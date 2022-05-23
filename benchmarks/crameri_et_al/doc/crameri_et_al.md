@@ -29,7 +29,7 @@ parts of which are excerpted here:
 ```
 
 In particular, this benchmark uses a custom geometry model to set the initial
-geometry. This geometry model, called &ldquo;`ReboundBox`,&rdquo; is based on
+geometry. This geometry model, called "`ReboundBox`," is based on
 the `Box` geometry model. It generates a domain in using the same parameters
 as `Box`, but then displaces all the nodes vertically with a sinusoidal
 perturbation, where the magnitude and order of that perturbation are specified
@@ -84,7 +84,7 @@ $\sim 800$ meters.
 Again, we excerpt the most relevant parts of the parameter file for this
 benchmark, with the full thing available in
 [benchmarks/crameri_et_al/case_2/crameri_benchmark_2.prm]. Here we use the
-&ldquo;Multicomponent&rdquo; material model, which allows us to easily set up
+"Multicomponent" material model, which allows us to easily set up
 a number of compositional fields with different material properties. The first
 compositional field corresponds to background mantle, the second corresponds
 to the rising blob, and the third corresponds to the viscous lid.
@@ -140,8 +140,8 @@ compositional fields.
 
 Crameri, F., H. Schmeling, G. J. Golabek, T. Duretz, R. Orendt, S. J. H.
 Buiter, D. A. May, B. J. P. Kaus, T. V. Gerya, and P. J. Tackley. 2012.
-&ldquo;A Comparison of Numerical Surface Topography Calculations in Geodynamic
-Modelling: An Evaluation of the 'Sticky Air' Method.&rdquo;
+"A Comparison of Numerical Surface Topography Calculations in Geodynamic
+Modelling: An Evaluation of the 'Sticky Air' Method."
 *Geophysical Journal International* 189 (1): 38&ndash;54.
 
 </div>

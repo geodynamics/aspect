@@ -64,7 +64,7 @@ re-interpolation to the quadrature points. Consequently, after projection, we
 limit the nodal values of the projection to the minimal and maximal original
 values, and only then interpolate back to the quadrature points.
 
-We demonstrate the effect of all of this with the &ldquo;sinker&rdquo;
+We demonstrate the effect of all of this with the "sinker"
 benchmark. This benchmark is defined by a high-viscosity, heavy sphere at the
 center of a two-dimensional box. This is achieved by defining a compositional
 field that is one inside and zero outside the sphere, and assigning a
@@ -87,7 +87,7 @@ refinement, Fig. [12] shows pressure plots that illustrate the problem
 with oscillations of the discrete pressure. The important part of these plots
 is not that the solution looks discontinuous &ndash; in fact, the exact
 solution is discontinuous at the edge of the circle[1] &ndash; but the spikes
-that go far above and below the &ldquo;cliff&rdquo; in the pressure along the
+that go far above and below the "cliff" in the pressure along the
 edge of the circle. Without averaging, these spikes are obviously orders of
 magnitude larger than the actual jump height. The spikes do not disappear
 under mesh refinement nor averaging, but they become far less pronounced with
@@ -229,7 +229,7 @@ pressure is in fact discontinuous along the edge of the circle.
 |        7         |    84.36     |   4.677    |   5.286   |   4.362   |  4.635  |  5.145   |
 |        8         |    83.96     |   5.701    |   5.664   |   4.686   |  5.524  |   6.42   |
 
-*Maximal pressure values for the &ldquo;sinker&rdquo; benchmark, using the
+*Maximal pressure values for the "sinker" benchmark, using the
 locally conservative, enriched Stokes element. The corresponding pressure
 solutions are shown in Fig. [24].*
 
@@ -256,9 +256,9 @@ element.*
 
 <div id="ref-Deu08" class="csl-entry">
 
-Deubelbeiss, Y., and B. J. P. Kaus. 2008. &ldquo;Comparison of Eulerian and
+Deubelbeiss, Y., and B. J. P. Kaus. 2008. "Comparison of Eulerian and
 Lagrangian Numerical Techniques for the Stokes Equations in the Presence of
-Strongly Varying Viscosity.&rdquo; *Physics of the Earth and Planetary
+Strongly Varying Viscosity." *Physics of the Earth and Planetary
 Interiors* 171: 92&ndash;111.
 
 </div>
@@ -266,16 +266,16 @@ Interiors* 171: 92&ndash;111.
 <div id="ref-DMGT11" class="csl-entry">
 
 Duretz, T., D. A. May, T. V. Garya, and P. J. Tackley. 2011.
-&ldquo;Discretization Errors and Free Surface Stabilization in the Finite
+"Discretization Errors and Free Surface Stabilization in the Finite
 Difference and Marker-in-Cell Method for Applied Geodynamics: A Numerical
-Study.&rdquo; *Geoch. Geoph. Geosystems* 12: Q07004/1&ndash;26.
+Study." *Geoch. Geoph. Geosystems* 12: Q07004/1&ndash;26.
 
 </div>
 
 <div id="ref-KHB12" class="csl-entry">
 
-Kronbichler, M., T. Heister, and W. Bangerth. 2012. &ldquo;High Accuracy
-Mantle Convection Simulation Through Modern Numerical Methods.&rdquo;
+Kronbichler, M., T. Heister, and W. Bangerth. 2012. "High Accuracy
+Mantle Convection Simulation Through Modern Numerical Methods."
 *Geophysical Journal International* 191: 12&ndash;29.
 <https://doi.org/10.1111/j.1365-246X.2012.05609.x>.
 
@@ -284,24 +284,24 @@ Mantle Convection Simulation Through Modern Numerical Methods.&rdquo;
 <div id="ref-Bab08" class="csl-entry">
 
 Schmeling, H., A. Y. Babeyko, A. Enns, C. Faccenna, F. Funiciello, T. Gerya,
-G. J. Golabek, et al. 2008. &ldquo;A Benchmark Comparison of Spontaneous
-Subduction Models&mdash;Towards a Free Surface.&rdquo; *Physics of the Earth
+G. J. Golabek, et al. 2008. "A Benchmark Comparison of Spontaneous
+Subduction Models&mdash;Towards a Free Surface." *Physics of the Earth
 and Planetary Interiors* 171: 198&ndash;223.
 
 </div>
 
 <div id="ref-TMK14" class="csl-entry">
 
-Thielmann, M., D. A. May, and B. J. P. Kaus. 2014. &ldquo;Discretization
-Errors in the Hybrid Finite Element Particle-in-Cell Method.&rdquo; *Pure and
+Thielmann, M., D. A. May, and B. J. P. Kaus. 2014. "Discretization
+Errors in the Hybrid Finite Element Particle-in-Cell Method." *Pure and
 Applied Geophysics* 171: 2165&ndash;84.
 
 </div>
 
 <div id="ref-Thi15" class="csl-entry">
 
-Thieulot, C. 2015. &ldquo;ELEFANT: A User-Friendly Multipurpose Geodynamics
-Code.&rdquo; Utrecht University.
+Thieulot, C. 2015. "ELEFANT: A User-Friendly Multipurpose Geodynamics
+Code." Utrecht University.
 
 </div>
 
@@ -322,8 +322,8 @@ total of 22,096 inner CG iterations for the elliptic block (and a total of 837
 for the approximate Schur complement). Using harmonic averaging, the 30+26
 outer iterations require only 1258 iterations on the elliptic block (and 84 on
 the Schur complement). In other words, the number of inner iterations per
-outer iteration (taking into account the split into &ldquo;cheap&rdquo; and
-&ldquo;expensive&rdquo; outer iterations, see (Kronbichler, Heister, and
+outer iteration (taking into account the split into "cheap" and
+"expensive" outer iterations, see (Kronbichler, Heister, and
 Bangerth 2012)) is reduced from 117 to 47 for the elliptic block and from 3.8
 to 1.5 for the Schur complement.
 

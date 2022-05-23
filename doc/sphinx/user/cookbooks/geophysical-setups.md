@@ -19,7 +19,7 @@ by one:
     viscosity almost surely also depends on the pressure and the strain rate.
     Because the issue is complicated and the exact material model not entirely
     clear, for the next few subsections we will therefore ignore the issue and
-    start with just using the &ldquo;simple&rdquo; material model where the
+    start with just using the "simple" material model where the
     viscosity is constant and most other coefficients depend at most on the
     temperature.
 

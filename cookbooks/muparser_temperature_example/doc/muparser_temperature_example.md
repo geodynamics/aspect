@@ -9,7 +9,7 @@ can quickly check initial conditions (i.e., without waiting for the solver to
 converge). For this model we define a simple 2D box, which is
 $5000 \times 1000$ km, with free-slip velocity boundary conditions. The
 material parameters are constant within the box (set using the
-&ldquo;simple&rdquo; material model). The initial thermal structure has two
+"simple" material model). The initial thermal structure has two
 parts divided at $xtr=2200$ km. The temperature in each region is defined
 using the equation for a half-space cooling model:
 $$T(x,y) = T_s + (T_m  - T_s) \erf{(\frac{y}{2\sqrt{\kappa x/v}})}$$ where
@@ -45,8 +45,8 @@ two different syntax options for if-statements (see also Section
 In the first syntax, both the true and false expression are evaluated (even
 though only one is needed), while in the second syntax, only the expression
 that is needed for the prescribed if condition is evaluated. In the lazy
-expression the `?` represents the &ldquo;then,&rdquo; and the `:` represents
-the &ldquo;else&rdquo; in the if-then-else statement. Because the function
+expression the `?` represents the "then," and the `:` represents
+the "else" in the if-then-else statement. Because the function
 expression is evaluated for every mesh point, for the plate temperature
 described above, it is necessary to use the lazy expression syntax to avoid
 evaluating the full temperature equation at mesh points where $x=0$ because

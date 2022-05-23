@@ -49,7 +49,7 @@ Coming back to the example at hand, we can visualize the particles that were
 advected along by opening both the field-based output files and the ones that
 correspond to particles (for example, `output/solution.visit` and
 `output/particles.visit`) and using a pseudo-color plot for the particles,
-selecting the &ldquo;id&rdquo; of particles to color each particle. By going
+selecting the "id" of particles to color each particle. By going
 to, for example, the output from the 72nd visualization output, this then
 results in a plot like the one shown in Fig. [1].
 
@@ -60,7 +60,7 @@ results in a plot like the one shown in Fig. [1].
 The particles shown here are not too impressive in still pictures since they
 are colorized by their particle number, which does not carry any particular
 meaning other than the fact that it enumerates the particles.[1] The particle
-&ldquo;id&rdquo; can, however, be useful when viewing an animation of time
+"id" can, however, be useful when viewing an animation of time
 steps. There, the different colors of particles allows the eye to follow the
 motion of a single particle. This is especially true if, after some time,
 particles have become well mixed by the flow field and adjacent particles no
@@ -75,7 +75,7 @@ information to particles, and how to visualize these.
 
 The particles in the above example only fulfill the purpose of visualizing the
 convection pattern. A more meaningful use for particles is to attach
-&ldquo;properties&rdquo; to them. A property consists of one or more numbers
+"properties" to them. A property consists of one or more numbers
 (or vectors or tensors) that may either be set at the beginning of the model
 run and stay constant, or are updated during the model runtime. These
 properties can then be used for many applications, e.g., storing an initial
@@ -127,7 +127,7 @@ following:
     later time visualizing this particle property will then show where
     particles came from. In cases where compositional variables undergo
     changes, e.g., by describing phase changes or chemical reactions, the
-    &ldquo;initial composition&rdquo; property can also be useful to compare
+    "initial composition" property can also be useful to compare
     the final composition of a particle with its initial composition and
     therefore determine which regions underwent reactions such as those
     described in Section [\[sec:cookbooks-composition\]][1], and where
@@ -137,7 +137,7 @@ following:
     values that are described based on a function of space. It provides an
     alternative way to set initial values if you don't want to first set
     a compositional field's initial values based on a function, and then
-    copy these values via the &ldquo;initial composition&rdquo; property to
+    copy these values via the "initial composition" property to
     particles. In the example above, we use the same function as for the
     compositional initial composition of field number one in
     Section [\[sec:cookbooks-composition\]][1]. Therefore, this property
@@ -167,7 +167,7 @@ following:
 The results of all of these properties can of course be visualized.
 Fig. [5] shows some of the pictures one can create with particles. The
 top row shows both the composition field $C_1$ (along with the mesh on which
-it is defined) and the corresponding &ldquo;initial $C_1$&rdquo; particle
+it is defined) and the corresponding "initial $C_1$" particle
 property, at $t=7.2$. Because the compositional field does not undergo any
 reactions, it should of course simply be the initial composition advected
 along with the flow field, and therefore equal the values of the corresponding
@@ -175,14 +175,14 @@ particle property. However, field-based compositions suffer from diffusion. On
 the other hand, the amount of diffusion can easily be decreased by mesh
 refinement.
 
-The bottom of the figure shows the norm of the &ldquo;initial position&rdquo;
+The bottom of the figure shows the norm of the "initial position"
 property at the initial time and at time $t=20$. These images therefore show
 how far from the origin each of the particles shown was at the initial time.
 
 [1] Particles are enumerated in a way so that first the first processor in a
 parallel computations numbers all of the particles on its first cell, then its
 second cell, and so on; then the second processor does the same with particles
-in the order of the cells it owns; etc. Thus, the &ldquo;id&rdquo; shown in
+in the order of the cells it owns; etc. Thus, the "id" shown in
 the picture is not just a random number, but rather shows the order of cells
 and how they belonged to the processors that participated in the computation
 at the time when particles were created. After some time, particles may of

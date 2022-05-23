@@ -8,7 +8,7 @@ deformations. The process is complicated to model because the rheology of
 cold, brittle crust is substantially more complicated than that of the hot,
 ductile rocks in the mantle. At the same time, the processes that act in such
 situations are surprisingly easy to replicate and visualize using simple
-&ldquo;sand box&rdquo; experiments in which one fills a volume with layers of
+"sand box" experiments in which one fills a volume with layers of
 differently-colored sand and compresses or stretches the volume. Examples of
 the patterns one can then observe in these do-it-yourself models are shown in
 Fig. [2].
@@ -36,7 +36,7 @@ sand dilation.
 
 In sandbox-type models, an important role is played by the boundaries and the
 frictional sliding of sand against these boundaries. For the top boundary
-condition, zero traction (&ldquo;open&rdquo;) and a sticky air layer is used
+condition, zero traction ("open") and a sticky air layer is used
 to approximate a free surface. Additional testing revealed that using a true
 free surface leads to significant mesh distortion and associated numerical
 instabilities. We also apply a rigid block that approximates a mobile wall
@@ -103,8 +103,8 @@ lower pressure values in (incipient) shear zones.
 <div id="ref-buiter16" class="csl-entry">
 
 Buiter, S. J. H., G. Schreurs, M. Albertz, T. V. Gerya, B. Kaus, W. Landry, L.
-le Pourhiet, et al. 2016. &ldquo;<span class="nocase">Benchmarking numerical
-models of brittle thrust wedges</span>.&rdquo; *Journal of Structural Geology*
+le Pourhiet, et al. 2016. "<span class="nocase">Benchmarking numerical
+models of brittle thrust wedges</span>." *Journal of Structural Geology*
 92: 140&ndash;77. <https://doi.org/10.1016/j.jsg.2016.03.003>.
 
 </div>

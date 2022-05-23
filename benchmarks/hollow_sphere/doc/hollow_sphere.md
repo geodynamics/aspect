@@ -41,8 +41,8 @@ velocity and a second-order convergence rate for the pressure.
 
 <div id="ref-THIE17" class="csl-entry">
 
-Thieulot, C. 2017. &ldquo;Analytical Solution for Viscous Incompressible
-Stokes Flow in a Spherical Shell.&rdquo; *Solid Earth* 8 (6): 1181&ndash;91.
+Thieulot, C. 2017. "Analytical Solution for Viscous Incompressible
+Stokes Flow in a Spherical Shell." *Solid Earth* 8 (6): 1181&ndash;91.
 <https://doi.org/10.5194/se-8-1181-2017>.
 
 </div>

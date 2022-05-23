@@ -11,10 +11,10 @@ show subsequently can be found at [cookbooks/convection_box_3d.prm](https://gith
 
 The first set of changes has to do with the geometry: it is three-dimensional,
 and we will have to address the fact that a box in 3d has 6 sides, not the 4
-we had previously. The documentation of the &ldquo;box&rdquo; geometry (see
+we had previously. The documentation of the "box" geometry (see
 Section {ref}`parameters:Geometry_20model`) states that these sides are
-numbered as follows: *&ldquo;in 3d, boundary indicators 0 through 5 indicate
-left, right, front, back, bottom and top boundaries.&rdquo;* Recalling that we
+numbered as follows: *"in 3d, boundary indicators 0 through 5 indicate
+left, right, front, back, bottom and top boundaries."* Recalling that we
 want tangential flow all around and want to fix the temperature to known
 values at the bottom and top, the following will make sense:
 

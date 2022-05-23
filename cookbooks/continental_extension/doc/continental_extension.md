@@ -136,22 +136,22 @@ temporal evolution of deformation patterns.
 <div id="ref-Bru14" class="csl-entry">
 
 Brune, S., C. Heine, M P&#7869;rez-Gussiny&#7869;, and S. V. Sobolev. 2014.
-&ldquo;Rift Migration Explains Continental Margin Asymmetry and Crustal
-Hyperextension.&rdquo; *Nat. Comm.* 5 (4014).
+"Rift Migration Explains Continental Margin Asymmetry and Crustal
+Hyperextension." *Nat. Comm.* 5 (4014).
 
 </div>
 
 <div id="ref-Cha86" class="csl-entry">
 
-Chapman, D. S. 1986. &ldquo;Thermal Gradients in the Continental Crust.&rdquo;
+Chapman, D. S. 1986. "Thermal Gradients in the Continental Crust."
 *Geol. Soc. London Spec. Publ.* 24: 63&ndash;70.
 
 </div>
 
 <div id="ref-HK04" class="csl-entry">
 
-Hirth, G., and D Kohlstedt. 2004. &ldquo;Rheology of the Upper Mantle and the
-Mantle Wedge:a View from the Experimentalists.&rdquo; In *Inside the
+Hirth, G., and D Kohlstedt. 2004. "Rheology of the Upper Mantle and the
+Mantle Wedge:a View from the Experimentalists." In *Inside the
 Subduction Factory*, edited by J. M. Eiler, 83&ndash;105. Geophys. Monogr.
 Ser. 138. Washington, DC: American Geophysical Union.
 
@@ -159,33 +159,33 @@ Ser. 138. Washington, DC: American Geophysical Union.
 
 <div id="ref-Hui11" class="csl-entry">
 
-Huismans, R., and C. Beaumont. 2011. &ldquo;Depth-Dependent Extension,
-Two-Stage Breakup and Cratonic Underplating at Rifted Margins.&rdquo; *Nature*
+Huismans, R., and C. Beaumont. 2011. "Depth-Dependent Extension,
+Two-Stage Breakup and Cratonic Underplating at Rifted Margins." *Nature*
 473 (71&ndash;75).
 
 </div>
 
 <div id="ref-Nal15" class="csl-entry">
 
-Naliboff, J., and S. Buiter. 2015. &ldquo;Rift Reactivation and Migration
-During Multiphase Extension.&rdquo; *Earth Planet. Sci. Lett.* 421
+Naliboff, J., and S. Buiter. 2015. "Rift Reactivation and Migration
+During Multiphase Extension." *Earth Planet. Sci. Lett.* 421
 (58&ndash;67).
 
 </div>
 
 <div id="ref-RB04" class="csl-entry">
 
-Rutter, E. H., and K. H. Brodie. 2004. &ldquo;Experimental Grain
-Size-Sensitive Flow of Hot-Pressed Brazilian Quartz Aggregates.&rdquo; *J.
+Rutter, E. H., and K. H. Brodie. 2004. "Experimental Grain
+Size-Sensitive Flow of Hot-Pressed Brazilian Quartz Aggregates." *J.
 Struct. Geol.* 26: 2011&ndash;23.
 
 </div>
 
 <div id="ref-RGWD06" class="csl-entry">
 
-Rybacki, E., M. Gottschalk, R. Wirth, and G. Dresen. 2006. &ldquo;Influence of
+Rybacki, E., M. Gottschalk, R. Wirth, and G. Dresen. 2006. "Influence of
 Water Fugacity and Activation Volume on the Flow Properties of Fine-Grained
-Anorthite Aggregates.&rdquo; *J. Geophys. Res.* 111 (B3).
+Anorthite Aggregates." *J. Geophys. Res.* 111 (B3).
 
 </div>
 

@@ -59,8 +59,8 @@ Theory, Experiments and Geological Application*. Academic Press, London,
 
 <div id="ref-wesc92" class="csl-entry">
 
-Weinberg, R. F., and H. Schmeling. 1992. &ldquo;<span
-class="nocase">Polydiapirs: multiwavelength gravity structures</span>.&rdquo;
+Weinberg, R. F., and H. Schmeling. 1992. "<span
+class="nocase">Polydiapirs: multiwavelength gravity structures</span>."
 *Journal of Structural Geology* 14 (4): 425&ndash;36.
 
 </div>

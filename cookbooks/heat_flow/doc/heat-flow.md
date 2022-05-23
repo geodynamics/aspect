@@ -160,8 +160,8 @@ temperature best fits the observed heat flux? Is that what one would expect
 for a mantle plume below the modeled ocean island?
 
 Repeat the computation of convective/conductive heat flux for the mid-ocean
-ridge model described above (in paragraph &ldquo;Heat flux close to mid-ocean
-ridges&rdquo;) for the best-fit plume model, and generate the corresponding
+ridge model described above (in paragraph "Heat flux close to mid-ocean
+ridges") for the best-fit plume model, and generate the corresponding
 plot that shows where conductive/convective heat flux are dominant (as above).
 Discuss how the plume influences what is the dominant mechanism for heat
 transport. Why does it have this effect?

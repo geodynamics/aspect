@@ -48,7 +48,7 @@ characteristic time scale) of melting, and they have to be consistent in the
 sense that the operator splitting time step can not be larger than the
 reaction time scale. The melting model we use here is the anhydrous mantle
 melting model of (Katz, Spiegelman, and Langmuir 2003) for a peridotitic rock
-composition, as implemented in the &ldquo;melt simple&rdquo; material model.
+composition, as implemented in the "melt simple" material model.
 
 ``` prmfile
 ```
@@ -61,7 +61,7 @@ boundary, as material should not cross this centerline. However, we do not
 know the inflow and outflow velocities at the bottom and right side of the
 model. Instead, what we can do here is prescribing the lithostatic pressure as
 a boundary condition for the stress. We accomplish this by using the
-&ldquo;initial lithostatic pressure&rdquo; model. This plugin will
+"initial lithostatic pressure" model. This plugin will
 automatically compute a 1d lithostatic pressure profile at a given point at
 the time of the model start and apply it as a boundary traction.
 
@@ -168,7 +168,7 @@ lithospheric material. Some ideas for adapting the model setup:
 -   Changing the speed of melt migration: The velocity of the melt with
     respect to the solid velocity is determined by the permeability and the
     melt viscosity (and the pressure gradients in the melt). Increasing the
-    permeability (by setting a different &ldquo;Reference permeability&rdquo;
+    permeability (by setting a different "Reference permeability"
     in the melt simple model) can lead to higher melt velocities, melt
     reaching the depth of freezing faster, and hence lower overall porosity
     values at steady state.
@@ -184,8 +184,8 @@ lithospheric material. Some ideas for adapting the model setup:
 
 <div id="ref-KSL2003" class="csl-entry">
 
-Katz, Richard F., Marc Spiegelman, and Charles H. Langmuir. 2003. &ldquo;A New
-Parameterization of Hydrous Mantle Melting.&rdquo; *Geochemistry, Geophysics,
+Katz, Richard F., Marc Spiegelman, and Charles H. Langmuir. 2003. "A New
+Parameterization of Hydrous Mantle Melting." *Geochemistry, Geophysics,
 Geosystems* 4 (9): n/a&ndash;. <https://doi.org/10.1029/2002GC000433>.
 
 </div>

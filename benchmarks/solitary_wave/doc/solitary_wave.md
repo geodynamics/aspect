@@ -77,40 +77,40 @@ in (Dannberg and Heister 2016).
 
 <div id="ref-BR86" class="csl-entry">
 
-Barcilon, V., and F. M. Richter. 1986. &ldquo;Nonlinear Waves in Compacting
-Media.&rdquo; *Journal of Fluid Mechanics* 164: 429&ndash;48.
+Barcilon, V., and F. M. Richter. 1986. "Nonlinear Waves in Compacting
+Media." *Journal of Fluid Mechanics* 164: 429&ndash;48.
 
 </div>
 
 <div id="ref-dannberg_melt" class="csl-entry">
 
-Dannberg, J., and T. Heister. 2016. &ldquo;Compressible Magma/Mantle Dynamics:
-3d, Adaptive Simulations in ASPECT.&rdquo; *Geophysical Journal International*
+Dannberg, J., and T. Heister. 2016. "Compressible Magma/Mantle Dynamics:
+3d, Adaptive Simulations in ASPECT." *Geophysical Journal International*
 207 (3): 1343&ndash;66. <https://doi.org/10.1093/gji/ggw329>.
 
 </div>
 
 <div id="ref-KMK2013" class="csl-entry">
 
-Keller, Tobias, Dave A. May, and Boris J. P. Kaus. 2013. &ldquo;Numerical
+Keller, Tobias, Dave A. May, and Boris J. P. Kaus. 2013. "Numerical
 Modelling of Magma Dynamics Coupled to Tectonic Deformation of Lithosphere and
-Crust.&rdquo; *Geophysical Journal International* 195 (3): 1406&ndash;42.
+Crust." *Geophysical Journal International* 195 (3): 1406&ndash;42.
 <https://doi.org/10.1093/gji/ggt306>.
 
 </div>
 
 <div id="ref-Schm00" class="csl-entry">
 
-Schmeling, Harro. 2000. &ldquo;Partial Melting and Melt Segregation in a
-Convecting Mantle.&rdquo; In *Physics and Chemistry of Partially Molten
+Schmeling, Harro. 2000. "Partial Melting and Melt Segregation in a
+Convecting Mantle." In *Physics and Chemistry of Partially Molten
 Rocks*, 141&ndash;78. Springer.
 
 </div>
 
 <div id="ref-SS11" class="csl-entry">
 
-Simpson, Gideon, and Marc Spiegelman. 2011. &ldquo;Solitary Wave Benchmarks in
-Magma Dynamics.&rdquo; *Journal of Scientific Computing* 49 (3): 268&ndash;90.
+Simpson, Gideon, and Marc Spiegelman. 2011. "Solitary Wave Benchmarks in
+Magma Dynamics." *Journal of Scientific Computing* 49 (3): 268&ndash;90.
 
 </div>
 

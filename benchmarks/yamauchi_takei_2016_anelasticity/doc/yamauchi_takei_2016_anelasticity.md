@@ -123,16 +123,16 @@ Code to recreate Fig. [1] is provided in
 
 <div id="ref-Hirsch2000" class="csl-entry">
 
-Hirschmann, Marc M. 2000. &ldquo;Mantle Solidus: Experimental Constraints and
-the Effects of Peridotite Composition.&rdquo; *Geochemistry, Geophysics,
+Hirschmann, Marc M. 2000. "Mantle Solidus: Experimental Constraints and
+the Effects of Peridotite Composition." *Geochemistry, Geophysics,
 Geosystems* 1 (10).
 
 </div>
 
 <div id="ref-McK05" class="csl-entry">
 
-McKenzie, Dan, James Jackson, and Keith Priestley. 2005. &ldquo;Thermal
-Structure of Oceanic and Continental Lithosphere.&rdquo; *Earth & Planetary
+McKenzie, Dan, James Jackson, and Keith Priestley. 2005. "Thermal
+Structure of Oceanic and Continental Lithosphere." *Earth & Planetary
 Science Letters* 233 (3-4): 337&ndash;49.
 
 </div>
@@ -140,16 +140,16 @@ Science Letters* 233 (3-4): 337&ndash;49.
 <div id="ref-P12" class="csl-entry">
 
 Priestley, Keith, Dan McKenzie, Jamie Barron, Mohammad Tatar, and Eric
-Debayle. 2012. &ldquo;The Zagros Core: Deformation of the Continental
-Lithospheric Mantle.&rdquo; *Geochemistry, Geophysics, Geosystems* 13 (11):
+Debayle. 2012. "The Zagros Core: Deformation of the Continental
+Lithospheric Mantle." *Geochemistry, Geophysics, Geosystems* 13 (11):
 Q11014.
 
 </div>
 
 <div id="ref-YT16" class="csl-entry">
 
-Yamauchi, H., and Y. Takei. 2016. &ldquo;Polycrystal Anelasticity at
-Near-Solidus Temperatures.&rdquo; *Journal of Geophysical Research: Solid
+Yamauchi, H., and Y. Takei. 2016. "Polycrystal Anelasticity at
+Near-Solidus Temperatures." *Journal of Geophysical Research: Solid
 Earth* 121 (11): 7790&ndash;820.
 
 </div>

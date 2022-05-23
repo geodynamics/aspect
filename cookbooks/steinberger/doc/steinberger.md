@@ -88,7 +88,7 @@ phase transitions, then can compute latent heat effects based on the pressure
 and temperature derivatives of the specific enthalpy (using the approach of
 (Nakagawa et al. 2009)). In our case, we simply do not include latent heat at
 all in our model. So the look-up table is computed without latent heat
-effects, and we set the &ldquo;Latent heat&rdquo; parameter to `false`.
+effects, and we set the "Latent heat" parameter to `false`.
 
 ``` prmfile
 ```
@@ -305,9 +305,9 @@ Figure [6].
 
 <div id="ref-connolly2005computation" class="csl-entry">
 
-Connolly, James AD. 2005. &ldquo;Computation of Phase Equilibria by Linear
+Connolly, James AD. 2005. "Computation of Phase Equilibria by Linear
 Programming: A Tool for Geodynamic Modeling and Its Application to Subduction
-Zone Decarbonation.&rdquo; *Earth and Planetary Science Letters* 236 (1-2):
+Zone Decarbonation." *Earth and Planetary Science Letters* 236 (1-2):
 524&ndash;41.
 
 </div>
@@ -315,8 +315,8 @@ Zone Decarbonation.&rdquo; *Earth and Planetary Science Letters* 236 (1-2):
 <div id="ref-gassmoller2020formulations" class="csl-entry">
 
 Gassm&ouml;ller, Rene, Juliane Dannberg, Wolfgang Bangerth, Timo Heister, and
-Robert Myhill. 2020. &ldquo;On Formulations of Compressible Mantle
-Convection.&rdquo; *Geophysical Journal International* 221 (2): 1264&ndash;80.
+Robert Myhill. 2020. "On Formulations of Compressible Mantle
+Convection." *Geophysical Journal International* 221 (2): 1264&ndash;80.
 <https://doi.org/10.1093/gji/ggaa078>.
 
 </div>
@@ -324,26 +324,26 @@ Convection.&rdquo; *Geophysical Journal International* 221 (2): 1264&ndash;80.
 <div id="ref-nakagawa2009incorporating" class="csl-entry">
 
 Nakagawa, Takashi, Paul J Tackley, Frederic Deschamps, and James AD Connolly.
-2009. &ldquo;Incorporating Self-Consistently Calculated Mineral Physics into
+2009. "Incorporating Self-Consistently Calculated Mineral Physics into
 Thermochemical Mantle Convection Simulations in a 3-d Spherical Shell and Its
-Influence on Seismic Anomalies in Earth's Mantle.&rdquo; *Geochemistry,
+Influence on Seismic Anomalies in Earth's Mantle." *Geochemistry,
 Geophysics, Geosystems* 10 (3).
 
 </div>
 
 <div id="ref-ringwood1988nature" class="csl-entry">
 
-Ringwood, AE, and T Irifune. 1988. &ldquo;Nature of the 650&ndash;Km Seismic
-Discontinuity: Implications for Mantle Dynamics and Differentiation.&rdquo;
+Ringwood, AE, and T Irifune. 1988. "Nature of the 650&ndash;Km Seismic
+Discontinuity: Implications for Mantle Dynamics and Differentiation."
 *Nature* 331 (6152): 131&ndash;36.
 
 </div>
 
 <div id="ref-stca06" class="csl-entry">
 
-Steinberger, B., and A. R. Calderwood. 2006. &ldquo;<span
+Steinberger, B., and A. R. Calderwood. 2006. "<span
 class="nocase">Models of large-scale viscous flow in the Earth's mantle
-with constraints from mineral physics and surface observations</span>.&rdquo;
+with constraints from mineral physics and surface observations</span>."
 *Geophy. J. Int.* 167: 1461&ndash;81.
 <https://doi.org/10.1111/j.1365-246X.2006.03131.x>.
 
@@ -351,8 +351,8 @@ with constraints from mineral physics and surface observations</span>.&rdquo;
 
 <div id="ref-stixrude2011thermodynamics" class="csl-entry">
 
-Stixrude, Lars, and Carolina Lithgow-Bertelloni. 2011. &ldquo;Thermodynamics
-of Mantle Minerals-II. Phase Equilibria.&rdquo; *Geophysical Journal
+Stixrude, Lars, and Carolina Lithgow-Bertelloni. 2011. "Thermodynamics
+of Mantle Minerals-II. Phase Equilibria." *Geophysical Journal
 International* 184 (3): 1180&ndash;1213.
 
 </div>

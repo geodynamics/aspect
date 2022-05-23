@@ -72,11 +72,11 @@ $\eta\textsubscript{max}=1000\eta_0$.
 
 We run the model to steady state for the reason given in Redmond & King
 (Redmond and King 2004) (which is similar to Kellogg & King (Kellogg and King
-1997), only applied to Mars): &ldquo;We use steady state calculations so that
+1997), only applied to Mars): "We use steady state calculations so that
 we can separate time-dependent from parameter-dependent effects. Once again,
 it is unlikely that any Mars-sized, or larger, planetary body is in steady
 state. These calculations mainly serve as a guide, allowing us to determine
-the relationship between surface observations and internal parameters.&rdquo;
+the relationship between surface observations and internal parameters."
 
 Steady-state fields are shown in Fig. [9]. We find that the velocity
 fields are similar between the isoviscous and weakly temperature-dependent
@@ -128,16 +128,16 @@ the simulation.
 
 <div id="ref-KW93" class="csl-entry">
 
-Karato, S. I., and P. Wu. 1993. &ldquo;Rheology of the Upper Mantle: A
-Synthesis.&rdquo; *Science* 260: 771&ndash;78.
+Karato, S. I., and P. Wu. 1993. "Rheology of the Upper Mantle: A
+Synthesis." *Science* 260: 771&ndash;78.
 
 </div>
 
 <div id="ref-keki97" class="csl-entry">
 
-Kellogg, Louise H, and Scott D King. 1997. &ldquo;The Effect of Temperature
+Kellogg, Louise H, and Scott D King. 1997. "The Effect of Temperature
 Dependent Viscosity on the Structure of New Plumes in the Mantle: Results of a
-Finite Element Model in a Spherical, Axisymmetric Shell.&rdquo;
+Finite Element Model in a Spherical, Axisymmetric Shell."
 *Earth Planet. Sci. Lett.* 148 (1-2): 13&ndash;26.
 <https://doi.org/10.1016/S0012-821X(97)00025-3>.
 
@@ -145,27 +145,27 @@ Finite Element Model in a Spherical, Axisymmetric Shell.&rdquo;
 
 <div id="ref-kiha92" class="csl-entry">
 
-Kiefer, W. S., and B. Hager. 1992. &ldquo;<span class="nocase">Geoid anomalies
+Kiefer, W. S., and B. Hager. 1992. "<span class="nocase">Geoid anomalies
 and dynamic topography from convection in cylindrical geometry: applications
-to mantle plumes on Earth and Venus</span>.&rdquo; *Geophy. J. Int.*
+to mantle plumes on Earth and Venus</span>." *Geophy. J. Int.*
 108: 198&ndash;214.
 
 </div>
 
 <div id="ref-reki04" class="csl-entry">
 
-Redmond, Hannah L, and Scott D King. 2004. &ldquo;A Numerical Study of a
+Redmond, Hannah L, and Scott D King. 2004. "A Numerical Study of a
 Mantle Plume Beneath the Tharsis Rise: Reconciling Dynamic Uplift and
-Lithospheric Support Models.&rdquo; *Journal of Geophysical Research: Planets*
+Lithospheric Support Models." *Journal of Geophysical Research: Planets*
 109 (E9). <https://doi.org/10.1029/2003JE002228>.
 
 </div>
 
 <div id="ref-stca06" class="csl-entry">
 
-Steinberger, B., and A. R. Calderwood. 2006. &ldquo;<span
+Steinberger, B., and A. R. Calderwood. 2006. "<span
 class="nocase">Models of large-scale viscous flow in the Earth's mantle
-with constraints from mineral physics and surface observations</span>.&rdquo;
+with constraints from mineral physics and surface observations</span>."
 *Geophy. J. Int.* 167: 1461&ndash;81.
 <https://doi.org/10.1111/j.1365-246X.2006.03131.x>.
 

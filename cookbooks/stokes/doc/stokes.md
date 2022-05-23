@@ -1,4 +1,4 @@
-#### The &ldquo;Stokes' law&rdquo; benchmark
+#### The "Stokes' law" benchmark
 
 *This section was contributed by Juliane Dannberg.*
 
@@ -42,7 +42,7 @@ with a density that is larger than the surrounding material. There are
 multiple ways of doing this. For example, we could simply set the initial
 temperature of the material in the sphere to a lower value, yielding a higher
 density with any of the common material models. Or, we could use 's
-facilities to advect along what are called &ldquo;compositional fields&rdquo;
+facilities to advect along what are called "compositional fields"
 and make the density dependent on these fields.
 
 We will go with the second approach and tell to advect a single compositional
@@ -78,12 +78,12 @@ calculate the average velocity of the sphere using the following filters:
     velocity_y^2+velocity_z^2)/Volume).
 
 If you then look at the Calculator object in the Spreadsheet View, you can see
-the average sinking velocity of the sphere in the column &ldquo;Result&rdquo;
+the average sinking velocity of the sphere in the column "Result"
 and compare it to the theoretical value
 $v_s = \num{8.72e-10} \, \si{m}/\si{s}$. In this case, the numerical result is
 $\num{8.865e-10} \,
 \si{m}/\si{s}$ when you add a few more refinement steps to actually resolve
-the 3d flow field adequately. The &ldquo;velocity statistics&rdquo;
+the 3d flow field adequately. The "velocity statistics"
 postprocessor we have selected above also provides us with a maximal velocity
 that is on the same order of magnitude. The difference between the analytical
 and the numerical values can be explained by different at least the following

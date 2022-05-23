@@ -12,7 +12,7 @@ is somewhat analogous to (Willett 1999), and in extension to (Allken,
 Huismans, and Thieulot 2011).
 
 Brittle failure is approximated by adapting the viscosity to limit the stress
-that is generated during deformation. This &ldquo;cap&rdquo; on the stress
+that is generated during deformation. This "cap" on the stress
 level is parameterized in this experiment by the pressure-dependent Drucker
 Prager yield criterion and we therefore make use of the Drucker-Prager
 material model (see Section [\[parameters:Material_20model\]][1]) in the
@@ -122,48 +122,48 @@ as a function of their initial offset (Allken, Huismans, and Thieulot 2011,
 
 <div id="ref-alhf13" class="csl-entry">
 
-Allken, V., R. S. Huismans, H. Fossen, and C. Thieulot. 2013. &ldquo;<span
+Allken, V., R. S. Huismans, H. Fossen, and C. Thieulot. 2013. "<span
 class="nocase">3D numerical modelling of graben interaction and linkage: a
-case study of the Canyonlands grabens, Utah</span>.&rdquo; *Basin Research*
+case study of the Canyonlands grabens, Utah</span>." *Basin Research*
 25: 1&ndash;14.
 
 </div>
 
 <div id="ref-alht11" class="csl-entry">
 
-Allken, V., R. Huismans, and C. Thieulot. 2011. &ldquo;Three Dimensional
-Numerical Modelling of Upper Crustal Extensional Systems.&rdquo;
+Allken, V., R. Huismans, and C. Thieulot. 2011. "Three Dimensional
+Numerical Modelling of Upper Crustal Extensional Systems."
 *J. Geophys. Res.* 116: B10409.
 
 </div>
 
 <div id="ref-alht12" class="csl-entry">
 
-&mdash;&mdash;&mdash;. 2012. &ldquo;Factors Controlling the Mode of Rift
-Interaction in Brittle-Ductile Coupled Systems: A 3d Numerical Study.&rdquo;
+&mdash;&mdash;&mdash;. 2012. "Factors Controlling the Mode of Rift
+Interaction in Brittle-Ductile Coupled Systems: A 3d Numerical Study."
 *Geochem. Geophys. Geosyst.* 13 (5): Q05010.
 
 </div>
 
 <div id="ref-buit12" class="csl-entry">
 
-Buiter, S. J. H. 2012. &ldquo;<span class="nocase">A review of brittle
-compressional wedge models</span>.&rdquo; *Tectonophysics* 530: 1&ndash;17.
+Buiter, S. J. H. 2012. "<span class="nocase">A review of brittle
+compressional wedge models</span>." *Tectonophysics* 530: 1&ndash;17.
 
 </div>
 
 <div id="ref-kaus10" class="csl-entry">
 
-Kaus, B. J. P. 2010. &ldquo;Factors That Control the Angle of Shear Bands in
-Geodynamic Numerical Models of Brittle Deformation.&rdquo; *Tectonophysics*
+Kaus, B. J. P. 2010. "Factors That Control the Angle of Shear Bands in
+Geodynamic Numerical Models of Brittle Deformation." *Tectonophysics*
 484: 36&ndash;47.
 
 </div>
 
 <div id="ref-will99" class="csl-entry">
 
-Willett, S. D. 1999. &ldquo;Rheological Dependence of Extension in Wedge
-Models of Convergent Orogens.&rdquo; *Tectonophysics* 305: 419&ndash;35.
+Willett, S. D. 1999. "Rheological Dependence of Extension in Wedge
+Models of Convergent Orogens." *Tectonophysics* 305: 419&ndash;35.
 
 </div>
 

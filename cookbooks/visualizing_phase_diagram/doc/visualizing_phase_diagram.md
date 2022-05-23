@@ -58,7 +58,7 @@ spinel system) are included for the 660 interfaces, and they need to be
 modified at a higher temperature. In spite of the complexities of mantle
 phases, the focus of this first example is to simply illustrate this approach
 of visualizing it. Beyond showing the diagram, We have also used the
-&ldquo;lineout&rdquo; feature in VisIt to export the data along two vertical
+"lineout" feature in VisIt to export the data along two vertical
 lines at $T = \SI{1173}{K}$ and $T = \SI{1673}{K}$ (Figure [2]). The figure
 for $T = \SI{1173}{K}$ illustrates the buoyancy forces felt by a descending
 cold slab within the mantle transition zone.
@@ -105,17 +105,17 @@ to a constant Clapeyron slope.
 
 <div id="ref-billen2018decoupling" class="csl-entry">
 
-Billen, Magali I, and Katrina M Arredondo. 2018. &ldquo;Decoupling of
+Billen, Magali I, and Katrina M Arredondo. 2018. "Decoupling of
 Plate-Asthenosphere Motion Caused by Non-Linear Viscosity During Slab Folding
-in the Transition Zone.&rdquo; *Physics of the Earth and Planetary Interiors*
+in the Transition Zone." *Physics of the Earth and Planetary Interiors*
 281: 17&ndash;30.
 
 </div>
 
 <div id="ref-stixrude2011thermodynamics" class="csl-entry">
 
-Stixrude, Lars, and Carolina Lithgow-Bertelloni. 2011. &ldquo;Thermodynamics
-of Mantle Minerals-II. Phase Equilibria.&rdquo; *Geophysical Journal
+Stixrude, Lars, and Carolina Lithgow-Bertelloni. 2011. "Thermodynamics
+of Mantle Minerals-II. Phase Equilibria." *Geophysical Journal
 International* 184 (3): 1180&ndash;1213.
 
 </div>

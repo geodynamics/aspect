@@ -31,14 +31,14 @@ we refer to other studies (McKenzie and Jackson 1983; Dahlen and Tromp 1998;
 Becker et al. 2003) for a derivation of this relationship, we can give an
 intuitive example for the necessity to apply the velocity gradient to the
 already accumulated deformation, instead of simply integrating the velocity
-gradient over time. Consider a simple one-dimensional &ldquo;grain&rdquo; of
+gradient over time. Consider a simple one-dimensional "grain" of
 length $1.0$, in which case the deformation tensor only has one component, the
 compression in $x$-direction. If one embeds this grain into a convergent flow
 field for a compressible medium where the dimensionless velocity gradient is
 $-0.5$ (e.g. a velocity of zero at its left end at $x=0.0$, and a velocity of
 $-0.5$ at its right end at $x=1.0$), simply integrating the velocity gradient
 would suggest that the grain reaches a length of zero after two units of time,
-and would then &ldquo;flip&rdquo; its orientation, which is clearly
+and would then "flip" its orientation, which is clearly
 non-physical. What happens instead can be seen by solving the equation of
 motion for the right end of the grain $\frac{dx}{dt} = v = -0.5 x$. Solving
 this equation for $x$ leads to $x(t) = e^{-0.5t}$. This is therefore also the
@@ -63,8 +63,8 @@ $\ln(\lambda_1/\lambda_2)$, called the *natural strain* (Ribe 1992).
 The full plugin implementing the integration of $\mathbf F$ can be found in
 [cookbooks/finite_strain/finite_strain.cc] and can be compiled with
 `cmake . && make` in the [cookbooks/finite_strain] directory. It can be
-loaded in a parameter file as an &ldquo;Additional shared library,&rdquo; and
-selected as material model. As it is derived from the &ldquo;simple&rdquo;
+loaded in a parameter file as an "Additional shared library," and
+selected as material model. As it is derived from the "simple"
 material model, all input parameters for the material properties are read in
 from the subsection `Simple model`.
 
@@ -106,9 +106,9 @@ model outputs such as the viscosity.
 <div id="ref-Becker2003" class="csl-entry">
 
 Becker, Thorsten W., James B. Kellogg, G&ouml;ran Ekstr&ouml;m, and Richard J.
-O'Connell. 2003. &ldquo;<span class="nocase">Comparison of azimuthal
+O'Connell. 2003. "<span class="nocase">Comparison of azimuthal
 seismic anisotropy from surface waves and finite strain from global
-mantle-circulation models</span>.&rdquo; *Geophysical Journal International*
+mantle-circulation models</span>." *Geophysical Journal International*
 155 (2): 696&ndash;714. <https://doi.org/10.1046/j.1365-246X.2003.02085.x>.
 
 </div>
@@ -122,9 +122,9 @@ University Press.
 
 <div id="ref-McKenzie1983" class="csl-entry">
 
-McKenzie, Dan, and James Jackson. 1983. &ldquo;<span class="nocase">The
+McKenzie, Dan, and James Jackson. 1983. "<span class="nocase">The
 relationship between strain rates, crustal thickening, palaeomagnetism, finite
-strain and fault movements within a deforming zone</span>.&rdquo; *Earth and
+strain and fault movements within a deforming zone</span>." *Earth and
 Planetary Science Letters* 65 (1): 182&ndash;202.
 <https://doi.org/10.1016/0012-821X(83)90198-X>.
 
@@ -132,8 +132,8 @@ Planetary Science Letters* 65 (1): 182&ndash;202.
 
 <div id="ref-Ribe1992" class="csl-entry">
 
-Ribe, Neil M. 1992. &ldquo;<span class="nocase">On the relation between
-seismic anisotropy and finite strain</span>.&rdquo; *Journal of Geophysical
+Ribe, Neil M. 1992. "<span class="nocase">On the relation between
+seismic anisotropy and finite strain</span>." *Journal of Geophysical
 Research* 97 (B6): 8737. <https://doi.org/10.1029/92JB00551>.
 
 </div>

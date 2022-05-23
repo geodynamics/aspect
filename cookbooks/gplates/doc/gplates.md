@@ -28,9 +28,9 @@ at CalTech and the Center for Geodynamics at the Norwegian Geological Survey
 (<http://www.gplates.org>). Apart from the software one needs the actual plate
 reconstruction that consists of closed polygons covering the complete model
 domain. For our case we will use the data provided by (Gurnis et al. 2012)
-that is available from the GPlates website under &ldquo;Download $\rightarrow$
+that is available from the GPlates website under "Download $\rightarrow$
 Download GPlates-compatible data $\rightarrow$ Global reconstructions with
-continuously closing plates from 140 Ma to the present.&rdquo; The data is
+continuously closing plates from 140 Ma to the present." The data is
 provided under a Creative Commons Attribution 3.0 Unported License
 (<http://creativecommons.org/licenses/by/3.0/>).
 
@@ -46,10 +46,10 @@ surface).
 
 With loaded plate polygon and rotation information the conversion from GPlates
 data to -readable velocity files is rather straightforward. First the user
-needs to generate (or import) so-called &ldquo;velocity domain points,&rdquo;
+needs to generate (or import) so-called "velocity domain points,"
 which are discrete sets of points at which GPlates will evaluate velocity
-information. This is done using the &ldquo;Features $\rightarrow$ Generate
-Velocity Domain Points $\rightarrow$ Latitude Longitude&rdquo; menu option.
+information. This is done using the "Features $\rightarrow$ Generate
+Velocity Domain Points $\rightarrow$ Latitude Longitude" menu option.
 Because is using an adaptive mesh it is not possible for GPlates to generate
 velocity information at the precise surface node positions like for CitcomS or
 Terra (the other currently available interfaces). Instead GPlates will output
@@ -57,7 +57,7 @@ the information on a general Latitude/Longitude grid with nodes on all
 crossing points. then internally interpolates this information to the current
 node locations during the model run. This requires the user to choose a
 sensible resolution of the GPlates output, which can be adjusted in the
-&ldquo;Generate Latitude/Longitude Velocity Domain Points&rdquo; dialog of
+"Generate Latitude/Longitude Velocity Domain Points" dialog of
 GPlates. In general a resolution that resolves the important features is
 necessary, while a resolution that is higher than the maximal mesh size for
 the model is unnecessary and only increases the computational cost and memory
@@ -66,20 +66,20 @@ consumption of the model.
 **Important note:** The Mesh creation routine in GPlates has significantly
 changed from version 1.3 to 1.4. In GPlates 1.4 and later the user has to make
 sure that the number of longitude intervals is set as twice the number of
-latitude intervals, the &ldquo;Place node points at centre of
-latitude/longitude cells&rdquo; box is **un**checked and the
-&ldquo;Latitude/Longitude extents&rdquo; are set to &ldquo;Use Global
-Extents.&rdquo; does check for most possible combinations that can not be read
+latitude intervals, the "Place node points at centre of
+latitude/longitude cells" box is **un**checked and the
+"Latitude/Longitude extents" are set to "Use Global
+Extents." does check for most possible combinations that can not be read
 and will cancel the calculation in these cases, however some mistakes can not
 be checked against from the information provided in the GPlates file.
 
 After creating the Velocity Domain Points the user should see the created
 points and their velocities indicated as points and arrows in GPlates. To
-export the calculated velocities one would use the &ldquo;Reconstruction
-$\rightarrow$ Export&rdquo; menu. In this dialog the user may specify the time
+export the calculated velocities one would use the "Reconstruction
+$\rightarrow$ Export" menu. In this dialog the user may specify the time
 instant or range at which the velocities shall be exported. The only necessary
-option is to include the &ldquo;Velocities&rdquo; data type in the &ldquo;Add
-Export&rdquo; sub-dialog. The velocities need to be exported in the native
+option is to include the "Velocities" data type in the "Add
+Export" sub-dialog. The velocities need to be exported in the native
 GPlates `*.gpml` format, which is based on XML and can be read by . In case of
 a time-range the user needs to add a pattern specifier to the name to create a
 series of files. The `%u` flag is especially suited for the interaction with ,
@@ -110,7 +110,7 @@ The relevant section of the input file is then as follows:
 ``` prmfile
 ```
 
-In the &ldquo;Boundary velocity model&rdquo; subsection the user prescribes
+In the "Boundary velocity model" subsection the user prescribes
 the boundary that is supposed to use the GPlates plugin. Although currently
 nothing forbids the user to use GPlates plugin for other boundaries than the
 surface, its current usage and the provided sample data only make sense for
@@ -121,7 +121,7 @@ lithosphere model. All plugin specific options may be set in
 section [\[parameters:Boundary_20velocity_20model\]][2]. Possible options
 include the data directory and file name of the velocity file/files, the time
 step (in model units, mostly seconds or years depending on the
-&ldquo;`Use years in output instead of seconds`&rdquo; flag) and the points
+"`Use years in output instead of seconds`" flag) and the points
 that define the 2D plane.
 
 ##### Comparing and visualizing 2D and 3D models.
@@ -130,8 +130,8 @@ The implementation of plate velocities in both two- and three-dimensional
 model setups allows for an easy comparison and test for common sources of
 error in the interpretation of model results. The left top figure in
 Fig. [1] shows a modification of the above presented parameter file by
-setting &ldquo;`Dimension = 3`&rdquo; and
-&ldquo;`Initial global refinement = 3`.&rdquo; The top right plot of
+setting "`Dimension = 3`" and
+"`Initial global refinement = 3`." The top right plot of
 Fig. [1] shows an example of three independent two-dimensional
 computations of the same reduced resolution. The models were prescribed to be
 orthogonal slices by setting:
@@ -212,7 +212,7 @@ section [\[sec:checkpoint-restart\]][3].
 
 Gurnis, M., M. Turner, S. Zahirovic, L. DiCaprio, S. Spasojevic, R. D.
 M&uuml;ller, J. Boyden, M. Seton, V. C. Manea, and D. J. Bower. 2012.
-&ldquo;Plate Tectonic Reconstructions with Continuously Closing Plates.&rdquo;
+"Plate Tectonic Reconstructions with Continuously Closing Plates."
 *Computers & Geosciences* 38: 35&ndash;42.
 
 </div>

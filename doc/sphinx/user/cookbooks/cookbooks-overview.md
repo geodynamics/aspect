@@ -29,7 +29,7 @@ file:
 ```
 
 This indicates that you want to do a computation in 2d, using a rectangular
-geometry (a &ldquo;box&rdquo;) with the edge length ("extent") equal to one in both the $x$-
+geometry (a "box") with the edge length ("extent") equal to one in both the $x$-
 and $y$-directions. Of course, there are other geometries you can choose from
 for the `Model name` parameter, and consequently other subsections that
 specify the details of these geometries.

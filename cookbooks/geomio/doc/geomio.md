@@ -99,9 +99,9 @@ it a higher viscosity can be found here:
 
 <div id="ref-bauvillegeomio" class="csl-entry">
 
-Bauville, A, and TS Baumann. 2019. &ldquo;geomIO: An Open-Source MATLAB
+Bauville, A, and TS Baumann. 2019. "geomIO: An Open-Source MATLAB
 Toolbox to Create the Initial Configuration of 2d/3d Thermo-Mechanical
-Simulations from 2d Vector Drawings.&rdquo; *Geochemistry, Geophysics,
+Simulations from 2d Vector Drawings." *Geochemistry, Geophysics,
 Geosystems*. <https://doi.org/10.1029/2018GC008057>.
 
 </div>

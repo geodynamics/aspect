@@ -95,8 +95,8 @@ numerical results shown after the input file.
 To run this benchmark, we need to set up an input file that describes the
 situation. In principle, what we need to do is to describe the position and
 entropy change of the phase transition in addition to the previously outlined
-boundary and initial conditions. For this purpose, we use the &ldquo;latent
-heat&rdquo; material model that allows us to set the density change
+boundary and initial conditions. For this purpose, we use the "latent
+heat" material model that allows us to set the density change
 $\Delta\rho$ and Clapeyron slope $\gamma$ (which together determine the
 entropy change via $\Delta S = \gamma \frac{\Delta\rho}{\rho^2}$) as well as
 the depth of the phase transition as input parameters.
@@ -129,10 +129,10 @@ Therefore, we use the last output step to compare predicted and computed
 values. You can visualize the output in different ways, one of it being
 ParaView and shown in Fig. [2] on the right side (an alternative is to
 use Visit as described in Section [\[sec:viz\]][4]). In ParaView, you can
-plot the temperature profile using the filter &ldquo;Plot Over Line&rdquo;
+plot the temperature profile using the filter "Plot Over Line"
 (Point1: 500000,0,0; Point2: 500000,1000000,0, then go to the
-&ldquo;Display&rdquo; tab and select &ldquo;T&rdquo; as only variable in the
-&ldquo;Line series&rdquo; section) or &ldquo;Calculator&rdquo; (as seen in
+"Display" tab and select "T" as only variable in the
+"Line series" section) or "Calculator" (as seen in
 Fig. [2]). In Fig. [4] (left) we can see that with increasing
 resolution, the value for the bottom temperature converges to a value of
 $T_2 = 1105.27 \, \si{K}$.

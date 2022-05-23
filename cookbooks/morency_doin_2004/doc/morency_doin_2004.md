@@ -44,8 +44,8 @@ reproduce the setup:
 
 <div id="ref-MD04" class="csl-entry">
 
-Morency, C., and M.-P. Doin. 2004. &ldquo;Numerical Simulations of the Mantle
-Lithosphere Delamination.&rdquo; *Journal of Geophysical Research: Solid Earth
+Morency, C., and M.-P. Doin. 2004. "Numerical Simulations of the Mantle
+Lithosphere Delamination." *Journal of Geophysical Research: Solid Earth
 (1978&ndash;2012)* 109 (B3).
 
 </div>

@@ -3,7 +3,7 @@
 This benchmark is based on the benchmark presented in (Gerya 2010) and
 extended in (Thieulot 2011). It consists of a two-dimensional
 $512~\si{\km}\times 512~\si{\km}$ domain filled with a fluid (the
-&ldquo;mantle&rdquo;) of density $\rho_1=3200\si{\kg\per\cubic\meter}$ and
+"mantle") of density $\rho_1=3200\si{\kg\per\cubic\meter}$ and
 viscosity $\eta_1=10^{21}~\si{\pascal\second}$. A square block of size
 $128~\si{\km}\times 128~\si{\km}$ is placed in the domain and is centered at
 location $(x_c,y_c)=(256~\si{\km},384~\si{\km})$ so as to ensure that its
@@ -53,9 +53,9 @@ Press.
 
 <div id="ref-thie11" class="csl-entry">
 
-Thieulot, C. 2011. &ldquo;<span class="nocase">FANTOM: two- and
+Thieulot, C. 2011. "<span class="nocase">FANTOM: two- and
 three-dimensional numerical modelling of creeping flows for the solution of
-geological problems</span>.&rdquo;
+geological problems</span>."
 *Phys. Earth. Planet. Inter.* 188: 47&ndash;68.
 
 </div>

@@ -41,7 +41,7 @@ the velocity. We do this in the subsection `Function`. The first of these
 parameters gives names to the components of the position vector (here, we are
 in 2d and we use $x$ and $z$ as spatial variable names) and the time. We could
 have left this entry at its default, `x,y,t`, but since we often think in
-terms of &ldquo;depth&rdquo; as the vertical direction, let us use `z` for the
+terms of "depth" as the vertical direction, let us use `z` for the
 second coordinate. In the second parameter we define symbolic constants that
 can be used in the formula for the velocity that is specified in the last
 parameter. This formula needs to have as many components as there are space

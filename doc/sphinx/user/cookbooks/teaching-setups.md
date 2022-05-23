@@ -14,7 +14,7 @@ behaviour that controls the model results.
 ## Introduction to Geophysics
 
 *This section was contributed by Juliane Dannberg, based on the course
-&ldquo;Introduction to Geophysics&rdquo; at University of Florida.*
+"Introduction to Geophysics" at University of Florida.*
 
 The course is designed to teach general concepts of geophysics, and it
 includes the following cookbooks:

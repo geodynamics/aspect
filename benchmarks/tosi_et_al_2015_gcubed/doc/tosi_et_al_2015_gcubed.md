@@ -82,16 +82,16 @@ resolved temperature and viscosity fields for case 1.
 <div id="ref-BBC89" class="csl-entry">
 
 Blankenbach, B., F. Busse, U. Christensen, L. Cserepes, D. Gunkel, U. Hansen,
-H. Harder, et al. 1989. &ldquo;A Benchmark Comparison for Mantle Convection
-Codes.&rdquo; *Geophys. J. Int.* 98: 23&ndash;38.
+H. Harder, et al. 1989. "A Benchmark Comparison for Mantle Convection
+Codes." *Geophys. J. Int.* 98: 23&ndash;38.
 
 </div>
 
 <div id="ref-T15" class="csl-entry">
 
 Tosi, N., C. Stein, L. Noack, C. H&uuml;ttig, P. Maierova, H. Samual, D. R.
-Davies, et al. 2015. &ldquo;A Community Benchmark for Viscoplastic Thermal
-Convection in a 2-d Square Box.&rdquo; *Geochem. Geophys. Geosyst.*
+Davies, et al. 2015. "A Community Benchmark for Viscoplastic Thermal
+Convection in a 2-d Square Box." *Geochem. Geophys. Geosyst.*
 16: 2175&ndash;96.
 
 </div>

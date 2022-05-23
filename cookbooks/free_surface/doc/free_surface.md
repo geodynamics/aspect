@@ -29,7 +29,7 @@ need to give a comma separated list of the boundary indicators where the
 'free surface' deformation should be applied. In this case, we are
 dealing with the 'top' boundary of a box in 2D. There is another
 significant parameter that needs to be set here: the value for the
-stabilization parameter &ldquo;theta.&rdquo; If this parameter is zero, then
+stabilization parameter "theta." If this parameter is zero, then
 there is no stabilization, and you are likely to see instabilities develop in
 the free surface. If this parameter is one then it will do a good job of
 stabilizing the free surface, but it may overly damp its motions. The default

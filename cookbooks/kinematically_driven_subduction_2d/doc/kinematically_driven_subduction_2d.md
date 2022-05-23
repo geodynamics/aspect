@@ -94,9 +94,9 @@ boundary. This can also be seen in Fig [7].
 
 <div id="ref-Quinquis2014" class="csl-entry">
 
-Quinquis, M. 2014. &ldquo;<span class="nocase">A numerical study of subduction
+Quinquis, M. 2014. "<span class="nocase">A numerical study of subduction
 zone dynamics using linear viscous to thermo-mechanical model setups including
-(de)hydration processes</span>.&rdquo; PhD thesis, Charles University.
+(de)hydration processes</span>." PhD thesis, Charles University.
 
 </div>
 

@@ -197,19 +197,19 @@ Dover.
 
 <div id="ref-JMR:2019" class="csl-entry">
 
-Robey, Jonathan M. 2019. &ldquo;On the Design, Implementation, and Use of a
+Robey, Jonathan M. 2019. "On the Design, Implementation, and Use of a
 Volume-of-Fluid Interface Tracking Algorithm for Modeling Convection and Other
-Processes in the Earth's Mantle.&rdquo; Applied Mathematics, University
+Processes in the Earth's Mantle." Applied Mathematics, University
 of California, Davis.
 
 </div>
 
 <div id="ref-JMR-EGP:2019" class="csl-entry">
 
-Robey, Jonathan M., and Elbridge Gerry Puckett. 2019. &ldquo;Implementation of
+Robey, Jonathan M., and Elbridge Gerry Puckett. 2019. "Implementation of
 a Volume-of-Fluid Method in a Finite Element Code with Applications to
 Thermochemical Convection in a Density Stratified Fluid in the Earth's
-Mantle.&rdquo; *Computers & Fluids* 190 (2): 217&ndash;53.
+Mantle." *Computers & Fluids* 190 (2): 217&ndash;53.
 https://doi.org/<https://doi.org/10.1016/j.compfluid.2019.05.015>.
 
 </div>

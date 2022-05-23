@@ -85,8 +85,8 @@ whole model series of Boussinesq cases presented in (Christensen and Yuen
 
 <div id="ref-CY85" class="csl-entry">
 
-Christensen, U. R., and D. A. Yuen. 1985. &ldquo;Layered Convection Induced by
-Phase Transitions.&rdquo; *J. Geoph. Res.* 90: 10291&ndash;300.
+Christensen, U. R., and D. A. Yuen. 1985. "Layered Convection Induced by
+Phase Transitions." *J. Geoph. Res.* 90: 10291&ndash;300.
 
 </div>
 

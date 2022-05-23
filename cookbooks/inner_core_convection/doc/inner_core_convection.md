@@ -61,7 +61,7 @@ secular cooling of the outer core. In spherical geometry, $H=6$.
 **Mechanical boundary.** The mechanical boundary conditions for the inner core
 are tangential stress-free and continuity of the normal stress at the
 inner-outer core boundary. For the non-dimensional equations, that means that
-we define a &ldquo;phase change number&rdquo; $\mathcal{P}$ (see (Deguen,
+we define a "phase change number" $\mathcal{P}$ (see (Deguen,
 Alboussi&egrave;re, and Cardin 2013)) so that the normal stress at the
 boundary is $-\mathcal{P} u_r$ with the radial velocity $u_r$. This number
 characterizes the resistance to phase change at the boundary, with
@@ -187,9 +187,9 @@ and 9 in (Deguen, Alboussi&egrave;re, and Cardin 2013).
 
 <div id="ref-Deguen2013" class="csl-entry">
 
-Deguen, R., T. Alboussi&egrave;re, and P. Cardin. 2013. &ldquo;Thermal
+Deguen, R., T. Alboussi&egrave;re, and P. Cardin. 2013. "Thermal
 Convection in Earth's Inner Core with Phase Change at Its
-Boundary.&rdquo; *Geophysical Journal International* 194 (3): 1310&ndash;34.
+Boundary." *Geophysical Journal International* 194 (3): 1310&ndash;34.
 <https://doi.org/10.1093/gji/ggt202>.
 
 </div>

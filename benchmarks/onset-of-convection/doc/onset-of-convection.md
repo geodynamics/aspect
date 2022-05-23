@@ -1,7 +1,7 @@
 #### Onset of convection benchmark
 
 *This section was contributed by Max Rudolph, based on a course assignment for
-&ldquo;Geodynamic Modeling&rdquo; at Portland State University.*
+"Geodynamic Modeling" at Portland State University.*
 
 Here we use to numerically reproduce the results of a linear stability
 analysis for the onset of convection in a fluid layer heated from below. This

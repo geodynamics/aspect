@@ -16,7 +16,7 @@ i.e., the piecewise viscosity function is defined as $$\begin{aligned}
 the upper and lower layers, respectively. This viscosity model can be
 implemented by creating a plugin that is a small modification of the `simpler`
 material model (from which it is otherwise simply copied). We call this
-material model &ldquo;SimplerWithCrust.&rdquo; In particular, what is
+material model "SimplerWithCrust." In particular, what is
 necessary is an evaluation function that looks like this:
 
 ``` c++

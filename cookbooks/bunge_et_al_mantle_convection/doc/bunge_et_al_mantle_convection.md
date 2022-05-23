@@ -64,65 +64,65 @@ movie of how the temperature evolves over this time period at
 
 <div id="ref-vavy93" class="csl-entry">
 
-Berg, Arie P van den, Peter E van Keken, and David A Yuen. 1993. &ldquo;The
+Berg, Arie P van den, Peter E van Keken, and David A Yuen. 1993. "The
 Effects of a Composite Non-Newtonian and Newtonian Rheology on Mantle
-Convection.&rdquo; *Geophy. J. Int.* 115 (1): 62&ndash;78.
+Convection." *Geophy. J. Int.* 115 (1): 62&ndash;78.
 
 </div>
 
 <div id="ref-BBC89" class="csl-entry">
 
 Blankenbach, B., F. Busse, U. Christensen, L. Cserepes, D. Gunkel, U. Hansen,
-H. Harder, et al. 1989. &ldquo;A Benchmark Comparison for Mantle Convection
-Codes.&rdquo; *Geophys. J. Int.* 98: 23&ndash;38.
+H. Harder, et al. 1989. "A Benchmark Comparison for Mantle Convection
+Codes." *Geophys. J. Int.* 98: 23&ndash;38.
 
 </div>
 
 <div id="ref-burb96" class="csl-entry">
 
-Bunge, H.-P., M. A. Richards, and J. R. Baumgardner. 1996. &ldquo;<span
+Bunge, H.-P., M. A. Richards, and J. R. Baumgardner. 1996. "<span
 class="nocase">Effect of depth-dependent viscosity on the planform of mantle
-convection</span>.&rdquo; *Nature* 379: 436&ndash;38.
+convection</span>." *Nature* 379: 436&ndash;38.
 
 </div>
 
 <div id="ref-burb97" class="csl-entry">
 
-&mdash;&mdash;&mdash;. 1997. &ldquo;<span class="nocase">A sensitivity study
+&mdash;&mdash;&mdash;. 1997. "<span class="nocase">A sensitivity study
 of three-dimensional spherical mantle convection at $10^8$ Rayleigh number:
 Effects of depth-dependent viscosity, heating mode, and endothermic phase
-change</span>.&rdquo; *J. Geophys. Res.* 102 (B6): 11, 991&ndash;12,
+change</span>." *J. Geophys. Res.* 102 (B6): 11, 991&ndash;12,
 007. <https://doi.org/10.1029/96JB03806>.
 
 </div>
 
 <div id="ref-buss75" class="csl-entry">
 
-Busse, F. H. 1975. &ldquo;<span class="nocase">Patterns of convection in
-spherical shells</span>.&rdquo; *J. Fluid Mech.* 72 (1): 67&ndash;85.
+Busse, F. H. 1975. "<span class="nocase">Patterns of convection in
+spherical shells</span>." *J. Fluid Mech.* 72 (1): 67&ndash;85.
 
 </div>
 
 <div id="ref-BC93" class="csl-entry">
 
 Busse, F., U. Christensen, R. Clever, L. Cserepes, C. Gable, E. Giannandrea,
-L. Guillou, et al. 1993. &ldquo;3d Convection at Infinite Prandtl Numbers in
-Cartesian Geometry &mdash; a Benchmark Comparison.&rdquo; *Geophys. Astrophys.
+L. Guillou, et al. 1993. "3d Convection at Infinite Prandtl Numbers in
+Cartesian Geometry &mdash; a Benchmark Comparison." *Geophys. Astrophys.
 Fluid Dynamics* 75: 39&ndash;59.
 
 </div>
 
 <div id="ref-buss79" class="csl-entry">
 
-Busse, FH. 1979. &ldquo;High Prandtl Number Convection.&rdquo;
+Busse, FH. 1979. "High Prandtl Number Convection."
 *Phys. Earth. Planet. Inter.* 19 (2): 149&ndash;57.
 
 </div>
 
 <div id="ref-youn74" class="csl-entry">
 
-Young, Richard E. 1974. &ldquo;Finite-Amplitude Thermal Convection in a
-Spherical Shell.&rdquo; *J. Fluid Mech.* 63 (4): 695&ndash;721.
+Young, Richard E. 1974. "Finite-Amplitude Thermal Convection in a
+Spherical Shell." *J. Fluid Mech.* 63 (4): 695&ndash;721.
 
 </div>
 

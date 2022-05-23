@@ -321,7 +321,7 @@ and analyzing them.
     hydrous silicates with a thickness of approximately 2000 km
     (<https://www.nasa.gov/mission_pages/cassini/multimedia/titan20120223L.html>).
 
--   Exoplanets There may be &ldquo;rocky&rdquo; planets outside of the solar
+-   Exoplanets There may be "rocky" planets outside of the solar
     system. A list can be found here:
     <https://en.wikipedia.org/wiki/List_of_nearest_terrestrial_exoplanet_candidates>.
     It also lists the mass and radius of the planets, which you will need to
@@ -372,8 +372,8 @@ information and help on what commands there are in gnuplot here:
 <http://www.gnuplot.info/>. They have a lot of examples (that can be found
 under Demos) that show you how a given plot will look like and the code to
 create a plot like this. But if there is a specific command I don't
-know, I usually just google something like &ldquo;gnuplot how do I change the
-x axis to log scale&rdquo; to find the answer.
+know, I usually just google something like "gnuplot how do I change the
+x axis to log scale" to find the answer.
 
 I like gnuplot because it allows you to quickly redo a plot even if the data
 have changed: If you just execute the same lines in gnuplot again, but with a

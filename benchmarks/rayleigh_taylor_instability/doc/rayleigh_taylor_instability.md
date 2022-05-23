@@ -62,9 +62,9 @@ and is found to match analytical results.
 
 <div id="ref-Deu08" class="csl-entry">
 
-Deubelbeiss, Y., and B. J. P. Kaus. 2008. &ldquo;Comparison of Eulerian and
+Deubelbeiss, Y., and B. J. P. Kaus. 2008. "Comparison of Eulerian and
 Lagrangian Numerical Techniques for the Stokes Equations in the Presence of
-Strongly Varying Viscosity.&rdquo; *Physics of the Earth and Planetary
+Strongly Varying Viscosity." *Physics of the Earth and Planetary
 Interiors* 171: 92&ndash;111.
 
 </div>
@@ -78,16 +78,16 @@ University Press.
 
 <div id="ref-ramb68" class="csl-entry">
 
-Ramberg, Hans. 1968. &ldquo;Instability of Layered Systems in the Field of
-Gravity.&rdquo; *Phys. Earth Planet. Interiors* 1: 427&ndash;47.
+Ramberg, Hans. 1968. "Instability of Layered Systems in the Field of
+Gravity." *Phys. Earth Planet. Interiors* 1: 427&ndash;47.
 
 </div>
 
 <div id="ref-thie11" class="csl-entry">
 
-Thieulot, C. 2011. &ldquo;<span class="nocase">FANTOM: two- and
+Thieulot, C. 2011. "<span class="nocase">FANTOM: two- and
 three-dimensional numerical modelling of creeping flows for the solution of
-geological problems</span>.&rdquo;
+geological problems</span>."
 *Phys. Earth. Planet. Inter.* 188: 47&ndash;68.
 
 </div>

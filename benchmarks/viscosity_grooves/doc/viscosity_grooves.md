@@ -65,7 +65,7 @@ level larger than 9 to recover the optimal convergence rates.
 
 <div id="ref-fieldstone" class="csl-entry">
 
-Thieulot, C. 2019. &ldquo;The Finite Element Method in Geodynamics.&rdquo;
+Thieulot, C. 2019. "The Finite Element Method in Geodynamics."
 <https://github.com/cedrict/fieldstone/blob/master/manual.pdf>.
 
 </div>

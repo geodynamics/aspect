@@ -80,9 +80,9 @@ information.
 <div id="ref-S40RTS" class="csl-entry">
 
 Ritsema, J., A. Deuss, H. J. van Heijst, and J. H. Woodhouse. 2011.
-&ldquo;S40rts: A Degree-40 Shear-Velocity Model for the Mantle from New
+"S40rts: A Degree-40 Shear-Velocity Model for the Mantle from New
 Rayleigh Wave Dispersion, Teleseismic Traveltime and Normal-Mode Splitting
-Function Measurements.&rdquo; *Geophysical Journal International* 184:
+Function Measurements." *Geophysical Journal International* 184:
 1223&ndash;36.
 
 </div>

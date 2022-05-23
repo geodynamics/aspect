@@ -25,11 +25,11 @@ where everything looks the same except that we set the dimension to 3:
 ```
 
 The next section concerns the geometry. The geometry model remains unchanged
-at &ldquo;spherical shell&rdquo; but we omit the opening angle of 90 degrees
+at "spherical shell" but we omit the opening angle of 90 degrees
 as we would like to get a complete spherical shell. Such a shell of course
 also only has two boundaries (the inner one has indicator zero, the outer one
 indicator one) and consequently these are the only ones we need to list in the
-&ldquo;Boundary velocity model&rdquo; section:
+"Boundary velocity model" section:
 
 ``` prmfile
 ```

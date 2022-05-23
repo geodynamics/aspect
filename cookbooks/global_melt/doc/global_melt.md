@@ -17,8 +17,8 @@ in both models in higher resolution can be found [online].
 
 The model setup is a 2D box with dimensions of $2900 \times 8700$&#8198;km,
 and it is heated from the bottom and cooled from the top. A full description
-can be found in Section 4.7 &ldquo;Influence of melt migration on a
-global-scale convection model&rdquo; in (Dannberg and Heister 2016). In the
+can be found in Section 4.7 "Influence of melt migration on a
+global-scale convection model" in (Dannberg and Heister 2016). In the
 first model we will look at, melting and freezing is only included passively:
 We use the `melt fraction` visualization postprocessor to compute how much
 melt is present for a given temperature and pressure at every given point in
@@ -82,16 +82,16 @@ over time in comparison to the model without melt migration.
 </figure>
 
 Figure [1] shows the time evolution of both models. A more complete
-comparison of the two models can be found in Section 4.7 &ldquo;Influence
-of melt migration on a global-scale convection model&rdquo; in (Dannberg and
+comparison of the two models can be found in Section 4.7 "Influence
+of melt migration on a global-scale convection model" in (Dannberg and
 Heister 2016).
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-dannberg_melt" class="csl-entry">
 
-Dannberg, J., and T. Heister. 2016. &ldquo;Compressible Magma/Mantle Dynamics:
-3d, Adaptive Simulations in ASPECT.&rdquo; *Geophysical Journal International*
+Dannberg, J., and T. Heister. 2016. "Compressible Magma/Mantle Dynamics:
+3d, Adaptive Simulations in ASPECT." *Geophysical Journal International*
 207 (3): 1343&ndash;66. <https://doi.org/10.1093/gji/ggw329>.
 
 </div>

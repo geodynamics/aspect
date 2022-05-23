@@ -1,6 +1,6 @@
 (cha:cookbooks)=
 # Cookbooks
-In this section, let us present a number of &ldquo;cookbooks&rdquo; &ndash;
+In this section, let us present a number of "cookbooks" &ndash;
 examples of how to use <span class="smallcaps">ASPECT</span> in typical or
 less typical ways. As discussed in {ref}`cha:run-aspect`, ASPECT is driven by
 run-time parameter files, and so setting up a particular situation primarily

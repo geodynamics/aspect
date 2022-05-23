@@ -172,18 +172,18 @@ spectral based code shows good agreement (see
 <div id="ref-S40RTS" class="csl-entry">
 
 Ritsema, J., A. Deuss, H. J. van Heijst, and J. H. Woodhouse. 2011.
-&ldquo;S40rts: A Degree-40 Shear-Velocity Model for the Mantle from New
+"S40rts: A Degree-40 Shear-Velocity Model for the Mantle from New
 Rayleigh Wave Dispersion, Teleseismic Traveltime and Normal-Mode Splitting
-Function Measurements.&rdquo; *Geophysical Journal International* 184:
+Function Measurements." *Geophysical Journal International* 184:
 1223&ndash;36.
 
 </div>
 
 <div id="ref-S20RTS" class="csl-entry">
 
-Ritsema, J., and H. J. van Heijst. 2000. &ldquo;Seismic Imaging of Structural
+Ritsema, J., and H. J. van Heijst. 2000. "Seismic Imaging of Structural
 Heterogeneity in Earth's Mantle: Evidence for Large-Scale Mantle
-Flow.&rdquo; *Sci. Progr.* 83: 243&ndash;59.
+Flow." *Sci. Progr.* 83: 243&ndash;59.
 
 </div>
 

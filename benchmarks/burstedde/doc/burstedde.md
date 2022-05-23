@@ -145,15 +145,15 @@ the pressure.
 <div id="ref-busa13" class="csl-entry">
 
 Burstedde, C., G. Stadler, L. Alisic, L. C. Wilcox, E. Tan, M. Gurnis, and O.
-Ghattas. 2013. &ldquo;Large-Scale Adaptive Mantle Convection
-Simulation.&rdquo; *Geophysical Journal International* 192.3: 889&ndash;906.
+Ghattas. 2013. "Large-Scale Adaptive Mantle Convection
+Simulation." *Geophysical Journal International* 192.3: 889&ndash;906.
 
 </div>
 
 <div id="ref-dobo04" class="csl-entry">
 
-Dohrmann, C. R., and P. B. Bochev. 20014. &ldquo;A Stabilized Finite Element
-Method for the Stokes Problem Based on Polynomial Pressure Projections.&rdquo;
+Dohrmann, C. R., and P. B. Bochev. 20014. "A Stabilized Finite Element
+Method for the Stokes Problem Based on Polynomial Pressure Projections."
 *International Journal for Numerical Methods in Fluids* 46: 183&ndash;201.
 
 </div>

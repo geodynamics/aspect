@@ -28,7 +28,7 @@ equations are formulated (see
 Equations [\[eq:stokes-1\]][1]&ndash;[\[eq:compositional\]][2]), ideally
 we would need to know reaction rates (the $q_i$) between the different
 components instead of the equilibrium value (which would then have to be
-compared with some sort of &ldquo;old solution&rdquo; of the compositional
+compared with some sort of "old solution" of the compositional
 fields). Sometimes we also may not know the equilibrium, and would only be
 able to find it iteratively, starting from the current composition. In
 addition, the reaction rate for a given compositional field usually depends on

@@ -2,11 +2,11 @@
 
 *This section is a co-production of Cedric Thieulot, Juliane Dannberg, Timo
 Heister and Wolfgang Bangerth with an extension to this benchmark provided by
-the Virginia Tech Department of Geosciences class &ldquo;Geodynamics and
-ASPECT&rdquo; co-taught by Scott King and D. Sarah Stamps.*
+the Virginia Tech Department of Geosciences class "Geodynamics and
+ASPECT" co-taught by Scott King and D. Sarah Stamps.*
 
 One of the most widely used benchmarks for mantle convection codes is the
-isoviscous Rayleigh-Taylor case (&ldquo;case 1a&rdquo;) published by van Keken
+isoviscous Rayleigh-Taylor case ("case 1a") published by van Keken
 *et al.* in (Keken et al. 1997). The benchmark considers a 2d situation where
 a lighter fluid underlies a heavier one with a non-horizontal interface
 between the two of them. This unstable layering causes the lighter fluid to
@@ -63,10 +63,10 @@ That said, it is startling that the second peak does not appear to converge
 despite the fact that the various codes compared in (Keken et al. 1997) show
 good agreement in this comparison. Tracking down the cause for this proved to
 be a lesson in benchmark design; in hindsight, it may also explain why van
-Keken *et al.* stated presciently in their abstract that &ldquo;*&mldr;good
+Keken *et al.* stated presciently in their abstract that "*&mldr;good
 agreement is found for the initial rise of the unstable lower layer; however,
 the timing and location of the later smaller-scale instabilities may differ
-between methods.*&rdquo; To understand what is happening here, note that the
+between methods.*" To understand what is happening here, note that the
 first peak in these plots corresponds to the plume that rises along the left
 edge of the domain and whose evolution is primarily determined by the
 large-scale shape of the initial interface (i.e., the cosine used to describe
@@ -207,7 +207,7 @@ later in the run.
 
 Now let us further add a two-layer viscosity model to the domain. This is done
 to recreate the two nonisoviscous Rayleigh-Taylor instability cases
-(&ldquo;cases 1b and 1c&rdquo;) published in van Keken *et al.* in (Keken et
+("cases 1b and 1c") published in van Keken *et al.* in (Keken et
 al. 1997). Let's assume the viscosity value of the upper, heavier layer
 is $\eta_{t}$ and the viscosity value of the lower, lighter layer is
 $\eta_{b}$. Based on the initial constant viscosity value 1$\times10^{2}$
@@ -254,8 +254,8 @@ tends to reach stability after around 500 time steps.
 <div id="ref-KKSCND97" class="csl-entry">
 
 Keken, P. E. van, S. D. King, H. Schmeling, U. R. Christensen, D. Neumeister,
-and M.-P. Doin. 1997. &ldquo;A Comparison of Methods for the Modeling of
-Thermochemical Convection.&rdquo; *J. Geoph. Res.* 102: 22477&ndash;95.
+and M.-P. Doin. 1997. "A Comparison of Methods for the Modeling of
+Thermochemical Convection." *J. Geoph. Res.* 102: 22477&ndash;95.
 
 </div>
 

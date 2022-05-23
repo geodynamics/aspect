@@ -69,9 +69,9 @@ spherical shell geometry model.
 
 <div id="ref-ZGH93" class="csl-entry">
 
-Zhong, Shijie, Michael Gurnis, and Gregory Hulbert. 1993. &ldquo;Accurate
+Zhong, Shijie, Michael Gurnis, and Gregory Hulbert. 1993. "Accurate
 Determination of Surface Normal Stress in Viscous Flow from a Consistent
-Boundary Flux Method.&rdquo; *Physics of the Earth and Planetary Interiors* 78
+Boundary Flux Method." *Physics of the Earth and Planetary Interiors* 78
 (1-2): 1&ndash;8. <https://doi.org/10.1016/0031-9201(93)90078-n>.
 
 </div>
