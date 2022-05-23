@@ -6,54 +6,19 @@ aspect-files      = $(shell echo ../include/aspect/*.h \
                             ../include/aspect/*/*.h     \
                             ../include/aspect/*/*/*.h   \
                             modules/*.h)
-aspect-manual-pix = $(shell find -L manual/cookbooks/ -name \*.png 2>/dev/null)
 
 # List all changelog files including the relative path and make sure to ignore
 # the .gitkeep file. Use find instead of ls because the directory might have
 # no changes in it:
 change-files = $(shell find modules/changes/ -type f -not -name '.*')
 
-# Find all parameter files to be included in the manual and generate their
-# output targets (.prm.out). There are two types of targets: Every file inside
-# the /doc/ folders generates the output inside the same folder. Every file
-# outside the /doc/ folder generates a target inside the doc folder. For
-# that we separate file and directory strings, attach 'doc/' to the directory
-# and '.out' to the file name and join them afterwards.
-aspect-doc-prms = $(shell find -L manual/cookbooks/ -path \*/doc/\* -name \*.prm 2>/dev/null)
-aspect-doc-prms-out = $(aspect-doc-prms:=.out)
-
 default:
 	@echo "make targets:"
 	@echo "  aspect.tag  - generates doxygen documentation into doxygen/"
-	@echo "  manual.pdf  - generates manual.pdf"
-	@echo "  all         - generates both"
+	@echo "  all         - same as above"
 
-all: aspect.tag manual.pdf
+all: aspect.tag
 
-# Generate .prm.out from .prm using the annotate.pl script and then process
-# index entries to contain at most three levels (by replacing the fourth
-# separator marker ! by /). This is repeated 10 times because only one nesting
-# level is removed in each call to sed. The replacement is necessary as
-# makeindex only allows for three levels of nesting.
-#
-# There are two rules for .prm.out files, the first one is executed if the
-# corresponding .prm file is found in the same folder as the .prm.out target.
-# This is the case for all *.part.prm files that are already in the doc/
-# subfolder of cookbooks and benchmarks. The second rule is triggered if the
-# corresponding .prm file is found in the parent folder of the .prm.out file
-# (in this case the first rule does not trigger, because the dependency is
-# not found). The second case applies to the full .prm files of the cookbook or
-# benchmark, for which the .prm file lies in the parent folder of the
-# doc/*.prm.out target folder.
-%.prm.out: %.prm Makefile
-	@echo "generating '$@' from '$<'..."
-	@perl manual/cookbooks/annotate.pl $< >$@
-	@for i in `seq 1 10`; do sed -i.bak 's/{\([^!]*\)!\([^!]*\)!\([^!]*\)!\([^}]*\)}/{\1!\2!\3\/\4}/' $@; rm $@.bak; done
-
-%.prm.out: $(dir %.prm)../$(notdir %.prm) Makefile
-	@echo "generating '$@' from '$<'..."
-	@perl manual/cookbooks/annotate.pl $< >$@
-	@for i in `seq 1 10`; do sed -i.bak 's/{\([^!]*\)!\([^!]*\)!\([^!]*\)!\([^}]*\)}/{\1!\2!\3\/\4}/' $@; rm $@.bak; done
 
 # Generate changes.h from the bits in modules/changes/
 modules/changes.h: $(change-files) modules/create_changes.sh modules/current_changes_*
@@ -84,49 +49,6 @@ aspect.tag: $(aspect-files) $(change-files) modules/changes.h options.dox Makefi
 	@echo 'GENERATE_TAGFILE = $@'                                >> aspect.dox
 	@doxygen aspect.dox || echo "Running doxygen to generate documentation failed."
 
-# make target for generating the pdf manual. The goal is to have the return
-# value of the sequence of bash commands reflect if building the manual was
-# successful. For this matter we need to catch errors from pdflatex, but we
-# need to ignore them the first time we run pdflatex, because of missing label
-# definitions, etc..
-manual.pdf: manual/manual.tex manual/manual.bib manual/parameters.tex \
-            $(aspect-manual-pix) $(aspect-doc-prms-out) 
-	@if test -x "`which pdflatex`" \
-                 -a -x "`which bibtex`" \
-                 -a -x "`which makeindex`" ; then \
-	   (cd manual ; \
-		rm -f manual.{aux,bbl,blg,log,out,pdf,toc} prm*.{idx,ilg,ind} ; \
-		pdflatex --shell-escape --interaction=batchmode manual.tex;      \
-		bibtex manual                                  && \
-		makeindex prmindex                             && \
-		pdflatex --shell-escape --interaction=batchmode manual.tex    && \
-		pdflatex --shell-escape --interaction=batchmode manual.tex    && \
-		pdflatex --shell-escape --interaction=batchmode manual.tex)   && \
-	   mv manual/manual.pdf . || \
-	   (echo                                                      && \
-	    echo "    Error: There were errors compiling manual.tex." && \
-	    echo "           Check manual/manual.log for details"     && \
-	    echo                                                      && \
-	    false); \
-         else \
-	  echo "------------------------------------------------------" ; \
-	  echo "Can't find either 'pdflatex', 'bibtex' or 'makeindex'." ; \
-	  echo "------------------------------------------------------" ; \
-	  false ; \
-	 fi
-
-# This rule will only trigger if the file is missing, which happens if the
-# user has a release tarball.
-manual/manual.tex:
-	@echo "------------------------------------------------------"
-	@echo "Error: Can not generate manual.pdf without the source"
-	@echo "files in manual/. If you are currently using a release"
-	@echo "of ASPECT, download the latest development version of"
-	@echo "ASPECT instead."
-	@echo "------------------------------------------------------"
-	@false
-
 clean:
 	-rm -f aspect.dox aspect.tag
 	-rm -rf doxygen
-	-rm -rf manual/manual.blg manual/manual.toc manual/manual.log manual/manual.out manual/manual.bbl manual/manual.aux
