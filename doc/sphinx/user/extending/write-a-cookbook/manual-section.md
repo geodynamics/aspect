@@ -1,25 +1,32 @@
 # Section in the manual
 
+:::{admonition} TODO
+This section needs to be re-written to accomodate the change to sphinx documentation
+:::
+
 Then you have to decide if the cookbook you want to contribute is a *Simple
 setup* (that explains how to use one specific feature, but does not try to
 reproduce any earth-like setting, see
-{ref}`sec:cookbooks-simple`13]), a *Geophysical setup* (that
+{ref}`sec:cookbooks:simple-setups`), a *Geophysical setup* (that
 teaches how to setup a specific type of geodynamic model like a global
 convection model, a subduction zone or a mid-ocean ridge, see
-{ref}`sec:cookbooks-geophysical`14]) or a *Benchmark* (see
-{ref}`sec:cookbooks-benchmarks`15]). Depending on that choice,
-you will then start a new `\subsubsection` in the [manual.tex][] file at the
-end of the corresponding subsection (Simple setups, Geophysical setups or
-Benchmarks). This is where your description of the model will go.
+{ref}`sec:cookbooks:geophysical-setups`) or a *Benchmark* (see
+{ref}`cha:benchmarks`). Depending on that choice, you will then start a new
+`\subsubsection` in the
+[manual.tex](https://github.com/geodynamics/aspect/tree/main/doc/manual/manual.tex)
+file at the end of the corresponding subsection (Simple setups, Geophysical
+setups or Benchmarks). This is where your description of the model will go.
 
 In addition to the text in the manual, you also have to create a subfolder in
-the [doc/manual/cookbooks][] directory. This is the place where all figures
+the [doc/manual/cookbooks](https://github.com/geodynamics/aspect/tree/main/doc/manual/cookbooks)
+directory. This is the place where all figures
 and input file/code snippets that accompany the description go into.
 
 Note also one special case: If your setup is a benchmark, you will have to put
-your input file into the [benchmarks][] folder rather than into the
-[cookbooks][] folder, and you have to create the subfolder for your figures
-and code snippets in the [doc/manual/cookbooks/benchmarks][] directory.
+your input file into the [benchmarks](https://github.com/geodynamics/aspect/tree/main/benchmarks) folder rather than into the
+[cookbooks](https://github.com/geodynamics/aspect/tree/main/cookbooks) folder,
+and you have to create the subfolder for your figures
+and code snippets in the [doc/manual/cookbooks/benchmarks](https://github.com/geodynamics/aspect/tree/main/doc/manual/cookbooks/benchmarks) directory.
 
 To give you some guidelines on how to write the section in the manual, you can
 follow this general structure:
@@ -35,7 +42,7 @@ follow this general structure:
     paragraph includes essential code snippets from the plugin file that
     complement and illustrate the description in the text. Place the code
     snippet in the corresponding subfolder you created in the
-    [doc/manual/cookbooks][] directory and use the command
+    [doc/manual/cookbooks](https://github.com/geodynamics/aspect/tree/main/doc/manual/cookbooks) directory and use the command
 
           \lstinline{\lstinputlisting[language=C++]{cookbooks/subfolder_name/code_snippet.cc}!
 
@@ -47,8 +54,8 @@ follow this general structure:
     geometry, etc., and anything that is special about the setup. Ideally,
     this description includes snippets from the input file. You can place
     these snippets in the subfolder you created in the
-    [doc/manual/cookbooks][] directory and include them in the `manual.tex`
-    file using a command like
+    [doc/manual/cookbooks](https://github.com/geodynamics/aspect/tree/main/doc/manual/cookbooks)
+    directory and include them in the `manual.tex` file using a command like
 
           \lstinputlisting[language=prmfile]{cookbooks/subfolder_name/doc/input_snippet.prm.out}
 
@@ -82,9 +89,10 @@ follow this general structure:
     modifications influence the model results.
 
 And that's it, you have just created your first cookbook! Make a [pull
-request][] to contribute it to the main repository! You can find more
-information on how to do that on [our github page][].
+request](https://docs.github.com/en/get-started/quickstart/github-flow) to
+contribute it to the main repository! You can find more information on how to do
+ that on [our github page](https://github.com/geodynamics/aspect/blob/main/CONTRIBUTING.md).
 
 You will get bonus points if you also create a test (see
-{ref}`sec:1.8.2][]) that only runs the first time step (or a lower
+{ref}`sec:extending:writing-tests`) that only runs the first time step (or a lower
 resolution version) of your cookbook.

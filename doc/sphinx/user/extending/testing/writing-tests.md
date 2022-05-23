@@ -1,3 +1,4 @@
+(sec:extending:writing-tests)=
 # Writing tests
 
 To write a test for a new feature, copy one of the existing parameter files in

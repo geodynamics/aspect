@@ -2,7 +2,7 @@
 # Boundary temperature model
 
 
-## **Parameters in section** Boundary temperature model
+## **Subsection:** Boundary temperature model
 
 
 (parameters:Boundary_20temperature_20model/Allow_20fixed_20temperature_20on_20outflow_20boundaries)=
@@ -104,7 +104,7 @@ Because this class simply takes what the initial temperature had described, this
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying boundary temperature models and shouldn't be used. Please use 'List of model names' instead.
 
 (parameters:Boundary_20temperature_20model/Ascii_20data_20model)=
-## **Parameters in section** Boundary temperature model/Ascii data model
+## **Subsection:** Boundary temperature model / Ascii data model
 (parameters:Boundary_20temperature_20model/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/boundary-temperature/ascii-data/test/
@@ -162,7 +162,7 @@ Because this class simply takes what the initial temperature had described, this
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Boundary_20temperature_20model/Box)=
-## **Parameters in section** Boundary temperature model/Box
+## **Subsection:** Boundary temperature model / Box
 (parameters:Boundary_20temperature_20model/Box/Bottom_20temperature)=
 ### __Parameter name:__ Bottom temperature
 **Default value:** 0.
@@ -196,7 +196,7 @@ Because this class simply takes what the initial temperature had described, this
 **Documentation:** Temperature at the top boundary (at maximal $x$-value). Units: \si{\kelvin}.
 
 (parameters:Boundary_20temperature_20model/Box_20with_20lithosphere_20boundary_20indicators)=
-## **Parameters in section** Boundary temperature model/Box with lithosphere boundary indicators
+## **Subsection:** Boundary temperature model / Box with lithosphere boundary indicators
 (parameters:Boundary_20temperature_20model/Box_20with_20lithosphere_20boundary_20indicators/Bottom_20temperature)=
 ### __Parameter name:__ Bottom temperature
 **Default value:** 0.
@@ -246,7 +246,7 @@ Because this class simply takes what the initial temperature had described, this
 **Documentation:** Temperature at the top boundary (at maximal $x$-value). Units: \si{\kelvin}.
 
 (parameters:Boundary_20temperature_20model/Constant)=
-## **Parameters in section** Boundary temperature model/Constant
+## **Subsection:** Boundary temperature model / Constant
 (parameters:Boundary_20temperature_20model/Constant/Boundary_20indicator_20to_20temperature_20mappings)=
 ### __Parameter name:__ Boundary indicator to temperature mappings
 **Default value:**
@@ -256,7 +256,7 @@ Because this class simply takes what the initial temperature had described, this
 **Documentation:** A comma separated list of mappings between boundary indicators and the temperature associated with the boundary indicators. The format for this list is ``indicator1 : value1, indicator2 : value2, ...'', where each indicator is a valid boundary indicator (either a number or the symbolic name of a boundary as provided by the geometry model) and each value is the temperature of that boundary.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core)=
-## **Parameters in section** Boundary temperature model/Dynamic core
+## **Subsection:** Boundary temperature model / Dynamic core
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Alpha)=
 ### __Parameter name:__ Alpha
 **Default value:** 1.35e-5
@@ -410,7 +410,7 @@ Because this class simply takes what the initial temperature had described, this
 **Documentation:** Initial light composition changing rate. Units: 1/year.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters)=
-## **Parameters in section** Boundary temperature model/Dynamic core/Geotherm parameters
+## **Subsection:** Boundary temperature model / Dynamic core / Geotherm parameters
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Composition_20dependency)=
 ### __Parameter name:__ Composition dependency
 **Default value:** true
@@ -460,7 +460,7 @@ Because this class simply takes what the initial temperature had described, this
 **Documentation:** If using the Fe-FeS system solidus from Buono \& Walker (2011) instead.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Other_20energy_20source)=
-## **Parameters in section** Boundary temperature model/Dynamic core/Other energy source
+## **Subsection:** Boundary temperature model / Dynamic core / Other energy source
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Other_20energy_20source/File_20name)=
 ### __Parameter name:__ File name
 **Default value:**
@@ -470,7 +470,7 @@ Because this class simply takes what the initial temperature had described, this
 **Documentation:** Data file name for other energy source into the core. The 'other energy source' is used for external core energy source.For example if someone want to test the early lunar core powered by precession (Dwyer, C. A., et al. (2011). A long-lived lunar dynamo driven by continuous mechanical stirring. Nature 479(7372): 212-214.)Format [Time(Gyr)   Energy rate(W)]
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Radioactive_20heat_20source)=
-## **Parameters in section** Boundary temperature model/Dynamic core/Radioactive heat source
+## **Subsection:** Boundary temperature model / Dynamic core / Radioactive heat source
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Radioactive_20heat_20source/Half_20life_20times)=
 ### __Parameter name:__ Half life times
 **Default value:**
@@ -504,7 +504,7 @@ Because this class simply takes what the initial temperature had described, this
 **Documentation:** Number of different radioactive heating elements in core
 
 (parameters:Boundary_20temperature_20model/Function)=
-## **Parameters in section** Boundary temperature model/Function
+## **Subsection:** Boundary temperature model / Function
 (parameters:Boundary_20temperature_20model/Function/Coordinate_20system)=
 ### __Parameter name:__ Coordinate system
 **Default value:** cartesian
@@ -558,7 +558,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Boundary_20temperature_20model/Initial_20temperature)=
-## **Parameters in section** Boundary temperature model/Initial temperature
+## **Subsection:** Boundary temperature model / Initial temperature
 (parameters:Boundary_20temperature_20model/Initial_20temperature/Maximal_20temperature)=
 ### __Parameter name:__ Maximal temperature
 **Default value:** 3773.
@@ -576,7 +576,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Minimal temperature. Units: \si{\kelvin}.
 
 (parameters:Boundary_20temperature_20model/Spherical_20constant)=
-## **Parameters in section** Boundary temperature model/Spherical constant
+## **Subsection:** Boundary temperature model / Spherical constant
 (parameters:Boundary_20temperature_20model/Spherical_20constant/Inner_20temperature)=
 ### __Parameter name:__ Inner temperature
 **Default value:** 6000.

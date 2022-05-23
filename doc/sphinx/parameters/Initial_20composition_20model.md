@@ -2,7 +2,7 @@
 # Initial composition model
 
 
-## **Parameters in section** Initial composition model
+## **Subsection:** Initial composition model
 
 
 (parameters:Initial_20composition_20model/List_20of_20model_20names)=
@@ -70,7 +70,7 @@ The format of valid entries for this parameter is that of a map given as ``key1:
 When ``composition is specified, the initial model is treated as a standard composition field with bounds between 0 and 1 assumed, The initial fluid fractions are then based on an iterated midpoint quadrature. Resultant volume fractions outside of the bounds will be coerced to the nearest valid value (ie 0 or 1). If ``level set`` is specified, the intial data will be assumed to be in the form of a signed distance level set function (i.e. a function which is positive when in the fluid, negative outside, and zero on the interface and the magnitude is always the distance to the interface so the gradient is one everywhere).
 
 (parameters:Initial_20composition_20model/Ascii_20data_20model)=
-## **Parameters in section** Initial composition model/Ascii data model
+## **Subsection:** Initial composition model / Ascii data model
 (parameters:Initial_20composition_20model/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
@@ -136,7 +136,7 @@ When ``composition is specified, the initial model is treated as a standard comp
 **Documentation:** Whether to use a 2D data slice of a 3D data file or the entire data file. Slicing a 3D dataset is only supported for 2D models.
 
 (parameters:Initial_20composition_20model/Function)=
-## **Parameters in section** Initial composition model/Function
+## **Subsection:** Initial composition model / Function
 (parameters:Initial_20composition_20model/Function/Coordinate_20system)=
 ### __Parameter name:__ Coordinate system
 **Default value:** cartesian
@@ -174,7 +174,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Initial_20composition_20model/World_20builder)=
-## **Parameters in section** Initial composition model/World builder
+## **Subsection:** Initial composition model / World builder
 (parameters:Initial_20composition_20model/World_20builder/List_20of_20relevant_20compositions)=
 ### __Parameter name:__ List of relevant compositions
 **Default value:**

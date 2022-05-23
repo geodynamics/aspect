@@ -2,7 +2,7 @@
 # Formulation
 
 
-## **Parameters in section** Formulation
+## **Subsection:** Formulation
 
 
 (parameters:Formulation/Enable_20additional_20Stokes_20RHS)=
@@ -41,7 +41,7 @@
   \item `custom': A custom selection of `Mass conservation' and `Temperature equation'.
 \end{enumerate}
 
-\note{Warning: The `custom' option is implemented for advanced users that want full control over the equations solved. It is possible to choose inconsistent formulations and no error checking is performed on the consistency of the resulting equations.}
+\note{Warning: The 'custom' option is implemented for advanced users that want full control over the equations solved. It is possible to choose inconsistent formulations and no error checking is performed on the consistency of the resulting equations.}
 
 \note{The `anelastic liquid approximation' option here can also be used to set up the `truncated anelastic liquid approximation' as long as this option is chosen together with a material model that defines a density that depends on temperature and depth and not on the pressure.}
 

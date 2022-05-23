@@ -4,12 +4,6 @@
 Equations {math:numref}`eq:stokes-1`-{math:numref}`eq:temperature` require us to pose initial conditions for the temperature, and this is done by selecting one of the existing models for initial conditions in the input parameter file, see {ref}`parameters:Initial_20temperature_20model`.
 The equations themselves do not require that initial conditions are specified for the velocity and pressure variables (since there are no time derivatives on these variables in the model).
 
-:::{admonition} TODO
-:class: error
-
-parameters:Initial_20temperature_20model reference dead
-:::
-
 Nevertheless, a nonlinear solver will have difficulty converging to the correct solution if we start with a completely unphysical pressure for models in which coefficients such as density $\rho$ and viscosity $\eta$ depend on the pressure and temperature.
 To this end, ASPECT uses pressure and temperature fields $p_{\textrm{ad}}(z), T_{\textrm{ad}}(z)$ computed in the adiabatic conditions model (see {ref}`parameters:Adiabatic_20conditions_20model`).
 By default, these fields satisfy adiabatic conditions:

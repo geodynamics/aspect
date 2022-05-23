@@ -4,11 +4,12 @@
 The material model is responsible for describing the various coefficients in
 the equations that ASPECT solves. To implement
 a new material model, you need to overload the
-[aspect::MaterialModel::Interface] class and use the
+[aspect::MaterialModel::Interface](https://aspect.geodynamics.org/doc/doxygen/namespaceaspect_1_1MaterialModel.html)
+class and use the
 `ASPECT_REGISTER_MATERIAL_MODEL` macro to register your new class. The
 implementation of the new class should be in namespace
 `aspect::MaterialModel`. An example of a material model implemented this way
-is given in {ref}`sec:davies-case23_BA`.
+is given in {ref}`sec:benchmarks:davies_et_al:case2.3`.
 
 Specifically, your new class needs to implement the following interface:
 
@@ -72,13 +73,13 @@ coefficient self-consistency
 
 The remaining functions are used in postprocessing as well as handling
 run-time parameters. The exact meaning of these member functions is documented
-in the [aspect::MaterialModel::Interface class
-documentation][aspect::MaterialModel::Interface]. Note that some of the
+in the [aspect::MaterialModel::Interface](https://aspect.geodynamics.org/doc/doxygen/namespaceaspect_1_1MaterialModel.html)
+class documentation. Note that some of the
 functions listed above have a default implementation, as discussed on the
 documentation page just mentioned.
 
 The function `is_compressible` returns whether we should consider the material
-as compressible or not, see {ref}`sec:Boussinesq` on the
+as compressible or not, see {ref}`sec:methods:approximate-equations:ba` on the
 Boussinesq model. As discussed there, incompressibility as described by this
 function does not necessarily imply that the density is constant; rather, it
 may still depend on temperature or pressure. In the current context,

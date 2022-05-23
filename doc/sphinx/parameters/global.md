@@ -1,7 +1,5 @@
-# Global
-
-
-## **Parameters in section** global
+(parameters:global)=
+# Global parameters
 
 
 (parameters:Additional_20shared_20libraries)=
