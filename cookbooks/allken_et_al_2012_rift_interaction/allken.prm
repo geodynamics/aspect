@@ -1,0 +1,168 @@
+#  Global parameters
+set Dimension                              = 3
+set Start time                             = 0
+set End time                               = 5e6
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver tolerance             = 1e-3
+set Max nonlinear iterations               = 25
+set Output directory                       = output_allken_etal_2012
+set Pressure normalization                 = no
+set CFL number                             = .25
+
+# Solver settings
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set Z repetitions = 2
+    set X extent      = 210e3
+    set Y extent      = 210e3
+    set Z extent      = 30e3
+  end
+end
+
+# Mesh refinement specifications.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 2
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 1
+  set Refinement fraction                = 0.5
+  set Strategy                           = strain rate
+  set Coarsening fraction                = 0
+  #set Run postprocessors on initial refinement = true
+end
+
+# Element types
+subsection Discretization
+  set Composition polynomial degree     = 2
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree     = 1
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+  set Additional tangential mesh velocity boundary indicators = left,right
+  subsection Free surface
+    set Surface velocity projection = normal
+  end
+end
+
+# Velocity boundary conditions
+# The imposed velocity produces a background strain-rate of 2e-15.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 2,3,4 #bottom,
+  set Prescribed velocity boundary indicators = left x: function, right x:function
+  subsection Function
+    set Variable names      = x,y,z
+    set Function constants  = cm=0.01, year=1, vel=0.5
+    set Function expression = if (x<20e3 , -vel*cm/year, vel*cm/year); 0; 0
+  end
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields  = noninitial_plastic_strain, plastic_strain , lower_crust
+end
+
+# Spatial domain of different compositional fields
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y,z
+    set Function constants  = xL=85e3 , xR=135e3
+    set Function expression = 0; \
+                              if( (y<=50e3  && abs(x-xL)<=4e3 && z>=15e3 && z<=19e3) || \
+                                  (y>=160e3 && abs(x-xR)<=4e3 && z>=15e3 && z<=19e3),1.25,0); \
+                              if(z<=15e3, 1, 0);
+  end
+end
+
+# Composition boundary conditions
+subsection Boundary composition model
+  set Fixed composition boundary indicators  =
+  set List of model names = initial composition
+end
+
+# Temperature boundary conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = initial temperature
+end
+
+# Temperature initial conditions (isothermal)
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+# Material model
+subsection Material model
+
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+
+    set Densities                   = 2800
+    set Reference viscosity         = 1.e21
+    set Reference strain rate       = 1.51e-15
+    set Maximum viscosity           = 1.e24
+    set Minimum viscosity           = 1.e19
+
+    set Prefactors for dislocation creep          = 5e-26,1e-50,1e-50, 5e-21
+    set Stress exponents for dislocation creep    = 1.0,1,1,1
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
+
+    set Viscosity averaging scheme  = maximum composition
+
+    set Angles of internal friction = 15.
+    set Cohesions                   = 20.e6
+
+    # The parameters below weaken the friction and cohesion by a
+    # a factor of 4 between plastic strain values of 0.5 and 1.5.
+    set Strain weakening mechanism                   = plastic weakening with plastic strain only
+    set Start plasticity strain weakening intervals  = 0.25
+    set End plasticity strain weakening intervals    = 1.25
+    set Cohesion strain weakening factors            = 0.25
+    set Friction strain weakening factors            = 0.25
+
+  end
+
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = basic statistics, composition statistics, temperature statistics, velocity statistics, visualization, topography
+
+  subsection Visualization
+    set List of output variables = material properties, strain rate
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+
+    set Time between graphical output = 0e3
+    set Interpolate output = true
+  end
+
+end
