@@ -4,7 +4,7 @@
 *This section was contributed by Marcel Saaro, Cedric Thieulot and John Naliboff.*
 
 This setup is based on from {cite:t}`kaus10` with the only exception for not using brittle strain weakening. The prm file is located in `/benchmarks/viscoelastic\_plastic\_shear\_bands`. The domain is a Cartesian box of size $(L_x \times L_y)=(\SI{40}{km} \times \SI{10}{km})$.
-The setup is shown in Fig. {numref}`fig:kaus_brick`. 
+The setup is shown in {numref}`fig:kaus_brick`. 
 The viscous inclusion of size $(\SI{800}{m} \times \SI{400}{m})$ is centered at the bottom of the domain. Its viscosity is $\eta_i=\SI{1e20}{\pascal\second}$.
 
 The brick material is characterised by an (elasto-)visco-plastic
@@ -24,7 +24,7 @@ The mesh is composed of $100\times25$ repetitions, i.e. a resolution of $\SI{400
 Setup for the Kaus (2010) brick in compression.
 ```
 
-Figure {numref}`kaus_brick_result_time_evolution` shows the effective strain rate field at 3 different times as obtained with the python script included in the corresponding folder. Elastic stresses build up until the yield criterion is reached and plastic deformation is activated, ultimately generating two conjugated shear bands rooted on the inclusion. The plots are produced with the script `kaus_2010_time_evolution.py`.
+{numref}`fig:kaus_brick_result_time_evolution` shows the effective strain rate field at 3 different times as obtained with the python script included in the corresponding folder. Elastic stresses build up until the yield criterion is reached and plastic deformation is activated, ultimately generating two conjugated shear bands rooted on the inclusion. The plots are produced with the script `kaus_2010_time_evolution.py`.
 
 ```{figure-md} fig:kaus_brick_result_time_evolution
 <img src="./kaus_2010_brick_result_time_evolution.*" alt="kaus_brick"  width="100%"/>
@@ -32,7 +32,7 @@ Figure {numref}`kaus_brick_result_time_evolution` shows the effective strain rat
 Time evolution of the shear bands in the extensional case of the Kaus (2010) brick.
 ```
 
-The profile at the height $\frac{5}{16}$ of the brick is displayed in Fig. {numref}`fig:kaus_brick_result_profile`. It is generated with the script `kaus_2010_analysis.py`.
+The profile at the height $\frac{5}{16}$ of the brick is displayed in {numref}`fig:kaus_brick_result_profile`. It is generated with the script `kaus_2010_analysis.py`.
 
 ```{figure-md} fig:kaus_brick_result_profile
 <img src="./kaus_2010_brick_result_strain_rate_profile.*" alt="kaus_brick"  width="100%"/>
