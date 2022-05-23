@@ -140,6 +140,12 @@ namespace aspect
           temperature_scaling_index = dT_vs_depth_profile.get_column_index_from_name("temperature_scaling");
         }
 
+      if (!this->get_adiabatic_conditions().is_initialized())
+      {
+          reference_profile.initialize(this->get_mpi_communicator());
+          density_index = reference_profile.get_column_index_from_name("density");
+      }
+
       // Get column for crustal depths
       std::set<types::boundary_id> surface_boundary_set;
       surface_boundary_set.insert(this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"));
@@ -1023,6 +1029,8 @@ namespace aspect
                 }
               else
                 {
+            	  double prem_density = reference_profile.get_data_component(Point<1>(depth), density_index);
+
                   // Densities below 300 km are computed using the scaling relationship from the velocity anomalies
                   double density_vs_scaling;
                   if (use_depth_dependent_rho_vs)
@@ -1031,12 +1039,16 @@ namespace aspect
                     // Values from Becker [2006], GJI
                     density_vs_scaling = 0.15;
 
-                  const double density_anomaly = delta_log_vs * density_vs_scaling;
+                  double density_anomaly = delta_log_vs * density_vs_scaling;
+
+                  if (!this->get_adiabatic_conditions().is_initialized())
+                	  density_anomaly = 0;
+
                   const double reference_density = this->get_adiabatic_conditions().is_initialized()
                                                    ?
                                                    this->get_adiabatic_conditions().density(in.position[i])
                                                    :
-                                                   reference_rho;
+                                                   prem_density;
 
                   out.densities[i] = reference_density * (1. + density_anomaly);
 
@@ -1378,6 +1390,8 @@ namespace aspect
 
           // Crustal boundary depths parameters
           Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "../../input_data/", "crustal_structure.txt", "Crustal depths");
+
+          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "../../input_data/1D_reference_profiles/", "prem.txt", "Reference profile");
         }
         prm.leave_subsection();
       }
@@ -1576,6 +1590,8 @@ namespace aspect
 
           crustal_boundary_depth.initialize_simulator (this->get_simulator());
           crustal_boundary_depth.parse_parameters(prm, "Crustal depths");
+
+          reference_profile.parse_parameters(prm, "Reference profile");
 
           // Make sure the grain size field comes after all potential material
           // data fields. Otherwise our material model calculation uses the

@@ -5,7 +5,7 @@ set Additional shared libraries            = ../../plugins/libequilibrium_grain_
 
 set Dimension = 2
 set Use years in output instead of seconds = true
-set Output directory                       = 2D-slice-with-faults-cratons
+set Output directory                       = 2D-slice-with-faults-cratons-1
 set World builder file                     = ../../input_data/world_builder_smac_cratons_faults_2D.json
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Start time                             = 0
@@ -25,16 +25,16 @@ subsection Solver parameters
   end
 end
 
-subsection Adiabatic conditions model
-  set Model name = reference profile
-
-  subsection Reference profile
-    subsection Ascii data model
-      set Data directory = ../../input_data/1D_reference_profiles/
-      set Data file name = prem.txt
-    end
-  end
-end
+#subsection Adiabatic conditions model
+#  set Model name = compute profile
+#
+#  subsection Compute profile
+#    subsection Ascii data model
+#      set Data directory = ../../input_data/1D_reference_profiles/
+#      set Data file name = prem.txt
+#    end
+#  end
+#end
 
 subsection Geometry model
   set Model name = spherical shell
@@ -48,7 +48,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement = 1
-  set Initial global refinement = 5
+  set Initial global refinement = 4
   set Strategy = minimum refinement function
   set Skip solvers on initial refinement = true
 
@@ -205,6 +205,11 @@ subsection Material model
      set Data directory                            = ../../input_data/
      set Data file name                            = crustal_structure_2D.txt
    end
+
+    subsection Reference profile
+      set Data directory = ../../input_data/1D_reference_profiles/
+      set Data file name = prem.txt
+    end
   end
 end
 
