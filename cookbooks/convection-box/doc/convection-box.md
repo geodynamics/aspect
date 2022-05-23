@@ -8,7 +8,7 @@ $\eta,\rho_0,\mathbf g,C_p, k$, for this testcase. Furthermore, we assume that
 the medium expands linearly with temperature. This leads to the following set
 of equations:
 ```{math}
-
+\begin{aligned}
   -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
                 \right] + \nabla p &=
   \rho_0 (1-\alpha (T-T_0)) \mathbf g
@@ -25,6 +25,7 @@ of equations:
   0
   & \qquad
   & \textrm{in $\Omega$}.
+\end{aligned}
 ```
 It is well known that we can
 non-dimensionalize this set of equations by introducing the Rayleigh number
@@ -76,11 +77,12 @@ With this said, let us consider how to represent this situation in practice.
 ##### The input file.
 
 The verbal description of this problem can be translated into an input file in
-the following way (see Section&nbsp;`sec:parameters` for a description
+the following way (see {ref}`parameters` for a description
 of all of the parameters that appear in the following input file, and the
 indices at the end of this manual if you want to find a particular parameter;
 you can find the input file to run this cookbook example in
-`cookbooks/convection-box.prm`:
+[cookbooks/convection-box.prm]
+((https://github.com/geodynamics/aspect/blob/main/cookbooks/convection-box/convection-box.prm)):
 
 ```{literalinclude} convection-box.prm
 ```
@@ -285,7 +287,9 @@ the Stokes and temperature equations in each time step.}
 ##### Play time 1: Different Rayleigh numbers.
 
 After showing you results for the input file as it can be found in
-`cookbooks/convection-box.prm`, let us end this section with a few ideas on
+[cookbooks/convection-box.prm]
+((https://github.com/geodynamics/aspect/blob/main/cookbooks/convection-box/convection-box.prm),
+let us end this section with a few ideas on
 how to play with it and what to explore. The first direction one could take
 this example is certainly to consider different Rayleigh numbers. As mentioned
 above, for the value $Ra=10^4$ for which the results above have been produced,
