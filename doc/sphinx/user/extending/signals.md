@@ -151,7 +151,7 @@ is called) an entry in a new column in the statistics file that records the
 number of constraints. On the other hand, it is equally possible to also
 modify the constraints object at this point. An application would be if you
 wanted to run a simulation where you prescribe the velocity in a part of the
-domain, e.g., for a subducting slab (see {ref}`sec:cookbooks:prescribed_velocities`).
+domain, e.g., for a subducting slab (see {ref}`sec:cookbooks:prescribed_velocity`).
 
 Signals exist for various waypoints in a simulation and you can consequently
 monitor and change what is happening inside a simulation by connecting your
