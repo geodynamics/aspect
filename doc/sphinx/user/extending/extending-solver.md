@@ -42,7 +42,7 @@ take a look at the paper that describes these methods, see
 {cite:t}`kronbichler:etal:2012`. Further, there are two predecessor programs whose
 extensive documentation is at a much higher level than the one typically found
 inside ASPECT itself, since they are meant to
-teach the basic components of convection simulators as part of the <span
+teach the basic components of convection simulators as part of the
 deal.II tutorial:
 
 -   The step-31 program at
