@@ -1,3 +1,4 @@
+(sec:extending:plugin-types:velocity-bc)=
 # Prescribed velocity boundary conditions
 
 Most of the time, one chooses relatively simple boundary values for the
