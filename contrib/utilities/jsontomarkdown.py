@@ -4,6 +4,24 @@ import json
 from sys import argv, exit, stderr
 
 
+def print_if_parameter_or_alias(entry, path_str, true_name, cur_path, output_file) :
+    if "value" in entry:
+        # this is a parameter
+        print("(parameters:" + path_str + ")=", file=output_file)
+        print("### __Parameter name:__ " + true_name, file=output_file)
+        print("**Default value:** " +  entry["default_value"] + " \n", file=output_file)
+        print("**Pattern:** " +  entry["pattern_description"] + " \n", file=output_file)
+        print("**Documentation:** " + entry["documentation"] + " \n", file=output_file)
+    elif "alias" in entry:
+        # This is an alias for a parameter
+        print("(parameters:" + path_str + ")=", file=output_file)
+        aliased_name = entry["alias"]
+        alias_path_str = "/".join(cur_path) + "/" + aliased_name.replace(" ", "_20")
+        print("### __Parameter name__: " +  true_name, file=output_file)
+        print("**Alias:** [" + aliased_name + "](parameters:" + alias_path_str + ")\n", file=output_file)
+        print("**Deprecation Status:** " + entry["deprecation_status"] + "\n", file=output_file)
+
+
 def handle_subsection(data, cur_path, output_file):
     keys = list(data.keys())
     keys.sort()
@@ -15,23 +33,7 @@ def handle_subsection(data, cur_path, output_file):
         path_str = "/".join(cur_path) + "/"  + key
         true_name = key.replace("_20", " ")
 
-        entry = data[key]
-
-        if "value" in entry:
-            # this is a parameter
-            print("(parameters:" + path_str + ")=", file=output_file)
-            print("### __Parameter name:__ " + true_name, file=output_file)
-            print("**Default value:** " +  entry["default_value"] + " \n", file=output_file)
-            print("**Pattern:** " +  entry["pattern_description"] + " \n", file=output_file)
-            print("**Documentation:** " + entry["documentation"] + " \n", file=output_file)
-        elif "alias" in entry:
-            # This is an alias for a parameter
-            print("(parameters:" + path_str + ")=", file=output_file)
-            aliased_name = entry["alias"]
-            alias_path_str = "/".join(cur_path) + "/" + aliased_name.replace(" ", "_20")
-            print("### __Parameter name__: " +  true_name, file=output_file)
-            print("**Alias:** [" + aliased_name + "](parameters:" + alias_path_str + ")\n", file=output_file)
-            print("**Deprecation Status:** " + entry["deprecation_status"] + "\n", file=output_file)
+        print_if_parameter_or_alias(data[key], path_str, true_name, cur_path, output_file)
 
     for key in keys:
         path_str = "/".join(cur_path) + "/"  + key
@@ -78,23 +80,7 @@ def handle_parameters(data):
         path_str = key
         true_name = key.replace("_20", " ")
 
-        entry = data[key]
-
-        if "value" in entry:
-            # this is a parameter
-            print("(parameters:" + path_str + ")=", file=global_parameters)
-            print("### __Parameter name:__ " + true_name, file=global_parameters)
-            print("**Default value:** " +  entry["default_value"] + " \n", file=global_parameters)
-            print("**Pattern:** " +  entry["pattern_description"] + " \n", file=global_parameters)
-            print("**Documentation:** " + entry["documentation"] + " \n", file=global_parameters)
-        elif "alias" in entry:
-            # This is an alias for a parameter
-            print("(parameters:" + path_str + ")=", file=global_parameters)
-            aliased_name = entry["alias"]
-            alias_path_str = ":".join(cur_path) + ":" + aliased_name.replace(" ", "_20")
-            print("### __Parameter name__: " +  true_name, file=global_parameters)
-            print("**Alias:** [" + aliased_name + "](parameters:" + alias_path_str + ")\n", file=global_parameters)
-            print("**Deprecation Status:** " + entry["deprecation_status"] + "\n", file=global_parameters)
+        print_if_parameter_or_alias(data[key], path_str, true_name, cur_path, global_parameters)
 
     for key in keys:
         path_str = key
