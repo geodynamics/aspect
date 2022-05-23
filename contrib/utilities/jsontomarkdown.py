@@ -8,8 +8,11 @@ from sys import argv, exit, stderr
 # in markdown. Escape some common latex-isms.
 def escape_doc_string(text) :
     return (text
+            .replace("``", "&ldquo;")
+            .replace("''", "&rdquo;")
             .replace("`", "&lsquo;")
-            .replace("'", "&rsquo;"))
+            .replace("'", "&rsquo;")
+    )
 
 
 

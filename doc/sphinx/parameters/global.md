@@ -68,7 +68,7 @@ For more information, see the section in the manual that discusses the general m
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Set a maximum time step size for only the first timestep. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the first time step to some value, especially when using the free surface, which needs to settle to prevent instabilities. This should in that case be combined with a value set for &lsquo;&lsquo;Maximum relative increase in time step&rsquo;&rsquo;. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step. Units: Years or seconds, depending on the &lsquo;&lsquo;Use years in output instead of seconds&rsquo;&rsquo; parameter.
+**Documentation:** Set a maximum time step size for only the first timestep. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the first time step to some value, especially when using the free surface, which needs to settle to prevent instabilities. This should in that case be combined with a value set for &ldquo;Maximum relative increase in time step&rdquo;. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step. Units: Years or seconds, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
 
 (parameters:Maximum_20relative_20increase_20in_20time_20step)=
 ### __Parameter name:__ Maximum relative increase in time step
@@ -84,7 +84,7 @@ For more information, see the section in the manual that discusses the general m
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Set a maximum time step size for the solver to use. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the time step to some value. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step.Units: Years or seconds, depending on the &lsquo;&lsquo;Use years in output instead of seconds&rsquo;&rsquo; parameter.
+**Documentation:** Set a maximum time step size for the solver to use. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the time step to some value. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step.Units: Years or seconds, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
 
 (parameters:Nonlinear_20solver_20scheme)=
 ### __Parameter name:__ Nonlinear solver scheme
@@ -180,7 +180,7 @@ For more information, see the section in the manual that discusses the general m
 
 **Documentation:** When computing results for mantle convection simulations, it is often difficult to judge the order of magnitude of results when they are stated in MKS units involving seconds. Rather, some kinds of results such as velocities are often stated in terms of meters per year (or, sometimes, centimeters per year). On the other hand, for non-dimensional computations, one wants results in their natural unit system as used inside the code. If this flag is set to &lsquo;true&rsquo; conversion to years happens; if it is &lsquo;false&rsquo;, no such conversion happens.
 
-Contrary to the word &lsquo;&lsquo;output&rsquo;&rsquo; in the name of this parameter, a number of plugins also use this parameter to determine how to interpret their \textit{inputs}. For example, when &lsquo;true&rsquo;, several of the boundary velocity models described in Section~\ref{parameters:Boundary_20velocity_20model} interpret both specific times in years instead of seconds, and velocities in meters per year instead of meters per second.
+Contrary to the word &ldquo;output&rdquo; in the name of this parameter, a number of plugins also use this parameter to determine how to interpret their \textit{inputs}. For example, when &lsquo;true&rsquo;, several of the boundary velocity models described in Section~\ref{parameters:Boundary_20velocity_20model} interpret both specific times in years instead of seconds, and velocities in meters per year instead of meters per second.
 
 (parameters:World_20builder_20file)=
 ### __Parameter name:__ World builder file

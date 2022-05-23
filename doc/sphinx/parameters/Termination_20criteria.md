@@ -27,7 +27,7 @@
 
 **Pattern:** [MultipleSelection end step|end time|steady state heat flux|steady state temperature|steady state velocity|user request|wall time ]
 
-**Documentation:** A comma separated list of termination criteria that will determine when the simulation should end. Whether explicitly stated or not, the &lsquo;&lsquo;end time&rsquo;&rsquo; termination criterion will always be used.The following termination criteria are available:
+**Documentation:** A comma separated list of termination criteria that will determine when the simulation should end. Whether explicitly stated or not, the &ldquo;end time&rdquo; termination criterion will always be used.The following termination criteria are available:
 
 &lsquo;end step&rsquo;: Terminate the simulation once the specified timestep has been reached.
 

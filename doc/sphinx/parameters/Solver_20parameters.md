@@ -73,7 +73,7 @@
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Set a length scale for the diffusion of advection fields if the &lsquo;&lsquo;prescribed field with diffusion&rsquo;&rsquo; method is selected for a field. More precisely, this length scale represents the square root of the product of diffusivity and time in the diffusion equation, and controls the distance over which features are diffused. Units: \si{\meter}.
+**Documentation:** Set a length scale for the diffusion of advection fields if the &ldquo;prescribed field with diffusion&rdquo; method is selected for a field. More precisely, this length scale represents the square root of the product of diffusivity and time in the diffusion equation, and controls the distance over which features are diffused. Units: \si{\meter}.
 
 (parameters:Solver_20parameters/Matrix_20Free)=
 ## **Subsection:** Solver parameters / Matrix Free
@@ -185,7 +185,7 @@ Once derivatives are used in a Newton method, \aspect{} always uses the Eisensta
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Set a time step size for computing reactions of compositional fields and the temperature field in case operator splitting is used. This is only used when the parameter &lsquo;&lsquo;Use operator splitting&rsquo;&rsquo; is set to true. The reaction time step must be greater than 0. If you want to prescribe the reaction time step only as a relative value compared to the advection time step as opposed to as an absolute value, you should use the parameter &lsquo;&lsquo;Reaction time steps per advection step&rsquo;&rsquo; and set this parameter to the same (or larger) value as the &lsquo;&lsquo;Maximum time step&rsquo;&rsquo; (which is 5.69e+300 by default). Units: Years or seconds, depending on the &lsquo;&lsquo;Use years in output instead of seconds&rsquo;&rsquo; parameter.
+**Documentation:** Set a time step size for computing reactions of compositional fields and the temperature field in case operator splitting is used. This is only used when the parameter &ldquo;Use operator splitting&rdquo; is set to true. The reaction time step must be greater than 0. If you want to prescribe the reaction time step only as a relative value compared to the advection time step as opposed to as an absolute value, you should use the parameter &ldquo;Reaction time steps per advection step&rdquo; and set this parameter to the same (or larger) value as the &ldquo;Maximum time step&rdquo; (which is 5.69e+300 by default). Units: Years or seconds, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
 
 (parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20time_20steps_20per_20advection_20step)=
 ### __Parameter name:__ Reaction time steps per advection step
@@ -193,7 +193,7 @@ Once derivatives are used in a Newton method, \aspect{} always uses the Eisensta
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** The number of reaction time steps done within one advection time step in case operator splitting is used. This is only used if the parameter &lsquo;&lsquo;Use operator splitting&rsquo;&rsquo; is set to true. If set to zero, this parameter is ignored. Otherwise, the reaction time step size is chosen according to this criterion and the &lsquo;&lsquo;Reaction time step&rsquo;&rsquo;, whichever yields the smaller time step. Units: none.
+**Documentation:** The number of reaction time steps done within one advection time step in case operator splitting is used. This is only used if the parameter &ldquo;Use operator splitting&rdquo; is set to true. If set to zero, this parameter is ignored. Otherwise, the reaction time step size is chosen according to this criterion and the &ldquo;Reaction time step&rdquo;, whichever yields the smaller time step. Units: none.
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters)=
 ## **Subsection:** Solver parameters / Stokes solver parameters

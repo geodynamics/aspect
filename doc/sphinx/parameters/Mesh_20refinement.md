@@ -61,7 +61,7 @@ Note that it is possible to supply conflicting refinement and coarsening setting
 
 **Pattern:** [Bool]
 
-**Documentation:** If multiple refinement criteria are specified in the &lsquo;&lsquo;Strategy&rsquo;&rsquo; parameter, then they need to be combined somehow to form the final refinement indicators. This is done using the method described by the &lsquo;&lsquo;Refinement criteria merge operation&rsquo;&rsquo; parameter which can either operate on the raw refinement indicators returned by each strategy (i.e., dimensional quantities) or using normalized values where the indicators of each strategy are first normalized to the interval $[0,1]$ (which also makes them non-dimensional). This parameter determines whether this normalization will happen.
+**Documentation:** If multiple refinement criteria are specified in the &ldquo;Strategy&rdquo; parameter, then they need to be combined somehow to form the final refinement indicators. This is done using the method described by the &ldquo;Refinement criteria merge operation&rdquo; parameter which can either operate on the raw refinement indicators returned by each strategy (i.e., dimensional quantities) or using normalized values where the indicators of each strategy are first normalized to the interval $[0,1]$ (which also makes them non-dimensional). This parameter determines whether this normalization will happen.
 
 (parameters:Mesh_20refinement/Refinement_20criteria_20merge_20operation)=
 ### __Parameter name:__ Refinement criteria merge operation
@@ -74,7 +74,7 @@ Note that it is possible to supply conflicting refinement and coarsening setting
 \begin{itemize}
 \item \texttt{plus}: Add the various error indicators together and refine those cells on which the sum of indicators is largest.
 \item \texttt{max}: Take the maximum of the various error indicators and refine those cells on which the maximal indicators is largest.
-\end{itemize}The refinement indicators computed by each strategy are modified by the &lsquo;&lsquo;Normalize individual refinement criteria&rsquo;&rsquo; and &lsquo;&lsquo;Refinement criteria scale factors&rsquo;&rsquo; parameters.
+\end{itemize}The refinement indicators computed by each strategy are modified by the &ldquo;Normalize individual refinement criteria&rdquo; and &ldquo;Refinement criteria scale factors&rdquo; parameters.
 
 (parameters:Mesh_20refinement/Refinement_20criteria_20scaling_20factors)=
 ### __Parameter name:__ Refinement criteria scaling factors
@@ -82,13 +82,13 @@ Note that it is possible to supply conflicting refinement and coarsening setting
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of scaling factors by which every individual refinement criterion will be multiplied by. If only a single refinement criterion is selected (using the &lsquo;&lsquo;Strategy&rsquo;&rsquo; parameter, then this parameter has no particular meaning. On the other hand, if multiple criteria are chosen, then these factors are used to weigh the various indicators relative to each other.
+**Documentation:** A list of scaling factors by which every individual refinement criterion will be multiplied by. If only a single refinement criterion is selected (using the &ldquo;Strategy&rdquo; parameter, then this parameter has no particular meaning. On the other hand, if multiple criteria are chosen, then these factors are used to weigh the various indicators relative to each other.
 
-If &lsquo;&lsquo;Normalize individual refinement criteria&rsquo;&rsquo; is set to true, then the criteria will first be normalized to the interval $[0,1]$ and then multiplied by the factors specified here. You will likely want to choose the factors to be not too far from 1 in that case, say between 1 and 10, to avoid essentially disabling those criteria with small weights. On the other hand, if the criteria are not normalized to $[0,1]$ using the parameter mentioned above, then the factors you specify here need to take into account the relative numerical size of refinement indicators (which in that case carry physical units).
+If &ldquo;Normalize individual refinement criteria&rdquo; is set to true, then the criteria will first be normalized to the interval $[0,1]$ and then multiplied by the factors specified here. You will likely want to choose the factors to be not too far from 1 in that case, say between 1 and 10, to avoid essentially disabling those criteria with small weights. On the other hand, if the criteria are not normalized to $[0,1]$ using the parameter mentioned above, then the factors you specify here need to take into account the relative numerical size of refinement indicators (which in that case carry physical units).
 
 You can experimentally play with these scaling factors by choosing to output the refinement indicators into the graphical output of a run.
 
-If the list of indicators given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are indicators chosen in the &lsquo;&lsquo;Strategy&rsquo;&rsquo; parameter.
+If the list of indicators given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are indicators chosen in the &ldquo;Strategy&rdquo; parameter.
 
 (parameters:Mesh_20refinement/Refinement_20fraction)=
 ### __Parameter name:__ Refinement fraction

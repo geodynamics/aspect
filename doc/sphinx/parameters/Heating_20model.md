@@ -25,11 +25,11 @@ For full adiabatic heating, this has to be used in combination with the heating 
 
 &lsquo;constant heating&rsquo;: Implementation of a model in which the heating rate is constant.
 
-&lsquo;function&rsquo;: Implementation of a model in which the heating rate is given in terms of an explicit formula that is elaborated in the parameters in section &lsquo;&lsquo;Heating model|Function&rsquo;&rsquo;. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+&lsquo;function&rsquo;: Implementation of a model in which the heating rate is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Heating model|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 The formula is interpreted as having units W/kg.
 
-Since the symbol $t$ indicating time may appear in the formulas for the heating rate, it is interpreted as having units seconds unless the global parameter &lsquo;&lsquo;Use years in output instead of seconds&rsquo;&rsquo; is set.
+Since the symbol $t$ indicating time may appear in the formulas for the heating rate, it is interpreted as having units seconds unless the global parameter &ldquo;Use years in output instead of seconds&rdquo; is set.
 
 &lsquo;latent heat&rsquo;: Implementation of a standard model for latent heat.
 

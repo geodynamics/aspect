@@ -35,7 +35,7 @@
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The factor by how much the Darcy coefficient K\_D in a cell can be smaller than the reference Darcy coefficient for this cell still to be considered a melt cell (for which the melt transport equations are solved). For smaller Darcy coefficients, the Stokes equations (without melt) are solved instead. Only used if &lsquo;&lsquo;Include melt transport&rsquo;&rsquo; is true.
+**Documentation:** The factor by how much the Darcy coefficient K\_D in a cell can be smaller than the reference Darcy coefficient for this cell still to be considered a melt cell (for which the melt transport equations are solved). For smaller Darcy coefficients, the Stokes equations (without melt) are solved instead. Only used if &ldquo;Include melt transport&rdquo; is true.
 
 (parameters:Melt_20settings/Use_20discontinuous_20compaction_20pressure)=
 ### __Parameter name:__ Use discontinuous compaction pressure
