@@ -121,14 +121,24 @@ def plot_timesteps(solution_folder, plot_file, interesting_times, xsize=8, ysize
     pvtu_file = sorted(solution_folder.glob(f"solution-{time:05d}.pvtu"))[0]
 
     x, y, field = get_data(pvtu_file, 'strain_rate')
-    x, y, field = reshape_data(x, y, field, res=100)
+    # x, y, field = reshape_data(x, y, field, res=100)
 
     ax = axes[i]
 
     if use_log:
-      c = ax.pcolor(x, y, np.log10(field), shading='auto', vmin=np.log10(vmin) if vmin else None, vmax=np.log10(vmax) if vmax else None)
+      # c = ax.pcolor(x, y, np.log10(field), shading='auto', vmin=np.log10(vmin) if vmin else None, vmax=np.log10(vmax) if vmax else None)
+      c = ax.scatter(x, y, s=4, marker='s', c=np.log10(field), vmin=np.log10(vmin) if vmin else None, vmax=np.log10(vmax) if vmax else None, edgecolors='none')
     else:
-      c = ax.pcolor(x, y, field, shading='auto', vmin=vmin, vmax=vmax)
+      # c = ax.pcolor(x, y, field, shading='auto', vmin=vmin, vmax=vmax)
+      c = ax.scatter(x, y, s=4, marker='s', c=field, vmin=vmin, vmax=vmax, edgecolors='none')
+
+    # if use_log:
+    #   c = ax.pcolor(x, y, np.log10(field), shading='auto', vmin=np.log10(vmin) if vmin else None, vmax=np.log10(vmax) if vmax else None)
+    # else:
+    #   c = ax.pcolor(x, y, field, shading='auto', vmin=vmin, vmax=vmax)
+
+    ax.set_xlim((np.min(x), np.max(x)))
+    ax.set_ylim((np.min(y), np.max(y)))
 
     ax.set_aspect('equal', 'box')
     ax.label_outer()
