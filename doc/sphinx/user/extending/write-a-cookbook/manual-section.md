@@ -20,7 +20,7 @@ Your toctree entry should follow the structure
 `benchmarks/YOUR-COOKBOOK-NAME/doc/YOUR-COOKBOOK-NAME.md` depending on which top-level
 directory your cookbook is going in (see the other toctree entries for examples).
 
-Now that it has a place to live in the manual, you'll need to actually create
+Now that it has a place to live in the manual, you will need to actually create
 the documentation, in the form of a .md file in the
 `aspect/cookbooks/YOUR-COOKBOOK-NAME/doc/` directory (replace `/cookbooks/` with
 `/benchmarks/` if applicable). The format in which cookbook documentation (and
