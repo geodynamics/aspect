@@ -1545,9 +1545,9 @@ namespace aspect
            * Constructor, see resize()
            */
           band_matrix(int dim, int n_u, int n_l);
-          
-          
-          
+
+
+
           /**
            * Resize to a @p dim by @dim matrix with given number
            * of off-diagonals.
@@ -1588,9 +1588,9 @@ namespace aspect
            * i=0,...,dim()-1
            */
           double &operator () (int i, int j);
-          
-          
-          
+
+
+
           /**
            * Read-only access
            */
