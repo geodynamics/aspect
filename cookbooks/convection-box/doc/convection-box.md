@@ -517,4 +517,3 @@ on the mesh this data is computed on.
 
 [^footnote2]: The statistics file gives this value to more digits: 4.89008498. However,
 these are clearly more digits than the result is accurate.
-
