@@ -23,7 +23,7 @@ and all material properties are chosen in a way so that the
 equations are non-dimensional.
 
 The required heating model and changes to the material model are implemented
-in the shared library [inner_core_convection.cc](../inner_core_convection.cc).
+in the shared library [inner_core_convection.cc](https://github.com/geodynamics/aspect/blob/main/cookbooks/inner_core_convection/inner_core_convection.cc).
 To compile the file, do
 
      cmake -DAspect_DIR=/path/to/aspect/build/ .
@@ -76,7 +76,7 @@ integral:
 with the normal vector $\mathbf n$.
 
 This phase change term is added to the matrix in the
-[inner_core_assembly.cc](../inner_core_assembly.cc) plugin by using a
+[inner_core_assembly.cc](https://github.com/geodynamics/aspect/blob/main/cookbooks/inner_core_convection/inner_core_assembly.cc) plugin by using a
 signal (as described in Section&nbsp;{ref}`sec:extending-signals`). The
 signal connects the function `set_assemblers_phase_boundary`, which is only
 called once at the beginning of the model run. It creates the new assembler
@@ -97,7 +97,7 @@ Equations&nbsp;{math:numref}`eq:inner-core`, two
 parameters determine the dynamics of convection in the inner core: the
 Rayleigh number $Ra$ and the phase change number $\mathcal{P}$. Three main
 areas can be distinguished: the stable area, the plume convection area and the
-translation mode of convection area (Figure&nbsp;{numref}`fig:regime:diagram`). For low Rayleigh
+translation mode of convection area ({numref}`fig:regime:diagram`). For low Rayleigh
 numbers (below the critical value $Ra_c$), there is no convection and thermal
 diffusion dominates the heat transport. However, if the inner core is
 convectively unstable ($Ra$\>$Ra_c$), the convection regime depends mostly on
@@ -131,7 +131,7 @@ function that can depend on the spatial coordinates and/or on time:
 ```{literalinclude} inner_core_traction.part.1.prm
 ```
 
-Figure&nbsp;{numref}`fig:inner:core:convection` shows examples of the three regimes with
+{numref}`fig:inner:core:convection` shows examples of the three regimes with
 $Ra=3000, \mathcal{P}=1000$ (plume convection), $Ra=10^5, \mathcal{P}=0.01$
 (translation), $Ra=10, \mathcal{P}=30$ (no convection).
 
@@ -167,14 +167,14 @@ $v_0=\frac{175}{2}\sqrt{\frac{6}{5}\frac{Ra}{\mathcal{P}}}$ going towards
 higher values of $\frac{Ra}{\mathcal{P}}$. In the same way, translation
 velocities will decrease from $v_0$ with increasing $\mathcal{P}$, with
 translation transitioning to plume convection at $\mathcal{P}\sim29$. Both
-trends are shown in Figure&nbsp;{numref}`fig:inner:core:trends` and can be compared to Figure&nbsp;8
+trends are shown in {numref}`fig:inner:core:trends` and can be compared to Figure&nbsp;8
 and 9 in {cite:t}`Deguen2013`.
 
 ```{figure-md} fig:inner:core:trends
 <img src="translation_over_Ra_and_P.svg" alt="Screenshot"  width="100%"/>
 
 Translation rate (approximated by the average of the velocity component in the direction of translation),
-normalized to the low-$\mathcal{P}$ limit estimate given in \cite{Deguen2013}, as a function of
+normalized to the low-$\mathcal{P}$ limit estimate given in {cite:t}`Deguen2013`, as a function of
 $\frac{Ra}{\mathcal{P}}$ for $\mathcal{P}=10^{-2}$ (left) and as a function of $\mathcal{P}$ for $Ra=10^5$ (right).
 The dashed gray line gives the translation velocity predicted in the limit of low $\mathcal{P}$. Disagreement
 for larger values of $\mathcal{P}$ indicates that higher order terms (not included in the low $\mathcal{P}$
