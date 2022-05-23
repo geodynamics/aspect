@@ -1,0 +1,19 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for Stokes solver
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 2178  0 0 0 4294967295 0 0 4.00000000e+02 6.93988715e+02 1.00000000e+03 output-prescribed_field_temperature_max_isotherm/solution/solution-00000 
+1 1.000000000000e+04 1.000000000000e+04 256 2467 1089 2178 37 0 0 4294967295 0 0 4.00000000e+02 6.70185745e+02 1.00000000e+03 output-prescribed_field_temperature_max_isotherm/solution/solution-00001 

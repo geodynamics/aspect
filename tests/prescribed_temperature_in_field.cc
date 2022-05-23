@@ -33,7 +33,7 @@ namespace aspect
   // Declare and parse additional parameters
   bool prescribe_internal_temperature;
   std::vector <std::string> fixed_compositional_fields;
-
+  double max_isotherm;
 
 
   void declare_parameters(const unsigned int /*dim*/,
@@ -49,7 +49,11 @@ namespace aspect
                          "the parameter ``Names of compositional fields with fixed temperature'' "
                          "and the temperature is fixed to its initial state. Indicators are evaluated "
                          "separately at each support point."
-
+                        );
+      prm.declare_entry ("Maximum fixed temperature isosurface", "0",
+                         Patterns::Double (),
+                         "The maximum temperature that will remain fixed. Temperatures above this "
+                         "value will be treated normally."
                         );
       prm.declare_entry ("Names of compositional fields with fixed temperature", "",
                          Patterns::List(Patterns::Anything ()),
@@ -71,6 +75,7 @@ namespace aspect
     {
       prescribe_internal_temperature = prm.get_bool ("Prescribe internal temperature");
       fixed_compositional_fields = Utilities::split_string_list (prm.get("Names of compositional fields with fixed temperature"));
+      max_isotherm = prm.get_double ("Maximum fixed temperature isosurface");
     }
     prm.leave_subsection ();
   }
@@ -117,7 +122,7 @@ namespace aspect
                         {
 
                           const unsigned int composition_idx = simulator_access.introspection().compositional_index_for_name(fixed_compositional_fields[c]);
-                          if (in.composition[q][composition_idx] >= 0.5)
+                          if (in.composition[q][composition_idx] >= 0.5 || in.temperature[q] <= max_isotherm)
                             {
                               constrain_temperature = true;
                             }
