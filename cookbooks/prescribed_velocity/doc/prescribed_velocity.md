@@ -32,7 +32,7 @@ to prescribe internal velocities with functions in a parameter file:
 ```
 
 The above plugin can be compiled with `cmake . && make` in the
-[cookbooks/prescribed_velocity][] directory. It can be loaded in a parameter
+[cookbooks/prescribed_velocity](https://github.com/geodynamics/aspect/tree/main/cookbooks/prescribed_velocity) directory. It can be loaded in a parameter
 file as an "Additional shared library" By setting parameters like
 those shown below, it is possible to produce many interesting flow fields such
 as the ones visualized in {numref}`fig:prescribed_velocity`.
