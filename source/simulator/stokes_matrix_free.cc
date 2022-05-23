@@ -1850,16 +1850,11 @@ namespace aspect
 
                   fe_face_values.reinit(simulator_cell, cell_face_pair.second);
 
-                  face_material_inputs.reinit(fe_face_values,
-                                              simulator_cell,
-                                              sim.introspection,
-                                              sim.solution);
-
-                  sim.compute_material_model_input_values(sim.solution,
-                                                          fe_face_values,
-                                                          simulator_cell,
-                                                          false,
-                                                          face_material_inputs);
+                  face_material_inputs.reinit  (fe_face_values,
+                                                simulator_cell,
+                                                sim.introspection,
+                                                sim.solution,
+                                                false);
                   sim.material_model->evaluate(face_material_inputs, face_material_outputs);
 
                   for (unsigned int q = 0; q < n_face_q_points; ++q)

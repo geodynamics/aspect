@@ -1,5 +1,5 @@
 (sec:extending:write-manual-section)=
-# Section in the manual
+# Adding a section to the manual
 
 Then you have to decide if the cookbook you want to contribute is a *Simple
 setup* (that explains how to use one specific feature, but does not try to
@@ -61,10 +61,10 @@ Your documentation should follow this general structure:
     YouTube. When creating figures or animations, you should think about the
     color scale that you use. Some colormaps &ndash; like the rainbow color
     palette that is still the default in some visualization tools &ndash; can
-    obscure features present in the data and introduce artifacts, because the
+    obscure features present in the data and introduce artifacts because the
     rainbow color scale is not perceptually uniform. For more background on
-    this topic, there is a great summary on
-    <https://matplotlib.org/users/colormaps.html>. To state some of their
+    this topic, start here
+    <https://matplotlib.org/2.0.2/users/colormaps.html>. To state some of their
     recommendations here, in most cases it is best to choose a perceptually
     uniform color palette. For representing information that has ordering,
     they recommend sequential color palettes that change in lightness/color

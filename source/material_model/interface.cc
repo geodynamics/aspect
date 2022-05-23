@@ -359,30 +359,38 @@ namespace aspect
                                      const LinearAlgebra::BlockVector &solution_vector,
                                      const bool compute_strain_rate)
     {
-      // Populate the newly allocated arrays
+      // Populate the arrays that hold solution values and gradients
       fe_values[introspection.extractors.temperature].get_function_values (solution_vector, this->temperature);
       fe_values[introspection.extractors.velocities].get_function_values (solution_vector, this->velocity);
       fe_values[introspection.extractors.pressure].get_function_values (solution_vector, this->pressure);
       fe_values[introspection.extractors.pressure].get_function_gradients (solution_vector, this->pressure_gradient);
+
+      // Only the viscosity in the material can depend on the strain_rate
+      // if this is not needed, we can save some time here. By setting the
+      // length of the strain_rate vector to 0, we signal to evaluate()
+      // that we do not need to access the viscosity.
       if (compute_strain_rate)
         fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (solution_vector,this->strain_rate);
       else
         this->strain_rate.resize(0);
 
       // Vectors for evaluating the compositional field parts of the finite element solution
-      std::vector<std::vector<double>> composition_values (introspection.n_compositional_fields, std::vector<double> (fe_values.n_quadrature_points));
+      std::vector<std::vector<double>> composition_values (introspection.n_compositional_fields,
+                                                            std::vector<double> (fe_values.n_quadrature_points));
       for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-        {
-          fe_values[introspection.extractors.compositional_fields[c]].get_function_values(solution_vector,composition_values[c]);
-        }
+        fe_values[introspection.extractors.compositional_fields[c]]
+        .get_function_values(solution_vector,composition_values[c]);
 
-      for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
+      // Then copy these values to exchange the inner and outer vector, because for the material
+      // model we need a vector with values of all the compositional fields for every quadrature point
+      for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
         {
-          this->position[i] = fe_values.quadrature_point(i);
           for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-            this->composition[i][c] = composition_values[c][i];
+            this->composition[q][c] = composition_values[c][q];
         }
 
+      // Finally also record quadrature point positions and the cell
+      this->position = fe_values.get_quadrature_points();
       this->current_cell = cell_x;
     }
 
