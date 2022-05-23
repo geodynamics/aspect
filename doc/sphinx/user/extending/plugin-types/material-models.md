@@ -99,7 +99,7 @@ The function update() is called at the beginning of every time step.
 
 Additionally, every material model has a member variable
 "modeldependence," declared in the Interface class, which can be
-accessed from the plugin as "this$\rightarrow$modeldependence."
+accessed from the plugin as `this$\rightarrow$modeldependence`.
 This structure describes the nonlinear dependence of the various coefficients
 on pressure, temperature, composition or strain rate. This information will be
 used in future versions of ASPECT to implement
