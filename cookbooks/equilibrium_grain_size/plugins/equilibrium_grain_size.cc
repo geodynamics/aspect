@@ -141,10 +141,10 @@ namespace aspect
         }
 
       if (!this->get_adiabatic_conditions().is_initialized())
-      {
+        {
           reference_profile.initialize(this->get_mpi_communicator());
           density_index = reference_profile.get_column_index_from_name("density");
-      }
+        }
 
       // Get column for crustal depths
       std::set<types::boundary_id> surface_boundary_set;
@@ -1029,7 +1029,9 @@ namespace aspect
                 }
               else
                 {
-            	  double prem_density = reference_profile.get_data_component(Point<1>(depth), density_index);
+                  const double outer_radius = this->get_geometry_model().representative_point(0.).norm();
+                  // The input prem data is has radius instead of depths
+                  double prem_density = reference_profile.get_data_component(Point<1>(outer_radius-depth), density_index);
 
                   // Densities below 300 km are computed using the scaling relationship from the velocity anomalies
                   double density_vs_scaling;
@@ -1042,7 +1044,7 @@ namespace aspect
                   double density_anomaly = delta_log_vs * density_vs_scaling;
 
                   if (!this->get_adiabatic_conditions().is_initialized())
-                	  density_anomaly = 0;
+                    density_anomaly = 0;
 
                   const double reference_density = this->get_adiabatic_conditions().is_initialized()
                                                    ?
@@ -1536,8 +1538,8 @@ namespace aspect
             std::string::size_type position;
             while (position = data_directory.find (subst_text),  position!=std::string::npos)
               data_directory.replace (data_directory.begin()+position,
-                                     data_directory.begin()+position+subst_text.size(),
-                                     ASPECT_SOURCE_DIR);
+                                      data_directory.begin()+position+subst_text.size(),
+                                      ASPECT_SOURCE_DIR);
           }
           material_file_names  = Utilities::split_string_list
                                  (prm.get ("Material file names"));
