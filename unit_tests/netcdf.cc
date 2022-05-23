@@ -23,7 +23,7 @@
 
 #ifdef ASPECT_WITH_NETCDF
 
-TEST_CASE("Utilities::load_netcdf")
+TEST_CASE("Utilities::load_netcdf-1d")
 {
   using namespace dealii;
 
@@ -37,5 +37,18 @@ TEST_CASE("Utilities::load_netcdf")
   REQUIRE(lookup.get_data(Point<1>(1.0), 2) == Approx(1.45)); // vpv at depth = 1.0
 }
 
+TEST_CASE("Utilities::load_netcdf-3d")
+{
+  using namespace dealii;
+
+  aspect::Utilities::StructuredDataLookup<3> lookup(1.0 /*scaling*/);
+  lookup.load_netcdf(ASPECT_SOURCE_DIR "/data/test/netcdf/test-3d-cartesian.nc");
+
+  REQUIRE(lookup.get_column_names()[0] == "index");
+  REQUIRE(lookup.get_column_names()[1] == "depth");
+
+  REQUIRE(lookup.get_data(Point<3>(0., 500., 0.), 0) == Approx(0.));
+  REQUIRE(lookup.get_data(Point<3>(1000., 500., 0.), 0) == Approx(1.));
+}
 
 #endif

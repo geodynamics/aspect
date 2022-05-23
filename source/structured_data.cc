@@ -654,8 +654,6 @@ namespace aspect
       //
       // Because the user can currently not specify what variables to use, we iterate over all of them,
       // grab those with the right number of dimensions and ignore the rest.
-
-
       int dimids_to_use[dim];
       std::vector<int> varids_to_use;
 
@@ -675,7 +673,7 @@ namespace aspect
             std::cout << " " << dimids[d];
           std::cout << std::endl;
 
-          if (varid < ndims)
+          if (varid < dim)
             {
               std::cout << "\tignoring variable of dimension." << std::endl;
             }
@@ -695,10 +693,11 @@ namespace aspect
                 {
                   for (int i=0; i<dim; ++i)
                     {
-                      dimids_to_use[i] = dimids[i];
                       size_t length;
                       status = nc_inq_dim(ncid, dimids[i], nullptr, &length);
-                      new_table_points[i] = length;
+                      dimids_to_use[i] = dimids[i];
+                      // dimensions are specified in reverse order in the nc file:
+                      new_table_points[dim-1-i] = length;
                     }
                 }
 
@@ -722,7 +721,8 @@ namespace aspect
 
         for (int d=0; d<dim; ++d)
           {
-            int varid = dimids_to_use[d];
+            // dimensions are specified in reverse order in the nc file:
+            int varid = dimids_to_use[dim-1-d];
 
             nc_type xtype;
             int ndims;
@@ -762,7 +762,14 @@ namespace aspect
 
             // .. and copy it over:
             for (std::size_t n = 0; n < n_elements; ++n)
-              data_tables[var](compute_table_indices(new_table_points, n)) = raw_data[n];
+              {
+                TableIndices<dim> ind = compute_table_indices(new_table_points, n);
+                TableIndices<dim> ind_to_use;
+                for (int i=0; i<dim; ++i)
+                  ind_to_use[i] = ind[dimids_to_use[i]];
+
+                data_tables[var](ind) = raw_data[n];
+              }
           }
 
       }
