@@ -41,7 +41,7 @@ The criterion considers the total heat flux over all boundaries listed by their 
 
 &lsquo;steady state velocity&rsquo;: A criterion that terminates the simulation when the RMS of the velocity field stays within a certain range for a specified period of time.
 
-&lsquo;user request&rsquo;: Terminate the simulation gracefully when a file with a specified name appears in the output directory. This allows the user to gracefully exit the simulation at any time by simply creating such a file using, for example, \texttt{touch output/terminate}. The file&rsquo;s location is chosen to be in the output directory, rather than in a generic location such as the ASPECT directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
+&lsquo;user request&rsquo;: Terminate the simulation gracefully when a file with a specified name appears in the output directory. This allows the user to gracefully exit the simulation at any time by simply creating such a file using, for example, `touch output/terminate`. The file&rsquo;s location is chosen to be in the output directory, rather than in a generic location such as the ASPECT directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
 
 &lsquo;wall time&rsquo;: Terminate the simulation once the wall time limit has reached.
 

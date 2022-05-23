@@ -69,11 +69,11 @@ Note that it is possible to supply conflicting refinement and coarsening setting
 
 **Pattern:** [Selection plus|max ]
 
-**Documentation:** If multiple mesh refinement criteria are computed for each cell (by passing a list of more than element to the \texttt{Strategy} parameter in this section of the input file) then one will have to decide which criteria should win when deciding which cells to refine. The operation that determines how to combine these competing criteria is the one that is selected here. The options are:
+**Documentation:** If multiple mesh refinement criteria are computed for each cell (by passing a list of more than element to the `Strategy` parameter in this section of the input file) then one will have to decide which criteria should win when deciding which cells to refine. The operation that determines how to combine these competing criteria is the one that is selected here. The options are:
 
 \begin{itemize}
-\item \texttt{plus}: Add the various error indicators together and refine those cells on which the sum of indicators is largest.
-\item \texttt{max}: Take the maximum of the various error indicators and refine those cells on which the maximal indicators is largest.
+\item `plus`: Add the various error indicators together and refine those cells on which the sum of indicators is largest.
+\item `max`: Take the maximum of the various error indicators and refine those cells on which the maximal indicators is largest.
 \end{itemize}The refinement indicators computed by each strategy are modified by the &ldquo;Normalize individual refinement criteria&rdquo; and &ldquo;Refinement criteria scale factors&rdquo; parameters.
 
 (parameters:Mesh_20refinement/Refinement_20criteria_20scaling_20factors)=

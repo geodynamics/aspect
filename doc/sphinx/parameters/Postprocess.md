@@ -33,7 +33,7 @@ The following postprocessors are available:
 
 &lsquo;core statistics&rsquo;: A postprocessor that computes some statistics about the core evolution. (Working only with dynamic core boundary temperature plugin)
 
-&lsquo;depth average&rsquo;: A postprocessor that computes depth averaged quantities and writes them into a file <depth_average.ext> in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section \texttt{Postprocess/Depth average} in the input file.
+&lsquo;depth average&rsquo;: A postprocessor that computes depth averaged quantities and writes them into a file <depth_average.ext> in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section `Postprocess/Depth average` in the input file.
 
 In the output files, the $x$-value of each data point corresponds to the depth, whereas the $y$-value corresponds to the simulation time. The time is provided in seconds or, if the global &ldquo;Use years in output instead of seconds&rdquo; parameter is set, in years.
 
@@ -92,7 +92,7 @@ As stated, this postprocessor computes the *outbound* mass flux. If you are inte
 
 &lsquo;particles&rsquo;: A Postprocessor that creates particles that follow the velocity field of the simulation. The particles can be generated and propagated in various ways and they can carry a number of constant or time-varying properties. The postprocessor can write output positions and properties of all particles at chosen intervals, although this is not mandatory. It also allows other parts of the code to query the particles for information.
 
-&lsquo;point values&rsquo;: A postprocessor that evaluates the solution (i.e., velocity, pressure, temperature, and compositional fields along with other fields that are treated as primary variables) at the end of every time step or after a user-specified time interval at a given set of points and then writes this data into the file <point\_values.txt> in the output directory. The points at which the solution should be evaluated are specified in the section \texttt{Postprocess/Point values} in the input file.
+&lsquo;point values&rsquo;: A postprocessor that evaluates the solution (i.e., velocity, pressure, temperature, and compositional fields along with other fields that are treated as primary variables) at the end of every time step or after a user-specified time interval at a given set of points and then writes this data into the file <point\_values.txt> in the output directory. The points at which the solution should be evaluated are specified in the section `Postprocess/Point values` in the input file.
 
 In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates of the evaluation points, and (iii) followed by the values of the solution vector at this point. The time is provided in seconds or, if the global &ldquo;Use years in output instead of seconds&rdquo; parameter is set, in years. In the latter case, the velocity is also converted to meters/year, instead of meters/second.
 
@@ -720,7 +720,7 @@ The following properties are available:
 
 &lsquo;velocity&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity at this position.
 
-&lsquo;viscoplastic strain invariants&rsquo;: A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in \texttt{benchmarks/buiter\_et\_al\_2008\_jgr/plugin/},and is effectively the same as what the visco plastic material model uses for compositional fields.
+&lsquo;viscoplastic strain invariants&rsquo;: A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in `benchmarks/buiter\_et\_al\_2008\_jgr/plugin/`,and is effectively the same as what the visco plastic material model uses for compositional fields.
 
 (parameters:Postprocess/Particles/Load_20balancing_20strategy)=
 ### __Parameter name:__ Load balancing strategy
@@ -736,7 +736,7 @@ The following properties are available:
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** Upper limit for particle number per cell. This limit is useful for adaptive meshes to prevent coarse cells from slowing down the whole model. It will be checked and enforced after mesh refinement, after MPI transfer of particles and after particle movement. If there are \texttt{n\_number\_of\_particles} $>$ \texttt{max\_particles\_per\_cell} particles in one cell then \texttt{n\_number\_of\_particles} - \texttt{max\_particles\_per\_cell} particles in this cell are randomly chosen and destroyed.
+**Documentation:** Upper limit for particle number per cell. This limit is useful for adaptive meshes to prevent coarse cells from slowing down the whole model. It will be checked and enforced after mesh refinement, after MPI transfer of particles and after particle movement. If there are `n\_number\_of\_particles` $>$ `max\_particles\_per\_cell` particles in one cell then `n\_number\_of\_particles` - `max\_particles\_per\_cell` particles in this cell are randomly chosen and destroyed.
 
 (parameters:Postprocess/Particles/Minimum_20particles_20per_20cell)=
 ### __Parameter name:__ Minimum particles per cell
@@ -744,7 +744,7 @@ The following properties are available:
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** Lower limit for particle number per cell. This limit is useful for adaptive meshes to prevent fine cells from being empty of particles. It will be checked and enforced after mesh refinement and after particle movement. If there are \texttt{n\_number\_of\_particles} $<$ \texttt{min\_particles\_per\_cell} particles in one cell then \texttt{min\_particles\_per\_cell} - \texttt{n\_number\_of\_particles} particles are generated and randomly placed in this cell. If the particles carry properties the individual property plugins control how the properties of the new particles are initialized.
+**Documentation:** Lower limit for particle number per cell. This limit is useful for adaptive meshes to prevent fine cells from being empty of particles. It will be checked and enforced after mesh refinement and after particle movement. If there are `n\_number\_of\_particles` $<$ `min\_particles\_per\_cell` particles in one cell then `min\_particles\_per\_cell` - `n\_number\_of\_particles` particles are generated and randomly placed in this cell. If the particles carry properties the individual property plugins control how the properties of the new particles are initialized.
 
 (parameters:Postprocess/Particles/Number_20of_20grouped_20files)=
 ### __Parameter name:__ Number of grouped files
@@ -1220,7 +1220,7 @@ Physical units: None, the quantity being output is a fractional change provided 
 
 Physical units: None, the quantity being output is a fractional change provided as a percentage.
 
-&lsquo;adiabat&rsquo;: A visualization output object that generates adiabatic temperature, pressure, density, and density derivative (with regard to depth)as produced by the \texttt{AdiabaticConditions} class.
+&lsquo;adiabat&rsquo;: A visualization output object that generates adiabatic temperature, pressure, density, and density derivative (with regard to depth)as produced by the `AdiabaticConditions` class.
 
 Physical units: \si{\kelvin}, \si{\pascal}, \si{\kilo\gram\per\meter\cubed\per\meter}, respectively, for the four components.
 
