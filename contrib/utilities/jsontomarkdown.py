@@ -4,6 +4,16 @@ import json
 from sys import argv, exit, stderr
 
 
+# Our doc strings are written for latex, but here we want to output them
+# in markdown. Escape some common latex-isms.
+def escape_doc_string(text) :
+    return (text
+            .replace("`", "&lsquo;")
+            .replace("'", "&rsquo;"))
+
+
+
+
 def print_if_parameter_or_alias(entry, path_str, true_name, cur_path, output_file) :
     if "value" in entry:
         # this is a parameter
@@ -11,7 +21,7 @@ def print_if_parameter_or_alias(entry, path_str, true_name, cur_path, output_fil
         print("### __Parameter name:__ " + true_name, file=output_file)
         print("**Default value:** " +  entry["default_value"] + " \n", file=output_file)
         print("**Pattern:** " +  entry["pattern_description"] + " \n", file=output_file)
-        print("**Documentation:** " + entry["documentation"] + " \n", file=output_file)
+        print("**Documentation:** " + escape_doc_string(entry["documentation"]) + " \n", file=output_file)
     elif "alias" in entry:
         # This is an alias for a parameter
         print("(parameters:" + path_str + ")=", file=output_file)
