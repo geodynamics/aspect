@@ -1,3 +1,4 @@
+(sec:methods:nullspace-removal)=
 # Nullspace removal
 
 The Stokes equation {math:numref}`eq:stokes-1` only involves symmetric gradients of the velocity, and as such the velocity is determined only up to rigid-body motions (that is to say, translations and rotations).
@@ -51,13 +52,7 @@ The user can flag the nullspace for removal by setting the `Remove nullspace` op
 
 
 ```{figure-md} fig:rigid_rotation
-<img src="../../_static/images/rigid_rotation.*" alt="Example of nullspace removal. On the left the nullspace (a rigid rotation) is removed, and the velocity vectors accurately show the mantle flow. On the right there is a significant clockwise rotation to the velocity solution which is making the more interesting flow features difficult to see."  width="80%"/>
+<img src="images/rigid_rotation.*" alt="Example of nullspace removal. On the left the nullspace (a rigid rotation) is removed, and the velocity vectors accurately show the mantle flow. On the right there is a significant clockwise rotation to the velocity solution which is making the more interesting flow features difficult to see."  width="80%"/>
 
 Example of nullspace removal. On the left the nullspace (a rigid rotation) is removed, and the velocity vectors accurately show the mantle flow. On the right there is a significant clockwise rotation to the velocity solution which is making the more interesting flow features difficult to see.
 ```
-
-:::{admonition} TODO
-:class: error
-
-{ref}`parameters:Nullspace_20removal` not setup yet so reference doesn't go anywhere
-:::

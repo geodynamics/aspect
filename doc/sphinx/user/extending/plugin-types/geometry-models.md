@@ -2,7 +2,7 @@
 # Geometry models
 
 The geometry model is responsible for describing the domain in which we want
-to solve the equations. A domain is described in <span
+to solve the equations. A domain is described in
 deal.II by a coarse mesh and, if necessary, an object
 that characterizes the boundary. Together, these two suffice to reconstruct
 any domain by adaptively refining the coarse mesh and placing new nodes
@@ -11,7 +11,7 @@ The geometry model is also responsible for marking different parts of the
 boundary with different *boundary indicators* for which one can then, in the
 input file, select whether these boundaries should be Dirichlet-type (fixed
 temperature) or Neumann-type (no heat flux) boundaries for the temperature,
-and what kind of velocity conditions should hold there. In <span
+and what kind of velocity conditions should hold there. In
 deal.II, a boundary indicator is a number of type
 `types::boundary_id`, but since boundaries are hard to remember and get right
 in input files, geometry models also have a function that provide a map from
@@ -23,7 +23,8 @@ and we have consistently used these symbolic names in the input files used in
 this manual.
 
 To implement a new geometry model, you need to overload the
-[aspect::GeometryModel::Interface][] class and use the
+[aspect::GeometryModel::Interface](https://aspect.geodynamics.org/doc/doxygen/namespaceaspect_1_1GeometryModel.html)
+class and use the
 `ASPECT_REGISTER_GEOMETRY_MODEL` macro to register your new class. The
 implementation of the new class should be in namespace
 `aspect::GeometryModel`.
@@ -72,7 +73,8 @@ template <int dim>
 
 The kind of information these functions need to provide is extensively
 discussed in the documentation of this interface class at
-[aspect::GeometryModel::Interface][]. The purpose of the last two functions
+[aspect::GeometryModel::Interface](https://aspect.geodynamics.org/doc/doxygen/namespaceaspect_1_1GeometryModel.html).
+The purpose of the last two functions
 has been discussed in the general overview of plugins above.
 
 The `create_coarse_mesh` function does not only create the actual mesh (i.e.,
@@ -138,7 +140,7 @@ already accurately represent where you want to pose which boundary condition
 which are tangential flow boundary conditions), then it is sufficient to set
 these boundary indicators only once at the beginning of the program since they
 will be inherited upon mesh refinement to the child faces. Here, *at the
-beginning of the program* is equivalent to inside the `create_coarse_mesh())`
+beginning of the program* is equivalent to inside the `create_coarse_mesh()`
 function of the geometry module shown above that generates the coarse mesh.
 
 Secondly, however, if you can only accurately determine which boundary
@@ -233,6 +235,8 @@ work on. Note that because the `create_coarse_mesh` function is declared as
 `const`, it is necessary that the `set_boundary_indicators` function is also
 declared `const`.
 
-<div class="center">
-
-</div>
+:::{note}
+For reasons that have to do with the way the `parallel::distributed::Triangulation` is
+implemented, functions that have been attached to the post-refinement signal of the triangulation
+are called more than once, sometimes several times, every time the triangulation is actually refined.
+:::

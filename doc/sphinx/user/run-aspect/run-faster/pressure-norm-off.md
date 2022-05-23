@@ -23,7 +23,3 @@ you don't need to normalize the pressure at all - simply go with
 whatever the solver provides. In that case, you can switch off pressure
 normalization by looking at the `Pressure normalization` parameter at the top
 level of the input file, see {ref}`parameters:global`.
-
-:::{admonition} TODO
-{ref}`parameters:global`links to a section that is not yet set up.
-:::

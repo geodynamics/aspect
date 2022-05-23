@@ -1,8 +1,8 @@
 (parameters:Prescribed_20Stokes_20solution)=
-# **Prescribed Stokes solution**
+# Prescribed Stokes solution
 
 
-## **Parameters in section** Prescribed Stokes solution
+## **Subsection:** Prescribed Stokes solution
 
 
 (parameters:Prescribed_20Stokes_20solution/Model_20name)=
@@ -20,7 +20,7 @@
 `function': This plugin allows to prescribe the Stokes solution for the velocity and pressure field in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 (parameters:Prescribed_20Stokes_20solution/Ascii_20data_20model)=
-## **Parameters in section** Prescribed Stokes solution/Ascii data model
+## **Subsection:** Prescribed Stokes solution / Ascii data model
 (parameters:Prescribed_20Stokes_20solution/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/prescribed-stokes-solution/
@@ -46,7 +46,7 @@
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Prescribed_20Stokes_20solution/Compaction_20pressure_20function)=
-## **Parameters in section** Prescribed Stokes solution/Compaction pressure function
+## **Subsection:** Prescribed Stokes solution / Compaction pressure function
 (parameters:Prescribed_20Stokes_20solution/Compaction_20pressure_20function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -76,7 +76,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Prescribed_20Stokes_20solution/Fluid_20pressure_20function)=
-## **Parameters in section** Prescribed Stokes solution/Fluid pressure function
+## **Subsection:** Prescribed Stokes solution / Fluid pressure function
 (parameters:Prescribed_20Stokes_20solution/Fluid_20pressure_20function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -106,7 +106,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Prescribed_20Stokes_20solution/Fluid_20velocity_20function)=
-## **Parameters in section** Prescribed Stokes solution/Fluid velocity function
+## **Subsection:** Prescribed Stokes solution / Fluid velocity function
 (parameters:Prescribed_20Stokes_20solution/Fluid_20velocity_20function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -136,7 +136,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Prescribed_20Stokes_20solution/Pressure_20function)=
-## **Parameters in section** Prescribed Stokes solution/Pressure function
+## **Subsection:** Prescribed Stokes solution / Pressure function
 (parameters:Prescribed_20Stokes_20solution/Pressure_20function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -166,7 +166,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Prescribed_20Stokes_20solution/Velocity_20function)=
-## **Parameters in section** Prescribed Stokes solution/Velocity function
+## **Subsection:** Prescribed Stokes solution / Velocity function
 (parameters:Prescribed_20Stokes_20solution/Velocity_20function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**

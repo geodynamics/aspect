@@ -66,7 +66,3 @@ categorized into the following groups:
 The details of parameters in each of these categories can be found in the
 sections linked to above. Some of them will also be used in the cookbooks in
 {ref}`cha:cookbooks`.
-
-:::{admonition} TODO
-Parameter documentation is not yet setup, so the many references to parameter files in this section are useless.
-:::

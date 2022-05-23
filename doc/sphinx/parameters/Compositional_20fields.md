@@ -1,8 +1,8 @@
 (parameters:Compositional_20fields)=
-# **Compositional fields**
+# Compositional fields
 
 
-## **Parameters in section** Compositional fields
+## **Subsection:** Compositional fields
 
 
 (parameters:Compositional_20fields/Compositional_20field_20methods)=

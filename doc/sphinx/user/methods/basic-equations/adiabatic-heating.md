@@ -7,9 +7,3 @@ If you assume the vertical component of the gradient of the *dynamic* pressure t
 ```
 While this simplification is possible, it is not necessary if you have access to the total pressure.
 ASPECT therefore by default implements the original term without this simplification, but allows to simplify this term by setting the "`Use simplified adiabatic heating`" parameter in {ref}`parameters:Heating_20model/Adiabatic_20heating`.
-
-:::{admonition} TODO
-:class: error
-
-Dead reference: {ref}`parameters:Heating_20model/Adiabatic_20heating`
-:::

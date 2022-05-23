@@ -1,8 +1,8 @@
 (parameters:Solver_20parameters)=
-# **Solver parameters**
+# Solver parameters
 
 
-## **Parameters in section** Solver parameters
+## **Subsection:** Solver parameters
 
 
 (parameters:Solver_20parameters/Composition_20solver_20tolerance)=
@@ -22,7 +22,7 @@
 **Documentation:** The relative tolerance up to which the linear system for the temperature system gets solved. See `Stokes solver parameters/Linear solver tolerance' for more details.
 
 (parameters:Solver_20parameters/AMG_20parameters)=
-## **Parameters in section** Solver parameters/AMG parameters
+## **Subsection:** Solver parameters / AMG parameters
 (parameters:Solver_20parameters/AMG_20parameters/AMG_20aggregation_20threshold)=
 ### __Parameter name:__ AMG aggregation threshold
 **Default value:** 0.001
@@ -56,7 +56,7 @@
 **Documentation:** This parameter sets the type of smoother for the AMG. The default is strongly recommended for any normal runs with ASPECT. There are some indications that the symmetric Gauss-Seidel might be better and more stable for the Newton solver. For extensive benchmarking of various settings of the AMG parameters in this section for the Stokes problem and others, see https://github.com/geodynamics/aspect/pull/234.
 
 (parameters:Solver_20parameters/Advection_20solver_20parameters)=
-## **Parameters in section** Solver parameters/Advection solver parameters
+## **Subsection:** Solver parameters / Advection solver parameters
 (parameters:Solver_20parameters/Advection_20solver_20parameters/GMRES_20solver_20restart_20length)=
 ### __Parameter name:__ GMRES solver restart length
 **Default value:** 50
@@ -66,7 +66,7 @@
 **Documentation:** This is the number of iterations that define the GMRES solver restart length. Increasing this parameter makes the solver more robust and decreases the number of iterations. Be aware that increasing this number increases the memory usage of the advection solver, and makes individual iterations more expensive.
 
 (parameters:Solver_20parameters/Diffusion_20solver_20parameters)=
-## **Parameters in section** Solver parameters/Diffusion solver parameters
+## **Subsection:** Solver parameters / Diffusion solver parameters
 (parameters:Solver_20parameters/Diffusion_20solver_20parameters/Diffusion_20length_20scale)=
 ### __Parameter name:__ Diffusion length scale
 **Default value:** 1.e4
@@ -76,7 +76,7 @@
 **Documentation:** Set a length scale for the diffusion of advection fields if the ``prescribed field with diffusion'' method is selected for a field. More precisely, this length scale represents the square root of the product of diffusivity and time in the diffusion equation, and controls the distance over which features are diffused. Units: \si{\meter}.
 
 (parameters:Solver_20parameters/Matrix_20Free)=
-## **Parameters in section** Solver parameters/Matrix Free
+## **Subsection:** Solver parameters / Matrix Free
 (parameters:Solver_20parameters/Matrix_20Free/Execute_20solver_20timings)=
 ### __Parameter name:__ Execute solver timings
 **Default value:** false
@@ -94,7 +94,7 @@
 **Documentation:** Turns on extra information for the matrix free GMG solver to be printed.
 
 (parameters:Solver_20parameters/Newton_20solver_20parameters)=
-## **Parameters in section** Solver parameters/Newton solver parameters
+## **Subsection:** Solver parameters / Newton solver parameters
 (parameters:Solver_20parameters/Newton_20solver_20parameters/Max_20Newton_20line_20search_20iterations)=
 ### __Parameter name:__ Max Newton line search iterations
 **Default value:** 5
@@ -178,7 +178,7 @@ Once derivatives are used in a Newton method, \aspect{} always uses the Eisensta
 **Documentation:** This method allows to slowly introduce the derivatives based on the improvement of the residual. If set to false, the scaling factor for the Newton derivatives is set to one immediately when switching on the Newton solver. When this is set to true, the derivatives are slowly introduced by the following equation: $\max(0.0, (1.0-(residual/switch\_initial\_residual)))$, where switch\_initial\_residual is the residual at the time when the Newton solver is switched on.
 
 (parameters:Solver_20parameters/Operator_20splitting_20parameters)=
-## **Parameters in section** Solver parameters/Operator splitting parameters
+## **Subsection:** Solver parameters / Operator splitting parameters
 (parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20time_20step)=
 ### __Parameter name:__ Reaction time step
 **Default value:** 1000.0
@@ -196,7 +196,7 @@ Once derivatives are used in a Newton method, \aspect{} always uses the Eisensta
 **Documentation:** The number of reaction time steps done within one advection time step in case operator splitting is used. This is only used if the parameter ``Use operator splitting'' is set to true. If set to zero, this parameter is ignored. Otherwise, the reaction time step size is chosen according to this criterion and the ``Reaction time step'', whichever yields the smaller time step. Units: none.
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters)=
-## **Parameters in section** Solver parameters/Stokes solver parameters
+## **Subsection:** Solver parameters / Stokes solver parameters
 (parameters:Solver_20parameters/Stokes_20solver_20parameters/GMRES_20solver_20restart_20length)=
 ### __Parameter name:__ GMRES solver restart length
 **Default value:** 50

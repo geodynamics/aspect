@@ -1,8 +1,8 @@
 (parameters:Mesh_20refinement)=
-# **Mesh refinement**
+# Mesh refinement
 
 
-## **Parameters in section** Mesh refinement
+## **Subsection:** Mesh refinement
 
 
 (parameters:Mesh_20refinement/Adapt_20by_20fraction_20of_20cells)=
@@ -219,7 +219,7 @@ For complex equations such as those we solve here, this observation may not be s
 **Documentation:** The number of time steps after which the mesh is to be adapted again based on computed error indicators. If 0 then the mesh will never be changed.
 
 (parameters:Mesh_20refinement/Artificial_20viscosity)=
-## **Parameters in section** Mesh refinement/Artificial viscosity
+## **Subsection:** Mesh refinement / Artificial viscosity
 (parameters:Mesh_20refinement/Artificial_20viscosity/Compositional_20field_20scaling_20factors)=
 ### __Parameter name:__ Compositional field scaling factors
 **Default value:**
@@ -239,7 +239,7 @@ If the list of scaling factors given in this parameter is empty, then this indic
 **Documentation:** A scaling factor for the artificial viscosity  of the temperature equation. Use 0.0 to disable.
 
 (parameters:Mesh_20refinement/Boundary)=
-## **Parameters in section** Mesh refinement/Boundary
+## **Subsection:** Mesh refinement / Boundary
 (parameters:Mesh_20refinement/Boundary/Boundary_20refinement_20indicators)=
 ### __Parameter name:__ Boundary refinement indicators
 **Default value:**
@@ -251,7 +251,7 @@ If the list of scaling factors given in this parameter is empty, then this indic
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
 (parameters:Mesh_20refinement/Compaction_20length)=
-## **Parameters in section** Mesh refinement/Compaction length
+## **Subsection:** Mesh refinement / Compaction length
 (parameters:Mesh_20refinement/Compaction_20length/Mesh_20cells_20per_20compaction_20length)=
 ### __Parameter name:__ Mesh cells per compaction length
 **Default value:** 1.0
@@ -261,7 +261,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 **Documentation:** The desired ratio between compaction length and size of the mesh cells, or, in other words, how many cells the mesh should (at least) have per compaction length. Every cell where this ratio is smaller than the value specified by this parameter (in places with fewer mesh cells per compaction length) is marked for refinement.
 
 (parameters:Mesh_20refinement/Composition)=
-## **Parameters in section** Mesh refinement/Composition
+## **Subsection:** Mesh refinement / Composition
 (parameters:Mesh_20refinement/Composition/Compositional_20field_20scaling_20factors)=
 ### __Parameter name:__ Compositional field scaling factors
 **Default value:**
@@ -273,7 +273,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 If the list of scaling factors given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are compositional fields.
 
 (parameters:Mesh_20refinement/Composition_20approximate_20gradient)=
-## **Parameters in section** Mesh refinement/Composition approximate gradient
+## **Subsection:** Mesh refinement / Composition approximate gradient
 (parameters:Mesh_20refinement/Composition_20approximate_20gradient/Compositional_20field_20scaling_20factors)=
 ### __Parameter name:__ Compositional field scaling factors
 **Default value:**
@@ -285,7 +285,7 @@ If the list of scaling factors given in this parameter is empty, then this indic
 If the list of scaling factors given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are compositional fields.
 
 (parameters:Mesh_20refinement/Composition_20gradient)=
-## **Parameters in section** Mesh refinement/Composition gradient
+## **Subsection:** Mesh refinement / Composition gradient
 (parameters:Mesh_20refinement/Composition_20gradient/Compositional_20field_20scaling_20factors)=
 ### __Parameter name:__ Compositional field scaling factors
 **Default value:**
@@ -297,7 +297,7 @@ If the list of scaling factors given in this parameter is empty, then this indic
 If the list of scaling factors given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are compositional fields.
 
 (parameters:Mesh_20refinement/Composition_20threshold)=
-## **Parameters in section** Mesh refinement/Composition threshold
+## **Subsection:** Mesh refinement / Composition threshold
 (parameters:Mesh_20refinement/Composition_20threshold/Compositional_20field_20thresholds)=
 ### __Parameter name:__ Compositional field thresholds
 **Default value:**
@@ -307,7 +307,7 @@ If the list of scaling factors given in this parameter is empty, then this indic
 **Documentation:** A list of thresholds that every individual compositional field will be evaluated against.
 
 (parameters:Mesh_20refinement/Isosurfaces)=
-## **Parameters in section** Mesh refinement/Isosurfaces
+## **Subsection:** Mesh refinement / Isosurfaces
 (parameters:Mesh_20refinement/Isosurfaces/Isosurfaces)=
 ### __Parameter name:__ Isosurfaces
 **Default value:**
@@ -319,7 +319,7 @@ If the list of scaling factors given in this parameter is empty, then this indic
 The first two entries for each isosurface, describing the minimum and maximum grid levels, can be two numbers or contain one of the key values 'min' and 'max'. This indicates the key will be replaced with the global minimum and maximum refinement levels. The 'min' and 'max' keys also accept adding values to be added or substracted from them respectively. This is done by adding a '+' or '-' and a number behind them (e.g. min+2 or max-1). Note that you can't substract a value from a minimum value or add a value to the maximum value. If, for example, `max-4` drops below the minimum or `min+4` goes above the maximum, it will simply use the global minimum and maximum values respectively. The same holds for any mesh refinement level below the global minimum or above the global maximum.
 
 (parameters:Mesh_20refinement/Maximum_20refinement_20function)=
-## **Parameters in section** Mesh refinement/Maximum refinement function
+## **Subsection:** Mesh refinement / Maximum refinement function
 (parameters:Mesh_20refinement/Maximum_20refinement_20function/Coordinate_20system)=
 ### __Parameter name:__ Coordinate system
 **Default value:** depth
@@ -357,7 +357,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Mesh_20refinement/Minimum_20refinement_20function)=
-## **Parameters in section** Mesh refinement/Minimum refinement function
+## **Subsection:** Mesh refinement / Minimum refinement function
 (parameters:Mesh_20refinement/Minimum_20refinement_20function/Coordinate_20system)=
 ### __Parameter name:__ Coordinate system
 **Default value:** depth
@@ -395,7 +395,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Mesh_20refinement/Volume_20of_20fluid_20interface)=
-## **Parameters in section** Mesh refinement/Volume of fluid interface
+## **Subsection:** Mesh refinement / Volume of fluid interface
 (parameters:Mesh_20refinement/Volume_20of_20fluid_20interface/Strict_20coarsening)=
 ### __Parameter name:__ Strict coarsening
 **Default value:** false

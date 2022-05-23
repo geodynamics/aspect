@@ -1,8 +1,8 @@
 (parameters:Boundary_20traction_20model)=
-# **Boundary traction model**
+# Boundary traction model
 
 
-## **Parameters in section** Boundary traction model
+## **Subsection:** Boundary traction model
 
 
 (parameters:Boundary_20traction_20model/Prescribed_20traction_20boundary_20indicators)=
@@ -16,7 +16,7 @@
 The format of valid entries for this parameter is that of a map given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where each key must be a valid boundary indicator (which is either an integer or the symbolic name the geometry model in use may have provided for this part of the boundary) and each value must be one of the currently implemented boundary traction models. ``selector'' is an optional string given as a subset of the letters `xyz' that allows you to apply the boundary conditions only to the components listed. As an example, '1 y: function' applies the type `function' to the y component on boundary 1. Without a selector it will affect all components of the traction.
 
 (parameters:Boundary_20traction_20model/Ascii_20data_20model)=
-## **Parameters in section** Boundary traction model/Ascii data model
+## **Subsection:** Boundary traction model / Ascii data model
 (parameters:Boundary_20traction_20model/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/boundary-traction/ascii-data/test/
@@ -74,7 +74,7 @@ The format of valid entries for this parameter is that of a map given as ``key1 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Boundary_20traction_20model/Function)=
-## **Parameters in section** Boundary traction model/Function
+## **Subsection:** Boundary traction model / Function
 (parameters:Boundary_20traction_20model/Function/Coordinate_20system)=
 ### __Parameter name:__ Coordinate system
 **Default value:** cartesian
@@ -112,7 +112,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Boundary_20traction_20model/Initial_20lithostatic_20pressure)=
-## **Parameters in section** Boundary traction model/Initial lithostatic pressure
+## **Subsection:** Boundary traction model / Initial lithostatic pressure
 (parameters:Boundary_20traction_20model/Initial_20lithostatic_20pressure/Number_20of_20integration_20points)=
 ### __Parameter name:__ Number of integration points
 **Default value:** 1000

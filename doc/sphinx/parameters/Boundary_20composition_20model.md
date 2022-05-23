@@ -1,8 +1,8 @@
 (parameters:Boundary_20composition_20model)=
-# **Boundary composition model**
+# Boundary composition model
 
 
-## **Parameters in section** Boundary composition model
+## **Subsection:** Boundary composition model
 
 
 (parameters:Boundary_20composition_20model/Allow_20fixed_20composition_20on_20outflow_20boundaries)=
@@ -94,7 +94,7 @@ Because this class simply takes what the initial composition had described, this
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying boundary composition models and shouldn't be used. Please use 'List of model names' instead.
 
 (parameters:Boundary_20composition_20model/Ascii_20data_20model)=
-## **Parameters in section** Boundary composition model/Ascii data model
+## **Subsection:** Boundary composition model / Ascii data model
 (parameters:Boundary_20composition_20model/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/boundary-composition/ascii-data/test/
@@ -152,7 +152,7 @@ Because this class simply takes what the initial composition had described, this
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Boundary_20composition_20model/Box)=
-## **Parameters in section** Boundary composition model/Box
+## **Subsection:** Boundary composition model / Box
 (parameters:Boundary_20composition_20model/Box/Bottom_20composition)=
 ### __Parameter name:__ Bottom composition
 **Default value:**
@@ -186,7 +186,7 @@ Because this class simply takes what the initial composition had described, this
 **Documentation:** A comma separated list of composition boundary values at the top boundary (at maximal $y$-value in 2d, or maximal $z$-value in 3d). This list must have as many entries as there are compositional fields. Units: none.
 
 (parameters:Boundary_20composition_20model/Box_20with_20lithosphere_20boundary_20indicators)=
-## **Parameters in section** Boundary composition model/Box with lithosphere boundary indicators
+## **Subsection:** Boundary composition model / Box with lithosphere boundary indicators
 (parameters:Boundary_20composition_20model/Box_20with_20lithosphere_20boundary_20indicators/Bottom_20composition)=
 ### __Parameter name:__ Bottom composition
 **Default value:**
@@ -236,7 +236,7 @@ Because this class simply takes what the initial composition had described, this
 **Documentation:** A comma separated list of composition boundary values at the top boundary (at maximal $y$-value in 2d, or maximal $z$-value in 3d). This list must have as many entries as there are compositional fields. Units: none.
 
 (parameters:Boundary_20composition_20model/Function)=
-## **Parameters in section** Boundary composition model/Function
+## **Subsection:** Boundary composition model / Function
 (parameters:Boundary_20composition_20model/Function/Coordinate_20system)=
 ### __Parameter name:__ Coordinate system
 **Default value:** cartesian
@@ -274,7 +274,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Boundary_20composition_20model/Initial_20composition)=
-## **Parameters in section** Boundary composition model/Initial composition
+## **Subsection:** Boundary composition model / Initial composition
 (parameters:Boundary_20composition_20model/Initial_20composition/Maximal_20composition)=
 ### __Parameter name:__ Maximal composition
 **Default value:** 1.
@@ -292,7 +292,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Minimal composition. Units: none.
 
 (parameters:Boundary_20composition_20model/Spherical_20constant)=
-## **Parameters in section** Boundary composition model/Spherical constant
+## **Subsection:** Boundary composition model / Spherical constant
 (parameters:Boundary_20composition_20model/Spherical_20constant/Inner_20composition)=
 ### __Parameter name:__ Inner composition
 **Default value:** 1.

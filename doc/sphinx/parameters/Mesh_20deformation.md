@@ -1,8 +1,8 @@
 (parameters:Mesh_20deformation)=
-# **Mesh deformation**
+# Mesh deformation
 
 
-## **Parameters in section** Mesh deformation
+## **Subsection:** Mesh deformation
 
 
 (parameters:Mesh_20deformation/Additional_20tangential_20mesh_20velocity_20boundary_20indicators)=
@@ -37,8 +37,10 @@ This surface velocity is used to deform the surface and as a boundary condition 
 
 `free surface': A plugin that computes the deformation of surface vertices according to the solution of the flow problem. In particular this means if the surface of the domain is left open to flow, this flow will carry the mesh with it. The implementation was described in \cite{rose_freesurface}, with the stabilization of the free surface originally described in \cite{KMM2010}.
 
+`initial boundary function': A plugin, which prescribes the surface mesh to deform according to an analytically prescribed function. Note that the function prescribes a deformation velocity, i.e. the return value of this plugin is later multiplied by the time step length to compute the displacement increment in this time step. Although the function's time variable is interpreted as years when Use years in output instead of seconds is set to true, the boundary deformation velocity should still be given in m/s. The format of the functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
 (parameters:Mesh_20deformation/Ascii_20data_20model)=
-## **Parameters in section** Mesh deformation/Ascii data model
+## **Subsection:** Mesh deformation / Ascii data model
 (parameters:Mesh_20deformation/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
@@ -64,7 +66,7 @@ This surface velocity is used to deform the surface and as a boundary condition 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Mesh_20deformation/Boundary_20function)=
-## **Parameters in section** Mesh deformation/Boundary function
+## **Subsection:** Mesh deformation / Boundary function
 (parameters:Mesh_20deformation/Boundary_20function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -94,7 +96,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Mesh_20deformation/Diffusion)=
-## **Parameters in section** Mesh deformation/Diffusion
+## **Subsection:** Mesh deformation / Diffusion
 (parameters:Mesh_20deformation/Diffusion/Hillslope_20transport_20coefficient)=
 ### __Parameter name:__ Hillslope transport coefficient
 **Default value:** 1e-6
@@ -112,7 +114,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The number of time steps between each application of diffusion.
 
 (parameters:Mesh_20deformation/Free_20surface)=
-## **Parameters in section** Mesh deformation/Free surface
+## **Subsection:** Mesh deformation / Free surface
 (parameters:Mesh_20deformation/Free_20surface/Free_20surface_20stabilization_20theta)=
 ### __Parameter name:__ Free surface stabilization theta
 **Default value:** 0.5
@@ -128,3 +130,33 @@ If the function you are describing represents a vector-valued function with mult
 **Pattern:** [Selection normal|vertical ]
 
 **Documentation:** After each time step the free surface must be advected in the direction of the velocity field. Mass conservation requires that the mesh velocity is in the normal direction of the surface. However, for steep topography or large curvature, advection in the normal direction can become ill-conditioned, and instabilities in the mesh can form. Projection of the mesh velocity onto the local vertical direction can preserve the mesh quality better, but at the cost of slightly poorer mass conservation of the domain.
+
+(parameters:Mesh_20deformation/Initial_20boundary_20function)=
+## **Subsection:** Mesh deformation / Initial boundary function
+(parameters:Mesh_20deformation/Initial_20boundary_20function/Function_20constants)=
+### __Parameter name:__ Function constants
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+(parameters:Mesh_20deformation/Initial_20boundary_20function/Function_20expression)=
+### __Parameter name:__ Function expression
+**Default value:** 0; 0
+
+**Pattern:** [Anything]
+
+**Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+(parameters:Mesh_20deformation/Initial_20boundary_20function/Variable_20names)=
+### __Parameter name:__ Variable names
+**Default value:** x,y,t
+
+**Pattern:** [Anything]
+
+**Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.

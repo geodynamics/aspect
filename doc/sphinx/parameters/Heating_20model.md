@@ -1,8 +1,8 @@
 (parameters:Heating_20model)=
-# **Heating model**
+# Heating model
 
 
-## **Parameters in section** Heating model
+## **Subsection:** Heating model
 
 
 (parameters:Heating_20model/List_20of_20model_20names)=
@@ -46,7 +46,7 @@ The formula is interpreted as having units W/kg.
 `shear heating with melt': Implementation of a standard model for shear heating of migrating melt, including bulk (compression) heating $\xi \left( \nabla \cdot \mathbf u_s \right)^2 $ and heating due to melt segregation $\frac{\eta_f \phi^2}{k} \left( \mathbf u_f - \mathbf u_s \right)^2 $. For full shear heating, this has to be used in combination with the heating model shear heating to also include shear heating for the solid part.
 
 (parameters:Heating_20model/Adiabatic_20heating)=
-## **Parameters in section** Heating model/Adiabatic heating
+## **Subsection:** Heating model / Adiabatic heating
 (parameters:Heating_20model/Adiabatic_20heating/Use_20simplified_20adiabatic_20heating)=
 ### __Parameter name:__ Use simplified adiabatic heating
 **Default value:** false
@@ -56,7 +56,7 @@ The formula is interpreted as having units W/kg.
 **Documentation:** A flag indicating whether the adiabatic heating should be simplified from $\alpha T (\mathbf u \cdot \nabla p)$ to $ \alpha \rho T (\mathbf u \cdot \mathbf g) $.
 
 (parameters:Heating_20model/Adiabatic_20heating_20of_20melt)=
-## **Parameters in section** Heating model/Adiabatic heating of melt
+## **Subsection:** Heating model / Adiabatic heating of melt
 (parameters:Heating_20model/Adiabatic_20heating_20of_20melt/Use_20simplified_20adiabatic_20heating)=
 ### __Parameter name:__ Use simplified adiabatic heating
 **Default value:** false
@@ -66,7 +66,7 @@ The formula is interpreted as having units W/kg.
 **Documentation:** A flag indicating whether the adiabatic heating should be simplified from $\alpha T (\mathbf u \cdot \nabla p)$ to $ \alpha \rho T (\mathbf u \cdot \mathbf g) $.
 
 (parameters:Heating_20model/Compositional_20heating)=
-## **Parameters in section** Heating model/Compositional heating
+## **Subsection:** Heating model / Compositional heating
 (parameters:Heating_20model/Compositional_20heating/Compositional_20heating_20values)=
 ### __Parameter name:__ Compositional heating values
 **Default value:** 0.
@@ -84,7 +84,7 @@ The formula is interpreted as having units W/kg.
 **Documentation:** A list of integers with as many entries as compositional fields plus one. The first entry corresponds to the background material, each following entry corresponds to a particular compositional field. If the entry for a field is '1' this field is considered during the computation of volume fractions, if it is '0' the field is ignored. This is useful if some compositional fields are used to track properties like finite strain that should not contribute to heat production. The first entry determines whether the background field contributes to heat production or not (essentially similar to setting its 'Compositional heating values' to zero, but included for consistency in the length of the input lists).
 
 (parameters:Heating_20model/Constant_20heating)=
-## **Parameters in section** Heating model/Constant heating
+## **Subsection:** Heating model / Constant heating
 (parameters:Heating_20model/Constant_20heating/Radiogenic_20heating_20rate)=
 ### __Parameter name:__ Radiogenic heating rate
 **Default value:** 0.
@@ -94,7 +94,7 @@ The formula is interpreted as having units W/kg.
 **Documentation:** The specific rate of heating due to radioactive decay (or other bulk sources you may want to describe). This parameter corresponds to the variable $H$ in the temperature equation stated in the manual, and the heating term is $ho H$. Units: W/kg.
 
 (parameters:Heating_20model/Function)=
-## **Parameters in section** Heating model/Function
+## **Subsection:** Heating model / Function
 (parameters:Heating_20model/Function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -124,7 +124,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Heating_20model/Latent_20heat_20melt)=
-## **Parameters in section** Heating model/Latent heat melt
+## **Subsection:** Heating model / Latent heat melt
 (parameters:Heating_20model/Latent_20heat_20melt/Melting_20entropy_20change)=
 ### __Parameter name:__ Melting entropy change
 **Default value:** -300.
@@ -134,7 +134,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The entropy change for the phase transition from solid to melt. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 (parameters:Heating_20model/Radioactive_20decay)=
-## **Parameters in section** Heating model/Radioactive decay
+## **Subsection:** Heating model / Radioactive decay
 (parameters:Heating_20model/Radioactive_20decay/Crust_20composition_20number)=
 ### __Parameter name:__ Crust composition number
 **Default value:** 0

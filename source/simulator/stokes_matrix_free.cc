@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -1365,12 +1365,6 @@ namespace aspect
   {
     parse_parameters(prm);
     CitationInfo::add("mf");
-
-    AssertThrow(!(sim.parameters.mesh_deformation_enabled
-                  && !sim.mesh_deformation->get_free_surface_boundary_indicators().empty()
-                  && sim.parameters.enable_elasticity),
-                ExcMessage("The matrix-free Stokes solver does not support free surface boundaries + GMG + elasticity."));
-
 
 #if !DEAL_II_VERSION_GTE(9,3,2)
     AssertThrow(!sim.parameters.mesh_deformation_enabled,

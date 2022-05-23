@@ -1,8 +1,8 @@
 (parameters:Gravity_20model)=
-# **Gravity model**
+# Gravity model
 
 
-## **Parameters in section** Gravity model
+## **Subsection:** Gravity model
 
 
 (parameters:Gravity_20model/Model_20name)=
@@ -26,7 +26,7 @@
 `vertical': A gravity model in which the gravity direction is vertical (pointing downward for positive values) and at a constant magnitude by default equal to one.
 
 (parameters:Gravity_20model/Ascii_20data_20model)=
-## **Parameters in section** Gravity model/Ascii data model
+## **Subsection:** Gravity model / Ascii data model
 (parameters:Gravity_20model/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/gravity-model/
@@ -52,7 +52,7 @@
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Gravity_20model/Function)=
-## **Parameters in section** Gravity model/Function
+## **Subsection:** Gravity model / Function
 (parameters:Gravity_20model/Function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -82,7 +82,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Gravity_20model/Radial_20constant)=
-## **Parameters in section** Gravity model/Radial constant
+## **Subsection:** Gravity model / Radial constant
 (parameters:Gravity_20model/Radial_20constant/Magnitude)=
 ### __Parameter name:__ Magnitude
 **Default value:** 9.81
@@ -92,7 +92,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Magnitude of the gravity vector in $m/s^2$. For positive values the direction is radially inward towards the center of the earth.
 
 (parameters:Gravity_20model/Radial_20linear)=
-## **Parameters in section** Gravity model/Radial linear
+## **Subsection:** Gravity model / Radial linear
 (parameters:Gravity_20model/Radial_20linear/Magnitude_20at_20bottom)=
 ### __Parameter name:__ Magnitude at bottom
 **Default value:** 10.7
@@ -110,7 +110,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Magnitude of the radial gravity vector at the surface of the domain. Units: \si{\meter\per\second\squared}.
 
 (parameters:Gravity_20model/Vertical)=
-## **Parameters in section** Gravity model/Vertical
+## **Subsection:** Gravity model / Vertical
 (parameters:Gravity_20model/Vertical/Magnitude)=
 ### __Parameter name:__ Magnitude
 **Default value:** 1.

@@ -1,8 +1,8 @@
 (parameters:Postprocess)=
-# **Postprocess**
+# Postprocess
 
 
-## **Parameters in section** Postprocess
+## **Subsection:** Postprocess
 
 
 (parameters:Postprocess/List_20of_20postprocessors)=
@@ -128,7 +128,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 **Documentation:** Whether or not the postprocessors should be executed after each of the nonlinear iterations done within one time step. As this is mainly an option for the purposes of debugging, it is not supported when the 'Time between graphical output' is larger than zero, or when the postprocessor is not intended to be run more than once per timestep.
 
 (parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics)=
-## **Parameters in section** Postprocess/Boundary strain rate residual statistics
+## **Subsection:** Postprocess / Boundary strain rate residual statistics
 (parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/postprocess/boundary-strain-rate-residual/
@@ -154,7 +154,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model.
 
 (parameters:Postprocess/Boundary_20velocity_20residual_20statistics)=
-## **Parameters in section** Postprocess/Boundary velocity residual statistics
+## **Subsection:** Postprocess / Boundary velocity residual statistics
 (parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/
@@ -196,7 +196,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 **Documentation:** Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.GPlates data is always interpreted to be in east and north directions and is not affected by this parameter.
 
 (parameters:Postprocess/Command)=
-## **Parameters in section** Postprocess/Command
+## **Subsection:** Postprocess / Command
 (parameters:Postprocess/Command/Command)=
 ### __Parameter name:__ Command
 **Default value:**
@@ -222,7 +222,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 **Documentation:** Select whether \aspect{} should terminate if the command returns a non-zero exit status.
 
 (parameters:Postprocess/Depth_20average)=
-## **Parameters in section** Postprocess/Depth average
+## **Subsection:** Postprocess / Depth average
 (parameters:Postprocess/Depth_20average/Depth_20boundaries_20of_20zones)=
 ### __Parameter name:__ Depth boundaries of zones
 **Default value:**
@@ -269,7 +269,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Dynamic_20core_20statistics)=
-## **Parameters in section** Postprocess/Dynamic core statistics
+## **Subsection:** Postprocess / Dynamic core statistics
 (parameters:Postprocess/Dynamic_20core_20statistics/Excess_20entropy_20only)=
 ### __Parameter name:__ Excess entropy only
 **Default value:** false
@@ -279,7 +279,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** Output the excess entropy only instead the each entropy terms.
 
 (parameters:Postprocess/Dynamic_20topography)=
-## **Parameters in section** Postprocess/Dynamic topography
+## **Subsection:** Postprocess / Dynamic topography
 (parameters:Postprocess/Dynamic_20topography/Density_20above)=
 ### __Parameter name:__ Density above
 **Default value:** 0.
@@ -313,7 +313,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** Whether to output a file containing the surface dynamic topography.
 
 (parameters:Postprocess/Geoid)=
-## **Parameters in section** Postprocess/Geoid
+## **Subsection:** Postprocess / Geoid
 (parameters:Postprocess/Geoid/Also_20output_20the_20gravity_20anomaly)=
 ### __Parameter name__: Also output the gravity anomaly
 **Alias:** [Output gravity anomaly](parameters:Postprocess/Geoid/Output_20gravity_20anomaly)
@@ -449,7 +449,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** Option to output the spherical harmonic coefficients of the surface topography contribution to the maximum degree. The default is false.
 
 (parameters:Postprocess/Global_20statistics)=
-## **Parameters in section** Postprocess/Global statistics
+## **Subsection:** Postprocess / Global statistics
 (parameters:Postprocess/Global_20statistics/Write_20statistics_20for_20each_20nonlinear_20iteration)=
 ### __Parameter name:__ Write statistics for each nonlinear iteration
 **Default value:** false
@@ -459,7 +459,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** Whether to put every nonlinear iteration into a separate line in the statistics file (if true), or to output only one line per time step that contains the total number of iterations of the Stokes and advection linear system solver.
 
 (parameters:Postprocess/Gravity_20calculation)=
-## **Parameters in section** Postprocess/Gravity calculation
+## **Subsection:** Postprocess / Gravity calculation
 (parameters:Postprocess/Gravity_20calculation/List_20of_20latitude)=
 ### __Parameter name:__ List of latitude
 **Default value:**
@@ -613,7 +613,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** The maximum number of time steps between each generation of gravity output files.
 
 (parameters:Postprocess/Memory_20statistics)=
-## **Parameters in section** Postprocess/Memory statistics
+## **Subsection:** Postprocess / Memory statistics
 (parameters:Postprocess/Memory_20statistics/Output_20peak_20virtual_20memory_20_28VmPeak_29)=
 ### __Parameter name:__ Output peak virtual memory _28VmPeak_29
 **Default value:** true
@@ -623,14 +623,14 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** If set to 'true', also output the peak virtual memory usage (computed as the maximum over all processors).
 
 (parameters:Postprocess/Particles)=
-## **Parameters in section** Postprocess/Particles
+## **Subsection:** Postprocess / Particles
 (parameters:Postprocess/Particles/Allow_20cells_20without_20particles)=
 ### __Parameter name:__ Allow cells without particles
 **Default value:** false
 
 **Pattern:** [Bool]
 
-**Documentation:** By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles, In case both the current cell and its neighbors are empty, the interpolator will return 0 for the current cell's properties.
+**Documentation:** By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles. In case both the current cell and its neighbors are empty, the interpolator will return 0 for the current cell's properties.
 
 (parameters:Postprocess/Particles/Data_20output_20format)=
 ### __Parameter name:__ Data output format
@@ -827,7 +827,7 @@ Units: years if the 'Use years in output instead of seconds' parameter is set; s
 **Documentation:** File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to `true' moves this process into a background thread, while the rest of the model continues.
 
 (parameters:Postprocess/Particles/Function)=
-## **Parameters in section** Postprocess/Particles/Function
+## **Subsection:** Postprocess / Particles / Function
 (parameters:Postprocess/Particles/Function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -865,9 +865,9 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Postprocess/Particles/Generator)=
-## **Parameters in section** Postprocess/Particles/Generator
+## **Subsection:** Postprocess / Particles / Generator
 (parameters:Postprocess/Particles/Generator/Ascii_20file)=
-## **Parameters in section** Postprocess/Particles/Generator/Ascii file
+## **Subsection:** Postprocess / Particles / Generator / Ascii file
 (parameters:Postprocess/Particles/Generator/Ascii_20file/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/particle/generator/ascii/
@@ -885,7 +885,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The name of the particle file.
 
 (parameters:Postprocess/Particles/Generator/Probability_20density_20function)=
-## **Parameters in section** Postprocess/Particles/Generator/Probability density function
+## **Subsection:** Postprocess / Particles / Generator / Probability density function
 (parameters:Postprocess/Particles/Generator/Probability_20density_20function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -931,7 +931,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Postprocess/Particles/Generator/Reference_20cell)=
-## **Parameters in section** Postprocess/Particles/Generator/Reference cell
+## **Subsection:** Postprocess / Particles / Generator / Reference cell
 (parameters:Postprocess/Particles/Generator/Reference_20cell/Number_20of_20particles_20per_20cell_20per_20direction)=
 ### __Parameter name:__ Number of particles per cell per direction
 **Default value:** 2
@@ -941,7 +941,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** List of number of particles to create per cell and spatial dimension. The size of the list is the number of spatial dimensions. If only one value is given, then each spatial dimension is set to the same value. The list of numbers are parsed as a floating point number (so that one can specify, for example, '1e4' particles) but it is interpreted as an integer, of course.
 
 (parameters:Postprocess/Particles/Generator/Uniform_20box)=
-## **Parameters in section** Postprocess/Particles/Generator/Uniform box
+## **Subsection:** Postprocess / Particles / Generator / Uniform box
 (parameters:Postprocess/Particles/Generator/Uniform_20box/Maximum_20x)=
 ### __Parameter name:__ Maximum x
 **Default value:** 1.
@@ -991,7 +991,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Minimum z coordinate for the region of particles.
 
 (parameters:Postprocess/Particles/Generator/Uniform_20radial)=
-## **Parameters in section** Postprocess/Particles/Generator/Uniform radial
+## **Subsection:** Postprocess / Particles / Generator / Uniform radial
 (parameters:Postprocess/Particles/Generator/Uniform_20radial/Center_20x)=
 ### __Parameter name:__ Center x
 **Default value:** 0.
@@ -1073,9 +1073,9 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The number of radial shells of particles that will be generated around the central point.
 
 (parameters:Postprocess/Particles/Interpolator)=
-## **Parameters in section** Postprocess/Particles/Interpolator
+## **Subsection:** Postprocess / Particles / Interpolator
 (parameters:Postprocess/Particles/Interpolator/Bilinear_20least_20squares)=
-## **Parameters in section** Postprocess/Particles/Interpolator/Bilinear least squares
+## **Subsection:** Postprocess / Particles / Interpolator / Bilinear least squares
 (parameters:Postprocess/Particles/Interpolator/Bilinear_20least_20squares/Use_20linear_20least_20squares_20limiter)=
 ### __Parameter name:__ Use linear least squares limiter
 **Default value:** false
@@ -1085,7 +1085,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Limit the interpolation of particle properties onto the cell so the value of each property is no smaller than its minimum and no larger than its maximum on the particles in each cell. If more than one value is specified, they will be treated as a list.
 
 (parameters:Postprocess/Particles/Interpolator/Quadratic_20least_20squares)=
-## **Parameters in section** Postprocess/Particles/Interpolator/Quadratic least squares
+## **Subsection:** Postprocess / Particles / Interpolator / Quadratic least squares
 (parameters:Postprocess/Particles/Interpolator/Quadratic_20least_20squares/Global_20particle_20property_20maximum)=
 ### __Parameter name:__ Global particle property maximum
 **Default value:** 1.7976931348623157e+308
@@ -1111,7 +1111,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Whether to apply a global particle property limiting scheme to the interpolated particle properties.
 
 (parameters:Postprocess/Particles/Melt_20particle)=
-## **Parameters in section** Postprocess/Particles/Melt particle
+## **Subsection:** Postprocess / Particles / Melt particle
 (parameters:Postprocess/Particles/Melt_20particle/Threshold_20for_20melt_20presence)=
 ### __Parameter name:__ Threshold for melt presence
 **Default value:** 1e-3
@@ -1121,7 +1121,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The minimum porosity that has to be present at the position of a particle for it to be considered a melt particle (in the sense that the melt presence property is set to 1).
 
 (parameters:Postprocess/Point_20values)=
-## **Parameters in section** Postprocess/Point values
+## **Subsection:** Postprocess / Point values
 (parameters:Postprocess/Point_20values/Evaluation_20points)=
 ### __Parameter name:__ Evaluation points
 **Default value:**
@@ -1147,7 +1147,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Whether or not the Evaluation points are specified in the natural coordinates of the geometry model, e.g. radius, lon, lat for the chunk model. Currently, natural coordinates for the spherical shell and sphere geometries are not supported.
 
 (parameters:Postprocess/Rotation_20statistics)=
-## **Parameters in section** Postprocess/Rotation statistics
+## **Subsection:** Postprocess / Rotation statistics
 (parameters:Postprocess/Rotation_20statistics/Output_20full_20moment_20of_20inertia_20tensor)=
 ### __Parameter name:__ Output full moment of inertia tensor
 **Default value:** false
@@ -1165,7 +1165,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Whether to use a constant density of one for the computation of the angular momentum and moment of inertia. This is an approximation that assumes that the 'volumetric' rotation is equal to the 'mass' rotation. If this parameter is true this postprocessor computes 'net rotation' instead of 'angular momentum'.
 
 (parameters:Postprocess/Topography)=
-## **Parameters in section** Postprocess/Topography
+## **Subsection:** Postprocess / Topography
 (parameters:Postprocess/Topography/Output_20to_20file)=
 ### __Parameter name:__ Output to file
 **Default value:** false
@@ -1183,7 +1183,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Visualization)=
-## **Parameters in section** Postprocess/Visualization
+## **Subsection:** Postprocess / Visualization
 (parameters:Postprocess/Visualization/Filter_20output)=
 ### __Parameter name:__ Filter output
 **Default value:** false
@@ -1402,7 +1402,7 @@ The effect of using this option can be seen in the following picture:
 **Documentation:** File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to `true' moves this process into a background thread, while the rest of the model continues.
 
 (parameters:Postprocess/Visualization/Artificial_20viscosity_20composition)=
-## **Parameters in section** Postprocess/Visualization/Artificial viscosity composition
+## **Subsection:** Postprocess / Visualization / Artificial viscosity composition
 (parameters:Postprocess/Visualization/Artificial_20viscosity_20composition/Name_20of_20compositional_20field)=
 ### __Parameter name:__ Name of compositional field
 **Default value:**
@@ -1412,7 +1412,7 @@ The effect of using this option can be seen in the following picture:
 **Documentation:** The name of the compositional field whose output should be visualized.
 
 (parameters:Postprocess/Visualization/Compositional_20fields_20as_20vectors)=
-## **Parameters in section** Postprocess/Visualization/Compositional fields as vectors
+## **Subsection:** Postprocess / Visualization / Compositional fields as vectors
 (parameters:Postprocess/Visualization/Compositional_20fields_20as_20vectors/Names_20of_20fields)=
 ### __Parameter name:__ Names of fields
 **Default value:**
@@ -1430,7 +1430,7 @@ The effect of using this option can be seen in the following picture:
 **Documentation:** Names of vectors as they will appear in the output.
 
 (parameters:Postprocess/Visualization/Heat_20flux_20map)=
-## **Parameters in section** Postprocess/Visualization/Heat flux map
+## **Subsection:** Postprocess / Visualization / Heat flux map
 (parameters:Postprocess/Visualization/Heat_20flux_20map/Output_20point_20wise_20heat_20flux)=
 ### __Parameter name:__ Output point wise heat flux
 **Default value:** false
@@ -1440,7 +1440,7 @@ The effect of using this option can be seen in the following picture:
 **Documentation:** A boolean flag that controls whether to output the heat flux map as a point wise value, or as a cell-wise averaged value. The point wise output is more accurate, but it currently omits prescribed heat flux values at boundaries and advective heat flux that is caused by velocities non-tangential to boundaries. If you do not use these two features it is recommended to switch this setting on to benefit from the increased output resolution.
 
 (parameters:Postprocess/Visualization/Material_20properties)=
-## **Parameters in section** Postprocess/Visualization/Material properties
+## **Subsection:** Postprocess / Visualization / Material properties
 (parameters:Postprocess/Visualization/Material_20properties/List_20of_20material_20properties)=
 ### __Parameter name:__ List of material properties
 **Default value:** density,thermal expansivity,specific heat,viscosity
@@ -1452,7 +1452,7 @@ The effect of using this option can be seen in the following picture:
 viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal diffusivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms|melt fraction
 
 (parameters:Postprocess/Visualization/Melt_20fraction)=
-## **Parameters in section** Postprocess/Visualization/Melt fraction
+## **Subsection:** Postprocess / Visualization / Melt fraction
 (parameters:Postprocess/Visualization/Melt_20fraction/A1)=
 ### __Parameter name:__ A1
 **Default value:** 1085.7
@@ -1598,7 +1598,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 **Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: \si{\per\pascal}.
 
 (parameters:Postprocess/Visualization/Melt_20material_20properties)=
-## **Parameters in section** Postprocess/Visualization/Melt material properties
+## **Subsection:** Postprocess / Visualization / Melt material properties
 (parameters:Postprocess/Visualization/Melt_20material_20properties/List_20of_20properties)=
 ### __Parameter name:__ List of properties
 **Default value:** compaction viscosity,permeability
@@ -1610,7 +1610,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gradient|is melt cell|darcy coefficient|darcy coefficient no cutoff|compaction length
 
 (parameters:Postprocess/Visualization/Principal_20stress)=
-## **Parameters in section** Postprocess/Visualization/Principal stress
+## **Subsection:** Postprocess / Visualization / Principal stress
 (parameters:Postprocess/Visualization/Principal_20stress/Use_20deviatoric_20stress)=
 ### __Parameter name:__ Use deviatoric stress
 **Default value:** false
@@ -1620,7 +1620,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 **Documentation:** Whether to use the deviatoric stress tensor instead of the full stress tensor to compute principal stress directions and values.
 
 (parameters:Postprocess/Visualization/Temperature_20anomaly)=
-## **Parameters in section** Postprocess/Visualization/Temperature anomaly
+## **Subsection:** Postprocess / Visualization / Temperature anomaly
 (parameters:Postprocess/Visualization/Temperature_20anomaly/Number_20of_20depth_20slices)=
 ### __Parameter name:__ Number of depth slices
 **Default value:** 20
@@ -1646,7 +1646,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 **Documentation:** Whether to use the minimal specified boundary temperature as the bottom boundary temperature. This option will only work for models with a fixed bottom boundary temperature.
 
 (parameters:Postprocess/Visualization/Volume_20of_20Fluid)=
-## **Parameters in section** Postprocess/Visualization/Volume of Fluid
+## **Subsection:** Postprocess / Visualization / Volume of Fluid
 (parameters:Postprocess/Visualization/Volume_20of_20Fluid/Output_20interface_20normals)=
 ### __Parameter name:__ Output interface normals
 **Default value:** false
@@ -1664,7 +1664,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 **Documentation:** Include fields defined such that the 0 contour is the fluid interface.
 
 (parameters:Postprocess/Visualization/Vp_20anomaly)=
-## **Parameters in section** Postprocess/Visualization/Vp anomaly
+## **Subsection:** Postprocess / Visualization / Vp anomaly
 (parameters:Postprocess/Visualization/Vp_20anomaly/Average_20velocity_20scheme)=
 ### __Parameter name:__ Average velocity scheme
 **Default value:** reference profile
@@ -1682,7 +1682,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 **Documentation:** Number of depth slices used to define average seismic compressional wave velocities from which anomalies are calculated. Units: non-dimensional.
 
 (parameters:Postprocess/Visualization/Vs_20anomaly)=
-## **Parameters in section** Postprocess/Visualization/Vs anomaly
+## **Subsection:** Postprocess / Visualization / Vs anomaly
 (parameters:Postprocess/Visualization/Vs_20anomaly/Average_20velocity_20scheme)=
 ### __Parameter name:__ Average velocity scheme
 **Default value:** reference profile

@@ -1,4 +1,5 @@
-#### Tracking finite strain
+(sec:cookbooks:finite_strain)=
+# Tracking finite strain
 
 *This section was contributed by Juliane Dannberg and Rene Gassm&ouml;ller*
 

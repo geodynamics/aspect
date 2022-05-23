@@ -1,8 +1,8 @@
 (parameters:Time_20stepping)=
-# **Time stepping**
+# Time stepping
 
 
-## **Parameters in section** Time stepping
+## **Subsection:** Time stepping
 
 
 (parameters:Time_20stepping/List_20of_20model_20names)=
@@ -33,7 +33,7 @@ A large reduction in time step size typically happens when velocities change abr
 **Documentation:** Specifiy a minimum time step size (or 0 to disable).
 
 (parameters:Time_20stepping/Function)=
-## **Parameters in section** Time stepping/Function
+## **Subsection:** Time stepping / Function
 (parameters:Time_20stepping/Function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -61,7 +61,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 **Documentation:** Name for the variable representing the current time.
 
 (parameters:Time_20stepping/Repeat_20on_20cutback)=
-## **Parameters in section** Time stepping/Repeat on cutback
+## **Subsection:** Time stepping / Repeat on cutback
 (parameters:Time_20stepping/Repeat_20on_20cutback/Cut_20back_20amount)=
 ### __Parameter name:__ Cut back amount
 **Default value:** 0.5

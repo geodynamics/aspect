@@ -1,8 +1,8 @@
 (parameters:Material_20model)=
-# **Material model**
+# Material model
 
 
-## **Parameters in section** Material model
+## **Subsection:** Material model
 
 
 (parameters:Material_20model/Material_20averaging)=
@@ -214,7 +214,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
  When more than one compositional field is present at a point, they are averaged arithmetically. An exception is viscosity, which may be averaged arithmetically, harmonically, geometrically, or by selecting the viscosity of the composition field with the greatest volume fraction.
 
 (parameters:Material_20model/Ascii_20reference_20profile)=
-## **Parameters in section** Material model/Ascii reference profile
+## **Subsection:** Material model / Ascii reference profile
 (parameters:Material_20model/Ascii_20reference_20profile/Thermal_20conductivity)=
 ### __Parameter name:__ Thermal conductivity
 **Default value:** 4.0
@@ -264,7 +264,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 **Documentation:** A list of prefactors for the viscosity that determine the viscosity profile. Each prefactor is applied in a depth range specified by the list of `Transition depths', i.e. the first prefactor is applied above the first transition depth, the second one between the first and second transition depth, and so on. To compute the viscosity profile, this prefactor is multiplied by the reference viscosity specified through the parameter `Viscosity'. List must have one more entry than Transition depths. Units: non-dimensional.
 
 (parameters:Material_20model/Ascii_20reference_20profile/Ascii_20data_20model)=
-## **Parameters in section** Material model/Ascii reference profile/Ascii data model
+## **Subsection:** Material model / Ascii reference profile / Ascii data model
 (parameters:Material_20model/Ascii_20reference_20profile/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
@@ -290,7 +290,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Material_20model/Averaging)=
-## **Parameters in section** Material model/Averaging
+## **Subsection:** Material model / Averaging
 (parameters:Material_20model/Averaging/Averaging_20operation)=
 ### __Parameter name:__ Averaging operation
 **Default value:** none
@@ -316,7 +316,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 **Documentation:** The limit normalized distance between 0 and 1 where the bell shape becomes zero. See the manual for a more information.
 
 (parameters:Material_20model/Compositing)=
-## **Parameters in section** Material model/Compositing
+## **Subsection:** Material model / Compositing
 (parameters:Material_20model/Compositing/Compressibility)=
 ### __Parameter name:__ Compressibility
 **Default value:** unspecified
@@ -390,7 +390,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 **Documentation:** Material model to use for Viscosity. Valid values for this parameter are the names of models that are also valid for the ``Material models/Model name'' parameter. See the documentation for that for more information.
 
 (parameters:Material_20model/Composition_20reaction_20model)=
-## **Parameters in section** Material model/Composition reaction model
+## **Subsection:** Material model / Composition reaction model
 (parameters:Material_20model/Composition_20reaction_20model/Composition_20viscosity_20prefactor_201)=
 ### __Parameter name:__ Composition viscosity prefactor 1
 **Default value:** 1.0
@@ -488,7 +488,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 **Documentation:** The value of the constant viscosity. Units: \si{\kilogram\per\meter\per\second}.
 
 (parameters:Material_20model/Depth_20dependent_20model)=
-## **Parameters in section** Material model/Depth dependent model
+## **Subsection:** Material model / Depth dependent model
 (parameters:Material_20model/Depth_20dependent_20model/Base_20model)=
 ### __Parameter name:__ Base model
 **Default value:** simple
@@ -560,7 +560,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 **Documentation:** A comma-separated list of viscosity values, corresponding to the depth values provided in ``Depth list''. The number of viscosity values specified here must be the same as the number of depths provided in ``Depth list''.
 
 (parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20function)=
-## **Parameters in section** Material model/Depth dependent model/Viscosity depth function
+## **Subsection:** Material model / Depth dependent model / Viscosity depth function
 (parameters:Material_20model/Depth_20dependent_20model/Viscosity_20depth_20function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -588,7 +588,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Material_20model/Diffusion_20dislocation)=
-## **Parameters in section** Material model/Diffusion dislocation
+## **Subsection:** Material model / Diffusion dislocation
 (parameters:Material_20model/Diffusion_20dislocation/Activation_20energies_20for_20diffusion_20creep)=
 ### __Parameter name:__ Activation energies for diffusion creep
 **Default value:** 375e3
@@ -778,7 +778,7 @@ Units: \si{\pascal\second}.
 **Documentation:** When more than one compositional field is present at a point with different viscosities, we need to come up with an average viscosity at that point.  Select a weighted harmonic, arithmetic, geometric, or maximum composition.
 
 (parameters:Material_20model/Drucker_20Prager)=
-## **Parameters in section** Material model/Drucker Prager
+## **Subsection:** Material model / Drucker Prager
 (parameters:Material_20model/Drucker_20Prager/Reference_20density)=
 ### __Parameter name:__ Reference density
 **Default value:** 3300.
@@ -832,7 +832,7 @@ Units: \si{\pascal\second}.
 **Documentation:** The value of the thermal expansion coefficient $\alpha$. Units: \si{\per\kelvin}.
 
 (parameters:Material_20model/Drucker_20Prager/Viscosity)=
-## **Parameters in section** Material model/Drucker Prager/Viscosity
+## **Subsection:** Material model / Drucker Prager / Viscosity
 (parameters:Material_20model/Drucker_20Prager/Viscosity/Angle_20of_20internal_20friction)=
 ### __Parameter name:__ Angle of internal friction
 **Default value:** 0.
@@ -874,7 +874,7 @@ Units: \si{\pascal\second}.
 **Documentation:** The value of the initial strain rate prescribed during the first nonlinear iteration $\dot{\epsilon}_ref$. Units: \si{\per\second}.
 
 (parameters:Material_20model/Grain_20size_20model)=
-## **Parameters in section** Material model/Grain size model
+## **Subsection:** Material model / Grain size model
 (parameters:Material_20model/Grain_20size_20model/Advect_20logarithm_20of_20grain_20size)=
 ### __Parameter name:__ Advect logarithm of grain size
 **Default value:** false
@@ -1276,7 +1276,7 @@ Units: \si{\pascal\second}.
 **Documentation:** The fraction $\chi$ of work done by dislocation creep to change the grain boundary area. Units: \si{\joule\per\meter\squared}.
 
 (parameters:Material_20model/Latent_20heat)=
-## **Parameters in section** Material model/Latent heat
+## **Subsection:** Material model / Latent heat
 (parameters:Material_20model/Latent_20heat/Composition_20viscosity_20prefactor)=
 ### __Parameter name:__ Composition viscosity prefactor
 **Default value:** 1.0
@@ -1454,7 +1454,7 @@ Units: \si{\pascal\second}.
 **Documentation:** A list of prefactors for the viscosity for each phase. The reference viscosity will be multiplied by this factor to get the corresponding viscosity for each phase. List must have one more entry than Phase transition depths. Units: non-dimensional.
 
 (parameters:Material_20model/Latent_20heat_20melt)=
-## **Parameters in section** Material model/Latent heat melt
+## **Subsection:** Material model / Latent heat melt
 (parameters:Material_20model/Latent_20heat_20melt/A1)=
 ### __Parameter name:__ A1
 **Default value:** 1085.7
@@ -1720,7 +1720,7 @@ Units: \si{\pascal\second}.
 **Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: \si{\per\pascal}.
 
 (parameters:Material_20model/Melt_20global)=
-## **Parameters in section** Material model/Melt global
+## **Subsection:** Material model / Melt global
 (parameters:Material_20model/Melt_20global/Depletion_20density_20change)=
 ### __Parameter name:__ Depletion density change
 **Default value:** 0.0
@@ -1916,7 +1916,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 **Documentation:** The temperature dependence of the shear viscosity. Dimensionless exponent. See the general documentation of this model for a formula that states the dependence of the viscosity on this factor, which is called $\beta$ there.
 
 (parameters:Material_20model/Melt_20simple)=
-## **Parameters in section** Material model/Melt simple
+## **Subsection:** Material model / Melt simple
 (parameters:Material_20model/Melt_20simple/A1)=
 ### __Parameter name:__ A1
 **Default value:** 1085.7
@@ -2218,7 +2218,7 @@ Note that melt does not freeze unless the 'Freezing rate' parameter is set to a 
 **Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: \si{\per\pascal}.
 
 (parameters:Material_20model/Modified_20Tait_20model)=
-## **Parameters in section** Material model/Modified Tait model
+## **Subsection:** Material model / Modified Tait model
 (parameters:Material_20model/Modified_20Tait_20model/Einstein_20temperature)=
 ### __Parameter name:__ Einstein temperature
 **Default value:** 600.
@@ -2292,7 +2292,7 @@ Note that melt does not freeze unless the 'Freezing rate' parameter is set to a 
 **Documentation:** The value of the constant viscosity $\eta_0$. Units: \si{\pascal\second}.
 
 (parameters:Material_20model/Modified_20Tait_20model/Reference_20heat_20capacity_20function)=
-## **Parameters in section** Material model/Modified Tait model/Reference heat capacity function
+## **Subsection:** Material model / Modified Tait model / Reference heat capacity function
 (parameters:Material_20model/Modified_20Tait_20model/Reference_20heat_20capacity_20function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -2320,7 +2320,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Material_20model/Multicomponent)=
-## **Parameters in section** Material model/Multicomponent
+## **Subsection:** Material model / Multicomponent
 (parameters:Material_20model/Multicomponent/Densities)=
 ### __Parameter name:__ Densities
 **Default value:** 3300.
@@ -2384,7 +2384,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 **Documentation:** When more than one compositional field is present at a point with different viscosities, we need to come up with an average viscosity at that point.  Select a weighted harmonic, arithmetic, geometric, or maximum composition.
 
 (parameters:Material_20model/Multicomponent_20compressible)=
-## **Parameters in section** Material model/Multicomponent compressible
+## **Subsection:** Material model / Multicomponent compressible
 (parameters:Material_20model/Multicomponent_20compressible/Isochoric_20specific_20heats)=
 ### __Parameter name:__ Isochoric specific heats
 **Default value:** 1250.
@@ -2458,7 +2458,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 **Documentation:** When more than one compositional field is present at a point with different viscosities, we need to come up with an average viscosity at that point.  Select a weighted harmonic, arithmetic, geometric, or maximum composition.
 
 (parameters:Material_20model/Nondimensional_20model)=
-## **Parameters in section** Material model/Nondimensional model
+## **Subsection:** Material model / Nondimensional model
 (parameters:Material_20model/Nondimensional_20model/Di)=
 ### __Parameter name:__ Di
 **Default value:** 0.0
@@ -2524,7 +2524,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 **Documentation:** Grueneisen parameter
 
 (parameters:Material_20model/PerpleX_20lookup_20model)=
-## **Parameters in section** Material model/PerpleX lookup model
+## **Subsection:** Material model / PerpleX lookup model
 (parameters:Material_20model/PerpleX_20lookup_20model/Maximum_20material_20pressure)=
 ### __Parameter name:__ Maximum material pressure
 **Default value:** 1.e12
@@ -2582,7 +2582,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 **Documentation:** The value of the viscosity $\eta$. Units: \si{\pascal\second}.
 
 (parameters:Material_20model/Replace_20lithosphere_20viscosity)=
-## **Parameters in section** Material model/Replace lithosphere viscosity
+## **Subsection:** Material model / Replace lithosphere viscosity
 (parameters:Material_20model/Replace_20lithosphere_20viscosity/Base_20model)=
 ### __Parameter name:__ Base model
 **Default value:** simple
@@ -2632,7 +2632,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 **Documentation:** Units: \si{\meter}.The maximum depth of the lithosphere. The model will be NaNs below this depth.
 
 (parameters:Material_20model/Simple_20compressible_20model)=
-## **Parameters in section** Material model/Simple compressible model
+## **Subsection:** Material model / Simple compressible model
 (parameters:Material_20model/Simple_20compressible_20model/Reference_20compressibility)=
 ### __Parameter name:__ Reference compressibility
 **Default value:** 4e-12
@@ -2682,7 +2682,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 **Documentation:** The value of the viscosity $\eta$. Units: \si{\pascal\second}.
 
 (parameters:Material_20model/Simple_20model)=
-## **Parameters in section** Material model/Simple model
+## **Subsection:** Material model / Simple model
 (parameters:Material_20model/Simple_20model/Composition_20viscosity_20prefactor)=
 ### __Parameter name:__ Composition viscosity prefactor
 **Default value:** 1.0
@@ -2772,7 +2772,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 **Documentation:** The value of the constant viscosity $\eta_0$. This viscosity may be modified by both temperature and compositional dependencies. Units: \si{\pascal\second}.
 
 (parameters:Material_20model/Simpler_20model)=
-## **Parameters in section** Material model/Simpler model
+## **Subsection:** Material model / Simpler model
 (parameters:Material_20model/Simpler_20model/Reference_20density)=
 ### __Parameter name:__ Reference density
 **Default value:** 3300.
@@ -2822,7 +2822,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 **Documentation:** The value of the viscosity $\eta$. Units: \si{\pascal\second}.
 
 (parameters:Material_20model/Steinberger_20model)=
-## **Parameters in section** Material model/Steinberger model
+## **Subsection:** Material model / Steinberger model
 (parameters:Material_20model/Steinberger_20model/Bilinear_20interpolation)=
 ### __Parameter name:__ Bilinear interpolation
 **Default value:** true
@@ -3020,7 +3020,7 @@ Units: \si{\pascal\second}.
 **Documentation:** Whether to use to use the laterally averaged temperature instead of the adiabatic temperature as reference for the viscosity calculation. This ensures that the laterally averaged viscosities remain more or less constant over the model runtime. This behaviour might or might not be desired.
 
 (parameters:Material_20model/Visco_20Plastic)=
-## **Parameters in section** Material model/Visco Plastic
+## **Subsection:** Material model / Visco Plastic
 (parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20Peierls_20creep)=
 ### __Parameter name:__ Activation energies for Peierls creep
 **Default value:** 320e3
@@ -3692,7 +3692,7 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 **Documentation:** Select what type of yield mechanism to use between Drucker Prager and stress limiter options.
 
 (parameters:Material_20model/Visco_20Plastic/Friction_20function)=
-## **Parameters in section** Material model/Visco Plastic/Friction function
+## **Subsection:** Material model / Visco Plastic / Friction function
 (parameters:Material_20model/Visco_20Plastic/Friction_20function/Coordinate_20system)=
 ### __Parameter name:__ Coordinate system
 **Default value:** cartesian
@@ -3730,7 +3730,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Material_20model/Viscoelastic)=
-## **Parameters in section** Material model/Viscoelastic
+## **Subsection:** Material model / Viscoelastic
 (parameters:Material_20model/Viscoelastic/Densities)=
 ### __Parameter name:__ Densities
 **Default value:** 3300.

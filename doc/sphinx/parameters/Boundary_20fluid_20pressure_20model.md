@@ -1,8 +1,8 @@
 (parameters:Boundary_20fluid_20pressure_20model)=
-# **Boundary fluid pressure model**
+# Boundary fluid pressure model
 
 
-## **Parameters in section** Boundary fluid pressure model
+## **Subsection:** Boundary fluid pressure model
 
 
 (parameters:Boundary_20fluid_20pressure_20model/Plugin_20name)=
@@ -16,7 +16,7 @@
 `density': A plugin that prescribes the fluid pressure gradient at the boundary based on fluid/solid density from the material model.
 
 (parameters:Boundary_20fluid_20pressure_20model/Density)=
-## **Parameters in section** Boundary fluid pressure model/Density
+## **Subsection:** Boundary fluid pressure model / Density
 (parameters:Boundary_20fluid_20pressure_20model/Density/Density_20formulation)=
 ### __Parameter name:__ Density formulation
 **Default value:** solid density

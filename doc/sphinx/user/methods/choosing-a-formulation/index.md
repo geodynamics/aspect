@@ -21,12 +21,6 @@ The choices involved in selecting a formulation include:
 All of these choices can be made in the input file by selecting the corresponding parameters (see {ref}`parameters:Formulation` and {ref}`parameters:Adiabatic_20conditions_20model`).
 A description of how to run ASPECT and the basic structure of the input file can be found in {ref}`cha:run-aspect`.
 
-:::{admonition} TODO
-:class: error
-
-Dead reference: parameters:Formulation and parameters:Adiabatic_20conditions_20model
-:::
-
 :::{toctree}
 mass-conservation-approx.md
 temp-equation-approx.md
