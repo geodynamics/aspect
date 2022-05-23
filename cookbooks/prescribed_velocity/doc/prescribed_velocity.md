@@ -43,5 +43,5 @@ as the ones visualized in {numref}`fig:prescribed_velocity`.
 ```{figure-md} fig:prescribed_velocity
 <img src="prescribed_velocity.*" alt="Screenshot"  width="100%"/>
 
-Examples of flows with prescribed internal velocities, as described in Section 5.2.9
+Examples of flows with prescribed internal velocities.
 ```
