@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_model_equilibrium_grain_size_h
-#define _aspect_model_equilibrium_grain_size_h
+#ifndef _aspect_cookbooks_equilibrium_grain_size_h
+#define _aspect_cookbooks_equilibrium_grain_size_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/lateral_averaging.h>
@@ -313,6 +313,16 @@ namespace aspect
                         const double pressure,
                         const std::vector<double> &compositional_fields,
                         const Point<dim> &position) const;
+
+        /**
+		 * A reference profile for density and seismic velocities.
+		 */
+		Utilities::AsciiDataProfile<dim> reference_profile;
+
+		/**
+		 * The column indices of the density column in the reference profile file.
+		 */
+		unsigned int density_index;
 
         double compressibility (const double temperature,
                                 const double pressure,

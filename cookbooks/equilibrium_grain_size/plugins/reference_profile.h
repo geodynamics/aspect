@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_adiabatic_conditions_reference_profile_h
-#define _aspect_adiabatic_conditions_reference_profile_h
+#ifndef _aspect_cookbooks_equilibrium_grain_size_reference_profile_h
+#define _aspect_cookbooks_equilibrium_grain_size_reference_profile_h
 
 
 #include <aspect/adiabatic_conditions/interface.h>
@@ -133,8 +133,8 @@ namespace aspect
         unsigned int n_points;
 
         /**
-         * Vectors of values of temperatures and pressures on a transect into
-         * depth at which we have computed them. The public member functions
+         * Vectors of values of temperatures, pressures, and densitites on a transect
+         * into depth at which we have computed them. The public member functions
          * of this class interpolate linearly between these points.
          */
         std::vector<double> temperatures;
