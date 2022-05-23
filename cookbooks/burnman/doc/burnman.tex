@@ -16,7 +16,7 @@ gravity, thermal expansivity, specific heat capacity and compressibility. Using 
 to generate the reference profile has the advantage that all the material property data
 are consistent, for example, the gravity profile is computed using the reference density.
 \begin{figure}
-  \includesvg[width=\textwidth]{cookbooks/burnman/doc/reference_profile.svg}
+  \includesvg[width=\textwidth]{reference_profile.svg}
   \caption{\it Reference profile generated using BurnMan.}
   \label{fig:burnman-reference-profile}
 \end{figure}
@@ -53,20 +53,20 @@ and between transition zone and lower mantle). The prefactors used here lead to 
 asthenosphere, and high viscosities in the lower mantle. To make sure that these viscosity jumps
 do not lead to numerical problems in our computation (see Section~\ref{sec:sinker-with-averaging}),
 we also use harmonic averaging of the material properties.
-\lstinputlisting[language=prmfile]{cookbooks/burnman/doc/material_model.part.prm.out}
+\lstinputlisting[language=prmfile]{material_model.part.prm.out}
 As the reference profile has a depth dependent density and also contains data for the compressibility,
 this material model supports compressible convection models.
 
 For the adiabatic conditions and the gravity model, we also specify that we want to use the respective
 \texttt{ascii data} plugin, and provide the data directory in the same way as for the material
 model. The gravity model automatically uses the same file as the adiabatic conditions model.
-\lstinputlisting[language=prmfile]{cookbooks/burnman/doc/adiabatic_conditions.part.prm.out}
-\lstinputlisting[language=prmfile]{cookbooks/burnman/doc/gravity_model.part.prm.out}
+\lstinputlisting[language=prmfile]{adiabatic_conditions.part.prm.out}
+\lstinputlisting[language=prmfile]{gravity_model.part.prm.out}
 
 To make use of the reference state we just imported from BurnMan, we choose a formulation of the
 equations that employs a reference state and compressible convection, in this case the anelastic
 liquid approximation (see Section~\ref{sec:ala}).
-\lstinputlisting[language=prmfile]{cookbooks/burnman/doc/formulation.part.prm.out}
+\lstinputlisting[language=prmfile]{formulation.part.prm.out}
 This means that the reference profiles are used for all material properties in the model, except for
 the density in the buoyancy term (on the right-hand side of the force balance equation~\eqref{eq:stokes-1},
 which in the limit of the anelastic liquid approximation becomes Equation~\eqref{eq:stokes-ALA-1}).
@@ -87,9 +87,9 @@ the data we provided in the \url{data/adiabatic-conditions/ascii-data/isentrope_
 is used in our model.
 
 \begin{figure}
-  \includegraphics[width=0.48\textwidth]{cookbooks/burnman/doc/temperature.png}
+  \includegraphics[width=0.48\textwidth]{temperature.png}
   \hfill
-  \includegraphics[width=0.48\textwidth]{cookbooks/burnman/doc/viscosity.png}
+  \includegraphics[width=0.48\textwidth]{viscosity.png}
   \caption{\it Compressible convection in a 2d spherical shell, using a reference profile exported
                form BurnMan, which is based on the Birch-Murnaghan equation of state. The figure shows the
                state at the end of the model evolution over 260\,Ma.}
@@ -106,7 +106,7 @@ instead of the reference density is used. For the TALA, this density only depend
 (and not on the dynamic pressure, as in the ALA). Hence, we have to make this change in the appropriate
 place in the material model (while keeping the formulation of the equations set to
 \texttt{anelastic liquid approximation}):
-\lstinputlisting[language=prmfile]{cookbooks/burnman/doc/tala.part.prm.out}
+\lstinputlisting[language=prmfile]{tala.part.prm.out}
 
 We now want to compare these commonly used approximations to the ``isothermal compression approximation''
 (see Section~\ref{sec:ica}) that is unique to \aspect{}. It does not require a reference state and uses
@@ -117,7 +117,7 @@ dependence of material properties on temperature and pressure in addition to tha
 deviations from the reference profile in both temperature and pressure. As this requires a modification
 of the equations outside of the material model, we have to specify this change in the
 \texttt{Formulation} (and remove the lines for the use of TALA discussed above).
-\lstinputlisting[language=prmfile]{cookbooks/burnman/doc/formulation_ica.part.prm.out}
+\lstinputlisting[language=prmfile]{formulation_ica.part.prm.out}
 As the ``isothermal compression approximation'' is also \aspect{}'s default for compressible models,
 the same model setup can also be achieved by just removing the lines that specify which \texttt{Formulation}
 should be used.
@@ -129,7 +129,7 @@ the state of the model -- such as the root mean square velocity -- are similar b
 
 \begin{figure}
 \centering
-  \includesvg[width=0.95\textwidth]{cookbooks/burnman/doc/comparison.svg}
+  \includesvg[width=0.95\textwidth]{comparison.svg}
   \caption{\it Comparison between the anelastic liquid approximation,
                the truncated anelastic liquid approximation
                and the isothermal compression approximation,
@@ -140,7 +140,7 @@ the state of the model -- such as the root mean square velocity -- are similar b
 
 \begin{figure}
 \centering
-  \includesvg[width=0.5\textwidth]{cookbooks/burnman/doc/vrms.svg}
+  \includesvg[width=0.5\textwidth]{vrms.svg}
   \caption{\it Comparison between the anelastic liquid approximation,
                the truncated anelastic liquid approximation
                and the isothermal compression approximation,

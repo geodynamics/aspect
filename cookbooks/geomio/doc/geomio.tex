@@ -33,11 +33,11 @@ index of the material that should be present in this region in the initial condi
   and only the outermost closed contour of a path will be considered. This means that, for example, for modeling a spherical
   annulus, you would have to draw two circles, and assign the inner one the same phase as the background of your drawing.}
 
-We will here use a drawing of a jellyfish located in \url{cookbooks/geomio/doc/jellyfish.svg}, where different phases
+We will here use a drawing of a jellyfish located in \url{jellyfish.svg}, where different phases
 have already been assigned to each path (Figure~\ref{fig:jelly-picture}).
 \begin{figure}[tb]
     \centering
-    \includesvg[width=0.2\textwidth]{cookbooks/geomio/doc/jellyfish.svg}
+    \includesvg[width=0.2\textwidth]{jellyfish.svg}
     \caption{\it Vector drawing of a jellyfish.}
     \label{fig:jelly-picture}
 \end{figure}
@@ -46,35 +46,35 @@ have already been assigned to each path (Figure~\ref{fig:jelly-picture}).
 After geomIO is initialized in MATLAB, we \href{http://geomio-doc.bitbucket.org/tuto2D.html#assigning-phase-to-markers}
 {run geomIO as described in the documentation}, loading the default options and then specifying all the option we want to
 change, such as the path to the input file, or the resolution:
-\lstinputlisting[language=matlab]{cookbooks/geomio/doc/run_geomio.part1.m}
+\lstinputlisting[language=matlab]{run_geomio.part1.m}
 You can view all of the options available by typing \texttt{opt} in MATLAB.
 
 In the next step we create the grid that is used for the coordinates in the \texttt{ascii data} initial conditions file
 and assign a phase to each grid point:
-\lstinputlisting[language=matlab]{cookbooks/geomio/doc/run_geomio.part2.m}
+\lstinputlisting[language=matlab]{run_geomio.part2.m}
 You can plot the \texttt{Phase} variable in MATLAB to see if the drawing was read in and all phases are assigned correctly
 (Figure~\ref{fig:jelly-plot}).
 \begin{figure}[tb]
     \centering
-    \includegraphics[width=0.45\textwidth]{cookbooks/geomio/doc/jelly.png}
+    \includegraphics[width=0.45\textwidth]{jelly.png}
     \caption{\it Plot of the \texttt{Phase} variable in MATLAB.}
     \label{fig:jelly-plot}
 \end{figure}
 Finally, we want to write output in a format that can be read in by \aspect{}'s \texttt{ascii data} compositional
 initial conditions plugin. We write the data into the file \texttt{jelly.txt}:
-\lstinputlisting[language=matlab]{cookbooks/geomio/doc/save_file_as_txt.m}
+\lstinputlisting[language=matlab]{save_file_as_txt.m}
 
 To read in the file we just created (a copy is located in \aspect{}'s data directory),
 we set up a model with a box geometry with the same extents we specified for the drawing in px
 and one compositional field. We choose the \texttt{ascii data} compositional initial conditions and specify that we
 want to read in our jellyfish. The relevant parts of the input file are listed below:
-\lstinputlisting[language=prmfile]{cookbooks/geomio/doc/geomIO.prm.out}
+\lstinputlisting[language=prmfile]{geomIO.prm.out}
 
 If we look at the output in \texttt{ParaView}, we can see our jellyfish, with the mesh refined at the
 boundaries between the different phases (Figure~\ref{fig:jelly-paraview}).
 \begin{figure}[tb]
     \centering
-    \includesvg[width=0.55\textwidth]{cookbooks/geomio/doc/jelly-paraview.svg}
+    \includesvg[width=0.55\textwidth]{jelly-paraview.svg}
     \caption{\it \aspect{} model output of the jellyfish and corresponding mesh in ParaView.}
     \label{fig:jelly-paraview}
 \end{figure}

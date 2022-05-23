@@ -78,7 +78,7 @@ Three main areas can be distinguished: the stable area, the plume convection are
 
 \begin{figure}[h]
 \begin{center}
-\includesvg[height=0.57\textwidth]{cookbooks/inner_core_convection/doc/Diagstab.svg}
+\includesvg[height=0.57\textwidth]{Diagstab.svg}
 	\caption{\it Stability diagram for convection in a sphere with phase change at its outer boundary. The stability curves for the first unstable mode (l=1) and the translation are obtained from \cite{Deguen2013}. Each dot (no convection) and triangle (blue: translation, yellow: plume convection) is one model run done with ASPECT. The highest the Ra and P are, the more refinement is required (see text).}
     \label{fig:diagramme-regime}
 \end{center}
@@ -87,27 +87,27 @@ Three main areas can be distinguished: the stable area, the plume convection are
 
 Changing the values of $Ra$ and $\mathcal{P}$ in the input file allows switching between the different regimes.
 The Rayleigh number can be changed by adjusting the magnitude of the gravity:
-\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/doc/inner_core_traction.part.2.prm.out}
+\lstinputlisting[language=prmfile]{inner_core_traction.part.2.prm.out}
 The phase change number is implemented as part of the material model, and as a function that can depend on the
 spatial coordinates and/or on time:
-\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/doc/inner_core_traction.part.1.prm.out}
+\lstinputlisting[language=prmfile]{inner_core_traction.part.1.prm.out}
 
 Figure~\ref{fig:inner-core-regimes} shows examples of the three regimes with $Ra=3000, \mathcal{P}=1000$ (plume convection),
 $Ra=10^5, \mathcal{P}=0.01$ (translation), $Ra=10, \mathcal{P}=30$ (no convection).
 
 \begin{figure}[h]
     \begin{center}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/Ra1e0P0modif.png}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/Ra1e2P-1modif.png}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/Ra1e5P4modif.png}
+    \includegraphics[width=0.25\linewidth]{Ra1e0P0modif.png}
+    \includegraphics[width=0.25\linewidth]{Ra1e2P-1modif.png}
+    \includegraphics[width=0.25\linewidth]{Ra1e5P4modif.png}
    \vspace{1cm}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/Ra1e0P0modif.png}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/Ra1e2P-1rescalemodif.png}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/Ra1e5P4rescalemodif.png}
+    \includegraphics[width=0.25\linewidth]{Ra1e0P0modif.png}
+    \includegraphics[width=0.25\linewidth]{Ra1e2P-1rescalemodif.png}
+    \includegraphics[width=0.25\linewidth]{Ra1e5P4rescalemodif.png}
    \vspace{1cm}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/no_convection.png}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/translation.png}
-    \includegraphics[width=0.25\linewidth]{cookbooks/inner_core_convection/doc/convection.png}
+    \includegraphics[width=0.25\linewidth]{no_convection.png}
+    \includegraphics[width=0.25\linewidth]{translation.png}
+    \includegraphics[width=0.25\linewidth]{convection.png}
     \caption{\it Convection regimes in the inner core for different values of $Ra$ and $\mathcal{P}$. From left to right: no convection, translation, plume convection; the 2D slices at the top are with the default temperature scale for all panels, while in the second row an adaptive scale is used. The bottom row features slightly different model parameters (that are still in the same regime as the models in the respective panels above) and also shows the velocity as arrows.}
     \label{fig:inner-core-regimes}
        \end{center}
@@ -118,7 +118,7 @@ $Ra=10^5, \mathcal{P}=0.01$ (translation), $Ra=10, \mathcal{P}=30$ (no convectio
 The temperature is set to 0 at the outer boundary and a large temperature gradient can develop at the boundary layer, especially for the translation regime. The adaptive mesh refinement allows it to resolve this layer at the inner core boundary. Another solution is to apply a specific initial refinement, based on the boundary layer thickness scaling law $\delta \propto Ra^{-0.236}$, and to refine specifically the uppermost part of the inner core.
 
 In order to have a mesh that is much finer at the outer boundary than in the center of the domain, this expression for the mesh refinement subsection can be used in the input file:
-\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/doc/inner_core_traction.part.3.prm.out}
+\lstinputlisting[language=prmfile]{inner_core_traction.part.3.prm.out}
 
 \vspace{0.3cm}
 \textbf{Scaling laws.}
@@ -133,9 +133,9 @@ Both trends are shown in Figure~\ref{fig:inner-core-trends} and can be compared 
 
 \begin{figure}
     \centering
-    \includesvg[width=0.49\textwidth]{cookbooks/inner_core_convection/doc/translation_over_Ra_P.svg}
+    \includesvg[width=0.49\textwidth]{translation_over_Ra_P.svg}
     \hfill
-    \includesvg[width=0.49\textwidth]{cookbooks/inner_core_convection/doc/translation_over_P.svg}
+    \includesvg[width=0.49\textwidth]{translation_over_P.svg}
     \caption{\it Translation rate (approximated by the average of the velocity component in the direction of translation),
     normalized to the low $\mathcal{P}$
     limit estimate given in \cite{Deguen2013}, as a function of $\frac{Ra}{\mathcal{P}}$ for $\mathcal{P}=10^{-2}$
