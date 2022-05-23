@@ -9,9 +9,9 @@ as simple as `NotePad` on Windows. When setting up these input files for a
 model you have in mind, you have to describe everything that characterizes the
 situation you are considering. In particular, this includes the following:
 
--   What internal forces act on the medium (the equation)?
+-   What internal forces act on the medium (the left-hand side of the equation)?
 
--   What external forces do we have (the right hand side)
+-   What external forces act on the medium (the right-hand of the equation side)?
 
 -   What is the domain (geometry)?
 
@@ -29,7 +29,7 @@ file:
 ```
 
 This indicates that you want to do a computation in 2d, using a rectangular
-geometry (a &ldquo;box&rdquo;) with edge length equal to one in both the $x$-
+geometry (a &ldquo;box&rdquo;) with the edge length ("extent") equal to one in both the $x$-
 and $y$-directions. Of course, there are other geometries you can choose from
 for the `Model name` parameter, and consequently other subsections that
 specify the details of these geometries.

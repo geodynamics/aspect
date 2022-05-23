@@ -53,15 +53,15 @@ highlight advantages and disadvantages of each of them:
     changes back, as it already is the first step of our guide to contributing
     back (see also {ref}`sec:extending:contributing`). However, for projects with
     functionality that is not intended to be merged into the main version
-    (e.g. because it is too specific to be of general use) we have found that
+    (e.g. because it is too specific to be of general use), we have found that
     this approach is not ideal, as you will still run into conflicts when you
     want to update your ASPECT version, and you
     need to merge the main version into your branch, or rebase the branch
     every time you want to update. Thus, while ideal for contributing to
-    ASPECT we do not recommend this approach for
+    ASPECT, we do not recommend this approach for
     keeping model-specific functionality around.
 
-3.  Create a shared library than contains your changes: The main benefit of
+3.  Create a shared library that contains your changes: The main benefit of
     the plugin architecture described in the paragraph above is that if you
     want to extend ASPECT for your own
     purposes, you can do this in a separate set of files that describe your
@@ -84,14 +84,15 @@ highlight advantages and disadvantages of each of them:
     the concept of plugins in {ref}`sec:extending:idea-of-plugins`, and how to write a plugin
     in {ref}`sec:extending:write-a-plugin`.
 
-Since ASPECT is written in C++ using the <span
+Since ASPECT is written in C++ using the
 deal.II library, you will have to be proficient in
 C++. You will also likely have to familiarize yourself with this library for
 which there is an extensive amount of documentation:
 
 -   The manual at
     <https://www.dealii.org/developer/doxygen/deal.II/index.html> that
-    describes in detail what every class, function and variable in deal.II does.
+    describes in detail what every class, function and variable in
+    deal.II does.
 
 -   A collection of modules at
     <https://www.dealii.org/developer/doxygen/deal.II/modules.html> that give
@@ -122,7 +123,7 @@ which there is an extensive amount of documentation:
 
 -   The deal.II Frequently Asked Questions at
     <https://github.com/dealii/dealii/wiki/Frequently-Asked-Questions> that
-    also have extensive sections on developing code with <span
+    also have extensive sections on developing code with
     deal.II as well as on debugging. It also answers
     a number of questions we frequently get about the use of C++ in <span
     deal.II.

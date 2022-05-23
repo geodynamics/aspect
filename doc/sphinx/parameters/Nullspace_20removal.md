@@ -2,7 +2,7 @@
 # Nullspace removal
 
 
-## **Parameters in section** Nullspace removal
+## **Subsection:** Nullspace removal
 
 
 (parameters:Nullspace_20removal/Remove_20nullspace)=

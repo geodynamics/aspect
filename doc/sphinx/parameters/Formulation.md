@@ -2,7 +2,7 @@
 # Formulation
 
 
-## **Parameters in section** Formulation
+## **Subsection:** Formulation
 
 
 (parameters:Formulation/Enable_20additional_20Stokes_20RHS)=

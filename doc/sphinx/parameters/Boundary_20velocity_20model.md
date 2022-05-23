@@ -2,7 +2,7 @@
 # Boundary velocity model
 
 
-## **Parameters in section** Boundary velocity model
+## **Subsection:** Boundary velocity model
 
 
 (parameters:Boundary_20velocity_20model/Prescribed_20velocity_20boundary_20indicators)=
@@ -52,7 +52,7 @@ The names of the boundaries listed here can either by numbers (in which case the
 The names of the boundaries listed here can either by numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 
 (parameters:Boundary_20velocity_20model/Ascii_20data_20model)=
-## **Parameters in section** Boundary velocity model/Ascii data model
+## **Subsection:** Boundary velocity model / Ascii data model
 (parameters:Boundary_20velocity_20model/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/
@@ -118,7 +118,7 @@ The names of the boundaries listed here can either by numbers (in which case the
 **Documentation:** Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.
 
 (parameters:Boundary_20velocity_20model/Function)=
-## **Parameters in section** Boundary velocity model/Function
+## **Subsection:** Boundary velocity model / Function
 (parameters:Boundary_20velocity_20model/Function/Coordinate_20system)=
 ### __Parameter name:__ Coordinate system
 **Default value:** cartesian
@@ -164,7 +164,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Boundary_20velocity_20model/GPlates_20model)=
-## **Parameters in section** Boundary velocity model/GPlates model
+## **Subsection:** Boundary velocity model / GPlates model
 (parameters:Boundary_20velocity_20model/GPlates_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/

@@ -1,0 +1,4 @@
+New: The block GMG Stokes solver now works for problems with
+free-surface boundaries and elasticity.
+<br>
+(Anne Glerum, Timo Heister, John Naliboff, Jiaqi Zhang, 2022/05/22)

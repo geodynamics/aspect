@@ -2,7 +2,7 @@
 # Melt settings
 
 
-## **Parameters in section** Melt settings
+## **Subsection:** Melt settings
 
 
 (parameters:Melt_20settings/Average_20melt_20velocity)=

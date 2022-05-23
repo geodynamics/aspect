@@ -2,7 +2,7 @@
 # Discretization
 
 
-## **Parameters in section** Discretization
+## **Subsection:** Discretization
 
 
 (parameters:Discretization/Composition_20polynomial_20degree)=
@@ -80,7 +80,7 @@ On the other hand, if this parameter is set to ``false''(the default), then the 
 For an in-depth discussion of these issues and a quantitative evaluation of the different choices, see \cite{KHB12}.
 
 (parameters:Discretization/Stabilization_20parameters)=
-## **Parameters in section** Discretization/Stabilization parameters
+## **Subsection:** Discretization / Stabilization parameters
 (parameters:Discretization/Stabilization_20parameters/Discontinuous_20penalty)=
 ### __Parameter name:__ Discontinuous penalty
 **Default value:** 10.
