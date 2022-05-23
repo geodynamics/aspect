@@ -37,13 +37,13 @@
 
 **Documentation:** Select a formulation for the basic equations. Different published formulations are available in ASPECT (see the list of possible values for this parameter in the manual for available options). Two ASPECT specific options are
 \begin{enumerate}
-  \item `isentropic compression': ASPECT's original formulation, using the explicit compressible mass equation, and the full density for the temperature equation.
-  \item `custom': A custom selection of `Mass conservation' and `Temperature equation'.
+  \item &lsquo;isentropic compression&rsquo;: ASPECT&rsquo;s original formulation, using the explicit compressible mass equation, and the full density for the temperature equation.
+  \item &lsquo;custom&rsquo;: A custom selection of &lsquo;Mass conservation&rsquo; and &lsquo;Temperature equation&rsquo;.
 \end{enumerate}
 
-\note{Warning: The 'custom' option is implemented for advanced users that want full control over the equations solved. It is possible to choose inconsistent formulations and no error checking is performed on the consistency of the resulting equations.}
+\note{Warning: The &lsquo;custom&rsquo; option is implemented for advanced users that want full control over the equations solved. It is possible to choose inconsistent formulations and no error checking is performed on the consistency of the resulting equations.}
 
-\note{The `anelastic liquid approximation' option here can also be used to set up the `truncated anelastic liquid approximation' as long as this option is chosen together with a material model that defines a density that depends on temperature and depth and not on the pressure.}
+\note{The &lsquo;anelastic liquid approximation&rsquo; option here can also be used to set up the &lsquo;truncated anelastic liquid approximation&rsquo; as long as this option is chosen together with a material model that defines a density that depends on temperature and depth and not on the pressure.}
 
 (parameters:Formulation/Mass_20conservation)=
 ### __Parameter name:__ Mass conservation
@@ -51,7 +51,7 @@
 
 **Pattern:** [Selection incompressible|isentropic compression|hydrostatic compression|reference density profile|implicit reference density profile|projected density field|ask material model ]
 
-**Documentation:** Possible approximations for the density derivatives in the mass conservation equation. Note that this parameter is only evaluated if `Formulation' is set to `custom'. Other formulations ignore the value of this parameter.
+**Documentation:** Possible approximations for the density derivatives in the mass conservation equation. Note that this parameter is only evaluated if &lsquo;Formulation&rsquo; is set to &lsquo;custom&rsquo;. Other formulations ignore the value of this parameter.
 
 (parameters:Formulation/Temperature_20equation)=
 ### __Parameter name:__ Temperature equation
@@ -59,4 +59,4 @@
 
 **Pattern:** [Selection real density|reference density profile ]
 
-**Documentation:** Possible approximations for the density in the temperature equation. Possible approximations are `real density' and `reference density profile'. Note that this parameter is only evaluated if `Formulation' is set to `custom'. Other formulations ignore the value of this parameter.
+**Documentation:** Possible approximations for the density in the temperature equation. Possible approximations are &lsquo;real density&rsquo; and &lsquo;reference density profile&rsquo;. Note that this parameter is only evaluated if &lsquo;Formulation&rsquo; is set to &lsquo;custom&rsquo;. Other formulations ignore the value of this parameter.
