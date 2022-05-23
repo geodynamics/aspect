@@ -159,7 +159,7 @@
 
 **Documentation:** If set to true, the Picard iteration uses the Eisenstat Walker method to determine how accurately linear systems need to be solved. The Picard iteration is used, for example, in the first few iterations of the Newton method before the matrix is built including derivatives of the model, since the Picard iteration generally converges even from points where Newton&rsquo;s method does not.
 
-Once derivatives are used in a Newton method, \aspect{} always uses the Eisenstat Walker method.
+Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat Walker method.
 
 (parameters:Solver_20parameters/Newton_20solver_20parameters/Use_20Newton_20failsafe)=
 ### __Parameter name:__ Use Newton failsafe

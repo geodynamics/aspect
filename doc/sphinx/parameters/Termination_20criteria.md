@@ -31,7 +31,7 @@
 
 &lsquo;end step&rsquo;: Terminate the simulation once the specified timestep has been reached.
 
-&lsquo;end time&rsquo;: Terminate the simulation once the end time specified in the input file has been reached. Unlike all other termination criteria, this criterion is *always* active, whether it has been explicitly selected or not in the input file (this is done to preserve historical behavior of \aspect{}, but it also likely does not inconvenience anyone since it is what would be selected in most cases anyway).
+&lsquo;end time&rsquo;: Terminate the simulation once the end time specified in the input file has been reached. Unlike all other termination criteria, this criterion is *always* active, whether it has been explicitly selected or not in the input file (this is done to preserve historical behavior of ASPECT, but it also likely does not inconvenience anyone since it is what would be selected in most cases anyway).
 
 &lsquo;steady state heat flux&rsquo;: A criterion that terminates the simulation when the integrated heat flux over a given list of boundaries stays within a certain range for a specified period of time.
 

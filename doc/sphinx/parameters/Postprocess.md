@@ -219,7 +219,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 **Pattern:** [Bool]
 
-**Documentation:** Select whether \aspect{} should terminate if the command returns a non-zero exit status.
+**Documentation:** Select whether ASPECT should terminate if the command returns a non-zero exit status.
 
 (parameters:Postprocess/Depth_20average)=
 ## **Subsection:** Postprocess / Depth average
@@ -1182,7 +1182,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Bool]
 
-**Documentation:** deal.II offers the possibility to filter duplicate vertices for HDF5 output files. This merges the vertices of adjacent cells and therefore saves disk space, but misrepresents discontinuous output properties. Activating this function reduces the disk space by about a factor of $2^{dim}$ for HDF5 output, and currently has no effect on other output formats. \note{**Warning:** Setting this flag to true will result in visualization output that does not accurately represent discontinuous fields. This may be because you are using a discontinuous finite element for the pressure, temperature, or compositional variables, or because you use a visualization postprocessor that outputs quantities as discontinuous fields (e.g., the strain rate, viscosity, etc.). These will then all be visualized as *continuous* quantities even though, internally, \aspect{} considers them as discontinuous fields.}
+**Documentation:** deal.II offers the possibility to filter duplicate vertices for HDF5 output files. This merges the vertices of adjacent cells and therefore saves disk space, but misrepresents discontinuous output properties. Activating this function reduces the disk space by about a factor of $2^{dim}$ for HDF5 output, and currently has no effect on other output formats. \note{**Warning:** Setting this flag to true will result in visualization output that does not accurately represent discontinuous fields. This may be because you are using a discontinuous finite element for the pressure, temperature, or compositional variables, or because you use a visualization postprocessor that outputs quantities as discontinuous fields (e.g., the strain rate, viscosity, etc.). These will then all be visualized as *continuous* quantities even though, internally, ASPECT considers them as discontinuous fields.}
 
 (parameters:Postprocess/Visualization/Interpolate_20output)=
 ### __Parameter name:__ Interpolate output
@@ -1190,13 +1190,13 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Bool]
 
-**Documentation:** deal.II offers the possibility to linearly interpolate output fields of higher order elements to a finer resolution. This somewhat compensates the fact that most visualization software only offers linear interpolation between grid points and therefore the output file is a very coarse representation of the actual solution field. Activating this option increases the spatial resolution in each dimension by a factor equal to the polynomial degree used for the velocity finite element (usually 2). In other words, instead of showing one quadrilateral or hexahedron in the visualization per cell on which \aspect{} computes, it shows multiple (for quadratic elements, it will describe each cell of the mesh on which we compute as $2\times 2$ or $2\times 2\times 2$ cells in 2d and 3d, respectively; correspondingly more subdivisions are used if you use cubic, quartic, or even higher order elements for the velocity).
+**Documentation:** deal.II offers the possibility to linearly interpolate output fields of higher order elements to a finer resolution. This somewhat compensates the fact that most visualization software only offers linear interpolation between grid points and therefore the output file is a very coarse representation of the actual solution field. Activating this option increases the spatial resolution in each dimension by a factor equal to the polynomial degree used for the velocity finite element (usually 2). In other words, instead of showing one quadrilateral or hexahedron in the visualization per cell on which ASPECT computes, it shows multiple (for quadratic elements, it will describe each cell of the mesh on which we compute as $2\times 2$ or $2\times 2\times 2$ cells in 2d and 3d, respectively; correspondingly more subdivisions are used if you use cubic, quartic, or even higher order elements for the velocity).
 
 The effect of using this option can be seen in the following picture showing a variation of the output produced with the input files from Section~\ref{sec:shell-simple-2d}:
 
 \begin{center}  \includegraphics[width=0.5\textwidth]{viz/parameters/build-patches}\end{center}Here, the left picture shows one visualization cell per computational cell (i.e., the option is switched off), and the right picture shows the same simulation with the option switched on (which is the default). The images show the same data, demonstrating that interpolating the solution onto bilinear shape functions as is commonly done in visualizing data loses information.
 
-Of course, activating this option also greatly increases the amount of data \aspect{} will write to disk: approximately by a factor of 4 in 2d, and a factor of 8 in 3d, when using quadratic elements for the velocity, and correspondingly more for even higher order elements.
+Of course, activating this option also greatly increases the amount of data ASPECT will write to disk: approximately by a factor of 4 in 2d, and a factor of 8 in 3d, when using quadratic elements for the velocity, and correspondingly more for even higher order elements.
 
 (parameters:Postprocess/Visualization/List_20of_20output_20variables)=
 ### __Parameter name:__ List of output variables
@@ -1286,7 +1286,7 @@ Physical units: \si{\watt\per\cubic\meter}.
 
 &lsquo;material properties&rsquo;: A visualization output object that generates output for the material properties given by the material model. The current postprocessor allows to output a (potentially large) subset of all of the information provided by material models at once, with just a single material model evaluation per output point. Although individual properties can still be listed in the &ldquo;List of output variables&rdquo;, this visualization plugin is called internally to avoid duplicated evaluations of the material model.
 
-In almost all places inside \aspect{}, the program can use &ldquo;averaged&rdquo; material properties, for example for the assembly of matrices and right hand side vectors. To accurately reflect the material parameters used internally, this visualization postprocessor averages in the same way as is used to do the assembly, and consequently the graphical output will reflect not pointwise properties, but averaged properties.
+In almost all places inside ASPECT, the program can use &ldquo;averaged&rdquo; material properties, for example for the assembly of matrices and right hand side vectors. To accurately reflect the material parameters used internally, this visualization postprocessor averages in the same way as is used to do the assembly, and consequently the graphical output will reflect not pointwise properties, but averaged properties.
 
 Physical units: Various.
 
@@ -1318,7 +1318,7 @@ Physical units: None.
 
 Physical units: Various, depending on what is being output.
 
-&lsquo;named additional outputs&rsquo;: Some material models can compute quantities other than those that typically appear in the equations that \aspect{} solves (such as the viscosity, density, etc). Examples of quantities material models may be able to compute are seismic velocities, or other quantities that can be derived from the state variables and the material coefficients such as the stress or stress anisotropies. These quantities are generically referred to as &lsquo;named outputs&rsquo; because they are given an explicit name different from the usual outputs of material models.
+&lsquo;named additional outputs&rsquo;: Some material models can compute quantities other than those that typically appear in the equations that ASPECT solves (such as the viscosity, density, etc). Examples of quantities material models may be able to compute are seismic velocities, or other quantities that can be derived from the state variables and the material coefficients such as the stress or stress anisotropies. These quantities are generically referred to as &lsquo;named outputs&rsquo; because they are given an explicit name different from the usual outputs of material models.
 
 This visualization postprocessor outputs whatever quantities the material model can compute. What quantities these are is specific to the material model in use for a simulation, and for many models in fact does not contain any named outputs at all.
 

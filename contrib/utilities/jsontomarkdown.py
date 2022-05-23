@@ -14,6 +14,8 @@ def escape_doc_string(text) :
            .replace("''", "&rdquo;")
            .replace("`", "&lsquo;")
            .replace("'", "&rsquo;")
+           .replace("\\aspect{}", "ASPECT")
+           .replace("\\dealii{}", "deal.II")
     )
 
     # Then also deal with italics and boldface and typewriter:
