@@ -1,7 +1,7 @@
 # Visualization the graphical output using *VisIt*
 
 In the following, let us discuss the process of visualizing a 2d computation
-using Visit. The steps necessary for other visualization programs will
+using VisIt. The steps necessary for other visualization programs will
 obviously differ but are, in principle, similar.
 
 To this end, let us consider a simulation of convection in a box-shaped, 2d
@@ -18,7 +18,7 @@ In order to visualize one time step, follow these steps:[^footnote1]
 
 -   *Selecting input files:* As mentioned above, in parallel computations we
     usually generate one output file per processor in each time step for which
-    visualization data is produced (see, however, {ref}`sec:run-aspect:large-data-issues`). To tell Visit which files together make up one time step,
+    visualization data is produced (see, however, {ref}`sec:run-aspect:large-data-issues`). To tell VisIt which files together make up one time step,
     ASPECT creates a
     `output/solution/solution-XXXXX.visit` file in the output directory. To
     open it, start VisIt, click on the "Open" button in the
@@ -34,14 +34,14 @@ In order to visualize one time step, follow these steps:[^footnote1]
     backward, and play buttons that allow you to move between time steps.
 
     ```{figure-md} fig:visit-1
-    <img src="images/visit-1-multi.*" alt="Main window of Visit, illustrating the different steps of adding content to a visualization."  width="72%"/>
+    <img src="images/visit-1-multi.*" alt="Main window of VisIt, illustrating the different steps of adding content to a visualization."  width="72%"/>
 
-    Main window of Visit, illustrating the different steps of adding content to a visualization
+    Main window of VisIt, illustrating the different steps of adding content to a visualization
     ```
     ```{figure-md} fig:visit-2
-    <img src="images/visit-2-multi.*" alt="Display window of Visit, showing a single plot and one where different data is overlaid."  width="98%"/>
+    <img src="images/visit-2-multi.*" alt="Display window of VisIt, showing a single plot and one where different data is overlaid."  width="98%"/>
 
-    Display window of Visit, showing a single plot and one where different data is overlaid.
+    Display window of VisIt, showing a single plot and one where different data is overlaid.
     ```
 
 -   *Selecting what to plot:* ASPECT outputs
@@ -62,7 +62,7 @@ In order to visualize one time step, follow these steps:[^footnote1]
     Let us choose the "Pseudocolor" item and select the
     temperature field as the quantity to plot. Your main window should now
     look as shown in {numref}`fig:visit-1`b. Then hit the
-    "Draw" button to make Visit generate data for the selected
+    "Draw" button to make VisIt generate data for the selected
     plots. This will yield a picture such as shown in
     {numref}`fig:visit-2`a in the display window of VisIt.
 
@@ -105,5 +105,5 @@ lectures demonstrating this process interactively at
 <http://www.youtube.com/watch?v=3ChnUxqtt08> for VisIt, and at
 <http://www.youtube.com/watch?v=w-65jufR-bc> for ParaView.
 
-[^footnote1]: The instructions and screenshots were generated with Visit 2.1. Later versions of Visit differ slightly in the arrangement of
+[^footnote1]: The instructions and screenshots were generated with VisIt 2.1. Later versions of VisIt differ slightly in the arrangement of
 components of the graphical user interface, but the workflow and general idea remains unchanged.

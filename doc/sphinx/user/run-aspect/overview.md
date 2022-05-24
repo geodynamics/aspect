@@ -194,7 +194,7 @@ The purpose of these files is as follows:
     `YYYY`th processor.
 
     VTK files can be visualized by many of the large visualization packages.
-    In particular, the [Visit](https://visit-dav.github.io/visit-website/) and [ParaView](https://www.paraview.org/) programs, both widely used,
+    In particular, the [VisIt](https://visit-dav.github.io/visit-website/) and [ParaView](https://www.paraview.org/) programs, both widely used,
     can read the files so created. However, while VTK has become a de-facto
     standard for data visualization in scientific computing, there
     doesn't appear to be an agreed upon way to describe which files
