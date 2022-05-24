@@ -98,68 +98,85 @@ def reshape_data(x, y, field_array, res=None):
   return X, Y, R
 
 
-def generate_field_map(x, y, field_array):
-  fig = plt.figure(figsize=(8, 2))
-
-  ax = fig.add_subplot(1, 1, 1)
-
-  c = ax.pcolor(x, y, field_array, shading='auto')
-  ax.set_aspect('equal', 'box')
-  ax.set_xlabel('Horizontal Position (m)')
-  ax.set_ylabel('Vertical Position (m)')
-  ax.set_title('Strain Rate Second Invariant (1/s)', fontsize=10)
-  fig.colorbar(c, ax=ax)
-
-  plt.show()
-
-
 def plot_timesteps(solution_folder, plot_file, interesting_times, xsize=8, ysize=2, use_log=True, vmin=None, vmax=None):
-  fig, axes = plt.subplots(len(interesting_times), 1, sharex=True)
-  fig.set_size_inches((xsize, ysize*len(interesting_times)))
+  fig = plt.figure(
+    figsize=(xsize, ysize*len(interesting_times)), # in inch
+    # facecolor='white',
+  )
+  fig.suptitle(
+    'Strain Rate Second Invariant in $\log_{10}$ scale (1/s)',
+    x=0.5, y=0.98,
+    fontsize=14
+  )
+  fig.supxlabel('Horizontal Position (m)')
+  fig.supylabel('Vertical Position (m)')
+
+  gs = fig.add_gridspec(
+    nrows=len(interesting_times), ncols=1,
+    left=0.125, right=0.9,
+    bottom=0.11, top=0.88,
+    hspace=0.2, wspace=0.2,
+  )
 
   for i, time in enumerate(interesting_times):
+    # -------------------------------------------------------------------------
+    # Load the data
+    # -------------------------------------------------------------------------
+    # Find the last pvtu file in the solution folder
     pvtu_file = sorted(solution_folder.glob(f"solution-{time:05d}.pvtu"))[0]
 
     x, y, field = get_data(pvtu_file, 'strain_rate')
-    # x, y, field = reshape_data(x, y, field, res=100)
 
-    ax = axes[i]
 
-    if use_log:
-      # c = ax.pcolor(x, y, np.log10(field), shading='auto', vmin=np.log10(vmin) if vmin else None, vmax=np.log10(vmax) if vmax else None)
-      c = ax.scatter(x, y, s=4, marker='s', c=np.log10(field), vmin=np.log10(vmin) if vmin else None, vmax=np.log10(vmax) if vmax else None, edgecolors='none')
-    else:
-      # c = ax.pcolor(x, y, field, shading='auto', vmin=vmin, vmax=vmax)
-      c = ax.scatter(x, y, s=4, marker='s', c=field, vmin=vmin, vmax=vmax, edgecolors='none')
-
-    # if use_log:
-    #   c = ax.pcolor(x, y, np.log10(field), shading='auto', vmin=np.log10(vmin) if vmin else None, vmax=np.log10(vmax) if vmax else None)
-    # else:
-    #   c = ax.pcolor(x, y, field, shading='auto', vmin=vmin, vmax=vmax)
-
-    ax.set_xlim((np.min(x), np.max(x)))
-    ax.set_ylim((np.min(y), np.max(y)))
-
-    ax.set_aspect('equal', 'box')
-    ax.label_outer()
-
-    ax.set_title(f"Timestep: {time}")
-
+    # -------------------------------------------------------------------------
+    # Plot: Strain Rate Field
+    # -------------------------------------------------------------------------
+    ax = fig.add_subplot(
+      gs[i, 0],
+      aspect='equal',
+      # facecolor='white',
+      title=f"Timestep: {time}",
+      # xlabel='Horizontal Position (m)',
+      xlim=(np.min(x), np.max(x)),
+      xticks=[] if i < len(interesting_times) - 1 else range(0,45000, 5000), # Hide if empty
+      # xticklabels=[], # Hide if empty
+      # ylabel='Vertical Position (m)',
+      ylim=(np.min(y), np.max(y)),
+      # yticks=[], # Hide if empty
+      # yticklabels=[], # Hide if empty
+    )
+    sc = ax.scatter(
+      x, y,
+      s=4, marker='s',
+      c=np.log10(field), edgecolors='none',
+      vmin=np.log10(vmin) if vmin else None,
+      vmax=np.log10(vmax) if vmax else None,
+      rasterized=True,
+    )
     if not (vmin and vmax):
-      fig.colorbar(c, ax=ax)
-
-  axes[1].set_ylabel('Vertical Position (m)')
-  axes[2].set_xlabel('Horizontal Position (m)')
-
-  fig.tight_layout()
-
-  fig.suptitle('Strain Rate Second Invariant in $\log_{10}$ scale (1/s)', x=0.5, y=1.025)
+      fig.colorbar(
+        sc, ax=ax,
+        # label='',
+        # ticks=[], # Hide if empty
+        location='right',
+        orientation='vertical',
+        fraction=0.1,
+        aspect=30,
+      )
 
   if vmin and vmax:
-    fig.colorbar(c, ax=axes.ravel().tolist())
+    fig.colorbar(
+      sc, ax=fig.get_axes(),
+      # label='',
+      # ticks=[], # Hide if empty
+      location='right',
+      orientation='vertical',
+      fraction=0.1,
+      aspect=30,
+    )
 
   plot_file.parent.mkdir(parents=True, exist_ok=True)
-  plt.savefig(plot_file, bbox_inches='tight')
+  plt.savefig(plot_file)
 
 
 if __name__ == "__main__":
