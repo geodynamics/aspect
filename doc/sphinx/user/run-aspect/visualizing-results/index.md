@@ -10,10 +10,10 @@ latter, see {ref}`sec:extending:vis-postprocessors`).
 
 By default, the files that are generated are in VTU format, i.e., the
 XML-based, compressed format defined by the VTK library, see
-<http://public.kitware.com/VTK/>. This file format has become a broadly
+<http://vtk.org/>. This file format has become a broadly
 accepted pseudo-standard that many visualization program support, including
 two of the visualization programs used most widely in computational science:
-Visit (see <https://visit.llnl.gov/>) and ParaView (see
+VisIt (see <https://visit.llnl.gov/>) and ParaView (see
 <http://www.paraview.org/>). The VTU format has a number of advantages beyond
 being widely distributed:
 
@@ -30,7 +30,7 @@ being widely distributed:
     time step that then contains a reference to the individual files that
     together make up the output of a single time step. Unfortunately, there
     doesn't appear to be a standard for these master records; however,
-    both ParaView and Visit have defined a format that each of these programs
+    both ParaView and VisIt have defined a format that each of these programs
     understand and that requires placing a file with ending `.pvtu` or
     `.visit` into the same directory as the output files from each processor.
     {ref}`sec:run-aspect:overview` gives an example of what can be found in the output
