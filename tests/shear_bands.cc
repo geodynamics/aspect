@@ -1,1 +1,1 @@
-#include <../benchmarks/shear_bands/shear_bands.cc>
+#include "../benchmarks/shear_bands/shear_bands.cc"
