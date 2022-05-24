@@ -25,11 +25,11 @@ This parameter only describes which boundaries have a fixed heat flux, but not w
 
 **Documentation:** Select one of the following plugins:
 
-&lsquo;function&rsquo;: Implementation of a model in which the boundary heat flux is given in terms of an explicit formula that is elaborated in the parameters in section &lsquo;&lsquo;Boundary heat flux model|Function&rsquo;&rsquo;. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+&lsquo;function&rsquo;: Implementation of a model in which the boundary heat flux is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary heat flux model|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 The formula you describe in the mentioned section is a scalar value for the heat flux that is assumed to be the flux normal to the boundary, and that has the unit W/(m$^2$) (in 3d) or W/m (in 2d). Negative fluxes are interpreted as the flow of heat into the domain, and positive fluxes are interpreted as heat flowing out of the domain.
 
-The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter &lsquo;&lsquo;Use years in output instead of seconds&rsquo;&rsquo; has been set.
+The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter &ldquo;Use years in output instead of seconds&rdquo; has been set.
 
 (parameters:Boundary_20heat_20flux_20model/Function)=
 ## **Subsection:** Boundary heat flux model / Function

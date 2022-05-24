@@ -1,15 +1,35 @@
 #!/usr/bin/python3
 
 import json
+import re
 from sys import argv, exit, stderr
 
 
 # Our doc strings are written for latex, but here we want to output them
 # in markdown. Escape some common latex-isms.
 def escape_doc_string(text) :
-    return (text
-            .replace("`", "&lsquo;")
-            .replace("'", "&rsquo;"))
+    # First some simple text replacements:
+    tmp = (text
+           .replace("``", "&ldquo;")
+           .replace("''", "&rdquo;")
+           .replace("`", "&lsquo;")
+           .replace("'", "&rsquo;")
+           .replace("\\aspect{}", "ASPECT")
+           .replace("\\dealii{}", "deal.II")
+    )
+
+    # Then also deal with italics and boldface and typewriter:
+    tmp = re.sub(r'\\textit\{(.*?)\}',
+                 r'*\1*',
+                 tmp)
+    tmp = re.sub(r'\\textbf\{(.*?)\}',
+                 r'**\1**',
+                 tmp)
+    tmp = re.sub(r'\\texttt\{(.*?)\}',
+                 r'`\1`',
+                 tmp)
+
+    return tmp;
 
 
 

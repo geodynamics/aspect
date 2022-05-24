@@ -67,7 +67,7 @@ ENDFOREACH()
 # Step 2: Now also find all of the image files that will find their
 #         way into the manual. These can have file endings .png
 #         or .svg.
-# Collect the .tex, .md, and .prm files
+# Collect the .png and .svg files
 FOREACH(_dir ${_doc_directories})
   FILE(GLOB_RECURSE _my_image_files
        RELATIVE ${CMAKE_SOURCE_DIR}

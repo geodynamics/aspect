@@ -13,7 +13,7 @@
 
 **Documentation:** When the temperature is fixed on a given boundary as determined by the list of &rsquo;Fixed temperature boundary indicators&rsquo;, there might be parts of the boundary where material flows out and one may want to prescribe the temperature only on the parts of the boundary where there is inflow. This parameter determines if temperatures are only prescribed at these inflow parts of the boundary (if false) or everywhere on a given boundary, independent of the flow direction (if true).Note that in this context, &lsquo;fixed&rsquo; refers to the fact that these are the boundary indicators where Dirichlet boundary conditions are applied, and does not imply that the boundary temperature is time-independent.
 
-Mathematically speaking, the temperature satisfies an advection-diffusion equation. For this type of equation, one can prescribe the temperature even on outflow boundaries as long as the diffusion coefficient is nonzero. This would correspond to the &lsquo;&lsquo;true&rsquo;&rsquo; setting of this parameter, which is correspondingly the default. In practice, however, this would only make physical sense if the diffusion coefficient is actually quite large to prevent the creation of a boundary layer. In addition, if there is no diffusion, one can only impose Dirichlet boundary conditions (i.e., prescribe a fixed temperature value at the boundary) at those boundaries where material flows in. This would correspond to the &lsquo;&lsquo;false&rsquo;&rsquo; setting of this parameter.
+Mathematically speaking, the temperature satisfies an advection-diffusion equation. For this type of equation, one can prescribe the temperature even on outflow boundaries as long as the diffusion coefficient is nonzero. This would correspond to the &ldquo;true&rdquo; setting of this parameter, which is correspondingly the default. In practice, however, this would only make physical sense if the diffusion coefficient is actually quite large to prevent the creation of a boundary layer. In addition, if there is no diffusion, one can only impose Dirichlet boundary conditions (i.e., prescribe a fixed temperature value at the boundary) at those boundaries where material flows in. This would correspond to the &ldquo;false&rdquo; setting of this parameter.
 
 (parameters:Boundary_20temperature_20model/Fixed_20temperature_20boundary_20indicators)=
 ### __Parameter name:__ Fixed temperature boundary indicators
@@ -47,17 +47,17 @@ The following boundary temperature models are available:
 
 &lsquo;dynamic core&rsquo;: This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following \cite{NPB+04}, and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the &lsquo;snowing core&rsquo; regime (i.e., the core solidifies from the top instead of bottom).
 
-&lsquo;function&rsquo;: Implementation of a model in which the boundary temperature is given in terms of an explicit formula that is elaborated in the parameters in section &lsquo;&lsquo;Boundary temperature model|Function&rsquo;&rsquo;.
+&lsquo;function&rsquo;: Implementation of a model in which the boundary temperature is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary temperature model|Function&rdquo;.
 
-Since the symbol $t$ indicating time may appear in the formulas for the prescribed temperatures, it is interpreted as having units seconds unless the global input parameter &lsquo;&lsquo;Use years in output instead of seconds&rsquo;&rsquo; is set, in which case we interpret the formula expressions as having units year.
+Since the symbol $t$ indicating time may appear in the formulas for the prescribed temperatures, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years in output instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
 
-Because this class simply takes what the function calculates, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &lsquo;&lsquo;Boundary temperature model/Initial temperature&rsquo;&rsquo;.
+Because this class simply takes what the function calculates, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary temperature model/Initial temperature&rdquo;.
 
 The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 &lsquo;initial temperature&rsquo;: A model in which the temperature at the boundary is chosen to be the same as given in the initial conditions.
 
-Because this class simply takes what the initial temperature had described, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &lsquo;&lsquo;Boundary temperature model/Initial temperature&rsquo;&rsquo;.
+Because this class simply takes what the initial temperature had described, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary temperature model/Initial temperature&rdquo;.
 
 &lsquo;spherical constant&rsquo;: A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell, ellipsoidal chunk or chunk. Parameters are read from subsection &rsquo;Spherical constant&rsquo;.
 
@@ -87,21 +87,21 @@ Because this class simply takes what the initial temperature had described, this
 
 &lsquo;dynamic core&rsquo;: This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following \cite{NPB+04}, and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the &lsquo;snowing core&rsquo; regime (i.e., the core solidifies from the top instead of bottom).
 
-&lsquo;function&rsquo;: Implementation of a model in which the boundary temperature is given in terms of an explicit formula that is elaborated in the parameters in section &lsquo;&lsquo;Boundary temperature model|Function&rsquo;&rsquo;.
+&lsquo;function&rsquo;: Implementation of a model in which the boundary temperature is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary temperature model|Function&rdquo;.
 
-Since the symbol $t$ indicating time may appear in the formulas for the prescribed temperatures, it is interpreted as having units seconds unless the global input parameter &lsquo;&lsquo;Use years in output instead of seconds&rsquo;&rsquo; is set, in which case we interpret the formula expressions as having units year.
+Since the symbol $t$ indicating time may appear in the formulas for the prescribed temperatures, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years in output instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
 
-Because this class simply takes what the function calculates, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &lsquo;&lsquo;Boundary temperature model/Initial temperature&rsquo;&rsquo;.
+Because this class simply takes what the function calculates, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary temperature model/Initial temperature&rdquo;.
 
 The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 &lsquo;initial temperature&rsquo;: A model in which the temperature at the boundary is chosen to be the same as given in the initial conditions.
 
-Because this class simply takes what the initial temperature had described, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &lsquo;&lsquo;Boundary temperature model/Initial temperature&rsquo;&rsquo;.
+Because this class simply takes what the initial temperature had described, this class can not know certain pieces of information such as the minimal and maximal temperature on the boundary. For operations that require this, for example in post-processing, this boundary temperature model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary temperature model/Initial temperature&rdquo;.
 
 &lsquo;spherical constant&rsquo;: A model in which the temperature is chosen constant on the inner and outer boundaries of a spherical shell, ellipsoidal chunk or chunk. Parameters are read from subsection &rsquo;Spherical constant&rsquo;.
 
-\textbf{Warning}: This parameter provides an old and deprecated way of specifying boundary temperature models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
+**Warning**: This parameter provides an old and deprecated way of specifying boundary temperature models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
 
 (parameters:Boundary_20temperature_20model/Ascii_20data_20model)=
 ## **Subsection:** Boundary temperature model / Ascii data model
@@ -253,7 +253,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Map of <[Anything]>:<[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A comma separated list of mappings between boundary indicators and the temperature associated with the boundary indicators. The format for this list is &lsquo;&lsquo;indicator1 : value1, indicator2 : value2, ...&rsquo;&rsquo;, where each indicator is a valid boundary indicator (either a number or the symbolic name of a boundary as provided by the geometry model) and each value is the temperature of that boundary.
+**Documentation:** A comma separated list of mappings between boundary indicators and the temperature associated with the boundary indicators. The format for this list is &ldquo;indicator1 : value1, indicator2 : value2, ...&rdquo;, where each indicator is a valid boundary indicator (either a number or the symbolic name of a boundary as provided by the geometry model) and each value is the temperature of that boundary.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core)=
 ## **Subsection:** Boundary temperature model / Dynamic core
