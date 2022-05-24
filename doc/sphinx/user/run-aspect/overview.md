@@ -90,7 +90,7 @@ ASPECT, deal.II, <span
 class="smallcaps">Trilinos</span> and <span class="smallcaps">p4est</span>
 versions as well as the mode you compiled
 ASPECT in (see {ref}`sec:run-aspect:debug-mode`), and the number of parallel
-processes used[^footnote3]. With this information we strive to make
+processes used.[^footnote3] With this information we strive to make
 ASPECT models as reproducible as possible.
 
 The following output depends on the model, and in this case was produced by a
@@ -200,7 +200,7 @@ The purpose of these files is as follows:
     doesn't appear to be an agreed upon way to describe which files
     jointly make up for the simulation data of a single time step (i.e., all
     files with the same `XXXXX` but different `YYYY` in the example above).
-    Visit and ParaView both have their method of doing things, through `.pvtu`
+    VisIt and ParaView both have their method of doing things, through `.pvtu`
     and `.visit` files. To make it easy for you to view data,
     ASPECT simply creates both kinds of files in each
     time step in which graphical data is produced, and these are then also
@@ -208,7 +208,7 @@ The purpose of these files is as follows:
     and `output/solution/solution-XXXXX.visit`.
 
     The final two files of this kind, `output/solution.pvd` and
-    `output/solution.visit`, are files that describes to ParaView and Visit,
+    `output/solution.visit`, are files that describes to ParaView and VisIt,
     respectively, which `output/solution/solution-XXXXX.pvtu` and
     `output/solution/solution-XXXXX.YYYY.vtu` jointly form a complete
     simulation. In the former case, the file lists the `.pvtu` files of all
@@ -217,7 +217,7 @@ The purpose of these files is as follows:
     simulation, grouped by the timestep they correspond to. To visualize an
     entire simulation, not just a single time step, it is therefore simplest
     to just load one of these files, depending on whether you use ParaView or
-    Visit.[^footnote6] Because loading an *entire* simulation is the most common use
+    VisIt.[^footnote6] Because loading an *entire* simulation is the most common use
     case, these are the two files you will most often load, and so they are
     placed in the `output` directory, not the subdirectory where the actual
     `.vtu` data files are located.
@@ -281,7 +281,7 @@ The purpose of these files is as follows:
     desired).
 
     By default, the data is written in text format that can be easily
-    visualized, see for example {ref}`fig:depthaverage`. The plot shows how an
+    visualized, see for example {numref}`fig:depthaverage`. The plot shows how an
     initially linear temperature profile forms upper and lower boundary
     layers.
 
@@ -323,7 +323,7 @@ amount of disk space.
 very useful for large-scale, 3d, parallel simulations. If you need a different format than VTK, you can select this using the
 run-time parameters discussed in {ref}`parameters:Postprocess/Visualization`.
 
-[^footnote6]: At the time of writing this, current versions of Visit (starting with version 2.5.1) actually have a bug that prevents them
-from successfully reading the `output/solution.visit` or `output/solution/solution-XXXXX.visit` files – Visit believes that
+[^footnote6]: At the time of writing this, current versions of VisIt (starting with version 2.5.1) actually have a bug that prevents them
+from successfully reading the `output/solution.visit` or `output/solution/solution-XXXXX.visit` files – VisIt believes that
 each of these files corresponds to an individual time step, rather than that a whole group of files together form one time step.
-This bug is not fixed in Visit 2.6.3, but may be fixed in later versions.
+This bug is not fixed in VisIt 2.6.3, but may be fixed in later versions.
