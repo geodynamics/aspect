@@ -558,11 +558,11 @@ namespace aspect
          * deal.II offers the possibility to write vtu files with higher order
          * representations of the output data. This means each cell will correctly
          * show the higher order representation of the output data instead of the
-         * linear interpolation between vertices that ParaView and Visit usually show.
+         * linear interpolation between vertices that ParaView and VisIt usually show.
          * Note that activating this option is safe and recommended, but requires that
          * (i) ``Output format'' is set to ``vtu'', (ii) ``Interpolate output'' is
          * set to true, (iii) you use a sufficiently new version of Paraview
-         * or Visit to read the files (Paraview version 5.5 or newer, and Visit version
+         * or VisIt to read the files (Paraview version 5.5 or newer, and VisIt version
          * to be determined), and (iv) you use deal.II version 9.1.0 or newer.
          */
         bool write_higher_order_output;
@@ -706,7 +706,7 @@ namespace aspect
          * directory, possibly one file written by each processor, belong to a
          * single time step and/or form the different time steps of a
          * simulation. For Paraview, this is a <code>.pvtu</code> file per
-         * time step and a <code>.pvd</code> for all time steps. For Visit it
+         * time step and a <code>.pvd</code> for all time steps. For VisIt it
          * is a <code>.visit</code> file per time step and one for all time
          * steps.
          *
