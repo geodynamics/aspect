@@ -329,8 +329,8 @@ namespace aspect
          */
         virtual
         double
-        limit_update_to_0_and_1 (const double value,
-                                 const double change_of_value) const;
+        assert_update_is_within_0_and_1 (const double value,
+                                         const double change_of_value) const;
 
 
         /**

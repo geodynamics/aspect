@@ -351,6 +351,10 @@ namespace aspect
       double solid_molar_volume = 0.0;
       for (unsigned int i=0; i<endmember_names.size(); ++i)
         {
+          // We assume here that the first 2 endmembers are the (solid) bridgmanite endmembers,
+          // and the 3rd and 4th are the (solid) ferropericlase endmembers. The endmember_phase_fraction_in_solid
+          // variable therefore indicates the fraction of bridgmanite or ferropericlase in the solid
+          // (depending on which phase the endmember belongs to).
           const double endmember_phase_fraction_in_solid = i<2 ? bridgmanite_molar_fraction_in_solid : 1.0 - bridgmanite_molar_fraction_in_solid;
 
           if (endmember_states[i] == EndmemberState::melt)
@@ -366,7 +370,7 @@ namespace aspect
       const double bounded_porosity = std::min(1.0, std::max(0.0, porosity));
 
       double melt_molar_fraction = 0.0;
-      if (melt_molar_volume > 0)
+      if (melt_molar_volume > 0.0)
         {
           const double n_moles_total = bounded_porosity / melt_molar_volume + (1.0 - bounded_porosity) / solid_molar_volume;
           melt_molar_fraction = bounded_porosity / (melt_molar_volume * n_moles_total);
@@ -380,8 +384,8 @@ namespace aspect
     template <int dim>
     double
     MeltBoukare<dim>::
-    limit_update_to_0_and_1 (const double old_value,
-                             const double change_of_value) const
+    assert_update_is_within_0_and_1 (const double old_value,
+                                     const double change_of_value) const
     {
       if (old_value + change_of_value < 0.0)
         {
@@ -409,13 +413,15 @@ namespace aspect
                    double &new_molar_composition_of_solid,
                    double &new_molar_composition_of_melt) const
     {
-      if (temperature == 0)
-        return 0;
+      if (temperature == 0.0)
+        return 0.0;
 
       const double molar_volatiles_in_bulk = 1.e-4;
       {
         // after Phipps Morgan, Jason. "Thermodynamics of pressure release melting of a veined plum pudding mantle."
         // Geochemistry, Geophysics, Geosystems 2.4 (2001).
+        // See also Appendix B of Dannberg et al., 2021. "The morphology, evolution and seismic visibility of partial
+        // melt at the core-mantle boundary: Implications for ULVZs".
         const double P = pressure;                   // pressure in Pa
         const double T = temperature;                // temperature in K
         const double R = constants::gas_constant;    // Ideal Gas Constant
@@ -426,15 +432,17 @@ namespace aspect
         const double dG_Mg_mantle = (Mg_mantle_melting_temperature - T) * Mg_mantle_melting_entropy
                                     + (P - melting_reference_pressure) * Mg_mantle_melting_volume;
 
-        const double p_Fe_mantle = std::exp(dG_Fe_mantle/(Fe_number_of_moles*R*T));
-        const double p_Mg_mantle = std::exp(dG_Mg_mantle/(Mg_number_of_moles*R*T));
+        // Equations (B.13) and (B.14) in Appendix B of Dannberg et al., 2021.
+        const double c_Fe_endmember = std::exp(dG_Fe_mantle/(Fe_number_of_moles*R*T));
+        const double c_Mg_endmember = std::exp(dG_Mg_mantle/(Mg_number_of_moles*R*T));
 
         // Mole composition of the solid and liquid (corresponds to the molar fraction of X_Fe, the iron-bearing endmember).
         // In addition to the Phipps Morgan model, we also include volatiles here.
-        const double a = (p_Fe_mantle - p_Mg_mantle) * p_Fe_mantle/p_Mg_mantle;
-        const double b = p_Fe_mantle * (1. - 1./p_Mg_mantle) - molar_composition_of_bulk * (p_Fe_mantle - p_Mg_mantle)/p_Mg_mantle + molar_volatiles_in_bulk * (1. - p_Fe_mantle);
-        const double c = -molar_composition_of_bulk * (1. - 1./p_Mg_mantle);
-        double Xls = (-b + std::sqrt(b*b - 4.*a*c))/(2.*a);
+        // Equations (B.8) and (B.10) to (B.12) in Appendix B of Dannberg et al., 2021.
+        const double q0 = (c_Fe_endmember - c_Mg_endmember) * c_Fe_endmember/c_Mg_endmember;
+        const double q1 = c_Fe_endmember * (1. - 1./c_Mg_endmember) - molar_composition_of_bulk * (c_Fe_endmember - c_Mg_endmember)/c_Mg_endmember + molar_volatiles_in_bulk * (1. - c_Fe_endmember);
+        const double q2 = -molar_composition_of_bulk * (1. - 1./c_Mg_endmember);
+        const double molar_composition_of_melt = (-q1 + std::sqrt(q1*q1 - 4.*q0*q2))/(2.*q0);
 
         const double T_Fe_mantle = dG_Fe_mantle / Fe_mantle_melting_entropy;
         const double T_Mg_mantle = dG_Mg_mantle / Mg_mantle_melting_entropy;
@@ -443,12 +451,12 @@ namespace aspect
 
         if (molar_composition_of_bulk < std::numeric_limits<double>::min())
           {
-            melt_molar_fraction = 0 > T_Mg_mantle ? 1.0 : molar_volatiles_in_bulk;
-            new_molar_composition_of_melt = 0;
-            new_molar_composition_of_solid = 0;
+            melt_molar_fraction = T_Mg_mantle < 0.0 ? 1.0 : molar_volatiles_in_bulk;
+            new_molar_composition_of_melt = 0.0;
+            new_molar_composition_of_solid = 0.0;
           }
-        else if (Xls <= molar_composition_of_bulk
-                 && 0 > std::min(T_Fe_mantle, T_Mg_mantle)) // above the liquidus
+        else if (molar_composition_of_melt <= molar_composition_of_bulk
+                 && std::min(T_Fe_mantle, T_Mg_mantle) < 0.0) // above the liquidus
           {
             melt_molar_fraction = 1.0;
             new_molar_composition_of_melt = molar_composition_of_bulk;
@@ -458,20 +466,21 @@ namespace aspect
           }
         else
           {
-            double Xss = Xls * p_Fe_mantle;
+            // Equations (B.9) in Appendix B of Dannberg et al., 2021.
+            const double molar_composition_of_solid = molar_composition_of_melt * c_Fe_endmember;
 
-            new_molar_composition_of_solid = std::max(std::min(Xss, molar_composition_of_bulk), 0.0);
-            new_molar_composition_of_melt = std::min(std::max(Xls, molar_composition_of_bulk), 1.0);
+            new_molar_composition_of_solid = std::max(std::min(molar_composition_of_solid, molar_composition_of_bulk), 0.0);
+            new_molar_composition_of_melt = std::min(std::max(molar_composition_of_melt, molar_composition_of_bulk), 1.0);
 
-            if (std::abs(Xls - Xss) > std::numeric_limits<double>::min())
-              melt_molar_fraction = std::min(std::max((molar_composition_of_bulk - Xss) / (Xls - Xss), 0.0), 1.0);
+            if (std::abs(molar_composition_of_melt - molar_composition_of_solid) > std::numeric_limits<double>::min())
+              melt_molar_fraction = std::min(std::max((molar_composition_of_bulk - molar_composition_of_solid) / (molar_composition_of_melt - molar_composition_of_solid), 0.0), 1.0);
             // If solid and melt composition are the same, there is no two-phase region.
             // If we are not above the liquidus, we are below the solidus.
             else
               melt_molar_fraction = molar_volatiles_in_bulk;
 
-            if (molar_volatiles_in_bulk > 0 && std::abs(molar_composition_of_bulk - Xss) > std::numeric_limits<double>::min())
-              molar_volatiles_in_melt = molar_volatiles_in_bulk*(Xls - Xss)/(molar_composition_of_bulk - Xss);
+            if (molar_volatiles_in_bulk > 0.0 && std::abs(molar_composition_of_bulk - molar_composition_of_solid) > std::numeric_limits<double>::min())
+              molar_volatiles_in_melt = molar_volatiles_in_bulk*(molar_composition_of_melt - molar_composition_of_solid)/(molar_composition_of_bulk - molar_composition_of_solid);
           }
 
         return melt_molar_fraction;
@@ -487,6 +496,15 @@ namespace aspect
                     std::vector<double> &melt_fractions) const
     {
       const unsigned int Fe_solid_idx = this->introspection().compositional_index_for_name("molar_Fe_in_solid");
+      unsigned int Fe_melt_idx = numbers::invalid_unsigned_int;
+      unsigned int porosity_idx = numbers::invalid_unsigned_int;
+
+      if (this->include_melt_transport())
+        {
+          Fe_melt_idx = this->introspection().compositional_index_for_name("molar_Fe_in_melt");
+          porosity_idx = this->introspection().compositional_index_for_name("porosity");
+        }
+
       const unsigned int n_endmembers = endmember_names.size();
       EndmemberProperties endmembers(n_endmembers);
 
@@ -502,10 +520,7 @@ namespace aspect
           double bridgmanite_molar_fraction_in_solid;
 
           if (this->include_melt_transport())
-            {
-              const unsigned int Fe_melt_idx = this->introspection().compositional_index_for_name("molar_Fe_in_melt");
-              melt_composition = in.composition[q][Fe_melt_idx];
-            }
+            melt_composition = in.composition[q][Fe_melt_idx];
 
           convert_composition_to_fraction_of_endmembers(in.temperature[q],
                                                         solid_composition,
@@ -516,25 +531,21 @@ namespace aspect
 
 
           if (this->include_melt_transport())
-            {
-              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-
-              melt_molar_fraction = compute_melt_molar_fraction(in.composition[q][porosity_idx],
-                                                                bridgmanite_molar_fraction_in_solid,
-                                                                endmembers,
-                                                                endmember_mole_fractions_per_phase);
-            }
+            melt_molar_fraction = compute_melt_molar_fraction(in.composition[q][porosity_idx],
+                                                              bridgmanite_molar_fraction_in_solid,
+                                                              endmembers,
+                                                              endmember_mole_fractions_per_phase);
 
           const double solid_molar_fraction = 1.0 - melt_molar_fraction;
-          double bulk_composition = melt_composition * melt_molar_fraction + solid_composition * solid_molar_fraction;
+          const double bulk_composition = melt_composition * melt_molar_fraction + solid_composition * solid_molar_fraction;
           double molar_volatiles_in_melt = 0.0;
 
-          double eq_melt_molar_fraction = this->melt_fraction(in.temperature[q],
-                                                              this->get_adiabatic_conditions().pressure(in.position[q]),
-                                                              bulk_composition,
-                                                              molar_volatiles_in_melt,
-                                                              solid_composition,
-                                                              melt_composition);
+          const double eq_melt_molar_fraction = this->melt_fraction(in.temperature[q],
+                                                                    this->get_adiabatic_conditions().pressure(in.position[q]),
+                                                                    bulk_composition,
+                                                                    molar_volatiles_in_melt,
+                                                                    solid_composition,
+                                                                    melt_composition);
 
           // We have to compute the endmember fractions again here because the porosity is now different.
           convert_composition_to_fraction_of_endmembers(in.temperature[q],
@@ -546,12 +557,12 @@ namespace aspect
 
 
           // convert from melt molar fraction to porosity
-          double solid_molar_volume = bridgmanite_molar_fraction_in_solid * endmember_mole_fractions_per_phase[febdg_idx] * endmembers.volumes[febdg_idx]
-                                      + bridgmanite_molar_fraction_in_solid * endmember_mole_fractions_per_phase[mgbdg_idx] * endmembers.volumes[mgbdg_idx]
-                                      + (1. - bridgmanite_molar_fraction_in_solid) * endmember_mole_fractions_per_phase[per_idx] * endmembers.volumes[per_idx]
-                                      + (1. - bridgmanite_molar_fraction_in_solid) * endmember_mole_fractions_per_phase[wus_idx] * endmembers.volumes[wus_idx];
-          double melt_molar_volume = endmember_mole_fractions_per_phase[mgmelt_idx] * endmembers.volumes[mgmelt_idx]
-                                     + endmember_mole_fractions_per_phase[femelt_idx] * endmembers.volumes[femelt_idx];
+          const double solid_molar_volume = bridgmanite_molar_fraction_in_solid * endmember_mole_fractions_per_phase[febdg_idx] * endmembers.volumes[febdg_idx]
+                                            + bridgmanite_molar_fraction_in_solid * endmember_mole_fractions_per_phase[mgbdg_idx] * endmembers.volumes[mgbdg_idx]
+                                            + (1. - bridgmanite_molar_fraction_in_solid) * endmember_mole_fractions_per_phase[per_idx] * endmembers.volumes[per_idx]
+                                            + (1. - bridgmanite_molar_fraction_in_solid) * endmember_mole_fractions_per_phase[wus_idx] * endmembers.volumes[wus_idx];
+          const double melt_molar_volume = endmember_mole_fractions_per_phase[mgmelt_idx] * endmembers.volumes[mgmelt_idx]
+                                           + endmember_mole_fractions_per_phase[femelt_idx] * endmembers.volumes[femelt_idx];
 
           melt_fractions[q] = eq_melt_molar_fraction * melt_molar_volume
                               / (eq_melt_molar_fraction * melt_molar_volume + (1.0 - eq_melt_molar_fraction) * solid_molar_volume);
@@ -571,6 +582,16 @@ namespace aspect
       BoukareOutputs<dim> *boukare_out = out.template get_additional_output<BoukareOutputs<dim>>();
       EnthalpyOutputs<dim> *enthalpy_out = out.template get_additional_output<EnthalpyOutputs<dim>>();
 
+      const unsigned int Fe_solid_idx = this->introspection().compositional_index_for_name("molar_Fe_in_solid");
+      unsigned int Fe_melt_idx = numbers::invalid_unsigned_int;
+      unsigned int porosity_idx = numbers::invalid_unsigned_int;
+
+      if (this->include_melt_transport())
+        {
+          Fe_melt_idx = this->introspection().compositional_index_for_name("molar_Fe_in_melt");
+          porosity_idx = this->introspection().compositional_index_for_name("porosity");
+        }
+
       // If the temperature or pressure are zero, this model does not work.
       // This should only happen when setting the melt constraints before we have the initial temperature.
       // In this case, just fill the permeabilities and fluid viscosities and return.
@@ -580,10 +601,9 @@ namespace aspect
             {
               if (melt_out != nullptr)
                 {
-                  const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
                   for (unsigned int q=0; q<in.position.size(); ++q)
                     {
-                      double porosity = std::max(in.composition[q][porosity_idx],0.0);
+                      const double porosity = std::max(in.composition[q][porosity_idx],0.0);
                       melt_out->fluid_viscosities[q] = eta_f;
                       melt_out->permeabilities[q] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
                     }
@@ -603,8 +623,6 @@ namespace aspect
           reaction_fraction = reaction_time_step_size / melting_time_scale;
         }
 
-
-      const unsigned int Fe_solid_idx = this->introspection().compositional_index_for_name("molar_Fe_in_solid");
       const unsigned int n_endmembers = endmember_names.size();
       EndmemberProperties endmembers(n_endmembers);
 
@@ -617,14 +635,12 @@ namespace aspect
 
           // We need the compositions of all phases.
           const double solid_composition = in.composition[q][Fe_solid_idx];
-          double melt_composition = 0.0, melt_molar_fraction = 0.0;
+          double melt_composition = 0.0;
+          double melt_molar_fraction = 0.0;
           double bridgmanite_molar_fraction_in_solid;
 
           if (this->include_melt_transport())
-            {
-              const unsigned int Fe_melt_idx = this->introspection().compositional_index_for_name("molar_Fe_in_melt");
-              melt_composition = in.composition[q][Fe_melt_idx];
-            }
+            melt_composition = in.composition[q][Fe_melt_idx];
 
           convert_composition_to_fraction_of_endmembers(in.temperature[q],
                                                         solid_composition,
@@ -634,14 +650,10 @@ namespace aspect
                                                         bridgmanite_molar_fraction_in_solid);
 
           if (this->include_melt_transport())
-            {
-              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-
-              melt_molar_fraction = compute_melt_molar_fraction(in.composition[q][porosity_idx],
-                                                                bridgmanite_molar_fraction_in_solid,
-                                                                endmembers,
-                                                                endmember_mole_fractions_per_phase);
-            }
+            melt_molar_fraction = compute_melt_molar_fraction(in.composition[q][porosity_idx],
+                                                              bridgmanite_molar_fraction_in_solid,
+                                                              endmembers,
+                                                              endmember_mole_fractions_per_phase);
 
           const double solid_molar_fraction = 1.0 - melt_molar_fraction;
 
@@ -654,11 +666,19 @@ namespace aspect
 
           for (unsigned int i=0; i<n_endmembers; ++i)
             {
-              // TODO: fix this using a phase vector (phase == 'bridgmanite')
+              // We assume here that the first 2 endmembers are the (solid) bridgmanite endmembers,
+              // and the 3rd and 4th are the (solid) ferropericlase endmembers. The endmember_phase_fraction_in_solid
+              // variable therefore indicates the fraction of bridgmanite or ferropericlase in the solid
+              // (depending on which phase the endmember belongs to).
+              // TODO: allow for more flexibility by letting the user set a phase vector in the input file
+              // (then we can check if phase == 'bridgmanite').
               const double endmember_phase_fraction_in_solid = i<2 ? bridgmanite_molar_fraction_in_solid : (1.0 - bridgmanite_molar_fraction_in_solid);
 
               if (endmember_states[i] == EndmemberState::solid)
                 {
+                  // There are two phases in the solid (bridgmanite and ferropericlase). The mole fraction of each
+                  // phase in the composite is the product of the solid fraction in the composite and the fraction
+                  // of that individual phase in the solid.
                   phase_mole_fractions_in_composite[i] = solid_molar_fraction * endmember_phase_fraction_in_solid;
                   endmember_mole_fractions_in_composite[i] = phase_mole_fractions_in_composite[i] * endmember_mole_fractions_per_phase[i];
                   solid_molar_mass += endmember_mole_fractions_in_composite[i] * molar_masses[i];
@@ -666,6 +686,7 @@ namespace aspect
                 }
               else if (endmember_states[i] == EndmemberState::melt)
                 {
+                  // There is only one phase in the melt, so the mole fraction of that phase equals the melt fraction.
                   phase_mole_fractions_in_composite[i] = melt_molar_fraction;
                   endmember_mole_fractions_in_composite[i] = phase_mole_fractions_in_composite[i] * endmember_mole_fractions_per_phase[i];
                   melt_molar_mass += endmember_mole_fractions_in_composite[i] * molar_masses[i];
@@ -689,31 +710,32 @@ namespace aspect
               out.specific_heat[q] += endmember_mole_fractions_in_composite[i] * endmembers.heat_capacities[i] / total_molar_mass;
 
 
-              if (endmember_states[i] == EndmemberState::solid && solid_molar_volume > 0)
+              if (endmember_states[i] == EndmemberState::solid && solid_molar_volume > 0.0)
                 {
                   out.compressibilities[q] += (endmember_mole_fractions_in_composite[i] * endmembers.volumes[i])
                                               / (solid_molar_volume * endmembers.bulk_moduli[i]);
                 }
             }
 
-          if (solid_molar_volume > 0)
+          if (solid_molar_volume > 0.0)
             out.densities[q] = solid_molar_mass / solid_molar_volume;
           else
             out.densities[q] = melt_molar_mass / melt_molar_volume;
 
           if (melt_out != nullptr)
             {
-              double melt_compressiblity = 0;
+              double melt_compressiblity = 0.0;
               for (unsigned int i=0; i<n_endmembers; ++i)
-                if (endmember_states[i] == EndmemberState::melt && melt_molar_volume > 0)
+                if (endmember_states[i] == EndmemberState::melt && melt_molar_volume > 0.0)
                   melt_compressiblity += (endmember_mole_fractions_in_composite[i] * endmembers.volumes[i]) / (melt_molar_volume * endmembers.bulk_moduli[i]);
 
-              if (melt_molar_volume > 0)
+              if (melt_molar_volume > 0.0)
                 melt_out->fluid_densities[q] = melt_molar_mass / melt_molar_volume;
               else
                 {
                   // make sure we have a useful melt density even if there is no melt to avoid density jumps
-                  double mass = 0, volume = 0;
+                  double mass = 0.0;
+                  double volume = 0.0;
                   for (unsigned int i=0; i<n_endmembers; ++i)
                     if (endmember_states[i] == EndmemberState::melt)
                       {
@@ -732,11 +754,6 @@ namespace aspect
 
           if (this->include_melt_transport())
             {
-              // Calculate the melting rate
-              const unsigned int Fe_solid_idx = this->introspection().compositional_index_for_name("molar_Fe_in_solid");
-              const unsigned int Fe_melt_idx = this->introspection().compositional_index_for_name("molar_Fe_in_melt");
-              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-
               // TODO: Alternatively, this could also be done by summing over endmember_mole_fractions_in_composite
               const double old_porosity = in.composition[q][porosity_idx];
               const double old_solid_composition = in.composition[q][Fe_solid_idx];
@@ -765,13 +782,13 @@ namespace aspect
                 }
 
               // We have to compute the update to the melt fraction in such a way that the bulk composition is conserved.
-              const double change_of_melt_composition = reaction_fraction * limit_update_to_0_and_1(old_melt_composition, melt_composition - old_melt_composition);
-              const double change_of_melt_fraction = reaction_fraction * limit_update_to_0_and_1(old_melt_molar_fraction, melt_molar_fraction - old_melt_molar_fraction);
+              const double change_of_melt_composition = reaction_fraction * assert_update_is_within_0_and_1(old_melt_composition, melt_composition - old_melt_composition);
+              const double change_of_melt_fraction = reaction_fraction * assert_update_is_within_0_and_1(old_melt_molar_fraction, melt_molar_fraction - old_melt_molar_fraction);
 
-              melt_molar_fraction = old_melt_molar_fraction + change_of_melt_fraction;
               melt_composition = old_melt_composition + change_of_melt_composition;
+              melt_molar_fraction = old_melt_molar_fraction + change_of_melt_fraction;
 
-              if (melt_molar_fraction > 0 && melt_molar_fraction < 1)
+              if (melt_molar_fraction > 0.0 && melt_molar_fraction < 1.0)
                 solid_composition = (bulk_composition - melt_molar_fraction * melt_composition)
                                     / (1.0 - melt_molar_fraction);
               const double change_of_solid_composition = solid_composition - old_solid_composition;
@@ -787,12 +804,12 @@ namespace aspect
 
 
               // convert from melt molar fraction to porosity
-              double solid_molar_volume = bridgmanite_molar_fraction_in_solid * endmember_mole_fractions_per_phase[febdg_idx] * endmembers.volumes[febdg_idx]
-                                          + bridgmanite_molar_fraction_in_solid * endmember_mole_fractions_per_phase[mgbdg_idx] * endmembers.volumes[mgbdg_idx]
-                                          + (1. - bridgmanite_molar_fraction_in_solid) * endmember_mole_fractions_per_phase[per_idx] * endmembers.volumes[per_idx]
-                                          + (1. - bridgmanite_molar_fraction_in_solid) * endmember_mole_fractions_per_phase[wus_idx] * endmembers.volumes[wus_idx];
-              double melt_molar_volume = endmember_mole_fractions_per_phase[mgmelt_idx] * endmembers.volumes[mgmelt_idx]
-                                         + endmember_mole_fractions_per_phase[femelt_idx] * endmembers.volumes[femelt_idx];
+              const double solid_molar_volume = bridgmanite_molar_fraction_in_solid * endmember_mole_fractions_per_phase[febdg_idx] * endmembers.volumes[febdg_idx]
+                                                + bridgmanite_molar_fraction_in_solid * endmember_mole_fractions_per_phase[mgbdg_idx] * endmembers.volumes[mgbdg_idx]
+                                                + (1. - bridgmanite_molar_fraction_in_solid) * endmember_mole_fractions_per_phase[per_idx] * endmembers.volumes[per_idx]
+                                                + (1. - bridgmanite_molar_fraction_in_solid) * endmember_mole_fractions_per_phase[wus_idx] * endmembers.volumes[wus_idx];
+              const double melt_molar_volume = endmember_mole_fractions_per_phase[mgmelt_idx] * endmembers.volumes[mgmelt_idx]
+                                               + endmember_mole_fractions_per_phase[femelt_idx] * endmembers.volumes[femelt_idx];
 
               const double new_porosity = melt_molar_fraction * melt_molar_volume
                                           / (melt_molar_fraction * melt_molar_volume + (1.0 - melt_molar_fraction) * solid_molar_volume);
@@ -834,7 +851,7 @@ namespace aspect
 
               // cutoff for viscosity at 30%
               const double porosity = std::min(0.3, std::max(in.composition[q][porosity_idx],0.0));
-              out.viscosities[q] = (1.0 - porosity) * eta_0 * exp(- alpha_phi * porosity);
+              out.viscosities[q] = (1.0 - porosity) * eta_0 * std::exp(- alpha_phi * porosity);
             }
           else
             {
@@ -855,18 +872,15 @@ namespace aspect
           for (unsigned int c=0; c<in.composition[q].size(); ++c)
             out.reaction_terms[q][c] = 0.0;
 
-          double visc_temperature_dependence = 1.0;
           const double delta_temp = in.temperature[q]-this->get_adiabatic_conditions().temperature(in.position[q]);
-          visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[q])),1e8),1e-8);
+          const double viscosity_bound = 1.e8;
+          const double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[q])),viscosity_bound),1./viscosity_bound);
           out.viscosities[q] *= visc_temperature_dependence;
         }
 
       // fill melt outputs if they exist
-
       if (melt_out != nullptr)
         {
-          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-
           for (unsigned int q=0; q<in.position.size(); ++q)
             {
               double porosity = std::max(in.composition[q][porosity_idx],0.0);
@@ -881,7 +895,8 @@ namespace aspect
               melt_out->compaction_viscosities[q] = (1.0 - porosity) * xi_0 / std::max(porosity, porosity_threshold);
 
               const double delta_temp = in.temperature[q]-this->get_adiabatic_conditions().temperature(in.position[q]);
-              const double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[q])),1e4),1e-4);
+              const double compaction_viscosity_bound = 1.e4;
+              const double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_bulk_viscosity_exponent*delta_temp/this->get_adiabatic_conditions().temperature(in.position[q])),compaction_viscosity_bound),1./compaction_viscosity_bound);
 
               melt_out->compaction_viscosities[q] *= visc_temperature_dependence;
             }
@@ -1002,7 +1017,7 @@ namespace aspect
           prm.declare_entry ("Endmember states", "solid, solid, solid, solid, melt, melt, melt",
                              Patterns::List(Patterns::MultipleSelection("solid|melt")),
                              "States of the endmember components used in the equation of state and the melting model. "
-                             "For each endmember, this leist has to define if they belong to the melt or to the solid. "
+                             "For each endmember, this list has to define if they belong to the melt or to the solid. "
                              "The order the states are given in has to be the same as the order the 'Endmember names' "
                              "are given in. "
                              "Units: none.");
@@ -1122,7 +1137,7 @@ namespace aspect
                                  "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
                                  "operator splitting' chosen in the material model, which is currently "
                                  + Utilities::to_string(melting_time_scale) + "."));
-          AssertThrow(melting_time_scale > 0,
+          AssertThrow(melting_time_scale > 0.0,
                       ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
 
           // Equation of state parameters
@@ -1194,7 +1209,7 @@ namespace aspect
                                                                                      n_endmembers,
                                                                                      "Third coefficients for specific heat polynomial");
 
-          //Check all lists have the correct length
+          // Check all lists have the correct length.
           AssertThrow(endmember_names.size() == endmember_states.size(),
                       ExcMessage("One of the lists that define the endmember parameters does not have the "
                                  "correct size.  Please check your parameter file."));
@@ -1252,9 +1267,19 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(MeltBoukare,
                                    "melt boukare",
-                                   "A material model that implements a melting model following Boukare"
-                                   "et al and uses it to compute the "
-                                   "material parameters required for the modelling of melt transport, "
-                                   "including a source term for the porosity according to a simplified.")
+                                   "A material model that implements a simplified version of the melting "
+                                   "model of Boukare et al. (https://doi.org/10.1002/2015JB011929) for the "
+                                   "lowermost mantle and uses it to compute the material parameters "
+                                   "required for the modelling of melt transport, including melting and "
+                                   "solidification and the corresponding changes in composition."
+                                   "The model parameterizes the composition (which includes the components "
+                                   "MgO, FeO and SiO2) as a mixture between two endmembers (one iron-bearing "
+                                   "and one magnesium-bearing). The equation of state considers three phases: "
+                                   "bridgmanite, ferropericlase, and melt (each with their individual "
+                                   "compositions). "
+                                   "More details can be found in Dannberg, J., Myhill, R., Gassmöller, R., "
+                                   "and Cottaar, S. (2021). The morphology, evolution and seismic visibility "
+                                   "of partial melt at the core–mantle boundary: implications for ULVZs. "
+                                   "Geophysical Journal International, 227(2), 1028-1059.")
   }
 }
