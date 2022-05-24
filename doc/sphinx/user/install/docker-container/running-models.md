@@ -10,13 +10,13 @@ recommend the following workflow:
     by your model) and navigate in a terminal into that directory.
 
 2.  Run the docker image and mount the current directory as a read-only volume
-    into the docker container[^footnote1]. This is accomplished by specifying the -v
+    into the docker container.[^footnote1] This is accomplished by specifying the -v
     flag followed by the absolute path on the host machine, colon, absolute
     path within the docker container, colon, and specifying read-only
     permissions as in the example below.
 
     Make sure your parameter file specifies a model output directory *other*
-    than the input directory, e.g. `/home/dealii/aspect/model_output`. When
+    than the input directory, e.g., `/home/dealii/aspect/model_output`. When
     you have started the container run the aspect model inside the container.
     Note that there are two ASPECT executables
     in the work directory of the container: `aspect` and `aspect-release`. For
@@ -38,7 +38,7 @@ recommend the following workflow:
     ```
 
 3.  After the model has finished (or during the model run if you want to check
-    intermediate results) copy the model output out of the container into your
+    intermediate results), copy the model output out of the container into your
     current directory. For this you need to find the name or ID of the docker
     container by running `docker ps -a` in a separate terminal first. Look for
     the most recently started container to identify your current
@@ -53,7 +53,7 @@ recommend the following workflow:
 
 4.  The output data is saved inside your container even after the computation
     finishes and even when you stop the container. After you have copied the
-    data out of the container you should therefore delete the container to
+    data out of the container, you should therefore delete the container to
     avoid duplication of output data. Even after deleting you will always be
     able to start a new container from the downloaded image following step 2.
     Deleting the finished container can be achieved by the
