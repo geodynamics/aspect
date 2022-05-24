@@ -121,7 +121,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 &lsquo;world builder&rsquo;: Specify the initial temperature through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter &rsquo;World builder file&rsquo;.
 
-\textbf{Warning}: This parameter provides an old and deprecated way of specifying initial temperature models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
+**Warning**: This parameter provides an old and deprecated way of specifying initial temperature models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
 
 (parameters:Initial_20temperature_20model/Adiabatic)=
 ## **Subsection:** Initial temperature model / Adiabatic

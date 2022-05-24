@@ -27,21 +27,21 @@
 
 **Pattern:** [MultipleSelection end step|end time|steady state heat flux|steady state temperature|steady state velocity|user request|wall time ]
 
-**Documentation:** A comma separated list of termination criteria that will determine when the simulation should end. Whether explicitly stated or not, the &lsquo;&lsquo;end time&rsquo;&rsquo; termination criterion will always be used.The following termination criteria are available:
+**Documentation:** A comma separated list of termination criteria that will determine when the simulation should end. Whether explicitly stated or not, the &ldquo;end time&rdquo; termination criterion will always be used.The following termination criteria are available:
 
 &lsquo;end step&rsquo;: Terminate the simulation once the specified timestep has been reached.
 
-&lsquo;end time&rsquo;: Terminate the simulation once the end time specified in the input file has been reached. Unlike all other termination criteria, this criterion is \textit{always} active, whether it has been explicitly selected or not in the input file (this is done to preserve historical behavior of \aspect{}, but it also likely does not inconvenience anyone since it is what would be selected in most cases anyway).
+&lsquo;end time&rsquo;: Terminate the simulation once the end time specified in the input file has been reached. Unlike all other termination criteria, this criterion is *always* active, whether it has been explicitly selected or not in the input file (this is done to preserve historical behavior of ASPECT, but it also likely does not inconvenience anyone since it is what would be selected in most cases anyway).
 
 &lsquo;steady state heat flux&rsquo;: A criterion that terminates the simulation when the integrated heat flux over a given list of boundaries stays within a certain range for a specified period of time.
 
-The criterion considers the total heat flux over all boundaries listed by their boundary indicators, rather than each boundary separately. As a consequence, if the \textit{sum} of heat fluxes over individual parts of the boundary no longer changes, then this criterion recommends termination, even if the heat flux over individual parts of the boundary continues to change.
+The criterion considers the total heat flux over all boundaries listed by their boundary indicators, rather than each boundary separately. As a consequence, if the *sum* of heat fluxes over individual parts of the boundary no longer changes, then this criterion recommends termination, even if the heat flux over individual parts of the boundary continues to change.
 
 &lsquo;steady state temperature&rsquo;: A criterion that terminates the simulation when the global integral of the temperature field stays within a certain range for a specified period of time.
 
 &lsquo;steady state velocity&rsquo;: A criterion that terminates the simulation when the RMS of the velocity field stays within a certain range for a specified period of time.
 
-&lsquo;user request&rsquo;: Terminate the simulation gracefully when a file with a specified name appears in the output directory. This allows the user to gracefully exit the simulation at any time by simply creating such a file using, for example, \texttt{touch output/terminate}. The file&rsquo;s location is chosen to be in the output directory, rather than in a generic location such as the ASPECT directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
+&lsquo;user request&rsquo;: Terminate the simulation gracefully when a file with a specified name appears in the output directory. This allows the user to gracefully exit the simulation at any time by simply creating such a file using, for example, `touch output/terminate`. The file&rsquo;s location is chosen to be in the output directory, rather than in a generic location such as the ASPECT directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
 
 &lsquo;wall time&rsquo;: Terminate the simulation once the wall time limit has reached.
 

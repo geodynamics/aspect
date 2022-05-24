@@ -55,7 +55,7 @@ The following composition models are available:
 
 &lsquo;world builder&rsquo;: Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter &rsquo;World builder file&rsquo;. It is possible to use the World Builder only for selected compositional fields by specifying the parameter &rsquo;List of relevant compositions&rsquo;.
 
-\textbf{Warning}: This parameter provides an old and deprecated way of specifying initial composition models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
+**Warning**: This parameter provides an old and deprecated way of specifying initial composition models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
 
 (parameters:Initial_20composition_20model/Volume_20of_20fluid_20initialization_20type)=
 ### __Parameter name:__ Volume of fluid initialization type
@@ -65,9 +65,9 @@ The following composition models are available:
 
 **Documentation:** A comma separated list denoting the method to be used to initialize a composition field specified to be advected using the volume of fluid method.
 
-The format of valid entries for this parameter is that of a map given as &lsquo;&lsquo;key1:value1, key2:value2&lsquo;&lsquo; where each key must be the name of a compositional field using the volume of fluid advection method, and the value is one of &lsquo;&lsquo;composition&lsquo;&lsquo; or &lsquo;&lsquo;level set&lsquo;&lsquo;. &lsquo;&lsquo;composition&lsquo;&lsquo; is the default
+The format of valid entries for this parameter is that of a map given as &ldquo;key1:value1, key2:value2&ldquo; where each key must be the name of a compositional field using the volume of fluid advection method, and the value is one of &ldquo;composition&ldquo; or &ldquo;level set&ldquo;. &ldquo;composition&ldquo; is the default
 
-When &lsquo;&lsquo;composition is specified, the initial model is treated as a standard composition field with bounds between 0 and 1 assumed, The initial fluid fractions are then based on an iterated midpoint quadrature. Resultant volume fractions outside of the bounds will be coerced to the nearest valid value (ie 0 or 1). If &lsquo;&lsquo;level set&lsquo;&lsquo; is specified, the intial data will be assumed to be in the form of a signed distance level set function (i.e. a function which is positive when in the fluid, negative outside, and zero on the interface and the magnitude is always the distance to the interface so the gradient is one everywhere).
+When &ldquo;composition is specified, the initial model is treated as a standard composition field with bounds between 0 and 1 assumed, The initial fluid fractions are then based on an iterated midpoint quadrature. Resultant volume fractions outside of the bounds will be coerced to the nearest valid value (ie 0 or 1). If &ldquo;level set&ldquo; is specified, the intial data will be assumed to be in the form of a signed distance level set function (i.e. a function which is positive when in the fluid, negative outside, and zero on the interface and the magnitude is always the distance to the interface so the gradient is one everywhere).
 
 (parameters:Initial_20composition_20model/Ascii_20data_20model)=
 ## **Subsection:** Initial composition model / Ascii data model
