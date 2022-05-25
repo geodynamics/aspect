@@ -121,7 +121,7 @@ lithosphere model. All plugin specific options may be set in
 section&nbsp;{ref}`parameters:Boundary_20velocity_20model`. Possible options
 include the data directory and file name of the velocity file/files, the time
 step (in model units, mostly seconds or years depending on the
-&ldquo;`Use years in output instead of seconds`&rdquo; flag) and the points
+`Use years in output instead of seconds` flag) and the points
 that define the 2D plane.
 
 ## Comparing and visualizing 2D and 3D models.
@@ -130,7 +130,7 @@ The implementation of plate velocities in both two- and three-dimensional
 model setups allows for an easy comparison and test for common sources of
 error in the interpretation of model results. The left top figure in
 Fig.&nbsp;[1][] shows a modification of the above presented parameter file by
-setting &ldquo;`Dimension = 3`&rdquo; and
+setting `Dimension = 3` and
 &ldquo;`Initial global refinement = 3`.&rdquo; The top right plot of
 Fig.&nbsp;[1][] shows an example of three independent two-dimensional
 computations of the same reduced resolution. The models were prescribed to be
