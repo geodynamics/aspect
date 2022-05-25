@@ -30,7 +30,7 @@ those two fields. In the input file, the user defines a depth and above this
 `reaction depth` the first compositional fields is converted to the second
 field. This can be done by changing the following section (the complete input
 file can be found in
-[cookbooks/composition-reaction/composition-reaction.prm][]).
+[cookbooks/composition-reaction/composition-reaction.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition-reaction/composition-reaction.prm)).
 
 ``` prmfile
 ```

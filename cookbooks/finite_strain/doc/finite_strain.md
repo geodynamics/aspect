@@ -77,8 +77,8 @@ from the subsection `Simple model`.
 
 The plugin was tested against analytical solutions for the deformation
 gradient tensor in simple and pure shear as described in
-[benchmarks/finite_strain/pure_shear.prm][] and
-[benchmarks/finite_strain/simple_shear.prm][].
+[benchmarks/finite_strain/pure_shear.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/finite_strain/pure_shear.prm) and
+[benchmarks/finite_strain/simple_shear.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/finite_strain/simple_shear.prm).
 
 We will demonstrate its use at the example of a 2D Cartesian convection model
 (Figure&nbsp;[1][]): Heating from the bottom leads to the ascent of plumes

@@ -1,9 +1,9 @@
 In order to advect particles along with the flow field, one just needs to add
 the `particles` postprocessor to the list of postprocessors and specify a few
 parameters. We do so in the
-[cookbooks/composition_passive_particles/composition_passive_particles.prm][]
+[cookbooks/composition_passive_particles/composition_passive_particles.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive_particles/composition_passive_particles.prm)
 input file, which is otherwise just a minor variation of the
-[cookbooks/composition_passive/composition_passive.prm][] case discussed in
+[cookbooks/composition_passive/composition_passive.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive/composition_passive.prm) case discussed in
 the previous Section&nbsp;[\[sec:cookbooks-composition\]][1]. In particular,
 the postprocess section now looks like this:
 
@@ -84,7 +84,7 @@ a defined particle path (like the pressure-temperature evolution of a certain
 piece of rock), or by integrating a quantity along a particle path (like the
 integrated strain a certain domain has experienced). We illustrate these
 properties in the cookbook
-[cookbooks/composition_passive_particles/composition_passive_particles_properties.prm][],
+[cookbooks/composition_passive_particles/composition_passive_particles_properties.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive_particles/composition_passive_particles_properties.prm),
 in which we add the following lines to the `Particles` subsection (we also
 increase the number of particles compared to the previous section to make the
 visualizations below more obvious):

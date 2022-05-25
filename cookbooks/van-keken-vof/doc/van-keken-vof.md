@@ -85,7 +85,7 @@ the signed distance function $\phi$. The modifications to the parameter file
 that are necessary in order to draw the reconstructed boundary as a contour
 are shown immediately below. The full configuration file for this version of
 the benchmark problem can be found at
-[cookbooks/van-keken-vof/van-keken-vof.prm][].
+[cookbooks/van-keken-vof/van-keken-vof.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/van-keken-vof/van-keken-vof.prm).
 
 ``` prmfile
 ```

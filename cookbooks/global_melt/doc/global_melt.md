@@ -28,7 +28,7 @@ to the solid. This also means that because melt is not extracted, the bulk
 composition of the material always stays the same, and melt only freezes again
 once advection or conduction causes the temperature of the solid rock to be
 below the solidus. The following input file (which can be found in
-[cookbooks/global_melt/global_no_melt.prm][]) contains a detailed description
+[cookbooks/global_melt/global_no_melt.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/global_melt/global_no_melt.prm)) contains a detailed description
 of the different options required to set up such a model:
 
 ``` prmfile
@@ -55,7 +55,7 @@ Moreover, there are additional material properties that describe how easily
 melt can move through the host rock, such as the `permeability`, or properties
 of the melt itself, such as the `fluid viscosity`. The following input file (a
 complete version of which can be found in
-[cookbooks/global_melt/global_melt.prm][]) details the changes we have to make
+[cookbooks/global_melt/global_melt.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/global_melt/global_melt.prm)) details the changes we have to make
 from the first model to set up a model with melt migration:
 
 ``` prmfile

@@ -54,7 +54,7 @@ parameters in ASPECT.
 ##### Setting up the model.
 
 For this cookbook we will use the parameter file provided in
-[cookbooks/initial-condition-S20RTS/S20RTS.prm][], which uses a 3d spherical
+[cookbooks/initial-condition-S20RTS/S20RTS.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/initial-condition-S20RTS/S20RTS.prm), which uses a 3d spherical
 shell geometry similar to section [\[sec:shell-simple-3d\]][1]. This plugin is
 only sensible for a 3D spherical shell with Earth-like dimensions.
 

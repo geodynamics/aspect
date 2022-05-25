@@ -14,7 +14,7 @@ dimensions with free slip boundary conditions. The initial temperature
 distribution considers a linear depth profile with a slight perturbation to
 start convection. Top and bottom boundaries are set to a fixed temperature
 value. The parameters shared between the benchmark cases can be found in
-[benchmarks/tosi_et_al_2015_gcubed/Tosi_base.prm][]. The other input files
+[benchmarks/tosi_et_al_2015_gcubed/Tosi_base.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/tosi_et_al_2015_gcubed/Tosi_base.prm). The other input files
 describe the variations on this base model, which pertain to the rheological
 description. The specific rheologies used are implemented in
 [benchmarks/tosi_et_al_2015_gcubed/tosi.cc][] and describe a linear and a

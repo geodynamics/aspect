@@ -89,7 +89,7 @@ since it can easily be replaced by a calculated file index (see also
 ##### Setting up the model.
 
 For this cookbook we will use the parameter file provided in
-[cookbooks/gplates/gplates_2d.prm][] which uses the 2d shell geometry
+[cookbooks/gplates/gplates_2d.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/gplates/gplates_2d.prm) which uses the 2d shell geometry
 previously discussed in Section&nbsp;[\[sec:shell-simple-2d\]][1]. &rsquo;s
 GPlates plugin allows for the use of two- and three-dimensional models
 incorporating the GPlates velocities. Since the output by GPlates is
@@ -149,7 +149,7 @@ three-dimensional figure in their respective model planes. The necessary
 information to rotate the 2D models to their respective planes (rotation axis
 and angle) is provided by the GPlates plugin in the beginning of the model
 output. The bottom plot of Fig.&nbsp;[1][] finally shows the results of the
-original [cookbooks/gplates/gplates_2d.prm][] also in the three mentioned
+original [cookbooks/gplates/gplates_2d.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/gplates/gplates_2d.prm) also in the three mentioned
 planes.
 
 Now that we have model output for otherwise identical 2D and 3D models with

@@ -54,7 +54,7 @@ file.
 
 All of this setup is then described by the following input file. (You can find
 the input file to run this cookbook example in
-[cookbooks/stokes/stokes.prm][]. For your first runs you will probably want to
+[cookbooks/stokes/stokes.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/stokes/stokes.prm). For your first runs you will probably want to
 reduce the number of mesh refinement steps to make things run more quickly.)
 
 ``` prmfile

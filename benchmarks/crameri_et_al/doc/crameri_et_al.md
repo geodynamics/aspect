@@ -22,7 +22,7 @@ are in Figure&nbsp;[1][].
 </div>
 
 The complete parameter file for this benchmark can be found in
-[benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm][], the most relevant
+[benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm), the most relevant
 parts of which are excerpted here:
 
 ``` prmfile
@@ -83,7 +83,7 @@ $\sim 800$ meters.
 
 Again, we excerpt the most relevant parts of the parameter file for this
 benchmark, with the full thing available in
-[benchmarks/crameri_et_al/case_2/crameri_benchmark_2.prm][]. Here we use the
+[benchmarks/crameri_et_al/case_2/crameri_benchmark_2.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/crameri_et_al/case_2/crameri_benchmark_2.prm). Here we use the
 &ldquo;Multicomponent&rdquo; material model, which allows us to easily set up
 a number of compositional fields with different material properties. The first
 compositional field corresponds to background mantle, the second corresponds

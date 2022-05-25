@@ -4,7 +4,7 @@
 *This section was contributed by Juliane Dannberg.*
 
 The input file for this model can be found at
-[cookbooks/onset_of_convection/onset_of_convection.prm][].
+[cookbooks/onset_of_convection/onset_of_convection.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/onset_of_convection/onset_of_convection.prm).
 
 This model is a copy of the onset of convection benchmark described in
 Section&nbsp;[\[sec:benchmark-onset-of-convection\]][1], with the difference
@@ -83,7 +83,7 @@ are m/s<sup>2</sup>.
 You can find a file called `run.sh` in the [cookbooks/onset_of_convection/][]
 folder. This file is not a model input file, but it is a bash script than can
 run a set of models rather than just one model. It uses the input file
-[cookbooks/onset_of_convection/onset_of_convection.prm][], modifies some of
+[cookbooks/onset_of_convection/onset_of_convection.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/onset_of_convection/onset_of_convection.prm), modifies some of
 the parameter values, and then runs it with ASPECT. To see what is in the
 file, you can open it with leafpad.
 

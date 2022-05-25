@@ -102,7 +102,7 @@ entropy change via $\Delta S = \gamma \frac{\Delta\rho}{\rho^2}$) as well as
 the depth of the phase transition as input parameters.
 
 All of this setup is then described by the input file
-[cookbooks/latent-heat/latent-heat.prm][] that models flow in a box of $10^6$
+[cookbooks/latent-heat/latent-heat.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/latent-heat/latent-heat.prm) that models flow in a box of $10^6$
 meters of height and width, and a fixed downward velocity. The following
 section shows the central part of this file:
 

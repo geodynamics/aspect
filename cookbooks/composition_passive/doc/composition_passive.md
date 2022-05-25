@@ -6,7 +6,7 @@ up, as well as the material that started in the top 20%. For the moment, let
 us assume that there is no material between the materials at the bottom, the
 top, and the middle. The way to describe this situation is to simply add the
 following block of definitions to the parameter file (you can find the full
-parameter file in [cookbooks/composition_passive/composition_passive.prm][]:
+parameter file in [cookbooks/composition_passive/composition_passive.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive/composition_passive.prm):
 
 ``` prmfile
 ```
@@ -60,7 +60,7 @@ While the scheme we use to advect the compositional fields is not strictly
 conservative, it is almost perfectly so in practice. For example, in the
 computations shown in this section (using two additional global mesh
 refinements over the settings in the parameter file
-[cookbooks/composition_passive/composition_passive.prm][]), Fig.&nbsp;[9][]
+[cookbooks/composition_passive/composition_passive.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive/composition_passive.prm)), Fig.&nbsp;[9][]
 shows the maximal and minimal values of the first compositional fields over
 time, along with the mass $m_1(t)$ (these are all tabulated in columns of the
 statistics file, see Sections&nbsp;[\[sec:running-overview\]][1] and

@@ -21,7 +21,7 @@ well as a lookup table in the Steinberger material model.
 ##### The input file.
 
 You can find the input file to run this cookbook example in
-[cookbooks/visualizing_phase_diagram/visualizing_phase_diagram.prm][]. For
+[cookbooks/visualizing_phase_diagram/visualizing_phase_diagram.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/visualizing_phase_diagram/visualizing_phase_diagram.prm). For
 this first case, phase transitions are prescribed manually in terms of their
 depth, Clapeyron slope, and other key parameters.
 

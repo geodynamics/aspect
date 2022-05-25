@@ -18,7 +18,7 @@ changes is relatively small. However, when taking into account the various
 discussions about which parts of the model were or were not realistic, they go
 throughout the input file, so we reproduce it here in its entirety,
 interspersed with comments (the full input file can also be found in
-[cookbooks/shell_simple_3d/shell_simple_3d.prm][]). Let us start from the top
+[cookbooks/shell_simple_3d/shell_simple_3d.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/shell_simple_3d/shell_simple_3d.prm)). Let us start from the top
 where everything looks the same except that we set the dimension to 3:
 
 ``` prmfile

@@ -23,7 +23,7 @@ thermochemical convection, the part we examine here can equally be considered
 as thermal or chemical convection; all that is necessary is that we describe
 the fluid&rsquo;s density. We can do that by using an inhomogeneous initial
 temperature field, or an inhomogeneous initial composition field. We will use
-the input file in [cookbooks/van-keken/van-keken-discontinuous.prm][] as
+the input file in [cookbooks/van-keken/van-keken-discontinuous.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/van-keken/van-keken-discontinuous.prm) as
 input, the central piece of which is as follows (go to the actual input file
 to see the remainder of the input parameters):
 
@@ -113,7 +113,7 @@ mesh-independent is to replace the original discontinuous initial condition
 with a smoothed out version; of course, we can still not represent it exactly
 on any given mesh, but we can at least get closer to it than for discontinuous
 variables. Consequently, let us use the following initial conditions instead
-(see also the file [cookbooks/van-keken/van-keken-smooth.prm][]):
+(see also the file [cookbooks/van-keken/van-keken-smooth.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/van-keken/van-keken-smooth.prm)):
 
 ``` prmfile
 ```

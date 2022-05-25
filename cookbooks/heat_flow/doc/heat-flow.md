@@ -4,7 +4,7 @@
 *This section was contributed by Juliane Dannberg.*
 
 The input file for this model can be found at
-[cookbooks/heat_flow/heat-flow.prm][]
+[cookbooks/heat_flow/heat-flow.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/heat_flow/heat-flow.prm)
 
 The model is loosely based on the cookbook describing how to model convection
 in a box with prescribed, variable velocity boundary conditions
@@ -29,7 +29,7 @@ can be found in [this presentation][].
 
 The model can also be modified to include radiogenic heat production and shear
 heating. The corresponding input file is located at
-[cookbooks/heat_flow/heat-flow-terms.prm][], and it switches on postprocessors
+[cookbooks/heat_flow/heat-flow-terms.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/heat_flow/heat-flow-terms.prm), and it switches on postprocessors
 that generate graphical output for the different heating terms. An example
 exercise is described in [this presentation (last slide)][].
 
@@ -112,7 +112,7 @@ In order to do that, pick your favourite ocean island from the list below.
 Find out on what tectonic plate the island is located on, and how old the
 ocean floor is where the hot spot is located.
 
-Use the input file [cookbooks/heat_flow/heat-flow-plume.prm][]. The model is
+Use the input file [cookbooks/heat_flow/heat-flow-plume.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/heat_flow/heat-flow-plume.prm). The model is
 very similar to the mid-ocean ridge model you analyzed above, but the oceanic
 plate does not move (so by default, there is no convective heat flux), and
 extension in the vertical direction is larger to allow for older (and,

@@ -6,7 +6,7 @@ Liu*
 There are several postprocessors that can be used to turn the velocity and
 pressure solution into quantities that can be compared to surface
 observations. In this cookbook
-([cookbooks/shell_3d_postprocess/shell_3d_postprocess.prm][]) we introduce two
+([cookbooks/shell_3d_postprocess/shell_3d_postprocess.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/shell_3d_postprocess/shell_3d_postprocess.prm)) we introduce two
 postprocessors: dynamic topography and the geoid. We initialize the model with
 a harmonic perturbation of degree 4 and order 2 and calculate the
 instantaneous solution. Analogous to the previous setup we use a spherical

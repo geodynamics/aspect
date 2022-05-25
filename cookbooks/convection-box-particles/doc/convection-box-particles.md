@@ -4,7 +4,7 @@
 *This section was contributed by Juliane Dannberg.*
 
 The input file for this model can be found at
-[cookbooks/convection-box-particles/convection-box-particles.prm][].
+[cookbooks/convection-box-particles/convection-box-particles.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/convection-box-particles/convection-box-particles.prm).
 
 This model is a modification of the Convection in a 2d box cookbook described
 in section [\[sec:cookbooks-simple-box\]][1]. It is changed to a lower

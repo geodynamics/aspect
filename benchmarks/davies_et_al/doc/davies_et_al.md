@@ -67,7 +67,7 @@ since we are only interested in the long term, steady state behavior.
 
 The model is relatively straightforward to set up, basing the input file on
 that discussed in Section&nbsp;[\[sec:shell-simple-2d\]][3]. The full input
-file can be found at [benchmarks/davies_et_al/case-1.1.prm][], with the
+file can be found at [benchmarks/davies_et_al/case-1.1.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-1.1.prm), with the
 interesting parts excerpted as follows:
 
 ``` prmfile
@@ -103,7 +103,7 @@ solution, adding a solid body rotation yields another solution. We select
 arbitrarily the one that has no net rotation (see
 Section&nbsp;[\[parameters:Nullspace_20removal\]][6]). The section in the
 input file that is relevant is then as follows (the full input file resides at
-[benchmarks/davies_et_al/case-2.1.prm][]):
+[benchmarks/davies_et_al/case-2.1.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-2.1.prm)):
 
 ``` prmfile
 ```
@@ -126,7 +126,7 @@ Case 2.2 is described as follows:
 
 In other words, we have an increased Rayleigh number and begin with the final
 steady state of case 2.1. To start the model where case 2.1 left off, the
-input file of case 2.1, [benchmarks/davies_et_al/case-2.1.prm][], instructs to
+input file of case 2.1, [benchmarks/davies_et_al/case-2.1.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-2.1.prm), instructs to
 checkpoint itself every few time steps (see
 Section&nbsp;[\[sec:checkpoint-restart\]][7]). If case 2.2 uses the same
 output directory, we can then resume the computations from this checkpoint
@@ -138,7 +138,7 @@ input time:
 
 We increase the Rayleigh number to $10^5$ by increasing the magnitude of
 gravity in the input file. The full script for case 2.2 is located in
-[benchmarks/davies_et_al/case-2.2.prm][]
+[benchmarks/davies_et_al/case-2.2.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-2.2.prm)
 
 (sec:benchmarks:davies_et_al:case2.3)=
 ## Case 2.3: BA_Ra103_vv_FS.
@@ -193,7 +193,7 @@ Using the method described in Sections&nbsp;[\[sec:benchmark-run\]][11] and
 `benchmarks/davies_et_al/case-2.3-plugin`, we can compile our new material
 model into a shared library that we can then reference from the input file.
 The complete input file for case 2.3 is located in
-[benchmarks/davies_et_al/case-2.3.prm][] and contains among others the
+[benchmarks/davies_et_al/case-2.3.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-2.3.prm) and contains among others the
 following parts:
 
 ``` prmfile

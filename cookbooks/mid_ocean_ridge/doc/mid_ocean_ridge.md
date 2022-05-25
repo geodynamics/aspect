@@ -96,7 +96,7 @@ will discuss this method as a possible modification to this cookbook at the
 end of this section.
 
 The complete input file is located at
-[cookbooks/mid_ocean_ridge/mid_ocean_ridge.prm][].
+[cookbooks/mid_ocean_ridge/mid_ocean_ridge.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/mid_ocean_ridge/mid_ocean_ridge.prm).
 
 ##### Model evolution.
 

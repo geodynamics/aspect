@@ -76,7 +76,7 @@ crust:
     of 170km implies a depth of 30km.
 
 The entire parameter file is located in
-[cookbooks/free_surface_with_crust/free_surface_with_crust.prm][].
+[cookbooks/free_surface_with_crust/free_surface_with_crust.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/free_surface_with_crust/free_surface_with_crust.prm).
 
 Running this input file generates a crust that is 30 km thick and 1000 times
 as viscous as the lower layer. Figure&nbsp;[2][] shows that adding a crust to

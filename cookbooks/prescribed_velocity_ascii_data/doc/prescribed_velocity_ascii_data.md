@@ -13,7 +13,7 @@ as an additional shared library:
 ```
 
 An example parameter file using this plugin can be found at
-[cookbooks/prescribed_velocity_ascii_data/prescribed_velocity_ascii_data.prm][].
+[cookbooks/prescribed_velocity_ascii_data/prescribed_velocity_ascii_data.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/prescribed_velocity_ascii_data/prescribed_velocity_ascii_data.prm).
 In this file, the velocities are constrained to be zero within the letters
 &ldquo;ASPECT&rdquo; (Figure&nbsp;[1][]). The part of this file which provides
 the location of the ASCII file and the prescribed velocity field function is:

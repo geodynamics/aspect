@@ -4,7 +4,7 @@
 *This section was contributed by Juliane Dannberg.*
 
 The input file for this model can be found at
-[cookbooks/magnetic_stripes/magnetic_stripes.prm][].
+[cookbooks/magnetic_stripes/magnetic_stripes.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/magnetic_stripes/magnetic_stripes.prm).
 
 This is a model of a mid-ocean ridge that shows how magnetic lineations are
 created on the sea floor as the magnetic field changes its orientation over

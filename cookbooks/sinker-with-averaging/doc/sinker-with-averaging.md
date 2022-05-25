@@ -71,7 +71,7 @@ field that is one inside and zero outside the sphere, and assigning a
 compositional dependence to the viscosity and density. We run only a single
 time step for this benchmark. This is all modeled in the following input file
 that can also be found in
-[cookbooks/sinker-with-averaging/sinker-with-averaging.prm][]:
+[cookbooks/sinker-with-averaging/sinker-with-averaging.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/sinker-with-averaging/sinker-with-averaging.prm):
 
 ``` prmfile
 ```

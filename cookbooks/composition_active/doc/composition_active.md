@@ -32,7 +32,7 @@ the surrounding material.[1]
 This setup of the problem can be described using an input file that is almost
 completely unchanged from the passive case. The only difference is the use of
 the following section (the complete input file can be found in
-[cookbooks/composition_active/composition_active.prm][]:
+[cookbooks/composition_active/composition_active.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_active/composition_active.prm):
 
 ``` prmfile
 ```

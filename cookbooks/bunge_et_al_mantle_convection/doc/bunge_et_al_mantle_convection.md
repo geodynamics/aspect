@@ -13,7 +13,7 @@ the &lsquo;simple&rsquo; material model to reproduce the set-up in (Bunge,
 Richards, and Baumgardner 1996), which reported that even modest increases in
 mantle viscosity with depth could have a marked effect on the style of mantle
 convection. The prm file corresponding to this cookbook can be found at
-[cookbooks/bunge_et_al_mantle_convection/bunge_et_al.prm][].
+[cookbooks/bunge_et_al_mantle_convection/bunge_et_al.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/bunge_et_al_mantle_convection/bunge_et_al.prm).
 
 Although the original article showcases results obtained in a 3D hollow
 sphere, we here run the models in an annular domain of inner radius
