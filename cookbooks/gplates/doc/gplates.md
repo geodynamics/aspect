@@ -131,7 +131,7 @@ model setups allows for an easy comparison and test for common sources of
 error in the interpretation of model results. The left top figure in
 Fig.&nbsp;[1][] shows a modification of the above presented parameter file by
 setting `Dimension = 3` and
-&ldquo;`Initial global refinement = 3`.&rdquo; The top right plot of
+`Initial global refinement = 3`. The top right plot of
 Fig.&nbsp;[1][] shows an example of three independent two-dimensional
 computations of the same reduced resolution. The models were prescribed to be
 orthogonal slices by setting:
