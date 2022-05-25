@@ -101,7 +101,9 @@ The complete input file is located at
 ##### Model evolution.
 
 ```{figure-md}
-<embed src="cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.pdf" id="fig:mid-ocean-ridge" style="width:50.0%" /><figcaption aria-hidden="true"><em>Mid-ocean ridge model after 8 million years. The top panel shows the depletion and porosity fields (with the characteristic triangular melting region), the bottom panel shows the temperature distribution and the melt velocity, indicated by the arrows.</em></figcaption>
+<embed src="cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.pdf" id="fig:mid-ocean-ridge" style="width:50.0%" />
+
+<figcaption aria-hidden="true"><em>Mid-ocean ridge model after 8 million years. The top panel shows the depletion and porosity fields (with the characteristic triangular melting region), the bottom panel shows the temperature distribution and the melt velocity, indicated by the arrows.</em></figcaption>
 ```
 
 When we look at the visualization output of this model (see also
@@ -126,7 +128,9 @@ field). A vertical profile at a distance of 80 km from the ridge axis showing
 this composition can be found in Figure&nbsp;[2][].
 
 ```{figure-md}
-<embed src="cookbooks/mid_ocean_ridge/doc/depletion_profile.pdf" id="fig:mid-ocean-ridge-profile" style="width:35.0%" /><figcaption aria-hidden="true"><em>Vertical profile through the model domain at a distance of 80 km from the ridge axis at the end of the model run, showing the distribution of depletion and enrichment as indicated by the peridotite field.</em></figcaption>
+<embed src="cookbooks/mid_ocean_ridge/doc/depletion_profile.pdf" id="fig:mid-ocean-ridge-profile" style="width:35.0%" />
+
+<figcaption aria-hidden="true"><em>Vertical profile through the model domain at a distance of 80 km from the ridge axis at the end of the model run, showing the distribution of depletion and enrichment as indicated by the peridotite field.</em></figcaption>
 ```
 
 ##### Mesh refinement.
@@ -145,7 +149,9 @@ melt velocity and compaction pressure that are to be expected in these places
 for refining the mesh.
 
 ```{figure-md}
-<embed src="cookbooks/mid_ocean_ridge/doc/refinement.pdf" id="fig:mid-ocean-ridge-mesh" style="width:60.0%" /><figcaption aria-hidden="true"><em>Mesh after a time of 3.6 million years for a model using the composition threshold refinement strategy (left) and the compaction length refinement strategy (right) Background colors indicate the melt velocity. Its sharp gradients at the interface between regions with and without melt can only be resolved using the compaction length refinement strategy.</em></figcaption>
+<embed src="cookbooks/mid_ocean_ridge/doc/refinement.pdf" id="fig:mid-ocean-ridge-mesh" style="width:60.0%" />
+
+<figcaption aria-hidden="true"><em>Mesh after a time of 3.6 million years for a model using the composition threshold refinement strategy (left) and the compaction length refinement strategy (right) Background colors indicate the melt velocity. Its sharp gradients at the interface between regions with and without melt can only be resolved using the compaction length refinement strategy.</em></figcaption>
 ```
 
 ##### Extending the model.

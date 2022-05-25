@@ -50,7 +50,9 @@ comparison are basically indistinguishable.
 <div class="center">
 
 ```{figure-md}
-<embed src="cookbooks/benchmarks/crameri_et_al/doc/crameri_1_comparison.pdf" id="fig:crameri-benchmark-relaxation-topography" style="width:95.0%" /><figcaption aria-hidden="true"><em>Results for the topography relaxation benchmark, showing maximum topography versus time. Over about <span class="math inline">100</span> ka the topography completely disappears. The results of four free surface codes, as well as the semi-analytic solution, are nearly identical.</em></figcaption>
+<embed src="cookbooks/benchmarks/crameri_et_al/doc/crameri_1_comparison.pdf" id="fig:crameri-benchmark-relaxation-topography" style="width:95.0%" />
+
+<figcaption aria-hidden="true"><em>Results for the topography relaxation benchmark, showing maximum topography versus time. Over about <span class="math inline">100</span> ka the topography completely disappears. The results of four free surface codes, as well as the semi-analytic solution, are nearly identical.</em></figcaption>
 ```
 
 </div>
@@ -80,7 +82,9 @@ $\sim 800$ meters.
 <div class="center">
 
 ```{figure-md}
-<embed src="cookbooks/benchmarks/crameri_et_al/doc/crameri_2_comparison.pdf" id="fig:crameri-2-comparison" style="width:95.0%" /><figcaption aria-hidden="true"><em>Evolution of topography for the dynamic topography benchmark. The maximum topography is shown as a function of time, for as well as for several other codes participating in the benchmark. This benchmark shows considerably more scatter between the codes.</em></figcaption>
+<embed src="cookbooks/benchmarks/crameri_et_al/doc/crameri_2_comparison.pdf" id="fig:crameri-2-comparison" style="width:95.0%" />
+
+<figcaption aria-hidden="true"><em>Evolution of topography for the dynamic topography benchmark. The maximum topography is shown as a function of time, for as well as for several other codes participating in the benchmark. This benchmark shows considerably more scatter between the codes.</em></figcaption>
 ```
 
 </div>
@@ -115,7 +119,9 @@ CFL number and mesh resolution. The results are shown in figure&nbsp;[5][].
 <div class="center">
 
 ```{figure-md}
-<embed src="cookbooks/benchmarks/crameri_et_al/doc/crameri_2_convergence.pdf" id="fig:crameri-benchmark-convergence" style="width:100.0%" /><figcaption aria-hidden="true"><em>Convergence for case two. Left: Logarithm of the error with decreasing CFL number. As the CFL number decreases, the error gets smaller. However, once it reaches a value of <span class="math inline">&#x2004;&#x223C;&#x2004;0.1</span>, there stops being much improvement in accuracy. Right: Logarithm of the error with increasing maximum mesh resolution. As the resolution increases, so does the accuracy.</em></figcaption>
+<embed src="cookbooks/benchmarks/crameri_et_al/doc/crameri_2_convergence.pdf" id="fig:crameri-benchmark-convergence" style="width:100.0%" />
+
+<figcaption aria-hidden="true"><em>Convergence for case two. Left: Logarithm of the error with decreasing CFL number. As the CFL number decreases, the error gets smaller. However, once it reaches a value of <span class="math inline">&#x2004;&#x223C;&#x2004;0.1</span>, there stops being much improvement in accuracy. Right: Logarithm of the error with increasing maximum mesh resolution. As the resolution increases, so does the accuracy.</em></figcaption>
 ```
 
 </div>

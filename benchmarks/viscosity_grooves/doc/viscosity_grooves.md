@@ -60,7 +60,9 @@ in the upper right corner of the $3\times 3$ domain will require a refinement
 level larger than 9 to recover the optimal convergence rates.
 
 ```{figure-md}
-<embed src="cookbooks/benchmarks/viscosity_grooves/doc/conv_0p1.pdf" id="fig:benchmark-grooves-errors" style="width:90.0%" /><figcaption aria-hidden="true"><em>Viscosity grooves benchmark: Velocity and pressure error convergence as a function of the mesh size <span class="math inline"><em>h</em></span> for 3 domain sizes.</em></figcaption>
+<embed src="cookbooks/benchmarks/viscosity_grooves/doc/conv_0p1.pdf" id="fig:benchmark-grooves-errors" style="width:90.0%" />
+
+<figcaption aria-hidden="true"><em>Viscosity grooves benchmark: Velocity and pressure error convergence as a function of the mesh size <span class="math inline"><em>h</em></span> for 3 domain sizes.</em></figcaption>
 ```
 
 <div id="refs" class="references csl-bib-body hanging-indent">

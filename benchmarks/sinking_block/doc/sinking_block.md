@@ -41,7 +41,9 @@ points forming a single smooth line.
 ```
 
 ```{figure-md}
-<embed src="cookbooks/benchmarks/sinking_block/doc/plot.pdf" id="fig:sinking_block2" style="width:80.0%" /><figcaption aria-hidden="true"><em>Scaled velocity measurements as a function of the viscosity contrast between surrounding medium and block for all experiments.</em></figcaption>
+<embed src="cookbooks/benchmarks/sinking_block/doc/plot.pdf" id="fig:sinking_block2" style="width:80.0%" />
+
+<figcaption aria-hidden="true"><em>Scaled velocity measurements as a function of the viscosity contrast between surrounding medium and block for all experiments.</em></figcaption>
 ```
 
 <div id="refs" class="references csl-bib-body hanging-indent">
