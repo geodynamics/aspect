@@ -232,8 +232,8 @@ laterally averaged temperature. The file
 adiabatic profile. To illustrate the difference, the content of both files is
 plotted in Figure&nbsp;[2][].
 
-<embed src="cookbooks/steinberger/doc/radial-visc.pdf" title="fig:" id="fig:steinberger-viscosity" style="width:48.0%" />
-<embed src="cookbooks/steinberger/doc/radial-visc-simple.pdf" title="fig:" id="fig:steinberger-viscosity" style="width:48.0%" />
+<embed src="radial-visc.svg" title="fig:" id="fig:steinberger-viscosity" style="width:48.0%" />
+<embed src="radial-visc-simple.svg" title="fig:" id="fig:steinberger-viscosity" style="width:48.0%" />
 
 In order to improve solver convergence, the material model has additional
 parameters that allow it to limit the viscosity variations. Because of the

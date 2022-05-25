@@ -35,7 +35,7 @@ We will here use a drawing of a jellyfish located in
 been assigned to each path (Figure&nbsp;[1][]).
 
 ```{figure-md} fig:jelly-picture
-<embed src="cookbooks/geomio/doc/jellyfish.pdf" style="width:20.0%" />
+<embed src="jellyfish.svg" style="width:20.0%" />
 
 Vector drawing of a jellyfish.
 ```
@@ -86,7 +86,7 @@ mesh refined at the boundaries between the different phases
 (Figure&nbsp;[3][]).
 
 ```{figure-md} fig:jelly-paraview
-<embed src="cookbooks/geomio/doc/jelly-paraview.pdf" style="width:55.0%" />
+<embed src="jelly-paraview.svg" style="width:55.0%" />
 
 <figcaption aria-hidden="true"> <em>model output of the jellyfish and corresponding mesh in ParaView.
 ```

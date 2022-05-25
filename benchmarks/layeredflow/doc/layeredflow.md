@@ -15,8 +15,8 @@ viscosity (if $\epsilon$ is small).
 
 <div class="center">
 
-<embed src="cookbooks/benchmarks/layeredflow/doc/viscosityA.pdf" title="fig:" id="fig:layeredflow1" style="width:48.0%" />
-<embed src="cookbooks/benchmarks/layeredflow/doc/viscosityD.pdf" title="fig:" id="fig:layeredflow1" style="width:48.0%" />
+<embed src="viscosityA.svg" title="fig:" id="fig:layeredflow1" style="width:48.0%" />
+<embed src="viscosityD.svg" title="fig:" id="fig:layeredflow1" style="width:48.0%" />
 
 </div>
 

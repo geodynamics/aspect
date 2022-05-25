@@ -36,7 +36,7 @@ explained by linear stability analysis (Weinberg and Schmeling 1992; Ramberg
 <img src="diapirs0015.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Figure" />
 
 ```{figure-md} fig:polydiapirs_vrms
-<embed src="cookbooks/benchmarks/polydiapirs/doc/vrms.pdf" style="width:75.0%" />
+<embed src="vrms.svg" style="width:75.0%" />
 
 Polydiapirism benchmark: Root mean square velocity as a function of time
 ```

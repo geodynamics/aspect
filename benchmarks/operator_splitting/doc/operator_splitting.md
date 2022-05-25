@@ -116,7 +116,7 @@ and we use the same methods to solve for these variables.
 <div class="center">
 
 ```{figure-md} fig:exponential-decay
-<embed src="cookbooks/benchmarks/operator_splitting/doc/error_exponential_decay.pdf" style="width:65.0%" />
+<embed src="error_exponential_decay.svg" style="width:65.0%" />
 
 Error for both compositional field and temperature compared to the analytical solution, varying the time steps of advection (blue data points and and top/blue x axis) and reactions (red data points and and bottom/red x axis), while keeping the other one constant, respectively.
 ```
@@ -138,8 +138,8 @@ this setup can be found in
 
 <div class="center">
 
-<embed src="cookbooks/benchmarks/operator_splitting/doc/error_advection_reaction.pdf" title="fig:" id="fig:advection-reaction" style="width:48.0%" />
-<embed src="cookbooks/benchmarks/operator_splitting/doc/error_advection_reaction2.pdf" title="fig:" id="fig:advection-reaction" style="width:48.0%" />
+<embed src="error_advection_reaction.svg" title="fig:" id="fig:advection-reaction" style="width:48.0%" />
+<embed src="error_advection_reaction2.svg" title="fig:" id="fig:advection-reaction" style="width:48.0%" />
 
 </div>
 
