@@ -136,7 +136,7 @@ the pressure shows quadratic convergence in the $L_1$ and $L_2$ norms, as one
 would hope for using $Q_2$ elements for the velocity and $Q_1$ elements for
 the pressure.
 
-<figure>
+```{figure-md}
 <embed src="cookbooks/benchmarks/burstedde/doc/errors.pdf" id="errors" /><figcaption aria-hidden="true"><em>Burstedde benchmark: Error convergence for the 3D polynomial Stokes benchmark. <span id="errors" label="errors">[errors]</span></em></figcaption>
 </figure>
 

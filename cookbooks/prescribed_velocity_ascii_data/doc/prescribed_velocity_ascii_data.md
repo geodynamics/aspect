@@ -32,7 +32,7 @@ These two ASCII data files are generated from `aspect_name.png` by the python
 file `make_ascii_files_from_png.py`, both of which can be found in the same
 directory as the parameter file.
 
-<figure>
+```{figure-md}
 <img src="prescribed_velocities_ascii_data_initial_conditions.png" id="fig:prescribed-velocity-ascii-data-init" alt="Initial composition and temperature conditions for the prescribed velocity ascii data cookbook, as described in Section 0.0.1." /><figcaption aria-hidden="true"><em>Initial composition and temperature conditions for the prescribed velocity ascii data cookbook, as described in Section <a href="#sec:prescribed-velocities-ascii-data" data-reference-type="ref" data-reference="sec:prescribed-velocities-ascii-data">0.0.1</a>.</em></figcaption>
 </figure>
 
@@ -41,7 +41,7 @@ and into the bases of the letters. The temperature gradients in the
 unconstrained part of the domain then generate convective flow.
 Figure&nbsp;[2][] illustrates the resulting flow field.
 
-<figure>
+```{figure-md}
 <img src="prescribed_velocity_ascii_data.png" id="fig:prescribed-velocity-ascii-data" style="width:80.0%" alt="Convective flow around the letters ASPECT, within which velocities are prescribed to be zero, as described in Section 0.0.1." /><figcaption aria-hidden="true"><em>Convective flow around the letters ASPECT, within which velocities are prescribed to be zero, as described in Section <a href="#sec:prescribed-velocities-ascii-data" data-reference-type="ref" data-reference="sec:prescribed-velocities-ascii-data">0.0.1</a>.</em></figcaption>
 </figure>
 

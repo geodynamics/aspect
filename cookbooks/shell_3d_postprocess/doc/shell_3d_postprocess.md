@@ -61,7 +61,7 @@ depression that drags the surface down. The geoid postprocessor uses a
 spherical harmonic expansion and can therefore only be used with the 3D
 spherical shell geometry model.
 
-<figure>
+```{figure-md}
 <img src="postprocess_cookbook-01.png" id="fig:pp" alt="Panel (a) shows an equatorial cross section of the temperature distribution and resulting flow from a harmonic perturbation. Panel (b) shows the resulting geoid, and panels (c) and (d) show the resulting surface and bottom topography. Note that we have subtracted the mean surface and bottom topography in the respective panels (c and d) as a postprocessing step outside of Aspect. " /><figcaption aria-hidden="true"><em>Panel (a) shows an equatorial cross section of the temperature distribution and resulting flow from a harmonic perturbation. Panel (b) shows the resulting geoid, and panels (c) and (d) show the resulting surface and bottom topography. Note that we have subtracted the mean surface and bottom topography in the respective panels (c and d) as a postprocessing step outside of Aspect.</em> </figcaption>
 </figure>
 

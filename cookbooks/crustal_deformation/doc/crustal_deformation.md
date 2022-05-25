@@ -77,7 +77,7 @@ unique capabilities of the code to handle free surface large deformation,
 localised strain rates through visco-plasticity and adaptive mesh refinement
 as shown in Fig. ([2][]).
 
-<figure>
+```{figure-md}
 <img src="grids.png" id="fig:meshes" style="width:70.0%" alt="Mesh evolution during the first timestep (refinement is based on strain rate)." /><figcaption aria-hidden="true"><em>Mesh evolution during the first timestep (refinement is based on strain rate).</em></figcaption>
 </figure>
 
@@ -86,7 +86,7 @@ bands form at an angle of approximately $53\degree$ to the bottom in extension
 and $35\degree$ in compression, both of which correspond to the reported
 Arthur angle (Kaus 2010; Buiter 2012).
 
-<figure>
+```{figure-md}
 <img src="both.png" id="fig:extcompr" alt="Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr." /><figcaption aria-hidden="true"><em>Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.</em></figcaption>
 </figure>
 
@@ -104,7 +104,7 @@ boundary conditions are implemented as follows:
 The presence of an offset between the two velocity discontinuity zones leads
 to a transform fault which connects them.
 
-<figure>
+```{figure-md}
 <img src="bottombc2.png" id="fig:bottombc" alt="Basal velocity boundary conditions and corresponding strain rate field for the 3D model." /><figcaption aria-hidden="true"><em>Basal velocity boundary conditions and corresponding strain rate field for the 3D model.</em></figcaption>
 </figure>
 
@@ -114,7 +114,7 @@ encouraged to run this setup in time to look at how the two grabens interact
 as a function of their initial offset (Allken, Huismans, and Thieulot 2011,
 2012; Allken et al. 2013).
 
-<figure>
+```{figure-md}
 <img src="all3D.png" id="fig:ext3D" alt="Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement." /><figcaption aria-hidden="true"><em>Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement.</em></figcaption>
 </figure>
 

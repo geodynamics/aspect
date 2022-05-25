@@ -36,7 +36,7 @@ size $h$ (taken in this case as the radial extent of the elements). As
 expected we recover a third-order convergence rate for the velocity and a
 second-order convergence rate for the pressure.
 
-<figure>
+```{figure-md}
 <embed src="cookbooks/benchmarks/annulus/doc/errors_annulus.pdf" id="fig:annulus-errors" /><figcaption aria-hidden="true"><em>Velocity and pressure errors in the <span class="math inline"><em>L</em><sub>2</sub></span>-norm as a function of the mesh size for the 2D annulus benchmark.</em></figcaption>
 </figure>
 
