@@ -38,7 +38,7 @@ in the `ReboundBox` subsection.
 The characteristic timescales of topography relaxation are significantly
 smaller than those of mantle convection. Taking timesteps larger than this
 relaxation timescale tends to cause sloshing instabilities, which are
-described further in Section&nbsp;[\[sec:freesurface\]][2]. Some sort of
+described further in Section&nbsp;{ref}`sec:freesurface`. Some sort of
 stabilization is required to take large timesteps. In this benchmark, however,
 we are interested in the relaxation timescale, so we are free to take very
 small timesteps (in this case, 0.01 times the CFL number). As can be seen in

@@ -2,7 +2,7 @@
 
 *This section was contributed by Bob Myhill*
 
-Building on [\[sec:prescribed-velocities\]][1], the
+Building on {ref}`sec:prescribed-velocities`, the
 [cookbooks/prescribed_velocity_ascii_data][] directory contains a plugin which
 uses an ASCII data file to specify where to prescribe internal velocities.
 Velocities are prescribed wherever the field value indicated by the ASCII data

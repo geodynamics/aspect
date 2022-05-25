@@ -66,7 +66,7 @@ is important here though is that the system evolve to four convective cells
 since we are only interested in the long term, steady state behavior.
 
 The model is relatively straightforward to set up, basing the input file on
-that discussed in Section&nbsp;[\[sec:shell-simple-2d\]][3]. The full input
+that discussed in Section&nbsp;{ref}`sec:shell-simple-2d`. The full input
 file can be found at [benchmarks/davies_et_al/case-1.1.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-1.1.prm), with the
 interesting parts excerpted as follows:
 
@@ -74,7 +74,7 @@ interesting parts excerpted as follows:
 ```
 
 We use the same trick here as in
-Section&nbsp;[\[sec:cookbooks-simple-box\]][4] to produce a model in which the
+Section&nbsp;{ref}`sec:cookbooks-simple-box` to produce a model in which the
 density $\rho(T)$ in the temperature equation [\[eq:temperature\]][5] is
 almost constant (namely, by choosing a very small thermal expansion
 coefficient) as required by the benchmark, and instead prescribe the desired
@@ -128,7 +128,7 @@ In other words, we have an increased Rayleigh number and begin with the final
 steady state of case 2.1. To start the model where case 2.1 left off, the
 input file of case 2.1, [benchmarks/davies_et_al/case-2.1.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-2.1.prm), instructs to
 checkpoint itself every few time steps (see
-Section&nbsp;[\[sec:checkpoint-restart\]][7]). If case 2.2 uses the same
+Section&nbsp;{ref}`sec:checkpoint-restart`). If case 2.2 uses the same
 output directory, we can then resume the computations from this checkpoint
 with an input file that prescribes a different Rayleigh number and a later
 input time:
@@ -159,9 +159,9 @@ The Rayleigh number is smaller here (and is selected using the gravity
 parameter in the input file, as before), but the more important change is that
 the viscosity is now a function of temperature. At the time of writing, there
 is no material model that would implement such a viscosity, so we create a
-plugin that does so for us (see Sections&nbsp;[\[sec:extending\]][8] and
-[\[sec:write-plugin\]][9] in general, and
-Section&nbsp;[\[sec:material-models\]][10] for material models in particular).
+plugin that does so for us (see Sections&nbsp;{ref}`sec:extending` and
+{ref}`sec:write-plugin` in general, and
+Section&nbsp;{ref}`sec:material-models` for material models in particular).
 The code for it is located in
 [benchmarks/davies_et_al/case-2.3-plugin/VoT.cc](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-2.3-plugin/VoT.cc) (where &ldquo;VoT&rdquo; is
 short for &ldquo;viscosity as a function of temperature&rdquo;) and is
@@ -188,8 +188,8 @@ evaluate(const typename Interface<dim>::MaterialModelInputs &in,
 }
 ```
 
-Using the method described in Sections&nbsp;[\[sec:benchmark-run\]][11] and
-[\[sec:write-plugin\]][9], and the files in the
+Using the method described in Sections&nbsp;{ref}`sec:benchmark-run` and
+{ref}`sec:write-plugin`, and the files in the
 `benchmarks/davies_et_al/case-2.3-plugin`, we can compile our new material
 model into a shared library that we can then reference from the input file.
 The complete input file for case 2.3 is located in

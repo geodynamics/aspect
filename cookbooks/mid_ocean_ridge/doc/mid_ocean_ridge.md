@@ -4,7 +4,7 @@
 
 The following cookbook will explain how to set up a model of a mid-ocean ridge
 that uses &rsquo;s implementation of coupled magma/mantle dynamics (see
-Section&nbsp;[\[sec:melt_transport\]][1]) and melting and freezing of mantle
+Section&nbsp;{ref}`sec:melt_transport`) and melting and freezing of mantle
 rock. In particular, it will outline
 
 1.  how to use operator splitting to accurately compute melting and freezing
@@ -17,7 +17,7 @@ rock. In particular, it will outline
     migration.
 
 How to set up a model with melt migration in general is explained in the
-previous cookbook [\[sec:cookbooks-melt-global\]][2].
+previous cookbook {ref}`sec:cookbooks-melt-global`.
 
 As the flow at mid-ocean ridges can be assumed to be roughly symmetric with
 respect to the ridge axis in the center, we only model one half of the ridge
@@ -39,7 +39,7 @@ reactions) is that these reactions can be much faster than the time step of
 the model. For mid-ocean ridges, melt is generally assumed to be in
 equilibrium with the solid, which means that the reaction is basically
 instantaneous. To model these type of processes, uses operator splitting (see
-also Section [\[sec:benchmark-operator_splitting\]][3]): Reactions are solved
+also Section {ref}`sec:benchmark-operator_splitting`): Reactions are solved
 on a different time scale than advection. For this model, this means that at
 the beginning of each time step, all melting reactions, including their latent
 heat effects, are solved using several shorter sub-time steps. In the input

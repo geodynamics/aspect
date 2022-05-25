@@ -8,7 +8,7 @@ where the density, viscosity, and other parameters depend on the composition,
 taking into account what the compositional fields actually denote (e.g., if
 they simply indicate the origin of material, or the concentration of things
 like olivine, perovskite, &mldr;). The construction of material models is
-discussed in much greater detail in Section&nbsp;[\[sec:material-models\]][1];
+discussed in much greater detail in Section&nbsp;{ref}`sec:material-models`;
 we do not want to revisit this issue here and instead choose &ndash; once
 again &ndash; the simplest material model that is implemented in : the
 `simple` model.

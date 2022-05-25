@@ -7,7 +7,7 @@ The input file for this model can be found at
 [cookbooks/convection-box-particles/convection-box-particles.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/convection-box-particles/convection-box-particles.prm).
 
 This model is a modification of the Convection in a 2d box cookbook described
-in section [\[sec:cookbooks-simple-box\]][1]. It is changed to a lower
+in section {ref}`sec:cookbooks-simple-box`. It is changed to a lower
 resolution, uses physical units, and outputs particles, which can be used to
 visualize the flow of the material. This makes it a good setup to run as a
 very first simple geodynamic model to test if is running on everyone&rsquo;s

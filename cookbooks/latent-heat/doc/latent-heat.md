@@ -128,7 +128,7 @@ state and only then does the bottom temperature reach the theoretical value.
 Therefore, we use the last output step to compare predicted and computed
 values. You can visualize the output in different ways, one of it being
 ParaView and shown in Fig.&nbsp;[2][] on the right side (an alternative is to
-use Visit as described in Section&nbsp;[\[sec:viz\]][4]). In ParaView, you can
+use Visit as described in Section&nbsp;{ref}`sec:viz`). In ParaView, you can
 plot the temperature profile using the filter &ldquo;Plot Over Line&rdquo;
 (Point1: 500000,0,0; Point2: 500000,1000000,0, then go to the
 &ldquo;Display&rdquo; tab and select &ldquo;T&rdquo; as only variable in the

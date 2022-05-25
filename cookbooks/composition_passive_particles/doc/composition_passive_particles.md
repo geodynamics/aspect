@@ -4,7 +4,7 @@ parameters. We do so in the
 [cookbooks/composition_passive_particles/composition_passive_particles.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive_particles/composition_passive_particles.prm)
 input file, which is otherwise just a minor variation of the
 [cookbooks/composition_passive/composition_passive.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive/composition_passive.prm) case discussed in
-the previous Section&nbsp;[\[sec:cookbooks-composition\]][1]. In particular,
+the previous Section&nbsp;{ref}`sec:cookbooks-composition`. In particular,
 the postprocess section now looks like this:
 
 ``` prmfile
@@ -18,7 +18,7 @@ Section&nbsp;{ref}`parameters:Postprocess/Particles`.)
 
 If you run this cookbook, information about all particles will be written into
 the output directory selected in the input file (as discussed in
-Section&nbsp;[\[sec:running-overview\]][3]). In the current case, in addition
+Section&nbsp;{ref}`sec:running-overview`). In the current case, in addition
 to the files already discussed there, a directory listing at the end of a run
 will show several particle related files:
 
@@ -41,7 +41,7 @@ drwxr-xr-x 2 bangerth bangerth   4096 Dec 11 10:08 solution
 Here, the `particles.pvd` and `particles.visit` files contain a list of all
 visualization files from all processors and time steps. These files can be
 loaded in much the same way as the `solution.pvd` and `solution.visit` files
-that were discussed in Section&nbsp;[\[sec:viz\]][4]. The actual data files
+that were discussed in Section&nbsp;{ref}`sec:viz`. The actual data files
 &ndash; possibly a large number, but not of much immediate interest to users
 &ndash; are located in the `particles` subdirectory.
 
@@ -99,7 +99,7 @@ multiple components. (A full list of particle properties that can currently be
 selected can be found in
 Section&nbsp;{ref}`parameters:Postprocess/Particles`, and new particle
 properties can be added as plugins as described in
-Section&nbsp;[\[sec:write-plugin\]][5].) The properties selected above do the
+Section&nbsp;{ref}`sec:write-plugin`.) The properties selected above do the
 following:
 
 -   `initial position:` This particle property simply stores the initial
@@ -119,7 +119,7 @@ following:
     compositional fields. Using this, it stores the compositional field
     initialization values at the location where the particle started, and
     again never changes them. This is useful in the same context as shown for
-    the field-based example in Section&nbsp;[\[sec:cookbooks-composition\]][1]
+    the field-based example in Section&nbsp;{ref}`sec:cookbooks-composition`
     where we would like to figure where materials ends up. In this case, one
     would set the initial composition to an indicator function for certain
     parts of the domain, and then set the initial composition property for the
@@ -130,7 +130,7 @@ following:
     &ldquo;initial composition&rdquo; property can also be useful to compare
     the final composition of a particle with its initial composition and
     therefore determine which regions underwent reactions such as those
-    described in Section&nbsp;[\[sec:cookbooks-composition\]][1], and where
+    described in Section&nbsp;{ref}`sec:cookbooks-composition`, and where
     the material that underwent this reaction got transported to.
 
 -   `function:` This particle property can be used to assign to each particle
@@ -140,7 +140,7 @@ following:
     copy these values via the &ldquo;initial composition&rdquo; property to
     particles. In the example above, we use the same function as for the
     compositional initial composition of field number one in
-    Section&nbsp;[\[sec:cookbooks-composition\]][1]. Therefore, this property
+    Section&nbsp;{ref}`sec:cookbooks-composition`. Therefore, this property
     should behave identical to the compositional field (except that the
     compositional field may have a reaction term that this particle property
     does not), although the two are of course advected using very different

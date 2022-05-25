@@ -63,8 +63,8 @@ refinements over the settings in the parameter file
 [cookbooks/composition_passive/composition_passive.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive/composition_passive.prm)), Fig.&nbsp;[9][]
 shows the maximal and minimal values of the first compositional fields over
 time, along with the mass $m_1(t)$ (these are all tabulated in columns of the
-statistics file, see Sections&nbsp;[\[sec:running-overview\]][1] and
-[\[sec:viz-stat\]][2]). While the maximum and minimum fluctuate slightly due
+statistics file, see Sections&nbsp;{ref}`sec:running-overview` and
+{ref}`sec:viz-stat`). While the maximum and minimum fluctuate slightly due
 to the instability of the finite element method in resolving discontinuous
 functions, the mass appears stable at a value of 0.403646 (the exact value,
 namely the area that was initially filled by each material, is 0.4; the

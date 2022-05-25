@@ -90,7 +90,7 @@ since it can easily be replaced by a calculated file index (see also
 
 For this cookbook we will use the parameter file provided in
 [cookbooks/gplates/gplates_2d.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/gplates/gplates_2d.prm) which uses the 2d shell geometry
-previously discussed in Section&nbsp;[\[sec:shell-simple-2d\]][1]. &rsquo;s
+previously discussed in Section&nbsp;{ref}`sec:shell-simple-2d`. &rsquo;s
 GPlates plugin allows for the use of two- and three-dimensional models
 incorporating the GPlates velocities. Since the output by GPlates is
 three-dimensional in any case, internally handles the 2D model by rotating the
@@ -204,7 +204,7 @@ Additionally, the parameter `Velocity file start time` allows for a period of
 no-slip boundary conditions before starting the use of the GPlates plugin.
 This is a comfort implementation, which could also be achieved by using the
 checkpointing possibility described in
-section&nbsp;[\[sec:checkpoint-restart\]][3].
+section&nbsp;{ref}`sec:checkpoint-restart`.
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

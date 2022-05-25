@@ -9,7 +9,7 @@ melt through a compacting and dilating matrix is the propagation of solitary
 waves (e.g. (Simpson and Spiegelman 2011; Keller, May, and Kaus 2013;
 Schmeling 2000)). The benchmark is intended to test the accuracy of the
 solution of the two-phase flow equations as described in Section
-[\[sec:melt_transport\]][1] and makes use of the fact that there is an
+{ref}`sec:melt_transport` and makes use of the fact that there is an
 analytical solution for the shape of solitary waves that travel through a
 partially molten rock with a constant background porosity without changing
 their shape and with a constant wave speed. Here, we follow the setup of the

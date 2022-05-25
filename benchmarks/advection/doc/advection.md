@@ -2,7 +2,7 @@
 
 The underlying PDEs of the temperature and compositional field are typically
 advection-dominated and as such, require a stabilization scheme, see
-[\[sec:advection-stabilization\]][1] for an introduction for the methods
+{ref}`sec:advection-stabilization` for an introduction for the methods
 implemented in .
 
 We have several benchmarks to test the robustness, quality of solutions (size

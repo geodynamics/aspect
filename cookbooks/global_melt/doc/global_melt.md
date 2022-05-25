@@ -4,7 +4,7 @@
 (Dannberg and Heister 2016) by Juliane Dannberg and Timo Heister.*
 
 The following cookbook will explain how to use &rsquo;s implementation of
-coupled magma/mantle dynamics (see Section&nbsp;[\[sec:melt_transport\]][1])
+coupled magma/mantle dynamics (see Section&nbsp;{ref}`sec:melt_transport`)
 to set up a model of mantle convection that also includes melting and freezing
 of mantle rock, and the transport of melt according to the two-phase flow
 equations. The model setup is described in detail in (Dannberg and Heister

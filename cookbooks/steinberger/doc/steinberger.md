@@ -42,7 +42,7 @@ Both the top and bottom boundaries allow for free slip. Because the model has
 periodic side boundary conditions and free slip boundaries at top and bottom,
 the amount of rigid-body rotation in $\phi$ direction is not constrained. In
 other words: There is no unique solution. can remove this nullspace from the
-model (see Section&nbsp;[\[sec:nullspace\]][1]). Here, we do this by setting
+model (see Section&nbsp;{ref}`sec:nullspace`). Here, we do this by setting
 the net rotation to zero:
 
 ``` prmfile

@@ -27,7 +27,7 @@ the phase transition (corresponding to 5% of the height of the box).
 
 In the model series presented in (Christensen and Yuen 1985), two important
 parameters are varied: the Rayleigh number (see for example
-Section&nbsp;[\[sec:cookbooks-simple-box\]][1]), which takes the values
+Section&nbsp;{ref}`sec:cookbooks-simple-box`), which takes the values
 $Ra = 10^4$, $10^5$, $4 \times 10^5$ and $2 \times 10^6$, and the phase
 buoyancy parameter, which is controlled by the Clapeyron slope of the phase
 transition (see (Christensen and Yuen 1985)) and takes values between $-0.8$

@@ -30,7 +30,7 @@ element grid with 1.25 and 2.5 km grid spacing, respectively, above and below
 50 km depth. This variation in grid spacing is achieved with a single initial
 adaptive refinement step using the minimum refinement function strategy.
 Unlike the crustal deformation cookbook (see
-Section&nbsp;[\[sec:cookbooks-crustal-deformation\]][1], the mesh is not
+Section&nbsp;{ref}`sec:cookbooks-crustal-deformation`, the mesh is not
 refined with time.
 
 ``` prmfile

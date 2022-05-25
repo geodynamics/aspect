@@ -87,7 +87,7 @@ go down or the scheduler aborts programs because they ran out of time. With
 computations this big, we cannot afford to just lose the results, so we
 checkpoint the computations every 50 time steps and can then resume it at the
 last saved state if necessary (see
-Section&nbsp;[\[sec:checkpoint-restart\]][2]):
+Section&nbsp;{ref}`sec:checkpoint-restart`):
 
 ``` prmfile
 ```

@@ -7,7 +7,7 @@ The input file for this model can be found at
 [cookbooks/onset_of_convection/onset_of_convection.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/onset_of_convection/onset_of_convection.prm).
 
 This model is a copy of the onset of convection benchmark described in
-Section&nbsp;[\[sec:benchmark-onset-of-convection\]][1], with the difference
+Section&nbsp;{ref}`sec:benchmark-onset-of-convection`, with the difference
 that parameter values are specified explicitly in the input file (rather than
 through an ipython notebook). The setup is based on a linear stability
 analysis for the onset of convection given in Turcotte and Schubert (Turcotte
