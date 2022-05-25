@@ -25,7 +25,7 @@ An example that shows how this model can be used to visualize lithospheric
 thickness and how it changes over time and in dependence of the spreading rate
 can be found in [this presentation][].
 
-##### Shear heating and radiogenic heating
+## Shear heating and radiogenic heating
 
 The model can also be modified to include radiogenic heat production and shear
 heating. The corresponding input file is located at
@@ -33,7 +33,7 @@ heating. The corresponding input file is located at
 that generate graphical output for the different heating terms. An example
 exercise is described in [this presentation (last slide)][].
 
-##### Example assignment: Heat flux
+## Example assignment: Heat flux
 
 *This section describes an example for a homework assignment based on this
 cookbook.*

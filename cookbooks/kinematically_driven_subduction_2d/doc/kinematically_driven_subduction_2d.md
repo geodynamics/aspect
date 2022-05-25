@@ -17,7 +17,7 @@ the solver tolerance.
 <img src="cookbooks/kinematically_driven_subduction_2d/doc/setup_Quinquis2014.png" id="fig:QQ_setup" style="width:80.0%" alt="Case 4 model setup. Copied from Quinquis (2014)." /><figcaption aria-hidden="true">Case 4 model setup. Copied from Quinquis (2014).</figcaption>
 </figure>
 
-##### Case 1: Simple geometry and rheology
+## Case 1: Simple geometry and rheology
 
 The Case 1 model setup considers three materials (compositional fields) apart
 from the background sublithospheric mantle (see Fig.&nbsp;[4][]):

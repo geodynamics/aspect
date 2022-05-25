@@ -9,7 +9,7 @@ Earth&rsquo;s buoyancy structure. In this cookbook we present how to use
 temperature perturbations based on the shear wave velocity model S20RTS
 (Ritsema and Heijst 2000) to initialize a mantle convection calculation.
 
-##### The input shear wave model.
+## The input shear wave model.
 
 The current version of can read in the shear wave velocity models S20RTS
 (Ritsema and Heijst 2000) and S40RTS (Ritsema et al. 2011), which are located
@@ -51,7 +51,7 @@ referenced to other absolute values and this should be taken into account when
 interpreting absolute values of temperature, density and other physical
 parameters in ASPECT.
 
-##### Setting up the model.
+## Setting up the model.
 
 For this cookbook we will use the parameter file provided in
 [cookbooks/initial-condition-S20RTS/S20RTS.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/initial-condition-S20RTS/S20RTS.prm), which uses a 3d spherical
@@ -98,7 +98,7 @@ temperature model. In this example we chose a surface and core mantle boundary
 temperature that differ from the reference mantle temperature in order to
 approximate thermal boundary layers.
 
-##### Visualizing 3D models.
+## Visualizing 3D models.
 
 In this cookbook we calculate the instantaneous solution to examine the flow
 field. Figures&nbsp;[1][] and [2][] show some of the output for a resolution

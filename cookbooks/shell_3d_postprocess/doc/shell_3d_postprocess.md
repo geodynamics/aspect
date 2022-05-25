@@ -25,7 +25,7 @@ dynamic topography. The deflection of the surfaces and density perturbations
 within the mantle also cause a perturbation in the gravitational field of the
 planet relative to the hydrostatic equilibrium ellipsoid.
 
-##### Dynamic topography at the surface and core mantle boundary.
+## Dynamic topography at the surface and core mantle boundary.
 
 Dynamic topography is calculated at the surface and bottom of the domain
 through a stress balancing approach where we assume that the radial stress at
@@ -45,7 +45,7 @@ might not fulfill this constraint if the resolution of the model is not high
 enough to provide an accurate solution. This cookbook only uses a refinement
 of 2, which is relatively low resolution.
 
-##### Geoid anomalies.
+## Geoid anomalies.
 
 Geoid anomalies are perturbations of the gravitational equipotential surface
 that are due to density variations within the mantle as well as deflections of

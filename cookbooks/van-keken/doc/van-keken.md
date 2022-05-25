@@ -133,7 +133,7 @@ However, for more exact results, one can choose this half width parameter
 proportional to the mesh size and thereby get more accurate results. The point
 of the section was to demonstrate the reason for the lack of convergence.
 
-##### Extension to an adaptive smoothing lengthscale.
+## Extension to an adaptive smoothing lengthscale.
 
 In this section we extend the van Keken cookbook following up the work
 previously completed by Cedric Thieulot, Juliane Dannberg, Timo Heister and

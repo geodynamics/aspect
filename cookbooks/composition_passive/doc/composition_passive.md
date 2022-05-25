@@ -1,4 +1,4 @@
-##### The passive case.
+## The passive case.
 
 We will consider the exact same situation as in the previous section but we
 will ask where the material that started in the bottom 20% of the domain ends

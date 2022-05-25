@@ -25,7 +25,7 @@ plastic component of the viscosity: $$\begin{aligned}
   \label{eq:tosi-benchmark-plast-visc}\end{aligned}$$ where $\eta^\ast$ is the
 constant effective viscosity at high stresses and $\sigma_y$ the yield stress.
 
-##### Case 1: Temperature-dependent convection.
+## Case 1: Temperature-dependent convection.
 
 The first benchmark considers a viscosity that only depends on temperature
 (Eq. [\[eq:tosi-benchmark-lin-visc\]][1], with $\gamma_Z=0$). When run to
@@ -42,7 +42,7 @@ and the error between them. Differences between these diagnostic quantities of
 the 11 codes that participated in the benchmark effort are smaller than 5% for
 their preferred mesh resolution.
 
-##### Case 2: Viscoplastic convection.
+## Case 2: Viscoplastic convection.
 
 Case 2 includes a strain rate-dependent component in the viscosity, which is
 harmonically averaged with the linear component (see also the code snippet

@@ -75,7 +75,7 @@ is well understood:
 
 With this said, let us consider how to represent this situation in practice.
 
-##### The input file.
+## The input file.
 
 The verbal description of this problem can be translated into an input file in
 the following way (see {ref}`parameters` for a description
@@ -87,7 +87,7 @@ you can find the input file to run this cookbook example in
 ```{literalinclude} convection-box.prm
 ```
 
-##### Running the program.
+## Running the program.
 
 When you run this program for the first time, you are probably still running
 in debug mode (see Section&nbsp;{ref}`sec:debug-mode`) and you will get
@@ -173,7 +173,7 @@ such as the viscosity, as well as in 3d, we have to spend much more work
 solving linear systems whereas the effort to assemble linear systems remains
 the same.
 
-##### Visualizing results.
+## Visualizing results.
 
 Having run the program, we now want to visualize the numerical results we got.
 ASPECT can generate graphical output in formats understood by pretty much any
@@ -284,7 +284,7 @@ Convection in a box: Number of linear iterations required to solve
 the Stokes and temperature equations in each time step.}
 ```
 
-##### Play time 1: Different Rayleigh numbers.
+## Play time 1: Different Rayleigh numbers.
 
 After showing you results for the input file as it can be found in
 [cookbooks/convection-box.prm]
@@ -339,7 +339,7 @@ file. In other words, changing the input file to contain the parameter setting
 
 will achieve the desired effect of computing with $Ra=10^6$.
 
-##### Play time 2: Thinking about finer meshes.
+## Play time 2: Thinking about finer meshes.
 
 In our computations for $Ra=10^4$ we used a $16\times 16$ mesh and obtained a
 value for the heat flux that differed from the generally accepted value from
@@ -416,7 +416,7 @@ simulation run yields the same accuracy as using the mesh that is globally
 refined in the beginning of the simulation, while needing a much lower compute
 time.
 
-##### Play time 3: Changing the finite element in use.
+## Play time 3: Changing the finite element in use.
 
 Another way to increase the accuracy of a finite element computation is to use
 a higher polynomial degree for the finite element shape functions. By default,

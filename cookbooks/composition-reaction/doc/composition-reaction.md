@@ -1,4 +1,4 @@
-##### The active case with reactions.
+## The active case with reactions.
 
 *This section was contributed by Juliane Dannberg and Ren&eacute;
 Ga&szlig;m&ouml;ller*.

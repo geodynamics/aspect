@@ -71,7 +71,7 @@ reproduced in a static medium such as this manual.
 In any case, we will see in the next section how to attach more interesting
 information to particles, and how to visualize these.
 
-##### Using particle properties.
+## Using particle properties.
 
 The particles in the above example only fulfill the purpose of visualizing the
 convection pattern. A more meaningful use for particles is to attach

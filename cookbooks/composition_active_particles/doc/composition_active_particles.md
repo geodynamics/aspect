@@ -1,4 +1,4 @@
-##### Using active particles.
+## Using active particles.
 
 In the examples above, particle properties passively track distinct model
 properties. These particle properties, however, may also be used to actively

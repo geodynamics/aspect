@@ -23,7 +23,7 @@ undergoes extension. Notably, the model design follows that of numerous
 previously published continental extension studies&nbsp;(Huismans and Beaumont
 2011; Brune et al. 2014; Naliboff and Buiter 2015, and references therein).
 
-##### Continental Extension
+## Continental Extension
 
 The 2D Cartesian model spans 200 ($x$) by 100 ($y$) km and has a finite
 element grid with 1.25 and 2.5 km grid spacing, respectively, above and below

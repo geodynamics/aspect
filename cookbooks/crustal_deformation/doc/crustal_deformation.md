@@ -90,7 +90,7 @@ Arthur angle (Kaus 2010; Buiter 2012).
 <img src="cookbooks/crustal_deformation/doc/both.png" id="fig:extcompr" alt="Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr." /><figcaption aria-hidden="true"><em>Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.</em></figcaption>
 </figure>
 
-##### Extension to 3D.
+## Extension to 3D.
 
 We can easily modify the previous input file to produce `crustal_model_3D.prm`
 which implements a similar setup, with the additional constraint that the

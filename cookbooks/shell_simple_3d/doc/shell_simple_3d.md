@@ -11,7 +11,7 @@ movie can be found at <http://youtu.be/j63MkEc0RRw>.
 <img src="cookbooks/shell_simple_3d/doc/x-movie0700.png" id="fig:simple-shell-3d" style="width:70.0%" alt="Convection in a spherical shell: Snapshot of isosurfaces of the temperature field at time t\approx \num{1.06e9} years with a quarter of the geometry cut away. The surface shows vectors indicating the flow velocity and direction." /><figcaption aria-hidden="true"><em>Convection in a spherical shell: Snapshot of isosurfaces of the temperature field at time <span class="math inline"><em>t</em>&#x2004;&#x2248;&#x2004;1.06&#x2004;&#xA0;&#xD7;&#xA0;&#x2004;10<sup>9</sup></span> years with a quarter of the geometry cut away. The surface shows vectors indicating the flow velocity and direction.</em></figcaption>
 </figure>
 
-##### The input file.
+## The input file.
 
 Compared to the input file discussed in the previous section, the number of
 changes is relatively small. However, when taking into account the various
@@ -92,7 +92,7 @@ Section&nbsp;{ref}`sec:checkpoint-restart`):
 ``` prmfile
 ```
 
-##### Evaluation.
+## Evaluation.
 
 Just as in the 2d case above, there are still many things that are wrong from
 a physical perspective in this setup, notably the no-slip boundary conditions

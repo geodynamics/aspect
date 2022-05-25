@@ -5,7 +5,7 @@
 This section follows the two free surface benchmarks described by Crameri et
 al. (Crameri et al. 2012).
 
-##### Case 1: Relaxation of topography.
+## Case 1: Relaxation of topography.
 
 The first benchmark involves a high viscosity lid sitting on top of a lower
 viscosity mantle. There is an initial sinusoidal topography which is then
@@ -53,7 +53,7 @@ comparison are basically indistinguishable.
 
 </div>
 
-##### Case 2: Dynamic topography.
+## Case 2: Dynamic topography.
 
 Case two is more complicated. Unlike the case one, it occurs over mantle
 convection timescales. In this benchmark there is the same high viscosity lid

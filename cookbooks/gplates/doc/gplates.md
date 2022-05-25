@@ -12,7 +12,7 @@ widely used plate reconstruction software GPlates, and the steps to go from a
 geologic plate reconstruction to a geodynamic model incorporating these
 velocities as boundary condition.
 
-##### Acquiring a plate reconstruction.
+## Acquiring a plate reconstruction.
 
 The plate reconstruction that is used in this cookbook is included in the
 `data/boundary-velocity/gplates/` directory of your installation. For a new
@@ -34,7 +34,7 @@ continuously closing plates from 140 Ma to the present.&rdquo; The data is
 provided under a Creative Commons Attribution 3.0 Unported License
 (<http://creativecommons.org/licenses/by/3.0/>).
 
-##### Converting GPlates data to input.
+## Converting GPlates data to input.
 
 After loading the data files into GPlates (\*.gpml for plate polygons, \*.rot
 for plate rotations over time) the user needs to convert the GPlates data to
@@ -86,7 +86,7 @@ series of files. The `%u` flag is especially suited for the interaction with ,
 since it can easily be replaced by a calculated file index (see also
 [0.0.1.5][]).
 
-##### Setting up the model.
+## Setting up the model.
 
 For this cookbook we will use the parameter file provided in
 [cookbooks/gplates/gplates_2d.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/gplates/gplates_2d.prm) which uses the 2d shell geometry
@@ -124,7 +124,7 @@ step (in model units, mostly seconds or years depending on the
 &ldquo;`Use years in output instead of seconds`&rdquo; flag) and the points
 that define the 2D plane.
 
-##### Comparing and visualizing 2D and 3D models.
+## Comparing and visualizing 2D and 3D models.
 
 The implementation of plate velocities in both two- and three-dimensional
 model setups allows for an easy comparison and test for common sources of
@@ -180,7 +180,7 @@ dimension independent approach of and its plugins.
 <img src="cookbooks/gplates/doc/gplates-comparison.png" id="fig:gv-1" alt="Using GPlates for velocity boundary conditions: The top left figure shows the results of a three-dimensional model using the present day plate velocities provided by GPlates as surface boundary condition. The top right figure shows three independent computations on two-dimensional slices through Earth. The boundary conditions for each of these slices (white arrows) are tangential to the slices and are projections of the three-dimensional velocity vectors into the two-dimensional plane occupied by the slice. While the two top models are created with the same mesh resolution the bottom figure shows three independent two-dimensional models using a higher resolution. The view is centered on South America with Antarctica being near the bottom of the figure (coastlines provided by NGU and the GPlates project)." /><figcaption aria-hidden="true"><em>Using GPlates for velocity boundary conditions: The top left figure shows the results of a three-dimensional model using the present day plate velocities provided by GPlates as surface boundary condition. The top right figure shows three independent computations on two-dimensional slices through Earth. The boundary conditions for each of these slices (white arrows) are tangential to the slices and are projections of the three-dimensional velocity vectors into the two-dimensional plane occupied by the slice. While the two top models are created with the same mesh resolution the bottom figure shows three independent two-dimensional models using a higher resolution. The view is centered on South America with Antarctica being near the bottom of the figure (coastlines provided by NGU and the GPlates project).</em></figcaption>
 </figure>
 
-##### Time-dependent boundary conditions.
+## Time-dependent boundary conditions.
 
 The example presented above uses a constant velocity boundary field that
 equals the present day plate movements. For a number of purposes one may want

@@ -24,7 +24,7 @@ example assignment below.
 Slides that describe the different forces controling convective motion (which
 is related to one of the questions in the assignment) can be found [here][].
 
-##### Example assignment: Onset of convection in celestial bodies
+## Example assignment: Onset of convection in celestial bodies
 
 *This section describes an example for a homework assignment based on this
 cookbook.*

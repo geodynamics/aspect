@@ -32,7 +32,7 @@ how melting and freezing induces chemical heterogeneity in the mantle,
 generating the crust and lithosphere. A movie of the full model evolution can
 be found [online][].
 
-##### The input file.
+## The input file.
 
 One important problem in models with melting and freezing (and other
 reactions) is that these reactions can be much faster than the time step of
@@ -98,7 +98,7 @@ end of this section.
 The complete input file is located at
 [cookbooks/mid_ocean_ridge/mid_ocean_ridge.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/mid_ocean_ridge/mid_ocean_ridge.prm).
 
-##### Model evolution.
+## Model evolution.
 
 <figure>
 <embed src="cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.pdf" id="fig:mid-ocean-ridge" style="width:50.0%" /><figcaption aria-hidden="true"><em>Mid-ocean ridge model after 8 million years. The top panel shows the depletion and porosity fields (with the characteristic triangular melting region), the bottom panel shows the temperature distribution and the melt velocity, indicated by the arrows.</em></figcaption>
@@ -129,7 +129,7 @@ this composition can be found in Figure&nbsp;[2][].
 <embed src="cookbooks/mid_ocean_ridge/doc/depletion_profile.pdf" id="fig:mid-ocean-ridge-profile" style="width:35.0%" /><figcaption aria-hidden="true"><em>Vertical profile through the model domain at a distance of 80 km from the ridge axis at the end of the model run, showing the distribution of depletion and enrichment as indicated by the peridotite field.</em></figcaption>
 </figure>
 
-##### Mesh refinement.
+## Mesh refinement.
 
 Another option for making sure that melt migration is resolved properly in the
 model is using a refinement criterion that directly relates to the compaction
@@ -148,7 +148,7 @@ for refining the mesh.
 <embed src="cookbooks/mid_ocean_ridge/doc/refinement.pdf" id="fig:mid-ocean-ridge-mesh" style="width:60.0%" /><figcaption aria-hidden="true"><em>Mesh after a time of 3.6 million years for a model using the composition threshold refinement strategy (left) and the compaction length refinement strategy (right) Background colors indicate the melt velocity. Its sharp gradients at the interface between regions with and without melt can only be resolved using the compaction length refinement strategy.</em></figcaption>
 </figure>
 
-##### Extending the model.
+## Extending the model.
 
 There are a number of parameters that influence the amount of melting, how
 fast the melt moves, and ultimately the distribution of crustal and
