@@ -13,7 +13,9 @@ these layers is introduced and is characterised by an amplitude $\Delta$ and a
 wavelength $\lambda=L_x/2$ as shown in Figure&nbsp;[1][].
 
 ```{figure-md}
-<img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/setup.*" id="fig:RTi_setup" style="width:40.0%" alt="Setup of the Rayleigh-Taylor instability benchmark (taken from (Thieulot 2011))" /><figcaption aria-hidden="true"><em>Setup of the Rayleigh-Taylor instability benchmark (taken from <span class="citation" data-cites="thie11">(Thieulot 2011)</span>)</em></figcaption>
+<img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/setup.*" id="fig:RTi_setup" style="width:40.0%" alt="Setup of the Rayleigh-Taylor instability benchmark (taken from (Thieulot 2011))" />
+
+<figcaption aria-hidden="true"><em>Setup of the Rayleigh-Taylor instability benchmark (taken from <span class="citation" data-cites="thie11">(Thieulot 2011)</span>)</em></figcaption>
 ```
 
 Under this condition, the velocity of the diapiric growth $v_y$ is given by
@@ -55,7 +57,9 @@ The maximum vertical velocity is plotted against $\phi_1$ in Figure&nbsp;[4][]
 and is found to match analytical results.
 
 ```{figure-md}
-<img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/plot.*" id="fig:RTi_vels" style="width:75.0%" alt="Maximum velocity for three values of the \phi_1 parameter." /><figcaption aria-hidden="true"><em>Maximum velocity for three values of the <span class="math inline"><em>&#x3D5;</em><sub>1</sub></span> parameter.</em></figcaption>
+<img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/plot.*" id="fig:RTi_vels" style="width:75.0%" alt="Maximum velocity for three values of the \phi_1 parameter." />
+
+<figcaption aria-hidden="true"><em>Maximum velocity for three values of the <span class="math inline"><em>&#x3D5;</em><sub>1</sub></span> parameter.</em></figcaption>
 ```
 
 <div id="refs" class="references csl-bib-body hanging-indent">

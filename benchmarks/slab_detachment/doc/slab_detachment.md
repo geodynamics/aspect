@@ -16,7 +16,9 @@ boundary conditions are imposed on the sides of the system, while free-slip
 boundary conditions are imposed at the top and bottom.
 
 ```{figure-md}
-<img src="drawing.png" id="fig:slab_detachment_setup" alt="Slab detachment benchmark: Initial geometry [fig:slab_detachment_setup]" /><figcaption aria-hidden="true"><em>Slab detachment benchmark: Initial geometry <span id="fig:slab_detachment_setup" label="fig:slab_detachment_setup">[fig:slab_detachment_setup]</span></em></figcaption>
+<img src="drawing.png" id="fig:slab_detachment_setup" alt="Slab detachment benchmark: Initial geometry [fig:slab_detachment_setup]" />
+
+<figcaption aria-hidden="true"><em>Slab detachment benchmark: Initial geometry <span id="fig:slab_detachment_setup" label="fig:slab_detachment_setup">[fig:slab_detachment_setup]</span></em></figcaption>
 ```
 
 Two materials are present in the domain: the lithosphere and the mantle as

@@ -44,7 +44,9 @@ following long and thin filaments.[2] This is an area in which may see
 improvements in the future.
 
 ```{figure-md}
-<img src="mass-composition-1.png" id="fig:compositional-passive-mass" style="width:40.0%" alt="Passive compositional fields: Minimum and maximum of the first compositional variable over time, as well as the mass m_1(t)=\int_\Omega c_1(\mathbf x,t) stored in this variable." /><figcaption aria-hidden="true"><em>Passive compositional fields: Minimum and maximum of the first compositional variable over time, as well as the mass <span class="math inline"><em>m</em><sub>1</sub>(<em>t</em>)&#x2004;=&#x2004;&#x222B;<sub><em>&#x3A9;</em></sub><em>c</em><sub>1</sub>(<strong>x</strong>,<em>t</em>)</span> stored in this variable.</em></figcaption>
+<img src="mass-composition-1.png" id="fig:compositional-passive-mass" style="width:40.0%" alt="Passive compositional fields: Minimum and maximum of the first compositional variable over time, as well as the mass m_1(t)=\int_\Omega c_1(\mathbf x,t) stored in this variable." />
+
+<figcaption aria-hidden="true"><em>Passive compositional fields: Minimum and maximum of the first compositional variable over time, as well as the mass <span class="math inline"><em>m</em><sub>1</sub>(<em>t</em>)&#x2004;=&#x2004;&#x222B;<sub><em>&#x3A9;</em></sub><em>c</em><sub>1</sub>(<strong>x</strong>,<em>t</em>)</span> stored in this variable.</em></figcaption>
 ```
 
 A different way of looking at the quality of compositional fields as opposed

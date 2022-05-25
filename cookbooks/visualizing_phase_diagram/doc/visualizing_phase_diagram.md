@@ -94,11 +94,15 @@ to a constant Clapeyron slope.
 .
 
 ```{figure-md}
-<img src="pyrolite_linear.png" id="fig:phase_diagram_ph_profile" style="width:40.0%" alt="Visualization of phase diagrams: Profiles of pyrolitic density at T=\SI{1173}{K} (red) and \SI{1673}{K} (blue)." /><figcaption aria-hidden="true"><em>Visualization of phase diagrams: Profiles of pyrolitic density at <span class="math inline"><em>T</em>&#x2004;=&#x2004;1173&#xA0;<em>K</em></span> (red) and <span class="math inline">1673&#xA0;<em>K</em></span> (blue).</em></figcaption>
+<img src="pyrolite_linear.png" id="fig:phase_diagram_ph_profile" style="width:40.0%" alt="Visualization of phase diagrams: Profiles of pyrolitic density at T=\SI{1173}{K} (red) and \SI{1673}{K} (blue)." />
+
+<figcaption aria-hidden="true"><em>Visualization of phase diagrams: Profiles of pyrolitic density at <span class="math inline"><em>T</em>&#x2004;=&#x2004;1173&#xA0;<em>K</em></span> (red) and <span class="math inline">1673&#xA0;<em>K</em></span> (blue).</em></figcaption>
 ```
 
 ```{figure-md}
-<img src="steinberg.png" id="fig:phase_diagram_steinberg_density" style="width:40.0%" alt="Visualization of phase diagrams: Density from lookup table of pyrolite from (Stixrude and Lithgow-Bertelloni 2011)." /><figcaption aria-hidden="true"><em>Visualization of phase diagrams: Density from lookup table of pyrolite from <span class="citation" data-cites="stixrude2011thermodynamics">(Stixrude and Lithgow-Bertelloni 2011)</span>.</em></figcaption>
+<img src="steinberg.png" id="fig:phase_diagram_steinberg_density" style="width:40.0%" alt="Visualization of phase diagrams: Density from lookup table of pyrolite from (Stixrude and Lithgow-Bertelloni 2011)." />
+
+<figcaption aria-hidden="true"><em>Visualization of phase diagrams: Density from lookup table of pyrolite from <span class="citation" data-cites="stixrude2011thermodynamics">(Stixrude and Lithgow-Bertelloni 2011)</span>.</em></figcaption>
 ```
 
 <div id="refs" class="references csl-bib-body hanging-indent">

@@ -78,7 +78,9 @@ localised strain rates through visco-plasticity and adaptive mesh refinement
 as shown in Fig. ([2][]).
 
 ```{figure-md}
-<img src="grids.png" id="fig:meshes" style="width:70.0%" alt="Mesh evolution during the first timestep (refinement is based on strain rate)." /><figcaption aria-hidden="true"><em>Mesh evolution during the first timestep (refinement is based on strain rate).</em></figcaption>
+<img src="grids.png" id="fig:meshes" style="width:70.0%" alt="Mesh evolution during the first timestep (refinement is based on strain rate)." />
+
+<figcaption aria-hidden="true"><em>Mesh evolution during the first timestep (refinement is based on strain rate).</em></figcaption>
 ```
 
 Deformation localizes at the basal velocity discontinuity and plastic shear
@@ -87,7 +89,9 @@ and $35\degree$ in compression, both of which correspond to the reported
 Arthur angle (Kaus 2010; Buiter 2012).
 
 ```{figure-md}
-<img src="both.png" id="fig:extcompr" alt="Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr." /><figcaption aria-hidden="true"><em>Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.</em></figcaption>
+<img src="both.png" id="fig:extcompr" alt="Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr." />
+
+<figcaption aria-hidden="true"><em>Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.</em></figcaption>
 ```
 
 ##### Extension to 3D.
@@ -105,7 +109,9 @@ The presence of an offset between the two velocity discontinuity zones leads
 to a transform fault which connects them.
 
 ```{figure-md}
-<img src="bottombc2.png" id="fig:bottombc" alt="Basal velocity boundary conditions and corresponding strain rate field for the 3D model." /><figcaption aria-hidden="true"><em>Basal velocity boundary conditions and corresponding strain rate field for the 3D model.</em></figcaption>
+<img src="bottombc2.png" id="fig:bottombc" alt="Basal velocity boundary conditions and corresponding strain rate field for the 3D model." />
+
+<figcaption aria-hidden="true"><em>Basal velocity boundary conditions and corresponding strain rate field for the 3D model.</em></figcaption>
 ```
 
 The Finite Element mesh, the velocity, viscosity and strain rate fields are
@@ -115,7 +121,9 @@ as a function of their initial offset (Allken, Huismans, and Thieulot 2011,
 2012; Allken et al. 2013).
 
 ```{figure-md}
-<img src="all3D.png" id="fig:ext3D" alt="Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement." /><figcaption aria-hidden="true"><em>Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement.</em></figcaption>
+<img src="all3D.png" id="fig:ext3D" alt="Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement." />
+
+<figcaption aria-hidden="true"><em>Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement.</em></figcaption>
 ```
 
 <div id="refs" class="references csl-bib-body hanging-indent">

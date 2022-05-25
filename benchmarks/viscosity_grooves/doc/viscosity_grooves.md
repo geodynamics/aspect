@@ -42,7 +42,9 @@ domain size adds complexity to it as it increases the number of low viscosity
 zones and the spacing between them decreases.
 
 ```{figure-md}
-<img src="viscs.png" id="fig:benchmark-grooves-domains" style="width:90.0%" alt="Viscosity grooves benchmark: Viscosity field for three domain sizes: 1\times 1, 2\times 2 and 3\times 3." /><figcaption aria-hidden="true"><em>Viscosity grooves benchmark: Viscosity field for three domain sizes: <span class="math inline">1&#x2005;&#xD7;&#x2005;1</span>, <span class="math inline">2&#x2005;&#xD7;&#x2005;2</span> and <span class="math inline">3&#x2005;&#xD7;&#x2005;3</span>.</em></figcaption>
+<img src="viscs.png" id="fig:benchmark-grooves-domains" style="width:90.0%" alt="Viscosity grooves benchmark: Viscosity field for three domain sizes: 1\times 1, 2\times 2 and 3\times 3." />
+
+<figcaption aria-hidden="true"><em>Viscosity grooves benchmark: Viscosity field for three domain sizes: <span class="math inline">1&#x2005;&#xD7;&#x2005;1</span>, <span class="math inline">2&#x2005;&#xD7;&#x2005;2</span> and <span class="math inline">3&#x2005;&#xD7;&#x2005;3</span>.</em></figcaption>
 ```
 
 The velocity and pressure errors (in the $L_2$ norm) are measured for

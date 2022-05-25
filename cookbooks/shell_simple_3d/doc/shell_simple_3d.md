@@ -8,7 +8,9 @@ gets from such a simulation is shown in Fig.&nbsp;[1][]. The corresponding
 movie can be found at <http://youtu.be/j63MkEc0RRw>.
 
 ```{figure-md}
-<img src="x-movie0700.png" id="fig:simple-shell-3d" style="width:70.0%" alt="Convection in a spherical shell: Snapshot of isosurfaces of the temperature field at time t\approx \num{1.06e9} years with a quarter of the geometry cut away. The surface shows vectors indicating the flow velocity and direction." /><figcaption aria-hidden="true"><em>Convection in a spherical shell: Snapshot of isosurfaces of the temperature field at time <span class="math inline"><em>t</em>&#x2004;&#x2248;&#x2004;1.06&#x2004;&#xA0;&#xD7;&#xA0;&#x2004;10<sup>9</sup></span> years with a quarter of the geometry cut away. The surface shows vectors indicating the flow velocity and direction.</em></figcaption>
+<img src="x-movie0700.png" id="fig:simple-shell-3d" style="width:70.0%" alt="Convection in a spherical shell: Snapshot of isosurfaces of the temperature field at time t\approx \num{1.06e9} years with a quarter of the geometry cut away. The surface shows vectors indicating the flow velocity and direction." />
+
+<figcaption aria-hidden="true"><em>Convection in a spherical shell: Snapshot of isosurfaces of the temperature field at time <span class="math inline"><em>t</em>&#x2004;&#x2248;&#x2004;1.06&#x2004;&#xA0;&#xD7;&#xA0;&#x2004;10<sup>9</sup></span> years with a quarter of the geometry cut away. The surface shows vectors indicating the flow velocity and direction.</em></figcaption>
 ```
 
 ##### The input file.
