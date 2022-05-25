@@ -71,9 +71,9 @@ resolved temperature and viscosity fields for case 1.
 
 <div class="center">
 
-<img src="cookbooks/benchmarks/tosi_et_al_2015_gcubed/doc/Case1_6_T.png" title="fig:" id="fig:tosi-benchmark-results" style="width:31.0%" alt="Temperature and viscosity field in steady-state for case 1 of (Tosi et al. 2015)." />
-<img src="cookbooks/benchmarks/tosi_et_al_2015_gcubed/doc/Case1_6_visc.png" title="fig:" id="fig:tosi-benchmark-results" style="width:31.0%" alt="Temperature and viscosity field in steady-state for case 1 of (Tosi et al. 2015)." />
-<img src="cookbooks/benchmarks/tosi_et_al_2015_gcubed/doc/Case1_6_vel.png" title="fig:" id="fig:tosi-benchmark-results" style="width:31.0%" alt="Temperature and viscosity field in steady-state for case 1 of (Tosi et al. 2015)." />
+<img src="Case1_6_T.png" title="fig:" id="fig:tosi-benchmark-results" style="width:31.0%" alt="Temperature and viscosity field in steady-state for case 1 of (Tosi et al. 2015)." />
+<img src="Case1_6_visc.png" title="fig:" id="fig:tosi-benchmark-results" style="width:31.0%" alt="Temperature and viscosity field in steady-state for case 1 of (Tosi et al. 2015)." />
+<img src="Case1_6_vel.png" title="fig:" id="fig:tosi-benchmark-results" style="width:31.0%" alt="Temperature and viscosity field in steady-state for case 1 of (Tosi et al. 2015)." />
 
 </div>
 

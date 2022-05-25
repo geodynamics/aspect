@@ -14,7 +14,7 @@ size of the subduction interface and crustal layers, viscosity averaging and
 the solver tolerance.
 
 <figure>
-<img src="cookbooks/kinematically_driven_subduction_2d/doc/setup_Quinquis2014.png" id="fig:QQ_setup" style="width:80.0%" alt="Case 4 model setup. Copied from Quinquis (2014)." /><figcaption aria-hidden="true">Case 4 model setup. Copied from Quinquis (2014).</figcaption>
+<img src="setup_Quinquis2014.png" id="fig:QQ_setup" style="width:80.0%" alt="Case 4 model setup. Copied from Quinquis (2014)." /><figcaption aria-hidden="true">Case 4 model setup. Copied from Quinquis (2014).</figcaption>
 </figure>
 
 ##### Case 1: Simple geometry and rheology
@@ -72,9 +72,9 @@ quantities in done in several new plugins:
 ``` prmfile
 ```
 
-<img src="cookbooks/kinematically_driven_subduction_2d/doc/Case1_dens_t0.png" title="fig:" id="fig:QQ_case1_setup" style="width:60.0%" alt="Case 1 density, viscosity and velocity at time zero." />
-<img src="cookbooks/kinematically_driven_subduction_2d/doc/Case1_visc_t0.png" title="fig:" id="fig:QQ_case1_setup" style="width:60.0%" alt="Case 1 density, viscosity and velocity at time zero." />
-<img src="cookbooks/kinematically_driven_subduction_2d/doc/Case1_vel_t0.png" title="fig:" id="fig:QQ_case1_setup" style="width:60.0%" alt="Case 1 density, viscosity and velocity at time zero." />
+<img src="Case1_dens_t0.png" title="fig:" id="fig:QQ_case1_setup" style="width:60.0%" alt="Case 1 density, viscosity and velocity at time zero." />
+<img src="Case1_visc_t0.png" title="fig:" id="fig:QQ_case1_setup" style="width:60.0%" alt="Case 1 density, viscosity and velocity at time zero." />
+<img src="Case1_vel_t0.png" title="fig:" id="fig:QQ_case1_setup" style="width:60.0%" alt="Case 1 density, viscosity and velocity at time zero." />
 
 We run the Case 1 setup for 15 My of model time. The diagnostic quantities in
 Fig.&nbsp;[5][] show three stages of model evolution: first trench advance
@@ -87,8 +87,8 @@ boundary. This can also be seen in Fig&nbsp;[7][].
 <img src="cookbooks/kinematically_driven_subduction_2d/doc/Case1_diagnostics.*" id="fig:QQ_case1_diagnostics" alt="Case 1 diagnostic quantities of ASPECT, Sulec and Elefant results." /><figcaption aria-hidden="true"><em>Case 1 diagnostic quantities of ASPECT, Sulec and Elefant results.</em></figcaption>
 </figure>
 
-<img src="cookbooks/kinematically_driven_subduction_2d/doc/Case1_visc_8My.png" title="fig:" id="fig:QQ_case1_results" style="width:60.0%" alt="Case 1 viscosity snapshots at 8 and 15 My." />
-<img src="cookbooks/kinematically_driven_subduction_2d/doc/Case1_visc_15My.png" title="fig:" id="fig:QQ_case1_results" style="width:60.0%" alt="Case 1 viscosity snapshots at 8 and 15 My." />
+<img src="Case1_visc_8My.png" title="fig:" id="fig:QQ_case1_results" style="width:60.0%" alt="Case 1 viscosity snapshots at 8 and 15 My." />
+<img src="Case1_visc_15My.png" title="fig:" id="fig:QQ_case1_results" style="width:60.0%" alt="Case 1 viscosity snapshots at 8 and 15 My." />
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

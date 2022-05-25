@@ -58,7 +58,7 @@ You can plot the `Phase` variable in MATLAB to see if the drawing was read in
 and all phases are assigned correctly (Figure&nbsp;[2][]).
 
 <figure>
-<img src="cookbooks/geomio/doc/jelly.png" id="fig:jelly-plot" style="width:45.0%" alt="Plot of the Phase variable in MATLAB." /><figcaption aria-hidden="true"><em>Plot of the <code>Phase</code> variable in MATLAB.</em></figcaption>
+<img src="jelly.png" id="fig:jelly-plot" style="width:45.0%" alt="Plot of the Phase variable in MATLAB." /><figcaption aria-hidden="true"><em>Plot of the <code>Phase</code> variable in MATLAB.</em></figcaption>
 </figure>
 
 Finally, we want to write output in a format that can be read in by &rsquo;s

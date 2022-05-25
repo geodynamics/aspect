@@ -296,10 +296,10 @@ downwellings detach from the base of the lithosphere. The temperature at the
 end of the model run and some of the material properties are shown in
 Figure&nbsp;[6][].
 
-<img src="cookbooks/steinberger/doc/temperature.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
-<img src="cookbooks/steinberger/doc/viscosity.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
-<img src="cookbooks/steinberger/doc/density.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
-<img src="cookbooks/steinberger/doc/specific_heat.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
+<img src="temperature.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
+<img src="viscosity.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
+<img src="density.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
+<img src="specific_heat.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

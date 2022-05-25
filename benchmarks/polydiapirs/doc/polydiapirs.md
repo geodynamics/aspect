@@ -30,10 +30,10 @@ corresponding to the two different growth rates of the interfaces, as
 explained by linear stability analysis (Weinberg and Schmeling 1992; Ramberg
 1981).
 
-<img src="cookbooks/benchmarks/polydiapirs/doc/diapirs0000.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
-<img src="cookbooks/benchmarks/polydiapirs/doc/diapirs0005.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
-<img src="cookbooks/benchmarks/polydiapirs/doc/diapirs0010.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
-<img src="cookbooks/benchmarks/polydiapirs/doc/diapirs0015.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
+<img src="diapirs0000.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
+<img src="diapirs0005.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
+<img src="diapirs0010.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
+<img src="diapirs0015.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
 
 <figure>
 <embed src="cookbooks/benchmarks/polydiapirs/doc/vrms.pdf" id="fig:polydiapirs_vrms" style="width:75.0%" /><figcaption aria-hidden="true"><em>Polydiapirism benchmark: Root mean square velocity as a function of time</em></figcaption>

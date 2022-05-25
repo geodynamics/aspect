@@ -29,9 +29,9 @@ function of the mesh size $h$ (taken in this case as the radial extent of the
 elements). As expected we recover a third-order convergence rate for the
 velocity and a second-order convergence rate for the pressure.
 
-<img src="cookbooks/benchmarks/hollow_sphere/doc/vel.png" title="fig:" id="fig:hollow-sphere-vp" alt="Velocity and pressure fields for the hollow sphere benchmark." />
-<img src="cookbooks/benchmarks/hollow_sphere/doc/vel2.png" title="fig:" id="fig:hollow-sphere-vp" alt="Velocity and pressure fields for the hollow sphere benchmark." />
-<img src="cookbooks/benchmarks/hollow_sphere/doc/pressure.png" title="fig:" id="fig:hollow-sphere-vp" alt="Velocity and pressure fields for the hollow sphere benchmark." />
+<img src="vel.png" title="fig:" id="fig:hollow-sphere-vp" alt="Velocity and pressure fields for the hollow sphere benchmark." />
+<img src="vel2.png" title="fig:" id="fig:hollow-sphere-vp" alt="Velocity and pressure fields for the hollow sphere benchmark." />
+<img src="pressure.png" title="fig:" id="fig:hollow-sphere-vp" alt="Velocity and pressure fields for the hollow sphere benchmark." />
 
 <figure>
 <embed src="cookbooks/benchmarks/hollow_sphere/doc/errors_hollowsphere.pdf" id="fig:hollow-sphere-errors" /><figcaption aria-hidden="true"><em>Velocity and pressure errors in the <span class="math inline"><em>L</em><sub>2</sub></span>-norm as a function of the mesh size.</em></figcaption>

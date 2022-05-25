@@ -75,7 +75,7 @@ not undergo any deformation during translation.
 <div class="center">
 
 <figure>
-<img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/exp1.png" id="fig:btwexp1" alt="Numerical model of a stable sand wedge. a) Initial model setup. b) Material field after 4 cm of translation. c) Strain rate field and d) pressure field." /><figcaption aria-hidden="true"><em>Numerical model of a stable sand wedge. a) Initial model setup. b) Material field after 4 cm of translation. c) Strain rate field and d) pressure field.</em></figcaption>
+<img src="exp1.png" id="fig:btwexp1" alt="Numerical model of a stable sand wedge. a) Initial model setup. b) Material field after 4 cm of translation. c) Strain rate field and d) pressure field." /><figcaption aria-hidden="true"><em>Numerical model of a stable sand wedge. a) Initial model setup. b) Material field after 4 cm of translation. c) Strain rate field and d) pressure field.</em></figcaption>
 </figure>
 
 </div>
@@ -93,7 +93,7 @@ lower pressure values in (incipient) shear zones.
 <div class="center">
 
 <figure>
-<img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/exp2.png" id="fig:btwexp2" alt="Numerical model of an unstable subcritical wedge. a) Initial model setup. b) Material field of sands after 10 cm shortening. c) Strain field and d) pressure field." /><figcaption aria-hidden="true"><em>Numerical model of an unstable subcritical wedge. a) Initial model setup. b) Material field of sands after 10 cm shortening. c) Strain field and d) pressure field.</em></figcaption>
+<img src="exp2.png" id="fig:btwexp2" alt="Numerical model of an unstable subcritical wedge. a) Initial model setup. b) Material field of sands after 10 cm shortening. c) Strain field and d) pressure field." /><figcaption aria-hidden="true"><em>Numerical model of an unstable subcritical wedge. a) Initial model setup. b) Material field of sands after 10 cm shortening. c) Strain field and d) pressure field.</em></figcaption>
 </figure>
 
 </div>
