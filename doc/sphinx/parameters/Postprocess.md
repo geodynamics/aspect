@@ -1462,7 +1462,8 @@ Physical units: \si{\per\second}.
 
 **Pattern:** [Bool]
 
-**Documentation:** deal.II offers the possibility to write vtu files with higher order representations of the output data. This means each cell will correctly show the higher order representation of the output data instead of the linear interpolation between vertices that ParaView and Visit usually show. Note that activating this option is safe and recommended, but requires that (i) &ldquo;Output format&rdquo; is set to &ldquo;vtu&rdquo;, (ii) &ldquo;Interpolate output&rdquo; is set to true, (iii) you use a sufficiently new version of Paraview or Visit to read the files (Paraview version 5.5 or newer, and Visit version to be determined), and (iv) you use deal.II version 9.1.0 or newer.
+**Documentation:** deal.II offers the possibility to write vtu files with higher order representations of the output data. This means each cell will correctly show the higher order representation of the output data instead of the linear interpolation between vertices that ParaView and VisIt usually show. Note that activating this option is safe and recommended, but requires that (i) &ldquo;Output format&rdquo; is set to &ldquo;vtu&rdquo;, (ii) &ldquo;Interpolate output&rdquo; is set to true, (iii) you use a sufficiently new version of Paraview or VisIt to read the files (Paraview version 5.5 or newer, and VisIt version to be determined), and (iv) you use deal.II version 9.1.0 or newer.
+
 The effect of using this option can be seen in the following picture:
 
 \begin{center}  \includegraphics[width=0.5\textwidth]{viz/parameters/higher-order-output}\end{center}The top figure shows the plain output without interpolation or higher order output. The middle figure shows output that was interpolated as discussed for the &ldquo;Interpolate output&rdquo; option. The bottom panel shows higher order output that achieves better accuracy than the interpolated output at a lower memory cost.

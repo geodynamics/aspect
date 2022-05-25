@@ -1179,6 +1179,45 @@ namespace aspect
 
 
     /**
+    * Additional output fields for the enthalpy change upon melting or
+    * freezing to be added to the MaterialModel::MaterialModelOutputs
+    * structure and filled in the MaterialModel::Interface::evaluate()
+    * function.
+    * These outputs are needed in heating models that compute the latent
+    * heat of melting/freezing based on the material properties in the
+    * material models (which is required for thermodynamically consistent
+    * models).
+    */
+    template <int dim>
+    class EnthalpyOutputs : public AdditionalMaterialOutputs<dim>
+    {
+      public:
+        EnthalpyOutputs(const unsigned int n_points)
+          : enthalpies_of_fusion(n_points, numbers::signaling_nan<double>())
+        {}
+
+        virtual ~EnthalpyOutputs()
+        {}
+
+        virtual void average (const MaterialAveraging::AveragingOperation operation,
+                              const FullMatrix<double>  &/*projection_matrix*/,
+                              const FullMatrix<double>  &/*expansion_matrix*/)
+        {
+          AssertThrow(operation == MaterialAveraging::AveragingOperation::none,ExcNotImplemented());
+          return;
+        }
+
+        /**
+         * Enthalpies of fusion, describing the amount of heat required to
+         * melt/solidify the material. These values are used when computing
+         * latent heat effects.
+         */
+        std::vector<double> enthalpies_of_fusion;
+    };
+
+
+
+    /**
      * A base class for parameterizations of material models. Classes derived
      * from this class will need to implement functions that provide material
      * parameters such as the viscosity, density, etc, typically as a function

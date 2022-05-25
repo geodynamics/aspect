@@ -1723,8 +1723,8 @@ namespace aspect
                   fe_values.reinit(simulator_cell);
                   in.reinit(fe_values, simulator_cell, sim.introspection, sim.current_linearization_point);
 
-                  sim.material_model->evaluate(in, out);
                   sim.material_model->fill_additional_material_model_inputs(in, sim.current_linearization_point, fe_values, sim.introspection);
+                  sim.material_model->evaluate(in, out);
 
                   const MaterialModel::MaterialModelDerivatives<dim> *derivatives
                     = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();

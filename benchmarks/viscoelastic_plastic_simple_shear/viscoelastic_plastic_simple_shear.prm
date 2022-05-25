@@ -127,7 +127,6 @@ subsection Material model
     # as it is used to compute time step 0.
     set Fixed elastic time step     = 0.01
     set Use fixed elastic time step = false
-    set Use stress averaging        = false
     set Viscosity averaging scheme  = maximum composition
 
     set Cohesions                   = 3.5
