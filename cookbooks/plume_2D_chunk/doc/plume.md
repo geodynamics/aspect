@@ -123,7 +123,7 @@ the simulation.
 ```{figure-md}
 <img src="cookbooks/plume_2D_chunk/doc/vrms.*" id="fig:plume-diff-creep-vrms" style="width:10cm" alt="Plume in a 2D chunk: Root mean square velocity for each experiment." />
 
-<figcaption aria-hidden="true"><em>Plume in a 2D chunk: Root mean square velocity for each experiment.</em></figcaption>
+Plume in a 2D chunk: Root mean square velocity for each experiment.</em></figcaption>
 ```
 
 <div id="refs" class="references csl-bib-body hanging-indent">

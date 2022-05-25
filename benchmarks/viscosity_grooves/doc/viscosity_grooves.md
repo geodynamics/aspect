@@ -44,7 +44,7 @@ zones and the spacing between them decreases.
 ```{figure-md}
 <img src="viscs.png" id="fig:benchmark-grooves-domains" style="width:90.0%" alt="Viscosity grooves benchmark: Viscosity field for three domain sizes: 1\times 1, 2\times 2 and 3\times 3." />
 
-<figcaption aria-hidden="true"><em>Viscosity grooves benchmark: Viscosity field for three domain sizes: <span class="math inline">1&#x2005;&#xD7;&#x2005;1</span>, <span class="math inline">2&#x2005;&#xD7;&#x2005;2</span> and <span class="math inline">3&#x2005;&#xD7;&#x2005;3</span>.</em></figcaption>
+Viscosity grooves benchmark: Viscosity field for three domain sizes: <span class="math inline">1&#x2005;&#xD7;&#x2005;1</span>, <span class="math inline">2&#x2005;&#xD7;&#x2005;2</span> and <span class="math inline">3&#x2005;&#xD7;&#x2005;3</span>.</em></figcaption>
 ```
 
 The velocity and pressure errors (in the $L_2$ norm) are measured for
@@ -62,7 +62,7 @@ level larger than 9 to recover the optimal convergence rates.
 ```{figure-md}
 <embed src="cookbooks/benchmarks/viscosity_grooves/doc/conv_0p1.pdf" id="fig:benchmark-grooves-errors" style="width:90.0%" />
 
-<figcaption aria-hidden="true"><em>Viscosity grooves benchmark: Velocity and pressure error convergence as a function of the mesh size <span class="math inline"><em>h</em></span> for 3 domain sizes.</em></figcaption>
+Viscosity grooves benchmark: Velocity and pressure error convergence as a function of the mesh size <span class="math inline"><em>h</em></span> for 3 domain sizes.</em></figcaption>
 ```
 
 <div id="refs" class="references csl-bib-body hanging-indent">

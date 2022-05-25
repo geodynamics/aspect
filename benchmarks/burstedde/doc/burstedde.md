@@ -139,7 +139,7 @@ the pressure.
 ```{figure-md}
 <embed src="cookbooks/benchmarks/burstedde/doc/errors.pdf" id="errors" />
 
-<figcaption aria-hidden="true"><em>Burstedde benchmark: Error convergence for the 3D polynomial Stokes benchmark. <span id="errors" label="errors">[errors]</span></em></figcaption>
+Burstedde benchmark: Error convergence for the 3D polynomial Stokes benchmark. <span id="errors" label="errors">[errors]</span></em></figcaption>
 ```
 
 <div id="refs" class="references csl-bib-body hanging-indent">

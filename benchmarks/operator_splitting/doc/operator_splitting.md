@@ -118,7 +118,7 @@ and we use the same methods to solve for these variables.
 ```{figure-md}
 <embed src="cookbooks/benchmarks/operator_splitting/doc/error_exponential_decay.pdf" id="fig:exponential-decay" style="width:65.0%" />
 
-<figcaption aria-hidden="true"><em>Error for both compositional field and temperature compared to the analytical solution, varying the time steps of advection (blue data points and and top/blue x axis) and reactions (red data points and and bottom/red x axis), while keeping the other one constant, respectively.</em></figcaption>
+Error for both compositional field and temperature compared to the analytical solution, varying the time steps of advection (blue data points and and top/blue x axis) and reactions (red data points and and bottom/red x axis), while keeping the other one constant, respectively.</em></figcaption>
 ```
 
 </div>

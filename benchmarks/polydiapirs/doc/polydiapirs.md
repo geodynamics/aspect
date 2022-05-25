@@ -38,7 +38,7 @@ explained by linear stability analysis (Weinberg and Schmeling 1992; Ramberg
 ```{figure-md}
 <embed src="cookbooks/benchmarks/polydiapirs/doc/vrms.pdf" id="fig:polydiapirs_vrms" style="width:75.0%" />
 
-<figcaption aria-hidden="true"><em>Polydiapirism benchmark: Root mean square velocity as a function of time</em></figcaption>
+Polydiapirism benchmark: Root mean square velocity as a function of time</em></figcaption>
 ```
 
 <div id="refs" class="references csl-bib-body hanging-indent">
