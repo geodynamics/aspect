@@ -1,4 +1,4 @@
-#### Visualizing phase diagrams
+# Visualizing phase diagrams
 
 *This section was contributed by Haoyuan Li and Magali Billen.*
 

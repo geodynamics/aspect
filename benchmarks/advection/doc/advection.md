@@ -1,4 +1,4 @@
-#### Advection stabilization benchmarks
+# Advection stabilization benchmarks
 
 The underlying PDEs of the temperature and compositional field are typically
 advection-dominated and as such, require a stabilization scheme, see

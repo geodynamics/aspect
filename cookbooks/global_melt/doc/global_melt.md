@@ -1,4 +1,4 @@
-#### Melt migration in a 2D mantle convection model
+# Melt migration in a 2D mantle convection model
 
 *This section was contributed by Juliane Dannberg and is based on a section in
 (Dannberg and Heister 2016) by Juliane Dannberg and Timo Heister.*

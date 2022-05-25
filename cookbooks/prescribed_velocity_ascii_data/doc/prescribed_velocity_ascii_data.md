@@ -1,4 +1,4 @@
-#### Prescribing internal velocity constraints with ASCII files
+# Prescribing internal velocity constraints with ASCII files
 
 *This section was contributed by Bob Myhill*
 

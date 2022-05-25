@@ -1,4 +1,4 @@
-#### The Tosi et al.&nbsp;benchmarks
+# The Tosi et al.&nbsp;benchmarks
 
 *This section was contributed by Anne Glerum.*
 

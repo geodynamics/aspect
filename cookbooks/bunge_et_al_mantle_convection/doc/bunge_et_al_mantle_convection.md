@@ -1,4 +1,4 @@
-#### The Bunge et al.&nbsp;mantle convection experiments
+# The Bunge et al.&nbsp;mantle convection experiments
 
 *This section was contributed by Cedric Thieulot and Bob Myhill.*
 

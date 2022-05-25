@@ -1,4 +1,4 @@
-#### Computation of the van Keken Problem with the Volume-of-Fluid Interface Tracking Method
+# Computation of the van Keken Problem with the Volume-of-Fluid Interface Tracking Method
 
 *This section is a co-production of Jonathan Robey and E. G. Puckett.* One can
 also model the van Keken problem with the volume-of-fluid (VOF) interface

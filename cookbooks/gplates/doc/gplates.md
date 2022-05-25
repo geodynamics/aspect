@@ -1,4 +1,4 @@
-#### Using reconstructed surface velocities by GPlates
+# Using reconstructed surface velocities by GPlates
 
 *This section was contributed by Ren&eacute; Ga&szlig;m&ouml;ller*
 

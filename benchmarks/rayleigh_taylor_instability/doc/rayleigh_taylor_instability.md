@@ -1,4 +1,4 @@
-#### The Rayleigh-Taylor instability
+# The Rayleigh-Taylor instability
 
 *This section was contributed by Cedric Thieulot.*
 

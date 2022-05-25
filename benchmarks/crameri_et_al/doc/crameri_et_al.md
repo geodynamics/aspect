@@ -1,4 +1,4 @@
-#### The Crameri et al.&nbsp;benchmarks
+# The Crameri et al.&nbsp;benchmarks
 
 *This section was contributed by Ian Rose.*
 

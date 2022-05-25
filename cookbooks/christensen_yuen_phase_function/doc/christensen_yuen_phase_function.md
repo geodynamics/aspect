@@ -1,4 +1,4 @@
-#### Convection in a 2d box with a phase transition
+# Convection in a 2d box with a phase transition
 
 *This section was contributed by Juliane Dannberg.*
 

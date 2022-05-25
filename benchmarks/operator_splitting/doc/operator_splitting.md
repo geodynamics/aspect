@@ -1,4 +1,4 @@
-#### Benchmarks for operator splitting
+# Benchmarks for operator splitting
 
 *This section was contributed by Juliane Dannberg.*
 

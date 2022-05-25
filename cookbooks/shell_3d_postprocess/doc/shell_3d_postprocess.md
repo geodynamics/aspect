@@ -1,4 +1,4 @@
-#### Postprocessing spherical 3D convection
+# Postprocessing spherical 3D convection
 
 *This section was contributed by Jacqueline Austermann, Ian Rose, and Shangxin
 Liu*

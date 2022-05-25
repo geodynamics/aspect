@@ -1,4 +1,4 @@
-#### The &ldquo;Stokes&rsquo; law&rdquo; benchmark
+# The &ldquo;Stokes&rsquo; law&rdquo; benchmark
 
 *This section was contributed by Juliane Dannberg.*
 

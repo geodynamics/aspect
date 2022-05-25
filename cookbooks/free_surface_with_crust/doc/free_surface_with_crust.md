@@ -1,4 +1,4 @@
-#### Using a free surface in a model with a crust
+# Using a free surface in a model with a crust
 
 *This section was contributed by William Durkin*.
 

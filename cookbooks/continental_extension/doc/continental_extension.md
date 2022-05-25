@@ -1,4 +1,4 @@
-#### Continental extension
+# Continental extension
 
 *This section was contributed by John Naliboff, Anne Glerum, and Valentina
 Magni*

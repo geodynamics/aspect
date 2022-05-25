@@ -1,4 +1,4 @@
-#### The van Keken thermochemical composition benchmark
+# The van Keken thermochemical composition benchmark
 
 *This section is a co-production of Cedric Thieulot, Juliane Dannberg, Timo
 Heister and Wolfgang Bangerth with an extension to this benchmark provided by

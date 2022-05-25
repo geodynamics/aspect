@@ -1,4 +1,4 @@
-#### Simple convection in a spherical 3d shell
+# Simple convection in a spherical 3d shell
 
 The setup from the previous section can of course be extended to 3d shell
 geometries as well &ndash; though at significant computational cost. In fact,

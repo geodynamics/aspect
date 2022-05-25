@@ -1,4 +1,4 @@
-#### Melt migration in a 2D mid-ocean ridge model
+# Melt migration in a 2D mid-ocean ridge model
 
 *This section was contributed by Juliane Dannberg.*
 

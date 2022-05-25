@@ -1,4 +1,4 @@
-#### Reading in compositional initial composition files generated with geomIO
+# Reading in compositional initial composition files generated with geomIO
 
 *This section was contributed by Juliane Dannberg*
 

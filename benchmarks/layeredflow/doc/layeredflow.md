@@ -1,4 +1,4 @@
-#### Layered flow with viscosity contrast
+# Layered flow with viscosity contrast
 
 *This section was contributed by Cedric Thieulot.*
 
