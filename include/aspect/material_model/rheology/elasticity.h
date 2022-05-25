@@ -163,15 +163,6 @@ namespace aspect
           bool use_fixed_elastic_time_step;
 
           /**
-           * Bool indicating whether to use a stress averaging scheme to account
-           * for differences between the numerical and fixed elastic time step
-           * (if true). When set to false, the viscoelastic stresses are not
-           * modified to account for differences between the viscoelastic time
-           * step and the numerical time step. Read from parameter file.
-           */
-          bool use_stress_averaging;
-
-          /**
            * Double for fixed elastic time step value, read from parameter file
            */
           double fixed_elastic_time_step;
