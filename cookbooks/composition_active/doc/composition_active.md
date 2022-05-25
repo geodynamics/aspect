@@ -1,4 +1,4 @@
-##### The active case.
+## The active case.
 
 The next step, of course, is to make the flow actually depend on the
 composition. After all, compositional fields are not only intended to indicate
@@ -8,7 +8,7 @@ where the density, viscosity, and other parameters depend on the composition,
 taking into account what the compositional fields actually denote (e.g., if
 they simply indicate the origin of material, or the concentration of things
 like olivine, perovskite, &mldr;). The construction of material models is
-discussed in much greater detail in Section&nbsp;[\[sec:material-models\]][1];
+discussed in much greater detail in Section&nbsp;{ref}`sec:material-models`;
 we do not want to revisit this issue here and instead choose &ndash; once
 again &ndash; the simplest material model that is implemented in : the
 `simple` model.
@@ -32,7 +32,7 @@ the surrounding material.[1]
 This setup of the problem can be described using an input file that is almost
 completely unchanged from the passive case. The only difference is the use of
 the following section (the complete input file can be found in
-[cookbooks/composition_active/composition_active.prm][]:
+[cookbooks/composition_active/composition_active.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_active/composition_active.prm):
 
 ``` prmfile
 ```

@@ -1,5 +1,5 @@
 (sec:benchmarks:inclusion)=
-#### The &ldquo;inclusion&rdquo; Stokes benchmark
+# The &ldquo;inclusion&rdquo; Stokes benchmark
 
 The &ldquo;inclusion&rdquo; benchmark again solves a problem with a
 discontinuous viscosity, but this time the viscosity is chosen in such a way

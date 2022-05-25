@@ -1,4 +1,4 @@
-#### Thin shell gravity benchmark
+# Thin shell gravity benchmark
 
 *This section was contributed by Cedric Thieulot, Bart Root and Paul Bremner.*
 

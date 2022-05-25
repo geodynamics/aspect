@@ -1,11 +1,11 @@
-#### The Crameri et al.&nbsp;benchmarks
+# The Crameri et al.&nbsp;benchmarks
 
 *This section was contributed by Ian Rose.*
 
 This section follows the two free surface benchmarks described by Crameri et
 al. (Crameri et al. 2012).
 
-##### Case 1: Relaxation of topography.
+## Case 1: Relaxation of topography.
 
 The first benchmark involves a high viscosity lid sitting on top of a lower
 viscosity mantle. There is an initial sinusoidal topography which is then
@@ -22,7 +22,7 @@ are in Figure&nbsp;[1][].
 </div>
 
 The complete parameter file for this benchmark can be found in
-[benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm][], the most relevant
+[benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm), the most relevant
 parts of which are excerpted here:
 
 ``` prmfile
@@ -38,7 +38,7 @@ in the `ReboundBox` subsection.
 The characteristic timescales of topography relaxation are significantly
 smaller than those of mantle convection. Taking timesteps larger than this
 relaxation timescale tends to cause sloshing instabilities, which are
-described further in Section&nbsp;[\[sec:freesurface\]][2]. Some sort of
+described further in Section&nbsp;{ref}`sec:freesurface`. Some sort of
 stabilization is required to take large timesteps. In this benchmark, however,
 we are interested in the relaxation timescale, so we are free to take very
 small timesteps (in this case, 0.01 times the CFL number). As can be seen in
@@ -53,7 +53,7 @@ comparison are basically indistinguishable.
 
 </div>
 
-##### Case 2: Dynamic topography.
+## Case 2: Dynamic topography.
 
 Case two is more complicated. Unlike the case one, it occurs over mantle
 convection timescales. In this benchmark there is the same high viscosity lid
@@ -83,7 +83,7 @@ $\sim 800$ meters.
 
 Again, we excerpt the most relevant parts of the parameter file for this
 benchmark, with the full thing available in
-[benchmarks/crameri_et_al/case_2/crameri_benchmark_2.prm][]. Here we use the
+[benchmarks/crameri_et_al/case_2/crameri_benchmark_2.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/crameri_et_al/case_2/crameri_benchmark_2.prm). Here we use the
 &ldquo;Multicomponent&rdquo; material model, which allows us to easily set up
 a number of compositional fields with different material properties. The first
 compositional field corresponds to background mantle, the second corresponds

@@ -1,4 +1,4 @@
-#### The slab detachment benchmark
+# The slab detachment benchmark
 
 *This section was contributed by Cedric Thieulot and Anne Glerum.*
 

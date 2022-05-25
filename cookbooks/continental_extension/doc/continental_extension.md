@@ -1,4 +1,4 @@
-#### Continental extension
+# Continental extension
 
 *This section was contributed by John Naliboff, Anne Glerum, and Valentina
 Magni*
@@ -23,14 +23,14 @@ undergoes extension. Notably, the model design follows that of numerous
 previously published continental extension studies&nbsp;(Huismans and Beaumont
 2011; Brune et al. 2014; Naliboff and Buiter 2015, and references therein).
 
-##### Continental Extension
+## Continental Extension
 
 The 2D Cartesian model spans 200 ($x$) by 100 ($y$) km and has a finite
 element grid with 1.25 and 2.5 km grid spacing, respectively, above and below
 50 km depth. This variation in grid spacing is achieved with a single initial
 adaptive refinement step using the minimum refinement function strategy.
 Unlike the crustal deformation cookbook (see
-Section&nbsp;[\[sec:cookbooks-crustal-deformation\]][1], the mesh is not
+Section&nbsp;{ref}`sec:cookbooks-crustal-deformation`, the mesh is not
 refined with time.
 
 ``` prmfile

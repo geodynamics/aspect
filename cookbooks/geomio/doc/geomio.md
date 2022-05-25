@@ -1,4 +1,4 @@
-#### Reading in compositional initial composition files generated with geomIO
+# Reading in compositional initial composition files generated with geomIO
 
 *This section was contributed by Juliane Dannberg*
 
@@ -61,14 +61,14 @@ and all phases are assigned correctly (Figure&nbsp;[2][]).
 <img src="cookbooks/geomio/doc/jelly.png" id="fig:jelly-plot" style="width:45.0%" alt="Plot of the Phase variable in MATLAB." /><figcaption aria-hidden="true"><em>Plot of the <code>Phase</code> variable in MATLAB.</em></figcaption>
 </figure>
 
-Finally, we want to write output in a format that can be read in by &rsquo;s
+Finally, we want to write output in a format that can be read in by ASPECT's
 `ascii data` compositional initial conditions plugin. We write the data into
 the file `jelly.txt`:
 
 ``` matlab
 ```
 
-To read in the file we just created (a copy is located in &rsquo;s data
+To read in the file we just created (a copy is located in ASPECT's data
 directory), we set up a model with a box geometry with the same extents we
 specified for the drawing in px and one compositional field. We choose the
 `ascii data` compositional initial conditions and specify that we want to read

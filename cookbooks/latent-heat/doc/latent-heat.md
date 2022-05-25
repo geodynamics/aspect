@@ -1,4 +1,4 @@
-#### Latent heat benchmark
+# Latent heat benchmark
 
 *This section was contributed by Juliane Dannberg.*
 
@@ -102,7 +102,7 @@ entropy change via $\Delta S = \gamma \frac{\Delta\rho}{\rho^2}$) as well as
 the depth of the phase transition as input parameters.
 
 All of this setup is then described by the input file
-[cookbooks/latent-heat/latent-heat.prm][] that models flow in a box of $10^6$
+[cookbooks/latent-heat/latent-heat.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/latent-heat/latent-heat.prm) that models flow in a box of $10^6$
 meters of height and width, and a fixed downward velocity. The following
 section shows the central part of this file:
 
@@ -128,7 +128,7 @@ state and only then does the bottom temperature reach the theoretical value.
 Therefore, we use the last output step to compare predicted and computed
 values. You can visualize the output in different ways, one of it being
 ParaView and shown in Fig.&nbsp;[2][] on the right side (an alternative is to
-use Visit as described in Section&nbsp;[\[sec:viz\]][4]). In ParaView, you can
+use Visit as described in Section&nbsp;{ref}`sec:viz`). In ParaView, you can
 plot the temperature profile using the filter &ldquo;Plot Over Line&rdquo;
 (Point1: 500000,0,0; Point2: 500000,1000000,0, then go to the
 &ldquo;Display&rdquo; tab and select &ldquo;T&rdquo; as only variable in the

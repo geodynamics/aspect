@@ -1,4 +1,4 @@
-#### Convection in a box with prescribed, variable velocity boundary conditions
+# Convection in a box with prescribed, variable velocity boundary conditions
 
 A similarly simple setup to the ones considered in the previous subsections is
 to equip the model we had with a different set of boundary conditions. There,

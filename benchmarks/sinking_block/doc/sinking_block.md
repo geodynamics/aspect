@@ -1,4 +1,4 @@
-#### The sinking block benchmark
+# The sinking block benchmark
 
 This benchmark is based on the benchmark presented in (Gerya 2010) and
 extended in (Thieulot 2011). It consists of a two-dimensional

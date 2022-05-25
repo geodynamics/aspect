@@ -1,4 +1,4 @@
-##### Using active particles.
+## Using active particles.
 
 In the examples above, particle properties passively track distinct model
 properties. These particle properties, however, may also be used to actively
@@ -10,11 +10,11 @@ points at which material models and other parts of the code need to evaluate
 these properties &ndash; we need to somehow get the values from particles back
 to fields that can then be evaluated at any point where this is necessary. A
 slightly modified version of the active-composition cookbook
-([cookbooks/composition_active/composition_active.prm][]) illustrates how to
+([cookbooks/composition_active/composition_active.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_active/composition_active.prm)) illustrates how to
 use &lsquo;active particles&rsquo; in this manner.
 
 This cookbook,
-[cookbooks/composition_active_particles/composition_active_particles.prm][],
+[cookbooks/composition_active_particles/composition_active_particles.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_active_particles/composition_active_particles.prm),
 modifies two sections of the input file. First, particles are added under the
 `Postprocess` section:
 

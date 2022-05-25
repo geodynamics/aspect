@@ -15,7 +15,7 @@ Brittle failure is approximated by adapting the viscosity to limit the stress
 that is generated during deformation. This &ldquo;cap&rdquo; on the stress
 level is parameterized in this experiment by the pressure-dependent Drucker
 Prager yield criterion and we therefore make use of the Drucker-Prager
-material model (see Section [\[parameters:Material_20model\]][1]) in the
+material model (see Section {ref}`parameters:Material_20model`) in the
 `cookbooks/crustal_deformation/crustal_model_2D.prm`.
 
 The layer is assumed to have dimensions of $\SI{80}{km} \times \SI{16}{km}$
@@ -27,7 +27,7 @@ specified as follows:
 
 The yield strength $\sigma_y$ is a function of pressure, cohesion and angle of
 friction (see Drucker-Prager material model in Section
-[\[parameters:Material_20model\]][1]), and the effective viscosity is then
+{ref}`parameters:Material_20model`), and the effective viscosity is then
 computed as follows:
 $$\mu_{\text{eff}} = \left( \frac{1}{ \frac{\sigma_y}{2 \dot{\epsilon}}+
 \mu_{\text{min}}} + \frac{1}{\mu_{\text{max}}}  \right)^{-1}$$ where
@@ -90,7 +90,7 @@ Arthur angle (Kaus 2010; Buiter 2012).
 <img src="cookbooks/crustal_deformation/doc/both.png" id="fig:extcompr" alt="Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr." /><figcaption aria-hidden="true"><em>Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.</em></figcaption>
 </figure>
 
-##### Extension to 3D.
+## Extension to 3D.
 
 We can easily modify the previous input file to produce `crustal_model_3D.prm`
 which implements a similar setup, with the additional constraint that the

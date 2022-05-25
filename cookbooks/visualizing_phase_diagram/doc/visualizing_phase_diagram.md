@@ -1,4 +1,4 @@
-#### Visualizing phase diagrams
+# Visualizing phase diagrams
 
 *This section was contributed by Haoyuan Li and Magali Billen.*
 
@@ -18,10 +18,10 @@ pressure and temperature in the graphical output. Here, we visualize a diagram
 of the phase transitions implemented in the visco plastic material model, as
 well as a lookup table in the Steinberger material model.
 
-##### The input file.
+## The input file.
 
 You can find the input file to run this cookbook example in
-[cookbooks/visualizing_phase_diagram/visualizing_phase_diagram.prm][]. For
+[cookbooks/visualizing_phase_diagram/visualizing_phase_diagram.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/visualizing_phase_diagram/visualizing_phase_diagram.prm). For
 this first case, phase transitions are prescribed manually in terms of their
 depth, Clapeyron slope, and other key parameters.
 
@@ -48,7 +48,7 @@ model are listed here:
 ``` prmfile
 ```
 
-##### Results.
+## Results.
 
 Visualization of the model results yields a phase diagram of a pyrolitic
 mantle (Figure [1][]). The field shown here has the reference densities of the

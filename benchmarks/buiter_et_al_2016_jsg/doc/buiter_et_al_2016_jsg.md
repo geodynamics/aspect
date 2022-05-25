@@ -1,4 +1,4 @@
-#### Brittle thrust wedges benchmark
+# Brittle thrust wedges benchmark
 
 *This section was contributed by Sibiao Liu, Stephanie Sparks, John Naliboff,
 Cedric Thieulot, and Wolfgang Bangerth.*

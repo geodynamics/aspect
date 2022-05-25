@@ -1,4 +1,4 @@
-#### The Tosi et al.&nbsp;benchmarks
+# The Tosi et al.&nbsp;benchmarks
 
 *This section was contributed by Anne Glerum.*
 
@@ -14,10 +14,10 @@ dimensions with free slip boundary conditions. The initial temperature
 distribution considers a linear depth profile with a slight perturbation to
 start convection. Top and bottom boundaries are set to a fixed temperature
 value. The parameters shared between the benchmark cases can be found in
-[benchmarks/tosi_et_al_2015_gcubed/Tosi_base.prm][]. The other input files
+[benchmarks/tosi_et_al_2015_gcubed/Tosi_base.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/tosi_et_al_2015_gcubed/Tosi_base.prm). The other input files
 describe the variations on this base model, which pertain to the rheological
 description. The specific rheologies used are implemented in
-[benchmarks/tosi_et_al_2015_gcubed/tosi.cc][] and describe a linear and a
+[benchmarks/tosi_et_al_2015_gcubed/tosi.cc](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/tosi_et_al_2015_gcubed/tosi.cc) and describe a linear and a
 plastic component of the viscosity: $$\begin{aligned}
   \eta_\text{linear}(T,z) &= \exp(-\ln(\eta_T) T + \ln(\eta_Z) z)
   \label{eq:tosi-benchmark-lin-visc} \\
@@ -25,7 +25,7 @@ plastic component of the viscosity: $$\begin{aligned}
   \label{eq:tosi-benchmark-plast-visc}\end{aligned}$$ where $\eta^\ast$ is the
 constant effective viscosity at high stresses and $\sigma_y$ the yield stress.
 
-##### Case 1: Temperature-dependent convection.
+## Case 1: Temperature-dependent convection.
 
 The first benchmark considers a viscosity that only depends on temperature
 (Eq. [\[eq:tosi-benchmark-lin-visc\]][1], with $\gamma_Z=0$). When run to
@@ -36,13 +36,13 @@ average temperature, the Nusselt number at the top and bottom of the domain,
 the RMS velocity at the top boundary and in the whole domain, and the maximum
 velocity at the surface. These quantities can be queried by using several of
 the postprocessors, but the additional postprocessor in
-[benchmarks/tosi_et_al_2015_gcubed/tosi.cc][] is needed to compute the average
+[benchmarks/tosi_et_al_2015_gcubed/tosi.cc](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/tosi_et_al_2015_gcubed/tosi.cc) is needed to compute the average
 rate of work done against gravity, the average rate of viscous dissipation,
 and the error between them. Differences between these diagnostic quantities of
 the 11 codes that participated in the benchmark effort are smaller than 5% for
 their preferred mesh resolution.
 
-##### Case 2: Viscoplastic convection.
+## Case 2: Viscoplastic convection.
 
 Case 2 includes a strain rate-dependent component in the viscosity, which is
 harmonically averaged with the linear component (see also the code snippet

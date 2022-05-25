@@ -1,4 +1,4 @@
-#### Simple convection in a spherical 3d shell
+# Simple convection in a spherical 3d shell
 
 The setup from the previous section can of course be extended to 3d shell
 geometries as well &ndash; though at significant computational cost. In fact,
@@ -11,14 +11,14 @@ movie can be found at <http://youtu.be/j63MkEc0RRw>.
 <img src="cookbooks/shell_simple_3d/doc/x-movie0700.png" id="fig:simple-shell-3d" style="width:70.0%" alt="Convection in a spherical shell: Snapshot of isosurfaces of the temperature field at time t\approx \num{1.06e9} years with a quarter of the geometry cut away. The surface shows vectors indicating the flow velocity and direction." /><figcaption aria-hidden="true"><em>Convection in a spherical shell: Snapshot of isosurfaces of the temperature field at time <span class="math inline"><em>t</em>&#x2004;&#x2248;&#x2004;1.06&#x2004;&#xA0;&#xD7;&#xA0;&#x2004;10<sup>9</sup></span> years with a quarter of the geometry cut away. The surface shows vectors indicating the flow velocity and direction.</em></figcaption>
 </figure>
 
-##### The input file.
+## The input file.
 
 Compared to the input file discussed in the previous section, the number of
 changes is relatively small. However, when taking into account the various
 discussions about which parts of the model were or were not realistic, they go
 throughout the input file, so we reproduce it here in its entirety,
 interspersed with comments (the full input file can also be found in
-[cookbooks/shell_simple_3d/shell_simple_3d.prm][]). Let us start from the top
+[cookbooks/shell_simple_3d/shell_simple_3d.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/shell_simple_3d/shell_simple_3d.prm)). Let us start from the top
 where everything looks the same except that we set the dimension to 3:
 
 ``` prmfile
@@ -87,12 +87,12 @@ go down or the scheduler aborts programs because they ran out of time. With
 computations this big, we cannot afford to just lose the results, so we
 checkpoint the computations every 50 time steps and can then resume it at the
 last saved state if necessary (see
-Section&nbsp;[\[sec:checkpoint-restart\]][2]):
+Section&nbsp;{ref}`sec:checkpoint-restart`):
 
 ``` prmfile
 ```
 
-##### Evaluation.
+## Evaluation.
 
 Just as in the 2d case above, there are still many things that are wrong from
 a physical perspective in this setup, notably the no-slip boundary conditions
@@ -108,7 +108,7 @@ terawatts) of which an estimated 12&ndash;30 TW are primordial heat released
 from cooling the Earth and 15&ndash;41 TW from radiogenic heating.[2] Our
 model does not include radiogenic heating (though has a number of
 `Heating models` to switch this on, see
-Section&nbsp;[\[parameters:Heating_20model\]][3]) but we can compare what the
+Section&nbsp;{ref}`parameters:Heating_20model`) but we can compare what the
 model gives us in terms of heat flux through the inner and outer boundaries of
 our shell geometry. This is shown in the left panel of Fig.&nbsp;[3][] where
 we plot the heat flux through boundaries zero and one, corresponding to the

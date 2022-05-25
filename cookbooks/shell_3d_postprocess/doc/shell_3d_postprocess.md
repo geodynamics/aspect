@@ -1,4 +1,4 @@
-#### Postprocessing spherical 3D convection
+# Postprocessing spherical 3D convection
 
 *This section was contributed by Jacqueline Austermann, Ian Rose, and Shangxin
 Liu*
@@ -6,7 +6,7 @@ Liu*
 There are several postprocessors that can be used to turn the velocity and
 pressure solution into quantities that can be compared to surface
 observations. In this cookbook
-([cookbooks/shell_3d_postprocess/shell_3d_postprocess.prm][]) we introduce two
+([cookbooks/shell_3d_postprocess/shell_3d_postprocess.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/shell_3d_postprocess/shell_3d_postprocess.prm)) we introduce two
 postprocessors: dynamic topography and the geoid. We initialize the model with
 a harmonic perturbation of degree 4 and order 2 and calculate the
 instantaneous solution. Analogous to the previous setup we use a spherical
@@ -25,7 +25,7 @@ dynamic topography. The deflection of the surfaces and density perturbations
 within the mantle also cause a perturbation in the gravitational field of the
 planet relative to the hydrostatic equilibrium ellipsoid.
 
-##### Dynamic topography at the surface and core mantle boundary.
+## Dynamic topography at the surface and core mantle boundary.
 
 Dynamic topography is calculated at the surface and bottom of the domain
 through a stress balancing approach where we assume that the radial stress at
@@ -45,7 +45,7 @@ might not fulfill this constraint if the resolution of the model is not high
 enough to provide an accurate solution. This cookbook only uses a refinement
 of 2, which is relatively low resolution.
 
-##### Geoid anomalies.
+## Geoid anomalies.
 
 Geoid anomalies are perturbations of the gravitational equipotential surface
 that are due to density variations within the mantle as well as deflections of
