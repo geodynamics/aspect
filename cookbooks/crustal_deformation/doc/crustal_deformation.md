@@ -80,7 +80,7 @@ as shown in Fig. ([2][]).
 ```{figure-md}
 <img src="grids.png" id="fig:meshes" style="width:70.0%" alt="Mesh evolution during the first timestep (refinement is based on strain rate)." />
 
-Mesh evolution during the first timestep (refinement is based on strain rate).</em></figcaption>
+Mesh evolution during the first timestep (refinement is based on strain rate).
 ```
 
 Deformation localizes at the basal velocity discontinuity and plastic shear
@@ -91,7 +91,7 @@ Arthur angle (Kaus 2010; Buiter 2012).
 ```{figure-md}
 <img src="both.png" id="fig:extcompr" alt="Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr." />
 
-Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.</em></figcaption>
+Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.
 ```
 
 ##### Extension to 3D.
@@ -111,7 +111,7 @@ to a transform fault which connects them.
 ```{figure-md}
 <img src="bottombc2.png" id="fig:bottombc" alt="Basal velocity boundary conditions and corresponding strain rate field for the 3D model." />
 
-Basal velocity boundary conditions and corresponding strain rate field for the 3D model.</em></figcaption>
+Basal velocity boundary conditions and corresponding strain rate field for the 3D model.
 ```
 
 The Finite Element mesh, the velocity, viscosity and strain rate fields are
@@ -123,7 +123,7 @@ as a function of their initial offset (Allken, Huismans, and Thieulot 2011,
 ```{figure-md}
 <img src="all3D.png" id="fig:ext3D" alt="Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement." />
 
-Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement.</em></figcaption>
+Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement.
 ```
 
 <div id="refs" class="references csl-bib-body hanging-indent">

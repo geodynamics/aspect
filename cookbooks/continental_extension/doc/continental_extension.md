@@ -126,13 +126,13 @@ temporal evolution of deformation patterns.
 ```{figure-md}
 <img src="continental_extension_cookbook_0myr.png" id="fig:continental_extension_cookbook_0myr" alt="Initial active deformation field (strain rate second invariant in units of \si{s}^{-1}) and distribution of plastic strain. The white line marks the (893&#xA0;K) isotherm (initial Moho temperature)." />
 
-Initial active deformation field (strain rate second invariant in units of <span class="math inline"><em>s</em><sup>&#x2212;1</sup></span>) and distribution of plastic strain. The white line marks the (893&#xA0;K) isotherm (initial Moho temperature).</em></figcaption>
+Initial active deformation field (strain rate second invariant in units of <span class="math inline"><em>s</em><sup>&#x2212;1</sup></span>) and distribution of plastic strain. The white line marks the (893&#xA0;K) isotherm (initial Moho temperature).
 ```
 
 ```{figure-md}
 <img src="continental_extension_cookbook_5myr.png" id="fig:continental_extension_cookbook_5myr" alt="Active (strain rate second invariant in units of \si{s}^{-1}) and finite (plastic) deformation after 5&#xA0;&#xD7;&#xA0;106 years of extension. The white line marks the (893&#xA0;K) isotherm (initial Moho temperature)." />
 
-Active (strain rate second invariant in units of <span class="math inline"><em>s</em><sup>&#x2212;1</sup></span>) and finite (plastic) deformation after 5&#xA0;&#xD7;&#xA0;10<sup>6</sup> years of extension. The white line marks the (893&#xA0;K) isotherm (initial Moho temperature).</em></figcaption>
+Active (strain rate second invariant in units of <span class="math inline"><em>s</em><sup>&#x2212;1</sup></span>) and finite (plastic) deformation after 5&#xA0;&#xD7;&#xA0;10<sup>6</sup> years of extension. The white line marks the (893&#xA0;K) isotherm (initial Moho temperature).
 ```
 
 <div id="refs" class="references csl-bib-body hanging-indent">

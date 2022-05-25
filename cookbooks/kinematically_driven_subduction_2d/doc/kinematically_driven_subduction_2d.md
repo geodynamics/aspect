@@ -88,7 +88,7 @@ boundary. This can also be seen in Fig&nbsp;[7][].
 ```{figure-md}
 <img src="cookbooks/kinematically_driven_subduction_2d/doc/Case1_diagnostics.*" id="fig:QQ_case1_diagnostics" alt="Case 1 diagnostic quantities of ASPECT, Sulec and Elefant results." />
 
-Case 1 diagnostic quantities of ASPECT, Sulec and Elefant results.</em></figcaption>
+Case 1 diagnostic quantities of ASPECT, Sulec and Elefant results.
 ```
 
 <img src="Case1_visc_8My.png" title="fig:" id="fig:QQ_case1_results" style="width:60.0%" alt="Case 1 viscosity snapshots at 8 and 15 My." />
