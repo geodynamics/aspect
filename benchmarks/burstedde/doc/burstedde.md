@@ -137,7 +137,7 @@ would hope for using $Q_2$ elements for the velocity and $Q_1$ elements for
 the pressure.
 
 ```{figure-md}
-<embed src="errors.svg" id="errors" />
+<img src="errors.svg" id="errors" />
 
 Burstedde benchmark: Error convergence for the 3D polynomial Stokes benchmark. <span id="errors" label="errors">[errors]</span>
 ```

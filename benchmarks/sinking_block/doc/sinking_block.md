@@ -41,7 +41,7 @@ Density field with velocity arrows for <span class="math inline"><em>&#x3B7;</em
 ```
 
 ```{figure-md} fig:sinking_block2
-<embed src="plot.svg" style="width:80.0%" />
+<img src="plot.svg" style="width:80.0%" />
 
 Scaled velocity measurements as a function of the viscosity contrast between surrounding medium and block for all experiments.
 ```

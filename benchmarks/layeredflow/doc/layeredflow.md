@@ -15,8 +15,8 @@ viscosity (if $\epsilon$ is small).
 
 <div class="center">
 
-<embed src="viscosityA.svg" title="fig:" id="fig:layeredflow1" style="width:48.0%" />
-<embed src="viscosityD.svg" title="fig:" id="fig:layeredflow1" style="width:48.0%" />
+<img src="viscosityA.svg" title="fig:" id="fig:layeredflow1" style="width:48.0%" />
+<img src="viscosityD.svg" title="fig:" id="fig:layeredflow1" style="width:48.0%" />
 
 </div>
 

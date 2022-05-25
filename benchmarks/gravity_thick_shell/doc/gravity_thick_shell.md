@@ -67,8 +67,8 @@ The resulting measurements obtained for a mesh composed of 12 caps of $32^3$
 cells (i.e., 393,216 total mesh cells) are shown in Fig.&nbsp;([2][]) and are
 in good agreement with the analytical profiles.
 
-<embed src="gravity_g.svg" title="fig:" id="fig:grav-thick-shell" style="width:8cm" />
-<embed src="gravity_U.svg" title="fig:" id="fig:grav-thick-shell" style="width:8cm" />
+<img src="gravity_g.svg" title="fig:" id="fig:grav-thick-shell" style="width:8cm" />
+<img src="gravity_U.svg" title="fig:" id="fig:grav-thick-shell" style="width:8cm" />
 
   [1]: #eq:app1
   [2]: #eq:gout

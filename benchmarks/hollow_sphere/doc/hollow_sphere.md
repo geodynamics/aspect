@@ -34,7 +34,7 @@ velocity and a second-order convergence rate for the pressure.
 <img src="pressure.png" title="fig:" id="fig:hollow-sphere-vp" alt="Figure" />
 
 ```{figure-md} fig:hollow-sphere-errors
-<embed src="errors_hollowsphere.svg" />
+<img src="errors_hollowsphere.svg" />
 
 Velocity and pressure errors in the <span class="math inline"><em>L</em><sub>2</sub></span>-norm as a function of the mesh size.
 ```

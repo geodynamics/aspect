@@ -72,7 +72,7 @@ from the subsection `Simple model`.
 ```
 
 ```{figure-md} fig:finite_strain
-<embed src="finite_strain.svg" style="width:75.0%" />
+<img src="finite_strain.svg" style="width:75.0%" />
 
 Accumulated finite strain in an example convection model, as described in Section <a href="#sec:finite-strain" data-reference-type="ref" data-reference="sec:finite-strain">0.0.1</a> at a time of 67.6&#xA0;Ma. Top panel: Temperature distribution. Bottom panel: Natural strain distribution. Additional black crosses are the scaled eigenvectors of the stretching tensor <span class="math inline"><strong>L</strong></span>, showing the direction of stretching and compression.
 ```
