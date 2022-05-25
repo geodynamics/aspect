@@ -7,7 +7,7 @@ boundary condition that prescribes the velocity according to a specific
 geologic reconstruction. The purpose of this kind of models is often to test a
 proposed geologic model and compare characteristic convection results to
 present-day observables in order to gain information about the initially
-assumed geologic input. In this cookbook we present &rsquo;s interface to the
+assumed geologic input. In this cookbook we present ASPECT's interface to the
 widely used plate reconstruction software GPlates, and the steps to go from a
 geologic plate reconstruction to a geodynamic model incorporating these
 velocities as boundary condition.
@@ -90,7 +90,7 @@ since it can easily be replaced by a calculated file index (see also
 
 For this cookbook we will use the parameter file provided in
 [cookbooks/gplates/gplates_2d.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/gplates/gplates_2d.prm) which uses the 2d shell geometry
-previously discussed in Section&nbsp;{ref}`sec:shell-simple-2d`. &rsquo;s
+previously discussed in Section&nbsp;{ref}`sec:shell-simple-2d`. ASPECT's
 GPlates plugin allows for the use of two- and three-dimensional models
 incorporating the GPlates velocities. Since the output by GPlates is
 three-dimensional in any case, internally handles the 2D model by rotating the

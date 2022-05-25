@@ -41,7 +41,7 @@ situation. In principle, what we need to do is to describe a spherical object
 with a density that is larger than the surrounding material. There are
 multiple ways of doing this. For example, we could simply set the initial
 temperature of the material in the sphere to a lower value, yielding a higher
-density with any of the common material models. Or, we could use &rsquo;s
+density with any of the common material models. Or, we could use ASPECT's
 facilities to advect along what are called &ldquo;compositional fields&rdquo;
 and make the density dependent on these fields.
 

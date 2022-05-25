@@ -3,7 +3,7 @@
 *This section was contributed by Juliane Dannberg.*
 
 The following cookbook will explain how to set up a model of a mid-ocean ridge
-that uses &rsquo;s implementation of coupled magma/mantle dynamics (see
+that uses ASPECT's implementation of coupled magma/mantle dynamics (see
 Section&nbsp;{ref}`sec:melt_transport`) and melting and freezing of mantle
 rock. In particular, it will outline
 
