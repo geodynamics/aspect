@@ -73,7 +73,7 @@ from the subsection `Simple model`.
 
 ```{figure-md}
 <embed src="cookbooks/finite_strain/doc/finite_strain.pdf" id="fig:finite_strain" style="width:75.0%" /><figcaption aria-hidden="true"><em>Accumulated finite strain in an example convection model, as described in Section <a href="#sec:finite-strain" data-reference-type="ref" data-reference="sec:finite-strain">0.0.1</a> at a time of 67.6&#xA0;Ma. Top panel: Temperature distribution. Bottom panel: Natural strain distribution. Additional black crosses are the scaled eigenvectors of the stretching tensor <span class="math inline"><strong>L</strong></span>, showing the direction of stretching and compression.</em></figcaption>
-</figure>
+```
 
 The plugin was tested against analytical solutions for the deformation
 gradient tensor in simple and pure shear as described in

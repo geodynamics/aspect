@@ -17,7 +17,7 @@ are in Figure&nbsp;[1][].
 
 ```{figure-md}
 <img src="initial_topography.png" id="fig:crameri-benchmark-initial-topography" style="width:95.0%" alt="Setup for the topography relaxation benchmark. The box is 2800 km wide and 700 km high, with a 100 km lid on top. The lid has a viscosity of 10^{23} \, {Pa\,s}, while the mantle has a viscosity of 10^{21} \, {Pa\,s}. The sides are free slip, the bottom is no slip, and the top is a free surface. Both the lid and the mantle have a density of 3300 \,{kg/m^3}, and gravity is 10 \, {m/s^2}. There is a 7 \, {km} sinusoidal initial topography on the free surface." /><figcaption aria-hidden="true"><em>Setup for the topography relaxation benchmark. The box is <span class="math inline">2800</span> km wide and <span class="math inline">700</span> km high, with a <span class="math inline">100</span> km lid on top. The lid has a viscosity of <span class="math inline">10<sup>23</sup>&#x2006;<em>P</em><em>a</em>&#x2006;<em>s</em></span>, while the mantle has a viscosity of <span class="math inline">10<sup>21</sup>&#x2006;<em>P</em><em>a</em>&#x2006;<em>s</em></span>. The sides are free slip, the bottom is no slip, and the top is a free surface. Both the lid and the mantle have a density of <span class="math inline">3300&#x2006;<em>k</em><em>g</em>/<em>m</em><sup>3</sup></span>, and gravity is <span class="math inline">10&#x2006;<em>m</em>/<em>s</em><sup>2</sup></span>. There is a <span class="math inline">7&#x2006;<em>k</em><em>m</em></span> sinusoidal initial topography on the free surface.</em></figcaption>
-</figure>
+```
 
 </div>
 
@@ -49,7 +49,7 @@ comparison are basically indistinguishable.
 
 ```{figure-md}
 <embed src="cookbooks/benchmarks/crameri_et_al/doc/crameri_1_comparison.pdf" id="fig:crameri-benchmark-relaxation-topography" style="width:95.0%" /><figcaption aria-hidden="true"><em>Results for the topography relaxation benchmark, showing maximum topography versus time. Over about <span class="math inline">100</span> ka the topography completely disappears. The results of four free surface codes, as well as the semi-analytic solution, are nearly identical.</em></figcaption>
-</figure>
+```
 
 </div>
 
@@ -65,7 +65,7 @@ surface. The details for the setup are in the caption of Figure&nbsp;[3][].
 
 ```{figure-md}
 <img src="rising_blob.png" id="fig:crameri-benchmark-rising-blob" style="width:95.0%" alt="Setup for the dynamic topography benchmark. Again, the domain is 2800 km wide and 700 km high. A 100 km thick lid with viscosity 10^{23} overlies a mantle with viscosity 10^{21}. Both the lid and the mantle have a density of 3300\,kg/m^3. A blob with diameter 100 km lies 300 km from the bottom of the domain. The blob has a density of 3200 kg/m^3 and a viscosity of 10^{20} Pa s." /><figcaption aria-hidden="true"><em>Setup for the dynamic topography benchmark. Again, the domain is <span class="math inline">2800</span> km wide and <span class="math inline">700</span> km high. A <span class="math inline">100</span> km thick lid with viscosity <span class="math inline">10<sup>23</sup></span> overlies a mantle with viscosity <span class="math inline">10<sup>21</sup></span>. Both the lid and the mantle have a density of <span class="math inline">3300&#x2006;<em>k</em><em>g</em>/<em>m</em><sup>3</sup></span>. A blob with diameter <span class="math inline">100</span> km lies <span class="math inline">300</span> km from the bottom of the domain. The blob has a density of <span class="math inline">3200<em>k</em><em>g</em>/<em>m</em><sup>3</sup></span> and a viscosity of <span class="math inline">10<sup>20</sup></span> Pa s.</em></figcaption>
-</figure>
+```
 
 </div>
 
@@ -77,7 +77,7 @@ $\sim 800$ meters.
 
 ```{figure-md}
 <embed src="cookbooks/benchmarks/crameri_et_al/doc/crameri_2_comparison.pdf" id="fig:crameri-2-comparison" style="width:95.0%" /><figcaption aria-hidden="true"><em>Evolution of topography for the dynamic topography benchmark. The maximum topography is shown as a function of time, for as well as for several other codes participating in the benchmark. This benchmark shows considerably more scatter between the codes.</em></figcaption>
-</figure>
+```
 
 </div>
 
@@ -112,7 +112,7 @@ CFL number and mesh resolution. The results are shown in figure&nbsp;[5][].
 
 ```{figure-md}
 <embed src="cookbooks/benchmarks/crameri_et_al/doc/crameri_2_convergence.pdf" id="fig:crameri-benchmark-convergence" style="width:100.0%" /><figcaption aria-hidden="true"><em>Convergence for case two. Left: Logarithm of the error with decreasing CFL number. As the CFL number decreases, the error gets smaller. However, once it reaches a value of <span class="math inline">&#x2004;&#x223C;&#x2004;0.1</span>, there stops being much improvement in accuracy. Right: Logarithm of the error with increasing maximum mesh resolution. As the resolution increases, so does the accuracy.</em></figcaption>
-</figure>
+```
 
 </div>
 

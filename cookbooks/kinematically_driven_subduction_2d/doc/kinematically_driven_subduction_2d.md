@@ -15,7 +15,7 @@ the solver tolerance.
 
 ```{figure-md}
 <img src="setup_Quinquis2014.png" id="fig:QQ_setup" style="width:80.0%" alt="Case 4 model setup. Copied from Quinquis (2014)." /><figcaption aria-hidden="true">Case 4 model setup. Copied from Quinquis (2014).</figcaption>
-</figure>
+```
 
 ##### Case 1: Simple geometry and rheology
 
@@ -85,7 +85,7 @@ boundary. This can also be seen in Fig&nbsp;[7][].
 
 ```{figure-md}
 <img src="cookbooks/kinematically_driven_subduction_2d/doc/Case1_diagnostics.*" id="fig:QQ_case1_diagnostics" alt="Case 1 diagnostic quantities of ASPECT, Sulec and Elefant results." /><figcaption aria-hidden="true"><em>Case 1 diagnostic quantities of ASPECT, Sulec and Elefant results.</em></figcaption>
-</figure>
+```
 
 <img src="Case1_visc_8My.png" title="fig:" id="fig:QQ_case1_results" style="width:60.0%" alt="Case 1 viscosity snapshots at 8 and 15 My." />
 <img src="Case1_visc_15My.png" title="fig:" id="fig:QQ_case1_results" style="width:60.0%" alt="Case 1 viscosity snapshots at 8 and 15 My." />

@@ -58,7 +58,7 @@ movie of how the temperature evolves over this time period at
 
 ```{figure-md}
 <img src="temps.png" id="fig:bunge_et_al" style="width:90.0%" alt="Bunge et al.&#xA0;benchmark. From left to right: temperature field at time t=5\cdot 10^9 years obtained with viscosity profiles a, b, c and d." /><figcaption aria-hidden="true"><em>Bunge et al.&#xA0;benchmark. From left to right: temperature field at time <span class="math inline"><em>t</em>&#x2004;=&#x2004;5&#x2005;&#x22C5;&#x2005;10<sup>9</sup></span> years obtained with viscosity profiles a, b, c and d.</em></figcaption>
-</figure>
+```
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

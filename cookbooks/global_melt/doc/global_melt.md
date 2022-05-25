@@ -79,7 +79,7 @@ over time in comparison to the model without melt migration.
 
 ```{figure-md}
 <embed src="cookbooks/global_melt/doc/model_evolution.pdf" id="fig:global-melt" style="width:90.0%" /><figcaption aria-hidden="true"><em>Evolution of the model without (left) and with (right) melt migration.</em></figcaption>
-</figure>
+```
 
 Figure&nbsp;[1][] shows the time evolution of both models. A more complete
 comparison of the two models can be found in Section&nbsp;4.7 &ldquo;Influence

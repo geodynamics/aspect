@@ -79,7 +79,7 @@ as shown in Fig. ([2][]).
 
 ```{figure-md}
 <img src="grids.png" id="fig:meshes" style="width:70.0%" alt="Mesh evolution during the first timestep (refinement is based on strain rate)." /><figcaption aria-hidden="true"><em>Mesh evolution during the first timestep (refinement is based on strain rate).</em></figcaption>
-</figure>
+```
 
 Deformation localizes at the basal velocity discontinuity and plastic shear
 bands form at an angle of approximately $53\degree$ to the bottom in extension
@@ -88,7 +88,7 @@ Arthur angle (Kaus 2010; Buiter 2012).
 
 ```{figure-md}
 <img src="both.png" id="fig:extcompr" alt="Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr." /><figcaption aria-hidden="true"><em>Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.</em></figcaption>
-</figure>
+```
 
 ##### Extension to 3D.
 
@@ -106,7 +106,7 @@ to a transform fault which connects them.
 
 ```{figure-md}
 <img src="bottombc2.png" id="fig:bottombc" alt="Basal velocity boundary conditions and corresponding strain rate field for the 3D model." /><figcaption aria-hidden="true"><em>Basal velocity boundary conditions and corresponding strain rate field for the 3D model.</em></figcaption>
-</figure>
+```
 
 The Finite Element mesh, the velocity, viscosity and strain rate fields are
 shown in Fig. ([4][]) at the end of the first time steps. The reader is
@@ -116,7 +116,7 @@ as a function of their initial offset (Allken, Huismans, and Thieulot 2011,
 
 ```{figure-md}
 <img src="all3D.png" id="fig:ext3D" alt="Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement." /><figcaption aria-hidden="true"><em>Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement.</em></figcaption>
-</figure>
+```
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

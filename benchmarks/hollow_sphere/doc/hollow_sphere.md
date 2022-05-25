@@ -35,7 +35,7 @@ velocity and a second-order convergence rate for the pressure.
 
 ```{figure-md}
 <embed src="cookbooks/benchmarks/hollow_sphere/doc/errors_hollowsphere.pdf" id="fig:hollow-sphere-errors" /><figcaption aria-hidden="true"><em>Velocity and pressure errors in the <span class="math inline"><em>L</em><sub>2</sub></span>-norm as a function of the mesh size.</em></figcaption>
-</figure>
+```
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

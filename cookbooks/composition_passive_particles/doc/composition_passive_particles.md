@@ -55,7 +55,7 @@ results in a plot like the one shown in Fig.&nbsp;[1][].
 
 ```{figure-md}
 <img src="solution-00072.png" id="fig:composition_passive_particles" style="width:50.0%" alt="Passively advected quantities visualized through both a [fig:composition_passive_particles] compositional field and a set of 1,000 particles, at t=7.2." /><figcaption aria-hidden="true"><em>Passively advected quantities visualized through both a <span id="fig:composition_passive_particles" label="fig:composition_passive_particles">[fig:composition_passive_particles]</span> compositional field and a set of 1,000 particles, at <span class="math inline"><em>t</em>&#x2004;=&#x2004;7.2</span>.</em></figcaption>
-</figure>
+```
 
 The particles shown here are not too impressive in still pictures since they
 are colorized by their particle number, which does not carry any particular

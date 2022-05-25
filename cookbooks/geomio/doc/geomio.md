@@ -36,7 +36,7 @@ been assigned to each path (Figure&nbsp;[1][]).
 
 ```{figure-md}
 <embed src="cookbooks/geomio/doc/jellyfish.pdf" id="fig:jelly-picture" style="width:20.0%" /><figcaption aria-hidden="true"><em>Vector drawing of a jellyfish.</em></figcaption>
-</figure>
+```
 
 After geomIO is initialized in MATLAB, we [run geomIO as described in the
 documentation][], loading the default options and then specifying all the
@@ -59,7 +59,7 @@ and all phases are assigned correctly (Figure&nbsp;[2][]).
 
 ```{figure-md}
 <img src="jelly.png" id="fig:jelly-plot" style="width:45.0%" alt="Plot of the Phase variable in MATLAB." /><figcaption aria-hidden="true"><em>Plot of the <code>Phase</code> variable in MATLAB.</em></figcaption>
-</figure>
+```
 
 Finally, we want to write output in a format that can be read in by &rsquo;s
 `ascii data` compositional initial conditions plugin. We write the data into
@@ -83,7 +83,7 @@ mesh refined at the boundaries between the different phases
 
 ```{figure-md}
 <embed src="cookbooks/geomio/doc/jelly-paraview.pdf" id="fig:jelly-paraview" style="width:55.0%" /><figcaption aria-hidden="true"> <em>model output of the jellyfish and corresponding mesh in ParaView.</em></figcaption>
-</figure>
+```
 
 For a geophysical setup, the MATLAB code could be extended to write out the
 phases into several different columns of the ASCII data file (corresponding to

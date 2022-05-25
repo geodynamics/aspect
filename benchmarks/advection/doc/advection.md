@@ -24,11 +24,11 @@ contains a (small) physical diffusion term.
 
 ```{figure-md}
 <img src="drop.png" id="fig:benchmark-drop" alt="Dropping box benchmark at final time. Left: entropy viscosity. Right: SUPG." /><figcaption aria-hidden="true"><em>Dropping box benchmark at final time. Left: entropy viscosity. Right: SUPG.</em></figcaption>
-</figure>
+```
 
 ```{figure-md}
 <img src="rotate_shape.png" id="fig:benchmark-rotate-shape" alt="Rotating shapes benchmark at final time: Left: reference. Middle: Entropy viscosity. Right: SUPG." /><figcaption aria-hidden="true"><em>Rotating shapes benchmark at final time: Left: reference. Middle: Entropy viscosity. Right: SUPG.</em></figcaption>
-</figure>
+```
 
   [1]: #sec:advection-stabilization
   [1]: #fig:benchmark-drop
