@@ -29,12 +29,12 @@ is related to one of the questions in the assignment) can be found [here][].
 *This section describes an example for a homework assignment based on this
 cookbook.*
 
-###### How to setup and run the models
+### How to setup and run the models
 
 In this assignment, you will analyze the likelihood of mantle convection in a
 celestial body.
 
-###### Pick a celestial body.
+### Pick a celestial body.
 
 In order to do that, pick a celestial body from the list in Section 3. You can
 also pick one that is not on my list, as long as you can convincingly argue
@@ -55,7 +55,7 @@ the thermal conductivity to 2.5 W/(m K). To do that, modify the line
 (changing the reference density from 4000 to 1000 kg/m<sup>3</sup>, and the
 thermal conductivity from 4.0 to 2.5 W/(m K).)
 
-###### Compute the gravity.
+### Compute the gravity.
 
 In addition, you will need to change the gravity. Smaller bodies, and ones
 with a lower density will have a lower gravity. You can assume that the
@@ -78,7 +78,7 @@ To change the gravity, modify the line
 in the `Gravity model` subsection to the value you have computed. The units
 are m/s<sup>2</sup>.
 
-###### Prepare the model runs.
+### Prepare the model runs.
 
 You can find a file called `run.sh` in the [cookbooks/onset_of_convection/][]
 folder. This file is not a model input file, but it is a bash script than can
@@ -119,7 +119,7 @@ results, so feel free to increase the number of values in the loops once you
 have found a parameter range that includes both models with and without
 convection.
 
-###### Run the models.
+### Run the models.
 
 To run the script, you need to type
 
@@ -141,7 +141,7 @@ and no convection will take place). In an unstable model, the velocity should
 grow after the first time step, in a stable model, the velocity should
 decrease.
 
-###### Postprocess the output.
+### Postprocess the output.
 
 You can plot the `onset-convection-data.csv` file using gnuplot (or a
 different plotting program, if there&rsquo;s one you like better). The
@@ -172,7 +172,7 @@ between models without and with convection. The temperatures should be in a
 reasonable range (you can check the densities in the visualization output in
 ParaView, if you have negative densities, your temperature is too large).
 
-###### Visualize the convective behaviour.
+### Visualize the convective behaviour.
 
 Now that you know for what parameters convection starts, run a model series of
 3 models for a longer time. Pick one parameter combination of temperature
@@ -206,14 +206,14 @@ You will use these models to analyze how the style of convection changes as
 the forces controlling convection move further away from being equal, as
 outlined below.
 
-###### What should be in your report?
+### What should be in your report?
 
-###### Start with an introduction.
+### Start with an introduction.
 
 Start with an introductory paragraph that states what you want to do and gives
 an outlook on the rest of the report.
 
-###### Describe your model setup.
+### Describe your model setup.
 
 In your report, start by describing the setup of the model and what can be
 learned from running such a model. Specifically, describe what the important
@@ -225,7 +225,7 @@ balance.
 State what celestial body you investigate, the vertical extension and the
 gravity you use in your model.
 
-###### Describe your model results.
+### Describe your model results.
 
 Then describe your model results. Include your plot of models with and without
 convection for different values of the viscosity and temperature difference
@@ -240,7 +240,7 @@ logarithmic scale!) For an Earth-like temperature variation across the mantle
 of your celestial body, what viscosity would be required for convection to be
 likely?
 
-###### Bonus question
+### Bonus question
 
 Find an approximate equation for the line of the onset of convection in the
 plot. Relate it to the forces acting in the model: Why does the equation
@@ -260,7 +260,7 @@ different viscosities you let evolve for a longer time as described above.
 What happens to the shape of plumes and slabs as the viscosity becomes
 smaller? What happens to the model velocity?
 
-###### Discuss the predictions of your model.
+### Discuss the predictions of your model.
 
 Based on the temperature and viscosity values you determined would be needed
 for the onset of convection in your celestial body, and how they compare to
@@ -271,19 +271,19 @@ reasonable parameters that would not predict convection, you can also argue
 that with the information we have, we can not say if the body would have
 mantle convection. That is a valid conclusion.
 
-###### Bonus question
+### Bonus question
 
 Discuss what evidence, surface features or observations could potentially
 indicate that a body has active mantle convection. Is there any evidence for
 the body you picked? Can you think of a reason why a celestial body would have
 convection even though the models do not predict it?
 
-###### Finish with a conclusion
+### Finish with a conclusion
 
 Summarize your results and any new insights you gained by running the models
 and analyzing them.
 
-###### List of celestial bodies
+### List of celestial bodies
 
 -   Mercury Mercury&rsquo;s mantle has a thickness of 500&ndash;700 km
     (<https://en.wikipedia.org/wiki/Mercury_(planet)#Internal_structure>. You
@@ -331,9 +331,9 @@ and analyzing them.
     which means you can compute the mantle thickness as 0.45 $\cdot$ planetary
     radius.
 
-###### Where to find more information
+### Where to find more information
 
-###### Input parameters, their units and their meaning
+### Input parameters, their units and their meaning
 
 All input parameters are documented here:
 <https://aspect.geodynamics.org/doc/parameter_view/parameters.xml>. If you are
@@ -346,7 +346,7 @@ material descriptions, in this case you have to pick the one that is in the
 same subsection as the one in your input file). If you click on the parameter,
 it will show a documentation of the parameter, including its units.
 
-###### ParaView
+### ParaView
 
 You can download a ParaView guide from here:
 <https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.7&type=data&os=Sources&downloadFile=ParaViewGuide-5.7.0.pdf>.
@@ -362,7 +362,7 @@ rainbow color scale as he does! It has been shown to be misleading, in the
 sense that it can make it look like there are features in the data that are
 not really there, and that it can hide other, real features in the data.
 
-###### Gnuplot
+### Gnuplot
 
 gnuplot is a command-line drive graphics program for linux. First: If you know
 a way to make the same type of plot I ask you to create below with a different

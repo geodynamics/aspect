@@ -44,7 +44,7 @@ model results in a report. For each of the two settings, discuss the setup of
 the model and the model results as detailed below. You can use resources and
 data from elsewhere, but you will need to reference these in your report.
 
-###### Heat flux close to mid-ocean ridges
+### Heat flux close to mid-ocean ridges
 
 Analyze the heat flux close to mid-ocean ridges.
 
@@ -83,7 +83,7 @@ screenshots under `View \rightarrow Take Screenshot (Host+E)`. Alternatively,
 you can press the Host + E keys (by default, the Host key is Right Ctrl on
 Windows machines or Right Cmd on a Mac).
 
-###### Describe your model setup and your results.
+### Describe your model setup and your results.
 
 Start by describing the setup of the model and what kind of predictions it can
 make that we can then compare to observations. Specifically, include a
@@ -104,7 +104,7 @@ Explain how the depth of the line where convective equals conductive heat flux
 changes with the age of the plate. Is this a linear relationship? Does the
 line follow an isotherm (line of constant temperature)? Why/why not?
 
-###### Heat flux at hot spots
+### Heat flux at hot spots
 
 In the second setup, you will analyze the heat flux of one ocean island.
 
@@ -120,7 +120,7 @@ accordingly, thicker) oceanic lithosphere.
 
 Open this file and change the following model parameters:
 
-###### 1. The age of the ocean floor
+### 1. The age of the ocean floor
 
 Take the age of the ocean floor your hot spot erupted on and subtract 10
 million years from it (because the model will run for 10 million years, so at
@@ -131,7 +131,7 @@ ocean floor you found for your ocean island). Insert this number in the line
 
 instead of 1 (which would correspond to 1 year).
 
-###### 2. The temperature of the plume
+### 2. The temperature of the plume
 
 Run several models with different plume temperatures. To change the
 temperature of the plume, modify the line
@@ -147,7 +147,7 @@ by multiplying the maximum vertical heat flux density at the bottom of the
 model (the `vertical_heat_flux` output variable) with the approximate area of
 the inflow, which is $6.3 \cdot 10^9$ m$^2$.
 
-###### Describe your model setup and your results.
+### Describe your model setup and your results.
 
 In your report, describe the model setup: What ocean island is modeled? What
 is the plate age? What plume temperatures are tested? What happens to the
@@ -166,7 +166,7 @@ plot that shows where conductive/convective heat flux are dominant (as above).
 Discuss how the plume influences what is the dominant mechanism for heat
 transport. Why does it have this effect?
 
-###### Discuss the predictions of your model.
+### Discuss the predictions of your model.
 
 Measurements (given in Harris, R. N., and M. K. McNutt (2007), Heat flow on
 hot spot swells: Evidence for fluid flow, J. Geophys. Res.,112, B03407) show
@@ -186,7 +186,7 @@ would contribute to the transport of heat. This process is not included in the
 model. How do you think it would change the temperature profile below the
 ocean island?
 
-###### Hot spot heat flux
+### Hot spot heat flux
 
 Values are taken from Schubert, Gerald, Donald Lawson Turcotte, and Peter
 Olson. Mantle convection in the Earth and planets. Cambridge University Press,
