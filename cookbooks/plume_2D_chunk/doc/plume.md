@@ -120,8 +120,8 @@ figure on the cover of this manual. Please check the corresponding video
 <https://youtu.be/FN2BBmbiA8E> to see the system for the entire duration of
 the simulation.
 
-```{figure-md}
-<img src="cookbooks/plume_2D_chunk/doc/vrms.*" id="fig:plume-diff-creep-vrms" style="width:10cm" alt="Plume in a 2D chunk: Root mean square velocity for each experiment." />
+```{figure-md} fig:plume-diff-creep-vrms
+<img src="cookbooks/plume_2D_chunk/doc/vrms.*" style="width:10cm" alt="Plume in a 2D chunk: Root mean square velocity for each experiment." />
 
 Plume in a 2D chunk: Root mean square velocity for each experiment.
 ```

@@ -33,8 +33,8 @@ velocity and a second-order convergence rate for the pressure.
 <img src="vel2.png" title="fig:" id="fig:hollow-sphere-vp" alt="Velocity and pressure fields for the hollow sphere benchmark." />
 <img src="pressure.png" title="fig:" id="fig:hollow-sphere-vp" alt="Velocity and pressure fields for the hollow sphere benchmark." />
 
-```{figure-md}
-<embed src="cookbooks/benchmarks/hollow_sphere/doc/errors_hollowsphere.pdf" id="fig:hollow-sphere-errors" />
+```{figure-md} fig:hollow-sphere-errors
+<embed src="cookbooks/benchmarks/hollow_sphere/doc/errors_hollowsphere.pdf" />
 
 Velocity and pressure errors in the <span class="math inline"><em>L</em><sub>2</sub></span>-norm as a function of the mesh size.
 ```

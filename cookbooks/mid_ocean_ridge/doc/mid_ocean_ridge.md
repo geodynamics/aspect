@@ -100,8 +100,8 @@ The complete input file is located at
 
 ##### Model evolution.
 
-```{figure-md}
-<embed src="cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.pdf" id="fig:mid-ocean-ridge" style="width:50.0%" />
+```{figure-md} fig:mid-ocean-ridge
+<embed src="cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.pdf" style="width:50.0%" />
 
 Mid-ocean ridge model after 8 million years. The top panel shows the depletion and porosity fields (with the characteristic triangular melting region), the bottom panel shows the temperature distribution and the melt velocity, indicated by the arrows.
 ```
@@ -127,8 +127,8 @@ km below are depleted material, and form the lithosphere (positive peridotite
 field). A vertical profile at a distance of 80 km from the ridge axis showing
 this composition can be found in Figure&nbsp;[2][].
 
-```{figure-md}
-<embed src="cookbooks/mid_ocean_ridge/doc/depletion_profile.pdf" id="fig:mid-ocean-ridge-profile" style="width:35.0%" />
+```{figure-md} fig:mid-ocean-ridge-profile
+<embed src="cookbooks/mid_ocean_ridge/doc/depletion_profile.pdf" style="width:35.0%" />
 
 Vertical profile through the model domain at a distance of 80 km from the ridge axis at the end of the model run, showing the distribution of depletion and enrichment as indicated by the peridotite field.
 ```
@@ -148,8 +148,8 @@ melt velocity and compaction pressure that are to be expected in these places
 (see Figure&nbsp;[3][]). Of course it is also possible to combine both methods
 for refining the mesh.
 
-```{figure-md}
-<embed src="cookbooks/mid_ocean_ridge/doc/refinement.pdf" id="fig:mid-ocean-ridge-mesh" style="width:60.0%" />
+```{figure-md} fig:mid-ocean-ridge-mesh
+<embed src="cookbooks/mid_ocean_ridge/doc/refinement.pdf" style="width:60.0%" />
 
 Mesh after a time of 3.6 million years for a model using the composition threshold refinement strategy (left) and the compaction length refinement strategy (right) Background colors indicate the melt velocity. Its sharp gradients at the interface between regions with and without melt can only be resolved using the compaction length refinement strategy.
 ```

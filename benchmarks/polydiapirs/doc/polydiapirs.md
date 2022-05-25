@@ -35,8 +35,8 @@ explained by linear stability analysis (Weinberg and Schmeling 1992; Ramberg
 <img src="diapirs0010.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
 <img src="diapirs0015.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
 
-```{figure-md}
-<embed src="cookbooks/benchmarks/polydiapirs/doc/vrms.pdf" id="fig:polydiapirs_vrms" style="width:75.0%" />
+```{figure-md} fig:polydiapirs_vrms
+<embed src="cookbooks/benchmarks/polydiapirs/doc/vrms.pdf" style="width:75.0%" />
 
 Polydiapirism benchmark: Root mean square velocity as a function of time
 ```

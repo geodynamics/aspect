@@ -77,8 +77,8 @@ unique capabilities of the code to handle free surface large deformation,
 localised strain rates through visco-plasticity and adaptive mesh refinement
 as shown in Fig. ([2][]).
 
-```{figure-md}
-<img src="grids.png" id="fig:meshes" style="width:70.0%" alt="Mesh evolution during the first timestep (refinement is based on strain rate)." />
+```{figure-md} fig:meshes
+<img src="grids.png" style="width:70.0%" alt="Mesh evolution during the first timestep (refinement is based on strain rate)." />
 
 Mesh evolution during the first timestep (refinement is based on strain rate).
 ```
@@ -88,8 +88,8 @@ bands form at an angle of approximately $53\degree$ to the bottom in extension
 and $35\degree$ in compression, both of which correspond to the reported
 Arthur angle (Kaus 2010; Buiter 2012).
 
-```{figure-md}
-<img src="both.png" id="fig:extcompr" alt="Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr." />
+```{figure-md} fig:extcompr
+<img src="both.png" alt="Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr." />
 
 Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.
 ```
@@ -108,8 +108,8 @@ boundary conditions are implemented as follows:
 The presence of an offset between the two velocity discontinuity zones leads
 to a transform fault which connects them.
 
-```{figure-md}
-<img src="bottombc2.png" id="fig:bottombc" alt="Basal velocity boundary conditions and corresponding strain rate field for the 3D model." />
+```{figure-md} fig:bottombc
+<img src="bottombc2.png" alt="Basal velocity boundary conditions and corresponding strain rate field for the 3D model." />
 
 Basal velocity boundary conditions and corresponding strain rate field for the 3D model.
 ```
@@ -120,8 +120,8 @@ encouraged to run this setup in time to look at how the two grabens interact
 as a function of their initial offset (Allken, Huismans, and Thieulot 2011,
 2012; Allken et al. 2013).
 
-```{figure-md}
-<img src="all3D.png" id="fig:ext3D" alt="Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement." />
+```{figure-md} fig:ext3D
+<img src="all3D.png" alt="Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement." />
 
 Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement.
 ```

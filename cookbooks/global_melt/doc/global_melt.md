@@ -77,8 +77,8 @@ Hence, both areas where material is partially molten and the location of the
 upwellings themselves have a much shorter wavelength and change much faster
 over time in comparison to the model without melt migration.
 
-```{figure-md}
-<embed src="cookbooks/global_melt/doc/model_evolution.pdf" id="fig:global-melt" style="width:90.0%" />
+```{figure-md} fig:global-melt
+<embed src="cookbooks/global_melt/doc/model_evolution.pdf" style="width:90.0%" />
 
 Evolution of the model without (left) and with (right) melt migration.
 ```

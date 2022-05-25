@@ -41,8 +41,8 @@ Another interesting aspect of this benchmark is the fact that increasing the
 domain size adds complexity to it as it increases the number of low viscosity
 zones and the spacing between them decreases.
 
-```{figure-md}
-<img src="viscs.png" id="fig:benchmark-grooves-domains" style="width:90.0%" alt="Viscosity grooves benchmark: Viscosity field for three domain sizes: 1\times 1, 2\times 2 and 3\times 3." />
+```{figure-md} fig:benchmark-grooves-domains
+<img src="viscs.png" style="width:90.0%" alt="Viscosity grooves benchmark: Viscosity field for three domain sizes: 1\times 1, 2\times 2 and 3\times 3." />
 
 Viscosity grooves benchmark: Viscosity field for three domain sizes: <span class="math inline">1&#x2005;&#xD7;&#x2005;1</span>, <span class="math inline">2&#x2005;&#xD7;&#x2005;2</span> and <span class="math inline">3&#x2005;&#xD7;&#x2005;3</span>.
 ```
@@ -59,8 +59,8 @@ resolutions above level 6. We find that the multitude of low viscosity bands
 in the upper right corner of the $3\times 3$ domain will require a refinement
 level larger than 9 to recover the optimal convergence rates.
 
-```{figure-md}
-<embed src="cookbooks/benchmarks/viscosity_grooves/doc/conv_0p1.pdf" id="fig:benchmark-grooves-errors" style="width:90.0%" />
+```{figure-md} fig:benchmark-grooves-errors
+<embed src="cookbooks/benchmarks/viscosity_grooves/doc/conv_0p1.pdf" style="width:90.0%" />
 
 Viscosity grooves benchmark: Velocity and pressure error convergence as a function of the mesh size <span class="math inline"><em>h</em></span> for 3 domain sizes.
 ```

@@ -93,14 +93,14 @@ to a constant Clapeyron slope.
 <img src="pyrolite_harzburgite.png" title="fig:" id="fig:phase_diagram_ph_density" style="width:90.0%" alt="Visualization of phase diagrams: The field of heat capacity showing values of reference densities for pyrolitic and harzburgitic phases." />
 .
 
-```{figure-md}
-<img src="pyrolite_linear.png" id="fig:phase_diagram_ph_profile" style="width:40.0%" alt="Visualization of phase diagrams: Profiles of pyrolitic density at T=\SI{1173}{K} (red) and \SI{1673}{K} (blue)." />
+```{figure-md} fig:phase_diagram_ph_profile
+<img src="pyrolite_linear.png" style="width:40.0%" alt="Visualization of phase diagrams: Profiles of pyrolitic density at T=\SI{1173}{K} (red) and \SI{1673}{K} (blue)." />
 
 Visualization of phase diagrams: Profiles of pyrolitic density at <span class="math inline"><em>T</em>&#x2004;=&#x2004;1173&#xA0;<em>K</em></span> (red) and <span class="math inline">1673&#xA0;<em>K</em></span> (blue).
 ```
 
-```{figure-md}
-<img src="steinberg.png" id="fig:phase_diagram_steinberg_density" style="width:40.0%" alt="Visualization of phase diagrams: Density from lookup table of pyrolite from (Stixrude and Lithgow-Bertelloni 2011)." />
+```{figure-md} fig:phase_diagram_steinberg_density
+<img src="steinberg.png" style="width:40.0%" alt="Visualization of phase diagrams: Density from lookup table of pyrolite from (Stixrude and Lithgow-Bertelloni 2011)." />
 
 Visualization of phase diagrams: Density from lookup table of pyrolite from <span class="citation" data-cites="stixrude2011thermodynamics">(Stixrude and Lithgow-Bertelloni 2011)</span>.
 ```

@@ -13,8 +13,8 @@ dissipation are monitored. In addition, we discuss the effects of the element
 size of the subduction interface and crustal layers, viscosity averaging and
 the solver tolerance.
 
-```{figure-md}
-<img src="setup_Quinquis2014.png" id="fig:QQ_setup" style="width:80.0%" alt="Case 4 model setup. Copied from Quinquis (2014)." />
+```{figure-md} fig:QQ_setup
+<img src="setup_Quinquis2014.png" style="width:80.0%" alt="Case 4 model setup. Copied from Quinquis (2014)." />
 
 <figcaption aria-hidden="true">Case 4 model setup. Copied from Quinquis (2014).</figcaption>
 ```
@@ -85,8 +85,8 @@ after about 13 My interaction between the slab and bottom boundary at 660 km
 depth, which slows down the slab. The slab then curves inward along the bottom
 boundary. This can also be seen in Fig&nbsp;[7][].
 
-```{figure-md}
-<img src="cookbooks/kinematically_driven_subduction_2d/doc/Case1_diagnostics.*" id="fig:QQ_case1_diagnostics" alt="Case 1 diagnostic quantities of ASPECT, Sulec and Elefant results." />
+```{figure-md} fig:QQ_case1_diagnostics
+<img src="cookbooks/kinematically_driven_subduction_2d/doc/Case1_diagnostics.*" alt="Case 1 diagnostic quantities of ASPECT, Sulec and Elefant results." />
 
 Case 1 diagnostic quantities of ASPECT, Sulec and Elefant results.
 ```

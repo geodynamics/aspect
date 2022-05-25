@@ -22,14 +22,14 @@ Both benchmarks have the identical setup in the temperature and a
 compositional field. The only difference is that the temperature equation
 contains a (small) physical diffusion term.
 
-```{figure-md}
-<img src="drop.png" id="fig:benchmark-drop" alt="Dropping box benchmark at final time. Left: entropy viscosity. Right: SUPG." />
+```{figure-md} fig:benchmark-drop
+<img src="drop.png" alt="Dropping box benchmark at final time. Left: entropy viscosity. Right: SUPG." />
 
 Dropping box benchmark at final time. Left: entropy viscosity. Right: SUPG.
 ```
 
-```{figure-md}
-<img src="rotate_shape.png" id="fig:benchmark-rotate-shape" alt="Rotating shapes benchmark at final time: Left: reference. Middle: Entropy viscosity. Right: SUPG." />
+```{figure-md} fig:benchmark-rotate-shape
+<img src="rotate_shape.png" alt="Rotating shapes benchmark at final time: Left: reference. Middle: Entropy viscosity. Right: SUPG." />
 
 Rotating shapes benchmark at final time: Left: reference. Middle: Entropy viscosity. Right: SUPG.
 ```

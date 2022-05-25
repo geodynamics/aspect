@@ -56,8 +56,8 @@ isoviscous equivalents, with more clearly defined upwellings. You can find a
 movie of how the temperature evolves over this time period at
 <https://youtu.be/5SPCU1sFGGc>.
 
-```{figure-md}
-<img src="temps.png" id="fig:bunge_et_al" style="width:90.0%" alt="Bunge et al.&#xA0;benchmark. From left to right: temperature field at time t=5\cdot 10^9 years obtained with viscosity profiles a, b, c and d." />
+```{figure-md} fig:bunge_et_al
+<img src="temps.png" style="width:90.0%" alt="Bunge et al.&#xA0;benchmark. From left to right: temperature field at time t=5\cdot 10^9 years obtained with viscosity profiles a, b, c and d." />
 
 Bunge et al.&#xA0;benchmark. From left to right: temperature field at time <span class="math inline"><em>t</em>&#x2004;=&#x2004;5&#x2005;&#x22C5;&#x2005;10<sup>9</sup></span> years obtained with viscosity profiles a, b, c and d.
 ```

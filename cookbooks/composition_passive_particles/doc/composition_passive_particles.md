@@ -53,8 +53,8 @@ selecting the &ldquo;id&rdquo; of particles to color each particle. By going
 to, for example, the output from the 72nd visualization output, this then
 results in a plot like the one shown in Fig.&nbsp;[1][].
 
-```{figure-md}
-<img src="solution-00072.png" id="fig:composition_passive_particles" style="width:50.0%" alt="Passively advected quantities visualized through both a [fig:composition_passive_particles] compositional field and a set of 1,000 particles, at t=7.2." />
+```{figure-md} fig:composition_passive_particles
+<img src="solution-00072.png" style="width:50.0%" alt="Passively advected quantities visualized through both a [fig:composition_passive_particles] compositional field and a set of 1,000 particles, at t=7.2." />
 
 Passively advected quantities visualized through both a <span id="fig:composition_passive_particles" label="fig:composition_passive_particles">[fig:composition_passive_particles]</span> compositional field and a set of 1,000 particles, at <span class="math inline"><em>t</em>&#x2004;=&#x2004;7.2</span>.
 ```

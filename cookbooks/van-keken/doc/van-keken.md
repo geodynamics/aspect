@@ -92,14 +92,14 @@ starts to rise from a completely different location &ndash; no wonder the
 second peak in the root mean square velocity plot is in a different location
 and with different height!
 
-```{figure-md}
-<img src="mesh-comparison-initial-conditions.png" id="fig:vk-3" style="width:70.0%" alt="Van Keken benchmark with discontinuous initial conditions for the compositional field: Initial compositional field interpolated onto a 32\times 32 (left) and 64\times 64 finite element mesh (right)." />
+```{figure-md} fig:vk-3
+<img src="mesh-comparison-initial-conditions.png" style="width:70.0%" alt="Van Keken benchmark with discontinuous initial conditions for the compositional field: Initial compositional field interpolated onto a 32\times 32 (left) and 64\times 64 finite element mesh (right)." />
 
 Van Keken benchmark with discontinuous initial conditions for the compositional field: Initial compositional field interpolated onto a <span class="math inline">32&#x2005;&#xD7;&#x2005;32</span> (left) and <span class="math inline">64&#x2005;&#xD7;&#x2005;64</span> finite element mesh (right).
 ```
 
-```{figure-md}
-<img src="mesh-comparison.png" id="fig:vk-4" alt="Van Keken benchmark with discontinuous initial conditions for the compositional field: Evolution of the compositional field over time on a 32\times 32 (first and third column; left to right and top to bottom) and 64\times 64 finite element mesh (second and fourth column). Pictures next to each other illustrate how critically the rise of the second plume depends on the mesh resolution, starting at around time t=350." />
+```{figure-md} fig:vk-4
+<img src="mesh-comparison.png" alt="Van Keken benchmark with discontinuous initial conditions for the compositional field: Evolution of the compositional field over time on a 32\times 32 (first and third column; left to right and top to bottom) and 64\times 64 finite element mesh (second and fourth column). Pictures next to each other illustrate how critically the rise of the second plume depends on the mesh resolution, starting at around time t=350." />
 
 Van Keken benchmark with discontinuous initial conditions for the compositional field: Evolution of the compositional field over time on a <span class="math inline">32&#x2005;&#xD7;&#x2005;32</span> (first and third column; left to right and top to bottom) and <span class="math inline">64&#x2005;&#xD7;&#x2005;64</span> finite element mesh (second and fourth column). Pictures next to each other illustrate how critically the rise of the second plume depends on the mesh resolution, starting at around time <span class="math inline"><em>t</em>&#x2004;=&#x2004;350</span>.
 ```
@@ -195,8 +195,8 @@ plumes rise more quickly. As it is increased the boundary grows, and the
 plumes rise more slowly. This trend can be used to force a more accurate
 convergence from the secondary plumes.
 
-```{figure-md}
-<img src="smoothing-parameter.png" id="fig:vk-5" style="width:60.0%" alt="Van Keken Benchmark using smoothed out interface at 7 global refinements: compositional field at time t=0 using smoothing parameter size: a) 0.0039, b) 0.0078, c) 0.0156, d) 0.0234, e) 0.0312, f) 0.0390, g) 0.0468, h) 0.0546, i) 0.0624." />
+```{figure-md} fig:vk-5
+<img src="smoothing-parameter.png" style="width:60.0%" alt="Van Keken Benchmark using smoothed out interface at 7 global refinements: compositional field at time t=0 using smoothing parameter size: a) 0.0039, b) 0.0078, c) 0.0156, d) 0.0234, e) 0.0312, f) 0.0390, g) 0.0468, h) 0.0546, i) 0.0624." />
 
 Van Keken Benchmark using smoothed out interface at 7 global refinements: compositional field at time <span class="math inline"><em>t</em>&#x2004;=&#x2004;0</span> using smoothing parameter size: a) 0.0039, b) 0.0078, c) 0.0156, d) 0.0234, e) 0.0312, f) 0.0390, g) 0.0468, h) 0.0546, i) 0.0624.
 ```
@@ -207,8 +207,8 @@ is a good agreement for the first peak for all smoothing parameters. As the
 width of the discontinuity increases, the second peak rises more slowly and
 later in the run.
 
-```{figure-md}
-<img src="smoothing-parameter-velocity.png" id="fig:vk-6" style="width:40.0%" alt="Van Keken benchmark with smoothed initial conditions for the compositional field using 7 global refinements for different smoothing parameters. Number of the time step is shown on the x-axis, while root mean square velocity is shown on the y-axis." />
+```{figure-md} fig:vk-6
+<img src="smoothing-parameter-velocity.png" style="width:40.0%" alt="Van Keken benchmark with smoothed initial conditions for the compositional field using 7 global refinements for different smoothing parameters. Number of the time step is shown on the x-axis, while root mean square velocity is shown on the y-axis." />
 
 Van Keken benchmark with smoothed initial conditions for the compositional field using 7 global refinements for different smoothing parameters. Number of the time step is shown on the <span class="math inline"><em>x</em></span>-axis, while root mean square velocity is shown on the <span class="math inline"><em>y</em></span>-axis.
 ```
@@ -226,8 +226,8 @@ lower, lighter layer is now either 10 or 1 Pa&nbsp;s, respectively. The
 viscosity profiles of the discontinuous and smooth models are shown in
 Fig.&nbsp;[11][].
 
-```{figure-md}
-<img src="contrast_viscosity.png" id="fig:vk-7" style="width:70.0%" alt="Van Keken benchmark using different-viscosity layers. The left image is the discontinuous case, while right is the smooth. Both are shown at t=0." />
+```{figure-md} fig:vk-7
+<img src="contrast_viscosity.png" style="width:70.0%" alt="Van Keken benchmark using different-viscosity layers. The left image is the discontinuous case, while right is the smooth. Both are shown at t=0." />
 
 Van Keken benchmark using different-viscosity layers. The left image is the discontinuous case, while right is the smooth. Both are shown at <span class="math inline"><em>t</em>&#x2004;=&#x2004;0</span>.
 ```
@@ -238,8 +238,8 @@ Fig.&nbsp;[12][]. This was generated using the original input parameter file,
 running the cases with 8 global refinements, and also adding the two-layer
 viscosity model.
 
-```{figure-md}
-<img src="2viscosities-final.png" id="fig:vk-8" style="width:50.0%" alt="Van Keken benchmark two-layer viscosity model at final time step number, t=2000. These images show layers of different compositions and viscosities. Discontinuous cases are the left images, smooth cases are the right. The upper images are \frac{\eta_{t}}{\eta_{b}}=0.1, and the lower are \frac{\eta_{t}}{\eta_{b}}=0.01." />
+```{figure-md} fig:vk-8
+<img src="2viscosities-final.png" style="width:50.0%" alt="Van Keken benchmark two-layer viscosity model at final time step number, t=2000. These images show layers of different compositions and viscosities. Discontinuous cases are the left images, smooth cases are the right. The upper images are \frac{\eta_{t}}{\eta_{b}}=0.1, and the lower are \frac{\eta_{t}}{\eta_{b}}=0.01." />
 
 Van Keken benchmark two-layer viscosity model at final time step number, <span class="math inline"><em>t</em>&#x2004;=&#x2004;2000</span>. These images show layers of different compositions and viscosities. Discontinuous cases are the left images, smooth cases are the right. The upper images are <span class="math inline">$\frac{\eta_{t}}{\eta_{b}}=0.1$</span>, and the lower are <span class="math inline">$\frac{\eta_{t}}{\eta_{b}}=0.01$</span>.
 ```
@@ -251,8 +251,8 @@ faster their ascent. To further reveal the effect of the two-layer viscosity
 model, we also plot the evolution of the fluids&rsquo; root mean square
 velocity over time, as shown in Fig.&nbsp;[13][].
 
-```{figure-md}
-<img src="2viscosities-velocity.png" id="fig:vk-9" style="width:40.0%" alt="Van Keken benchmark: Evolution of the root mean square velocity as a function of time for different viscosity contrast proportions (0.1/0.01) for both discontinuous and smooth models." />
+```{figure-md} fig:vk-9
+<img src="2viscosities-velocity.png" style="width:40.0%" alt="Van Keken benchmark: Evolution of the root mean square velocity as a function of time for different viscosity contrast proportions (0.1/0.01) for both discontinuous and smooth models." />
 
 Van Keken benchmark: Evolution of the root mean square velocity as a function of time for different viscosity contrast proportions (0.1/0.01) for both discontinuous and smooth models.
 ```

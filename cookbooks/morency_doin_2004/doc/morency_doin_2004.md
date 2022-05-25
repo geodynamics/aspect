@@ -36,8 +36,8 @@ reproduce the setup:
 ``` prmfile
 ```
 
-```{figure-md}
-<embed src="cookbooks/morency_doin_2004/doc/morency_doin_2004_fig1.pdf" id="fig:md-1" />
+```{figure-md} fig:md-1
+<embed src="cookbooks/morency_doin_2004/doc/morency_doin_2004_fig1.pdf" />
 
 Approximate reproduction of figure 1 from <span class="citation" data-cites="MD04">(Morency and Doin 2004)</span> using the &#x2018;morency doin&#x2019; material model with almost all default parameters. Note the low-viscosity Moho, enabled by the low activation energy of the crustal component.
 ```

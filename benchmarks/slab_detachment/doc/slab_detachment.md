@@ -15,8 +15,8 @@ computational domain is a $1000 \si{km}\times 660 \si{km}$ box. No-slip
 boundary conditions are imposed on the sides of the system, while free-slip
 boundary conditions are imposed at the top and bottom.
 
-```{figure-md}
-<img src="drawing.png" id="fig:slab_detachment_setup" alt="Slab detachment benchmark: Initial geometry [fig:slab_detachment_setup]" />
+```{figure-md} fig:slab_detachment_setup
+<img src="drawing.png" alt="Slab detachment benchmark: Initial geometry [fig:slab_detachment_setup]" />
 
 Slab detachment benchmark: Initial geometry <span id="fig:slab_detachment_setup" label="fig:slab_detachment_setup">[fig:slab_detachment_setup]</span>
 ```

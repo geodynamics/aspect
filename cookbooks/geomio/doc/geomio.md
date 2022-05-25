@@ -34,8 +34,8 @@ We will here use a drawing of a jellyfish located in
 [cookbooks/geomio/doc/jellyfish.svg][], where different phases have already
 been assigned to each path (Figure&nbsp;[1][]).
 
-```{figure-md}
-<embed src="cookbooks/geomio/doc/jellyfish.pdf" id="fig:jelly-picture" style="width:20.0%" />
+```{figure-md} fig:jelly-picture
+<embed src="cookbooks/geomio/doc/jellyfish.pdf" style="width:20.0%" />
 
 Vector drawing of a jellyfish.
 ```
@@ -59,8 +59,8 @@ In the next step we create the grid that is used for the coordinates in the
 You can plot the `Phase` variable in MATLAB to see if the drawing was read in
 and all phases are assigned correctly (Figure&nbsp;[2][]).
 
-```{figure-md}
-<img src="jelly.png" id="fig:jelly-plot" style="width:45.0%" alt="Plot of the Phase variable in MATLAB." />
+```{figure-md} fig:jelly-plot
+<img src="jelly.png" style="width:45.0%" alt="Plot of the Phase variable in MATLAB." />
 
 Plot of the <code>Phase</code> variable in MATLAB.
 ```
@@ -85,8 +85,8 @@ If we look at the output in `ParaView`, we can see our jellyfish, with the
 mesh refined at the boundaries between the different phases
 (Figure&nbsp;[3][]).
 
-```{figure-md}
-<embed src="cookbooks/geomio/doc/jelly-paraview.pdf" id="fig:jelly-paraview" style="width:55.0%" />
+```{figure-md} fig:jelly-paraview
+<embed src="cookbooks/geomio/doc/jelly-paraview.pdf" style="width:55.0%" />
 
 <figcaption aria-hidden="true"> <em>model output of the jellyfish and corresponding mesh in ParaView.
 ```
