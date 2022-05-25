@@ -163,7 +163,7 @@ plugin that does so for us (see Sections&nbsp;[\[sec:extending\]][8] and
 [\[sec:write-plugin\]][9] in general, and
 Section&nbsp;[\[sec:material-models\]][10] for material models in particular).
 The code for it is located in
-[benchmarks/davies_et_al/case-2.3-plugin/VoT.cc][] (where &ldquo;VoT&rdquo; is
+[benchmarks/davies_et_al/case-2.3-plugin/VoT.cc](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-2.3-plugin/VoT.cc) (where &ldquo;VoT&rdquo; is
 short for &ldquo;viscosity as a function of temperature&rdquo;) and is
 essentially a copy of the `simpler` material model. The primary change
 compared to the `simpler` material model is the line about the viscosity in

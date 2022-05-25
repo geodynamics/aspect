@@ -51,7 +51,7 @@ Figure&nbsp;[1][] illustrates the model setup.
 
 The parameter file and material model for this setup can be found in
 [benchmarks/solitary_wave/solitary_wave.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/solitary_wave/solitary_wave.prm) and
-[benchmarks/solitary_wave/solitary_wave.cc][]. The most relevant sections are
+[benchmarks/solitary_wave/solitary_wave.cc](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/solitary_wave/solitary_wave.cc). The most relevant sections are
 shown in the following paragraph.
 
 ``` prmfile

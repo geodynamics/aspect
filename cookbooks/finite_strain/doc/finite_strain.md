@@ -61,7 +61,7 @@ amount of relative stretching at every point by the ratio
 $\ln(\lambda_1/\lambda_2)$, called the *natural strain* (Ribe 1992).
 
 The full plugin implementing the integration of $\mathbf F$ can be found in
-[cookbooks/finite_strain/finite_strain.cc][] and can be compiled with
+[cookbooks/finite_strain/finite_strain.cc](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/finite_strain/finite_strain.cc) and can be compiled with
 `cmake . && make` in the [cookbooks/finite_strain][] directory. It can be
 loaded in a parameter file as an &ldquo;Additional shared library,&rdquo; and
 selected as material model. As it is derived from the &ldquo;simple&rdquo;

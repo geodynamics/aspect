@@ -52,7 +52,7 @@ Additional changes make the new parameters `Jump height`, `Lower viscosity`,
 and `Upper viscosity` available to the input parameter file, and corresponding
 variables available in the class and used in the code snippet above. The
 entire code can be found in
-[cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc][]. Refer to
+[cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc). Refer to
 Section&nbsp;[\[sec:plugins\]][1] for more information about writing and
 running plugins.
 

@@ -17,7 +17,7 @@ value. The parameters shared between the benchmark cases can be found in
 [benchmarks/tosi_et_al_2015_gcubed/Tosi_base.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/tosi_et_al_2015_gcubed/Tosi_base.prm). The other input files
 describe the variations on this base model, which pertain to the rheological
 description. The specific rheologies used are implemented in
-[benchmarks/tosi_et_al_2015_gcubed/tosi.cc][] and describe a linear and a
+[benchmarks/tosi_et_al_2015_gcubed/tosi.cc](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/tosi_et_al_2015_gcubed/tosi.cc) and describe a linear and a
 plastic component of the viscosity: $$\begin{aligned}
   \eta_\text{linear}(T,z) &= \exp(-\ln(\eta_T) T + \ln(\eta_Z) z)
   \label{eq:tosi-benchmark-lin-visc} \\
@@ -36,7 +36,7 @@ average temperature, the Nusselt number at the top and bottom of the domain,
 the RMS velocity at the top boundary and in the whole domain, and the maximum
 velocity at the surface. These quantities can be queried by using several of
 the postprocessors, but the additional postprocessor in
-[benchmarks/tosi_et_al_2015_gcubed/tosi.cc][] is needed to compute the average
+[benchmarks/tosi_et_al_2015_gcubed/tosi.cc](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/tosi_et_al_2015_gcubed/tosi.cc) is needed to compute the average
 rate of work done against gravity, the average rate of viscous dissipation,
 and the error between them. Differences between these diagnostic quantities of
 the 11 codes that participated in the benchmark effort are smaller than 5% for

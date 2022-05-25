@@ -115,7 +115,7 @@ The parameter file and initial temperature model for this benchmark can be
 found at
 [benchmarks/yamauchi_takei_2016_anelasticity/yamauchi_takei_2016_anelasticity.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/yamauchi_takei_2016_anelasticity/yamauchi_takei_2016_anelasticity.prm)
 and
-[benchmarks/yamauchi_takei_2016_anelasticity/anelasticity_temperature.cc][].
+[benchmarks/yamauchi_takei_2016_anelasticity/anelasticity_temperature.cc](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/yamauchi_takei_2016_anelasticity/anelasticity_temperature.cc).
 Code to recreate Fig.&nbsp;[1][] is provided in
 [benchmarks/yamauchi_takei_2016_anelasticity/plot_output][].
 
