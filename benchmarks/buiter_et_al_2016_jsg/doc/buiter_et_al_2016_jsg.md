@@ -13,8 +13,8 @@ differently-colored sand and compresses or stretches the volume. Examples of
 the patterns one can then observe in these do-it-yourself models are shown in
 Fig.&nbsp;[2][].
 
-<img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/real-sandbox-1.jpg" title="fig:" id="fig:sandbox-images" style="width:45.0%" alt="Figure" />
-<img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/real-sandbox-2.jpg" title="fig:" id="fig:sandbox-images" style="width:45.0%" alt="Figure" />
+<img src="real-sandbox-1.jpg" title="fig:" id="fig:sandbox-images" style="width:45.0%" alt="Figure" />
+<img src="real-sandbox-2.jpg" title="fig:" id="fig:sandbox-images" style="width:45.0%" alt="Figure" />
 
 Buiter et al.&nbsp;(Buiter et al. 2016) organized new comparison experiments
 between these kinds of analogue and numerical models to investigate this kind
