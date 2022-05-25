@@ -14,7 +14,7 @@ The 1000 particles we are asking here are initially uniformly distributed
 throughout the domain and are, at the end of each time step, advected along
 with the velocity field just computed. (There are a number of options to
 decide which method to use for advecting particles, see
-Section&nbsp;[\[parameters:Postprocess/Particles\]][2].)
+Section&nbsp;{ref}`parameters:Postprocess/Particles`.)
 
 If you run this cookbook, information about all particles will be written into
 the output directory selected in the input file (as discussed in
@@ -97,7 +97,7 @@ properties (`function`, `pT path`, `initial position` and
 `initial composition`), some of which may be scalars and others can have
 multiple components. (A full list of particle properties that can currently be
 selected can be found in
-Section&nbsp;[\[parameters:Postprocess/Particles\]][2], and new particle
+Section&nbsp;{ref}`parameters:Postprocess/Particles`, and new particle
 properties can be added as plugins as described in
 Section&nbsp;[\[sec:write-plugin\]][5].) The properties selected above do the
 following:

@@ -118,7 +118,7 @@ the surface of a spherical shell (boundary number 1 in the above provided
 parameter file). In case you are familiar with this kind of modeling and the
 plugin you could however also use it to prescribe mantle movements *below* a
 lithosphere model. All plugin specific options may be set in
-section&nbsp;[\[parameters:Boundary_20velocity_20model\]][2]. Possible options
+section&nbsp;{ref}`parameters:Boundary_20velocity_20model`. Possible options
 include the data directory and file name of the velocity file/files, the time
 step (in model units, mostly seconds or years depending on the
 &ldquo;`Use years in output instead of seconds`&rdquo; flag) and the points

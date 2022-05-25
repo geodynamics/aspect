@@ -108,7 +108,7 @@ terawatts) of which an estimated 12&ndash;30 TW are primordial heat released
 from cooling the Earth and 15&ndash;41 TW from radiogenic heating.[2] Our
 model does not include radiogenic heating (though has a number of
 `Heating models` to switch this on, see
-Section&nbsp;[\[parameters:Heating_20model\]][3]) but we can compare what the
+Section&nbsp;{ref}`parameters:Heating_20model`) but we can compare what the
 model gives us in terms of heat flux through the inner and outer boundaries of
 our shell geometry. This is shown in the left panel of Fig.&nbsp;[3][] where
 we plot the heat flux through boundaries zero and one, corresponding to the

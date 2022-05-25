@@ -38,7 +38,7 @@ $${Nu}_{T} = \frac{-Q_{T}\ln(f)}{2\pi{r_{\max}}(1-f)k}$$ and similarly
 $${Nu}_{B} = \frac{-Q_{B}f\ln(f)}{2\pi{r_{\min}}(1-f)k}.$$ $Q_T$ and $Q_B$ are
 heat fluxes that can readily compute through the `heat flux statistics`
 postprocessor (see
-Section&nbsp;[\[parameters:Postprocess/List of postprocessors\]][2]). For
+Section&nbsp;{ref}`parameters:Postprocess/List of postprocessors`). For
 further details on the nondimensionalization and equations used for each
 approximation, refer to Davies et al.
 
@@ -101,7 +101,7 @@ of the entire system satisfies the Stokes equations with their boundary
 conditions. In other words, the solution of the problem is not unique: given a
 solution, adding a solid body rotation yields another solution. We select
 arbitrarily the one that has no net rotation (see
-Section&nbsp;[\[parameters:Nullspace_20removal\]][6]). The section in the
+Section&nbsp;{ref}`parameters:Nullspace_20removal`). The section in the
 input file that is relevant is then as follows (the full input file resides at
 [benchmarks/davies_et_al/case-2.1.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-2.1.prm)):
 

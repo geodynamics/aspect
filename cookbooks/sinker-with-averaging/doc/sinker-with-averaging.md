@@ -154,7 +154,7 @@ averaging.
 numbers of global mesh refinement steps and for different material averaging
 operations. The GMRES solver first tries to run 30 iterations with a cheaper
 preconditioner before switching to a more expensive preconditioner (see
-Section&nbsp;[\[parameters:Nonlinear solver tolerance\]][4]).*
+Section&nbsp;{ref}`parameters:Nonlinear solver tolerance`).*
 
 </div>
 
@@ -172,7 +172,7 @@ A final comment is in order. First, one may think that the results should be
 better in cases of discontinuous pressures if the numerical approximation
 actually allowed for discontinuous pressures. This is in fact possible: We can
 use a finite element in which the pressure space contains piecewise constants
-(see Section&nbsp;[\[parameters:Discretization\]][5]). To do so, one simply
+(see Section&nbsp;{ref}`parameters:Discretization`). To do so, one simply
 needs to add the following piece to the input file:
 
 ``` prmfile
