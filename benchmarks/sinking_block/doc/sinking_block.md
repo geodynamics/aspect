@@ -35,7 +35,7 @@ Figure&nbsp;[2][] and we indeed recover the expected trend with all data
 points forming a single smooth line.
 
 ```{figure-md} fig:sinking_block1
-<img src="dens_vel.png" style="width:60.0%" alt="Density field with velocity arrows for \eta_2=10^{27}~\si{\pascal\second} and \delta\rho=32~\si{\kg\per\cubic\meter}" />
+<img src="dens_vel.png" style="width:60.0%" alt="Figure" />
 
 Density field with velocity arrows for <span class="math inline"><em>&#x3B7;</em><sub>2</sub>&#x2004;=&#x2004;10<sup>27</sup>&#xA0;Pas</span> and <span class="math inline"><em>&#x3B4;</em><em>&#x3C1;</em>&#x2004;=&#x2004;32&#xA0;kg/m<sup>3</sup></span>
 ```

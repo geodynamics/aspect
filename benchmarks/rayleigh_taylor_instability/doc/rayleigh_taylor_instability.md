@@ -13,7 +13,7 @@ these layers is introduced and is characterised by an amplitude $\Delta$ and a
 wavelength $\lambda=L_x/2$ as shown in Figure&nbsp;[1][].
 
 ```{figure-md} fig:RTi_setup
-<img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/setup.*" style="width:40.0%" alt="Setup of the Rayleigh-Taylor instability benchmark (taken from (Thieulot 2011))" />
+<img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/setup.*" style="width:40.0%" alt="Figure" />
 
 Setup of the Rayleigh-Taylor instability benchmark (taken from <span class="citation" data-cites="thie11">(Thieulot 2011)</span>)
 ```
@@ -50,14 +50,14 @@ file:
       set Refinement fraction = 0.6
     end
 
-<img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/grid.*" title="fig:" id="fig:RTi_grids" style="width:44.0%" alt="Left: grid with initial global refinement 4 and adaptive refinement 6; Right: density field with detail of the mesh." />
-<img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/grid2.*" title="fig:" id="fig:RTi_grids" style="width:52.0%" alt="Left: grid with initial global refinement 4 and adaptive refinement 6; Right: density field with detail of the mesh." />
+<img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/grid.*" title="fig:" id="fig:RTi_grids" style="width:44.0%" alt="Figure" />
+<img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/grid2.*" title="fig:" id="fig:RTi_grids" style="width:52.0%" alt="Figure" />
 
 The maximum vertical velocity is plotted against $\phi_1$ in Figure&nbsp;[4][]
 and is found to match analytical results.
 
 ```{figure-md} fig:RTi_vels
-<img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/plot.*" style="width:75.0%" alt="Maximum velocity for three values of the \phi_1 parameter." />
+<img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/plot.*" style="width:75.0%" alt="Figure" />
 
 Maximum velocity for three values of the <span class="math inline"><em>&#x3D5;</em><sub>1</sub></span> parameter.
 ```

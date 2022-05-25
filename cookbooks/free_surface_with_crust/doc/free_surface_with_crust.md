@@ -89,8 +89,8 @@ substantially, causing it to affect the surface topography at a later time.
 Just as the cookbook shown in Section&nbsp;[\[sec:cookbooks-freesurface\]][2],
 the topography returns to zero after some time.
 
-<img src="free_surface_with_crust.png" title="fig:" id="fig:freesurfaceWC" style="height:25.0%" alt="Adding a viscous crust to a model with surface topography. The thermal anomaly spreads horizontally as it collides with the highly viscous crust (left, white solid line). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right)." />
-<img src="topography.png" title="fig:" id="fig:freesurfaceWC" style="height:25.0%" alt="Adding a viscous crust to a model with surface topography. The thermal anomaly spreads horizontally as it collides with the highly viscous crust (left, white solid line). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right)." />
+<img src="free_surface_with_crust.png" title="fig:" id="fig:freesurfaceWC" style="height:25.0%" alt="Figure" />
+<img src="topography.png" title="fig:" id="fig:freesurfaceWC" style="height:25.0%" alt="Figure" />
 
   [cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc]: cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc
   [1]: #sec:plugins

@@ -13,8 +13,8 @@ differently-colored sand and compresses or stretches the volume. Examples of
 the patterns one can then observe in these do-it-yourself models are shown in
 Fig.&nbsp;[2][].
 
-<img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/real-sandbox-1.jpg" title="fig:" id="fig:sandbox-images" style="width:45.0%" alt="Examples of deformation patterns of &#x201C;sand box&#x201D; experiments in which alternating layers of differently-colored sand undergo deformation. Pictures courtesy of the lab of Dennis Harry at Colorado State University." />
-<img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/real-sandbox-2.jpg" title="fig:" id="fig:sandbox-images" style="width:45.0%" alt="Examples of deformation patterns of &#x201C;sand box&#x201D; experiments in which alternating layers of differently-colored sand undergo deformation. Pictures courtesy of the lab of Dennis Harry at Colorado State University." />
+<img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/real-sandbox-1.jpg" title="fig:" id="fig:sandbox-images" style="width:45.0%" alt="Figure" />
+<img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/real-sandbox-2.jpg" title="fig:" id="fig:sandbox-images" style="width:45.0%" alt="Figure" />
 
 Buiter et al.&nbsp;(Buiter et al. 2016) organized new comparison experiments
 between these kinds of analogue and numerical models to investigate this kind
@@ -75,7 +75,7 @@ not undergo any deformation during translation.
 <div class="center">
 
 ```{figure-md} fig:btwexp1
-<img src="exp1.png" alt="Numerical model of a stable sand wedge. a) Initial model setup. b) Material field after 4 cm of translation. c) Strain rate field and d) pressure field." />
+<img src="exp1.png" alt="Figure" />
 
 Numerical model of a stable sand wedge. a) Initial model setup. b) Material field after 4 cm of translation. c) Strain rate field and d) pressure field.
 ```
@@ -95,7 +95,7 @@ lower pressure values in (incipient) shear zones.
 <div class="center">
 
 ```{figure-md} fig:btwexp2
-<img src="exp2.png" alt="Numerical model of an unstable subcritical wedge. a) Initial model setup. b) Material field of sands after 10 cm shortening. c) Strain field and d) pressure field." />
+<img src="exp2.png" alt="Figure" />
 
 Numerical model of an unstable subcritical wedge. a) Initial model setup. b) Material field of sands after 10 cm shortening. c) Strain field and d) pressure field.
 ```

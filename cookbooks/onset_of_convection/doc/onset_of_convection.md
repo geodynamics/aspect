@@ -18,7 +18,7 @@ models with small parameter variations. More details can be found in the
 example assignment below.
 
 .
-<img src="convection_models.png" title="fig:" id="fig:convection-box-iterations" style="width:80.0%" alt="Onset of convection model with different Rayleigh numbers. Background colors show temperature." />
+<img src="convection_models.png" title="fig:" id="fig:convection-box-iterations" style="width:80.0%" alt="Figure" />
 .
 
 Slides that describe the different forces controling convective motion (which

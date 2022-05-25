@@ -70,7 +70,7 @@ After running the cookbook, you may modify it in a number of ways:
 -   Try a model in a different geometry, such as spherical shells.
 
 ```{figure-md} fig:freesurface
-<img src="free_surface.*" alt="Figure"  width="100%"/>
+<img src="free_surface.*" alt="Figure"/>
 
 Evolution of surface topography due to a rising blob. On the left is a snapshot of the model setup. The right shows the value of the highest topography in the domain over 18 Myr of model time. The topography peaks at 167 meters after 5.5 Myr. This cookbook may be run with the `cookbooks/free_surface/free_surface.prm` input file.
 ```

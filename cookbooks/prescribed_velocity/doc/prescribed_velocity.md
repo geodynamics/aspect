@@ -41,7 +41,7 @@ as the ones visualized in {numref}`fig:prescribed_velocity`.
 ```
 
 ```{figure-md} fig:prescribed_velocity
-<img src="prescribed_velocity.*" alt="Screenshot"  width="100%"/>
+<img src="prescribed_velocity.*" alt="Figure"/>
 
 Examples of flows with prescribed internal velocities.
 ```

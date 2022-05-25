@@ -11,7 +11,7 @@ However, in principle, other compositions or equations of state can be used, as 
 Using BurnMan to generate the reference profile has the advantage that all the material property data are consistent, for example, the gravity profile is computed using the reference density.
 
 ```{figure-md} fig:burnman-reference-profile
-<img src="reference_profile.*" alt="Reference profile generated using Burnman"/>
+<img src="reference_profile.*" alt="Figure"/>
 
 Reference profile generated using Burnman.
 ```
@@ -67,7 +67,7 @@ Visualizing material properties such as density, thermal expansivity or specific
 We can also visualize the gravity and the adiabatic profile, to ensure that the data we provided in the `data/adiabatic-conditions/ascii-data/isentrope_properties.txt` file is used in our model.
 
 ```{figure-md} fig:burnman-convection
-<img src="temperature.png" style="width:48.0%" alt="Compressible convection in a 2d spherical shell, using a reference profile exported form BurnMan, which is based on the Birch-Murnaghan equation of state. The figure shows the state at the end of the model evolution over 260&#x2006;Ma." />
+<img src="temperature.png" style="width:48.0%" alt="Figure" />
 
 Compressible convection in a 2d spherical shell, using a reference profile exported form BurnMan, which is based on the Birch-Murnaghan equation of state. The figure shows the state at the end of the model evolution over 260&#x2006;Ma.
 ```

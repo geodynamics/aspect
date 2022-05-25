@@ -26,9 +26,9 @@ radial and of unit length.
 The parameter $k$ controls the number of convection cells present in the
 domain, as shown in Fig.&nbsp;[3][].
 
-<img src="pressures.png" title="fig:" id="fig:annulus-vp" alt="Pressure, density and velocity fields for k=0,1,2,3 for the 2D annulus benchmark." />
-<img src="density.png" title="fig:" id="fig:annulus-vp" alt="Pressure, density and velocity fields for k=0,1,2,3 for the 2D annulus benchmark." />
-<img src="velocities2.png" title="fig:" id="fig:annulus-vp" alt="Pressure, density and velocity fields for k=0,1,2,3 for the 2D annulus benchmark." />
+<img src="pressures.png" title="fig:" id="fig:annulus-vp" alt="Figure" />
+<img src="density.png" title="fig:" id="fig:annulus-vp" alt="Figure" />
+<img src="velocities2.png" title="fig:" id="fig:annulus-vp" alt="Figure" />
 
 In the present case, we set $R_1=1$, $R_2=2$ and $C=-1$. Fig.&nbsp;[4][] shows
 the velocity and pressure errors in the $L_2$-norm as a function of the mesh

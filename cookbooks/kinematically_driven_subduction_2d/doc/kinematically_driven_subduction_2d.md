@@ -14,7 +14,7 @@ size of the subduction interface and crustal layers, viscosity averaging and
 the solver tolerance.
 
 ```{figure-md} fig:QQ_setup
-<img src="setup_Quinquis2014.png" style="width:80.0%" alt="Case 4 model setup. Copied from Quinquis (2014)." />
+<img src="setup_Quinquis2014.png" style="width:80.0%" alt="Figure" />
 
 <figcaption aria-hidden="true">Case 4 model setup. Copied from Quinquis (2014).</figcaption>
 ```
@@ -74,9 +74,9 @@ quantities in done in several new plugins:
 ``` prmfile
 ```
 
-<img src="Case1_dens_t0.png" title="fig:" id="fig:QQ_case1_setup" style="width:60.0%" alt="Case 1 density, viscosity and velocity at time zero." />
-<img src="Case1_visc_t0.png" title="fig:" id="fig:QQ_case1_setup" style="width:60.0%" alt="Case 1 density, viscosity and velocity at time zero." />
-<img src="Case1_vel_t0.png" title="fig:" id="fig:QQ_case1_setup" style="width:60.0%" alt="Case 1 density, viscosity and velocity at time zero." />
+<img src="Case1_dens_t0.png" title="fig:" id="fig:QQ_case1_setup" style="width:60.0%" alt="Figure" />
+<img src="Case1_visc_t0.png" title="fig:" id="fig:QQ_case1_setup" style="width:60.0%" alt="Figure" />
+<img src="Case1_vel_t0.png" title="fig:" id="fig:QQ_case1_setup" style="width:60.0%" alt="Figure" />
 
 We run the Case 1 setup for 15 My of model time. The diagnostic quantities in
 Fig.&nbsp;[5][] show three stages of model evolution: first trench advance
@@ -86,13 +86,13 @@ depth, which slows down the slab. The slab then curves inward along the bottom
 boundary. This can also be seen in Fig&nbsp;[7][].
 
 ```{figure-md} fig:QQ_case1_diagnostics
-<img src="cookbooks/kinematically_driven_subduction_2d/doc/Case1_diagnostics.*" alt="Case 1 diagnostic quantities of ASPECT, Sulec and Elefant results." />
+<img src="cookbooks/kinematically_driven_subduction_2d/doc/Case1_diagnostics.*" alt="Figure" />
 
 Case 1 diagnostic quantities of ASPECT, Sulec and Elefant results.
 ```
 
-<img src="Case1_visc_8My.png" title="fig:" id="fig:QQ_case1_results" style="width:60.0%" alt="Case 1 viscosity snapshots at 8 and 15 My." />
-<img src="Case1_visc_15My.png" title="fig:" id="fig:QQ_case1_results" style="width:60.0%" alt="Case 1 viscosity snapshots at 8 and 15 My." />
+<img src="Case1_visc_8My.png" title="fig:" id="fig:QQ_case1_results" style="width:60.0%" alt="Figure" />
+<img src="Case1_visc_15My.png" title="fig:" id="fig:QQ_case1_results" style="width:60.0%" alt="Figure" />
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

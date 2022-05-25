@@ -60,7 +60,7 @@ You can plot the `Phase` variable in MATLAB to see if the drawing was read in
 and all phases are assigned correctly (Figure&nbsp;[2][]).
 
 ```{figure-md} fig:jelly-plot
-<img src="jelly.png" style="width:45.0%" alt="Plot of the Phase variable in MATLAB." />
+<img src="jelly.png" style="width:45.0%" alt="Figure" />
 
 Plot of the <code>Phase</code> variable in MATLAB.
 ```

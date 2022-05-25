@@ -41,8 +41,8 @@ $\beta=0.01$ and $\epsilon=0.05$.
 
 <div class="center">
 
-<img src="vel.png" title="fig:" id="fig:layeredflow2" style="height:48.0%" alt="Velocity and viscosity fields for \beta=0.01 and \epsilon=0.05 at uniform level 8 resolution, using y_0=1/3." />
-<img src="viscosity.png" title="fig:" id="fig:layeredflow2" style="height:48.0%" alt="Velocity and viscosity fields for \beta=0.01 and \epsilon=0.05 at uniform level 8 resolution, using y_0=1/3." />
+<img src="vel.png" title="fig:" id="fig:layeredflow2" style="height:48.0%" alt="Figure" />
+<img src="viscosity.png" title="fig:" id="fig:layeredflow2" style="height:48.0%" alt="Figure" />
 
 </div>
 

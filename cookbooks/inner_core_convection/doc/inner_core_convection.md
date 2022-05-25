@@ -114,7 +114,7 @@ values of $\mathcal{P}$, the first unstable mode is a linear combination of the 
 convection mode and of the small-$\mathcal{P}$ translation mode.
 
 ```{figure-md} fig:regime:diagram
-<img src="Diagstab.svg" alt="Screenshot"  width="80%"/>
+<img src="Diagstab.svg" alt="Figure"/>
 
 Stability diagram for convection in a sphere with phase change at its outer boundary. The stability curves for the first unstable mode ($l=1$) and the translation are obtained from {cite:t}`Deguen2013`. Each dot (no convection) and triangle (blue: translation, yellow: plume convection) is one model run done with ASPECT. The higher $Ra$ and $\mathcal{P}$ are, the more refinement is required (see text).
 ```
@@ -137,7 +137,7 @@ $Ra=3000, \mathcal{P}=1000$ (plume convection), $Ra=10^5, \mathcal{P}=0.01$
 (translation), $Ra=10, \mathcal{P}=30$ (no convection).
 
 ```{figure-md} fig:inner:core:convection
-<img src="inner-core-convection.svg" alt="Screenshot"  width="90%"/>
+<img src="inner-core-convection.svg" alt="Figure"/>
 
 Convection regimes in the inner core for different values of $Ra$ and $\mathcal{P}$. From left to right: no convection, translation, plume convection; the 2D slices in the top row use the default temperature scale for all panels, while in the second row an adaptive scale is used. The bottom row features slightly different model parameters (that are still in the same regime as the models in the respective panels above) and also shows the velocity as arrows.
 ```
@@ -172,7 +172,7 @@ trends are shown in {numref}`fig:inner:core:trends` and can be compared to Figur
 and 9 in {cite:t}`Deguen2013`.
 
 ```{figure-md} fig:inner:core:trends
-<img src="translation_over_Ra_and_P.svg" alt="Screenshot"  width="100%"/>
+<img src="translation_over_Ra_and_P.svg" alt="Figure"/>
 
 Translation rate (approximated by the average of the velocity component in the direction of translation),
 normalized to the low-$\mathcal{P}$ limit estimate given in {cite:t}`Deguen2013`, as a function of

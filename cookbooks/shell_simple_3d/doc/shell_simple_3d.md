@@ -8,7 +8,7 @@ gets from such a simulation is shown in Fig.&nbsp;[1][]. The corresponding
 movie can be found at <http://youtu.be/j63MkEc0RRw>.
 
 ```{figure-md} fig:simple-shell-3d
-<img src="x-movie0700.png" style="width:70.0%" alt="Convection in a spherical shell: Snapshot of isosurfaces of the temperature field at time t\approx \num{1.06e9} years with a quarter of the geometry cut away. The surface shows vectors indicating the flow velocity and direction." />
+<img src="x-movie0700.png" style="width:70.0%" alt="Figure" />
 
 Convection in a spherical shell: Snapshot of isosurfaces of the temperature field at time <span class="math inline"><em>t</em>&#x2004;&#x2248;&#x2004;1.06&#x2004;&#xA0;&#xD7;&#xA0;&#x2004;10<sup>9</sup></span> years with a quarter of the geometry cut away. The surface shows vectors indicating the flow velocity and direction.
 ```
@@ -125,8 +125,8 @@ compared with estimated heat fluxes of 5&ndash;15 TW for the core-mantle
 boundary, and an estimated heat loss due to cooling of the mantle of
 7&ndash;15 TW (values again taken from Wikipedia).
 
-<img src="heatflux.png" title="fig:" id="fig:shell-simple-3d-eval" style="width:48.0%" alt="Evaluating the 3d spherical shell model. Left: Outward heat fluxes through the inner and outer boundaries of the shell. Right: Average and maximal velocities in the mantle." />
-<img src="velocities.png" title="fig:" id="fig:shell-simple-3d-eval" style="width:48.0%" alt="Evaluating the 3d spherical shell model. Left: Outward heat fluxes through the inner and outer boundaries of the shell. Right: Average and maximal velocities in the mantle." />
+<img src="heatflux.png" title="fig:" id="fig:shell-simple-3d-eval" style="width:48.0%" alt="Figure" />
+<img src="velocities.png" title="fig:" id="fig:shell-simple-3d-eval" style="width:48.0%" alt="Figure" />
 
 A second measure of whether these results make sense is to compare velocities
 in the mantle with what is known from observations. As shown in the right

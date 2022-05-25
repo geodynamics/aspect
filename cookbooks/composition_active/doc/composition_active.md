@@ -44,9 +44,9 @@ postprocessing section, using the `density` visualization plugin:
 ``` prmfile
 ```
 
-<img src="visit0007.png" title="fig:" id="fig:composition-active-composition" style="width:30.0%" alt="Active compositional fields: Compositional field 1 at the time t=0, 10, 20. Compared to the results shown in Fig.&#xA0;[fig:compositional-passive] it is clear that the heavy material stays at the bottom of the domain now. The effect of the density on the velocity field is also clearly visible by noting that at all three times the spreading center at the top boundary is in exactly the same position; this would result in exactly the same velocity field if the density and temperature were constant." />
-<img src="visit0009.png" title="fig:" id="fig:composition-active-composition" style="width:30.0%" alt="Active compositional fields: Compositional field 1 at the time t=0, 10, 20. Compared to the results shown in Fig.&#xA0;[fig:compositional-passive] it is clear that the heavy material stays at the bottom of the domain now. The effect of the density on the velocity field is also clearly visible by noting that at all three times the spreading center at the top boundary is in exactly the same position; this would result in exactly the same velocity field if the density and temperature were constant." />
-<img src="visit0008.png" title="fig:" id="fig:composition-active-composition" style="width:30.0%" alt="Active compositional fields: Compositional field 1 at the time t=0, 10, 20. Compared to the results shown in Fig.&#xA0;[fig:compositional-passive] it is clear that the heavy material stays at the bottom of the domain now. The effect of the density on the velocity field is also clearly visible by noting that at all three times the spreading center at the top boundary is in exactly the same position; this would result in exactly the same velocity field if the density and temperature were constant." />
+<img src="visit0007.png" title="fig:" id="fig:composition-active-composition" style="width:30.0%" alt="Figure" />
+<img src="visit0009.png" title="fig:" id="fig:composition-active-composition" style="width:30.0%" alt="Figure" />
+<img src="visit0008.png" title="fig:" id="fig:composition-active-composition" style="width:30.0%" alt="Figure" />
 
 <img src="visit0000.png" title="fig:" id="fig:composition-active-temperature" style="width:30.0%" alt="Active compositional fields: Temperature fields at t=0, 2, 4, 8,
   12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the dense material at the bottom." />

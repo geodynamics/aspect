@@ -27,9 +27,9 @@ It then follows that:
 $$p_0 =-  \frac{1}{L^2}  \int_0^L\int_0^L (x^2y^2+xy+5) dx dy
 = -\frac{L^4}{9}-\frac{L^2}{4} - 5.$$
 
-<img src="vel3x3.png" title="fig:" id="fig:benchmark-grooves-3x3" style="width:31.0%" alt="Viscosity grooves benchmark: From left to right, velocity field, pressure field, and norm of the right hand side of the momentum equation, for a 3\times 3 domain with \epsilon=0.1." />
-<img src="press3x3.png" title="fig:" id="fig:benchmark-grooves-3x3" style="width:31.0%" alt="Viscosity grooves benchmark: From left to right, velocity field, pressure field, and norm of the right hand side of the momentum equation, for a 3\times 3 domain with \epsilon=0.1." />
-<img src="rhs3x3.png" title="fig:" id="fig:benchmark-grooves-3x3" style="width:31.0%" alt="Viscosity grooves benchmark: From left to right, velocity field, pressure field, and norm of the right hand side of the momentum equation, for a 3\times 3 domain with \epsilon=0.1." />
+<img src="vel3x3.png" title="fig:" id="fig:benchmark-grooves-3x3" style="width:31.0%" alt="Figure" />
+<img src="press3x3.png" title="fig:" id="fig:benchmark-grooves-3x3" style="width:31.0%" alt="Figure" />
+<img src="rhs3x3.png" title="fig:" id="fig:benchmark-grooves-3x3" style="width:31.0%" alt="Figure" />
 
 As seen in Figure&nbsp;[4][], the value of $\epsilon$ controls the viscosity
 field amplitude: when the $\sin$ term of the viscosity takes value 1, the
@@ -42,7 +42,7 @@ domain size adds complexity to it as it increases the number of low viscosity
 zones and the spacing between them decreases.
 
 ```{figure-md} fig:benchmark-grooves-domains
-<img src="viscs.png" style="width:90.0%" alt="Viscosity grooves benchmark: Viscosity field for three domain sizes: 1\times 1, 2\times 2 and 3\times 3." />
+<img src="viscs.png" style="width:90.0%" alt="Figure" />
 
 Viscosity grooves benchmark: Viscosity field for three domain sizes: <span class="math inline">1&#x2005;&#xD7;&#x2005;1</span>, <span class="math inline">2&#x2005;&#xD7;&#x2005;2</span> and <span class="math inline">3&#x2005;&#xD7;&#x2005;3</span>.
 ```

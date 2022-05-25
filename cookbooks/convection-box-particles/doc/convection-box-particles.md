@@ -14,7 +14,7 @@ very first simple geodynamic model to test if is running on everyone&rsquo;s
 computer, and to demonstrate how to visualize models results.
 
 .
-<img src="convection-box.png" title="fig:" id="fig:convection-box-iterations" style="width:40.0%" alt="Setup of the tutorial model. Background colors show temperature, gray spheres illustrate particle positions." />
+<img src="convection-box.png" title="fig:" id="fig:convection-box-iterations" style="width:40.0%" alt="Figure" />
 .
 
 Slides that demonstrate how to run the model from inside a virtual machine,

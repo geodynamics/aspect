@@ -25,7 +25,7 @@ is outlined in the Generic Mapping Tools (GMT) function grdflexure:
 <https://docs.generic-mapping-tools.org/6.1/supplements/potential/grdflexure.html>
 
 ```{figure-md} fig:choosing-infills
-<img src="choosing_infill_densities.*" alt="How infill densities are calculated"/>
+<img src="choosing_infill_densities.*" alt="Figure"/>
 
 How infill densities are used in this plugin
 ```
@@ -50,7 +50,7 @@ As outlined in the GMT documentation, the fourier solution is not valid if the i
 density varies spatially, so for this benchmark both infill densities are set to 2000 $kg/m^3$.
 
 ```{figure-md} fig:flexure-comparison
-<img src="flexure_comparison.*" alt="Flexure comparison to analytic solution"/>
+<img src="flexure_comparison.*" alt="Figure"/>
 
 Comparing ASPECT flexure to analytic solution from GMT. The topographic load is also shown.
 ```

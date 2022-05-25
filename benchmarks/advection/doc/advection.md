@@ -23,13 +23,13 @@ compositional field. The only difference is that the temperature equation
 contains a (small) physical diffusion term.
 
 ```{figure-md} fig:benchmark-drop
-<img src="drop.png" alt="Dropping box benchmark at final time. Left: entropy viscosity. Right: SUPG." />
+<img src="drop.png" alt="Figure" />
 
 Dropping box benchmark at final time. Left: entropy viscosity. Right: SUPG.
 ```
 
 ```{figure-md} fig:benchmark-rotate-shape
-<img src="rotate_shape.png" alt="Rotating shapes benchmark at final time: Left: reference. Middle: Entropy viscosity. Right: SUPG." />
+<img src="rotate_shape.png" alt="Figure" />
 
 Rotating shapes benchmark at final time: Left: reference. Middle: Entropy viscosity. Right: SUPG.
 ```

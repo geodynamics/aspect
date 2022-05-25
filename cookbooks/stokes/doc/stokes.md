@@ -97,16 +97,16 @@ that implements the equations correctly.
 
 <div class="center">
 
-<img src="stokes-velocity.png" title="fig:" id="fig:stokes-falling-sphere-2d" style="width:55.0%" alt="Stokes benchmark. Both figures show only a 2D slice of the three-dimensional model. Left: The compositional field and overlaid to it some velocity vectors. The composition is 1 inside a sphere with the radius of 200 km and 0 outside of this sphere. As the velocity vectors show, the sphere sinks in the viscous medium. Right: The density distribution of the model. The compositional density contrast of 100 kg/\si{m}^3 leads to a higher density inside of the sphere." />
-<img src="stokes-density.png" title="fig:" id="fig:stokes-falling-sphere-2d" style="width:44.0%" alt="Stokes benchmark. Both figures show only a 2D slice of the three-dimensional model. Left: The compositional field and overlaid to it some velocity vectors. The composition is 1 inside a sphere with the radius of 200 km and 0 outside of this sphere. As the velocity vectors show, the sphere sinks in the viscous medium. Right: The density distribution of the model. The compositional density contrast of 100 kg/\si{m}^3 leads to a higher density inside of the sphere." />
+<img src="stokes-velocity.png" title="fig:" id="fig:stokes-falling-sphere-2d" style="width:55.0%" alt="Figure" />
+<img src="stokes-density.png" title="fig:" id="fig:stokes-falling-sphere-2d" style="width:44.0%" alt="Figure" />
 
 </div>
 
 <div class="center">
 
-<img src="composition.png" title="fig:" id="fig:stokes-falling-sphere-3d" style="width:30.0%" alt="Stokes benchmark. Three-dimensional views of the compositional field (left), the adaptively refined mesh (center) and the resulting velocity field (right)." />
-<img src="mesh.png" title="fig:" id="fig:stokes-falling-sphere-3d" style="width:30.0%" alt="Stokes benchmark. Three-dimensional views of the compositional field (left), the adaptively refined mesh (center) and the resulting velocity field (right)." />
-<img src="velocity.png" title="fig:" id="fig:stokes-falling-sphere-3d" style="width:30.0%" alt="Stokes benchmark. Three-dimensional views of the compositional field (left), the adaptively refined mesh (center) and the resulting velocity field (right)." />
+<img src="composition.png" title="fig:" id="fig:stokes-falling-sphere-3d" style="width:30.0%" alt="Figure" />
+<img src="mesh.png" title="fig:" id="fig:stokes-falling-sphere-3d" style="width:30.0%" alt="Figure" />
+<img src="velocity.png" title="fig:" id="fig:stokes-falling-sphere-3d" style="width:30.0%" alt="Figure" />
 
 </div>
 

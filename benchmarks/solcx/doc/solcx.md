@@ -37,12 +37,12 @@ and <http://www.underworldproject.org/>, and correcting for the mismatch in
 sign between the implementation and the description in {cite}`DMGT11`).
 
 ```{figure-md} fig:solcx1
-<img src="solcx-solution.*" id="fig:solcx1" alt="SolCx Stokes benchmark. The density perturbation field and overlaid to it some velocity vectors. The viscosity is very large in the right hand, leading to a stagnant flow in this region." />
+<img src="solcx-solution.*" id="fig:solcx1" alt="Figure" />
 
 SolCx Stokes benchmark. The density perturbation field and overlaid to it some velocity vectors. The viscosity is very large in the right hand, leading to a stagnant flow in this region.
 ```
 ```{figure-md} fig:solcx2
-<img src="solcx-solution-pressure.*" id="fig:solcx2" alt="SolCx Stokes benchmark. The pressure on a relatively coarse mesh, showing the internal layer along the line where the viscosity jumps." />
+<img src="solcx-solution-pressure.*" id="fig:solcx2" alt="Figure" />
 
 SolCx Stokes benchmark. The pressure on a relatively coarse mesh, showing the internal layer along the line where the viscosity jumps.
 ```

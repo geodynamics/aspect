@@ -52,8 +52,8 @@ prediction (green curve) and Fig.&nbsp;6.39 of (Turcotte and Schubert 2014).
 The relative error between the numerically-determined value of $Ra_c$ and the
 analytic solution are shown in the right panel of Fig.&nbsp;[2][].
 
-<img src="racr.png" title="fig:" id="fig:onset-1" style="width:49.0%" alt="Left: Comparison of numerically-determined and theoretical values for Ra_c. Red circles indicate numerical simulations unstable to convection, black circles indicate simulations that are stable. The green dashed curve indicates the theoretical prediction. Right: Relative error in determination of Ra_c. The dashed red line indicates the error tolerance used in bisection procedure." />
-<img src="racr_error.png" title="fig:" id="fig:onset-1" style="width:49.0%" alt="Left: Comparison of numerically-determined and theoretical values for Ra_c. Red circles indicate numerical simulations unstable to convection, black circles indicate simulations that are stable. The green dashed curve indicates the theoretical prediction. Right: Relative error in determination of Ra_c. The dashed red line indicates the error tolerance used in bisection procedure." />
+<img src="racr.png" title="fig:" id="fig:onset-1" style="width:49.0%" alt="Figure" />
+<img src="racr_error.png" title="fig:" id="fig:onset-1" style="width:49.0%" alt="Figure" />
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

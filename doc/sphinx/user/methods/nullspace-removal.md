@@ -52,7 +52,7 @@ The user can flag the nullspace for removal by setting the `Remove nullspace` op
 
 
 ```{figure-md} fig:rigid_rotation
-<img src="images/rigid_rotation.*" alt="Example of nullspace removal. On the left the nullspace (a rigid rotation) is removed, and the velocity vectors accurately show the mantle flow. On the right there is a significant clockwise rotation to the velocity solution which is making the more interesting flow features difficult to see."  width="80%"/>
+<img src="images/rigid_rotation.*" alt="Figure"/>
 
 Example of nullspace removal. On the left the nullspace (a rigid rotation) is removed, and the velocity vectors accurately show the mantle flow. On the right there is a significant clockwise rotation to the velocity solution which is making the more interesting flow features difficult to see.
 ```

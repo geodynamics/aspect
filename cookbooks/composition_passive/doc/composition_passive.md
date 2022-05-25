@@ -19,15 +19,15 @@ zero everywhere else, and because they have simply been advected along with
 the flow field, the places where they are larger than one half indicate where
 material has been transported to so far.[1]
 
-<img src="visit0007.png" title="fig:" id="fig:compositional-passive" style="width:30.0%" alt="Passive compositional fields: The figures show, at different times in the simulation, the velocity field along with those locations where the first compositional field is larger than 0.5 (in red, indicating the locations where material from the bottom of the domain has gone) as well as where the second compositional field is larger than 0.5 (in blue, indicating material from the top of the domain. The results were obtained with two more global refinement steps compared to the cookbooks/composition_passive/composition_passive.prm input file." />
-<img src="visit0008.png" title="fig:" id="fig:compositional-passive" style="width:30.0%" alt="Passive compositional fields: The figures show, at different times in the simulation, the velocity field along with those locations where the first compositional field is larger than 0.5 (in red, indicating the locations where material from the bottom of the domain has gone) as well as where the second compositional field is larger than 0.5 (in blue, indicating material from the top of the domain. The results were obtained with two more global refinement steps compared to the cookbooks/composition_passive/composition_passive.prm input file." />
-<img src="visit0009.png" title="fig:" id="fig:compositional-passive" style="width:30.0%" alt="Passive compositional fields: The figures show, at different times in the simulation, the velocity field along with those locations where the first compositional field is larger than 0.5 (in red, indicating the locations where material from the bottom of the domain has gone) as well as where the second compositional field is larger than 0.5 (in blue, indicating material from the top of the domain. The results were obtained with two more global refinement steps compared to the cookbooks/composition_passive/composition_passive.prm input file." />
-<img src="visit0010.png" title="fig:" id="fig:compositional-passive" style="width:30.0%" alt="Passive compositional fields: The figures show, at different times in the simulation, the velocity field along with those locations where the first compositional field is larger than 0.5 (in red, indicating the locations where material from the bottom of the domain has gone) as well as where the second compositional field is larger than 0.5 (in blue, indicating material from the top of the domain. The results were obtained with two more global refinement steps compared to the cookbooks/composition_passive/composition_passive.prm input file." />
-<img src="visit0012.png" title="fig:" id="fig:compositional-passive" style="width:30.0%" alt="Passive compositional fields: The figures show, at different times in the simulation, the velocity field along with those locations where the first compositional field is larger than 0.5 (in red, indicating the locations where material from the bottom of the domain has gone) as well as where the second compositional field is larger than 0.5 (in blue, indicating material from the top of the domain. The results were obtained with two more global refinement steps compared to the cookbooks/composition_passive/composition_passive.prm input file." />
-<img src="visit0014.png" title="fig:" id="fig:compositional-passive" style="width:30.0%" alt="Passive compositional fields: The figures show, at different times in the simulation, the velocity field along with those locations where the first compositional field is larger than 0.5 (in red, indicating the locations where material from the bottom of the domain has gone) as well as where the second compositional field is larger than 0.5 (in blue, indicating material from the top of the domain. The results were obtained with two more global refinement steps compared to the cookbooks/composition_passive/composition_passive.prm input file." />
+<img src="visit0007.png" title="fig:" id="fig:compositional-passive" style="width:30.0%" alt="Figure" />
+<img src="visit0008.png" title="fig:" id="fig:compositional-passive" style="width:30.0%" alt="Figure" />
+<img src="visit0009.png" title="fig:" id="fig:compositional-passive" style="width:30.0%" alt="Figure" />
+<img src="visit0010.png" title="fig:" id="fig:compositional-passive" style="width:30.0%" alt="Figure" />
+<img src="visit0012.png" title="fig:" id="fig:compositional-passive" style="width:30.0%" alt="Figure" />
+<img src="visit0014.png" title="fig:" id="fig:compositional-passive" style="width:30.0%" alt="Figure" />
 
-<img src="visit0015.png" title="fig:" id="fig:compositional-passive-zoom" style="height:30.0%" alt="Passive compositional fields: A later image of the simulation corresponding to the sequence shown in Fig.&#xA0;6 (left) and zoom-in on the center, also showing the mesh (right)." />
-<img src="visit0017.png" title="fig:" id="fig:compositional-passive-zoom" style="height:30.0%" alt="Passive compositional fields: A later image of the simulation corresponding to the sequence shown in Fig.&#xA0;6 (left) and zoom-in on the center, also showing the mesh (right)." />
+<img src="visit0015.png" title="fig:" id="fig:compositional-passive-zoom" style="height:30.0%" alt="Figure" />
+<img src="visit0017.png" title="fig:" id="fig:compositional-passive-zoom" style="height:30.0%" alt="Figure" />
 
 Fig.&nbsp;[6][] shows one aspect of compositional fields that occasionally
 makes them difficult to use for very long time computations. The simulation
@@ -44,7 +44,7 @@ following long and thin filaments.[2] This is an area in which may see
 improvements in the future.
 
 ```{figure-md} fig:compositional-passive-mass
-<img src="mass-composition-1.png" style="width:40.0%" alt="Passive compositional fields: Minimum and maximum of the first compositional variable over time, as well as the mass m_1(t)=\int_\Omega c_1(\mathbf x,t) stored in this variable." />
+<img src="mass-composition-1.png" style="width:40.0%" alt="Figure" />
 
 Passive compositional fields: Minimum and maximum of the first compositional variable over time, as well as the mass <span class="math inline"><em>m</em><sub>1</sub>(<em>t</em>)&#x2004;=&#x2004;&#x222B;<sub><em>&#x3A9;</em></sub><em>c</em><sub>1</sub>(<strong>x</strong>,<em>t</em>)</span> stored in this variable.
 ```

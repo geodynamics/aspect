@@ -33,9 +33,9 @@ is only a single material in the domain (i.e. no change in composition in
 space). Nevertheless this simple setup provides us with a complex-enough
 density distribution to test the gravity postprocessor.
 
-<img src="cookbooks/benchmarks/gravity_mantle/doc/mesh.*" title="fig:" id="fig:grav_mantle1" style="width:5cm" alt="Mantle gravity cookbook. From left to right: mesh, temperature anomaly and density. Coastlines are available for Paraview at https://www.earthmodels.org/date-and-tools/coastlines/los-alamos. Once opened the data must be scaled up (simply set the scale of the lower left menu in Paraview to the desired outer radius of your model). Grid lines are also available on the same site." />
-<img src="cookbooks/benchmarks/gravity_mantle/doc/T.*" title="fig:" id="fig:grav_mantle1" style="width:5cm" alt="Mantle gravity cookbook. From left to right: mesh, temperature anomaly and density. Coastlines are available for Paraview at https://www.earthmodels.org/date-and-tools/coastlines/los-alamos. Once opened the data must be scaled up (simply set the scale of the lower left menu in Paraview to the desired outer radius of your model). Grid lines are also available on the same site." />
-<img src="cookbooks/benchmarks/gravity_mantle/doc/rho.*" title="fig:" id="fig:grav_mantle1" style="width:5cm" alt="Mantle gravity cookbook. From left to right: mesh, temperature anomaly and density. Coastlines are available for Paraview at https://www.earthmodels.org/date-and-tools/coastlines/los-alamos. Once opened the data must be scaled up (simply set the scale of the lower left menu in Paraview to the desired outer radius of your model). Grid lines are also available on the same site." />
+<img src="cookbooks/benchmarks/gravity_mantle/doc/mesh.*" title="fig:" id="fig:grav_mantle1" style="width:5cm" alt="Figure" />
+<img src="cookbooks/benchmarks/gravity_mantle/doc/T.*" title="fig:" id="fig:grav_mantle1" style="width:5cm" alt="Figure" />
+<img src="cookbooks/benchmarks/gravity_mantle/doc/rho.*" title="fig:" id="fig:grav_mantle1" style="width:5cm" alt="Figure" />
 
 The gravity postprocessor computes the gravitational potential, acceleration
 vector and gradient at a given radius (here chosen to be
@@ -72,8 +72,8 @@ contribution to the gravity signal of any density distribution that solely
 depends on $r$ can and should be removed as it does not contain any valuable
 information.
 
-<img src="cookbooks/benchmarks/gravity_mantle/doc/grav.*" title="fig:" id="fig:grav_mantle2" style="width:48.0%" alt="Mantle gravity: gravitational acceleration |g| (left) and potential (right) computed at radius 6621&#xA0;km." />
-<img src="cookbooks/benchmarks/gravity_mantle/doc/pot.*" title="fig:" id="fig:grav_mantle2" style="width:48.0%" alt="Mantle gravity: gravitational acceleration |g| (left) and potential (right) computed at radius 6621&#xA0;km." />
+<img src="cookbooks/benchmarks/gravity_mantle/doc/grav.*" title="fig:" id="fig:grav_mantle2" style="width:48.0%" alt="Figure" />
+<img src="cookbooks/benchmarks/gravity_mantle/doc/pot.*" title="fig:" id="fig:grav_mantle2" style="width:48.0%" alt="Figure" />
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

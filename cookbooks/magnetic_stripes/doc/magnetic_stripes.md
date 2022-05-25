@@ -31,7 +31,7 @@ be found [here][]. Slides with an introduction to the Earth&rsquo;s magnetic
 field can be found [here][3].
 
 .
-<img src="mid-ocean-ridge.png" title="fig:" id="fig:convection-box-iterations" style="width:60.0%" alt="Setup of the mid-ocean ridge model. Background colors show temperature. Black and white colors at the top of the model illustrate the orientation of the magnetic field frozen in the rock when the melt generated at the mid-ocean ridge reaches the surface, crystallizes to form new sea floor, and the rock cools down. White lines illustrate the flow field." />
+<img src="mid-ocean-ridge.png" title="fig:" id="fig:convection-box-iterations" style="width:60.0%" alt="Figure" />
 .
 
   [cookbooks/magnetic_stripes/magnetic_stripes.prm]: cookbooks/magnetic_stripes/magnetic_stripes.prm

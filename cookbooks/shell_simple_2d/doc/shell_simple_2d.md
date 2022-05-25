@@ -12,7 +12,7 @@ find a movie of how the temperature evolves over this time period at
 <http://www.youtube.com/watch?v=d4AS1FmdarU>.[^footnote1]
 
 ```{figure-md} fig:simple-shell-2d
-<img src="x-movie.*" alt="figure" width="96.0%"/>
+<img src="x-movie.*" alt="Figure"/>
 
 Simple convection in a quarter of an annulus: Snapshots of the temperature field at times $t=0$, $t=1.2\times 10^7$ years (time step 2135), and $t=10^9$ years (time step 25,662). The bottom right part of each figure shows an overlay of the mesh used during that time step.
 ```
@@ -170,7 +170,7 @@ been mixed sufficiently to allow plumes to rise or sink through the entire
 depth of the mantle.
 
 ```{figure-md} fig:simple-shell-2d:rms
-<img src="rms-multi.*" alt="figure" width="96.0%"/>
+<img src="rms-multi.*" alt="Figure"/>
 
 Simple convection in a quarter of an annulus. Left: Root mean square values of the velocity field. The initial spike (off the scale) is due to the overturning of the unstable layering of the temperature. Convection is suppressed for the first 800 million years due to the stable layering that results from it. The maximal velocity encountered follows generally the same trend and is in the range of 2-3 cm/year between 100 and 800 million years, and 4-8 cm/year following that. Right: Average temperature at various depths for $t=0$, $t=800,000$ years, $t=5\times 10^{8}$ years, and $t=10^9$ years.
 ```
@@ -237,13 +237,13 @@ will cool until it will be in energetic balance and on longer time scales, in-
 and outflow of thermal energy would balance each other.
 
 ```{figure-md} fig:simple-shell-2d:heat-flux
-<img src="heatflux-multi.*" alt="figure" width="96.0%"/>
+<img src="heatflux-multi.*" alt="Figure"/>
 
 Simple convection in a quarter of an annulus. Left: Heat flux through the core-mantle and mantle-air boundaries of the domain for the model with shear heating. Right: Same for a model without shear heating.
 ```
 
 ```{figure-md} fig:simple-shell-2d:avg-temperature
-<img src="avgtemp-multi.*" alt="figure" width="96.0%"/>
+<img src="avgtemp-multi.*" alt="Figure"/>
 
 Simple convection in a quarter of an annulus. Left: Average temperature throughout the model for the model with shear heating. Right: Same for a model without shear heating.
 ```

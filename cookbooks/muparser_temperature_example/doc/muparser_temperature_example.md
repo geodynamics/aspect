@@ -66,7 +66,7 @@ insulating (zero flux) side-walls and fixed temperature at the top and bottom.
 Figure [1][] shows the initial temperature on the full domain.
 
 ```{figure-md}
-<img src="initial_temperature.png" id="lazy-expression-tempic" style="width:80.0%" alt="Initial temperature condition for the lazy-expression syntax cookbook. [lazy-expression-tempic]" />
+<img src="initial_temperature.png" id="lazy-expression-tempic" style="width:80.0%" alt="Figure" />
 
 Initial temperature condition for the lazy-expression syntax cookbook. <span id="lazy-expression-tempic" label="lazy-expression-tempic">[lazy-expression-tempic]</span>
 ```
@@ -103,7 +103,7 @@ between the region that is specific to be a level 7 and the region at level 3
 to create a smooth transition in element size.
 
 ```{figure-md}
-<img src="initial_temperature_on_mesh_zoom.png" id="lazy-expression-tempic-zoom" style="width:50.0%" alt="Initial temperature condition for the lazy-expression syntax cookbook within the region where the two plates meet. The wireframe shows the element size refinement. [lazy-expression-tempic-zoom]" />
+<img src="initial_temperature_on_mesh_zoom.png" id="lazy-expression-tempic-zoom" style="width:50.0%" alt="Figure" />
 
 Initial temperature condition for the lazy-expression syntax cookbook within the region where the two plates meet. The wireframe shows the element size refinement. <span id="lazy-expression-tempic-zoom" label="lazy-expression-tempic-zoom">[lazy-expression-tempic-zoom]</span>
 ```

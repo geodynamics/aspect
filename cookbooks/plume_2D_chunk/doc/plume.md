@@ -86,15 +86,15 @@ few hundred kilometers thick (the thermal lithosphere), forcing the convection
 cell below it.i In other words, the thick lid insulates the convection cell,
 raising the temperature within it.
 
-<img src="cookbooks/plume_2D_chunk/doc/vel1.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
-<img src="cookbooks/plume_2D_chunk/doc/vel2.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
-<img src="cookbooks/plume_2D_chunk/doc/vel3.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
-<img src="cookbooks/plume_2D_chunk/doc/T1.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
-<img src="cookbooks/plume_2D_chunk/doc/T2.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
-<img src="cookbooks/plume_2D_chunk/doc/T3.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
-<img src="cookbooks/plume_2D_chunk/doc/eta1.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
-<img src="cookbooks/plume_2D_chunk/doc/eta2.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
-<img src="cookbooks/plume_2D_chunk/doc/eta3.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
+<img src="cookbooks/plume_2D_chunk/doc/vel1.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Figure" />
+<img src="cookbooks/plume_2D_chunk/doc/vel2.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Figure" />
+<img src="cookbooks/plume_2D_chunk/doc/vel3.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Figure" />
+<img src="cookbooks/plume_2D_chunk/doc/T1.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Figure" />
+<img src="cookbooks/plume_2D_chunk/doc/T2.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Figure" />
+<img src="cookbooks/plume_2D_chunk/doc/T3.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Figure" />
+<img src="cookbooks/plume_2D_chunk/doc/eta1.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Figure" />
+<img src="cookbooks/plume_2D_chunk/doc/eta2.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Figure" />
+<img src="cookbooks/plume_2D_chunk/doc/eta3.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Figure" />
 
 Obtaining a steady state is contingent on the narrow angular opening. We find
 that simply increasing the angular opening from $\pi/8$ to $\pi/4$ yields only
@@ -103,9 +103,9 @@ the system never stabilizes (see Fig.&nbsp;[12][]). Also, decreasing $\eta_0$
 by a factor 10 would yield $Ra=10^7$. In this case, too, a statistical steady
 state is reached (not shown here).
 
-<img src="cookbooks/plume_2D_chunk/doc/exp1_22.*" title="fig:" id="fig:plume-angular-opening" style="width:5cm" alt="Plume in a 2D chunk: Temperature at the end of the run. From left to right: Angular opening of \pi/8, \pi/4 and \pi/2. The first two have reached a steady state while the third one has not." />
-<img src="cookbooks/plume_2D_chunk/doc/exp1_45.*" title="fig:" id="fig:plume-angular-opening" style="width:5cm" alt="Plume in a 2D chunk: Temperature at the end of the run. From left to right: Angular opening of \pi/8, \pi/4 and \pi/2. The first two have reached a steady state while the third one has not." />
-<img src="cookbooks/plume_2D_chunk/doc/exp1_90.*" title="fig:" id="fig:plume-angular-opening" style="width:5cm" alt="Plume in a 2D chunk: Temperature at the end of the run. From left to right: Angular opening of \pi/8, \pi/4 and \pi/2. The first two have reached a steady state while the third one has not." />
+<img src="cookbooks/plume_2D_chunk/doc/exp1_22.*" title="fig:" id="fig:plume-angular-opening" style="width:5cm" alt="Figure" />
+<img src="cookbooks/plume_2D_chunk/doc/exp1_45.*" title="fig:" id="fig:plume-angular-opening" style="width:5cm" alt="Figure" />
+<img src="cookbooks/plume_2D_chunk/doc/exp1_90.*" title="fig:" id="fig:plume-angular-opening" style="width:5cm" alt="Figure" />
 
 Fig.&nbsp;[13][] shows the time evolution of the root mean square velocity as
 a function of time. As mentioned above, no active planet is at steady state so
@@ -121,7 +121,7 @@ figure on the cover of this manual. Please check the corresponding video
 the simulation.
 
 ```{figure-md} fig:plume-diff-creep-vrms
-<img src="cookbooks/plume_2D_chunk/doc/vrms.*" style="width:10cm" alt="Plume in a 2D chunk: Root mean square velocity for each experiment." />
+<img src="cookbooks/plume_2D_chunk/doc/vrms.*" style="width:10cm" alt="Figure" />
 
 Plume in a 2D chunk: Root mean square velocity for each experiment.
 ```

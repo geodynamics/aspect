@@ -22,18 +22,18 @@ The velocity solution computed with three more levels of global refinement
 and plotted over the viscosity field is shown in {numref}`fig:solkz3`.
 
 ```{figure-md} fig:solkz1
-<img src="solkz-solution.*" alt="SolKz Stokes benchmark. The density perturbation field overlaid with velocity vectors. The viscosity grows exponentially in the vertical direction, leading to small velocities at the top despite the large density variations." />
+<img src="solkz-solution.*" alt="Figure" />
 
 SolKz Stokes benchmark. The density pertubation field overlaid with velocity vectors. The viscosity grows exponentially in the vertical direction, leading to small velocities at the top despite the large density variations.
 ```
 ```{figure-md} fig:solkz2
-<img src="solkz-solution-pressure.*" title="fig:" id="fig:solkz2" alt="SolKz Stokes benchmark pressure." />
+<img src="solkz-solution-pressure.*" title="fig:" id="fig:solkz2" alt="Figure" />
 
 SolKz Stokes benchmark pressure.
 ```
 
 ```{figure-md} fig:solkz3
-<img src="solkz-solution-viscosity.*" id="fig:solkz3" alt="SolKz Stokes benchmark. Another view of the velocity vectors, this time plotted over the viscosity field." />
+<img src="solkz-solution-viscosity.*" id="fig:solkz3" alt="Figure" />
 
 SolKz Stokes benchmark. Another view of the velocity vectors, this time plotted over the viscosity field.
 ```

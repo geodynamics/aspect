@@ -74,7 +74,7 @@ the phase transition, the more it impedes the flow, leading to episodic, or
 completely layered convection (see Figure&nbsp;[1][]).
 
 ```{figure-md} fig:christensen_yuen
-<img src="flow_field.png" style="width:80.0%" alt="Phase function model: Flow field in steady state for two models with a Rayleigh number of Ra = 10^5, but different phase buoyancy. The model on the left has a Clapeyron slope of -2.7~\si{\mega\pascal\per\kelvin} (corresponding to P=-0.4) as in the original input file, leading to layered convection. The model on the right has a Clapeyron slope of +2.7~\si{\mega\pascal\per\kelvin} (corresponding to P=0.4), leading to one large convection cell." />
+<img src="flow_field.png" style="width:80.0%" alt="Figure" />
 
 Phase function model: Flow field in steady state for two models with a Rayleigh number of <span class="math inline"><em>R</em><em>a</em>&#x2004;=&#x2004;10<sup>5</sup></span>, but different phase buoyancy. The model on the left has a Clapeyron slope of <span class="math inline">&#x2005;&#x2212;&#x2005;2.7&#xA0;MPa/K</span> (corresponding to <span class="math inline"><em>P</em>&#x2004;=&#x2004;&#x2005;&#x2212;&#x2005;0.4</span>) as in the original input file, leading to layered convection. The model on the right has a Clapeyron slope of <span class="math inline">&#x2005;+&#x2005;2.7&#xA0;MPa/K</span> (corresponding to <span class="math inline"><em>P</em>&#x2004;=&#x2004;0.4</span>), leading to one large convection cell.
 ```

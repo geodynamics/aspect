@@ -26,7 +26,7 @@ parameter names have changed, this can lead to unexpected model behavior or
 even unusable parameter files.
 
 ```{figure-md} fig:aspect-gui
-<img src="images/aspect-gui.png" title="fig:" id="fig:aspect-gui" style="width:40.0%" alt="The parameter GUI lists all available parameter options, and allows to change and save them into a new parameter file. Input fields know about the type of the variable and will display useful options to change them (e.g. drop-down menus, file dialogs, text fields)." />
+<img src="images/aspect-gui.png" title="fig:" id="fig:aspect-gui" style="width:40.0%" alt="Figure" />
 
 The parameter GUI lists all available parameter options, and allows to change and save them into a new parameter file. Input fields know about the type of the variable and will display useful options to change them (e.g. drop-down menus, file dialogs, text fields).
 ```
