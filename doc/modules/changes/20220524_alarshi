@@ -1,0 +1,3 @@
+New: Added an output variable for depth average postprocessor called 'log viscosity' that computes the lateral average of log10(viscosity) in depth layers specified in the postprocessor.
+<br>
+(Arushi Saxena, 2022/05/24)
