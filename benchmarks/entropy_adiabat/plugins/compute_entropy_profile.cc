@@ -66,7 +66,8 @@ namespace aspect
       const unsigned int entropy_index = this->introspection().compositional_index_for_name("entropy");
 
       // Constant properties on the reference profile
-      in.strain_rate.resize(0); // we do not need the viscosity
+      // We only need the material model to compute the density
+      in.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::additional_outputs;
       in.velocity[0] = Tensor <1,dim> ();
       // The entropy along an adiabat is constant (equals the surface entropy)
       in.composition[0][entropy_index] = surface_entropy;

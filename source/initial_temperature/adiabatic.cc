@@ -88,7 +88,8 @@ namespace aspect
       in.velocity[0]= Tensor<1,dim> ();
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         in.composition[0][c] = function->value(Point<1>(depth),c);
-      in.strain_rate.resize(0); // adiabat has strain=0.
+      in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties |
+                                MaterialModel::MaterialProperties::thermal_conductivity;
       this->get_material_model().evaluate(in, out);
 
       const double kappa = ( (this->get_parameters().formulation_temperature_equation ==

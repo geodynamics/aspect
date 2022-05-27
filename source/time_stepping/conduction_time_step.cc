@@ -49,6 +49,8 @@ namespace aspect
                                                  this->introspection().n_compositional_fields);
       MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
                                                    this->introspection().n_compositional_fields);
+      in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties |
+                                MaterialModel::MaterialProperties::thermal_conductivity;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())

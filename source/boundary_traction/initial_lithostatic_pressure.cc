@@ -122,6 +122,7 @@ namespace aspect
       // Set up the input for the density function of the material model.
       typename MaterialModel::Interface<dim>::MaterialModelInputs in0(1, n_compositional_fields);
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out0(1, n_compositional_fields);
+      in0.requested_properties = MaterialModel::MaterialProperties::density;
 
       // Where to calculate the density
       // for cartesian domains
@@ -172,6 +173,7 @@ namespace aspect
           // Set up the input for the density function of the material model
           typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, n_compositional_fields);
           typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, n_compositional_fields);
+          in.requested_properties = MaterialModel::MaterialProperties::density;
 
           // Where to calculate the density:
           // for cartesian domains
@@ -199,8 +201,8 @@ namespace aspect
           for (unsigned int c=0; c<n_compositional_fields; ++c)
             in.composition[0][c] = this->get_initial_composition_manager().initial_composition(in.position[0], c);
 
-          // We do not need the viscosity.
-          in.strain_rate.resize(0);
+          // We only need the density from the material model
+          in.requested_properties = MaterialModel::MaterialProperties::density;
 
           // We set all entries of the velocity vector to zero since this is the lithostatic case.
           in.velocity[0] = Tensor<1,dim> ();

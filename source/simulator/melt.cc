@@ -1115,6 +1115,7 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
       create_material_model_outputs(out);
 

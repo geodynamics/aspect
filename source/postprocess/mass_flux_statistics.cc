@@ -62,6 +62,7 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::density;
 
       // for every surface face on which it makes sense to compute a
       // mass flux and that is owned by this processor,

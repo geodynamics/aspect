@@ -283,20 +283,22 @@ namespace aspect
                                                      introspection.n_compositional_fields);
           MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
                                                        introspection.n_compositional_fields);
-          if ( ! use_constant_density)
+          in.requested_properties = MaterialModel::MaterialProperties::density;
+
+          if (!use_constant_density)
             {
-              fe[introspection.extractors.pressure].get_function_values (relevant_dst, in.pressure);
-              fe[introspection.extractors.temperature].get_function_values (relevant_dst, in.temperature);
+              fe[introspection.extractors.pressure].get_function_values(relevant_dst, in.pressure);
+              fe[introspection.extractors.temperature].get_function_values(relevant_dst, in.temperature);
               in.velocity = velocities;
-              fe[introspection.extractors.pressure].get_function_gradients (relevant_dst, in.pressure_gradient);
-              for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+              fe[introspection.extractors.pressure].get_function_gradients(relevant_dst, in.pressure_gradient);
+              for (unsigned int c = 0; c < introspection.n_compositional_fields; ++c)
                 fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
                                                                                          composition_values[c]);
 
-              for (unsigned int i=0; i<n_q_points; ++i)
+              for (unsigned int i = 0; i < n_q_points; ++i)
                 {
                   in.position[i] = fe.quadrature_point(i);
-                  for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+                  for (unsigned int c = 0; c < introspection.n_compositional_fields; ++c)
                     in.composition[i][c] = composition_values[c][i];
                 }
               material_model->evaluate(in, out);
@@ -390,13 +392,13 @@ namespace aspect
                                                introspection.n_compositional_fields);
     MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
                                                  introspection.n_compositional_fields);
+    in.requested_properties = MaterialModel::MaterialProperties::density;
 
     // loop over all local cells
-    for (const auto &cell : dof_handler.active_cell_iterators())
-      if (cell->is_locally_owned())
+    for (const auto &cell : dof_handler.active_cell_iterators()) if (cell->is_locally_owned())
         {
           if (limit_to_top_faces == false)
-            fe_values.reinit (cell);
+            fe_values.reinit(cell);
           else
             {
               // We only want the output at the top boundary, so only compute it if the current cell
@@ -404,13 +406,13 @@ namespace aspect
               bool cell_at_top_boundary = false;
               for (const unsigned int f : cell->face_indices())
                 if (cell->at_boundary(f) &&
-                    (geometry_model->translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top"))
+                    (geometry_model->translate_id_to_symbol_name(cell->face(f)->boundary_id()) == "top"))
                   {
                     Assert(cell_at_top_boundary == false,
                            ExcInternalError("Error, more than one top surface found in a cell."));
 
                     cell_at_top_boundary = true;
-                    fe_face_values.reinit(cell,f);
+                    fe_face_values.reinit(cell, f);
                   }
 
               if (cell_at_top_boundary == false)
@@ -428,11 +430,11 @@ namespace aspect
           else
             {
               // Get the velocity at each quadrature point
-              fe[introspection.extractors.velocities].get_function_values (solution, in.velocity);
+              fe[introspection.extractors.velocities].get_function_values(solution, in.velocity);
             }
 
           // actually compute the moment of inertia and angular momentum
-          for (unsigned int k=0; k<n_q_points; ++k)
+          for (unsigned int k = 0; k < n_q_points; ++k)
             {
               // get the position and density at this quadrature point
               const Point<dim> r_vec = q_points[k];
@@ -442,17 +444,17 @@ namespace aspect
               if (dim == 2)
                 {
                   // Get the velocity perpendicular to the position vector
-                  const Tensor<1,dim> r_perp = cross_product_2d(r_vec);
+                  const Tensor<1, dim> r_perp = cross_product_2d(r_vec);
 
                   local_scalar_angular_momentum += in.velocity[k] * r_perp * rho * JxW;
                   local_scalar_moment_of_inertia += r_vec.norm_square() * rho * JxW;
                 }
               else
                 {
-                  const Tensor<1,dim> r_cross_v = cross_product_3d(r_vec, in.velocity[k]);
+                  const Tensor<1, dim> r_cross_v = cross_product_3d(r_vec, in.velocity[k]);
 
                   local_angular_momentum += r_cross_v * rho * JxW;
-                  local_moment_of_inertia += (r_vec.norm_square() * unit_symmetric_tensor<dim>() - symmetrize(outer_product(r_vec,r_vec))) * rho * JxW;
+                  local_moment_of_inertia += (r_vec.norm_square() * unit_symmetric_tensor<dim>() - symmetrize(outer_product(r_vec, r_vec))) * rho * JxW;
                 }
             }
         }

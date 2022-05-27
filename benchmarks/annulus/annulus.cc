@@ -527,6 +527,7 @@ namespace aspect
                   MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, this->introspection(), this->get_solution());
                   MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
                   fe_face_values[this->introspection().extractors.temperature].get_function_values(topo_vector, topo_values);
+                  in_face.requested_properties = MaterialModel::MaterialProperties::density;
                   material_model.evaluate(in_face, out_face);
 
                   for (unsigned int q=0; q < quadrature_formula.size(); ++q)

@@ -1460,6 +1460,7 @@ namespace aspect
                                update_JxW_values);
 
       MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, sim.introspection.n_compositional_fields);
+      in.requested_properties = MaterialModel::MaterialProperties::viscosity;
       MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, sim.introspection.n_compositional_fields);
 
       // This function call computes a cellwise projection of data defined at quadrature points to
@@ -1819,6 +1820,7 @@ namespace aspect
             sim.mesh_deformation->get_free_surface_boundary_indicators();
 
           MaterialModel::MaterialModelInputs<dim> face_material_inputs(n_face_q_points, sim.introspection.n_compositional_fields);
+          face_material_inputs.requested_properties = MaterialModel::MaterialProperties::density;
           MaterialModel::MaterialModelOutputs<dim> face_material_outputs(n_face_q_points, sim.introspection.n_compositional_fields);
 
           active_cell_data.free_surface_stabilization_term_table.reinit(n_faces_boundary, n_face_q_points);

@@ -283,7 +283,12 @@ namespace aspect
       requested_properties(MaterialProperties::all_properties)
     {
       if (compute_strain_rate == false)
-        this->strain_rate.resize(0);
+        {
+          this->strain_rate.resize(0);
+          requested_properties = MaterialProperties::Property(requested_properties & ~MaterialProperties::viscosity);
+        }
+      else
+        requested_properties = requested_properties | MaterialProperties::viscosity;
 
       for (unsigned int q=0; q<input_data.solution_values.size(); ++q)
         {
@@ -370,9 +375,15 @@ namespace aspect
       // length of the strain_rate vector to 0, we signal to evaluate()
       // that we do not need to access the viscosity.
       if (compute_strain_rate)
-        fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (solution_vector,this->strain_rate);
+        {
+          fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (solution_vector,this->strain_rate);
+          requested_properties = requested_properties | MaterialProperties::viscosity;
+        }
       else
-        this->strain_rate.resize(0);
+        {
+          this->strain_rate.resize(0);
+          requested_properties = MaterialProperties::Property(requested_properties & ~MaterialProperties::viscosity);
+        }
 
       // Vectors for evaluating the compositional field parts of the finite element solution
       std::vector<std::vector<double>> composition_values (introspection.n_compositional_fields,
@@ -409,14 +420,6 @@ namespace aspect
     bool
     MaterialModelInputs<dim>::requests_property(const MaterialProperties::Property &property) const
     {
-      //TODO: Remove this once all callers set requested_properties correctly
-      if ((property & MaterialProperties::Property::viscosity) != 0)
-        return (strain_rate.size() != 0);
-
-      //TODO: Remove this once all callers set requested_properties correctly
-      if ((property & MaterialProperties::Property::reaction_terms) != 0)
-        return (strain_rate.size() != 0);
-
       // Note that this means 'requested_properties' can include other properties than
       // just 'property', but in any case it at least requests 'property'.
       return (requested_properties & property) != 0;
