@@ -16,7 +16,7 @@ state while the mantle wedge convects and reaches a more realistic thermal state
 Compositional fields used for this cookbook.
 ```
 
-The plugin works by fixing specific temperature degrees of fredom before each temperature solve
+The plugin works by fixing specific temperature degrees of freedom before each temperature solve
 to the value of the initial temperature. The area where the temperature is fixed is determined by a list
 of compositional fields. This ensures that all points within the specified fields do not evolve their
 temperature with time, and this can be easily toggled in the input file by setting
