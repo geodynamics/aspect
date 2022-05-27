@@ -243,7 +243,7 @@ namespace aspect
         if (force_out == nullptr)
           return;
 
-        if (in.requests_property(MaterialProperties::force_terms))
+        if (in.requests_property(MaterialProperties::additional_outputs))
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
               // Get old stresses from compositional fields
