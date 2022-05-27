@@ -129,7 +129,10 @@ adjusting the magnitude of the gravity:
 The phase change number is implemented as part of the material model, and as a
 function that can depend on the spatial coordinates and/or on time:
 
-```{literalinclude} inner_core_traction.part.1.prm
+```{literalinclude} ../inner_core_traction.prm
+:start-at: "subsection Material model"
+:end-before: "# The inner core is a sphere"
+
 ```
 
 {numref}`fig:inner:core:convection` shows examples of the three regimes with
