@@ -15,15 +15,15 @@ $V_S$-to-temperature conversion accurately accounts for the strongly
 non-linear temperature dependence of $V_S$ at near-solidus conditions and is
 therefore especially useful for initializing models with accurate temperature
 structure in the upper $\sim$&nbsp;400 km of the mantle. This benchmark is
-located in the folder [benchmarks/yamauchi_takei_2016_anelasticity][].
+located in the folder [benchmarks/yamauchi_takei_2016_anelasticity](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/yamauchi_takei_2016_anelasticity).
 
-<div class="center">
+```{figure-md} fig:anelasticity
+<img src="YT16_benchmark.png" />
 
-<figure>
-<img src="cookbooks/benchmarks/yamauchi_takei_2016_anelasticity/doc/YT16_benchmark.png" id="fig:anelasticity" alt="V_S as a function of temperature in the oceanic lithosphere. Dotted lines: digitized results from Fig. 20 of Yamauchi &amp; Takei&#xA0;(Yamauchi and Takei 2016); solid lines: results; red = 50 km; blue = 75 km. Temperatures are taken from the plate model of McKenzie et al.&#xA0;(McKenzie, Jackson, and Priestley 2005) and V_{S} from the surface wave tomography model of Priestley et al.&#xA0;(Priestley et al. 2012)." /><figcaption aria-hidden="true"><em><span class="math inline"><em>V</em><sub><em>S</em></sub></span> as a function of temperature in the oceanic lithosphere. Dotted lines: digitized results from Fig. 20 of Yamauchi &amp; Takei&#xA0;<span class="citation" data-cites="YT16">(Yamauchi and Takei 2016)</span>; solid lines: results; red = 50 km; blue = 75 km. Temperatures are taken from the plate model of McKenzie et al.&#xA0;<span class="citation" data-cites="McK05">(McKenzie, Jackson, and Priestley 2005)</span> and <span class="math inline"><em>V</em><sub><em>S</em></sub></span> from the surface wave tomography model of Priestley et al.&#xA0;<span class="citation" data-cites="P12">(Priestley et al. 2012)</span>.</em></figcaption>
-</figure>
+ V_S as a function of temperature in the oceanic lithosphere. Dotted lines: digitized results from Fig. 20 of Yamauchi &amp; Takei&#xA0;(Yamauchi and Takei 2016); solid lines: results; red = 50 km; blue = 75 km. Temperatures are taken from the plate model of McKenzie et al.&#xA0;(McKenzie, Jackson, and Priestley 2005) and V_{S} from the surface wave tomography model of Priestley et al.&#xA0;(Priestley et al. 2012).
+```
 
-</div>
+
 
 The parameterization of Yamauchi & Takei&nbsp;(Yamauchi and Takei 2016)
 defines $V_S$ as
@@ -107,7 +107,7 @@ $\eta_r = 6.22 \times 10^{21}~\si{Pa . s}$, $E_a = 452.5~\si{kJ . mol}^{-1}$,
 $V_a = 7.913 \times 10^{-6}~\si{m}^{3}~\si{mol}^{-1}$ and
 $\frac{\partial T_s}{\partial z} = 1.018~\si{K . km}^{-1}$. As $V_S$ is a
 complex function of temperature, a Brent minimization algorithm is used to
-find optimal values. Fig.&nbsp;[1][] shows that the implementation of this
+find optimal values. Fig.&nbsp;[1] shows that the implementation of this
 parameterization can accurately recreate the results shown by Yamauchi &
 Takei&nbsp;(Yamauchi and Takei 2016) in their Fig. 20.
 
@@ -116,41 +116,41 @@ found at
 [benchmarks/yamauchi_takei_2016_anelasticity/yamauchi_takei_2016_anelasticity.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/yamauchi_takei_2016_anelasticity/yamauchi_takei_2016_anelasticity.prm)
 and
 [benchmarks/yamauchi_takei_2016_anelasticity/anelasticity_temperature.cc](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/yamauchi_takei_2016_anelasticity/anelasticity_temperature.cc).
-Code to recreate Fig.&nbsp;[1][] is provided in
-[benchmarks/yamauchi_takei_2016_anelasticity/plot_output][].
+Code to recreate Fig.&nbsp;[1] is provided in
+[benchmarks/yamauchi_takei_2016_anelasticity/plot_output](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/yamauchi_takei_2016_anelasticity/plot_output).
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-Hirsch2000" class="csl-entry">
 
-Hirschmann, Marc M. 2000. &ldquo;Mantle Solidus: Experimental Constraints and
-the Effects of Peridotite Composition.&rdquo; *Geochemistry, Geophysics,
+Hirschmann, Marc M. 2000. "Mantle Solidus: Experimental Constraints and
+the Effects of Peridotite Composition." *Geochemistry, Geophysics,
 Geosystems* 1 (10).
 
 </div>
 
 <div id="ref-McK05" class="csl-entry">
 
-McKenzie, Dan, James Jackson, and Keith Priestley. 2005. &ldquo;Thermal
-Structure of Oceanic and Continental Lithosphere.&rdquo; *Earth & Planetary
-Science Letters* 233 (3-4): 337&ndash;49.
+McKenzie, Dan, James Jackson, and Keith Priestley. 2005. "Thermal
+Structure of Oceanic and Continental Lithosphere." *Earth & Planetary
+Science Letters* 233 (3-4): 337--49.
 
 </div>
 
 <div id="ref-P12" class="csl-entry">
 
 Priestley, Keith, Dan McKenzie, Jamie Barron, Mohammad Tatar, and Eric
-Debayle. 2012. &ldquo;The Zagros Core: Deformation of the Continental
-Lithospheric Mantle.&rdquo; *Geochemistry, Geophysics, Geosystems* 13 (11):
+Debayle. 2012. "The Zagros Core: Deformation of the Continental
+Lithospheric Mantle." *Geochemistry, Geophysics, Geosystems* 13 (11):
 Q11014.
 
 </div>
 
 <div id="ref-YT16" class="csl-entry">
 
-Yamauchi, H., and Y. Takei. 2016. &ldquo;Polycrystal Anelasticity at
-Near-Solidus Temperatures.&rdquo; *Journal of Geophysical Research: Solid
-Earth* 121 (11): 7790&ndash;820.
+Yamauchi, H., and Y. Takei. 2016. "Polycrystal Anelasticity at
+Near-Solidus Temperatures." *Journal of Geophysical Research: Solid
+Earth* 121 (11): 7790--820.
 
 </div>
 

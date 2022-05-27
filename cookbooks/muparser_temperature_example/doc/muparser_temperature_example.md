@@ -9,7 +9,7 @@ can quickly check initial conditions (i.e., without waiting for the solver to
 converge). For this model we define a simple 2D box, which is
 $5000 \times 1000$ km, with free-slip velocity boundary conditions. The
 material parameters are constant within the box (set using the
-&ldquo;simple&rdquo; material model). The initial thermal structure has two
+"simple" material model). The initial thermal structure has two
 parts divided at $xtr=2200$&nbsp;km. The temperature in each region is defined
 using the equation for a half-space cooling model:
 $$T(x,y) = T_s + (T_m  - T_s) \erf{(\frac{y}{2\sqrt{\kappa x/v}})}$$ where
@@ -45,8 +45,8 @@ two different syntax options for if-statements (see also Section
 In the first syntax, both the true and false expression are evaluated (even
 though only one is needed), while in the second syntax, only the expression
 that is needed for the prescribed if condition is evaluated. In the lazy
-expression the `?` represents the &ldquo;then,&rdquo; and the `:` represents
-the &ldquo;else&rdquo; in the if-then-else statement. Because the function
+expression the `?` represents the "then," and the `:` represents
+the "else" in the if-then-else statement. Because the function
 expression is evaluated for every mesh point, for the plate temperature
 described above, it is necessary to use the lazy expression syntax to avoid
 evaluating the full temperature equation at mesh points where $x=0$ because
@@ -63,11 +63,13 @@ T-ov is the function for the temperature of the overriding plate.
 Notice also that the boundary conditions for the temperature are defined in a
 separate subsection and depend on the geometry. The boundary conditions are
 insulating (zero flux) side-walls and fixed temperature at the top and bottom.
-Figure [1][] shows the initial temperature on the full domain.
+Figure [1] shows the initial temperature on the full domain.
 
-<figure>
-<img src="cookbooks/muparser_temperature_example/doc/initial_temperature.png" id="lazy-expression-tempic" style="width:80.0%" alt="Initial temperature condition for the lazy-expression syntax cookbook. [lazy-expression-tempic]" /><figcaption aria-hidden="true"><em>Initial temperature condition for the lazy-expression syntax cookbook. <span id="lazy-expression-tempic" label="lazy-expression-tempic">[lazy-expression-tempic]</span></em></figcaption>
-</figure>
+```{figure-md} lazy-expression-tempic
+<img src="initial_temperature.png" style="width:80.0%" />
+
+ Initial temperature condition for the lazy-expression syntax cookbook. [lazy-expression-tempic]
+```
 
 The structure and refinement of the mesh are determined in two subsections of
 the parameter file. First, because the model domain is not a square, it is
@@ -87,22 +89,24 @@ and use the `if-then-else` statement in the function expression to refine 4
 more times to a refinement level of 7, but only where the depth is less than
 150&nbsp;km. Appropriate values of the minimum refinement level in this
 function expression could be the sum of initial global refinement level (3)
-and initial adaptive refinement level (4) in the &lsquo;`then`&rsquo;
+and initial adaptive refinement level (4) in the '`then`'
 statement (i.e., 7 here) and the value of initial global refinement in the
-&lsquo;`else`&rsquo; statement.
+'`else`' statement.
 
 ``` prmfile
 ```
 
-Figure [2][] zooms in on the region where the two plates meet and shows the
+Figure [2] zooms in on the region where the two plates meet and shows the
 temperature on a wireframe highlighting the element size refinement. Notice
 that the mesh refinement algorithm automatically adjusts the element size
 between the region that is specific to be a level 7 and the region at level 3
 to create a smooth transition in element size.
 
-<figure>
-<img src="cookbooks/muparser_temperature_example/doc/initial_temperature_on_mesh_zoom.png" id="lazy-expression-tempic-zoom" style="width:50.0%" alt="Initial temperature condition for the lazy-expression syntax cookbook within the region where the two plates meet. The wireframe shows the element size refinement. [lazy-expression-tempic-zoom]" /><figcaption aria-hidden="true"><em>Initial temperature condition for the lazy-expression syntax cookbook within the region where the two plates meet. The wireframe shows the element size refinement. <span id="lazy-expression-tempic-zoom" label="lazy-expression-tempic-zoom">[lazy-expression-tempic-zoom]</span></em></figcaption>
-</figure>
+```{figure-md} lazy-expression-tempic-zoom
+<img src="initial_temperature_on_mesh_zoom.png" style="width:50.0%" />
+
+ Initial temperature condition for the lazy-expression syntax cookbook within the region where the two plates meet. The wireframe shows the element size refinement. [lazy-expression-tempic-zoom]
+```
 
 Finally, in order to just test whether the initial temperature structure has
 been properly defined, it is helpful to run the model for a single time-step
@@ -111,7 +115,7 @@ the `End time` can be set to zero. If the model is very large (lots of
 refinement) or there are large viscosity jumps that take longer to converge in
 the Stokes solver, it can also be useful to set the solver tolerance
 parameters to large values as noted below. However, remember that in that case
-the solution will not be converged &ndash; it is only useful for checking that
+the solution will not be converged -- it is only useful for checking that
 the initial condition is set correctly.
 
 ``` prmfile

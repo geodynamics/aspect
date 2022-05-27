@@ -51,15 +51,15 @@ model are listed here:
 ## Results.
 
 Visualization of the model results yields a phase diagram of a pyrolitic
-mantle (Figure [1][]). The field shown here has the reference densities of the
+mantle (Figure [1]). The field shown here has the reference densities of the
 pyrolite phases, though settings of phase transitions are over-simplified. One
 may notice that three transitions (i.e., one in the olivine system, two in the
 spinel system) are included for the 660 interfaces, and they need to be
 modified at a higher temperature. In spite of the complexities of mantle
 phases, the focus of this first example is to simply illustrate this approach
 of visualizing it. Beyond showing the diagram, We have also used the
-&ldquo;lineout&rdquo; feature in VisIt to export the data along two vertical
-lines at $T = \SI{1173}{K}$ and $T = \SI{1673}{K}$ (Figure [2][]). The figure
+"lineout" feature in VisIt to export the data along two vertical
+lines at $T = \SI{1173}{K}$ and $T = \SI{1673}{K}$ (Figure [2]). The figure
 for $T = \SI{1173}{K}$ illustrates the buoyancy forces felt by a descending
 cold slab within the mantle transition zone.
 
@@ -71,10 +71,10 @@ needed:
 ```
 
 With this change, we can also visualize the phase diagram of harzburgite in
-Figure [1][].
+Figure [1].
 
 Moreover, We tested the pyrolitic lookup table used in the Steinberg material
-model (Figure [3][]). The same setup of the initial condition is applied as in
+model (Figure [3]). The same setup of the initial condition is applied as in
 the previous case. The densities, however, are not assigned to the heat
 capacity anymore. Thus the vertical axis would deviate from the axis of
 pressure a little bit. This second setup serves the goal of illustrating a
@@ -90,33 +90,42 @@ and $\SI{660}{km}$ depth, respectively, marked by linear boundaries analogous
 to a constant Clapeyron slope.
 
 .
-<img src="cookbooks/visualizing_phase_diagram/doc/pyrolite_harzburgite.png" title="fig:" id="fig:phase_diagram_ph_density" style="width:90.0%" alt="Visualization of phase diagrams: The field of heat capacity showing values of reference densities for pyrolitic and harzburgitic phases." />
+
+```{figure-md} fig:phase_diagram_ph_density
+<img src="pyrolite_harzburgite.png" style="width:90.0%" />
+
+ Visualization of phase diagrams: The field of heat capacity showing values of reference densities for pyrolitic and harzburgitic phases.
+```
 .
 
-<figure>
-<img src="cookbooks/visualizing_phase_diagram/doc/pyrolite_linear.png" id="fig:phase_diagram_ph_profile" style="width:40.0%" alt="Visualization of phase diagrams: Profiles of pyrolitic density at T=\SI{1173}{K} (red) and \SI{1673}{K} (blue)." /><figcaption aria-hidden="true"><em>Visualization of phase diagrams: Profiles of pyrolitic density at <span class="math inline"><em>T</em>&#x2004;=&#x2004;1173&#xA0;<em>K</em></span> (red) and <span class="math inline">1673&#xA0;<em>K</em></span> (blue).</em></figcaption>
-</figure>
+```{figure-md} fig:phase_diagram_ph_profile
+<img src="pyrolite_linear.png" style="width:40.0%" />
 
-<figure>
-<img src="cookbooks/visualizing_phase_diagram/doc/steinberg.png" id="fig:phase_diagram_steinberg_density" style="width:40.0%" alt="Visualization of phase diagrams: Density from lookup table of pyrolite from (Stixrude and Lithgow-Bertelloni 2011)." /><figcaption aria-hidden="true"><em>Visualization of phase diagrams: Density from lookup table of pyrolite from <span class="citation" data-cites="stixrude2011thermodynamics">(Stixrude and Lithgow-Bertelloni 2011)</span>.</em></figcaption>
-</figure>
+ Visualization of phase diagrams: Profiles of pyrolitic density at T=\SI{1173}{K} (red) and \SI{1673}{K} (blue).
+```
+
+```{figure-md} fig:phase_diagram_steinberg_density
+<img src="steinberg.png" style="width:40.0%" />
+
+ Visualization of phase diagrams: Density from lookup table of pyrolite from (Stixrude and Lithgow-Bertelloni 2011).
+```
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-billen2018decoupling" class="csl-entry">
 
-Billen, Magali I, and Katrina M Arredondo. 2018. &ldquo;Decoupling of
+Billen, Magali I, and Katrina M Arredondo. 2018. "Decoupling of
 Plate-Asthenosphere Motion Caused by Non-Linear Viscosity During Slab Folding
-in the Transition Zone.&rdquo; *Physics of the Earth and Planetary Interiors*
-281: 17&ndash;30.
+in the Transition Zone." *Physics of the Earth and Planetary Interiors*
+281: 17--30.
 
 </div>
 
 <div id="ref-stixrude2011thermodynamics" class="csl-entry">
 
-Stixrude, Lars, and Carolina Lithgow-Bertelloni. 2011. &ldquo;Thermodynamics
-of Mantle Minerals-II. Phase Equilibria.&rdquo; *Geophysical Journal
-International* 184 (3): 1180&ndash;1213.
+Stixrude, Lars, and Carolina Lithgow-Bertelloni. 2011. "Thermodynamics
+of Mantle Minerals-II. Phase Equilibria." *Geophysical Journal
+International* 184 (3): 1180--1213.
 
 </div>
 

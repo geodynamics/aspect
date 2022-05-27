@@ -3,15 +3,15 @@
 In the examples above, particle properties passively track distinct model
 properties. These particle properties, however, may also be used to actively
 influence the model as it runs. For instance, a composition-dependent material
-model may use particles&rsquo; initial composition rather than an advected
-compositional field. To make this work &ndash; i.e., to get information from
+model may use particles' initial composition rather than an advected
+compositional field. To make this work -- i.e., to get information from
 particles that are located at unpredictable locations, to the quadrature
 points at which material models and other parts of the code need to evaluate
-these properties &ndash; we need to somehow get the values from particles back
+these properties -- we need to somehow get the values from particles back
 to fields that can then be evaluated at any point where this is necessary. A
 slightly modified version of the active-composition cookbook
 ([cookbooks/composition_active/composition_active.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_active/composition_active.prm)) illustrates how to
-use &lsquo;active particles&rsquo; in this manner.
+use 'active particles' in this manner.
 
 This cookbook,
 [cookbooks/composition_active_particles/composition_active_particles.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_active_particles/composition_active_particles.prm),
@@ -58,7 +58,7 @@ count slightly below 100. While on the high end compared to most geodynamic
 studies using active particles, increasing the number of particles per cell
 further may alter the solution. As with the numerical resolution, any study
 using active particles should systematically vary the number of particles per
-cell in order to determine this parameter&rsquo;s influence on the simulation.
+cell in order to determine this parameter's influence on the simulation.
 
   [cookbooks/composition_active/composition_active.prm]: cookbooks/composition_active/composition_active.prm
   [cookbooks/composition_active_particles/composition_active_particles.prm]: cookbooks/composition_active_particles/composition_active_particles.prm

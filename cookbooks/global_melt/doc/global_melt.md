@@ -8,17 +8,17 @@ coupled magma/mantle dynamics (see Section&nbsp;{ref}`sec:melt_transport`)
 to set up a model of mantle convection that also includes melting and freezing
 of mantle rock, and the transport of melt according to the two-phase flow
 equations. The model setup is described in detail in (Dannberg and Heister
-2016), which can be found [here][], and in the following we will go over a
+2016), which can be found [here], and in the following we will go over a
 slightly simplified version in lower resolution. We will start by looking at a
 global mantle convection without melt migration, and will then discuss how the
 input file has to be modified in order to add melt transport. A movie that
 compares the evolution of the temperature field and the amount of melt present
-in both models in higher resolution can be found [online][].
+in both models in higher resolution can be found [online].
 
 The model setup is a 2D box with dimensions of $2900 \times 8700$&#8198;km,
 and it is heated from the bottom and cooled from the top. A full description
-can be found in Section&nbsp;4.7 &ldquo;Influence of melt migration on a
-global-scale convection model&rdquo; in (Dannberg and Heister 2016). In the
+can be found in Section&nbsp;4.7 "Influence of melt migration on a
+global-scale convection model" in (Dannberg and Heister 2016). In the
 first model we will look at, melting and freezing is only included passively:
 We use the `melt fraction` visualization postprocessor to compute how much
 melt is present for a given temperature and pressure at every given point in
@@ -67,7 +67,7 @@ regions where material starts to melt are similar. However, once melt is
 formed, the model evolutions start to deviate. In the model with melt
 migration, melt moves upwards from the region where it is generated much
 faster than the flow of solid material, so that it reaches cold regions
-&ndash; where it freezes again &ndash; in a shorter amount of time. Because of
+-- where it freezes again -- in a shorter amount of time. Because of
 that, the overall amount of melt is smaller in this model at any given point
 in time. In addition, enriched material, present in places where melt has
 crystallized, has a higher density than average or depleted mantle material.
@@ -77,22 +77,24 @@ Hence, both areas where material is partially molten and the location of the
 upwellings themselves have a much shorter wavelength and change much faster
 over time in comparison to the model without melt migration.
 
-<figure>
-<embed src="cookbooks/global_melt/doc/model_evolution.pdf" id="fig:global-melt" style="width:90.0%" /><figcaption aria-hidden="true"><em>Evolution of the model without (left) and with (right) melt migration.</em></figcaption>
-</figure>
+```{figure-md} fig:global-melt
+<img src="model_evolution.svg" style="width:90.0%" />
 
-Figure&nbsp;[1][] shows the time evolution of both models. A more complete
-comparison of the two models can be found in Section&nbsp;4.7 &ldquo;Influence
-of melt migration on a global-scale convection model&rdquo; in (Dannberg and
+Evolution of the model without (left) and with (right) melt migration.
+```
+
+Figure&nbsp;[1] shows the time evolution of both models. A more complete
+comparison of the two models can be found in Section&nbsp;4.7 "Influence
+of melt migration on a global-scale convection model" in (Dannberg and
 Heister 2016).
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-dannberg_melt" class="csl-entry">
 
-Dannberg, J., and T. Heister. 2016. &ldquo;Compressible Magma/Mantle Dynamics:
-3d, Adaptive Simulations in ASPECT.&rdquo; *Geophysical Journal International*
-207 (3): 1343&ndash;66. <https://doi.org/10.1093/gji/ggw329>.
+Dannberg, J., and T. Heister. 2016. "Compressible Magma/Mantle Dynamics:
+3d, Adaptive Simulations in ASPECT." *Geophysical Journal International*
+207 (3): 1343--66. <https://doi.org/10.1093/gji/ggw329>.
 
 </div>
 

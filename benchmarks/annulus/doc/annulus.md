@@ -24,21 +24,38 @@ velocity is tangential to both inner and outer surfaces. The gravity vector is
 radial and of unit length.
 
 The parameter $k$ controls the number of convection cells present in the
-domain, as shown in Fig.&nbsp;[3][].
+domain, as shown in Fig.&nbsp;[3].
 
-<img src="cookbooks/benchmarks/annulus/doc/pressures.png" title="fig:" id="fig:annulus-vp" alt="Pressure, density and velocity fields for k=0,1,2,3 for the 2D annulus benchmark." />
-<img src="cookbooks/benchmarks/annulus/doc/density.png" title="fig:" id="fig:annulus-vp" alt="Pressure, density and velocity fields for k=0,1,2,3 for the 2D annulus benchmark." />
-<img src="cookbooks/benchmarks/annulus/doc/velocities2.png" title="fig:" id="fig:annulus-vp" alt="Pressure, density and velocity fields for k=0,1,2,3 for the 2D annulus benchmark." />
 
-In the present case, we set $R_1=1$, $R_2=2$ and $C=-1$. Fig.&nbsp;[4][] shows
+```{figure-md} fig:annulus-vp
+<img src="pressures.png" />
+
+ Pressure, density and velocity fields for k=0,1,2,3 for the 2D annulus benchmark.
+```
+
+```{figure-md} fig:annulus-vp
+<img src="density.png" />
+
+ Pressure, density and velocity fields for k=0,1,2,3 for the 2D annulus benchmark.
+```
+
+```{figure-md} fig:annulus-vp
+<img src="velocities2.png" />
+
+ Pressure, density and velocity fields for k=0,1,2,3 for the 2D annulus benchmark.
+```
+
+In the present case, we set $R_1=1$, $R_2=2$ and $C=-1$. Fig.&nbsp;[4] shows
 the velocity and pressure errors in the $L_2$-norm as a function of the mesh
 size $h$ (taken in this case as the radial extent of the elements). As
 expected we recover a third-order convergence rate for the velocity and a
 second-order convergence rate for the pressure.
 
-<figure>
-<embed src="cookbooks/benchmarks/annulus/doc/errors_annulus.pdf" id="fig:annulus-errors" /><figcaption aria-hidden="true"><em>Velocity and pressure errors in the <span class="math inline"><em>L</em><sub>2</sub></span>-norm as a function of the mesh size for the 2D annulus benchmark.</em></figcaption>
-</figure>
+```{figure-md} fig:annulus-errors
+<img src="errors_annulus.svg" />
+
+Velocity and pressure errors in the <span class="math inline"><em>L</em><sub>2</sub></span>-norm as a function of the mesh size for the 2D annulus benchmark.
+```
 
   [3]: #fig:annulus-vp
   [4]: #fig:annulus-errors

@@ -20,26 +20,28 @@ repository by executing the command
 
      git clone https://bitbucket.org/geomio/geomio.git
 
-or you can download geomIO [here][]. You will then need to add the geomIO
+or you can download geomIO [here]. You will then need to add the geomIO
 source folders to your MATLAB path by running the file located in
 `/path/to/geomio/installation/InstallGeomIO.m`. An extensive documentation for
 how to use geomIO can be found [here][1]. Among other things, it explains [how
-to generate drawings in Inkscape][] that can be read in by geomIO, which
-involves assigning new attributes to paths in Inkscape&rsquo;s XML editor. In
-particular, a new property &lsquo;phase&rsquo; has to be added to each path,
+to generate drawings in Inkscape] that can be read in by geomIO, which
+involves assigning new attributes to paths in Inkscape's XML editor. In
+particular, a new property 'phase' has to be added to each path,
 and set to a value corresponding to the index of the material that should be
 present in this region in the initial condition of the geodynamic model.
 
 We will here use a drawing of a jellyfish located in
-[cookbooks/geomio/doc/jellyfish.svg][], where different phases have already
-been assigned to each path (Figure&nbsp;[1][]).
+[cookbooks/geomio/doc/jellyfish.svg](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/geomio/doc/jellyfish.svg), where different phases have already
+been assigned to each path (Figure&nbsp;[1]).
 
-<figure>
-<embed src="cookbooks/geomio/doc/jellyfish.pdf" id="fig:jelly-picture" style="width:20.0%" /><figcaption aria-hidden="true"><em>Vector drawing of a jellyfish.</em></figcaption>
-</figure>
+```{figure-md} fig:jelly-picture
+<img src="jellyfish.svg" style="width:20.0%" />
+
+Vector drawing of a jellyfish.
+```
 
 After geomIO is initialized in MATLAB, we [run geomIO as described in the
-documentation][], loading the default options and then specifying all the
+documentation], loading the default options and then specifying all the
 option we want to change, such as the path to the input file, or the
 resolution:
 
@@ -55,11 +57,13 @@ In the next step we create the grid that is used for the coordinates in the
 ```
 
 You can plot the `Phase` variable in MATLAB to see if the drawing was read in
-and all phases are assigned correctly (Figure&nbsp;[2][]).
+and all phases are assigned correctly (Figure&nbsp;[2]).
 
-<figure>
-<img src="cookbooks/geomio/doc/jelly.png" id="fig:jelly-plot" style="width:45.0%" alt="Plot of the Phase variable in MATLAB." /><figcaption aria-hidden="true"><em>Plot of the <code>Phase</code> variable in MATLAB.</em></figcaption>
-</figure>
+```{figure-md} fig:jelly-plot
+<img src="jelly.png" style="width:45.0%" />
+
+ Plot of the Phase variable in MATLAB.
+```
 
 Finally, we want to write output in a format that can be read in by ASPECT's
 `ascii data` compositional initial conditions plugin. We write the data into
@@ -79,11 +83,13 @@ in our jellyfish. The relevant parts of the input file are listed below:
 
 If we look at the output in `ParaView`, we can see our jellyfish, with the
 mesh refined at the boundaries between the different phases
-(Figure&nbsp;[3][]).
+(Figure&nbsp;[3]).
 
-<figure>
-<embed src="cookbooks/geomio/doc/jelly-paraview.pdf" id="fig:jelly-paraview" style="width:55.0%" /><figcaption aria-hidden="true"> <em>model output of the jellyfish and corresponding mesh in ParaView.</em></figcaption>
-</figure>
+```{figure-md} fig:jelly-paraview
+<img src="jelly-paraview.svg" style="width:55.0%" />
+
+<figcaption aria-hidden="true"> <em>model output of the jellyfish and corresponding mesh in ParaView.
+```
 
 For a geophysical setup, the MATLAB code could be extended to write out the
 phases into several different columns of the ASCII data file (corresponding to
@@ -99,9 +105,9 @@ it a higher viscosity can be found here:
 
 <div id="ref-bauvillegeomio" class="csl-entry">
 
-Bauville, A, and TS Baumann. 2019. &ldquo;geomIO: An Open-Source MATLAB
+Bauville, A, and TS Baumann. 2019. "geomIO: An Open-Source MATLAB
 Toolbox to Create the Initial Configuration of 2d/3d Thermo-Mechanical
-Simulations from 2d Vector Drawings.&rdquo; *Geochemistry, Geophysics,
+Simulations from 2d Vector Drawings." *Geochemistry, Geophysics,
 Geosystems*. <https://doi.org/10.1029/2018GC008057>.
 
 </div>

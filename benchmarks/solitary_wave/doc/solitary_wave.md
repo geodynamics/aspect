@@ -39,15 +39,15 @@ x(\phi) &= \pm (A + 0.5)
 \ln \frac{\sqrt{A-1} - \sqrt{A-\phi}}{\sqrt{A-1} + \sqrt{A-\phi}} \right]\end{aligned}$$
 and the phase speed $c$, scaled back to physical units, is $c = u_0 (2A+1)$.
 This is only valid in the limit of small porosity $\phi_0 \ll 1$.
-Figure&nbsp;[1][] illustrates the model setup.
+Figure&nbsp;[1] illustrates the model setup.
 
-<div class="center">
+```{figure-md} fig:setup-solitary-wave
+<img src="setup.svg" style="width:65.0%" />
 
-<figure>
-<embed src="cookbooks/benchmarks/solitary_wave/doc/setup.pdf" id="fig:setup-solitary-wave" style="width:65.0%" /><figcaption aria-hidden="true"><em>Setup of the solitary wave benchmark. The domain is <span class="math inline">400</span> m high and includes a low porosity (<span class="math inline"><em>&#x3D5;</em>&#x2004;=&#x2004;0.001</span>) background with an initial perturbation (<span class="math inline"><em>&#x3D5;</em>&#x2004;=&#x2004;0.1</span>). The solid density is <span class="math inline">3300&#x2006;<em>k</em><em>g</em>/<em>m</em><sup>3</sup></span> and the melt density is <span class="math inline">2500&#x2006;<em>k</em><em>g</em>/<em>m</em><sup>3</sup></span>. We apply the negative phase speed of the solitary wave <span class="math inline"><strong>u</strong><sub><em>s</em></sub>&#x2004;=&#x2004;&#x2005;&#x2212;&#x2005;<em>c</em>&#x2006;<strong>e</strong><sub><em>z</em></sub></span> as velocity boundary condition, so that the wave will stay at its original position while the background is moving.</em></figcaption>
-</figure>
+Setup of the solitary wave benchmark. The domain is <span class="math inline">400</span> m high and includes a low porosity (<span class="math inline"><em>&#x3D5;</em>&#x2004;=&#x2004;0.001</span>) background with an initial perturbation (<span class="math inline"><em>&#x3D5;</em>&#x2004;=&#x2004;0.1</span>). The solid density is <span class="math inline">3300&#x2006;<em>k</em><em>g</em>/<em>m</em><sup>3</sup></span> and the melt density is <span class="math inline">2500&#x2006;<em>k</em><em>g</em>/<em>m</em><sup>3</sup></span>. We apply the negative phase speed of the solitary wave <span class="math inline"><strong>u</strong><sub><em>s</em></sub>&#x2004;=&#x2004;&#x2005;&#x2212;&#x2005;<em>c</em>&#x2006;<strong>e</strong><sub><em>z</em></sub></span> as velocity boundary condition, so that the wave will stay at its original position while the background is moving.
+```
 
-</div>
+
 
 The parameter file and material model for this setup can be found in
 [benchmarks/solitary_wave/solitary_wave.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/solitary_wave/solitary_wave.prm) and
@@ -77,40 +77,40 @@ in (Dannberg and Heister 2016).
 
 <div id="ref-BR86" class="csl-entry">
 
-Barcilon, V., and F. M. Richter. 1986. &ldquo;Nonlinear Waves in Compacting
-Media.&rdquo; *Journal of Fluid Mechanics* 164: 429&ndash;48.
+Barcilon, V., and F. M. Richter. 1986. "Nonlinear Waves in Compacting
+Media." *Journal of Fluid Mechanics* 164: 429--48.
 
 </div>
 
 <div id="ref-dannberg_melt" class="csl-entry">
 
-Dannberg, J., and T. Heister. 2016. &ldquo;Compressible Magma/Mantle Dynamics:
-3d, Adaptive Simulations in ASPECT.&rdquo; *Geophysical Journal International*
-207 (3): 1343&ndash;66. <https://doi.org/10.1093/gji/ggw329>.
+Dannberg, J., and T. Heister. 2016. "Compressible Magma/Mantle Dynamics:
+3d, Adaptive Simulations in ASPECT." *Geophysical Journal International*
+207 (3): 1343--66. <https://doi.org/10.1093/gji/ggw329>.
 
 </div>
 
 <div id="ref-KMK2013" class="csl-entry">
 
-Keller, Tobias, Dave A. May, and Boris J. P. Kaus. 2013. &ldquo;Numerical
+Keller, Tobias, Dave A. May, and Boris J. P. Kaus. 2013. "Numerical
 Modelling of Magma Dynamics Coupled to Tectonic Deformation of Lithosphere and
-Crust.&rdquo; *Geophysical Journal International* 195 (3): 1406&ndash;42.
+Crust." *Geophysical Journal International* 195 (3): 1406--42.
 <https://doi.org/10.1093/gji/ggt306>.
 
 </div>
 
 <div id="ref-Schm00" class="csl-entry">
 
-Schmeling, Harro. 2000. &ldquo;Partial Melting and Melt Segregation in a
-Convecting Mantle.&rdquo; In *Physics and Chemistry of Partially Molten
-Rocks*, 141&ndash;78. Springer.
+Schmeling, Harro. 2000. "Partial Melting and Melt Segregation in a
+Convecting Mantle." In *Physics and Chemistry of Partially Molten
+Rocks*, 141--78. Springer.
 
 </div>
 
 <div id="ref-SS11" class="csl-entry">
 
-Simpson, Gideon, and Marc Spiegelman. 2011. &ldquo;Solitary Wave Benchmarks in
-Magma Dynamics.&rdquo; *Journal of Scientific Computing* 49 (3): 268&ndash;90.
+Simpson, Gideon, and Marc Spiegelman. 2011. "Solitary Wave Benchmarks in
+Magma Dynamics." *Journal of Scientific Computing* 49 (3): 268--90.
 
 </div>
 

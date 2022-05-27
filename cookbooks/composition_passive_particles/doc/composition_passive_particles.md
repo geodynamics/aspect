@@ -42,25 +42,27 @@ Here, the `particles.pvd` and `particles.visit` files contain a list of all
 visualization files from all processors and time steps. These files can be
 loaded in much the same way as the `solution.pvd` and `solution.visit` files
 that were discussed in Section&nbsp;{ref}`sec:viz`. The actual data files
-&ndash; possibly a large number, but not of much immediate interest to users
-&ndash; are located in the `particles` subdirectory.
+-- possibly a large number, but not of much immediate interest to users
+-- are located in the `particles` subdirectory.
 
 Coming back to the example at hand, we can visualize the particles that were
 advected along by opening both the field-based output files and the ones that
 correspond to particles (for example, `output/solution.visit` and
 `output/particles.visit`) and using a pseudo-color plot for the particles,
-selecting the &ldquo;id&rdquo; of particles to color each particle. By going
+selecting the "id" of particles to color each particle. By going
 to, for example, the output from the 72nd visualization output, this then
-results in a plot like the one shown in Fig.&nbsp;[1][].
+results in a plot like the one shown in Fig.&nbsp;[1].
 
-<figure>
-<img src="cookbooks/composition_passive_particles/doc/solution-00072.png" id="fig:composition_passive_particles" style="width:50.0%" alt="Passively advected quantities visualized through both a [fig:composition_passive_particles] compositional field and a set of 1,000 particles, at t=7.2." /><figcaption aria-hidden="true"><em>Passively advected quantities visualized through both a <span id="fig:composition_passive_particles" label="fig:composition_passive_particles">[fig:composition_passive_particles]</span> compositional field and a set of 1,000 particles, at <span class="math inline"><em>t</em>&#x2004;=&#x2004;7.2</span>.</em></figcaption>
-</figure>
+```{figure-md} fig:composition_passive_particles
+<img src="solution-00072.png" style="width:50.0%" />
+
+ Passively advected quantities visualized through both a [fig:composition_passive_particles] compositional field and a set of 1,000 particles, at t=7.2.
+```
 
 The particles shown here are not too impressive in still pictures since they
 are colorized by their particle number, which does not carry any particular
 meaning other than the fact that it enumerates the particles.[1] The particle
-&ldquo;id&rdquo; can, however, be useful when viewing an animation of time
+"id" can, however, be useful when viewing an animation of time
 steps. There, the different colors of particles allows the eye to follow the
 motion of a single particle. This is especially true if, after some time,
 particles have become well mixed by the flow field and adjacent particles no
@@ -75,7 +77,7 @@ information to particles, and how to visualize these.
 
 The particles in the above example only fulfill the purpose of visualizing the
 convection pattern. A more meaningful use for particles is to attach
-&ldquo;properties&rdquo; to them. A property consists of one or more numbers
+"properties" to them. A property consists of one or more numbers
 (or vectors or tensors) that may either be set at the beginning of the model
 run and stay constant, or are updated during the model runtime. These
 properties can then be used for many applications, e.g., storing an initial
@@ -127,7 +129,7 @@ following:
     later time visualizing this particle property will then show where
     particles came from. In cases where compositional variables undergo
     changes, e.g., by describing phase changes or chemical reactions, the
-    &ldquo;initial composition&rdquo; property can also be useful to compare
+    "initial composition" property can also be useful to compare
     the final composition of a particle with its initial composition and
     therefore determine which regions underwent reactions such as those
     described in Section&nbsp;{ref}`sec:cookbooks-composition`, and where
@@ -135,9 +137,9 @@ following:
 
 -   `function:` This particle property can be used to assign to each particle
     values that are described based on a function of space. It provides an
-    alternative way to set initial values if you don&rsquo;t want to first set
-    a compositional field&rsquo;s initial values based on a function, and then
-    copy these values via the &ldquo;initial composition&rdquo; property to
+    alternative way to set initial values if you don't want to first set
+    a compositional field's initial values based on a function, and then
+    copy these values via the "initial composition" property to
     particles. In the example above, we use the same function as for the
     compositional initial composition of field number one in
     Section&nbsp;{ref}`sec:cookbooks-composition`. Therefore, this property
@@ -148,8 +150,8 @@ following:
     numerical diffusion of the compositional field.
 
 -   `pT path:` This property is interesting in that the particle
-    property&rsquo;s values always exactly mirror the pressure and temperature
-    at the particle&rsquo;s current location. This does not seem to be very
+    property's values always exactly mirror the pressure and temperature
+    at the particle's current location. This does not seem to be very
     useful since the information is already available. However, because each
     particle has a unique id, one can select a particular particle and output
     its properties (including pressure and temperature based on the `pT path`
@@ -159,15 +161,35 @@ following:
     determining the metamorphic reactions that happen during deformation
     processes (e.g., in a subduction zone).
 
-<img src="cookbooks/composition_passive_particles/doc/composition-C1.png" title="fig:" id="fig:composition_passive_particles_properties" style="width:45.0%" alt="Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20." />
-<img src="cookbooks/composition_passive_particles/doc/particles-C1.png" title="fig:" id="fig:composition_passive_particles_properties" style="width:45.0%" alt="Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20." />
-<img src="cookbooks/composition_passive_particles/doc/initial-position-00000.png" title="fig:" id="fig:composition_passive_particles_properties" style="width:45.0%" alt="Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20." />
-<img src="cookbooks/composition_passive_particles/doc/initial-position-00199.png" title="fig:" id="fig:composition_passive_particles_properties" style="width:45.0%" alt="Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20." />
+
+```{figure-md} fig:composition_passive_particles_properties
+<img src="composition-C1.png" style="width:45.0%" />
+
+ Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20.
+```
+
+```{figure-md} fig:composition_passive_particles_properties
+<img src="particles-C1.png" style="width:45.0%" />
+
+ Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20.
+```
+
+```{figure-md} fig:composition_passive_particles_properties
+<img src="initial-position-00000.png" style="width:45.0%" />
+
+ Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20.
+```
+
+```{figure-md} fig:composition_passive_particles_properties
+<img src="initial-position-00199.png" style="width:45.0%" />
+
+ Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20.
+```
 
 The results of all of these properties can of course be visualized.
-Fig.&nbsp;[5][] shows some of the pictures one can create with particles. The
+Fig.&nbsp;[5] shows some of the pictures one can create with particles. The
 top row shows both the composition field $C_1$ (along with the mesh on which
-it is defined) and the corresponding &ldquo;initial $C_1$&rdquo; particle
+it is defined) and the corresponding "initial $C_1$" particle
 property, at $t=7.2$. Because the compositional field does not undergo any
 reactions, it should of course simply be the initial composition advected
 along with the flow field, and therefore equal the values of the corresponding
@@ -175,14 +197,14 @@ particle property. However, field-based compositions suffer from diffusion. On
 the other hand, the amount of diffusion can easily be decreased by mesh
 refinement.
 
-The bottom of the figure shows the norm of the &ldquo;initial position&rdquo;
+The bottom of the figure shows the norm of the "initial position"
 property at the initial time and at time $t=20$. These images therefore show
 how far from the origin each of the particles shown was at the initial time.
 
 [1] Particles are enumerated in a way so that first the first processor in a
 parallel computations numbers all of the particles on its first cell, then its
 second cell, and so on; then the second processor does the same with particles
-in the order of the cells it owns; etc. Thus, the &ldquo;id&rdquo; shown in
+in the order of the cells it owns; etc. Thus, the "id" shown in
 the picture is not just a random number, but rather shows the order of cells
 and how they belonged to the processors that participated in the computation
 at the time when particles were created. After some time, particles may of

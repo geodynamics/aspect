@@ -29,24 +29,26 @@ By limiting the strength of the lithosphere at low temperature, this rheology
 allows one to more realistically model processes like lithospheric
 delamination and foundering in the presence of weak crustal layers. A similar
 model setup to the one described in (Morency and Doin 2004) can be reproduced
-with the files in the directory [cookbooks/morency_doin_2004][]. In
+with the files in the directory [cookbooks/morency_doin_2004](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/morency_doin_2004). In
 particular, the following sections of the input file are important to
 reproduce the setup:
 
 ``` prmfile
 ```
 
-<figure>
-<embed src="cookbooks/morency_doin_2004/doc/morency_doin_2004_fig1.pdf" id="fig:md-1" /><figcaption aria-hidden="true"><em>Approximate reproduction of figure 1 from <span class="citation" data-cites="MD04">(Morency and Doin 2004)</span> using the &#x2018;morency doin&#x2019; material model with almost all default parameters. Note the low-viscosity Moho, enabled by the low activation energy of the crustal component.</em></figcaption>
-</figure>
+```{figure-md} fig:md-1
+<img src="morency_doin_2004_fig1.svg" />
+
+Approximate reproduction of figure 1 from <span class="citation" data-cites="MD04">(Morency and Doin 2004)</span> using the &#x2018;morency doin&#x2019; material model with almost all default parameters. Note the low-viscosity Moho, enabled by the low activation energy of the crustal component.
+```
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-MD04" class="csl-entry">
 
-Morency, C., and M.-P. Doin. 2004. &ldquo;Numerical Simulations of the Mantle
-Lithosphere Delamination.&rdquo; *Journal of Geophysical Research: Solid Earth
-(1978&ndash;2012)* 109 (B3).
+Morency, C., and M.-P. Doin. 2004. "Numerical Simulations of the Mantle
+Lithosphere Delamination." *Journal of Geophysical Research: Solid Earth
+(1978--2012)* 109 (B3).
 
 </div>
 

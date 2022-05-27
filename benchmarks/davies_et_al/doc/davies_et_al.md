@@ -163,8 +163,8 @@ plugin that does so for us (see Sections&nbsp;{ref}`sec:extending` and
 {ref}`sec:write-plugin` in general, and
 Section&nbsp;{ref}`sec:material-models` for material models in particular).
 The code for it is located in
-[benchmarks/davies_et_al/case-2.3-plugin/VoT.cc](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-2.3-plugin/VoT.cc) (where &ldquo;VoT&rdquo; is
-short for &ldquo;viscosity as a function of temperature&rdquo;) and is
+[benchmarks/davies_et_al/case-2.3-plugin/VoT.cc](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-2.3-plugin/VoT.cc) (where "VoT" is
+short for "viscosity as a function of temperature") and is
 essentially a copy of the `simpler` material model. The primary change
 compared to the `simpler` material model is the line about the viscosity in
 the following function:
@@ -209,7 +209,7 @@ a setup with constant gravity, constant inner and outer temperatures and
 constant thermal expansion coefficient (this is not how we describe it in the
 input files, but we could have done so and it is closer to how we intuit about
 fluids than adjusting the gravity), then the Rayleigh number is inversely
-proportional to the viscosity &ndash; and it is immediately clear that larger
+proportional to the viscosity -- and it is immediately clear that larger
 Rayleigh numbers (corresponding to lower viscosities) then lead to thinner
 plumes. This is nicely reflected in the visualizations.
 
@@ -225,9 +225,10 @@ different models used after that.
 These runs also produce quantitative data that will be published along with
 the concise descriptions of the benchmarks and a comparison with other codes.
 In particular, some of the criteria listed above to judge the accuracy of
-results are listed in Table&nbsp;[1][].[1]
+results are listed in Table&nbsp;[1].[1]
 
-<div id="tab:davies-et-al-results">
+```{table} *Davies et al. benchmarks: Numerical results for some of the output quantities required by the benchmarks and the various cases considered.*
+:name: tab:davies-et-al-results
 
 | Case | $\left<T\right>$ | $Nu_T$ | $Nu_B$ | $V_{\text{rms}}$ |
 |:-----|:----------------:|:------:|:------:|:----------------:|
@@ -236,10 +237,7 @@ results are listed in Table&nbsp;[1][].[1]
 | 2.2  |      0.382       | 9.548  | 9.584  |     193.371      |
 | 2.3  |      0.582       | 5.102  | 5.121  |      79.632      |
 
-*Davies et al. benchmarks: Numerical results for some of the output quantities
-required by the benchmarks and the various cases considered.*
-
-</div>
+```
 
 [1] The input files available in the `benchmarks/davies_et_al` directory use 5
 global refinements in order to provide cases that can be run without excessive

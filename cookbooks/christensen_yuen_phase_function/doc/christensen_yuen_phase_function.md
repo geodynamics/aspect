@@ -71,11 +71,13 @@ Rayleigh number and the phase buoyancy parameter, the flow pattern in steady
 state can be very different: For positive or low negative Clapeyron slopes,
 one large convection cell develops. The more negative the Clapeyron slope of
 the phase transition, the more it impedes the flow, leading to episodic, or
-completely layered convection (see Figure&nbsp;[1][]).
+completely layered convection (see Figure&nbsp;[1]).
 
-<figure>
-<img src="cookbooks/christensen_yuen_phase_function/doc/flow_field.png" id="fig:christensen_yuen" style="width:80.0%" alt="Phase function model: Flow field in steady state for two models with a Rayleigh number of Ra = 10^5, but different phase buoyancy. The model on the left has a Clapeyron slope of -2.7~\si{\mega\pascal\per\kelvin} (corresponding to P=-0.4) as in the original input file, leading to layered convection. The model on the right has a Clapeyron slope of +2.7~\si{\mega\pascal\per\kelvin} (corresponding to P=0.4), leading to one large convection cell." /><figcaption aria-hidden="true"><em>Phase function model: Flow field in steady state for two models with a Rayleigh number of <span class="math inline"><em>R</em><em>a</em>&#x2004;=&#x2004;10<sup>5</sup></span>, but different phase buoyancy. The model on the left has a Clapeyron slope of <span class="math inline">&#x2005;&#x2212;&#x2005;2.7&#xA0;MPa/K</span> (corresponding to <span class="math inline"><em>P</em>&#x2004;=&#x2004;&#x2005;&#x2212;&#x2005;0.4</span>) as in the original input file, leading to layered convection. The model on the right has a Clapeyron slope of <span class="math inline">&#x2005;+&#x2005;2.7&#xA0;MPa/K</span> (corresponding to <span class="math inline"><em>P</em>&#x2004;=&#x2004;0.4</span>), leading to one large convection cell.</em></figcaption>
-</figure>
+```{figure-md} fig:christensen_yuen
+<img src="flow_field.png" style="width:80.0%" />
+
+ Phase function model: Flow field in steady state for two models with a Rayleigh number of Ra = 10^5, but different phase buoyancy. The model on the left has a Clapeyron slope of -2.7~\si{\mega\pascal\per\kelvin} (corresponding to P=-0.4) as in the original input file, leading to layered convection. The model on the right has a Clapeyron slope of +2.7~\si{\mega\pascal\per\kelvin} (corresponding to P=0.4), leading to one large convection cell.
+```
 
 The shell script `run_all_models.sh` in the same folder can be used to run the
 whole model series of Boussinesq cases presented in (Christensen and Yuen
@@ -85,8 +87,8 @@ whole model series of Boussinesq cases presented in (Christensen and Yuen
 
 <div id="ref-CY85" class="csl-entry">
 
-Christensen, U. R., and D. A. Yuen. 1985. &ldquo;Layered Convection Induced by
-Phase Transitions.&rdquo; *J. Geoph. Res.* 90: 10291&ndash;300.
+Christensen, U. R., and D. A. Yuen. 1985. "Layered Convection Induced by
+Phase Transitions." *J. Geoph. Res.* 90: 10291--300.
 
 </div>
 

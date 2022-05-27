@@ -22,27 +22,44 @@ $$\rho(r,\theta)=  \left(   \frac{\alpha}{r^4}  (8 \ln r -6) +  \frac{8\beta}{3r
 We set $R_1=0.5$, $R_2=1$ and $\gamma=-1$. The pressure is zero on both
 surfaces so that the surface pressure normalization is used. The boundary
 conditions that are used are simply the analytical velocity prescribed on both
-boundaries. The velocity and pressure fields are shown in Fig.&nbsp;[3][].
+boundaries. The velocity and pressure fields are shown in Fig.&nbsp;[3].
 
-Fig.&nbsp;[4][] shows the velocity and pressure errors in the $L_2$-norm as a
+Fig.&nbsp;[4] shows the velocity and pressure errors in the $L_2$-norm as a
 function of the mesh size $h$ (taken in this case as the radial extent of the
 elements). As expected we recover a third-order convergence rate for the
 velocity and a second-order convergence rate for the pressure.
 
-<img src="cookbooks/benchmarks/hollow_sphere/doc/vel.png" title="fig:" id="fig:hollow-sphere-vp" alt="Velocity and pressure fields for the hollow sphere benchmark." />
-<img src="cookbooks/benchmarks/hollow_sphere/doc/vel2.png" title="fig:" id="fig:hollow-sphere-vp" alt="Velocity and pressure fields for the hollow sphere benchmark." />
-<img src="cookbooks/benchmarks/hollow_sphere/doc/pressure.png" title="fig:" id="fig:hollow-sphere-vp" alt="Velocity and pressure fields for the hollow sphere benchmark." />
 
-<figure>
-<embed src="cookbooks/benchmarks/hollow_sphere/doc/errors_hollowsphere.pdf" id="fig:hollow-sphere-errors" /><figcaption aria-hidden="true"><em>Velocity and pressure errors in the <span class="math inline"><em>L</em><sub>2</sub></span>-norm as a function of the mesh size.</em></figcaption>
-</figure>
+```{figure-md} fig:hollow-sphere-vp
+<img src="vel.png" />
+
+ Velocity and pressure fields for the hollow sphere benchmark.
+```
+
+```{figure-md} fig:hollow-sphere-vp
+<img src="vel2.png" />
+
+ Velocity and pressure fields for the hollow sphere benchmark.
+```
+
+```{figure-md} fig:hollow-sphere-vp
+<img src="pressure.png" />
+
+ Velocity and pressure fields for the hollow sphere benchmark.
+```
+
+```{figure-md} fig:hollow-sphere-errors
+<img src="errors_hollowsphere.svg" />
+
+Velocity and pressure errors in the <span class="math inline"><em>L</em><sub>2</sub></span>-norm as a function of the mesh size.
+```
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-THIE17" class="csl-entry">
 
-Thieulot, C. 2017. &ldquo;Analytical Solution for Viscous Incompressible
-Stokes Flow in a Spherical Shell.&rdquo; *Solid Earth* 8 (6): 1181&ndash;91.
+Thieulot, C. 2017. "Analytical Solution for Viscous Incompressible
+Stokes Flow in a Spherical Shell." *Solid Earth* 8 (6): 1181--91.
 <https://doi.org/10.5194/se-8-1181-2017>.
 
 </div>
