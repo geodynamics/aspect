@@ -1,4 +1,5 @@
 # Load the signal library.
+set Additional shared libraries = ./libprescribed_temperature_in_field.so
 set Dimension   = 2
 set End time    = 10000
 
