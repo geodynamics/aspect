@@ -1,5 +1,5 @@
 (sec:benchmarks:the-kaus_2010-brick)=
-# The Kaus (2010) Brick
+# The Kaus (2010) Brick benchmark
 
 *This section was contributed by Marcel Saaro, Cedric Thieulot and John Naliboff.*
 
