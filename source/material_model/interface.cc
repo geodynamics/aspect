@@ -287,8 +287,6 @@ namespace aspect
           this->strain_rate.resize(0);
           requested_properties = MaterialProperties::Property(requested_properties & ~MaterialProperties::viscosity);
         }
-      else
-        requested_properties = requested_properties | MaterialProperties::viscosity;
 
       for (unsigned int q=0; q<input_data.solution_values.size(); ++q)
         {

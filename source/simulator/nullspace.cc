@@ -395,7 +395,8 @@ namespace aspect
     in.requested_properties = MaterialModel::MaterialProperties::density;
 
     // loop over all local cells
-    for (const auto &cell : dof_handler.active_cell_iterators()) if (cell->is_locally_owned())
+    for (const auto &cell : dof_handler.active_cell_iterators())
+      if (cell->is_locally_owned())
         {
           if (limit_to_top_faces == false)
             fe_values.reinit(cell);
