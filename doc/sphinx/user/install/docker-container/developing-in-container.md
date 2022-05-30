@@ -29,6 +29,7 @@ following way:
 mkdir aspect-build
 cd aspect-build
 cmake -DCMAKE_BUILD_TYPE=Debug -DDEAL_II_DIR=$HOME/deal.II-install $HOME/aspect
+make
 ./aspect $HOME/aspect/cookbooks/shell_simple_2d/shell_simple_2d.prm
 ```
 
