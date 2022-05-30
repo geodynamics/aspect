@@ -1,4 +1,4 @@
-#### Using reconstructed surface velocities by GPlates
+# Using reconstructed surface velocities by GPlates
 
 *This section was contributed by Ren&eacute; Ga&szlig;m&ouml;ller*
 
@@ -7,12 +7,12 @@ boundary condition that prescribes the velocity according to a specific
 geologic reconstruction. The purpose of this kind of models is often to test a
 proposed geologic model and compare characteristic convection results to
 present-day observables in order to gain information about the initially
-assumed geologic input. In this cookbook we present &rsquo;s interface to the
+assumed geologic input. In this cookbook we present ASPECT's interface to the
 widely used plate reconstruction software GPlates, and the steps to go from a
 geologic plate reconstruction to a geodynamic model incorporating these
 velocities as boundary condition.
 
-##### Acquiring a plate reconstruction.
+## Acquiring a plate reconstruction.
 
 The plate reconstruction that is used in this cookbook is included in the
 `data/boundary-velocity/gplates/` directory of your installation. For a new
@@ -34,7 +34,7 @@ continuously closing plates from 140 Ma to the present.&rdquo; The data is
 provided under a Creative Commons Attribution 3.0 Unported License
 (<http://creativecommons.org/licenses/by/3.0/>).
 
-##### Converting GPlates data to input.
+## Converting GPlates data to input.
 
 After loading the data files into GPlates (\*.gpml for plate polygons, \*.rot
 for plate rotations over time) the user needs to convert the GPlates data to
@@ -86,11 +86,11 @@ series of files. The `%u` flag is especially suited for the interaction with ,
 since it can easily be replaced by a calculated file index (see also
 [0.0.1.5][]).
 
-##### Setting up the model.
+## Setting up the model.
 
 For this cookbook we will use the parameter file provided in
-[cookbooks/gplates/gplates_2d.prm][] which uses the 2d shell geometry
-previously discussed in Section&nbsp;[\[sec:shell-simple-2d\]][1]. &rsquo;s
+[cookbooks/gplates/gplates_2d.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/gplates/gplates_2d.prm) which uses the 2d shell geometry
+previously discussed in Section&nbsp;{ref}`sec:shell-simple-2d`. ASPECT's
 GPlates plugin allows for the use of two- and three-dimensional models
 incorporating the GPlates velocities. Since the output by GPlates is
 three-dimensional in any case, internally handles the 2D model by rotating the
@@ -118,20 +118,20 @@ the surface of a spherical shell (boundary number 1 in the above provided
 parameter file). In case you are familiar with this kind of modeling and the
 plugin you could however also use it to prescribe mantle movements *below* a
 lithosphere model. All plugin specific options may be set in
-section&nbsp;[\[parameters:Boundary_20velocity_20model\]][2]. Possible options
+section&nbsp;{ref}`parameters:Boundary_20velocity_20model`. Possible options
 include the data directory and file name of the velocity file/files, the time
 step (in model units, mostly seconds or years depending on the
-&ldquo;`Use years in output instead of seconds`&rdquo; flag) and the points
+`Use years in output instead of seconds` flag) and the points
 that define the 2D plane.
 
-##### Comparing and visualizing 2D and 3D models.
+## Comparing and visualizing 2D and 3D models.
 
 The implementation of plate velocities in both two- and three-dimensional
 model setups allows for an easy comparison and test for common sources of
 error in the interpretation of model results. The left top figure in
 Fig.&nbsp;[1][] shows a modification of the above presented parameter file by
-setting &ldquo;`Dimension = 3`&rdquo; and
-&ldquo;`Initial global refinement = 3`.&rdquo; The top right plot of
+setting `Dimension = 3` and
+`Initial global refinement = 3`. The top right plot of
 Fig.&nbsp;[1][] shows an example of three independent two-dimensional
 computations of the same reduced resolution. The models were prescribed to be
 orthogonal slices by setting:
@@ -149,7 +149,7 @@ three-dimensional figure in their respective model planes. The necessary
 information to rotate the 2D models to their respective planes (rotation axis
 and angle) is provided by the GPlates plugin in the beginning of the model
 output. The bottom plot of Fig.&nbsp;[1][] finally shows the results of the
-original [cookbooks/gplates/gplates_2d.prm][] also in the three mentioned
+original [cookbooks/gplates/gplates_2d.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/gplates/gplates_2d.prm) also in the three mentioned
 planes.
 
 Now that we have model output for otherwise identical 2D and 3D models with
@@ -180,7 +180,7 @@ dimension independent approach of and its plugins.
 <img src="cookbooks/gplates/doc/gplates-comparison.png" id="fig:gv-1" alt="Using GPlates for velocity boundary conditions: The top left figure shows the results of a three-dimensional model using the present day plate velocities provided by GPlates as surface boundary condition. The top right figure shows three independent computations on two-dimensional slices through Earth. The boundary conditions for each of these slices (white arrows) are tangential to the slices and are projections of the three-dimensional velocity vectors into the two-dimensional plane occupied by the slice. While the two top models are created with the same mesh resolution the bottom figure shows three independent two-dimensional models using a higher resolution. The view is centered on South America with Antarctica being near the bottom of the figure (coastlines provided by NGU and the GPlates project)." /><figcaption aria-hidden="true"><em>Using GPlates for velocity boundary conditions: The top left figure shows the results of a three-dimensional model using the present day plate velocities provided by GPlates as surface boundary condition. The top right figure shows three independent computations on two-dimensional slices through Earth. The boundary conditions for each of these slices (white arrows) are tangential to the slices and are projections of the three-dimensional velocity vectors into the two-dimensional plane occupied by the slice. While the two top models are created with the same mesh resolution the bottom figure shows three independent two-dimensional models using a higher resolution. The view is centered on South America with Antarctica being near the bottom of the figure (coastlines provided by NGU and the GPlates project).</em></figcaption>
 </figure>
 
-##### Time-dependent boundary conditions.
+## Time-dependent boundary conditions.
 
 The example presented above uses a constant velocity boundary field that
 equals the present day plate movements. For a number of purposes one may want
@@ -204,7 +204,7 @@ Additionally, the parameter `Velocity file start time` allows for a period of
 no-slip boundary conditions before starting the use of the GPlates plugin.
 This is a comfort implementation, which could also be achieved by using the
 checkpointing possibility described in
-section&nbsp;[\[sec:checkpoint-restart\]][3].
+section&nbsp;{ref}`sec:checkpoint-restart`.
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

@@ -225,7 +225,8 @@ this kind of knowledge is scattered all across the code base.
 
 Introspection is a way out of this dilemma. Using the
 `SimulatorAccess::introspection()` function returns a reference to an object
-(of type [aspect::Introspection](https://aspect.geodynamics.org/doc/doxygen/structaspect_1_1Introspection.html)) that plugins can use to learn about these
+(of type [aspect::Introspection](https://aspect.geodynamics.org/doc/doxygen/structaspect_1_1Introspection.html))
+that plugins can use to learn about these
 sort of conventions. For example,
 `this->introspection().component_mask.pressure` returns a component mask (a
 deal.II concept that describes a list of booleans for each component in a

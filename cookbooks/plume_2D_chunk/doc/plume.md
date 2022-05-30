@@ -1,4 +1,4 @@
-#### Plume in a 2D chunk
+# Plume in a 2D chunk
 
 *This section was contributed by Cedric Thieulot and Paul Bremner.*
 

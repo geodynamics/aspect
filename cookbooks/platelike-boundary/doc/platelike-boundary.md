@@ -1,4 +1,4 @@
-#### Convection in a box with prescribed, variable velocity boundary conditions
+# Convection in a box with prescribed, variable velocity boundary conditions
 
 A similarly simple setup to the ones considered in the previous subsections is
 to equip the model we had with a different set of boundary conditions. There,
@@ -13,20 +13,20 @@ this. To make it slightly more interesting, we choose a $2\times 1$ domain in
 
 Like for many other things, has a set of plugins for prescribed velocity
 boundary values (see
-Sections&nbsp;[\[parameters:Boundary_20velocity_20model\]][1] and
-[\[sec:prescribed-velocity-boundary-conditions\]][2]). These plugins allow one
+Sections&nbsp;{ref}`parameters:Boundary_20velocity_20model` and
+{ref}`sec:extending:plugin-types:velocity-bc`). These plugins allow one
 to write sophisticated models for the boundary velocity on parts or all of the
 boundary, but there is also one simple implementation that just takes a
 formula for the components of the velocity.
 
 To illustrate this, let us consider the
-[cookbooks/platelike-boundary/platelike-boundary.prm][] input file. It
+[cookbooks/platelike-boundary.prm](https://github.com/geodynamics/aspect/blob/main/cookbooks/platelike-boundary/platelike-boundary.prm) input file. It
 essentially extends the input file considered in the previous example. The
 part of this file that we are particularly interested in in the current
 context is the selection of the kind of velocity boundary conditions on the
 four sides of the box geometry, which we do using a section like this:
 
-``` prmfile
+``` {literalinclude} boundary.part.prm
 ```
 
 We use tangential flow at boundaries named left, right and bottom.
@@ -55,28 +55,22 @@ by the parser we use for these formulas has the syntax
 
 The remainder of the setup is described in the following, complete input file:
 
-``` prmfile
+``` {literalinclude} platelike.prm
 ```
 
 This model description yields a setup with a Rayleigh number of 200 (taking
 into account that the domain has size 2). It would, thus, be dominated by heat
 conduction rather than convection if the prescribed velocity boundary
 conditions did not provide a stirring action. Visualizing the results of this
-simulation[1] yields images like the ones shown in Fig.&nbsp;[6][].
+simulation[^footnote1] yields images like the ones shown in {numref}`fig:platelike`.
 
-<img src="cookbooks/platelike-boundary/doc/visit0000.png" title="fig:" id="fig:platelike" style="width:30.0%" alt="Variable velocity boundary conditions: Temperature and velocity fields at the initial time (top left) and at various other points in time during the simulation." />
-<img src="cookbooks/platelike-boundary/doc/visit0001.png" title="fig:" id="fig:platelike" style="width:30.0%" alt="Variable velocity boundary conditions: Temperature and velocity fields at the initial time (top left) and at various other points in time during the simulation." />
-<img src="cookbooks/platelike-boundary/doc/visit0003.png" title="fig:" id="fig:platelike" style="width:30.0%" alt="Variable velocity boundary conditions: Temperature and velocity fields at the initial time (top left) and at various other points in time during the simulation." />
-<img src="cookbooks/platelike-boundary/doc/visit0004.png" title="fig:" id="fig:platelike" style="width:30.0%" alt="Variable velocity boundary conditions: Temperature and velocity fields at the initial time (top left) and at various other points in time during the simulation." />
-<img src="cookbooks/platelike-boundary/doc/visit0005.png" title="fig:" id="fig:platelike" style="width:30.0%" alt="Variable velocity boundary conditions: Temperature and velocity fields at the initial time (top left) and at various other points in time during the simulation." />
-<img src="cookbooks/platelike-boundary/doc/visit0006.png" title="fig:" id="fig:platelike" style="width:30.0%" alt="Variable velocity boundary conditions: Temperature and velocity fields at the initial time (top left) and at various other points in time during the simulation." />
+```{figure-md} fig:platelike
+<img src="platelike.*" style="width:30.0%" />
 
-[1] In fact, the pictures are generated using a twice more refined mesh to
+Variable velocity boundary conditions: Temperature and velocity fields at the initial time (top left) and at various other points in time during the simulation.
+```
+
+[^footnote1]: In fact, the pictures are generated using a twice more refined mesh to
 provide adequate resolution. We keep the default setting of five global
 refinements in the parameter file as documented above to keep compute time
 reasonable when using the default settings.
-
-  [1]: #parameters:Boundary_20velocity_20model
-  [2]: #sec:prescribed-velocity-boundary-conditions
-  [cookbooks/platelike-boundary/platelike-boundary.prm]: cookbooks/platelike-boundary/platelike-boundary.prm
-  [6]: #fig:platelike

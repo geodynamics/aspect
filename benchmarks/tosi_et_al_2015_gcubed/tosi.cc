@@ -559,6 +559,7 @@ namespace aspect
                                                                      this->n_compositional_fields());
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
                                                                        this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
       // loop over active, locally owned cells and
       // extract material model input and compute integrals

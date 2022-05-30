@@ -1,4 +1,4 @@
-#### Convection using a pressure&ndash;temperature look-up table and the rheology of Steinberger and Calderwood (2006)
+# Convection using a pressure&ndash;temperature look-up table and the rheology of Steinberger and Calderwood (2006)
 
 *This section was contributed by Juliane Dannberg and Ren&eacute;
 Gassm&ouml;ller.*
@@ -27,7 +27,7 @@ physics constraints and surface observations.
 
 In addition, this cookbook shows the use of periodic boundary conditions.
 
-##### Geometry and periodic boundaries.
+## Geometry and periodic boundaries.
 
 The model setup is a quarter spherical shell with periodic side boundaries.
 The inner and outer radius are 3481&nbsp;km and 6371&nbsp;km, respectively, so
@@ -42,7 +42,7 @@ Both the top and bottom boundaries allow for free slip. Because the model has
 periodic side boundary conditions and free slip boundaries at top and bottom,
 the amount of rigid-body rotation in $\phi$ direction is not constrained. In
 other words: There is no unique solution. can remove this nullspace from the
-model (see Section&nbsp;[\[sec:nullspace\]][1]). Here, we do this by setting
+model (see Section&nbsp;{ref}`sec:nullspace`). Here, we do this by setting
 the net rotation to zero:
 
 ``` prmfile
@@ -54,7 +54,7 @@ profile, thermal boundary layers at the surface and the core-mantle boundary,
 and a small harmonic perturbation to initiate convection. The gravity profile
 in the model is based on PREM.
 
-##### The equation of state.
+## The equation of state.
 
 To use material properties from a temperature&ndash;pressure look-up table, we
 use the Steinberger material model. We have to specify the path to the
@@ -103,7 +103,7 @@ to be solved for entropy instead of pressure (which is an option available in
 ; in this case, the look-up table needs to be given in terms of entropy and
 pressure).
 
-##### The look-up table format.
+## The look-up table format.
 
 The format of these look-up tables is described in the documentation of the
 [aspect::MaterialModel::MaterialUtilities::Lookup::MaterialLookup][] class.
@@ -178,7 +178,7 @@ increment, and number of values parameters given in the header, assuming a
 uniform step size. The first column is always assumed to be the inner loop
 (i.e., it needs to increase first while the second column stays constant).
 
-##### The rheology.
+## The rheology.
 
 The rheology of this model consists of two parts: The viscosity profile, and
 the lateral variations due to temperature. For each of these, we need to read
@@ -256,7 +256,7 @@ realistic subduction in a model like this, one would have to either prescribe
 plate velocities at the surface (forcing plates to subduct) or take into
 account plastic yielding (so that the lithosphere can break).
 
-##### The projected density approximation.
+## The projected density approximation.
 
 Since our model is compressible, the most accurate way to solve the mass
 conservation equation implemented in is to use the &lsquo;projected density
@@ -286,9 +286,9 @@ provides the values that should be interpolated onto the field.
 ```
 
 The complete input file can be found in
-[cookbooks/steinberger/doc/steinberger.prm][].
+[cookbooks/steinberger/doc/steinberger.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/steinberger/doc/steinberger.prm).
 
-##### Results.
+## Results.
 
 We run the model for 300 million years. Over the time of the model evolution,
 some plumes rise and spread beneath the base of the lithosphere, and some cold

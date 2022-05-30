@@ -203,6 +203,9 @@ namespace aspect
         entropy_derivative_pressure    = 128,
         entropy_derivative_temperature = 256,
         reaction_terms                 = 512,
+        reaction_rates                 = 1024,
+        force_terms                    = 2048,
+        additional_outputs             = 4096,
 
         equation_of_state_properties   = density |
                                          thermal_expansion_coefficient |
@@ -213,7 +216,10 @@ namespace aspect
         all_properties                 = equation_of_state_properties |
                                          viscosity |
                                          thermal_conductivity |
-                                         reaction_terms
+                                         reaction_terms |
+                                         reaction_rates |
+                                         force_terms |
+                                         additional_outputs
       };
 
       /**
@@ -1174,6 +1180,45 @@ namespace aspect
          * quadrature point.
          */
         std::vector<Tensor<2,dim>> elastic_force;
+    };
+
+
+
+    /**
+    * Additional output fields for the enthalpy change upon melting or
+    * freezing to be added to the MaterialModel::MaterialModelOutputs
+    * structure and filled in the MaterialModel::Interface::evaluate()
+    * function.
+    * These outputs are needed in heating models that compute the latent
+    * heat of melting/freezing based on the material properties in the
+    * material models (which is required for thermodynamically consistent
+    * models).
+    */
+    template <int dim>
+    class EnthalpyOutputs : public AdditionalMaterialOutputs<dim>
+    {
+      public:
+        EnthalpyOutputs(const unsigned int n_points)
+          : enthalpies_of_fusion(n_points, numbers::signaling_nan<double>())
+        {}
+
+        virtual ~EnthalpyOutputs()
+        {}
+
+        virtual void average (const MaterialAveraging::AveragingOperation operation,
+                              const FullMatrix<double>  &/*projection_matrix*/,
+                              const FullMatrix<double>  &/*expansion_matrix*/)
+        {
+          AssertThrow(operation == MaterialAveraging::AveragingOperation::none,ExcNotImplemented());
+          return;
+        }
+
+        /**
+         * Enthalpies of fusion, describing the amount of heat required to
+         * melt/solidify the material. These values are used when computing
+         * latent heat effects.
+         */
+        std::vector<double> enthalpies_of_fusion;
     };
 
 

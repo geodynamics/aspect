@@ -19,7 +19,7 @@ The directory contains:
     compile `solcx.cc`.
 
 To run this benchmark you need to follow the general outline of
-steps discussed in {ref}`sec:write-plugin`. For the current case, this
+steps discussed in {ref}`sec:extending:write-a-plugin`. For the current case, this
 amounts to the following:
 
 1.   Move into the directory of that particular benchmark:

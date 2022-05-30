@@ -1,4 +1,4 @@
-#### Computation of the van Keken Problem with the Volume-of-Fluid Interface Tracking Method
+# Computation of the van Keken Problem with the Volume-of-Fluid Interface Tracking Method
 
 *This section is a co-production of Jonathan Robey and E. G. Puckett.* One can
 also model the van Keken problem with the volume-of-fluid (VOF) interface
@@ -85,7 +85,7 @@ the signed distance function $\phi$. The modifications to the parameter file
 that are necessary in order to draw the reconstructed boundary as a contour
 are shown immediately below. The full configuration file for this version of
 the benchmark problem can be found at
-[cookbooks/van-keken-vof/van-keken-vof.prm][].
+[cookbooks/van-keken-vof/van-keken-vof.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/van-keken-vof/van-keken-vof.prm).
 
 ``` prmfile
 ```

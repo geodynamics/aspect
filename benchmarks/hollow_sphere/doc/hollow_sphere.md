@@ -1,4 +1,4 @@
-#### The hollow sphere benchmark
+# The hollow sphere benchmark
 
 This benchmark is based on Thieulot (Thieulot 2017) in which an analytical
 solution to the isoviscous incompressible Stokes equations is derived in a

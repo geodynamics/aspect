@@ -71,10 +71,10 @@ one inside and zero outside the sphere, and assigning a compositional dependence
 to the viscosity and density. We run only a single time step for this benchmark.
 This is all modeled in the following input file that can also be found in
 \url{cookbooks/sinker-with-averaging/sinker-with-averaging.prm}:
-\lstinputlisting[language=prmfile]{cookbooks/sinker-with-averaging/doc/full.prm.out}
+\lstinputlisting[language=prmfile]{full.prm.out}
 
 The type of averaging on each cell is chosen using this part of the input file:
-\lstinputlisting[language=prmfile]{cookbooks/sinker-with-averaging/doc/harmonic.prm.out}
+\lstinputlisting[language=prmfile]{harmonic.prm.out}
 For the various different averaging options, and for different levels of mesh
 refinement, Fig.~\ref{fig:sinker-with-averaging-pressure} shows
 pressure plots that illustrate the problem with oscillations of the discrete
@@ -120,17 +120,17 @@ averaging.
 \begin{figure}[htb]
   \centering
   \begin{tabular}{cccccc}
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1/sinker-7-none.png}
+    \includegraphics[width=0.14\textwidth]{q2q1/sinker-7-none.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1/sinker-7-arithmetic.png}
+    \includegraphics[width=0.14\textwidth]{q2q1/sinker-7-arithmetic.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1/sinker-7-harmonic.png}
+    \includegraphics[width=0.14\textwidth]{q2q1/sinker-7-harmonic.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1/sinker-7-geometric.png}
+    \includegraphics[width=0.14\textwidth]{q2q1/sinker-7-geometric.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1/sinker-7-largest.png}
+    \includegraphics[width=0.14\textwidth]{q2q1/sinker-7-largest.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1/sinker-7-project.png}
+    \includegraphics[width=0.14\textwidth]{q2q1/sinker-7-project.png}
     \\
     $[-45.2,45.2]$
     &
@@ -145,17 +145,17 @@ averaging.
     $[-2.77,2.77]$
     \\
     \\
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1/sinker-8-none.png}
+    \includegraphics[width=0.14\textwidth]{q2q1/sinker-8-none.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1/sinker-8-arithmetic.png}
+    \includegraphics[width=0.14\textwidth]{q2q1/sinker-8-arithmetic.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1/sinker-8-harmonic.png}
+    \includegraphics[width=0.14\textwidth]{q2q1/sinker-8-harmonic.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1/sinker-8-geometric.png}
+    \includegraphics[width=0.14\textwidth]{q2q1/sinker-8-geometric.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1/sinker-8-largest.png}
+    \includegraphics[width=0.14\textwidth]{q2q1/sinker-8-largest.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1/sinker-8-project.png}
+    \includegraphics[width=0.14\textwidth]{q2q1/sinker-8-project.png}
     \\
     $[-44.5,44.5]$
     &
@@ -217,7 +217,7 @@ actually allowed for discontinuous pressures. This is in fact possible: We can
 use a finite element in which the pressure space contains piecewise constants
 (see Section~\ref{parameters:Discretization}). To do so, one simply needs to add
 the following piece to the input file:
-\lstinputlisting[language=prmfile]{cookbooks/sinker-with-averaging/doc/conservative.prm.out}
+\lstinputlisting[language=prmfile]{conservative.prm.out}
 Disappointingly, however, this makes no real difference: the pressure
 oscillations are no better (maybe even worse) than for the standard Stokes
 element we use, as shown in
@@ -233,29 +233,29 @@ that the true pressure is in fact discontinuous along the edge of the circle.
 \begin{figure}[htb]
   \centering
   \begin{tabular}{cccccc}
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1plus/sinker-7-none.png}
+    \includegraphics[width=0.14\textwidth]{q2q1plus/sinker-7-none.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1plus/sinker-7-arithmetic.png}
+    \includegraphics[width=0.14\textwidth]{q2q1plus/sinker-7-arithmetic.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1plus/sinker-7-harmonic.png}
+    \includegraphics[width=0.14\textwidth]{q2q1plus/sinker-7-harmonic.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1plus/sinker-7-geometric.png}
+    \includegraphics[width=0.14\textwidth]{q2q1plus/sinker-7-geometric.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1plus/sinker-7-pick-largest.png}
+    \includegraphics[width=0.14\textwidth]{q2q1plus/sinker-7-pick-largest.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1plus/sinker-7-project-to-Q1.png}
+    \includegraphics[width=0.14\textwidth]{q2q1plus/sinker-7-project-to-Q1.png}
     \\
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1plus/sinker-8-none.png}
+    \includegraphics[width=0.14\textwidth]{q2q1plus/sinker-8-none.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1plus/sinker-8-arithmetic.png}
+    \includegraphics[width=0.14\textwidth]{q2q1plus/sinker-8-arithmetic.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1plus/sinker-8-harmonic.png}
+    \includegraphics[width=0.14\textwidth]{q2q1plus/sinker-8-harmonic.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1plus/sinker-8-geometric.png}
+    \includegraphics[width=0.14\textwidth]{q2q1plus/sinker-8-geometric.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1plus/sinker-8-pick-largest.png}
+    \includegraphics[width=0.14\textwidth]{q2q1plus/sinker-8-pick-largest.png}
     &
-    \includegraphics[width=0.14\textwidth]{cookbooks/sinker-with-averaging/doc/q2q1plus/sinker-8-project-to-Q1.png}
+    \includegraphics[width=0.14\textwidth]{q2q1plus/sinker-8-project-to-Q1.png}
   \end{tabular}
   \caption{\it Visualization of the pressure field for the ``sinker''
     problem. Like Fig.~\ref{fig:sinker-with-averaging-pressure} but using the

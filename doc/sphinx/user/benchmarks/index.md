@@ -63,6 +63,7 @@ benchmarks/advection/doc/advection.md
 benchmarks/yamauchi_takei_2016_anelasticity/doc/yamauchi_takei_2016_anelasticity.md
 benchmarks/gravity_thin_shell/doc/gravity_thin_shell.md
 benchmarks/gravity_thick_shell/doc/gravity_thick_shell.md
+benchmarks/infill_density/doc/infill_density.md
 benchmarks/gravity_mantle/doc/gravity_mantle.md
 benchmarks/buiter_et_al_2016_jsg/doc/buiter_et_al_2016_jsg.md
 benchmarks/viscoelastic_plastic_shear_bands/kaus_2010/doc/kaus_2010_extension.md

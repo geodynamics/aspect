@@ -42,7 +42,3 @@ file. In our experience, file servers are quickly overwhelmed when encountering 
 machines wanting to open, fill, flush and close their own file via NFS mounted file system calls,
 sometimes completely blocking the entire cluster environment for extended periods of time.
 :::
-
-:::{admonition} TODO
-{ref}`parameters:global` and {ref}`parameters:Postprocess/Visualization` refer to files which are not yet setup
-:::

@@ -1366,12 +1366,6 @@ namespace aspect
     parse_parameters(prm);
     CitationInfo::add("mf");
 
-    AssertThrow(!(sim.parameters.mesh_deformation_enabled
-                  && !sim.mesh_deformation->get_free_surface_boundary_indicators().empty()
-                  && sim.parameters.enable_elasticity),
-                ExcMessage("The matrix-free Stokes solver does not support free surface boundaries + GMG + elasticity."));
-
-
 #if !DEAL_II_VERSION_GTE(9,3,2)
     AssertThrow(!sim.parameters.mesh_deformation_enabled,
                 ExcMessage("Mesh deformation with the GMG solver requires deal.II 9.3.2 or newer."));
@@ -1466,6 +1460,7 @@ namespace aspect
                                update_JxW_values);
 
       MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, sim.introspection.n_compositional_fields);
+      in.requested_properties = MaterialModel::MaterialProperties::viscosity;
       MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, sim.introspection.n_compositional_fields);
 
       // This function call computes a cellwise projection of data defined at quadrature points to
@@ -1729,8 +1724,8 @@ namespace aspect
                   fe_values.reinit(simulator_cell);
                   in.reinit(fe_values, simulator_cell, sim.introspection, sim.current_linearization_point);
 
-                  sim.material_model->evaluate(in, out);
                   sim.material_model->fill_additional_material_model_inputs(in, sim.current_linearization_point, fe_values, sim.introspection);
+                  sim.material_model->evaluate(in, out);
 
                   const MaterialModel::MaterialModelDerivatives<dim> *derivatives
                     = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
@@ -1825,6 +1820,7 @@ namespace aspect
             sim.mesh_deformation->get_free_surface_boundary_indicators();
 
           MaterialModel::MaterialModelInputs<dim> face_material_inputs(n_face_q_points, sim.introspection.n_compositional_fields);
+          face_material_inputs.requested_properties = MaterialModel::MaterialProperties::density;
           MaterialModel::MaterialModelOutputs<dim> face_material_outputs(n_face_q_points, sim.introspection.n_compositional_fields);
 
           active_cell_data.free_surface_stabilization_term_table.reinit(n_faces_boundary, n_face_q_points);
@@ -1856,16 +1852,11 @@ namespace aspect
 
                   fe_face_values.reinit(simulator_cell, cell_face_pair.second);
 
-                  face_material_inputs.reinit(fe_face_values,
-                                              simulator_cell,
-                                              sim.introspection,
-                                              sim.solution);
-
-                  sim.compute_material_model_input_values(sim.solution,
-                                                          fe_face_values,
-                                                          simulator_cell,
-                                                          false,
-                                                          face_material_inputs);
+                  face_material_inputs.reinit  (fe_face_values,
+                                                simulator_cell,
+                                                sim.introspection,
+                                                sim.solution,
+                                                false);
                   sim.material_model->evaluate(face_material_inputs, face_material_outputs);
 
                   for (unsigned int q = 0; q < n_face_q_points; ++q)

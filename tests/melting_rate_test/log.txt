@@ -1,0 +1,71 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.3.0-pre (steinberger_lateral_viscosity, 21ea4ee94)
+--     . using deal.II 9.4.0-pre (master, 3d869ba6cd)
+--     .       with 32 bit indices and vectorization level 2 (256 bits)
+--     . using Trilinos 12.18.1
+--     . using p4est 2.3.2
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.3.0-pre&melt=1&sha=21ea4ee94&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+4,225)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 36+0 iterations.
+   Solving fluid velocity system... 13 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  7.94e-24 m/year, 3.43e-23 m/year
+     Temperature min/avg/max:            3400 K, 4200 K, 5000 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+     Writing graphical output:           output-melting_rate_test/solution/solution-00000
+
+*** Timestep 1:  t=1e+06 years, dt=1e+06 years
+   Solving composition reactions... in 10 substep(s).
+
+   Postprocessing:
+     RMS, max velocity:                  7.94e-24 m/year, 3.43e-23 m/year
+     Temperature min/avg/max:            3400 K, 4200 K, 5000 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+     Writing graphical output:           output-melting_rate_test/solution/solution-00001
+
+*** Timestep 2:  t=2e+06 years, dt=1e+06 years
+   Solving composition reactions... in 10 substep(s).
+
+   Postprocessing:
+     RMS, max velocity:                  7.94e-24 m/year, 3.43e-23 m/year
+     Temperature min/avg/max:            3400 K, 4200 K, 5000 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
+     Writing graphical output:           output-melting_rate_test/solution/solution-00002
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |      21.3s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Assemble Stokes system          |         1 |      2.11s |       9.9% |
+| Build Stokes preconditioner     |         1 |      1.38s |       6.5% |
+| Initialization                  |         1 |     0.599s |       2.8% |
+| Postprocessing                  |         3 |      6.24s |        29% |
+| Setup dof systems               |         1 |     0.202s |      0.95% |
+| Setup initial conditions        |         1 |      1.99s |       9.3% |
+| Setup matrices                  |         1 |      1.27s |         6% |
+| Solve Stokes system             |         1 |      1.62s |       7.6% |
+| Solve composition reactions     |         2 |      3.01s |        14% |
++---------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts:21s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.3.0-pre&melt=1&sha=21ea4ee94&src=code
+-----------------------------------------------------------------------------

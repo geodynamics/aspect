@@ -61,10 +61,10 @@ The following changes are necessary compared to the input file from the
 cookbook shown in Section~\ref{sec:cookbooks-freesurface} to include a crust:
 \begin{itemize}
   \item Load the plugin implementing the new material model:
-  \lstinputlisting[language=prmfile]{cookbooks/free_surface_with_crust/doc/free_surface_with_crust.part1.prm.out}
+  \lstinputlisting[language=prmfile]{free_surface_with_crust.part1.prm.out}
   
   \item Declare values for the new parameters:
-  \lstinputlisting[language=prmfile]{cookbooks/free_surface_with_crust/doc/free_surface_with_crust.part2.prm.out}
+  \lstinputlisting[language=prmfile]{free_surface_with_crust.part2.prm.out}
   Note that the height of the interface at 170km is interpreted in the
   coordinate system in which the box geometry of this cookbook lives. The box
   has dimensions $500\si{km}\times 200\si{km}$, so an interface height of
@@ -87,9 +87,9 @@ topography returns to zero after some time.
 
 \begin{figure}
   \centering
-  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/doc/free_surface_with_crust.png}
+  \includegraphics[height=0.25\textwidth]{free_surface_with_crust.png}
   \hfill
-  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface_with_crust/doc/topography.png}
+  \includegraphics[height=0.25\textwidth]{topography.png}
   \caption{\it Adding a viscous crust to a model with surface topography. The
   thermal anomaly spreads horizontally as it collides with the highly viscous crust (left, white solid line). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right).}
   \label{fig:freesurfaceWC}

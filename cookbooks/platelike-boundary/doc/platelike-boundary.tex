@@ -24,7 +24,7 @@ input file. It essentially extends the input file considered in the previous exa
 The part of this file that we are particularly interested in in the current
 context is the selection of the kind of velocity boundary conditions on the four
 sides of the box geometry, which we do using a section like this:
-\lstinputlisting[language=prmfile]{cookbooks/platelike-boundary/doc/boundary.part.prm.out}
+\lstinputlisting[language=prmfile]{boundary.part.prm.out}
 
 We use tangential flow at boundaries named left, right and bottom.
 Additionally, we specify a comma separated list (here with only a single
@@ -85,7 +85,7 @@ boundary without corresponding inflow anywhere else.}
 
 
 The remainder of the setup is described in the following, complete input file:
-\lstinputlisting[language=prmfile]{cookbooks/platelike-boundary/doc/platelike.prm.out}
+\lstinputlisting[language=prmfile]{platelike.prm.out}
 
 
 This model description yields a setup with a Rayleigh number of 200 (taking
@@ -100,17 +100,17 @@ yields images like the ones shown in Fig.~\ref{fig:platelike}.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/doc/visit0000.png}
+  \includegraphics[width=0.3\textwidth]{visit0000.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/doc/visit0001.png}
+  \includegraphics[width=0.3\textwidth]{visit0001.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/doc/visit0003.png}
+  \includegraphics[width=0.3\textwidth]{visit0003.png}
   \\
-  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/doc/visit0004.png}
+  \includegraphics[width=0.3\textwidth]{visit0004.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/doc/visit0005.png}
+  \includegraphics[width=0.3\textwidth]{visit0005.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/platelike-boundary/doc/visit0006.png}
+  \includegraphics[width=0.3\textwidth]{visit0006.png}
   \caption{\it Variable velocity boundary conditions: Temperature and velocity
   fields at the initial time (top left) and at various other points in time during the
   simulation.}

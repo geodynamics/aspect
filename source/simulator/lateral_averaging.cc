@@ -84,6 +84,28 @@ namespace aspect
 
 
     template <int dim>
+    class FunctorDepthAverageLogViscosity: public internal::FunctorBase<dim>
+    {
+      public:
+        bool need_material_properties() const override
+        {
+          return true;
+        }
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs<dim> &out,
+                        const FEValues<dim> &,
+                        const LinearAlgebra::BlockVector &,
+                        std::vector<double> &output) override
+        {
+          for (unsigned i = 0; i < out.viscosities.size(); i++)
+            output[i] = std::log10 (out.viscosities[i]);
+        }
+    };
+
+
+
+    template <int dim>
     class FunctorDepthAverageVelocityMagnitude: public internal::FunctorBase<dim>
     {
       public:
@@ -670,6 +692,14 @@ namespace aspect
 
 
   template <int dim>
+  void LateralAveraging<dim>::get_log_viscosity_averages(std::vector<double> &values) const
+  {
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"log_viscosity"))[0];
+  }
+
+
+  template <int dim>
   void LateralAveraging<dim>::get_velocity_magnitude_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
@@ -811,6 +841,10 @@ namespace aspect
         else if (property_names[property_index] == "viscosity")
           {
             functors.push_back(std::make_unique<FunctorDepthAverageViscosity<dim>>());
+          }
+        else if (property_names[property_index] == "log_viscosity")
+          {
+            functors.push_back(std::make_unique<FunctorDepthAverageLogViscosity<dim>>());
           }
         else if (property_names[property_index] == "vertical_heat_flux")
           {

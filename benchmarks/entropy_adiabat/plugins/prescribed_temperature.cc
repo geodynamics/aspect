@@ -38,6 +38,7 @@ namespace aspect
       // Evaluate the material model to get the temperature
       MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
       in.position[0]=position;
       in.temperature[0]=this->get_adiabatic_conditions().temperature(position);

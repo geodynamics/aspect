@@ -1,0 +1,3 @@
+#       time        depth viscosity log_viscosity
+           0       500000     5.05e+25           25
+           0      1.5e+06      5.5e+24         24.5

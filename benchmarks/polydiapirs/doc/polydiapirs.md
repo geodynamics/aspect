@@ -1,4 +1,4 @@
-#### Polydiapirism
+# Polydiapirism
 
 *This section was contributed by Cedric Thieulot.*
 

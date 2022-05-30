@@ -1,8 +1,8 @@
-#### Prescribing internal velocity constraints with ASCII files
+# Prescribing internal velocity constraints with ASCII files
 
 *This section was contributed by Bob Myhill*
 
-Building on [\[sec:prescribed-velocities\]][1], the
+Building on {ref}`sec:prescribed-velocities`, the
 [cookbooks/prescribed_velocity_ascii_data][] directory contains a plugin which
 uses an ASCII data file to specify where to prescribe internal velocities.
 Velocities are prescribed wherever the field value indicated by the ASCII data
@@ -13,7 +13,7 @@ as an additional shared library:
 ```
 
 An example parameter file using this plugin can be found at
-[cookbooks/prescribed_velocity_ascii_data/prescribed_velocity_ascii_data.prm][].
+[cookbooks/prescribed_velocity_ascii_data/prescribed_velocity_ascii_data.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/prescribed_velocity_ascii_data/prescribed_velocity_ascii_data.prm).
 In this file, the velocities are constrained to be zero within the letters
 &ldquo;ASPECT&rdquo; (Figure&nbsp;[1][]). The part of this file which provides
 the location of the ASCII file and the prescribed velocity field function is:

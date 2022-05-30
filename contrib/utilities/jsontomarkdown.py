@@ -1,7 +1,56 @@
 #!/usr/bin/python3
 
 import json
+import re
 from sys import argv, exit, stderr
+
+
+# Our doc strings are written for latex, but here we want to output them
+# in markdown. Escape some common latex-isms.
+def escape_doc_string(text) :
+    # First some simple text replacements:
+    tmp = (text
+           .replace("``", "&ldquo;")
+           .replace("''", "&rdquo;")
+           .replace("`", "&lsquo;")
+           .replace("'", "&rsquo;")
+           .replace("\\aspect{}", "ASPECT")
+           .replace("\\dealii{}", "deal.II")
+    )
+
+    # Then also deal with italics and boldface and typewriter:
+    tmp = re.sub(r'\\textit\{(.*?)\}',
+                 r'*\1*',
+                 tmp)
+    tmp = re.sub(r'\\textbf\{(.*?)\}',
+                 r'**\1**',
+                 tmp)
+    tmp = re.sub(r'\\texttt\{(.*?)\}',
+                 r'`\1`',
+                 tmp)
+
+    return tmp;
+
+
+
+
+def print_if_parameter_or_alias(entry, path_str, true_name, cur_path, output_file) :
+    if "value" in entry:
+        # this is a parameter
+        print("(parameters:" + path_str + ")=", file=output_file)
+        print("### __Parameter name:__ " + true_name, file=output_file)
+        print("**Default value:** " +  entry["default_value"] + " \n", file=output_file)
+        print("**Pattern:** " +  entry["pattern_description"] + " \n", file=output_file)
+        print("**Documentation:** " + escape_doc_string(entry["documentation"]) + " \n", file=output_file)
+    elif "alias" in entry:
+        # This is an alias for a parameter
+        print("(parameters:" + path_str + ")=", file=output_file)
+        aliased_name = entry["alias"]
+        alias_path_str = "/".join(cur_path) + "/" + aliased_name.replace(" ", "_20")
+        print("### __Parameter name__: " +  true_name, file=output_file)
+        print("**Alias:** [" + aliased_name + "](parameters:" + alias_path_str + ")\n", file=output_file)
+        print("**Deprecation Status:** " + entry["deprecation_status"] + "\n", file=output_file)
+
 
 def handle_subsection(data, cur_path, output_file):
     keys = list(data.keys())
@@ -13,33 +62,22 @@ def handle_subsection(data, cur_path, output_file):
     for key in keys:
         path_str = "/".join(cur_path) + "/"  + key
         true_name = key.replace("_20", " ")
-        
-        if "value" in data[key]:
-            # this is a parameter
-            print("(parameters:" + path_str + ")=", file=output_file)
-            print("### __Parameter name:__ " + true_name, file=output_file)
-            print("**Default value:** " +  data[key]["default_value"] + " \n", file=output_file)
-            print("**Pattern:** " +  data[key]["pattern_description"] + " \n", file=output_file)
-            print("**Documentation:** " + data[key]["documentation"] + " \n", file=output_file)
-        elif "alias" in data[key]:
-            # This is an alias for a parameter
-            print("(parameters:" + path_str + ")=", file=output_file)
-            aliased_name = data[key]["alias"]
-            alias_path_str = "/".join(cur_path) + "/" + aliased_name.replace(" ", "_20") 
-            print("### __Parameter name__: " +  true_name, file=output_file)
-            print("**Alias:** [" + aliased_name + "](parameters:" + alias_path_str + ")\n", file=output_file)
-            print("**Deprecation Status:** " + data[key]["deprecation_status"] + "\n", file=output_file)
+
+        print_if_parameter_or_alias(data[key], path_str, true_name, cur_path, output_file)
 
     for key in keys:
         path_str = "/".join(cur_path) + "/"  + key
 
-        if (not "value" in data[key]) and (not "alias" in data[key]):
+        entry = data[key]
+
+        if (not "value" in entry) and (not "alias" in entry):
             # This is a subsection
             print("(parameters:" + path_str + ")=", file=output_file)
             new_path = cur_path + [key]
             section_name = path_str.replace("_20", " ")
-            print("## **Parameters in section** " + section_name, file=output_file)
-            handle_subsection(data[key], new_path, output_file)
+            section_name = section_name.replace("/"," / ")
+            print("## **Subsection:** " + section_name, file=output_file)
+            handle_subsection(entry, new_path, output_file)
 
 def handle_parameters(data):
     global_output_file = open("doc/sphinx/parameters/index.md", "w")
@@ -58,8 +96,8 @@ def handle_parameters(data):
                              "---\n"
                              "global.md\n")
     global_parameters = open("doc/sphinx/parameters/global.md", "w")
-    print("# Global \n\n", file=global_parameters)
-    print("## **Parameters in section** global \n\n", file=global_parameters)
+    print("(parameters:global)=", file=global_parameters)
+    print("# Global parameters\n\n", file=global_parameters)
 
     cur_path = []
     keys = list(data.keys())
@@ -71,26 +109,13 @@ def handle_parameters(data):
     for key in keys:
         path_str = key
         true_name = key.replace("_20", " ")
-        
-        if "value" in data[key]:
-            # this is a parameter
-            print("(parameters:" + path_str + ")=", file=global_parameters)
-            print("### __Parameter name:__ " + true_name, file=global_parameters)
-            print("**Default value:** " +  data[key]["default_value"] + " \n", file=global_parameters)
-            print("**Pattern:** " +  data[key]["pattern_description"] + " \n", file=global_parameters)
-            print("**Documentation:** " + data[key]["documentation"] + " \n", file=global_parameters)
-        elif "alias" in data[key]:
-            # This is an alias for a parameter
-            print("(parameters:" + path_str + ")=", file=global_parameters)
-            aliased_name = data[key]["alias"]
-            alias_path_str = ":".join(cur_path) + ":" + aliased_name.replace(" ", "_20") 
-            print("### __Parameter name__: " +  true_name, file=global_parameters)
-            print("**Alias:** [" + aliased_name + "](parameters:" + alias_path_str + ")\n", file=global_parameters)
-            print("**Deprecation Status:** " + data[key]["deprecation_status"] + "\n", file=global_parameters)
+
+        print_if_parameter_or_alias(data[key], path_str, true_name, cur_path, global_parameters)
 
     for key in keys:
         path_str = key
-        if (not "value" in data[key]) and (not "alias" in data[key]):
+        entry = data[key]
+        if (not "value" in entry) and (not "alias" in entry):
             # This is a subsection
             # Add this to the toctree
             print(key + ".md", file=global_output_file)
@@ -100,16 +125,15 @@ def handle_parameters(data):
             new_path = cur_path + [key]
             section_name = path_str.replace("_20", " ").replace(":", "/")
             print("# " + section_name + "\n\n", file=subfile)
-            print("## **Parameters in section** " + section_name + "\n\n", file=subfile)
-            handle_subsection(data[key], new_path, subfile)
+            print("## **Subsection:** " + section_name + "\n\n", file=subfile)
+            handle_subsection(entry, new_path, subfile)
             subfile.close()
     global_output_file.write(":::\n")
     global_output_file.close()
-   
+
 if __name__  == "__main__":
     data = {}
     input_file = open(argv[1], "r")
     data = json.load(input_file)
     handle_parameters(data)
     exit(0)
-

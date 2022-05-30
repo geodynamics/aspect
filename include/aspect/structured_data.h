@@ -92,7 +92,6 @@ namespace aspect
          * location. In other words, after the call, the variables passed as the
          * second and third arguments may be empty or otherwise altered.
          *
-        #if DEAL_II_VERSION_GTE(9,4,0)
          * If ASPECT is built on deal.II version 9.4 or higher, this class
          * is able to share data between processes located on the same
          * machine. In this case, if the last argument, `root_process` is
@@ -111,11 +110,10 @@ namespace aspect
          * If `root_process` equals `numbers::invalid_unsigned_int`, then
          * every process needs to pass data for all arguments and the
          * `mpi_communicator` argument is ignored.
-        #else
+         *
          * If ASPECT is built on a version of deal.II 9.3 or older,
          * then all processes need to pass in valid values for the first
          * three arguments and the last two arguments are ignored.
-        #endif
          */
         void reinit(const std::vector<std::string> &column_names,
                     std::vector<std::vector<double>> &&coordinate_values,
@@ -261,10 +259,10 @@ namespace aspect
 
         /**
          * Computes the table indices given the size @p sizes of the
-         * i-th entry.
+         * entry with index @p idx.
          */
         TableIndices<dim>
-        compute_table_indices(const TableIndices<dim> &sizes, const unsigned int i) const;
+        compute_table_indices(const TableIndices<dim> &sizes, const std::size_t idx) const;
 
     };
 

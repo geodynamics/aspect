@@ -62,17 +62,13 @@ changing the material model, or changing what is being computed at the end of ea
 affects what you get.
 :::
 
-:::{admonition} TODO
-References to parameter files in footnote [^footnote2] are dead; parameter file documentation not set up.
-:::
-
 [^footnote1]: You can also extend ASPECT using plugins - i.e., pieces of code you compile separately and either link into the ASPECT executable itself, or reference from the input file. This is discussed in {ref}`cha:extending`.
 
 [^footnote2]: Internally, the geometry models ASPECT uses label every part of the boundary with what is called a *boundary indicator*
 – a number that identifies pieces of the boundary. If you know which number each piece has, you can list these numbers on
-the right-hand sides of the assignments of boundary types above. For example, the left boundary of the box has boundary
-indicator zero (see Section A.43), and using this number instead of the `left` would have been equally valid. However, numbers
+the right hand sides of the assignments of boundary types above. For example, the left boundary of the box has boundary
+indicator zero (see {ref}`parameters:Geometry_20model`), and using this number instead of the `left` would have been equally valid. However, numbers
 are far more difficult to remember than names, and consequently every geometry model provides string aliases such as “`left`”
 for each boundary indicator describing parts of the boundary. These symbolic aliases are specific to the geometry – for the box,
 they are “`left`”, “`right`”, “`bottom`”, etc., whereas for a spherical shell they are “`inner`” and “`outer`” – but are described in the
-documentation of every geometry model, see Section A.43.
+documentation of every geometry model, see {ref}`parameters:Geometry_20model`.

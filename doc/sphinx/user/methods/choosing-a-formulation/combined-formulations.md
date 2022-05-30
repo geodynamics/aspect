@@ -26,8 +26,3 @@ This option should be chosen together with a material model that defines a densi
 
 An example cookbook that shows a comparison between different approximations
 is discussed in {ref}`sec:cookbooks:geophysical:burnman`.
-
-:::{admonition} TODO
-:class: error
-Parameters references
-:::

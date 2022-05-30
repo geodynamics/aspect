@@ -423,7 +423,14 @@ namespace aspect
      * distributes the content by MPI_Bcast to all processes. The function
      * returns the content of the file on all processes.
      *
-     * @param [in] filename The name of the ascii file to load.
+     * @param [in] filename The name of the ascii file to load. If the
+     *  file name ends in `.gz`, then the function assumes that the file
+     *  has been compressed using gzip; it then reads and uncompresses the file
+     *  before distributing it. If the file name is a URL (starting with either
+     *  `http://`, `https://`, or `file://`), and if ASPECT has been configured
+     *  with libDAP, then the file is read from that location via libDAP
+     *  and the returned string is an ASCII data representation of what was
+     *  obtained this way.
      * @param [in] comm The MPI communicator in which the content is
      * distributed.
      * @return A string which contains the data in @p filename.

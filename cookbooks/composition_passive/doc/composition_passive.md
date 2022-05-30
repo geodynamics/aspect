@@ -1,4 +1,4 @@
-##### The passive case.
+## The passive case.
 
 We will consider the exact same situation as in the previous section but we
 will ask where the material that started in the bottom 20% of the domain ends
@@ -6,7 +6,7 @@ up, as well as the material that started in the top 20%. For the moment, let
 us assume that there is no material between the materials at the bottom, the
 top, and the middle. The way to describe this situation is to simply add the
 following block of definitions to the parameter file (you can find the full
-parameter file in [cookbooks/composition_passive/composition_passive.prm][]:
+parameter file in [cookbooks/composition_passive/composition_passive.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive/composition_passive.prm):
 
 ``` prmfile
 ```
@@ -60,11 +60,11 @@ While the scheme we use to advect the compositional fields is not strictly
 conservative, it is almost perfectly so in practice. For example, in the
 computations shown in this section (using two additional global mesh
 refinements over the settings in the parameter file
-[cookbooks/composition_passive/composition_passive.prm][]), Fig.&nbsp;[9][]
+[cookbooks/composition_passive/composition_passive.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive/composition_passive.prm)), Fig.&nbsp;[9][]
 shows the maximal and minimal values of the first compositional fields over
 time, along with the mass $m_1(t)$ (these are all tabulated in columns of the
-statistics file, see Sections&nbsp;[\[sec:running-overview\]][1] and
-[\[sec:viz-stat\]][2]). While the maximum and minimum fluctuate slightly due
+statistics file, see Sections&nbsp;{ref}`sec:running-overview` and
+{ref}`sec:viz-stat`). While the maximum and minimum fluctuate slightly due
 to the instability of the finite element method in resolving discontinuous
 functions, the mass appears stable at a value of 0.403646 (the exact value,
 namely the area that was initially filled by each material, is 0.4; the

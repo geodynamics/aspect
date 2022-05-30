@@ -80,7 +80,7 @@ namespace aspect
                            "relationship uses the regular numerical time step or a separate fixed "
                            "elastic time step throughout the model run. The fixed elastic time step "
                            "is always used during the initial time step. If a fixed elastic time "
-                           "step is used throughout the model run, a stress averaging scheme can be "
+                           "step is used throughout the model run, a stress averaging scheme is "
                            "applied to account for differences with the numerical time step. An "
                            "alternative approach is to limit the maximum time step size so that it "
                            "is equal to the elastic time step. The default value of this parameter is "
@@ -91,10 +91,6 @@ namespace aspect
                            "The fixed elastic time step $dte$. Units: years if the "
                            "'Use years in output instead of seconds' parameter is set; "
                            "seconds otherwise.");
-        prm.declare_entry ("Use stress averaging","false",
-                           Patterns::Bool (),
-                           "Whether to apply a stress averaging scheme to account for differences "
-                           "between the fixed elastic time step and numerical time step. ");
         prm.declare_entry ("Stabilization time scale factor", "1.",
                            Patterns::Double (1.),
                            "A stabilization factor for the elastic stresses that influences how fast "
@@ -133,8 +129,6 @@ namespace aspect
           use_fixed_elastic_time_step = false;
         else
           AssertThrow(false, ExcMessage("'Use fixed elastic time step' must be set to 'true' or 'false'"));
-
-        use_stress_averaging = prm.get_bool ("Use stress averaging");
 
         stabilization_time_scale_factor = prm.get_double ("Stabilization time scale factor");
 
@@ -249,20 +243,21 @@ namespace aspect
         if (force_out == nullptr)
           return;
 
-        for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
-          {
-            // Get old stresses from compositional fields
-            SymmetricTensor<2,dim> stress_old;
-            for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
-              stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
+        if (in.requests_property(MaterialProperties::force_terms))
+          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+            {
+              // Get old stresses from compositional fields
+              SymmetricTensor<2,dim> stress_old;
+              for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
+                stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
 
-            // Average viscoelastic viscosity
-            const double average_viscoelastic_viscosity = out.viscosities[i];
+              // Average viscoelastic viscosity
+              const double average_viscoelastic_viscosity = out.viscosities[i];
 
-            // Fill elastic force outputs (See equation 30 in Moresi et al., 2003, J. Comp. Phys.)
-            force_out->elastic_force[i] = -1. * ( average_viscoelastic_viscosity / calculate_elastic_viscosity(average_elastic_shear_moduli[i]) * stress_old );
+              // Fill elastic force outputs (See equation 30 in Moresi et al., 2003, J. Comp. Phys.)
+              force_out->elastic_force[i] = -1. * ( average_viscoelastic_viscosity / calculate_elastic_viscosity(average_elastic_shear_moduli[i]) * stress_old );
 
-          }
+            }
       }
 
 
@@ -330,12 +325,11 @@ namespace aspect
                 // stress_new is the (new) stored elastic stress
                 SymmetricTensor<2,dim> stress_new = stress_creep * (1. - (elastic_damper_viscosity / damped_elastic_viscosity)) + elastic_damper_viscosity * stress_0 / damped_elastic_viscosity;
 
-                // Stress averaging scheme to account for difference between fixed elastic time step
-                // and numerical time step (see equation 32 in Moresi et al., 2003, J. Comp. Phys.)
-                if (use_stress_averaging == true)
-                  {
-                    stress_new = ( ( 1. - ( dt / dte ) ) * stress_old ) + ( ( dt / dte ) * stress_new ) ;
-                  }
+                // Stress averaging scheme to account for difference between the elastic time step
+                // and the numerical time step (see equation 32 in Moresi et al., 2003, J. Comp. Phys.)
+                // Note that if there is no difference between the elastic timestep and the numerical
+                // timestep, then no averaging occurs as dt/dte = 1.
+                stress_new = ( ( 1. - ( dt / dte ) ) * stress_old ) + ( ( dt / dte ) * stress_new ) ;
 
                 // Fill reaction terms
                 for (unsigned int j = 0; j < SymmetricTensor<2,dim>::n_independent_components ; ++j)

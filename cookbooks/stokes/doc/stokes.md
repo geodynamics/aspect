@@ -1,4 +1,4 @@
-#### The &ldquo;Stokes&rsquo; law&rdquo; benchmark
+# The &ldquo;Stokes&rsquo; law&rdquo; benchmark
 
 *This section was contributed by Juliane Dannberg.*
 
@@ -41,7 +41,7 @@ situation. In principle, what we need to do is to describe a spherical object
 with a density that is larger than the surrounding material. There are
 multiple ways of doing this. For example, we could simply set the initial
 temperature of the material in the sphere to a lower value, yielding a higher
-density with any of the common material models. Or, we could use &rsquo;s
+density with any of the common material models. Or, we could use ASPECT's
 facilities to advect along what are called &ldquo;compositional fields&rdquo;
 and make the density dependent on these fields.
 
@@ -54,7 +54,7 @@ file.
 
 All of this setup is then described by the following input file. (You can find
 the input file to run this cookbook example in
-[cookbooks/stokes/stokes.prm][]. For your first runs you will probably want to
+[cookbooks/stokes/stokes.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/stokes/stokes.prm). For your first runs you will probably want to
 reduce the number of mesh refinement steps to make things run more quickly.)
 
 ``` prmfile
@@ -64,7 +64,7 @@ Using this input file, let us try to evaluate the results of the current
 computations for the settling velocity of the sphere. You can visualize the
 output in different ways, one of it being ParaView and shown in
 Fig.&nbsp;[2][] (an alternative is to use Visit as described in
-Section&nbsp;[\[sec:viz\]][1]; 3d images of this simulation using Visit are
+Section&nbsp;{ref}`sec:viz`; 3d images of this simulation using Visit are
 shown in Fig.&nbsp;[5][]). Here, ParaView has the advantage that you can
 calculate the average velocity of the sphere using the following filters:
 

@@ -1,4 +1,4 @@
-#### Viscosity grooves benchmark
+# Viscosity grooves benchmark
 
 *This benchmark was designed by Dave May and this section was contributed by
 Cedric Thieulot.*

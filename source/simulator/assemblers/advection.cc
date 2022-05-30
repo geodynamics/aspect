@@ -924,11 +924,11 @@ namespace aspect
               // set up neighbor values
               scratch.neighbor_face_finite_element_values->reinit (neighbor, neighbor2);
 
-              this->compute_material_model_input_values (this->get_current_linearization_point(),
-                                                         *scratch.neighbor_face_finite_element_values,
-                                                         neighbor,
-                                                         true,
-                                                         scratch.neighbor_face_material_model_inputs);
+              scratch.neighbor_face_material_model_inputs.reinit  (*scratch.neighbor_face_finite_element_values,
+                                                                   neighbor,
+                                                                   this->introspection(),
+                                                                   this->get_current_linearization_point(),
+                                                                   true);
               this->get_material_model().evaluate(scratch.neighbor_face_material_model_inputs,
                                                   scratch.neighbor_face_material_model_outputs);
 
@@ -1256,11 +1256,11 @@ namespace aspect
                 (*scratch.subface_finite_element_values)[introspection.extractors.velocities].get_function_values(this->get_mesh_velocity(),
                     scratch.face_mesh_velocity_values);
 
-              this->compute_material_model_input_values (this->get_current_linearization_point(),
-                                                         *scratch.subface_finite_element_values,
-                                                         cell,
-                                                         true,
-                                                         scratch.face_material_model_inputs);
+              scratch.face_material_model_inputs.reinit  (*scratch.subface_finite_element_values,
+                                                          cell,
+                                                          this->introspection(),
+                                                          this->get_current_linearization_point(),
+                                                          true);
               this->get_material_model().evaluate(scratch.face_material_model_inputs,
                                                   scratch.face_material_model_outputs);
 
@@ -1280,11 +1280,11 @@ namespace aspect
               // set up neighbor values
               scratch.neighbor_face_finite_element_values->reinit (neighbor_child, neighbor2);
 
-              this->compute_material_model_input_values (this->get_current_linearization_point(),
-                                                         *scratch.neighbor_face_finite_element_values,
-                                                         neighbor_child,
-                                                         true,
-                                                         scratch.neighbor_face_material_model_inputs);
+              scratch.neighbor_face_material_model_inputs.reinit  (*scratch.neighbor_face_finite_element_values,
+                                                                   neighbor_child,
+                                                                   this->introspection(),
+                                                                   this->get_current_linearization_point(),
+                                                                   true);
               this->get_material_model().evaluate(scratch.neighbor_face_material_model_inputs,
                                                   scratch.neighbor_face_material_model_outputs);
 

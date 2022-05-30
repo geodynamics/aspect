@@ -35,7 +35,7 @@ different regions of the model (e.g., for the two plates as described above)
 and so we need to use if-statements to specify these regions. The function
 constants and expressions are read in using the muparser. The muparser accepts
 two different syntax options for if-statements (see also Section
-[\[sec:muparser-format\]][1]).
+{ref}`sec:muparser-format`).
 
 1.  `if(condition, true-expression, false-expression)`
 

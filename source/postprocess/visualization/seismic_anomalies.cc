@@ -68,6 +68,7 @@ namespace aspect
 
         MaterialModel::MaterialModelInputs<dim> in(n_q_points, this->n_compositional_fields());
         MaterialModel::MaterialModelOutputs<dim> out(n_q_points, this->n_compositional_fields());
+        in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
         std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
@@ -211,6 +212,7 @@ namespace aspect
 
         MaterialModel::MaterialModelInputs<dim> in(n_q_points, this->n_compositional_fields());
         MaterialModel::MaterialModelOutputs<dim> out(n_q_points, this->n_compositional_fields());
+        in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
         std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
@@ -296,9 +298,6 @@ namespace aspect
                     fe_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
                                                                                                  in.pressure_gradient);
                     in.position = fe_values.get_quadrature_points();
-
-                    // we do not need the strain rate
-                    in.strain_rate.resize(0);
 
                     // Loop over compositional fields to get composition values
                     for (unsigned int c=0; c<this->n_compositional_fields(); ++c)

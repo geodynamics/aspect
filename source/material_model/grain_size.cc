@@ -42,6 +42,7 @@ namespace aspect
       {
         std::vector<std::string> names;
         names.emplace_back("dislocation_viscosity");
+        names.emplace_back("diffusion_viscosity");
         names.emplace_back("boundary_area_change_work_fraction");
         return names;
       }
@@ -54,6 +55,7 @@ namespace aspect
       :
       NamedAdditionalMaterialOutputs<dim>(make_dislocation_viscosity_outputs_names()),
       dislocation_viscosities(n_points, numbers::signaling_nan<double>()),
+      diffusion_viscosities(n_points, numbers::signaling_nan<double>()),
       boundary_area_change_work_fractions(n_points, numbers::signaling_nan<double>())
     {}
 
@@ -70,6 +72,9 @@ namespace aspect
             return dislocation_viscosities;
 
           case 1:
+            return diffusion_viscosities;
+
+          case 2:
             return boundary_area_change_work_fractions;
 
           default:
@@ -851,7 +856,10 @@ namespace aspect
               out.viscosities[i] = std::min(std::max(min_eta,effective_viscosity),max_eta);
 
               if (DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>())
-                disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
+                {
+                  disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
+                  disl_viscosities_out->diffusion_viscosities[i] = std::min(std::max(min_eta,diff_viscosity),1e300);
+                }
             }
 
           out.densities[i] = density(in.temperature[i], pressure, in.composition[i], in.position[i]);

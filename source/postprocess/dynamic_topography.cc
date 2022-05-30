@@ -147,6 +147,7 @@ namespace aspect
             // Evaluate the material model in the cell volume.
             MaterialModel::MaterialModelInputs<dim> in_volume(fe_volume_values, cell, this->introspection(), this->get_solution());
             MaterialModel::MaterialModelOutputs<dim> out_volume(fe_volume_values.n_quadrature_points, this->n_compositional_fields());
+            in_volume.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::viscosity;
             this->get_material_model().evaluate(in_volume, out_volume);
 
             // Get solution values for the divergence of the velocity, which is not
@@ -267,6 +268,7 @@ namespace aspect
             // Evaluate the material model on the cell face.
             MaterialModel::MaterialModelInputs<dim> in_support(fe_support_values, cell, this->introspection(), this->get_solution());
             MaterialModel::MaterialModelOutputs<dim> out_support(fe_support_values.n_quadrature_points, this->n_compositional_fields());
+            in_support.requested_properties = MaterialModel::MaterialProperties::density;
             this->get_material_model().evaluate(in_support, out_support);
 
             fe_support_values[this->introspection().extractors.velocities].get_function_values(topo_vector, stress_support_values);
@@ -315,6 +317,7 @@ namespace aspect
             // Evaluate the material model on the cell face.
             MaterialModel::MaterialModelInputs<dim> in_output(fe_output_values, cell, this->introspection(), this->get_solution());
             MaterialModel::MaterialModelOutputs<dim> out_output(fe_output_values.n_quadrature_points, this->n_compositional_fields());
+            in_output.requested_properties = MaterialModel::MaterialProperties::density;
             this->get_material_model().evaluate(in_output, out_output);
 
             fe_output_values[this->introspection().extractors.velocities].get_function_values(topo_vector, stress_output_values);

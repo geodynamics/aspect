@@ -1,4 +1,4 @@
-#include <../tests/spiegelman_fail_test.cc>
+#include "../tests/spiegelman_fail_test.cc"
 
 int f(double parameter)
 {

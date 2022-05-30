@@ -1,1 +1,1 @@
-#include <../benchmarks/solitary_wave/solitary_wave.cc>
+#include "../benchmarks/solitary_wave/solitary_wave.cc"

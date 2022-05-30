@@ -1,4 +1,4 @@
-#### Using a free surface in a model with a crust
+# Using a free surface in a model with a crust
 
 *This section was contributed by William Durkin*.
 
@@ -52,12 +52,12 @@ Additional changes make the new parameters `Jump height`, `Lower viscosity`,
 and `Upper viscosity` available to the input parameter file, and corresponding
 variables available in the class and used in the code snippet above. The
 entire code can be found in
-[cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc][]. Refer to
-Section&nbsp;[\[sec:plugins\]][1] for more information about writing and
+[cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc). Refer to
+Section&nbsp;{ref}`sec:plugins` for more information about writing and
 running plugins.
 
 The following changes are necessary compared to the input file from the
-cookbook shown in Section&nbsp;[\[sec:cookbooks-freesurface\]][2] to include a
+cookbook shown in Section&nbsp;{ref}`sec:cookbooks-freesurface` to include a
 crust:
 
 -   Load the plugin implementing the new material model:
@@ -76,7 +76,7 @@ crust:
     of 170km implies a depth of 30km.
 
 The entire parameter file is located in
-[cookbooks/free_surface_with_crust/free_surface_with_crust.prm][].
+[cookbooks/free_surface_with_crust/free_surface_with_crust.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/free_surface_with_crust/free_surface_with_crust.prm).
 
 Running this input file generates a crust that is 30 km thick and 1000 times
 as viscous as the lower layer. Figure&nbsp;[2][] shows that adding a crust to
@@ -86,7 +86,7 @@ temperature anomaly reaches the base of the crustal layer (approximately at
 the time for which Fig&nbsp;[2][] shows the temperature profile). The
 crust&rsquo;s high viscosity reduces the temperature anomaly&rsquo;s velocity
 substantially, causing it to affect the surface topography at a later time.
-Just as the cookbook shown in Section&nbsp;[\[sec:cookbooks-freesurface\]][2],
+Just as the cookbook shown in Section&nbsp;{ref}`sec:cookbooks-freesurface`,
 the topography returns to zero after some time.
 
 <img src="cookbooks/free_surface_with_crust/doc/free_surface_with_crust.png" title="fig:" id="fig:freesurfaceWC" style="height:25.0%" alt="Adding a viscous crust to a model with surface topography. The thermal anomaly spreads horizontally as it collides with the highly viscous crust (left, white solid line). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right)." />

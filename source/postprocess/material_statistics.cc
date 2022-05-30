@@ -48,6 +48,7 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::viscosity;
 
       double local_volume = 0.0;
       double local_mass = 0.0;

@@ -24,10 +24,6 @@ larger. The parameters you can adjust are all listed in
 parameters you want to look at are `Linear solver tolerance`,
 `Temperature solver tolerance` and `Composition solver tolerance`.
 
-:::{admonition} TODO
-{ref}`parameters:Solver_20parameters` links to a file that has not yet been set up.
-:::
-
 All this said, it is important to understand the consequences of choosing
 tolerances larger. In particular, if you choose tolerances too large, then the
 difference between the exact solution of a linear system $x$ and the

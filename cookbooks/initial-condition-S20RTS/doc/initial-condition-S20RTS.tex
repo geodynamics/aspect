@@ -20,7 +20,7 @@ interpolation. The input files \texttt{S20RTS.sph} and \texttt{S40RTS.sph} were
 downloaded from \url{http://www.earth.lsa.umich.edu/~jritsema/Research.html}
 and have the following format (this example is S20RTS):
 
-\lstinputlisting[language=prmfile]{cookbooks/initial-condition-S20RTS/doc/S20RTS.input.sph}
+\lstinputlisting[language=prmfile]{S20RTS.input.sph}
 
 The first number in the first line denotes the maximum degree. This is followed in
 the next line by the spherical harmonic coefficients from the surface down to the
@@ -59,7 +59,7 @@ for a 3D spherical shell with Earth-like dimensions.
 
 The relevant section in the input file is as follows:
 
-\lstinputlisting[language=prmfile]{cookbooks/initial-condition-S20RTS/doc/S20RTS.part.prm.out}
+\lstinputlisting[language=prmfile]{S20RTS.part.prm.out}
 
 For this initial condition model we need to first specify the data directory in which
 the input files are located as well as the initial condition file (S20RTS.sph or
@@ -152,7 +152,7 @@ and gravity anomalies from ASPECT and a spectral based code shows good agreement
 (see \texttt{benchmarks/spectral-comparison/} for figure and details).
 
 \begin{figure}
-  \includegraphics[width=\textwidth]{cookbooks/initial-condition-S20RTS/doc/Fig_cookbook_V4-01.png}
+  \includegraphics[width=\textwidth]{Fig_cookbook_V4-01.png}
   \hfill
   \caption{\it Panels (a) and (b) show the density distribution as prescribed from the shear
   wave velocity model S20RTS and the resulting flow for a global refinement of 4. This
@@ -165,7 +165,7 @@ and gravity anomalies from ASPECT and a spectral based code shows good agreement
 \end{figure}
 
 \begin{figure}
-  \includegraphics[width=\textwidth]{cookbooks/initial-condition-S20RTS/doc/Fig_cookbook_V4-02.png}
+  \includegraphics[width=\textwidth]{Fig_cookbook_V4-02.png}
   \hfill
   \caption{\it The first row of this figure shows the surface dynamic topography resulting
   from the flow shown in Figure~\ref{fig:ic-1} for a global

@@ -25,7 +25,7 @@ the program is saved so that a simulation can later be continued at this
 point. The previous checkpoint files will then be deleted. To resume
 operations from the last saved state, you need to set the `Resume computation`
 flag in the input parameter file to `true`, see
-{ref}`parameters:Resume computation`.
+{ref}`parameters:global`.
 
 :::{note}
 It is not imperative that the parameters selected in the input file are exactly the same
@@ -41,8 +41,4 @@ different number of processors than initially used to checkpoint the simulation.
 combinations are easy to detect, and ASPECT may not always realize immediate what is going on
 if you change a setting that can’t be changed. However, you will almost invariably get nonsensical
 results after some time.
-:::
-
-:::{admonition} TODO
-{ref}`parameters:Checkpointing`and {ref}`parameters:Resume computation` refer to parameter files, which have not yet been set up.
 :::

@@ -1,4 +1,4 @@
-#### The 2D annulus benchmark
+# The 2D annulus benchmark
 
 *This section was contributed by C. Thieulot and E. G. Puckett.*
 

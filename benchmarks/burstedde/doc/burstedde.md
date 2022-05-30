@@ -1,4 +1,4 @@
-#### The Burstedde variable viscosity benchmark
+# The Burstedde variable viscosity benchmark
 
 *This section was contributed by Iris van Zelst.*
 
@@ -92,7 +92,7 @@ the `benchmarks/burstedde/burstedde.cc` file that accompanies this benchmark.
 
 We will use the input file `benchmarks/burstedde/burstedde.prm` as input,
 which is very similar to the input file `benchmarks/inclusion/adaptive.prm`
-discussed above in Section&nbsp;[\[sec:benchmark-inclusion\]][5]. The major
+discussed above in Section&nbsp;{ref}`sec:benchmark-inclusion`. The major
 changes for the 3D polynomial Stokes benchmark are listed below:
 
 ``` prmfile
