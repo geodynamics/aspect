@@ -12,40 +12,6 @@ import vtk as vtk
 from vtk.util import numpy_support
 
 
-def main():
-  parser = argparse.ArgumentParser(
-    description='Create a strain rate profile from the output directory of the aspect',
-    epilog='Author: Marcel Saaro, John Naliboff'
-  )
-  parser.add_argument(
-    "-o", "--output-dir",
-    type=str,
-    required=True,
-    help='Path of the output dir in the prm file',
-  )
-  parser.add_argument(
-    "-p", "--plot-file",
-    type=str,
-    required=True,
-    help='Path of the plot file. None existing folders in the path will be created.',
-  )
-  args = parser.parse_args()
-
-  output_dir = Path(args.output_dir)
-  plot_file = Path(args.plot_file)
-
-  plot_timesteps(
-    solution_folder=output_dir / 'solution',
-    plot_file=plot_file,
-    interesting_times=[6, 12, 18],
-    xsize=8,
-    ysize=2,
-    use_log=True,
-    vmin=1e-15,
-    vmax=1e-13,
-  )
-
-
 def get_data(file_path, field_name):
   reader = vtk.vtkXMLPUnstructuredGridReader()
   reader.SetFileName(file_path)
@@ -177,6 +143,40 @@ def plot_timesteps(solution_folder, plot_file, interesting_times, xsize=8, ysize
 
   plot_file.parent.mkdir(parents=True, exist_ok=True)
   plt.savefig(plot_file)
+
+
+def main():
+  parser = argparse.ArgumentParser(
+    description='Create a strain rate profile from the output directory of the aspect',
+    epilog='Author: Marcel Saaro, John Naliboff'
+  )
+  parser.add_argument(
+    "-o", "--output-dir",
+    type=str,
+    required=True,
+    help='Path of the output dir in the prm file',
+  )
+  parser.add_argument(
+    "-p", "--plot-file",
+    type=str,
+    required=True,
+    help='Path of the plot file. None existing folders in the path will be created.',
+  )
+  args = parser.parse_args()
+
+  output_dir = Path(args.output_dir)
+  plot_file = Path(args.plot_file)
+
+  plot_timesteps(
+    solution_folder=output_dir / 'solution',
+    plot_file=plot_file,
+    interesting_times=[6, 12, 18],
+    xsize=8,
+    ysize=2,
+    use_log=True,
+    vmin=1e-15,
+    vmax=1e-13,
+  )
 
 
 if __name__ == "__main__":
