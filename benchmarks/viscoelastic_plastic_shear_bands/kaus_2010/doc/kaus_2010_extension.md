@@ -22,7 +22,7 @@ The mesh is composed of $100 \times 25$ repetitions, i.e. a resolution of $400 \
 Setup for the Kaus (2010) brick in compression.
 ```
 
-{numref}`fig:kaus_brick_result_time_evolution` shows the effective strain rate field at 3 different times as obtained with the python script included in the corresponding folder. Elastic stresses build up until the yield criterion is reached and plastic deformation is activated,  ultimately generating two conjugated shear bands rooted on the inclusion. The plots are produced with the script `kaus_2010_time_evolution.py`.
+{numref}`fig:kaus_brick_result_time_evolution` shows the effective strain rate field at 3 different times as obtained with the python script included in the corresponding folder. Elastic stresses build up until the yield criterion is reached and plastic deformation is activated, ultimately generating two conjugated shear bands rooted on the inclusion. The plots are produced with the script `kaus_2010_time_evolution.py`.
 
 ```{figure-md} fig:kaus_brick_result_time_evolution
 <img src="./kaus_2010_brick_result_time_evolution.*" alt="kaus_brick"  width="100%"/>
