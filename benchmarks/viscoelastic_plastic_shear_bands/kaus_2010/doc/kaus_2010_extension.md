@@ -3,7 +3,7 @@
 
 *This section was contributed by Marcel Saaro, Cedric Thieulot and John Naliboff.*
 
-This setup is based on from {cite:t}`kaus10` with the only exception for not using brittle strain weakening. The prm file is located in `/benchmarks/viscoelastic\_plastic\_shear\_bands`. The domain is a Cartesian box of size $(L_x \times L_y)=(40 \text{km} \times 10 \text{km})$.
+This setup is based on {cite:t}`kaus10` with the only exception of not using brittle strain weakening. The prm file is located in [/benchmarks/viscoelastic\_plastic\_shear\_bands](https://github.com/geodynamics/aspect/tree/main/benchmarks/viscoelastic\_plastic\_shear\_bands). The domain is a Cartesian box of size $(L_x \times L_y)=(40 \text{km} \times 10 \text{km})$.
 The setup is shown in {numref}`fig:kaus_brick`.
 The viscous inclusion of size $(800 \text{m} \times 400 \text{m})$ is centered at the bottom of the domain. Its viscosity is $\eta_i=1 \times 10^{20} \text{Pa s}$.
 
