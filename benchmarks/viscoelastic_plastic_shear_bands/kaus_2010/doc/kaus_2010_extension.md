@@ -7,7 +7,7 @@ This setup is based on {cite:t}`kaus10` with the only exception of not using bri
 The setup is shown in {numref}`fig:kaus_brick`.
 The viscous inclusion of size $(800 \text{m} \times 400 \text{m})$ is centered at the bottom of the domain. Its viscosity is $\eta_i=1 \times 10^{20} \text{Pa s}$.
 
-The brick material is characterised by an (elasto-)visco-plastic rheology following a Drucker-Prager yield criterion with a cohesion $c=40 \text{MPA}$ and angle of friction $\phi=30°$. The elastic shear modulus is set to $G=50 \times 10^{10} \text{Pa}$.
+The brick material is characterised by an (elasto-)visco-plastic rheology following a Drucker-Prager yield criterion with a cohesion $c=40 \text{MPA}$ and angle of friction $\phi=30^{\circ}$. The elastic shear modulus is set to $G=50 \times 10^{10} \text{Pa}$.
 
 Both materials (brick and inclusion) have a density of $\rho=2700 \frac{\text{kg}}{\text{m}^3}$. The gravity is pointing downwards with $g=10 \frac{\text{m}}{\text{s}^2}$.
 The flow is assumed to be isothermal and incompressible.
