@@ -36,9 +36,9 @@ much of the aim of computational geodynamics is to validate the models that we h
 :::{toctree}
 benchmark-run.md
 benchmarks/onset-of-convection/doc/onset-of-convection.md
-cookbooks/van-keken/doc/van-keken.md
-cookbooks/van-keken-vof/doc/van-keken-vof.md
-cookbooks/bunge_et_al_mantle_convection/doc/bunge_et_al_mantle_convection.md
+../cookbooks/cookbooks/van-keken/doc/van-keken.md
+../cookbooks/cookbooks/van-keken-vof/doc/van-keken-vof.md
+../cookbooks/cookbooks/bunge_et_al_mantle_convection/doc/bunge_et_al_mantle_convection.md
 benchmarks/rayleigh_taylor_instability/doc/rayleigh_taylor_instability.md
 benchmarks/polydiapirs/doc/polydiapirs.md
 benchmarks/sinking_block/doc/sinking_block.md
@@ -49,9 +49,9 @@ benchmarks/burstedde/doc/burstedde.md
 benchmarks/slab_detachment/doc/slab_detachment.md
 benchmarks/hollow_sphere/doc/hollow_sphere.md
 benchmarks/annulus/doc/annulus.md
-cookbooks/stokes/doc/stokes.md
+../cookbooks/cookbooks/stokes/doc/stokes.md
 benchmarks/viscosity_grooves/doc/viscosity_grooves.md
-cookbooks/latent-heat/doc/latent-heat.md
+../cookbooks/cookbooks/latent-heat/doc/latent-heat.md
 benchmarks/davies_et_al/doc/davies_et_al.md
 benchmarks/crameri_et_al/doc/crameri_et_al.md
 benchmarks/solitary_wave/doc/solitary_wave.md
