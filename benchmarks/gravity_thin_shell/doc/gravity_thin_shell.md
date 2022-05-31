@@ -8,11 +8,11 @@ Earth mantle and we wish to compute the resulting gravity field and potential
 at satellite height.
 
 The domain is a spherical shell of 10&nbsp;km radius centered at a depth $D$,
-i.e. the inner radius is $R\textsubscript{inner}=6371-D-5~\si{\km}$ and the
-outer radius $R\textsubscript{outer}=6371-D+5~ \si{\km}$. It is filled with a
+i.e. the inner radius is $R\_{inner}=6371-D-5~\si{\km}$ and the
+outer radius $R\_{outer}=6371-D+5~ \si{\km}$. It is filled with a
 fluid of constant density $\rho_0=3300~\si{\kg\per\cubic\meter}$ with total
 mass
-$M=\frac43 \pi (R\textsubscript{outer}^3-R\textsubscript{inner}^3)\rho_0$.
+$M=\frac43 \pi (R\_{outer}^3-R\_{inner}^3)\rho_0$.
 
 Both the Stokes and energy equations solve are bypassed:
 
@@ -21,7 +21,7 @@ Both the Stokes and energy equations solve are bypassed:
 
 We make use of the Custom mesh subdivision option to generate a mesh where a
 single cell is used in the radial direction (parameterized with the number of
-&lsquo;slices&rsquo;) while 6 blocks (default value) of $2^5\times 2^5$ cells
+'slices') while 6 blocks (default value) of $2^5\times 2^5$ cells
 are used in the lateral direction. This gives a total of 6,144 mesh cells. For
 $D=100~\si{\km}$ the parameterization of the mesh is then as follows:
 
@@ -29,7 +29,7 @@ $D=100~\si{\km}$ the parameterization of the mesh is then as follows:
 ```
 
 We wish to compute the gravity potential $U$ and the gravity vector
-${\mathbf g}$ at a radius of $R\textsubscript{s}=6371+250=6621~\si{\km}$ (i.e.
+${\mathbf g}$ at a radius of $R\_{s}=6371+250=6621~\si{\km}$ (i.e.
 the gravity experienced by a satellite flying at a height of $250~\si{\km}$
 above the surface of the Earth) on a regular longitude-latitude grid spanning
 the whole Earth, with a $2\si{\degree}\times 2\si{\degree}$ resolution:
@@ -73,9 +73,10 @@ and average values of both the potential and the acceleration are printed in
 the statistics file while measurements at all the desired points are written
 in the `output_gravity` folder inside the output folder. We ran the input file
 for $I\in \{-1,0,1,2\}$ for $D=0,100,500,1500,3000~\si{\km}$ and the results
-are presented in Table&nbsp;[1][] alongside the analytical values.
+are presented in Table&nbsp;[1] alongside the analytical values.
 
-<div id="tab:thin_shell_gravity_benchmark">
+```{table} *Thin shell gravity benchmark: $1\si{mGal}=10^{-5}\si{\meter\per\square\second}$. $n_q$ is the number of GLQ points per cell. 'a.v.' stands for analytical value.*
+:name: tab:thin_shell_gravity_benchmark
 
 |      |      |       |           |              |           |              |                                    |              |
 |:----:|:----:|:-----:|:---------:|:------------:|:---------:|:------------:|:----------------------------------:|:------------:|
@@ -107,11 +108,7 @@ are presented in Table&nbsp;[1][] alongside the analytical values.
 |      |  2   | $4^3$ | 717.4641  |   717.4641   | 717.4641  | -47503.2981  |            -47503.2981             | -47503.2981  |
 |      | a.v. |       | 717.4641  |              |           | -47503.2981  |                                    |              |
 
-*Thin shell gravity benchmark:
-$1\si{mGal}=10^{-5}\si{\meter\per\square\second}$. $n_q$ is the number of GLQ
-points per cell. &lsquo;a.v.&rsquo; stands for analytical value.*
-
-</div>
+```
 
 
 

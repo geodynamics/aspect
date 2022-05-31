@@ -35,20 +35,38 @@ file can be found in
 ``` prmfile
 ```
 
-<img src="cookbooks/composition-reaction/doc/0.png" title="fig:" id="fig:composition-reaction" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,
-  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction." />
-<img src="cookbooks/composition-reaction/doc/2.png" title="fig:" id="fig:composition-reaction" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,
-  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction." />
-<img src="cookbooks/composition-reaction/doc/4.png" title="fig:" id="fig:composition-reaction" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,
-  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction." />
-<img src="cookbooks/composition-reaction/doc/8.png" title="fig:" id="fig:composition-reaction" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,
-  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction." />
-<img src="cookbooks/composition-reaction/doc/12.png" title="fig:" id="fig:composition-reaction" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,
-  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction." />
-<img src="cookbooks/composition-reaction/doc/20.png" title="fig:" id="fig:composition-reaction" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,
-  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction." />
 
-Results of this model are visualized in Fig&nbsp;[6][]. What is visible is
+```{figure-md} fig:composition-reaction
+<img src="0.png" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,
+  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction." />
+```
+
+```{figure-md} fig:composition-reaction
+<img src="2.png" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,
+  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction." />
+```
+
+```{figure-md} fig:composition-reaction
+<img src="4.png" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,
+  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction." />
+```
+
+```{figure-md} fig:composition-reaction
+<img src="8.png" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,
+  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction." />
+```
+
+```{figure-md} fig:composition-reaction
+<img src="12.png" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,
+  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction." />
+```
+
+```{figure-md} fig:composition-reaction
+<img src="20.png" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,
+  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction." />
+```
+
+Results of this model are visualized in Fig&nbsp;[6]. What is visible is
 that over the course of the simulation, the material that starts at the bottom
 of the domain ascends, reaches the reaction depth and gets converted to the
 second material, which starts to sink down.

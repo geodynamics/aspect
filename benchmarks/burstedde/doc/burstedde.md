@@ -108,12 +108,13 @@ ensure that the solver can solve the system accurately enough to make sure
 that the iteration error is smaller than the discretization error.
 
 Expected analytical solutions at two locations are summarised in
-Table&nbsp;[1][] and can be deduced from equations
+Table&nbsp;[1] and can be deduced from equations
 [\[eq:burstedde-velocity\]][1] and [\[eq:burstedde-pressure\]][2].
 Figure&nbsp;[\[fig:burstedde-benchmark\]][6] shows that the analytical
 solution is indeed retrieved by the model.
 
-<div id="tab:burstedde-table">
+```{table} *Analytical solutions <span id="tab:burstedde-table" label="tab:burstedde-table">\[tab:burstedde-table\]</span>*
+:name: tab:burstedde-table
 
 | Quantity       | $\mathbf{r} = (0,0,0)$ | $\mathbf{r} = (1,1,1)$ |
 |:---------------|:----------------------:|:----------------------:|
@@ -121,10 +122,7 @@ solution is indeed retrieved by the model.
 | $\mathbf{u}$   |       $(0,0,0)$        |      $(4,4,-13)$       |
 | $|\mathbf{u}|$ |          $0$           |        $14.177$        |
 
-*Analytical solutions <span id="tab:burstedde-table"
-label="tab:burstedde-table">\[tab:burstedde-table\]</span>*
-
-</div>
+```
 
 &nbsp;
 &nbsp;
@@ -136,25 +134,27 @@ the pressure shows quadratic convergence in the $L_1$ and $L_2$ norms, as one
 would hope for using $Q_2$ elements for the velocity and $Q_1$ elements for
 the pressure.
 
-<figure>
-<embed src="cookbooks/benchmarks/burstedde/doc/errors.pdf" id="errors" /><figcaption aria-hidden="true"><em>Burstedde benchmark: Error convergence for the 3D polynomial Stokes benchmark. <span id="errors" label="errors">[errors]</span></em></figcaption>
-</figure>
+```{figure-md} errors
+<img src="errors.svg" />
+
+Burstedde benchmark: Error convergence for the 3D polynomial Stokes benchmark. <span id="errors" label="errors">[errors]</span>
+```
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-busa13" class="csl-entry">
 
 Burstedde, C., G. Stadler, L. Alisic, L. C. Wilcox, E. Tan, M. Gurnis, and O.
-Ghattas. 2013. &ldquo;Large-Scale Adaptive Mantle Convection
-Simulation.&rdquo; *Geophysical Journal International* 192.3: 889&ndash;906.
+Ghattas. 2013. "Large-Scale Adaptive Mantle Convection
+Simulation." *Geophysical Journal International* 192.3: 889--906.
 
 </div>
 
 <div id="ref-dobo04" class="csl-entry">
 
-Dohrmann, C. R., and P. B. Bochev. 20014. &ldquo;A Stabilized Finite Element
-Method for the Stokes Problem Based on Polynomial Pressure Projections.&rdquo;
-*International Journal for Numerical Methods in Fluids* 46: 183&ndash;201.
+Dohrmann, C. R., and P. B. Bochev. 20014. "A Stabilized Finite Element
+Method for the Stokes Problem Based on Polynomial Pressure Projections."
+*International Journal for Numerical Methods in Fluids* 46: 183--201.
 
 </div>
 

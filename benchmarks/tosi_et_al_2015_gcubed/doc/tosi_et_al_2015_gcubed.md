@@ -55,7 +55,7 @@ $$\eta(T,\epsilon,z) = 2 \left(\frac{1}{\eta_\text{linear}}+\frac{1}{\eta_\text{
 ```
 
 This rheology leads to mobile-lid convection, with the descending cold lid
-cooling the cell&rsquo;s interior (Fig. 2 of (Tosi et al. 2015)).
+cooling the cell's interior (Fig. 2 of (Tosi et al. 2015)).
 
 By changing the input parameters shown in the code snippet, we obtain the
 other benchmark cases. Case 3 includes a depth-dependent component for the
@@ -66,14 +66,29 @@ is varied to investigate the transitions from mobile-lid to periodic to
 stagnant-lid convection regimes. The input files referenced above implement
 these specific cases. As mentioned before, the results are presented in (Tosi
 et al. 2015) together with the results of several other finite element, finite
-volume, and spectral codes. Figure&nbsp;[3][] shows one example of the
+volume, and spectral codes. Figure&nbsp;[3] shows one example of the
 resolved temperature and viscosity fields for case 1.
 
 <div class="center">
 
-<img src="cookbooks/benchmarks/tosi_et_al_2015_gcubed/doc/Case1_6_T.png" title="fig:" id="fig:tosi-benchmark-results" style="width:31.0%" alt="Temperature and viscosity field in steady-state for case 1 of (Tosi et al. 2015)." />
-<img src="cookbooks/benchmarks/tosi_et_al_2015_gcubed/doc/Case1_6_visc.png" title="fig:" id="fig:tosi-benchmark-results" style="width:31.0%" alt="Temperature and viscosity field in steady-state for case 1 of (Tosi et al. 2015)." />
-<img src="cookbooks/benchmarks/tosi_et_al_2015_gcubed/doc/Case1_6_vel.png" title="fig:" id="fig:tosi-benchmark-results" style="width:31.0%" alt="Temperature and viscosity field in steady-state for case 1 of (Tosi et al. 2015)." />
+
+```{figure-md} fig:tosi-benchmark-results
+<img src="Case1_6_T.png" style="width:31.0%" />
+
+ Temperature and viscosity field in steady-state for case 1 of (Tosi et al. 2015).
+```
+
+```{figure-md} fig:tosi-benchmark-results
+<img src="Case1_6_visc.png" style="width:31.0%" />
+
+ Temperature and viscosity field in steady-state for case 1 of (Tosi et al. 2015).
+```
+
+```{figure-md} fig:tosi-benchmark-results
+<img src="Case1_6_vel.png" style="width:31.0%" />
+
+ Temperature and viscosity field in steady-state for case 1 of (Tosi et al. 2015).
+```
 
 </div>
 
@@ -82,17 +97,17 @@ resolved temperature and viscosity fields for case 1.
 <div id="ref-BBC89" class="csl-entry">
 
 Blankenbach, B., F. Busse, U. Christensen, L. Cserepes, D. Gunkel, U. Hansen,
-H. Harder, et al. 1989. &ldquo;A Benchmark Comparison for Mantle Convection
-Codes.&rdquo; *Geophys. J. Int.* 98: 23&ndash;38.
+H. Harder, et al. 1989. "A Benchmark Comparison for Mantle Convection
+Codes." *Geophys. J. Int.* 98: 23--38.
 
 </div>
 
 <div id="ref-T15" class="csl-entry">
 
 Tosi, N., C. Stein, L. Noack, C. H&uuml;ttig, P. Maierova, H. Samual, D. R.
-Davies, et al. 2015. &ldquo;A Community Benchmark for Viscoplastic Thermal
-Convection in a 2-d Square Box.&rdquo; *Geochem.&nbsp;Geophys.&nbsp;Geosyst.*
-16: 2175&ndash;96.
+Davies, et al. 2015. "A Community Benchmark for Viscoplastic Thermal
+Convection in a 2-d Square Box." *Geochem.&nbsp;Geophys.&nbsp;Geosyst.*
+16: 2175--96.
 
 </div>
 

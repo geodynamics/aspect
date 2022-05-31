@@ -12,7 +12,7 @@ is somewhat analogous to (Willett 1999), and in extension to (Allken,
 Huismans, and Thieulot 2011).
 
 Brittle failure is approximated by adapting the viscosity to limit the stress
-that is generated during deformation. This &ldquo;cap&rdquo; on the stress
+that is generated during deformation. This "cap" on the stress
 level is parameterized in this experiment by the pressure-dependent Drucker
 Prager yield criterion and we therefore make use of the Drucker-Prager
 material model (see Section {ref}`parameters:Material_20model`) in the
@@ -66,7 +66,7 @@ We also make use of the strain rate-based mesh refinement plugin:
 ```
 
 Setting `set Initial adaptive refinement = 4` yields a series of meshes as
-shown in Fig. ([1][]), all produced during the first timestep. As expected, we
+shown in Fig. ([1]), all produced during the first timestep. As expected, we
 see that the location of the highest mesh refinement corresponds to the
 location of a set of conjugated shear bands.
 
@@ -75,27 +75,31 @@ If we now set this parameter to 1 and allow the simulation to evolve for
 conditions) develops and deepens/thickens over time, nicely showcasing the
 unique capabilities of the code to handle free surface large deformation,
 localised strain rates through visco-plasticity and adaptive mesh refinement
-as shown in Fig. ([2][]).
+as shown in Fig. ([2]).
 
-<figure>
-<img src="cookbooks/crustal_deformation/doc/grids.png" id="fig:meshes" style="width:70.0%" alt="Mesh evolution during the first timestep (refinement is based on strain rate)." /><figcaption aria-hidden="true"><em>Mesh evolution during the first timestep (refinement is based on strain rate).</em></figcaption>
-</figure>
+```{figure-md} fig:meshes
+<img src="grids.png" style="width:70.0%" />
+
+ Mesh evolution during the first timestep (refinement is based on strain rate).
+```
 
 Deformation localizes at the basal velocity discontinuity and plastic shear
 bands form at an angle of approximately $53\degree$ to the bottom in extension
 and $35\degree$ in compression, both of which correspond to the reported
 Arthur angle (Kaus 2010; Buiter 2012).
 
-<figure>
-<img src="cookbooks/crustal_deformation/doc/both.png" id="fig:extcompr" alt="Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr." /><figcaption aria-hidden="true"><em>Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.</em></figcaption>
-</figure>
+```{figure-md} fig:extcompr
+<img src="both.png" />
+
+ Finite element mesh, velocity, viscosity and strain rate fields in the case of extensional boundary conditions (top) and compressive boundary conditions (bottom) at t=500kyr.
+```
 
 ## Extension to 3D.
 
 We can easily modify the previous input file to produce `crustal_model_3D.prm`
 which implements a similar setup, with the additional constraint that the
 position of the velocity discontinuity varies with the $y$-coordinate, as
-shown in Fig. ([3][]). The domain is now $128\times96\times16$km and the
+shown in Fig. ([3]). The domain is now $128\times96\times16$km and the
 boundary conditions are implemented as follows:
 
 ``` prmfile
@@ -104,66 +108,70 @@ boundary conditions are implemented as follows:
 The presence of an offset between the two velocity discontinuity zones leads
 to a transform fault which connects them.
 
-<figure>
-<img src="cookbooks/crustal_deformation/doc/bottombc2.png" id="fig:bottombc" alt="Basal velocity boundary conditions and corresponding strain rate field for the 3D model." /><figcaption aria-hidden="true"><em>Basal velocity boundary conditions and corresponding strain rate field for the 3D model.</em></figcaption>
-</figure>
+```{figure-md} fig:bottombc
+<img src="bottombc2.png" />
+
+ Basal velocity boundary conditions and corresponding strain rate field for the 3D model.
+```
 
 The Finite Element mesh, the velocity, viscosity and strain rate fields are
-shown in Fig. ([4][]) at the end of the first time steps. The reader is
+shown in Fig. ([4]) at the end of the first time steps. The reader is
 encouraged to run this setup in time to look at how the two grabens interact
 as a function of their initial offset (Allken, Huismans, and Thieulot 2011,
 2012; Allken et al. 2013).
 
-<figure>
-<img src="cookbooks/crustal_deformation/doc/all3D.png" id="fig:ext3D" alt="Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement." /><figcaption aria-hidden="true"><em>Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement.</em></figcaption>
-</figure>
+```{figure-md} fig:ext3D
+<img src="all3D.png" />
+
+ Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement.
+```
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-alhf13" class="csl-entry">
 
-Allken, V., R. S. Huismans, H. Fossen, and C. Thieulot. 2013. &ldquo;<span
+Allken, V., R. S. Huismans, H. Fossen, and C. Thieulot. 2013. "<span
 class="nocase">3D numerical modelling of graben interaction and linkage: a
-case study of the Canyonlands grabens, Utah</span>.&rdquo; *Basin Research*
-25: 1&ndash;14.
+case study of the Canyonlands grabens, Utah</span>." *Basin Research*
+25: 1--14.
 
 </div>
 
 <div id="ref-alht11" class="csl-entry">
 
-Allken, V., R. Huismans, and C. Thieulot. 2011. &ldquo;Three Dimensional
-Numerical Modelling of Upper Crustal Extensional Systems.&rdquo;
+Allken, V., R. Huismans, and C. Thieulot. 2011. "Three Dimensional
+Numerical Modelling of Upper Crustal Extensional Systems."
 *J.&nbsp;Geophys.&nbsp;Res.* 116: B10409.
 
 </div>
 
 <div id="ref-alht12" class="csl-entry">
 
-&mdash;&mdash;&mdash;. 2012. &ldquo;Factors Controlling the Mode of Rift
-Interaction in Brittle-Ductile Coupled Systems: A 3d Numerical Study.&rdquo;
+---------. 2012. "Factors Controlling the Mode of Rift
+Interaction in Brittle-Ductile Coupled Systems: A 3d Numerical Study."
 *Geochem.&nbsp;Geophys.&nbsp;Geosyst.* 13 (5): Q05010.
 
 </div>
 
 <div id="ref-buit12" class="csl-entry">
 
-Buiter, S. J. H. 2012. &ldquo;<span class="nocase">A review of brittle
-compressional wedge models</span>.&rdquo; *Tectonophysics* 530: 1&ndash;17.
+Buiter, S. J. H. 2012. "<span class="nocase">A review of brittle
+compressional wedge models</span>." *Tectonophysics* 530: 1--17.
 
 </div>
 
 <div id="ref-kaus10" class="csl-entry">
 
-Kaus, B. J. P. 2010. &ldquo;Factors That Control the Angle of Shear Bands in
-Geodynamic Numerical Models of Brittle Deformation.&rdquo; *Tectonophysics*
-484: 36&ndash;47.
+Kaus, B. J. P. 2010. "Factors That Control the Angle of Shear Bands in
+Geodynamic Numerical Models of Brittle Deformation." *Tectonophysics*
+484: 36--47.
 
 </div>
 
 <div id="ref-will99" class="csl-entry">
 
-Willett, S. D. 1999. &ldquo;Rheological Dependence of Extension in Wedge
-Models of Convergent Orogens.&rdquo; *Tectonophysics* 305: 419&ndash;35.
+Willett, S. D. 1999. "Rheological Dependence of Extension in Wedge
+Models of Convergent Orogens." *Tectonophysics* 305: 419--35.
 
 </div>
 

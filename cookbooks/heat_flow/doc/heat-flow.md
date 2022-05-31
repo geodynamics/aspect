@@ -18,12 +18,17 @@ corresponds to a plate age of 0, and temperature is fixed at the top, so that
 a cold thermal boundary develops over time at the top model boundary.
 
 .
-<img src="cookbooks/heat_flow/doc/mid-ocean-ridge.png" title="fig:" id="fig:convection-box-iterations" style="width:60.0%" alt="Setup of the mid-ocean-ridge model that illustrates the cooling of the lithosphere. Background colors show temperature, streamlines illustrate the flow." />
+
+```{figure-md} fig:convection-box-iterations
+<img src="mid-ocean-ridge.png" style="width:60.0%" />
+
+ Setup of the mid-ocean-ridge model that illustrates the cooling of the lithosphere. Background colors show temperature, streamlines illustrate the flow.
+```
 .
 
 An example that shows how this model can be used to visualize lithospheric
 thickness and how it changes over time and in dependence of the spreading rate
-can be found in [this presentation][].
+can be found in [this presentation].
 
 ## Shear heating and radiogenic heating
 
@@ -31,7 +36,7 @@ The model can also be modified to include radiogenic heat production and shear
 heating. The corresponding input file is located at
 [cookbooks/heat_flow/heat-flow-terms.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/heat_flow/heat-flow-terms.prm), and it switches on postprocessors
 that generate graphical output for the different heating terms. An example
-exercise is described in [this presentation (last slide)][].
+exercise is described in [this presentation (last slide)].
 
 ## Example assignment: Heat flux
 
@@ -49,11 +54,11 @@ data from elsewhere, but you will need to reference these in your report.
 Analyze the heat flux close to mid-ocean ridges.
 
 In order to do that, use the mid-ocean ridge model, which is located in the
-folder [cookbooks/heat_flow/][]. Run the model and use ParaView to compute and
+folder [cookbooks/heat_flow/](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/heat_flow/). Run the model and use ParaView to compute and
 visualize the conductive and convective heat flux in vertical direction. Hint:
 You can use the Calculator filter in ParaView to compute the convective and
 conductive heat flux, using the equations on slides 5 and 6 of [this
-presentation][]. Be careful to make sure that the units are the same; the
+presentation]. Be careful to make sure that the units are the same; the
 velocity in ParaView is given in m/yr, while all other properties are given in
 SI units:
 
@@ -95,7 +100,7 @@ Next, describe the model results. Include a plot of convective/conductive heat
 flux and discuss it: Respectively, where are convection and conduction
 dominant? Qualitatively, describe how the temperature profile compares to the
 profiles computed with Wolfram Alpha (as described on slide 7 of [this
-presentation][]) under the assumption that the temperature follows a
+presentation]) under the assumption that the temperature follows a
 conductive (linear) profile going downwards from the surface, and then remains
 constant once it reaches 1600 K (in the region where convection is dominant)?
 What causes the similarities/differences?
@@ -160,8 +165,8 @@ temperature best fits the observed heat flux? Is that what one would expect
 for a mantle plume below the modeled ocean island?
 
 Repeat the computation of convective/conductive heat flux for the mid-ocean
-ridge model described above (in paragraph &ldquo;Heat flux close to mid-ocean
-ridges&rdquo;) for the best-fit plume model, and generate the corresponding
+ridge model described above (in paragraph "Heat flux close to mid-ocean
+ridges") for the best-fit plume model, and generate the corresponding
 plot that shows where conductive/convective heat flux are dominant (as above).
 Discuss how the plume influences what is the dominant mechanism for heat
 transport. Why does it have this effect?

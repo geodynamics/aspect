@@ -1,4 +1,4 @@
-# Convection using a pressure&ndash;temperature look-up table and the rheology of Steinberger and Calderwood (2006)
+# Convection using a pressure--temperature look-up table and the rheology of Steinberger and Calderwood (2006)
 
 *This section was contributed by Juliane Dannberg and Ren&eacute;
 Gassm&ouml;ller.*
@@ -56,7 +56,7 @@ in the model is based on PREM.
 
 ## The equation of state.
 
-To use material properties from a temperature&ndash;pressure look-up table, we
+To use material properties from a temperature--pressure look-up table, we
 use the Steinberger material model. We have to specify the path to the
 directory where all the data files we want to use for this model are stored.
 This includes the files for the viscosity profile, the lateral viscosity
@@ -88,7 +88,7 @@ phase transitions, then can compute latent heat effects based on the pressure
 and temperature derivatives of the specific enthalpy (using the approach of
 (Nakagawa et al. 2009)). In our case, we simply do not include latent heat at
 all in our model. So the look-up table is computed without latent heat
-effects, and we set the &ldquo;Latent heat&rdquo; parameter to `false`.
+effects, and we set the "Latent heat" parameter to `false`.
 
 ``` prmfile
 ```
@@ -106,7 +106,7 @@ pressure).
 ## The look-up table format.
 
 The format of these look-up tables is described in the documentation of the
-[aspect::MaterialModel::MaterialUtilities::Lookup::MaterialLookup][] class.
+[aspect::MaterialModel::MaterialUtilities::Lookup::MaterialLookup] class.
 Two different formats are currently supported: Perple_X and HeFESTo. The
 format needs to be selected in the input file, and each format has a specific
 header and needs to be structured in a specific way. The paragraph below
@@ -224,16 +224,22 @@ the temperature in the model, which is why we choose it for this cookbook.
 
 The default data directory already contains two radial viscosity files, one
 for each of these cases. The file
-[data/material-model/steinberger/radial-visc.txt][] is the original
+[data/material-model/steinberger/radial-visc.txt] is the original
 Steinberger and Calderwood (Steinberger and Calderwood 2006) profile (with an
 interpolation between the original discrete layers) and for use with the
 laterally averaged temperature. The file
-[data/material-model/steinberger/radial-visc-simple.txt][] is for use with the
+[data/material-model/steinberger/radial-visc-simple.txt] is for use with the
 adiabatic profile. To illustrate the difference, the content of both files is
-plotted in Figure&nbsp;[2][].
+plotted in Figure&nbsp;[2].
 
-<embed src="cookbooks/steinberger/doc/radial-visc.pdf" title="fig:" id="fig:steinberger-viscosity" style="width:48.0%" />
-<embed src="cookbooks/steinberger/doc/radial-visc-simple.pdf" title="fig:" id="fig:steinberger-viscosity" style="width:48.0%" />
+
+```{figure-md} fig:steinberger-viscosity
+<img src="radial-visc.svg" style="width:48.0%" />
+```
+
+```{figure-md} fig:steinberger-viscosity
+<img src="radial-visc-simple.svg" style="width:48.0%" />
+```
 
 In order to improve solver convergence, the material model has additional
 parameters that allow it to limit the viscosity variations. Because of the
@@ -259,8 +265,8 @@ account plastic yielding (so that the lithosphere can break).
 ## The projected density approximation.
 
 Since our model is compressible, the most accurate way to solve the mass
-conservation equation implemented in is to use the &lsquo;projected density
-approximation.&rsquo; This way, will compute the density gradients in the mass
+conservation equation implemented in is to use the 'projected density
+approximation.' This way, will compute the density gradients in the mass
 conservation directly from the density field (interpolated onto the finite
 element grid) rather than approximating it with a reference profile or
 temperature/pressure derivatives of the density.
@@ -268,18 +274,18 @@ temperature/pressure derivatives of the density.
 To use the projected density approximation, we need to specify it as the form
 of the equations we want to use, and we need to provide a field that the
 density values can be interpolated on. The first part is handled in the
-&lsquo;Formulation&rsquo; section of the input file. This is where we can
+'Formulation' section of the input file. This is where we can
 select the projected density approximation as the formulation we want to use
 for the mass conservation equation. The temperature equation uses the real
 density (rather than a reference profile) as well.
 
 To allow for the interpolation, we create a compositional field that we call
-&lsquo;density_field.&rsquo; We assign the field the type
-&lsquo;density,&rsquo; so that knows that this is the field it should use to
+'density_field.' We assign the field the type
+'density,' so that knows that this is the field it should use to
 compute the density gradient required to solve the equations. does not need to
 solve an equation for this field, it only needs to interpolate the density
 values onto it. This is covered by the compositional field method
-&lsquo;prescribed field.&rsquo; For fields of this type, the material model
+'prescribed field.' For fields of this type, the material model
 provides the values that should be interpolated onto the field.
 
 ``` prmfile
@@ -294,29 +300,49 @@ We run the model for 300 million years. Over the time of the model evolution,
 some plumes rise and spread beneath the base of the lithosphere, and some cold
 downwellings detach from the base of the lithosphere. The temperature at the
 end of the model run and some of the material properties are shown in
-Figure&nbsp;[6][].
+Figure&nbsp;[6].
 
-<img src="cookbooks/steinberger/doc/temperature.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
-<img src="cookbooks/steinberger/doc/viscosity.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
-<img src="cookbooks/steinberger/doc/density.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
-<img src="cookbooks/steinberger/doc/specific_heat.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
+
+```{figure-md} fig:steinberger-end-state
+<img src="temperature.png" style="width:48.0%" />
+
+ End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity.
+```
+
+```{figure-md} fig:steinberger-end-state
+<img src="viscosity.png" style="width:48.0%" />
+
+ End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity.
+```
+
+```{figure-md} fig:steinberger-end-state
+<img src="density.png" style="width:48.0%" />
+
+ End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity.
+```
+
+```{figure-md} fig:steinberger-end-state
+<img src="specific_heat.png" style="width:48.0%" />
+
+ End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity.
+```
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-connolly2005computation" class="csl-entry">
 
-Connolly, James AD. 2005. &ldquo;Computation of Phase Equilibria by Linear
+Connolly, James AD. 2005. "Computation of Phase Equilibria by Linear
 Programming: A Tool for Geodynamic Modeling and Its Application to Subduction
-Zone Decarbonation.&rdquo; *Earth and Planetary Science Letters* 236 (1-2):
-524&ndash;41.
+Zone Decarbonation." *Earth and Planetary Science Letters* 236 (1-2):
+524--41.
 
 </div>
 
 <div id="ref-gassmoller2020formulations" class="csl-entry">
 
 Gassm&ouml;ller, Rene, Juliane Dannberg, Wolfgang Bangerth, Timo Heister, and
-Robert Myhill. 2020. &ldquo;On Formulations of Compressible Mantle
-Convection.&rdquo; *Geophysical Journal International* 221 (2): 1264&ndash;80.
+Robert Myhill. 2020. "On Formulations of Compressible Mantle
+Convection." *Geophysical Journal International* 221 (2): 1264--80.
 <https://doi.org/10.1093/gji/ggaa078>.
 
 </div>
@@ -324,36 +350,36 @@ Convection.&rdquo; *Geophysical Journal International* 221 (2): 1264&ndash;80.
 <div id="ref-nakagawa2009incorporating" class="csl-entry">
 
 Nakagawa, Takashi, Paul J Tackley, Frederic Deschamps, and James AD Connolly.
-2009. &ldquo;Incorporating Self-Consistently Calculated Mineral Physics into
+2009. "Incorporating Self-Consistently Calculated Mineral Physics into
 Thermochemical Mantle Convection Simulations in a 3-d Spherical Shell and Its
-Influence on Seismic Anomalies in Earth&rsquo;s Mantle.&rdquo; *Geochemistry,
+Influence on Seismic Anomalies in Earth's Mantle." *Geochemistry,
 Geophysics, Geosystems* 10 (3).
 
 </div>
 
 <div id="ref-ringwood1988nature" class="csl-entry">
 
-Ringwood, AE, and T Irifune. 1988. &ldquo;Nature of the 650&ndash;Km Seismic
-Discontinuity: Implications for Mantle Dynamics and Differentiation.&rdquo;
-*Nature* 331 (6152): 131&ndash;36.
+Ringwood, AE, and T Irifune. 1988. "Nature of the 650--Km Seismic
+Discontinuity: Implications for Mantle Dynamics and Differentiation."
+*Nature* 331 (6152): 131--36.
 
 </div>
 
 <div id="ref-stca06" class="csl-entry">
 
-Steinberger, B., and A. R. Calderwood. 2006. &ldquo;<span
-class="nocase">Models of large-scale viscous flow in the Earth&rsquo;s mantle
-with constraints from mineral physics and surface observations</span>.&rdquo;
-*Geophy.&nbsp;J.&nbsp;Int.* 167: 1461&ndash;81.
+Steinberger, B., and A. R. Calderwood. 2006. "<span
+class="nocase">Models of large-scale viscous flow in the Earth's mantle
+with constraints from mineral physics and surface observations</span>."
+*Geophy.&nbsp;J.&nbsp;Int.* 167: 1461--81.
 <https://doi.org/10.1111/j.1365-246X.2006.03131.x>.
 
 </div>
 
 <div id="ref-stixrude2011thermodynamics" class="csl-entry">
 
-Stixrude, Lars, and Carolina Lithgow-Bertelloni. 2011. &ldquo;Thermodynamics
-of Mantle Minerals-II. Phase Equilibria.&rdquo; *Geophysical Journal
-International* 184 (3): 1180&ndash;1213.
+Stixrude, Lars, and Carolina Lithgow-Bertelloni. 2011. "Thermodynamics
+of Mantle Minerals-II. Phase Equilibria." *Geophysical Journal
+International* 184 (3): 1180--1213.
 
 </div>
 

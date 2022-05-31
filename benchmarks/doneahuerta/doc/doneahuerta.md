@@ -2,7 +2,7 @@
 
 *This section was contributed by Cedric Thieulot.*
 
-This benchmark is taken from Donea and Huerta&rsquo;s book (Donea and Huerta
+This benchmark is taken from Donea and Huerta's book (Donea and Huerta
 2003). The domain is a unit square and the viscosity and density are set to 1.
 The components of the gravity vector $\mathbf g$ are prescribed as
 $$\begin{aligned}

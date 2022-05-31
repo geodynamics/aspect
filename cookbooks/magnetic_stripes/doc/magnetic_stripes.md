@@ -14,24 +14,29 @@ model also has a compositional field that tracks the orientation of the
 magnetic field when material reaches the surface at the ridge axis in the
 center of the model (and correspondingly, a value of 1 or -1 is assigned to
 the field). As the material is advected away from the ridge axis, alternating
-stripes &ndash; symmetric with respect to the ridge axis &ndash; become
+stripes -- symmetric with respect to the ridge axis -- become
 visible.
 
 This functionality is implemented through a new material model called magnetic
 stripes. This material model allows it to add a list of reversal times to the
 input file, that will then be used during the simulation. The input file used
-here contains the Earth&rsquo;s reversal history of the last 83 million years.
+here contains the Earth's reversal history of the last 83 million years.
 
 Before the model can be run, the plugin needs to be compiled (see
 Section&nbsp;{ref}`sec:benchmark-run`). To illustrate the stripes forming on
 the sea floor, a high resolution is necessary, which means that this cookbook
 needs longer to run than some of the others, and it may not always be feasible
 to run it on student laptops, or at least not during class. An animation can
-be found [here][]. Slides with an introduction to the Earth&rsquo;s magnetic
+be found [here]. Slides with an introduction to the Earth's magnetic
 field can be found [here][3].
 
 .
-<img src="cookbooks/magnetic_stripes/doc/mid-ocean-ridge.png" title="fig:" id="fig:convection-box-iterations" style="width:60.0%" alt="Setup of the mid-ocean ridge model. Background colors show temperature. Black and white colors at the top of the model illustrate the orientation of the magnetic field frozen in the rock when the melt generated at the mid-ocean ridge reaches the surface, crystallizes to form new sea floor, and the rock cools down. White lines illustrate the flow field." />
+
+```{figure-md} fig:convection-box-iterations
+<img src="mid-ocean-ridge.png" style="width:60.0%" />
+
+ Setup of the mid-ocean ridge model. Background colors show temperature. Black and white colors at the top of the model illustrate the orientation of the magnetic field frozen in the rock when the melt generated at the mid-ocean ridge reaches the surface, crystallizes to form new sea floor, and the rock cools down. White lines illustrate the flow field.
+```
 .
 
   [cookbooks/magnetic_stripes/magnetic_stripes.prm]: cookbooks/magnetic_stripes/magnetic_stripes.prm

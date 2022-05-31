@@ -8,20 +8,30 @@ deformations. The process is complicated to model because the rheology of
 cold, brittle crust is substantially more complicated than that of the hot,
 ductile rocks in the mantle. At the same time, the processes that act in such
 situations are surprisingly easy to replicate and visualize using simple
-&ldquo;sand box&rdquo; experiments in which one fills a volume with layers of
+"sand box" experiments in which one fills a volume with layers of
 differently-colored sand and compresses or stretches the volume. Examples of
 the patterns one can then observe in these do-it-yourself models are shown in
-Fig.&nbsp;[2][].
+Fig.&nbsp;[2].
 
-<img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/real-sandbox-1.jpg" title="fig:" id="fig:sandbox-images" style="width:45.0%" alt="Examples of deformation patterns of &#x201C;sand box&#x201D; experiments in which alternating layers of differently-colored sand undergo deformation. Pictures courtesy of the lab of Dennis Harry at Colorado State University." />
-<img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/real-sandbox-2.jpg" title="fig:" id="fig:sandbox-images" style="width:45.0%" alt="Examples of deformation patterns of &#x201C;sand box&#x201D; experiments in which alternating layers of differently-colored sand undergo deformation. Pictures courtesy of the lab of Dennis Harry at Colorado State University." />
+
+```{figure-md} fig:sandbox-images
+<img src="real-sandbox-1.jpg" style="width:45.0%" />
+
+ Examples of deformation patterns of &#x201C;sand box&#x201D; experiments in which alternating layers of differently-colored sand undergo deformation. Pictures courtesy of the lab of Dennis Harry at Colorado State University.
+```
+
+```{figure-md} fig:sandbox-images
+<img src="real-sandbox-2.jpg" style="width:45.0%" />
+
+ Examples of deformation patterns of &#x201C;sand box&#x201D; experiments in which alternating layers of differently-colored sand undergo deformation. Pictures courtesy of the lab of Dennis Harry at Colorado State University.
+```
 
 Buiter et al.&nbsp;(Buiter et al. 2016) organized new comparison experiments
 between these kinds of analogue and numerical models to investigate this kind
 of brittle thrust wedge behavior. The benchmark here aims to verify that the
 wedge models using follows other numerical results and the analytical wedge
 theory shown in this paper. In particular, input files
-([benchmarks/buiter_et_al_2016_jsg][]) are provided for reproducing the
+([benchmarks/buiter_et_al_2016_jsg](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/buiter_et_al_2016_jsg)) are provided for reproducing the
 numerical simulations of stable wedge experiment 1 and unstable wedge
 experiment 2 with the same model setups.
 
@@ -36,7 +46,7 @@ sand dilation.
 
 In sandbox-type models, an important role is played by the boundaries and the
 frictional sliding of sand against these boundaries. For the top boundary
-condition, zero traction (&ldquo;open&rdquo;) and a sticky air layer is used
+condition, zero traction ("open") and a sticky air layer is used
 to approximate a free surface. Additional testing revealed that using a true
 free surface leads to significant mesh distortion and associated numerical
 instabilities. We also apply a rigid block that approximates a mobile wall
@@ -66,46 +76,46 @@ The relevant parameters are shown here:
 taper theory remain stable when translated horizontally. A quartz sand wedge
 with a horizontal base and a surface slope of 20 degrees is pushed 4 cm
 horizontally by inward movement of a mobile wall at the right boundary with a
-velocity of 2.5 cm/hour (Figure&nbsp;[3][]). The basal angle is zero
+velocity of 2.5 cm/hour (Figure&nbsp;[3]). The basal angle is zero
 (horizontal), a thin layer separates the sand and boundary to ensure minimum
 coupling between the wedge and bounding box during translation, and a sticky
 air layer is used above the wedge. Further, the purely plastic material should
 not undergo any deformation during translation.
 
-<div class="center">
+```{figure-md} fig:btwexp1
+<img src="exp1.png" />
 
-<figure>
-<img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/exp1.png" id="fig:btwexp1" alt="Numerical model of a stable sand wedge. a) Initial model setup. b) Material field after 4 cm of translation. c) Strain rate field and d) pressure field." /><figcaption aria-hidden="true"><em>Numerical model of a stable sand wedge. a) Initial model setup. b) Material field after 4 cm of translation. c) Strain rate field and d) pressure field.</em></figcaption>
-</figure>
+ Numerical model of a stable sand wedge. a) Initial model setup. b) Material field after 4 cm of translation. c) Strain rate field and d) pressure field.
+```
 
-</div>
+
 
 *Experiment 2* tests how an unstable subcritical wedge deforms to reach the
 critical taper solution. In this experiment, horizontal layers of sand undergo
 10 cm shortening by inward movement of a mobile wall with a velocity of 2.5
-cm/hour (Figure&nbsp;[4][]). Model results show thrust wedge generation near
+cm/hour (Figure&nbsp;[4]). Model results show thrust wedge generation near
 the mobile wall through a combination of mainly in-sequence forward and
 backward thrusting. The strain field highlights several incipient shear zones
 that do not always accumulate enough offset to become visible in the material
 field. The pressure field of the model remains more or less lithostatic, with
 lower pressure values in (incipient) shear zones.
 
-<div class="center">
+```{figure-md} fig:btwexp2
+<img src="exp2.png" />
 
-<figure>
-<img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/exp2.png" id="fig:btwexp2" alt="Numerical model of an unstable subcritical wedge. a) Initial model setup. b) Material field of sands after 10 cm shortening. c) Strain field and d) pressure field." /><figcaption aria-hidden="true"><em>Numerical model of an unstable subcritical wedge. a) Initial model setup. b) Material field of sands after 10 cm shortening. c) Strain field and d) pressure field.</em></figcaption>
-</figure>
+ Numerical model of an unstable subcritical wedge. a) Initial model setup. b) Material field of sands after 10 cm shortening. c) Strain field and d) pressure field.
+```
 
-</div>
+
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-buiter16" class="csl-entry">
 
 Buiter, S. J. H., G. Schreurs, M. Albertz, T. V. Gerya, B. Kaus, W. Landry, L.
-le Pourhiet, et al. 2016. &ldquo;<span class="nocase">Benchmarking numerical
-models of brittle thrust wedges</span>.&rdquo; *Journal of Structural Geology*
-92: 140&ndash;77. <https://doi.org/10.1016/j.jsg.2016.03.003>.
+le Pourhiet, et al. 2016. "<span class="nocase">Benchmarking numerical
+models of brittle thrust wedges</span>." *Journal of Structural Geology*
+92: 140--77. <https://doi.org/10.1016/j.jsg.2016.03.003>.
 
 </div>
 

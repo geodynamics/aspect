@@ -16,7 +16,7 @@ i.e., the piecewise viscosity function is defined as $$\begin{aligned}
 the upper and lower layers, respectively. This viscosity model can be
 implemented by creating a plugin that is a small modification of the `simpler`
 material model (from which it is otherwise simply copied). We call this
-material model &ldquo;SimplerWithCrust.&rdquo; In particular, what is
+material model "SimplerWithCrust." In particular, what is
 necessary is an evaluation function that looks like this:
 
 ``` c++
@@ -79,18 +79,28 @@ The entire parameter file is located in
 [cookbooks/free_surface_with_crust/free_surface_with_crust.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/free_surface_with_crust/free_surface_with_crust.prm).
 
 Running this input file generates a crust that is 30 km thick and 1000 times
-as viscous as the lower layer. Figure&nbsp;[2][] shows that adding a crust to
+as viscous as the lower layer. Figure&nbsp;[2] shows that adding a crust to
 the model causes the maximum topography to both decrease and occur at a later
 time. Heat flows through the system primarily by advection until the
 temperature anomaly reaches the base of the crustal layer (approximately at
-the time for which Fig&nbsp;[2][] shows the temperature profile). The
-crust&rsquo;s high viscosity reduces the temperature anomaly&rsquo;s velocity
+the time for which Fig&nbsp;[2] shows the temperature profile). The
+crust's high viscosity reduces the temperature anomaly's velocity
 substantially, causing it to affect the surface topography at a later time.
 Just as the cookbook shown in Section&nbsp;{ref}`sec:cookbooks-freesurface`,
 the topography returns to zero after some time.
 
-<img src="cookbooks/free_surface_with_crust/doc/free_surface_with_crust.png" title="fig:" id="fig:freesurfaceWC" style="height:25.0%" alt="Adding a viscous crust to a model with surface topography. The thermal anomaly spreads horizontally as it collides with the highly viscous crust (left, white solid line). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right)." />
-<img src="cookbooks/free_surface_with_crust/doc/topography.png" title="fig:" id="fig:freesurfaceWC" style="height:25.0%" alt="Adding a viscous crust to a model with surface topography. The thermal anomaly spreads horizontally as it collides with the highly viscous crust (left, white solid line). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right)." />
+
+```{figure-md} fig:freesurfaceWC
+<img src="free_surface_with_crust.png" style="height:25.0%" />
+
+ Adding a viscous crust to a model with surface topography. The thermal anomaly spreads horizontally as it collides with the highly viscous crust (left, white solid line). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right).
+```
+
+```{figure-md} fig:freesurfaceWC
+<img src="topography.png" style="height:25.0%" />
+
+ Adding a viscous crust to a model with surface topography. The thermal anomaly spreads horizontally as it collides with the highly viscous crust (left, white solid line). The addition of a crustal layer both dampens and delays the appearance of the topographic maximum and minimum (right).
+```
 
   [cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc]: cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc
   [1]: #sec:plugins

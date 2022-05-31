@@ -30,7 +30,7 @@ inducing corner flow. Material can flow out freely at the right model
 boundary. The model shows both how melt is focused towards the ridge axis, and
 how melting and freezing induces chemical heterogeneity in the mantle,
 generating the crust and lithosphere. A movie of the full model evolution can
-be found [online][].
+be found [online].
 
 ## The input file.
 
@@ -48,7 +48,7 @@ characteristic time scale) of melting, and they have to be consistent in the
 sense that the operator splitting time step can not be larger than the
 reaction time scale. The melting model we use here is the anhydrous mantle
 melting model of (Katz, Spiegelman, and Langmuir 2003) for a peridotitic rock
-composition, as implemented in the &ldquo;melt simple&rdquo; material model.
+composition, as implemented in the "melt simple" material model.
 
 ``` prmfile
 ```
@@ -61,7 +61,7 @@ boundary, as material should not cross this centerline. However, we do not
 know the inflow and outflow velocities at the bottom and right side of the
 model. Instead, what we can do here is prescribing the lithostatic pressure as
 a boundary condition for the stress. We accomplish this by using the
-&ldquo;initial lithostatic pressure&rdquo; model. This plugin will
+"initial lithostatic pressure" model. This plugin will
 automatically compute a 1d lithostatic pressure profile at a given point at
 the time of the model start and apply it as a boundary traction.
 
@@ -100,20 +100,22 @@ The complete input file is located at
 
 ## Model evolution.
 
-<figure>
-<embed src="cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.pdf" id="fig:mid-ocean-ridge" style="width:50.0%" /><figcaption aria-hidden="true"><em>Mid-ocean ridge model after 8 million years. The top panel shows the depletion and porosity fields (with the characteristic triangular melting region), the bottom panel shows the temperature distribution and the melt velocity, indicated by the arrows.</em></figcaption>
-</figure>
+```{figure-md} fig:mid-ocean-ridge
+<img src="mid_ocean_ridge.svg" style="width:50.0%" />
+
+Mid-ocean ridge model after 8 million years. The top panel shows the depletion and porosity fields (with the characteristic triangular melting region), the bottom panel shows the temperature distribution and the melt velocity, indicated by the arrows.
+```
 
 When we look at the visualization output of this model (see also
-Figure&nbsp;[1][]), we can see how the hot material flowing in from the bottom
+Figure&nbsp;[1]), we can see how the hot material flowing in from the bottom
 starts to melt as it reaches lower and lower pressures and crosses the
 solidus. Simultaneously, melting makes the residual solid rock more depleted
 (as indicated by the positive values of the compositional field called
-&lsquo;peridotite&rsquo;). Once material approaches the surface, it is cooled
+'peridotite'). Once material approaches the surface, it is cooled
 from the cold boundary layer above, and melt starts to crystallize again,
-generating &lsquo;enriched&rsquo; basaltic crust where is freezes (as
+generating 'enriched' basaltic crust where is freezes (as
 indicated by the negative values of the compositional field called
-&lsquo;peridotite&rsquo;). As the temperature gradients are much sharper close
+'peridotite'). As the temperature gradients are much sharper close
 to the surface, this transition from melt to solid rock is much sharper than
 in the melting region. Once material crystallizes, it is transported away from
 the ridge axis due to the flow field induced by the prescribed plate velocity
@@ -123,11 +125,13 @@ ridge shows two distinct layers: The top $\approx 7$ km are enriched material,
 and form the basaltic crust (negative peridotite field), and the $\approx 50$
 km below are depleted material, and form the lithosphere (positive peridotite
 field). A vertical profile at a distance of 80 km from the ridge axis showing
-this composition can be found in Figure&nbsp;[2][].
+this composition can be found in Figure&nbsp;[2].
 
-<figure>
-<embed src="cookbooks/mid_ocean_ridge/doc/depletion_profile.pdf" id="fig:mid-ocean-ridge-profile" style="width:35.0%" /><figcaption aria-hidden="true"><em>Vertical profile through the model domain at a distance of 80 km from the ridge axis at the end of the model run, showing the distribution of depletion and enrichment as indicated by the peridotite field.</em></figcaption>
-</figure>
+```{figure-md} fig:mid-ocean-ridge-profile
+<img src="depletion_profile.svg" style="width:35.0%" />
+
+Vertical profile through the model domain at a distance of 80 km from the ridge axis at the end of the model run, showing the distribution of depletion and enrichment as indicated by the peridotite field.
+```
 
 ## Mesh refinement.
 
@@ -141,12 +145,14 @@ length. This can be done in the mesh refinement section of the input file:
 This will lead to a higher resolution particularly in regions with low (but
 not zero) porosity, and can be useful to resolve the strong gradients in the
 melt velocity and compaction pressure that are to be expected in these places
-(see Figure&nbsp;[3][]). Of course it is also possible to combine both methods
+(see Figure&nbsp;[3]). Of course it is also possible to combine both methods
 for refining the mesh.
 
-<figure>
-<embed src="cookbooks/mid_ocean_ridge/doc/refinement.pdf" id="fig:mid-ocean-ridge-mesh" style="width:60.0%" /><figcaption aria-hidden="true"><em>Mesh after a time of 3.6 million years for a model using the composition threshold refinement strategy (left) and the compaction length refinement strategy (right) Background colors indicate the melt velocity. Its sharp gradients at the interface between regions with and without melt can only be resolved using the compaction length refinement strategy.</em></figcaption>
-</figure>
+```{figure-md} fig:mid-ocean-ridge-mesh
+<img src="refinement.svg" style="width:60.0%" />
+
+Mesh after a time of 3.6 million years for a model using the composition threshold refinement strategy (left) and the compaction length refinement strategy (right) Background colors indicate the melt velocity. Its sharp gradients at the interface between regions with and without melt can only be resolved using the compaction length refinement strategy.
+```
 
 ## Extending the model.
 
@@ -168,7 +174,7 @@ lithospheric material. Some ideas for adapting the model setup:
 -   Changing the speed of melt migration: The velocity of the melt with
     respect to the solid velocity is determined by the permeability and the
     melt viscosity (and the pressure gradients in the melt). Increasing the
-    permeability (by setting a different &ldquo;Reference permeability&rdquo;
+    permeability (by setting a different "Reference permeability"
     in the melt simple model) can lead to higher melt velocities, melt
     reaching the depth of freezing faster, and hence lower overall porosity
     values at steady state.
@@ -184,9 +190,9 @@ lithospheric material. Some ideas for adapting the model setup:
 
 <div id="ref-KSL2003" class="csl-entry">
 
-Katz, Richard F., Marc Spiegelman, and Charles H. Langmuir. 2003. &ldquo;A New
-Parameterization of Hydrous Mantle Melting.&rdquo; *Geochemistry, Geophysics,
-Geosystems* 4 (9): n/a&ndash;. <https://doi.org/10.1029/2002GC000433>.
+Katz, Richard F., Marc Spiegelman, and Charles H. Langmuir. 2003. "A New
+Parameterization of Hydrous Mantle Melting." *Geochemistry, Geophysics,
+Geosystems* 4 (9): n/a--. <https://doi.org/10.1029/2002GC000433>.
 
 </div>
 

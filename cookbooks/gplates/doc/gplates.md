@@ -28,9 +28,9 @@ at CalTech and the Center for Geodynamics at the Norwegian Geological Survey
 (<http://www.gplates.org>). Apart from the software one needs the actual plate
 reconstruction that consists of closed polygons covering the complete model
 domain. For our case we will use the data provided by (Gurnis et al. 2012)
-that is available from the GPlates website under &ldquo;Download $\rightarrow$
+that is available from the GPlates website under "Download $\rightarrow$
 Download GPlates-compatible data $\rightarrow$ Global reconstructions with
-continuously closing plates from 140 Ma to the present.&rdquo; The data is
+continuously closing plates from 140 Ma to the present." The data is
 provided under a Creative Commons Attribution 3.0 Unported License
 (<http://creativecommons.org/licenses/by/3.0/>).
 
@@ -46,10 +46,10 @@ surface).
 
 With loaded plate polygon and rotation information the conversion from GPlates
 data to -readable velocity files is rather straightforward. First the user
-needs to generate (or import) so-called &ldquo;velocity domain points,&rdquo;
+needs to generate (or import) so-called "velocity domain points,"
 which are discrete sets of points at which GPlates will evaluate velocity
-information. This is done using the &ldquo;Features $\rightarrow$ Generate
-Velocity Domain Points $\rightarrow$ Latitude Longitude&rdquo; menu option.
+information. This is done using the "Features $\rightarrow$ Generate
+Velocity Domain Points $\rightarrow$ Latitude Longitude" menu option.
 Because is using an adaptive mesh it is not possible for GPlates to generate
 velocity information at the precise surface node positions like for CitcomS or
 Terra (the other currently available interfaces). Instead GPlates will output
@@ -57,7 +57,7 @@ the information on a general Latitude/Longitude grid with nodes on all
 crossing points. then internally interpolates this information to the current
 node locations during the model run. This requires the user to choose a
 sensible resolution of the GPlates output, which can be adjusted in the
-&ldquo;Generate Latitude/Longitude Velocity Domain Points&rdquo; dialog of
+"Generate Latitude/Longitude Velocity Domain Points" dialog of
 GPlates. In general a resolution that resolves the important features is
 necessary, while a resolution that is higher than the maximal mesh size for
 the model is unnecessary and only increases the computational cost and memory
@@ -66,25 +66,25 @@ consumption of the model.
 **Important note:** The Mesh creation routine in GPlates has significantly
 changed from version 1.3 to 1.4. In GPlates 1.4 and later the user has to make
 sure that the number of longitude intervals is set as twice the number of
-latitude intervals, the &ldquo;Place node points at centre of
-latitude/longitude cells&rdquo; box is **un**checked and the
-&ldquo;Latitude/Longitude extents&rdquo; are set to &ldquo;Use Global
-Extents.&rdquo; does check for most possible combinations that can not be read
+latitude intervals, the "Place node points at centre of
+latitude/longitude cells" box is **un**checked and the
+"Latitude/Longitude extents" are set to "Use Global
+Extents." does check for most possible combinations that can not be read
 and will cancel the calculation in these cases, however some mistakes can not
 be checked against from the information provided in the GPlates file.
 
 After creating the Velocity Domain Points the user should see the created
 points and their velocities indicated as points and arrows in GPlates. To
-export the calculated velocities one would use the &ldquo;Reconstruction
-$\rightarrow$ Export&rdquo; menu. In this dialog the user may specify the time
+export the calculated velocities one would use the "Reconstruction
+$\rightarrow$ Export" menu. In this dialog the user may specify the time
 instant or range at which the velocities shall be exported. The only necessary
-option is to include the &ldquo;Velocities&rdquo; data type in the &ldquo;Add
-Export&rdquo; sub-dialog. The velocities need to be exported in the native
+option is to include the "Velocities" data type in the "Add
+Export" sub-dialog. The velocities need to be exported in the native
 GPlates `*.gpml` format, which is based on XML and can be read by . In case of
 a time-range the user needs to add a pattern specifier to the name to create a
 series of files. The `%u` flag is especially suited for the interaction with ,
 since it can easily be replaced by a calculated file index (see also
-[0.0.1.5][]).
+[0.0.1.5]).
 
 ## Setting up the model.
 
@@ -110,7 +110,7 @@ The relevant section of the input file is then as follows:
 ``` prmfile
 ```
 
-In the &ldquo;Boundary velocity model&rdquo; subsection the user prescribes
+In the "Boundary velocity model" subsection the user prescribes
 the boundary that is supposed to use the GPlates plugin. Although currently
 nothing forbids the user to use GPlates plugin for other boundaries than the
 surface, its current usage and the provided sample data only make sense for
@@ -129,10 +129,10 @@ that define the 2D plane.
 The implementation of plate velocities in both two- and three-dimensional
 model setups allows for an easy comparison and test for common sources of
 error in the interpretation of model results. The left top figure in
-Fig.&nbsp;[1][] shows a modification of the above presented parameter file by
+Fig.&nbsp;[1] shows a modification of the above presented parameter file by
 setting `Dimension = 3` and
 `Initial global refinement = 3`. The top right plot of
-Fig.&nbsp;[1][] shows an example of three independent two-dimensional
+Fig.&nbsp;[1] shows an example of three independent two-dimensional
 computations of the same reduced resolution. The models were prescribed to be
 orthogonal slices by setting:
 
@@ -148,7 +148,7 @@ The results of these models are plotted simultaneously in a single
 three-dimensional figure in their respective model planes. The necessary
 information to rotate the 2D models to their respective planes (rotation axis
 and angle) is provided by the GPlates plugin in the beginning of the model
-output. The bottom plot of Fig.&nbsp;[1][] finally shows the results of the
+output. The bottom plot of Fig.&nbsp;[1] finally shows the results of the
 original [cookbooks/gplates/gplates_2d.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/gplates/gplates_2d.prm) also in the three mentioned
 planes.
 
@@ -157,7 +157,7 @@ equal resolution and additional 2D output for a higher resolution an
 interesting question to ask would be: What additional information can be
 created by either using three-dimensional geometry or higher resolution in
 mantle convection models with prescribed boundary velocities. As one can see
-in the comparison between the top right and bottom plot in Fig.&nbsp;[1][]
+in the comparison between the top right and bottom plot in Fig.&nbsp;[1]
 additional resolution clearly improves the geometry of small scale features
 like the shape of up- and downwellings as well as the maximal temperature
 deviation from the background mantle. However, the limitation to two
@@ -176,9 +176,11 @@ material model) are way too simplified to draw any scientific conclusion out
 of it. Rather it is thought as a proof-of-concept what is possible with the
 dimension independent approach of and its plugins.
 
-<figure>
-<img src="cookbooks/gplates/doc/gplates-comparison.png" id="fig:gv-1" alt="Using GPlates for velocity boundary conditions: The top left figure shows the results of a three-dimensional model using the present day plate velocities provided by GPlates as surface boundary condition. The top right figure shows three independent computations on two-dimensional slices through Earth. The boundary conditions for each of these slices (white arrows) are tangential to the slices and are projections of the three-dimensional velocity vectors into the two-dimensional plane occupied by the slice. While the two top models are created with the same mesh resolution the bottom figure shows three independent two-dimensional models using a higher resolution. The view is centered on South America with Antarctica being near the bottom of the figure (coastlines provided by NGU and the GPlates project)." /><figcaption aria-hidden="true"><em>Using GPlates for velocity boundary conditions: The top left figure shows the results of a three-dimensional model using the present day plate velocities provided by GPlates as surface boundary condition. The top right figure shows three independent computations on two-dimensional slices through Earth. The boundary conditions for each of these slices (white arrows) are tangential to the slices and are projections of the three-dimensional velocity vectors into the two-dimensional plane occupied by the slice. While the two top models are created with the same mesh resolution the bottom figure shows three independent two-dimensional models using a higher resolution. The view is centered on South America with Antarctica being near the bottom of the figure (coastlines provided by NGU and the GPlates project).</em></figcaption>
-</figure>
+```{figure-md} fig:gv-1
+<img src="gplates-comparison.png" />
+
+ Using GPlates for velocity boundary conditions: The top left figure shows the results of a three-dimensional model using the present day plate velocities provided by GPlates as surface boundary condition. The top right figure shows three independent computations on two-dimensional slices through Earth. The boundary conditions for each of these slices (white arrows) are tangential to the slices and are projections of the three-dimensional velocity vectors into the two-dimensional plane occupied by the slice. While the two top models are created with the same mesh resolution the bottom figure shows three independent two-dimensional models using a higher resolution. The view is centered on South America with Antarctica being near the bottom of the figure (coastlines provided by NGU and the GPlates project).
+```
 
 ## Time-dependent boundary conditions.
 
@@ -186,7 +188,7 @@ The example presented above uses a constant velocity boundary field that
 equals the present day plate movements. For a number of purposes one may want
 to use a prescribed velocity boundary condition that changes over time, for
 example to investigate the effect of trench migration on subduction. Therefore
-&rsquo;s GPlates plugin is able to read in multiple velocity files and
+'s GPlates plugin is able to read in multiple velocity files and
 linearly interpolate between pairs of files to the current model time. To
 achieve this, one needs to use the `%d` wildcard in the velocity file name,
 which represents the current velocity file index (e.g.
@@ -212,8 +214,8 @@ section&nbsp;{ref}`sec:checkpoint-restart`.
 
 Gurnis, M., M. Turner, S. Zahirovic, L. DiCaprio, S. Spasojevic, R. D.
 M&uuml;ller, J. Boyden, M. Seton, V. C. Manea, and D. J. Bower. 2012.
-&ldquo;Plate Tectonic Reconstructions with Continuously Closing Plates.&rdquo;
-*Computers & Geosciences* 38: 35&ndash;42.
+"Plate Tectonic Reconstructions with Continuously Closing Plates."
+*Computers & Geosciences* 38: 35--42.
 
 </div>
 

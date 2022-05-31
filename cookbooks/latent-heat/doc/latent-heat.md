@@ -4,12 +4,22 @@
 
 The setup of this benchmark is taken from Schubert, Turcotte and Olson
 (Schubert, Turcotte, and Olson 2001) (part 1, p. 194) and is illustrated in
-Fig.&nbsp;[2][].
+Fig.&nbsp;[2].
 
 <div class="center">
 
-<img src="cookbooks/benchmarks/latent-heat/doc/latent-heat-setup.png" title="fig:" id="fig:latent-heat-benchmark" style="width:52.0%" alt="Latent heat benchmark. Both figures show the 2D box model domain. Left: Setup of the benchmark together with a sketch of the expected temperature profile across the phase transition. The dashed line marks the phase transition. Material flows in with a prescribed temperature and velocity at the top, crosses the phase transition in the center and flows out at the bottom. The predicted bottom temperature is T_2 = 1109.08 \, \si{K}. Right: Temperature distribution of the model together with the associated temperature profile across the phase transition. The modelled bottom temperature is T_2 = 1107.39 \, \si{K}." />
-<img src="cookbooks/benchmarks/latent-heat/doc/latent-heat-temperature.png" title="fig:" id="fig:latent-heat-benchmark" style="width:47.0%" alt="Latent heat benchmark. Both figures show the 2D box model domain. Left: Setup of the benchmark together with a sketch of the expected temperature profile across the phase transition. The dashed line marks the phase transition. Material flows in with a prescribed temperature and velocity at the top, crosses the phase transition in the center and flows out at the bottom. The predicted bottom temperature is T_2 = 1109.08 \, \si{K}. Right: Temperature distribution of the model together with the associated temperature profile across the phase transition. The modelled bottom temperature is T_2 = 1107.39 \, \si{K}." />
+
+```{figure-md} fig:latent-heat-benchmark
+<img src="latent-heat-setup.png" style="width:52.0%" />
+
+ Latent heat benchmark. Both figures show the 2D box model domain. Left: Setup of the benchmark together with a sketch of the expected temperature profile across the phase transition. The dashed line marks the phase transition. Material flows in with a prescribed temperature and velocity at the top, crosses the phase transition in the center and flows out at the bottom. The predicted bottom temperature is T_2 = 1109.08 \, \si{K}. Right: Temperature distribution of the model together with the associated temperature profile across the phase transition. The modelled bottom temperature is T_2 = 1107.39 \, \si{K}.
+```
+
+```{figure-md} fig:latent-heat-benchmark
+<img src="latent-heat-temperature.png" style="width:47.0%" />
+
+ Latent heat benchmark. Both figures show the 2D box model domain. Left: Setup of the benchmark together with a sketch of the expected temperature profile across the phase transition. The dashed line marks the phase transition. Material flows in with a prescribed temperature and velocity at the top, crosses the phase transition in the center and flows out at the bottom. The predicted bottom temperature is T_2 = 1109.08 \, \si{K}. Right: Temperature distribution of the model together with the associated temperature profile across the phase transition. The modelled bottom temperature is T_2 = 1107.39 \, \si{K}.
+```
 
 </div>
 
@@ -80,7 +90,7 @@ change across the phase transition. With this method, we could reproduce the
 analytic results from (Schubert, Turcotte, and Olson 2001).
 
 The exact values of the parameters used for this benchmark can be found in
-Fig.&nbsp;[2][]. They result in a predicted value of $T_2 =
+Fig.&nbsp;[2]. They result in a predicted value of $T_2 =
 1109.08 \, \si{K}$ for the temperature in the bottom half of the model, and we
 will demonstrate below that we can match this value in our numerical
 computations. However, it is not as simple as suggested above. In actual
@@ -95,8 +105,8 @@ numerical results shown after the input file.
 To run this benchmark, we need to set up an input file that describes the
 situation. In principle, what we need to do is to describe the position and
 entropy change of the phase transition in addition to the previously outlined
-boundary and initial conditions. For this purpose, we use the &ldquo;latent
-heat&rdquo; material model that allows us to set the density change
+boundary and initial conditions. For this purpose, we use the "latent
+heat" material model that allows us to set the density change
 $\Delta\rho$ and Clapeyron slope $\gamma$ (which together determine the
 entropy change via $\Delta S = \gamma \frac{\Delta\rho}{\rho^2}$) as well as
 the depth of the phase transition as input parameters.
@@ -117,8 +127,18 @@ influences the result.
 
 <div class="center">
 
-<img src="cookbooks/benchmarks/latent-heat/doc/latent-heat-results-1.png" title="fig:" id="fig:latent-heat-benchmark-results" style="width:49.0%" alt="Results of the latent heat benchmark. Both figures show the modelled temperature T_2 at the bottom of the model domain. Left: T_2 in dependence of resolution using a constant phase transition width of 20&#x2006;km. With an increasing number of global refinements of the mesh, the bottom temperature converges against a value of T_2 = 1105.27 \, \si{K}. Right: T_2 in dependence of phase transition width. The model resolution is chosen proportional to the phase transition width, starting with 5 global refinements for a width of 20&#x2006;km. With decreasing phase transition width, T_2 approaches the theoretical value of 1109.08 \, \si{K}" />
-<img src="cookbooks/benchmarks/latent-heat/doc/latent-heat-results-2.png" title="fig:" id="fig:latent-heat-benchmark-results" style="width:49.0%" alt="Results of the latent heat benchmark. Both figures show the modelled temperature T_2 at the bottom of the model domain. Left: T_2 in dependence of resolution using a constant phase transition width of 20&#x2006;km. With an increasing number of global refinements of the mesh, the bottom temperature converges against a value of T_2 = 1105.27 \, \si{K}. Right: T_2 in dependence of phase transition width. The model resolution is chosen proportional to the phase transition width, starting with 5 global refinements for a width of 20&#x2006;km. With decreasing phase transition width, T_2 approaches the theoretical value of 1109.08 \, \si{K}" />
+
+```{figure-md} fig:latent-heat-benchmark-results
+<img src="latent-heat-results-1.png" style="width:49.0%" />
+
+ Results of the latent heat benchmark. Both figures show the modelled temperature T_2 at the bottom of the model domain. Left: T_2 in dependence of resolution using a constant phase transition width of 20&#x2006;km. With an increasing number of global refinements of the mesh, the bottom temperature converges against a value of T_2 = 1105.27 \, \si{K}. Right: T_2 in dependence of phase transition width. The model resolution is chosen proportional to the phase transition width, starting with 5 global refinements for a width of 20&#x2006;km. With decreasing phase transition width, T_2 approaches the theoretical value of 1109.08 \, \si{K}
+```
+
+```{figure-md} fig:latent-heat-benchmark-results
+<img src="latent-heat-results-2.png" style="width:49.0%" />
+
+ Results of the latent heat benchmark. Both figures show the modelled temperature T_2 at the bottom of the model domain. Left: T_2 in dependence of resolution using a constant phase transition width of 20&#x2006;km. With an increasing number of global refinements of the mesh, the bottom temperature converges against a value of T_2 = 1105.27 \, \si{K}. Right: T_2 in dependence of phase transition width. The model resolution is chosen proportional to the phase transition width, starting with 5 global refinements for a width of 20&#x2006;km. With decreasing phase transition width, T_2 approaches the theoretical value of 1109.08 \, \si{K}
+```
 
 </div>
 
@@ -127,13 +147,13 @@ computations. We note that it takes some time for the model to reach a steady
 state and only then does the bottom temperature reach the theoretical value.
 Therefore, we use the last output step to compare predicted and computed
 values. You can visualize the output in different ways, one of it being
-ParaView and shown in Fig.&nbsp;[2][] on the right side (an alternative is to
+ParaView and shown in Fig.&nbsp;[2] on the right side (an alternative is to
 use Visit as described in Section&nbsp;{ref}`sec:viz`). In ParaView, you can
-plot the temperature profile using the filter &ldquo;Plot Over Line&rdquo;
+plot the temperature profile using the filter "Plot Over Line"
 (Point1: 500000,0,0; Point2: 500000,1000000,0, then go to the
-&ldquo;Display&rdquo; tab and select &ldquo;T&rdquo; as only variable in the
-&ldquo;Line series&rdquo; section) or &ldquo;Calculator&rdquo; (as seen in
-Fig.&nbsp;[2][]). In Fig.&nbsp;[4][] (left) we can see that with increasing
+"Display" tab and select "T" as only variable in the
+"Line series" section) or "Calculator" (as seen in
+Fig.&nbsp;[2]). In Fig.&nbsp;[4] (left) we can see that with increasing
 resolution, the value for the bottom temperature converges to a value of
 $T_2 = 1105.27 \, \si{K}$.
 
@@ -141,12 +161,12 @@ However, this is not what the analytic solution predicted. The reason for this
 difference is the width of the phase transition with which we smooth out the
 Dirac delta function that results from differentiating the $X(y)$ we would
 have liked to use in an ideal world. (In reality, however, for the
-Earth&rsquo;s mantle we also expect phase transitions that are distributed
+Earth's mantle we also expect phase transitions that are distributed
 over a certain depth range and so the smoothed out approach may not be a bad
 approximation.) Of course, the results shown above result from an the
 analytical approach that is only correct if the phase transition is
 discontinuous and constrained to one specific depth $y=y_{tr}$. Instead, we
-chose a hyperbolic tangent as our phase function. Moreover, Fig.&nbsp;[4][]
+chose a hyperbolic tangent as our phase function. Moreover, Fig.&nbsp;[4]
 (right) illustrates what happens to the temperature at the bottom when we vary
 the width of the phase transition: The smaller the width, the closer the
 temperature gets to the predicted value of $T_2 = 1109.08 \, \si{K}$,

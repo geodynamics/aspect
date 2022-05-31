@@ -15,12 +15,14 @@ computational domain is a $1000 \si{km}\times 660 \si{km}$ box. No-slip
 boundary conditions are imposed on the sides of the system, while free-slip
 boundary conditions are imposed at the top and bottom.
 
-<figure>
-<img src="cookbooks/benchmarks/slab_detachment/doc/drawing.png" id="fig:slab_detachment_setup" alt="Slab detachment benchmark: Initial geometry [fig:slab_detachment_setup]" /><figcaption aria-hidden="true"><em>Slab detachment benchmark: Initial geometry <span id="fig:slab_detachment_setup" label="fig:slab_detachment_setup">[fig:slab_detachment_setup]</span></em></figcaption>
-</figure>
+```{figure-md} fig:slab_detachment_setup
+<img src="drawing.png" />
+
+ Slab detachment benchmark: Initial geometry [fig:slab_detachment_setup]
+```
 
 Two materials are present in the domain: the lithosphere and the mantle as
-shown in Figure&nbsp;[1][]. The gravity acceleration is Earth-like with
+shown in Figure&nbsp;[1]. The gravity acceleration is Earth-like with
 $g=9.81 \si{m}\si{s}^2$. The overriding plate is $80\si{km}$ thick and is
 placed at the top of the domain. The already subducted lithosphere extends
 vertically into the mantle for $250 \si{km}$. This slab has a density
@@ -43,9 +45,9 @@ explored in (Glerum et al. 2018).
 
 <div id="ref-garm18" class="csl-entry">
 
-Garzanti, E., G. Radeff, and M. G. Malus&agrave;. 2018. &ldquo;Slab Breakoff:
+Garzanti, E., G. Radeff, and M. G. Malus&agrave;. 2018. "Slab Breakoff:
 A Critical Appraisal of a Geological Theory as Applied in Space and
-Time.&rdquo; *Earth-Science Reviews* 177: 303&ndash;19.
+Time." *Earth-Science Reviews* 177: 303--19.
 <https://doi.org/10.1016/j.earscirev.2017.11.012>.
 
 </div>
@@ -53,43 +55,43 @@ Time.&rdquo; *Earth-Science Reviews* 177: 303&ndash;19.
 <div id="ref-gltf18" class="csl-entry">
 
 Glerum, A., C. Thieulot, M. Fraters, C. Blom, and W. Spakman. 2018.
-&ldquo;Nonlinear Viscoplasticity in <span class="smallcaps">ASPECT</span>:
-Benchmarking and Applications to Subduction.&rdquo; *Solid Earth* 9 (2):
-267&ndash;94. <https://doi.org/10.5194/se-9-267-2018>.
+"Nonlinear Viscoplasticity in <span class="smallcaps">ASPECT</span>:
+Benchmarking and Applications to Subduction." *Solid Earth* 9 (2):
+267--94. <https://doi.org/10.5194/se-9-267-2018>.
 
 </div>
 
 <div id="ref-hitg14" class="csl-entry">
 
 Hillebrand, B., C. Thieulot, T. Geenen, A. P. van den Berg, and W. Spakman.
-2014. &ldquo;Using the Level Set Method in Geodynamical Modeling of
-Multi-Material Flows and Earth&rsquo;s Free Surface.&rdquo; *Solid Earth* 5
-(2): 1087&ndash;98. <https://doi.org/10.5194/se-5-1087-2014>.
+2014. "Using the Level Set Method in Geodynamical Modeling of
+Multi-Material Flows and Earth's Free Surface." *Solid Earth* 5
+(2): 1087--98. <https://doi.org/10.5194/se-5-1087-2014>.
 
 </div>
 
 <div id="ref-schm11" class="csl-entry">
 
-Schmalholz, S. M. 2011. &ldquo;<span class="nocase">A simple analytical
-solution for slab detachment</span>.&rdquo;
-*Earth&nbsp;Planet.&nbsp;Sci.&nbsp;Lett.* 304: 45&ndash;54.
+Schmalholz, S. M. 2011. "<span class="nocase">A simple analytical
+solution for slab detachment</span>."
+*Earth&nbsp;Planet.&nbsp;Sci.&nbsp;Lett.* 304: 45--54.
 
 </div>
 
 <div id="ref-vaal11" class="csl-entry">
 
-van Hunen, J., and M. B. Allen. 2011. &ldquo;<span class="nocase">Continental
+van Hunen, J., and M. B. Allen. 2011. "<span class="nocase">Continental
 collision and slab break-off: A comparison of 3-D numerical models with
-observations</span>.&rdquo; *Earth&nbsp;Planet.&nbsp;Sci.&nbsp;Lett.* 302:
-27&ndash;37.
+observations</span>." *Earth&nbsp;Planet.&nbsp;Sci.&nbsp;Lett.* 302:
+27--37.
 
 </div>
 
 <div id="ref-wosp00" class="csl-entry">
 
-Wortel, M. J. R., and W. Spakman. 2000. &ldquo;<span class="nocase">Subduction
-and slab detachment in the Mediterranean-Carpathian region</span>.&rdquo;
-*Science* 290: 1910&ndash;17.
+Wortel, M. J. R., and W. Spakman. 2000. "<span class="nocase">Subduction
+and slab detachment in the Mediterranean-Carpathian region</span>."
+*Science* 290: 1910--17.
 
 </div>
 

@@ -24,20 +24,42 @@ perturbed by a random noise of amplitude $\pm 0.001~\si{m}$. Since fluid 3 is
 lighter than fluid 2 and fluid 2 is lighter than fluid 1, both interfaces are
 unstable. We observe that interface 2-3 deforms first, produces domes which
 are subsequently incorporated in the domes being generated at the interface
-1-2, as shown in Figure&nbsp;[4][]. The root mean square velocity
-(Figure&nbsp;[5][]) shows two slopes in the early stages ($t<50~\si{\second}$)
+1-2, as shown in Figure&nbsp;[4]. The root mean square velocity
+(Figure&nbsp;[5]) shows two slopes in the early stages ($t<50~\si{\second}$)
 corresponding to the two different growth rates of the interfaces, as
 explained by linear stability analysis (Weinberg and Schmeling 1992; Ramberg
 1981).
 
-<img src="cookbooks/benchmarks/polydiapirs/doc/diapirs0000.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
-<img src="cookbooks/benchmarks/polydiapirs/doc/diapirs0005.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
-<img src="cookbooks/benchmarks/polydiapirs/doc/diapirs0010.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
-<img src="cookbooks/benchmarks/polydiapirs/doc/diapirs0015.png" title="fig:" id="fig:polydiapirs_density" style="width:48.0%" alt="Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}." />
 
-<figure>
-<embed src="cookbooks/benchmarks/polydiapirs/doc/vrms.pdf" id="fig:polydiapirs_vrms" style="width:75.0%" /><figcaption aria-hidden="true"><em>Polydiapirism benchmark: Root mean square velocity as a function of time</em></figcaption>
-</figure>
+```{figure-md} fig:polydiapirs_density
+<img src="diapirs0000.png" style="width:48.0%" />
+
+ Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}.
+```
+
+```{figure-md} fig:polydiapirs_density
+<img src="diapirs0005.png" style="width:48.0%" />
+
+ Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}.
+```
+
+```{figure-md} fig:polydiapirs_density
+<img src="diapirs0010.png" style="width:48.0%" />
+
+ Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}.
+```
+
+```{figure-md} fig:polydiapirs_density
+<img src="diapirs0015.png" style="width:48.0%" />
+
+ Polydiapirism benchmark: Density field at t=0,25,50,75~\si{\second}.
+```
+
+```{figure-md} fig:polydiapirs_vrms
+<img src="vrms.svg" style="width:75.0%" />
+
+Polydiapirism benchmark: Root mean square velocity as a function of time
+```
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
@@ -51,7 +73,7 @@ Cambridge: Cambridge University Press.
 
 <div id="ref-ramb81" class="csl-entry">
 
-Ramberg, H. 1981. *Gravity, Deformation, and the Earth&rsquo;s Crust: In
+Ramberg, H. 1981. *Gravity, Deformation, and the Earth's Crust: In
 Theory, Experiments and Geological Application*. Academic Press, London,
 214pp.
 
@@ -59,9 +81,9 @@ Theory, Experiments and Geological Application*. Academic Press, London,
 
 <div id="ref-wesc92" class="csl-entry">
 
-Weinberg, R. F., and H. Schmeling. 1992. &ldquo;<span
-class="nocase">Polydiapirs: multiwavelength gravity structures</span>.&rdquo;
-*Journal of Structural Geology* 14 (4): 425&ndash;36.
+Weinberg, R. F., and H. Schmeling. 1992. "<span
+class="nocase">Polydiapirs: multiwavelength gravity structures</span>."
+*Journal of Structural Geology* 14 (4): 425--36.
 
 </div>
 

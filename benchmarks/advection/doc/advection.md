@@ -12,23 +12,27 @@ the benchmarks implemented:
 -   Dropping box (`benchmarks/drop_*.prm`): This is a simple 2d box with a
     prescribed, constant, vertical velocity. An initial condition creates a
     square box with a high temperature, which is advected vertically. See
-    Figure&nbsp;[1][].
+    Figure&nbsp;[1].
 
 -   Rotating Shapes: `benchmarks/rotate_shape_*.prm`: A collection of shapes
     in a 2d box rotated by 360 degrees by a prescribed velocity. See
-    Figure&nbsp;[2][].
+    Figure&nbsp;[2].
 
 Both benchmarks have the identical setup in the temperature and a
 compositional field. The only difference is that the temperature equation
 contains a (small) physical diffusion term.
 
-<figure>
-<img src="cookbooks/benchmarks/advection/doc/drop.png" id="fig:benchmark-drop" alt="Dropping box benchmark at final time. Left: entropy viscosity. Right: SUPG." /><figcaption aria-hidden="true"><em>Dropping box benchmark at final time. Left: entropy viscosity. Right: SUPG.</em></figcaption>
-</figure>
+```{figure-md} fig:benchmark-drop
+<img src="drop.png" />
 
-<figure>
-<img src="cookbooks/benchmarks/advection/doc/rotate_shape.png" id="fig:benchmark-rotate-shape" alt="Rotating shapes benchmark at final time: Left: reference. Middle: Entropy viscosity. Right: SUPG." /><figcaption aria-hidden="true"><em>Rotating shapes benchmark at final time: Left: reference. Middle: Entropy viscosity. Right: SUPG.</em></figcaption>
-</figure>
+ Dropping box benchmark at final time. Left: entropy viscosity. Right: SUPG.
+```
+
+```{figure-md} fig:benchmark-rotate-shape
+<img src="rotate_shape.png" />
+
+ Rotating shapes benchmark at final time: Left: reference. Middle: Entropy viscosity. Right: SUPG.
+```
 
   [1]: #sec:advection-stabilization
   [1]: #fig:benchmark-drop
