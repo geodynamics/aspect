@@ -250,9 +250,10 @@ namespace aspect
                       }
                     if (use_linear_least_squares_limiter[property_index] == true)
                       {
-                        // If the limiter is working correctly, we should not be significantly more than machine error outside of the range of the property bounds
-                        Assert(interpolated_value >= property_minimums[property_index] - std::max(std::abs(property_minimums[property_index]), std::abs(property_maximums[property_index])) * 10. * std::numeric_limits<double>::epsilon(), ExcInternalError());
-                        Assert(interpolated_value <= property_maximums[property_index] + std::max(std::abs(property_minimums[property_index]), std::abs(property_maximums[property_index])) * 10. * std::numeric_limits<double>::epsilon(), ExcInternalError());
+                        // Assert that the limiter was reasonably effective. We can not expect perfect accuracy
+                        // due to inaccuracies e.g. in the inversion of the mapping.
+                        Assert(interpolated_value >= property_minimums[property_index] - 1e-9 * std::max(std::abs(property_minimums[property_index]), std::abs(property_maximums[property_index])), ExcInternalError());
+                        Assert(interpolated_value <= property_maximums[property_index] + 1e-9 * std::max(std::abs(property_minimums[property_index]), std::abs(property_maximums[property_index])), ExcInternalError());
                         interpolated_value = std::min(interpolated_value, property_maximums[property_index]);
                         interpolated_value = std::max(interpolated_value, property_minimums[property_index]);
                       }
