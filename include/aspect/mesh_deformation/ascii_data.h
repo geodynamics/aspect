@@ -69,6 +69,11 @@ namespace aspect
                                                 const Point<dim> &position) const override;
 
         /**
+         * Returns whether or not the plugin requires surface stabilization
+         */
+        bool needs_surface_stabilization () const override;
+
+        /**
          * Declare the parameters this class takes through input files.
          */
         static

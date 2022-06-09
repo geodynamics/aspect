@@ -39,10 +39,119 @@
 
 #include <deal.II/numerics/vector_tools.h>
 
-
+#include <aspect/melt.h>
 
 namespace aspect
 {
+  namespace Assemblers
+  {
+    template <int dim>
+    ApplyStabilization<dim>::ApplyStabilization(const double stabilization_theta)
+      :
+      free_surface_theta(stabilization_theta)
+    {}
+
+    template <int dim>
+    void
+    ApplyStabilization<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>       &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim>      &data_base) const
+    {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+
+      AssertThrow(!this->get_mesh_deformation_handler().get_boundary_indicators_requiring_stabilization().empty(),
+                  ExcMessage("Applying surface stabilization, even though no boundary requires it."));
+
+
+      if (this->get_parameters().include_melt_transport)
+        {
+          this->get_melt_handler().apply_free_surface_stabilization_with_melt (free_surface_theta,
+                                                                               scratch.cell,
+                                                                               scratch,
+                                                                               data);
+          return;
+        }
+
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+
+      const typename DoFHandler<dim>::active_cell_iterator cell (&this->get_triangulation(),
+                                                                 scratch.finite_element_values.get_cell()->level(),
+                                                                 scratch.finite_element_values.get_cell()->index(),
+                                                                 &this->get_dof_handler());
+
+      const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
+      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+
+      // Get the boundary indicators of those boundaries that require stabilization
+      const std::set<types::boundary_id> tmp_boundary_indicators_requiring_stabilization = this->get_mesh_deformation_handler().get_boundary_indicators_requiring_stabilization();
+
+      // only apply on mesh deformation faces that require stabilization
+      if (cell->at_boundary() && cell->is_locally_owned())
+        for (const unsigned int face_no : cell->face_indices())
+          if (cell->face(face_no)->at_boundary())
+            {
+              const types::boundary_id boundary_indicator
+                = cell->face(face_no)->boundary_id();
+
+              if (tmp_boundary_indicators_requiring_stabilization.find(boundary_indicator)
+                  == tmp_boundary_indicators_requiring_stabilization.end())
+                continue;
+
+              scratch.face_finite_element_values.reinit(cell, face_no);
+
+              scratch.face_material_model_inputs.reinit  (scratch.face_finite_element_values,
+                                                          cell,
+                                                          this->introspection(),
+                                                          this->get_solution(),
+                                                          false);
+
+              this->get_material_model().evaluate(scratch.face_material_model_inputs, scratch.face_material_model_outputs);
+
+              for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
+                {
+                  for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+                    {
+                      if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                        {
+                          scratch.phi_u[i_stokes] = scratch.face_finite_element_values[introspection.extractors.velocities].value(i, q_point);
+                          ++i_stokes;
+                        }
+                      ++i;
+                    }
+
+                  const Tensor<1,dim>
+                  gravity = this->get_gravity_model().gravity_vector(scratch.face_finite_element_values.quadrature_point(q_point));
+                  const double g_norm = gravity.norm();
+
+                  // construct the relevant vectors
+                  const Tensor<1,dim> n_hat = scratch.face_finite_element_values.normal_vector(q_point);
+                  const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
+
+                  const double pressure_perturbation = scratch.face_material_model_outputs.densities[q_point] *
+                                                       this->get_timestep() *
+                                                       free_surface_theta *
+                                                       g_norm;
+
+                  // see Kaus et al 2010 for details of the stabilization term
+                  for (unsigned int i=0; i< stokes_dofs_per_cell; ++i)
+                    for (unsigned int j=0; j< stokes_dofs_per_cell; ++j)
+                      {
+                        // The fictive stabilization stress is (phi_u[i].g)*(phi_u[j].n)
+                        const double stress_value = -pressure_perturbation*
+                                                    (scratch.phi_u[i]*g_hat) * (scratch.phi_u[j]*n_hat)
+                                                    *scratch.face_finite_element_values.JxW(q_point);
+
+                        data.local_matrix(i,j) += stress_value;
+                      }
+                }
+            }
+    }
+  }
+
+
+
   namespace MeshDeformation
   {
     template <int dim>
@@ -56,6 +165,15 @@ namespace aspect
     void
     Interface<dim>::update ()
     {}
+
+
+
+    template <int dim>
+    bool
+    Interface<dim>::needs_surface_stabilization () const
+    {
+      return false;
+    }
 
 
 
@@ -141,6 +259,41 @@ namespace aspect
       // so we need to fetch it separately.
       if (!Plugins::plugin_type_matches<InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
         include_initial_topography = true;
+
+      // If a surface needs to be stabilized, set up the assemblers.
+      if (!this->get_mesh_deformation_handler().get_boundary_indicators_requiring_stabilization().empty())
+        {
+          this->get_signals().set_assemblers.connect(
+            [&](const SimulatorAccess<dim> &sim_access,
+                aspect::Assemblers::Manager<dim> &assemblers)
+          {
+            this->set_assemblers(sim_access, assemblers);
+          });
+        }
+    }
+
+
+
+    template <int dim>
+    void MeshDeformationHandler<dim>::set_assemblers(const SimulatorAccess<dim> &,
+                                                     aspect::Assemblers::Manager<dim> &assemblers) const
+    {
+      aspect::Assemblers::ApplyStabilization<dim> *surface_stabilization
+        = new aspect::Assemblers::ApplyStabilization<dim>(surface_theta);
+
+      assemblers.stokes_system.push_back(
+        std::unique_ptr<aspect::Assemblers::ApplyStabilization<dim>> (surface_stabilization));
+
+      // Note that we do not want face_material_model_data, because we do not
+      // connect to a face assembler. We instead connect to a normal assembler,
+      // and compute our own material_model_inputs in apply_stabilization
+      // (because we want to use the solution instead of the current_linearization_point
+      // to compute the material properties).
+      assemblers.stokes_system_assembler_on_boundary_face_properties.needed_update_flags |= (update_values  |
+          update_gradients |
+          update_quadrature_points |
+          update_normal_vectors |
+          update_JxW_values);
     }
 
 
@@ -172,6 +325,7 @@ namespace aspect
             model->update();
         }
     }
+
 
 
     template <int dim>
@@ -215,11 +369,29 @@ namespace aspect
                            "\n\n"
                            "The format is id1: object1 \\& object2, id2: object3 \\& object2, where "
                            "objects are one of " + std::get<dim>(registered_plugins).get_description_string());
+
+        prm.enter_subsection ("Free surface");
+        {
+          prm.declare_entry("Free surface stabilization theta", "0.5",
+                            Patterns::Double(0., 1.),
+                            "Theta parameter described in \\cite{KMM2010}. "
+                            "An unstabilized free surface can overshoot its "
+                            "equilibrium position quite easily and generate "
+                            "unphysical results.  One solution is to use a "
+                            "quasi-implicit correction term to the forces near the "
+                            "free surface.  This parameter describes how much "
+                            "the free surface is stabilized with this term, "
+                            "where zero is no stabilization, and one is fully "
+                            "implicit.");
+        }
+        prm.leave_subsection ();
       }
       prm.leave_subsection ();
 
       std::get<dim>(registered_plugins).declare_parameters (prm);
     }
+
+
 
     template <int dim>
     void MeshDeformationHandler<dim>::parse_parameters(ParameterHandler &prm)
@@ -328,6 +500,13 @@ namespace aspect
 
         for (const auto &boundary_id : tangential_mesh_deformation_boundary_indicators)
           zero_mesh_deformation_boundary_indicators.erase(boundary_id);
+
+        prm.enter_subsection ("Free surface");
+        {
+          surface_theta = prm.get_double("Free surface stabilization theta");
+        }
+        prm.leave_subsection ();
+
       }
       prm.leave_subsection ();
 
@@ -348,6 +527,14 @@ namespace aspect
               mesh_deformation_objects[boundary_and_object_names.first].back()->parse_parameters (prm);
               mesh_deformation_objects[boundary_and_object_names.first].back()->initialize ();
             }
+        }
+
+      // Go through the objects, and get the indicators for boundaries that need to be stabilized.
+      for (const auto &boundary_and_deformation_objects : mesh_deformation_objects)
+        {
+          for (const auto &model : boundary_and_deformation_objects.second)
+            if (model->needs_surface_stabilization() == true)
+              boundary_indicators_requiring_stabilization.insert(boundary_and_deformation_objects.first);
         }
     }
 
@@ -1284,9 +1471,26 @@ namespace aspect
 
     template <int dim>
     const std::set<types::boundary_id> &
+    MeshDeformationHandler<dim>::get_boundary_indicators_requiring_stabilization () const
+    {
+      return boundary_indicators_requiring_stabilization;
+    }
+
+
+
+    template <int dim>
+    const std::set<types::boundary_id> &
     MeshDeformationHandler<dim>::get_free_surface_boundary_indicators () const
     {
       return free_surface_boundary_indicators;
+    }
+
+
+
+    template <int dim>
+    double MeshDeformationHandler<dim>::get_free_surface_theta()const
+    {
+      return surface_theta;
     }
 
 

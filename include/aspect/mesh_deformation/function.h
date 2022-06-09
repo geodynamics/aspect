@@ -59,6 +59,11 @@ namespace aspect
                                                  const std::set<types::boundary_id> &boundary_id) const override;
 
         /**
+         * Returns whether or not the plugin requires surface stabilization
+         */
+        bool needs_surface_stabilization () const override;
+
+        /**
          * Declare parameters for the free surface handling.
          */
         static

@@ -1835,14 +1835,14 @@ namespace aspect
                                               internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
                                               internal::Assembly::CopyData::StokesSystem<dim>      &data) const
   {
-    const std::set<types::boundary_id> free_surface_boundary_indicators = this->get_mesh_deformation_handler().get_free_surface_boundary_indicators();
-    if (free_surface_boundary_indicators.empty())
+    const std::set<types::boundary_id> tmp_boundary_indicators_requiring_stabilization = this->get_mesh_deformation_handler().get_boundary_indicators_requiring_stabilization();
+    if (tmp_boundary_indicators_requiring_stabilization.empty())
       return;
 
     const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
     const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
 
-    // only apply on free surface faces
+    // only apply on mesh deformation surfaces that require stabilization
     if (cell->at_boundary() && cell->is_locally_owned())
       for (const unsigned int face_no : cell->face_indices())
         if (cell->face(face_no)->at_boundary())
@@ -1850,7 +1850,7 @@ namespace aspect
             const types::boundary_id boundary_indicator
               = cell->face(face_no)->boundary_id();
 
-            if (free_surface_boundary_indicators.find(boundary_indicator) == free_surface_boundary_indicators.end())
+            if (tmp_boundary_indicators_requiring_stabilization.find(boundary_indicator) == tmp_boundary_indicators_requiring_stabilization.end())
               continue;
 
             scratch.face_finite_element_values.reinit(cell, face_no);
