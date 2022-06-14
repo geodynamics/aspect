@@ -1,3 +1,4 @@
+(sec:benchmarks:vankeken)=
 # The van Keken thermochemical composition benchmark
 
 *This section is a co-production of Cedric Thieulot, Juliane Dannberg, Timo
