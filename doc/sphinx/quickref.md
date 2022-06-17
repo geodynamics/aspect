@@ -531,6 +531,25 @@ If the paper you wish to cite is not already in [references.bib](https://github.
 
 where `firstauthor` and `secondauthor` refer to the *last* names of the authors.
 
+
+## Physical Units
+MathJax (that converts the $\LaTeX$ in MarkDown) doesn't support the siunitx package
+used in the old manual and it appears that the project doesn't have plans to
+[support it](https://github.com/mathjax/MathJax/issues/447). To write units and
+quantities now, use this [package](https://mhchem.github.io/MathJax-mhchem/). A
+downside to this package is that it doesn't require recognizing the units as siunitx does.
+
+```md
+$\pu{1.8e3 km}$
+$\pu{1800 Pa s}$
+$\pu{3300 kg // m2}$
+```
+
+$\pu{1.8e3 km}$
+$\pu{1800 Pa s}$
+$\pu{3300 kg // m2}$
+
+
 ## Footnotes
 ```md
 Here's how you put a footnote[^footnote1] in a sentence.

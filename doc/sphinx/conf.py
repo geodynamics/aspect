@@ -19,7 +19,7 @@
 
 project = 'ASPECT'
 copyright = '2022'
-author = 'Wolfgang Bangerth, Juliane Dannberg, Menno Fraters, Rene Gassmöller, Anne Glerum, Timo Heister, Bob Myhill, John Naliboff; with contributions by: Jacqueline Austermann, Magali Billen, Markus B&uuml;rg, Thomas Clevenger, Samuel Cox, William Durkin, Grant Euen, Thomas Geenen, Ryan Grove, Eric Heien, Ludovic Jeanniot, Louise Kellogg, Scott King, Martin Kronbichler, Marine Lasbleis, Haoyuan Li, Shangxin Liu, Hannah Mark, Elvira Mulyukova, Bart Niday, Jonathan Perry-Houts, Elbridge Gerry Puckett, Tahiry Rajaonarison, Fred Richards, Jonathan Robey, Ian Rose, Max Rudolph, Stephanie Sparks, D. Sarah Stamps, Cedric Thieulot, Wanying Wang, Iris van Zelst, Siqi Zhang'
+author = 'Wolfgang Bangerth, Juliane Dannberg, Menno Fraters, Rene Gassmöller, Anne Glerum, Timo Heister, Bob Myhill, John Naliboff; with contributions by: Jacqueline Austermann, Magali Billen, Markus B&uuml;rg, Thomas Clevenger, Samuel Cox, William Durkin, Grant Euen, Thomas Geenen, Mack Gregory, Ryan Grove, Eric Heien, Ludovic Jeanniot, Louise Kellogg, Scott King, Martin Kronbichler, Marine Lasbleis, Haoyuan Li, Shangxin Liu, Hannah Mark, Elvira Mulyukova, Bart Niday, Jonathan Perry-Houts, Elbridge Gerry Puckett, Tahiry Rajaonarison, Fred Richards, Jonathan Robey, Ian Rose, Max Rudolph, Stephanie Sparks, D. Sarah Stamps, Cedric Thieulot, Wanying Wang, Iris van Zelst, Siqi Zhang'
 
 # The full version, including alpha/beta/rc tags
 with open('../../VERSION', 'r') as file:
@@ -102,3 +102,12 @@ html_context = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_last_updated_fmt = ""
+
+# The mhchem package is supported by MathJax and serves a similar
+# purpose as the siunitx package that was used in the pdf manual
+mathjax3_config = {
+    "loader": {"load": ['[tex]/mhchem']},
+    "tex": {"packages": {'[+]': ['mhchem']}},
+    "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}
+}
+

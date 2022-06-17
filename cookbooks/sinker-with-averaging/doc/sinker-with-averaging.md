@@ -364,7 +364,7 @@ pressure is in fact discontinuous along the edge of the circle.
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
-<div id="ref-Deu08" class="csl-entry">
+<div id="ref-deubelbeiss:kaus:2008" class="csl-entry">
 
 Deubelbeiss, Y., and B. J. P. Kaus. 2008. "Comparison of Eulerian and
 Lagrangian Numerical Techniques for the Stokes Equations in the Presence of
