@@ -1320,6 +1320,12 @@ namespace aspect
 
       mesh_deformation_dof_handler.distribute_dofs(mesh_deformation_fe);
 
+      // Renumber the DoFs hierarchical so that we get the
+      // same numbering if we resume the computation. This
+      // is because the numbering depends on the order the
+      // cells are created.
+      DoFRenumbering::hierarchical (mesh_deformation_dof_handler);
+
       if (this->is_stokes_matrix_free())
         {
           mesh_deformation_dof_handler.distribute_mg_dofs();
@@ -1364,12 +1370,6 @@ namespace aspect
       this->get_pcout() << "Number of mesh deformation degrees of freedom: "
                         << mesh_deformation_dof_handler.n_dofs()
                         << std::endl;
-
-      // Renumber the DoFs hierarchical so that we get the
-      // same numbering if we resume the computation. This
-      // is because the numbering depends on the order the
-      // cells are created.
-      DoFRenumbering::hierarchical (mesh_deformation_dof_handler);
 
       mesh_locally_owned = mesh_deformation_dof_handler.locally_owned_dofs();
       DoFTools::extract_locally_relevant_dofs (mesh_deformation_dof_handler,
