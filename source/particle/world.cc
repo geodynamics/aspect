@@ -611,7 +611,12 @@ namespace aspect
                                       property_manager->get_data_info().fieldname_exists("melt_presence");
       auto &evaluator = evaluators.get_velocity_or_fluid_velocity_evaluator(use_fluid_velocity);
 
+#if DEAL_II_VERSION_GTE(9,4,0)
+      auto &mapping_info = evaluators.get_mapping_info();
+      mapping_info.reinit(cell, {positions.data(),positions.size()});
+#else
       evaluator.reinit (cell, {positions.data(),positions.size()});
+#endif
 
       evaluator.evaluate({solution_values.data(),solution_values.size()},
                          EvaluationFlags::values);
@@ -841,6 +846,13 @@ namespace aspect
           virtual
           FEPointEvaluation<dim, dim> &
           get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity) = 0;
+
+#if DEAL_II_VERSION_GTE(9,4,0)
+          // Return the cached mapping information.
+          virtual
+          NonMatching::MappingInfo<dim> &
+          get_mapping_info() = 0;
+#endif
       };
 
       // This class evaluates the solution vector at arbitrary positions inside a cell.
@@ -892,10 +904,15 @@ namespace aspect
           FEPointEvaluation<dim, dim> &
           get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity) override;
 
+#if DEAL_II_VERSION_GTE(9,4,0)
+          // Return the cached mapping information.
+          NonMatching::MappingInfo<dim> &
+          get_mapping_info() override;
+#endif
         private:
 #if DEAL_II_VERSION_GTE(9,4,0)
           // MappingInfo object for the FEPointEvaluation objects
-          NonMatching::MappingInfo<dim, dim> mapping_info;
+          NonMatching::MappingInfo<dim> mapping_info;
 #endif
 
           // FEPointEvaluation objects for all common
@@ -1051,11 +1068,10 @@ namespace aspect
         // TODO: It would be nice to be able to hand over a ComponentMask
         // to specify which evaluators to use. Currently, this is only
         // possible by manually accessing the public members of this class.
-        velocity.reinit (cell, positions);
-
 #if DEAL_II_VERSION_GTE(9,4,0)
         mapping_info.reinit(cell,positions);
 #else
+        velocity.reinit (cell, positions);
         pressure.reinit (cell, positions);
         temperature.reinit (cell, positions);
         compositions.reinit (cell, positions);
@@ -1175,6 +1191,18 @@ namespace aspect
 
         return velocity;
       }
+
+
+#if DEAL_II_VERSION_GTE(9,4,0)
+      template <int dim, int n_compositional_fields>
+      NonMatching::MappingInfo<dim> &
+      SolutionEvaluatorsImplementation<dim, n_compositional_fields>::get_mapping_info()
+      {
+        return mapping_info;
+      }
+#endif
+
+
 
       // A function to create a pointer to a SolutionEvaluators object.
       template <int dim>
