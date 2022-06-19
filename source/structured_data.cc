@@ -31,9 +31,21 @@
 #include <aspect/geometry_model/two_merged_chunks.h>
 
 #include <boost/lexical_cast.hpp>
+
 #ifdef ASPECT_WITH_NETCDF
+
 #include <netcdf.h>
+#define AssertThrowNetCDF(error_code) \
+  AssertThrow(error_code == NC_NOERR, dealii::ExcMessage("A NetCDF Error with code " + std::to_string(error_code) + " occured."))
+
+#else
+
+#define AssertThrowNetCDF(error_code) \
+  AssertThrow(false, ExcInternalError())
+
 #endif
+
+
 
 namespace aspect
 {
@@ -629,11 +641,11 @@ namespace aspect
       int status;
 
       status = nc_open(filename.c_str(), NC_NOWRITE, &ncid);
-      AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+      AssertThrowNetCDF(status);
 
       int ndims, nvars, ngatts, unlimdimid;
       status = nc_inq(ncid, &ndims, &nvars, &ngatts, &unlimdimid);
-      AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+      AssertThrowNetCDF(status);
 
 
       for (int dimid=0; dimid<ndims; ++dimid)
@@ -641,9 +653,9 @@ namespace aspect
           char  name[NC_MAX_NAME];
           size_t length;
           status = nc_inq_dim(ncid, dimid, name, &length);
-          AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+          AssertThrowNetCDF(status);
           std::cout << "dim " << dimid << "'" << name << "' has length " << length << std::endl;
-          // TODO: parse/store coordinate name?
+          // TODO: We could store coordinate name here, but the StructuredData class does not store them at the     moment.
         }
 
       // The number of dimensions ndims can be different in the netcdf file. In fact,
@@ -667,7 +679,7 @@ namespace aspect
 
           status = nc_inq_var (ncid, varid, name, &xtype, &ndims, dimids,
                                &natts);
-          AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+          AssertThrowNetCDF(status);
           std::cout << "var " << varid << "'" << name << "' has ndims = " << ndims << ": ";
           for (int d=0; d<ndims; ++d)
             std::cout << " " << dimids[d];
@@ -738,7 +750,7 @@ namespace aspect
 
             coordinate_values[d].resize(new_table_points[d]);
             status = nc_get_var_double(ncid, varid, coordinate_values[d].data());
-            AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+            AssertThrowNetCDF(status);
 
             std::cout << "coordinate " << d << " length= " << new_table_points[d] << " data=  " << coordinate_values[d][0] << ' ' << coordinate_values[d][1] << " ..." << std::endl;
           }
@@ -758,7 +770,7 @@ namespace aspect
 
             // Load the data
             status = nc_get_var_double(ncid, varids_to_use[var], raw_data.data());
-            AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+            AssertThrowNetCDF(status);
 
             // .. and copy it over:
             for (std::size_t n = 0; n < n_elements; ++n)
@@ -776,7 +788,7 @@ namespace aspect
 
 
       status = nc_close(ncid);
-      AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+      AssertThrowNetCDF(status);
 
       // ready to go:
       this->reinit(data_column_names, std::move(coordinate_values),std::move(data_tables));
