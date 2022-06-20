@@ -42,7 +42,7 @@ Number of mesh deformation degrees of freedom: 1466
 *** Timestep 1:  t=684459 years, dt=684459 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 0+44 iterations.
+   Solving Stokes system... 0+43 iterations.
 
    Postprocessing:
      Topography min/max: -398.6 m, 885.8 m
@@ -51,16 +51,16 @@ Number of mesh deformation degrees of freedom: 1466
 *** Timestep 2:  t=2.11561e+06 years, dt=1.43115e+06 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 0+65 iterations.
+   Solving Stokes system... 0+60 iterations.
 
    Postprocessing:
      Topography min/max: -2251 m, 1093 m
      RMS, max velocity:  0.00125 m/year, 0.00309 m/year
 
 *** Timestep 3:  t=2.66159e+06 years, dt=545985 years
-   Solving mesh displacement system... 7 iterations.
+   Solving mesh displacement system... 5 iterations.
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 0+40 iterations.
+   Solving Stokes system... 0+38 iterations.
 
    Postprocessing:
      Topography min/max: -582.8 m, 278.3 m
@@ -69,7 +69,7 @@ Number of mesh deformation degrees of freedom: 1466
 *** Timestep 4:  t=3.33737e+06 years, dt=675777 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 0+42 iterations.
+   Solving Stokes system... 0+40 iterations.
 
    Postprocessing:
      Topography min/max: -385.2 m, 793 m
@@ -78,7 +78,7 @@ Number of mesh deformation degrees of freedom: 1466
 *** Timestep 5:  t=4.92118e+06 years, dt=1.58381e+06 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 0+70 iterations.
+   Solving Stokes system... 0+64 iterations.
 
    Postprocessing:
      Topography min/max: -2343 m, 1225 m
@@ -88,9 +88,9 @@ Number of mesh deformation degrees of freedom: 1466
 
 
 *** Timestep 6:  t=5.52709e+06 years, dt=605917 years
-   Solving mesh displacement system... 7 iterations.
+   Solving mesh displacement system... 5 iterations.
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 0+41 iterations.
+   Solving Stokes system... 0+38 iterations.
 
    Postprocessing:
      Topography min/max: -594.6 m, 308.1 m
@@ -99,25 +99,25 @@ Number of mesh deformation degrees of freedom: 1466
 *** Timestep 7:  t=6.2934e+06 years, dt=766309 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 0+44 iterations.
+   Solving Stokes system... 0+41 iterations.
 
    Postprocessing:
-     Topography min/max: -443.9 m, 852.5 m
+     Topography min/max: -443.9 m, 852.6 m
      RMS, max velocity:  0.000695 m/year, 0.00189 m/year
 
 *** Timestep 8:  t=7.92477e+06 years, dt=1.63137e+06 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 0+71 iterations.
+   Solving Stokes system... 0+64 iterations.
 
    Postprocessing:
      Topography min/max: -2282 m, 1264 m
      RMS, max velocity:  0.00116 m/year, 0.00276 m/year
 
-*** Timestep 9:  t=8.59078e+06 years, dt=666003 years
-   Solving mesh displacement system... 7 iterations.
+*** Timestep 9:  t=8.59077e+06 years, dt=666003 years
+   Solving mesh displacement system... 5 iterations.
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 0+42 iterations.
+   Solving Stokes system... 0+40 iterations.
 
    Postprocessing:
      Topography min/max: -462.9 m, 254 m
@@ -126,7 +126,7 @@ Number of mesh deformation degrees of freedom: 1466
 *** Timestep 10:  t=9.56101e+06 years, dt=970233 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 0+48 iterations.
+   Solving Stokes system... 0+45 iterations.
 
    Postprocessing:
      Topography min/max: -470.9 m, 868.8 m
