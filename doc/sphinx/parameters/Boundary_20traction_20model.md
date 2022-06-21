@@ -103,6 +103,14 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 
+(parameters:Boundary_20traction_20model/Function/Use_20spherical_20unit_20vectors)=
+### __Parameter name:__ Use spherical unit vectors
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** Specify traction as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive tractions point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.
+
 (parameters:Boundary_20traction_20model/Function/Variable_20names)=
 ### __Parameter name:__ Variable names
 **Default value:** x,y,t

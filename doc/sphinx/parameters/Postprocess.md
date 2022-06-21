@@ -235,14 +235,14 @@ The file format then consists of lines with Euclidean coordinates followed by th
 ### __Parameter name:__ List of output variables
 **Default value:** all
 
-**Pattern:** [MultipleSelection all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|rising velocity|Vs|Vp|viscosity|vertical heat flux|vertical mass flux|composition mass ]
+**Pattern:** [MultipleSelection all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|rising velocity|Vs|Vp|log viscosity|viscosity|vertical heat flux|vertical mass flux|composition mass ]
 
 **Documentation:** A comma separated list which specifies which quantities to average in each depth slice. It defaults to averaging all available quantities, but this can be an expensive operation, so you may want to select only a few.
 
 Specifically, the sinking velocity is defined as the scalar product of the velocity and a unit vector in the direction of gravity, if positive (being zero if this product is negative, which would correspond to an upward velocity). The rising velocity is the opposite: the scalar product of the velocity and a unit vector in the direction opposite of gravity, if positive (being zero for downward velocities).
 
 List of options:
-all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|rising velocity|Vs|Vp|viscosity|vertical heat flux|vertical mass flux|composition mass
+all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|rising velocity|Vs|Vp|log viscosity|viscosity|vertical heat flux|vertical mass flux|composition mass
 
 (parameters:Postprocess/Depth_20average/Number_20of_20zones)=
 ### __Parameter name:__ Number of zones
@@ -1076,13 +1076,21 @@ If the function you are describing represents a vector-valued function with mult
 ## **Subsection:** Postprocess / Particles / Interpolator
 (parameters:Postprocess/Particles/Interpolator/Bilinear_20least_20squares)=
 ## **Subsection:** Postprocess / Particles / Interpolator / Bilinear least squares
+(parameters:Postprocess/Particles/Interpolator/Bilinear_20least_20squares/Use_20boundary_20extrapolation)=
+### __Parameter name:__ Use boundary extrapolation
+**Default value:** false
+
+**Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Extends the range used by &rsquo;Use linear least squares limiter&rsquo; by linearly interpolating values at cell boundaries from neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property. Enabling &rsquo;Use boundary extrapolation&rsquo; requires enabling &rsquo;Use linear least squares limiter&rsquo;.
+
 (parameters:Postprocess/Particles/Interpolator/Bilinear_20least_20squares/Use_20linear_20least_20squares_20limiter)=
 ### __Parameter name:__ Use linear least squares limiter
 **Default value:** false
 
 **Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Limit the interpolation of particle properties onto the cell so the value of each property is no smaller than its minimum and no larger than its maximum on the particles in each cell. If more than one value is specified, they will be treated as a list.
+**Documentation:** Limit the interpolation of particle properties onto the cell, so that the value of each property is no smaller than its minimum and no larger than its maximum on the particles of each cell, and the average of neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property.
 
 (parameters:Postprocess/Particles/Interpolator/Quadratic_20least_20squares)=
 ## **Subsection:** Postprocess / Particles / Interpolator / Quadratic least squares
@@ -1463,7 +1471,6 @@ Physical units: \si{\per\second}.
 **Pattern:** [Bool]
 
 **Documentation:** deal.II offers the possibility to write vtu files with higher order representations of the output data. This means each cell will correctly show the higher order representation of the output data instead of the linear interpolation between vertices that ParaView and VisIt usually show. Note that activating this option is safe and recommended, but requires that (i) &ldquo;Output format&rdquo; is set to &ldquo;vtu&rdquo;, (ii) &ldquo;Interpolate output&rdquo; is set to true, (iii) you use a sufficiently new version of Paraview or VisIt to read the files (Paraview version 5.5 or newer, and VisIt version to be determined), and (iv) you use deal.II version 9.1.0 or newer.
-
 The effect of using this option can be seen in the following picture:
 
 \begin{center}  \includegraphics[width=0.5\textwidth]{viz/parameters/higher-order-output}\end{center}The top figure shows the plain output without interpolation or higher order output. The middle figure shows output that was interpolated as discussed for the &ldquo;Interpolate output&rdquo; option. The bottom panel shows higher order output that achieves better accuracy than the interpolated output at a lower memory cost.
