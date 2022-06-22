@@ -133,6 +133,14 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** The entropy change for the phase transition from solid to melt. Units: \si{\joule\per\kelvin\per\kilogram}.
 
+(parameters:Heating_20model/Latent_20heat_20melt/Retrieve_20entropy_20change_20from_20material_20model)=
+### __Parameter name:__ Retrieve entropy change from material model
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** Instead of using the entropy change given in the &rsquo;Melting entropy change&rsquo; query the EnthalpyAdditionalOutputs in the material model to compute the entropy change for the phase transition from solid to melt.Units: $J/(kg K)$.
+
 (parameters:Heating_20model/Radioactive_20decay)=
 ## **Subsection:** Heating model / Radioactive decay
 (parameters:Heating_20model/Radioactive_20decay/Crust_20composition_20number)=

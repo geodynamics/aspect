@@ -23,7 +23,7 @@ More averaging schemes are available in the averaging material model. This mater
 ### __Parameter name:__ Model name
 **Default value:** unspecified
 
-**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
+**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** The name of the material model to be used in this simulation. There are many material models you can choose from, as listed below. They generally fall into two category: (i) models that implement a particular case of material behavior, (ii) models that modify other models in some way. We sometimes call the latter &ldquo;compositing models&rdquo;. An example of a compositing model is the &ldquo;depth dependent&rdquo; model below in that it takes another, freely choosable model as its base and then modifies that model&rsquo;s output in some way.
 
@@ -93,6 +93,8 @@ Note that this model uses the formulation that assumes an incompressible medium 
 &lsquo;latent heat melt&rsquo;: A material model that includes the latent heat of melting for two materials: peridotite and pyroxenite. The melting model for peridotite is taken from Katz et al., 2003 (A new parameterization of hydrous mantle melting) and the one for pyroxenite from Sobolev et al., 2011 (Linking mantle plumes, large igneous provinces and environmental catastrophes). The model assumes a constant entropy change for melting 100\% of the material, which can be specified in the input file. The partial derivatives of entropy with respect to temperature and pressure required for calculating the latent heat consumption are then calculated as product of this constant entropy change, and the respective derivative of the function the describes the melt fraction. This is linearly averaged with respect to the fractions of the two materials present. If no compositional fields are specified in the input file, the model assumes that the material is peridotite. If compositional fields are specified, the model assumes that the first compositional field is the fraction of pyroxenite and the rest of the material is peridotite.
 
 Otherwise, this material model has a temperature- and pressure-dependent density and viscosity and the density and thermal expansivity depend on the melt fraction present. It is possible to extent this model to include a melt fraction dependence of all the material parameters by calling the function melt_fraction in the calculation of the respective parameter. However, melt and solid move with the same velocity and melt extraction is not taken into account (batch melting).
+
+&lsquo;melt boukare&rsquo;: A material model that implements a simplified version of the melting model of Boukare et al. (https://doi.org/10.1002/2015JB011929) for the lowermost mantle and uses it to compute the material parameters required for the modelling of melt transport, including melting and solidification and the corresponding changes in composition.The model parameterizes the composition (which includes the components MgO, FeO and SiO2) as a mixture between two endmembers (one iron-bearing and one magnesium-bearing). The equation of state considers three phases: bridgmanite, ferropericlase, and melt (each with their individual compositions). More details can be found in Dannberg, J., Myhill, R., Gassmöller, R., and Cottaar, S. (2021). The morphology, evolution and seismic visibility of partial melt at the core–mantle boundary: implications for ULVZs. Geophysical Journal International, 227(2), 1028-1059.
 
 &lsquo;melt global&rsquo;: A material model that implements a simple formulation of the material parameters required for the modelling of melt transport, including a source term for the porosity according to a simplified linear melting model similar to \cite{schmeling2006}:
 $\phi_{\text{equilibrium}} = \frac{T-T_{\text{sol}}}{T_{\text{liq}}-T_{\text{sol}}}$
@@ -303,7 +305,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 ### __Parameter name:__ Base model
 **Default value:** simple
 
-**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic ]
+**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic ]
 
 **Documentation:** The name of a material model that will be modified by an averaging operation. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
 
@@ -321,7 +323,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 ### __Parameter name:__ Compressibility
 **Default value:** unspecified
 
-**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
+**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Compressibility. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
 
@@ -329,7 +331,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 ### __Parameter name:__ Density
 **Default value:** unspecified
 
-**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
+**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Density. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
 
@@ -337,7 +339,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 ### __Parameter name:__ Entropy derivative pressure
 **Default value:** unspecified
 
-**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
+**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Entropy derivative pressure. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
 
@@ -345,7 +347,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 ### __Parameter name:__ Entropy derivative temperature
 **Default value:** unspecified
 
-**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
+**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Entropy derivative temperature. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
 
@@ -353,7 +355,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 ### __Parameter name:__ Reaction terms
 **Default value:** unspecified
 
-**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
+**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Reaction terms. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
 
@@ -361,7 +363,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 ### __Parameter name:__ Specific heat
 **Default value:** unspecified
 
-**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
+**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Specific heat. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
 
@@ -369,7 +371,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 ### __Parameter name:__ Thermal conductivity
 **Default value:** unspecified
 
-**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
+**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Thermal conductivity. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
 
@@ -377,7 +379,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 ### __Parameter name:__ Thermal expansion coefficient
 **Default value:** unspecified
 
-**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
+**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Thermal expansion coefficient. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
 
@@ -385,7 +387,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 ### __Parameter name:__ Viscosity
 **Default value:** unspecified
 
-**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
+**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic|unspecified ]
 
 **Documentation:** Material model to use for Viscosity. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
 
@@ -493,7 +495,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 ### __Parameter name:__ Base model
 **Default value:** simple
 
-**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic ]
+**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic ]
 
 **Documentation:** The name of a material model that will be modified by a depth dependent viscosity. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for that for more information.
 
@@ -1695,6 +1697,266 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: \si{\per\pascal}.
 
+(parameters:Material_20model/Melt_20boukare)=
+## **Subsection:** Material model / Melt boukare
+(parameters:Material_20model/Melt_20boukare/Einstein_20temperatures)=
+### __Parameter name:__ Einstein temperatures
+**Default value:** 418.1, 561.0, 297.6, 540.2, 505.75, 558.1, 558.1
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** List of Einstein temperatures for each different endmember.Units: K.
+
+(parameters:Material_20model/Melt_20boukare/Endmember_20names)=
+### __Parameter name:__ Endmember names
+**Default value:** FeSiO3_bridgmanite, MgSiO3_bridgmanite, FeO_periclase, MgO_periclase, FeO_melt, MgO_melt, SiO2_melt
+
+**Pattern:** [List of <[MultipleSelection MgSiO3_bridgmanite|FeSiO3_bridgmanite|MgO_periclase|FeO_periclase|MgO_melt|FeO_melt|SiO2_melt ]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Names of the endmember components used in the equation of state and the melting model, and whose parameters are determined by the other input parameters of this material model. The order the parameters are given in has to be the same as the order the endmember names are given in. Units: none.
+
+(parameters:Material_20model/Melt_20boukare/Endmember_20states)=
+### __Parameter name:__ Endmember states
+**Default value:** solid, solid, solid, solid, melt, melt, melt
+
+**Pattern:** [List of <[MultipleSelection solid|melt ]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** States of the endmember components used in the equation of state and the melting model. For each endmember, this list has to define if they belong to the melt or to the solid. The order the states are given in has to be the same as the order the &rsquo;Endmember names&rsquo; are given in. Units: none.
+
+(parameters:Material_20model/Melt_20boukare/Exponential_20melt_20weakening_20factor)=
+### __Parameter name:__ Exponential melt weakening factor
+**Default value:** 27
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The porosity dependence of the viscosity. Units: dimensionless.
+
+(parameters:Material_20model/Melt_20boukare/Fe_20mantle_20melting_20temperature)=
+### __Parameter name:__ Fe mantle melting temperature
+**Default value:** 3424.5
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The melting temperature of one of the components in the melting model, the Fe mantle endmember.Units: K.
+
+(parameters:Material_20model/Melt_20boukare/Fe_20number_20of_20moles)=
+### __Parameter name:__ Fe number of moles
+**Default value:** 0.48
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The number of moles of Fe atoms mixing on a pseudosite in the mantle lattice, This is needed because we use an empirical model fitting the full Boukare model, and can be changed to reflect partition coefficients from other sources.Units: none.
+
+(parameters:Material_20model/Melt_20boukare/First_20derivatives_20of_20the_20bulk_20modulus)=
+### __Parameter name:__ First derivatives of the bulk modulus
+**Default value:** 4.14, 4.14, 4.9, 3.95, 5.0802472229003905, 4.25, 4.25
+
+**Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The pressure derivative of the bulk modulus at the reference temperature and reference pressure for each different endmember component.Units: none.
+
+(parameters:Material_20model/Melt_20boukare/Include_20melting_20and_20freezing)=
+### __Parameter name:__ Include melting and freezing
+**Default value:** true
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to include melting and freezing (according to a simplified linear melting approximation in the model (if true), or not (if false).
+
+(parameters:Material_20model/Melt_20boukare/Linear_20coefficients_20for_20specific_20heat_20polynomial)=
+### __Parameter name:__ Linear coefficients for specific heat polynomial
+**Default value:** 6.36191292e-03, -3.31714290e-03, 3.36163516e-03, -6.35318887e-03, -2.41909947e-03, -2.41909947e-03, -2.41909947e-03
+
+**Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The first of three coefficients that are used to compute the specific heat capacities for each different endmember at the reference temperature and reference pressure. This coefficient describes the linear part of the temperature dependence. Units: J/kg/K/K.
+
+(parameters:Material_20model/Melt_20boukare/Melting_20time_20scale_20for_20operator_20splitting)=
+### __Parameter name:__ Melting time scale for operator splitting
+**Default value:** 1e3
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** In case the operator splitting scheme is used, the porosity field can not be set to a new equilibrium melt fraction instantly, but the model has to provide a melting time scale instead. This time scale defines how fast melting happens, or more specifically, the parameter defines the time after which the deviation of the porosity from the equilibrium melt fraction will be reduced to a fraction of $1/e$. So if the melting time scale is small compared to the time step size, the reaction will be so fast that the porosity is very close to the equilibrium melt fraction after reactions are computed. Conversely, if the melting time scale is large compared to the time step size, almost no melting and freezing will occur.
+
+Also note that the melting time scale has to be larger than or equal to the reaction time step used in the operator splitting scheme, otherwise reactions can not be computed. If the model does not use operator splitting, this parameter is not used. Units: yr or s, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+
+(parameters:Material_20model/Melt_20boukare/Mg_20mantle_20melting_20temperature)=
+### __Parameter name:__ Mg mantle melting temperature
+**Default value:** 4821.2
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The melting temperature of one of the components in the melting model, the Mg mantle endmember.Units: K.
+
+(parameters:Material_20model/Melt_20boukare/Mg_20number_20of_20moles)=
+### __Parameter name:__ Mg number of moles
+**Default value:** 0.62
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The number of moles of Mg atoms mixing on a pseudosite in the mantle lattice, This is needed because we use an empirical model fitting the full Boukare model, and can be changed to reflect partition coefficients from other sources.Units: none.
+
+(parameters:Material_20model/Melt_20boukare/Molar_20masses)=
+### __Parameter name:__ Molar masses
+**Default value:** 0.1319287, 0.1003887, 0.0718444, 0.0403044, 0.0707624708, 0.048592178, 0.048592178
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Molar masses of the different endmembersUnits: kg/mol.
+
+(parameters:Material_20model/Melt_20boukare/Number_20of_20atoms)=
+### __Parameter name:__ Number of atoms
+**Default value:** 5.0, 5.0, 2.0, 2.0, 2.092, 2.419, 2.419
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Number of atoms per in the formula of each endmember.Units: none.
+
+(parameters:Material_20model/Melt_20boukare/Reference_20bulk_20moduli)=
+### __Parameter name:__ Reference bulk moduli
+**Default value:** 2.81e11, 2.51e+11, 1.52e11, 1.616e11, 166652774642.11273, 2.317e11, 2.317e11
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** List of bulk moduli for each different endmember at the reference temperature and reference pressure.Units: Pa.
+
+(parameters:Material_20model/Melt_20boukare/Reference_20bulk_20viscosity)=
+### __Parameter name:__ Reference bulk viscosity
+**Default value:** 1e22
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The value of the constant bulk viscosity $\xi_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $Pa \, s$.
+
+(parameters:Material_20model/Melt_20boukare/Reference_20enthalpies)=
+### __Parameter name:__ Reference enthalpies
+**Default value:** -1082910.0, -1442310.0, -262240.0, -601570.0, -195245.49100022088, -538009.8, -538009.8
+
+**Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** List of enthalpies at the reference temperature and reference pressure for each different endmember component.Units: J/mol.
+
+(parameters:Material_20model/Melt_20boukare/Reference_20entropies)=
+### __Parameter name:__ Reference entropies
+**Default value:** 95.0, 62.6, 58.6, 26.5, 95.0299295525918, 64.9, 64.9
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** List of entropies at the reference temperature and reference pressure for each different endmember component.Units: J/K/mol.
+
+(parameters:Material_20model/Melt_20boukare/Reference_20melt_20viscosity)=
+### __Parameter name:__ Reference melt viscosity
+**Default value:** 10
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The value of the constant melt viscosity $\eta_f$. Units: $Pa \, s$.
+
+(parameters:Material_20model/Melt_20boukare/Reference_20permeability)=
+### __Parameter name:__ Reference permeability
+**Default value:** 1e-8
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Reference permeability of the solid host rock.Units: $m^2$.
+
+(parameters:Material_20model/Melt_20boukare/Reference_20pressure)=
+### __Parameter name:__ Reference pressure
+**Default value:** 1e11
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Reference pressure used to compute the material propertiesof the different endmember components.Units: Pa.
+
+(parameters:Material_20model/Melt_20boukare/Reference_20shear_20viscosity)=
+### __Parameter name:__ Reference shear viscosity
+**Default value:** 5e20
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The value of the constant viscosity $\eta_0$ of the solid matrix. This viscosity may be modified by both temperature and porosity dependencies. Units: $Pa \, s$.
+
+(parameters:Material_20model/Melt_20boukare/Reference_20specific_20heat_20capacities)=
+### __Parameter name:__ Reference specific heat capacities
+**Default value:** 139.546209, 161.546581, 52.0016403, 73.1147154, 79.5326013, 79.5326013, 79.5326013
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** List of specific heat capacities for each different endmember at the reference temperature and reference pressure.Units: J/kg/K.
+
+(parameters:Material_20model/Melt_20boukare/Reference_20temperature)=
+### __Parameter name:__ Reference temperature
+**Default value:** 298.15
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Reference temperature used to compute the material propertiesof the different endmember components.Units: K.
+
+(parameters:Material_20model/Melt_20boukare/Reference_20thermal_20expansivities)=
+### __Parameter name:__ Reference thermal expansivities
+**Default value:** 1.87e-05, 1.87e-05, 3.22e-05, 3.11e-05, 2.9614332469401705e-05, 2.06e-05, 2.06e-05
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** List of thermal expansivities for each different endmember at the reference temperature and reference pressure.Units: 1/K.
+
+(parameters:Material_20model/Melt_20boukare/Reference_20volumes)=
+### __Parameter name:__ Reference volumes
+**Default value:** 2.534e-05, 2.445e-05, 1.206e-05, 1.125e-05, 1.2325484447664221e-05, 1.218e-05, 1.218e-05
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Reference volumes of the different endmembers.Units: $m^3$.
+
+(parameters:Material_20model/Melt_20boukare/Second_20coefficients_20for_20specific_20heat_20polynomial)=
+### __Parameter name:__ Second coefficients for specific heat polynomial
+**Default value:** -4.13886524e+06, -3.57533814e+06, -1.19540964e+06, -7.33679285e+05, -1.61692272e+06, -1.61692272e+06, -1.61692272e+06
+
+**Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The second of three coefficients that are used to compute the specific heat capacities for each different endmember at the reference temperature and reference pressure. This coefficient describes the part of the temperature dependence that scales as the inverse of the square of the temperature. Units: J K/kg.
+
+(parameters:Material_20model/Melt_20boukare/Second_20derivatives_20of_20the_20bulk_20modulus)=
+### __Parameter name:__ Second derivatives of the bulk modulus
+**Default value:** -1.6e-11, -1.6e-11, -3.2e-11, -2.4e-11, -3.9742163085937504e-11, -2.14e-11, -2.14e-11
+
+**Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The second pressure derivative of the bulk modulus at the reference temperature and reference pressure for each different endmember component.Units: 1/Pa.
+
+(parameters:Material_20model/Melt_20boukare/Thermal_20bulk_20viscosity_20exponent)=
+### __Parameter name:__ Thermal bulk viscosity exponent
+**Default value:** 0.0
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The temperature dependence of the bulk viscosity. Dimensionless exponent. See the general documentation of this model for a formula that states the dependence of the viscosity on this factor, which is called $\beta$ there.
+
+(parameters:Material_20model/Melt_20boukare/Thermal_20conductivity)=
+### __Parameter name:__ Thermal conductivity
+**Default value:** 4.7
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The value of the thermal conductivity $k$. Units: $W/m/K$.
+
+(parameters:Material_20model/Melt_20boukare/Thermal_20viscosity_20exponent)=
+### __Parameter name:__ Thermal viscosity exponent
+**Default value:** 0.0
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The temperature dependence of the shear viscosity. Dimensionless exponent. See the general documentation of this model for a formula that states the dependence of the viscosity on this factor, which is called $\beta$ there.
+
+(parameters:Material_20model/Melt_20boukare/Third_20coefficients_20for_20specific_20heat_20polynomial)=
+### __Parameter name:__ Third coefficients for specific heat polynomial
+**Default value:** -464.775577, -1112.54791, 25.5067110, -592.994207, -562.222634, -562.222634, -562.222634
+
+**Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The third of three coefficients that are used to compute the specific heat capacities for each different endmember at the reference temperature and reference pressure. This coefficient describes the part of the temperature dependence that scales as the inverse of the square root of the temperatureUnits: J/kg/sqrt(K).
+
 (parameters:Material_20model/Melt_20global)=
 ## **Subsection:** Material model / Melt global
 (parameters:Material_20model/Melt_20global/Depletion_20density_20change)=
@@ -2563,7 +2825,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 ### __Parameter name:__ Base model
 **Default value:** simple
 
-**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic ]
+**Pattern:** [Selection Steinberger|ascii reference profile|averaging|compositing|composition reaction|depth dependent|diffusion dislocation|drucker prager|grain size|latent heat|latent heat melt|melt boukare|melt global|melt simple|modified tait|multicomponent|multicomponent compressible|nondimensional|perplex lookup|replace lithosphere viscosity|simple|simple compressible|simpler|visco plastic|viscoelastic ]
 
 **Documentation:** The name of a material model that will be modified by a replacingthe viscosity in the lithosphere by a constant value. Valid values for this parameter are the names of models that are also valid for the &ldquo;Material models/Model name&rdquo; parameter. See the documentation for more information.
 
@@ -3593,7 +3855,7 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 
 **Pattern:** [Selection true|false|unspecified ]
 
-**Documentation:** Select whether the material time scale in the viscoelastic constitutive relationship uses the regular numerical time step or a separate fixed elastic time step throughout the model run. The fixed elastic time step is always used during the initial time step. If a fixed elastic time step is used throughout the model run, a stress averaging scheme can be applied to account for differences with the numerical time step. An alternative approach is to limit the maximum time step size so that it is equal to the elastic time step. The default value of this parameter is &rsquo;unspecified&rsquo;, which throws an exception during runtime. In order for the model to run the user must select &rsquo;true&rsquo; or &rsquo;false&rsquo;.
+**Documentation:** Select whether the material time scale in the viscoelastic constitutive relationship uses the regular numerical time step or a separate fixed elastic time step throughout the model run. The fixed elastic time step is always used during the initial time step. If a fixed elastic time step is used throughout the model run, a stress averaging scheme is applied to account for differences with the numerical time step. An alternative approach is to limit the maximum time step size so that it is equal to the elastic time step. The default value of this parameter is &rsquo;unspecified&rsquo;, which throws an exception during runtime. In order for the model to run the user must select &rsquo;true&rsquo; or &rsquo;false&rsquo;.
 
 (parameters:Material_20model/Visco_20Plastic/Use_20plastic_20damper)=
 ### __Parameter name:__ Use plastic damper
@@ -3602,14 +3864,6 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use a plastic damper when computing the Drucker-Prager plastic viscosity. The damper acts to stabilize the plastic shear band width and remove associated mesh-dependent behavior at sufficient resolutions.
-
-(parameters:Material_20model/Visco_20Plastic/Use_20stress_20averaging)=
-### __Parameter name:__ Use stress averaging
-**Default value:** false
-
-**Pattern:** [Bool]
-
-**Documentation:** Whether to apply a stress averaging scheme to account for differences between the fixed elastic time step and numerical time step.
 
 (parameters:Material_20model/Visco_20Plastic/Viscosity_20averaging_20scheme)=
 ### __Parameter name:__ Viscosity averaging scheme
@@ -3767,15 +4021,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Selection true|false|unspecified ]
 
-**Documentation:** Select whether the material time scale in the viscoelastic constitutive relationship uses the regular numerical time step or a separate fixed elastic time step throughout the model run. The fixed elastic time step is always used during the initial time step. If a fixed elastic time step is used throughout the model run, a stress averaging scheme can be applied to account for differences with the numerical time step. An alternative approach is to limit the maximum time step size so that it is equal to the elastic time step. The default value of this parameter is &rsquo;unspecified&rsquo;, which throws an exception during runtime. In order for the model to run the user must select &rsquo;true&rsquo; or &rsquo;false&rsquo;.
-
-(parameters:Material_20model/Viscoelastic/Use_20stress_20averaging)=
-### __Parameter name:__ Use stress averaging
-**Default value:** false
-
-**Pattern:** [Bool]
-
-**Documentation:** Whether to apply a stress averaging scheme to account for differences between the fixed elastic time step and numerical time step.
+**Documentation:** Select whether the material time scale in the viscoelastic constitutive relationship uses the regular numerical time step or a separate fixed elastic time step throughout the model run. The fixed elastic time step is always used during the initial time step. If a fixed elastic time step is used throughout the model run, a stress averaging scheme is applied to account for differences with the numerical time step. An alternative approach is to limit the maximum time step size so that it is equal to the elastic time step. The default value of this parameter is &rsquo;unspecified&rsquo;, which throws an exception during runtime. In order for the model to run the user must select &rsquo;true&rsquo; or &rsquo;false&rsquo;.
 
 (parameters:Material_20model/Viscoelastic/Viscosities)=
 ### __Parameter name:__ Viscosities
