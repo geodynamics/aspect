@@ -110,7 +110,14 @@ jobs:
     #linux build including tests
     name: tests
     runs-on: [ubuntu-latest]
-    container: geodynamics/aspect-tester:focal-dealii-9.3-v2
+    strategy:
+      matrix:
+        include:
+          - image: "geodynamics/aspect-tester:focal-dealii-9.3-v2"
+            tests: "ON"
+          - image: "geodynamics/aspect-tester:focal-dealii-9.4-v1"
+            tests: "OFF"
+    container: ${{ matrix.image }}
 
     steps:
     - uses: actions/checkout@v2
@@ -125,7 +132,7 @@ jobs:
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=ON \
         -D ASPECT_UNITY_BUILD=ON \
-        -D ASPECT_RUN_ALL_TESTS='ON' \
+        -D ASPECT_RUN_ALL_TESTS='${{ matrix.tests }}' \
         ..
         ninja
         ./aspect --test
