@@ -319,6 +319,24 @@ namespace aspect
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
     };
+
+    /**
+     * This class assembles the right-hand-side term of the Stokes equation
+     * that is caused by the variable density in the mass conservation equation.
+     * This class approximates this term as
+     * $ - \nabla \cdot \mathbf{u} = \frac{1}{\rho} \frac{\partial \rho}{\partial t} + \frac{1}{\rho} \nabla \rho \cdot \mathbf{u}$
+     * where the right-hand side velocity is explicitly taken from the last timestep,
+     * and the density is taken from a compositional field of the type 'density'.
+     */
+    template <int dim>
+    class NewtonStokesProjectedDensityFieldTerm : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
+    };
   }
 }
 
