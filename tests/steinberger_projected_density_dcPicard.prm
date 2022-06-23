@@ -11,6 +11,7 @@ set CFL number                             = 1.0
 set End time                               = 1e5
 set Adiabatic surface temperature          = 1600.0
 set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = iterated Advection and defect correction Stokes
 
 subsection Boundary temperature model
   set List of model names = spherical constant
@@ -70,7 +71,6 @@ subsection Material model
     set Radial viscosity file name       = test-radial-visc.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false
-    set Reference viscosity              = 1e21
     set Thermal conductivity             = 1.5
   end
 end

@@ -1,4 +1,8 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 Number of active cells: 192 (on 4 levels)
 Number of degrees of freedom: 5,223 (1,666+225+833+833+833+833)
 
@@ -7,14 +11,60 @@ Number of degrees of freedom: 5,223 (1,666+225+833+833+833+833)
    Solving composition system ... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Solving another_field system ... 0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 1.51146e-16, 1.56323e-16, 0, 1.41029e-16
+   Initial Newton Stokes residual = 1.22791e+14, v = 1.22791e+14, p = 0
+
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 1.22791e+14
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Solving composition system ... 0 iterations.
+   Copying properties into prescribed compositional field density_field.
+   Solving another_field system ... 0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 1.51146e-16, 1.56323e-16, 0, 1.41029e-16
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.0182257, norm of the rhs: 2.23795e+12, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0182257
+
+   Solving temperature system... 0 iterations.
+   Solving composition system ... 0 iterations.
+   Copying properties into prescribed compositional field density_field.
+   Solving another_field system ... 0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 1.51146e-16, 1.56323e-16, 0, 1.41029e-16
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.00053489, norm of the rhs: 6.56796e+10, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00053489
+
+   Solving temperature system... 0 iterations.
+   Solving composition system ... 0 iterations.
+   Copying properties into prescribed compositional field density_field.
+   Solving another_field system ... 0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 1.51146e-16, 1.56323e-16, 0, 1.41029e-16
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 1.32152e-05, norm of the rhs: 1.6227e+09, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.32152e-05
+
+   Solving temperature system... 0 iterations.
+   Solving composition system ... 0 iterations.
+   Copying properties into prescribed compositional field density_field.
+   Solving another_field system ... 0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 1.51146e-16, 1.56323e-16, 0, 1.41029e-16
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 3.64732e-07, norm of the rhs: 4.47858e+07, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 3.64732e-07
+
 
    Postprocessing:
      Writing graphical output:           output-steinberger_projected_density_dcPicard/solution/solution-00000
-     RMS, max velocity:                  0.581 m/year, 1.11 m/year
+     RMS, max velocity:                  0.578 m/year, 1.1 m/year
      Temperature min/avg/max:            273 K, 2437 K, 4250 K
-     Heat fluxes through boundary parts: 4.857e+05 W, -4.251e+06 W, 0 W, 0 W
+     Heat fluxes through boundary parts: 4.994e+05 W, -4.274e+06 W, 0 W, 0 W
      Writing depth average:              output-steinberger_projected_density_dcPicard/depth_average
 
 *** Timestep 1:  t=100000 years, dt=100000 years
@@ -22,17 +72,68 @@ Number of degrees of freedom: 5,223 (1,666+225+833+833+833+833)
    Solving composition system ... 11 iterations.
    Copying properties into prescribed compositional field density_field.
    Solving another_field system ... 11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 0.00377686, 0.0202637, 0, 0.0108039
+   Initial Newton Stokes residual = 8.39913e+13, v = 8.31745e+13, p = 1.16847e+13
+
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.177775, norm of the rhs: 1.49316e+13
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.177775
+
+   Solving temperature system... 11 iterations.
+   Solving composition system ... 9 iterations.
+   Copying properties into prescribed compositional field density_field.
+   Solving another_field system ... 9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 0.000124181, 0.000414974, 0, 0.000193229
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.00303935, norm of the rhs: 2.55279e+11, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00303935
+
+   Solving temperature system... 10 iterations.
+   Solving composition system ... 8 iterations.
+   Copying properties into prescribed compositional field density_field.
+   Solving another_field system ... 8 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 6.86801e-06, 3.11439e-05, 0, 1.43923e-05
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.000264697, norm of the rhs: 2.22323e+10, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000264697
+
+   Solving temperature system... 8 iterations.
+   Solving composition system ... 7 iterations.
+   Copying properties into prescribed compositional field density_field.
+   Solving another_field system ... 7 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 6.11297e-07, 2.60559e-06, 0, 1.3899e-06
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 1.19298e-05, norm of the rhs: 1.002e+09, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.19298e-05
+
+   Solving temperature system... 7 iterations.
+   Solving composition system ... 6 iterations.
+   Copying properties into prescribed compositional field density_field.
+   Solving another_field system ... 5 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 4.31519e-08, 1.2514e-07, 0, 8.13161e-08
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 1.11153e-06, norm of the rhs: 9.33591e+07, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.11153e-06
+
 
    Postprocessing:
      Writing graphical output:           output-steinberger_projected_density_dcPicard/solution/solution-00001
-     RMS, max velocity:                  0.578 m/year, 1.11 m/year
-     Temperature min/avg/max:            273 K, 2435 K, 4250 K
-     Heat fluxes through boundary parts: -2.814e+06 W, -1.215e+06 W, 0 W, 0 W
+     RMS, max velocity:                  0.578 m/year, 1.12 m/year
+     Temperature min/avg/max:            273 K, 2436 K, 4250 K
+     Heat fluxes through boundary parts: -2.718e+06 W, -1.136e+06 W, 0 W, 0 W
      Writing depth average:              output-steinberger_projected_density_dcPicard/depth_average
 
 Termination requested by criterion: end time
 
 
++------------------------------------------------+------------+------------+
++------------------------------------+-----------+------------+------------+
++------------------------------------+-----------+------------+------------+
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
