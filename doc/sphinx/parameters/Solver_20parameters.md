@@ -104,7 +104,7 @@
 **Documentation:** The maximum number of line search iterations allowed. If the criterion is not reached after this number of iterations, we apply the scaled increment even though it does not satisfy the necessary criteria and simply continue with the next Newton iteration.
 
 (parameters:Solver_20parameters/Newton_20solver_20parameters/Max_20pre_2dNewton_20nonlinear_20iterations)=
-### __Parameter name:__ Max pre_2dNewton nonlinear iterations
+### __Parameter name:__ Max pre-Newton nonlinear iterations
 **Default value:** 10
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
@@ -206,7 +206,7 @@ Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat W
 **Documentation:** This is the number of iterations that define the GMRES solver restart length. Increasing this parameter helps with convergence issues arising from high localized viscosity jumps in the domain. Be aware that increasing this number increases the memory usage of the Stokes solver, and makes individual Stokes iterations more expensive.
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters/IDR_28s_29_20parameter)=
-### __Parameter name:__ IDR_28s_29 parameter
+### __Parameter name:__ IDR(s) parameter
 **Default value:** 2
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]

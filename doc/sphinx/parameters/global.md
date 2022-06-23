@@ -55,7 +55,7 @@ For more information, see the section in the manual that discusses the general m
 **Documentation:** The maximal number of nonlinear iterations to be performed.
 
 (parameters:Max_20nonlinear_20iterations_20in_20pre_2drefinement)=
-### __Parameter name:__ Max nonlinear iterations in pre_2drefinement
+### __Parameter name:__ Max nonlinear iterations in pre-refinement
 **Default value:** 2147483647
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]

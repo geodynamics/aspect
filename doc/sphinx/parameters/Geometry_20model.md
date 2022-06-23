@@ -470,7 +470,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** The number of subdivisions of the coarse (initial) mesh in depth.
 
 (parameters:Geometry_20model/Ellipsoidal_20chunk/East_2dWest_20subdivisions)=
-### __Parameter name:__ East_2dWest subdivisions
+### __Parameter name:__ East-West subdivisions
 **Default value:** 1
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
@@ -502,7 +502,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Longitude:latitude in degrees of the North-West corner point of model region. The North-East direction is positive. If one of the three corners is not provided the missing corner value will be calculated so all faces are parallel.
 
 (parameters:Geometry_20model/Ellipsoidal_20chunk/North_2dSouth_20subdivisions)=
-### __Parameter name:__ North_2dSouth subdivisions
+### __Parameter name:__ North-South subdivisions
 **Default value:** 1
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
@@ -526,7 +526,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Longitude:latitude in degrees of the South-West corner point of model region. The North-East direction is positive. If one of the three corners is not provided the missing corner value will be calculated so all faces are parallel.
 
 (parameters:Geometry_20model/Ellipsoidal_20chunk/Semi_2dmajor_20axis)=
-### __Parameter name:__ Semi_2dmajor axis
+### __Parameter name:__ Semi-major axis
 **Default value:** 6378137.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
