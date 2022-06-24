@@ -1,12 +1,17 @@
+# The following files do not need to be in the release tarballs:
 .gitattributes export-ignore
 .gitignore export-ignore
 doc/bump_version.sh export-ignore
 doc/release-tasklist export-ignore
+doc/sphinx/ export-ignore
 doc/manual/ export-ignore
 doc/release-tasklist export-ignore
 doc/update_parameters.sh export-ignore
 Jenkinsfile export-ignore
 .zenodo.json export-ignore
+.mailmap export-ignore
+.readthedocs.yaml export-ignore
+.clang-tidy export-ignore
 
 # Documentation shouldn't count as part of the language percentages.
 **/doc/** linguist-documentation
