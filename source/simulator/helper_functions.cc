@@ -543,6 +543,39 @@ namespace aspect
 
 
   template <int dim>
+  void Simulator<dim>::exchange_refinement_flags ()
+  {
+    // Communicate refinement flags on ghost cells from the owner of the
+    // cell. This is necessary to get consistent refinement, as mesh
+    // smoothing would undo some of the requested coarsening/refinement.
+
+    auto pack
+    = [] (const typename DoFHandler<dim>::active_cell_iterator &cell) -> std::uint8_t
+    {
+      if (cell->refine_flag_set())
+        return 1;
+      if (cell->coarsen_flag_set())
+        return 2;
+      return 0;
+    };
+    auto unpack
+    = [] (const typename DoFHandler<dim>::active_cell_iterator &cell, const std::uint8_t &flag) -> void
+    {
+      cell->clear_coarsen_flag();
+      cell->clear_refine_flag();
+      if (flag==1)
+        cell->set_refine_flag();
+      else if (flag==2)
+        cell->set_coarsen_flag();
+    };
+
+    GridTools::exchange_cell_data_to_ghosts<std::uint8_t, DoFHandler<dim>>
+    (dof_handler, pack, unpack);
+  }
+
+
+
+  template <int dim>
   void Simulator<dim>::maybe_refine_mesh (const double new_time_step,
                                           unsigned int &max_refinement_level)
   {
@@ -2437,6 +2470,7 @@ namespace aspect
   template void Simulator<dim>::maybe_write_timing_output () const; \
   template bool Simulator<dim>::maybe_write_checkpoint (const time_t, const bool); \
   template bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level); \
+  template void Simulator<dim>::exchange_refinement_flags (); \
   template void Simulator<dim>::maybe_refine_mesh (const double new_time_step, unsigned int &max_refinement_level); \
   template void Simulator<dim>::advance_time (const double step_size); \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
