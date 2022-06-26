@@ -667,10 +667,14 @@ namespace aspect
       DoFHandler<dim> dof_handler_v;
       DoFHandler<dim> dof_handler_p;
       DoFHandler<dim> dof_handler_projection;
+      DoFHandler<dim> dof_handler_temperature;
+      DoFHandler<dim> dof_handler_composition;
 
       FESystem<dim> fe_v;
       FESystem<dim> fe_p;
       FESystem<dim> fe_projection;
+      FESystem<dim> fe_temperature;
+      FESystem<dim> fe_composition;
 
       /**
        * Store the data for the Stokes operator (viscosity, etc.) for the active cells.

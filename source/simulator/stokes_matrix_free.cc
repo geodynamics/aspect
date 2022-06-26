@@ -1147,7 +1147,23 @@ namespace aspect
                   sym_grad_u[d][d] -= 1.0/3.0*div;
               }
 
-            velocity.submit_symmetric_gradient(sym_grad_u, q);
+            if (cell_data->enable_newton_derivatives)
+              {
+                const SymmetricTensor<2,dim,VectorizedArray<number>> grads_phi_u_i = velocity.get_symmetric_gradient (q);
+
+                SymmetricTensor<2,dim,VectorizedArray<number>> newton_velocity_term =
+                  (grads_phi_u_i * cell_data->strain_rate_table(cell,q))
+                  * cell_data->newton_factor_wrt_strain_rate_table(cell,q);
+
+                if (cell_data->symmetrize_newton_system)
+                  newton_velocity_term +=
+                    (cell_data->newton_factor_wrt_strain_rate_table(cell,q)*grads_phi_u_i)
+                    * cell_data->strain_rate_table(cell,q);
+                velocity.submit_symmetric_gradient(sym_grad_u + newton_velocity_term, q);
+
+              }
+            else
+              velocity.submit_symmetric_gradient(sym_grad_u, q);
           }
 
         velocity.integrate_scatter (EvaluationFlags::gradients, dst);
@@ -1346,6 +1362,8 @@ namespace aspect
       dof_handler_v(simulator.triangulation),
       dof_handler_p(simulator.triangulation),
       dof_handler_projection(simulator.triangulation),
+      dof_handler_temperature(simulator.triangulation),
+      dof_handler_composition(simulator.triangulation),
 
       fe_v (FE_Q<dim>(sim.parameters.stokes_velocity_degree), dim),
       fe_p (FE_Q<dim>(sim.parameters.stokes_velocity_degree-1),1),
@@ -1361,7 +1379,9 @@ namespace aspect
                                 sim.parameters.material_averaging
                                 ==
                                 MaterialModel::MaterialAveraging::AveragingOperation::project_to_Q1_only_viscosity
-                                ? 1 : 0), 1)
+                                ? 1 : 0), 1),
+      fe_temperature(FE_Q<dim>(sim.parameters.temperature_degree),1),
+      fe_composition(FE_Q<dim>(sim.parameters.composition_degree),1)
   {
     parse_parameters(prm);
     CitationInfo::add("mf");
@@ -1681,11 +1701,6 @@ namespace aspect
 
           active_cell_data.enable_newton_derivatives = true;
 
-          // TODO: these are not implemented yet
-          for (unsigned int level=0; level<n_levels; ++level)
-            level_cell_data[level].enable_newton_derivatives = false;
-
-
           FEValues<dim> fe_values (*sim.mapping,
                                    sim.finite_element,
                                    quadrature_formula,
@@ -1772,6 +1787,251 @@ namespace aspect
             (sim.newton_handler->parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::symmetric)
             != Newton::Parameters::Stabilization::none;
           active_cell_data.symmetrize_newton_system = symmetrize_newton_system;
+
+          {
+            // compute and store level cell data for the Newton method.
+            // We use different dof handlers because MGTransferMatrixFree doesn't support different base elements.
+
+            MGTransferMatrixFree<dim,double> transfer_velocity;
+            transfer_velocity.build(dof_handler_v);
+
+            MGTransferMatrixFree<dim,double> transfer_pressure;
+            transfer_pressure.build(dof_handler_p);
+
+            MGTransferMatrixFree<dim, double> transfer_temperature;
+            transfer_temperature.build(dof_handler_temperature);
+
+            MGTransferMatrixFree<dim, double> transfer_composition;
+            transfer_composition.build(dof_handler_composition);
+
+            MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>>
+            level_linearization_point_velocity;
+            level_linearization_point_velocity.resize(0,n_levels-1);
+
+            MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>>
+            level_linearization_point_pressure;
+            level_linearization_point_pressure.resize(0,n_levels-1);
+
+            MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>>
+            level_linearization_point_temperature;
+            level_linearization_point_temperature.resize(0,n_levels-1);
+
+            const unsigned int n_compositional_fields = sim.introspection.n_compositional_fields;
+            std::vector<MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>>>
+            level_linearization_point_composition(n_compositional_fields);
+            for (unsigned int c=0; c<n_compositional_fields; ++c)
+              level_linearization_point_composition[c].resize(0,n_levels-1);
+
+
+            const unsigned int block_vel = sim.introspection.block_indices.velocities;
+            const unsigned int block_p = (sim.parameters.include_melt_transport) ? sim.introspection.variable("fluid pressure").block_index
+                                         : sim.introspection.block_indices.pressure;
+            const unsigned int block_temperature = sim.introspection.block_indices.temperature;
+
+            // convert Trilinos BlockVector into Vector:
+            LinearAlgebra::BlockVector trilinos_linearization_point_stokes(sim.introspection.index_sets.stokes_partitioning,
+                                                                           sim.mpi_communicator);
+            trilinos_linearization_point_stokes.block(block_vel) = sim.current_linearization_point.block(block_vel);
+            trilinos_linearization_point_stokes.block(block_p) = sim.current_linearization_point.block(block_p);
+
+            dealii::LinearAlgebra::distributed::BlockVector<double> active_linearization_point_stokes(2);
+            stokes_matrix.initialize_dof_vector(active_linearization_point_stokes);
+
+            internal::ChangeVectorTypes::copy(active_linearization_point_stokes, trilinos_linearization_point_stokes);
+
+            transfer_velocity.interpolate_to_mg(dof_handler_v,
+                                                level_linearization_point_velocity,
+                                                active_linearization_point_stokes.block(block_vel));
+
+            transfer_pressure.interpolate_to_mg(dof_handler_p,
+                                                level_linearization_point_pressure,
+                                                active_linearization_point_stokes.block(block_p));
+
+            const IndexSet temperature_partitioning = sim.introspection.index_sets.system_partitioning[block_temperature];
+            dealii::LinearAlgebra::distributed::Vector<double>
+            active_linearization_point_temperature(temperature_partitioning, sim.mpi_communicator);
+
+            internal::ChangeVectorTypes::copy(active_linearization_point_temperature,
+                                              sim.current_linearization_point.block(block_temperature));
+
+            transfer_temperature.interpolate_to_mg(dof_handler_temperature,
+                                                   level_linearization_point_temperature,
+                                                   active_linearization_point_temperature);
+
+            for (unsigned int c=0; c<n_compositional_fields; ++c)
+              {
+                const unsigned int block_c = sim.introspection.block_indices.compositional_fields[c];
+                const IndexSet c_partitioning = sim.introspection.index_sets.system_partitioning[block_c];
+                dealii::LinearAlgebra::distributed::Vector<double>
+                active_linearization_point_composition_c(c_partitioning, sim.mpi_communicator);
+
+                internal::ChangeVectorTypes::copy(active_linearization_point_composition_c,
+                                                  sim.current_linearization_point.block(block_c));
+
+                transfer_composition.interpolate_to_mg(dof_handler_composition,
+                                                       level_linearization_point_composition[c],
+                                                       active_linearization_point_composition_c);
+              }
+
+            FEValues<dim> fe_values_velocity(*sim.mapping,
+                                             fe_v,
+                                             quadrature_formula,
+                                             update_values   |
+                                             update_gradients |
+                                             update_quadrature_points);
+            FEValues<dim> fe_values_pressure(*sim.mapping,
+                                             fe_p,
+                                             quadrature_formula,
+                                             update_values |
+                                             update_gradients);
+            FEValues<dim> fe_values_temperature(*sim.mapping,
+                                                fe_temperature,
+                                                quadrature_formula,
+                                                update_values);
+            FEValues<dim> fe_values_composition(*sim.mapping,
+                                                fe_composition,
+                                                quadrature_formula,
+                                                update_values);
+
+            const unsigned int n_q_points = quadrature_formula.size();
+            MaterialModel::MaterialModelInputs<dim> in(fe_values_velocity.n_quadrature_points, n_compositional_fields);
+            MaterialModel::MaterialModelOutputs<dim> out(fe_values_velocity.n_quadrature_points, n_compositional_fields);
+            sim.newton_handler->create_material_model_outputs(out);
+
+            std::vector<double> local_dof_values_velocity(fe_v.dofs_per_cell);
+
+            const FEValuesExtractors::Vector velocities(0);
+
+            for (unsigned int level = 0; level < n_levels; ++level)
+              {
+                level_cell_data[level].enable_newton_derivatives = true;
+                level_cell_data[level].symmetrize_newton_system = symmetrize_newton_system;
+
+                const unsigned int n_cells = mg_matrices_A_block[level].get_matrix_free()->n_cell_batches();
+
+
+                level_cell_data[level].strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
+                level_cell_data[level].newton_factor_wrt_pressure_table.reinit(TableIndices<2>(n_cells, n_q_points));
+                level_cell_data[level].newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
+
+                std::vector<types::global_dof_index> local_dof_indices_velocity(fe_v.dofs_per_cell);
+                std::vector<types::global_dof_index> local_dof_indices_pressure(fe_p.dofs_per_cell);
+                std::vector<types::global_dof_index> local_dof_indices_temperature(fe_temperature.dofs_per_cell);
+                std::vector<types::global_dof_index> local_dof_indices_composition(fe_composition.dofs_per_cell);
+                for (unsigned int cell=0; cell<n_cells; ++cell)
+                  {
+                    const unsigned int n_components_filled = mg_matrices_A_block[level].get_matrix_free()->n_active_entries_per_cell_batch(cell);
+
+                    for (unsigned int i=0; i<n_components_filled; ++i)
+                      {
+                        // reinitialize the material model inputs for this cell manually.
+                        typename DoFHandler<dim>::level_cell_iterator velocity_cell =
+                          mg_matrices_A_block[level].get_matrix_free()->get_cell_iterator(cell,i);
+                        velocity_cell->get_active_or_mg_dof_indices(local_dof_indices_velocity);
+                        fe_values_velocity.reinit(velocity_cell);
+
+                        typename DoFHandler<dim>::level_cell_iterator pressure_cell(&(sim.triangulation),
+                                                                                    level,
+                                                                                    velocity_cell->index(),
+                                                                                    &(dof_handler_p));
+                        pressure_cell->get_active_or_mg_dof_indices(local_dof_indices_pressure);
+                        fe_values_pressure.reinit(pressure_cell);
+
+                        typename DoFHandler<dim>::level_cell_iterator temperature_cell(&(sim.triangulation),
+                                                                                       level,
+                                                                                       velocity_cell->index(),
+                                                                                       &(dof_handler_temperature));
+                        temperature_cell->get_active_or_mg_dof_indices(local_dof_indices_temperature);
+                        fe_values_temperature.reinit(temperature_cell);
+
+                        typename DoFHandler<dim>::level_cell_iterator composition_cell(&(sim.triangulation),
+                                                                                       level,
+                                                                                       velocity_cell->index(),
+                                                                                       &(dof_handler_composition));
+                        composition_cell->get_active_or_mg_dof_indices(local_dof_indices_composition);
+                        fe_values_composition.reinit(composition_cell);
+                        {
+                          // do in.reinit() manually:
+                          fe_values_pressure.get_function_values(level_linearization_point_pressure[level],
+                                                                 local_dof_indices_pressure,
+                                                                 in.pressure);
+
+                          fe_values_pressure.get_function_gradients(level_linearization_point_pressure[level],
+                                                                    local_dof_indices_pressure,
+                                                                    in.pressure_gradient);
+
+                          fe_values_temperature.get_function_values(level_linearization_point_temperature[level],
+                                                                    local_dof_indices_temperature,
+                                                                    in.temperature);
+
+                          // get_function_values with local dof indices doesn't support vector fe,
+                          // and cell->get_dof_values() only works for active cells.
+                          // we get local dof values manually here:
+                          for (unsigned int i=0; i<fe_v.dofs_per_cell; ++i)
+                            local_dof_values_velocity[i] = level_linearization_point_velocity[level](local_dof_indices_velocity[i]);
+
+                          fe_values_velocity[velocities].get_function_values_from_local_dof_values(local_dof_values_velocity,
+                                                                                                   in.velocity);
+                          fe_values_velocity[velocities].get_function_symmetric_gradients_from_local_dof_values(local_dof_values_velocity,
+                              in.strain_rate);
+
+                          // evaluate the compositional field
+                          for (unsigned int c = 0; c < n_compositional_fields; ++c)
+                            {
+                              fe_values_composition.get_function_values(level_linearization_point_composition[c][level],
+                                                                        local_dof_indices_composition,
+                                                                        in.composition[c]);
+                            }
+
+                          // copy from MaterialModelInputs<dim>::reinit():
+                          in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::viscosity;
+                          in.position = fe_values_velocity.get_quadrature_points();
+                        }
+
+                        //TODO fill_additional_material_model_inputs on level meshes.
+                        sim.material_model->evaluate(in, out);
+
+                        const MaterialModel::MaterialModelDerivatives<dim> *derivatives
+                          = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
+
+                        Assert(derivatives != nullptr,
+                               ExcMessage ("Error: The Newton method requires the material to "
+                                           "compute derivatives."));
+
+                        for (unsigned int q=0; q<n_q_points; ++q)
+                          {
+                            // use the spd factor when the stabilization is PD or SPD.
+                            const double alpha =  (sim.newton_handler->parameters.velocity_block_stabilization
+                                                   & Newton::Parameters::Stabilization::PD)
+                                                  != Newton::Parameters::Stabilization::none
+                                                  ?
+                                                  Utilities::compute_spd_factor<dim>(out.viscosities[q],
+                                                                                     in.strain_rate[q],
+                                                                                     derivatives->viscosity_derivative_wrt_strain_rate[q],
+                                                                                     sim.newton_handler->parameters.SPD_safety_factor)
+                                                  :
+                                                  1.0;
+
+                            level_cell_data[level].newton_factor_wrt_pressure_table(cell,q)[i]
+                              = derivatives->viscosity_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
+
+                            for (unsigned int m=0; m<dim; ++m)
+                              for (unsigned int n=0; n<dim; ++n)
+                                {
+                                  level_cell_data[level].strain_rate_table(cell, q)[m][n][i]
+                                    = in.strain_rate[q][m][n];
+
+                                  level_cell_data[level].newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
+                                    = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n]
+                                      * newton_derivative_scaling_factor * alpha;
+                                }
+                          }
+                      }
+                  }
+
+              }
+          }
+
         }
       else
         {
@@ -1783,7 +2043,12 @@ namespace aspect
           active_cell_data.newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
 
           for (unsigned int level=0; level<n_levels; ++level)
-            level_cell_data[level].enable_newton_derivatives = false;
+            {
+              level_cell_data[level].enable_newton_derivatives = false;
+              level_cell_data[level].newton_factor_wrt_pressure_table.reinit(TableIndices<2>(0,0));
+              level_cell_data[level].strain_rate_table.reinit(TableIndices<2>(0,0));
+              level_cell_data[level].newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
+            }
         }
     }
 
@@ -2673,6 +2938,26 @@ namespace aspect
       dof_handler_projection.distribute_dofs(fe_projection);
 
       DoFRenumbering::hierarchical(dof_handler_projection);
+    }
+
+    // temperature DoFHandler
+    {
+      dof_handler_temperature.clear();
+      dof_handler_temperature.distribute_dofs(fe_temperature);
+
+      DoFRenumbering::hierarchical(dof_handler_temperature);
+
+      dof_handler_temperature.distribute_mg_dofs();
+    }
+
+    // Compositional DoFHandler
+    {
+      dof_handler_composition.clear();
+      dof_handler_composition.distribute_dofs(fe_composition);
+
+      DoFRenumbering::hierarchical(dof_handler_composition);
+
+      dof_handler_composition.distribute_mg_dofs();
     }
 
     // Multigrid DoF setup
