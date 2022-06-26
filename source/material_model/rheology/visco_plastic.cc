@@ -87,7 +87,7 @@ namespace aspect
 
       template <int dim>
       ViscoPlastic<dim>::ViscoPlastic ()
-      {}
+        = default;
 
 
 

@@ -49,7 +49,7 @@ namespace aspect
 
   template <int dim>
   VariableDeclaration<dim>::VariableDeclaration()
-  {}
+    = default;
 
   template <int dim>
   unsigned int
@@ -98,7 +98,7 @@ namespace aspect
 
   template <int dim>
   FEVariableCollection<dim>::FEVariableCollection()
-  {}
+    = default;
 
 
 

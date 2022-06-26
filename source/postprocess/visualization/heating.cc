@@ -52,8 +52,8 @@ namespace aspect
         std::vector<std::string> names = this->get_heating_model_manager().get_active_heating_model_names();
 
         // make the names valid names for output variables via DataOut
-        for (unsigned int i=0; i<names.size(); ++i)
-          std::replace(names[i].begin(), names[i].end(), ' ', '_');
+        for (auto &name : names)
+          std::replace(name.begin(), name.end(), ' ', '_');
 
         return names;
       }

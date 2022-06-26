@@ -1542,8 +1542,8 @@ namespace aspect
       std::sort (additional_refinement_times.begin(),
                  additional_refinement_times.end());
       if (convert_to_years == true)
-        for (unsigned int i=0; i<additional_refinement_times.size(); ++i)
-          additional_refinement_times[i] *= year_in_seconds;
+        for (double &additional_refinement_time : additional_refinement_times)
+          additional_refinement_time *= year_in_seconds;
 
       skip_solvers_on_initial_refinement = prm.get_bool("Skip solvers on initial refinement");
       skip_setup_initial_conditions_on_initial_refinement = prm.get_bool("Skip setup initial conditions on initial refinement");
@@ -1620,41 +1620,41 @@ namespace aspect
                              "'Nullspace removal/Remove nullspace' contains entries more than once. "
                              "This is not allowed. Please check your parameter file."));
 
-      for (unsigned int i=0; i<nullspace_names.size(); ++i)
+      for (auto &nullspace_name : nullspace_names)
         {
-          if (nullspace_names[i]=="net rotation")
+          if (nullspace_name=="net rotation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_rotation);
-          else if (nullspace_names[i]=="net surface rotation")
+          else if (nullspace_name=="net surface rotation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_surface_rotation);
-          else if (nullspace_names[i]=="angular momentum")
+          else if (nullspace_name=="angular momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::angular_momentum);
-          else if (nullspace_names[i]=="net translation")
+          else if (nullspace_name=="net translation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_translation_x |
                                   NullspaceRemoval::net_translation_y | ( dim == 3 ?
                                                                           NullspaceRemoval::net_translation_z : 0) );
-          else if (nullspace_names[i]=="net x translation")
+          else if (nullspace_name=="net x translation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_translation_x);
-          else if (nullspace_names[i]=="net y translation")
+          else if (nullspace_name=="net y translation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_translation_y);
-          else if (nullspace_names[i]=="net z translation")
+          else if (nullspace_name=="net z translation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_translation_z);
-          else if (nullspace_names[i]=="linear x momentum")
+          else if (nullspace_name=="linear x momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_x);
-          else if (nullspace_names[i]=="linear y momentum")
+          else if (nullspace_name=="linear y momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_y);
-          else if (nullspace_names[i]=="linear z momentum")
+          else if (nullspace_name=="linear z momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_z);
-          else if (nullspace_names[i]=="linear momentum")
+          else if (nullspace_name=="linear momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_x |
                                   NullspaceRemoval::linear_momentum_y | ( dim == 3 ?

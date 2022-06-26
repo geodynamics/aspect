@@ -34,7 +34,7 @@ namespace aspect
     {
       template <int dim>
       DislocationCreep<dim>::DislocationCreep ()
-      {}
+        = default;
 
 
 
@@ -216,8 +216,8 @@ namespace aspect
         // that is masked anyway, like strain. Despite
         // these compositions being masked, their viscosities
         // are computed anyway and this will lead to division by zero.
-        for (unsigned int n = 0; n < prefactors_dislocation.size(); ++n)
-          AssertThrow(prefactors_dislocation[n] > 0., ExcMessage("The dislocation prefactor should be larger than zero."));
+        for (double prefactor : prefactors_dislocation)
+          AssertThrow(prefactor > 0., ExcMessage("The dislocation prefactor should be larger than zero."));
       }
     }
   }

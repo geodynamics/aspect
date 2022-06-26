@@ -281,8 +281,8 @@ namespace aspect
                                        ">, but the latter is not a valid name."));
 
               bool already_present = false;
-              for (unsigned int n=0; n<postprocessor_names.size(); ++n)
-                if (postprocessor_names[n] == p)
+              for (auto &postprocessor_name : postprocessor_names)
+                if (postprocessor_name == p)
                   {
                     already_present = true;
                     break;

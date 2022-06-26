@@ -29,7 +29,7 @@ namespace aspect
   {
     template <int dim>
     AsciiDataLayered<dim>::AsciiDataLayered ()
-    {}
+      = default;
 
 
     template <int dim>

@@ -48,7 +48,7 @@ namespace aspect
 
     template <int dim>
     StokesResidual<dim>::StokesResidual ()
-    {}
+      = default;
 
 
 

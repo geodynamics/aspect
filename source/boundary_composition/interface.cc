@@ -81,7 +81,7 @@ namespace aspect
 
     template <int dim>
     Manager<dim>::~Manager()
-    {}
+      = default;
 
 
 

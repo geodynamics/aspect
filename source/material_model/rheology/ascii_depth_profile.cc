@@ -33,7 +33,7 @@ namespace aspect
 
       template <int dim>
       AsciiDepthProfile<dim>::AsciiDepthProfile ()
-      {}
+        = default;
 
 
 

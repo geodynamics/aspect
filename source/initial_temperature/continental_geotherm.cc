@@ -34,7 +34,7 @@ namespace aspect
   {
     template <int dim>
     ContinentalGeotherm<dim>::ContinentalGeotherm ()
-    {}
+      = default;
 
 
     template <int dim>

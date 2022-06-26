@@ -237,14 +237,14 @@ namespace aspect
 
           std::vector<std::array<double,dim>> evaluation_points;
 
-          for (unsigned int p=0; p<point_list.size(); ++p)
+          for (const auto &p : point_list)
             {
               const std::vector<std::string> coordinates
-                = Utilities::split_string_list(point_list[p], ',');
+                = Utilities::split_string_list(p, ',');
               AssertThrow (coordinates.size() == dim,
                            ExcMessage ("In setting up the list of evaluation points for the <Point values> "
                                        "postprocessor, one of the evaluation points reads <"
-                                       + point_list[p] +
+                                       + p +
                                        ">, but this does not correspond to a list of numbers with "
                                        "as many coordinates as you run your simulation in."));
 

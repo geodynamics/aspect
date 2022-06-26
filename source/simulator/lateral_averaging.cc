@@ -429,7 +429,7 @@ namespace aspect
 
     template <int dim>
     FunctorBase<dim>::~FunctorBase()
-    {}
+      = default;
 
 
 
@@ -795,75 +795,75 @@ namespace aspect
                                                   const std::vector<std::string> &property_names) const
   {
     std::vector<std::unique_ptr<internal::FunctorBase<dim>>> functors;
-    for (unsigned int property_index=0; property_index<property_names.size(); ++property_index)
+    for (const auto &property_name : property_names)
       {
-        if (property_names[property_index] == "temperature")
+        if (property_name == "temperature")
           {
             functors.push_back(std::make_unique<FunctorDepthAverageField<dim>>
                                (this->introspection().extractors.temperature));
           }
-        else if (this->introspection().compositional_name_exists(property_names[property_index]))
+        else if (this->introspection().compositional_name_exists(property_name))
           {
             const unsigned int c =
-              this->introspection().compositional_index_for_name(property_names[property_index]);
+              this->introspection().compositional_index_for_name(property_name);
 
             functors.push_back(std::make_unique<FunctorDepthAverageField<dim>> (
                                  this->introspection().extractors.compositional_fields[c]));
           }
-        else if (property_names[property_index] == "velocity_magnitude")
+        else if (property_name == "velocity_magnitude")
           {
             functors.push_back(std::make_unique<FunctorDepthAverageVelocityMagnitude<dim>>
                                (this->introspection().extractors.velocities,
                                 this->convert_output_to_years()));
           }
-        else if (property_names[property_index] == "sinking_velocity")
+        else if (property_name == "sinking_velocity")
           {
             functors.push_back(std::make_unique<FunctorDepthAverageSinkingVelocity<dim>>
                                (this->introspection().extractors.velocities,
                                 &this->get_gravity_model(),
                                 this->convert_output_to_years()));
           }
-        else if (property_names[property_index] == "rising_velocity")
+        else if (property_name == "rising_velocity")
           {
             functors.push_back(std::make_unique<FunctorDepthAverageRisingVelocity<dim>>
                                (this->introspection().extractors.velocities,
                                 &this->get_gravity_model(),
                                 this->convert_output_to_years()));
           }
-        else if (property_names[property_index] == "Vs")
+        else if (property_name == "Vs")
           {
             functors.push_back(std::make_unique<FunctorDepthAverageVsVp<dim>> (true /* Vs */));
           }
-        else if (property_names[property_index] == "Vp")
+        else if (property_name == "Vp")
           {
             functors.push_back(std::make_unique<FunctorDepthAverageVsVp<dim>> (false /* Vp */));
           }
-        else if (property_names[property_index] == "viscosity")
+        else if (property_name == "viscosity")
           {
             functors.push_back(std::make_unique<FunctorDepthAverageViscosity<dim>>());
           }
-        else if (property_names[property_index] == "log_viscosity")
+        else if (property_name == "log_viscosity")
           {
             functors.push_back(std::make_unique<FunctorDepthAverageLogViscosity<dim>>());
           }
-        else if (property_names[property_index] == "vertical_heat_flux")
+        else if (property_name == "vertical_heat_flux")
           {
             functors.push_back(std::make_unique<FunctorDepthAverageVerticalHeatFlux<dim>>
                                (this->introspection().extractors.velocities,
                                 this->introspection().extractors.temperature,
                                 &this->get_gravity_model()));
           }
-        else if (property_names[property_index] == "vertical_mass_flux")
+        else if (property_name == "vertical_mass_flux")
           {
             functors.push_back(std::make_unique<FunctorDepthAverageVerticalMassFlux<dim>>
                                (this->introspection().extractors.velocities,
                                 &this->get_gravity_model()));
           }
-        else if (this->introspection().compositional_name_exists(property_names[property_index].substr(0, property_names[property_index].size()-5)) &&
-                 property_names[property_index].substr(property_names[property_index].size()-5) == "_mass")
+        else if (this->introspection().compositional_name_exists(property_name.substr(0, property_name.size()-5)) &&
+                 property_name.substr(property_name.size()-5) == "_mass")
           {
             const unsigned int c =
-              this->introspection().compositional_index_for_name(property_names[property_index].substr(0, property_names[property_index].size()-5));
+              this->introspection().compositional_index_for_name(property_name.substr(0, property_name.size()-5));
 
             functors.push_back(std::make_unique<FunctorDepthAverageFieldMass<dim>> (
                                  this->introspection().extractors.compositional_fields[c]));
@@ -872,7 +872,7 @@ namespace aspect
           {
             AssertThrow(false,
                         ExcMessage("The lateral averaging scheme was asked to average the property "
-                                   "named <" + property_names[property_index] + ">, but it does not know how "
+                                   "named <" + property_name + ">, but it does not know how "
                                    "to do that. There is no functor implemented that computes this property."));
           }
       }

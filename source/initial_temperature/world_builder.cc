@@ -34,7 +34,7 @@ namespace aspect
   {
     template <int dim>
     WorldBuilder<dim>::WorldBuilder ()
-    {}
+      = default;
 
     template <int dim>
     void

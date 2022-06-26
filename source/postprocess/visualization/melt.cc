@@ -55,17 +55,17 @@ namespace aspect
       {
         std::vector<std::string> solution_names;
 
-        for (unsigned int i=0; i<property_names.size(); ++i)
-          if (property_names[i] == "fluid density gradient")
+        for (const auto &property_name : property_names)
+          if (property_name == "fluid density gradient")
             for (unsigned int i=0; i<dim; ++i)
               solution_names.emplace_back("fluid_density_gradient");
-          else if (property_names[i] == "compaction pressure")
+          else if (property_name == "compaction pressure")
             {
               solution_names.emplace_back("p_c");
             }
           else
             {
-              solution_names.push_back(property_names[i]);
+              solution_names.push_back(property_name);
               std::replace(solution_names.back().begin(),solution_names.back().end(),' ', '_');
             }
 
@@ -80,9 +80,9 @@ namespace aspect
       get_data_component_interpretation () const
       {
         std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation;
-        for (unsigned int i=0; i<property_names.size(); ++i)
+        for (const auto &property_name : property_names)
           {
-            if (property_names[i] == "fluid density gradient")
+            if (property_name == "fluid density gradient")
               {
                 for (unsigned int c=0; c<dim; ++c)
                   interpretation.push_back (DataComponentInterpretation::component_is_part_of_vector);

@@ -42,9 +42,9 @@ namespace aspect
       get_names () const
       {
         std::vector<std::string> solution_names;
-        for (unsigned int i=0; i<vector_names.size(); ++i)
+        for (const auto &vector_name : vector_names)
           for (unsigned int j=0; j<dim; ++j)
-            solution_names.push_back(vector_names[i]);
+            solution_names.push_back(vector_name);
         return solution_names;
       }
 
@@ -135,20 +135,20 @@ namespace aspect
               vector_names = Utilities::split_string_list(prm.get("Names of vectors"), ',');
 
               const std::vector<std::string> sets_list = Utilities::split_string_list(prm.get("Names of fields"), ';');
-              for (unsigned int i=0; i<sets_list.size(); ++i)
+              for (const auto &set_string : sets_list)
                 {
-                  const std::vector<std::string> set = Utilities::split_string_list(sets_list[i], ',');
+                  const std::vector<std::string> set = Utilities::split_string_list(set_string, ',');
                   AssertThrow((set.size() == dim || set.size() == 1),
                               ExcMessage("Sets of compositional fields to be output as vectors must have dim components, "
                                          "or one component (i.e. the first field in a sequence of dim consecutive fields)."));
 
                   std::vector<unsigned int> set_idx;
-                  for (unsigned int j=0; j<set.size(); ++j)
+                  for (const auto &name : set)
                     {
-                      AssertThrow(this->introspection().compositional_name_exists (set[j]),
+                      AssertThrow(this->introspection().compositional_name_exists (name),
                                   ExcMessage("All fields in compositional vector sets must match names of compositional "
                                              "fields as assigned in the \"Compositional fields/Names of fields\" parameter."));
-                      set_idx.push_back(this->introspection().compositional_index_for_name(set[j]));
+                      set_idx.push_back(this->introspection().compositional_index_for_name(name));
                     }
 
                   while (set_idx.size() < dim)

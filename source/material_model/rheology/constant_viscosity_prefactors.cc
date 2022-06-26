@@ -34,7 +34,7 @@ namespace aspect
     {
       template <int dim>
       ConstantViscosityPrefactors<dim>::ConstantViscosityPrefactors ()
-      {}
+        = default;
 
 
 

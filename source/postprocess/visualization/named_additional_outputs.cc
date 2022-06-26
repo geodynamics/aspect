@@ -64,8 +64,8 @@ namespace aspect
               {
                 std::vector<std::string> names = result->get_names();
 
-                for (unsigned int i=0; i<names.size(); ++i)
-                  property_names.push_back(names[i]);
+                for (auto &name : names)
+                  property_names.push_back(name);
               }
           }
 
@@ -74,8 +74,8 @@ namespace aspect
                                "provided by the material model are named outputs. Either remove the postprocessor, or check why no "
                                "named output is provided."));
 
-        for (unsigned int i=0; i<property_names.size(); ++i)
-          std::replace(property_names[i].begin(),property_names[i].end(),' ', '_');
+        for (auto &property_name : property_names)
+          std::replace(property_name.begin(),property_name.end(),' ', '_');
       }
 
 

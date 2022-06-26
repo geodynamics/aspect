@@ -89,7 +89,7 @@ namespace aspect
         template <int dim>
         StokesPreconditioner<dim>::
         ~StokesPreconditioner ()
-        {}
+          = default;
 
 
         template <int dim>
@@ -601,7 +601,7 @@ namespace aspect
 
     template <int dim>
     AdvectionStabilizationInterface<dim>::~AdvectionStabilizationInterface()
-    {}
+      = default;
 
 
 

@@ -2273,19 +2273,19 @@ namespace aspect
 
     periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
 
-    for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
+    for (const auto &pb : pbs)
       {
         // Throw error if we are trying to use the same boundary for more than one boundary condition
-        AssertThrow( is_element( (*p).first.first, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
-                     is_element( (*p).first.second, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
-                     is_element( (*p).first.first, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
-                     is_element( (*p).first.second, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
-                     is_element( (*p).first.first, boundary_indicator_lists[0] ) == false && // zero velocity
-                     is_element( (*p).first.second, boundary_indicator_lists[0] ) == false && // zero velocity
-                     is_element( (*p).first.first, boundary_indicator_lists[1] ) == false && // tangential velocity
-                     is_element( (*p).first.second, boundary_indicator_lists[1] ) == false && // tangential velocity
-                     is_element( (*p).first.first, boundary_indicator_lists[3] ) == false && // prescribed traction or velocity
-                     is_element( (*p).first.second, boundary_indicator_lists[3] ) == false,  // prescribed traction or velocity
+        AssertThrow( is_element( pb.first.first, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
+                     is_element( pb.first.second, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
+                     is_element( pb.first.first, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
+                     is_element( pb.first.second, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
+                     is_element( pb.first.first, boundary_indicator_lists[0] ) == false && // zero velocity
+                     is_element( pb.first.second, boundary_indicator_lists[0] ) == false && // zero velocity
+                     is_element( pb.first.first, boundary_indicator_lists[1] ) == false && // tangential velocity
+                     is_element( pb.first.second, boundary_indicator_lists[1] ) == false && // tangential velocity
+                     is_element( pb.first.first, boundary_indicator_lists[3] ) == false && // prescribed traction or velocity
+                     is_element( pb.first.second, boundary_indicator_lists[3] ) == false,  // prescribed traction or velocity
                      ExcMessage("Periodic boundaries must not have boundary conditions set."));
       }
 

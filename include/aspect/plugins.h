@@ -357,13 +357,11 @@ namespace aspect
 
         // now create a pattern from all of these sorted names
         std::string pattern_of_names;
-        for (typename std::set<std::string>::const_iterator
-             p = names.begin();
-             p != names.end(); ++p)
+        for (const auto &name : names)
           {
             if (pattern_of_names.size() > 0)
               pattern_of_names += "|";
-            pattern_of_names += *p;
+            pattern_of_names += name;
           }
 
         return pattern_of_names;

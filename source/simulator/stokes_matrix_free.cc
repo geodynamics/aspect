@@ -2336,7 +2336,7 @@ namespace aspect
         const int n_timings = 10;
         Timer timer(sim.mpi_communicator);
 
-        auto time_this = [&](const char *name, int repeats, std::function<void()> body, std::function<void()> prepare)
+        auto time_this = [&](const char *name, int repeats, const std::function<void()> &body, const std::function<void()> &prepare)
         {
           sim.pcout << "Timing " << name << ' ' << n_timings << " time(s) and repeat "
                     << repeats << " time(s) within each timing:" << std::endl;
