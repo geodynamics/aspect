@@ -12,6 +12,62 @@ import re
 from sys import argv, exit, stderr
 
 
+def mangle(text):
+    """
+    Mangle the special characters in the given string as _XY where XY
+    is the ASCII code encoded in base64.
+
+    Reimplementation of mangle() in deal.II's parameter_handler.cc
+
+    """
+    output = ""
+    lookup = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f']
+    for t in text:
+        if (t >= 'a' and t <= 'z') or (t>= 'A' and t <= 'Z') or (t>= '0' and t <= '9'):
+            output += t
+        else:
+            output += '_'
+            c = ord(t)
+            assert(c<256)
+            output += lookup[c // 16]
+            output += lookup[c % 16]
+    return output
+
+def demangle(text):
+    """
+    The reverse operation of mangle().
+
+    Reimplementation of demangle() in deal.II's parameter_handler.cc
+
+    """
+    output = ""
+    lookup = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f']
+    step = 0
+    c = 0
+    for t in text:
+        if step == 0:
+            if t=='_':
+                step = 1
+            else:
+                output += t
+        elif step == 1:
+            c = lookup.index(t)
+            step = 2
+        elif step == 2:
+            c = c*16 + lookup.index(t)
+            output += chr(c)
+            step = 0        
+    return output
+
+def test_mangling():
+    assert(mangle("aBD403") == "aBD403")
+    assert(mangle("dashdash--space end") == "dashdash_2d_2dspace_20end")
+    assert(mangle("underscore_end") == "underscore_5fend")
+    strings = ["underscore_end", "sadflhsdgkj", "- _#$%", "_20__20_"]
+    for s in strings:
+        assert(demangle(mangle(s)) == s)
+    
+    
 # Our doc strings are written for latex, but here we want to output them
 # in markdown. Escape some common latex-isms.
 def escape_doc_string(text) :
@@ -53,7 +109,7 @@ def print_if_parameter_or_alias(entry, path_str, true_name, cur_path, output_fil
         # This is an alias for a parameter
         print("(parameters:" + path_str + ")=", file=output_file)
         aliased_name = entry["alias"]
-        alias_path_str = "/".join(cur_path) + "/" + aliased_name.replace(" ", "_20")
+        alias_path_str = "/".join(cur_path) + "/" + mangle(aliased_name)
         print("### __Parameter name__: " +  true_name, file=output_file)
         print("**Alias:** [" + aliased_name + "](parameters:" + alias_path_str + ")\n", file=output_file)
         print("**Deprecation Status:** " + entry["deprecation_status"] + "\n", file=output_file)
@@ -68,7 +124,7 @@ def handle_subsection(data, cur_path, output_file):
     # incorrectly
     for key in keys:
         path_str = "/".join(cur_path) + "/"  + key
-        true_name = key.replace("_20", " ")
+        true_name = demangle(key)
 
         print_if_parameter_or_alias(data[key], path_str, true_name, cur_path, output_file)
 
@@ -81,7 +137,7 @@ def handle_subsection(data, cur_path, output_file):
             # This is a subsection
             print("(parameters:" + path_str + ")=", file=output_file)
             new_path = cur_path + [key]
-            section_name = path_str.replace("_20", " ")
+            section_name = demangle(path_str)
             section_name = section_name.replace("/"," / ")
             print("## **Subsection:** " + section_name, file=output_file)
             handle_subsection(entry, new_path, output_file)
@@ -115,7 +171,7 @@ def handle_parameters(data):
     # incorrectly
     for key in keys:
         path_str = key
-        true_name = key.replace("_20", " ")
+        true_name = demangle(key)
 
         print_if_parameter_or_alias(data[key], path_str, true_name, cur_path, global_parameters)
 
@@ -130,7 +186,7 @@ def handle_parameters(data):
             subfile = open("doc/sphinx/parameters/" + key + ".md", "w")
             print("(parameters:" + path_str + ")=", file=subfile)
             new_path = cur_path + [key]
-            section_name = path_str.replace("_20", " ").replace(":", "/")
+            section_name = demangle(path_str).replace(":", "/")
             print("# " + section_name + "\n\n", file=subfile)
             print("## **Subsection:** " + section_name + "\n\n", file=subfile)
             handle_subsection(entry, new_path, subfile)
@@ -139,6 +195,8 @@ def handle_parameters(data):
     global_output_file.close()
 
 if __name__  == "__main__":
+    test_mangling()
+    
     if (len(argv) !=2):
         exit("ERROR: Please specify the parameters.json file as an input.")
 

@@ -615,7 +615,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 (parameters:Postprocess/Memory_20statistics)=
 ## **Subsection:** Postprocess / Memory statistics
 (parameters:Postprocess/Memory_20statistics/Output_20peak_20virtual_20memory_20_28VmPeak_29)=
-### __Parameter name:__ Output peak virtual memory _28VmPeak_29
+### __Parameter name:__ Output peak virtual memory (VmPeak)
 **Default value:** true
 
 **Pattern:** [Bool]
@@ -1433,7 +1433,7 @@ Physical units: \si{\per\second}.
 **Documentation:** For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain, so the mesh has its own velocity field.  This may be written as an output field by setting this parameter to true.
 
 (parameters:Postprocess/Visualization/Point_2dwise_20stress_20and_20strain)=
-### __Parameter name:__ Point_2dwise stress and strain
+### __Parameter name:__ Point-wise stress and strain
 **Default value:** false
 
 **Pattern:** [Bool]

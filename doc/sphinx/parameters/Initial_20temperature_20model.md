@@ -334,7 +334,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** List of the 3 thicknesses of the lithospheric layers &rsquo;upper\_crust&rsquo;, &rsquo;lower\_crust&rsquo; and &rsquo;mantle\_lithosphere&rsquo;. If only one thickness is given, then the same thickness is used for all layers. Units: \si{meter}.
 
 (parameters:Initial_20temperature_20model/Continental_20geotherm/Lithosphere_2dAsthenosphere_20boundary_20isotherm)=
-### __Parameter name:__ Lithosphere_2dAsthenosphere boundary isotherm
+### __Parameter name:__ Lithosphere-Asthenosphere boundary isotherm
 **Default value:** 1673.15
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
@@ -864,7 +864,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The file from which the initial geotherm table is to be read. The format of the file is defined by what is read in source/initial\_temperature/spherical\_shell.cc.
 
 (parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Non_2ddimensional_20depth)=
-### __Parameter name:__ Non_2ddimensional depth
+### __Parameter name:__ Non-dimensional depth
 **Default value:** 0.7
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
