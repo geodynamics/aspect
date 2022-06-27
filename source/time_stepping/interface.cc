@@ -342,7 +342,7 @@ namespace aspect
 
         prm.leave_subsection();
 
-        for (auto &model_name : model_names)
+        for (const auto &model_name : model_names)
           {
             active_plugins.push_back (std::unique_ptr<Interface<dim>>
                                       (std::get<dim>(registered_plugins)

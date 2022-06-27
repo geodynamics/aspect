@@ -1620,7 +1620,7 @@ namespace aspect
                              "'Nullspace removal/Remove nullspace' contains entries more than once. "
                              "This is not allowed. Please check your parameter file."));
 
-      for (auto &nullspace_name : nullspace_names)
+      for (const auto &nullspace_name : nullspace_names)
         {
           if (nullspace_name=="net rotation")
             nullspace_removal = typename NullspaceRemoval::Kind(

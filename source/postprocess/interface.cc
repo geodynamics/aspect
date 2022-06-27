@@ -93,7 +93,7 @@ namespace aspect
       // call the execute() functions of all postprocessor objects we have
       // here in turns
       std::list<std::pair<std::string,std::string>> output_list;
-      for (auto &p : postprocessors)
+      for (const auto &p : postprocessors)
         {
           try
             {
@@ -281,7 +281,7 @@ namespace aspect
                                        ">, but the latter is not a valid name."));
 
               bool already_present = false;
-              for (auto &postprocessor_name : postprocessor_names)
+              for (const auto &postprocessor_name : postprocessor_names)
                 if (postprocessor_name == p)
                   {
                     already_present = true;

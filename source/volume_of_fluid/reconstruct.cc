@@ -321,7 +321,7 @@ namespace aspect
               const std::vector<double> weights = fevalues.get_JxW_values();
 
               double cell_vol = 0.0;
-              for (double weight : weights)
+              for (const double weight : weights)
                 {
                   cell_vol+=weight;
                 }
@@ -359,7 +359,7 @@ namespace aspect
                 const std::vector<double> weights = fevalues.get_JxW_values();
 
                 double cell_vol = 0.0;
-                for (double weight : weights)
+                for (const double weight : weights)
                   {
                     cell_vol+=weight;
                   }

@@ -1319,7 +1319,7 @@ namespace aspect
 
         if (comp.length()>0)
           {
-            for (char direction : comp)
+            for (const char direction : comp)
               {
                 switch (direction)
                   {

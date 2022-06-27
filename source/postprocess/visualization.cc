@@ -1382,7 +1382,7 @@ namespace aspect
 
       // then go through the list, create objects and let them parse
       // their own parameters
-      for (auto &viz_name : viz_names)
+      for (const auto &viz_name : viz_names)
         {
           VisualizationPostprocessors::Interface<dim> *
           viz_postprocessor = std::get<dim>(registered_visualization_plugins)

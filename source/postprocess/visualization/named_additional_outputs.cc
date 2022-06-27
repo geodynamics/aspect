@@ -64,7 +64,7 @@ namespace aspect
               {
                 std::vector<std::string> names = result->get_names();
 
-                for (auto &name : names)
+                for (const auto &name : names)
                   property_names.push_back(name);
               }
           }

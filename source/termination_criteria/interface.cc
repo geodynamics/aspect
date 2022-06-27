@@ -227,7 +227,7 @@ namespace aspect
 
       // go through the list, create objects, initialize them, and let them parse
       // their own parameters
-      for (auto &plugin_name : plugin_names)
+      for (const auto &plugin_name : plugin_names)
         {
           termination_objects.push_back (std::unique_ptr<Interface<dim>>
                                          (std::get<dim>(registered_plugins)

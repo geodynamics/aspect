@@ -350,7 +350,7 @@ namespace aspect
       std::vector<std::vector<double>> surface_topo_spherical_function;
       std::vector<std::vector<double>> CMB_topo_spherical_function;
 
-      for (auto &surface_stored_value : surface_stored_values)
+      for (const auto &surface_stored_value : surface_stored_values)
         {
           const std::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(surface_stored_value.first);
 
@@ -365,7 +365,7 @@ namespace aspect
                                                                            });
         }
 
-      for (auto &CMB_stored_value : CMB_stored_values)
+      for (const auto &CMB_stored_value : CMB_stored_values)
         {
           const std::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(CMB_stored_value.first);
 
@@ -539,7 +539,7 @@ namespace aspect
 
       // Compute the grid geoid anomaly based on spherical harmonics.
       std::vector<double> geoid_anomaly;
-      for (auto &surface_cell_spherical_coordinate : surface_cell_spherical_coordinates)
+      for (const auto &surface_cell_spherical_coordinate : surface_cell_spherical_coordinates)
         {
           int ind = 0;
           double geoid_value = 0;
@@ -809,7 +809,7 @@ namespace aspect
           std::vector<double> gravity_anomaly;
           gravity_anomaly.reserve(surface_cell_spherical_coordinates.size());
 
-          for (auto &surface_cell_spherical_coordinate : surface_cell_spherical_coordinates)
+          for (const auto &surface_cell_spherical_coordinate : surface_cell_spherical_coordinates)
             {
               int ind = 0;
               double gravity_value = 0;

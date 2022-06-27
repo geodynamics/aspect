@@ -164,7 +164,7 @@ namespace aspect
             {
               if (output_format_string != "txt")
                 {
-                  for (auto &variable : variables)
+                  for (const auto &variable : variables)
                     data_out_stack.declare_data_vector (variable,
                                                         DataOutStack<1>::cell_vector);
 
@@ -233,7 +233,7 @@ namespace aspect
 
                   // Write the header
                   f << "#       time" << "        depth";
-                  for (auto &variable : variables)
+                  for (const auto &variable : variables)
                     f << ' ' << variable;
                   f << std::endl;
 

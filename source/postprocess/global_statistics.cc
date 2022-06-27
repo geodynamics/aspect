@@ -131,7 +131,7 @@ namespace aspect
       // vectors in which we store our data.
       unsigned int nonlinear_iterations = stokes_iterations_cheap.size();
 
-      for (auto &advection_iteration : advection_iterations)
+      for (const auto &advection_iteration : advection_iterations)
         nonlinear_iterations = std::max(nonlinear_iterations, static_cast<unsigned int> (advection_iteration.second.size()));
 
       if (one_line_per_iteration)
@@ -142,7 +142,7 @@ namespace aspect
             statistics.add_value("Nonlinear iteration number",
                                  iteration);
 
-            for (auto &advection_iteration : advection_iterations)
+            for (const auto &advection_iteration : advection_iterations)
               if (iteration < advection_iteration.second.size())
                 statistics.add_value(advection_iteration.first,
                                      advection_iteration.second[iteration]);

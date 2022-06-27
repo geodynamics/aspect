@@ -107,7 +107,7 @@ namespace aspect
       double T_min, T_max, T_prev, time_prev, T_sum=0, T_mean, deviation_max;
       T_min = T_max = T_prev = time_temperature.front().second;
       time_prev = time_temperature.front().first;
-      for (auto &it : time_temperature)
+      for (const auto &it : time_temperature)
         {
           T_min = std::min(T_min, it.second);
           T_max = std::max(T_max, it.second);

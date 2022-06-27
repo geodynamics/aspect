@@ -90,7 +90,7 @@ namespace aspect
       double flux_min, flux_max, flux_prev, time_prev, flux_sum=0, flux_mean, deviation_max;
       flux_min = flux_max = flux_prev = time_heat_flux.front().second;
       time_prev = time_heat_flux.front().first;
-      for (auto &it : time_heat_flux)
+      for (const auto &it : time_heat_flux)
         {
           flux_min = std::min(flux_min, it.second);
           flux_max = std::max(flux_max, it.second);

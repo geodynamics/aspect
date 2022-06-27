@@ -272,7 +272,7 @@ namespace aspect
     make_extractor_sequence (const std::vector<unsigned int> &compositional_fields)
     {
       std::vector<FEValuesExtractors::Scalar> x;
-      for (unsigned int compositional_field : compositional_fields)
+      for (const unsigned int compositional_field : compositional_fields)
         x.emplace_back(compositional_field);
       return x;
     }
