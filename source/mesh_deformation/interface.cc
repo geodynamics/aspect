@@ -106,6 +106,7 @@ namespace aspect
                                                           this->introspection(),
                                                           this->get_solution(),
                                                           false);
+              scratch.face_material_model_inputs.requested_properties = MaterialModel::MaterialProperties::density;
 
               this->get_material_model().evaluate(scratch.face_material_model_inputs, scratch.face_material_model_outputs);
 
