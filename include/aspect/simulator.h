@@ -1569,6 +1569,17 @@ namespace aspect
       get_extrapolated_advection_field_range (const AdvectionField &advection_field) const;
 
       /**
+       * Exchange coarsen/refinement flags set between processors so that
+       * we have the correct settings on all ghost cells.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       *
+       */
+      void exchange_refinement_flags();
+
+
+      /**
        * Check if timing output should be written in this timestep, and if so
        * write it.
        *
