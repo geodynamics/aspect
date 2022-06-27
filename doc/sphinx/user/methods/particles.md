@@ -9,7 +9,7 @@ solving equations {math:numref}`eq:stokes-1`-{math:numref}`eq:stokes-2`, then th
 $k$th particle's position satisfies the equations
 ```{math}
 \begin{aligned}
-  \frac{\partial}{\partial t} \mathbf x_k(t)
+  \frac{d}{dt} \mathbf x_k(t)
   = \mathbf u(\mathbf x_k(t),t).
 \end{aligned}
 ```
