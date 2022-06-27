@@ -142,7 +142,7 @@ namespace aspect
                                               "and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell "
                                               "and $d$ is the dimension. "
                                               "This scaling ensures that the error indicators converge to zero as "
-                                              "$h_K\\rightarrow 0$ even if the energy density is discontinuous, since "
+                                              "$h_K\\rightarrow 0$ even if the viscosity is discontinuous, since "
                                               "the gradient of a discontinuous function grows like $1/h_K$.")
   }
 }
