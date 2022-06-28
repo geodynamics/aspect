@@ -20,11 +20,7 @@
 
 
 #include <aspect/postprocess/domain_volume_statistics.h>
-#include <aspect/utilities.h>
-#include <aspect/geometry_model/interface.h>
 
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/fe/fe_values.h>
 #include <deal.II/grid/grid_tools.h>
 
 namespace aspect
@@ -35,12 +31,13 @@ namespace aspect
     std::pair<std::string,std::string>
     DomainVolume<dim>::execute (TableHandler &statistics)
     {
-      const double global_volume = GridTools::volume (this->get_triangulation(), this->get_mapping());
+      const double global_volume = this->get_volume();
 
       // add the volume to the statistics object
       // and create a single string that can be output to the screen
       std::ostringstream screen_text;
-      const std::string name = "Model domain volume (m3) ";
+      const std::string unit = (dim == 2) ? "m2" : "m3";
+      const std::string name = "Model domain volume (" + unit + ")";
       statistics.add_value (name, global_volume);
 
       // also make sure that the other columns filled by this object
@@ -50,7 +47,7 @@ namespace aspect
 
       // print to the screen
       screen_text.precision(4);
-      screen_text << global_volume << " m3";
+      screen_text << global_volume << " " << unit;
 
       return std::pair<std::string, std::string> ("Model domain volume:",
                                                   screen_text.str());
@@ -66,7 +63,7 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(DomainVolume,
                                   "domain volume statistics",
-                                  "A postprocessor that computes the total volume "
-                                  "of the computational domain. ")
+                                  "A postprocessor that computes the total area (in 2d) "
+                                  "or volume (in 3D) of the computational domain. ")
   }
 }

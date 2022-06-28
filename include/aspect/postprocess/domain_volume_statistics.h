@@ -32,8 +32,8 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes some statistics about the material_flux
-     * in and out of boundaries.
+     * A postprocessor that computes the total area (2D) or volume (3D)
+     * of the computational domain.
      *
      * @ingroup Postprocessing
      */
