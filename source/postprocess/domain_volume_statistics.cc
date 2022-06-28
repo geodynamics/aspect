@@ -31,11 +31,10 @@ namespace aspect
     std::pair<std::string,std::string>
     DomainVolume<dim>::execute (TableHandler &statistics)
     {
+      // Retrieve the current domain volume
       const double global_volume = this->get_volume();
 
       // add the volume to the statistics object
-      // and create a single string that can be output to the screen
-      std::ostringstream screen_text;
       const std::string unit = (dim == 2) ? "m2" : "m3";
       const std::string name = "Model domain volume (" + unit + ")";
       statistics.add_value (name, global_volume);
@@ -45,7 +44,8 @@ namespace aspect
       statistics.set_precision (name, 8);
       statistics.set_scientific (name, true);
 
-      // print to the screen
+      // create a single string to output to the screen
+      std::ostringstream screen_text;
       screen_text.precision(4);
       screen_text << global_volume << " " << unit;
 
