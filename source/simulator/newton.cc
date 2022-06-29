@@ -85,6 +85,13 @@ namespace aspect
         assemblers.stokes_system.push_back(
           std::make_unique<aspect::Assemblers::NewtonStokesIsentropicCompressionTerm<dim>>());
       }
+    else if (this->get_parameters().formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::projected_density_field)
+      {
+        CitationInfo::add("pda");
+        assemblers.stokes_system.push_back(
+          std::make_unique<aspect::Assemblers::NewtonStokesProjectedDensityFieldTerm<dim>>());
+      }
     else
       AssertThrow(false,
                   ExcMessage("Unknown mass conservation equation approximation. There is no assembler"
