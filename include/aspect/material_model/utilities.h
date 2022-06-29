@@ -586,6 +586,17 @@ namespace aspect
            */
           unsigned int n_phases_total;
       };
+
+      /**
+      * A function for mapping differences in material properties to the exact values for each phase.
+      * Based on the PhaseAveragingOperation, the differences will be either simply added or their value
+      * is added to the logarithmic of the previous phase's value.
+      */
+      std::vector<double>
+      parse_map_differences_to_values( const std::vector<double>,
+                                       const std::unique_ptr<std::vector<unsigned int>> &,
+                                       const PhaseUtilities::PhaseAveragingOperation=PhaseUtilities::arithmetic);
+
     }
   }
 }

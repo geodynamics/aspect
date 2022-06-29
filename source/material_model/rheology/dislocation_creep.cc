@@ -169,6 +169,15 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\meter\\cubed\\per\\mole}.");
+        prm.declare_entry ("Define phase properties by differences instead of exact values", "false",
+                           Patterns::Bool (),
+                           "Whether to list phase transitions properties by differences between adjacent phases or an exact value for each phase."
+                           "If this parameter is true, "
+                           "then the input file will use a value for the first phase and M-1 values for the differences between phases "
+                           "to define the material properties (e.g. density). Also note that the differences by log values rather than the"
+                           "differences by values are used for the prefactors in the flow laws."
+                           "If it is false, the parameter file will use M values, one for each phase to"
+                           "define the material properties instead.");
       }
 
 
@@ -184,32 +193,56 @@ namespace aspect
         const bool has_background_field = true;
 
         // Read parameters, each of size of number of composition + number of phases + 1
-        prefactors_dislocation = Utilities::parse_map_to_double_array(prm.get("Prefactors for dislocation creep"),
-                                                                      list_of_composition_names,
-                                                                      has_background_field,
-                                                                      "Prefactors for dislocation creep",
-                                                                      true,
-                                                                      expected_n_phases_per_composition);
+        use_differences_instead_of_values = prm.get_bool("Define phase properties by differences instead of exact values");
+        std::vector<double> prefactors_dislocation_inputs = Utilities::parse_map_to_double_array(prm.get("Prefactors for dislocation creep"),
+                                                            list_of_composition_names,
+                                                            has_background_field,
+                                                            "Prefactors for dislocation creep",
+                                                            true,
+                                                            expected_n_phases_per_composition,
+                                                            false,
+                                                            use_differences_instead_of_values);
 
-        stress_exponents_dislocation = Utilities::parse_map_to_double_array(prm.get("Stress exponents for dislocation creep"),
-                                                                            list_of_composition_names,
-                                                                            has_background_field,
-                                                                            "Stress exponents for dislocation creep",
-                                                                            true,
-                                                                            expected_n_phases_per_composition);
+        std::vector<double> stress_exponents_dislocation_inputs = Utilities::parse_map_to_double_array(prm.get("Stress exponents for dislocation creep"),
+                                                                  list_of_composition_names,
+                                                                  has_background_field,
+                                                                  "Stress exponents for dislocation creep",
+                                                                  true,
+                                                                  expected_n_phases_per_composition,
+                                                                  false,
+                                                                  use_differences_instead_of_values);
 
-        activation_energies_dislocation = Utilities::parse_map_to_double_array(prm.get("Activation energies for dislocation creep"),
-                                                                               list_of_composition_names,
-                                                                               has_background_field,
-                                                                               "Activation energies for dislocation creep",
-                                                                               true,
-                                                                               expected_n_phases_per_composition);
-        activation_volumes_dislocation  = Utilities::parse_map_to_double_array(prm.get("Activation volumes for dislocation creep"),
-                                                                               list_of_composition_names,
-                                                                               has_background_field,
-                                                                               "Activation volumes for dislocation creep",
-                                                                               true,
-                                                                               expected_n_phases_per_composition);
+        std::vector<double> activation_energies_dislocation_inputs = Utilities::parse_map_to_double_array(prm.get("Activation energies for dislocation creep"),
+                                                                     list_of_composition_names,
+                                                                     has_background_field,
+                                                                     "Activation energies for dislocation creep",
+                                                                     true,
+                                                                     expected_n_phases_per_composition,
+                                                                     false,
+                                                                     use_differences_instead_of_values);
+        std::vector<double> activation_volumes_dislocation_inputs  = Utilities::parse_map_to_double_array(prm.get("Activation volumes for dislocation creep"),
+                                                                     list_of_composition_names,
+                                                                     has_background_field,
+                                                                     "Activation volumes for dislocation creep",
+                                                                     true,
+                                                                     expected_n_phases_per_composition,
+                                                                     false,
+                                                                     use_differences_instead_of_values);
+        if (use_differences_instead_of_values)
+          {
+            prefactors_dislocation = MaterialModel::MaterialUtilities::parse_map_differences_to_values(prefactors_dislocation_inputs, expected_n_phases_per_composition, MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
+            stress_exponents_dislocation = MaterialModel::MaterialUtilities::parse_map_differences_to_values(stress_exponents_dislocation_inputs, expected_n_phases_per_composition);
+            activation_energies_dislocation = MaterialModel::MaterialUtilities::parse_map_differences_to_values(activation_energies_dislocation_inputs, expected_n_phases_per_composition);
+            activation_volumes_dislocation = MaterialModel::MaterialUtilities::parse_map_differences_to_values(activation_volumes_dislocation_inputs, expected_n_phases_per_composition);
+          }
+        else
+          {
+            // default
+            prefactors_dislocation = prefactors_dislocation_inputs;
+            stress_exponents_dislocation = stress_exponents_dislocation_inputs;
+            activation_energies_dislocation = activation_energies_dislocation_inputs;
+            activation_volumes_dislocation = activation_volumes_dislocation_inputs;
+          }
 
         // Check that there are no prefactor entries set to zero,
         // for example because the entry is for a field

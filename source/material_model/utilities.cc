@@ -1340,6 +1340,50 @@ namespace aspect
             n_phases_total += n+1;
           }
       }
+
+
+      std::vector<double>
+      parse_map_differences_to_values(const std::vector<double> input_values,
+                                      const std::unique_ptr<std::vector<unsigned int>> &values_per_key,
+                                      const PhaseUtilities::PhaseAveragingOperation operation)
+      {
+        unsigned field_index = 0;
+        std::vector<double> return_values;
+        for (const unsigned int &n_values: *values_per_key)
+          {
+            for (unsigned int n_value=0; n_value<n_values; n_value++)
+              {
+                if (n_value == 0)
+                  {
+                    // push back the value from the first phase of a composition
+                    return_values.push_back(input_values[field_index]);
+                  }
+                else
+                  {
+                    // handle values of the other phases of a composition
+                    if (operation == PhaseUtilities::logarithmic)
+                      {
+                        // in case of logarithmic addition, the difference values are added to the logarithmic of the previous phase value.
+                        double field_value = std::log10(return_values[field_index-1]) + input_values[field_index];
+                        field_value = std::pow(10.0, field_value);
+                        return_values.push_back(field_value);
+                      }
+                    else if (operation == PhaseUtilities::arithmetic)
+                      {
+                        // otherwise, the values are simply added.
+                        double field_value = return_values[field_index-1] + input_values[field_index];
+                        return_values.push_back(field_value);
+                      }
+                    else
+                      {
+                        Assert (false, ExcNotImplemented());
+                      }
+                  }
+                ++field_index;
+              }
+          }
+        return return_values;
+      }
     }
   }
 }

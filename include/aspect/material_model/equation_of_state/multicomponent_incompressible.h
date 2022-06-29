@@ -97,6 +97,14 @@ namespace aspect
 
         private:
           /**
+           * Whether to define the phase properties based on the exact values, or the value differences.
+           * Based on this parameter, either M values (if false), one for each phase, or a value for the first phase
+           * followed by M-1 values for the differences between adjacent phases will be used to define (if true)
+           * the phase properties.
+           */
+          bool use_differences_instead_of_values;
+
+          /**
            * Vector of reference densities $\rho_0$ with one entry per composition and phase plus one
            * for the background field.
            */

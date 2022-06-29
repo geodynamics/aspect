@@ -146,6 +146,14 @@ namespace aspect
            * Viscosity of a damper used to stabilize plasticity
            */
           double damper_viscosity;
+
+          /**
+           * Whether to define the phase properties based on the exact values, or the value differences.
+           * Based on this parameter, either M values, one for each phase, or a value for the first phase
+           * followed by M-1 values for the differences between adjacent phases will be used to define
+           * the phase properties.
+           */
+          bool use_differences_instead_of_values;
       };
     }
   }

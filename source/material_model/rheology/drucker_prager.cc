@@ -195,6 +195,14 @@ namespace aspect
         prm.declare_entry ("Plastic damper viscosity", "0.0", Patterns::Double(0),
                            "Viscosity of the damper that acts in parallel with the plastic viscosity "
                            "to produce mesh-independent behavior at sufficient resolutions. Units: \\si{\\pascal\\second}");
+        prm.declare_entry ("Define phase properties by differences instead of exact values", "false",
+                           Patterns::Bool (),
+                           "Whether to list phase transitions properties by differences between adjacent phases or an exact value for each phase."
+                           "If this parameter is true, "
+                           "then the input file will use a value for the first phase and M-1 values for the differences between phases "
+                           "to define the material properties (e.g. density)."
+                           "If it is false, the parameter file will use M values, one for each phase to"
+                           "define the material properties instead.");
       }
 
 
@@ -209,23 +217,41 @@ namespace aspect
         // Establish that a background field is required here
         const bool has_background_field = true;
 
-        angles_internal_friction = Utilities::parse_map_to_double_array(prm.get("Angles of internal friction"),
-                                                                        list_of_composition_names,
-                                                                        has_background_field,
-                                                                        "Angles of internal friction",
-                                                                        true,
-                                                                        expected_n_phases_per_composition);
+        use_differences_instead_of_values = prm.get_bool("Define phase properties by differences instead of exact values");
+
+        std::vector<double> angles_internal_friction_inputs = Utilities::parse_map_to_double_array(prm.get("Angles of internal friction"),
+                                                              list_of_composition_names,
+                                                              has_background_field,
+                                                              "Angles of internal friction",
+                                                              true,
+                                                              expected_n_phases_per_composition,
+                                                              false,
+                                                              use_differences_instead_of_values);
+
+        std::vector<double> cohesion_inputs = Utilities::parse_map_to_double_array(prm.get("Cohesions"),
+                                                                                   list_of_composition_names,
+                                                                                   has_background_field,
+                                                                                   "Cohesions",
+                                                                                   true,
+                                                                                   expected_n_phases_per_composition,
+                                                                                   false,
+                                                                                   use_differences_instead_of_values);
+
+        if (use_differences_instead_of_values)
+          {
+            angles_internal_friction = MaterialModel::MaterialUtilities::parse_map_differences_to_values(angles_internal_friction_inputs, expected_n_phases_per_composition);
+            cohesions = MaterialModel::MaterialUtilities::parse_map_differences_to_values(cohesion_inputs, expected_n_phases_per_composition, MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
+          }
+        else
+          {
+            // default
+            angles_internal_friction = angles_internal_friction_inputs;
+            cohesions = cohesion_inputs;
+          }
 
         // Convert angles from degrees to radians
         for (double &angle : angles_internal_friction)
           angle *= numbers::PI/180.0;
-
-        cohesions = Utilities::parse_map_to_double_array(prm.get("Cohesions"),
-                                                         list_of_composition_names,
-                                                         has_background_field,
-                                                         "Cohesions",
-                                                         true,
-                                                         expected_n_phases_per_composition);
 
         // Limit maximum value of the Drucker-Prager yield stress
         max_yield_stress = prm.get_double("Maximum yield stress");

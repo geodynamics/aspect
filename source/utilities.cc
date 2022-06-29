@@ -492,11 +492,23 @@ namespace aspect
                   // If we expect multiple values for a key, but found exactly one: assume
                   // the one value stands for every expected value. This allows
                   // for short and simpler input if all values for a key are the same.
+                  // In case we are using the differences as the entries for phases,
+                  // we would use 0.0 to stand for every expected values except for
+                  // the first one.
                   if (n_values == 1)
                     {
                       const double field_value = map.find(field_name)->second;
                       for (unsigned int i=1; i<n_expected_values; ++i)
-                        map.emplace(field_name, field_value);
+                        {
+                          if (options.use_differences_instead_of_values)
+                            {
+                              map.emplace(field_name, 0.0);
+                            }
+                          else
+                            {
+                              map.emplace(field_name, field_value);
+                            }
+                        }
                     }
                 }
 
@@ -546,7 +558,8 @@ namespace aspect
                                const std::string &property_name,
                                const bool allow_multiple_values_per_key,
                                const std::unique_ptr<std::vector<unsigned int>> &n_values_per_key,
-                               const bool allow_missing_keys)
+                               const bool allow_missing_keys,
+                               const bool use_differences_instead_of_values)
     {
       std::vector<std::string> input_field_names = list_of_keys;
 
@@ -556,6 +569,7 @@ namespace aspect
       MapParsing::Options options(input_field_names, property_name);
       options.allow_multiple_values_per_key = allow_multiple_values_per_key;
       options.allow_missing_keys = allow_missing_keys;
+      options.use_differences_instead_of_values = use_differences_instead_of_values;
 
       if (n_values_per_key)
         {

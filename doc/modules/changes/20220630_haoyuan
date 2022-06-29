@@ -1,0 +1,9 @@
+New: The values of the properties of material phases can be entered
+by the differences between adjacent phases. If this is the case,
+then all the phase properties need to be entered by a value for the first phase
+followed by M-1 values for the differences between adjacent phases. 
+Otherwise, the phase properties are entered by M values, one for each phase.
+Also note that when the option is true, the differences of the log values rather than
+the differences of the values are used
+for the "Prefactors" in the flow laws.
+<br> (Haoyuan Li, 2022/06/30)

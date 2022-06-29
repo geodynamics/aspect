@@ -143,6 +143,12 @@ namespace aspect
          */
         bool check_values_per_key;
 
+        /**
+        * Whether to define the phase properties based
+        * on the exact values, or the value differences.
+        */
+        bool use_differences_instead_of_values;
+
         /*
          * A vector of unsigned
          * integers that is used by store_values_per_key and
@@ -274,7 +280,12 @@ namespace aspect
      * @param [in] allow_missing_keys Whether to allow that some keys are
      *   not set to any values, i.e. they do not appear at all in the
      *   @p key_value_map. This also allows a completely empty map.
-     *
+     * @param [in] use_differences_instead_of_values Whether to define the
+     *   phase properties based on the exact values rather than value differences.
+     *   if this is true, then all the phase properties need to be entered by
+     *   a value for the first phase followed by M-1 values for the differences
+     *   between adjacent phases. Also note that the differences by log values rather than the
+     *   differences by values are used for the "Prefactors" in the flow laws.
      * @return A vector of values that are parsed from the map, provided
      *   in the order in which the keys appear in the @p list_of_keys argument.
      *   If multiple values per key are allowed, the vector contains first all
@@ -293,7 +304,8 @@ namespace aspect
                                const std::string &property_name,
                                const bool allow_multiple_values_per_key = false,
                                const std::unique_ptr<std::vector<unsigned int>> &n_values_per_key = nullptr,
-                               const bool allow_missing_keys = false);
+                               const bool allow_missing_keys = false,
+                               const bool use_differences_instead_of_values = false);
 
     /**
      * This function takes a string argument that is assumed to represent

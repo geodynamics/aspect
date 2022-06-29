@@ -115,6 +115,14 @@ namespace aspect
                                               const DiffusionCreepParameters creep_parameters) const;
 
         private:
+          /**
+           * Whether to define the phase properties based on the exact values, or the value differences.
+           * Based on this parameter, either M values (if false), one for each phase, or a value for the first phase
+           * followed by M-1 values for the differences between adjacent phases will be used to define (if true)
+           * the phase properties. Also note that the differences by log values rather than the
+           * differences by values are used for the "Prefactors" in the flow laws.
+           */
+          bool use_differences_instead_of_values;
 
           /**
            * List of diffusion creep prefactors A.

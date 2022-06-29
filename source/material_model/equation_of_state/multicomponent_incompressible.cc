@@ -22,6 +22,7 @@
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/utilities.h>
+#include <aspect/material_model/utilities.h>
 
 
 namespace aspect
@@ -81,21 +82,35 @@ namespace aspect
         prm.declare_entry ("Densities", "3300.",
                            Patterns::Anything(),
                            "List of densities for background mantle and compositional fields,"
-                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
+                           "for a total of N+M+1 values, where N is the number of"
+                           " compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
         prm.declare_entry ("Thermal expansivities", std::to_string(default_thermal_expansion),
                            Patterns::Anything(),
                            "List of thermal expansivities for background mantle and compositional fields,"
-                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
-                           "If only one value is given, then all use the same value. Units: \\si{\\per\\kelvin}.");
+                           "for a total of N+M+1 values, where N is the number of"
+                           "compositional fields and M is the number of phases. "
+                           "If only one value is given, then all use the same value."
+                           "Units: \\si{\\per\\kelvin}.");
         prm.declare_entry ("Heat capacities", "1250.",
                            Patterns::Anything(),
                            "List of specific heats $C_p$ for background mantle and compositional fields,"
-                           "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
+                           "for a total of N+M+1 values, where N is the number of"
+                           "compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
         prm.declare_alias ("Heat capacities", "Specific heats");
+        prm.declare_entry ("Define phase properties by differences instead of exact values", "false",
+                           Patterns::Bool (),
+                           "Whether to list phase transitions properties by differences"
+                           "between adjacent phases or an exact value for each phase."
+                           "If this parameter is true, "
+                           "then the input file will use a value for the first phase and"
+                           "M-1 values for the differences between phases "
+                           "to define the material properties (e.g. density)."
+                           "If it is false, the parameter file will use M values,"
+                           "one for each phase to define the material properties instead.");
       }
 
 
@@ -114,26 +129,48 @@ namespace aspect
         const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
         // Parse multicomponent properties
-        densities = Utilities::parse_map_to_double_array (prm.get("Densities"),
-                                                          list_of_composition_names,
-                                                          has_background_field,
-                                                          "Densities",
-                                                          true,
-                                                          expected_n_phases_per_composition);
+        use_differences_instead_of_values = prm.get_bool("Define phase properties by differences instead of exact values");
 
-        thermal_expansivities = Utilities::parse_map_to_double_array (prm.get("Thermal expansivities"),
-                                                                      list_of_composition_names,
-                                                                      has_background_field,
-                                                                      "Thermal expansivities",
-                                                                      true,
-                                                                      expected_n_phases_per_composition);
+        std::vector<double> density_inputs = Utilities::parse_map_to_double_array (prm.get("Densities"),
+                                                                                   list_of_composition_names,
+                                                                                   has_background_field,
+                                                                                   "Densities",
+                                                                                   true,
+                                                                                   expected_n_phases_per_composition,
+                                                                                   false,
+                                                                                   use_differences_instead_of_values);
 
-        specific_heats = Utilities::parse_map_to_double_array (prm.get("Heat capacities"),
-                                                               list_of_composition_names,
-                                                               has_background_field,
-                                                               "Specific heats",
-                                                               true,
-                                                               expected_n_phases_per_composition);
+        std::vector<double> thermal_expansivity_inputs = Utilities::parse_map_to_double_array (prm.get("Thermal expansivities"),
+                                                         list_of_composition_names,
+                                                         has_background_field,
+                                                         "Thermal expansivities",
+                                                         true,
+                                                         expected_n_phases_per_composition,
+                                                         false,
+                                                         use_differences_instead_of_values);
+
+        std::vector<double> specific_heat_inputs = Utilities::parse_map_to_double_array (prm.get("Heat capacities"),
+                                                   list_of_composition_names,
+                                                   has_background_field,
+                                                   "Specific heats",
+                                                   true,
+                                                   expected_n_phases_per_composition,
+                                                   false,
+                                                   use_differences_instead_of_values);
+
+        if (use_differences_instead_of_values)
+          {
+            densities = MaterialModel::MaterialUtilities::parse_map_differences_to_values(density_inputs, expected_n_phases_per_composition);
+            thermal_expansivities =  MaterialModel::MaterialUtilities::parse_map_differences_to_values(thermal_expansivity_inputs, expected_n_phases_per_composition);
+            specific_heats =  MaterialModel::MaterialUtilities::parse_map_differences_to_values(specific_heat_inputs, expected_n_phases_per_composition);
+          }
+        else
+          {
+            // default
+            densities = density_inputs;
+            thermal_expansivities = thermal_expansivity_inputs;
+            specific_heats = specific_heat_inputs;
+          }
       }
     }
   }
