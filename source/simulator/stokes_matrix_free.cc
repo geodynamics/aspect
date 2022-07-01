@@ -1855,6 +1855,7 @@ namespace aspect
                                                 sim.introspection,
                                                 sim.solution,
                                                 false);
+                  face_material_inputs.requested_properties = MaterialModel::MaterialProperties::density;
                   sim.material_model->evaluate(face_material_inputs, face_material_outputs);
 
                   for (unsigned int q = 0; q < n_face_q_points; ++q)
