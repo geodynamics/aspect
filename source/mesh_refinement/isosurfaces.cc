@@ -144,7 +144,7 @@ namespace aspect
           }
         else
           {
-            return std::min(std::max((unsigned int)Utilities::string_to_int(string),minimum_refinement_level),maximum_refinement_level);
+            return std::min(std::max(static_cast<unsigned int>(Utilities::string_to_int(string)),minimum_refinement_level),maximum_refinement_level);
           }
 
       }
@@ -337,7 +337,7 @@ namespace aspect
                   std::vector<std::string> key_and_value = Utilities::split_string_list (*field_entry, ':');
                   AssertThrow(key_and_value.size() == 2,
                               ExcMessage("The isosurface property must have a key (e.g. Temperature) and two values separated by a | (e.g. (300 | 600)."));
-                  properties.push_back(internal::Property(key_and_value[0], compositions)); // convert key to property name
+                  properties.emplace_back(key_and_value[0], compositions); // convert key to property name
                   const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
                   AssertThrow(values.size() == 2,
                               ExcMessage("Both a maximum and a minimum value are required for each isosurface."));

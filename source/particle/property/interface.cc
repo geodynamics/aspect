@@ -59,11 +59,10 @@ namespace aspect
 
             position_per_plugin.push_back(global_component_index);
 
-            for (unsigned int field_index = 0;
-                 field_index < property.size(); ++field_index)
+            for (const auto &entry : property)
               {
-                const std::string  name         = property[field_index].first;
-                const unsigned int n_components = property[field_index].second;
+                const std::string  name         = entry.first;
+                const unsigned int n_components = entry.second;
 
                 field_names.push_back(name);
                 components_per_field.push_back(n_components);
@@ -336,14 +335,14 @@ namespace aspect
       template <int dim>
       inline
       Manager<dim>::Manager ()
-      {}
+        = default;
 
 
 
       template <int dim>
       inline
       Manager<dim>::~Manager ()
-      {}
+        = default;
 
 
 

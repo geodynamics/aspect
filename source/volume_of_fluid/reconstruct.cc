@@ -321,9 +321,9 @@ namespace aspect
               const std::vector<double> weights = fevalues.get_JxW_values();
 
               double cell_vol = 0.0;
-              for (unsigned int j=0; j<weights.size(); ++j)
+              for (const double weight : weights)
                 {
-                  cell_vol+=weights[j];
+                  cell_vol+=weight;
                 }
               for (unsigned int nind = 0; nind < n_candidate_normals; ++nind)
                 {
@@ -359,9 +359,9 @@ namespace aspect
                 const std::vector<double> weights = fevalues.get_JxW_values();
 
                 double cell_vol = 0.0;
-                for (unsigned int j=0; j<weights.size(); ++j)
+                for (const double weight : weights)
                   {
-                    cell_vol+=weights[j];
+                    cell_vol+=weight;
                   }
 
                 for (unsigned int nind = 0; nind < n_candidate_normals; ++nind)

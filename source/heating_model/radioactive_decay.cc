@@ -30,7 +30,7 @@ namespace aspect
   {
     template <int dim>
     RadioactiveDecay<dim>::RadioactiveDecay ()
-    {}
+      = default;
 
 
     template <int dim>

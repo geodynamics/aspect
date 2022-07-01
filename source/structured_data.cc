@@ -640,7 +640,7 @@ namespace aspect
 
     template <int dim>
     AsciiDataBase<dim>::AsciiDataBase ()
-    {}
+      = default;
 
 
     template <int dim>
@@ -1204,7 +1204,7 @@ namespace aspect
 
     template <int dim>
     AsciiDataLayered<dim>::AsciiDataLayered ()
-    {}
+      = default;
 
 
 
@@ -1373,7 +1373,7 @@ namespace aspect
 
     template <int dim, int spacedim>
     AsciiDataInitial<dim, spacedim>::AsciiDataInitial ()
-    {}
+      = default;
 
 
 
@@ -1433,7 +1433,7 @@ namespace aspect
 
     template <int dim>
     AsciiDataProfile<dim>::AsciiDataProfile ()
-    {}
+      = default;
 
 
 

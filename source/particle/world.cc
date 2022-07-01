@@ -42,11 +42,11 @@ namespace aspect
   {
     template <int dim>
     World<dim>::World()
-    {}
+      = default;
 
     template <int dim>
     World<dim>::~World()
-    {}
+      = default;
 
     template <int dim>
     void

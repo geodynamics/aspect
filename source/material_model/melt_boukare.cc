@@ -819,7 +819,7 @@ namespace aspect
               for (unsigned int c=0; c<in.composition[q].size(); ++c)
                 {
                   // fill reaction rate outputs
-                  if (reaction_rate_out != NULL)
+                  if (reaction_rate_out != nullptr)
                     {
                       if (!include_melting_and_freezing)
                         reaction_rate_out->reaction_rates[q][c] = 0.0;

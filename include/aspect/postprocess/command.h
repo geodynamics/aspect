@@ -25,7 +25,7 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace aspect
 {

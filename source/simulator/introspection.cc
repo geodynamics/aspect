@@ -262,7 +262,7 @@ namespace aspect
 
   template <int dim>
   Introspection<dim>::~Introspection ()
-  {}
+    = default;
 
 
 
@@ -272,8 +272,8 @@ namespace aspect
     make_extractor_sequence (const std::vector<unsigned int> &compositional_fields)
     {
       std::vector<FEValuesExtractors::Scalar> x;
-      for (unsigned int i=0; i<compositional_fields.size(); ++i)
-        x.emplace_back(compositional_fields[i]);
+      for (const unsigned int compositional_field : compositional_fields)
+        x.emplace_back(compositional_field);
       return x;
     }
   }

@@ -324,7 +324,7 @@ namespace aspect
       /**
        * Move constructor. This constructor simply moves all members.
        */
-      MaterialModelInputs (MaterialModelInputs &&) = default;
+      MaterialModelInputs (MaterialModelInputs &&)  noexcept = default;
 
       /**
        * Copy operator. Copying these objects is expensive and
@@ -507,7 +507,7 @@ namespace aspect
       /**
        * Move constructor. This constructor simply moves all members.
        */
-      MaterialModelOutputs (MaterialModelOutputs &&) = default;
+      MaterialModelOutputs (MaterialModelOutputs &&)  noexcept = default;
 
       /**
        * Copy operator. Copying these objects is expensive, and consequently
@@ -518,7 +518,7 @@ namespace aspect
       /**
        * Move operator.
        */
-      MaterialModelOutputs &operator= (MaterialModelOutputs &&) = default;
+      MaterialModelOutputs &operator= (MaterialModelOutputs &&)  noexcept = default;
 
       /**
       * Function that returns the number of points at which
@@ -1078,7 +1078,7 @@ namespace aspect
         {}
 
         ~AdditionalMaterialOutputsStokesRHS() override
-        {}
+          = default;
 
         void average (const MaterialAveraging::AveragingOperation /*operation*/,
                       const FullMatrix<double>  &/*projection_matrix*/,
@@ -1162,7 +1162,7 @@ namespace aspect
         {}
 
         ~ElasticOutputs() override
-        {}
+          = default;
 
         void average (const MaterialAveraging::AveragingOperation operation,
                       const FullMatrix<double>  &/*projection_matrix*/,
@@ -1201,7 +1201,7 @@ namespace aspect
         {}
 
         virtual ~EnthalpyOutputs()
-        {}
+          = default;
 
         virtual void average (const MaterialAveraging::AveragingOperation operation,
                               const FullMatrix<double>  &/*projection_matrix*/,

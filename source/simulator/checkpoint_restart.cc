@@ -332,9 +332,9 @@ namespace aspect
         {
           uLongf compressed_data_length = compressBound (oss.str().length());
           std::vector<char *> compressed_data (compressed_data_length);
-          int err = compress2 ((Bytef *) &compressed_data[0],
+          int err = compress2 (reinterpret_cast<Bytef *>(&compressed_data[0]),
                                &compressed_data_length,
-                               (const Bytef *) oss.str().data(),
+                               reinterpret_cast<const Bytef *>(oss.str().data()),
                                oss.str().length(),
                                Z_BEST_COMPRESSION);
           (void)err;
@@ -349,8 +349,8 @@ namespace aspect
               }; /* list of compressed sizes of blocks */
 
           std::ofstream f ((parameters.output_directory + "restart.resume.z.new").c_str());
-          f.write((const char *)compression_header, 4 * sizeof(compression_header[0]));
-          f.write((char *)&compressed_data[0], compressed_data_length);
+          f.write(reinterpret_cast<const char *>(compression_header), 4 * sizeof(compression_header[0]));
+          f.write(reinterpret_cast<char *>(&compressed_data[0]), compressed_data_length);
           f.close();
 
           // We check the fail state of the stream _after_ closing the file to
@@ -470,7 +470,7 @@ namespace aspect
         std::istringstream ifs (restart_data);
 
         uint32_t compression_header[4];
-        ifs.read((char *)compression_header, 4 * sizeof(compression_header[0]));
+        ifs.read(reinterpret_cast<char *>(compression_header), 4 * sizeof(compression_header[0]));
         Assert(compression_header[0]==1, ExcInternalError());
 
         std::vector<char> compressed(compression_header[3]);
@@ -478,8 +478,8 @@ namespace aspect
         ifs.read(&compressed[0],compression_header[3]);
         uLongf uncompressed_size = compression_header[1];
 
-        const int err = uncompress((Bytef *)&uncompressed[0], &uncompressed_size,
-                                   (Bytef *)&compressed[0], compression_header[3]);
+        const int err = uncompress(reinterpret_cast<Bytef *>(&uncompressed[0]), &uncompressed_size,
+                                   reinterpret_cast<Bytef *>(&compressed[0]), compression_header[3]);
         AssertThrow (err == Z_OK,
                      ExcMessage (std::string("Uncompressing the data buffer resulted in an error with code <")
                                  +

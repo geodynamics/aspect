@@ -67,8 +67,8 @@ namespace aspect
 
         auto cell = input_data.template get_cell<dim>();
 
-        for (unsigned int q=0; q<computed_quantities.size(); ++q)
-          computed_quantities[q](0)= std::numeric_limits<double>::quiet_NaN();
+        for (auto &quantity : computed_quantities)
+          quantity(0)= std::numeric_limits<double>::quiet_NaN();
 
         const double unit_scaling_factor = this->convert_output_to_years() ? year_in_seconds : 1.0;
 

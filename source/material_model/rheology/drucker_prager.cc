@@ -34,7 +34,7 @@ namespace aspect
     {
       template <int dim>
       DruckerPrager<dim>::DruckerPrager ()
-      {}
+        = default;
 
       template <int dim>
       const DruckerPragerParameters

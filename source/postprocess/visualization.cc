@@ -154,7 +154,7 @@ namespace aspect
 
             solution_units.emplace_back("K");
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              solution_units.push_back (""); // we don't know here
+              solution_units.emplace_back(""); // we don't know here
 
             return solution_units;
           }
@@ -1382,11 +1382,11 @@ namespace aspect
 
       // then go through the list, create objects and let them parse
       // their own parameters
-      for (unsigned int name=0; name<viz_names.size(); ++name)
+      for (const auto &viz_name : viz_names)
         {
           VisualizationPostprocessors::Interface<dim> *
           viz_postprocessor = std::get<dim>(registered_visualization_plugins)
-                              .create_plugin (viz_names[name],
+                              .create_plugin (viz_name,
                                               "Visualization plugins");
 
           // make sure that the postprocessor is indeed of type

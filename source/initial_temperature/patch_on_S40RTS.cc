@@ -32,7 +32,7 @@ namespace aspect
   {
     template <int dim>
     PatchOnS40RTS<dim>::PatchOnS40RTS ()
-    {}
+      = default;
 
 
     template <int dim>

@@ -227,18 +227,18 @@ namespace aspect
 
       // go through the list, create objects, initialize them, and let them parse
       // their own parameters
-      for (unsigned int name=0; name<plugin_names.size(); ++name)
+      for (const auto &plugin_name : plugin_names)
         {
           termination_objects.push_back (std::unique_ptr<Interface<dim>>
                                          (std::get<dim>(registered_plugins)
-                                          .create_plugin (plugin_names[name],
+                                          .create_plugin (plugin_name,
                                                           "Termination criteria::Termination criteria")));
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*termination_objects.back()))
             sim->initialize_simulator (this->get_simulator());
           termination_objects.back()->parse_parameters (prm);
           termination_objects.back()->initialize ();
 
-          termination_obj_names.push_back(plugin_names[name]);
+          termination_obj_names.push_back(plugin_name);
         }
     }
 

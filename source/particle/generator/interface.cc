@@ -33,7 +33,7 @@ namespace aspect
     {
       template <int dim>
       Interface<dim>::Interface()
-      {}
+        = default;
 
 
 

@@ -45,9 +45,9 @@ namespace aspect
                             std::vector<Vector<double>> &computed_quantities) const
       {
         // Initialize everything to zero, so that we can ignore faces we are
-        // not interested in (namely, those not labeled as 'top' or 'bottom'
-        for (unsigned int q=0; q<computed_quantities.size(); ++q)
-          computed_quantities[q](0) = 0;
+        // not interested in (namely, those not labeled as 'top' or 'bottom')
+        for (auto &quantity : computed_quantities)
+          quantity(0) = 0;
 
         const Postprocess::DynamicTopography<dim> &dynamic_topography =
           this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim>>();

@@ -31,7 +31,7 @@ namespace aspect
   {
     template <int dim>
     AsciiProfile<dim>::AsciiProfile ()
-    {}
+      = default;
 
 
     template <int dim>

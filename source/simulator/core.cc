@@ -479,10 +479,10 @@ namespace aspect
     using periodic_boundary_set
       = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
     periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
-    for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
+    for (const auto &pb : pbs)
       {
-        open_velocity_boundary_indicators.erase ((*p).first.first);
-        open_velocity_boundary_indicators.erase ((*p).first.second);
+        open_velocity_boundary_indicators.erase (pb.first.first);
+        open_velocity_boundary_indicators.erase (pb.first.second);
       }
 
     // We need to do the RHS compatibility modification, if the model is
@@ -1319,9 +1319,9 @@ namespace aspect
 
         if (comp.length()>0)
           {
-            for (std::string::const_iterator direction=comp.begin(); direction!=comp.end(); ++direction)
+            for (const char direction : comp)
               {
-                switch (*direction)
+                switch (direction)
                   {
                     case 'x':
                       mask[introspection.component_indices.velocities[0]] = true;

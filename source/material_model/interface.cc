@@ -899,7 +899,7 @@ namespace aspect
     template <int dim>
     NamedAdditionalMaterialOutputs<dim>::
     ~NamedAdditionalMaterialOutputs()
-    {}
+      = default;
 
 
 
