@@ -241,6 +241,9 @@ namespace aspect
                   current_edot_ii = ref_strain_rate;
                 else
                   {
+                    Assert(std::isfinite(in.strain_rate[i].norm()),
+                           ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                                      "not filled by the caller."));
                     const double viscoelastic_strain_rate_invariant = elastic_rheology.calculate_viscoelastic_strain_rate(in.strain_rate[i],
                                                                       stress_old,
                                                                       elastic_shear_moduli[j]);
@@ -374,6 +377,10 @@ namespace aspect
             // A new material model inputs variable that uses the strain rate and pressure difference.
             MaterialModel::MaterialModelInputs<dim> in_derivatives = in;
 
+            Assert(std::isfinite(in.strain_rate[i].norm()),
+                   ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                              "not filled by the caller."));
+
             // For each independent component, compute the derivative.
             for (unsigned int component = 0; component < SymmetricTensor<2,dim>::n_independent_components; ++component)
               {
@@ -409,9 +416,7 @@ namespace aspect
                   }
               }
 
-            /**
-             * Now compute the derivative of the viscosity to the pressure
-             */
+            // ow compute the derivative of the viscosity to the pressure
             const double pressure_difference = in.pressure[i] + (std::fabs(in.pressure[i]) * finite_difference_accuracy);
 
             in_derivatives.pressure[i] = pressure_difference;

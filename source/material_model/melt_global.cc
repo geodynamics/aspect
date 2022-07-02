@@ -172,6 +172,11 @@ namespace aspect
                                                    in.requests_property(MaterialProperties::reaction_rates) ||
                                                    in.requests_property(MaterialProperties::viscosity)))
                 {
+                  Assert(std::isfinite(in.strain_rate[i].norm()),
+                         ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                                    "not filled by the caller."));
+                  const double trace_strain_rate = trace(in.strain_rate[i]);
+
                   const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 
                   // Calculate the melting rate as difference between the equilibrium melt fraction
@@ -189,7 +194,7 @@ namespace aspect
                   for (unsigned int c = 0; c < in.composition[i].size(); ++c)
                     {
                       if (c == peridotite_idx && this->get_timestep_number() > 1)
-                        out.reaction_terms[i][c] = porosity_change - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
+                        out.reaction_terms[i][c] = porosity_change - in.composition[i][peridotite_idx] * trace_strain_rate * this->get_timestep();
                       else if (c == porosity_idx && this->get_timestep_number() > 1)
                         out.reaction_terms[i][c] = porosity_change * out.densities[i] / this->get_timestep();
                       else
