@@ -5,4 +5,4 @@
 # communicate with the docker daemon without root user privileges (see the docker
 # webpage for an explanation).
 
-docker build -t geodynamics/aspect-tester:focal-dealii-9.3-v1 .
+docker build -t geodynamics/aspect-tester:focal-dealii-9.4-v2 .

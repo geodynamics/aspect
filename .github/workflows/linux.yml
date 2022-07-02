@@ -115,7 +115,7 @@ jobs:
         include:
           - image: "geodynamics/aspect-tester:focal-dealii-9.3-v2"
             tests: "ON"
-          - image: "geodynamics/aspect-tester:focal-dealii-9.4-v1"
+          - image: "geodynamics/aspect-tester:focal-dealii-9.4-v2"
             tests: "OFF"
     container: ${{ matrix.image }}
 
