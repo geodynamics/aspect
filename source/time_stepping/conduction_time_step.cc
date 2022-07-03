@@ -33,7 +33,7 @@ namespace aspect
     {
       double min_local_conduction_timestep = std::numeric_limits<double>::max();
 
-      const QIterated<dim> quadrature_formula (QTrapez<1>(),
+      const QIterated<dim> quadrature_formula (QTrapezoid<1>(),
                                                this->get_parameters().stokes_velocity_degree);
 
       FEValues<dim> fe_values (this->get_mapping(),
