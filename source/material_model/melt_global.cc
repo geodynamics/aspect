@@ -22,8 +22,10 @@
 #include <aspect/material_model/melt_global.h>
 #include <aspect/adiabatic_conditions/interface.h>
 
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/numerics/fe_field_function.h>
+
 
 
 namespace aspect
@@ -172,10 +174,14 @@ namespace aspect
                                                    in.requests_property(MaterialProperties::reaction_rates) ||
                                                    in.requests_property(MaterialProperties::viscosity)))
                 {
-                  Assert(std::isfinite(in.strain_rate[i].norm()),
+                  Assert(this->get_timestep_number()<=1 || std::isfinite(in.strain_rate[i].norm()),
                          ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                     "not filled by the caller."));
-                  const double trace_strain_rate = trace(in.strain_rate[i]);
+                  const double trace_strain_rate =
+                    (this->get_timestep_number() > 1) ?
+                    (trace(in.strain_rate[i]))
+                    :
+                    numbers::signaling_nan<double>();
 
                   const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 
