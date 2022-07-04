@@ -22,8 +22,10 @@
 #include <aspect/material_model/melt_global.h>
 #include <aspect/adiabatic_conditions/interface.h>
 
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/numerics/fe_field_function.h>
+
 
 
 namespace aspect
@@ -172,6 +174,15 @@ namespace aspect
                                                    in.requests_property(MaterialProperties::reaction_rates) ||
                                                    in.requests_property(MaterialProperties::viscosity)))
                 {
+                  Assert(this->get_timestep_number()<=1 || std::isfinite(in.strain_rate[i].norm()),
+                         ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                                    "not filled by the caller."));
+                  const double trace_strain_rate =
+                    (this->get_timestep_number() > 1) ?
+                    (trace(in.strain_rate[i]))
+                    :
+                    numbers::signaling_nan<double>();
+
                   const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 
                   // Calculate the melting rate as difference between the equilibrium melt fraction
@@ -189,7 +200,7 @@ namespace aspect
                   for (unsigned int c = 0; c < in.composition[i].size(); ++c)
                     {
                       if (c == peridotite_idx && this->get_timestep_number() > 1)
-                        out.reaction_terms[i][c] = porosity_change - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
+                        out.reaction_terms[i][c] = porosity_change - in.composition[i][peridotite_idx] * trace_strain_rate * this->get_timestep();
                       else if (c == porosity_idx && this->get_timestep_number() > 1)
                         out.reaction_terms[i][c] = porosity_change * out.densities[i] / this->get_timestep();
                       else

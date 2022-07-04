@@ -320,6 +320,9 @@ namespace aspect
                 const SymmetricTensor<2,dim> stress_0 = (stress_old + dte * ( symmetrize(rotation * Tensor<2,dim>(stress_old) ) - symmetrize(Tensor<2,dim>(stress_old) * rotation) ) );
 
                 // stress_creep is the stress experienced by the viscous and elastic components.
+                Assert(std::isfinite(in.strain_rate[i].norm()),
+                       ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                                  "not filled by the caller."));
                 const SymmetricTensor<2,dim> stress_creep = 2. * average_viscoelastic_viscosity * ( deviator(in.strain_rate[i]) + stress_0 / (2. * damped_elastic_viscosity ) );
 
                 // stress_new is the (new) stored elastic stress

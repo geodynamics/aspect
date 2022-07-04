@@ -1276,9 +1276,11 @@ namespace aspect
                                update_quadrature_points | update_gradients | update_values);
 
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
+      // We only need access to the MeltOutputs in p_c_scale().
+      in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
+
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
       create_material_model_outputs(out);
-
 
       std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -1508,6 +1510,8 @@ namespace aspect
                                          this->introspection(),
                                          this->get_current_linearization_point(),
                                          false);
+            // We only need access to the MeltOutputs in p_c_scale().
+            material_model_inputs.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
             this->get_material_model().evaluate(material_model_inputs,
                                                 material_model_outputs);
