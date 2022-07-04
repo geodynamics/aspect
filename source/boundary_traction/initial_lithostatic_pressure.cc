@@ -143,8 +143,8 @@ namespace aspect
       for (unsigned int c=0; c<n_compositional_fields; ++c)
         in0.composition[0][c] = this->get_initial_composition_manager().initial_composition(in0.position[0], c);
 
-      // We do not need the viscosity.
-      in0.strain_rate.resize(0);
+      // Hopefully the material model won't needed in0.strain_rate, we
+      // leave it as NaNs.
 
       // We set all entries of the velocity vector to zero since this is the lithostatic case.
       in0.velocity[0] = Tensor<1,dim> ();

@@ -284,7 +284,6 @@ namespace aspect
     {
       if (compute_strain_rate == false)
         {
-          this->strain_rate.resize(0);
           requested_properties = MaterialProperties::Property(requested_properties & ~MaterialProperties::viscosity);
         }
 
@@ -369,9 +368,7 @@ namespace aspect
       fe_values[introspection.extractors.pressure].get_function_gradients (solution_vector, this->pressure_gradient);
 
       // Only the viscosity in the material can depend on the strain_rate
-      // if this is not needed, we can save some time here. By setting the
-      // length of the strain_rate vector to 0, we signal to evaluate()
-      // that we do not need to access the viscosity.
+      // if this is not needed, we can save some time here.
       if (compute_strain_rate)
         {
           fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (solution_vector,this->strain_rate);
@@ -379,7 +376,6 @@ namespace aspect
         }
       else
         {
-          this->strain_rate.resize(0);
           requested_properties = MaterialProperties::Property(requested_properties & ~MaterialProperties::viscosity);
         }
 
