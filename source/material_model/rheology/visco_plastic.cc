@@ -416,7 +416,7 @@ namespace aspect
                   }
               }
 
-            // ow compute the derivative of the viscosity to the pressure
+            // Now compute the derivative of the viscosity to the pressure
             const double pressure_difference = in.pressure[i] + (std::fabs(in.pressure[i]) * finite_difference_accuracy);
 
             in_derivatives.pressure[i] = pressure_difference;
