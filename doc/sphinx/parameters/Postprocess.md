@@ -690,7 +690,7 @@ Select one of the following models:
 ### __Parameter name:__ List of particle properties
 **Default value:**
 
-**Pattern:** [MultipleSelection composition|elastic stress|function|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|velocity|viscoplastic strain invariants ]
+**Pattern:** [MultipleSelection composition|elastic stress|function|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
 
 **Documentation:** A comma separated list of particle properties that should be tracked. By default none is selected, which means only position, velocity and id of the particles are output.
 
@@ -717,6 +717,8 @@ The following properties are available:
 &lsquo;position&rsquo;: Implementation of a plugin in which the particle property is defined as the current position.
 
 &lsquo;reference position&rsquo;: Implementation of a plugin in which the particle property is defined as the current reference position.
+
+&lsquo;strain rate&rsquo;: Implementation of a plugin in which the time evolution of strain rate is saved and stored on the particles.
 
 &lsquo;velocity&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity at this position.
 
