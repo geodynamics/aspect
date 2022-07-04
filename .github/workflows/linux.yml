@@ -1,10 +1,18 @@
 name: linux
 
-on: [push, pull_request]
+on: pull_request
 
 concurrency:
   group: ${{ github.actor }}-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  OMPI_MCA_btl_base_warn_component_unused: 0
+  OMPI_MCA_mpi_yield_when_idle: 1
+  OMPI_MCA_rmaps_base_oversubscribe: 1
+  OMPI_ALLOW_RUN_AS_ROOT: 1
+  OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+  OMPI_MCA_btl_vader_single_copy_mechanism: none
 
 jobs:
   linux-nounity:
@@ -81,43 +89,30 @@ jobs:
         name: manual.log
         path: doc/manual/manual.log
 
-  dealii-dev:
-    # linux build with deal.II dev
-    name: test-dealii-dev
-    runs-on: [ubuntu-18.04]
-    container:
-      image: dealii/dealii:master-focal
-      options: --user 0
-    steps:
-    - uses: actions/checkout@v2
-    - name: compile
-      run: |
-        mkdir build
-        cd build
-        cmake \
-        -G 'Ninja' \
-        -D CMAKE_CXX_FLAGS='-Werror' \
-        -D ASPECT_TEST_GENERATOR='Ninja' \
-        -D ASPECT_PRECOMPILE_HEADERS=ON \
-        -D ASPECT_UNITY_BUILD=ON \
-        ..
-        ninja
-        cat detailed.log
-        ./aspect -v
-        ./aspect --test
-
   tests:
     #linux build including tests
     name: tests
     runs-on: [ubuntu-latest]
     strategy:
+      fail-fast: false
       matrix:
         include:
           - image: "geodynamics/aspect-tester:focal-dealii-9.3-v2"
-            tests: "ON"
+            run-tests: "ON"
+            compare-tests: "ON"
+            container-options: '--name container'
           - image: "geodynamics/aspect-tester:focal-dealii-9.4-v2"
-            tests: "OFF"
-    container: ${{ matrix.image }}
+            run-tests: "ON"
+            compare-tests: "OFF"
+            container-options: '--name container'
+          - image: dealii/dealii:master-focal
+            run-tests: "ON"
+            compare-tests: "OFF"
+            container-options: '--user 0 --name container'
+
+    container: 
+      image: ${{ matrix.image }}
+      options: ${{ matrix.container-options }}
 
     steps:
     - uses: actions/checkout@v2
@@ -132,7 +127,8 @@ jobs:
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=ON \
         -D ASPECT_UNITY_BUILD=ON \
-        -D ASPECT_RUN_ALL_TESTS='${{ matrix.tests }}' \
+        -D ASPECT_RUN_ALL_TESTS='${{ matrix.run-tests }}' \
+        -D ASPECT_COMPARE_TEST_RESULTS='${{ matrix.compare-tests }}' \
         ..
         ninja
         ./aspect --test
