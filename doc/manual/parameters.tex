@@ -19326,12 +19326,14 @@ The following properties are available:
 
 `reference position': Implementation of a plugin in which the particle property is defined as the current reference position.
 
+`strain rate': Implementation of a plugin in which the time evolution of strain rate is saved and stored on the particles.
+
 `velocity': Implementation of a plugin in which the particle property is defined as the recent velocity at this position.
 
 `viscoplastic strain invariants': A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in \texttt{benchmarks/buiter\_et\_al\_2008\_jgr/plugin/},and is effectively the same as what the visco plastic material model uses for compositional fields.
 
 
-{\it Possible values:} A comma-separated list of any of composition, elastic stress, function, initial composition, initial position, integrated strain, integrated strain invariant, melt particle, pT path, position, reference position, velocity, viscoplastic strain invariants
+{\it Possible values:} A comma-separated list of any of composition, elastic stress, function, initial composition, initial position, integrated strain, integrated strain invariant, melt particle, pT path, position, reference position, strain rate, velocity, viscoplastic strain invariants
 \item {\it Parameter name:} {\tt Load balancing strategy}
 \phantomsection\label{parameters:Postprocess/Particles/Load balancing strategy}
 \label{parameters:Postprocess/Particles/Load_20balancing_20strategy}

@@ -324,7 +324,7 @@ namespace aspect
 
 
         /**
-         * Make sure that when the property @param value is updated by adding @param change_of_value,
+         * Make sure that when the property @p value is updated by adding @p change_of_value,
          * the new value is between zero and one. Otherwise, throw an error message.
          */
         virtual
@@ -334,8 +334,8 @@ namespace aspect
 
 
         /**
-          * Compute the equilibrium melt fraction for a given @param temperature, @param pressure,
-          * and @param bulk_composition and the corresponding composition of melt and solid. The
+          * Compute the equilibrium melt fraction for a given @p temperature, @p pressure,
+          * and @p bulk_composition and the corresponding composition of melt and solid. The
           * melting model is based on Phipps Morgan, Jason. "Thermodynamics of pressure release
           * melting of a veined plum pudding mantle." Geochemistry, Geophysics, Geosystems 2.4
           * (2001), and additionally includes volatiles.
