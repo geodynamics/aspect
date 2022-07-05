@@ -16,7 +16,6 @@
 #ifndef aspect_compat_mapping_cartesian_h
 #define aspect_compat_mapping_cartesian_h
 
-
 #include <deal.II/base/config.h>
 
 #include <deal.II/base/qprojector.h>
@@ -25,6 +24,8 @@
 
 #include <cmath>
 
+#if DEAL_II_VERSION_GTE(9,4,0)
+#if !DEAL_II_VERSION_GTE(9,4,1)
 
 namespace aspect
 {
@@ -421,5 +422,8 @@ namespace aspect
   /*@}*/
 
 }
+
+#endif
+#endif
 
 #endif

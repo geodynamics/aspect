@@ -35,6 +35,9 @@
 #include <cmath>
 #include <memory>
 
+#if DEAL_II_VERSION_GTE(9,4,0)
+#if !DEAL_II_VERSION_GTE(9,4,1)
+
 namespace aspect
 {
   using namespace dealii;
@@ -1246,3 +1249,6 @@ namespace aspect
 #undef INSTANTIATE
 
 }
+
+#endif
+#endif
