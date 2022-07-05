@@ -1789,6 +1789,9 @@ namespace aspect
     if (parameters.mesh_deformation_enabled)
       {
         mesh_deformation->execute ();
+
+        // calculate global volume after deforming mesh
+        global_volume = GridTools::volume (triangulation, *mapping);
         signals.post_mesh_deformation(*this);
       }
 
