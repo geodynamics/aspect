@@ -28,7 +28,11 @@
 #include <functional>
 #include <memory>
 
-
+#if DEAL_II_VERSION_GTE(9,4,0)
+#if !DEAL_II_VERSION_GTE(9,4,1)
+#include <aspect/compat/mapping_cartesian.h>
+#endif
+#endif
 
 namespace big_mpi
 {
