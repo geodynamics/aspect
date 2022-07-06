@@ -476,7 +476,7 @@ namespace aspect
     // use a quadrature formula that has one point at
     // the location of each degree of freedom in the
     // velocity element
-    const QIterated<dim> quadrature_formula (QTrapez<1>(),
+    const QIterated<dim> quadrature_formula (QTrapezoid<1>(),
                                              parameters.stokes_velocity_degree);
     const unsigned int n_q_points = quadrature_formula.size();
 
@@ -713,7 +713,7 @@ namespace aspect
   Simulator<dim>::
   get_extrapolated_advection_field_range (const AdvectionField &advection_field) const
   {
-    const QIterated<dim> quadrature_formula (QTrapez<1>(),
+    const QIterated<dim> quadrature_formula (QTrapezoid<1>(),
                                              advection_field.polynomial_degree(introspection));
 
     const unsigned int n_q_points = quadrature_formula.size();

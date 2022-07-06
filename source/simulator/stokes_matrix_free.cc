@@ -1605,9 +1605,15 @@ namespace aspect
     // Explicitly pick the version with template argument double to convert
     // double-valued active_viscosity_vector to GMGNumberType-valued
     // level_viscosity_vector:
+#if DEAL_II_VERSION_GTE(9,5,0)
+    transfer.template interpolate_to_mg<dealii::LinearAlgebra::distributed::Vector<double>>(dof_handler_projection,
+        level_viscosity_vector,
+        active_viscosity_vector);
+#else
     transfer.template interpolate_to_mg<double>(dof_handler_projection,
                                                 level_viscosity_vector,
                                                 active_viscosity_vector);
+#endif
 
     for (unsigned int level=0; level<n_levels; ++level)
       {

@@ -308,7 +308,7 @@ namespace aspect
                                   QGauss<dim>(advection_field.polynomial_degree(introspection)
                                               +
                                               (parameters.stokes_velocity_degree+1)/2),
-                                  QTrapez<dim-1> (),
+                                  QTrapezoid<dim-1> (),
                                   update_flags,
                                   face_update_flags,
                                   introspection.n_compositional_fields,
