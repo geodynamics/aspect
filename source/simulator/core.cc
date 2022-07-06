@@ -108,8 +108,13 @@ namespace aspect
     {
       if (geometry_model.has_curved_elements())
         return std::make_unique<MappingQCache<dim>>(4);
+
+#if !DEAL_II_VERSION_GTE(9,4,0) || DEAL_II_VERSION_GTE(9,4,1)
       if (Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(initial_topography_model))
         return std::make_unique<MappingCartesian<dim>>();
+#else
+      (void) initial_topography_model;
+#endif
 
       return std::make_unique<MappingQ1<dim>>();
     }
