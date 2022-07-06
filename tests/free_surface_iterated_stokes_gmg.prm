@@ -14,6 +14,9 @@ subsection Solver parameters
     set Linear solver tolerance = 1.e-7
     set Number of cheap Stokes solver steps = 0
   end
+  subsection Matrix Free
+    set Use level free surface stabilization = true
+  end
 end
 
 subsection Material model

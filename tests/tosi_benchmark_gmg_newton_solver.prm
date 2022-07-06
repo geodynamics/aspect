@@ -9,6 +9,9 @@ subsection Solver parameters
   subsection Stokes solver parameters
     set Stokes solver type = block GMG
   end
+  subsection Matrix Free
+    set Use level Newton derivatives = true
+  end
 end
 
 subsection Material model
