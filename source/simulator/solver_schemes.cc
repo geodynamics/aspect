@@ -142,6 +142,8 @@ namespace aspect
   double Simulator<dim>::assemble_and_solve_temperature (const bool compute_initial_residual,
                                                          double *initial_residual)
   {
+    double current_residual = 0.0;
+
     switch (parameters.temperature_method)
       {
         case Parameters<dim>::AdvectionFieldMethod::fem_field:
@@ -171,13 +173,7 @@ namespace aspect
               *initial_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
             }
 
-          const double current_residual = solve_advection(adv_field);
-
-          current_linearization_point.block(introspection.block_indices.temperature)
-            = solution.block(introspection.block_indices.temperature);
-
-          if ((initial_residual != nullptr) && (*initial_residual > 0))
-            return current_residual / *initial_residual;
+          current_residual = solve_advection(adv_field);
           break;
         }
 
@@ -214,6 +210,12 @@ namespace aspect
         default:
           AssertThrow(false,ExcNotImplemented());
       }
+
+    current_linearization_point.block(introspection.block_indices.temperature)
+      = solution.block(introspection.block_indices.temperature);
+
+    if ((initial_residual != nullptr) && (*initial_residual > 0))
+      return current_residual / *initial_residual;
 
     return 0.0;
   }

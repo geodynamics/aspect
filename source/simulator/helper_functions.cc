@@ -1972,7 +1972,6 @@ namespace aspect
       current_constraints.distribute (distributed_vector);
 
     solution.block(advection_block) = distributed_vector.block(advection_block);
-    current_linearization_point.block(advection_block) = distributed_vector.block(advection_block);
   }
 
 
