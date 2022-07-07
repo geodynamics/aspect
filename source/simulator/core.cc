@@ -1765,7 +1765,7 @@ namespace aspect
       // Possibly load data of plugins associated with cells
       signals.post_refinement_load_user_data(triangulation);
 
-      // calculate global volume after displacing mesh (if we have, in fact, displaced it)
+      // calculate global volume after refining mesh
       global_volume = GridTools::volume (triangulation, *mapping);
     }
   }
@@ -1943,6 +1943,7 @@ namespace aspect
 
         setup_dofs();
 
+        // calculate global volume after refining mesh
         global_volume = GridTools::volume (triangulation, *mapping);
       }
 
