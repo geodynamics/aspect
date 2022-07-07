@@ -1,10 +1,6 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libentropy_conduction.so>
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 200 (on 1 levels)
 Number of degrees of freedom: 6,417 (2,406+402+1,203+1,203+1,203)
 
@@ -55,84 +51,84 @@ Number of degrees of freedom: 6,417 (2,406+402+1,203+1,203+1,203)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Copying properties into prescribed temperature field.
-   Solving temperature system... 62 iterations.
+   Solving temperature system... 64 iterations.
    Solving entropy system ... 7 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000738786, 0.000318795, 0, 0.229509
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00123874, 0.000318795, 0, 0.229509
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.229509
 
    Copying properties into prescribed temperature field.
-   Solving temperature system... 57 iterations.
+   Solving temperature system... 65 iterations.
    Solving entropy system ... 7 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000320524, 0.000204331, 0, 0.188927
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00324188, 0.000204331, 0, 0.188927
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.188927
 
    Copying properties into prescribed temperature field.
-   Solving temperature system... 55 iterations.
+   Solving temperature system... 64 iterations.
    Solving entropy system ... 7 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000206157, 0.000152752, 0, 0.144734
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00141152, 0.000152752, 0, 0.144734
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.144734
 
    Copying properties into prescribed temperature field.
-   Solving temperature system... 54 iterations.
+   Solving temperature system... 65 iterations.
    Solving entropy system ... 7 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000154229, 0.000122626, 0, 0.110455
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00311614, 0.000122626, 0, 0.110455
       Relative nonlinear residual (total system) after nonlinear iteration 5: 0.110455
 
    Copying properties into prescribed temperature field.
-   Solving temperature system... 53 iterations.
+   Solving temperature system... 64 iterations.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000124149, 0.00010261, 0, 0.0869101
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00152219, 0.00010261, 0, 0.0869101
       Relative nonlinear residual (total system) after nonlinear iteration 6: 0.0869101
 
    Copying properties into prescribed temperature field.
-   Solving temperature system... 52 iterations.
+   Solving temperature system... 64 iterations.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000104258, 8.82808e-05, 0, 0.0706989
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00298058, 8.82808e-05, 0, 0.0706989
       Relative nonlinear residual (total system) after nonlinear iteration 7: 0.0706989
 
    Copying properties into prescribed temperature field.
-   Solving temperature system... 51 iterations.
+   Solving temperature system... 64 iterations.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.00225e-05, 7.7493e-05, 0, 0.0591696
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0016119, 7.7493e-05, 0, 0.0591696
       Relative nonlinear residual (total system) after nonlinear iteration 8: 0.0591696
 
    Copying properties into prescribed temperature field.
-   Solving temperature system... 51 iterations.
+   Solving temperature system... 64 iterations.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.92947e-05, 6.90828e-05, 0, 0.0506624
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00286442, 6.90828e-05, 0, 0.0506624
       Relative nonlinear residual (total system) after nonlinear iteration 9: 0.0506624
 
    Copying properties into prescribed temperature field.
-   Solving temperature system... 50 iterations.
+   Solving temperature system... 64 iterations.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.09111e-05, 6.2345e-05, 0, 0.0441691
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00169026, 6.2345e-05, 0, 0.0441691
       Relative nonlinear residual (total system) after nonlinear iteration 10: 0.0441691
 
 
@@ -145,9 +141,4 @@ Number of degrees of freedom: 6,417 (2,406+402+1,203+1,203+1,203)
 Termination requested by criterion: end time
 
 
-+------------------------------------------------+------------+------------+
-+------------------------------------+-----------+------------+------------+
-+------------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
