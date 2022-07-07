@@ -716,7 +716,7 @@ namespace aspect
           register_particle_property (const std::string &name,
                                       const std::string &description,
                                       void (*declare_parameters_function) (ParameterHandler &),
-                                      Property::Interface<dim> *(*factory_function) ());
+                                      std::unique_ptr<Property::Interface<dim>> (*factory_function) ());
 
 
           /**

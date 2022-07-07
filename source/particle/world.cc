@@ -1616,7 +1616,7 @@ namespace aspect
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialization");
 
       // Create a generator object depending on what the parameters specify
-      generator.reset(Generator::create_particle_generator<dim> (prm));
+      generator = Generator::create_particle_generator<dim> (prm);
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
         sim->initialize_simulator (this->get_simulator());
       generator->parse_parameters(prm);
@@ -1630,14 +1630,14 @@ namespace aspect
       property_manager->initialize();
 
       // Create an integrator object depending on the specified parameter
-      integrator.reset(Integrator::create_particle_integrator<dim> (prm));
+      integrator = Integrator::create_particle_integrator<dim> (prm);
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
         sim->initialize_simulator (this->get_simulator());
       integrator->parse_parameters(prm);
       integrator->initialize();
 
       // Create an interpolator object depending on the specified parameter
-      interpolator.reset(Interpolator::create_particle_interpolator<dim> (prm));
+      interpolator = Interpolator::create_particle_interpolator<dim> (prm);
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
         sim->initialize_simulator (this->get_simulator());
       interpolator->parse_parameters(prm);
