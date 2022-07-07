@@ -1506,6 +1506,15 @@ namespace aspect
 
 
     template <int dim>
+    const DoFHandler<dim> &
+    MeshDeformationHandler<dim>::get_mesh_deformation_dof_handler () const
+    {
+      return mesh_deformation_dof_handler;
+    }
+
+
+
+    template <int dim>
     const LinearAlgebra::Vector &
     MeshDeformationHandler<dim>::get_initial_topography () const
     {

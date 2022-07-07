@@ -576,6 +576,23 @@ namespace aspect
         bool output_mesh_velocity;
 
         /**
+         * For mesh deformation computations ASPECT uses an Arbitrary-Lagrangian-
+         * Eulerian formulation to handle deforming the domain, so the mesh
+         * has a field that determines the displacement from the reference
+         * configuration. This may be written as an output field by setting
+         * this flag to true.
+         */
+        bool output_mesh_displacement;
+
+        /**
+         * For mesh deformation computations ASPECT uses an Arbitrary-Lagrangian-
+         * Eulerian formulation to handle deforming the domain, but we output the
+         * mesh in its deformed state if this flag is set to true. If set to false,
+         * the mesh is written undeformed.
+         */
+        bool output_undeformed_mesh;
+
+        /**
          * File operations can potentially take a long time, blocking the
          * progress of the rest of the model run. Setting this variable to
          * 'true' moves this process into a background thread, while the

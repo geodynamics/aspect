@@ -321,11 +321,17 @@ namespace aspect
         get_initial_topography () const;
 
         /**
-         * Return the mesh displacements stored on
-         * the mesh deformation element.
+         * Return the mesh displacements based on the mesh deformation
+         * DoFHandler you can access with get_mesh_deformation_dof_handler().
          */
         const LinearAlgebra::Vector &
         get_mesh_displacements () const;
+
+        /**
+         * Return the DoFHandler used to represent the mesh deformation space.
+         */
+        const DoFHandler<dim> &
+        get_mesh_deformation_dof_handler () const;
 
         /**
          * Go through the list of all mesh deformation objects that have been selected
