@@ -63,7 +63,6 @@ namespace aspect
       };
       std::vector<entry> entries;
 
-      //      const QTrapez<dim> quadrature_formula;
       const QMidpoint<dim> quadrature_formula;
 
       const unsigned int n_q_points =  quadrature_formula.size();
