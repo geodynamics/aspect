@@ -72,8 +72,8 @@ namespace aspect
     // Additionally, the n==1 logic for normalization at the bottom is not pretty.
     for (unsigned int n=0; n<1+introspection.n_compositional_fields; ++n)
       {
-        AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
-                               : AdvectionField::composition(n-1));
+        const AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
+                                     : AdvectionField::composition(n-1));
 
         const unsigned int base_element = advf.base_element(introspection);
 

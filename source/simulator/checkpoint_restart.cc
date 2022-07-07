@@ -459,7 +459,7 @@ namespace aspect
 
     pcout << "*** Resuming from snapshot!" << std::endl << std::endl;
 
-    // read resume.z to set up the state of the model
+    // Read resume.z to set up the state of the model
     try
       {
 #ifdef DEAL_II_WITH_ZLIB
