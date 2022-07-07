@@ -27,13 +27,13 @@ end
 
 subsection Mesh refinement
   set Initial global refinement          = 0
-  set Initial adaptive refinement        = 4
+  set Initial adaptive refinement        = 2
   set Time steps between mesh refinement = 0
   set Strategy                           = minimum refinement function
   subsection Minimum refinement function
     set Coordinate system   = spherical
     set Variable names      = r,phi
-    set Function expression = r>=6169.e3 ? 4 : 0
+    set Function expression = r>=6169.e3 ? 2 : 0
   end
 end
 

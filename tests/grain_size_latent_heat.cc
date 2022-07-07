@@ -64,7 +64,7 @@ namespace aspect
 
           if (in.current_cell.state() == IteratorState::valid)
             {
-              const QTrapez<dim> quadrature_formula;
+              const QTrapezoid<dim> quadrature_formula;
               const unsigned int n_q_points = quadrature_formula.size();
 
               FEValues<dim> fe_values (this->get_mapping(),

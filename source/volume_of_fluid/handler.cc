@@ -23,6 +23,8 @@
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/mesh_refinement/volume_of_fluid_interface.h>
 #include <aspect/simulator/assemblers/interface.h>
+#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 
 #include <deal.II/base/work_stream.h>
 #include <deal.II/grid/filtered_iterator.h>
@@ -418,8 +420,9 @@ namespace aspect
     AssertThrow(!this->get_material_model().is_compressible(),
                 ExcMessage("Volume of Fluid Interface Tracking currently assumes incompressibility."));
 
-    AssertThrow(dynamic_cast<const MappingCartesian<dim> *>(&(this->get_mapping())),
-                ExcMessage("Volume of Fluid Interface Tracking currently requires Cartesian Mappings"));
+    AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()) ||
+                Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()),
+                ExcMessage("Volume of Fluid Interface Tracking currently requires a box geometry."));
 
     AssertThrow(!this->get_parameters().mesh_deformation_enabled,
                 ExcMessage("Volume of Fluid Interface Tracking is currently incompatible with the Free Surface implementation."));
