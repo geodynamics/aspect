@@ -1,0 +1,4 @@
+Fixed: The global volume of the mesh that was stored in the Simulator class was
+not updated after mesh deformation. This is fixed now.
+<br>
+(Rene Gassmoeller, 2022/07/06)

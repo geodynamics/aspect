@@ -16,7 +16,7 @@ Number of mesh deformation degrees of freedom: 5346
 
    Postprocessing:
      Topography min/max:       -206.4 m, 126.7 m
-     RMS, max velocity:        0.0361 m/year, 0.144 m/year
+     RMS, max velocity:        0.036 m/year, 0.144 m/year
      Writing graphical output: output1.tmp/solution/solution-00002
 
 *** Timestep 3:  t=20021.1 years, dt=10887.9 years
