@@ -475,7 +475,7 @@ namespace aspect
 
           extents[1]           = prm.get_double ("Y extent");
           lower_box_origin[1]  = prm.get_double ("Box origin Y coordinate");
-          periodic[1]          = prm.get_bool ("Y periodic");;
+          periodic[1]          = prm.get_bool ("Y periodic");
           lower_repetitions[1] = prm.get_integer ("Y repetitions");
 
           if (dim == 2)

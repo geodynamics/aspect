@@ -57,7 +57,7 @@ namespace aspect
       const double pressure = Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
                                                                                     position,
                                                                                     0);
-      return -pressure * normal_vector;;
+      return -pressure * normal_vector;
     }
 
 

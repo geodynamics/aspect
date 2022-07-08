@@ -1134,7 +1134,7 @@ namespace aspect
                                            !assemblers->advection_system_on_interior_face.empty()) &&
                                           assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation;
     const bool allocate_neighbor_contributions = !assemblers->advection_system_on_interior_face.empty() &&
-                                                 assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation;;
+                                                 assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation;
 
     const bool use_supg = (parameters.advection_stabilization_method
                            == Parameters<dim>::AdvectionStabilizationMethod::supg);

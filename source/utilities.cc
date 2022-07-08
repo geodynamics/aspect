@@ -2325,7 +2325,7 @@ namespace aspect
       if ((strain_rate.norm() == 0) || (dviscosities_dstrain_rate.norm() == 0))
         return 1;
 
-      const double norm_a_b = std::sqrt((strain_rate*strain_rate)*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));;//std::sqrt((deviator(strain_rate)*deviator(strain_rate))*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));
+      const double norm_a_b = std::sqrt((strain_rate*strain_rate)*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));//std::sqrt((deviator(strain_rate)*deviator(strain_rate))*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));
       const double contract_b_a = (dviscosities_dstrain_rate*strain_rate);
       const double one_minus_part = 1 - (contract_b_a / norm_a_b);
       const double denom = one_minus_part * one_minus_part * norm_a_b;
