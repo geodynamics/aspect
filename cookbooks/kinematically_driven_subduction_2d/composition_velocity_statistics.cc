@@ -155,8 +155,8 @@ namespace aspect
         {
           prm.declare_entry("Names of slab compositional fields", "",
                             Patterns::List(Patterns::Anything()),
-                            "A list of names for each of the compositional fields that. "
-                            "makes up the subduction plate.");
+                            "A list of names for each of the compositional fields that "
+                            "makes up the subducting plate.");
         }
         prm.leave_subsection();
       }
@@ -178,7 +178,7 @@ namespace aspect
           AssertThrow((slab_compositions.size() > 0) &&
                       (slab_compositions.size() <= this->n_compositional_fields()),
                       ExcMessage("The length of the list of names for the compositional "
-                                 "fields that make up the slabs much be larger than zero "
+                                 "fields that make up the slabs must be larger than zero "
                                  "and smaller or equal to the number of compositional fields."));
         }
         prm.leave_subsection();
