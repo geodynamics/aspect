@@ -92,7 +92,7 @@ Termination requested by criterion: end time
 | Solve temperature system         |         3 |   0.00137s |         0% |
 +----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts:4s
+-- Total wallclock time elapsed including restarts: 4s
 -----------------------------------------------------------------------------
 -- For information on how to cite ASPECT, see:
 --   https://aspect.geodynamics.org/citing.html?ver=2.4.0-pre&sha=4a8ed33c8&src=code

@@ -515,7 +515,7 @@ namespace aspect
         if (parameters.timing_output_frequency ==0)
           {
             computing_timer.print_summary ();
-            pcout << "-- Total wallclock time elapsed including restarts:"
+            pcout << "-- Total wallclock time elapsed including restarts: "
                   << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
                   << 's' << std::endl;
           }
@@ -630,7 +630,7 @@ namespace aspect
     if (write_timing_output)
       {
         computing_timer.print_summary ();
-        pcout << "-- Total wallclock time elapsed including restarts:"
+        pcout << "-- Total wallclock time elapsed including restarts: "
               << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
               << 's' << std::endl;
       }
