@@ -1,4 +1,0 @@
-New: The defect correction and Newton solvers now also support
-the projected density method in the mass conservation equation. 
-<br>
-(Menno Fraters, 2022/06/27)

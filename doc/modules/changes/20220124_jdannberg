@@ -1,9 +1,0 @@
-Fixed: The simple version of the steinberger viscosity profile data
-file now correctly excludes both the top and bottom boundary layer.
-These need to be removed from the original profile in case the
-model uses a temperature-dependent viscosity based on the adiabatic
-profile (rather than the laterally averaged temperature). Otherwise
-the temperature effect will be included twice. The old version of
-the file had excluded the top, but not the bottom boundary layer.
-<br>
-(Juliane Dannberg, 2022/01/24)

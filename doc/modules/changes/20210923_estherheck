@@ -1,5 +1,0 @@
-Changed/New: The material model dynamic_friction has been integrated 
-into a new rheology model friction_models that can be used together 
-with the visco_plastic material model.
-<br>
-(Esther Heckenbach, 2021/09/23)

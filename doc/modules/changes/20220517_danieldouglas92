@@ -1,5 +1,0 @@
-New: Add an advection field method that
-advects a compositional field according
-to Darcy's Law.
-<br>
-(Daniel Douglas, 2022/05/17)

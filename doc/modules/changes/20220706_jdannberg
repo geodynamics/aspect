@@ -1,8 +1,0 @@
-Fixed: The prescribed temperature is now being used in the
-computation of material properties when assembling the
-Stokes equations. Before, the Stokes equations used the
-initial temperature rather than the prescribed temperature
-because it was only copied into the solution and not the
-current linearization point. 
-<br>
-(Juliane Dannberg, 2022/07/06)

@@ -1,8 +1,0 @@
-Fixed: The 'random uniform' particle generator plugin would not consider the
-volume of each cell correctly when generating a uniform particle density. This
-was irrelevant for box models, but would lead to too many particles in cells
-close to the bottom of curved models, and too few particles in cells close to
-the top of curved models. Box models with initial adaptive refinement were not
-affected by this bug. This is fixed now.
-<br>
-(Rene Gassmoeller, 2021/11/10)

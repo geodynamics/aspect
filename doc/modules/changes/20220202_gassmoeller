@@ -1,5 +1,0 @@
-Fixed: When using the full A block as Stokes preconditioner in a compressible
-model using a Newton solver scheme we added an unnecessary assembler, which
-would throw an assertion. This is fixed now by not adding the assembler.
-<br>
-(Rene Gassmoeller, 2022/02/02)

@@ -1,5 +1,0 @@
-Fixed: The 'gravity calculation' postprocessor has been made faster
-by distributing the work to compute theoretical values among the
-available processors, and due to other changes.
-<br>
-(Wolfgang Bangerth, 2022/05/20)
