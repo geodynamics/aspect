@@ -440,7 +440,17 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::resume_from_snapshot()
   {
-    // first check existence of the two restart files
+    // By definition, a checkpoint is past the first time step. As a consequence,
+    // the Simulator object will not need the initial conditions objects, and
+    // we can release the pointers to these objects that we have created in
+    // the constructor of this class. If some of the other plugins created there
+    // still need access to these initial conditions, they will have created
+    // their own shared pointers.
+    initial_temperature_manager.reset();
+    initial_composition_manager.reset();
+
+    // Then start with the actual deserialization.
+    // First check existence of the two restart files
     AssertThrow (Utilities::fexists(parameters.output_directory + "restart.mesh"),
                  ExcMessage ("You are trying to restart a previous computation, "
                              "but the restart file <"

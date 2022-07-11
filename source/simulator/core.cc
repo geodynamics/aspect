@@ -2024,6 +2024,14 @@ namespace aspect
               }
           }
 
+        // We're now definitely past the point where we need the initial
+        // conditions objects, and we can release the pointers to these objects
+        // that we have created in the constructor of this class. If some of the
+        // other plugins created there still need access to these initial
+        // conditions, they will have created their own shared pointers.
+        initial_temperature_manager.reset();
+        initial_composition_manager.reset();
+
         // Prepare the next time step:
         time_stepping_manager.update();
 
