@@ -64,7 +64,7 @@ Termination requested by criterion: end time
 | Solve composition reactions     |         2 |      3.01s |        14% |
 +---------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts:21s
+-- Total wallclock time elapsed including restarts: 21s
 -----------------------------------------------------------------------------
 -- For information on how to cite ASPECT, see:
 --   https://aspect.geodynamics.org/citing.html?ver=2.3.0-pre&melt=1&sha=21ea4ee94&src=code
