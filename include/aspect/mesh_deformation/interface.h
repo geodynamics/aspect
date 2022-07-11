@@ -411,9 +411,9 @@ namespace aspect
         void compute_mesh_displacements ();
 
         /**
-        * Solve vector Laplacian equation using GMG for internal mesh displacements and update
-        * the current displacement vector based on the solution.
-        */
+         * Solve vector Laplacian equation using GMG for internal mesh displacements and update
+         * the current displacement vector based on the solution.
+         */
         void compute_mesh_displacements_gmg ();
 
         /**
@@ -588,14 +588,14 @@ namespace aspect
         MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> level_displacements;
 
         /**
-        * Multigrid transfer operator for the displacements
-        */
+         * Multigrid transfer operator for the displacements
+         */
         MGTransferMatrixFree<dim, double> mg_transfer;
 
 
         /**
-        * Multigrid level constraints for the displacements
-        */
+         * Multigrid level constraints for the displacements
+         */
         MGConstrainedDoFs mg_constrained_dofs;
 
         friend class Simulator<dim>;

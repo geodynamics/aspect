@@ -656,13 +656,13 @@ namespace aspect
           std::string last_mesh_file_name;
 
           /**
-          * A list of pairs (time, pvtu_filename) that have so far been written
-          * and that we will pass to DataOutInterface::write_pvd_record to
-          * create a master file that can make the association between
-          * simulation time and corresponding file name (this is done because
-          * there is no way to store the simulation time inside the .pvtu or
-          * .vtu files).
-          */
+           * A list of pairs (time, pvtu_filename) that have so far been written
+           * and that we will pass to DataOutInterface::write_pvd_record to
+           * create a master file that can make the association between
+           * simulation time and corresponding file name (this is done because
+           * there is no way to store the simulation time inside the .pvtu or
+           * .vtu files).
+           */
           std::vector<std::pair<double,std::string>> times_and_pvtu_names;
 
           /**

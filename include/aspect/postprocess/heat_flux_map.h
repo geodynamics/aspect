@@ -76,7 +76,7 @@ namespace aspect
 
     /**
      * A postprocessor that computes the point-wise heat flux density through the boundaries.
-
+     *
      * @ingroup Postprocessing
      */
     template <int dim>

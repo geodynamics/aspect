@@ -175,9 +175,9 @@ namespace aspect
     }
 
     /**
-    * A namespace whose enum members are used in querying which material
-    * properties should be computed.
-    */
+     * A namespace whose enum members are used in querying which material
+     * properties should be computed.
+     */
     namespace MaterialProperties
     {
       /**
@@ -257,7 +257,7 @@ namespace aspect
        * @param n_comp The number of vector quantities (in the order in which
        * the Introspection class reports them) for which input will be
        * provided.
-      */
+       */
       MaterialModelInputs(const unsigned int n_points,
                           const unsigned int n_comp);
 
@@ -521,9 +521,9 @@ namespace aspect
       MaterialModelOutputs &operator= (MaterialModelOutputs &&)  noexcept = default;
 
       /**
-      * Function that returns the number of points at which
-      * the material model is to be evaluated.
-      */
+       * Function that returns the number of points at which
+       * the material model is to be evaluated.
+       */
       unsigned int n_evaluation_points() const;
 
       /**
@@ -1183,15 +1183,15 @@ namespace aspect
 
 
     /**
-    * Additional output fields for the enthalpy change upon melting or
-    * freezing to be added to the MaterialModel::MaterialModelOutputs
-    * structure and filled in the MaterialModel::Interface::evaluate()
-    * function.
-    * These outputs are needed in heating models that compute the latent
-    * heat of melting/freezing based on the material properties in the
-    * material models (which is required for thermodynamically consistent
-    * models).
-    */
+     * Additional output fields for the enthalpy change upon melting or
+     * freezing to be added to the MaterialModel::MaterialModelOutputs
+     * structure and filled in the MaterialModel::Interface::evaluate()
+     * function.
+     * These outputs are needed in heating models that compute the latent
+     * heat of melting/freezing based on the material properties in the
+     * material models (which is required for thermodynamically consistent
+     * models).
+     */
     template <int dim>
     class EnthalpyOutputs : public AdditionalMaterialOutputs<dim>
     {
@@ -1342,7 +1342,7 @@ namespace aspect
          * If this material model can produce additional named outputs
          * that are derived from NamedAdditionalOutputs, create them in here.
          * By default, this does nothing.
-          */
+         */
         virtual
         void
         create_additional_named_outputs (MaterialModelOutputs &outputs) const;

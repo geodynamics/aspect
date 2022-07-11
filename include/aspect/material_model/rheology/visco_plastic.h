@@ -78,8 +78,8 @@ namespace aspect
     };
 
     /**
-       * A data structure with the output of calculate_isostrain_viscosities.
-       */
+     * A data structure with the output of calculate_isostrain_viscosities.
+     */
     struct IsostrainViscosities
     {
       /**
