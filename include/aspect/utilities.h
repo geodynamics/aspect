@@ -328,19 +328,19 @@ namespace aspect
     orthogonal_vectors (const Tensor<1,dim> &v);
 
     /**
-      * A function that returns the corresponding euler angles for a
-      * rotation described by rotation axis and angle.
-      */
+     * A function that returns the corresponding euler angles for a
+     * rotation described by rotation axis and angle.
+     */
     Tensor<2,3>
     rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
                                const double rotation_angle);
 
     /**
-      * Compute the 3d rotation matrix that describes the rotation of a
-      * plane defined by the two points @p point_one and @p point_two
-      * onto the x-y-plane in a way that the vector from the origin to
-      * point_one points into the (0,1,0) direction after the rotation.
-      */
+     * Compute the 3d rotation matrix that describes the rotation of a
+     * plane defined by the two points @p point_one and @p point_two
+     * onto the x-y-plane in a way that the vector from the origin to
+     * point_one points into the (0,1,0) direction after the rotation.
+     */
     Tensor<2,3>
     compute_rotation_matrix_for_slice (const Tensor<1,3> &point_one,
                                        const Tensor<1,3> &point_two);
@@ -870,12 +870,12 @@ namespace aspect
                               const std::string &output_filename = "");
 
     /**
-    * Conversion object where one can provide a function that returns
-    * a tensor for the velocity at a given point and it returns something
-    * that matches the dealii::Function interface with a number of output
-    * components equal to the number of components of the finite element
-    * in use.
-    */
+     * Conversion object where one can provide a function that returns
+     * a tensor for the velocity at a given point and it returns something
+     * that matches the dealii::Function interface with a number of output
+     * components equal to the number of components of the finite element
+     * in use.
+     */
     template <int dim>
     class VectorFunctionFromVelocityFunctionObject : public Function<dim>
     {

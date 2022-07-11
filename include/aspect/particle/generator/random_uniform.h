@@ -56,8 +56,8 @@ namespace aspect
           using Generator::Interface<dim>::generate_particles;
 
           /**
-          * Declare the parameters this class takes through input files.
-          */
+           * Declare the parameters this class takes through input files.
+           */
           static
           void
           declare_parameters (ParameterHandler &prm);

@@ -66,17 +66,17 @@ namespace aspect
           bool is_compressible () const;
 
           /**
-          * Function to compute the thermodynamic properties in @p out given the
-          * inputs in @p in over all evaluation points.
-          * This function also fills the mass_fraction and volume_fraction vectors.
-          */
+           * Function to compute the thermodynamic properties in @p out given the
+           * inputs in @p in over all evaluation points.
+           * This function also fills the mass_fraction and volume_fraction vectors.
+           */
           void
           evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                    std::vector<MaterialModel::EquationOfStateOutputs<dim>> &eos_outputs) const;
 
           /**
-          * Function to fill the seismic velocity and phase volume additional outputs
-          */
+           * Function to fill the seismic velocity and phase volume additional outputs
+           */
           void
           fill_additional_outputs(const MaterialModel::MaterialModelInputs<dim> &in,
                                   const std::vector<std::vector<double>> &volume_fractions,
@@ -137,16 +137,16 @@ namespace aspect
           std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup>> material_lookup;
 
           /**
-          * Vector of strings containing the names of the unique phases in all the material lookups.
-          */
+           * Vector of strings containing the names of the unique phases in all the material lookups.
+           */
           std::vector<std::string> unique_phase_names;
 
           /**
-          * Vector of vector of unsigned ints which constitutes mappings
-          * between lookup phase name vectors and unique_phase_names.
-          * The element unique_phase_indices[i][j] contains the
-          * index of phase name j from lookup i as it is found in unique_phase_names.
-          */
+           * Vector of vector of unsigned ints which constitutes mappings
+           * between lookup phase name vectors and unique_phase_names.
+           * The element unique_phase_indices[i][j] contains the
+           * index of phase name j from lookup i as it is found in unique_phase_names.
+           */
           std::vector<std::vector<unsigned int>> unique_phase_indices;
 
           /**
@@ -201,30 +201,30 @@ namespace aspect
                                         SeismicAdditionalOutputs<dim> *seismic_out) const;
 
           /**
-          * This function uses the MaterialModelInputs &in to fill the output_values
-          * of the phase_volume_fractions_out output object with the volume
-          * fractions of each of the unique phases at each of the evaluation points.
-          * These volume fractions are obtained from the Perple_X- or HeFESTo-derived
-          * pressure-temperature lookup tables.
-          * The filled output_values object is a vector of vector<double>;
-          * the outer vector is expected to have a size that equals the number
-          * of unique phases, the inner vector is expected to have a size that
-          * equals the number of evaluation points.
-          */
+           * This function uses the MaterialModelInputs &in to fill the output_values
+           * of the phase_volume_fractions_out output object with the volume
+           * fractions of each of the unique phases at each of the evaluation points.
+           * These volume fractions are obtained from the Perple_X- or HeFESTo-derived
+           * pressure-temperature lookup tables.
+           * The filled output_values object is a vector of vector<double>;
+           * the outer vector is expected to have a size that equals the number
+           * of unique phases, the inner vector is expected to have a size that
+           * equals the number of evaluation points.
+           */
           void fill_phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                                             const std::vector<std::vector<double>> &volume_fractions,
                                             NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out) const;
 
           /**
-          * This function uses the MaterialModelInputs &in to fill the output_values
-          * of the dominant_phases_out output object with the index of the
-          * dominant phase at each of the evaluation points.
-          * The phases are obtained from the Perple_X- or HeFESTo-derived
-          * pressure-temperature lookup tables.
-          * The filled output_values object is a vector of vector<unsigned int>;
-          * the outer vector is expected to have a size of 1, the inner vector is
-          * expected to have a size that equals the number of evaluation points.
-          */
+           * This function uses the MaterialModelInputs &in to fill the output_values
+           * of the dominant_phases_out output object with the index of the
+           * dominant phase at each of the evaluation points.
+           * The phases are obtained from the Perple_X- or HeFESTo-derived
+           * pressure-temperature lookup tables.
+           * The filled output_values object is a vector of vector<unsigned int>;
+           * the outer vector is expected to have a size of 1, the inner vector is
+           * expected to have a size that equals the number of evaluation points.
+           */
           void fill_dominant_phases (const MaterialModel::MaterialModelInputs<dim> &in,
                                      const std::vector<std::vector<double>> &volume_fractions,
                                      PhaseOutputs<dim> &dominant_phases_out) const;

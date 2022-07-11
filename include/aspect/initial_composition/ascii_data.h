@@ -106,10 +106,10 @@ namespace aspect
         Tensor<1,3> second_point_on_slice;
 
         /**
-          * The matrix that describes the rotation by which a 2D model
-          * needs to be transformed to a plane that contains the origin and
-          * the two prescribed points given in the input.
-          */
+         * The matrix that describes the rotation by which a 2D model
+         * needs to be transformed to a plane that contains the origin and
+         * the two prescribed points given in the input.
+         */
         Tensor<2,3> rotation_matrix;
     };
   }

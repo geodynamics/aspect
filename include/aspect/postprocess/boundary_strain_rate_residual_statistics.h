@@ -33,12 +33,12 @@ namespace aspect
   {
 
     /**
-    * A postprocessor that computes some statistics about the residual of the second invariant of the strain
-    * rate at the top surface. The residual is calculated as the difference between the second invariant of
-    * the modeled strain rate and a data file containing the second invariant of strain rate observations.
-    *
-    * @ingroup Postprocessing
-    */
+     * A postprocessor that computes some statistics about the residual of the second invariant of the strain
+     * rate at the top surface. The residual is calculated as the difference between the second invariant of
+     * the modeled strain rate and a data file containing the second invariant of strain rate observations.
+     *
+     * @ingroup Postprocessing
+     */
 
     template <int dim>
     class BoundaryStrainRateResidualStatistics : public Interface<dim>, public ::aspect::SimulatorAccess<dim>

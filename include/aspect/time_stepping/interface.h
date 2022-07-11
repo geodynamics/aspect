@@ -203,9 +203,9 @@ namespace aspect
         bool should_repeat_time_step() const;
 
         /**
-          * If true, execute a mesh refinement step now (potentially before repeating
-          * the current time step).
-          */
+         * If true, execute a mesh refinement step now (potentially before repeating
+         * the current time step).
+         */
         bool should_refine_mesh() const;
 
         /**

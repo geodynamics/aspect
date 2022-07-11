@@ -99,7 +99,7 @@ namespace aspect
    * length of the output vector. Each function averages a specific quantity
    * (as specified by their name), and that quantity is averaged laterally
    * for each depth slice.
-
+   *
    * Plugins may access the LateralAveraging plugin through the SimulatorAccess
    * function get_lateral_averaging(), and then query that for the desired
    * averaged quantity.
