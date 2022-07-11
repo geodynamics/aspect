@@ -12,7 +12,7 @@
  * Stokes equations. Before, the Stokes equations used the
  * initial temperature rather than the prescribed temperature
  * because it was only copied into the solution and not the
- * current linearization point. 
+ * current linearization point.
  * <br>
  * (Juliane Dannberg, 2022/07/06)
  *
@@ -22,7 +22,7 @@
  * (Rene Gassmoeller, 2022/07/06)
  *
  * <li> New: The defect correction and Newton solvers now also support
- * the projected density method in the mass conservation equation. 
+ * the projected density method in the mass conservation equation.
  * <br>
  * (Menno Fraters, 2022/06/27)
  *
@@ -43,7 +43,7 @@
  * <li> New: The DislocationViscosityOutputs now also contain the
  * diffusion viscosity in addition to the dislocation viscosity
  * and the boundary area change work fraction. This is useful
- * to compute the ratio of diffusion and dislocation creep in 
+ * to compute the ratio of diffusion and dislocation creep in
  * cases where the viscosity is averaged cell-wise, because in
  * these cases this ratio can not be recovered accurately from
  * just the dislocation and effective viscosity.
@@ -61,16 +61,16 @@
  * (Daniel Douglas, 2023/05/22)
  *
  * <li> New: Add a benchmark for load induced flexure with options
- * for specifying sediment and rock material infilling the 
+ * for specifying sediment and rock material infilling the
  * flexural moat.
- * 
+ *
  * <br>
  * (Daniel Douglas, 2022/05/22)
  *
- * <li> New: Add a test case for fixing the temperature in a user 
- * specified compositional field to the temperature that the 
+ * <li> New: Add a test case for fixing the temperature in a user
+ * specified compositional field to the temperature that the
  * field was initialized with.
- * 
+ *
  * <br>
  * (Daniel Douglas, 2022/05/21)
  *
@@ -81,7 +81,7 @@
  * (Wolfgang Bangerth, 2022/05/20)
  *
  * <li> Changed: The reference viscosity function is no longer part
- * of the material model interface (because we do not require 
+ * of the material model interface (because we do not require
  * it anymore for the pressure scaling or anywhere else). The
  * one material model affected by this is the depth-dependent
  * model, which now has its own reference viscosity parameter
@@ -135,7 +135,7 @@
  * (John Naliboff, 2022/05/05)
  *
  * <li> New: There is now a cookbook of kinematically driven
- * oceanic subduction in 2D with isoviscous materials and 
+ * oceanic subduction in 2D with isoviscous materials and
  * without temperature effects. The cookbook model setup
  * is based on Quinquis (2014).
  * <br>
@@ -144,7 +144,7 @@
  * <li> New: There is now a new advection method for the temperature
  * called 'prescribed field with diffusion', which works in the
  * same way as the corresponding advection field method for
- * compositional fields. 
+ * compositional fields.
  * <br>
  * (Juliane Dannberg, 2022/03/28)
  *
@@ -170,7 +170,7 @@
  * <br>
  * (Anne Glerum, 2022/03/17)
  *
- * <li> New: The mesh displacements are computed by the 
+ * <li> New: The mesh displacements are computed by the
  * GMG solver when the GMG Stokes solver is used.
  * <br>
  * (Timo Heister, Jiaqi Zhang, 2022/03/01)
@@ -198,12 +198,12 @@
  * read in 3d ascii datasets into a 2d model and slice the dataset
  * in a user controlled plane. This
  * allows it to make high-resolution 2d models of problems that use
- * observational data (such as seismic tomography models). 
+ * observational data (such as seismic tomography models).
  * <br>
  * (Juliane Dannberg, Rene Gassmoeller, 2022/02/07)
  *
- * <li> Fixed: The GMG solver could fail in problems with large viscosity variations 
- * and Q1 viscosity averaging, because viscosities would become negative 
+ * <li> Fixed: The GMG solver could fail in problems with large viscosity variations
+ * and Q1 viscosity averaging, because viscosities would become negative
  * on coarser GMG levels. This is now fixed.
  * <br>
  * (Timo Heister, Jiaqi Zhang, 2022/02/05)
@@ -233,9 +233,9 @@
  * <br>
  * (Juliane Dannberg, 2022/01/28)
  *
- * <li> Fixed: The compressible terms for the DC Stokes and Newton solvers 
+ * <li> Fixed: The compressible terms for the DC Stokes and Newton solvers
  * where not correctly assembled. This is fixed now, and tests comparing
- * the Stokes and DC Stokes solver have been added. 
+ * the Stokes and DC Stokes solver have been added.
  * <br>
  * (Menno Fraters, 2022/01/26)
  *
@@ -264,13 +264,13 @@
  * <br>
  * (Juliane Dannberg, 2022/01/21)
  *
- * <li> New: The matrix-free GMG Stokes preconditioner is now 
+ * <li> New: The matrix-free GMG Stokes preconditioner is now
  * implemented for the free surface stabilization.
  * <br>
  * (Timo Heister, John Naliboff, Jiaqi Zhang, 2022/01/11)
  *
  * <li> Fixed: Boundary conditions are no longer applied to the projected
- * density field.   
+ * density field.
  * <br>
  * (Juliane Dannberg, 2022/01/07)
  *
@@ -325,7 +325,7 @@
  * (Elodie Kendall and Rene Gassmoeller, 2021/10/29)
  *
  * <li> New: There is now a postprocessor that computes the
- * second invariant of the deviatoric stress tensor. 
+ * second invariant of the deviatoric stress tensor.
  * <br>
  * (Anne Glerum, 2021/10/22)
  *
@@ -335,8 +335,8 @@
  * <br>
  * (Anne Glerum, 2021/09/27)
  *
- * <li> Changed/New: The material model dynamic_friction has been integrated 
- * into a new rheology model friction_models that can be used together 
+ * <li> Changed/New: The material model dynamic_friction has been integrated
+ * into a new rheology model friction_models that can be used together
  * with the visco_plastic material model.
  * <br>
  * (Esther Heckenbach, 2021/09/23)
@@ -345,7 +345,7 @@
  * <br>
  * (Elodie Kendall, Timo Heister and Rene Gassmoeller, 2021/09/20)
  *
- * <li> New: ASPECT now has a cookbook which uses the gravity postprocessor to 
+ * <li> New: ASPECT now has a cookbook which uses the gravity postprocessor to
  * compute gravity generated by S40RTS-based mantle density variations.
  * <br>
  * (Cedric Thieulot, 2021/08/31)
@@ -393,23 +393,23 @@
  * <br>
  * (Haoyuan Li and Magali Billen, 2021/07/16)
  *
- * <li> New: The matrix-free GMG Stokes preconditioner is now 
+ * <li> New: The matrix-free GMG Stokes preconditioner is now
  * implemented for the Newton solver.
  * <br>
  * (Timo Heister, Menno Fraters, Jiaqi Zhang, 2021/07/15)
  *
- * <li> New: There is now a cookbook that reproduces convection models 
- * with a phase function from Christensen and Yuen, 1985. 
+ * <li> New: There is now a cookbook that reproduces convection models
+ * with a phase function from Christensen and Yuen, 1985.
  * <br>
  * (Juliane Dannberg, 2021/07/14)
  *
- * <li> Changed: The latent heat material model is now consistent with the 
- * density in the phase function formulation from Christensen and Yuen, 1985. 
+ * <li> Changed: The latent heat material model is now consistent with the
+ * density in the phase function formulation from Christensen and Yuen, 1985.
  * <br>
  * (Juliane Dannberg, 2021/07/14)
  *
- * <li> New: There is now a rising velocity output variable in the depth 
- * average postprocessor. 
+ * <li> New: There is now a rising velocity output variable in the depth
+ * average postprocessor.
  * <br>
  * (Juliane Dannberg, 2021/07/13)
  *
@@ -422,8 +422,8 @@
  * <br>
  * (Bob Myhill, 2021/07/13)
  *
- * <li> Fixed: The sinking velocity depth average postprocessor now computes 
- * the actual sinking velocity (and not the rising velocity).  
+ * <li> Fixed: The sinking velocity depth average postprocessor now computes
+ * the actual sinking velocity (and not the rising velocity).
  * <br>
  * (Juliane Dannberg, 2021/07/13)
  *
@@ -448,15 +448,15 @@
  * (Sibiao Liu, 2021/07/09)
  *
  * <li> New: There is now a postprocessor that computes the maximum depth
- * of each compositional field at each timestep. 
+ * of each compositional field at each timestep.
  * <br>
  * (Anne Glerum, 2021/07/09)
  *
- * <li> New: There is now a geometry model plugin "chunk with lithosphere boundary indicators" 
+ * <li> New: There is now a geometry model plugin "chunk with lithosphere boundary indicators"
  * that allows for two different types of boundary conditions on the side boundaries
  * of a chunk domain. On each side boundary, two boundary indicators are available
  * to set these different boundary conditions. A use-case can be prescribed plate motions
- * on the upper part of the domain and an open boundary underneath the plates. 
+ * on the upper part of the domain and an open boundary underneath the plates.
  * <br>
  * (Anne Glerum, 2021/07/09)
  *
@@ -476,7 +476,7 @@
  * <li> New: There is now a ‘static’ option for the temperature field that is set-up similarly to the ‘static’ option for compositional fields. This allows the temperature field to be static while advection is on so you can still advect and build up elastic stresses.
  * <br>
  * (Rebecca Fildes, Magali Billen, 2021/07/08)
- * 
+ *
  *
  * <li> Changed: When using the constant temperature boundary plugin, ASPECT
  * now checks that the Fixed temperature boundary indicators match the
@@ -500,7 +500,7 @@
  * (Bob Myhill, 2021/07/08)
  *
  * <li> New: There is now a termination criterion based on the steady state
- * heat flux. 
+ * heat flux.
  * <br>
  * (Juliane Dannberg, 2021/07/07)
  *
@@ -524,21 +524,21 @@
  * (Rene Gassmoeller, Juliane Dannberg, 2021/06/25)
  *
  * <li> New: Added a cutoff stress to Rheology::PeierlsCreep.
- * 
- * In parameterisations of the Peierls creep flow law where the 
- * power law stress exponent is equal to zero, the strain rate 
- * does not approach zero as the stress drops to zero. This is 
- * a problem, because the iterative solve for the equilibrium 
- * stress may yield a negative stress at low strain rates 
+ *
+ * In parameterisations of the Peierls creep flow law where the
+ * power law stress exponent is equal to zero, the strain rate
+ * does not approach zero as the stress drops to zero. This is
+ * a problem, because the iterative solve for the equilibrium
+ * stress may yield a negative stress at low strain rates
  * (which results in a negative viscosity).
- * 
- * The Peierls creep rheology module now includes a parameter 
- * "Cutoff stresses for Peierls creep". At stresses below the 
- * cutoff, the strain rate is modelled as a quadratic function 
- * of the stress (edot_ii = astress^2 + bstress). This effectively 
- * means that Peierls creep transitions into power law creep and 
+ *
+ * The Peierls creep rheology module now includes a parameter
+ * "Cutoff stresses for Peierls creep". At stresses below the
+ * cutoff, the strain rate is modelled as a quadratic function
+ * of the stress (edot_ii = astress^2 + bstress). This effectively
+ * means that Peierls creep transitions into power law creep and
  * then a linear rheology as stress decreases below the cutoff.
- * 
+ *
  * <br>
  * (Daniel Douglas, 2021/03/23)
  *
