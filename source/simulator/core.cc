@@ -310,13 +310,21 @@ namespace aspect
     gravity_model->parse_parameters (prm);
     gravity_model->initialize ();
 
-    // Create the initial condition plugins
-    initial_temperature_manager.initialize_simulator(*this);
-    initial_temperature_manager.parse_parameters (prm);
+    // Create the initial temperature and condition plugins, and then
+    // initialize them. Some of these objects store std::shared_ptrs
+    // to the initial temperature and composition objects, so it is
+    // important that we have the pointers of the current class
+    // already set by the time we call the initialize() functions.
+    initial_temperature_manager
+      = std::make_shared<InitialTemperature::Manager<dim>>();
+    initial_composition_manager
+      = std::make_shared<InitialComposition::Manager<dim>>();
 
-    // Create the initial composition plugins
-    initial_composition_manager.initialize_simulator(*this);
-    initial_composition_manager.parse_parameters (prm);
+    initial_temperature_manager->initialize_simulator(*this);
+    initial_temperature_manager->parse_parameters (prm);
+
+    initial_composition_manager->initialize_simulator(*this);
+    initial_composition_manager->parse_parameters (prm);
 
     // Create a boundary temperature manager
     boundary_temperature_manager.initialize_simulator (*this);

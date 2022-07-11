@@ -579,12 +579,45 @@ namespace aspect
   }
 
 
+
+  template <int dim>
+  std::shared_ptr<const InitialTemperature::Manager<dim>>
+  SimulatorAccess<dim>::get_initial_temperature_manager_pointer () const
+  {
+    Assert (simulator->initial_temperature_manager,
+            ExcMessage ("You are trying to access the initial temperature manager "
+                        "object, but the Simulator object is no longer keeping "
+                        "track of it because the initial time has passed. If "
+                        "you need to access to this object after the first time "
+                        "step, you need to copy the object returned by "
+                        "this function before or during the first time step "
+                        "into a std::shared_ptr that lives long enough to "
+                        "extend the lifetime of the object pointed to "
+                        "beyond the timeframe that the Simulator object "
+                        "keeps track of it."));
+    return simulator->initial_temperature_manager;
+  }
+
+
+
   template <int dim>
   const InitialTemperature::Manager<dim> &
   SimulatorAccess<dim>::get_initial_temperature_manager () const
   {
-    return simulator->initial_temperature_manager;
+    Assert (simulator->initial_temperature_manager,
+            ExcMessage ("You are trying to access the initial temperature manager "
+                        "object, but the Simulator object is no longer keeping "
+                        "track of it because the initial time has passed. If "
+                        "you need to access to this object after the first time "
+                        "step, you need to copy the object returned by "
+                        "this function before or during the first time step "
+                        "into a std::shared_ptr that lives long enough to "
+                        "extend the lifetime of the object pointed to "
+                        "beyond the timeframe that the Simulator object "
+                        "keeps track of it."));
+    return *simulator->initial_temperature_manager;
   }
+
 
 
   template <int dim>
@@ -597,12 +630,45 @@ namespace aspect
   }
 
 
+
+  template <int dim>
+  std::shared_ptr<const InitialComposition::Manager<dim>>
+  SimulatorAccess<dim>::get_initial_composition_manager_pointer () const
+  {
+    Assert (simulator->initial_composition_manager,
+            ExcMessage ("You are trying to access the initial composition manager "
+                        "object, but the Simulator object is no longer keeping "
+                        "track of it because the initial time has passed. If "
+                        "you need to access to this object after the first time "
+                        "step, you need to copy the object returned by "
+                        "this function before or during the first time step "
+                        "into a std::shared_ptr that lives long enough to "
+                        "extend the lifetime of the object pointed to "
+                        "beyond the timeframe that the Simulator object "
+                        "keeps track of it."));
+    return simulator->initial_composition_manager;
+  }
+
+
+
   template <int dim>
   const InitialComposition::Manager<dim> &
   SimulatorAccess<dim>::get_initial_composition_manager () const
   {
-    return simulator->initial_composition_manager;
+    Assert (simulator->initial_composition_manager,
+            ExcMessage ("You are trying to access the initial composition manager "
+                        "object, but the Simulator object is no longer keeping "
+                        "track of it because the initial time has passed. If "
+                        "you need to access to this object after the first time "
+                        "step, you need to copy the object returned by "
+                        "this function before or during the first time step "
+                        "into a std::shared_ptr that lives long enough to "
+                        "extend the lifetime of the object pointed to "
+                        "beyond the timeframe that the Simulator object "
+                        "keeps track of it."));
+    return *simulator->initial_composition_manager;
   }
+
 
 
   template <int dim>
