@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 - 2019 by Matthias Maier
+# Copyright (C) 2013 - 2021 by Matthias Maier
 #
 # This file is part of ASPECT.
 #
