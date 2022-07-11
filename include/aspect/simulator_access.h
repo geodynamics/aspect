@@ -886,7 +886,7 @@ namespace aspect
       get_particle_world();
 
       /**
-       *  Return true if using the block GMG Stokes solver.
+       * Return true if using the block GMG Stokes solver.
        */
       bool is_stokes_matrix_free();
 

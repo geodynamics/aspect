@@ -69,8 +69,8 @@ namespace aspect
     {
       public:
         /**
-          * Initialization function. Computes endmember properties.
-          */
+         * Initialization function. Computes endmember properties.
+         */
         virtual
         void
         initialize ();
@@ -334,12 +334,12 @@ namespace aspect
 
 
         /**
-          * Compute the equilibrium melt fraction for a given @p temperature, @p pressure,
-          * and @p bulk_composition and the corresponding composition of melt and solid. The
-          * melting model is based on Phipps Morgan, Jason. "Thermodynamics of pressure release
-          * melting of a veined plum pudding mantle." Geochemistry, Geophysics, Geosystems 2.4
-          * (2001), and additionally includes volatiles.
-          */
+         * Compute the equilibrium melt fraction for a given @p temperature, @p pressure,
+         * and @p bulk_composition and the corresponding composition of melt and solid. The
+         * melting model is based on Phipps Morgan, Jason. "Thermodynamics of pressure release
+         * melting of a veined plum pudding mantle." Geochemistry, Geophysics, Geosystems 2.4
+         * (2001), and additionally includes volatiles.
+         */
         virtual
         double
         melt_fraction (const double temperature,

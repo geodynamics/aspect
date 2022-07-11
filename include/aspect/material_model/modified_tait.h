@@ -66,7 +66,7 @@ namespace aspect
          * context, compressibility means whether we should solve the continuity
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
-        * This model is compressible.
+         * This model is compressible.
          */
         bool is_compressible () const override;
         /**

@@ -446,7 +446,8 @@ namespace aspect
            */
           Vector<double>              local_rhs;
 
-          /** Denotes which face matrices have actually been assembled in the DG field
+          /**
+           * Denotes which face matrices have actually been assembled in the DG field
            * assembly. Entries for matrices not used (for example, those corresponding
            * to non-existent subfaces; or faces being assembled by the neighboring cell)
            * are set to false.

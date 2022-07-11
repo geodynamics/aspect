@@ -50,7 +50,7 @@ namespace aspect
      * postprocessor.
      * The average- minimum- and maximum gravity acceleration and potential are written
      * into the statistics file.
-
+     *
      * @ingroup Postprocessing
      */
     template <int dim>

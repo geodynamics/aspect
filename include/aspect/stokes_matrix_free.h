@@ -410,9 +410,9 @@ namespace aspect
   }
 
   /**
-    * Base class for the matrix free GMG solver for the Stokes system. The
-    * actual implementation is found inside StokesMatrixFreeHandlerImplementation below.
-    */
+   * Base class for the matrix free GMG solver for the Stokes system. The
+   * actual implementation is found inside StokesMatrixFreeHandlerImplementation below.
+   */
   template<int dim>
   class StokesMatrixFreeHandler
   {
