@@ -1,11 +1,7 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
-Loading shared library </home/jiaqi2/aspect/aspect/benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/libsimple_nonlinear.so>
+Loading shared library <./libnonlinear_channel_flow_tractions_dc_picard_Stokes_GMG.so>
 
 Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 4,096 (on 7 levels)
 Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
 
@@ -23,39 +19,34 @@ Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
       Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.0116343, norm of the rhs: 1.08226e+10, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 2.13934e-08, norm of the rhs: 19901, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 6.35873e-09, norm of the rhs: 5915.14, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 5.20117e-09, norm of the rhs: 4838.33, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 4.96526e-09, norm of the rhs: 4618.88, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 2.10894e-08, norm of the rhs: 19618.2, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 4.83735e-09, norm of the rhs: 4499.89, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 5.83458e-09, norm of the rhs: 5427.55, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 4.7759e-09, norm of the rhs: 4442.72, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 4.80134e-09, norm of the rhs: 4466.39, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 4.89804e-09, norm of the rhs: 4556.35, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 4.62745e-09, norm of the rhs: 4304.63, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 4.47221e-09, norm of the rhs: 4160.22, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 4.91535e-09, norm of the rhs: 4572.44, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 4.65442e-09, norm of the rhs: 4329.71, newton_derivative_scaling_factor: 0
 
 
    Postprocessing:
      RMS, max velocity:                  1.14e-07 m/s, 1.56e-07 m/s
-     Pressure min/avg/max:               -2.877e-06 Pa, 5e+08 Pa, 1e+09 Pa
+     Pressure min/avg/max:               -1.591e-06 Pa, 5e+08 Pa, 1e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -3.473 kg/s, 3.473 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_tractions_dc_picard_Stokes_GMG/solution/solution-00000
 
 Termination requested by criterion: end time
 
 
-+-----------------------------------------------+------------+------------+
-+-----------------------------------+-----------+------------+------------+
-+-----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
