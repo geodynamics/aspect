@@ -2,7 +2,6 @@
 # benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/input_t.prm
 
 include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/input_t.prm
-set Additional shared libraries = $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/libsimple_nonlinear.so
 
 set Nonlinear solver scheme = single Advection, iterated defect correction Stokes
 

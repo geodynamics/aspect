@@ -1,8 +1,6 @@
 # Test GMG  iterated defect correction Stokes solver based on
 # benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/input.prm
 
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/tosi_et_al_2015_gcubed/libtosi_benchmark.so
-
 include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/input.prm
 
 set Nonlinear solver scheme = single Advection, iterated defect correction Stokes
