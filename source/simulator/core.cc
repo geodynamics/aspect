@@ -418,7 +418,7 @@ namespace aspect
 
     if (postprocess_manager.template has_matching_postprocessor<Postprocess::Particles<dim>>())
       {
-        particle_world.reset(new Particle::World<dim>());
+        particle_world = std::make_unique<Particle::World<dim>>();
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(particle_world.get()))
           sim->initialize_simulator (*this);
 
@@ -460,15 +460,15 @@ namespace aspect
                              "the use of a Cartesian geometry model."));
 
     for (const auto &p : parameters.prescribed_traction_boundary_indicators)
+      boundary_traction[p.first]
+        = BoundaryTraction::create_boundary_traction<dim> (p.second.second);
+
+    for (auto &bv : boundary_traction)
       {
-        BoundaryTraction::Interface<dim> *bv
-          = BoundaryTraction::create_boundary_traction<dim>
-            (p.second.second);
-        boundary_traction[p.first].reset (bv);
-        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(bv))
+        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(bv.second.get()))
           sim->initialize_simulator(*this);
-        bv->parse_parameters (prm);
-        bv->initialize ();
+        bv.second->parse_parameters (prm);
+        bv.second->initialize ();
       }
 
     std::set<types::boundary_id> open_velocity_boundary_indicators
@@ -549,7 +549,12 @@ namespace aspect
   template <int dim>
   Simulator<dim>::~Simulator ()
   {
-    particle_world.reset(nullptr);
+    // The particle_world object is declared before the triangulation, and so
+    // is destroyed after the latter. But it stores a pointer to the
+    // triangulation and uses it during destruction. This results in
+    // trouble. So destroy it first.
+    particle_world.reset();
+
     // wait if there is a thread that's still writing the statistics
     // object (set from the output_statistics() function)
     if (output_statistics_thread.joinable())

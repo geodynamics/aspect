@@ -225,7 +225,7 @@ namespace aspect
         register_termination_criterion (const std::string &name,
                                         const std::string &description,
                                         void (*declare_parameters_function) (ParameterHandler &),
-                                        Interface<dim> *(*factory_function) ());
+                                        std::unique_ptr<Interface<dim>>(*factory_function) ());
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the

@@ -1384,7 +1384,7 @@ namespace aspect
       // their own parameters
       for (const auto &viz_name : viz_names)
         {
-          VisualizationPostprocessors::Interface<dim> *
+          std::unique_ptr<VisualizationPostprocessors::Interface<dim>>
           viz_postprocessor = std::get<dim>(registered_visualization_plugins)
                               .create_plugin (viz_name,
                                               "Visualization plugins");
@@ -1392,20 +1392,19 @@ namespace aspect
           // make sure that the postprocessor is indeed of type
           // dealii::DataPostprocessor or of type
           // VisualizationPostprocessors::CellDataVectorCreator
-          Assert ((dynamic_cast<DataPostprocessor<dim>*>(viz_postprocessor)
+          Assert ((dynamic_cast<DataPostprocessor<dim>*>(viz_postprocessor.get())
                    != nullptr)
                   ||
-                  (dynamic_cast<VisualizationPostprocessors::CellDataVectorCreator<dim>*>(viz_postprocessor)
+                  (dynamic_cast<VisualizationPostprocessors::CellDataVectorCreator<dim>*>(viz_postprocessor.get())
                    != nullptr)
                   ,
                   ExcMessage ("Can't convert visualization postprocessor to type "
                               "dealii::DataPostprocessor or "
                               "VisualizationPostprocessors::CellDataVectorCreator!?"));
 
-          postprocessors.push_back (std::unique_ptr<VisualizationPostprocessors::Interface<dim>>
-                                    (viz_postprocessor));
+          postprocessors.emplace_back (std::move(viz_postprocessor));
 
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(postprocessors.back().get()))
             sim->initialize_simulator (this->get_simulator());
 
           postprocessors.back()->parse_parameters (prm);
@@ -1494,7 +1493,7 @@ namespace aspect
     register_visualization_postprocessor (const std::string &name,
                                           const std::string &description,
                                           void (*declare_parameters_function) (ParameterHandler &),
-                                          VisualizationPostprocessors::Interface<dim> *(*factory_function) ())
+                                          std::unique_ptr<VisualizationPostprocessors::Interface<dim>> (*factory_function) ())
     {
       std::get<dim>(registered_visualization_plugins).register_plugin (name,
                                                                        description,

@@ -400,7 +400,7 @@ namespace aspect
         register_visualization_postprocessor (const std::string &name,
                                               const std::string &description,
                                               void (*declare_parameters_function) (ParameterHandler &),
-                                              VisualizationPostprocessors::Interface<dim> *(*factory_function) ());
+                                              std::unique_ptr<VisualizationPostprocessors::Interface<dim>>(*factory_function) ());
 
         /**
          * A function that is used to indicate to the postprocessor manager which

@@ -112,7 +112,7 @@ namespace aspect
     register_boundary_traction (const std::string &name,
                                 const std::string &description,
                                 void (*declare_parameters_function) (ParameterHandler &),
-                                Interface<dim> *(*factory_function) ())
+                                std::unique_ptr<Interface<dim>>(*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,
@@ -122,12 +122,10 @@ namespace aspect
 
 
     template <int dim>
-    Interface<dim> *
+    std::unique_ptr<Interface<dim>>
     create_boundary_traction (const std::string &name)
     {
-      Interface<dim> *plugin = std::get<dim>(registered_plugins).create_plugin (name,
-                                                                                "Boundary traction conditions");
-      return plugin;
+      return std::get<dim>(registered_plugins).create_plugin (name, "Boundary traction conditions");
     }
 
 
@@ -186,7 +184,7 @@ namespace aspect
   register_boundary_traction<dim> (const std::string &, \
                                    const std::string &, \
                                    void ( *) (ParameterHandler &), \
-                                   Interface<dim> *( *) ()); \
+                                   std::unique_ptr<Interface<dim>>( *) ()); \
   \
   template  \
   void \
@@ -201,7 +199,7 @@ namespace aspect
   get_names<dim> (); \
   \
   template \
-  Interface<dim> * \
+  std::unique_ptr<Interface<dim>> \
   create_boundary_traction<dim> (const std::string &);
 
     ASPECT_INSTANTIATE(INSTANTIATE)

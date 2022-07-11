@@ -1,0 +1,9 @@
+Changed: In our plugin systems, we have many factory functions
+that create objects and returned raw pointers; in many but not
+all places, these returned raw pointers were then converted to
+`std::unique_ptr`s. This has been changed now
+by (hopefully) consistently letting factory functions
+return `std::unique_ptr`s right away, and then dealing with them at
+the receiving end.
+<br>
+(Wolfgang Bangerth, 2022/07/07)

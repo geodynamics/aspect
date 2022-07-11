@@ -762,15 +762,11 @@ namespace aspect
         // their own parameters
         for (auto &plugin_name : plugin_names)
           {
-            aspect::Particle::Property::Interface<dim> *
-            particle_property = std::get<dim>(registered_plugins)
-                                .create_plugin (plugin_name,
-                                                "Particle property plugins");
+            property_list.emplace_back (std::get<dim>(registered_plugins)
+                                        .create_plugin (plugin_name,
+                                                        "Particle property plugins"));
 
-            property_list.push_back (std::unique_ptr<Property::Interface<dim>>
-                                     (particle_property));
-
-            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*property_list.back()))
+            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_list.back().get()))
               sim->initialize_simulator (this->get_simulator());
 
             property_list.back()->parse_parameters (prm);
@@ -789,7 +785,7 @@ namespace aspect
       register_particle_property (const std::string &name,
                                   const std::string &description,
                                   void (*declare_parameters_function) (ParameterHandler &),
-                                  Property::Interface<dim> *(*factory_function) ())
+                                  std::unique_ptr<Property::Interface<dim>> (*factory_function) ())
       {
         std::get<dim>(registered_plugins).register_plugin (name,
                                                            description,

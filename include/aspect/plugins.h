@@ -125,7 +125,7 @@ namespace aspect
         RegisterHelper (void (*register_function) (const std::string &,
                                                    const std::string &,
                                                    void ( *)(ParameterHandler &),
-                                                   InterfaceClass * ( *)()),
+                                                   std::unique_ptr<InterfaceClass> ( *)()),
                         const char *name,
                         const char *description)
         {
@@ -140,9 +140,9 @@ namespace aspect
          * this class.
          */
         static
-        InterfaceClass *factory ()
+        std::unique_ptr<InterfaceClass> factory ()
         {
-          return new ModelClass();
+          return std::make_unique<ModelClass>();
         }
       };
 
@@ -167,7 +167,7 @@ namespace aspect
         = std::tuple<std::string,
         std::string,
         void ( *) (ParameterHandler &),
-        InterfaceClass *( *) ()>;
+        std::unique_ptr<InterfaceClass>( *) ()>;
 
         /**
          * A pointer to a list of all registered plugins.
@@ -197,7 +197,7 @@ namespace aspect
         void register_plugin (const std::string &name,
                               const std::string &description,
                               void (*declare_parameters_function) (ParameterHandler &),
-                              InterfaceClass * (*factory_function) ());
+                              std::unique_ptr<InterfaceClass> (*factory_function) ());
 
         /**
          * Generate a list of names of the registered plugins separated by '|'
@@ -235,7 +235,7 @@ namespace aspect
          * function.
          */
         static
-        InterfaceClass *
+        std::unique_ptr<InterfaceClass>
         create_plugin (const std::string  &name,
                        const std::string &documentation);
 
@@ -250,7 +250,7 @@ namespace aspect
          * function.
          */
         static
-        InterfaceClass *
+        std::unique_ptr<InterfaceClass>
         create_plugin (const std::string  &name,
                        const std::string &documentation,
                        ParameterHandler &prm);
@@ -313,7 +313,7 @@ namespace aspect
       register_plugin (const std::string &name,
                        const std::string &description,
                        void (*declare_parameters_function) (ParameterHandler &),
-                       InterfaceClass * (*factory_function) ())
+                       std::unique_ptr<InterfaceClass> (*factory_function) ())
       {
         // see if this is the first time we get into this
         // function and if so initialize the static member variable
@@ -431,7 +431,7 @@ namespace aspect
 
 
       template <typename InterfaceClass>
-      InterfaceClass *
+      std::unique_ptr<InterfaceClass>
       PluginList<InterfaceClass>::
       create_plugin (const std::string &name,
                      const std::string &documentation)
@@ -460,7 +460,7 @@ namespace aspect
              p != plugins->end(); ++p)
           if (std::get<0>(*p) == name)
             {
-              InterfaceClass *i = std::get<3>(*p)();
+              std::unique_ptr<InterfaceClass> i = std::get<3>(*p)();
               return i;
             }
 
@@ -471,13 +471,13 @@ namespace aspect
 
 
       template <typename InterfaceClass>
-      InterfaceClass *
+      std::unique_ptr<InterfaceClass>
       PluginList<InterfaceClass>::
       create_plugin (const std::string &name,
                      const std::string &documentation,
                      ParameterHandler  &prm)
       {
-        InterfaceClass *i = create_plugin(name, documentation);
+        std::unique_ptr<InterfaceClass> i = create_plugin(name, documentation);
         i->parse_parameters (prm);
         return i;
       }

@@ -268,7 +268,7 @@ namespace aspect
     register_geometry_model (const std::string &name,
                              const std::string &description,
                              void (*declare_parameters_function) (ParameterHandler &),
-                             Interface<dim> *(*factory_function) ())
+                             std::unique_ptr<Interface<dim>>(*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,
@@ -278,7 +278,7 @@ namespace aspect
 
 
     template <int dim>
-    Interface<dim> *
+    std::unique_ptr<Interface<dim>>
     create_geometry_model (ParameterHandler &prm)
     {
       std::string model_name;
@@ -385,7 +385,7 @@ namespace aspect
   register_geometry_model<dim> (const std::string &, \
                                 const std::string &, \
                                 void ( *) (ParameterHandler &), \
-                                Interface<dim> *( *) ()); \
+                                std::unique_ptr<Interface<dim>>( *) ()); \
   \
   template  \
   void \
@@ -396,7 +396,7 @@ namespace aspect
   write_plugin_graph<dim> (std::ostream &); \
   \
   template \
-  Interface<dim> * \
+  std::unique_ptr<Interface<dim>> \
   create_geometry_model<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)

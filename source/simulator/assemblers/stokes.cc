@@ -910,17 +910,14 @@ namespace aspect
 
       const typename DoFHandler<dim>::face_iterator face = scratch.cell->face(scratch.face_number);
 
-      if (this->get_boundary_traction()
-          .find (face->boundary_id())
+      if (this->get_boundary_traction().find (face->boundary_id())
           !=
           this->get_boundary_traction().end())
         {
           for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
             {
               const Tensor<1,dim> traction
-                = this->get_boundary_traction().find(
-                    face->boundary_id()
-                  )->second
+                = this->get_boundary_traction().find(face->boundary_id())->second
                   ->boundary_traction (face->boundary_id(),
                                        scratch.face_finite_element_values.quadrature_point(q),
                                        scratch.face_finite_element_values.normal_vector(q));

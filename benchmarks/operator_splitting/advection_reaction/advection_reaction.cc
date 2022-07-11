@@ -176,7 +176,7 @@ namespace aspect
           // create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
           // leave the current section
-          base_model.reset(create_material_model<dim>(prm.get("Base model")));
+          base_model = create_material_model<dim>(prm.get("Base model"));
           if (Plugins::plugin_type_matches<SimulatorAccess<dim>>(*base_model))
             Plugins::get_plugin_as_type<SimulatorAccess<dim>>(*base_model).initialize_simulator (this->get_simulator());
 

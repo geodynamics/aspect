@@ -119,7 +119,7 @@ namespace aspect
     register_material_model (const std::string &name,
                              const std::string &description,
                              void (*declare_parameters_function) (ParameterHandler &),
-                             Interface<dim> *(*factory_function) ())
+                             std::unique_ptr<Interface<dim>>(*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,
@@ -129,18 +129,16 @@ namespace aspect
 
 
     template <int dim>
-    Interface<dim> *
+    std::unique_ptr<Interface<dim>>
     create_material_model (const std::string &model_name)
     {
-      Interface<dim> *plugin = std::get<dim>(registered_plugins).create_plugin (model_name,
-                                                                                "Material model::Model name");
-      return plugin;
+      return std::get<dim>(registered_plugins).create_plugin (model_name, "Material model::Model name");
     }
 
 
 
     template <int dim>
-    Interface<dim> *
+    std::unique_ptr<Interface<dim>>
     create_material_model (ParameterHandler &prm)
     {
       std::string model_name;
@@ -1130,7 +1128,7 @@ namespace aspect
   register_material_model<dim> (const std::string &, \
                                 const std::string &, \
                                 void ( *) (ParameterHandler &), \
-                                Interface<dim> *( *) ()); \
+                                std::unique_ptr<Interface<dim>>( *) ()); \
   \
   template \
   std::string \
@@ -1141,7 +1139,7 @@ namespace aspect
   declare_parameters<dim> (ParameterHandler &); \
   \
   template \
-  Interface<dim> * \
+  std::unique_ptr<Interface<dim>> \
   create_material_model<dim> (const std::string &model_name); \
   \
   template \
@@ -1149,7 +1147,7 @@ namespace aspect
   write_plugin_graph<dim> (std::ostream &); \
   \
   template \
-  Interface<dim> * \
+  std::unique_ptr<Interface<dim>> \
   create_material_model<dim> (ParameterHandler &prm); \
   \
   template struct MaterialModelInputs<dim>; \
