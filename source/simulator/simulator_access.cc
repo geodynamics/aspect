@@ -659,7 +659,7 @@ namespace aspect
             ExcMessage ("You are trying to access the initial composition manager "
                         "object, but the Simulator object is no longer keeping "
                         "track of it because the initial time has passed. If "
-                        "you need to access to this object after the first time "
+                        "you need access to this object after the first time "
                         "step, you need to copy the object returned by "
                         "this function before or during the first time step "
                         "into a std::shared_ptr that lives long enough to "

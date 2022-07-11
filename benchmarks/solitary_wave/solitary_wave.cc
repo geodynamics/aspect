@@ -381,10 +381,17 @@ namespace aspect
 
         virtual double reference_darcy_coefficient () const
         {
+          // Make sure we keep track of the initial composition manager and
+          // that it continues to live beyond the time when the simulator
+          // class releases its pointer to it.
+          if (initial_composition_manager == nullptr)
+            const_cast<std::shared_ptr<const aspect::InitialComposition::Manager<dim>>&>(initial_composition_manager)
+              = this->get_initial_composition_manager_pointer();
+
           // Note that this number is based on the background porosity in the
           // solitary wave initial condition.
           const SolitaryWaveInitialCondition<dim> &initial_composition =
-            this->get_initial_composition_manager().template
+            initial_composition_manager->template
             get_matching_initial_composition_model<SolitaryWaveInitialCondition<dim>>();
 
           return reference_permeability * pow(initial_composition.get_background_porosity(), 3.0) / eta_f;
@@ -460,6 +467,14 @@ namespace aspect
         double xi_0;
         double eta_f;
         double reference_permeability;
+
+        /**
+         * A shared pointer to the initial composition object
+         * that ensures that the current object can continue
+         * to access the initial composition object beyond the
+         * first time step.
+         */
+        std::shared_ptr<const aspect::InitialComposition::Manager<dim>> initial_composition_manager;
     };
 
     template <int dim>

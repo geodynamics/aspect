@@ -97,7 +97,7 @@ namespace aspect
              VectorFunctionFromScalarFunctionObject<dim, double>(
                [&](const Point<dim> &p) -> double
         {
-          return initial_temperature_manager.initial_temperature(p);
+          return initial_temperature_manager->initial_temperature(p);
         },
         introspection.component_indices.temperature,
         introspection.n_components)
@@ -105,7 +105,7 @@ namespace aspect
         VectorFunctionFromScalarFunctionObject<dim, double>(
           [&](const Point<dim> &p) -> double
         {
-          return initial_composition_manager.initial_composition(p, n-1);
+          return initial_composition_manager->initial_composition(p, n-1);
         },
         introspection.component_indices.compositional_fields[n-1],
         introspection.n_components));
@@ -136,8 +136,8 @@ namespace aspect
                     // must not exceed one, this should be checked
                     double sum = 0;
                     for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
-                      sum += initial_composition_manager.initial_composition(fe_values.quadrature_point(i),
-                                                                             parameters.normalized_fields[m]);
+                      sum += initial_composition_manager->initial_composition(fe_values.quadrature_point(i),
+                                                                              parameters.normalized_fields[m]);
 
                     if (std::abs(sum) > 1.0+std::numeric_limits<double>::epsilon())
                       {

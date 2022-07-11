@@ -89,6 +89,13 @@ namespace aspect
   void constrain_internal_temperature (const SimulatorAccess<dim> &simulator_access,
                                        AffineConstraints<double> &current_constraints)
   {
+    // Save access to the initial temperature manager the first time
+    // we get here so that we can access it past the first time step
+    // as well.
+    static std::shared_ptr<const aspect::InitialTemperature::Manager<dim>> initial_temperature_manager;
+    if (initial_temperature_manager == nullptr)
+      initial_temperature_manager = simulator_access.get_initial_temperature_manager_pointer();
+
     if (prescribe_internal_temperature)
       {
         const std::vector<Point<dim>> points = aspect::Utilities::get_unit_support_points(simulator_access);
@@ -138,7 +145,7 @@ namespace aspect
                             {
 
                               // Set the temperature to be equal to the initial temperature
-                              in.temperature[q] = simulator_access.get_initial_temperature_manager().initial_temperature(in.position[q]);
+                              in.temperature[q] = initial_temperature_manager->initial_temperature(in.position[q]);
                               // Update the constraints
                               current_constraints.add_line (local_dof_indices[q]);
                               current_constraints.set_inhomogeneity (local_dof_indices[q], in.temperature[q]);
