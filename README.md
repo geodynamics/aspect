@@ -70,10 +70,9 @@ For more information see:
  - The current [Online Documentation](https://aspect-documentation.readthedocs.io/en/latest/)
  - The current [PDF Manual](http://www.math.clemson.edu/~heister/manual.pdf)
  - [How to cite ASPECT](https://aspect.geodynamics.org/cite.html)
- - For questions on the source code of ASPECT, portability, installation, new or existing features, etc., use the [ASPECT forum](https://community.geodynamics.org/c/aspect). This forum is where the ASPECT users and developers all hang out. Archived discussions from the inactive aspect-devel mailing list can be downloaded at [aspect-devel archives](http://lists.geodynamics.org/pipermail/aspect-devel).
+ - For questions on the source code of ASPECT, portability, installation, new or existing features, etc., use the [ASPECT forum](https://community.geodynamics.org/c/aspect). This forum is where the ASPECT users and developers all hang out.
  - See the [Future Plan Board](https://github.com/geodynamics/aspect/projects/2) for a high level overview of items in development.
  - ASPECT is primarily based on the deal.II library. If you have particular questions about deal.II, contact the [deal.II discussion groups](https://www.dealii.org/mail.html).
- - In case of more general questions about mantle convection, you can contact the [CIG mantle convection mailing lists](http://lists.geodynamics.org/cgi-bin/mailman/listinfo/cig-MC).
  - ASPECT is being developed by a large, collaborative, and inclusive community. It is currently maintained by the following people:
      - Wolfgang Bangerth: bangerth@math.colostate.edu
      - Juliane Dannberg: judannberg@gmail.com
