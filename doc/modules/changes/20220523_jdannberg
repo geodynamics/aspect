@@ -1,9 +1,0 @@
-New: The DislocationViscosityOutputs now also contain the
-diffusion viscosity in addition to the dislocation viscosity
-and the boundary area change work fraction. This is useful
-to compute the ratio of diffusion and dislocation creep in 
-cases where the viscosity is averaged cell-wise, because in
-these cases this ratio can not be recovered accurately from
-just the dislocation and effective viscosity.
-<br>
-(Juliane Dannberg, 2022/05/23)

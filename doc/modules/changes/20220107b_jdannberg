@@ -1,8 +1,0 @@
-Fixed: Boundaries with tangential velocity are no longer taken into
-account when checking if a boundary is an outflow boundary, which is
-important in the case where temperature or composition are only fixed
-on inflow (but not outflow) parts of the boundary. The old behavior
-led to temperature/composition sometimes not being prescribed
-correctly, especially in the case of spherical geometries.
-<br>
-(Juliane Dannberg, 2021/07/07)

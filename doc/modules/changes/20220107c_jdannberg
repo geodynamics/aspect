@@ -1,8 +1,0 @@
-Changed: The Steinberger material model can now be used with the
-projected density approximation (and with an arbitrary number of
-compositional fields).
-New: There is now a new type of compositional field called
-'density' that is intended to be used with the projected density
-approximation.
-<br>
-(Juliane Dannberg, 2022/01/07)

@@ -1,3 +1,0 @@
-New: The variables "minimum viscosity" and "maximum viscosity" in the visco plastic material model can now have different values for different phases. This is useful in assigning shear zone viscosity in a subduction model.
-<br>
-(Haoyuan Li, 2021/12/21)

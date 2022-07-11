@@ -1,6 +1,0 @@
-Improved: The continental extension cookbook has been updated to
-use a number of new features, including a faster solver scheme,
-a more realistic method for initiating deformation, and
-initial adaptive mesh refinement.
-<br>
-(John Naliboff, 2021/07/16)
