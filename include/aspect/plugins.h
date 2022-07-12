@@ -157,10 +157,12 @@ namespace aspect
         /**
          * A type describing everything we need to know about a plugin.
          *
-         * The entries in the tuple are: - The name by which it can be
-         * selected. - A description of this plugin that will show up in the
-         * documentation in the parameter file. - A function that can declare
-         * the run-time parameters this plugin takes from the parameter file.
+         * The entries in the tuple are:
+         * - The name by which it can be selected.
+         * - A description of this plugin that will show up in the
+         *   documentation in the parameter file.
+         * - A function that can declare the run-time parameters this
+         *   plugin takes from the parameter file.
          * - A function that can produce objects of this plugin type.
          */
         using PluginInfo
@@ -175,7 +177,7 @@ namespace aspect
          * The object is a pointer rather than an object for the following
          * reason: objects with static initializers (such as =0) are
          * initialized before any objects for which one needs to run
-         * constructors. consequently, we can be sure that this pointer is set
+         * constructors. Consequently, we can be sure that this pointer is set
          * to zero before we ever try to register a postprocessor, and
          * consequently whenever we run Manager::register_postprocessor, we
          * need not worry whether we try to add something to this list before
@@ -323,18 +325,16 @@ namespace aspect
         // verify that the same name has not previously been
         // used to register a plugin, since we would then no
         // longer be able to identify the plugin
-        for (typename std::list<PluginInfo>::const_iterator
-             p = plugins->begin();
-             p != plugins->end(); ++p)
-          Assert (std::get<0>(*p) != name,
+        for (const auto &p : *plugins)
+          Assert (std::get<0>(p) != name,
                   ExcMessage ("A plugin with name <" + name + "> has "
                               "already been registered!"));
 
         // now add one record to the list
-        plugins->push_back (PluginInfo(name,
-                                       description,
-                                       declare_parameters_function,
-                                       factory_function));
+        plugins->emplace_back (name,
+                               description,
+                               declare_parameters_function,
+                               factory_function);
       }
 
 
