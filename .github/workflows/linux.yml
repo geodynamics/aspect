@@ -100,14 +100,17 @@ jobs:
           - image: "geodynamics/aspect-tester:focal-dealii-9.3-v2"
             run-tests: "ON"
             compare-tests: "ON"
+            result-file: "changes-test-results-9.3.diff"
             container-options: '--name container'
           - image: "geodynamics/aspect-tester:focal-dealii-9.4-v2"
             run-tests: "ON"
             compare-tests: "OFF"
+            result-file: "changes-test-results-9.4.diff"
             container-options: '--name container'
           - image: dealii/dealii:master-focal
             run-tests: "ON"
             compare-tests: "OFF"
+            result-file: "changes-test-results-master.diff"
             container-options: '--user 0 --name container'
 
     container: 
@@ -154,7 +157,7 @@ jobs:
     - name: archive test results
       uses: actions/upload-artifact@v2
       with:
-        name: changes-test-results.diff
+        name: ${{ matrix.result-file }}
         path: build/changes-test-results.diff
     - name: check test results
       run: |
