@@ -173,7 +173,7 @@ namespace aspect
         register_boundary_velocity (const std::string &name,
                                     const std::string &description,
                                     void (*declare_parameters_function) (ParameterHandler &),
-                                    std::unique_ptr<Interface<dim>>(*factory_function) ());
+                                    std::unique_ptr<Interface<dim>> (*factory_function) ());
 
 
         /**
