@@ -382,7 +382,7 @@ namespace aspect
         for (typename std::list<PluginInfo>::const_iterator
              p = plugins->begin();
              p != plugins->end(); ++p)
-          names_and_descriptions[std::get<0>(*p)] = std::get<1>(*p);;
+          names_and_descriptions[std::get<0>(*p)] = std::get<1>(*p);
 
         // then output it all
         std::map<std::string,std::string>::const_iterator

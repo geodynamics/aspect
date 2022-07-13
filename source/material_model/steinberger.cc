@@ -54,7 +54,7 @@ namespace aspect
         while (!in.eof())
           {
             double visc, depth;
-            in >> visc;;
+            in >> visc;
             if (in.eof())
               break;
             in >> depth;
@@ -99,7 +99,7 @@ namespace aspect
         while (!in.eof())
           {
             double visc, depth;
-            in >> visc;;
+            in >> visc;
             if (in.eof())
               break;
             in >> depth;
