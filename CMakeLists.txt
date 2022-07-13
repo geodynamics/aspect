@@ -139,19 +139,32 @@ if(ASPECT_WITH_WORLD_BUILDER)
   MESSAGE(STATUS "Using World Builder version ${WORLD_BUILDER_VERSION} found at ${WORLD_BUILDER_SOURCE_DIR}.")
 
   # add source and include dirs:
-  FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/*.cc")
+  IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
+    FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/*.cc")
+  ELSE()
+    FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/*.cc")
+  ENDIF()
   LIST(APPEND TARGET_SRC ${wb_files})
 
   # generate config.cc and include it:
-  CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/world_builder_config.cc" @ONLY)
+  IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
+    CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/world_builder_config.cc" @ONLY)
+  ELSE()
+    CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/config.cc.in" "${CMAKE_BINARY_DIR}/world_builder_config.cc" @ONLY)
+  ENDIF()
   LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/world_builder_config.cc")
 
   # Move some file to the end for unity builds to make sure other file come
   # "before". Note: The current design keeps all ASPECT files (including
   # ASPECT_UNITY_LAST files) before all GWB files. Mixing them will causes
   # many issues with non-unique namespace names like Utilities.
-  SET(UNITY_WB_LAST_FILES
-  "${WORLD_BUILDER_SOURCE_DIR}/source/parameters.cc")
+  IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
+    SET(UNITY_WB_LAST_FILES
+    "${WORLD_BUILDER_SOURCE_DIR}/source/parameters.cc")
+  ELSE()
+    SET(UNITY_WB_LAST_FILES
+    "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/parameters.cc")
+  ENDIF()
 
   FOREACH(_source_file ${UNITY_WB_LAST_FILES})
     LIST(FIND TARGET_SRC ${_source_file} _index)
