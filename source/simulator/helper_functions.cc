@@ -512,7 +512,7 @@ namespace aspect
   {
     if (pre_refinement_step < parameters.initial_adaptive_refinement)
       {
-        if (parameters.timing_output_frequency ==0)
+        if (parameters.timing_output_frequency == 0)
           {
             computing_timer.print_summary ();
             pcout << "-- Total wallclock time elapsed including restarts: "
