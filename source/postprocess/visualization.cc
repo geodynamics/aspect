@@ -602,6 +602,17 @@ namespace aspect
                 AssertThrowMPI(ierr);
               }
         }
+#if DEAL_II_VERSION_GTE(9,5,0)
+      else if (output_format == "parallel deal.II intermediate")
+        {
+          const std::string filename = this->get_output_directory() + "solution/"
+                                       + solution_file_prefix + ".pd2";
+
+          data_out.write_deal_II_intermediate_in_parallel(filename,
+                                                          this->get_mpi_communicator(),
+                                                          DataOutBase::VtkFlags::default_compression);
+        }
+#endif
       else   // Write in a different format than hdf5 or vtu. This case is supported, but is not
         // optimized for parallel output in that every process will write one file directly
         // into the output directory. This may or may not affect performance depending on
