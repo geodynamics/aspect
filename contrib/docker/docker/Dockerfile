@@ -6,6 +6,17 @@ LABEL maintainer <rene.gassmoeller@mailbox.org>
 RUN cd $HOME && wget https://github.com/Kitware/CMake/releases/download/v3.17.3/cmake-3.17.3-Linux-x86_64.tar.gz && tar xf cmake*.tar.gz && rm cmake*.tar.gz
 ENV PATH $HOME/cmake-3.17.3-Linux-x86_64/bin:$PATH
 
+USER root
+RUN wget https://github.com/tjhei/astyle/releases/download/v2.04/astyle_2.04_linux.tar.gz && \
+        tar xf astyle_2.04_linux.tar.gz && \
+        cd astyle/build/gcc && make && \
+        make install && \
+        cd && \
+        rm -rf astyle* && \
+        astyle --version
+
+USER dealii
+
 # Build aspect, replace git checkout command to create image for release
 RUN git clone https://github.com/geodynamics/aspect.git ./aspect && \ 
     mkdir aspect/build-release && \

@@ -39,7 +39,7 @@ jobs:
           context: ./contrib/docker/docker/
           cache-from: type=registry,ref=dealii/dealii:v9.4.0-focal
           cache-to: type=inline
-          push: false
+          push: true
           tags: geodynamics/aspect:latest
 
       - name: Build and push Docker image for release
@@ -49,6 +49,6 @@ jobs:
           context: ./contrib/docker/docker/
           cache-from: type=registry,ref=dealii/dealii:v9.4.0-focal
           cache-to: type=inline
-          push: false
+          push: true
           tags: geodynamics/aspect:${{github.ref_name}}
 
