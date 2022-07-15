@@ -44,9 +44,8 @@ output of ASPECT can also be found in the ASPECT
 [manual](http://www.math.clemson.edu/~heister/manual.pdf). This manual also
 discusses the structure of the source code.
 
-For getting started, you can also watch our online
-[tutorial](https://geodynamics.org/cig/events/calendar/2016-cig-all-hands-meeting/aspect-tutorial/tutorial/).
-
+For getting started, you can also watch recordings from our
+[tutorials](https://github.com/geodynamics/aspect/wiki/Tutorial-Materials).
 
 
 Contributing to ASPECT
