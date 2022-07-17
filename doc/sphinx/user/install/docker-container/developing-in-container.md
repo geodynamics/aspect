@@ -15,9 +15,8 @@ terminal into the modified ASPECT source
 folder):
 
 ``` ksh
-docker pull tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5
-docker run -it -v "$(pwd):/home/dealii/aspect:ro" \
-  tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5 bash
+docker pull geodynamics/aspect:latest
+docker run -it -v "$(pwd):/home/dealii/aspect:ro" geodynamics/aspect:latest
 ```
 
 Inside of the container you now find a read-only
@@ -28,8 +27,8 @@ following way:
 ``` ksh
 mkdir aspect-build
 cd aspect-build
-cmake -DCMAKE_BUILD_TYPE=Debug -DDEAL_II_DIR=$HOME/deal.II-install $HOME/aspect
-make
+cmake -DCMAKE_BUILD_TYPE=Debug $HOME/aspect
+make -j4
 ./aspect $HOME/aspect/cookbooks/shell_simple_2d/shell_simple_2d.prm
 ```
 
