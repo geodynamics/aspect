@@ -95,13 +95,12 @@ the following command in any terminal (replace `ASPECT_SOURCE_DIR` with the
 path to your ASPECT directory):
 
 ``` ksh
-docker run -v ASPECT_SOURCE_DIR:/home/dealii/aspect \
-    --name=aspect-tester --rm -it \
-    tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5 \
-    bash /home/dealii/aspect/cmake/compile_and_update_tests.sh
+docker run -v ASPECT_SOURCE_DIR:/home/dealii/aspect --rm -it\
+    geodynamics/aspect-tester:focal-dealii-9.3-v2 \
+    bash /home/dealii/aspect/contrib/utilities/compile_and_update_tests.sh
 ```
 
-This command executes the shell script `cmake/compile_and_update_tests.sh`
+This command executes the shell script `contrib/utilities/compile_and_update_tests.sh`
 *inside* the docker container that contains the official
 ASPECT test system. Note that by mounting your
 ASPECT folder into the container you are actually
