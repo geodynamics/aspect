@@ -11,7 +11,8 @@ Number of mesh deformation degrees of freedom: 1122
    Solving Stokes system... 32+0 iterations.
 
    Postprocessing:
-     Topography min/max: 0 m, 0 m
+     Topography min/max:  0 m, 0 m
+     Model domain volume: 2e+10 m2
 
 *** Timestep 1:  t=220971 years, dt=220971 years
    Solving mesh displacement system... 1 iterations.
@@ -20,7 +21,8 @@ Number of mesh deformation degrees of freedom: 1122
    Solving Stokes system... 31+0 iterations.
 
    Postprocessing:
-     Topography min/max: -2210 m, -2210 m
+     Topography min/max:  -2210 m, -2210 m
+     Model domain volume: 1.956e+10 m2
 
 *** Timestep 2:  t=444396 years, dt=223426 years
    Solving mesh displacement system... 1 iterations.
@@ -29,7 +31,8 @@ Number of mesh deformation degrees of freedom: 1122
    Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
-     Topography min/max: -4395 m, -4395 m
+     Topography min/max:  -4395 m, -4395 m
+     Model domain volume: 1.912e+10 m2
 
 *** Timestep 3:  t=670275 years, dt=225878 years
    Solving mesh displacement system... 1 iterations.
@@ -38,7 +41,8 @@ Number of mesh deformation degrees of freedom: 1122
    Solving Stokes system... 23+0 iterations.
 
    Postprocessing:
-     Topography min/max: -6554 m, -6554 m
+     Topography min/max:  -6554 m, -6554 m
+     Model domain volume: 1.869e+10 m2
 
 *** Timestep 4:  t=898601 years, dt=228327 years
    Solving mesh displacement system... 1 iterations.
@@ -47,7 +51,8 @@ Number of mesh deformation degrees of freedom: 1122
    Solving Stokes system... 23+0 iterations.
 
    Postprocessing:
-     Topography min/max: -8688 m, -8688 m
+     Topography min/max:  -8688 m, -8688 m
+     Model domain volume: 1.826e+10 m2
 
 *** Timestep 5:  t=1e+06 years, dt=101399 years
    Solving mesh displacement system... 1 iterations.
@@ -56,7 +61,8 @@ Number of mesh deformation degrees of freedom: 1122
    Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
-     Topography min/max: -9614 m, -9614 m
+     Topography min/max:  -9614 m, -9614 m
+     Model domain volume: 1.808e+10 m2
 
 Termination requested by criterion: end time
 
