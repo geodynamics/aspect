@@ -21,6 +21,7 @@
 #include <aspect/global.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
+#include <world_builder/config.h>
 #include <aspect/initial_temperature/world_builder.h>
 #include <world_builder/world.h>
 #include <aspect/geometry_model/interface.h>
@@ -49,9 +50,15 @@ namespace aspect
     WorldBuilder<dim>::
     initial_temperature (const Point<dim> &position) const
     {
+#if WORLD_BUILDER_VERSION_MAJOR > 0 || WORLD_BUILDER_VERSION_MINOR >= 5
+      return this->get_world_builder().temperature(Utilities::convert_point_to_array(position),
+                                                   -this->get_geometry_model().height_above_reference_surface(position));
+#else
+
       return this->get_world_builder().temperature(Utilities::convert_point_to_array(position),
                                                    -this->get_geometry_model().height_above_reference_surface(position),
                                                    this->get_gravity_model().gravity_vector(position).norm());
+#endif
     }
 
   }
