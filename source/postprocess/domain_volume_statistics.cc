@@ -35,7 +35,7 @@ namespace aspect
       const double global_volume = this->get_volume();
 
       // add the volume to the statistics object
-      const std::string unit = (dim == 2) ? "m2" : "m3";
+      const std::string unit = (dim == 2) ? "m^2" : "m^3";
       const std::string name = "Model domain volume (" + unit + ")";
       statistics.add_value (name, global_volume);
 
