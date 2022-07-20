@@ -89,6 +89,20 @@ namespace aspect
           bool new_integration_step() override;
 
           /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
+
+          /**
            * We need to tell the property manager how many intermediate properties this integrator requires,
            * so that it can allocate sufficient space for each particle. However, the integrator is not
            * created at the time the property manager is set up and we can not reverse the order of creation,
@@ -112,6 +126,12 @@ namespace aspect
            * The location of the RK2 data that is stored in the particle properties.
            */
           unsigned int property_index_old_location;
+
+          /**
+           * Whether to evaluate old and current velocity to compute a solution
+           * that is higher order accurate in time.
+           */
+          bool higher_order_in_time;
       };
 
     }
