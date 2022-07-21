@@ -610,7 +610,7 @@ namespace aspect
 
           data_out.write_deal_II_intermediate_in_parallel(filename,
                                                           this->get_mpi_communicator(),
-                                                          DataOutBase::VtkFlags::default_compression);
+                                                          DataOutBase::CompressionLevel::default_compression);
         }
 #endif
       else   // Write in a different format than hdf5 or vtu. This case is supported, but is not
