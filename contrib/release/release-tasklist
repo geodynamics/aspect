@@ -130,7 +130,7 @@
        https://community.geodynamics.org/c/aspect
        dealii@googlegroups.com
 
-Announcement for 2.4.0 (July 15, 2022)
+Announcement for 2.4.0 (July 25, 2022)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 2.4.0. ASPECT is the Advanced
 Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
@@ -210,7 +210,7 @@ Among others this release includes the following significant changes:
   (Juliane Dannberg, Rene Gassmoeller)
 
 - New: Added a new postprocessor which computes the parameter "Mobility"
-  following Lourenco et al., 2020 G3
+  following Lourenco et al., 2020.
   (Elodie Kendall, Rene Gassmoeller, Anne Glerum and Bob Myhill)
 
 - Improved: Particle operations have been significantly accelerated, in
