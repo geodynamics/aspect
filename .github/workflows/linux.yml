@@ -132,9 +132,9 @@ jobs:
         -D ASPECT_UNITY_BUILD=ON \
         -D ASPECT_RUN_ALL_TESTS='${{ matrix.run-tests }}' \
         -D ASPECT_COMPARE_TEST_RESULTS='${{ matrix.compare-tests }}' \
-        -D CMAKE_UNITY_BUILD_BATCH_SIZE=16 \
+        -D CMAKE_UNITY_BUILD_BATCH_SIZE=8 \
         ..
-        ninja -j1
+        ninja -j 2
         ./aspect --test
     - name: prebuild tests
       run: |
