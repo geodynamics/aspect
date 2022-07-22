@@ -1885,19 +1885,31 @@ namespace aspect
        */
       const std::unique_ptr<InitialTopographyModel::Interface<dim>>          initial_topography_model;
       const std::unique_ptr<GeometryModel::Interface<dim>>                   geometry_model;
-      const IntermediaryConstructorAction                                     post_geometry_model_creation_action;
+      const IntermediaryConstructorAction                                    post_geometry_model_creation_action;
       const std::unique_ptr<MaterialModel::Interface<dim>>                   material_model;
       const std::unique_ptr<GravityModel::Interface<dim>>                    gravity_model;
-      BoundaryTemperature::Manager<dim>                                       boundary_temperature_manager;
-      BoundaryComposition::Manager<dim>                                       boundary_composition_manager;
+      BoundaryTemperature::Manager<dim>                                      boundary_temperature_manager;
+      BoundaryComposition::Manager<dim>                                      boundary_composition_manager;
       const std::unique_ptr<PrescribedStokesSolution::Interface<dim>>        prescribed_stokes_solution;
-      InitialComposition::Manager<dim>                                        initial_composition_manager;
-      InitialTemperature::Manager<dim>                                        initial_temperature_manager;
+
+      /**
+       * The following two variables are pointers to objects that describe
+       * the initial temperature and composition values. The Simulator
+       * class itself releases these pointers once they are no longer
+       * needed, somewhere during the first time step once it is known
+       * that they are no longer needed. However, plugins can have their
+       * own shared pointers to these objects, and the lifetime of the
+       * objects pointed to is then until the last of these plugins
+       * gets deleted.
+       */
+      std::shared_ptr<InitialTemperature::Manager<dim>>                      initial_temperature_manager;
+      std::shared_ptr<InitialComposition::Manager<dim>>                      initial_composition_manager;
+
       const std::unique_ptr<AdiabaticConditions::Interface<dim>>             adiabatic_conditions;
 #ifdef ASPECT_WITH_WORLD_BUILDER
-      const std::unique_ptr<WorldBuilder::World>                              world_builder;
+      const std::unique_ptr<WorldBuilder::World>                             world_builder;
 #endif
-      BoundaryVelocity::Manager<dim>                                          boundary_velocity_manager;
+      BoundaryVelocity::Manager<dim>                                         boundary_velocity_manager;
       std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim>>> boundary_traction;
       const std::unique_ptr<BoundaryHeatFlux::Interface<dim>>                boundary_heat_flux;
 

@@ -60,6 +60,15 @@ namespace aspect
       if (initialized)
         return;
 
+      // The simulator only keeps the initial conditions around for
+      // the first time step. As a consequence, we have to save a
+      // shared pointer to that object ourselves the first time we get
+      // here.
+      if ((reference_composition == initial_composition)
+          &&
+          (initial_composition_manager == nullptr))
+        initial_composition_manager = this->get_initial_composition_manager_pointer();
+
       temperatures.resize(n_points, numbers::signaling_nan<double>());
       pressures.resize(n_points, numbers::signaling_nan<double>());
       densities.resize(n_points, numbers::signaling_nan<double>());
@@ -144,7 +153,7 @@ namespace aspect
 
           if (reference_composition == initial_composition)
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              in.composition[0][c] = this->get_initial_composition_manager().initial_composition(representative_point, c);
+              in.composition[0][c] = initial_composition_manager->initial_composition(representative_point, c);
           else if (reference_composition == reference_function)
             {
               const double depth = this->get_geometry_model().depth(representative_point);
@@ -326,6 +335,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>

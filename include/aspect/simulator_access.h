@@ -637,6 +637,43 @@ namespace aspect
        * This can then, for example, be used to get the names of the initial temperature
        * models used in a computation, or to compute the initial temperature
        * for a given position.
+       *
+       * While the Simulator class creates a shared pointer to an initial
+       * temperature manager before the first time step, it releases
+       * the pointer once it no longer needs access to the initial
+       * compositions. As a consequence, you can only call this function
+       * during the first time step.
+       *
+       * If the Simulator's shared pointer were the only
+       * one that points to the initial temperature manager object, that
+       * would also destroy the object pointed to. However, plugin classes
+       * can have member variables that are *also* shared pointers to
+       * these manager objects, and if you initialize such a shared
+       * pointer from the result of this function -- typically in the
+       * `initialize()` function of a plugin class -- then the Simulator
+       * giving up its shared pointer does not actually destroy the
+       * manager object but extends its lifetime until the last plugin
+       * that has a pointer to it is destroyed itself. As a consequence,
+       * if you need access to the initial temperature in a plugin, you
+       * will need to keep a shared pointer to it around for as long
+       * as you need it.
+       */
+      std::shared_ptr<const InitialTemperature::Manager<dim>>
+      get_initial_temperature_manager_pointer () const;
+
+      /**
+       * Return a reference to the manager of the initial temperature model.
+       * This can then, for example, be used to get the names of the initial temperature
+       * models used in a computation.
+       *
+       * While the Simulator class creates a shared pointer to an initial
+       * temperature manager before the first time step, it releases
+       * the pointer once it no longer needs access to the initial
+       * temperature. As a consequence, you can only call this function
+       * during the first time step. If a plugin needs access to the initial
+       * temperature at a later time, it has to store its own shared
+       * pointer to that object, and that is what can be achieved using
+       * the get_initial_temperature_manager_pointer() function above.
        */
       const InitialTemperature::Manager<dim> &
       get_initial_temperature_manager () const;
@@ -653,6 +690,43 @@ namespace aspect
        * Return a pointer to the manager of the initial composition model.
        * This can then, for example, be used to get the names of the initial composition
        * models used in a computation.
+       *
+       * While the Simulator class creates a shared pointer to an initial
+       * composition manager before the first time step, it releases
+       * the pointer once it no longer needs access to the initial
+       * compositions. As a consequence, you can only call this function
+       * during the first time step.
+       *
+       * If the Simulator's shared pointer were the only
+       * one that points to the initial composition manager object, that
+       * would also destroy the object pointed to. However, plugin classes
+       * can have member variables that are *also* shared pointers to
+       * these manager objects, and if you initialize such a shared
+       * pointer from the result of this function -- typically in the
+       * `initialize()` function of a plugin class -- then the Simulator
+       * giving up its shared pointer does not actually destroy the
+       * manager object but extends its lifetime until the last plugin
+       * that has a pointer to it is destroyed itself. As a consequence,
+       * if you need access to the initial compositions in a plugin, you
+       * will need to keep a shared pointer to it around for as long
+       * as you need it.
+       */
+      std::shared_ptr<const InitialComposition::Manager<dim>>
+      get_initial_composition_manager_pointer () const;
+
+      /**
+       * Return a reference to the manager of the initial composition model.
+       * This can then, for example, be used to get the names of the initial composition
+       * models used in a computation.
+       *
+       * While the Simulator class creates a shared pointer to an initial
+       * composition manager before the first time step, it releases
+       * the pointer once it no longer needs access to the initial
+       * compositions. As a consequence, you can only call this function
+       * during the first time step. If a plugin needs access to the initial
+       * composition at a later time, it has to store its own shared
+       * pointer to that object, and that is what can be achieved using
+       * the get_initial_composition_manager_pointer() function above.
        */
       const InitialComposition::Manager<dim> &
       get_initial_composition_manager () const;

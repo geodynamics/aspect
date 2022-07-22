@@ -19,6 +19,7 @@
  */
 
 #include <aspect/particle/property/pT_path.h>
+#include <aspect/simulator_signals.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/initial_temperature/interface.h>
 
@@ -28,6 +29,19 @@ namespace aspect
   {
     namespace Property
     {
+      template <int dim>
+      void
+      PTPath<dim>::initialize()
+      {
+        // Make sure we keep track of the initial temperature manager and
+        // that it continues to live beyond the time when the simulator
+        // class releases its pointer to it.
+        initial_temperature = this->get_initial_temperature_manager_pointer();
+      }
+
+
+
+
       template <int dim>
       void
       PTPath<dim>::initialize_one_particle_property(const Point<dim> &position,
@@ -44,7 +58,7 @@ namespace aspect
         // all following time steps, we set temperature and pressure to
         // their correct then-current values.
         data.push_back(this->get_adiabatic_conditions().pressure(position));
-        data.push_back(this->get_initial_temperature_manager().initial_temperature(position));
+        data.push_back(initial_temperature->initial_temperature(position));
       }
 
 

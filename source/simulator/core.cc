@@ -310,13 +310,21 @@ namespace aspect
     gravity_model->parse_parameters (prm);
     gravity_model->initialize ();
 
-    // Create the initial condition plugins
-    initial_temperature_manager.initialize_simulator(*this);
-    initial_temperature_manager.parse_parameters (prm);
+    // Create the initial temperature and condition plugins, and then
+    // initialize them. Some of these objects store std::shared_ptrs
+    // to the initial temperature and composition objects, so it is
+    // important that we have the pointers of the current class
+    // already set by the time we call the initialize() functions.
+    initial_temperature_manager
+      = std::make_shared<InitialTemperature::Manager<dim>>();
+    initial_composition_manager
+      = std::make_shared<InitialComposition::Manager<dim>>();
 
-    // Create the initial composition plugins
-    initial_composition_manager.initialize_simulator(*this);
-    initial_composition_manager.parse_parameters (prm);
+    initial_temperature_manager->initialize_simulator(*this);
+    initial_temperature_manager->parse_parameters (prm);
+
+    initial_composition_manager->initialize_simulator(*this);
+    initial_composition_manager->parse_parameters (prm);
 
     // Create a boundary temperature manager
     boundary_temperature_manager.initialize_simulator (*this);
@@ -2015,6 +2023,14 @@ namespace aspect
                 goto start_time_iteration;
               }
           }
+
+        // We're now definitely past the point where we need the initial
+        // conditions objects, and we can release the pointers to these objects
+        // that we have created in the constructor of this class. If some of the
+        // other plugins created there still need access to these initial
+        // conditions, they will have created their own shared pointers.
+        initial_temperature_manager.reset();
+        initial_composition_manager.reset();
 
         // Prepare the next time step:
         time_stepping_manager.update();

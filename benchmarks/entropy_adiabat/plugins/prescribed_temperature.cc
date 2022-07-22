@@ -31,6 +31,17 @@ namespace aspect
   namespace InitialTemperature
   {
     template <int dim>
+    void
+    PrescribedTemperature<dim>::initialize()
+    {
+      // Make sure we keep track of the initial composition manager and
+      // that it continues to live beyond the time when the simulator
+      // class releases its pointer to it.
+      initial_composition = this->get_initial_composition_manager_pointer();
+    }
+
+
+    template <int dim>
     double
     PrescribedTemperature<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -40,13 +51,13 @@ namespace aspect
       MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
       in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
-      in.position[0]=position;
-      in.temperature[0]=this->get_adiabatic_conditions().temperature(position);
-      in.pressure[0]=this->get_adiabatic_conditions().pressure(position);
-      in.velocity[0]= Tensor<1,dim> ();
+      in.position[0] = position;
+      in.temperature[0] = this->get_adiabatic_conditions().temperature(position);
+      in.pressure[0] = this->get_adiabatic_conditions().pressure(position);
+      in.velocity[0] = Tensor<1,dim> ();
 
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-        in.composition[0][c] = this->get_initial_composition_manager().initial_composition(position, c);
+        in.composition[0][c] = initial_composition->initial_composition(position, c);
 
       in.strain_rate.resize(0);
 
