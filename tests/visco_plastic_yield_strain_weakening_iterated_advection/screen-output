@@ -1,0 +1,255 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.5.0-pre (enable_iterative_Advection_strain_rheology, 2f57ae6a3)
+--     . using deal.II 9.4.0
+--     .       with 32 bit indices and vectorization level 1 (128 bits)
+--     . using Trilinos 13.0.0
+--     . using p4est 2.8.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.5.0-pre&sha=2f57ae6a3&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 1,885 (882+121+441+441)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping total_strain composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+2 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39736e-16, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0
+     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+
+   Solving temperature system... 0 iterations.
+   Skipping total_strain composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39736e-16, 0, 7.30327e-15
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.30327e-15
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0
+     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.229s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         2 |    0.0124s |       5.4% |
+| Assemble composition system      |         2 |    0.0135s |       5.9% |
+| Assemble temperature system      |         2 |    0.0136s |       5.9% |
+| Build Stokes preconditioner      |         2 |    0.0142s |       6.2% |
+| Build temperature preconditioner |         2 |   0.00118s |      0.52% |
+| Initialization                   |         1 |     0.154s |        67% |
+| Postprocessing                   |         2 |   0.00133s |      0.58% |
+| Setup dof systems                |         1 |   0.00142s |      0.62% |
+| Setup initial conditions         |         1 |   0.00539s |       2.4% |
+| Setup matrices                   |         1 |   0.00561s |       2.5% |
+| Solve Stokes system              |         2 |   0.00207s |       0.9% |
+| Solve temperature system         |         2 |  0.000607s |      0.27% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 0s
+*** Timestep 1:  t=100000 years, dt=100000 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.74835e-16, 1, 2.55359e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Postprocessing:
+     Compositions min/max/mass: 0.001/0.001/1e+07
+     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.74835e-16, 3.27074e-13, 2.55359e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.27074e-13
+
+   Postprocessing:
+     Compositions min/max/mass: 0.001/0.001/1e+07
+     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.74835e-16, 3.27074e-13, 2.55359e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.27074e-13
+
+   Postprocessing:
+     Compositions min/max/mass: 0.001/0.001/1e+07
+     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.74835e-16, 3.27074e-13, 2.55359e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 3.27074e-13
+
+   Postprocessing:
+     Compositions min/max/mass: 0.001/0.001/1e+07
+     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.74835e-16, 3.27074e-13, 2.55359e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 3.27074e-13
+
+   Postprocessing:
+     Compositions min/max/mass: 0.001/0.001/1e+07
+     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.393s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         7 |    0.0453s |        12% |
+| Assemble composition system      |         7 |    0.0509s |        13% |
+| Assemble temperature system      |         7 |    0.0533s |        14% |
+| Build Stokes preconditioner      |         7 |     0.051s |        13% |
+| Build composition preconditioner |         5 |   0.00222s |      0.57% |
+| Build temperature preconditioner |         7 |    0.0029s |      0.74% |
+| Initialization                   |         1 |     0.154s |        39% |
+| Postprocessing                   |         7 |   0.00481s |       1.2% |
+| Setup dof systems                |         1 |   0.00142s |      0.36% |
+| Setup initial conditions         |         1 |   0.00539s |       1.4% |
+| Setup matrices                   |         1 |   0.00561s |       1.4% |
+| Solve Stokes system              |         7 |   0.00499s |       1.3% |
+| Solve composition system         |         5 |   0.00135s |      0.34% |
+| Solve temperature system         |         7 |   0.00205s |      0.52% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 0s
+*** Timestep 2:  t=200000 years, dt=100000 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.05232e-16, 1.10367e-13, 2.65247e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.10367e-13
+
+   Postprocessing:
+     Compositions min/max/mass: 0.002/0.002/2e+07
+     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.05232e-16, 1.10367e-13, 2.65247e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.10367e-13
+
+   Postprocessing:
+     Compositions min/max/mass: 0.002/0.002/2e+07
+     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.05232e-16, 1.10367e-13, 2.65247e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.10367e-13
+
+   Postprocessing:
+     Compositions min/max/mass: 0.002/0.002/2e+07
+     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.05232e-16, 1.10367e-13, 2.65247e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.10367e-13
+
+   Postprocessing:
+     Compositions min/max/mass: 0.002/0.002/2e+07
+     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.05232e-16, 1.10367e-13, 2.65247e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.10367e-13
+
+   Postprocessing:
+     Compositions min/max/mass: 0.002/0.002/2e+07
+     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.566s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |        12 |    0.0809s |        14% |
+| Assemble composition system      |        12 |     0.094s |        17% |
+| Assemble temperature system      |        12 |    0.0941s |        17% |
+| Build Stokes preconditioner      |        12 |    0.0868s |        15% |
+| Build composition preconditioner |        10 |   0.00446s |      0.79% |
+| Build temperature preconditioner |        12 |   0.00521s |      0.92% |
+| Initialization                   |         1 |     0.154s |        27% |
+| Postprocessing                   |        12 |   0.00841s |       1.5% |
+| Setup dof systems                |         1 |   0.00142s |      0.25% |
+| Setup initial conditions         |         1 |   0.00539s |      0.95% |
+| Setup matrices                   |         1 |   0.00561s |      0.99% |
+| Solve Stokes system              |        12 |   0.00767s |       1.4% |
+| Solve composition system         |        10 |   0.00278s |      0.49% |
+| Solve temperature system         |        12 |   0.00344s |      0.61% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 1s
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.567s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |        12 |    0.0809s |        14% |
+| Assemble composition system      |        12 |     0.094s |        17% |
+| Assemble temperature system      |        12 |    0.0941s |        17% |
+| Build Stokes preconditioner      |        12 |    0.0868s |        15% |
+| Build composition preconditioner |        10 |   0.00446s |      0.79% |
+| Build temperature preconditioner |        12 |   0.00521s |      0.92% |
+| Initialization                   |         1 |     0.154s |        27% |
+| Postprocessing                   |        12 |   0.00841s |       1.5% |
+| Setup dof systems                |         1 |   0.00142s |      0.25% |
+| Setup initial conditions         |         1 |   0.00539s |      0.95% |
+| Setup matrices                   |         1 |   0.00561s |      0.99% |
+| Solve Stokes system              |        12 |   0.00767s |       1.4% |
+| Solve composition system         |        10 |   0.00278s |      0.49% |
+| Solve temperature system         |        12 |   0.00344s |      0.61% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 1s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.5.0-pre&sha=2f57ae6a3&src=code
+-----------------------------------------------------------------------------
