@@ -210,6 +210,7 @@ namespace aspect
 
 
         private:
+          std::vector<double> angles_internal_friction;
 
           /**
            * Reference strain rate for the first non-linear iteration

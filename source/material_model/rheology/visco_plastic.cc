@@ -268,19 +268,22 @@ namespace aspect
             const Postprocess::MobilityStatistics<dim> &mobility_statistics =
               this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
             const double average_mobility = mobility_statistics.get_average_mobility();
-            double friction_factor = 0.;
-            //first find factors 
-            if (average_mobility == 0.)
-              friction_factor = 1;
-            else if (average_mobility <= 1.5)
-              friction_factor = 1.5;
-            else if (average_mobility > 1.5 && average_mobility < 2.5)
-              friction_factor = 3 - average_mobility;
-            else if (average_mobility >= 2.5)
-              friction_factor = 0.5;
+            const double average_mobility_told = mobility_statistics.get_average_mobility_told();       
+
+            //sensitivity value
+            const double alpha = 1;
+            double DMob = average_mobility - average_mobility_told;
+
+            double friction_terms = alpha * drucker_prager_parameters.angle_internal_friction * DMob;             
             
-            //now modify friction
-            const double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1] * friction_factor;
+            //vary friction
+            double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1] - friction_terms;
+            
+            //limit friction 
+            if (current_friction > 0.5 * drucker_prager_parameters.angle_internal_friction)
+              current_friction = 0.5 * drucker_prager_parameters.angle_internal_friction;
+            else if (current_friction < 1.5 * drucker_prager_parameters.angle_internal_friction)             
+              current_friction = 1.5 * drucker_prager_parameters.angle_internal_friction; 
 
             // Step 5: plastic yielding
 
@@ -642,6 +645,14 @@ namespace aspect
             elastic_rheology.parse_parameters(prm);
           }
 
+        //read in friction angle
+        angles_internal_friction = Utilities::parse_map_to_double_array(prm.get("Angles of internal friction"),
+                                                                        list_of_composition_names,
+                                                                        has_background_field,
+                                                                        "Angles of internal friction",
+                                                                        true,
+                                                                        expected_n_phases_per_composition);
+
         // Reference and minimum/maximum values
         min_strain_rate = prm.get_double("Minimum strain rate");
         ref_strain_rate = prm.get_double("Reference strain rate");
@@ -788,24 +799,29 @@ namespace aspect
                                                                           n_phases_per_composition);
                 plastic_out->cohesions[i]   += volume_fractions[j] * (drucker_prager_parameters.cohesion * weakening_factors[0]);
  
-                //Elodie Feb 2022             
-                // Get a pointer to the mobility postprocessor
-                const Postprocess::MobilityStatistics<dim> &mobility_statistics =
-                  this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
-                const double average_mobility = mobility_statistics.get_average_mobility();
-                double friction_factor = 0.;
-                //first find factors 
-                if (average_mobility == 0.)
-                  friction_factor = 1;
-                else if (average_mobility <= 1.5)
-                  friction_factor = 1.5;
-                else if (average_mobility > 1.5 && average_mobility < 2.5)
-                  friction_factor = 3 - average_mobility;
-                else if (average_mobility >= 2.5)
-                  friction_factor = 0.5;
+               //Elodie Feb 2022             
+               // Get a pointer to the mobility postprocessor
+               const Postprocess::MobilityStatistics<dim> &mobility_statistics =
+                        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
+               const double average_mobility = mobility_statistics.get_average_mobility();
+               const double average_mobility_told = mobility_statistics.get_average_mobility_told(); 
+
+               const double alpha = 1;
+               double DMob = average_mobility - average_mobility_told;
+   
+               double friction_terms = alpha * drucker_prager_parameters.angle_internal_friction * DMob;
+              
+               //vary friction   
+               double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1] - friction_terms;
+
+               //limit friction
+               if (current_friction > 0.5 * drucker_prager_parameters.angle_internal_friction)
+                 current_friction = 0.5 * drucker_prager_parameters.angle_internal_friction;
+               else if (current_friction < 1.5 * drucker_prager_parameters.angle_internal_friction)
+                 current_friction = 1.5 * drucker_prager_parameters.angle_internal_friction;
 
                 // Also convert radians to degrees
-                plastic_out->friction_angles[i] += 180.0/numbers::PI * volume_fractions[j] * (drucker_prager_parameters.angle_internal_friction * weakening_factors[1] * friction_factor);
+                plastic_out->friction_angles[i] += 180.0/numbers::PI * volume_fractions[j] * current_friction;
               }
           }
       }
