@@ -11,7 +11,7 @@
 \usepackage{siunitx}
 \usepackage{cite}
 \usepackage{svg}
-\usepackage{newclude}
+\usepackage{import}
 
 % This adds space between the Appendix number (e.g., A.101) and the title.
 
@@ -144,7 +144,7 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
   \begin{textblock*}{0in}(0.0in,0.8in)
     \begin{center}
       \vspace{1em}
-      \includesvg[width=4.5in]{../logo/unlabeled_logo.svg}
+      \includegraphics[width=4.5in]{../logo/unlabeled_logo.pdf}
       \hspace{5em}
     \end{center}
   \end{textblock*}
@@ -4863,14 +4863,14 @@ computed at the end of each time step -- affects what you get.}
 \subsection{Simple setups}
 \label{sec:cookbooks-simple}
 
-\include*{cookbooks/convection-box/doc/convection-box.tex}
+\import{cookbooks/convection-box/doc/}{convection-box}
 
 % cookbooks/convection_box_3d
-\include*{cookbooks/convection_box_3d/doc/convection_box_3d.tex}
+\import{cookbooks/convection_box_3d/doc/}{convection_box_3d}
 
 
 % cookbooks/platelike-boundary
-\include*{cookbooks/platelike-boundary/doc/platelike-boundary.tex}
+\import{cookbooks/platelike-boundary/doc/}{platelike-boundary}
 
 
 \subsubsection{Using passive and active compositional fields}
@@ -4900,16 +4900,16 @@ cookbook, we will follow the route of advected fields.
 
 % cookbooks/composition_active/
 
-\include*{cookbooks/composition_passive/doc/composition_passive.tex}
+\import{cookbooks/composition_passive/doc/}{composition_passive}
 
 
 % cookbooks/composition_active/
 
-\include*{cookbooks/composition_active/doc/composition_active.tex}
+\import{cookbooks/composition_active/doc/}{composition_active}
 
 
 % cookbooks/composition-reaction
-\include*{cookbooks/composition-reaction/doc/composition-reaction.tex}
+\import{cookbooks/composition-reaction/doc/}{composition-reaction}
 
 
 \subsubsection{Using particles}
@@ -4936,58 +4936,58 @@ way to go, \aspect{} supports both: using fields and using particles.
 
 % cookbooks/composition_passive_particles/
 
-\include*{cookbooks/composition_passive_particles/doc/composition_passive_particles.tex}
+\import{cookbooks/composition_passive_particles/doc/}{composition_passive_particles}
 
 
 % cookbooks/composition_active_particles/
 
-\include*{cookbooks/composition_active_particles/doc/composition_active_particles.tex}
+\import{cookbooks/composition_active_particles/doc/}{composition_active_particles}
 
 
 % cookbooks/free_surface
-\include*{cookbooks/free_surface/doc/free_surface.tex}
+\import{cookbooks/free_surface/doc/}{free_surface}
 
 
 % cookbooks/free_surface_with_crust
-\include*{cookbooks/free_surface_with_crust/doc/free_surface_with_crust.tex}
+\import{cookbooks/free_surface_with_crust/doc/}{free_surface_with_crust}
 
 
 % cookbooks/sinker-with-averaging
-\include*{cookbooks/sinker-with-averaging/doc/sinker-with-averaging.tex}
+\import{cookbooks/sinker-with-averaging/doc/}{sinker-with-averaging}
 
 
 % cookbooks/prescribed_velocity
-\include*{cookbooks/prescribed_velocity/doc/prescribed_velocity.tex}
+\import{cookbooks/prescribed_velocity/doc/}{prescribed_velocity}
 
 
 % cookbooks/prescribed_velocity_ascii_data
-\include*{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.tex}
+\import{cookbooks/prescribed_velocity_ascii_data/doc/}{prescribed_velocity_ascii_data}
 
 
 % cookbooks/shell_simple_2d_smoothing
-\include*{cookbooks/shell_simple_2d_smoothing/doc/shell_simple_2d_smoothing.tex}
+\import{cookbooks/shell_simple_2d_smoothing/doc/}{shell_simple_2d_smoothing}
 
 
 % cookbooks/finite_strain/
-\include*{cookbooks/finite_strain/doc/finite_strain.tex}
+\import{cookbooks/finite_strain/doc/}{finite_strain}
 
 % cookbooks/geomio
-\include*{cookbooks/geomio/doc/geomio.tex}
+\import{cookbooks/geomio/doc/}{geomio}
 
 
 % cookbooks/muparser_temperature_example
-\include*{cookbooks/muparser_temperature_example/doc/muparser_temperature_example.tex}
+\import{cookbooks/muparser_temperature_example/doc/}{muparser_temperature_example}
 
 
-\include*{cookbooks/christensen_yuen_phase_function/doc/christensen_yuen_phase_function.tex}
+\import{cookbooks/christensen_yuen_phase_function/doc/}{christensen_yuen_phase_function}
 
 
 % cookbooks/phase_diagram/
-\include*{cookbooks/visualizing_phase_diagram/doc/visualizing_phase_diagram.tex}
+\import{cookbooks/visualizing_phase_diagram/doc/}{visualizing_phase_diagram}
 
 
 % cookbooks/plume_2D_chunk
-\include*{cookbooks/plume_2D_chunk/doc/plume.tex}
+\import{cookbooks/plume_2D_chunk/doc/}{plume}
 
 
 \subsection{Geophysical setups}
@@ -5083,59 +5083,59 @@ asked for, say, the Rayleigh number of a simulation.
 
 
 % cookbooks/shell_simple_2d
-\include*{cookbooks/shell_simple_2d/doc/shell_simple_2d.tex}
+\import{cookbooks/shell_simple_2d/doc/}{shell_simple_2d}
 
 
 % cookbooks/shell_simple_3d
-\include*{cookbooks/shell_simple_3d/doc/shell_simple_3d.tex}
+\import{cookbooks/shell_simple_3d/doc/}{shell_simple_3d}
 
 
 % cookbooks/shell_3d_postprocess
-\include*{cookbooks/shell_3d_postprocess/doc/shell_3d_postprocess.tex}
+\import{cookbooks/shell_3d_postprocess/doc/}{shell_3d_postprocess}
 
 
 % cookbooks/initial-condition-S20RTS
-\include*{cookbooks/initial-condition-S20RTS/doc/initial-condition-S20RTS.tex}
+\import{cookbooks/initial-condition-S20RTS/doc/}{initial-condition-S20RTS}
 
 
 % cookbooks/gplates/
-\include*{cookbooks/gplates/doc/gplates.tex}
+\import{cookbooks/gplates/doc/}{gplates}
 
 
 % cookbooks/burnman/
-\include*{../../cookbooks/burnman/doc/burnman.tex}
+\import{../../cookbooks/burnman/doc/}{burnman}
 
 
 % cookbooks/steinberger/
-\include*{../../cookbooks/steinberger/doc/steinberger.tex}
+\import{../../cookbooks/steinberger/doc/}{steinberger}
 
 
 % cookbooks/morency_doin_2004/
-\include*{cookbooks/morency_doin_2004/doc/morency_doin_2004.tex}
+\import{cookbooks/morency_doin_2004/doc/}{morency_doin_2004}
 
 
 % cookbooks/crustal_deformation
-\include*{cookbooks/crustal_deformation/doc/crustal_deformation.tex}
+\import{cookbooks/crustal_deformation/doc/}{crustal_deformation}
 
 
 % cookbooks/continental_extension
-\include*{cookbooks/continental_extension/doc/continental_extension.tex}
+\import{cookbooks/continental_extension/doc/}{continental_extension}
 
 
 % cookbooks/inner_core_convection
-\include*{cookbooks/inner_core_convection/doc/inner_core_convection.tex}
+\import{cookbooks/inner_core_convection/doc/}{inner_core_convection}
 
 
 % cookbooks/global_melt
-\include*{cookbooks/global_melt/doc/global_melt.tex}
+\import{cookbooks/global_melt/doc/}{global_melt}
 
 
 % cookbooks/mid_ocean_ridge
-\include*{cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.tex}
+\import{cookbooks/mid_ocean_ridge/doc/}{mid_ocean_ridge}
 
 
 % cookbooks/kinematically_driven_subduction_2d
-\include*{cookbooks/kinematically_driven_subduction_2d/doc/kinematically_driven_subduction_2d.tex}
+\import{cookbooks/kinematically_driven_subduction_2d/doc/}{kinematically_driven_subduction_2d}
 
 
 \subsection{Benchmarks}
@@ -5226,122 +5226,122 @@ the current directory.
 
 
 % benchmarks/onset-of-convection
-\include*{cookbooks/benchmarks/onset-of-convection/doc/onset-of-convection.tex}
+\import{cookbooks/benchmarks/onset-of-convection/doc/}{onset-of-convection}
 
 
 % cookbooks/benchamrks/van-keken
-\include*{cookbooks/benchmarks/van-keken/doc/van-keken.tex}
+\import{cookbooks/benchmarks/van-keken/doc/}{van-keken}
 
 
 % cookbooks/van-keken-vof
-\include*{cookbooks/van-keken-vof/doc/van-keken-vof.tex}
+\import{cookbooks/van-keken-vof/doc/}{van-keken-vof}
 
 % cookbooks/bunge_et_al_mantle_convection/
-\include*{cookbooks/bunge_et_al_mantle_convection/doc/bunge_et_al_mantle_convection.tex}
+\import{cookbooks/bunge_et_al_mantle_convection/doc/}{bunge_et_al_mantle_convection}
 
 
 % cookbooks/benchmarks/rayleigh_taylor_instablility
-\include*{cookbooks/benchmarks/rayleigh_taylor_instability/doc/rayleigh_taylor_instability.tex}
+\import{cookbooks/benchmarks/rayleigh_taylor_instability/doc/}{rayleigh_taylor_instability}
 
 
 % cookbooks/benchmarks/polydiapirs
-\include*{cookbooks/benchmarks/polydiapirs/doc/polydiapirs.tex}
+\import{cookbooks/benchmarks/polydiapirs/doc/}{polydiapirs}
 
 
 % cookbooks/benchmarks/sinking_block
-\include*{cookbooks/benchmarks/sinking_block/doc/sinking_block.tex}
+\import{cookbooks/benchmarks/sinking_block/doc/}{sinking_block}
 
 
 % cookbooks/benchmarks/solcx
-\include*{cookbooks/benchmarks/solcx/doc/solcx.tex}
+\import{cookbooks/benchmarks/solcx/doc/}{solcx}
 
 
 % cookbooks/benchmarks/solkz
-\include*{cookbooks/benchmarks/solkz/doc/solkz.tex}
+\import{cookbooks/benchmarks/solkz/doc/}{solkz}
 
 
 % cookbooks/benchmarks/inclusion
-\include*{cookbooks/benchmarks/inclusion/doc/inclusion.tex}
+\import{cookbooks/benchmarks/inclusion/doc/}{inclusion}
 
 
 % cookbooks/benchmarks/burstedde
-\include*{cookbooks/benchmarks/burstedde/doc/burstedde.tex}
+\import{cookbooks/benchmarks/burstedde/doc/}{burstedde}
 
 
 % cookbooks/benchmarks/slab_detachment
-\include*{cookbooks/benchmarks/slab_detachment/doc/slab_detachment.tex}
+\import{cookbooks/benchmarks/slab_detachment/doc/}{slab_detachment}
 
 
 % cookbooks/benchmarks/hollow_sphere
-\include*{cookbooks/benchmarks/hollow_sphere/doc/hollow_sphere.tex}
+\import{cookbooks/benchmarks/hollow_sphere/doc/}{hollow_sphere}
 
 
 % cookbooks/benchmarks/annulus
-\include*{cookbooks/benchmarks/annulus/doc/annulus.tex}
+\import{cookbooks/benchmarks/annulus/doc/}{annulus}
 
 
 % cookbooks/benchmarks/stokes
-\include*{cookbooks/benchmarks/stokes/doc/stokes.tex}
+\import{cookbooks/benchmarks/stokes/doc/}{stokes}
 
 
 % cookbooks/benchmarks/viscosity_grooves
-\include*{cookbooks/benchmarks/viscosity_grooves/doc/viscosity_grooves.tex}
+\import{cookbooks/benchmarks/viscosity_grooves/doc/}{viscosity_grooves}
 
 
 % cookbooks/benchmarks/latent-heat
-\include*{cookbooks/benchmarks/latent-heat/doc/latent-heat.tex}
+\import{cookbooks/benchmarks/latent-heat/doc/}{latent-heat}
 
 
 % cookbooks/benchmarks/davies_et_al
-\include*{cookbooks/benchmarks/davies_et_al/doc/davies_et_al.tex}
+\import{cookbooks/benchmarks/davies_et_al/doc/}{davies_et_al}
 
 
 % cookbooks/benchmarks/crameri_et_al
-\include*{cookbooks/benchmarks/crameri_et_al/doc/crameri_et_al.tex}
+\import{cookbooks/benchmarks/crameri_et_al/doc/}{crameri_et_al}
 
 
 % cookbooks/benchmarks/solitary_wave
-\include*{cookbooks/benchmarks/solitary_wave/doc/solitary_wave.tex}
+\import{cookbooks/benchmarks/solitary_wave/doc/}{solitary_wave}
 
 
 % cookbooks/benchmarks/operator_splitting
-\include*{cookbooks/benchmarks/operator_splitting/doc/operator_splitting.tex}
+\import{cookbooks/benchmarks/operator_splitting/doc/}{operator_splitting}
 
 
 % cookbooks/benchmarks/tosi_et_al_2015_gcubed
-\include*{cookbooks/benchmarks/tosi_et_al_2015_gcubed/doc/tosi_et_al_2015_gcubed.tex}
+\import{cookbooks/benchmarks/tosi_et_al_2015_gcubed/doc/}{tosi_et_al_2015_gcubed}
 
 
 % cookbooks/benchmarks/layeredflow
-\include*{cookbooks/benchmarks/layeredflow/doc/layeredflow.tex}
+\import{cookbooks/benchmarks/layeredflow/doc/}{layeredflow}
 
 
 % cookbooks/benchmarks/doneahuerta
-\include*{cookbooks/benchmarks/doneahuerta/doc/doneahuerta.tex}
+\import{cookbooks/benchmarks/doneahuerta/doc/}{doneahuerta}
 
 
 % cookbooks/benchmarks/advection
-\include*{cookbooks/benchmarks/advection/doc/advection.tex}
+\import{cookbooks/benchmarks/advection/doc/}{advection}
 
 
 % cookbooks/benchmarks/yamauchi_takei_2016_anelasticity
-\include*{cookbooks/benchmarks/yamauchi_takei_2016_anelasticity/doc/yamauchi_takei_2016_anelasticity.tex}
+\import{cookbooks/benchmarks/yamauchi_takei_2016_anelasticity/doc/}{yamauchi_takei_2016_anelasticity}
 
 
 % cookbooks/benchmarks/gravity_thin_shell
-\include*{cookbooks/benchmarks/gravity_thin_shell/doc/gravity_thin_shell.tex}
+\import{cookbooks/benchmarks/gravity_thin_shell/doc/}{gravity_thin_shell}
 
 
 % cookbooks/benchmarks/gravity_thick_shell
-\include*{cookbooks/benchmarks/gravity_thick_shell/doc/gravity_thick_shell.tex}
+\import{cookbooks/benchmarks/gravity_thick_shell/doc/}{gravity_thick_shell}
 
 
 % cookbooks/benchmarks/gravity_mantle
-\include*{cookbooks/benchmarks/gravity_mantle/doc/gravity_mantle.tex}
+\import{cookbooks/benchmarks/gravity_mantle/doc/}{gravity_mantle}
 
 
 % cookbooks/benchmarks/buiter_et_al_2016_jsg
-\include*{cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/buiter_et_al_2016_jsg.tex}
+\import{cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/}{buiter_et_al_2016_jsg}
 
 
 \subsection{Setups for teaching}
@@ -5366,13 +5366,13 @@ The course is designed to teach general concepts of geophysics, and it includes 
   \item \nameref{sec:cookbooks-magnetic-stripes} (using the files in \url{cookbooks/magnetic_stripes/})
 \end{enumerate}
 
-\include*{cookbooks/convection-box-particles/doc/convection-box-particles.tex}
+\import{cookbooks/convection-box-particles/doc/}{convection-box-particles}
 
-\include*{cookbooks/heat_flow/doc/heat-flow.tex}
+\import{cookbooks/heat_flow/doc/}{heat-flow}
 
-\include*{cookbooks/onset_of_convection/doc/onset_of_convection.tex}
+\import{cookbooks/onset_of_convection/doc/}{onset_of_convection}
 
-\include*{cookbooks/magnetic_stripes/doc/magnetic_stripes.tex}
+\import{cookbooks/magnetic_stripes/doc/}{magnetic_stripes}
 
 \section{Extending and contributing to \aspect}
 \label{sec:extending}
@@ -7822,7 +7822,7 @@ of this document. There, each parameter is shown with all references
 to the parameter throughout the entire document.
 
 % now include a file that describes all currently available run-time parameters
-\include*{parameters}
+\input{parameters}
 
 
 \pagebreak
