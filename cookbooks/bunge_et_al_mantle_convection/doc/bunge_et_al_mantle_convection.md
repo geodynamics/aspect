@@ -18,12 +18,12 @@ $R_{inner} = 3480~\text{ km}$ and outer radius
 $R_{outer} = 6370~\text{ km}$. The surface temperature is set to
 $T{_{surf}}$ = 1060 K and the bottom temperature to
 $T{_{cmb}} = 3450$ K. The gravity vector is radial and its
-magnitude is $g = 10$ m&nbsp;s<sup>&minus;2</sup>.
+magnitude is $g = 10 \text{m s}^{-2}$.
 
 There is a single incompressible fluid in the domain, characterized by
 $\rho_0 = 4500$ kg&nbsp;m<sup>&minus;3</sup>, $\alpha = 2.5\cdot10^{-5}$
-&nbsp;K, $k = 4$ W&nbsp;m<sup>&minus;</sup>&nbsp;K<sup>&minus;1</sup>, $C_p = 1000$
-J&nbsp;kg<sup>&minus;</sup>&nbsp;K<sup>&minus;1</sup> and its internal heating rate is
+&nbsp;K, $k = 4$ W&nbsp;m<sup>&minus;1</sup>&nbsp;K<sup>&minus;1</sup>, $C_p = 1000$
+J&nbsp;kg<sup>&minus;1</sup>&nbsp;K<sup>&minus;1</sup> and its internal heating rate is
 $Q{_{int}} = 1\cdot10^{-12}$ W&nbsp;kg<sup>&minus;1</sup>. The
 interface between the upper mantle (viscosity $\eta_{um}$) and
 the lower mantle (viscosity $\eta_{lm}$) is fixed at 670 km
