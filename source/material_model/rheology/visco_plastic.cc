@@ -280,9 +280,9 @@ namespace aspect
             double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1] - friction_terms;
             
             //limit friction 
-            if (current_friction > 0.5 * drucker_prager_parameters.angle_internal_friction)
+            if (current_friction < 0.5 * drucker_prager_parameters.angle_internal_friction)
               current_friction = 0.5 * drucker_prager_parameters.angle_internal_friction;
-            else if (current_friction < 1.5 * drucker_prager_parameters.angle_internal_friction)             
+            else if (current_friction > 1.5 * drucker_prager_parameters.angle_internal_friction)             
               current_friction = 1.5 * drucker_prager_parameters.angle_internal_friction; 
 
             // Step 5: plastic yielding
@@ -815,9 +815,9 @@ namespace aspect
                double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1] - friction_terms;
 
                //limit friction
-               if (current_friction > 0.5 * drucker_prager_parameters.angle_internal_friction)
+               if (current_friction < 0.5 * drucker_prager_parameters.angle_internal_friction)
                  current_friction = 0.5 * drucker_prager_parameters.angle_internal_friction;
-               else if (current_friction < 1.5 * drucker_prager_parameters.angle_internal_friction)
+               else if (current_friction > 1.5 * drucker_prager_parameters.angle_internal_friction)
                  current_friction = 1.5 * drucker_prager_parameters.angle_internal_friction;
 
                 // Also convert radians to degrees
