@@ -2,8 +2,8 @@
 
 ## Our Pledge
 
-In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to 
-making participation in our project and our community a harassment-free experience for everyone, 
+In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to
+making participation in our project and our community a harassment-free experience for everyone,
 regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion (or lack thereof), sexual identity and orientation, or technology choices.
 
 ## Our Standards
@@ -50,4 +50,4 @@ Project maintainers who do not follow or enforce the Code of Conduct in good fai
 
 ## Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant homepage](http://contributor-covenant.org), version 1.4, available [here](http://contributor-covenant.org/version/1/4) and draws on the Community Code of Conduct of the Computational Infrastructure for Geodynamics, available [here](https://geodynamics.org/cig/about/code-conduct/).
+This Code of Conduct is adapted from the [Contributor Covenant homepage](http://contributor-covenant.org), version 1.4, available [here](http://contributor-covenant.org/version/1/4) and draws on the Community Code of Conduct of the Computational Infrastructure for Geodynamics, available [here](https://geodynamics.org/aboutus/policies/conduct).
