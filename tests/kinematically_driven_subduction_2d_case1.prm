@@ -1,18 +1,17 @@
-# This cookbook models oceanic subduction in a 2d
-# box of 3000 x 670 km.
+# This test is the same setup as the
+# cookbook kinematically_driven_subduction_2d
+# but with lower resolution. It models oceanic
+# subduction in a 2d box of 3000 x 670 km.
 # The subducting plate is driven by inflow boundary
 # conditions on the top part of the right boundary,
 # while a balancing outflow is prescribed underneath.
 # Only density and viscosity differ per composition.
-# High resolution is required to a.o. resolve the weak zone
-# between the subducting and overriding plate, so about
-# 100 MPI processes are required.
 
 # 2D
 set Dimension                              = 2
-# Run for 15 My
+# Run for 0.1 My
 set Start time                             = 0
-set End time                               = 15.01e6
+set End time                               = 1.e5
 set CFL number                             = 0.5
 set Use years in output instead of seconds = true
 # Linear solver
@@ -56,11 +55,6 @@ subsection Boundary velocity model
                               0
     set Variable names      = x,z
   end
-end
-
-subsection Checkpointing
-  set Steps between checkpoint = 200
-  set Time between checkpoint  = 0
 end
 
 subsection Material model
@@ -136,8 +130,8 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement              = 1
-  set Initial global refinement                = 6
-  set Minimum refinement level                 = 6
+  set Initial global refinement                = 4
+  set Minimum refinement level                 = 4
   set Normalize individual refinement criteria = true
   set Refinement criteria merge operation      = plus
   set Coarsening fraction                      = 0.01
@@ -152,7 +146,7 @@ subsection Mesh refinement
     set Coordinate system = depth
     set Variable names = x,z,t
     set Function constants = vel=150e3, L=100e3, crust=10e3
-    set Function expression = if(x<crust,10,if(x<L,9,if(x<vel,8,6)))
+    set Function expression = if(x<crust,8,if(x<L,7,if(x<vel,6,4)))
   end
 
 end
@@ -178,7 +172,6 @@ end
 
 
 subsection Termination criteria
-  set Checkpoint on termination = true
   set Termination criteria      = end time
 end
 

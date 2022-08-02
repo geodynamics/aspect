@@ -66,7 +66,7 @@ namespace aspect
          */
 
       private:
-        std::vector<std::string> slab_compositions;
+        std::vector<std::string> selected_fields;
     };
   }
 }
