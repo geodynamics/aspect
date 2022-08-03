@@ -1,6 +1,6 @@
-name: github-docker
+name: github-docker-tester
 
-on: 
+on:
   schedule:
     # * is a special character in YAML so you have to quote this string
     # trigger at 1:30 am every day
@@ -16,7 +16,7 @@ permissions:
 jobs:
   build-docker:
     runs-on: ubuntu-latest
-    # if: github.repository == 'geodynamics/aspect'
+    if: github.repository == 'geodynamics/aspect'
     steps:    
       - name: Checkout code
         uses: actions/checkout@v3
@@ -37,5 +37,5 @@ jobs:
           cache-from: type=registry,ref=ubuntu:20.04
           cache-to: type=inline
           push: true
-          tags: gassmoeller/aspect-tester:latest
+          tags: geodynamics/aspect-tester:latest
 
