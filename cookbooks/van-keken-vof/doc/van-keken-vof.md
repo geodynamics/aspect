@@ -37,7 +37,7 @@ interface, rather than in the entire computational domain.
 
 As noted above, when the interface is discontinuous, the van Keken problem is
 a version of the Rayleigh-Taylor problem, which is unstable to perturbations
-of all wavelengths[^footnote1] (e.g. see {cite:t}`chandrasekhar:1961`). Therefore, it is
+of all wavelengths whether the two fluids have the same viscosity or different viscosities (e.g. see {cite:t}`chandrasekhar:1961`). Therefore, it is
 extremely sensitive to the initial conditions. In order to address this
 sensitivity, we do not use the default approach of computing the initial
 material volume fractions using a composition quadrature. Instead we compute
@@ -197,5 +197,3 @@ of the changes in width of the smoothed regions in the computations shown in
 {numref}`fig:vk-6`. In summary, these results demonstrate the
 sensitivity of the discontinuous version of the van Keken problem to even
 extremely small variations in the initial conditions.
-
-[^footnote1]: This is true whether the two fluids have the same viscosity or different viscosities.
