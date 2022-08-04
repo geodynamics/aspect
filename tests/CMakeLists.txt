@@ -97,14 +97,15 @@ ENDFUNCTION()
 
 # Analyze the .prm to decide if this test should be run or not. We are
 # checking for the following strings in the .prm:
-# 1. "WORLD BUILDER" - only run with World Builder.
+# 1. "Enable if: ASPECT_WITH_WORLD_BUILDER" - only run with World Builder.
 # 2. "QUICK_TEST" - enable the test even if RUN_ALL_TESTS is false
 FUNCTION(SHOULD_ENABLE_TEST _filename)
 
   FILE(STRINGS ${_filename} _input_lines
-  REGEX "WORLD BUILDER")
+       REGEX "Enable if: ASPECT_WITH_WORLD_BUILDER")
   IF(NOT "${_input_lines}" STREQUAL "")
-    IF (${_input_lines} MATCHES "WORLD BUILDER" AND NOT ASPECT_WITH_WORLD_BUILDER)
+    IF (${_input_lines} MATCHES "Enable if: ASPECT_WITH_WORLD_BUILDER" 
+        AND NOT ASPECT_WITH_WORLD_BUILDER)
       SET(_use_test OFF PARENT_SCOPE)
     ENDIF()
   ENDIF()
