@@ -28,6 +28,12 @@
 #include <aspect/initial_composition/interface.h>
 #include <aspect/simulator_access.h>
 
+namespace WorldBuilder
+{
+  class World;
+}
+
+
 namespace aspect
 {
   namespace InitialComposition
@@ -86,6 +92,12 @@ namespace aspect
          * should be evaluated for this compositional field.
          */
         std::vector<bool> relevant_compositions;
+
+        /**
+         * A pointer to the WorldBuilder object. Keeping this pointer ensures
+         * that the object doesn't go away while we still need it.
+         */
+        std::shared_ptr<const ::WorldBuilder::World> world_builder;
     };
   }
 }
