@@ -3,7 +3,7 @@
 # we do not include statistics with the hope that this makes the test work on
 # a wide range of machines
 
-# QUICK_TEST
+# Enable if: QUICK_TEST
 # MPI: 2
 
 
