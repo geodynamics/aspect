@@ -1,15 +1,11 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libprescribed_temperature_with_diffusion.so>
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 400 (on 2 levels)
 Number of degrees of freedom: 6,618 (4,010+603+2,005)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Copying properties into prescribed temperature field.
+   Copying properties into prescribed temperature field... done.
    Solving temperature system... 152 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 35+0 iterations.
@@ -21,9 +17,4 @@ Number of degrees of freedom: 6,618 (4,010+603+2,005)
 Termination requested by criterion: end time
 
 
-+------------------------------------------------+------------+------------+
-+------------------------------------+-----------+------------+------------+
-+------------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
