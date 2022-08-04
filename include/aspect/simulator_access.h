@@ -805,6 +805,7 @@ namespace aspect
        */
       const NewtonHandler<dim> &
       get_newton_handler () const;
+
 #ifdef ASPECT_WITH_WORLD_BUILDER
       /**
        * Return a reference to the world builder that controls the setup of
@@ -812,9 +813,30 @@ namespace aspect
        *
        * This call will only succeed if ASPECT was configured to use
        * the WorldBuilder.
+       *
+       * While the Simulator class creates a shared pointer to a
+       * WorldBuilder object before the first time step, it releases
+       * the pointer once it no longer needs access to the initial
+       * conditions. As a consequence, you can only call this function
+       * during the first time step. If a plugin needs access to the object
+       * so returned at a later time, it has to store its own shared
+       * pointer to that object, and that is what can be achieved using
+       * the get_world_builder_pointer() function below.
        */
       const WorldBuilder::World &
       get_world_builder () const;
+
+      /**
+       * This function is to get_world_builder() what
+       * get_initial_temperature_manager_pointer() is to
+       * the get_initial_temperature_manager() function: It returns a
+       * shared pointer so that objects that still need access to the
+       * WorldBuilder object after the Simulator class has released
+       * it, can extend the lifetime of the object pointed to by
+       * keeping a shared pointer to it.
+       */
+      std::shared_ptr<const WorldBuilder::World>
+      get_world_builder_pointer () const;
 #endif
       /**
        * Return a reference to the mesh deformation handler. This function will

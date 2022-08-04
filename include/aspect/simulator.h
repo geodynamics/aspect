@@ -1907,7 +1907,18 @@ namespace aspect
 
       const std::unique_ptr<AdiabaticConditions::Interface<dim>>             adiabatic_conditions;
 #ifdef ASPECT_WITH_WORLD_BUILDER
-      const std::unique_ptr<WorldBuilder::World>                             world_builder;
+      /**
+       * A pointer to the WorldBuilder object. Like the
+       * `initial_temperature_manager` and
+       * `initial_composition_manager` objects above, the Simulator
+       * object itself releases this pointer at the end of the
+       * initialization process (right after releasing the
+       * two mentioned initial condition objects). If a part of
+       * the plugin system still needs the world builder object
+       * after this point, it needs to keep its own shared pointer
+       * to it.
+       */
+      std::shared_ptr<WorldBuilder::World>                                   world_builder;
 #endif
       BoundaryVelocity::Manager<dim>                                         boundary_velocity_manager;
       std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim>>> boundary_traction;

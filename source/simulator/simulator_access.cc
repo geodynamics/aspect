@@ -719,9 +719,44 @@ namespace aspect
   SimulatorAccess<dim>::get_world_builder () const
   {
     Assert (simulator->world_builder.get() != nullptr,
-            ExcMessage("You can not call this function if the World Builder is not enabled. "
-                       "Enable it by providing a path to a world builder file."));
-    return *(simulator->world_builder);
+            ExcMessage ("You are trying to access the WorldBuilder "
+                        "object, but the Simulator object is not currently storing "
+                        "a pointer to such an object. This may be because you have "
+                        "not enabled WorldBuilder support during configuration of "
+                        "ASPECT. Alternatively, the Simulator object may no "
+                        "longer be keeping "
+                        "track of it because the initial time has passed. If "
+                        "you need to access to this object after the first time "
+                        "step, you need to copy the object returned by "
+                        "this function before or during the first time step "
+                        "into a std::shared_ptr that lives long enough to "
+                        "extend the lifetime of the object pointed to "
+                        "beyond the timeframe that the Simulator object "
+                        "keeps track of it."));
+    return *simulator->world_builder;
+  }
+
+
+  template <int dim>
+  std::shared_ptr<const WorldBuilder::World>
+  SimulatorAccess<dim>::get_world_builder_pointer () const
+  {
+    Assert (simulator->world_builder.get() != nullptr,
+            ExcMessage ("You are trying to access the WorldBuilder "
+                        "object, but the Simulator object is not currently storing "
+                        "a pointer to such an object. This may be because you have "
+                        "not enabled WorldBuilder support during configuration of "
+                        "ASPECT. Alternatively, the Simulator object may no "
+                        "longer be keeping "
+                        "track of it because the initial time has passed. If "
+                        "you need to access to this object after the first time "
+                        "step, you need to copy the object returned by "
+                        "this function before or during the first time step "
+                        "into a std::shared_ptr that lives long enough to "
+                        "extend the lifetime of the object pointed to "
+                        "beyond the timeframe that the Simulator object "
+                        "keeps track of it."));
+    return simulator->world_builder;
   }
 #endif
 

@@ -189,7 +189,7 @@ namespace aspect
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
 #ifdef ASPECT_WITH_WORLD_BUILDER
     world_builder (parameters.world_builder_file != "" ?
-                   std::make_unique<WorldBuilder::World>(parameters.world_builder_file) :
+                   std::make_shared<WorldBuilder::World>(parameters.world_builder_file) :
                    nullptr),
 #endif
     boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
@@ -2031,7 +2031,10 @@ namespace aspect
         // conditions, they will have created their own shared pointers.
         initial_temperature_manager.reset();
         initial_composition_manager.reset();
-
+#ifdef ASPECT_WITH_WORLD_BUILDER
+        // The same applies to the world builder object:
+        world_builder.reset();
+#endif
         // Prepare the next time step:
         time_stepping_manager.update();
 

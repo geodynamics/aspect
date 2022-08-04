@@ -448,6 +448,10 @@ namespace aspect
     // their own shared pointers.
     initial_temperature_manager.reset();
     initial_composition_manager.reset();
+#ifdef ASPECT_WITH_WORLD_BUILDER
+    // The same applies to the world builder object:
+    world_builder.reset();
+#endif
 
     // Then start with the actual deserialization.
     // First check existence of the two restart files
