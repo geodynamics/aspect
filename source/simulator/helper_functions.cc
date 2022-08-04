@@ -1856,14 +1856,14 @@ namespace aspect
                                                    mpi_communicator);
 
     if (adv_field.is_temperature())
-      pcout << "   Copying properties into prescribed temperature field."
-            << std::endl;
+      pcout << "   Copying properties into prescribed temperature field... "
+            << std::flush;
     else
       {
         const std::string name_of_field = introspection.name_for_compositional_index(adv_field.compositional_variable);
 
-        pcout << "   Copying properties into prescribed compositional field " + name_of_field + "."
-              << std::endl;
+        pcout << "   Copying properties into prescribed compositional field " + name_of_field + "... "
+              << std::flush;
       }
 
     // Create an FEValues object that allows us to interpolate onto the solution
@@ -1972,6 +1972,8 @@ namespace aspect
       current_constraints.distribute (distributed_vector);
 
     solution.block(advection_block) = distributed_vector.block(advection_block);
+
+    pcout << "done." << std::endl;
   }
 
 
