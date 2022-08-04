@@ -111,9 +111,9 @@ namespace aspect
              :
              1.0);
 
-          Assert (density_c_P >= 0,
-                  ExcMessage ("The product of density and c_P needs to be a "
-                              "non-negative quantity."));
+          AssertThrow (density_c_P >= 0,
+                       ExcMessage ("The product of density and c_P needs to be a "
+                                   "non-negative quantity."));
 
           const double latent_heat_LHS =
             ((advection_field_is_temperature)
@@ -121,9 +121,9 @@ namespace aspect
              scratch.heating_model_outputs.lhs_latent_heat_terms[q]
              :
              0.0);
-          Assert (density_c_P + latent_heat_LHS >= 0,
-                  ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                              "to the left hand side needs to be a non-negative quantity."));
+          AssertThrow (density_c_P + latent_heat_LHS >= 0,
+                       ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                   "to the left hand side needs to be a non-negative quantity."));
 
           const double gamma =
             ((advection_field_is_temperature)
@@ -723,9 +723,9 @@ namespace aspect
                  :
                  1.0);
 
-              Assert (density_c_P >= 0,
-                      ExcMessage ("The product of density and c_P needs to be a "
-                                  "non-negative quantity."));
+              AssertThrow (density_c_P >= 0,
+                           ExcMessage ("The product of density and c_P needs to be a "
+                                       "non-negative quantity."));
 
               const double conductivity =
                 ((advection_field.is_temperature())
@@ -739,9 +739,9 @@ namespace aspect
                  scratch.face_heating_model_outputs.lhs_latent_heat_terms[q]
                  :
                  0.0);
-              Assert (density_c_P + latent_heat_LHS >= 0,
-                      ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                                  "to the left hand side needs to be a non-negative quantity."));
+              AssertThrow (density_c_P + latent_heat_LHS >= 0,
+                           ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                       "to the left hand side needs to be a non-negative quantity."));
 
               const double penalty = (advection_field.is_temperature()
                                       ?
@@ -987,9 +987,9 @@ namespace aspect
                      :
                      1.0);
 
-                  Assert (density_c_P >= 0,
-                          ExcMessage ("The product of density and c_P needs to be a "
-                                      "non-negative quantity."));
+                  AssertThrow (density_c_P >= 0,
+                               ExcMessage ("The product of density and c_P needs to be a "
+                                           "non-negative quantity."));
 
                   const double conductivity =
                     ((advection_field.is_temperature())
@@ -1003,9 +1003,9 @@ namespace aspect
                      scratch.face_heating_model_outputs.lhs_latent_heat_terms[q]
                      :
                      0.0);
-                  Assert (density_c_P + latent_heat_LHS >= 0,
-                          ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                                      "to the left hand side needs to be a non-negative quantity."));
+                  AssertThrow (density_c_P + latent_heat_LHS >= 0,
+                               ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                           "to the left hand side needs to be a non-negative quantity."));
 
                   const double penalty = (advection_field.is_temperature()
                                           ?
@@ -1031,9 +1031,9 @@ namespace aspect
                      :
                      1.0);
 
-                  Assert (neighbor_density_c_P >= 0,
-                          ExcMessage ("The product of density and c_P on the neighbor needs to be a "
-                                      "non-negative quantity."));
+                  AssertThrow (neighbor_density_c_P >= 0,
+                               ExcMessage ("The product of density and c_P on the neighbor needs to be a "
+                                           "non-negative quantity."));
 
                   const double neighbor_conductivity =
                     ((advection_field.is_temperature())
@@ -1047,9 +1047,9 @@ namespace aspect
                      scratch.neighbor_face_heating_model_outputs.lhs_latent_heat_terms[q]
                      :
                      0.0);
-                  Assert (neighbor_density_c_P + neighbor_latent_heat_LHS >= 0,
-                          ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                                      "to the left hand side on the neighbor needs to be a non-negative quantity."));
+                  AssertThrow (neighbor_density_c_P + neighbor_latent_heat_LHS >= 0,
+                               ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                           "to the left hand side on the neighbor needs to be a non-negative quantity."));
 
                   const double neighbor_penalty = (advection_field.is_temperature()
                                                    ?
@@ -1068,11 +1068,11 @@ namespace aspect
                     std::max(density_c_P + latent_heat_LHS,
                              neighbor_density_c_P + neighbor_latent_heat_LHS);
 
-                  Assert (numbers::is_finite(max_density_c_P_and_latent_heat),
-                          ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a finite quantity."));
-                  Assert (max_density_c_P_and_latent_heat >= 0,
-                          ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a "
-                                      "non-negative quantity."));
+                  AssertThrow (numbers::is_finite(max_density_c_P_and_latent_heat),
+                               ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a finite quantity."));
+                  AssertThrow (max_density_c_P_and_latent_heat >= 0,
+                               ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a "
+                                           "non-negative quantity."));
 
                   /**
                    * The discontinuous Galerkin method uses 2 types of jumps over edges:
@@ -1343,9 +1343,9 @@ namespace aspect
                      :
                      1.0);
 
-                  Assert (density_c_P >= 0,
-                          ExcMessage ("The product of density and c_P needs to be a "
-                                      "non-negative quantity."));
+                  AssertThrow (density_c_P >= 0,
+                               ExcMessage ("The product of density and c_P needs to be a "
+                                           "non-negative quantity."));
 
                   const double conductivity =
                     ((advection_field.is_temperature())
@@ -1359,9 +1359,9 @@ namespace aspect
                      scratch.face_heating_model_outputs.lhs_latent_heat_terms[q]
                      :
                      0.0);
-                  Assert (density_c_P + latent_heat_LHS >= 0,
-                          ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                                      "to the left hand side needs to be a non-negative quantity."));
+                  AssertThrow (density_c_P + latent_heat_LHS >= 0,
+                               ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                           "to the left hand side needs to be a non-negative quantity."));
 
                   const double penalty = (advection_field.is_temperature()
                                           ?
@@ -1387,9 +1387,9 @@ namespace aspect
                      :
                      1.0);
 
-                  Assert (neighbor_density_c_P >= 0,
-                          ExcMessage ("The product of density and c_P on the neighbor needs to be a "
-                                      "non-negative quantity."));
+                  AssertThrow (neighbor_density_c_P >= 0,
+                               ExcMessage ("The product of density and c_P on the neighbor needs to be a "
+                                           "non-negative quantity."));
 
                   const double neighbor_conductivity =
                     ((advection_field.is_temperature())
@@ -1403,9 +1403,9 @@ namespace aspect
                      scratch.neighbor_face_heating_model_outputs.lhs_latent_heat_terms[q]
                      :
                      0.0);
-                  Assert (neighbor_density_c_P + neighbor_latent_heat_LHS >= 0,
-                          ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                                      "to the left hand side on the neighbor needs to be a non-negative quantity."));
+                  AssertThrow (neighbor_density_c_P + neighbor_latent_heat_LHS >= 0,
+                               ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                           "to the left hand side on the neighbor needs to be a non-negative quantity."));
 
                   const double neighbor_penalty = (advection_field.is_temperature()
                                                    ?
@@ -1424,11 +1424,11 @@ namespace aspect
                     std::max(density_c_P + latent_heat_LHS,
                              neighbor_density_c_P + neighbor_latent_heat_LHS);
 
-                  Assert (numbers::is_finite(max_density_c_P_and_latent_heat),
-                          ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a finite quantity."));
-                  Assert (max_density_c_P_and_latent_heat >= 0,
-                          ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a "
-                                      "non-negative quantity."));
+                  AssertThrow (numbers::is_finite(max_density_c_P_and_latent_heat),
+                               ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a finite quantity."));
+                  AssertThrow (max_density_c_P_and_latent_heat >= 0,
+                               ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a "
+                                           "non-negative quantity."));
 
                   /**
                    * The discontinuous Galerkin method uses 2 types of jumps over edges:
