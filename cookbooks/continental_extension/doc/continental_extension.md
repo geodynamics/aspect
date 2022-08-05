@@ -20,8 +20,7 @@ using the following set of input parameters:
 
 This cookbook provides one such example where the continental lithosphere
 undergoes extension. Notably, the model design follows that of numerous
-previously published continental extension studies&nbsp;(Huismans and Beaumont
-2011; Brune et al. 2014; Naliboff and Buiter 2015, and references therein).
+previously published continental extension studies ({cite}`Hui11,Bru14,Nal15` and references therein)
 
 ## Continental Extension
 
@@ -29,7 +28,7 @@ The 2D Cartesian model spans 200 ($x$) by 100 ($y$) km and has a finite
 element grid with 1.25 and 2.5 km grid spacing, respectively, above and below
 50 km depth. This variation in grid spacing is achieved with a single initial
 adaptive refinement step using the minimum refinement function strategy.
-Unlike the crustal deformation cookbook (see {ref}`sec:cookbooks-crustal-deformation`),
+Unlike the crustal deformation cookbook (see {ref}`sec:cookbooks:crustal-deformation`),
 the mesh is not refined with time.
 
 ```{literalinclude} continental_extension_geometry_mesh.prm
@@ -56,8 +55,7 @@ thick) and mantle lithosphere (60 km thick). Material (viscous flow law
 parameters, cohesion, internal friction angle) and thermodynamic properties
 for each compositional field are based largely on previous numerical studies.
 Dislocation creep viscous flow parameters are taken from published deformation
-experiments for wet quartzite (Rutter and Brodie 2004), wet anorthite (Rybacki
-et al. 2006) and dry olivine (Hirth and Kohlstedt 2004). Additional
+experiments for wet quartzite ({cite}`RB04`), wet anorthite ({cite}`RGWD06`) and dry olivine ({cite}`HK04`). Additional
 compositional fields are used to track plastic strain and the non-initial
 plastic strain, with the latter value tracking the same quantity as the
 plastic strain absent the initial plastic strain values. As discussed further
@@ -72,10 +70,9 @@ distributed deformation in this region.
 The initial thermal structure, radiogenic heating model and associated thermal
 properties are consistent with the prescribed thermal boundary conditions and
 produce a geotherm characteristic of the continental lithosphere. The
-equations defining the initial geotherm (Chapman 1986) follow the form
+equations defining the initial geotherm ({cite}`Cha86`) follow the form
 ```{math}
 \begin{aligned}
-$$\begin{aligned}
   \label{eq:continental-geotherm-1}
   T(z) = T_T + \frac{q_T}{k}z - \frac{Az^2}{2k}
 \end{aligned}
@@ -121,8 +118,7 @@ depth, the simulation will not produce a realistic representation of
 continental breakup due to the lack of an upwelling asthenosphere layer.
 Indeed, numerical studies that examine continental breakup, rather than just
 the initial stages of continental extension, include an asthenospheric layer
-or modified basal boundary conditions (e.g. Winkler boundary condition (Brune
-et al. 2014, for example)) as temperature variations associated with
+or modified basal boundary conditions (e.g. Winkler boundary condition in {cite}`Bru14` for example) as temperature variations associated with
 lithospheric thinning exert a first-order influence on the deformation
 patterns. As noted below, numerous additional parameters may also affect the
 temporal evolution of deformation patterns.
@@ -142,67 +138,3 @@ Active (strain rate second invariant in units of $s^{-1}$) and finite (plastic)
 deformation after 50 million years of extension. The white line marks the (893 $K$)
 isotherm (initial Moho temperature).
 ```
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-Bru14" class="csl-entry">
-
-Brune, S., C. Heine, M P&#7869;rez-Gussiny&#7869;, and S. V. Sobolev. 2014.
-"Rift Migration Explains Continental Margin Asymmetry and Crustal
-Hyperextension." *Nat. Comm.* 5 (4014).
-
-</div>
-
-<div id="ref-Cha86" class="csl-entry">
-
-Chapman, D. S. 1986. "Thermal Gradients in the Continental Crust."
-*Geol. Soc. London Spec. Publ.* 24: 63--70.
-
-</div>
-
-<div id="ref-HK04" class="csl-entry">
-
-Hirth, G., and D Kohlstedt. 2004. "Rheology of the Upper Mantle and the
-Mantle Wedge:a View from the Experimentalists." In *Inside the
-Subduction Factory*, edited by J. M. Eiler, 83--105. Geophys. Monogr.
-Ser. 138. Washington, DC: American Geophysical Union.
-
-</div>
-
-<div id="ref-Hui11" class="csl-entry">
-
-Huismans, R., and C. Beaumont. 2011. "Depth-Dependent Extension,
-Two-Stage Breakup and Cratonic Underplating at Rifted Margins." *Nature*
-473 (71--75).
-
-</div>
-
-<div id="ref-Nal15" class="csl-entry">
-
-Naliboff, J., and S. Buiter. 2015. "Rift Reactivation and Migration
-During Multiphase Extension." *Earth Planet. Sci. Lett.* 421
-(58--67).
-
-</div>
-
-<div id="ref-RB04" class="csl-entry">
-
-Rutter, E. H., and K. H. Brodie. 2004. "Experimental Grain
-Size-Sensitive Flow of Hot-Pressed Brazilian Quartz Aggregates." *J.
-Struct. Geol.* 26: 2011--23.
-
-</div>
-
-<div id="ref-RGWD06" class="csl-entry">
-
-Rybacki, E., M. Gottschalk, R. Wirth, and G. Dresen. 2006. "Influence of
-Water Fugacity and Activation Volume on the Flow Properties of Fine-Grained
-Anorthite Aggregates." *J. Geophys. Res.* 111 (B3).
-
-</div>
-
-</div>
-
-  [1]: #sec:cookbooks-crustal-deformation
-  [1]: #fig:continental_extension_cookbook_0myr
-  [2]: #fig:continental_extension_cookbook_5myr
