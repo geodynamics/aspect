@@ -761,19 +761,16 @@ namespace aspect
             plastic_out->friction_angles[i] = 0;
             plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
 
-            const std::vector<double> friction_angles_RAD = calculate_isostrain_viscosities(in, i, volume_fractions,
-                                                                                            phase_function_values,
-                                                                                            n_phases_per_composition).current_friction_angles;
+            const IsostrainViscosities isostrain_viscosities = calculate_isostrain_viscosities(in, i, volume_fractions,
+                                                               phase_function_values,
+                                                               n_phases_per_composition);
+            const std::vector<double> friction_angles_RAD = isostrain_viscosities.current_friction_angles;
+            const std::vector<double> cohesions = isostrain_viscosities.current_cohesions;
 
-            // set to weakened values, or unweakened values when strain weakening is not used
+            // average over the volume volume fractions
             for (unsigned int j=0; j < volume_fractions.size(); ++j)
               {
-                // Calculate the strain weakening factors and weakened values
-                const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
-                const DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(j,
-                                                                          phase_function_values,
-                                                                          n_phases_per_composition);
-                plastic_out->cohesions[i]   += volume_fractions[j] * (drucker_prager_parameters.cohesion * weakening_factors[0]);
+                plastic_out->cohesions[i]   += volume_fractions[j] * cohesions[j];
                 // Also convert radians to degrees
                 plastic_out->friction_angles[i] += 180.0/numbers::PI * volume_fractions[j] * friction_angles_RAD[j];
               }
