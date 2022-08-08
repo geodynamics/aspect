@@ -1,4 +1,4 @@
-`# The Burstedde variable viscosity benchmark
+# The Burstedde variable viscosity benchmark
 
 *This section was contributed by Iris van Zelst.*
 
