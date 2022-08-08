@@ -106,6 +106,7 @@ namespace aspect
         output_parameters.composition_yielding.resize(volume_fractions.size(), false);
         output_parameters.composition_viscosities.resize(volume_fractions.size(), numbers::signaling_nan<double>());
         output_parameters.current_friction_angles.resize(volume_fractions.size(), numbers::signaling_nan<double>());
+        output_parameters.current_cohesions.resize(volume_fractions.size(), numbers::signaling_nan<double>());
 
         // Assemble stress tensor if elastic behavior is enabled
         SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2,dim>>();
@@ -277,6 +278,7 @@ namespace aspect
                                                                       current_friction,
                                                                       in.position[i]);
             output_parameters.current_friction_angles[j] = current_friction;
+            output_parameters.current_cohesions[j] = current_cohesion;
 
             // Step 5: plastic yielding
 

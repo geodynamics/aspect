@@ -96,6 +96,11 @@ namespace aspect
        * The current friction angle.
        */
       std::vector<double> current_friction_angles;
+
+      /**
+       * The current cohesion.
+       */
+      std::vector<double> current_cohesions;
     };
 
     namespace Rheology
