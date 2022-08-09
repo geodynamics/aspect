@@ -74,7 +74,7 @@ computations for the settling velocity of the sphere. You can visualize the
 output in different ways, one of it being ParaView and shown in
 {numref}`fig:stokes-falling-sphere-2d` (an alternative is to use Visit as described in
 {ref}`sec:run-aspect:visualizing-results`; 3d images of this simulation using Visit are
-shown in {numref}`stokes-falling-sphere-3d`). Here, ParaView has the advantage that you can
+shown in {numref}`fig:stokes-falling-sphere-3d`). Here, ParaView has the advantage that you can
 calculate the average velocity of the sphere using the following filters:
 
 1.  Threshold (Scalars: C_1, Lower Threshold 0.5, Upper Threshold 1),
