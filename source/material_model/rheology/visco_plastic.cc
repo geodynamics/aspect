@@ -740,8 +740,6 @@ namespace aspect
           }
       }
 
-
-
       template <int dim>
       void
       ViscoPlastic<dim>::
@@ -750,20 +748,19 @@ namespace aspect
                            const bool plastic_yielding,
                            const MaterialModel::MaterialModelInputs<dim> &in,
                            MaterialModel::MaterialModelOutputs<dim> &out,
-                           const std::vector<double> &phase_function_values,
-                           const std::vector<unsigned int> &n_phases_per_composition) const
+                           const IsostrainViscosities &isostrain_viscosities) const
       {
         PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
 
         if (plastic_out != nullptr)
           {
+            AssertThrow(in.requests_property(MaterialProperties::viscosity),
+                        ExcMessage("The PlasticAdditionalOutputs cannot be filled when the viscosity has not been computed."));
+
             plastic_out->cohesions[i] = 0;
             plastic_out->friction_angles[i] = 0;
             plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
 
-            const IsostrainViscosities isostrain_viscosities = calculate_isostrain_viscosities(in, i, volume_fractions,
-                                                               phase_function_values,
-                                                               n_phases_per_composition);
             const std::vector<double> friction_angles_RAD = isostrain_viscosities.current_friction_angles;
             const std::vector<double> cohesions = isostrain_viscosities.current_cohesions;
 
