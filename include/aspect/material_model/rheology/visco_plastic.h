@@ -71,10 +71,16 @@ namespace aspect
         std::vector<double> friction_angles;
 
         /**
+         * The plastic yield stress.
+         */
+        std::vector<double> yield_stresses;
+
+        /**
          * The area where the viscous stress exceeds the plastic yield stress,
          * and viscosity is rescaled back to the yield envelope.
          */
         std::vector<double> yielding;
+
     };
 
     /**

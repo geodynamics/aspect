@@ -39,20 +39,19 @@ namespace aspect
         std::vector<std::string> names;
         names.emplace_back("current_cohesions");
         names.emplace_back("current_friction_angles");
+        names.emplace_back("current_yield_stresses");
         names.emplace_back("plastic_yielding");
         return names;
       }
     }
 
-
-
     template <int dim>
-    PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
-      :
-      NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
-      cohesions(n_points, numbers::signaling_nan<double>()),
-      friction_angles(n_points, numbers::signaling_nan<double>()),
-      yielding(n_points, numbers::signaling_nan<double>())
+    PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs(const unsigned int n_points)
+      : NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
+        cohesions(n_points, numbers::signaling_nan<double>()),
+        friction_angles(n_points, numbers::signaling_nan<double>()),
+        yield_stresses(n_points, numbers::signaling_nan<double>()),
+        yielding(n_points, numbers::signaling_nan<double>())
     {}
 
 
@@ -61,7 +60,7 @@ namespace aspect
     std::vector<double>
     PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
-      AssertIndexRange (idx, 3);
+      AssertIndexRange (idx, 4);
       switch (idx)
         {
           case 0:
@@ -71,6 +70,9 @@ namespace aspect
             return friction_angles;
 
           case 2:
+            return yield_stresses;
+
+          case 3:
             return yielding;
 
           default:
@@ -759,17 +761,30 @@ namespace aspect
 
             plastic_out->cohesions[i] = 0;
             plastic_out->friction_angles[i] = 0;
+            plastic_out->yield_stresses[i] = 0;
             plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
 
             const std::vector<double> friction_angles_RAD = isostrain_viscosities.current_friction_angles;
             const std::vector<double> cohesions = isostrain_viscosities.current_cohesions;
 
+            // The max yield stress is the same for each composition, so we give the 0th field value.
+            const double max_yield_stress = drucker_prager_plasticity.compute_drucker_prager_parameters(0).max_yield_stress;
+
+            double pressure_for_plasticity = in.pressure[i];
+            if (allow_negative_pressures_in_plasticity == false)
+              pressure_for_plasticity = std::max(in.pressure[i], 0.0);
+
             // average over the volume volume fractions
-            for (unsigned int j=0; j < volume_fractions.size(); ++j)
+            for (unsigned int j = 0; j < volume_fractions.size(); ++j)
               {
                 plastic_out->cohesions[i]   += volume_fractions[j] * cohesions[j];
                 // Also convert radians to degrees
                 plastic_out->friction_angles[i] += 180.0/numbers::PI * volume_fractions[j] * friction_angles_RAD[j];
+                plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress(cohesions[j],
+                                                  friction_angles_RAD[j],
+                                                  pressure_for_plasticity,
+                                                  max_yield_stress);
+
               }
           }
       }
