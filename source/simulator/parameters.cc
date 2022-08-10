@@ -167,7 +167,7 @@ namespace aspect
                        "Units: Years or seconds, depending on the ``Use years "
                        "in output instead of seconds'' parameter.");
 
-    prm.declare_entry ("Maximum relative increase in time step", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
+    prm.declare_entry ("Maximum relative increase in time step", "86.0",
                        Patterns::Double (0.),
                        "Set a percentage with which the time step is limited to increase. Generally the "
                        "time step based on the CFL number should be sufficient, but for complicated models "
