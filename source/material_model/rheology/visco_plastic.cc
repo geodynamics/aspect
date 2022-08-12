@@ -268,11 +268,11 @@ namespace aspect
             const Postprocess::MobilityStatistics<dim> &mobility_statistics =
               this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
             const double average_mobility = mobility_statistics.get_average_mobility();
-            const double average_mobility_told = mobility_statistics.get_average_mobility_told();       
+            const double average_mobility_t0 = mobility_statistics.get_average_mobility_t0();       
 
             //sensitivity value
             const double alpha = 1;
-            double DMob = average_mobility - average_mobility_told;
+            double DMob = average_mobility - average_mobility_t0;
 
             double friction_terms = alpha * drucker_prager_parameters.angle_internal_friction * DMob;             
             
@@ -804,10 +804,10 @@ namespace aspect
                const Postprocess::MobilityStatistics<dim> &mobility_statistics =
                         this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
                const double average_mobility = mobility_statistics.get_average_mobility();
-               const double average_mobility_told = mobility_statistics.get_average_mobility_told(); 
+               const double average_mobility_t0 = mobility_statistics.get_average_mobility_t0(); 
 
                const double alpha = 1;
-               double DMob = average_mobility - average_mobility_told;
+               double DMob = average_mobility - average_mobility_t0;
    
                double friction_terms = alpha * drucker_prager_parameters.angle_internal_friction * DMob;
               

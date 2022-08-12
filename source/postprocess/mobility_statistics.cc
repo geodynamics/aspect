@@ -142,9 +142,12 @@ namespace aspect
       // see if averaging is requested at this time      
       if (this->get_time() >= last_average_time + average_interval)
         {  
-          average_mobility_told = average_mobility;
           average_mobility = combined_mobility/(average_interval/output_interval);
           combined_mobility = 0;
+          if (this->get_time() > 320e6 && this->get_time() <= 340e6)
+          {
+            average_mobility_t0 = average_mobility;
+          }
         } 
 
       const std::string name_mobility = "Mobility";
@@ -227,7 +230,7 @@ namespace aspect
     {
       ar &combined_mobility;
       ar &average_mobility;
-      ar &average_mobility_told;
+      ar &average_mobility_t0;
       ar &last_output_time;
       ar &last_average_time;
     }
@@ -328,10 +331,10 @@ namespace aspect
 
     template <int dim>
     double
-    MobilityStatistics<dim>::get_average_mobility_told() const
+    MobilityStatistics<dim>::get_average_mobility_t0() const
     {
     //Elodie July 2022
-    return average_mobility_told;
+    return average_mobility_t0;
     }
   }
 }

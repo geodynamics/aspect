@@ -52,7 +52,7 @@ namespace aspect
  
         double get_average_mobility() const;
 
-        double get_average_mobility_told() const;
+        double get_average_mobility_t0() const;
         
         //double get_combined_mobility() const;     
      
@@ -113,7 +113,7 @@ namespace aspect
           double combined_mobility = 0;
 
           double average_mobility = 0;  
-          double average_mobility_told = 0;
+          double average_mobility_t0 = 0;
     };
   }
 }
