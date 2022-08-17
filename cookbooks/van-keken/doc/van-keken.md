@@ -168,9 +168,9 @@ of the section was to demonstrate the reason for the lack of convergence.
 
 ## Extension to an adaptive smoothing lengthscale.
 
-In this section we extend the van Keken cookbook following up the work
+*In this section we extend the van Keken cookbook, following up on the work
 previously completed by Cedric Thieulot, Juliane Dannberg, Timo Heister and
-Wolfgang Bangerth. *This section contributed by Grant Euen, Tahiry
+Wolfgang Bangerth. This section was contributed by Grant Euen, Tahiry
 Rajaonarison, and Shangxin Liu as part of the Geodynamics and ASPECT class at
 Virginia Tech.*
 
