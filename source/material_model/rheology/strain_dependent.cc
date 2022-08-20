@@ -152,7 +152,7 @@ namespace aspect
                            "If only one value is given, then all use the same value.  Units: None.");
 
         prm.declare_entry ("Strain healing mechanism", "no healing",
-                           Patterns::Selection("no healing|temperature dependent"),
+                           Patterns::Selection("no healing|temperature dependent|fracture healing"),
                            "Whether to apply strain healing to plastic yielding and viscosity terms, "
                            "and if yes, which method to use. The following methods are available:"
                            "\n\n"
@@ -163,7 +163,14 @@ namespace aspect
                            "to the temperature-dependent Frank Kamenetskii formulation, computes "
                            "strain healing as removing strain as a function of temperature, time, "
                            "and a user-defined healing rate and prefactor "
-                           "as done in Fuchs and Becker, 2019, for mantle convection");
+                           "as done in Fuchs and Becker, 2019, for mantle convection. "
+                           "\n\n"
+                           "\\item ``fracture healing'': Fracture-related healing applied to "
+                           "plastic yielding term, reducing the accumulated plastic strain with "
+                           "time on deactivated, slowly creeping fractures (e.g., faults). "
+                           "This mechanism is refered to Poliakov & Buck, 1998. "
+                           "Note that this mechanism is only tested with the option -  "
+                           "plastic weakening with plastic strain only ");
 
         prm.declare_entry ("Strain healing temperature dependent recovery rate", "1.e-15", Patterns::Double(0),
                            "Recovery rate prefactor for temperature dependent "
@@ -172,6 +179,10 @@ namespace aspect
         prm.declare_entry ("Strain healing temperature dependent prefactor", "15.", Patterns::Double(0),
                            "Prefactor for temperature dependent "
                            "strain healing. Units: None");
+
+        prm.declare_entry ("Strain healing fracture recovery rate", "1.e-13", Patterns::Double(0),
+                           "Constant fracture recovery rate for deactivating fractures, "
+                           "which is equal to 1/fracture healing time. Units: $1/s$");
       }
 
       template <int dim>
@@ -322,6 +333,8 @@ namespace aspect
           healing_mechanism = no_healing;
         else if (prm.get ("Strain healing mechanism") == "temperature dependent")
           healing_mechanism = temperature_dependent;
+        else if (prm.get ("Strain healing mechanism") == "fracture healing")
+          healing_mechanism = fracture_healing;
         else
           AssertThrow(false, ExcMessage("Not a valid Strain healing mechanism!"));
 
@@ -346,6 +359,8 @@ namespace aspect
         strain_healing_temperature_dependent_recovery_rate = prm.get_double ("Strain healing temperature dependent recovery rate");
 
         strain_healing_temperature_dependent_prefactor = prm.get_double ("Strain healing temperature dependent prefactor");
+
+        strain_healing_fracture_recovery_rate = prm.get_double ("Strain healing fracture recovery rate");
       }
 
 
@@ -445,6 +460,18 @@ namespace aspect
                               * this->get_timestep();
               break;
             }
+            case fracture_healing:
+            {
+              // Formula: APS_eff = APS_current / (1+recovery_rate * timestep)
+              // delta_APS = APS_eff - APS_current is the strain increment due
+              // to fracture healing. NOTE that the "healed_strain" here does
+              // not mean the real healed strain. Instead, it means the fracture
+              // healing coefficient [1/(1+recovery_rate*dt)-1] for delta_APS,
+              // where the recovery_rate is 1/fracture healing time.
+              // healed_strain = strain_healing_fracture_recovery_rate * this->get_timestep(); (Gerya,2013)
+              healed_strain = 1.0/(1.0 + strain_healing_fracture_recovery_rate * this->get_timestep()) - 1.0;
+              break;
+            }
           }
         return healed_strain;
       }
@@ -508,13 +535,33 @@ namespace aspect
 
             const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(in.strain_rate[i])), 0.)),
                                             min_strain_rate);
+            // strain increment from current timestep
             double delta_e_ii = edot_ii*this->get_timestep();
+            // current strain: either accumulated plastic strain or total strain
+            double current_e_ii = 0.0;
+            if (weakening_mechanism == total_strain || weakening_mechanism == plastic_weakening_with_total_strain_only)
+              current_e_ii = in.composition[i][this->introspection().compositional_index_for_name("total_strain")];
+            else if (weakening_mechanism == plastic_weakening_with_plastic_strain_only || weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
+              current_e_ii = in.composition[i][this->introspection().compositional_index_for_name("plastic_strain")];
+            else
+              AssertThrow(false, ExcNotImplemented());
 
-            // Adjusting strain values to account for strain healing without exceeding an unreasonable range
-            if (healing_mechanism != no_healing)
+            // Adjusting strain values to account for strain healing
+            // without exceeding an unreasonable range
+            if (healing_mechanism == temperature_dependent)
               {
                 // Never heal more strain than exists
                 delta_e_ii -= calculate_strain_healing(in,i);
+              }
+            if (healing_mechanism == fracture_healing)
+              {
+                // new strain increment due to fracture healing
+                // Note that the strain healing mechanism is not used
+                // for the first timestep.
+                if (this->get_timestep_number() == 1)
+                  delta_e_ii += 0.0;
+                else
+                  delta_e_ii = current_e_ii * calculate_strain_healing(in,i);
               }
             if (weakening_mechanism == plastic_weakening_with_plastic_strain_only && plastic_yielding == true)
               out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] =

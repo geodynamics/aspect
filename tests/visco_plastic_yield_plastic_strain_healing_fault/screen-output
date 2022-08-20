@@ -1,0 +1,228 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 2,326 (882+121+441+441+441)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+     Writing graphical output:           output-visco_plastic_yield_plastic_strain_healing_fault/solution/solution-00000
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 1:  t=5e+06 years, dt=5e+06 years
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 11 iterations.
+   Solving total_strain system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00145174
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 2:  t=1e+07 years, dt=5e+06 years
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 10 iterations.
+   Solving total_strain system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0012287
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 3:  t=1.5e+07 years, dt=5e+06 years
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 12 iterations.
+   Solving total_strain system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000403175
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 4:  t=2e+07 years, dt=5e+06 years
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 12 iterations.
+   Solving total_strain system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000341888
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.00069 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 5:  t=2.5e+07 years, dt=5e+06 years
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 12 iterations.
+   Solving total_strain system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000274419
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000689 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 6:  t=3e+07 years, dt=5e+06 years
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 12 iterations.
+   Solving total_strain system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000251439
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000689 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 7:  t=3.5e+07 years, dt=5e+06 years
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 12 iterations.
+   Solving total_strain system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000233188
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000688 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 8:  t=4e+07 years, dt=5e+06 years
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 12 iterations.
+   Solving total_strain system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000201661
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000409 m/year, 0.000687 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 9:  t=4.5e+07 years, dt=5e+06 years
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 12 iterations.
+   Solving total_strain system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000170918
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000409 m/year, 0.000686 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 10:  t=5e+07 years, dt=5e+06 years
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 12 iterations.
+   Solving total_strain system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000151331
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000409 m/year, 0.000685 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+     Writing graphical output:           output-visco_plastic_yield_plastic_strain_healing_fault/solution/solution-00001
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

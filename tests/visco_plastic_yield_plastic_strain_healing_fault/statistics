@@ -1,0 +1,32 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: RMS velocity (m/year)
+# 16: Max. velocity (m/year)
+# 17: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 18: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 19: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 20: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 21: Visualization file name
+ 0 0.000000000000e+00 0.000000000000e+00 100 1003 441 882 1 0  0  0 9 11 22 4.08249673e-04 6.91118640e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05 output-visco_plastic_yield_plastic_strain_healing_fault/solution/solution-00000 
+ 1 5.000000000000e+06 5.000000000000e+06 100 1003 441 882 1 0 11  9 8 10 20 4.08253241e-04 6.91041818e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05                                                                              "" 
+ 2 1.000000000000e+07 5.000000000000e+06 100 1003 441 882 1 0 10 11 8 10 20 4.08262433e-04 6.90855870e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05                                                                              "" 
+ 3 1.500000000000e+07 5.000000000000e+06 100 1003 441 882 1 0 12 11 7  9 18 4.08279379e-04 6.90525524e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05                                                                              "" 
+ 4 2.000000000000e+07 5.000000000000e+06 100 1003 441 882 1 0 12 11 7  9 18 4.08305955e-04 6.90035261e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05                                                                              "" 
+ 5 2.500000000000e+07 5.000000000000e+06 100 1003 441 882 1 0 12 10 7  9 18 4.08343750e-04 6.89401089e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05                                                                              "" 
+ 6 3.000000000000e+07 5.000000000000e+06 100 1003 441 882 1 0 12 10 7  9 18 4.08393680e-04 6.88662893e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05                                                                              "" 
+ 7 3.500000000000e+07 5.000000000000e+06 100 1003 441 882 1 0 12 10 7  9 18 4.08456085e-04 6.87866893e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05                                                                              "" 
+ 8 4.000000000000e+07 5.000000000000e+06 100 1003 441 882 1 0 12 10 7  9 18 4.08531049e-04 6.87052397e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05                                                                              "" 
+ 9 4.500000000000e+07 5.000000000000e+06 100 1003 441 882 1 0 12 11 6  8 17 4.08618523e-04 6.86248323e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05                                                                              "" 
+10 5.000000000000e+07 5.000000000000e+06 100 1003 441 882 1 0 12 11 6  8 16 4.08718267e-04 6.85476009e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05 output-visco_plastic_yield_plastic_strain_healing_fault/solution/solution-00001 
