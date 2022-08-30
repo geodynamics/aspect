@@ -1,5 +1,5 @@
-# a perl script that annotates a parameter file with index
-# entries for the ASPECT manual
+# A perl script that annotates a parameter file with index
+# entries for the ASPECT manual.
 
 $section = "";
 

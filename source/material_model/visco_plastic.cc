@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -377,16 +377,6 @@ namespace aspect
 
 
     template <int dim>
-    double
-    ViscoPlastic<dim>::
-    reference_viscosity () const
-    {
-      return rheology->ref_visc;
-    }
-
-
-
-    template <int dim>
     bool
     ViscoPlastic<dim>::
     is_compressible () const
@@ -491,7 +481,7 @@ namespace aspect
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters (prm,
-                                              std_cxx14::make_unique<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
+                                              std::make_unique<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
 
 
           thermal_diffusivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal diffusivities"))),
@@ -504,15 +494,9 @@ namespace aspect
                                                                            n_fields,
                                                                            "Thermal conductivities");
 
-          Nusselt_number = prm.get_double("Nusselt number");
-          T_cooling = prm.get_double("Hydrothermal cooling reference temperature");
-          D_cooling = prm.get_double("Hydrothermal cooling reference depth");
-          C_stress = prm.get_double("Hydrothermal cooling stress smoothing");
-          C_depth = prm.get_double("Hydrothermal cooling depth smoothing"); 
-
-          rheology = std_cxx14::make_unique<Rheology::ViscoPlastic<dim>>();
+          rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
-          rheology->parse_parameters(prm, std_cxx14::make_unique<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
+          rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
         }
         prm.leave_subsection();
       }

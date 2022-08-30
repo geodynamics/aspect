@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,7 +25,7 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace aspect
 {

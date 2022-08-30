@@ -1,3 +1,7 @@
+\subsubsection{Computation of the van Keken Problem with the Volume-of-Fluid Interface Tracking Method}
+\label{sec:van-keken VOF interface tracking}
+
+\textit{This section is a co-production of Jonathan Robey and E. G. Puckett.}
 One can also model the van Keken problem with the volume-of-fluid (VOF) interface tracking 
 algorithm in \aspect{}.
 In fact, this problem is particularly well-suited to being computed with the VOF method, since 
@@ -18,7 +22,7 @@ in a neighborhood of the interface, rather than in the entire computational doma
 
 \begin{figure}
    \centering
-\includegraphics[width=0.5\textwidth]{cookbooks/van-keken-vof/doc/rms_vel_comparison.png}
+\includegraphics[width=0.5\textwidth]{rms_vel_comparison.png}
    \caption{\it Evolution of the root mean square velocity as a function of time for computations 
     of the van Keken problem made with the VOF interface tracking algorithm with five 
     different global mesh refinements.
@@ -33,7 +37,7 @@ in a neighborhood of the interface, rather than in the entire computational doma
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.4\textwidth]{cookbooks/van-keken-vof/doc/vof_van_keken_refinement_comparison.png}
+    \includegraphics[width=0.4\textwidth]{vof_van_keken_refinement_comparison.png}
     \caption{\it The results of two computations of the van Keken problem made with the VOF 
         interface tracking algorithm overlaid upon each other at $t_\text{end}=2000$.
         This visualization shows the reconstructed boundary between the two
@@ -76,7 +80,7 @@ to more accurately reproduce the initial condition on a sub-grid scale than woul
 possible on the coarser grid on which we compute the time evolution of the interface. 
 
 
-\lstinputlisting[language=prmfile]{cookbooks/van-keken-vof/doc/main.part.prm.out}
+\lstinputlisting[language=prmfile]{main.part.prm.out}
 
 The relevant sections of the parameter file for this type of initialization of the VOF method 
 appears immediately above.
@@ -105,7 +109,7 @@ boundary as a contour are shown immediately below.
 The full configuration file for this version of the benchmark problem can be found at 
 \url{cookbooks/van-keken-vof/van-keken-vof.prm}.
 
-\lstinputlisting[language=prmfile]{cookbooks/van-keken-vof/doc/postprocess.part.prm.out}
+\lstinputlisting[language=prmfile]{postprocess.part.prm.out}
 \noindent
 
 We made a number of computations of the van Keken problem with the VOF method in order to 
@@ -185,11 +189,11 @@ in the initial conditions.
 Specifically, we vary the amplitude $a$ of the cosine function in the initial conditions, as 
 shown below.
 
-\lstinputlisting[language=prmfile]{cookbooks/van-keken-vof/doc/variation.part.prm.out}
+\lstinputlisting[language=prmfile]{variation.part.prm.out}
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.5\textwidth]{cookbooks/van-keken-vof/doc/init_diff_rms_vel_comparison.png}
+    \includegraphics[width=0.5\textwidth]{init_diff_rms_vel_comparison.png}
     \caption{\it Computations of the van Keken problem made with the VOF
         interface tracking algorithm showing the evolution of the RMS velocity
         as a function of time for small changes in the amplitude $a$ of the

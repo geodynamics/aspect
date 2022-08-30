@@ -53,7 +53,6 @@ subsection Material model
     set Minimum viscosity = 1e1
     set Maximum viscosity = 1e28
     set Effective viscosity coefficient = 1.0
-    set Reference viscosity = 1e22
 
     set Thermal diffusivity = 0.8e-6
     set Heat capacity = 1.25e3

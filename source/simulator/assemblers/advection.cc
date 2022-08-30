@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,6 +20,7 @@
 
 #include <aspect/simulator/assemblers/advection.h>
 
+#include <aspect/melt.h>
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
 
@@ -55,8 +56,8 @@ namespace aspect
     AdvectionSystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                    internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
-      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
-      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>&> (data_base);
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -70,7 +71,6 @@ namespace aspect
       const bool   use_bdf2_scheme = (this->get_timestep_number() > 1);
       const double time_step = this->get_timestep();
       const double old_time_step = this->get_old_timestep();
-
       const double bdf2_factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
                                                      (time_step + old_time_step)) : 1.0;
 
@@ -79,7 +79,7 @@ namespace aspect
 
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
-      if (!advection_field_is_temperature && advection_field.advection_method (introspection)
+      if (advection_field.advection_method (introspection)
           == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
         return;
 
@@ -111,9 +111,9 @@ namespace aspect
              :
              1.0);
 
-          Assert (density_c_P >= 0,
-                  ExcMessage ("The product of density and c_P needs to be a "
-                              "non-negative quantity."));
+          AssertThrow (density_c_P >= 0,
+                       ExcMessage ("The product of density and c_P needs to be a "
+                                   "non-negative quantity."));
 
           const double latent_heat_LHS =
             ((advection_field_is_temperature)
@@ -121,9 +121,9 @@ namespace aspect
              scratch.heating_model_outputs.lhs_latent_heat_terms[q]
              :
              0.0);
-          Assert (density_c_P + latent_heat_LHS >= 0,
-                  ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                              "to the left hand side needs to be a non-negative quantity."));
+          AssertThrow (density_c_P + latent_heat_LHS >= 0,
+                       ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                   "to the left hand side needs to be a non-negative quantity."));
 
           const double gamma =
             ((advection_field_is_temperature)
@@ -260,7 +260,7 @@ namespace aspect
     std::vector<double>
     AdvectionSystem<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
-      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
 
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
@@ -318,8 +318,8 @@ namespace aspect
     DiffusionSystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                    internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
-      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
-      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>&> (data_base);
 
       const Parameters<dim> &parameters = this->get_parameters();
       const Introspection<dim> &introspection = this->introspection();
@@ -327,7 +327,7 @@ namespace aspect
 
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
 
-      if (advection_field.is_temperature() || advection_field.advection_method(introspection)
+      if (advection_field.advection_method(introspection)
           != Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
         return;
 
@@ -384,7 +384,7 @@ namespace aspect
     std::vector<double>
     DiffusionSystem<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
-      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
       std::vector<double> residuals(scratch.finite_element_values.n_quadrature_points, 0.0);
 
       return residuals;
@@ -397,8 +397,8 @@ namespace aspect
     AdvectionSystemBoundaryHeatFlux<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                                   internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
-      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
-      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>&> (data_base);
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -470,11 +470,183 @@ namespace aspect
 
     template <int dim>
     void
-    AdvectionSystemBoundaryFace<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                                              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    DarcySystem<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
+    {
+      MeltHandler<dim>::create_material_model_outputs(outputs);
+    }
+
+    template <int dim>
+    void
+    DarcySystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+
+      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      if (advection_field.advection_method(introspection)
+          != Parameters<dim>::AdvectionFieldMethod::fem_darcy_field)
+        return;
+
+      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
+
+      const bool use_supg = (this->get_parameters().advection_stabilization_method
+                             == Parameters<dim>::AdvectionStabilizationMethod::supg);
+      AssertThrow(use_supg == false,
+                  ExcMessage("The Darcy field advection method does not support the use of SUPG"));
+
+      const bool   use_bdf2_scheme = (this->get_timestep_number() > 1);
+      const double time_step = this->get_timestep();
+      const double old_time_step = this->get_old_timestep();
+
+      const double bdf2_factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
+                                                     (time_step + old_time_step)) : 1.0;
+      const unsigned int solution_component = advection_field.component_index(introspection);
+      const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
+      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+          // precompute the values of shape functions and their gradients.
+          // We only need to look up values of shape functions if they
+          // belong to 'our' component. They are zero otherwise anyway.
+          // Note that we later only look at the values that we do set here.
+          for (unsigned int i=0, i_advection=0; i_advection<advection_dofs_per_cell;/*increment at end of loop*/)
+            {
+              if (fe.system_to_component_index(i).first == solution_component)
+                {
+                  scratch.grad_phi_field[i_advection] = scratch.finite_element_values[solution_field].gradient (i,q);
+                  scratch.phi_field[i_advection]      = scratch.finite_element_values[solution_field].value (i,q);
+                  ++i_advection;
+                }
+              ++i;
+            }
+
+          const double reaction_term = scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable];
+
+          const double field_term_for_rhs
+            = (use_bdf2_scheme ?
+               (scratch.old_field_values[q] *
+                (1 + time_step/old_time_step)
+                -
+                scratch.old_old_field_values[q] *
+                (time_step * time_step) /
+                (old_time_step * (time_step + old_time_step)))
+               :
+               scratch.old_field_values[q]);
+
+
+          // We calculate the fluid velocity current_u_f using an approximation of Darcy's Law:
+          // u_f = u_s - K_D / phi * (rho_s * g - rho_f * g)
+          // u_f = fluid velocity
+          // u_s = solid velocity
+          // K_D = Darcy Coefficient
+          // phi = porosity
+          // rho_f = fluid density
+          // rhos_s = solid density
+          // g = gravity
+          // The second term on the rhs of Darcy's Law only contributes to the component of the
+          // fluid velocity parallel to the gravity vector, which is proportional to the
+          // buoyancy of the fluid phase.
+          const double rho_s = scratch.material_model_outputs.densities[q];
+          const double rho_f = melt_outputs->fluid_densities[q];
+          const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
+          const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+          const double porosity         = std::max(scratch.material_model_inputs.composition[q][porosity_index],1e-10);
+          const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q] / porosity;
+          const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+          Tensor<1,dim> current_u_f = current_u - K_D * (rho_s - rho_f) * gravity;
+
+          // Subtract off the mesh velocity for ALE corrections if necessary
+          if (this->get_parameters().mesh_deformation_enabled)
+            current_u_f -= scratch.mesh_velocity_values[q];
+          const double JxW = scratch.finite_element_values.JxW(q);
+
+          // do the actual assembly. note that we only need to loop over the advection
+          // shape functions because these are the only contributions we compute here
+          for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+            {
+              data.local_rhs(i)
+              += (field_term_for_rhs * scratch.phi_field[i]
+                  + scratch.phi_field[i]
+                  * reaction_term)
+                 * JxW;
+
+              for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                {
+                  data.local_matrix(i,j)
+                  += (
+                       (time_step * scratch.artificial_viscosity
+                        * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
+                       + ((time_step * (scratch.phi_field[i] * (current_u_f * scratch.grad_phi_field[j])))
+                          + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j]))
+                     )
+                     * JxW;
+                }
+            }
+        }
+    }
+
+
+
+    template <int dim>
+    std::vector<double>
+    DarcySystem<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      const Introspection<dim> &introspection = this->introspection();
+      std::vector<double> residuals(n_q_points);
+      if (advection_field.is_temperature())
+        {
+          return residuals;
+        }
+
+
+      const MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+      for (unsigned int q=0; q < n_q_points; ++q)
+        {
+
+          const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
+          const double rho_s = scratch.material_model_outputs.densities[q];
+          const double rho_f = melt_outputs->fluid_densities[q];
+          const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+          const double porosity         = std::max(scratch.material_model_inputs.composition[q][porosity_index], 1e-10);
+          const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
+
+          const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
+                                   scratch.old_old_velocity_values[q]) / 2
+                                  - K_D*(rho_s - rho_f)*gravity/porosity;
+
+          const double dField_dt = (this->get_old_timestep() == 0.0) ? 0.0 :
+                                   (
+                                     ((scratch.old_field_values)[q] - (scratch.old_old_field_values)[q])
+                                     / this->get_old_timestep());
+          const double u_grad_field = u * (scratch.old_field_grads[q] +
+                                           scratch.old_old_field_grads[q]) / 2;
+
+          const double dreaction_term_dt = (this->get_old_timestep() == 0) ? 0.0 :
+                                           scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
+                                           / this->get_old_timestep();
+
+          residuals[q] = std::abs(dField_dt + u_grad_field - dreaction_term_dt);
+        }
+      return residuals;
+    }
+
+
+
+    template <int dim>
+    void
+    AdvectionSystemBoundaryFace<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                                              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>&> (data_base);
 
       const Parameters<dim> &parameters = this->get_parameters();
       const Introspection<dim> &introspection = this->introspection();
@@ -551,9 +723,9 @@ namespace aspect
                  :
                  1.0);
 
-              Assert (density_c_P >= 0,
-                      ExcMessage ("The product of density and c_P needs to be a "
-                                  "non-negative quantity."));
+              AssertThrow (density_c_P >= 0,
+                           ExcMessage ("The product of density and c_P needs to be a "
+                                       "non-negative quantity."));
 
               const double conductivity =
                 ((advection_field.is_temperature())
@@ -567,9 +739,9 @@ namespace aspect
                  scratch.face_heating_model_outputs.lhs_latent_heat_terms[q]
                  :
                  0.0);
-              Assert (density_c_P + latent_heat_LHS >= 0,
-                      ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                                  "to the left hand side needs to be a non-negative quantity."));
+              AssertThrow (density_c_P + latent_heat_LHS >= 0,
+                           ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                       "to the left hand side needs to be a non-negative quantity."));
 
               const double penalty = (advection_field.is_temperature()
                                       ?
@@ -684,8 +856,8 @@ namespace aspect
     AdvectionSystemInteriorFace<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
-      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
-      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>&> (data_base);
 
       const Parameters<dim> &parameters = this->get_parameters();
       const Introspection<dim> &introspection = this->introspection();
@@ -752,11 +924,11 @@ namespace aspect
               // set up neighbor values
               scratch.neighbor_face_finite_element_values->reinit (neighbor, neighbor2);
 
-              this->compute_material_model_input_values (this->get_current_linearization_point(),
-                                                         *scratch.neighbor_face_finite_element_values,
-                                                         neighbor,
-                                                         true,
-                                                         scratch.neighbor_face_material_model_inputs);
+              scratch.neighbor_face_material_model_inputs.reinit  (*scratch.neighbor_face_finite_element_values,
+                                                                   neighbor,
+                                                                   this->introspection(),
+                                                                   this->get_current_linearization_point(),
+                                                                   true);
               this->get_material_model().evaluate(scratch.neighbor_face_material_model_inputs,
                                                   scratch.neighbor_face_material_model_outputs);
 
@@ -781,12 +953,12 @@ namespace aspect
                 {
                   if (fe.system_to_component_index(i).first == solution_component)
                     {
-                      data.neighbor_dof_indices[face_no * GeometryInfo<dim>::max_children_per_face][i_advection] = neighbor_dof_indices[i];
+                      data.neighbor_dof_indices[nth_interface_matrix(fe.reference_cell(), face_no)][i_advection] = neighbor_dof_indices[i];
                       ++i_advection;
                     }
                   ++i;
                 }
-              data.assembled_matrices[face_no * GeometryInfo<dim>::max_children_per_face] = true;
+              data.assembled_matrices[nth_interface_matrix(fe.reference_cell(), face_no)] = true;
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
@@ -815,9 +987,9 @@ namespace aspect
                      :
                      1.0);
 
-                  Assert (density_c_P >= 0,
-                          ExcMessage ("The product of density and c_P needs to be a "
-                                      "non-negative quantity."));
+                  AssertThrow (density_c_P >= 0,
+                               ExcMessage ("The product of density and c_P needs to be a "
+                                           "non-negative quantity."));
 
                   const double conductivity =
                     ((advection_field.is_temperature())
@@ -831,9 +1003,9 @@ namespace aspect
                      scratch.face_heating_model_outputs.lhs_latent_heat_terms[q]
                      :
                      0.0);
-                  Assert (density_c_P + latent_heat_LHS >= 0,
-                          ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                                      "to the left hand side needs to be a non-negative quantity."));
+                  AssertThrow (density_c_P + latent_heat_LHS >= 0,
+                               ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                           "to the left hand side needs to be a non-negative quantity."));
 
                   const double penalty = (advection_field.is_temperature()
                                           ?
@@ -859,9 +1031,9 @@ namespace aspect
                      :
                      1.0);
 
-                  Assert (neighbor_density_c_P >= 0,
-                          ExcMessage ("The product of density and c_P on the neighbor needs to be a "
-                                      "non-negative quantity."));
+                  AssertThrow (neighbor_density_c_P >= 0,
+                               ExcMessage ("The product of density and c_P on the neighbor needs to be a "
+                                           "non-negative quantity."));
 
                   const double neighbor_conductivity =
                     ((advection_field.is_temperature())
@@ -875,9 +1047,9 @@ namespace aspect
                      scratch.neighbor_face_heating_model_outputs.lhs_latent_heat_terms[q]
                      :
                      0.0);
-                  Assert (neighbor_density_c_P + neighbor_latent_heat_LHS >= 0,
-                          ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                                      "to the left hand side on the neighbor needs to be a non-negative quantity."));
+                  AssertThrow (neighbor_density_c_P + neighbor_latent_heat_LHS >= 0,
+                               ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                           "to the left hand side on the neighbor needs to be a non-negative quantity."));
 
                   const double neighbor_penalty = (advection_field.is_temperature()
                                                    ?
@@ -896,11 +1068,11 @@ namespace aspect
                     std::max(density_c_P + latent_heat_LHS,
                              neighbor_density_c_P + neighbor_latent_heat_LHS);
 
-                  Assert (numbers::is_finite(max_density_c_P_and_latent_heat),
-                          ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a finite quantity."));
-                  Assert (max_density_c_P_and_latent_heat >= 0,
-                          ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a "
-                                      "non-negative quantity."));
+                  AssertThrow (numbers::is_finite(max_density_c_P_and_latent_heat),
+                               ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a finite quantity."));
+                  AssertThrow (max_density_c_P_and_latent_heat >= 0,
+                               ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a "
+                                           "non-negative quantity."));
 
                   /**
                    * The discontinuous Galerkin method uses 2 types of jumps over edges:
@@ -945,7 +1117,7 @@ namespace aspect
                              )
                              * scratch.face_finite_element_values->JxW(q);
 
-                          data.local_matrices_int_ext[face_no * GeometryInfo<dim>::max_children_per_face](i,j)
+                          data.local_matrices_int_ext[nth_interface_matrix(fe.reference_cell(), face_no)](i,j)
                           += (- 0.5 * time_step * neighbor_conductivity
                               * scratch.neighbor_face_grad_phi_field[j]
                               * scratch.face_finite_element_values->normal_vector(q)
@@ -975,7 +1147,7 @@ namespace aspect
                              )
                              * scratch.face_finite_element_values->JxW(q);
 
-                          data.local_matrices_ext_int[face_no * GeometryInfo<dim>::max_children_per_face](i,j)
+                          data.local_matrices_ext_int[nth_interface_matrix(fe.reference_cell(), face_no)](i,j)
                           += (+ 0.5 * time_step * conductivity
                               * scratch.face_grad_phi_field[j]
                               * scratch.face_finite_element_values->normal_vector(q)
@@ -1005,7 +1177,7 @@ namespace aspect
                              )
                              * scratch.face_finite_element_values->JxW(q);
 
-                          data.local_matrices_ext_ext[face_no * GeometryInfo<dim>::max_children_per_face](i,j)
+                          data.local_matrices_ext_ext[nth_interface_matrix(fe.reference_cell(), face_no)](i,j)
                           += (+ 0.5 * time_step * neighbor_conductivity
                               * scratch.neighbor_face_grad_phi_field[i]
                               * scratch.face_finite_element_values->normal_vector(q)
@@ -1084,11 +1256,11 @@ namespace aspect
                 (*scratch.subface_finite_element_values)[introspection.extractors.velocities].get_function_values(this->get_mesh_velocity(),
                     scratch.face_mesh_velocity_values);
 
-              this->compute_material_model_input_values (this->get_current_linearization_point(),
-                                                         *scratch.subface_finite_element_values,
-                                                         cell,
-                                                         true,
-                                                         scratch.face_material_model_inputs);
+              scratch.face_material_model_inputs.reinit  (*scratch.subface_finite_element_values,
+                                                          cell,
+                                                          this->introspection(),
+                                                          this->get_current_linearization_point(),
+                                                          true);
               this->get_material_model().evaluate(scratch.face_material_model_inputs,
                                                   scratch.face_material_model_outputs);
 
@@ -1108,11 +1280,11 @@ namespace aspect
               // set up neighbor values
               scratch.neighbor_face_finite_element_values->reinit (neighbor_child, neighbor2);
 
-              this->compute_material_model_input_values (this->get_current_linearization_point(),
-                                                         *scratch.neighbor_face_finite_element_values,
-                                                         neighbor_child,
-                                                         true,
-                                                         scratch.neighbor_face_material_model_inputs);
+              scratch.neighbor_face_material_model_inputs.reinit  (*scratch.neighbor_face_finite_element_values,
+                                                                   neighbor_child,
+                                                                   this->introspection(),
+                                                                   this->get_current_linearization_point(),
+                                                                   true);
               this->get_material_model().evaluate(scratch.neighbor_face_material_model_inputs,
                                                   scratch.neighbor_face_material_model_outputs);
 
@@ -1137,12 +1309,12 @@ namespace aspect
                 {
                   if (fe.system_to_component_index(i).first == solution_component)
                     {
-                      data.neighbor_dof_indices[face_no * GeometryInfo<dim>::max_children_per_face + subface_no][i_advection] = neighbor_dof_indices[i];
+                      data.neighbor_dof_indices[nth_interface_matrix(fe.reference_cell(), face_no, subface_no)][i_advection] = neighbor_dof_indices[i];
                       ++i_advection;
                     }
                   ++i;
                 }
-              data.assembled_matrices[face_no * GeometryInfo<dim>::max_children_per_face + subface_no] = true;
+              data.assembled_matrices[nth_interface_matrix(fe.reference_cell(), face_no, subface_no)] = true;
 
               for (unsigned int q=0; q<n_q_points; ++q)
                 {
@@ -1171,9 +1343,9 @@ namespace aspect
                      :
                      1.0);
 
-                  Assert (density_c_P >= 0,
-                          ExcMessage ("The product of density and c_P needs to be a "
-                                      "non-negative quantity."));
+                  AssertThrow (density_c_P >= 0,
+                               ExcMessage ("The product of density and c_P needs to be a "
+                                           "non-negative quantity."));
 
                   const double conductivity =
                     ((advection_field.is_temperature())
@@ -1187,9 +1359,9 @@ namespace aspect
                      scratch.face_heating_model_outputs.lhs_latent_heat_terms[q]
                      :
                      0.0);
-                  Assert (density_c_P + latent_heat_LHS >= 0,
-                          ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                                      "to the left hand side needs to be a non-negative quantity."));
+                  AssertThrow (density_c_P + latent_heat_LHS >= 0,
+                               ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                           "to the left hand side needs to be a non-negative quantity."));
 
                   const double penalty = (advection_field.is_temperature()
                                           ?
@@ -1215,9 +1387,9 @@ namespace aspect
                      :
                      1.0);
 
-                  Assert (neighbor_density_c_P >= 0,
-                          ExcMessage ("The product of density and c_P on the neighbor needs to be a "
-                                      "non-negative quantity."));
+                  AssertThrow (neighbor_density_c_P >= 0,
+                               ExcMessage ("The product of density and c_P on the neighbor needs to be a "
+                                           "non-negative quantity."));
 
                   const double neighbor_conductivity =
                     ((advection_field.is_temperature())
@@ -1231,9 +1403,9 @@ namespace aspect
                      scratch.neighbor_face_heating_model_outputs.lhs_latent_heat_terms[q]
                      :
                      0.0);
-                  Assert (neighbor_density_c_P + neighbor_latent_heat_LHS >= 0,
-                          ExcMessage ("The sum of density times c_P and the latent heat contribution "
-                                      "to the left hand side on the neighbor needs to be a non-negative quantity."));
+                  AssertThrow (neighbor_density_c_P + neighbor_latent_heat_LHS >= 0,
+                               ExcMessage ("The sum of density times c_P and the latent heat contribution "
+                                           "to the left hand side on the neighbor needs to be a non-negative quantity."));
 
                   const double neighbor_penalty = (advection_field.is_temperature()
                                                    ?
@@ -1252,11 +1424,11 @@ namespace aspect
                     std::max(density_c_P + latent_heat_LHS,
                              neighbor_density_c_P + neighbor_latent_heat_LHS);
 
-                  Assert (numbers::is_finite(max_density_c_P_and_latent_heat),
-                          ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a finite quantity."));
-                  Assert (max_density_c_P_and_latent_heat >= 0,
-                          ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a "
-                                      "non-negative quantity."));
+                  AssertThrow (numbers::is_finite(max_density_c_P_and_latent_heat),
+                               ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a finite quantity."));
+                  AssertThrow (max_density_c_P_and_latent_heat >= 0,
+                               ExcMessage ("The maximum product of density and c_P plus latent heat LHS on the neighbor needs to be a "
+                                           "non-negative quantity."));
 
                   /**
                    * The discontinuous Galerkin method uses 2 types of jumps over edges:
@@ -1301,7 +1473,7 @@ namespace aspect
                              )
                              * scratch.subface_finite_element_values->JxW(q);
 
-                          data.local_matrices_int_ext[face_no * GeometryInfo<dim>::max_children_per_face + subface_no](i,j)
+                          data.local_matrices_int_ext[nth_interface_matrix(fe.reference_cell(), face_no, subface_no)](i,j)
                           += (- 0.5 * time_step * neighbor_conductivity
                               * scratch.neighbor_face_grad_phi_field[j]
                               * scratch.subface_finite_element_values->normal_vector(q)
@@ -1331,7 +1503,7 @@ namespace aspect
                              )
                              * scratch.subface_finite_element_values->JxW(q);
 
-                          data.local_matrices_ext_int[face_no * GeometryInfo<dim>::max_children_per_face + subface_no](i,j)
+                          data.local_matrices_ext_int[nth_interface_matrix(fe.reference_cell(), face_no, subface_no)](i,j)
                           += (+ 0.5 * time_step * conductivity
                               * scratch.face_grad_phi_field[j]
                               * scratch.subface_finite_element_values->normal_vector(q)
@@ -1361,7 +1533,7 @@ namespace aspect
                              )
                              * scratch.subface_finite_element_values->JxW(q);
 
-                          data.local_matrices_ext_ext[face_no * GeometryInfo<dim>::max_children_per_face + subface_no](i,j)
+                          data.local_matrices_ext_ext[nth_interface_matrix(fe.reference_cell(), face_no, subface_no)](i,j)
                           += (+ 0.5 * time_step * neighbor_conductivity
                               * scratch.neighbor_face_grad_phi_field[i]
                               * scratch.subface_finite_element_values->normal_vector(q)
@@ -1407,6 +1579,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template class AdvectionSystem<dim>; \
   template class DiffusionSystem<dim>; \
+  template class DarcySystem<dim>; \
   template class AdvectionSystemBoundaryFace<dim>; \
   template class AdvectionSystemInteriorFace<dim>; \
   template class AdvectionSystemBoundaryHeatFlux<dim>;

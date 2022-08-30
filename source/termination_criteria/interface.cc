@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,10 +30,6 @@ namespace aspect
   namespace TerminationCriteria
   {
 // ------------------------------ Interface -----------------------------
-
-    template <int dim>
-    Interface<dim>::~Interface ()
-    {}
 
     template <int dim>
     void
@@ -231,18 +227,18 @@ namespace aspect
 
       // go through the list, create objects, initialize them, and let them parse
       // their own parameters
-      for (unsigned int name=0; name<plugin_names.size(); ++name)
+      for (const auto &plugin_name : plugin_names)
         {
           termination_objects.push_back (std::unique_ptr<Interface<dim>>
                                          (std::get<dim>(registered_plugins)
-                                          .create_plugin (plugin_names[name],
+                                          .create_plugin (plugin_name,
                                                           "Termination criteria::Termination criteria")));
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*termination_objects.back()))
             sim->initialize_simulator (this->get_simulator());
           termination_objects.back()->parse_parameters (prm);
           termination_objects.back()->initialize ();
 
-          termination_obj_names.push_back(plugin_names[name]);
+          termination_obj_names.push_back(plugin_name);
         }
     }
 
@@ -252,7 +248,7 @@ namespace aspect
     Manager<dim>::register_termination_criterion (const std::string &name,
                                                   const std::string &description,
                                                   void (*declare_parameters_function) (ParameterHandler &),
-                                                  Interface<dim> *(*factory_function) ())
+                                                  std::unique_ptr<Interface<dim>> (*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,
@@ -283,10 +279,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<TerminationCriteria::Interface<2>>::PluginInfo> *
-                                                                              internal::Plugins::PluginList<TerminationCriteria::Interface<2>>::plugins = nullptr;
+      internal::Plugins::PluginList<TerminationCriteria::Interface<2>>::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<TerminationCriteria::Interface<3>>::PluginInfo> *
-                                                                              internal::Plugins::PluginList<TerminationCriteria::Interface<3>>::plugins = nullptr;
+      internal::Plugins::PluginList<TerminationCriteria::Interface<3>>::plugins = nullptr;
     }
   }
 

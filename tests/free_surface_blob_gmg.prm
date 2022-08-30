@@ -1,0 +1,17 @@
+# test gmg + free surface
+include $ASPECT_SOURCE_DIR/tests/free_surface_blob.prm
+
+set Dimension = 2
+set Output directory                       = output_free_surface_blob_gmg
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Linear solver tolerance = 1.e-7
+    set Number of cheap Stokes solver steps = 0
+  end
+end
+
+subsection Material model
+  set Material averaging = harmonic average
+end

@@ -1,0 +1,23 @@
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.5
+  set Refinement fraction                      = 0.5
+
+  # Note that we allow for more adaptive refinements than before, as only cells
+  # with a small compaction length will be marked for refinement (as opposed to
+  # all melt cells), and we want to properly resolve the compaction length.
+  set Initial adaptive refinement              = 3
+  set Initial global refinement                = 4
+  set Strategy                                 = minimum refinement function, compaction length
+  set Time steps between mesh refinement       = 5
+
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Function expression = 4
+    set Variable names      = x,y
+  end
+
+  # We want the cells to be 8 times smaller than the compaction length.
+  subsection Compaction length
+    set Mesh cells per compaction length = 8.0
+  end
+end

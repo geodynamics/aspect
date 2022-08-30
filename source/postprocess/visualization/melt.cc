@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -40,8 +40,13 @@ namespace aspect
       MeltMaterialProperties<dim>::
       MeltMaterialProperties ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        // What is being output depends on run-time parameters. We can not
+        // describe physical units to the base class at this point.
+        Interface<dim>("")
       {}
+
+
 
       template <int dim>
       std::vector<std::string>
@@ -50,22 +55,24 @@ namespace aspect
       {
         std::vector<std::string> solution_names;
 
-        for (unsigned int i=0; i<property_names.size(); ++i)
-          if (property_names[i] == "fluid density gradient")
+        for (const auto &property_name : property_names)
+          if (property_name == "fluid density gradient")
             for (unsigned int i=0; i<dim; ++i)
               solution_names.emplace_back("fluid_density_gradient");
-          else if (property_names[i] == "compaction pressure")
+          else if (property_name == "compaction pressure")
             {
               solution_names.emplace_back("p_c");
             }
           else
             {
-              solution_names.push_back(property_names[i]);
+              solution_names.push_back(property_name);
               std::replace(solution_names.back().begin(),solution_names.back().end(),' ', '_');
             }
 
         return solution_names;
       }
+
+
 
       template <int dim>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
@@ -73,9 +80,9 @@ namespace aspect
       get_data_component_interpretation () const
       {
         std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation;
-        for (unsigned int i=0; i<property_names.size(); ++i)
+        for (const auto &property_name : property_names)
           {
-            if (property_names[i] == "fluid density gradient")
+            if (property_name == "fluid density gradient")
               {
                 for (unsigned int c=0; c<dim; ++c)
                   interpretation.push_back (DataComponentInterpretation::component_is_part_of_vector);
@@ -87,6 +94,8 @@ namespace aspect
         return interpretation;
       }
 
+
+
       template <int dim>
       UpdateFlags
       MeltMaterialProperties<dim>::
@@ -94,6 +103,8 @@ namespace aspect
       {
         return update_gradients | update_values  | update_quadrature_points;
       }
+
+
 
       template <int dim>
       void
@@ -178,6 +189,8 @@ namespace aspect
           }
       }
 
+
+
       template <int dim>
       void
       MeltMaterialProperties<dim>::declare_parameters (ParameterHandler &prm)
@@ -209,6 +222,8 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
+
 
       template <int dim>
       void
@@ -254,7 +269,9 @@ namespace aspect
                                                   "for melt related properties of the material model. Note "
                                                   "that this postprocessor always outputs the compaction pressure, "
                                                   "but can output a large range of additional properties, as "
-                                                  "selected in the ``List of properties'' parameter.")
+                                                  "selected in the ``List of properties'' parameter."
+                                                  "\n\n"
+                                                  "Physical units: Various, depending on what is being output.")
 
     }
   }

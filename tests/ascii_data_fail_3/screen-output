@@ -16,6 +16,12 @@ An error occurred in file <structured_data.cc> in function
 The violated condition was: 
     read_data_entries == n_expected_data_entries
 Additional information: 
-    While reading the data file 'ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_3.txt' the ascii data plugin has reached the end of the file, but has not found the expected number of data values considering the spatial dimension, data columns, and number of lines prescribed by the POINTS header of the file. Please check the number of data lines against the POINTS header in the file.
+    While reading the data file
+    'ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_3.txt'
+    the ascii data plugin has reached the end of the file, but has not
+    found the expected number of data values considering the spatial
+    dimension, data columns, and number of lines prescribed by the POINTS
+    header of the file. Please check the number of data lines against the
+    POINTS header in the file.
 
 Aborting!

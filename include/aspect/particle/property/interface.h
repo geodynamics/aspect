@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -312,7 +312,7 @@ namespace aspect
            * Destructor. Made virtual so that derived classes can be created
            * and destroyed through pointers to the base class.
            */
-          virtual ~Interface ();
+          virtual ~Interface () = default;
 
           /**
            * Initialization function. This function is called once at the
@@ -469,7 +469,7 @@ namespace aspect
            */
           virtual
           std::vector<std::pair<std::string, unsigned int>>
-                                                         get_property_information() const = 0;
+          get_property_information() const = 0;
 
 
           /**
@@ -529,7 +529,7 @@ namespace aspect
            * @return A vector that contains pairs of the property names and the
            * number of components this property plugin defines.
            */
-          std::vector<std::pair<std::string, unsigned int> >
+          std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const override;
 
           /**
@@ -538,7 +538,7 @@ namespace aspect
            */
           virtual
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm) override;
 
         private:
           /**
@@ -716,7 +716,7 @@ namespace aspect
           register_particle_property (const std::string &name,
                                       const std::string &description,
                                       void (*declare_parameters_function) (ParameterHandler &),
-                                      Property::Interface<dim> *(*factory_function) ());
+                                      std::unique_ptr<Property::Interface<dim>> (*factory_function) ());
 
 
           /**
@@ -779,11 +779,11 @@ namespace aspect
   namespace ASPECT_REGISTER_PARTICLE_PROPERTY_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::Particle::Property::Manager<2>::register_particle_property, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::Particle::Property::Manager<2>::register_particle_property, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::Particle::Property::Manager<3>::register_particle_property, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::Particle::Property::Manager<3>::register_particle_property, \
+                                name, description); \
   }
 
     }

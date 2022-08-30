@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -66,12 +66,12 @@ namespace aspect
            * Implementation of the corresponding function of the base class.
            */
           const std::vector<DataOutBase::Patch<0,dim>> &
-                                                    get_patches () const override;
+          get_patches () const override;
 
           /**
            * Implementation of the corresponding function of the base class.
            */
-          std::vector< std::string >
+          std::vector<std::string>
           get_dataset_names () const override;
 
           /**
@@ -299,7 +299,7 @@ namespace aspect
          * directory, possibly one file written by each processor, belong to a
          * single time step and/or form the different time steps of a
          * simulation. For Paraview, this is a <code>.pvtu</code> file per
-         * time step and a <code>.pvd</code> for all time steps. For Visit it
+         * time step and a <code>.pvd</code> for all time steps. For VisIt it
          * is a <code>.visit</code> file per time step and one for all time
          * steps.
          *

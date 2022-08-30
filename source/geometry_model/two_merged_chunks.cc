@@ -128,7 +128,7 @@ namespace aspect
            ++cell)
         {
           // First set the default boundary indicators.
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             if (cell->face(f)->at_boundary())
               cell->face(f)->set_boundary_id (f);
 
@@ -150,12 +150,12 @@ namespace aspect
             {
               // Set the upper part of the southern boundary to indicator 2*dim+2.
               if (cell->face(4)->at_boundary())
-                if ((cell->vertex(GeometryInfo<dim-1>::vertices_per_cell-1).norm() + cell->vertex(0).norm()) / 2.0 > point3[0])
+                if ((cell->vertex(cell->face(4)->n_vertices()-1).norm() + cell->vertex(0).norm()) / 2.0 > point3[0])
                   cell->face(4)->set_boundary_id (2*dim+2);
 
               // Set the upper part of the northern boundary to indicator 2*dim+3.
               if (cell->face(5)->at_boundary())
-                if ((cell->vertex((GeometryInfo<dim-1>::vertices_per_cell-1)/2).norm()  + cell->vertex(0).norm()) / 2.0 > point3[0])
+                if ((cell->vertex((cell->face(5)->n_vertices()-1)/2).norm()  + cell->vertex(0).norm()) / 2.0 > point3[0])
                   cell->face(5)->set_boundary_id (2*dim+3);
             }
 
@@ -196,8 +196,8 @@ namespace aspect
                   std::pair<std::string,types::boundary_id>("upperwest",  5)
                 };
 
-            return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                             &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+            return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                             std::end(mapping));
           }
 
           case 3:
@@ -215,8 +215,8 @@ namespace aspect
                   std::pair<std::string,types::boundary_id>("uppernorth", 9)
                 };
 
-            return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                             &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+            return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                             std::end(mapping));
           }
         }
 
@@ -600,15 +600,6 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    namespace internal
-    {
-#define INSTANTIATE(dim) \
-  template class ChunkGeometry<dim>;
-      ASPECT_INSTANTIATE(INSTANTIATE)
-
-#undef INSTANTIATE
-    }
-
     ASPECT_REGISTER_GEOMETRY_MODEL(TwoMergedChunks,
                                    "chunk with lithosphere boundary indicators",
                                    "A geometry which can be described as a chunk of a spherical shell, "

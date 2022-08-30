@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -656,7 +656,7 @@ namespace aspect
 
       // Calculate core mantle boundary heat flow
       {
-        const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
+        const Quadrature<dim-1> &quadrature_formula = this->introspection().face_quadratures.temperature;
         FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                           this->get_fe(),
                                           quadrature_formula,
@@ -675,6 +675,9 @@ namespace aspect
 
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+        // Do not request viscosity or reaction rates
+        in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties |
+                                  MaterialModel::MaterialProperties::thermal_conductivity;
 
         // for every surface face on which it makes sense to compute a
         // heat flux and that is owned by this processor,
@@ -688,35 +691,16 @@ namespace aspect
 
         for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            for (const unsigned int f : cell->face_indices())
               if (cell->at_boundary(f))
                 if (cell->face(f)->boundary_id() == CMB_id)
                   {
                     fe_face_values.reinit (cell, f);
+
+                    in.reinit(fe_face_values, cell, this->introspection(), this->get_solution(), /*compute_strain_rates = */ false);
+
                     fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
                         temperature_gradients);
-                    fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                        in.temperature);
-                    fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                                                                   in.pressure);
-                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                      fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
-                          composition_values[c]);
-
-                    in.position = fe_face_values.get_quadrature_points();
-
-                    // since we are not reading the viscosity and the viscosity
-                    // is the only coefficient that depends on the strain rate,
-                    // we need not compute the strain rate. set the corresponding
-                    // array to empty, to prevent accidental use and skip the
-                    // evaluation of the strain rate in evaluate().
-                    in.strain_rate.resize(0);
-
-                    for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
-                      {
-                        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                          in.composition[i][c] = composition_values[c][i];
-                      }
 
                     this->get_material_model().evaluate(in, out);
 

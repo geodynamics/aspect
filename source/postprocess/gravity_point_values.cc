@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -28,11 +28,13 @@
 #include <aspect/utilities.h>
 
 #include <deal.II/base/quadrature_lib.h>
+#include <deal.II/base/mpi.templates.h>
 #include <deal.II/fe/fe_values.h>
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/lexical_cast.hpp>
+
 
 namespace aspect
 {
@@ -51,6 +53,121 @@ namespace aspect
       last_output_timestep (numbers::invalid_unsigned_int),
       output_file_number (numbers::invalid_unsigned_int)
     {}
+
+
+
+    template <int dim>
+    void
+    GravityPointValues<dim>::initialize ()
+    {
+      // Get the value of the outer radius and inner radius:
+      if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
+        {
+          model_outer_radius = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>
+                               (this->get_geometry_model()).outer_radius();
+          model_inner_radius = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>
+                               (this->get_geometry_model()).inner_radius();
+        }
+      else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
+        {
+          model_outer_radius = Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>
+                               (this->get_geometry_model()).outer_radius();
+          model_inner_radius = Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>
+                               (this->get_geometry_model()).inner_radius();
+        }
+      else if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()))
+        {
+          model_outer_radius = Plugins::get_plugin_as_type<const GeometryModel::Sphere<dim>>
+                               (this->get_geometry_model()).radius();
+          model_inner_radius = 0;
+        }
+      else
+        {
+          model_outer_radius = 1;
+          model_inner_radius = 0;
+        }
+
+
+      // *** First calculate the number of satellites according to the sampling scheme:
+      unsigned int n_satellites;
+      if (sampling_scheme == fibonacci_spiral)
+        n_satellites = n_points_spiral * n_points_radius;
+      else if (sampling_scheme == map)
+        n_satellites = n_points_radius * n_points_longitude * n_points_latitude;
+      else if (sampling_scheme == list_of_points)
+        n_satellites = longitude_list.size();
+      else n_satellites = 1;
+
+      // *** Second assign the coordinates of all satellites:
+      satellite_positions_spherical.resize(n_satellites);
+      if (sampling_scheme == map)
+        {
+          unsigned int p = 0;
+          for (unsigned int h=0; h < n_points_radius; ++h)
+            {
+              for (unsigned int i=0; i < n_points_longitude; ++i)
+                {
+                  for (unsigned int j=0; j < n_points_latitude; ++j)
+                    {
+                      if (n_points_radius > 1)
+                        satellite_positions_spherical[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / (n_points_radius - 1)) * h;
+                      else
+                        satellite_positions_spherical[p][0] = minimum_radius;
+                      if (n_points_longitude > 1)
+                        satellite_positions_spherical[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / (n_points_longitude - 1)) * i) * numbers::PI / 180.;
+                      else
+                        satellite_positions_spherical[p][1] = minimum_colongitude * numbers::PI / 180.;
+                      if (n_points_latitude > 1)
+                        satellite_positions_spherical[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) / (n_points_latitude - 1)) * j) * numbers::PI / 180.;
+                      else
+                        satellite_positions_spherical[p][2] = minimum_colatitude * numbers::PI / 180.;
+                      ++p;
+                    }
+                }
+            }
+        }
+      if (sampling_scheme == fibonacci_spiral)
+        {
+          const double golden_ratio = (1. + std::sqrt(5.))/2.;
+          const double golden_angle = 2. * numbers::PI * (1. - 1./golden_ratio);
+          unsigned int p = 0;
+          for (unsigned int h=0; h < n_points_radius; ++h)
+            {
+              for (unsigned int s=0; s < n_points_spiral; ++s)
+                {
+                  if (n_points_radius > 1)
+                    satellite_positions_spherical[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / (n_points_radius - 1)) * h;
+                  else
+                    satellite_positions_spherical[p][0] = minimum_radius;
+                  satellite_positions_spherical[p][2] = std::acos(1. - 2. * s / (n_points_spiral - 1.));
+                  satellite_positions_spherical[p][1] = std::fmod((s*golden_angle), 2.*numbers::PI);
+                  ++p;
+                }
+            }
+        }
+      if (sampling_scheme == list_of_points)
+        {
+          for (unsigned int p=0; p < n_satellites; ++p)
+            {
+              if (radius_list.size() == 1)
+                satellite_positions_spherical[p][0] = radius_list[0];
+              else
+                satellite_positions_spherical[p][0] = radius_list[p];
+              if (longitude_list[p] < 0)
+                satellite_positions_spherical[p][1] = (360 + longitude_list[p]) * numbers::PI / 180.;
+              else
+                satellite_positions_spherical[p][1] = (longitude_list[p]) * numbers::PI / 180.;
+              satellite_positions_spherical[p][2] = (90 - latitude_list[p]) * numbers::PI / 180. ;
+            }
+        }
+
+      // The spherical coordinates are shifted into cartesian to allow simplification
+      // in the mathematical equation.
+      satellite_positions_cartesian.resize (n_satellites);
+      for (unsigned int p=0; p<n_satellites; ++p)
+        satellite_positions_cartesian[p]
+          = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(satellite_positions_spherical[p]);
+    }
 
 
 
@@ -79,12 +196,13 @@ namespace aspect
       if ((this->get_time() < last_output_time + output_interval)
           && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
           && (this->get_timestep_number() != 0))
-        return std::pair<std::string,std::string>();
+        return {};
 
       // Up the counter of the number of the file by one, but not in
       // the very first output step. if we run postprocessors on all
       // iterations, only increase file number in the first nonlinear iteration
-      const bool increase_file_number = (this->get_nonlinear_iteration() == 0) || (!this->get_parameters().run_postprocessors_on_nonlinear_iterations);
+      const bool increase_file_number = (this->get_nonlinear_iteration() == 0) ||
+                                        (!this->get_parameters().run_postprocessors_on_nonlinear_iterations);
       if (output_file_number == numbers::invalid_unsigned_int)
         output_file_number = 0;
       else if (increase_file_number)
@@ -97,7 +215,8 @@ namespace aspect
 
       // Get quadrature formula and increase the degree of quadrature over the velocity
       // element degree.
-      const unsigned int degree = this->get_fe().base_element(this->introspection().base_elements.velocities).degree
+      const unsigned int degree = this->get_fe().base_element(this->introspection()
+                                                              .base_elements.velocities).degree
                                   + quadrature_degree_increase;
       const QGauss<dim> quadrature_formula (degree);
       FEValues<dim> fe_values (this->get_mapping(),
@@ -108,155 +227,236 @@ namespace aspect
                                update_quadrature_points |
                                update_JxW_values);
 
-      // Get the value of the outer radius and inner radius:
-      double model_outer_radius;
-      double model_inner_radius;
-      if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
-        {
-          model_outer_radius = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>
-                               (this->get_geometry_model()).outer_radius();
-          model_inner_radius = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>
-                               (this->get_geometry_model()).inner_radius();
-        }
-      else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
-        {
-          model_outer_radius = Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>
-                               (this->get_geometry_model()).outer_radius();
-          model_inner_radius = Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>
-                               (this->get_geometry_model()).inner_radius();
-        }
-      else if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()))
-        {
-          model_outer_radius = Plugins::get_plugin_as_type<const GeometryModel::Sphere<dim>>
-                               (this->get_geometry_model()).radius();
-          model_inner_radius = 0;
-        }
-      else
-        {
-          model_outer_radius = 1;
-          model_inner_radius = 0;
-        }
 
       // Get the value of the universal gravitational constant:
       const double G = aspect::constants::big_g;
 
-      // Storing cartesian coordinates, density and JxW at local quadrature points in a vector
-      // avoids to use MaterialModel and fe_values within the loops. Because the postprocessor
-      // runs in parallel, the total number of local quadrature points has to be determined:
-      const unsigned int n_locally_owned_cells = (this->get_triangulation().n_locally_owned_active_cells());
       const unsigned int n_quadrature_points_per_cell = quadrature_formula.size();
 
-      // Declare the vector 'density_JxW' to store the density at quadrature points. The
-      // density and the JxW are here together for simplicity in the equation (both variables
-      // only appear together):
-      std::vector<double> density_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
-      std::vector<double> density_anomalies_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
+      const unsigned int n_satellites = satellite_positions_spherical.size();
 
-      // Declare the vector 'position_point' to store the position of quadrature points:
-      std::vector<Point<dim>> position_point (n_locally_owned_cells * n_quadrature_points_per_cell);
 
-      // The following loop perform the storage of the position and density * JxW values
-      // at local quadrature points:
-      MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),this->n_compositional_fields());
-      unsigned int local_cell_number = 0;
+      // This is the main loop which computes gravity acceleration, potential and
+      // gradients at a point located at the spherical coordinate [r, phi, theta].
+      // This loop corresponds to the 3 integrals of Newton law:
+      std::vector<double>                 local_g_potential (n_satellites);
+      std::vector<Tensor<1,dim>>          local_g (n_satellites);
+      std::vector<Tensor<1,dim>>          local_g_anomaly (n_satellites);
+      std::vector<SymmetricTensor<2,dim>> local_g_gradient (n_satellites);
+
+      std::vector<double> G_times_density_times_JxW (n_quadrature_points_per_cell);
+      std::vector<double> G_times_density_anomaly_times_JxW (n_quadrature_points_per_cell);
+
+      MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),
+                                                 this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),
+                                                   this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::density;
+
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
+            // Evaluate the solution at the quadrature points of this cell
             fe_values.reinit (cell);
-            const std::vector<Point<dim>> &position_point_cell = fe_values.get_quadrature_points();
+
             in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
             this->get_material_model().evaluate(in, out);
+
+            // Pull some computations that are independent of the
+            // satellite position out of the following loop. This is
+            // because we may have a very large number of satellites,
+            // so even just one multiplication that is unnecessarily
+            // repeated can be expensive.
             for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
               {
-                density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q] * fe_values.JxW(q);
-                density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-reference_density) * fe_values.JxW(q);
-                position_point[local_cell_number * n_quadrature_points_per_cell + q] = position_point_cell[q];
+                G_times_density_times_JxW[q]         = G * out.densities[q] *
+                                                       fe_values.JxW(q);
+                G_times_density_anomaly_times_JxW[q] = G * (out.densities[q]-reference_density) *
+                                                       fe_values.JxW(q);
               }
-            ++local_cell_number;
+
+
+            for (unsigned int p=0; p < n_satellites; ++p)
+              {
+                const Point<dim> satellite_position = satellite_positions_cartesian[p];
+
+                for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
+                  {
+                    const Tensor<1,dim> r_vector = satellite_position - fe_values.quadrature_point(q);
+
+                    const double r_squared = r_vector.norm_square();
+                    const double r = std::sqrt(r_squared);
+                    const double r_cubed = r * r_squared;
+                    const double one_over_r_cubed = 1. / r_cubed;
+                    const double r_to_the_5 = r_squared * r_cubed;
+
+                    const double G_density_JxW = G_times_density_times_JxW[q];
+
+                    // For gravity acceleration:
+                    const double KK = - G_density_JxW * one_over_r_cubed;
+                    local_g[p] += KK * r_vector;
+
+                    // For gravity anomalies:
+                    const double KK_anomalies = - G_times_density_anomaly_times_JxW[q] * one_over_r_cubed;
+                    local_g_anomaly[p] += KK_anomalies * r_vector;
+
+                    // For gravity potential:
+                    local_g_potential[p] -= G_density_JxW / r;
+
+                    // For gravity gradient:
+                    const double grad_KK = G_density_JxW / r_to_the_5;
+                    for (unsigned int e=0; e<dim; ++e)
+                      for (unsigned int f=e; f<dim; ++f)
+                        local_g_gradient[p][e][f] += grad_KK * (3.0
+                                                                * r_vector[e] * r_vector[f]
+                                                                - (e==f ? r_squared : 0));
+                  }
+              }
           }
 
-      // Pre-Assign the coordinates of all satellites in a vector point:
-      // *** First calculate the number of satellites according to the sampling scheme:
-      unsigned int n_satellites;
-      if (sampling_scheme == fibonacci_spiral)
-        n_satellites = n_points_spiral * n_points_radius;
-      else if (sampling_scheme == map)
-        n_satellites = n_points_radius * n_points_longitude * n_points_latitude;
-      else if (sampling_scheme == list_of_points)
-        n_satellites = longitude_list.size();
-      else n_satellites = 1;
+      // Sum local gravity components over global domain and compute
+      // some max and mins. We can directly call Utilities::MPI::sum()
+      // for a vector of doubles, but for the other data types we have
+      // to be more creative:
+      std::vector<double> g_potential(n_satellites);
+      Utilities::MPI::sum (make_const_array_view(local_g_potential),
+                           this->get_mpi_communicator(),
+                           make_array_view(g_potential));
 
-      // *** Second assign the coordinates of all satellites:
-      std::vector<Point<dim>> satellites_coordinate(n_satellites);
-      if (sampling_scheme == map)
+      const auto tensor_sum
+        = [] (const auto &v1, const auto &v2)
+      {
+        AssertDimension (v1.size(), v2.size());
+
+        using element_type = typename std::remove_reference<decltype(v1)>::type::value_type;
+
+        std::vector<element_type> result (v1.size());
+        for (unsigned int i=0; i<result.size(); ++i)
+          result[i] = v1[i] + v2[i];
+        return result;
+      };
+
+      const std::vector<Tensor<1,dim>>
+      g = Utilities::MPI::all_reduce<decltype(local_g)>
+          (local_g,
+           this->get_mpi_communicator(),
+           tensor_sum);
+
+      const std::vector<Tensor<1,dim>>
+      g_anomaly = Utilities::MPI::all_reduce<decltype(local_g_anomaly)>
+                  (local_g_anomaly,
+                   this->get_mpi_communicator(),
+                   tensor_sum);
+
+      const std::vector<SymmetricTensor<2,dim>>
+      g_gradient = Utilities::MPI::all_reduce<decltype(local_g_gradient)>
+                   (local_g_gradient,
+                    this->get_mpi_communicator(),
+                    tensor_sum);
+
+      double sum_g = 0;
+      double min_g = std::numeric_limits<double>::max();
+      double max_g = std::numeric_limits<double>::lowest();
+      double sum_g_potential = 0;
+      double min_g_potential = std::numeric_limits<double>::max();
+      double max_g_potential = std::numeric_limits<double>::lowest();
+
+      for (unsigned int p=0; p < n_satellites; ++p)
         {
-          unsigned int p = 0;
-          for (unsigned int h=0; h < n_points_radius; ++h)
-            {
-              for (unsigned int i=0; i < n_points_longitude; ++i)
-                {
-                  for (unsigned int j=0; j < n_points_latitude; ++j)
-                    {
-                      if (n_points_radius > 1)
-                        satellites_coordinate[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / (n_points_radius - 1)) * h;
-                      else
-                        satellites_coordinate[p][0] = minimum_radius;
-                      if (n_points_longitude > 1)
-                        satellites_coordinate[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / (n_points_longitude - 1)) * i) * numbers::PI / 180.;
-                      else
-                        satellites_coordinate[p][1] = minimum_colongitude * numbers::PI / 180.;
-                      if (n_points_latitude > 1)
-                        satellites_coordinate[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) / (n_points_latitude - 1)) * j) * numbers::PI / 180.;
-                      else
-                        satellites_coordinate[p][2] = minimum_colatitude * numbers::PI / 180.;
-                      ++p;
-                    }
-                }
-            }
+          // sum gravity components for all n_satellites:
+          sum_g += g[p].norm();
+          sum_g_potential += g_potential[p];
+          max_g = std::max(g[p].norm(), max_g);
+          min_g = std::min(g[p].norm(), min_g);
+          max_g_potential = std::max(g_potential[p], max_g_potential);
+          min_g_potential = std::min(g_potential[p], min_g_potential);
         }
-      if (sampling_scheme == fibonacci_spiral)
-        {
-          const double golden_ratio = (1. + std::sqrt(5.))/2.;
-          const double golden_angle = 2. * numbers::PI * (1. - 1./golden_ratio);
-          unsigned int p = 0;
-          for (unsigned int h=0; h < n_points_radius; ++h)
-            {
-              for (unsigned int s=0; s < n_points_spiral; ++s)
-                {
-                  if (n_points_radius > 1)
-                    satellites_coordinate[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / (n_points_radius - 1)) * h;
-                  else
-                    satellites_coordinate[p][0] = minimum_radius;
-                  satellites_coordinate[p][2] = std::acos(1. - 2. * s / (n_points_spiral - 1.));
-                  satellites_coordinate[p][1] = std::fmod((s*golden_angle), 2.*numbers::PI);
-                  ++p;
-                }
-            }
-        }
-      if (sampling_scheme == list_of_points)
-        {
-          for (unsigned int p=0; p < n_satellites; ++p)
-            {
-              if (radius_list.size() == 1)
-                satellites_coordinate[p][0] = radius_list[0];
-              else
-                satellites_coordinate[p][0] = radius_list[p];
-              if (longitude_list[p] < 0)
-                satellites_coordinate[p][1] = (360 + longitude_list[p]) * numbers::PI / 180.;
-              else
-                satellites_coordinate[p][1] = (longitude_list[p]) * numbers::PI / 180.;
-              satellites_coordinate[p][2] = (90 - latitude_list[p]) * numbers::PI / 180. ;
-            }
-        }
+
+
+      // Now also compute theoretical values. These are output only
+      // on process zero and, for now, also only computed on process zero.
+      std::vector<double> g_theory(n_satellites);
+      std::vector<double> g_potential_theory(n_satellites);
+      std::vector<SymmetricTensor<2,dim>> g_gradient_theory(n_satellites);
+
+      const unsigned int my_rank
+        = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+      const unsigned int n_ranks
+        = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+
+      for (unsigned int p=0; p < n_satellites; ++p)
+        if (p % n_ranks == my_rank)
+          {
+            const Point<dim> satellite_position = satellite_positions_cartesian[p];
+
+            // analytical solution to calculate the theoretical gravity and its derivatives
+            // from a uniform density model. Can only be used if concentric density profile.
+            if (satellite_positions_spherical[p][0] <= model_inner_radius)
+              {
+                // We are inside the inner radius
+                g_theory[p] = 0;
+                g_potential_theory[p] = 2.0 * G * numbers::PI * reference_density *
+                                        (std::pow(model_inner_radius,2) - std::pow(model_outer_radius,2));
+              }
+            else if ((satellite_positions_spherical[p][0] > model_inner_radius)
+                     && (satellite_positions_spherical[p][0] < model_outer_radius))
+              {
+                // We are in the spherical shell
+                g_theory[p] = G * numbers::PI * 4./3. * reference_density *
+                              (satellite_positions_spherical[p][0] -
+                               (std::pow(model_inner_radius,3)
+                                /  std::pow(satellite_positions_spherical[p][0],2)));
+                g_potential_theory[p] = G * numbers::PI * 4./3. * reference_density *
+                                        ((std::pow(satellite_positions_spherical[p][0],2)/2.0) +
+                                         (std::pow(model_inner_radius,3) / satellite_positions_spherical[p][0]))
+                                        -
+                                        G * numbers::PI * 2.0 * reference_density *
+                                        std::pow(model_outer_radius,2);
+              }
+            else
+              {
+                const double common_factor = G * numbers::PI * 4./3. * reference_density
+                                             * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3));
+                const double r = satellite_positions_spherical[p][0];
+
+                g_theory[p] = common_factor / std::pow(r,2);
+                g_potential_theory[p] = - common_factor / r;
+
+                // For the gradient of g, start with the common part of
+                // the diagonal elements:
+                g_gradient_theory[p][0][0] =
+                  g_gradient_theory[p][1][1] =
+                    g_gradient_theory[p][2][2] = -1./std::pow(r,3);
+
+                // Then do the off-diagonal elements:
+                for (unsigned int e=0; e<dim; ++e)
+                  for (unsigned int f=e; f<dim; ++f)
+                    g_gradient_theory[p][e][f] += -(- 3.0 * satellite_position[e] * satellite_position[f])
+                                                  /  std::pow(r,5);
+                g_gradient_theory[p] *= common_factor;
+              }
+          }
+
+      g_theory = Utilities::MPI::all_reduce<decltype(g_theory)>
+                 (g_theory,
+                  this->get_mpi_communicator(),
+                  tensor_sum);
+
+      g_potential_theory = Utilities::MPI::all_reduce<decltype(g_potential_theory)>
+                           (g_potential_theory,
+                            this->get_mpi_communicator(),
+                            tensor_sum);
+
+      g_gradient_theory = Utilities::MPI::all_reduce<decltype(g_gradient_theory)>
+                          (g_gradient_theory,
+                           this->get_mpi_communicator(),
+                           tensor_sum);
 
       // open the file on rank 0 and write the headers
-      std::ofstream output;
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          output.open(filename.c_str());
-          AssertThrow(output,
-                      ExcMessage("Unable to open file for writing: " + filename +"."));
+          // First put all of our output into a string buffer:
+          std::ostringstream output;
           output << "# 1: position_satellite_r" << '\n'
                  << "# 2: position_satellite_phi" << '\n'
                  << "# 3: position_satellite_theta" << '\n'
@@ -287,174 +487,47 @@ namespace aspect
                  << "# 28: gravity_gradient_theory_xz" << '\n'
                  << "# 29: gravity_gradient_theory_yz" << '\n'
                  << '\n';
-        }
 
-      // This is the main loop which computes gravity acceleration, potential and
-      // gradients at a point located at the spherical coordinate [r, phi, theta].
-      // This loop corresponds to the 3 integrals of Newton law:
-      double sum_g = 0;
-      double min_g = std::numeric_limits<double>::max();
-      double max_g = std::numeric_limits<double>::lowest();
-      double sum_g_potential = 0;
-      double min_g_potential = std::numeric_limits<double>::max();
-      double max_g_potential = std::numeric_limits<double>::lowest();
-      for (unsigned int p=0; p < n_satellites; ++p)
-        {
-
-          // The spherical coordinates are shifted into cartesian to allow simplification
-          // in the mathematical equation.
-          std::array<double,dim> satellite_point_coordinate;
-          satellite_point_coordinate[0] = satellites_coordinate[p][0];
-          satellite_point_coordinate[1] = satellites_coordinate[p][1];
-          satellite_point_coordinate[2] = satellites_coordinate[p][2];
-          const Point<dim> position_satellite = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(satellite_point_coordinate);
-
-          // For each point (i.e. satellite), the fourth integral goes over cells and
-          // quadrature points to get the unique distance between those, to calculate
-          // gravity vector components x,y,z (in tensor), potential and gradients.
-          Tensor<1,dim> local_g;
-          Tensor<1,dim> local_g_anomaly;
-          Tensor<2,dim> local_g_gradient;
-          double local_g_potential = 0;
-          local_cell_number = 0;
-          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-            if (cell->is_locally_owned())
-              {
-                for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
-                  {
-                    const double dist = (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]).norm();
-                    // For gravity acceleration:
-                    const double KK = - G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
-                    local_g += KK * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
-                    // For gravity anomalies:
-                    const double KK_anomalies = - G * density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
-                    local_g_anomaly += KK_anomalies * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
-                    // For gravity potential:
-                    local_g_potential -= G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / dist;
-                    // For gravity gradient:
-                    const double grad_KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,5);
-                    local_g_gradient[0][0] += grad_KK * (3.0
-                                                         * std::pow((position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0]),2)
-                                                         - std::pow(dist,2));
-                    local_g_gradient[1][1] += grad_KK * (3.0
-                                                         * std::pow((position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1]),2)
-                                                         - std::pow(dist,2));
-                    local_g_gradient[2][2] += grad_KK * (3.0
-                                                         * std::pow((position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]),2)
-                                                         - std::pow(dist,2));
-                    local_g_gradient[0][1] += grad_KK * (3.0
-                                                         * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
-                                                         * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1]));
-                    local_g_gradient[0][2] += grad_KK * (3.0
-                                                         * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
-                                                         * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]));
-                    local_g_gradient[1][2] += grad_KK * (3.0
-                                                         * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1])
-                                                         * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]));
-                  }
-                ++local_cell_number;
-              }
-
-          // Sum local gravity components over global domain:
-          const Tensor<1,dim> g          = Utilities::MPI::sum (local_g, this->get_mpi_communicator());
-          const Tensor<1,dim> g_anomaly  = Utilities::MPI::sum (local_g_anomaly, this->get_mpi_communicator());
-          const Tensor<2,dim> g_gradient = Utilities::MPI::sum (local_g_gradient, this->get_mpi_communicator());
-          const double g_potential       = Utilities::MPI::sum (local_g_potential, this->get_mpi_communicator());
-
-          // sum gravity components for all n_satellites:
-          sum_g += g.norm();
-          sum_g_potential += g_potential;
-          if (g.norm() > max_g)
-            max_g = g.norm();
-          if (g.norm() < min_g)
-            min_g = g.norm();
-          if (g_potential > max_g_potential)
-            max_g_potential = g_potential;
-          if (g_potential < min_g_potential)
-            min_g_potential = g_potential;
-
-          // analytical solution to calculate the theoretical gravity and its derivatives
-          // from a uniform density model. Can only be used if concentric density profile.
-          double g_theory = 0;
-          double g_potential_theory = 0;
-          Tensor<2,dim> g_gradient_theory;
-          if (satellites_coordinate[p][0] <= model_inner_radius)
+          for (unsigned int p=0; p < n_satellites; ++p)
             {
-              g_theory = 0;
-              g_potential_theory = 2.0 * G * numbers::PI * reference_density * (std::pow(model_inner_radius,2) - std::pow(model_outer_radius,2));
-            }
-          else if ((satellites_coordinate[p][0] > model_inner_radius) && (satellites_coordinate[p][0] < model_outer_radius))
-            {
-              g_theory = G * numbers::PI * 4./3. * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
-                                                                        /  std::pow(satellites_coordinate[p][0],2)));
-              g_potential_theory = G * numbers::PI * 4./3. * reference_density
-                                   * ((std::pow(satellites_coordinate[p][0],2)/2.0) + (std::pow(model_inner_radius,3)/satellites_coordinate[p][0]))
-                                   - G * numbers::PI * 2.0 * reference_density * std::pow(model_outer_radius,2);
-            }
-          else
-            {
-              g_theory = G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                         / std::pow(satellites_coordinate[p][0],2);
-              g_potential_theory = - G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                   /  satellites_coordinate[p][0];
-              g_gradient_theory[0][0] = -G * numbers::PI * 4./3. * reference_density
-                                        * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[0],2))
-                                        /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[1][1] = -G * numbers::PI * 4./3. * reference_density
-                                        * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[1],2))
-                                        /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[2][2] = -G * numbers::PI * 4./3. * reference_density
-                                        * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[2],2))
-                                        /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[0][1] = -G * numbers::PI * 4./3. * reference_density
-                                        * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (- 3.0 * position_satellite[0] * position_satellite[1])
-                                        /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[0][2] = -G * numbers::PI * 4./3. * reference_density
-                                        * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (- 3.0 * position_satellite[0] * position_satellite[2])
-                                        /  std::pow(satellites_coordinate[p][0],5);
-              g_gradient_theory[1][2] = -G * numbers::PI * 4./3. * reference_density
-                                        * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (- 3.0 * position_satellite[1] * position_satellite[2])
-                                        /  std::pow(satellites_coordinate[p][0],5);
-            }
+              const Point<dim> satellite_position = satellite_positions_cartesian[p];
 
-          // write output.
-          // g_gradient is here given in eotvos E (1E = 1e-9 per square seconds):
-          if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-            {
-              output << satellites_coordinate[p][0] << ' '
-                     << satellites_coordinate[p][1] *180. / numbers::PI << ' '
-                     << satellites_coordinate[p][2] *180. / numbers::PI << ' '
-                     << position_satellite[0] << ' '
-                     << position_satellite[1] << ' '
-                     << position_satellite[2] << ' '
+              // write output.
+              // g_gradient is here given in eotvos E (1E = 1e-9 per square seconds):
+              output << satellite_positions_spherical[p][0] << ' '
+                     << satellite_positions_spherical[p][1] *180. / numbers::PI << ' '
+                     << satellite_positions_spherical[p][2] *180. / numbers::PI << ' '
+                     << satellite_position[0] << ' '
+                     << satellite_position[1] << ' '
+                     << satellite_position[2] << ' '
                      << std::setprecision(precision)
-                     << g << ' '
-                     << g.norm() << ' '
-                     << g_theory << ' '
-                     << g_potential << ' '
-                     << g_potential_theory << ' '
-                     << g_anomaly << ' '
-                     << g_anomaly.norm() << ' '
-                     << g_gradient[0][0] *1e9 << ' '
-                     << g_gradient[1][1] *1e9 << ' '
-                     << g_gradient[2][2] *1e9 << ' '
-                     << g_gradient[0][1] *1e9 << ' '
-                     << g_gradient[0][2] *1e9 << ' '
-                     << g_gradient[1][2] *1e9 << ' '
-                     << g_gradient_theory[0][0] *1e9 << ' '
-                     << g_gradient_theory[1][1] *1e9 << ' '
-                     << g_gradient_theory[2][2] *1e9 << ' '
-                     << g_gradient_theory[0][1] *1e9 << ' '
-                     << g_gradient_theory[0][2] *1e9 << ' '
-                     << g_gradient_theory[1][2] *1e9 << ' '
+                     << g[p] << ' '
+                     << g[p].norm() << ' '
+                     << g_theory[p] << ' '
+                     << g_potential[p] << ' '
+                     << g_potential_theory[p] << ' '
+                     << g_anomaly[p] << ' '
+                     << g_anomaly[p].norm() << ' '
+                     << g_gradient[p][0][0] *1e9 << ' '
+                     << g_gradient[p][1][1] *1e9 << ' '
+                     << g_gradient[p][2][2] *1e9 << ' '
+                     << g_gradient[p][0][1] *1e9 << ' '
+                     << g_gradient[p][0][2] *1e9 << ' '
+                     << g_gradient[p][1][2] *1e9 << ' '
+                     << g_gradient_theory[p][0][0] *1e9 << ' '
+                     << g_gradient_theory[p][1][1] *1e9 << ' '
+                     << g_gradient_theory[p][2][2] *1e9 << ' '
+                     << g_gradient_theory[p][0][1] *1e9 << ' '
+                     << g_gradient_theory[p][0][2] *1e9 << ' '
+                     << g_gradient_theory[p][1][2] *1e9 << ' '
                      << '\n';
             }
+
+          // Now push the entire buffer into the output file in one swoop fell:
+          std::ofstream output_file(filename);
+          AssertThrow(output_file,
+                      ExcMessage("Unable to open file for writing: " + filename +"."));
+          output_file << output.str();
         }
 
       // write quantities in the statistic file

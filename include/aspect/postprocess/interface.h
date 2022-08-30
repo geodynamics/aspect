@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -75,8 +75,7 @@ namespace aspect
          * Destructor. Does nothing but is virtual so that derived classes
          * destructors are also virtual.
          */
-        virtual
-        ~Interface ();
+        virtual ~Interface () = default;
 
         /**
          * Initialize function.
@@ -227,7 +226,7 @@ namespace aspect
          * individual postprocessors.
          */
         std::list<std::pair<std::string,std::string>>
-                                                   execute (TableHandler &statistics);
+        execute (TableHandler &statistics);
 
         /**
          * Go through the list of all postprocessors that have been selected
@@ -323,7 +322,7 @@ namespace aspect
         register_postprocessor (const std::string &name,
                                 const std::string &description,
                                 void (*declare_parameters_function) (ParameterHandler &),
-                                Interface<dim> *(*factory_function) ());
+                                std::unique_ptr<Interface<dim>> (*factory_function) ());
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -454,11 +453,11 @@ namespace aspect
   namespace ASPECT_REGISTER_POSTPROCESSOR_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::Postprocess::Manager<2>::register_postprocessor, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::Postprocess::Manager<2>::register_postprocessor, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::Postprocess::Manager<3>::register_postprocessor, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::Postprocess::Manager<3>::register_postprocessor, \
+                                name, description); \
   }
   }
 }

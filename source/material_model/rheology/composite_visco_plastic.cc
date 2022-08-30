@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -64,7 +64,7 @@ namespace aspect
 
       template <int dim>
       CompositeViscoPlastic<dim>::CompositeViscoPlastic ()
-      {}
+        = default;
 
 
 
@@ -130,16 +130,16 @@ namespace aspect
         // to prevent a division-by-zero, and a floating point exception.
         // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
         // strain rate (often simplified as epsilondot_ii)
-        const double edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
+        const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.)),
                                         min_strain_rate);
 
         Rheology::DiffusionCreepParameters diffusion_creep_parameters;
         Rheology::DislocationCreepParameters dislocation_creep_parameters;
         Rheology::PeierlsCreepParameters peierls_creep_parameters;
         Rheology::DruckerPragerParameters drucker_prager_parameters;
-        double eta_diff = max_viscosity;
-        double eta_disl = max_viscosity;
-        double eta_prls = max_viscosity;
+        double eta_diff = maximum_viscosity;
+        double eta_disl = maximum_viscosity;
+        double eta_prls = maximum_viscosity;
 
         if (use_diffusion_creep)
           {
@@ -159,7 +159,7 @@ namespace aspect
             eta_prls = peierls_creep->compute_approximate_viscosity(edot_ii, pressure, temperature, composition);
           }
         // First guess at a stress using diffusion, dislocation, and Peierls creep viscosities calculated with the total second strain rate invariant.
-        const double eta_guess = std::min(std::max(min_viscosity, eta_diff*eta_disl*eta_prls/(eta_diff*eta_disl + eta_diff*eta_prls + eta_disl*eta_prls)), max_viscosity);
+        const double eta_guess = std::min(std::max(minimum_viscosity, eta_diff*eta_disl*eta_prls/(eta_diff*eta_disl + eta_diff*eta_prls + eta_disl*eta_prls)), maximum_viscosity);
 
         double creep_stress = 2.*eta_guess*edot_ii;
 
@@ -198,8 +198,8 @@ namespace aspect
                                                                    peierls_creep_parameters,
                                                                    drucker_prager_parameters);
 
-            const double strain_rate = creep_stress/(2.*max_viscosity) + (max_viscosity/(max_viscosity - min_viscosity))*creep_edot_and_deriv.first;
-            strain_rate_deriv = 1./(2.*max_viscosity) + (max_viscosity/(max_viscosity - min_viscosity))*creep_edot_and_deriv.second;
+            const double strain_rate = creep_stress/(2.*maximum_viscosity) + (maximum_viscosity/(maximum_viscosity - minimum_viscosity))*creep_edot_and_deriv.first;
+            strain_rate_deriv = 1./(2.*maximum_viscosity) + (maximum_viscosity/(maximum_viscosity - minimum_viscosity))*creep_edot_and_deriv.second;
 
             strain_rate_residual = strain_rate - edot_ii;
 
@@ -230,8 +230,8 @@ namespace aspect
 
         // The creep stress is not the total stress, so we still need to do a little work to obtain the effective viscosity.
         // First, we compute the stress running through the strain rate limiter, and then add that to the creep stress
-        // NOTE: The viscosity of the strain rate limiter is equal to (min_visc*max_visc)/(max_visc - min_visc)
-        const double lim_stress = 2.*min_viscosity*(edot_ii - creep_stress/(2.*max_viscosity));
+        // NOTE: The viscosity of the strain rate limiter is equal to (minimum_viscosity*maximum_viscosity)/(maximum_viscosity - minimum_viscosity)
+        const double lim_stress = 2.*minimum_viscosity*(edot_ii - creep_stress/(2.*maximum_viscosity));
         const double total_stress = creep_stress + lim_stress;
 
         // Compute the strain rate experienced by the different mechanisms
@@ -263,7 +263,7 @@ namespace aspect
             partial_strain_rates[3] = drpr_edot_and_deriv.first;
           }
 
-        partial_strain_rates[4] = total_stress/(2.*max_viscosity);
+        partial_strain_rates[4] = total_stress/(2.*maximum_viscosity);
 
         // Now we return the viscosity using the total stress
         return total_stress/(2.*edot_ii);
@@ -387,8 +387,8 @@ namespace aspect
         stress_max_iteration_number = prm.get_integer ("Maximum creep strain rate iterations");
 
         // Read min and max viscosity parameters
-        min_viscosity = prm.get_double ("Minimum viscosity");
-        max_viscosity = prm.get_double ("Maximum viscosity");
+        minimum_viscosity = prm.get_double ("Minimum viscosity");
+        maximum_viscosity = prm.get_double ("Maximum viscosity");
 
         // Rheological parameters
 
@@ -396,7 +396,7 @@ namespace aspect
         use_diffusion_creep = prm.get_bool ("Include diffusion creep in composite rheology");
         if (use_diffusion_creep)
           {
-            diffusion_creep = std_cxx14::make_unique<Rheology::DiffusionCreep<dim>>();
+            diffusion_creep = std::make_unique<Rheology::DiffusionCreep<dim>>();
             diffusion_creep->initialize_simulator (this->get_simulator());
             diffusion_creep->parse_parameters(prm, expected_n_phases_per_composition);
           }
@@ -405,7 +405,7 @@ namespace aspect
         use_dislocation_creep = prm.get_bool ("Include dislocation creep in composite rheology");
         if (use_dislocation_creep)
           {
-            dislocation_creep = std_cxx14::make_unique<Rheology::DislocationCreep<dim>>();
+            dislocation_creep = std::make_unique<Rheology::DislocationCreep<dim>>();
             dislocation_creep->initialize_simulator (this->get_simulator());
             dislocation_creep->parse_parameters(prm, expected_n_phases_per_composition);
           }
@@ -414,7 +414,7 @@ namespace aspect
         use_peierls_creep = prm.get_bool ("Include Peierls creep in composite rheology");
         if (use_peierls_creep)
           {
-            peierls_creep = std_cxx14::make_unique<Rheology::PeierlsCreep<dim>>();
+            peierls_creep = std::make_unique<Rheology::PeierlsCreep<dim>>();
             peierls_creep->initialize_simulator (this->get_simulator());
             peierls_creep->parse_parameters(prm, expected_n_phases_per_composition);
           }
@@ -423,7 +423,7 @@ namespace aspect
         use_drucker_prager = prm.get_bool ("Include Drucker Prager plasticity in composite rheology");
         if (use_drucker_prager)
           {
-            drucker_prager = std_cxx14::make_unique<Rheology::DruckerPrager<dim>>();
+            drucker_prager = std::make_unique<Rheology::DruckerPrager<dim>>();
             drucker_prager->initialize_simulator (this->get_simulator());
             drucker_prager->parse_parameters(prm, expected_n_phases_per_composition);
 

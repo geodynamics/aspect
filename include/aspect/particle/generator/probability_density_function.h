@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -63,24 +63,21 @@ namespace aspect
       {
         public:
           /**
-           * Initialization function for the random number generator.
-           */
-          void
-          initialize () override;
-
-          /**
-           * Generate a set of particles in the current
-           * particle world. The particle density is set by an analytically
+           * Generate a set of particles in the given
+           * particle handler. The particle density is set by an analytically
            * prescribed density function that is set as an input parameter.
-           * This function builds a list of probabilities for all local cells
-           * and then calls generate_particles_in_subdomain() to generate
-           * the local particles.
            *
-           * @param [in,out] particles A multimap between cells and their
-           * particles. This map will be filled in this function.
+           * @param [in,out] particle_handler The particle handler into which
+           * the generated particles should be inserted.
            */
           void
-          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles) override;
+          generate_particles(Particles::ParticleHandler<dim> &particle_handler) override;
+
+          // avoid -Woverloaded-virtual
+          // TODO: remove this using directive once the following deprecated
+          // function in the interface class has been removed:
+          // generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
+          using Generator::Interface<dim>::generate_particles;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -94,16 +91,6 @@ namespace aspect
            */
           void
           parse_parameters (ParameterHandler &prm) override;
-
-        protected:
-
-          /**
-           * Returns the weight of one cell, which is interpreted as the probability
-           * to generate particles in this cell.
-           */
-          virtual
-          double
-          get_cell_weight (const typename DoFHandler<dim>::active_cell_iterator &cell) const;
 
         private:
           /**
@@ -132,33 +119,6 @@ namespace aspect
            * density.
            */
           Functions::ParsedFunction<dim> function;
-
-          /**
-           * Generate a set of particles distributed within the local domain
-           * according to the probability density function.
-           *
-           * @param [in] particles_per_cell A vector with n_locally_owned_cells entries
-           * that determines how many particles are generated in each cell.
-           * @param [in] first_particle_index The starting ID to assign to generated particles of the local process.
-           * @param [in] n_local_particles The total number of particles to generate locally.
-           * @param [out] particles A map between cells and all generated particles.
-           *
-           */
-          void
-          generate_particles_in_subdomain (const std::vector<unsigned int> &particles_per_cell,
-                                           const types::particle_index first_particle_index,
-                                           const types::particle_index n_local_particles,
-                                           std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles);
-
-          /**
-           * This function loops over all active cells in the local subdomain
-           * and returns a vector of accumulated cell weights with the size
-           * n_locally_owned_active_cells(). This vector is calculated
-           * by looping over all locally owned cells and accumulating the
-           * return value of get_cell_weight(cell).
-           */
-          std::vector<double>
-          compute_local_accumulated_cell_weights () const;
       };
 
     }

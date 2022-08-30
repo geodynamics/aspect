@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -51,12 +51,12 @@ namespace aspect
         std::vector<std::string> averaging_variables;
         averaging_variables.reserve(variables.size());
 
-        for (unsigned int i=0; i<variables.size(); ++i)
-          if (!((variables[i] == "adiabatic_temperature")
-                || (variables[i] == "adiabatic_pressure")
-                || (variables[i] == "adiabatic_density")
-                || (variables[i] == "adiabatic_density_derivative")))
-            averaging_variables.emplace_back(variables[i]);
+        for (const auto &variable : variables)
+          if (!((variable == "adiabatic_temperature")
+                || (variable == "adiabatic_pressure")
+                || (variable == "adiabatic_density")
+                || (variable == "adiabatic_density_derivative")))
+            averaging_variables.emplace_back(variable);
         return averaging_variables;
       }
     }
@@ -164,8 +164,8 @@ namespace aspect
             {
               if (output_format_string != "txt")
                 {
-                  for (unsigned int j=0; j<variables.size(); ++j)
-                    data_out_stack.declare_data_vector (variables[j],
+                  for (const auto &variable : variables)
+                    data_out_stack.declare_data_vector (variable,
                                                         DataOutStack<1>::cell_vector);
 
                   for (unsigned int i=0; i<entries.size(); ++i)
@@ -233,8 +233,8 @@ namespace aspect
 
                   // Write the header
                   f << "#       time" << "        depth";
-                  for ( unsigned int i = 0; i < variables.size(); ++i)
-                    f << " " << variables[i];
+                  for (const auto &variable : variables)
+                    f << ' ' << variable;
                   f << std::endl;
 
                   // Output each data point in the entries object
@@ -321,7 +321,7 @@ namespace aspect
           const std::string variables =
             "all|temperature|composition|"
             "adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|"
-            "velocity magnitude|sinking velocity|rising velocity|Vs|Vp|"
+            "velocity magnitude|sinking velocity|rising velocity|Vs|Vp|log viscosity|"
             "viscosity|vertical heat flux|vertical mass flux|composition mass";
           prm.declare_entry("List of output variables", "all",
                             Patterns::MultipleSelection(variables.c_str()),
@@ -468,6 +468,9 @@ namespace aspect
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
               variables.emplace_back("viscosity");
+
+            if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "log viscosity") != output_variables.end() )
+              variables.emplace_back("log_viscosity");
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical heat flux") != output_variables.end() )
               variables.emplace_back("vertical_heat_flux");

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,6 +33,15 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
+      template <int dim>
+      GrainLagAngle<dim>::
+      GrainLagAngle ()
+        :
+        CellDataVectorCreator<dim>("radian")
+      {}
+
+
+
       template<int dim>
       std::pair<std::string, Vector<float> *> GrainLagAngle<dim>::execute() const
       {
@@ -49,8 +58,6 @@ namespace aspect
         // Set up material models
         MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                    this->n_compositional_fields());
-        MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                     this->n_compositional_fields());
 
         // Loop over cells and calculate theta in each one
         // Note that we start after timestep 0 because we need the strain rate,
@@ -65,7 +72,7 @@ namespace aspect
                         this->get_solution(), true);
               // Also get velocity gradients
               std::vector<Tensor<2, dim>> velocity_gradient(n_q_points,
-                                                            Tensor<2, dim>());
+                                                             Tensor<2, dim>());
               fe_values[this->introspection().extractors.velocities].get_function_gradients(
                 this->get_solution(), velocity_gradient);
 
@@ -156,7 +163,7 @@ namespace aspect
                                                   "A visualization output object that generates output "
                                                   "showing the angle between the ~infinite strain axis "
                                                   "and the flow velocity. Kaminski and Ribe "
-                                                  "(2002, Gcubed) call this quantity $\\Theta$ and "
+                                                  "(see \\cite{Kaminski2002}) call this quantity $\\Theta$ and "
                                                   "define it as "
                                                   "$\\Theta = \\cos^{-1}(\\hat{u}\\cdot\\hat{e})$ "
                                                   " where $\\hat{u}=\\vec{u}/|{u}|$, $\\vec{u}$ "
@@ -165,7 +172,9 @@ namespace aspect
                                                   "which we calculate as the first eigenvector of "
                                                   "the 'left stretch' tensor. "
                                                   "$\\Theta$ can be used to calculate the grain "
-                                                  "orientation lag parameter.")
+                                                  "orientation lag parameter."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\radian}.")
     }
   }
 }

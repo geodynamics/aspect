@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -94,8 +94,8 @@ namespace aspect
           density_function (density)
         {}
 
-        virtual void vector_value (const Point< dim > &p,
-                                   Vector< double >   &values) const
+        virtual void vector_value (const Point<dim> &p,
+                                   Vector<double>   &values) const
         {
           double pos[2]= {p(0),p(1)};
 
@@ -262,15 +262,6 @@ namespace aspect
           this->model_dependence.compressibility = MaterialModel::NonlinearDependence::none;
           this->model_dependence.specific_heat = MaterialModel::NonlinearDependence::none;
           this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
-        }
-
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const
-        {
-          return 1;
         }
 
         /**

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -49,7 +49,7 @@ namespace aspect
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
-                                                     InitialComposition<dim>::get_property_information() const
+      InitialComposition<dim>::get_property_information() const
       {
         AssertThrow(this->n_compositional_fields() > 0,
                     ExcMessage("You have requested the particle property <initial "

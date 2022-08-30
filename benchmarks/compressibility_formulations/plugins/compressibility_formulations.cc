@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -31,8 +31,8 @@ namespace aspect
   {
     /**
      * A material model that is identical to the simple compressible model,
-     * except that the density is tracked in a compositional field named
-     * 'density_field' using the prescribed field advection method. It also
+     * except that the density is tracked in a compositional field of type
+     * 'density' using the prescribed field advection method. It also
      * allows some modification to the density and thermal expansivity
      * calculation for the compressibility benchmarks.
      *
@@ -50,9 +50,6 @@ namespace aspect
 
         virtual
         bool is_compressible () const;
-
-        virtual
-        double reference_viscosity () const;
 
         virtual
         void
@@ -119,16 +116,6 @@ namespace aspect
 
 
     template <int dim>
-    double
-    CompressibilityFormulations<dim>::
-    reference_viscosity () const
-    {
-      return base_model->reference_viscosity();
-    }
-
-
-
-    template <int dim>
     bool
     CompressibilityFormulations<dim>::
     is_compressible () const
@@ -145,7 +132,7 @@ namespace aspect
     {
       base_model->evaluate(in,out);
 
-      const unsigned int density_field_index = this->introspection().compositional_index_for_name("density_field");
+      const unsigned int density_field_index = this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density);
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
@@ -258,7 +245,7 @@ namespace aspect
       // create the base model and initialize its SimulatorAccess base
       // class; it will get a chance to read its parameters below after we
       // leave the current section
-      base_model.reset(create_material_model<dim>("simple compressible"));
+      base_model = create_material_model<dim>("simple compressible");
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
         sim->initialize_simulator (this->get_simulator());
       base_model->parse_parameters(prm);
@@ -275,9 +262,9 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(CompressibilityFormulations,
                                    "compressibility formulations",
                                    "A material model that is identical to the simple compressible model, "
-                                   " except that the density is tracked in a compositional field named "
-                                   " 'density_field' using the prescribed field advection method. It also "
-                                   " allows some modification to the density and thermal expansivity "
-                                   " calculation for the compressibility benchmarks.")
+                                   "except that the density is tracked in a compositional field of type "
+                                   "'density' using the prescribed field advection method. It also "
+                                   "allows some modification to the density and thermal expansivity "
+                                   "calculation for the compressibility benchmarks.")
   }
 }

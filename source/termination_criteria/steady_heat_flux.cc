@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2021 by the authors of the ASPECT code.
+  Copyright (C) 2021 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -60,7 +60,7 @@ namespace aspect
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             if (cell->at_boundary(f))
               {
                 const types::boundary_id boundary_indicator
@@ -90,13 +90,13 @@ namespace aspect
       double flux_min, flux_max, flux_prev, time_prev, flux_sum=0, flux_mean, deviation_max;
       flux_min = flux_max = flux_prev = time_heat_flux.front().second;
       time_prev = time_heat_flux.front().first;
-      for (auto it=time_heat_flux.begin(); it!=time_heat_flux.end(); ++it)
+      for (const auto &it : time_heat_flux)
         {
-          flux_min = std::min(flux_min, (*it).second);
-          flux_max = std::max(flux_max, (*it).second);
-          flux_sum += (((*it).second + flux_prev)/2.0)*((*it).first-time_prev);
-          time_prev = (*it).first;
-          flux_prev = (*it).second;
+          flux_min = std::min(flux_min, it.second);
+          flux_max = std::max(flux_max, it.second);
+          flux_sum += ((it.second + flux_prev)/2.0)*(it.first-time_prev);
+          time_prev = it.first;
+          flux_prev = it.second;
         }
 
       flux_mean = flux_sum/(time_heat_flux.back().first-time_heat_flux.front().first);
@@ -221,6 +221,13 @@ namespace aspect
                                           "steady state heat flux",
                                           "A criterion that terminates the simulation when the integrated "
                                           "heat flux over a given list of boundaries stays within a certain "
-                                          "range for a specified period of time.")
+                                          "range for a specified period of time."
+                                          "\n\n"
+                                          "The criterion considers the total heat flux over all boundaries "
+                                          "listed by their boundary indicators, rather than each boundary "
+                                          "separately. As a consequence, if the \\textit{sum} of heat fluxes "
+                                          "over individual parts of the boundary no longer changes, then this "
+                                          "criterion recommends termination, even if the heat flux over "
+                                          "individual parts of the boundary continues to change.")
   }
 }

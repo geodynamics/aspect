@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -142,7 +142,7 @@ namespace aspect
            * Return a copy of this manifold.
            */
           std::unique_ptr<Manifold<dim,dim>>
-                                          clone() const override;
+          clone() const override;
 
           /**
            * Set the minimal radius of the domain.

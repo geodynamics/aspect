@@ -80,7 +80,7 @@ and the indices at the end of this manual if you want to find a particular
 parameter; you can find the input file to run this cookbook example in
 \url{cookbooks/convection-box.prm}):
 
-\lstinputlisting[language=prmfile]{cookbooks/convection-box/doc/convection-box.prm.out}
+\lstinputlisting[language=prmfile]{convection-box.prm.out}
 
 
 \paragraph{Running the program.}
@@ -186,9 +186,9 @@ simulation.
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/visit0000.png}
+\includegraphics[width=0.4\textwidth]{visit0000.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/visit0001.png}
+\includegraphics[width=0.4\textwidth]{visit0001.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Initial temperature and velocity field (left)
@@ -261,9 +261,9 @@ through these two boundaries disappears as we refine the mesh further.
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/velocity.png}
+\includegraphics[width=0.4\textwidth]{velocity.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/heatflux.png}
+\includegraphics[width=0.4\textwidth]{heatflux.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Root mean square and maximal velocity as a
@@ -288,13 +288,15 @@ more iterations to solve these equations.
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/iterations.png}
+\includegraphics[width=0.4\textwidth]{iterations.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Number of linear iterations required to solve
 the Stokes and temperature equations in each time step.}
 \label{fig:convection-box-iterations}
 \end{figure}
+
+\note{If you want to run a version of this cookbook that uses Earth-like rather than nondimensional parameters, and that includes particles that visualize the flow field, see Section~\ref{sec:cookbooks-running-a-model}.}
 
 
 \paragraph{Play time 1: Different Rayleigh numbers.} After showing you results
@@ -321,9 +323,9 @@ The structures of the flow pattern also become smaller and smaller.
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/ra_1e2_visit0000.png}
+\includegraphics[width=0.4\textwidth]{ra_1e2_visit0000.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/ra_1e6_visit0001.png}
+\includegraphics[width=0.4\textwidth]{ra_1e6_visit0001.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Temperature fields at the end of a
@@ -336,9 +338,9 @@ The mesh on the right is clearly too coarse to resolve the structure of the solu
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/ra_1e6_velocity.png}
+\includegraphics[width=0.4\textwidth]{ra_1e6_velocity.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/ra_1e6_heatflux.png}
+\includegraphics[width=0.4\textwidth]{ra_1e6_heatflux.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Velocities (left) and heat flux across the
@@ -361,7 +363,7 @@ To generate these results, remember that we have chosen
 $g=Ra$ in our input file. In other words, changing the input file to
 contain the parameter setting
 %
-\lstinputlisting[language=prmfile]{cookbooks/convection-box/doc/gravity.part.prm.out}
+\lstinputlisting[language=prmfile]{gravity.part.prm.out}
 %
 will achieve the desired effect of computing with $Ra=10^6$.
 
@@ -374,7 +376,7 @@ interesting to think about computing even more accurately. This is easily done
 by using a finer mesh, for example. In the parameter file above, we have chosen
 the mesh setting as follows:
 %
-\lstinputlisting[language=prmfile]{cookbooks/convection-box/doc/refine.part.prm.out}
+\lstinputlisting[language=prmfile]{refine.part.prm.out}
 %
 We start out with a box geometry consisting of a single cell that is refined
 four times. Each time we split each cell into its 4 children, obtaining the
@@ -400,7 +402,7 @@ a particular time at least 8 times as expensive, assuming that all solvers in
 parameter in the \aspect{} input file that let's us increase the mesh resolution
 at later times. To this end, let us use the following snippet for the input
 file:
-\lstinputlisting[language=prmfile]{cookbooks/convection-box/doc/refine2.part.prm.out}
+\lstinputlisting[language=prmfile]{refine2.part.prm.out}
 
 What this does is the following: We start with an $8\times 8$ mesh (3 times
 globally refined) but then at times $t=0.2,0.3$ and $0.4$ we refine the mesh
@@ -414,9 +416,9 @@ do another global refinement, bringing us to refinement levels 4, 5 and finally
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/steps_unknowns.png}
+\includegraphics[width=0.4\textwidth]{steps_unknowns.png}
 \hfill
-\includegraphics[width=0.4\textwidth]{cookbooks/convection-box/doc/steps_heatflux.png}
+\includegraphics[width=0.4\textwidth]{steps_heatflux.png}
 \hfill
 \phantom.
 \caption{\it Convection in a box: Refinement in stages. Total number
@@ -483,7 +485,7 @@ cheaper of the two options.
 
 Following these considerations, let us add the following section to the
 parameter file:
-\lstinputlisting[language=prmfile]{cookbooks/convection-box/doc/disc.part.prm.out}
+\lstinputlisting[language=prmfile]{disc.part.prm.out}
 
 This leaves the velocity and pressure shape functions at quadratic and linear
 polynomial degree but increases the polynomial degree of the temperature from

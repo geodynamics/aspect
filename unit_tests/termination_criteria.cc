@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -29,7 +29,7 @@
  * two or more entries. Otherwise the function does not change the list.
  */
 void trim_time_temperature_list (const double necessary_time_in_steady_state,
-                                 std::list<std::pair<double, double> > &time_temperature_list)
+                                 std::list<std::pair<double, double>> &time_temperature_list)
 {
   // Remove old times until we're at the correct time period
   // but ensure at least two entries remain in the list (one old, one current timestep)
@@ -44,7 +44,7 @@ void trim_time_temperature_list (const double necessary_time_in_steady_state,
 
 TEST_CASE("trim time_temperature_list test for steady state termination criteria")
 {
-  std::list<std::pair<double,double> > time_temperature;
+  std::list<std::pair<double,double>> time_temperature;
   time_temperature.emplace_back(std::make_pair(0.0,1.0));
   time_temperature.emplace_back(std::make_pair(1.0,2.0));
   time_temperature.emplace_back(std::make_pair(1.4,3.0));

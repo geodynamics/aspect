@@ -1,4 +1,24 @@
-#include <../tests/spiegelman_fail_test.cc>
+/*
+  Copyright (C) 2022 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
+#include "../tests/spiegelman_fail_test.cc"
 
 int f(double parameter)
 {
@@ -129,10 +149,10 @@ int f(double parameter)
   MaterialModelOutputs<dim> out_dviscositydstrainrate_oneone(5,3);
   MaterialModelOutputs<dim> out_dviscositydtemperature(5,3);
 
-  if (out_base.get_additional_output<MaterialModelDerivatives<dim> >() != nullptr)
+  if (out_base.get_additional_output<MaterialModelDerivatives<dim>>() != nullptr)
     throw "error";
 
-  out_base.additional_outputs.push_back(std_cxx14::make_unique<MaterialModelDerivatives<dim> > (5));
+  out_base.additional_outputs.push_back(std::make_unique<MaterialModelDerivatives<dim>> (5));
 
   SpiegelmanMaterial<dim> mat;
   ParameterHandler prm;
@@ -173,7 +193,7 @@ int f(double parameter)
 
   //set up additional output for the derivatives
   MaterialModelDerivatives<dim> *derivatives;
-  derivatives = out_base.get_additional_output<MaterialModelDerivatives<dim> >();
+  derivatives = out_base.get_additional_output<MaterialModelDerivatives<dim>>();
 
   double temp;
   for (unsigned int i = 0; i < 5; i++)

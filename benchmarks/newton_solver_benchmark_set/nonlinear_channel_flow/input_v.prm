@@ -10,7 +10,7 @@ set End time                               = 0
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
-set Use years in output instead of seconds = false  # default: true
+set Use years in output instead of seconds = false
 set Nonlinear solver scheme = iterated Advection and Stokes #Newton Stokes
 set Max nonlinear iterations = 150
 set Nonlinear solver tolerance = 1e-14
@@ -76,7 +76,6 @@ subsection Material model
     set Stress exponent = 5
     set Viscosity averaging p = 10000
     set Viscosity prefactor = 1e-37
-    set Reference viscosity = 1e5
      set Use deviator of strain-rate = false
   end
 end

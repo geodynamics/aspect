@@ -22,6 +22,9 @@ An error occurred in file <steinberger.cc> in function
 The violated condition was: 
     numbers::is_finite(temperature)
 Additional information: 
-    In computing depth averages, there is at least one depth band that does not have any quadrature points in it. Consider reducing number of depth layers for averaging specified in the parameter file.(Number lateral average bands)
+    In computing depth averages, there is at least one depth band that
+    does not have any quadrature points in it. Consider reducing number of
+    depth layers for averaging specified in the parameter file.(Number
+    lateral average bands)
 
 Aborting!

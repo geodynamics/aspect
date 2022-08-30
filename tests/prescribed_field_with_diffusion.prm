@@ -78,12 +78,12 @@ subsection Material model
   set Model name = prescribed field material
 
   subsection Simple model
-    set Reference density             = 1    # default: 3300
+    set Reference density             = 1
     set Reference specific heat       = 1250
-    set Reference temperature         = 0    # default: 293
-    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1e-6
     set Thermal expansion coefficient = 1
-    set Viscosity                     = 1    # default: 5e24
+    set Viscosity                     = 1
   end
 end
 
@@ -111,6 +111,6 @@ subsection Postprocess
     set List of output variables      = named additional outputs
     set Number of grouped files       = 0
     set Output format                 = vtu
-    set Time between graphical output = 0                                                                                # default: 1e8
+    set Time between graphical output = 0
   end
 end

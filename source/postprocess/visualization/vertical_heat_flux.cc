@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,8 @@ namespace aspect
       VerticalHeatFlux ()
         :
         DataPostprocessorScalar<dim> ("vertical_heat_flux",
-                                      update_values | update_quadrature_points | update_gradients)
+                                      update_values | update_quadrature_points | update_gradients),
+        Interface<dim>("W/m/m")
       {}
 
 
@@ -63,6 +64,10 @@ namespace aspect
                                                    false);
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
+        in.requested_properties = MaterialModel::MaterialProperties::density |
+                                  MaterialModel::MaterialProperties::specific_heat |
+                                  MaterialModel::MaterialProperties::thermal_conductivity;
+
         this->get_material_model().evaluate(in, out);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
@@ -94,7 +99,9 @@ namespace aspect
                                                   "A visualization output object that generates output "
                                                   "for the heat flux in the vertical direction, which is "
                                                   "the sum of the advective and the conductive heat flux, "
-                                                  "with the sign convention of positive flux upwards.")
+                                                  "with the sign convention of positive flux upwards."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\watt\\per\\square\\meter}.")
     }
   }
 }

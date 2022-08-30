@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -63,6 +63,9 @@ namespace aspect
 
           MaterialModel::MaterialModelInputs<dim> in (1, this->n_compositional_fields());
           MaterialModel::MaterialModelOutputs<dim> out (1, this->n_compositional_fields());
+          in.requested_properties = MaterialModel::MaterialProperties::thermal_conductivity |
+                                    MaterialModel::MaterialProperties::equation_of_state_properties |
+                                    MaterialModel::MaterialProperties::viscosity;
 
           in.position[0] = representative_point;
           in.temperature[0] = temperature;

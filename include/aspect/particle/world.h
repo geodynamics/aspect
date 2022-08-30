@@ -391,16 +391,6 @@ namespace aspect
         apply_particle_per_cell_bounds();
 
         /**
-         * TODO: Implement this for arbitrary meshes.
-         * This function checks if the @p lost_particles moved across a
-         * periodic boundary and tries to reinsert them into
-         * @p moved_particles_cell or @p moved_particles_domain. All particles
-         * that can not be found are discarded.
-         */
-        void
-        move_particles_back_into_mesh();
-
-        /**
          * Advect the particle positions by one integration step. Needs to be
          * called until integrator->continue() returns false.
          */
@@ -421,7 +411,6 @@ namespace aspect
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         /**
          * Update the particle properties of one cell.
          *
@@ -435,7 +424,6 @@ namespace aspect
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                internal::SolutionEvaluators<dim> &evaluators);
-#endif
 
         /**
          * Advect the particles of one cell. Performs only one step for
@@ -450,7 +438,6 @@ namespace aspect
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         /**
          * Advect the particles of one cell. Performs only one step for
          * multi-step integrators. Needs to be called until integrator->continue()
@@ -469,7 +456,6 @@ namespace aspect
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                internal::SolutionEvaluators<dim> &evaluators);
-#endif
 
         /**
          * This function registers the necessary functions to the

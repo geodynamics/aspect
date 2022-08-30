@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
+ Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -20,6 +20,7 @@
 
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
+#include <aspect/simulator/assemblers/interface.h>
 #include <aspect/volume_of_fluid/utilities.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/volume_of_fluid/field.h>
@@ -72,13 +73,16 @@ namespace aspect
       data.local_matrix = 0;
       data.local_rhs = 0;
 
-      //loop over all possible subfaces of the cell, and reset corresponding rhs
-      for (unsigned int f = 0; f < GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell; ++f)
-        {
-          data.local_face_rhs[f] = 0.0;
-          data.local_face_matrices_ext_ext[f] = 0.0;
-          data.face_contributions_mask[f] = false;
-        }
+      // For interior face contributions loop over all possible
+      // subfaces of the cell, and reset their matrices.
+      for (auto &m : data.local_face_rhs)
+        m = 0;
+      for (auto &m : data.local_face_matrices_ext_ext)
+        m = 0;
+
+      // Mark the arrays initialized to zero above as currently all unused
+      std::fill (data.face_contributions_mask.begin(), data.face_contributions_mask.end(),
+                 false);
 
       scratch.finite_element_values[solution_field].get_function_values (vof_solution_vector,
                                                                          scratch.old_field_values);
@@ -109,7 +113,7 @@ namespace aspect
           scratch.volume += scratch.finite_element_values.JxW(q);
         }
 
-      for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+      for (const unsigned int face_no : cell->face_indices())
         {
           // Obtain the normal direction for the face in question
           // Deal.II orders faces as dim*2+(face_direction_is_positive?1:0)
@@ -488,7 +492,7 @@ namespace aspect
               // that correspond to the solution_field we are interested in
               neighbor->get_dof_indices (neighbor_dof_indices);
 
-              const unsigned int f_rhs_ind = face_no * GeometryInfo<dim>::max_children_per_face;
+              const unsigned int f_rhs_ind = Assemblers::nth_interface_matrix(cell->reference_cell(), face_no);
 
               for (unsigned int i=0; i<volume_of_fluid_dofs_per_cell; ++i)
                 data.neighbor_dof_indices[f_rhs_ind][i]
@@ -584,7 +588,7 @@ namespace aspect
               std::vector<types::global_dof_index> neighbor_dof_indices (scratch.subface_finite_element_values.get_fe().dofs_per_cell);
               neighbor_child->get_dof_indices (neighbor_dof_indices);
 
-              const unsigned int f_rhs_ind = face_no * GeometryInfo<dim>::max_children_per_face+subface_no;
+              const unsigned int f_rhs_ind = Assemblers::nth_interface_matrix(cell->reference_cell(), face_no, subface_no);
 
               for (unsigned int i=0; i<volume_of_fluid_dofs_per_cell; ++i)
                 data.neighbor_dof_indices[f_rhs_ind][i]

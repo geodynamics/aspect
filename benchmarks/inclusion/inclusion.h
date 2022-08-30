@@ -89,8 +89,8 @@ namespace aspect
           FunctionInclusion (double eta_B,
                              const unsigned int n_compositional_fields)
             : Function<dim>(dim+2+n_compositional_fields), eta_B_(eta_B) {}
-          virtual void vector_value (const Point< dim >   &p,
-                                     Vector< double >   &values) const
+          virtual void vector_value (const Point<dim>   &p,
+                                     Vector<double>   &values) const
           {
             double pos[2]= {p(0),p(1)};
             AnalyticSolutions::_Inclusion
@@ -246,17 +246,6 @@ namespace aspect
 
 
 
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const
-        {
-          return 1;
-        }
-        /**
-         * @}
-         */
         /**
          * Returns the viscosity value in the inclusion
          */

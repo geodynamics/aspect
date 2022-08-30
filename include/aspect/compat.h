@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -28,15 +28,57 @@
 #include <functional>
 #include <memory>
 
-// for std_cxx14::make_unique:
-#if DEAL_II_VERSION_GTE(9,3,0)
-// avoid deprecated std_cxx14 inside deal.II
-namespace std_cxx14
+namespace big_mpi
 {
-  using std::make_unique;
-}
+
+#if DEAL_II_VERSION_GTE(9,4,0)
+
+  using dealii::Utilities::MPI::broadcast;
+
 #else
-#include <deal.II/base/std_cxx14/memory.h>
+
+  inline MPI_Datatype
+  mpi_type_id(const char *)
+  {
+    return MPI_CHAR;
+  }
+
+  /**
+   * Broadcast the information in @p buffer from @p root to all
+   * other ranks.
+   */
+  template <typename T>
+  void
+  broadcast(T                 *buffer,
+            const size_t       count,
+            const unsigned int root,
+            const MPI_Comm    &comm)
+  {
+    Assert(root < dealii::Utilities::MPI::n_mpi_processes(comm),
+           dealii::ExcMessage("Invalid root rank specified."));
+
+    // MPI_Bcast's count is a signed int, so send at most 2^31 in each
+    // iteration:
+    const size_t max_send_count = std::numeric_limits<signed int>::max();
+
+    size_t total_sent_count = 0;
+    while (total_sent_count < count)
+      {
+        const size_t current_count =
+          std::min(count - total_sent_count, max_send_count);
+
+        const int ierr = MPI_Bcast(buffer + total_sent_count,
+                                   current_count,
+                                   mpi_type_id(buffer),
+                                   root,
+                                   comm);
+        AssertThrowMPI(ierr);
+        total_sent_count += current_count;
+      }
+
+  }
 #endif
+
+}
 
 #endif

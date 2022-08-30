@@ -11,14 +11,34 @@
 	    "orcid": "0000-0003-0357-7115"
 	},
 	{
+	    "name": "Menno Fraters",
+	    "affiliation": "University of California, Davis",
+	    "orcid": "0000-0003-0035-7723"
+	},
+	{
 	    "name": "Rene Gassmoeller",
 	    "affiliation": "Colorado State University",
 	    "orcid": "0000-0001-7098-8198"
 	},
 	{
+	    "name": "Anne Glerum",
+	    "affiliation": "Geoforschungszentrum Potsdam, Germany",
+	    "orcid": "0000-0002-9481-1749"
+	},
+	{
 	    "name": "Timo Heister",
 	    "affiliation": "Clemson University",
 	    "orcid": "0000-0002-8137-3903"
+	},
+	{
+	    "name": "Robert Myhill",
+	    "affiliation": "University of Bristol, UK",
+	    "orcid": "0000-0001-9489-5236"
+	},
+	{
+	    "name": "John Naliboff",
+	    "affiliation": "New Mexico Tech",
+	    "orcid": "0000-0002-5697-7203"
 	}
     ]
 }

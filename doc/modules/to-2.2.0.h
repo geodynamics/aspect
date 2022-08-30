@@ -7,14 +7,14 @@
  *
  * <ol>
  *
- * <li> Changed: The Geodynamic World Builder has been updated to version 0.3.0.  
+ * <li> Changed: The Geodynamic World Builder has been updated to version 0.3.0.
  * <br>
  * (Menno Fraters, 2020/06/18)
  *
  * <li> New: Project to Q1 viscosity averaging implemented for the matrix-free
  * GMG Stokes solver. Using "project to Q1 only viscosity" averaging scheme
- * with the GMG solver recovers optimal convergence rates for velocity in 
- * all benchmarking problems.  
+ * with the GMG solver recovers optimal convergence rates for velocity in
+ * all benchmarking problems.
  * <br>
  * (Thomas C. Clevenger, 2020/06/16)
  *
@@ -28,11 +28,11 @@
  * <li> New: Modified benchmark of elastic stress build-up in a viscoelastic cantilever flexing under its own weight.
  *      The boundary conditions are modified to have an open top and bottom, which allows the ambient fluid to be more
  *      readily displaced while the cantilever flexes. Four python scripts are included which create various plots that are
- *      useful for comparison to an analytic solution from Geodynamics, Turcotte and Schubert. These 4 scripts plot: 
- *      1) The stress profile near the attachment point of the beam 
+ *      useful for comparison to an analytic solution from Geodynamics, Turcotte and Schubert. These 4 scripts plot:
+ *      1) The stress profile near the attachment point of the beam
  *      2) The maximum/minimum stress with time
  *      3) The maximum deflection with time
- *      4) The shape of the beam when it is at its maximum flexed state. 
+ *      4) The shape of the beam when it is at its maximum flexed state.
  * <br>
  * (D. Douglas, G. Ito, J. Naliboff, 2020/05/13)
  *
@@ -59,30 +59,30 @@
  * <br>
  * (Ludovic Jeanniot, 2020/04/07)
  *
- * <li> New: There is a new module in the MaterialModel::Rheology namespace 
- * (ConstantViscosityPrefactors) for multiplying the viscosity of each 
- * compositional field by a specific factor. 
+ * <li> New: There is a new module in the MaterialModel::Rheology namespace
+ * (ConstantViscosityPrefactors) for multiplying the viscosity of each
+ * compositional field by a specific factor.
  * <br>
  * (John Naliboff, 2020/04/04)
- * 
  *
- * <li> New: Benchmark of bouyancy-driven viscoelastic plate 
+ *
+ * <li> New: Benchmark of bouyancy-driven viscoelastic plate
  * flexure with a free surface from Choi et al., 2013,
  * JGR, v.118, p.2429-2444, doi:10.1002/jgrb.50148.
  * <br>
  * (J. Naliboff, C. Thieulot, 2020/04/03)
  *
- * <li> Remove: The Viscoelastic Plastic material model and test suite 
- * has been removed. It has been superseded by the Visco Plastic 
- * material model, which now has the option to simulate 
- * viscoelastic-plastic deformation. 
+ * <li> Remove: The Viscoelastic Plastic material model and test suite
+ * has been removed. It has been superseded by the Visco Plastic
+ * material model, which now has the option to simulate
+ * viscoelastic-plastic deformation.
  * <br>
  * (John Naliboff, 2020/03/31)
- * 
+ *
  *
  * <li> Added: the precision of gravity acceleration, potential and gradients written in the output
  * and statistics files of the "gravity point values" postprocessor may be changed by the user
- * via the parameter file under the name "set Precision in gravity output". 
+ * via the parameter file under the name "set Precision in gravity output".
  * The default value is 12.
  * <br>
  * (Ludovic Jeanniot, 2020/03/30)
@@ -98,15 +98,15 @@
  * <br>
  * (Ludovic Jeanniot, 2020/03/18)
  *
- * <li> New: The visco plastic material model now has an option to simulate 
+ * <li> New: The visco plastic material model now has an option to simulate
  * viscoelastic and viscoelastic-plastic deformation.
  * <br>
  * (John Naliboff, Dan Sandiford, 2020/03/12)
  *
  * <li> Changed: The sampling scheme names 'map' and 'list' of the 'gravity point values'
- * postprocessor were renamed more appropriately 'uniform distribution' 
+ * postprocessor were renamed more appropriately 'uniform distribution'
  * and 'list of points'. The previous names still work for backward compatibility.
- * Additionally, this postprocessor now computes the theoretical gravity potential 
+ * Additionally, this postprocessor now computes the theoretical gravity potential
  * in addition to the existing outputs.
  * <br>
  * (Ludovic Jeanniot, 2020/03/10)
@@ -135,13 +135,13 @@
  * (Max Rudolph, Timo Heister, 2020/02/25)
  *
  * <li> New: Any material model using the strain_dependent rheology
- * module now has the option to track plastic strain in a 
+ * module now has the option to track plastic strain in a
  * compositional field where the initial plastic strain is removed.
  * To use this option, users must include a compositional field
  * with the name 'noninitial_plastic_strain'. This feature will be
  * useful in models where the initial plastic strain field is used
- * to localize deformation, but may then mask the initial stages of 
- * fault growth. 
+ * to localize deformation, but may then mask the initial stages of
+ * fault growth.
  * <br>
  * (John Naliboff, 2020/02/25)
  *
@@ -156,12 +156,12 @@
  * <br>
  * (Rene Gassmoeller, Marie Kajan, 2020/02/14)
  *
- * <li> New: The geometric multigrid preconditioner for the Stokes system now supports 
+ * <li> New: The geometric multigrid preconditioner for the Stokes system now supports
  * Picard iterations for the defect correction form of the Stokes equations.
  * <br>
  * (Thomas C. Clevenger, 2020/02/14)
  *
- * <li> New: Benchmark of deformation of free surface by traction boundary 
+ * <li> New: Benchmark of deformation of free surface by traction boundary
  * conditions, over viscous/viscoelastic halfspace.
  * <br>
  * (F. Clerc, J. Naliboff, C. Thieulot, D. Douglas, G. Ito, 2020/02/05)
@@ -176,15 +176,15 @@
  * Existing parameter files and data files for the "adiabatic boundary" plugin will have to be checked and converted to the new format.
  * <br>
  * (Emmanuel Njinju and  Tahiry Rajaonarison,  2020/05/05)
- * 
- * 
+ *
+ *
  *
  * <li> Incompatibility: The option to use PETSc for linear algebra has been removed
  * until further notice.
  * <br>
  * (Timo Heister, 2020/01/24)
  *
- * <li> Fix: Fixed a bug in the particle generator probability density function when 
+ * <li> Fix: Fixed a bug in the particle generator probability density function when
  * using fewer particles than mpi processes.
  * <br>
  * (Menno Fraters and Rene Gassmoeller, 2020/01/24)
@@ -227,10 +227,10 @@
  * <br>
  * (Rene Gassmoeller, 2019/11/08)
  *
- * <li> Fixed: Resuming from a checkpoint of a box model with initial topography 
+ * <li> Fixed: Resuming from a checkpoint of a box model with initial topography
  * was broken, because the grid transformation was not applied
  * again after restart. Now the box geometry model connects to the signal after
- * resuming the computation such that it applies the initial topography again. 
+ * resuming the computation such that it applies the initial topography again.
  * <br>
  * (Anne Glerum, 2019/11/06)
  *
@@ -274,7 +274,7 @@
  *
  * <li> New: There is a new model in the MaterialModel::Rheology namespace for plastic
  * material behavior based on the Drucker Prager yield criterion. This functionality
- * replaces existing functionality in MaterialUtilities and is currently used in the 
+ * replaces existing functionality in MaterialUtilities and is currently used in the
  * visco plastic, drucker prager, and dynamic friction material models.
  * <br>
  * (John Naliboff, 2019/10/10)
@@ -300,23 +300,23 @@
  * <br>
  * (John Naliboff, Rene Gassmoeller, 2019/08/22)
  *
- * <li> New: There are two new modules in the MaterialModel::Rheology namespace for 
- * viscous creep material behavior, diffusion creep and dislocation creep. 
- * The functionality in these modules was transferred from the visco plastic 
- * material model. In the future other material models can use this functionality 
+ * <li> New: There are two new modules in the MaterialModel::Rheology namespace for
+ * viscous creep material behavior, diffusion creep and dislocation creep.
+ * The functionality in these modules was transferred from the visco plastic
+ * material model. In the future other material models can use this functionality
  * without duplicating code.
  *
  * <li> Removed: Input parameters and functionality related to the old syntax
- * for strain softening in the ViscoPlastic material model and the 
- * Rheology::StrainDependent namespace. 
+ * for strain softening in the ViscoPlastic material model and the
+ * Rheology::StrainDependent namespace.
  * <br>
  * (John Naliboff, 2019/09/17)
- * 
+ *
  *
  * <li> New: There is a new model in the MaterialModel::Rheology namespace for material behavior
  * that depends on finite strain. At present, the functionality in this
- * model deals strictly with strain softening behavior, which was 
- * transferred from the visco plastic material model. However, in the future 
+ * model deals strictly with strain softening behavior, which was
+ * transferred from the visco plastic material model. However, in the future
  * other material models can use this functionality without duplicating code.
  *
  * <li> New: Added a statistics postprocessor 'load balance statistics' that computes
@@ -326,7 +326,7 @@
  * (Rene Gassmoeller, 2019/08/16)
  *
  * <li> New: The matrix-free, block GMG Stokes solver can now be used for compressible
- * flow computations (all except those involving implicit reference density). 
+ * flow computations (all except those involving implicit reference density).
  * <br>
  * (Conrad Clevenger, 2019/08/06)
  *
@@ -346,9 +346,9 @@
  * <br>
  * (Rene Gassmoeller, 2019/07/09)
  *
- * <li> New: There is a new material model plug-in that sets viscosity to  
+ * <li> New: There is a new material model plug-in that sets viscosity to
  * a specified constant above the lithosphere-asthenosphere boundary,
- * which is specified by an ascii file or a maximum lithosphere depth 
+ * which is specified by an ascii file or a maximum lithosphere depth
  * value. Below this the viscosity is taken from any other available
  * material model. All other material properties are taken from the
  * base model.
@@ -372,15 +372,15 @@
  * <li> New: There is now a new module structure for mesh deformation
  * plugins. The original free surface has become one of these plugins;
  * a function plugin is also available. The new structure enables the
- * user to prescribe movement of the mesh independent of the 
+ * user to prescribe movement of the mesh independent of the
  * Stokes velocity by setting mesh velocity boundary conditions
- * on one or more mesh deformation boundaries. These boundary 
+ * on one or more mesh deformation boundaries. These boundary
  * conditions are used to solve the Laplace problem for the velocity
  * of the internal mesh nodes, as was originally done for the free
  * surface alone.
  * <br>
  * (Rene Gassmoeller, Anne Glerum, Derek Neuharth, Marine Lasbleis 2019/06/18)
- * 
+ *
  * Incompatibility: Due to the new mesh deformation module, there
  * is no backwards compatibility for input files that include a
  * free surface. The "Free surface" section has been moved into
@@ -397,21 +397,21 @@
  * <br>
  * (Rene Gassmoeller, 2019/06/14)
  *
- * <li> Fixed: There was a bug in the heating model manager that occurred when a 
- * simulation used several heating models and some of them filled the rates 
- * of temperature change heating model outputs, but others did not. Because 
- * many heating models do not touch the rates of temperature change heating 
- * model outputs at all, the values need to be reset to zero before those 
- * heating models are evaluated, otherwise they will contain rates of 
- * temperature change outputs from a heating model that was evaluated 
- * previously (which would lead to unintended temperature changes). This is 
+ * <li> Fixed: There was a bug in the heating model manager that occurred when a
+ * simulation used several heating models and some of them filled the rates
+ * of temperature change heating model outputs, but others did not. Because
+ * many heating models do not touch the rates of temperature change heating
+ * model outputs at all, the values need to be reset to zero before those
+ * heating models are evaluated, otherwise they will contain rates of
+ * temperature change outputs from a heating model that was evaluated
+ * previously (which would lead to unintended temperature changes). This is
  * fixed now by resetting the appropriate outputs to zero between the
  * evaluation of the different heating models.
  * <br>
  * (Juliane Dannberg, 2019/06/12)
  *
  * <li> Changed: The Geodynamic World Builder is not longer a git submodule, but the files are
- * now distributed with ASPECT.  
+ * now distributed with ASPECT.
  * <br>
  * (Menno Fraters, 2019/05/31)
  *
@@ -424,8 +424,8 @@
  * <br>
  * (Bob Myhill, 2019/05/30)
  *
- * <li> New: Extended spherical shell geometry model to 
- * include custom mesh schemes. 
+ * <li> New: Extended spherical shell geometry model to
+ * include custom mesh schemes.
  * <br>
  * (Ludovic Jeanniot, Marie Kajan and Wolfgang Bangerth, 2019/05/30)
  *
@@ -439,7 +439,7 @@
  * <br>
  * (G. Euen, R. Gassmoeller, T. Heister, 2019/05/29)
  *
- * <li> New: Slab detachment benchmark first presented in Schmalholtz (2011) and 
+ * <li> New: Slab detachment benchmark first presented in Schmalholtz (2011) and
  * run with ASPECT by A. Glerum (2018).
  * <br>
  * (C. Thieulot and A. Glerum, 2019/05/28)
@@ -455,9 +455,9 @@
  * <br>
  * (Bob Myhill, 2019/05/27)
  *
- * <li> New: There is a new matrix-free Stokes solver which uses geometric multigrid for 
- * preconditioning in the A-block. Currently the new method can handle no slip BCs for velocity 
- * on any mesh, and free slip boundary conditions for a box. Free surface, melt transport, and 
+ * <li> New: There is a new matrix-free Stokes solver which uses geometric multigrid for
+ * preconditioning in the A-block. Currently the new method can handle no slip BCs for velocity
+ * on any mesh, and free slip boundary conditions for a box. Free surface, melt transport, and
  * compressible flow are not yet implemented.
  * <br>
  * (Conrad Clevenger, Timo Heister, 2019/05/27)
@@ -466,9 +466,9 @@
  * <br>
  * (Cedric Thieulot, 2019/05/26)
  *
- * <li> New: There is a new initial topography model that sets the 
+ * <li> New: There is a new initial topography model that sets the
  * initial topography based on a function specified in the input
- * file. 
+ * file.
  * <br>
  * (Anne Glerum, 2019/05/26)
  *
@@ -487,19 +487,19 @@
  * <br>
  * (Rene Gassmoeller, 2019/05/25)
  *
- * <li> New: There is a new initial temperature plug-in that sets a specified 
+ * <li> New: There is a new initial temperature plug-in that sets a specified
  * lithosphere temperature above the lithsphere-asthenosphere boundary,
- * which is specified by an ascii file or a maximum lithosphere depth 
- * value. Below this the initial temperature is set as NaN. This 
- * plug-in can be combined with another using the 'replace if valid' 
- * operator. 
+ * which is specified by an ascii file or a maximum lithosphere depth
+ * value. Below this the initial temperature is set as NaN. This
+ * plug-in can be combined with another using the 'replace if valid'
+ * operator.
  * <br>
  * (Sophie Coulson, 2019/05/25)
  *
  * <li> New: There is a new material model that combines viscous, elastic
- * and plastic deformation for one or more materials. At present, 
+ * and plastic deformation for one or more materials. At present,
  * the model does not take into account diffusion or dislocation creep
- * flow laws and strain softening. 
+ * flow laws and strain softening.
  * <br>
  * (John Naliboff, 2019/05/24)
  *

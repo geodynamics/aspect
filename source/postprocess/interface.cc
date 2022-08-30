@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,11 +30,6 @@ namespace aspect
   namespace Postprocess
   {
 // ------------------------------ Interface -----------------------------
-
-    template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
 
 
     template <int dim>
@@ -93,12 +88,12 @@ namespace aspect
 
     template <int dim>
     std::list<std::pair<std::string,std::string>>
-                                               Manager<dim>::execute (TableHandler &statistics)
+    Manager<dim>::execute (TableHandler &statistics)
     {
       // call the execute() functions of all postprocessor objects we have
       // here in turns
       std::list<std::pair<std::string,std::string>> output_list;
-      for (auto &p : postprocessors)
+      for (const auto &p : postprocessors)
         {
           try
             {
@@ -286,8 +281,8 @@ namespace aspect
                                        ">, but the latter is not a valid name."));
 
               bool already_present = false;
-              for (unsigned int n=0; n<postprocessor_names.size(); ++n)
-                if (postprocessor_names[n] == p)
+              for (const auto &postprocessor_name : postprocessor_names)
+                if (postprocessor_name == p)
                   {
                     already_present = true;
                     break;
@@ -397,7 +392,7 @@ namespace aspect
     Manager<dim>::register_postprocessor (const std::string &name,
                                           const std::string &description,
                                           void (*declare_parameters_function) (ParameterHandler &),
-                                          Interface<dim> *(*factory_function) ())
+                                          std::unique_ptr<Interface<dim>> (*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,
@@ -428,10 +423,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<Postprocess::Interface<2>>::PluginInfo> *
-                                                                      internal::Plugins::PluginList<Postprocess::Interface<2>>::plugins = nullptr;
+      internal::Plugins::PluginList<Postprocess::Interface<2>>::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<Postprocess::Interface<3>>::PluginInfo> *
-                                                                      internal::Plugins::PluginList<Postprocess::Interface<3>>::plugins = nullptr;
+      internal::Plugins::PluginList<Postprocess::Interface<3>>::plugins = nullptr;
     }
   }
 

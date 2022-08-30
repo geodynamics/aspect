@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -76,12 +76,6 @@ namespace aspect
          * if and only if base model is compressible.
          */
         bool is_compressible () const override;
-
-        /**
-         * Method to calculate reference viscosity for the model. The reference
-         * viscosity is simply the reference  viscosity from the base model.
-         */
-        double reference_viscosity () const override;
 
       private:
 

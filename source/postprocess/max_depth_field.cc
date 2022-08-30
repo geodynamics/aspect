@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2021 by the authors of the ASPECT code.
+  Copyright (C) 2021 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,9 +25,6 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-
 
 namespace aspect
 {
@@ -41,7 +38,7 @@ namespace aspect
       // be defensive about determining that a compositional field actually exists
       AssertThrow(this->introspection().base_elements.compositional_fields != numbers::invalid_unsigned_int,
                   ExcMessage("This postprocessor cannot be used without compositional fields."));
-      const QGauss<dim> quadrature_formula(this->get_fe().base_element(this->introspection().base_elements.compositional_fields).degree + 1);
+      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.compositional_fields;
 
       const unsigned int n_q_points = quadrature_formula.size();
 
@@ -94,10 +91,10 @@ namespace aspect
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
           const std::string columns[] = {"Max depth [m] for composition " + this->introspection().name_for_compositional_index(c)};
-          for (unsigned int i = 0; i < sizeof(columns) / sizeof(columns[0]); ++i)
+          for (const auto &col: columns)
             {
-              statistics.set_precision(columns[i], 8);
-              statistics.set_scientific(columns[i], true);
+              statistics.set_precision(col, 8);
+              statistics.set_scientific(col, true);
             }
         }
 

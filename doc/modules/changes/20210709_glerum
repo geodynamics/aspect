@@ -1,4 +1,0 @@
-New: There is now a postprocessor that computes the maximum depth
-of each compositional field at each timestep. 
-<br>
-(Anne Glerum, 2021/07/09)

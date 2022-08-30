@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -102,7 +102,7 @@ namespace aspect
         return;
 
       inputs.additional_inputs.push_back(
-        std_cxx14::make_unique<MaterialModel::MeltInputs<dim>> (inputs.position.size()));
+        std::make_unique<MaterialModel::MeltInputs<dim>> (inputs.position.size()));
     }
   }
 }

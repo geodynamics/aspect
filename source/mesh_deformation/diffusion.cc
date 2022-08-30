@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -96,8 +96,8 @@ namespace aspect
       AffineConstraints<double> matrix_constraints(mesh_locally_relevant);
       DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, matrix_constraints);
 
-      std::set< types::boundary_id > periodic_boundary_indicators;
-      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
+      std::set<types::boundary_id> periodic_boundary_indicators;
+      using periodic_boundary_pairs = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
       const periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
       for (const auto &p : pbp)
         {
@@ -177,29 +177,15 @@ namespace aspect
       LinearAlgebra::SparseMatrix matrix;
 
       // Sparsity of the matrix
-#ifdef ASPECT_USE_PETSC
-      LinearAlgebra::DynamicSparsityPattern sp(mesh_locally_relevant);
-
-#else
       TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
                                             mesh_locally_owned,
                                             mesh_locally_relevant,
                                             this->get_mpi_communicator());
-#endif
       DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler, sp, matrix_constraints, false,
                                        Utilities::MPI::this_mpi_process(this->get_mpi_communicator()));
 
-#ifdef ASPECT_USE_PETSC
-      SparsityTools::distribute_sparsity_pattern(sp,
-                                                 mesh_deformation_dof_handler.n_locally_owned_dofs_per_processor(),
-                                                 this->get_mpi_communicator(), mesh_locally_relevant);
-
-      sp.compress();
-      mass_matrix.reinit (mesh_locally_owned, mesh_locally_owned, sp, this->get_mpi_communicator());
-#else
       sp.compress();
       matrix.reinit (sp);
-#endif
 
       LinearAlgebra::Vector system_rhs, solution;
       system_rhs.reinit(mesh_locally_owned, this->get_mpi_communicator());
@@ -262,7 +248,7 @@ namespace aspect
       // Iterate over all cells to find those at the mesh deformation boundary
       for (; fscell!=fsendc; ++fscell)
         if (fscell->at_boundary() && fscell->is_locally_owned())
-          for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+          for (const unsigned int face_no : fscell->face_indices())
             if (fscell->face(face_no)->at_boundary())
               {
                 // Boundary indicator of current cell face
@@ -414,7 +400,7 @@ namespace aspect
 
       for (const auto &fscell : mesh_deformation_dof_handler.active_cell_iterators())
         if (fscell->at_boundary() && fscell->is_locally_owned())
-          for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+          for (const unsigned int face_no : fscell->face_indices())
             if (fscell->face(face_no)->at_boundary())
               {
                 // Get the boundary indicator of current cell face
@@ -471,18 +457,10 @@ namespace aspect
                        mesh_locally_relevant, boundary_velocity, boundary_id);
 
       // now insert the relevant part of the solution into the mesh constraints
-#if DEAL_II_VERSION_GTE(9,3,0)
       const IndexSet constrained_dofs =
         DoFTools::extract_boundary_dofs(mesh_deformation_dof_handler,
                                         ComponentMask(dim, true),
                                         boundary_id);
-#else
-      IndexSet constrained_dofs;
-      DoFTools::extract_boundary_dofs(mesh_deformation_dof_handler,
-                                      ComponentMask(dim, true),
-                                      constrained_dofs,
-                                      boundary_id);
-#endif
 
       for (unsigned int i = 0; i < constrained_dofs.n_elements();  ++i)
         {
@@ -494,6 +472,16 @@ namespace aspect
                 mesh_velocity_constraints.set_inhomogeneity(index, boundary_velocity[index]);
               }
         }
+    }
+
+
+
+    template <int dim>
+    bool
+    Diffusion<dim>::
+    needs_surface_stabilization () const
+    {
+      return false;
     }
 
 

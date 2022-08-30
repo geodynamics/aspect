@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -149,7 +149,7 @@ namespace aspect
          * The outer vector stores the inner vector associated with each quadrature point on a spherical surface.
          */
         std::pair<std::vector<double>,std::vector<double>>
-                                                        to_spherical_harmonic_coefficients(const std::vector<std::vector<double>> &spherical_function) const;
+        to_spherical_harmonic_coefficients(const std::vector<std::vector<double>> &spherical_function) const;
 
         /**
          * Function to compute the density contribution in spherical harmonic expansion throughout the mantle
@@ -157,7 +157,7 @@ namespace aspect
          * This function returns a pair containing real spherical harmonics of density integral (cos and sin part) from min degree to max degree.
          */
         std::pair<std::vector<double>,std::vector<double>>
-                                                        density_contribution (const double &outer_radius) const;
+        density_contribution (const double &outer_radius) const;
 
         /**
          * Function to compute the surface and CMB topography contribution in spherical harmonic expansion

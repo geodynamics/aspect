@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -67,8 +67,7 @@ namespace aspect
 
         /**
          * Function to compute the material properties in @p out given the
-         * inputs in @p in. If MaterialModelInputs.strain_rate has the length
-         * 0, then the viscosity does not need to be computed.
+         * inputs in @p in.
          */
         void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                       MaterialModel::MaterialModelOutputs<dim> &out) const override;
@@ -83,15 +82,6 @@ namespace aspect
          */
         bool is_compressible () const override;
 
-        /**
-         * @}
-         */
-
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        double reference_viscosity () const override;
         /**
          * @}
          */

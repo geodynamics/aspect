@@ -171,3 +171,8 @@ compressibility_formulations/: dummy
 viscoelastic_plastic_shear_bands/: dummy
 	@$(def); run_all_prms $@/gerya_2019
 	@$(def); run_all_prms $@/kaus_2010
+
+# amg.prm does not converge with a coarse mesh
+nsinker_spherical_shell/: dummy
+	+@$(def); make_lib $@
+	@$(def); run_prm $@ gmg.prm

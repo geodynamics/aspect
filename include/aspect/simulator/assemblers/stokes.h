@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -152,7 +152,7 @@ namespace aspect
      * This class approximates this term as
      * $ - \nabla \cdot \mathbf{u} = \frac{1}{\rho} \frac{\partial \rho}{\partial t} + \frac{1}{\rho} \nabla \rho \cdot \mathbf{u}$
      * where the right-hand side velocity is explicitly taken from the last timestep,
-     * and the density is taken from a compositional field called 'density_field'.
+     * and the density is taken from a compositional field of the type 'density'.
      */
     template <int dim>
     class StokesProjectedDensityFieldTerm : public Assemblers::Interface<dim>,

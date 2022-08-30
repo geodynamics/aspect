@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -313,7 +313,7 @@ namespace aspect
      * points is calculated.
      */
     double
-    distance_to_line(const std::array<dealii::Point<2>,2 > &point_list,
+    distance_to_line(const std::array<dealii::Point<2>,2> &point_list,
                      const dealii::Point<2> &point);
 
     /**
@@ -326,6 +326,24 @@ namespace aspect
     template <int dim>
     std::array<Tensor<1,dim>,dim-1>
     orthogonal_vectors (const Tensor<1,dim> &v);
+
+    /**
+     * A function that returns the corresponding euler angles for a
+     * rotation described by rotation axis and angle.
+     */
+    Tensor<2,3>
+    rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
+                               const double rotation_angle);
+
+    /**
+     * Compute the 3d rotation matrix that describes the rotation of a
+     * plane defined by the two points @p point_one and @p point_two
+     * onto the x-y-plane in a way that the vector from the origin to
+     * point_one points into the (0,1,0) direction after the rotation.
+     */
+    Tensor<2,3>
+    compute_rotation_matrix_for_slice (const Tensor<1,3> &point_one,
+                                       const Tensor<1,3> &point_two);
 
     /**
      * A function for evaluating real spherical harmonics. It takes the degree (l)
@@ -405,7 +423,14 @@ namespace aspect
      * distributes the content by MPI_Bcast to all processes. The function
      * returns the content of the file on all processes.
      *
-     * @param [in] filename The name of the ascii file to load.
+     * @param [in] filename The name of the ascii file to load. If the
+     *  file name ends in `.gz`, then the function assumes that the file
+     *  has been compressed using gzip; it then reads and uncompresses the file
+     *  before distributing it. If the file name is a URL (starting with either
+     *  `http://`, `https://`, or `file://`), and if ASPECT has been configured
+     *  with libDAP, then the file is read from that location via libDAP
+     *  and the returned string is an ASCII data representation of what was
+     *  obtained this way.
      * @param [in] comm The MPI communicator in which the content is
      * distributed.
      * @return A string which contains the data in @p filename.
@@ -757,6 +782,12 @@ namespace aspect
         std::array<double,dim> &get_coordinates();
 
         /**
+         * Returns the coordinates in the given coordinate system, which may
+         * not be Cartesian.
+         */
+        const std::array<double,dim> &get_coordinates() const;
+
+        /**
          * The coordinate that represents the 'surface' directions in the
          * chosen coordinate system.
          */
@@ -770,7 +801,7 @@ namespace aspect
 
       private:
         /**
-         * An enum which stores the the coordinate system of this natural
+         * An enum which stores the coordinate system of this natural
          * point
          */
         Utilities::Coordinates::CoordinateSystem coordinate_system;
@@ -813,12 +844,38 @@ namespace aspect
                      VectorType                                                &vec_result);
 
     /**
-    * Conversion object where one can provide a function that returns
-    * a tensor for the velocity at a given point and it returns something
-    * that matches the dealii::Function interface with a number of output
-    * components equal to the number of components of the finite element
-    * in use.
-    */
+     * Throw an exception that a linear solver failed with some helpful information for the user.
+     * This function is needed because we have multiple solvers that all require similar treatment
+     * and we would like to keep the output consistent. If the optional parameter
+     * @p output_filename is given, the solver history is additionally written to this file.
+     *
+     * @p solver_name A name that identifies the solver and appears in the error message.
+     * @p function_name The name of the function that used the solver (to identify where in the code
+     *   a solver failed).
+     * @p solver_controls One or more solver controls that describe the history of the solver(s)
+     *   that failed. The reason the function takes multiple controls is we sometimes use
+     *   multi-stage solvers, e.g. we try a cheap solver first, and use an expensive solver if the
+     *   cheap solver fails.
+     * @p exc The exception that was thrown by the solver when it failed, containing additional
+     *   information about what happened.
+     * @p mpi_communicator The MPI Communicator of the problem.
+     * @p output_filename An optional file name into which (if present) the solver history will
+     *   be written.
+     */
+    void linear_solver_failed(const std::string &solver_name,
+                              const std::string &function_name,
+                              const std::vector<SolverControl> &solver_controls,
+                              const std::exception &exc,
+                              const MPI_Comm &mpi_communicator,
+                              const std::string &output_filename = "");
+
+    /**
+     * Conversion object where one can provide a function that returns
+     * a tensor for the velocity at a given point and it returns something
+     * that matches the dealii::Function interface with a number of output
+     * components equal to the number of components of the finite element
+     * in use.
+     */
     template <int dim>
     class VectorFunctionFromVelocityFunctionObject : public Function<dim>
     {

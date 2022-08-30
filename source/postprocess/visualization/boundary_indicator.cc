@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,6 +30,14 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
+      template <int dim>
+      BoundaryIndicator<dim>::
+      BoundaryIndicator ()
+        :
+        CellDataVectorCreator<dim>("") // no physical units
+      {}
+
+
 
       template <int dim>
       std::pair<std::string, Vector<float> *>
@@ -51,7 +59,7 @@ namespace aspect
               if (cell->at_boundary())
                 {
                   types::boundary_id boundary_id = largest_boundary_id_plus_one;
-                  for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                  for (const unsigned int f : cell->face_indices())
                     {
                       if (cell->face(f)->at_boundary())
                         {
@@ -96,7 +104,9 @@ namespace aspect
                                                   "When a cell is situated in one of the corners of the domain, "
                                                   "multiple faces will have a boundary indicator. This postprocessor "
                                                   "returns the value of the first face along a boundary that is encountered "
-                                                  "in a loop over all the faces. ")
+                                                  "in a loop over all the faces."
+                                                  "\n\n"
+                                                  "Physical units: None.")
     }
   }
 }

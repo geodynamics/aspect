@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -105,9 +105,59 @@ namespace aspect
 
 
     template <int dim>
+    typename Introspection<dim>::Quadratures
+    setup_quadratures (const Parameters<dim> &parameters,
+                       const ReferenceCell reference_cell)
+    {
+      typename Introspection<dim>::Quadratures quadratures;
+
+      quadratures.velocities = reference_cell.get_gauss_type_quadrature<dim>(parameters.stokes_velocity_degree+1);
+      quadratures.pressure = reference_cell.get_gauss_type_quadrature<dim>(parameters.use_equal_order_interpolation_for_stokes
+                                                                           ?
+                                                                           parameters.stokes_velocity_degree+1
+                                                                           :
+                                                                           parameters.stokes_velocity_degree);
+      quadratures.temperature = reference_cell.get_gauss_type_quadrature<dim>(parameters.temperature_degree+1);
+      quadratures.compositional_fields = reference_cell.get_gauss_type_quadrature<dim>(parameters.composition_degree+1);
+      quadratures.system = reference_cell.get_gauss_type_quadrature<dim>(std::max({parameters.stokes_velocity_degree,
+                                                                                   parameters.temperature_degree,
+                                                                                   parameters.composition_degree
+                                                                                  }) + 1);
+
+      return quadratures;
+    }
+
+
+
+    template <int dim>
+    typename Introspection<dim>::FaceQuadratures
+    setup_face_quadratures (const Parameters<dim> &parameters,
+                            const ReferenceCell reference_cell)
+    {
+      typename Introspection<dim>::FaceQuadratures quadratures;
+
+      quadratures.velocities = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.stokes_velocity_degree+1);
+      quadratures.pressure = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.use_equal_order_interpolation_for_stokes
+                             ?
+                             parameters.stokes_velocity_degree+1
+                             :
+                             parameters.stokes_velocity_degree);
+      quadratures.temperature = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.temperature_degree+1);
+      quadratures.compositional_fields = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.composition_degree+1);
+      quadratures.system = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(std::max({parameters.stokes_velocity_degree,
+                           parameters.temperature_degree,
+                           parameters.composition_degree
+                                                                                                           }) + 1);
+
+      return quadratures;
+    }
+
+
+
+    template <int dim>
     std::shared_ptr<FiniteElement<dim>>
-                                     new_FE_Q_or_DGP(const bool discontinuous,
-                                                     const unsigned int degree)
+    new_FE_Q_or_DGP(const bool discontinuous,
+                    const unsigned int degree)
     {
       if (discontinuous)
         return std::make_shared<FE_DGP<dim>>(degree);
@@ -119,8 +169,8 @@ namespace aspect
 
     template <int dim>
     std::shared_ptr<FiniteElement<dim>>
-                                     new_FE_Q_or_DGQ(const bool discontinuous,
-                                                     const unsigned int degree)
+    new_FE_Q_or_DGQ(const bool discontinuous,
+                    const unsigned int degree)
     {
       if (discontinuous)
         return std::make_shared<FE_DGQ<dim>>(degree);
@@ -134,7 +184,7 @@ namespace aspect
 
   template <int dim>
   std::vector<VariableDeclaration<dim>>
-                                     construct_default_variables (const Parameters<dim> &parameters)
+  construct_default_variables (const Parameters<dim> &parameters)
   {
     std::vector<VariableDeclaration<dim>> variables;
 
@@ -198,17 +248,21 @@ namespace aspect
     extractors (component_indices),
     base_elements (internal::setup_base_elements<dim>(*this)),
     polynomial_degree (internal::setup_polynomial_degree<dim>(parameters)),
+    quadratures (internal::setup_quadratures<dim>(parameters, ReferenceCells::get_hypercube<dim>())),
+    face_quadratures (internal::setup_face_quadratures<dim>(parameters, ReferenceCells::get_hypercube<dim>())),
     component_masks (*this),
     system_dofs_per_block (n_blocks),
+    temperature_method(parameters.temperature_method),
     compositional_field_methods(parameters.compositional_field_methods),
-    composition_names(parameters.names_of_compositional_fields)
+    composition_names(parameters.names_of_compositional_fields),
+    composition_descriptions(parameters.composition_descriptions)
   {}
 
 
 
   template <int dim>
   Introspection<dim>::~Introspection ()
-  {}
+    = default;
 
 
 
@@ -218,8 +272,8 @@ namespace aspect
     make_extractor_sequence (const std::vector<unsigned int> &compositional_fields)
     {
       std::vector<FEValuesExtractors::Scalar> x;
-      for (unsigned int i=0; i<compositional_fields.size(); ++i)
-        x.emplace_back(compositional_fields[i]);
+      for (const unsigned int compositional_field : compositional_fields)
+        x.emplace_back(compositional_field);
       return x;
     }
   }
@@ -299,6 +353,41 @@ namespace aspect
     // Simply return the full list of composition names
     return composition_names;
   }
+
+
+
+  template <int dim>
+  const std::vector<typename Parameters<dim>::CompositionalFieldDescription> &
+  Introspection<dim>::get_composition_descriptions () const
+  {
+    return composition_descriptions;
+  }
+
+
+
+  template <int dim>
+  bool
+  Introspection<dim>::composition_type_exists (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const
+  {
+    for (unsigned int c=0; c<composition_descriptions.size(); ++c)
+      if (composition_descriptions[c].type == type)
+        return true;
+    return false;
+  }
+
+
+
+  template <int dim>
+  unsigned int
+  Introspection<dim>::find_composition_type (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const
+  {
+    for (unsigned int c=0; c<composition_descriptions.size(); ++c)
+      if (composition_descriptions[c].type == type)
+        return c;
+    return composition_descriptions.size();
+  }
+
+
 
   template <int dim>
   bool

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,7 +36,8 @@ namespace aspect
       SPD_Factor ()
         :
         DataPostprocessorScalar<dim> ("spd_factor",
-                                      update_values | update_gradients | update_quadrature_points)
+                                      update_values | update_gradients | update_quadrature_points),
+        Interface<dim>("")  // no physical units
       {}
 
 
@@ -57,9 +58,10 @@ namespace aspect
                                                    this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity | MaterialModel::MaterialProperties::additional_outputs;
 
         out.additional_outputs.push_back(
-          std_cxx14::make_unique<MaterialModel::MaterialModelDerivatives<dim>> (n_quadrature_points));
+          std::make_unique<MaterialModel::MaterialModelDerivatives<dim>> (n_quadrature_points));
 
         this->get_material_model().evaluate(in, out);
 
@@ -99,7 +101,9 @@ namespace aspect
                                                   "A visualization output object that generates output "
                                                   "for the spd factor. The spd factor is a factor which "
                                                   "scales a part of the Jacobian used for the Newton solver "
-                                                  "to make sure that the Jacobian remains positive definite.")
+                                                  "to make sure that the Jacobian remains positive definite."
+                                                  "\n\n"
+                                                  "Physical units: None.")
     }
   }
 }

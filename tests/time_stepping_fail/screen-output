@@ -51,6 +51,7 @@ An error occurred in file <function.cc> in function
 The violated condition was: 
     new_time_step > 0
 Additional information: 
-    The time step length for the each time step needs to be positive, but the computed step length of the "function" plugin was: -1.000000.
+    The time step length for the each time step needs to be positive, but
+    the computed step length of the "function" plugin was: -1.000000.
 
 Aborting!

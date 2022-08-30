@@ -1,3 +1,5 @@
+\subsubsection{Using a free surface}
+\label{sec:cookbooks-freesurface}
 \textit{This section was contributed by Ian Rose}.
 
 Free surfaces are numerically challenging but can be useful for self consistently
@@ -38,7 +40,7 @@ it is sufficient to reduce the time step size of the first few time steps.
 Following are the sections in the input file specific to this testcase.  The full parameter
 file may be found at \url{cookbooks/free_surface/free_surface.prm}.
 
-\lstinputlisting[language=prmfile]{cookbooks/free_surface/doc/free_surface.part.prm.out}
+\lstinputlisting[language=prmfile]{free_surface.part.prm.out}
 
 Running this input file will produce results like those in Figure~\ref{fig:freesurface}.
 The model starts with a single hot blob of rock which rises in the domain.  As it 
@@ -57,9 +59,9 @@ After running the cookbook, you may modify it in a number of ways:
 
 \begin{figure}
   \centering
-  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface/doc/free_surface_blob.png}
+  \includegraphics[height=0.25\textwidth]{free_surface_blob.png}
   \hfill
-  \includegraphics[height=0.25\textwidth]{cookbooks/free_surface/doc/free_surface_topography.png}
+  \includegraphics[height=0.25\textwidth]{free_surface_topography.png}
   \caption{\it Evolution of surface topography due to a rising blob.  On the left is a 
            snapshot of the model setup.  The right shows the value of the highest 
            topography in the domain over 18 Myr of model time.  The topography peaks

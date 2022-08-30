@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/simulator.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
@@ -11,14 +31,14 @@ int f()
   const int dim=3;
 
   // A square polygon
-  std::vector< Point<2> > polygon(4);
+  std::vector<Point<2>> polygon(4);
   polygon[0] = Point<2>(0.0,0.0);
   polygon[1] = Point<2>(1.0,0.0);
   polygon[2] = Point<2>(1.0,1.0);
   polygon[3] = Point<2>(0.0,1.0);
 
   // A concave polygon
-  std::vector< Point<2> > concave_polygon(5);
+  std::vector<Point<2>> concave_polygon(5);
   concave_polygon[0] = Point<2>(0.0,0.0);
   concave_polygon[1] = Point<2>(1.0,0.0);
   concave_polygon[2] = Point<2>(1.0,1.0);
@@ -26,7 +46,7 @@ int f()
   concave_polygon[4] = Point<2>(0.0,1.0);
 
   // A selfcrossing polygon
-  std::vector< Point<2> > crossing_polygon(4);
+  std::vector<Point<2>> crossing_polygon(4);
   crossing_polygon[0] = Point<2>(0.0,0.0);
   crossing_polygon[1] = Point<2>(1.0,0.0);
   crossing_polygon[2] = Point<2>(1.0,-1.0);

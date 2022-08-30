@@ -5,6 +5,12 @@
 # With increasing resolution, it should return the following
 # maximum depths of the composition fields:
 # 82, 110 and 82 km, resp.
+# The postprocessors viscous dissipation statistics and
+# viscous dissipation per compositional field return
+# the viscous dissipation over the whole domain and
+# per area of each field, resp. With enough resolution,
+# the dissipation over the whole domain should be
+# approx. 8.5 kW/m and that over the subducting plate approx. 4 kW/m.
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
@@ -143,7 +149,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, maximum depth of field
+  set List of postprocessors = velocity statistics, maximum depth of field, viscous dissipation statistics
 end
 
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,7 +32,8 @@ namespace aspect
       DynamicTopography ()
         :
         DataPostprocessorScalar<dim> ("dynamic_topography",
-                                      update_quadrature_points)
+                                      update_quadrature_points),
+        Interface<dim>("m")
       {}
 
 
@@ -45,23 +46,19 @@ namespace aspect
       {
         // Initialize everything to zero, so that we can ignore faces we are
         // not interested in (namely, those not labeled as 'top' or 'bottom'
-        for (unsigned int q=0; q<computed_quantities.size(); ++q)
-          computed_quantities[q](0) = 0;
+        for (auto &quantity : computed_quantities)
+          quantity(0) = 0;
 
         const Postprocess::DynamicTopography<dim> &dynamic_topography =
           this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim>>();
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         auto cell = input_data.template get_cell<dim>();
-#else
-        auto cell = input_data.template get_cell<DoFHandler<dim>>();
-#endif
 
         // We only want to output dynamic topography at the top and bottom
         // boundary, so only compute it if the current cell has
         // a face at the top or bottom boundary.
         bool cell_at_top_or_bottom_boundary = false;
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+        for (const unsigned int f : cell->face_indices())
           if (cell->at_boundary(f) &&
               (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
                this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
@@ -152,7 +149,9 @@ namespace aspect
                                                   "Alternatively, consider using the "
                                                   "\"surface dynamic topography\" visualization postprocessor "
                                                   "to only output the dynamic topography at the boundary of "
-                                                  "the domain.")
+                                                  "the domain."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\meter}.")
     }
   }
 }

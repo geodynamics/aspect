@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,10 +36,6 @@ namespace aspect
 {
   namespace BoundaryComposition
   {
-    template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
     template <int dim>
     void
     Interface<dim>::update ()
@@ -85,7 +81,7 @@ namespace aspect
 
     template <int dim>
     Manager<dim>::~Manager()
-    {}
+      = default;
 
 
 
@@ -116,7 +112,7 @@ namespace aspect
     Manager<dim>::register_boundary_composition (const std::string &name,
                                                  const std::string &description,
                                                  void (*declare_parameters_function) (ParameterHandler &),
-                                                 Interface<dim> *(*factory_function) ())
+                                                 std::unique_ptr<Interface<dim>> (*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,
@@ -398,10 +394,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<BoundaryComposition::Interface<2>>::PluginInfo> *
-                                                                              internal::Plugins::PluginList<BoundaryComposition::Interface<2>>::plugins = nullptr;
+      internal::Plugins::PluginList<BoundaryComposition::Interface<2>>::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<BoundaryComposition::Interface<3>>::PluginInfo> *
-                                                                              internal::Plugins::PluginList<BoundaryComposition::Interface<3>>::plugins = nullptr;
+      internal::Plugins::PluginList<BoundaryComposition::Interface<3>>::plugins = nullptr;
     }
   }
 

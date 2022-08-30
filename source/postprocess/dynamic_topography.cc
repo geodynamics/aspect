@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -119,7 +119,7 @@ namespace aspect
           {
             // see if the cell is at the *top* or *bottom* boundary, not just any boundary
             unsigned int face_idx = numbers::invalid_unsigned_int;
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            for (const unsigned int f : cell->face_indices())
               {
                 if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                   {
@@ -147,12 +147,8 @@ namespace aspect
             // Evaluate the material model in the cell volume.
             MaterialModel::MaterialModelInputs<dim> in_volume(fe_volume_values, cell, this->introspection(), this->get_solution());
             MaterialModel::MaterialModelOutputs<dim> out_volume(fe_volume_values.n_quadrature_points, this->n_compositional_fields());
+            in_volume.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::viscosity;
             this->get_material_model().evaluate(in_volume, out_volume);
-
-            // Evaluate the material model on the cell face.
-            MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, this->introspection(), this->get_solution());
-            MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-            this->get_material_model().evaluate(in_face, out_face);
 
             // Get solution values for the divergence of the velocity, which is not
             // computed by the material model.
@@ -227,7 +223,7 @@ namespace aspect
 
       // Also construct data structures for getting the dynamic topography at the cell face
       // midpoints. This is a more practical thing for text output and visualization.
-      QGauss<dim-1> output_quadrature(quadrature_degree);
+      const QGauss<dim-1> output_quadrature(quadrature_degree);
       FEFaceValues<dim> fe_output_values (this->get_mapping(),
                                           this->get_fe(),
                                           output_quadrature,
@@ -246,7 +242,7 @@ namespace aspect
             // is true and will be changed to false if it's at the lower boundary. If the
             // cell is at neither boundary the loop will continue to the next cell.
             bool at_upper_surface = true;
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            for (const unsigned int f : cell->face_indices())
               {
                 if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                   {
@@ -272,6 +268,7 @@ namespace aspect
             // Evaluate the material model on the cell face.
             MaterialModel::MaterialModelInputs<dim> in_support(fe_support_values, cell, this->introspection(), this->get_solution());
             MaterialModel::MaterialModelOutputs<dim> out_support(fe_support_values.n_quadrature_points, this->n_compositional_fields());
+            in_support.requested_properties = MaterialModel::MaterialProperties::density;
             this->get_material_model().evaluate(in_support, out_support);
 
             fe_support_values[this->introspection().extractors.velocities].get_function_values(topo_vector, stress_support_values);
@@ -320,6 +317,7 @@ namespace aspect
             // Evaluate the material model on the cell face.
             MaterialModel::MaterialModelInputs<dim> in_output(fe_output_values, cell, this->introspection(), this->get_solution());
             MaterialModel::MaterialModelOutputs<dim> out_output(fe_output_values.n_quadrature_points, this->n_compositional_fields());
+            in_output.requested_properties = MaterialModel::MaterialProperties::density;
             this->get_material_model().evaluate(in_output, out_output);
 
             fe_output_values[this->introspection().extractors.velocities].get_function_values(topo_vector, stress_output_values);
@@ -435,12 +433,10 @@ namespace aspect
       if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
         filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
 
-      const unsigned int max_data_length = Utilities::MPI::max (output.str().size()+1,
-                                                                this->get_mpi_communicator());
-      const unsigned int mpi_tag = 123;
+      const std::vector<std::string> data = Utilities::MPI::gather(this->get_mpi_communicator(), output.str());
 
-      // on processor 0, collect all of the data the individual processors send
-      // and concatenate them into one file
+      // On processor 0, collect all of the data the individual processors sent
+      // and concatenate them into one file:
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           std::ofstream file (filename.c_str());
@@ -449,40 +445,8 @@ namespace aspect
                << ((dim==2)? "x y " : "x y z ")
                << (upper ? "surface topography" : "bottom topography") << std::endl;
 
-          // first write out the data we have created locally
-          file << output.str();
-
-          std::string tmp;
-          tmp.resize (max_data_length, '\0');
-
-          // then loop through all of the other processors and collect
-          // data, then write it to the file
-          for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-            {
-              MPI_Status status;
-              // get the data. note that MPI says that an MPI_Recv may receive
-              // less data than the length specified here. since we have already
-              // determined the maximal message length, we use this feature here
-              // rather than trying to find out the exact message length with
-              // a call to MPI_Probe.
-              const int ierr = MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
-                                         this->get_mpi_communicator(), &status);
-              AssertThrowMPI(ierr);
-
-              // output the string. note that 'tmp' has length max_data_length,
-              // but we only wrote a certain piece of it in the MPI_Recv, ended
-              // by a \0 character. write only this part by outputting it as a
-              // C string object, rather than as a std::string
-              file << tmp.c_str();
-            }
-        }
-      else
-        // on other processors, send the data to processor zero. include the \0
-        // character at the end of the string
-        {
-          const int ierr = MPI_Send (&output.str()[0], output.str().size()+1, MPI_CHAR, 0, mpi_tag,
-                                     this->get_mpi_communicator());
-          AssertThrowMPI(ierr);
+          for (const auto &str : data)
+            file << str;
         }
     }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -71,6 +71,16 @@ namespace aspect
         topography_direction = -gravity / gravity.norm();
 
       return topo * topography_direction;
+    }
+
+
+
+    template <int dim>
+    bool
+    AsciiData<dim>::
+    needs_surface_stabilization () const
+    {
+      return false;
     }
 
 

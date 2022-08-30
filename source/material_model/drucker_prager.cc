@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -50,6 +50,9 @@ namespace aspect
           // calculate effective viscosity
           if (in.requests_property(MaterialProperties::viscosity))
             {
+              Assert(std::isfinite(in.strain_rate[i].norm()),
+                     ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                                "not filled by the caller."));
               const SymmetricTensor<2,dim> strain_rate_deviator = deviator(in.strain_rate[i]);
 
               // For the very first time this function is called
@@ -165,16 +168,6 @@ namespace aspect
 
 
     template <int dim>
-    double
-    DruckerPrager<dim>::
-    reference_viscosity () const
-    {
-      return reference_eta;
-    }
-
-
-
-    template <int dim>
     bool
     DruckerPrager<dim>::
     is_compressible () const
@@ -198,28 +191,6 @@ namespace aspect
                              Patterns::Double (0.),
                              "The reference temperature $T_0$. The reference temperature is used "
                              "in the density calculation. Units: \\si{\\kelvin}.");
-          prm.declare_entry ("Reference viscosity", "1e22",
-                             Patterns::Double (0.),
-                             "The reference viscosity that is used for pressure scaling. "
-                             "To understand how pressure scaling works, take a look at "
-                             "\\cite{KHB12}. In particular, the value of this parameter "
-                             "would not affect the solution computed by \\aspect{} if "
-                             "we could do arithmetic exactly; however, computers do "
-                             "arithmetic in finite precision, and consequently we need to "
-                             "scale quantities in ways so that their magnitudes are "
-                             "roughly the same. As explained in \\cite{KHB12}, we scale "
-                             "the pressure during some computations (never visible by "
-                             "users) by a factor that involves a reference viscosity. This "
-                             "parameter describes this reference viscosity."
-                             "\n\n"
-                             "For problems with a constant viscosity, you will generally want "
-                             "to choose the reference viscosity equal to the actual viscosity. "
-                             "For problems with a variable viscosity, the reference viscosity "
-                             "should be a value that adequately represents the order of "
-                             "magnitude of the viscosities that appear, such as an average "
-                             "value or the value one would use to compute a Rayleigh number."
-                             "\n\n"
-                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
@@ -267,7 +238,6 @@ namespace aspect
           equation_of_state.parse_parameters (prm);
 
           reference_T                = prm.get_double ("Reference temperature");
-          reference_eta              = prm.get_double ("Reference viscosity");
           thermal_conductivities     = prm.get_double ("Thermal conductivity");
           prm.enter_subsection ("Viscosity");
           {
@@ -317,8 +287,8 @@ namespace aspect
                                    "The viscosity is computed according to the Drucker Prager frictional "
                                    "plasticity criterion (non-associative) based on a user-defined "
                                    "internal friction angle $\\phi$ and cohesion $C$. In 3D: "
-                                   " $\\sigma_y = \\frac{6 C \\cos(\\phi)}{\\sqrt(3) (3+\\sin(\\phi))} + "
-                                   "\\frac{2 P \\sin(\\phi)}{\\sqrt(3) (3+\\sin(\\phi))}$, "
+                                   " $\\sigma_y = \\frac{6 C \\cos(\\phi)}{\\sqrt{3} (3+\\sin(\\phi))} + "
+                                   "\\frac{6 P \\sin(\\phi)}{\\sqrt{3} (3+\\sin(\\phi))}$, "
                                    "where $P$ is the pressure. "
                                    "See for example Zienkiewicz, O. C., Humpheson, C. and Lewis, R. W. (1975), "
                                    "G\\'{e}otechnique 25, No. 4, 671-689. "

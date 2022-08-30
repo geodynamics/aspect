@@ -17,7 +17,7 @@
 # (this is just not feasible in the test, as it would take too
 # many time time steps until the onset of melting).
 
-set Adiabatic surface temperature          = 1600               # default: 0
+set Adiabatic surface temperature          = 1600
 set CFL number                             = 1.0
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 10
@@ -83,7 +83,7 @@ subsection Boundary velocity model
 end
 
 subsection Geometry model
-  set Model name = box # default:
+  set Model name = box
 
   subsection Box
     set X extent  = 7200
@@ -156,8 +156,8 @@ subsection Mesh refinement
   set Coarsening fraction                      = 0.00
   set Refinement fraction                      = 0.999
 
-  set Initial adaptive refinement              = 1                    # default: 2
-  set Initial global refinement                = 0                    # default: 2
+  set Initial adaptive refinement              = 1
+  set Initial global refinement                = 0
   set Strategy                                 = minimum refinement function, composition threshold
   set Time steps between mesh refinement       = 0
 
@@ -235,7 +235,7 @@ subsection Postprocess
     set Number of grouped files       = 0
     set Interpolate output            = false
     set Output format                 = vtu
-    set Time between graphical output = 2500                                                                               # default: 1e8
+    set Time between graphical output = 2500
   end
 
 end

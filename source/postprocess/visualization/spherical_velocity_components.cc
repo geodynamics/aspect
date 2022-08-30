@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,8 +34,22 @@ namespace aspect
       SphericalVelocityComponents ()
         :
         DataPostprocessorVector<dim> ("spherical_velocity_components",
-                                      update_quadrature_points)
+                                      update_values | update_quadrature_points),
+        Interface<dim>()    // unknown units at construction time, will be filled by a separate function
       {}
+
+
+
+      template <int dim>
+      std::string
+      SphericalVelocityComponents<dim>::
+      get_physical_units () const
+      {
+        if (this->convert_output_to_years())
+          return "m/year";
+        else
+          return "m/s";
+      }
 
 
 
@@ -49,12 +63,15 @@ namespace aspect
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == dim,    ExcInternalError());
 
+        const double velocity_scaling_factor =
+          this->convert_output_to_years() ? year_in_seconds : 1.0;
+
         Tensor<1,dim> velocity;
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             for (unsigned int d = 0; d < dim; ++d)
               {
-                velocity[d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
+                velocity[d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]] * velocity_scaling_factor;
               }
 
             std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(input_data.evaluation_points[q]);
@@ -119,7 +136,10 @@ namespace aspect
                                                   "A visualization output object that outputs the polar coordinates "
                                                   "components $v_r$ and $v_\\phi$ of the velocity field in 2D and the "
                                                   "spherical coordinates components $v_r$, $v_{\\phi}$ and $v_{\\theta}$ "
-                                                  "of the velocity field in 3D.")
+                                                  "of the velocity field in 3D."
+                                                  "\n\n"
+                                                  "Physical units: $\\frac{\\text{m}}{\\text{s}}$ or "
+                                                  "$\\frac{\\text{m}}{\\text{year}}$, depending on settings in the input file.")
     }
   }
 }

@@ -44,7 +44,6 @@ subsection Material model
     set Elastic shear moduli        = 1.e10
     set Use fixed elastic time step = true
     set Fixed elastic time step     = 2e3
-    set Use stress averaging        = false
     set Viscosity averaging scheme  = harmonic
 
     set Densities                   = 2800.

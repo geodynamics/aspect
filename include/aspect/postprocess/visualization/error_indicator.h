@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -41,6 +41,11 @@ namespace aspect
         public SimulatorAccess<dim>
       {
         public:
+          /**
+           * Constructor.
+           */
+          ErrorIndicator();
+
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -191,8 +191,8 @@ namespace aspect
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
-      internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>& > (scratch_base);
-      internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>& > (data_base);
+      internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>&> (scratch_base);
+      internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>&> (data_base);
 
       const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
         scratch.material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>();
@@ -265,7 +265,7 @@ namespace aspect
       if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
+            std::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
         }
     }
 
@@ -277,8 +277,8 @@ namespace aspect
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
-      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
-      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
 
       const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
         scratch.material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>();
@@ -364,14 +364,14 @@ namespace aspect
       if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
+            std::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
         }
 
       if (this->get_parameters().enable_additional_stokes_rhs
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> (n_points));
+            std::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> (n_points));
         }
       Assert(!this->get_parameters().enable_additional_stokes_rhs
              ||
@@ -478,7 +478,7 @@ namespace aspect
       if (material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>() == nullptr)
         {
           material_model_outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
+            std::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
         }
 
       this->get_material_model().create_additional_named_outputs(material_model_outputs);
@@ -501,7 +501,6 @@ namespace aspect
         static void declare_parameters (ParameterHandler &prm);
         virtual void parse_parameters (ParameterHandler &prm);
         virtual bool is_compressible () const;
-        virtual double reference_viscosity () const;
         virtual double reference_density () const;
         virtual void create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
       private:
@@ -527,13 +526,13 @@ namespace aspect
       for (unsigned int i=0; i<assemblers.stokes_preconditioner.size(); ++i)
         {
           if (Plugins::plugin_type_matches<Assemblers::StokesPreconditioner<dim>>(*(assemblers.stokes_preconditioner[i])))
-            assemblers.stokes_preconditioner[i] = std_cxx14::make_unique<Assemblers::StokesPreconditionerAnisotropicViscosity<dim>> ();
+            assemblers.stokes_preconditioner[i] = std::make_unique<Assemblers::StokesPreconditionerAnisotropicViscosity<dim>> ();
         }
 
       for (unsigned int i=0; i<assemblers.stokes_system.size(); ++i)
         {
           if (Plugins::plugin_type_matches<Assemblers::StokesIncompressibleTerms<dim>>(*(assemblers.stokes_system[i])))
-            assemblers.stokes_system[i] = std_cxx14::make_unique<Assemblers::StokesIncompressibleTermsAnisotropicViscosity<dim>> ();
+            assemblers.stokes_system[i] = std::make_unique<Assemblers::StokesIncompressibleTermsAnisotropicViscosity<dim>> ();
         }
     }
 
@@ -745,15 +744,6 @@ namespace aspect
 
 
     template <int dim>
-    double
-    AV<dim>::reference_viscosity () const
-    {
-      return 1.0;
-    }
-
-
-
-    template <int dim>
     void
     AV<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -801,7 +791,7 @@ namespace aspect
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
+            std::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
         }
     }
   }

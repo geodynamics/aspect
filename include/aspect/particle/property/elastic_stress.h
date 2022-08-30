@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -82,7 +82,7 @@ namespace aspect
            * @copydoc aspect::Particle::Property::Interface::get_property_information()
            */
           std::vector<std::pair<std::string, unsigned int>>
-                                                         get_property_information() const override;
+          get_property_information() const override;
 
         private:
           /**

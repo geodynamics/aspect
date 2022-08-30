@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,8 +36,13 @@ namespace aspect
       MaterialProperties<dim>::
       MaterialProperties ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        // What quantities are output depends on parameters, and so do the physical units.
+        // There is nothing useful we can provide here at this point.
+        Interface<dim>("")
       {}
+
+
 
       template <int dim>
       std::vector<std::string>
@@ -46,20 +51,22 @@ namespace aspect
       {
         std::vector<std::string> solution_names;
 
-        for (unsigned int i=0; i<property_names.size(); ++i)
-          if (property_names[i] == "reaction terms")
+        for (const auto &property_name : property_names)
+          if (property_name == "reaction terms")
             {
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                 solution_names.push_back (this->introspection().name_for_compositional_index(c) + "_change");
             }
           else
             {
-              solution_names.push_back(property_names[i]);
+              solution_names.push_back(property_name);
               std::replace(solution_names.back().begin(),solution_names.back().end(),' ', '_');
             }
 
         return solution_names;
       }
+
+
 
       template <int dim>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
@@ -67,9 +74,9 @@ namespace aspect
       get_data_component_interpretation () const
       {
         std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation;
-        for (unsigned int i=0; i<property_names.size(); ++i)
+        for (const auto &property_name : property_names)
           {
-            if (property_names[i] == "reaction terms")
+            if (property_name == "reaction terms")
               {
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   interpretation.push_back (DataComponentInterpretation::component_is_scalar);
@@ -132,11 +139,7 @@ namespace aspect
             &&
             this->get_parameters().material_averaging != MaterialModel::MaterialAveraging::AveragingOperation::project_to_Q1_only_viscosity)
           MaterialModel::MaterialAveraging::average (this->get_parameters().material_averaging,
-#if DEAL_II_VERSION_GTE(9,3,0)
                                                      input_data.template get_cell<dim>(),
-#else
-                                                     input_data.template get_cell<DoFHandler<dim>>(),
-#endif
                                                      Quadrature<dim>(),
                                                      this->get_mapping(),
                                                      out);
@@ -149,7 +152,7 @@ namespace aspect
                                    "model you use does not actually compute a melt fraction."));
 
             Plugins::get_plugin_as_type<const MaterialModel::MeltFractionModel<dim>> (this->get_material_model()).
-                                                                                  melt_fractions(in, melt_fractions);
+            melt_fractions(in, melt_fractions);
           }
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
@@ -201,6 +204,8 @@ namespace aspect
           }
       }
 
+
+
       template <int dim>
       void
       MaterialProperties<dim>::declare_parameters (ParameterHandler &prm)
@@ -234,6 +239,7 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
 
 
       template <int dim>
@@ -292,7 +298,9 @@ namespace aspect
                                                   "this visualization postprocessor averages in the same way "
                                                   "as is used to do the assembly, and consequently the "
                                                   "graphical output will reflect not pointwise properties, "
-                                                  "but averaged properties.")
+                                                  "but averaged properties."
+                                                  "\n\n"
+                                                  "Physical units: Various.")
     }
   }
 }

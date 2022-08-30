@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -106,8 +106,6 @@ namespace aspect
         * This material model is incompressible.
          */
         virtual bool is_compressible () const;
-
-        virtual double reference_viscosity () const;
 
         virtual double reference_density () const;
 
@@ -285,7 +283,7 @@ namespace aspect
             thermal_conductivities += volume_fractions[c] * thermal_diffusivity[c] * heat_capacity[c] * densities[c];
 
           // calculate effective viscosity
-          if (in.strain_rate.size())
+          if (in.requests_property(MaterialProperties::viscosity))
             {
               // This function calculates viscosities assuming that all the compositional fields
               // experience the same strain rate (isostrain). Since there is only one process in
@@ -416,7 +414,7 @@ namespace aspect
                     {
                       std::cout << "Error: Averaged viscosity to pressure devrivative is not finite. " << std::endl;
                       for (unsigned int c=0; c < volume_fractions.size(); ++c)
-                        std::cout << composition_dviscosities_dpressure[c] << ",";
+                        std::cout << composition_dviscosities_dpressure[c] << ',';
                       std::cout << std::endl;
                     }
                   Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_pressure[i]),ExcMessage ("Error: Averaged dviscosities_dpressure is not finite."));
@@ -446,14 +444,6 @@ namespace aspect
           for (unsigned int c=0; c < in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
         }
-    }
-
-    template <int dim>
-    double
-    DruckerPragerCompositions<dim>::
-    reference_viscosity () const
-    {
-      return ref_visc;
     }
 
     template <int dim>

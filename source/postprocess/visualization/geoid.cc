@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -38,8 +38,11 @@ namespace aspect
       Geoid ()
         :
         DataPostprocessorScalar<dim> ("geoid",
-                                      update_quadrature_points)
+                                      update_quadrature_points),
+        Interface<dim>("m")
       {}
+
+
 
       template <int dim>
       void
@@ -48,6 +51,8 @@ namespace aspect
       {
         CitationInfo::add("geoid");
       }
+
+
 
       template <int dim>
       void
@@ -59,20 +64,16 @@ namespace aspect
                      ExcMessage("The geoid postprocessor is currently only implemented for "
                                 "the spherical shell geometry model."));
 
-        for (unsigned int q=0; q<computed_quantities.size(); ++q)
-          computed_quantities[q](0) = 0;
+        for (auto &quantity : computed_quantities)
+          quantity(0) = 0;
 
         const Postprocess::Geoid<dim> &geoid =
           this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Geoid<dim>>();
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         auto cell = input_data.template get_cell<dim>();
-#else
-        auto cell = input_data.template get_cell<DoFHandler<dim>>();
-#endif
 
         bool cell_at_top_boundary = false;
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+        for (const unsigned int f : cell->face_indices())
           if (cell->at_boundary(f) &&
               this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top")
             cell_at_top_boundary = true;
@@ -105,7 +106,8 @@ namespace aspect
                                                   "geoid",
                                                   "Visualization for the geoid solution. The geoid is given "
                                                   "by the equivalent water column height due to a gravity perturbation. "
-                                                  "Units: \\si{\\meter}.")
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\meter}.")
     }
   }
 }

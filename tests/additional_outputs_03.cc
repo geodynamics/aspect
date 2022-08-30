@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/simulator.h>
 #include <deal.II/grid/tria.h>
 #include <aspect/material_model/simple.h>
@@ -50,7 +70,7 @@ namespace aspect
 
           AdditionalOutputs1<dim> *additional;
 
-          additional = out.template get_additional_output<AdditionalOutputs1<dim> >();
+          additional = out.template get_additional_output<AdditionalOutputs1<dim>>();
           if (additional)
             ++counter_with;
           else
@@ -89,26 +109,26 @@ namespace aspect
       {
         std::cout << "* create_additional_material_model_outputs() called" << std::endl;
 
-        if (out.template get_additional_output<MaterialModel::AdditionalOutputs1<dim> >() != nullptr)
+        if (out.template get_additional_output<MaterialModel::AdditionalOutputs1<dim>>() != nullptr)
           return;
 
         std::cout << "   creating additional output!" << std::endl;
-        out.additional_outputs.push_back(std_cxx14::make_unique<MaterialModel::AdditionalOutputs1<dim> > (2));
+        out.additional_outputs.push_back(std::make_unique<MaterialModel::AdditionalOutputs1<dim>> (2));
 
       }
 
       virtual void execute(internal::Assembly::Scratch::ScratchBase<dim>        &scratch_base,
                            internal::Assembly::CopyData::CopyDataBase<dim>       &/*data_base*/) const
       {
-        internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+        internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
 
         MaterialModel::AdditionalOutputs1<dim> *additional
-          = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalOutputs1<dim> >();
+          = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalOutputs1<dim>>();
 
         std::cout << "* local_assemble_stokes call, have additional? " << (additional!=nullptr) << std::endl;
         if (additional!=nullptr)
           std::cout << "   value = " << additional->additional_material_output1[0]
-                    << " " << additional->additional_material_output1[1] << std::endl;
+                    << ' ' << additional->additional_material_output1[1] << std::endl;
 
 
       }
@@ -128,7 +148,7 @@ namespace aspect
     quiet = false;
 
     TestAssembler<dim> *test_assembler = new TestAssembler<dim>();
-    assemblers.stokes_system.push_back(std::unique_ptr<Assemblers::Interface<dim> >(test_assembler));
+    assemblers.stokes_system.push_back(std::unique_ptr<Assemblers::Interface<dim>>(test_assembler));
   }
 }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -89,14 +89,6 @@ namespace aspect
       elastic_rheology.fill_elastic_force_outputs(in, average_elastic_shear_moduli, out);
       elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
 
-    }
-
-    template <int dim>
-    double
-    Viscoelastic<dim>::
-    reference_viscosity () const
-    {
-      return viscosities[0]; //background
     }
 
     template <int dim>

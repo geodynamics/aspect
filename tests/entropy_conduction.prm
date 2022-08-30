@@ -1,0 +1,7 @@
+# Conductive cooling starting form an adiabat.
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/entropy_conduction.prm
+
+set End time = 1e7

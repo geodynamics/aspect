@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -30,49 +30,17 @@ namespace aspect
     {
       template <int dim>
       void
-      QuadraturePoints<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
+      QuadraturePoints<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
-        const QGauss<dim> quadrature_formula(this->get_parameters().stokes_velocity_degree + 1);
+        const Quadrature<dim> &quadrature_formula
+          = this->introspection().quadratures.velocities;
 
-        types::particle_index n_particles_to_generate = quadrature_formula.size() * this->get_triangulation().n_locally_owned_active_cells();
-        types::particle_index prefix_sum = 0;
-        types::particle_index particle_index = 0;
-
-        FEValues<dim> fe_values(this->get_mapping(),
-                                this->get_fe(),
-                                quadrature_formula,
-                                update_quadrature_points);
-
-        const int ierr = MPI_Scan(&n_particles_to_generate, &prefix_sum, 1, DEAL_II_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
-        AssertThrowMPI(ierr);
-
-        particle_index = prefix_sum - n_particles_to_generate;
-
-        for (const auto &cell : this->get_triangulation().active_cell_iterators())
-          if (cell->is_locally_owned())
-            {
-              fe_values.reinit(cell);
-              for (unsigned int i = 0; i < quadrature_formula.size(); i++)
-                {
-                  const Particle<dim> particle(fe_values.get_quadrature_points()[i], quadrature_formula.get_points()[i], particle_index);
-                  const Particles::internal::LevelInd cell_index(cell->level(), cell->index());
-                  particles.insert(std::make_pair(cell_index, particle));
-                  ++particle_index;
-                }
-            }
+        Particles::Generators::regular_reference_locations(
+          this->get_triangulation(),
+          quadrature_formula.get_points(),
+          particle_handler,
+          this->get_mapping());
       }
-
-
-      template <int dim>
-      void
-      QuadraturePoints<dim>::declare_parameters (ParameterHandler &)
-      {}
-
-
-      template <int dim>
-      void
-      QuadraturePoints<dim>::parse_parameters (ParameterHandler &)
-      {}
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -221,14 +221,6 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-        /**
-         * @}
-         */
       private:
 
         double viscosity (const double                  temperature,
@@ -278,11 +270,6 @@ namespace aspect
          * The thermal conductivity.
          */
         double thermal_k;
-
-        /*
-         * The reference viscosity
-         */
-        double eta;
 
         /*
          * The linear viscosity parameter pertaining to
@@ -404,14 +391,6 @@ namespace aspect
       return etaasterisk + (stressy/strainratenorm);
     }
 
-    template <int dim>
-    double
-    TosiMaterial<dim>::
-    reference_viscosity () const
-    {
-      return eta;
-    }
-
 
 
     template <int dim>
@@ -438,9 +417,6 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the reference temperature $T_0$. The reference temperature is used "
                              "in the density calculation.");
-          prm.declare_entry ("Reference viscosity", "1e-1",
-                             Patterns::Double (0),
-                             "The value of the constant reference viscosity $\\eta_0$.");
           prm.declare_entry ("Minimum viscosity", "1e-6",
                              Patterns::Double (0),
                              "The value of the minimum cut-off viscosity $\\eta_min$.");
@@ -495,7 +471,6 @@ namespace aspect
         {
           reference_rho              = prm.get_double ("Reference density");
           reference_T                = prm.get_double ("Reference temperature");
-          eta                        = prm.get_double ("Reference viscosity");
           thermal_k                  = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
@@ -578,12 +553,13 @@ namespace aspect
       // the values of the compositional fields are stored as blockvectors for each field
       // we have to extract them in this structure
       std::vector<std::vector<double>> prelim_composition_values (this->n_compositional_fields(),
-                                                                  std::vector<double> (n_q_points));
+                                                                   std::vector<double> (n_q_points));
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
                                                                      this->n_compositional_fields());
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
                                                                        this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
       // loop over active, locally owned cells and
       // extract material model input and compute integrals

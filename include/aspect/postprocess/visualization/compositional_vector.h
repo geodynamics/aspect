@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -77,7 +77,7 @@ namespace aspect
            * Stores sets of compositional field indices to
            * be visualized together as vector fields.
            */
-          std::vector<std::vector<unsigned int >> sets;
+          std::vector<std::vector<unsigned int>> sets;
       };
     }
   }

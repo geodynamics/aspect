@@ -13,6 +13,8 @@ An error occurred in file <visualization.cc> in function
 The violated condition was: 
     Utilities::has_unique_entries(viz_names)
 Additional information: 
-    The list of strings for the parameter 'Postprocess/Visualization/List of output variables' contains entries more than once. This is not allowed. Please check your parameter file.
+    The list of strings for the parameter 'Postprocess/Visualization/List
+    of output variables' contains entries more than once. This is not
+    allowed. Please check your parameter file.
 
 Aborting!

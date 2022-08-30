@@ -93,6 +93,11 @@ subsection Postprocess
     set Data output format       = none
     set List of particle properties = initial composition
     set Interpolation scheme = bilinear least squares
+    subsection Interpolator
+      subsection Bilinear least squares
+        set Use linear least squares limiter = true
+      end
+    end
     set Update ghost particles   = true
 
     set Particle generator name = reference cell

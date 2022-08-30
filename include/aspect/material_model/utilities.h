@@ -92,10 +92,10 @@ namespace aspect
                   const double pressure) const;
 
             /**
-            * Computes the derivative of enthalpy for pressure, using the
-            * resolution of the read-in table to compute a finite-difference
-            * approximation of the derivative.
-            */
+             * Computes the derivative of enthalpy for pressure, using the
+             * resolution of the read-in table to compute a finite-difference
+             * approximation of the derivative.
+             */
             double
             dHdp (const double temperature,
                   const double pressure) const;
@@ -212,11 +212,11 @@ namespace aspect
             dealii::Table<2,unsigned int> dominant_phase_indices;
 
             /**
-            * The vector of column names corresponding to each phase,
-            * and a vector of tables containing the volume fractions of
-            * each phase at a given temperature and pressure.
-            * The ordering of both vectors is the same.
-            */
+             * The vector of column names corresponding to each phase,
+             * and a vector of tables containing the volume fractions of
+             * each phase at a given temperature and pressure.
+             * The ordering of both vectors is the same.
+             */
             std::vector<std::string> phase_column_names;
             std::vector<dealii::Table<2,double>> phase_volume_fractions;
 
@@ -361,19 +361,19 @@ namespace aspect
 
 
       /**
-      * This function computes averages of multicomponent thermodynamic properties
-      * that are stored in a vector of EquationOfStateOutputs.
-      * Each @p eos_outputs contains the thermodynamic properties for
-      * all materials at a given evaluation point.
-      * The averaged properties are:
-      * density, isothermal compressibility, thermal_expansivity,
-      * the specific entropy derivatives with respect to pressure and temperature
-      * and the specific heat capacity. The first three of these properties
-      * are averaged by volume fraction, and the second three
-      * (the specific properties) are averaged by mass fraction.
-      * These averages are used to fill the corresponding attributes of
-      * a MaterialModelOutputs object.
-      */
+       * This function computes averages of multicomponent thermodynamic properties
+       * that are stored in a vector of EquationOfStateOutputs.
+       * Each @p eos_outputs contains the thermodynamic properties for
+       * all materials at a given evaluation point.
+       * The averaged properties are:
+       * density, isothermal compressibility, thermal_expansivity,
+       * the specific entropy derivatives with respect to pressure and temperature
+       * and the specific heat capacity. The first three of these properties
+       * are averaged by volume fraction, and the second three
+       * (the specific properties) are averaged by mass fraction.
+       * These averages are used to fill the corresponding attributes of
+       * a MaterialModelOutputs object.
+       */
       template <int dim>
       void
       fill_averaged_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs,
@@ -393,7 +393,7 @@ namespace aspect
          * Enumeration for selecting which averaging scheme to use when
          * averaging the properties of different phases.
          * Select between arithmetic and logarithmic.
-        */
+         */
         enum PhaseAveragingOperation
         {
           arithmetic,
@@ -402,21 +402,21 @@ namespace aspect
       }
 
       /**
-      * Material models compute output quantities such as the viscosity, the
-      * density, etc. For some models, these values may depend on the phase in
-      * addition to the composition, and more than one phase field might have
-      * nonzero values at a given quadrature point. This means that properties
-      * for each composition have to be averaged based on the fractions of each
-      * phase field present. This function performs this type of averaging.
-      * The averaging is based on the choice in @p operation. Averaging is conducted
-      * over the phase functions given in @p phase_function_values, with
-      * @p parameter_values containing values of all individual phases. Unlike the average_value
-      * function defined for compositions, averaging in this function is calculated based
-      * on phase functions and the change of variables on the trajectory of phase boundaries.
-      * Thus on a single phase boundary, values of variables change gradually from one phase
-      * to the other. The values of the phase function used to average the properties varies
-      * between 0 and 1.
-      */
+       * Material models compute output quantities such as the viscosity, the
+       * density, etc. For some models, these values may depend on the phase in
+       * addition to the composition, and more than one phase field might have
+       * nonzero values at a given quadrature point. This means that properties
+       * for each composition have to be averaged based on the fractions of each
+       * phase field present. This function performs this type of averaging.
+       * The averaging is based on the choice in @p operation. Averaging is conducted
+       * over the phase functions given in @p phase_function_values, with
+       * @p parameter_values containing values of all individual phases. Unlike the average_value
+       * function defined for compositions, averaging in this function is calculated based
+       * on phase functions and the change of variables on the trajectory of phase boundaries.
+       * Thus on a single phase boundary, values of variables change gradually from one phase
+       * to the other. The values of the phase function used to average the properties varies
+       * between 0 and 1.
+       */
       double phase_average_value (const std::vector<double> &phase_function_values,
                                   const std::vector<unsigned int> &n_phases_per_composition,
                                   const std::vector<double> &parameter_values,
@@ -434,9 +434,9 @@ namespace aspect
       struct PhaseFunctionInputs
       {
         /**
-        * Constructor. Initializes the various variables of this
-        * structure with the input values.
-        */
+         * Constructor. Initializes the various variables of this
+         * structure with the input values.
+         */
         PhaseFunctionInputs(const double temperature,
                             const double pressure,
                             const double depth,

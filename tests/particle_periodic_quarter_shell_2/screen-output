@@ -1,0 +1,58 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 768 (on 5 levels)
+Number of degrees of freedom: 13,637 (6,402+833+3,201+3,201)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     Writing particle output:             output-particle_periodic_quarter_shell_2/particles/particles-00000
+     Writing graphical output:            output-particle_periodic_quarter_shell_2/solution/solution-00000
+     Particle count per cell min/avg/max: 0, 0, 7
+
+*** Timestep 1:  t=0.00818125 seconds, dt=0.00818125 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     Writing particle output:             output-particle_periodic_quarter_shell_2/particles/particles-00001
+     Particle count per cell min/avg/max: 0, 0, 4
+
+*** Timestep 2:  t=0.0163625 seconds, dt=0.00818125 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     Writing particle output:             output-particle_periodic_quarter_shell_2/particles/particles-00002
+     Particle count per cell min/avg/max: 0, 0, 6
+
+*** Timestep 3:  t=0.0245437 seconds, dt=0.00818125 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     Writing particle output:             output-particle_periodic_quarter_shell_2/particles/particles-00003
+     Particle count per cell min/avg/max: 0, 0, 7
+
+*** Timestep 4:  t=0.032725 seconds, dt=0.00818125 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     Writing particle output:             output-particle_periodic_quarter_shell_2/particles/particles-00004
+     Particle count per cell min/avg/max: 0, 0, 7
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

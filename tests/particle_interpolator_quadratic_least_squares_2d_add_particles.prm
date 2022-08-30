@@ -98,7 +98,7 @@ subsection Postprocess
     set Minimum particles per cell = 10
     set Maximum particles per cell = 16384
     set Load balancing strategy = remove and add particles
-    set Update ghost particles = true
+    set Update ghost particles = false
 
     subsection Function
       set Number of components = 2
@@ -117,9 +117,7 @@ subsection Postprocess
 
     subsection Interpolator
       subsection Quadratic least squares
-        set Use limiter = true
-        set Global particle property minimum = -1, 1
-        set Global particle property maximum = 1, 1e6
+        set Use quadratic least squares limiter = false
       end
     end
   end

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -59,7 +59,7 @@ namespace aspect
         const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
 
         // Calculate strain rate second invariant
-        const double edot_ii = std::sqrt(std::fabs(second_invariant(deviator(strain_rate))));
+        const double edot_ii = std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.));
 
         // New strain is the old strain plus dt*edot_ii
         const double new_strain = old_strain + dt*edot_ii;
@@ -88,7 +88,7 @@ namespace aspect
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
-                                                     IntegratedStrainInvariant<dim>::get_property_information() const
+      IntegratedStrainInvariant<dim>::get_property_information() const
       {
         const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("integrated strain invariant",1));
         return property_information;

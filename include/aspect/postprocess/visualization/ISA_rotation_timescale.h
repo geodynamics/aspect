@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -53,6 +53,10 @@ namespace aspect
       class ISARotationTimescale: public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
+          /**
+           * Constructor.
+           */
+          ISARotationTimescale();
 
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()

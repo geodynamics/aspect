@@ -8,7 +8,7 @@ top, and the middle. The way to describe this situation is to simply add the
 following block of definitions to the parameter file (you can find the full
 parameter file in \url{cookbooks/composition_passive/composition_passive.prm}:
 
-\lstinputlisting[language=prmfile]{cookbooks/composition_passive/doc/passive.part.prm.out}
+\lstinputlisting[language=prmfile]{passive.part.prm.out}
 
 Running this simulation yields results such as the ones shown in
 Fig.~\ref{fig:compositional-passive} where we show the values of the functions
@@ -24,17 +24,17 @@ the domain we are interested in.}
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition_passive/doc/visit0007.png}
+  \includegraphics[width=0.3\textwidth]{visit0007.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition_passive/doc/visit0008.png}
+  \includegraphics[width=0.3\textwidth]{visit0008.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition_passive/doc/visit0009.png}
+  \includegraphics[width=0.3\textwidth]{visit0009.png}
   \\
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition_passive/doc/visit0010.png}
+  \includegraphics[width=0.3\textwidth]{visit0010.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition_passive/doc/visit0012.png}
+  \includegraphics[width=0.3\textwidth]{visit0012.png}
   \hfill
-  \includegraphics[width=0.3\textwidth]{cookbooks/composition_passive/doc/visit0014.png}
+  \includegraphics[width=0.3\textwidth]{visit0014.png}
   \caption{\it Passive compositional fields: The figures show, at
     different times in the simulation, the velocity field along with
     those locations where the first compositional field is larger than
@@ -49,9 +49,9 @@ the domain we are interested in.}
 
 \begin{figure}
   \centering
-  \includegraphics[height=0.3\textwidth]{cookbooks/composition_passive/doc/visit0015.png}
+  \includegraphics[height=0.3\textwidth]{visit0015.png}
   \hfill
-  \includegraphics[height=0.3\textwidth]{cookbooks/composition_passive/doc/visit0017.png}
+  \includegraphics[height=0.3\textwidth]{visit0017.png}
   \caption{\it Passive compositional fields: A later image of the simulation
     corresponding to the sequence shown in
     Fig.~\ref{fig:compositional-passive} (left) and zoom-in on the
@@ -87,7 +87,7 @@ This is an area in which \aspect{} may see improvements in the future.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.4\textwidth]{cookbooks/composition_passive/doc/mass-composition-1.png}
+  \includegraphics[width=0.4\textwidth]{mass-composition-1.png}
   \caption{\it Passive compositional fields: Minimum and maximum of the first
   compositional variable over time, as well as the mass $m_1(t)=\int_\Omega c_1(\mathbf x,t)$ stored in this variable.}
   \label{fig:compositional-passive-mass}
@@ -99,7 +99,7 @@ mass contained in the $i$th compositional field is $m_i(t)=\int_\Omega c_i(\math
 This can easily be achieve in the following way, by adding the \texttt{composition statistics}
 postprocessor:
 
-\lstinputlisting[language=prmfile]{cookbooks/composition_passive/doc/postprocess.part.prm.out}
+\lstinputlisting[language=prmfile]{postprocess.part.prm.out}
 
 While the scheme we use to advect the compositional fields is not strictly
 conservative, it is almost perfectly so in practice. For example, in

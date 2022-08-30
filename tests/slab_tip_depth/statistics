@@ -17,4 +17,8 @@
 # 17: Max depth [m] for composition OP
 # 18: Max depth [m] for composition ML_SP
 # 19: Max depth [m] for composition crust_SP
-0 0.000000000000e+00 0.000000000000e+00 5056 47316 20987 62961 0 0 0 0 213 793 1066 2.03631502e-02 5.10457182e-02 7.85156250e+04 1.09921875e+05 7.85156250e+04 
+# 20: Viscous dissipation (W/m) for composition OP
+# 21: Viscous dissipation (W/m) for composition ML_SP
+# 22: Viscous dissipation (W/m) for composition crust_SP
+# 23: Viscous dissipation (W/m)
+0 0.000000000000e+00 0.000000000000e+00 4480 42122 18679 56037 0 0 0 0 205 443 1031 2.03658668e-02 5.10465690e-02 7.85156250e+04 1.09921875e+05 7.85156250e+04 3.14376428e+03 5.80885397e+03 1.11191424e+03 1.18242146e+04 

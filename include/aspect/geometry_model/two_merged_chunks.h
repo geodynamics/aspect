@@ -313,8 +313,8 @@ namespace aspect
         internal::ChunkGeometry<dim> manifold;
 
         /**
-          * Bind boundary indicators to child cells after each mesh refinement round.
-          */
+         * Bind boundary indicators to child cells after each mesh refinement round.
+         */
         virtual void set_boundary_indicators (parallel::distributed::Triangulation<dim> &triangulation) const;
     };
   }

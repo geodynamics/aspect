@@ -17,17 +17,17 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
    Solving Stokes system... 37+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:    -1.543e+07/1.463e+07/-7.583e+11 // -1.463e+07/1.543e+07/7.583e+11 // -3.462e+06/1.103e+06/-3.734e+12 // -0.2049/1.312/2.272e+06
-     Number of advected particles: 4471
+     Compositions min/max/mass:    -1.26e+07/1.169e+07/-7.735e+11 // -1.169e+07/1.26e+07/7.735e+11 // -3.406e+06/1.216e+06/-3.733e+12 // -0.1483/1.096/2.275e+06
+     Number of advected particles: 4470
 
 *** Timestep 2:  t=2000 years, dt=1000 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system... 37+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:    -2.606e+07/2.518e+07/-7.956e+11 // -2.518e+07/2.606e+07/7.956e+11 // -4.737e+06/1.422e+06/-4.033e+12 // -0.2001/1.303/2.285e+06
-     Number of advected particles: 4463
+     Compositions min/max/mass:    -1.908e+07/1.805e+07/-8.071e+11 // -1.805e+07/1.908e+07/8.071e+11 // -4.469e+06/1.491e+06/-4.018e+12 // -0.1451/1.146/2.289e+06
+     Number of advected particles: 4464
 
 Termination requested by criterion: end time
 

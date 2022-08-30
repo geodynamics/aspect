@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -120,8 +120,8 @@ namespace aspect
             beta_(beta)
           {}
 
-          virtual void vector_value (const Point< dim >   &pos,
-                                     Vector< double >   &values) const
+          virtual void vector_value (const Point<dim>   &pos,
+                                     Vector<double>   &values) const
           {
             Assert (dim == 2, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -247,14 +247,6 @@ namespace aspect
 
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-        /**
-         * @}
-         */
-        /**
          * Returns the viscosity value in the inclusion
          */
         double get_beta() const;
@@ -265,14 +257,6 @@ namespace aspect
         double beta;
     };
 
-
-    template <int dim>
-    double
-    AnnulusMaterial<dim>::
-    reference_viscosity () const
-    {
-      return 1.;
-    }
 
 
     template <int dim>
@@ -543,6 +527,7 @@ namespace aspect
                   MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, this->introspection(), this->get_solution());
                   MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
                   fe_face_values[this->introspection().extractors.temperature].get_function_values(topo_vector, topo_values);
+                  in_face.requested_properties = MaterialModel::MaterialProperties::density;
                   material_model.evaluate(in_face, out_face);
 
                   for (unsigned int q=0; q < quadrature_formula.size(); ++q)

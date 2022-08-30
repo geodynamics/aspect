@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -79,8 +79,8 @@ namespace aspect
 
                 // Determine if this field should be excluded, if so, skip it
                 bool exclude_property = false;
-                for (unsigned int i = 0; i < exclude_output_properties.size(); ++i)
-                  if (field_name.find(exclude_output_properties[i]) != std::string::npos)
+                for (const auto &property : exclude_output_properties)
+                  if (field_name.find(property) != std::string::npos)
                     {
                       exclude_property = true;
                       break;
@@ -104,10 +104,10 @@ namespace aspect
                     // If the property has dim components, we treat it as vector
                     if (n_components == dim)
                       {
-                        vector_datasets.push_back(std::make_tuple(property_index_to_output_index[field_position],
-                                                                  property_index_to_output_index[field_position]+n_components-1,
-                                                                  field_name,
-                                                                  DataComponentInterpretation::component_is_part_of_vector));
+                        vector_datasets.emplace_back(property_index_to_output_index[field_position],
+                                                     property_index_to_output_index[field_position]+n_components-1,
+                                                     field_name,
+                                                     DataComponentInterpretation::component_is_part_of_vector);
                       }
                   }
               }
@@ -121,7 +121,11 @@ namespace aspect
           {
             patches[i].vertices[0] = particle->get_location();
             patches[i].patch_index = i;
+
+#if !DEAL_II_VERSION_GTE(9,4,0)
             patches[i].n_subdivisions = 1;
+#endif
+
             patches[i].data.reinit(dataset_names.size(),1);
 
             patches[i].data(0,0) = particle->get_id();
@@ -141,13 +145,13 @@ namespace aspect
 
       template <int dim>
       const std::vector<DataOutBase::Patch<0,dim>> &
-                                                ParticleOutput<dim>::get_patches () const
+      ParticleOutput<dim>::get_patches () const
       {
         return patches;
       }
 
       template <int dim>
-      std::vector< std::string >
+      std::vector<std::string>
       ParticleOutput<dim>::get_dataset_names () const
       {
         return dataset_names;
@@ -285,7 +289,7 @@ namespace aspect
 
       DataOutBase::write_pvd_record (pvd_master, times_and_pvtu_file_names);
 
-      // finally, do the same for Visit via the .visit file for this
+      // finally, do the same for VisIt via the .visit file for this
       // time step, as well as for all time steps together
       const std::string
       visit_master_filename = (this->get_output_directory()
@@ -300,6 +304,7 @@ namespace aspect
         // the global .visit file needs the relative path because it sits a
         // directory above
         std::vector<std::string> filenames_with_path;
+        filenames_with_path.reserve(filenames.size());
         for (const auto &filename : filenames)
           {
             filenames_with_path.push_back("particles/" + filename);
@@ -332,11 +337,23 @@ namespace aspect
 
       statistics.add_value("Number of advected particles",world.n_global_particles());
 
-      // If it's not time to generate an output file or we do not write output
+      // If it's not time to generate an output file
       // return early with the number of particles that were advected
       if (this->get_time() < last_output_time + output_interval)
         return std::make_pair("Number of advected particles:",
                               Utilities::int_to_string(world.n_global_particles()));
+
+      // If we do not write output
+      // return early with the number of particles that were advected
+      if (output_formats.size() == 0 || output_formats[0] == "none")
+        {
+          // Up the next time we need output. This is relevant to correctly
+          // write output after a restart if the format is changed.
+          set_last_output_time (this->get_time());
+
+          return std::make_pair("Number of advected particles:",
+                                Utilities::int_to_string(world.n_global_particles()));
+        }
 
       if (output_file_number == numbers::invalid_unsigned_int)
         output_file_number = 0;
@@ -360,13 +377,10 @@ namespace aspect
 
       for (const auto &output_format : output_formats)
         {
-          if (output_format == "none")
-            {
-              // If we do not write output return early with the number of advected particles
-              return std::make_pair("Number of advected particles:",
-                                    Utilities::int_to_string(world.n_global_particles()));
-            }
-          else if (output_format=="hdf5")
+          // this case was handled above
+          Assert(output_format != "none", ExcInternalError());
+
+          if (output_format == "hdf5")
             {
               const std::string particle_file_name = "particles/" + particle_file_prefix + ".h5";
               const std::string xdmf_filename = "particles.xdmf";
@@ -714,7 +728,7 @@ namespace aspect
           exclude_output_properties = Utilities::split_string_list(prm.get("Exclude output properties"));
 
           // Never output the integrator properties that are for internal use only
-          exclude_output_properties.push_back("internal: integrator properties");
+          exclude_output_properties.emplace_back("internal: integrator properties");
         }
         prm.leave_subsection ();
       }

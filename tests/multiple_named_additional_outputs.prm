@@ -70,12 +70,12 @@ subsection Material model
   set Model name = prescribed field material
 
   subsection Simple model
-    set Reference density             = 1    # default: 3300
+    set Reference density             = 1
     set Reference specific heat       = 1250
-    set Reference temperature         = 0    # default: 293
-    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1e-6
     set Thermal expansion coefficient = 1
-    set Viscosity                     = 1    # default: 5e24
+    set Viscosity                     = 1
   end
 end
 

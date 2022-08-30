@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -120,14 +120,6 @@ namespace aspect
         }
     }
 
-    template <int dim>
-    double
-    CompositionReaction<dim>::
-    reference_viscosity () const
-    {
-      return eta;
-    }
-
 
 
     template <int dim>
@@ -235,8 +227,8 @@ namespace aspect
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points,
-                                                                             this->n_compositional_fields()));
+            std::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points,
+                                                                        this->n_compositional_fields()));
         }
     }
   }

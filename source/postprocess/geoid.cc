@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -39,7 +39,7 @@ namespace aspect
   {
     template <int dim>
     std::pair<std::vector<double>,std::vector<double>>
-                                                    Geoid<dim>::to_spherical_harmonic_coefficients(const std::vector<std::vector<double>> &spherical_function) const
+    Geoid<dim>::to_spherical_harmonic_coefficients(const std::vector<std::vector<double>> &spherical_function) const
     {
       std::vector<double> cosi(spherical_function.size(),0);
       std::vector<double> sini(spherical_function.size(),0);
@@ -82,7 +82,7 @@ namespace aspect
 
     template <int dim>
     std::pair<std::vector<double>,std::vector<double>>
-                                                    Geoid<dim>::density_contribution (const double &/*outer_radius*/) const
+    Geoid<dim>::density_contribution (const double &/*outer_radius*/) const
     {
       Assert(false, ExcNotImplemented());
       return std::make_pair(std::vector<double>(), std::vector<double>());
@@ -91,7 +91,7 @@ namespace aspect
 
     template <>
     std::pair<std::vector<double>,std::vector<double>>
-                                                    Geoid<3>::density_contribution (const double &outer_radius) const
+    Geoid<3>::density_contribution (const double &outer_radius) const
     {
       const unsigned int quadrature_degree = this->introspection().polynomial_degree.temperature;
 
@@ -108,8 +108,10 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<3> in(fe_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<3> out(fe_values.n_quadrature_points, this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::density;
 
-      std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+      std::vector<std::vector<double>>
+      composition_values(this->n_compositional_fields(), std::vector<double>(quadrature_formula.size()));
 
       // Directly do the global 3D integral over each quadrature point of every cell (different from traditional way to do layer integral).
       // This is necessary because of ASPECT's adaptive mesh refinement feature.
@@ -210,7 +212,7 @@ namespace aspect
             unsigned int face_idx = numbers::invalid_unsigned_int;
             bool at_upper_surface = false;
             {
-              for (unsigned int f=0; f<GeometryInfo<3>::faces_per_cell; ++f)
+              for (const unsigned int f : cell->face_indices())
                 {
                   if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                     {
@@ -348,33 +350,33 @@ namespace aspect
       std::vector<std::vector<double>> surface_topo_spherical_function;
       std::vector<std::vector<double>> CMB_topo_spherical_function;
 
-      for (unsigned int i=0; i<surface_stored_values.size(); ++i)
+      for (const auto &surface_stored_value : surface_stored_values)
         {
-          const std::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(surface_stored_values[i].first);
+          const std::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(surface_stored_value.first);
 
           // Calculate spherical infinitesimal sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2
-          const double infinitesimal = surface_stored_values[i].second.first/(outer_radius*outer_radius);
+          const double infinitesimal = surface_stored_value.second.first/(outer_radius*outer_radius);
 
           // Theta, phi, spherical infinitesimal, and surface topography
           surface_topo_spherical_function.emplace_back(std::vector<double> {scoord[2],
                                                                             scoord[1],
                                                                             infinitesimal,
-                                                                            surface_stored_values[i].second.second
+                                                                            surface_stored_value.second.second
                                                                            });
         }
 
-      for (unsigned int i=0; i<CMB_stored_values.size(); ++i)
+      for (const auto &CMB_stored_value : CMB_stored_values)
         {
-          const std::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(CMB_stored_values[i].first);
+          const std::array<double,3> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(CMB_stored_value.first);
 
           // Calculate spherical infinitesimal sin(theta)*d_theta*d_phi by infinitesimal_area/radius^2
-          const double infinitesimal = CMB_stored_values[i].second.first/(inner_radius*inner_radius);
+          const double infinitesimal = CMB_stored_value.second.first/(inner_radius*inner_radius);
 
           // Theta, phi, spherical infinitesimal, and CMB dynamic topography
           CMB_topo_spherical_function.emplace_back(std::vector<double> {scoord[2],
                                                                         scoord[1],
                                                                         infinitesimal,
-                                                                        CMB_stored_values[i].second.second
+                                                                        CMB_stored_value.second.second
                                                                        });
         }
 
@@ -515,7 +517,7 @@ namespace aspect
         if (cell->is_locally_owned() && cell->at_boundary())
           {
             // If the cell is at the top boundary, store the cell's upper face midpoint location.
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            for (const unsigned int f : cell->face_indices())
               if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                 {
                   fe_face_center_values.reinit(cell,f);
@@ -537,7 +539,7 @@ namespace aspect
 
       // Compute the grid geoid anomaly based on spherical harmonics.
       std::vector<double> geoid_anomaly;
-      for (unsigned int i=0; i<surface_cell_spherical_coordinates.size(); ++i)
+      for (const auto &surface_cell_spherical_coordinate : surface_cell_spherical_coordinates)
         {
           int ind = 0;
           double geoid_value = 0;
@@ -546,7 +548,7 @@ namespace aspect
               for (unsigned int iord = 0; iord < ideg+1; ++iord)
                 {
                   // Normalization after Dahlen and Tromp (1986) Appendix B.6.
-                  const std::pair<double,double> sph_harm_vals = aspect::Utilities::real_spherical_harmonic(ideg,iord,surface_cell_spherical_coordinates.at(i).first,surface_cell_spherical_coordinates.at(i).second);
+                  const std::pair<double,double> sph_harm_vals = aspect::Utilities::real_spherical_harmonic(ideg,iord,surface_cell_spherical_coordinate.first,surface_cell_spherical_coordinate.second);
                   const double cos_component = sph_harm_vals.first; // real / cos part
                   const double sin_component = sph_harm_vals.second; // imaginary / sin part
 
@@ -780,53 +782,20 @@ namespace aspect
       const std::string filename = this->get_output_directory() +
                                    "geoid_anomaly." +
                                    dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
-      const unsigned int max_data_length = dealii::Utilities::MPI::max (output.str().size()+1,
-                                                                        this->get_mpi_communicator());
-      const unsigned int mpi_tag = 123;
+      const std::vector<std::string> data = Utilities::MPI::gather(this->get_mpi_communicator(), output.str());
 
-      // On processor 0, collect all of the data the individual processors send
-      // and concatenate them into one file.
-      if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+      // On processor 0, collect all of the data the individual processors sent
+      // and concatenate them into one file:
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           std::ofstream file (filename.c_str());
+
           file << "# "
                << ((output_in_lat_lon == true)? "longitude latitude" : "x y z")
                << " geoid_anomaly" << std::endl;
 
-          // First write out the data we have created locally.
-          file << output.str();
-
-          std::string tmp;
-          tmp.resize (max_data_length, '\0');
-
-          // Then loop through all of the other processors and collect
-          // data, then write it to the file.
-          for (unsigned int p=1; p<dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-            {
-              MPI_Status status;
-              // Get the data. Note that MPI says that an MPI_Recv may receive
-              // less data than the length specified here. Since we have already
-              // determined the maximal message length, we use this feature here
-              // rather than trying to find out the exact message length with
-              // a call to MPI_Probe.
-              const int ierr = MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
-                                         this->get_mpi_communicator(), &status);
-              AssertThrowMPI(ierr);
-
-              // Output the string. Note that 'tmp' has length max_data_length,
-              // but we only wrote a certain piece of it in the MPI_Recv, ended
-              // by a \0 character. Write only this part by outputting it as a
-              // C string object, rather than as a std::string.
-              file << tmp.c_str();
-            }
-        }
-      else
-        // On other processors, send the data to processor zero. include the \0
-        // character at the end of the string.
-        {
-          const int ierr = MPI_Send (&output.str()[0], output.str().size()+1, MPI_CHAR, 0, mpi_tag,
-                                     this->get_mpi_communicator());
-          AssertThrowMPI(ierr);
+          for (const auto &str : data)
+            file << str;
         }
 
       // Prepare the free-air gravity anomaly output.
@@ -840,7 +809,7 @@ namespace aspect
           std::vector<double> gravity_anomaly;
           gravity_anomaly.reserve(surface_cell_spherical_coordinates.size());
 
-          for (unsigned int i=0; i<surface_cell_spherical_coordinates.size(); ++i)
+          for (const auto &surface_cell_spherical_coordinate : surface_cell_spherical_coordinates)
             {
               int ind = 0;
               double gravity_value = 0;
@@ -849,7 +818,7 @@ namespace aspect
                   for (unsigned int iord = 0; iord < ideg+1; ++iord)
                     {
                       // Normalization after Dahlen and Tromp (1986) Appendix B.6.
-                      const std::pair<double,double> sph_harm_vals = aspect::Utilities::real_spherical_harmonic(ideg,iord,surface_cell_spherical_coordinates.at(i).first,surface_cell_spherical_coordinates.at(i).second);
+                      const std::pair<double,double> sph_harm_vals = aspect::Utilities::real_spherical_harmonic(ideg,iord,surface_cell_spherical_coordinate.first,surface_cell_spherical_coordinate.second);
                       const double cos_component = sph_harm_vals.first; // real / cos part
                       const double sin_component = sph_harm_vals.second; // imaginary / sin part
 
@@ -900,50 +869,20 @@ namespace aspect
           const std::string filename = this->get_output_directory() +
                                        "gravity_anomaly." +
                                        dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
-          const unsigned int max_data_length = dealii::Utilities::MPI::max (output_gravity_anomaly.str().size()+1,
-                                                                            this->get_mpi_communicator());
-          const unsigned int mpi_tag = 123;
-          // On processor 0, collect all of the data the individual processors send
-          // and concatenate them into one file.
-          if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+          const std::vector<std::string> data = Utilities::MPI::gather(this->get_mpi_communicator(), output_gravity_anomaly.str());
+
+          // On processor 0, collect all of the data the individual processors sent
+          // and concatenate them into one file:
+          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
               std::ofstream file (filename.c_str());
+
               file << "# "
                    << ((output_in_lat_lon == true)? "longitude latitude" : "x y z")
                    << " gravity_anomaly" << std::endl;
 
-              // First write out the data we have created locally.
-              file << output_gravity_anomaly.str();
-              std::string tmp;
-              tmp.resize (max_data_length, '\0');
-
-              // Then loop through all of the other processors and collect
-              // data, then write it to the file.
-              for (unsigned int p=1; p<dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-                {
-                  MPI_Status status;
-                  // Get the data. Note that MPI says that an MPI_Recv may receive
-                  // less data than the length specified here. Since we have already
-                  // determined the maximal message length, we use this feature here
-                  // rather than trying to find out the exact message length with
-                  // a call to MPI_Probe.
-                  const int ierr = MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
-                                             this->get_mpi_communicator(), &status);
-                  AssertThrowMPI(ierr);
-                  // Output the string. Note that 'tmp' has length max_data_length,
-                  // but we only wrote a certain piece of it in the MPI_Recv, ended
-                  // by a \0 character. Write only this part by outputting it as a
-                  // C string object, rather than as a std::string.
-                  file << tmp.c_str();
-                }
-            }
-          else
-            // On other processors, send the data to processor zero. include the \0
-            // character at the end of the string.
-            {
-              const int ierr = MPI_Send (&output_gravity_anomaly.str()[0], output_gravity_anomaly.str().size()+1, MPI_CHAR, 0, mpi_tag,
-                                         this->get_mpi_communicator());
-              AssertThrowMPI(ierr);
+              for (const auto &str : data)
+                file << str;
             }
         }
 

@@ -1,5 +1,5 @@
 #### Continental Extension Cookbook
-# This cookbook is based off numerous published studies, three of which are listed below.
+# This cookbook is based off numerous published studies, five of which are listed below.
 # For additional information, see these publications and references therein.
 #   1. Brune, S., Heine, C., Perez-Gussinye, M., and Sobolev, S.V. (2014), Nat. Comm., v.5, n.4014,
 #      Rift migration explains continental margin asymmetry and crustal hyperextension
@@ -7,54 +7,96 @@
 #      Depth-dependent extension, two-stage breakup and cratonic underplating at rifted margins
 #   3. Naliboff, J., and Buiter, S.H. (2015), Earth Planet. Sci. Lett., v.421, p.58-67,
 #      "Rift Reactivation and migration during multiphase extension"
+#   4. Naliboff, J., Glerum, A., Sascha, S., Peron-Pinvidic, G., and Wrona, T. (2020), Geophys.
+#      Res. Lett., 47, e2019GL086611, "Development of 3‐D rift heterogeneity through fault
+#      network evolution"
+#   5. Sandiford, D., Brune, S., Glerum, A., Naliboff, J., and Whittaker, J.M. (2021), Geophys.
+#      Geochem. Geosys., 22, e2021GC009681, "Kinematics of footwall exhumation at oceanic
+#      detachment faults: Solid-block rotation and apparent unbending"
 
 ####  Global parameters
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 5e6
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Nonlinear solver scheme                = single Advection, iterated defect correction Stokes
 set Nonlinear solver tolerance             = 1e-4
-set Max nonlinear iterations               = 10
+set Max nonlinear iterations               = 100
 set CFL number                             = 0.5
+set Maximum time step                      = 20e3
 set Output directory                       = output-continental_extension
-set Timing output frequency                = 1
 set Pressure normalization                 = no
 
 #### Parameters describing the model
 
-# Model geometry (400x100 km, 2 km spacing)
+# Governing equations
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+# Model geometry (200x100 km, 20 km spacing)
 subsection Geometry model
   set Model name = box
   subsection Box
-    set X repetitions = 200
-    set Y repetitions = 50
-    set X extent      = 400e3
+    set X repetitions = 10
+    set Y repetitions = 5
+    set X extent      = 200e3
     set Y extent      = 100e3
   end
 end
 
-# Mesh refinement specifications (no mesh refinement,
-# but the coarse mesh is already 200x50, see above)
+# Globally refine the mesh to 2.5 km spacing, and then
+# adaptively refine the mesh to 1.25 km spacing above y=50 km
+# and between x=40 and x=160 km. These values ensure areas
+# undergoing brittle deformation are in the high-resolution
+# region.
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0
-  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 3
   set Time steps between mesh refinement = 0
+  set Strategy = minimum refinement function
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y
+    set Function expression = if ( y>=50e3 && x>=40.e3 && x<=160.e3, 4, 3)
+  end
 end
 
-# Advecting the free surface vertically rather than
-# in the surface normal direction can result in a
-# more stable mesh when the deformation is large
+# Use the Eisenstat Walker method to automatically determine the
+# linear solver tolerance during the defect Picard iterations.
+# Adjusting the Maximum linear solver tolerance will affect how long
+# it takes to reach a solution, but not the actual value of the
+# solution.
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+  subsection Newton solver parameters
+    set Maximum linear Stokes solver tolerance   = 1e-2
+    set Use Eisenstat Walker method for Picard iterations = true
+  end
+end
+
+# Advecting the free surface using a normal, rather than vertical,
+# projection. To reduce mesh instabilities and associated solver
+# issues when deformation becomes large, diffusion is applied to
+# the free surface at each time step.
 subsection Mesh deformation
-  set Mesh deformation boundary indicators        = top: free surface
+  set Mesh deformation boundary indicators        = top: free surface, top: diffusion
   subsection Free surface
-    set Surface velocity projection = vertical
+    set Surface velocity projection = normal
+  end
+  subsection Diffusion
+    # Diffusivity term. Increasing this value will result
+    # in a smoother free surface and lower topography
+    # amplitudes.
+    set Hillslope transport coefficient = 1.e-8
   end
 end
 
 # Velocity on boundaries characterized by functions
 # The outward velocity (x-direction) on the left and right walls is 0.25 cm/year
-# The vertical velocity at the base is 0.125 cm/year (balances outflow on sides)
+# The vertical velocity at the base is 0.25 cm/year (balances outflow on sides)
 # Velocity components parallel to the base (x-velocity) and side walls (y-velocity)
 # are unconstrained (i.e. 'free').
 subsection Boundary velocity model
@@ -62,37 +104,44 @@ subsection Boundary velocity model
 
   subsection Function
     set Variable names      = x,y
-    set Function constants  = cm=0.01, year=1
-    set Function expression = if (x<200e3 , -0.25*cm/year, 0.25*cm/year) ; 0.125*cm/year
+    set Function constants  = v=0.0025, w=200.e3, d=100.e3
+    set Function expression = if (x < w/2 , -v, v) ; v*2*d/w
   end
 end
 
 
 # Number and names of compositional fields
-# The four compositional fields represent the upper crust, lower crust, mantle
-# and a 'seed' placed in the mantle to help localize deformation.
+# The five compositional fields represent:
+# 1. The plastic strain that accumualates over time, with the initial plastic strain removed
+# 2. The plastic strain that accumulated over time, including the initial plastic strain values
+# 3. The upper crust
+# 4. The lower crust
+# 5. The mantle lithosphere
 subsection Compositional fields
-  set Number of fields = 4
-  set Names of fields = upper, lower, mantle, seed
+  set Number of fields = 5
+  set Names of fields = noninitial_plastic_strain, plastic_strain, crust_upper, crust_lower, mantle_lithosphere
 end
 
 
-# Spatial domain of different compositional fields
-# The upper crust, lower crust and mantle are continuous horizontal layers
-# of varying thickness.  The top of the seed (4x8 km) is placed 2 km beneath
-# the base of the crust and straddles the horizontal midpoint.
+# Initial values of different compositional fields
+# The upper crust (20 km thick), lower crust (20 km thick)
+# and mantle (60 km thick) are continuous horizontal layers
+# of constant thickness. The non initial plastic strain is set
+# to 0 and the initial plastic strain is randomized between
+# 0.5 and 1.5.
 subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
-    set Function expression = if(y>=80.e3, 1, 0); \
-                              if(y<80.e3 && y>=70.e3, 1, 0); \
-                              if(y<70.e3 && y>-100.e3,1, 0); \
-                              if(y<68.e3 && y>60.e3 && x>=198.e3 && x<=202.e3 , 1, 0);
+    set Function expression = 0; \
+                              if(x>50.e3 && x<150.e3 && y>50.e3, 0.5 + rand_seed(1), 0); \
+                              if(y>=80.e3, 1, 0); \
+                              if(y<80.e3 && y>=60.e3, 1, 0); \
+                              if(y<60.e3, 1, 0);
   end
 end
 
-# Composition: fixed on bottom, free on sides and top
+# Composition: fixed on bottom (inflow boundary), free on sides and top
 subsection Boundary composition model
   set Fixed composition boundary indicators = bottom
   set List of model names = initial composition
@@ -106,9 +155,8 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
   set List of model names = box
-
   subsection Box
-    set Bottom temperature = 1573
+    set Bottom temperature = 1613
     set Top temperature    =  273
   end
 end
@@ -118,29 +166,35 @@ end
 #   D.S. Chapman (1986), "Thermal gradients in the continental crust",
 #   Geological Society of London Special Publications, v.24, p.63-70.
 # The initial constraints are:
-#   Layer Surface Temperature - upper crust (ts1) = 273 K;
-#                               mantle      (ts3) = 823 K;
-#   Model Base Temperature - (tb) = 1573 K;
-#   Heat Production - upper crust (A) = 1.5e-6 W/m^3;
-#   Thermal Conductivity - upper crust (k1) = 2.5 (W/(m K));
-#                          lower crust (k2) = 2.5 (W/(m K));
-#                          mantle      (k3) = 3.3 (W/(m K));
+#   Surface Temperature  - upper crust (ts1) = 273 K
+#   Surface Heat Flow    - upper crust (qs1) = 0.055 mW/m^2
+#   Heat Production      - upper crust (A1)  = 1.00e-6 W/m^3;
+#   Heat Production      - lower crust (A2)  = 0.25e-6 W/m^3;
+#   Heat Production      - mantle (A3)       = 0.00e-6 W/m^3;
+#   Thermal Conductivity - all layers        = 2.5 (W/(m K));
 # To satisfy these constraints, the following values are required:
-#   Layer Surface Heat Flow - upper crust (qs1) = 0.065357 W/m^2;
-#                             lower crust (qs2) = 0.035357 W/m^2;
-#                             mantle      (qs3) = 0.035357 W/m^2;
-#   Temperature - base of upper crust (ts2) = 681.5714
+#   Surface Temperature  - lower crust (ts2) = 633 K
+#                        - mantle (ts3)      = 893 K
+#   Surface Heat Flow    - lower crust (qs2) = 0.035 W/m^2;
+#                        - mantle      (qs3) = 0.030 W/m^2;
+# Note: The continental geotherm initial temperature model
+#       plugin can be used to compute an identical geotherm
+#       for the lithosphere. An example of how to use this
+#       plugin is illustrated in the test for this cookbook
+#       (tests/continental_extension.prm).
 subsection Initial temperature model
   set Model name = function
   subsection Function
     set Variable names = x,y
-    set Function constants = h=100e3,ts1=273,ts2=681.5714,ts3=823., \
-                                     k1=2.5,k2=2.5,k3=3.3,A=1.5e-6, \
-                             qs1=0.0653571,qs2=0.035357,qs3=0.035357,qb3=0.035357
+    set Function constants = h=100e3, ts1=273, ts2=633, ts3=893, \
+                             A1=1.e-6, A2=0.25e-6, A3=0.0, \
+                             k1=2.5, k2=2.5, k3=2.5, \
+                             qs1=0.055, qs2=0.035, qs3=0.030
     set Function expression = if( (h-y)<=20.e3, \
-                                  ts1 + (qs1/k1)*(h-y) - (A*(h-y)*(h-y))/(2.0*k1), \
-                                  if((h-y)>20.e3 && (h-y)<=30.e3, ts2 + (qs2/k2)*(h-y-20.e3),\
-                                  ts3 + (qs3/k3)*(h-y-30.e3)));
+                                  ts1 + (qs1/k1)*(h-y) - (A1*(h-y)*(h-y))/(2.0*k1), \
+                                  if( (h-y)>20.e3 && (h-y)<=40.e3, \
+                                      ts2 + (qs2/k2)*(h-y-20.e3) - (A2*(h-y-20.e3)*(h-y-20.e3))/(2.0*k2), \
+                                      ts3 + (qs3/k3)*(h-y-40.e3) - (A3*(h-y-40.e3)*(h-y-40.e3))/(2.0*k3) ) );
   end
 end
 
@@ -149,7 +203,8 @@ end
 subsection Heating model
   set List of model names = compositional heating
   subsection Compositional heating
-    set Compositional heating values = 0., 1.5e-6, 0., 0., 0.
+    set Use compositional field for heat production averaging = 1, 0, 0, 1, 1, 1
+    set Compositional heating values = 0.0, 0.0, 0.0, 1.0e-6, 0.25e-6, 0.
   end
 end
 
@@ -166,8 +221,7 @@ subsection Material model
   subsection Visco Plastic
 
     # Reference temperature and viscosity
-    set Reference temperature = 293
-    set Reference viscosity = 1e22
+    set Reference temperature = 273
 
     # The minimum strain-rate helps limit large viscosities values that arise
     # as the strain-rate approaches zero.
@@ -182,10 +236,14 @@ subsection Material model
 
     # Thermal diffusivity is adjusted to match thermal conductivities
     # assumed in assigning the initial geotherm
-    set Thermal diffusivities = 1.333333e-6, 1.190476e-6, 1.149425e-6, 1.333333e-6, 1.333333e-6
-    set Heat capacities       =        750.,        750.,        750.,        750.,         750.
-    set Densities             =        3300,        2800,        2900,        3300,         3300
-    set Thermal expansivities =        2e-5,        2e-5,        2e-5,        2e-5,         2e-5
+    set Define thermal conductivities = true
+    set Thermal conductivities        = 2.5
+    set Heat capacities               = 750.
+
+    # Density values of 1 are assigned to "strain" fields, which are not taken into
+    # account when computing material properties.
+    set Densities                     = 3300, 1.0, 1.0, 2700,  2900, 3300
+    set Thermal expansivities         = 2e-5
 
     # Harmonic viscosity averaging
     set Viscosity averaging scheme = harmonic
@@ -208,14 +266,23 @@ subsection Material model
     #    "Influence of water fugacity and activation volume on the flow properties of fine-grained
     #    anorthite aggregates"
     # Note that the viscous pre-factors below are scaled to plane strain from unixial strain experiments.
-    set Prefactors for dislocation creep          = 6.52e-16, 8.57e-28, 7.13e-18, 6.52e-16, 7.13e-18
-    set Stress exponents for dislocation creep    =      3.5,      4.0,      3.0,      3.5, 3.0
-    set Activation energies for dislocation creep =   530.e3,   223.e3,   345.e3,   530.e3, 345.e3
-    set Activation volumes for dislocation creep  =   18.e-6,       0.,       0.,   18.e-6, 0.
+    # For ease of identification, fields tracking strain are assigned prefactors of 1e-50
+    set Prefactors for dislocation creep          = 6.52e-16, 1.00e-50, 1.00e-50, 8.57e-28, 7.13e-18, 6.52e-16
+    set Stress exponents for dislocation creep    =      3.5,      1.0,      1.0,      4.0,      3.0,      3.5
+    set Activation energies for dislocation creep =   530.e3,      0.0,      0.0,   223.e3,   345.e3,   530.e3
+    set Activation volumes for dislocation creep  =   18.e-6,      0.0,      0.0,      0.0,      0.0,   18.e-6
 
     # Plasticity parameters
-    set Angles of internal friction =   20.,   20.,  20.,    20., 20.
-    set Cohesions                   = 20.e6, 20.e6, 20.e6, 20.e6, 20.e6
+    set Angles of internal friction = 30
+    set Cohesions                   = 20.e6
+
+    # The parameters below weaken the friction and cohesion by a
+    # a factor of 4 between plastic strain values of 0.5 and 1.5.
+    set Strain weakening mechanism                   = plastic weakening with plastic strain only
+    set Start plasticity strain weakening intervals  = 0.5
+    set End plasticity strain weakening intervals    = 1.5
+    set Cohesion strain weakening factors            = 0.25
+    set Friction strain weakening factors            = 0.25
 
   end
 end
@@ -232,16 +299,12 @@ end
 
 # Post processing
 subsection Postprocess
-  set List of postprocessors = velocity statistics, basic statistics, temperature statistics, visualization
+  set List of postprocessors = basic statistics, composition statistics, heat flux densities, heat flux statistics, mass flux statistics, matrix statistics, pressure statistics, temperature statistics, topography, velocity statistics, visualization
   subsection Visualization
-    set List of output variables = density, viscosity, strain rate, error indicator
+    set List of output variables = density, heat flux map, named additional outputs, strain rate, viscosity
     set Output format = vtu
-    set Time between graphical output = 1e6
-  end
-end
-
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Number of cheap Stokes solver steps = 0
+    set Time between graphical output = 100.e3
+    set Interpolate output            = true
+    set Output format                 = vtu
   end
 end

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -139,6 +139,7 @@ namespace aspect
     Point<2> as_2d(const Point<3> &/*p*/)
     {
       Assert (false, ExcInternalError());
+      return Point<2>();
     }
 
     Point<2> as_2d(const Point<2> &p)
@@ -149,6 +150,7 @@ namespace aspect
     Point<3> as_3d(const Point<2> &/*p*/)
     {
       Assert (false, ExcInternalError());
+      return Point<3>();
     }
 
     Point<3> as_3d(const Point<3> &p)
@@ -190,7 +192,7 @@ namespace aspect
 
     if (prescribe_internal_velocities)
       {
-        const std::vector< Point<dim> > points = aspect::Utilities::get_unit_support_points(simulator_access);
+        const std::vector<Point<dim>> points = aspect::Utilities::get_unit_support_points(simulator_access);
         const Quadrature<dim> quadrature (points);
         FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_quadrature_points);
         typename DoFHandler<dim>::active_cell_iterator cell;

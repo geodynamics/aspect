@@ -1,0 +1,27 @@
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 1,885 (882+121+441+441)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+   Postprocessing:
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Writing graphical output:           output-visco_plastic_yield_strain_weakening_no-advect_no_stokes/solution/solution-00000
+
+
+
+
+*** Timestep 1:  t=1 years, dt=1 years
+
+   Postprocessing:
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+
+
+
+
+Termination requested by criterion: end time
+
+
+

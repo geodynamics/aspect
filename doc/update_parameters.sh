@@ -19,8 +19,10 @@ fi
 # documents all parameters and that we can use for the manual
 echo Creating parameters.tex
 rm -f output/parameters.tex
+rm -f output/parameters.json
 $ASPECT doc/manual/empty.prm >/dev/null 2>/dev/null \
     || { echo "Running ASPECT for parameters.tex failed"; exit 1; }
+
 cp output/parameters.tex doc/manual/ \
     || { echo "ERROR: could not copy parameters.tex"; exit 1; }
 
@@ -64,6 +66,14 @@ grep '[^\\]%' parameters.tex && echo "Error, please remove '%'!" && exit 1
 
 cd ../..
 
+echo Creating parameters.md
+./contrib/utilities/jsontomarkdown.py output/parameters.json > doc/sphinx/parameters.md \
+    || { echo "Conversion of parameters to markdown failed"; exit 1; }
+
+# The jsontomarkdown script currently can leave spaces at the ends of lines.  
+./contrib/utilities/indent
+
+
 
 # next, run ASPECT so that it produces the parameters.xml file that
 # documents all parameters and that we use for the web view of parameters
@@ -90,9 +100,9 @@ echo Creating plugin graph
 $ASPECT --output-plugin-graph doc/manual/empty.prm >plugin_graph.dot 2>/dev/null \
     || { echo "Running ASPECT for the plugin graph failed"; exit 1; }
 
-neato plugin_graph.dot -Tpdf -o plugin_graph.pdf \
+neato plugin_graph.dot -Tsvg -o plugin_graph.svg \
     || { echo "Can't run neato"; cat plugin_graph.dot; exit 1; }
-mv plugin_graph.pdf plugin_graph.dot doc/manual/ || echo "ERROR: could not copy plugin_graph.*"
+mv plugin_graph.svg plugin_graph.dot doc/manual/ || echo "ERROR: could not copy plugin_graph.*"
 
 popd
 echo done

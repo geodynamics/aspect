@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -42,6 +42,7 @@ namespace aspect
       {
         std::vector<std::string> names;
         names.emplace_back("dislocation_viscosity");
+        names.emplace_back("diffusion_viscosity");
         names.emplace_back("boundary_area_change_work_fraction");
         return names;
       }
@@ -54,6 +55,7 @@ namespace aspect
       :
       NamedAdditionalMaterialOutputs<dim>(make_dislocation_viscosity_outputs_names()),
       dislocation_viscosities(n_points, numbers::signaling_nan<double>()),
+      diffusion_viscosities(n_points, numbers::signaling_nan<double>()),
       boundary_area_change_work_fractions(n_points, numbers::signaling_nan<double>())
     {}
 
@@ -70,6 +72,9 @@ namespace aspect
             return dislocation_viscosities;
 
           case 1:
+            return diffusion_viscosities;
+
+          case 2:
             return boundary_area_change_work_fractions;
 
           default:
@@ -90,12 +95,12 @@ namespace aspect
         {
           if (material_file_format == perplex)
             material_lookup
-            .push_back(std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>(datadirectory+material_file_names[i],
+            .push_back(std::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>(datadirectory+material_file_names[i],
                        use_bilinear_interpolation,
                        this->get_mpi_communicator()));
           else if (material_file_format == hefesto)
             material_lookup
-            .push_back(std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::HeFESToReader>(datadirectory+material_file_names[i],
+            .push_back(std::make_unique<MaterialModel::MaterialUtilities::Lookup::HeFESToReader>(datadirectory+material_file_names[i],
                        datadirectory+derivatives_file_names[i],
                        use_bilinear_interpolation,
                        this->get_mpi_communicator()));
@@ -184,7 +189,7 @@ namespace aspect
       // get grain size and limit it to a global minimum
       const unsigned int grain_size_index = this->introspection().compositional_index_for_name("grain_size");
       double grain_size = composition[grain_size_index];
-      grain_size = std::max(std::exp(-grain_size),min_grain_size);
+      grain_size = std::max(std::exp(-grain_size), min_grain_size);
 
       composition[grain_size_index] = grain_size;
     }
@@ -246,7 +251,7 @@ namespace aspect
 
           // grain size reduction in dislocation creep regime
           const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
-          const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+          const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
           const double current_diffusion_viscosity   = diffusion_viscosity(temperature, pressure, current_composition, strain_rate, position);
           current_dislocation_viscosity              = dislocation_viscosity(temperature, pressure, current_composition, strain_rate, position, current_dislocation_viscosity);
@@ -336,7 +341,7 @@ namespace aspect
                          const Point<dim>             &position) const
     {
       const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
-      const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+      const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
       const double grain_size = composition[this->introspection().compositional_index_for_name("grain_size")];
 
@@ -430,7 +435,7 @@ namespace aspect
                                              const Point<dim> &position) const
     {
       const SymmetricTensor<2,dim> shear_strain_rate = dislocation_strain_rate - 1./dim * trace(dislocation_strain_rate) * unit_symmetric_tensor<dim>();
-      const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+      const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
       // Currently this will never be called without adiabatic_conditions initialized, but just in case
       const double adiabatic_pressure = this->get_adiabatic_conditions().is_initialized()
@@ -479,7 +484,7 @@ namespace aspect
                const Point<dim> &position) const
     {
       const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
-      const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+      const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
       const double diff_viscosity = diffusion_viscosity(temperature, pressure, composition, strain_rate, position);
 
@@ -565,16 +570,6 @@ namespace aspect
             vs += compositional_fields[i] * material_lookup[i]->seismic_Vs(temperature,pressure);
         }
       return vs;
-    }
-
-
-
-    template <int dim>
-    double
-    GrainSize<dim>::
-    reference_viscosity () const
-    {
-      return eta;
     }
 
 
@@ -711,25 +706,44 @@ namespace aspect
       if (in.current_cell.state() == IteratorState::valid)
         {
           // get the pressures and temperatures at the vertices of the cell
-#if DEAL_II_VERSION_GTE(9,3,0)
           const QTrapezoid<dim> quadrature_formula;
-#else
-          const QTrapez<dim> quadrature_formula;
-#endif
 
-          const unsigned int n_q_points = quadrature_formula.size();
-          FEValues<dim> fe_values (this->get_mapping(),
-                                   this->get_fe(),
-                                   quadrature_formula,
-                                   update_values);
+          std::vector<double> solution_values(this->get_fe().dofs_per_cell);
+          in.current_cell->get_dof_values(this->get_current_linearization_point(),
+                                          solution_values.begin(),
+                                          solution_values.end());
 
-          std::vector<double> temperatures(n_q_points), pressures(n_q_points);
-          fe_values.reinit (in.current_cell);
+          // Only create the evaluator the first time we get here
+          if (!temperature_evaluator)
+            temperature_evaluator.reset(new FEPointEvaluation<1,dim>(this->get_mapping(),
+                                                                     this->get_fe(),
+                                                                     update_values,
+                                                                     this->introspection().component_indices.temperature));
+          if (!pressure_evaluator)
+            pressure_evaluator.reset(new FEPointEvaluation<1,dim>(this->get_mapping(),
+                                                                  this->get_fe(),
+                                                                  update_values,
+                                                                  this->introspection().component_indices.pressure));
 
-          fe_values[this->introspection().extractors.temperature]
-          .get_function_values (this->get_current_linearization_point(), temperatures);
-          fe_values[this->introspection().extractors.pressure]
-          .get_function_values (this->get_current_linearization_point(), pressures);
+
+          // Initialize the evaluator for the temperature
+          temperature_evaluator->reinit(in.current_cell, quadrature_formula.get_points());
+          temperature_evaluator->evaluate(solution_values,
+                                          EvaluationFlags::values);
+
+          // Initialize the evaluator for the pressure
+          pressure_evaluator->reinit(in.current_cell, quadrature_formula.get_points());
+          pressure_evaluator->evaluate(solution_values,
+                                       EvaluationFlags::values);
+
+          std::vector<double> temperatures(quadrature_formula.size());
+          std::vector<double> pressures(quadrature_formula.size());
+
+          for (unsigned int i=0; i<quadrature_formula.size(); ++i)
+            {
+              temperatures[i] = temperature_evaluator->get_value(i);
+              pressures[i] = pressure_evaluator->get_value(i);
+            }
 
           AssertThrow (material_lookup.size() == 1,
                        ExcMessage("This formalism is only implemented for one material "
@@ -802,7 +816,7 @@ namespace aspect
                 double pressure_deviation = pressure - transition_pressure
                                             - transition_slopes[phase] * (in.temperature[i] - transition_temperatures[phase]);
 
-                // If we are close to the the phase boundary (pressure difference
+                // If we are close to the phase boundary (pressure difference
                 // is smaller than phase boundary width), and the velocity points
                 // away from the phase transition the material has crossed the transition.
                 if ((std::abs(pressure_deviation) < pressure_width)
@@ -825,9 +839,11 @@ namespace aspect
             {
               double effective_viscosity;
               double disl_viscosity = std::numeric_limits<double>::max();
-
+              Assert(std::isfinite(in.strain_rate[i].norm()),
+                     ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                                "not filled by the caller."));
               const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i] - 1./dim * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();
-              const double second_strain_rate_invariant = std::sqrt(std::abs(second_invariant(shear_strain_rate)));
+              const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
               const double diff_viscosity = diffusion_viscosity(in.temperature[i], pressure, composition, in.strain_rate[i], in.position[i]);
 
@@ -842,7 +858,10 @@ namespace aspect
               out.viscosities[i] = std::min(std::max(min_eta,effective_viscosity),max_eta);
 
               if (DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>())
-                disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
+                {
+                  disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
+                  disl_viscosities_out->diffusion_viscosities[i] = std::min(std::max(min_eta,diff_viscosity),1e300);
+                }
             }
 
           out.densities[i] = density(in.temperature[i], pressure, in.composition[i], in.position[i]);
@@ -1456,7 +1475,7 @@ namespace aspect
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::DislocationViscosityOutputs<dim>> (n_points));
+            std::make_unique<MaterialModel::DislocationViscosityOutputs<dim>> (n_points));
         }
 
       // These properties are only output properties.
@@ -1464,7 +1483,7 @@ namespace aspect
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+            std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
     }
   }

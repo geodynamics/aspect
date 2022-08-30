@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -54,7 +54,7 @@ namespace aspect
            * Destructor. Made virtual so that derived classes can be created
            * and destroyed through pointers to the base class.
            */
-          virtual ~Interface ();
+          virtual ~Interface () = default;
 
           /**
            * Perform an interpolation of the properties of the particles in
@@ -77,9 +77,9 @@ namespace aspect
           DEAL_II_DEPRECATED
           virtual
           std::vector<std::vector<double>>
-                                        properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                                             const std::vector<Point<dim>> &positions,
-                                                             const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
+          properties_at_points(const ParticleHandler<dim> &particle_handler,
+                               const std::vector<Point<dim>> &positions,
+                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
 
           /**
            * Perform an interpolation of the properties of the particles in
@@ -107,10 +107,10 @@ namespace aspect
            */
           virtual
           std::vector<std::vector<double>>
-                                        properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                                             const std::vector<Point<dim>> &positions,
-                                                             const ComponentMask &selected_properties,
-                                                             const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const = 0;
+          properties_at_points(const ParticleHandler<dim> &particle_handler,
+                               const std::vector<Point<dim>> &positions,
+                               const ComponentMask &selected_properties,
+                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const = 0;
 
           /**
            * Declare the parameters this class takes through input files. The
@@ -162,7 +162,7 @@ namespace aspect
       register_particle_interpolator (const std::string &name,
                                       const std::string &description,
                                       void (*declare_parameters_function) (ParameterHandler &),
-                                      Interface<dim> *(*factory_function) ());
+                                      std::unique_ptr<Interface<dim>> (*factory_function) ());
 
       /**
        * A function that given the name of a model returns a pointer to an
@@ -175,7 +175,7 @@ namespace aspect
        * @ingroup ParticleInterpolators
        */
       template <int dim>
-      Interface<dim> *
+      std::unique_ptr<Interface<dim>>
       create_particle_interpolator (ParameterHandler &prm);
 
 
@@ -215,11 +215,11 @@ namespace aspect
   namespace ASPECT_REGISTER_PARTICLE_INTERPOLATOR_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::Particle::Interpolator::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::Particle::Interpolator::register_particle_interpolator<2>, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::Particle::Interpolator::register_particle_interpolator<2>, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::Particle::Interpolator::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::Particle::Interpolator::register_particle_interpolator<3>, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::Particle::Interpolator::register_particle_interpolator<3>, \
+                                name, description); \
   }
     }
   }

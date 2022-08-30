@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -119,20 +119,11 @@ namespace aspect
          * @}
          */
 
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
 
         double parameter_a() const;
         double parameter_wavenumber() const;
         double parameter_Di() const;
         double parameter_gamma() const;
-
-        /**
-         * @}
-         */
 
 
         /**
@@ -180,14 +171,6 @@ namespace aspect
       gamma=1.0;
 
       wavenumber=1;
-    }
-
-    template <int dim>
-    double
-    TanGurnis<dim>::
-    reference_viscosity () const
-    {
-      return 1.0;
     }
 
 

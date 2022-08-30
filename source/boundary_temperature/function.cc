@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -41,7 +41,7 @@ namespace aspect
     boundary_temperature (const types::boundary_id /*boundary_indicator*/,
                           const Point<dim> &position) const
     {
-      Utilities::NaturalCoordinate<dim> point =
+      const Utilities::NaturalCoordinate<dim> point =
         this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
       return boundary_temperature_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
     }

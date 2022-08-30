@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -164,7 +164,7 @@ namespace aspect
             if (this->get_parameters().formulation == Parameters<dim>::Formulation::boussinesq_approximation)
               out.densities[i] = (reference_rho * density_temperature_dependence + density_composition_dependence + phase_dependence);
 
-            out.viscosities[i] = std::max(min_viscosity, std::min(max_viscosity, out.viscosities[i] * viscosity_phase_dependence));
+            out.viscosities[i] = std::max(minimum_viscosity, std::min(maximum_viscosity, out.viscosities[i] * viscosity_phase_dependence));
           }
 
           // Calculate entropy derivative
@@ -218,16 +218,6 @@ namespace aspect
 
         }
     }
-
-
-    template <int dim>
-    double
-    LatentHeat<dim>::
-    reference_viscosity () const
-    {
-      return eta;
-    }
-
 
 
 
@@ -355,8 +345,8 @@ namespace aspect
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
           reference_compressibility  = prm.get_double ("Compressibility");
           compositional_delta_rho    = prm.get_double ("Density differential for compositional field 1");
-          min_viscosity              = prm.get_double ("Minimum viscosity");
-          max_viscosity              = prm.get_double ("Maximum viscosity");
+          minimum_viscosity              = prm.get_double ("Minimum viscosity");
+          maximum_viscosity              = prm.get_double ("Maximum viscosity");
 
           phase_function.initialize_simulator (this->get_simulator());
           phase_function.parse_parameters (prm);

@@ -102,7 +102,6 @@ subsection Material model
   set Model name = Steinberger
   subsection Steinberger model
     set Thermal conductivity             = 2.38
-    set Reference viscosity              = 8.44e21
     set Minimum viscosity                = 8.44e21
     set Maximum viscosity                = 8.44e21
 
@@ -133,7 +132,7 @@ subsection Discretization
     set beta  = 0.078
 
     # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
-    set cR    = 0.5   # default: 0.11
+    set cR    = 0.5
   end
 end
 

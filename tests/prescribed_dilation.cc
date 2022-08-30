@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/material_model/simple.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/postprocess/interface.h>
@@ -61,8 +81,8 @@ namespace aspect
             eta(eta)
           {}
 
-          virtual void vector_value (const Point< dim >   &pos,
-                                     Vector< double >   &values) const
+          virtual void vector_value (const Point<dim>   &pos,
+                                     Vector<double>   &values) const
           {
             Assert (dim == 2, ExcNotImplemented());
             Assert (values.size() >= 3, ExcInternalError());
@@ -151,10 +171,10 @@ namespace aspect
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           MaterialModel::PrescribedPlasticDilation<dim>
-          *prescribed_dilation = out.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim> >();
+          *prescribed_dilation = out.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>();
 
           MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
-          *force = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
+          *force = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -213,8 +233,6 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-        virtual double reference_viscosity () const;
-
         double get_eta () const;
 
         /**
@@ -223,15 +241,6 @@ namespace aspect
         double eta;
     };
 
-
-
-    template <int dim>
-    double
-    MyMaterial<dim>::
-    reference_viscosity () const
-    {
-      return 1.;
-    }
 
 
     template <int dim>
@@ -316,13 +325,13 @@ namespace aspect
     std::pair<std::string,std::string>
     MyPostprocessor<dim>::execute (TableHandler &statistics)
     {
-      std::unique_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim>> ref_func;
       {
         const MyMaterial<dim> *
         material_model
           = dynamic_cast<const MyMaterial<dim> *>(&this->get_material_model());
 
-        ref_func = std_cxx14::make_unique<AnalyticSolutions::Exact<dim>>(material_model->get_eta());
+        ref_func = std::make_unique<AnalyticSolutions::Exact<dim>>(material_model->get_eta());
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);

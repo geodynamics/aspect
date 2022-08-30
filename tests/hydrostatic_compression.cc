@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/material_model/interface.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/simulator_access.h>
@@ -23,11 +43,6 @@ namespace aspect
       virtual bool is_compressible () const
       {
         return true;
-      }
-
-      virtual double reference_viscosity () const
-      {
-        return 1.0;
       }
 
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
@@ -80,8 +95,8 @@ namespace aspect
   {
     public:
       RefFunction () : Function<dim>(dim+2) {}
-      virtual void vector_value (const Point< dim >   &p,
-                                 Vector< double >   &values) const
+      virtual void vector_value (const Point<dim>   &p,
+                                 Vector<double>   &values) const
       {
         double x = p(0);
         double z = p(1);
@@ -168,8 +183,8 @@ namespace aspect
       execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
       {
-        internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
-        internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+        internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
+        internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
 
         const Introspection<dim> &introspection = this->introspection();
         const FiniteElement<dim> &fe = this->get_fe();
@@ -261,7 +276,7 @@ namespace aspect
   {
 
     Assemblers::Interface<dim> *assembler = new ForceAssembler<dim>();
-    assemblers.stokes_system.push_back(std::unique_ptr<Assemblers::Interface<dim> >(assembler));
+    assemblers.stokes_system.push_back(std::unique_ptr<Assemblers::Interface<dim>>(assembler));
   }
 }
 

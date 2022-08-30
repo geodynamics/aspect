@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -78,8 +78,7 @@ namespace aspect
          * Destructor. Does nothing but is virtual so that derived classes
          * destructors are also virtual.
          */
-        virtual
-        ~Interface ();
+        virtual ~Interface () = default;
 
         /**
          * Initialization function. This function is called once at the
@@ -266,7 +265,7 @@ namespace aspect
         register_mesh_refinement_criterion (const std::string &name,
                                             const std::string &description,
                                             void (*declare_parameters_function) (ParameterHandler &),
-                                            Interface<dim> *(*factory_function) ());
+                                            std::unique_ptr<Interface<dim>> (*factory_function) ());
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -378,11 +377,11 @@ namespace aspect
   namespace ASPECT_REGISTER_MESH_REFINEMENT_CRITERION_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::MeshRefinement::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::MeshRefinement::Manager<2>::register_mesh_refinement_criterion, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::MeshRefinement::Manager<2>::register_mesh_refinement_criterion, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::MeshRefinement::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::MeshRefinement::Manager<3>::register_mesh_refinement_criterion, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::MeshRefinement::Manager<3>::register_mesh_refinement_criterion, \
+                                name, description); \
   }
   }
 }

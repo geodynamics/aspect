@@ -14,7 +14,7 @@ set Start time                                       = 0
 set End time                                         = 14400 #Equivalent to ~10 cm of shortening
 set Use years in output instead of seconds           = false
 set CFL number                                       = 0.5
-set Output directory                                 = Brittle_thrust_wedge_exp2
+set Output directory                                 = output-Brittle_thrust_wedge_exp2
 set Pressure normalization                           = no
 set Timing output frequency                          = 20
 
@@ -179,7 +179,6 @@ subsection Material model
 
   subsection Visco Plastic
     set Reference temperature                        = 293
-    set Reference viscosity                          = 1e8
     set Minimum strain rate                          = 1e-20
     set Reference strain rate                        = 2e-5
 

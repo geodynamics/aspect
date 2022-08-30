@@ -69,7 +69,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  =
-    set Function expression = 0; 0; 0; if ( 180e3>=x && y>=100e3 && y<=210e3, 1, 0)
+    set Function expression = 0; 0; 0; if ( 180e3>=x && y>=100e3 && y<=120e3, 1, 0)
   end
 end
 

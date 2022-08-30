@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -100,13 +100,6 @@ namespace aspect
          * Returns value from material model providing compressibility.
          */
         bool is_compressible () const override;
-
-        /**
-         * @copydoc MaterialModel::Interface::reference_viscosity()
-         *
-         * Taken from the material model providing viscosities
-         */
-        double reference_viscosity () const override;
 
 
 

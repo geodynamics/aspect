@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -99,7 +99,7 @@ namespace aspect
    * length of the output vector. Each function averages a specific quantity
    * (as specified by their name), and that quantity is averaged laterally
    * for each depth slice.
-
+   *
    * Plugins may access the LateralAveraging plugin through the SimulatorAccess
    * function get_lateral_averaging(), and then query that for the desired
    * averaged quantity.
@@ -116,8 +116,8 @@ namespace aspect
        */
       DEAL_II_DEPRECATED
       std::vector<std::vector<double>>
-                                    get_averages(const unsigned int n_slices,
-                                                 const std::vector<std::string> &property_names) const;
+      get_averages(const unsigned int n_slices,
+                   const std::vector<std::string> &property_names) const;
 
       /**
        * Return a depth profile of lateral averages of the selected
@@ -136,8 +136,8 @@ namespace aspect
        * as many vectors returned as names in @p property_names.
        */
       std::vector<std::vector<double>>
-                                    compute_lateral_averages(const unsigned int n_slices,
-                                                             const std::vector<std::string> &property_names) const;
+      compute_lateral_averages(const unsigned int n_slices,
+                               const std::vector<std::string> &property_names) const;
 
       /**
        * Return a depth profile of lateral averages of the selected
@@ -162,8 +162,8 @@ namespace aspect
        * and there are as many vectors returned as names in @p property_names.
        */
       std::vector<std::vector<double>>
-                                    compute_lateral_averages(const std::vector<double> &depth_bounds,
-                                                             const std::vector<std::string> &property_names) const;
+      compute_lateral_averages(const std::vector<double> &depth_bounds,
+                               const std::vector<std::string> &property_names) const;
 
       /**
        * Return a depth profile of lateral averages. This function is the
@@ -196,8 +196,8 @@ namespace aspect
        * the number of @p depth_bounds).
        */
       std::vector<std::vector<double>>
-                                    compute_lateral_averages(const std::vector<double> &depth_bounds,
-                                                             std::vector<std::unique_ptr<internal::FunctorBase<dim>>> &functors) const;
+      compute_lateral_averages(const std::vector<double> &depth_bounds,
+                               std::vector<std::unique_ptr<internal::FunctorBase<dim>>> &functors) const;
 
       /**
        * Fill the argument with a set of lateral averages of the current
@@ -236,6 +236,16 @@ namespace aspect
        */
       void
       get_viscosity_averages(std::vector<double> &values) const;
+
+      /**
+       * Compute a lateral average of the log10 of the current viscosity.
+       *
+       * @param values The output vector of laterally averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
+       */
+      void
+      get_log_viscosity_averages(std::vector<double> &values) const;
 
       /**
        * Compute a lateral average of the current velocity magnitude.

@@ -18,6 +18,9 @@ An error occurred in file <interface.h> in function
 The violated condition was: 
     has_matching_postprocessor<PostprocessorType> ()
 Additional information: 
-    You asked Postprocess::Manager::get_matching_postprocessor() for a postprocessor of type <aspect::Postprocess::PressureStatistics<2>> that could not be found in the current model. Activate this postprocessor in the input file.
+    You asked Postprocess::Manager::get_matching_postprocessor() for a
+    postprocessor of type <aspect::Postprocess::PressureStatistics<2>>
+    that could not be found in the current model. Activate this
+    postprocessor in the input file.
 
 Aborting!

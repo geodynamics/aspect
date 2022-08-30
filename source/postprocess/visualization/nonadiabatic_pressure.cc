@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,8 @@ namespace aspect
       NonadiabaticPressure ()
         :
         DataPostprocessorScalar<dim> ("nonadiabatic_pressure",
-                                      update_values | update_quadrature_points)
+                                      update_values | update_quadrature_points),
+        Interface<dim>("Pa")
       {}
 
 
@@ -82,7 +83,9 @@ namespace aspect
                                                   "what this visualization postprocessor therefore produces is "
                                                   "\\textit{one} way to compute a \\textit{dynamic "
                                                   "pressure}. There are, however, other ways as well, "
-                                                  "depending on the choice of the ``background pressure''.")
+                                                  "depending on the choice of the ``background pressure''."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\pascal}.")
     }
   }
 }

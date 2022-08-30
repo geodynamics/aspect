@@ -8,7 +8,7 @@ set End time                               = 0
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
-set Use years in output instead of seconds = false  # default: true
+set Use years in output instead of seconds = false
 
 set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Max nonlinear iterations               = 5
@@ -53,12 +53,12 @@ subsection Material model
   set Model name = compressibility iterated stokes
 
   subsection Simple model
-    set Reference density             = 1    # default: 3300
+    set Reference density             = 1
     set Reference specific heat       = 1250
-    set Reference temperature         = 0    # default: 293
-    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1e-6
     set Thermal expansion coefficient = 0
-    set Viscosity                     = 1    # default: 5e24
+    set Viscosity                     = 1
   end
 end
 
@@ -98,7 +98,7 @@ subsection Postprocess
     set List of output variables      = density
     set Number of grouped files       = 0
     set Output format                 = vtu
-    set Time between graphical output = 0                                                                                # default: 1e8
+    set Time between graphical output = 0
   end
 end
 

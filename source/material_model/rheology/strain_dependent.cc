@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -84,7 +84,7 @@ namespace aspect
                            "approximated as the product of the second invariant of the strain rate "
                            "in each time step and the time step size in regions where material is "
                            "not plastically yielding. This quantity is integrated and tracked over time, and "
-                           "used to weaken the the pre-yield viscosity. The cohesion and friction angle are "
+                           "used to weaken the pre-yield viscosity. The cohesion and friction angle are "
                            "not weakened."
                            "\n\n"
                            "\\item ``default'': The default option has the same behavior as ``none'', "
@@ -274,12 +274,16 @@ namespace aspect
                          Parameters<dim>::NonlinearSolver::single_Advection_iterated_Newton_Stokes
                          ||
                          this->get_parameters().nonlinear_solver ==
-                         Parameters<dim>::NonlinearSolver::single_Advection_iterated_defect_correction_Stokes),
+                         Parameters<dim>::NonlinearSolver::single_Advection_iterated_defect_correction_Stokes
+                         ||
+                         this->get_parameters().nonlinear_solver ==
+                         Parameters<dim>::NonlinearSolver::no_Advection_no_Stokes),
                         ExcMessage("The material model will only work with the nonlinear "
                                    "solver schemes 'single Advection, single Stokes', "
                                    "'single Advection, iterated Stokes', "
-                                   "'single Advection, iterated Newton Stokes', and "
-                                   "'single Advection, iterated defect correction Stokes' "
+                                   "'single Advection, iterated Newton Stokes', "
+                                   "'single Advection, iterated defect correction Stokes', and "
+                                   "'no Advection, no Stokes' "
                                    "when strain weakening is enabled, because more than one nonlinear "
                                    "advection iteration will result in the incorrect value of strain."));
           }
@@ -498,7 +502,12 @@ namespace aspect
         // Calculate changes in strain and update the reaction terms
         if  (this->simulator_is_past_initialization() && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
           {
-            const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
+            Assert(std::isfinite(in.strain_rate[i].norm()),
+                   ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                              "not filled by the caller."));
+
+            const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(in.strain_rate[i])), 0.)),
+                                            min_strain_rate);
             double delta_e_ii = edot_ii*this->get_timestep();
 
             // Adjusting strain values to account for strain healing without exceeding an unreasonable range
@@ -539,50 +548,56 @@ namespace aspect
                                            MaterialModel::MaterialModelOutputs<dim> &out) const
       {
 
-        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
+        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 &&
+            in.requests_property(MaterialProperties::reaction_terms) && weakening_mechanism == finite_strain_tensor)
           {
             // We need the velocity gradient for the finite strain (they are not
             // in material model inputs), so we get them from the finite element.
             std::vector<Point<dim>> quadrature_positions(in.n_evaluation_points());
-            for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+            for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
               quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
 
-            FEValues<dim> fe_values (this->get_mapping(),
-                                     this->get_fe(),
-                                     Quadrature<dim>(quadrature_positions),
-                                     update_gradients);
+            std::vector<double> solution_values(this->get_fe().dofs_per_cell);
+            in.current_cell->get_dof_values(this->get_solution(),
+                                            solution_values.begin(),
+                                            solution_values.end());
 
-            std::vector<Tensor<2,dim>> velocity_gradients (quadrature_positions.size(), Tensor<2,dim>());
+            // Only create the evaluator the first time we get here
+            if (!evaluator)
+              evaluator.reset(new FEPointEvaluation<dim, dim>(this->get_mapping(),
+                                                              this->get_fe(),
+                                                              update_gradients,
+                                                              this->introspection().component_indices.velocities[0]));
 
-            fe_values.reinit (in.current_cell);
-            fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_solution(),
-                                                                                           velocity_gradients);
+            // Initialize the evaluator for the old velocity gradients
+            evaluator->reinit(in.current_cell, quadrature_positions);
+            evaluator->evaluate(solution_values,
+                                EvaluationFlags::gradients);
 
             // Assign the strain components to the compositional fields reaction terms.
             // If there are too many fields, we simply fill only the first fields with the
             // existing strain tensor components.
 
-            for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
+            for (unsigned int q = 0; q < in.n_evaluation_points(); ++q)
               {
-                if (in.current_cell.state() == IteratorState::valid && weakening_mechanism == finite_strain_tensor
-                    && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
+                if (in.current_cell.state() == IteratorState::valid)
 
                   {
                     // Convert the compositional fields into the tensor quantity they represent.
-                    Tensor<2,dim> strain;
+                    Tensor<2, dim> strain;
                     const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
-                    for (unsigned int i = n_first; i < n_first + Tensor<2,dim>::n_independent_components ; ++i)
+                    for (unsigned int i = n_first; i < n_first + Tensor<2, dim>::n_independent_components; ++i)
                       {
-                        strain[Tensor<2,dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
+                        strain[Tensor<2, dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
                       }
 
                     // Compute the strain accumulated in this timestep.
-                    const Tensor<2,dim> strain_increment = this->get_timestep() * (velocity_gradients[q] * strain);
+                    const Tensor<2, dim> strain_increment = this->get_timestep() * (evaluator->get_gradient(q) * strain);
 
                     // Output the strain increment component-wise to its respective compositional field's reaction terms.
-                    for (unsigned int i = n_first; i < n_first + Tensor<2,dim>::n_independent_components ; ++i)
+                    for (unsigned int i = n_first; i < n_first + Tensor<2, dim>::n_independent_components; ++i)
                       {
-                        out.reaction_terms[q][i] = strain_increment[Tensor<2,dim>::unrolled_to_component_indices(i)];
+                        out.reaction_terms[q][i] = strain_increment[Tensor<2, dim>::unrolled_to_component_indices(i)];
                       }
                   }
               }

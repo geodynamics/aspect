@@ -7,17 +7,17 @@
  *
  * <ol>
  *
- * <li> <li> New: A mesh refinement plugin that allows to set regions of minimum and 
- * maximum refinement based on specific values of variables (of e.g. temperature) between two 
- * isosurfaces of that value. For example the minimum refinement is 2 and maximum refinement 
+ * <li> <li> New: A mesh refinement plugin that allows to set regions of minimum and
+ * maximum refinement based on specific values of variables (of e.g. temperature) between two
+ * isosurfaces of that value. For example the minimum refinement is 2 and maximum refinement
  * is 4 if the temperature is between 273 K and 1600 K.
  * <br>
  * (Menno Fraters and Haoyuan Li, 2021/07/09)
  *
  * <li> Fixed: The Steinberger material model now uses the correct profile for
- * lateral viscosity variations (in dependence of temperature). Before 
+ * lateral viscosity variations (in dependence of temperature). Before
  * this change, it had artificial jumps at the transition from upper to
- * lower mantle and used n=3 instead of n=3.5. 
+ * lower mantle and used n=3 instead of n=3.5.
  * <br>
  * (Juliane Dannberg, 2021/05/20)
  *
@@ -34,7 +34,7 @@
  * The values of fields that are advected through the particle method
  * are now in sync with the values carried by the particles.
  * In iterative advection schemes, the particle location is restored
- * before each iteration. 
+ * before each iteration.
  * A new postprocessor outputs the reference location of the particles
  * in their respective cells.
  * <br>
@@ -110,9 +110,9 @@
  * <br>
  * (Bob Myhill, 2020/11/30)
  *
- * <li> Fixed: The Multicomponent Incompressible equation 
- * of state (EOS) module now uses the correct reference 
- * temperature for density when adiabatic heating is used. 
+ * <li> Fixed: The Multicomponent Incompressible equation
+ * of state (EOS) module now uses the correct reference
+ * temperature for density when adiabatic heating is used.
  * <br>
  * (John Naliboff and Anne Glerum, 2020/11/28)
  *
@@ -124,7 +124,7 @@
  * <br>
  * (John Naliboff and Cedric Thieulot, 2020/11/19)
  *
- * <li> Fixed: The visualization postprocessors that output stresses now use the 
+ * <li> Fixed: The visualization postprocessors that output stresses now use the
  * correct sign for the shear stress term (under the convention of positive
  * compressive stress), i.e. -2*eta*strain_rate+pressure*I instead of
  * 2*eta*strain_rate+pressure*I.
@@ -141,8 +141,8 @@
  * <br>
  * (Kiran Chotalia, Rene Gassmoeller, 2020/11/10)
  *
- * <li> New: There is now a new property in the depth average postprocessor 
- * that averages the mass of a compositional field (rather than its volume, 
+ * <li> New: There is now a new property in the depth average postprocessor
+ * that averages the mass of a compositional field (rather than its volume,
  * as the "composition" property).
  * <br>
  * (Juliane Dannberg, 2020/11/09)
@@ -184,7 +184,7 @@
  *
  * <li> New: Added a rheology model that computes viscosity as depth-dependent values
  * taken from an input ascii data file. The existing depth-dependent material
- * model is modified to utilize the new rheology. 
+ * model is modified to utilize the new rheology.
  * <br>
  * (Arushi Saxena, 2020/09/21)
  *
@@ -196,13 +196,13 @@
  * (Bob Myhill, 2020/09/04)
  *
  * <li> New: Added a new benchmark that examines shortening of a
- * visco-plastic or viscoelastic-plastic block in the absence of 
- * gravity. The benchmark is modified from Exercise 13.2 in 
+ * visco-plastic or viscoelastic-plastic block in the absence of
+ * gravity. The benchmark is modified from Exercise 13.2 in
  * Gerya 2019 (Introduction to Numerical Geodynamic Modeling).
  * <br>
  * (John Naliboff and Cedric Thieulot, 2020/09/03)
  *
- * <li> New: Added a visualization object in postprocessing that computes the velocity residual at the top boundary of the model domain. The residual is computed between the modeled and the input velocities that can either be in an ascii data or gplates model format. 
+ * <li> New: Added a visualization object in postprocessing that computes the velocity residual at the top boundary of the model domain. The residual is computed between the modeled and the input velocities that can either be in an ascii data or gplates model format.
  * <br>
  * (Arushi Saxena, 2020/09/02)
  *
@@ -245,7 +245,7 @@
  * <li> New: The PerpleX Lookup module can now accept phase volume
  * fractions, for use in the material models or simply to visualize
  * after the model runs. A python file is also provided in the
- * contributions folder to allow users to easily create input files 
+ * contributions folder to allow users to easily create input files
  * in the correct format.
  * <br>
  * (Bob Myhill, 2020/08/14)
@@ -258,10 +258,10 @@
  * (Bob Myhill, John Naliboff, Cedric Theulot, 2020/08/14)
  *
  * <li> New: Added a new input parameter "Stabilization time scale factor" to Rheology::Elasticity.
- * 
+ *
  * This variable is a stabilization factor for the elastic stresses that influences how fast
  *  elastic stresses adjust to deformation.
- * 
+ *
  * <br>
  * (Daniel Douglas, Rene Gassmöller, Esther Heckenbach 2020/08/13)
  *
@@ -283,11 +283,11 @@
  * deformation to the mesh that acts as a starting point for deformations during
  * the model run. This can be used to prescribe an initial topography and will
  * replace the less general 'initial topography' plugin system in a future
- * version. 
+ * version.
  * <br>
  * (Rene Gassmoeller, 2020/08/12)
  *
- * <li> New: Added calculation for temperature-dependent strain healing in the strain 
+ * <li> New: Added calculation for temperature-dependent strain healing in the strain
  * dependent rheology module.
  * <br>
  * (Erin Heilman, 2020/08/12)
@@ -303,13 +303,13 @@
  * (Wolfgang Bangerth, 2020/08/11)
  *
  * <li> New: A rheology module for Peierls creep has been added
- * (namespace MaterialModel::Rheology::PeierlsCreep). This module 
+ * (namespace MaterialModel::Rheology::PeierlsCreep). This module
  * is used to define parameters for Peierls creep and compute an approximate
  * viscosity, which is integrated in the visco_plastic material model.
  * <br>
  * (John Naliboff and Magali Billen, 2020/08/10)
  *
- * <li> New: The gravity model 'function' does now evaluate the time at each timestep and the function expression can therefore now be time dependent. 
+ * <li> New: The gravity model 'function' does now evaluate the time at each timestep and the function expression can therefore now be time dependent.
  * <br>
  * (Jacky Austermann, 2020/08/10)
  *
@@ -327,10 +327,10 @@
  * Also add optional entry to MaterialModel::ViscoPlastic::calculate_isostrain_viscosities in order to pass in values of phase functions.
  * <br>
  * (Haoyuan Li, 2020/08/06) *
- * <li> Fixed: The latent heat and latent heat melt material models now 
- * use the adiabatic temperature as the reference temperature for the 
- * viscosity if adiabatic heating is switched on (and hence, the 
- * geotherm is an adiabat rather than a constant temperature). 
+ * <li> Fixed: The latent heat and latent heat melt material models now
+ * use the adiabatic temperature as the reference temperature for the
+ * viscosity if adiabatic heating is switched on (and hence, the
+ * geotherm is an adiabat rather than a constant temperature).
  * <br>
  * (Juliane Dannberg, 2020/08/05)
  *
@@ -373,10 +373,10 @@
  * (Haoyuan Li, 2020/07/01)
  *
  * <li> New: There is now a mesh deformation plugin "diffusion" that can be
- * used to diffuse away surface topography in box geometry models. The 
- * plugin can be used alone or in combination with the free surface 
+ * used to diffuse away surface topography in box geometry models. The
+ * plugin can be used alone or in combination with the free surface
  * to approximate surface processes and increase numerical stability
- * by limiting mesh distortion. 
+ * by limiting mesh distortion.
  * <br>
  * (Anne Glerum, 2020/06/19)
  *

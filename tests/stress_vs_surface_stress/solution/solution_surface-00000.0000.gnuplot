@@ -4,7 +4,7 @@
 #
 # For a description of the GNUPLOT format see the GNUPLOT manual.
 #
-# <x> <y> <surface_stress_xx> <surface_stress_xy> <surface_stress_yx> <surface_stress_yy> 
+# <x> <y> <surface_stress> <surface_stress> <surface_stress> <surface_stress> 
 0 0 9426.38 -0.000656362 -0.000656362 9926.64 
 0 0.0625 9426.38 -0.000656362 -0.000656362 9926.64 
 

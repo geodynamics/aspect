@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -112,14 +112,6 @@ namespace aspect
           double
           rotation_axis_from_matrix (Tensor<1,3> &rotation_axis,
                                      const Tensor<2,3> &rotation_matrix) const;
-
-          /**
-           * A function that returns the corresponding euler angles for a
-           * rotation described by rotation axis and angle.
-           */
-          Tensor<2,3>
-          rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
-                                     const double rotation_angle) const;
 
           /**
            * Convert a tensor of rank 1 and dimension in to rank 1 and
@@ -287,7 +279,7 @@ namespace aspect
         /**
          * Scale the velocity boundary condition by a scalar factor.
          */
-        double scale_factor;
+        double velocity_scaling_factor;
 
         /**
          * Two user defined points that prescribe the plane from which the 2D

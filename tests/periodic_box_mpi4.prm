@@ -22,7 +22,7 @@ subsection Discretization
   subsection Stabilization parameters
     set alpha = 2
     set beta  = 0.078
-    set cR    = 0.5   # default: 0.11
+    set cR    = 0.5
   end
 end
 
@@ -75,7 +75,7 @@ subsection Mesh refinement
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.05
   set Strategy                           = temperature
-  set Time steps between mesh refinement = 0                       # default: 10
+  set Time steps between mesh refinement = 0
 end
 
 

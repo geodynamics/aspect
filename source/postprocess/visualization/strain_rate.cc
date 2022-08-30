@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,8 @@ namespace aspect
       StrainRate ()
         :
         DataPostprocessorScalar<dim> ("strain_rate",
-                                      update_gradients | update_quadrature_points)
+                                      update_gradients | update_quadrature_points),
+        Interface<dim>("1/s")
       {}
 
 
@@ -48,8 +49,10 @@ namespace aspect
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
-        Assert (input_data.solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
-        Assert (input_data.solution_gradients[0].size() == this->introspection().n_components,          ExcInternalError());
+        Assert (input_data.solution_values[0].size() == this->introspection().n_components,
+                ExcInternalError());
+        Assert (input_data.solution_gradients[0].size() == this->introspection().n_components,
+                ExcInternalError());
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
@@ -58,7 +61,7 @@ namespace aspect
               grad_u[d] = input_data.solution_gradients[q][d];
 
             const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
-            computed_quantities[q](0) = std::sqrt(std::fabs(second_invariant(deviator(strain_rate))));
+            computed_quantities[q](0) = std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.));
           }
 
         // average the values if requested
@@ -86,7 +89,9 @@ namespace aspect
                                                   "in the incompressible case and "
                                                   "$\\sqrt{[\\varepsilon(\\mathbf u)-\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I]:"
                                                   "[\\varepsilon(\\mathbf u)-\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I]}$ "
-                                                  "in the compressible case.")
+                                                  "in the compressible case."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\per\\second}.")
     }
   }
 }

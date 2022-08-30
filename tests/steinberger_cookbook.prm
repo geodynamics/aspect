@@ -1,0 +1,12 @@
+# Copy of the steinberger cookbook, with a shorter end time,
+# lower resolution and without nonlinear iterations.
+
+include $ASPECT_SOURCE_DIR/cookbooks/steinberger/steinberger.prm
+
+set End time                             = 2e6
+set Nonlinear solver scheme              = single Advection, single Stokes
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+end

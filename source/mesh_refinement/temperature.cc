@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,8 +34,7 @@ namespace aspect
     {
       indicators = 0;
 
-      QGauss<dim-1> quadrature (this->introspection().polynomial_degree.temperature+1);
-
+      const Quadrature<dim-1> &quadrature = this->introspection().face_quadratures.temperature;
       KellyErrorEstimator<dim>::estimate (this->get_mapping(),
                                           this->get_dof_handler(),
                                           quadrature,

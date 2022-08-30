@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -72,14 +72,14 @@ namespace aspect
     // Additionally, the n==1 logic for normalization at the bottom is not pretty.
     for (unsigned int n=0; n<1+introspection.n_compositional_fields; ++n)
       {
-        AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
-                               : AdvectionField::composition(n-1));
+        const AdvectionField advf = ((n == 0) ? AdvectionField::temperature()
+                                     : AdvectionField::composition(n-1));
 
         const unsigned int base_element = advf.base_element(introspection);
 
         // get the temperature/composition support points
         const std::vector<Point<dim>> support_points
-                                   = finite_element.base_element(base_element).get_unit_support_points();
+          = finite_element.base_element(base_element).get_unit_support_points();
         Assert (support_points.size() != 0,
                 ExcInternalError());
 
@@ -97,7 +97,7 @@ namespace aspect
              VectorFunctionFromScalarFunctionObject<dim, double>(
                [&](const Point<dim> &p) -> double
         {
-          return initial_temperature_manager.initial_temperature(p);
+          return initial_temperature_manager->initial_temperature(p);
         },
         introspection.component_indices.temperature,
         introspection.n_components)
@@ -105,7 +105,7 @@ namespace aspect
         VectorFunctionFromScalarFunctionObject<dim, double>(
           [&](const Point<dim> &p) -> double
         {
-          return initial_composition_manager.initial_composition(p, n-1);
+          return initial_composition_manager->initial_composition(p, n-1);
         },
         introspection.component_indices.compositional_fields[n-1],
         introspection.n_components));
@@ -136,8 +136,8 @@ namespace aspect
                     // must not exceed one, this should be checked
                     double sum = 0;
                     for (unsigned int m=0; m<parameters.normalized_fields.size(); ++m)
-                      sum += initial_composition_manager.initial_composition(fe_values.quadrature_point(i),
-                                                                             parameters.normalized_fields[m]);
+                      sum += initial_composition_manager->initial_composition(fe_values.quadrature_point(i),
+                                                                              parameters.normalized_fields[m]);
 
                     if (std::abs(sum) > 1.0+std::numeric_limits<double>::epsilon())
                       {
@@ -250,7 +250,7 @@ namespace aspect
 
     // get the temperature/composition support points
     const std::vector<Point<dim>> support_points
-                               = finite_element.base_element(base_element).get_unit_support_points();
+      = finite_element.base_element(base_element).get_unit_support_points();
     Assert (support_points.size() != 0,
             ExcInternalError());
 
@@ -381,15 +381,13 @@ namespace aspect
         // wants a function that represents all components of the
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
-        auto lambda = [&](const Point<dim> &p) -> double
+        VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+          [&](const Point<dim> &p) -> double
         {
           return adiabatic_conditions->pressure(p);
-        };
-
-        VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-          lambda,
-          pressure_comp,
-          introspection.n_components);
+        },
+        pressure_comp,
+        introspection.n_components);
 
         VectorTools::interpolate (*mapping, dof_handler,
                                   vector_function_object,
@@ -413,8 +411,7 @@ namespace aspect
         LinearAlgebra::BlockVector system_tmp;
         system_tmp.reinit (system_rhs);
 
-        QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
-
+        const Quadrature<dim> &quadrature = introspection.quadratures.velocities;
         Utilities::project_cellwise<dim,LinearAlgebra::BlockVector>(*mapping,
                                                                     dof_handler,
                                                                     introspection.component_indices.pressure,

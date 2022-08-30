@@ -8,16 +8,16 @@
  * <ol>
  *
  * <li> New: ASPECT can optionally compile with the Geodynamic World Builder
- * (https://github.com/GeodynamicWorldBuilder/WorldBuilder/). There 
- * are new initial conditions plugins for temperature and composition which use the 
+ * (https://github.com/GeodynamicWorldBuilder/WorldBuilder/). There
+ * are new initial conditions plugins for temperature and composition which use the
  * Geodynamic World Builder to construct initial conditions.
- * 
+ *
  * (Menno Fraters, 2019/04/24)
  *
  * <li> New: There is a new postprocessor 'entropy viscosity statistics' that
  * computes the maximum and average entropy viscosity stabilization for
  * the temperature equation for diagnostic purposes.
- * 
+ *
  * (Rene Gassmoeller, 2019/03/22)
  *
  * <li> New: There is now an option to output visualization data as higher order
@@ -43,7 +43,7 @@
  * <li> New: Added basic support for a volume-of-fluid interface tracking advection
  * method in 2D incompressible box models. The VoF method is an efficient method
  * to track a distinct compositional field without artificial diffusion.
- * 
+ *
  * (Jonathan Robey, 2019/01/28)
  *
  * <li> New: ASPECT now outputs a file named original.prm in the output directory with the exact content of the parameter it got started with.
@@ -59,20 +59,20 @@
  * <br>
  * (Jacky Austermann, 2018/11/15)
  *
- * <li> Changed: If the 'prescribed field' compositional field method is used 
+ * <li> Changed: If the 'prescribed field' compositional field method is used
  * for a field, this field will now be solved in the order it is listed
- * in in the input file (as is done for all compositional fields) instead 
- * of being updated after all of the other fields are solved (the 
- * previous behaviour). 
+ * in in the input file (as is done for all compositional fields) instead
+ * of being updated after all of the other fields are solved (the
+ * previous behaviour).
  * <br>
  * (Juliane Dannberg, 2018/10/31)
  *
  * <li> New: There is now a new method for compositional fields that allows
- * to prescribe them to a value that is computed in the material model 
- * and then, in a second step, to diffuse them based on a length scale 
- * given as an input parameter. This option can be used by selecting the 
- * 'prescribed field with diffusion' compositional field method in the 
- * input file, and allows it to smooth quantities that are computed in 
+ * to prescribe them to a value that is computed in the material model
+ * and then, in a second step, to diffuse them based on a length scale
+ * given as an input parameter. This option can be used by selecting the
+ * 'prescribed field with diffusion' compositional field method in the
+ * input file, and allows it to smooth quantities that are computed in
  * the material model.
  * <br>
  * (Juliane Dannberg, 2018/10/29)
@@ -80,11 +80,11 @@
  * <li> Changed: The heat flux through the boundary cells that is computed
  * in several postprocessors is now computed using the consistent boundary
  * flux method as described in
- * 
+ *
  * Gresho, et al. (1987). The consistent Galerkin FEM for computing derived
  * boundary quantities in thermal and or fluids problems. International Journal
  * for Numerical Methods in Fluids, 7(4), 371-394.
- * 
+ *
  * This leads to significantly different (and more accurate) heat flux
  * output. In particular the following changes are expected:
  *   - Heat flux through reflecting boundaries is exactly 0,
@@ -97,10 +97,10 @@
  *   - Heat flux now includes advective heat flux (i.e. the term velocity times
  *     temperature times density times specific heat capacity), not purely
  *     conductive heat flux.
- * 
+ *
  * Note that all of these changes purely affect the postprocessing. The
  * accuracy of the solution has not changed.
- * 
+ *
  * Benchmark and test results have been updated and therefore now differ from
  * publications that described their initial results.
  * <br>
@@ -112,11 +112,11 @@
  * <br>
  * (Rene Gassmoeller, 2018/10/04)
  *
- * <li> New: Compositional fields can now be prescribed to a value that is 
- * computed in the material model as an additional output at every time 
- * step and then interpolated and copied into the solution vector (as 
- * opposed to advecting the compositional field). This option can be 
- * used by selecting the 'prescribed field' compositional field method 
+ * <li> New: Compositional fields can now be prescribed to a value that is
+ * computed in the material model as an additional output at every time
+ * step and then interpolated and copied into the solution vector (as
+ * opposed to advecting the compositional field). This option can be
+ * used by selecting the 'prescribed field' compositional field method
  * in the input file.
  * <br>
  * (Juliane Dannberg, 2018/10/01)
@@ -145,7 +145,7 @@
  * (Rene Gassmoeller, 2018/09/15)
  *
  * <li> Fixed: The global entropy variation that is used in the artificial
- * viscosity computation was always computed with a quadrature of the 
+ * viscosity computation was always computed with a quadrature of the
  * polynomial degree of the temperature (even for compositional fields).
  * This is fixed now, and causes minor changes in the stabilization for
  * compositional fields if they use a different element order than the
@@ -184,13 +184,13 @@
  * <br>
  * (Timo Heister, 2018/07/25)
  *
- * <li> New: Added a postprocessor for the temperature anomaly, 
+ * <li> New: Added a postprocessor for the temperature anomaly,
  * defined as temperature - (depth average of temperature).
  * <br>
  * (Max Rudolph, 2018/07/11)
  *
- * <li> New: ASPECT now has a Patch on S40RTS initial temperature model which combines S40RTS and 
- * an ascii grid containing an upper mantle tomography. Data is input in Vs and converted to 
+ * <li> New: ASPECT now has a Patch on S40RTS initial temperature model which combines S40RTS and
+ * an ascii grid containing an upper mantle tomography. Data is input in Vs and converted to
  * temperature within the function (using the same method as S40RTS_perturbation).
  * <br>
  * (Sophie Coulson, 2018/07/09)
@@ -199,10 +199,10 @@
  * following the FEM book by Donea and Huerta.
  * <br>
  * (Cedric Thieulot, 2018/07/02)
- *   
- * 
  *
- * <li> New: The benchmarks now include a viscoplastic thermal convection benchmark as 
+ *
+ *
+ * <li> New: The benchmarks now include a viscoplastic thermal convection benchmark as
  * described and performed in Tosi et al. (G3 2015).
  * <br>
  * (Anne Glerum, 2018/06/27)
@@ -259,8 +259,8 @@
  * (Bart Niday, 2018/06/23)
  *
  * <li> Changed: We now only set time step number and timestep sizes after
- * initialization is finished. 
- * 
+ * initialization is finished.
+ *
  * Right now, there is no way to find out, for example in the hook that
  * is called from the function that builds constraints, whether we
  * are already in the process of time stepping, or only in the
@@ -271,8 +271,8 @@
  * <br>
  * (Wolfgang Bangerth, 2018/06/20)
  *
- * <li> New: There is now a visualization postprocessor that outputs 
- * the compaction length, the characteristic length scale of 
+ * <li> New: There is now a visualization postprocessor that outputs
+ * the compaction length, the characteristic length scale of
  * melt transport.
  * <br>
  * (Joe Schools, 2018/06/19)
@@ -285,7 +285,7 @@
  * (Bob Myhill, 2018/06/19)
  *
  * <li> New: Compositional fields can now be advected with the melt velocity
- * (as opposed to the solid velocity), and this option can be used by 
+ * (as opposed to the solid velocity), and this option can be used by
  * selecting the 'melt field' advection method in the input file.
  * <br>
  * (Juliane Dannberg, 2018/06/19)

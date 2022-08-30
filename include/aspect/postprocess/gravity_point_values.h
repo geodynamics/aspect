@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -50,7 +50,7 @@ namespace aspect
      * postprocessor.
      * The average- minimum- and maximum gravity acceleration and potential are written
      * into the statistics file.
-
+     *
      * @ingroup Postprocessing
      */
     template <int dim>
@@ -61,6 +61,11 @@ namespace aspect
          * Constructor.
          */
         GravityPointValues ();
+
+        /**
+         * @copydoc Interface::initialize().
+         */
+        void initialize() override;
 
         /**
          * Specify the creation of output_gravity.txt.
@@ -266,6 +271,18 @@ namespace aspect
          */
         std::vector<double> latitude_list;
 
+        // ------------ the following variables are not set from parameters,
+        //              but are instead computed up front from input
+        //              parameters and other parts of the overall model
+        double model_outer_radius;
+        double model_inner_radius;
+
+        /**
+         * The positions of all satellite positions in spherical and
+         * Cartesian coordinate systems.
+         */
+        std::vector<std::array<double,dim>> satellite_positions_spherical;
+        std::vector<Point<dim>>             satellite_positions_cartesian;
     };
   }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -24,6 +24,8 @@
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+
+#include <deal.II/matrix_free/fe_point_evaluation.h>
 
 namespace aspect
 {
@@ -161,15 +163,6 @@ namespace aspect
           bool use_fixed_elastic_time_step;
 
           /**
-           * Bool indicating whether to use a stress averaging scheme to account
-           * for differences between the numerical and fixed elastic time step
-           * (if true). When set to false, the viscoelastic stresses are not
-           * modified to account for differences between the viscoelastic time
-           * step and the numerical time step. Read from parameter file.
-           */
-          bool use_stress_averaging;
-
-          /**
            * Double for fixed elastic time step value, read from parameter file
            */
           double fixed_elastic_time_step;
@@ -182,6 +175,15 @@ namespace aspect
            * time step to create a time scale.
            */
           double stabilization_time_scale_factor;
+
+          /**
+           * We cache the evaluator that is necessary to evaluate the old velocity
+           * gradients. They are required to compute the elastic stresses, but
+           * are not provided by the material model.
+           * By caching the evaluator, we can avoid recreating it every time we
+           * need it.
+           */
+          mutable std::unique_ptr<FEPointEvaluation<dim, dim>> evaluator;
       };
     }
   }

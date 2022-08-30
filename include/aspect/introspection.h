@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,6 +23,7 @@
 #define _aspect_introspection_h
 
 #include <deal.II/base/index_set.h>
+#include <deal.II/base/quadrature.h>
 #include <deal.II/fe/component_mask.h>
 #include <deal.II/fe/fe_values_extractors.h>
 #include <deal.II/fe/fe.h>
@@ -41,7 +42,7 @@ namespace aspect
    */
   template <int dim>
   std::vector<VariableDeclaration<dim>>
-                                     construct_default_variables (const Parameters<dim> &parameters);
+  construct_default_variables (const Parameters<dim> &parameters);
 
 
 
@@ -213,6 +214,61 @@ namespace aspect
       const PolynomialDegree polynomial_degree;
 
       /**
+       * A structure that contains appropriate quadrature formulas for the
+       * finite elements that correspond to each of the variables in this problem,
+       * as well as for the complete system (the `system` variable).
+       *
+       * If there are compositional fields, they are all discretized with the
+       * same polynomial degree and, consequently, we only need a single formula.
+       *
+       * The quadrature formulas provided here are chosen such that the
+       * compute integrals with sufficient accuracy. For hypercube cells,
+       * this means in particular that they are of Gauss type with a
+       * number of Gauss points per coordinate direction that is one larger than
+       * the polynomial degree of the finite element per direction. For
+       * example, when using quadratic elements for the velocity, the
+       * corresponding quadrature formula will have three Gauss points per
+       * direction. If the mesh is based on triangles or tetrahedra, the
+       * quadrature formula is not of tensor-product Gauss type, but the
+       * corresponding analog for simplex cells.
+       */
+      struct Quadratures
+      {
+        Quadrature<dim>       velocities;
+        Quadrature<dim>       pressure;
+        Quadrature<dim>       temperature;
+        Quadrature<dim>       compositional_fields;
+        Quadrature<dim>       system;
+      };
+      /**
+       * A variable that enumerates the polynomial degree of the finite element
+       * that correspond to each of the variables in this problem.
+       */
+      const Quadratures quadratures;
+
+      /**
+       * A structure that contains appropriate face quadrature formulas for the
+       * finite elements that correspond to each of the variables in this problem,
+       * as well as for the complete system (the `system` variable).
+       *
+       * This structure corresponds to the Quadratures structure above, but for
+       * face integration.
+       */
+      struct FaceQuadratures
+      {
+        Quadrature<dim-1>       velocities;
+        Quadrature<dim-1>       pressure;
+        Quadrature<dim-1>       temperature;
+        Quadrature<dim-1>       compositional_fields;
+        Quadrature<dim-1>       system;
+      };
+      /**
+       * A variable that enumerates the polynomial degree of the finite element
+       * that correspond to each of the variables in this problem.
+       */
+      const FaceQuadratures face_quadratures;
+
+      /**
        * A structure that contains component masks for each of the variables
        * in this problem. Component masks are a deal.II concept, see the
        * deal.II glossary.
@@ -317,6 +373,12 @@ namespace aspect
       IndexSets index_sets;
 
       /**
+       * A variable that contains the field method for the temperature field
+       * and is used to determine how to solve it when solving a timestep.
+       */
+      typename Parameters<dim>::AdvectionFieldMethod::Kind temperature_method;
+
+      /**
        * A vector that contains a field method for every compositional
        * field and is used to determine how to solve a particular field when
        * solving a timestep.
@@ -354,6 +416,39 @@ namespace aspect
       get_composition_names () const;
 
       /**
+       * A function that returns the full vector of compositional
+       * field descriptions.
+       */
+      const std::vector<typename Parameters<dim>::CompositionalFieldDescription> &
+      get_composition_descriptions () const;
+
+
+      /**
+       * A function that gets the type of a compositional field as an input
+       * parameter and returns if any compositional field of that type is
+       * used in this simulation.
+       *
+       * @param type The type of compositional field (as specified in the
+       * input file)
+       */
+      bool
+      composition_type_exists (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const;
+
+
+      /**
+       * A function that gets the type of a compositional field as an input
+       * parameter and returns the index of the first compositional field of
+       * this type used in this simulation. If no such field is found, the
+       * function returns the number of compositional fields.
+       *
+       * @param type The type of compositional field (as specified in the
+       * input file)
+       */
+      unsigned int
+      find_composition_type (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const;
+
+
+      /**
        * A function that gets the name of a compositional field as an input
        * parameter and returns if the compositional field is used in this
        * simulation.
@@ -380,6 +475,13 @@ namespace aspect
        * be used in the simulation.
        */
       std::vector<std::string> composition_names;
+
+      /**
+       * A vector that stores descriptions of each compositional field,
+       * including its type (i.e. whether the compositional field corresponds
+       * to chemical composition, porosity etc.).
+       */
+      std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions;
 
   };
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -62,12 +62,13 @@ namespace aspect
       // the values of the compositional fields are stored as block vectors for each field
       // we have to extract them in this structure
       std::vector<std::vector<double>> prelim_composition_values (this->n_compositional_fields(),
-                                                                  std::vector<double> (quadrature.size()));
+                                                                   std::vector<double> (quadrature.size()));
 
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(),
                                                  this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(),
                                                    this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
@@ -141,7 +142,7 @@ namespace aspect
                                               "and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell "
                                               "and $d$ is the dimension. "
                                               "This scaling ensures that the error indicators converge to zero as "
-                                              "$h_K\\rightarrow 0$ even if the energy density is discontinuous, since "
+                                              "$h_K\\rightarrow 0$ even if the viscosity is discontinuous, since "
                                               "the gradient of a discontinuous function grows like $1/h_K$.")
   }
 }

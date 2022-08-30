@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -45,7 +45,7 @@ void print_aspect_header(Stream &stream)
 
   stream << "--     . using deal.II " << DEAL_II_PACKAGE_VERSION;
   if (strcmp(DEAL_II_GIT_BRANCH,"") != 0)
-    stream << " (" << DEAL_II_GIT_BRANCH << ", " << DEAL_II_GIT_SHORTREV << ")";
+    stream << " (" << DEAL_II_GIT_BRANCH << ", " << DEAL_II_GIT_SHORTREV << ')';
   stream << "\n";
   stream << "--     .       with "
 #ifdef DEAL_II_WITH_64BIT_INDICES
@@ -60,17 +60,10 @@ void print_aspect_header(Stream &stream)
   stream << DEAL_II_COMPILER_VECTORIZATION_LEVEL
          << " (" << n_vect_bits << " bits)\n";
 
-#ifdef ASPECT_USE_PETSC
-  stream << "--     . using PETSc "
-         << PETSC_VERSION_MAJOR    << '.'
-         << PETSC_VERSION_MINOR    << '.'
-         << PETSC_VERSION_SUBMINOR << '\n';
-#else
   stream << "--     . using Trilinos "
          << DEAL_II_TRILINOS_VERSION_MAJOR    << '.'
          << DEAL_II_TRILINOS_VERSION_MINOR    << '.'
          << DEAL_II_TRILINOS_VERSION_SUBMINOR << '\n';
-#endif
   stream << "--     . using p4est "
          << DEAL_II_P4EST_VERSION_MAJOR << '.'
          << DEAL_II_P4EST_VERSION_MINOR << '.'

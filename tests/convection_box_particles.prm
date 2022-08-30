@@ -1,0 +1,4 @@
+include $ASPECT_SOURCE_DIR/cookbooks/convection-box-particles/convection-box-particles.prm
+
+set Dimension = 2
+set End time = 0

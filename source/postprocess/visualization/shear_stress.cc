@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,8 @@ namespace aspect
       ShearStress ()
         :
         DataPostprocessorTensor<dim> ("shear_stress",
-                                      update_values | update_gradients | update_quadrature_points)
+                                      update_values | update_gradients | update_quadrature_points),
+        Interface<dim>("Pa")
       {}
 
 
@@ -56,6 +57,9 @@ namespace aspect
                                                    this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
+
+        // We do not need to compute anything but the viscosity
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
         // Compute the viscosity...
         this->get_material_model().evaluate(in, out);
@@ -127,7 +131,9 @@ namespace aspect
                                                   "elastic contribution is being accounted for. The shear "
                                                   "stress differs from the full stress tensor "
                                                   "by the absence of the pressure. Note that the convention "
-                                                  "of positive compressive stress is followed. ")
+                                                  "of positive compressive stress is followed."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\pascal}.")
     }
   }
 }

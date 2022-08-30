@@ -1,0 +1,99 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.4.0-pre (add_vep_torsion_BM, 4a8ed33c8)
+--     . using deal.II 9.3.1
+--     .       with 32 bit indices and vectorization level 1 (128 bits)
+--     . using Trilinos 12.18.1
+--     . using p4est 2.2.0
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.4.0-pre&sha=4a8ed33c8&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 125 (on 1 levels)
+Number of degrees of freedom: 13,526 (3,993+216+1,331+1,331+1,331+1,331+1,331+1,331+1,331)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_zz composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xz composition solve because RHS is zero.
+   Skipping ve_stress_yz composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 36+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.66645e-07
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0
+
+*** Timestep 1:  t=0.01 seconds, dt=0.01 seconds
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 13 iterations.
+   Solving ve_stress_yy system ... 13 iterations.
+   Solving ve_stress_zz system ... 13 iterations.
+   Solving ve_stress_xy system ... 13 iterations.
+   Solving ve_stress_xz system ... 12 iterations.
+   Solving ve_stress_yz system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.51536e-06
+
+
+   Postprocessing:
+     Compositions min/max/mass: -1.64e-05/1.511e-05/-1.455e-10 // -1.636e-05/1.622e-05/1.445e-10 // -1.337e-05/1.286e-05/9.515e-13 // -1.871e-05/1.917e-05/-5.239e-10 // 0.297/0.297/0.297 // -1.691e-05/1.689e-05/-4.805e-10
+
+*** Timestep 2:  t=0.02 seconds, dt=0.01 seconds
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 13 iterations.
+   Solving ve_stress_yy system ... 14 iterations.
+   Solving ve_stress_zz system ... 13 iterations.
+   Solving ve_stress_xy system ... 14 iterations.
+   Solving ve_stress_xz system ... 10 iterations.
+   Solving ve_stress_yz system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.70271e-06
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0.001159/0.001192/0.001176 // -1.546e-05/1.458e-05/7.847e-10 // -0.001191/-0.001163/-0.001176 // -1.765e-05/1.853e-05/-3.825e-10 // 0.5901/0.5902/0.5901 // 0.0004411/0.0004733/0.0004575
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      3.82s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         4 |     0.651s |        17% |
+| Assemble composition system      |        18 |      1.86s |        49% |
+| Assemble temperature system      |         3 |     0.348s |       9.1% |
+| Build Stokes preconditioner      |         4 |     0.384s |        10% |
+| Build composition preconditioner |        12 |    0.0655s |       1.7% |
+| Build temperature preconditioner |         3 |    0.0173s |      0.45% |
+| Initialization                   |         1 |     0.122s |       3.2% |
+| Postprocessing                   |         3 |    0.0166s |      0.44% |
+| Setup dof systems                |         1 |   0.00544s |      0.14% |
+| Setup initial conditions         |         1 |    0.0665s |       1.7% |
+| Setup matrices                   |         1 |    0.0371s |      0.97% |
+| Solve Stokes system              |         4 |    0.0584s |       1.5% |
+| Solve composition system         |        12 |    0.0281s |      0.74% |
+| Solve temperature system         |         3 |   0.00137s |         0% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 4s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.4.0-pre&sha=4a8ed33c8&src=code
+-----------------------------------------------------------------------------

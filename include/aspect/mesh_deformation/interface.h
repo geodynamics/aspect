@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -24,18 +24,51 @@
 
 #include <aspect/plugins.h>
 #include <aspect/simulator_access.h>
-
 #include <aspect/global.h>
 
 #include <deal.II/fe/fe_system.h>
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/lac/affine_constraints.h>
 #include <deal.II/base/index_set.h>
+#include <deal.II/base/mg_level_object.h>
+#include <deal.II/lac/la_parallel_vector.h>
+#include <deal.II/multigrid/mg_constrained_dofs.h>
+#include <deal.II/multigrid/mg_transfer_matrix_free.h>
+#include <aspect/simulator/assemblers/interface.h>
 
 
 namespace aspect
 {
   using namespace dealii;
+
+  namespace Assemblers
+  {
+    /**
+     * Apply stabilization to a cell of the system matrix. The
+     * stabilization is only added to cells on a free surface. The
+     * scheme is based on that of Kaus et. al., 2010. Called during
+     * assembly of the system matrix.
+     */
+    template <int dim>
+    class ApplyStabilization: public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        ApplyStabilization(const double stabilization_theta);
+
+        void
+        execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
+
+      private:
+        /**
+         * Stabilization parameter for the free surface. Should be between
+         * zero and one. A value of zero means no stabilization. See Kaus
+         * et. al. 2010 for more details.
+         */
+        const double free_surface_theta;
+    };
+  }
 
   template <int dim> class Simulator;
 
@@ -80,6 +113,13 @@ namespace aspect
          * The default implementation of this function does nothing.
          */
         virtual void update();
+
+
+        /**
+         * A function that will be called to check whether stabilization is needed.
+         */
+        virtual bool needs_surface_stabilization() const;
+
 
         /**
          * A function that returns the initial deformation of points on the
@@ -159,6 +199,13 @@ namespace aspect
         void initialize();
 
         /**
+         * Called by Simulator::set_assemblers() to allow the FreeSurface plugin
+         * to register its assembler.
+         */
+        void set_assemblers(const SimulatorAccess<dim> &simulator_access,
+                            aspect::Assemblers::Manager<dim> &assemblers) const;
+
+        /**
          * Update function of the MeshDeformationHandler. This function
          * allows the individual mesh deformation objects to update.
          */
@@ -213,14 +260,14 @@ namespace aspect
         (const std::string &name,
          const std::string &description,
          void (*declare_parameters_function) (ParameterHandler &),
-         Interface<dim> *(*factory_function) ());
+         std::unique_ptr<Interface<dim>> (*factory_function) ());
 
         /**
          * Return a map of boundary indicators to the names of all mesh deformation models currently
          * used in the computation, as specified in the input file.
          */
         const std::map<types::boundary_id, std::vector<std::string>> &
-                                                                  get_active_mesh_deformation_names () const;
+        get_active_mesh_deformation_names () const;
 
         /**
          * Return a map of boundary indicators to vectors of pointers to all mesh deformation models
@@ -237,12 +284,24 @@ namespace aspect
         get_active_mesh_deformation_boundary_indicators () const;
 
         /**
+         * Return a set of all the indicators of boundaries that
+         * require surface stabilization.
+         */
+        const std::set<types::boundary_id> &
+        get_boundary_indicators_requiring_stabilization () const;
+
+        /**
          * Return the boundary id of the surface that has a free surface
          * mesh deformation object. If no free surface is used,
          * an empty set is returned.
          */
         const std::set<types::boundary_id> &
         get_free_surface_boundary_indicators () const;
+
+        /**
+         * Return the stabilization parameter for the free surface.
+         */
+        double get_free_surface_theta () const;
 
         /**
          * Return the initial topography stored on
@@ -290,6 +349,15 @@ namespace aspect
         const MeshDeformationType &
         get_matching_mesh_deformation_object () const;
 
+
+        /**
+         * If multilevel solvers are used, we need a mapping on each multigrid level. These
+         * are automatically updated by this handler class and can be accessed with this
+         * method.
+         */
+        const Mapping<dim> &
+        get_level_mapping(const unsigned int level) const;
+
         /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
@@ -314,41 +382,39 @@ namespace aspect
 
       private:
         /**
-         * Set the boundary conditions for the solution of the elliptic
-         * problem, which computes the initial displacements of the internal
-         * vertices so that the mesh does not become too distorted due to
-         * motion of the surface. Displacements of vertices on the deforming
-         * surface are fixed according to the selected deformation plugins.
+         * Compute the initial constraints for the mesh displacement
+         * on the boundaries of the domain.  This is used on the mesh
+         * deformation boundaries to describe a displacement (initial
+         * topography) to be used during the simulation. The
+         * displacement is given by the active deformation plugins.
          */
-        AffineConstraints<double> make_initial_constraints ();
+        void make_initial_constraints ();
 
         /**
-         * Deform the initial mesh by solving a Laplace equation
-         * for the interior mesh vertices. The boundary deformation
-         * is prescribed as given by the
-         * compute_initial_deformation_on_boundary() function of
-         * the individual mesh deformation plugins.
-         */
-        void deform_initial_mesh ();
-
-        /**
-         * Set the boundary conditions for the solution of the elliptic
-         * problem, which computes the displacements of the internal
-         * vertices so that the mesh does not become too distorted due to
-         * motion of the surface. Velocities of vertices on the
-         * deforming surface are fixed according to the selected deformation
-         * plugins. Velocities of vertices on free-slip boundaries are
-         * constrained to be tangential to those boundaries. Velocities of
-         * vertices on no-slip boundaries are set to be zero. If a no-slip
-         * boundary is marked as additional tangential, then vertex velocities
-         * are constrained as tangential.
+         * Compute the constraints for the mesh velocity on the
+         * boundaries of the domain.  On the mesh deformation
+         * boundaries, the velocity is given by the active deformation
+         * plugins.
+         *
+         * Velocities on free-slip boundaries are constrained to be
+         * tangential to those boundaries. Velocities on no-slip
+         * boundaries are set to be zero. If a no-slip boundary is
+         * marked as additional tangential, then velocities are
+         * constrained as tangential.
          */
         void make_constraints ();
 
         /**
-         * Solve vector Laplacian equation for internal mesh displacements.
+         * Solve vector Laplacian equation for internal mesh displacements and update
+         * the current displacement vector based on the solution.
          */
         void compute_mesh_displacements ();
+
+        /**
+         * Solve vector Laplacian equation using GMG for internal mesh displacements and update
+         * the current displacement vector based on the solution.
+         */
+        void compute_mesh_displacements_gmg ();
 
         /**
          * Set up the vector with initial displacements of the mesh
@@ -371,6 +437,11 @@ namespace aspect
          * Calculate the velocity of the mesh for ALE corrections.
          */
         void interpolate_mesh_velocity ();
+
+        /**
+         * Update the mesh deformation for the multigrid levels.
+         */
+        void update_multilevel_deformation ();
 
         /**
          * Reference to the Simulator object to which a MeshDeformationHandler
@@ -491,7 +562,41 @@ namespace aspect
          */
         std::set<types::boundary_id> free_surface_boundary_indicators;
 
+        /**
+         * The set of boundary indicators for which the mesh deformation
+         * objects need surface stabilization.
+         */
+        std::set<types::boundary_id> boundary_indicators_requiring_stabilization;
+
         bool include_initial_topography;
+
+        /**
+         * Stabilization parameter for the free surface. Should be between
+         * zero and one. A value of zero means no stabilization.  See Kaus
+         * et. al. 2010 for more details.
+         */
+        double surface_theta;
+
+        /**
+         * If required, store a mapping for each multigrid level.
+         */
+        MGLevelObject<std::unique_ptr<Mapping<dim>>> level_mappings;
+
+        /**
+         * One vector on each multigrid level for the mesh displacement used in the mapping.
+         */
+        MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> level_displacements;
+
+        /**
+         * Multigrid transfer operator for the displacements
+         */
+        MGTransferMatrixFree<dim, double> mg_transfer;
+
+
+        /**
+         * Multigrid level constraints for the displacements
+         */
+        MGConstrainedDoFs mg_constrained_dofs;
 
         friend class Simulator<dim>;
         friend class SimulatorAccess<dim>;
@@ -505,10 +610,8 @@ namespace aspect
     bool
     MeshDeformationHandler<dim>::has_matching_mesh_deformation_object () const
     {
-      for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim>>>>::iterator boundary_id
-           = mesh_deformation_objects.begin();
-           boundary_id != mesh_deformation_objects.end(); ++boundary_id)
-        for (const auto &p : boundary_id->second)
+      for (const auto &object_iterator : mesh_deformation_objects)
+        for (const auto &p : object_iterator.second)
           if (Plugins::plugin_type_matches<MeshDeformationType>(*p))
             return true;
 
@@ -529,20 +632,15 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "mesh deformation in the input file."));
 
-      for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim>>>>::iterator boundary_id
-           = mesh_deformation_objects.begin();
-           boundary_id != mesh_deformation_objects.end(); ++boundary_id)
-        {
-          typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator mesh_def;
-          for (const auto &p : boundary_id->second)
-            {
-              if (Plugins::plugin_type_matches<MeshDeformationType>(*p))
-                return Plugins::get_plugin_as_type<MeshDeformationType>(*p);
-              else
-                // We will never get here, because we had the Assert above. Just to avoid warnings.
-                return Plugins::get_plugin_as_type<MeshDeformationType>(*(*mesh_def));
-            }
-        }
+      for (const auto &object_iterator : mesh_deformation_objects)
+        for (const auto &p : object_iterator.second)
+          if (Plugins::plugin_type_matches<MeshDeformationType>(*p))
+            return Plugins::get_plugin_as_type<MeshDeformationType>(*p);
+
+      typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator mesh_def;
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<MeshDeformationType>(*(*mesh_def));
+
     }
 
 
@@ -571,11 +669,11 @@ namespace aspect
   namespace ASPECT_REGISTER_MESH_DEFORMATION_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::MeshDeformation::MeshDeformationHandler<2>::register_mesh_deformation, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::MeshDeformation::MeshDeformationHandler<2>::register_mesh_deformation, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::MeshDeformation::MeshDeformationHandler<3>::register_mesh_deformation, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::MeshDeformation::MeshDeformationHandler<3>::register_mesh_deformation, \
+                                name, description); \
   }
   }
 }

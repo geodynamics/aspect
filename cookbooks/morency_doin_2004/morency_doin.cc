@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -124,14 +124,6 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    MorencyDoin<dim>::
-    reference_viscosity () const
-    {
-      return ref_visc;
-    }
-
-    template <int dim>
     bool
     MorencyDoin<dim>::
     is_compressible () const
@@ -184,8 +176,6 @@ namespace aspect
           prm.declare_entry ("Cohesive strength of rocks at the surface", "117.", Patterns::Double(0.), "($\\tau_0$). Units: \\si{\\pascal}");
           prm.declare_entry ("Reference temperature", "293.", Patterns::Double(0.), "For calculating density by thermal expansivity. Units: \\si{\\kelvin}");
           prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::Double(0.), "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}");
-
-          prm.declare_entry ("Reference viscosity", "1e22", Patterns::Double(0.), "Reference viscosity for nondimensionalization.");
         }
         prm.leave_subsection();
       }
@@ -214,8 +204,6 @@ namespace aspect
           tau_0 = prm.get_double ("Cohesive strength of rocks at the surface");
           min_strain_rate = prm.get_double("Minimum strain rate");
           reference_T = prm.get_double("Reference temperature");
-
-          ref_visc = prm.get_double ("Reference viscosity");
 
           std::vector<double> x_values;
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -149,8 +149,7 @@ namespace aspect
          * Destructor. Does nothing but is virtual so that derived classes
          * destructors are also virtual.
          */
-        virtual ~MeltFractionModel ()
-        {};
+        virtual ~MeltFractionModel () = default;
     };
 
     /**
@@ -261,7 +260,7 @@ namespace aspect
      * the case of melt migration on a single cell.
      */
     template <int dim>
-    class MeltAdvectionSystem : public MeltInterface<dim>
+    class MeltAdvectionSystem : public MeltInterface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>
     {
       public:
         void

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -119,11 +119,6 @@ namespace aspect
           return false;
         }
 
-        virtual double reference_viscosity() const
-        {
-          return 1;
-        }
-
         void
         parse_parameters(ParameterHandler &/*prm*/)
         {
@@ -162,11 +157,6 @@ namespace aspect
         virtual bool is_compressible() const
         {
           return false;
-        }
-
-        virtual double reference_viscosity() const
-        {
-          return 1;
         }
 
         void
@@ -239,7 +229,7 @@ namespace aspect
 
         virtual
         std::vector<std::pair<std::string, unsigned int>>
-                                                       get_property_information() const
+        get_property_information() const
         {
           std::vector<std::pair<std::string,unsigned int>> property_information;
 

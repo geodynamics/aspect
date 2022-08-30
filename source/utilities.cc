@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -48,9 +48,14 @@
 #include <locale>
 #include <string>
 #include <sys/stat.h>
+#include <iostream>
+#include <regex>
 
 #include <boost/math/special_functions/spherical_harmonic.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
+#include <boost/iostreams/copy.hpp>
 
 namespace aspect
 {
@@ -60,6 +65,155 @@ namespace aspect
    */
   namespace Utilities
   {
+    namespace internal
+    {
+      namespace MPI
+      {
+        // --------------------------------------------------------------------
+        // The following is copied from deal.II's mpi.templates.h file.
+        // We should instead import it from deal.II's header files directly
+        // if that information is made available via one of the existing .h
+        // files.
+        // --------------------------------------------------------------------
+#ifdef DEAL_II_WITH_MPI
+        /**
+         * Return the corresponding MPI data type id for the argument given.
+         */
+        inline MPI_Datatype
+        mpi_type_id(const bool *)
+        {
+#  if DEAL_II_MPI_VERSION_GTE(2, 2)
+          return MPI_CXX_BOOL;
+#  else
+          return MPI_C_BOOL;
+#  endif
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const char *)
+        {
+          return MPI_CHAR;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const signed char *)
+        {
+          return MPI_SIGNED_CHAR;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const short *)
+        {
+          return MPI_SHORT;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const int *)
+        {
+          return MPI_INT;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const long int *)
+        {
+          return MPI_LONG;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned char *)
+        {
+          return MPI_UNSIGNED_CHAR;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned short *)
+        {
+          return MPI_UNSIGNED_SHORT;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned int *)
+        {
+          return MPI_UNSIGNED;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned long int *)
+        {
+          return MPI_UNSIGNED_LONG;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned long long int *)
+        {
+          return MPI_UNSIGNED_LONG_LONG;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const float *)
+        {
+          return MPI_FLOAT;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const double *)
+        {
+          return MPI_DOUBLE;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const long double *)
+        {
+          return MPI_LONG_DOUBLE;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const std::complex<float> *)
+        {
+          return MPI_COMPLEX;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const std::complex<double> *)
+        {
+          return MPI_DOUBLE_COMPLEX;
+        }
+#endif
+      }
+    }
+
+
+
     template <typename T>
     Table<2,T>
     parse_input_table (const std::string &input_string,
@@ -90,6 +244,8 @@ namespace aspect
 
       return input_table;
     }
+
+
 
     namespace
     {
@@ -186,16 +342,25 @@ namespace aspect
           {
             // No Patterns matches were found!
             AssertThrow (false,
-                         ExcMessage ("The required format for property <"
+                         ExcMessage ("The string for property <"
                                      + property_name
-                                     + "> was not found. Specify a comma separated "
-                                     + "list of `<double>' or `<key1> : <double>|<double>|..., "
-                                     + "<key2> : <double>|... , ... '."));
+                                     + "> does not have the expected format. "
+                                     + "Check that the string is either a "
+                                     + "comma separated list of `<double>' or "
+                                     + "`<key1> : <double>|<double>|..., "
+                                     + "<key2> : <double>|... , ... '. "
+                                     + "If the string looks correct, "
+                                     + "it is likely that the length of the "
+                                     + "list of keys passed to "
+                                     + "parse_map_to_double_array does not "
+                                     + "match the length of the "
+                                     + "comma separated property list."));
           }
 
         return parsed_map;
       }
     }
+
 
 
     std::vector<double>
@@ -367,6 +532,7 @@ namespace aspect
     }
 
 
+
     /**
     * This is an internal deal.II function stolen from dof_tools.cc
     *
@@ -402,6 +568,7 @@ namespace aspect
 
       return local_component_association;
     }
+
 
 
     template <int dim>
@@ -514,6 +681,8 @@ namespace aspect
         return ecoord;
       }
 
+
+
       template <int dim>
       std::array<double,dim>
       cartesian_to_spherical_coordinates(const Point<dim> &position)
@@ -533,6 +702,8 @@ namespace aspect
           }
         return scoord;
       }
+
+
 
       template <int dim>
       Point<dim>
@@ -563,6 +734,8 @@ namespace aspect
         return ccoord;
       }
 
+
+
       template <int dim>
       std::array<double,3>
       cartesian_to_ellipsoidal_coordinates(const Point<3> &x,
@@ -588,6 +761,8 @@ namespace aspect
         return phi_theta_d;
       }
 
+
+
       template <int dim>
       Point<3>
       ellipsoidal_to_cartesian_coordinates(const std::array<double,3> &phi_theta_d,
@@ -606,6 +781,7 @@ namespace aspect
                          ((1 - eccentricity * eccentricity) * R_bar + d) * std::sin(theta));
 
       }
+
 
 
       template <int dim>
@@ -677,9 +853,9 @@ namespace aspect
 
         return Coordinates::invalid;
       }
-
-
     }
+
+
 
     template <int dim>
     bool
@@ -781,6 +957,8 @@ namespace aspect
       return (wn != 0);
     }
 
+
+
     template <int dim>
     double
     signed_distance_to_polygon(const std::vector<Point<2>> &point_list,
@@ -818,7 +996,7 @@ namespace aspect
 
       for (unsigned int i = 0; i < n_poly_points; ++i)
         {
-          const std::array<Point<2>,2 > list = {{point_list[i], shifted_point_list[i]}};
+          const std::array<Point<2>,2> list = {{point_list[i], shifted_point_list[i]}};
           distances[i] = distance_to_line(list, point);
         }
 
@@ -826,8 +1004,10 @@ namespace aspect
       return *std::min_element(distances.begin(),distances.end()) * sign;
     }
 
+
+
     double
-    distance_to_line(const std::array<dealii::Point<2>,2 > &point_list,
+    distance_to_line(const std::array<dealii::Point<2>,2> &point_list,
                      const dealii::Point<2> &point)
     {
 
@@ -872,6 +1052,8 @@ namespace aspect
       const Point<2> point_on_segment = point_list[0] + (c1/c2) * vector_segment;
       return (Tensor<1,2> (point - point_on_segment)).norm();
     }
+
+
 
     template <int dim>
     std::array<Tensor<1,dim>,dim-1>
@@ -934,6 +1116,98 @@ namespace aspect
     }
 
 
+
+    Tensor<2,3>
+    rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
+                               const double rotation_angle)
+    {
+      Tensor<2,3> rotation_matrix;
+      rotation_matrix[0][0] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[0] + std::cos(rotation_angle);
+      rotation_matrix[0][1] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[1] - rotation_axis[2] * std::sin(rotation_angle);
+      rotation_matrix[0][2] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[2] + rotation_axis[1] * std::sin(rotation_angle);
+      rotation_matrix[1][0] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[0] + rotation_axis[2] * std::sin(rotation_angle);
+      rotation_matrix[1][1] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[1] + std::cos(rotation_angle);
+      rotation_matrix[1][2] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[2] - rotation_axis[0] * std::sin(rotation_angle);
+      rotation_matrix[2][0] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[0] - rotation_axis[1] * std::sin(rotation_angle);
+      rotation_matrix[2][1] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[1] + rotation_axis[0] * std::sin(rotation_angle);
+      rotation_matrix[2][2] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[2] + std::cos(rotation_angle);
+      return rotation_matrix;
+    }
+
+
+
+    Tensor<2,3>
+    compute_rotation_matrix_for_slice (const Tensor<1,3> &point_one,
+                                       const Tensor<1,3> &point_two)
+    {
+      AssertThrow(point_one.norm() > std::numeric_limits<double>::min()
+                  && point_two.norm() > std::numeric_limits<double>::min(),
+                  ExcMessage("The points that are used to define the slice that "
+                             "should be rotated onto the x-y-plane can not lie "
+                             "at the origin of the coordinate system."));
+
+      // Set up the normal vector of an unrotated 2D spherical shell
+      // that by default lies in the x-y plane.
+      const Tensor<1,3> unrotated_normal_vector ({0.0,0.0,1.0});
+
+      // Compute the normal vector of the plane that contains
+      // the origin and the two points specified as the function arguments.
+      Tensor<1,3> rotated_normal_vector = cross_product_3d(point_one, point_two);
+
+      AssertThrow(rotated_normal_vector.norm() > std::numeric_limits<double>::min(),
+                  ExcMessage("The points that are used to define the slice that "
+                             "should be rotated onto the x-y-plane can not lie "
+                             "along the line that also goes through the origin "
+                             "of the coordinate system."));
+
+      rotated_normal_vector /= rotated_normal_vector.norm();
+
+      Tensor<2,3> rotation_matrix ({{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}});
+
+      // Calculate the crossing line of the two normals,
+      // which will be the rotation axis to transform the one
+      // normal into the other
+      Tensor<1,3> rotation_axis = cross_product_3d(unrotated_normal_vector, rotated_normal_vector);
+
+      // If the normal vector of the slice already points in z-direction, we do not have to
+      // apply the first rotation.
+      if (rotation_axis.norm() > std::numeric_limits<double>::min())
+        {
+          rotation_axis /= rotation_axis.norm();
+
+          // Calculate the rotation angle from the inner product rule
+          const double rotation_angle = std::acos(rotated_normal_vector * unrotated_normal_vector);
+          rotation_matrix = rotation_matrix_from_axis(rotation_axis, rotation_angle);
+        }
+
+      // Now apply the rotation that will project point_one onto the known point
+      // (0,1,0).
+      const Tensor<1,3> normalized_point_one = point_one / point_one.norm();
+      const Tensor<1,3> rotated_point_one = transpose(rotation_matrix) * normalized_point_one;
+      const Tensor<1,3> final_point_one ({0.0,1.0,0.0});
+
+      const double second_rotation_angle = std::acos(rotated_point_one * final_point_one);
+      Tensor<1,3> second_rotation_axis = cross_product_3d(final_point_one, rotated_point_one);
+
+      // If point 1 is already located at (0,1,0) after the first rotation, we do not
+      // have to apply the second rotation.
+      if (second_rotation_axis.norm() > std::numeric_limits<double>::min())
+        {
+          second_rotation_axis /= second_rotation_axis.norm();
+          const Tensor<2,3> second_rotation_matrix = rotation_matrix_from_axis(second_rotation_axis, second_rotation_angle);
+
+          // The final rotation used for the model will be the combined
+          // rotation of the two operations above. This is achieved by a
+          // matrix multiplication of the rotation matrices.
+          // This concatenation of rotations is the reason for using a
+          // rotation matrix instead of a combined rotation_axis + angle.
+          rotation_matrix = rotation_matrix * second_rotation_matrix;
+        }
+      return rotation_matrix;
+    }
+
+
+
     std::pair<double,double> real_spherical_harmonic( const unsigned int l,
                                                       const unsigned int m,
                                                       const double theta,
@@ -956,6 +1230,7 @@ namespace aspect
     }
 
 
+
     bool
     fexists(const std::string &filename)
     {
@@ -965,6 +1240,7 @@ namespace aspect
       // success requires the file to exist and to be readable
       return static_cast<bool>(ifile);
     }
+
 
 
     bool
@@ -977,6 +1253,7 @@ namespace aspect
     }
 
 
+
     std::string
     read_and_distribute_file_content(const std::string &filename,
                                      const MPI_Comm &comm)
@@ -985,15 +1262,15 @@ namespace aspect
 
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
-          // set file size to an invalid size (signaling an error if we can not read it)
-          unsigned int filesize = numbers::invalid_unsigned_int;
+          std::size_t filesize;
 
           // Check to see if the prm file will be reading data from disk or
           // from a provided URL
           if (filename_is_url(filename))
             {
 #ifdef ASPECT_WITH_LIBDAP
-              libdap::Connect *url = new libdap::Connect(filename);
+              std::unique_ptr<libdap::Connect> url
+                = std::make_unique<libdap::Connect>(filename);
               libdap::BaseTypeFactory factory;
               libdap::DataDDS dds(&factory);
               libdap::DAS das;
@@ -1049,9 +1326,7 @@ namespace aspect
               std::vector<std::string> points;
               for (libdap::AttrTable::Attr_iter i = das.var_begin(); i != das.var_end(); i++)
                 {
-                  libdap::AttrTable *table;
-
-                  table = das.get_table(i);
+                  libdap::AttrTable *table = das.get_table(i);
                   if (table->get_attr("POINTS") != "")
                     points.push_back(table->get_attr("POINTS"));
                   if (table->get_attr("points") != "")
@@ -1065,7 +1340,7 @@ namespace aspect
               urlString << "# POINTS:";
               for (unsigned int i = 0; i < points.size(); i++)
                 {
-                  urlString << " " << points[i];
+                  urlString << ' ' << points[i];
                 }
               urlString << "\n";
 
@@ -1078,19 +1353,23 @@ namespace aspect
                   for (unsigned int j = 0; j < columns.size(); j++)
                     {
                       urlString << columns[j][i];
-                      urlString << " ";
+                      urlString << ' ';
                     }
                   urlString << "\n";
                 }
 
               data_string = urlString.str();
               filesize = data_string.size();
-              delete url;
+
 #else // ASPECT_WITH_LIBDAP
 
-              // broadcast failure state, then throw
-              const int ierr = MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
-              AssertThrowMPI(ierr);
+              // Broadcast failure state, then throw. We signal the failure by
+              // setting the file size to an invalid size, then trigger an assert.
+              {
+                std::size_t invalid_filesize = numbers::invalid_size_type;
+                const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
+                AssertThrowMPI(ierr);
+              }
               AssertThrow(false,
                           ExcMessage(std::string("Reading of file ") + filename + " failed. " +
                                      "Make sure you have the dependencies for reading a url " +
@@ -1100,33 +1379,43 @@ namespace aspect
             }
           else
             {
-              std::ifstream filestream(filename.c_str());
+              std::ifstream filestream;
+              const bool filename_ends_in_gz = std::regex_search(filename, std::regex("\\.gz$"));
+              if (filename_ends_in_gz == true)
+                filestream.open(filename.c_str(), std::ios_base::in | std::ios_base::binary);
+              else
+                filestream.open(filename.c_str());
 
               if (!filestream)
                 {
                   // broadcast failure state, then throw
-                  const int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+                  std::size_t invalid_filesize = numbers::invalid_size_type;
+                  const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
                   AssertThrowMPI(ierr);
                   AssertThrow (false,
                                ExcMessage (std::string("Could not open file <") + filename + ">."));
-                  return data_string; // never reached
                 }
-
 
               // Read data from disk
               std::stringstream datastream;
-              filestream >> datastream.rdbuf();
 
-              if (!filestream.eof())
+              try
+                {
+                  boost::iostreams::filtering_istreambuf in;
+                  if (filename_ends_in_gz == true)
+                    in.push(boost::iostreams::gzip_decompressor());
+
+                  in.push(filestream);
+                  boost::iostreams::copy(in, datastream);
+                }
+              catch (const std::ios::failure &)
                 {
                   // broadcast failure state, then throw
-                  const int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+                  std::size_t invalid_filesize = numbers::invalid_size_type;
+                  const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
                   AssertThrowMPI(ierr);
                   AssertThrow (false,
-                               ExcMessage (std::string("Reading of file ") + filename + " finished " +
-                                           "before the end of file was reached. Is the file corrupted or "
-                                           "too large for the input buffer?"));
-                  return data_string; // never reached
+                               ExcMessage (std::string("Could not read file content from <") + filename + ">."));
                 }
 
               data_string = datastream.str();
@@ -1134,29 +1423,30 @@ namespace aspect
             }
 
           // Distribute data_size and data across processes
-          int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          int ierr = MPI_Bcast(&filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
           AssertThrowMPI(ierr);
-          ierr = MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
-          AssertThrowMPI(ierr);
+
+          big_mpi::broadcast(&data_string[0], filesize, 0, comm);
         }
       else
         {
           // Prepare for receiving data
-          unsigned int filesize;
-          int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          std::size_t filesize;
+          int ierr = MPI_Bcast(&filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
           AssertThrowMPI(ierr);
-          if (filesize == numbers::invalid_unsigned_int)
+          if (filesize == numbers::invalid_size_type)
             throw QuietException();
 
           data_string.resize(filesize);
 
           // Receive and store data
-          ierr = MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
-          AssertThrowMPI(ierr);
+          big_mpi::broadcast(&data_string[0], filesize, 0, comm);
         }
 
       return data_string;
     }
+
+
 
     int
     mkdirp(std::string pathname,const mode_t mode)
@@ -1187,6 +1477,8 @@ namespace aspect
 
       return 0;
     }
+
+
 
     void create_directory(const std::string &pathname,
                           const MPI_Comm &comm,
@@ -1234,6 +1526,8 @@ namespace aspect
         }
     }
 
+
+
 // tk does the cubic spline interpolation that can be used between different spherical layers in the mantle.
 // This interpolation is based on the script spline.h, which was downloaded from
 // http://kluge.in-chemnitz.de/opensource/spline/spline.h   //
@@ -1251,16 +1545,23 @@ namespace aspect
            * Constructor, see resize()
            */
           band_matrix(int dim, int n_u, int n_l);
+
+
+
           /**
            * Resize to a @p dim by @dim matrix with given number
            * of off-diagonals.
            */
           void resize(int dim, int n_u, int n_l);
 
+
+
           /**
            * Return the dimension of the matrix
            */
           int dim() const;
+
+
 
           /**
            * Number of off-diagonals above.
@@ -1270,6 +1571,8 @@ namespace aspect
             return m_upper.size()-1;
           }
 
+
+
           /**
            * Number of off-diagonals below.
            */
@@ -1278,40 +1581,57 @@ namespace aspect
             return m_lower.size()-1;
           }
 
+
+
           /**
            * Writeable access to element A(i,j), indices going from
            * i=0,...,dim()-1
            */
           double &operator () (int i, int j);
+
+
+
           /**
            * Read-only access
            */
           double operator () (int i, int j) const;
+
+
 
           /**
            * second diagonal (used in LU decomposition), saved in m_lower[0]
            */
           double &saved_diag(int i);
 
+
+
           /**
            * second diagonal (used in LU decomposition), saved in m_lower[0]
            */
           double saved_diag(int i) const;
+
+
 
           /**
            * LU-Decomposition of a band matrix
            */
           void lu_decompose();
 
+
+
           /**
            * solves Ux=y
            */
           std::vector<double> r_solve(const std::vector<double> &b) const;
 
+
+
           /**
            * solves Ly=b
            */
           std::vector<double> l_solve(const std::vector<double> &b) const;
+
+
 
           /**
            * Solve Ax=b and builds LU decomposition using lu_decompose()
@@ -1319,21 +1639,29 @@ namespace aspect
            */
           std::vector<double> lu_solve(const std::vector<double> &b,
                                        bool is_lu_decomposed=false);
+
+
+
         private:
           /**
            * diagonal and off-diagonals above
            */
-          std::vector< std::vector<double>> m_upper;
+          std::vector<std::vector<double>> m_upper;
+
           /**
            * diagonals below the diagonal
            */
-          std::vector< std::vector<double>> m_lower;
+          std::vector<std::vector<double>> m_lower;
       };
+
+
 
       band_matrix::band_matrix(int dim, int n_u, int n_l)
       {
         resize(dim, n_u, n_l);
       }
+
+
 
       void band_matrix::resize(int dim, int n_u, int n_l)
       {
@@ -1342,15 +1670,13 @@ namespace aspect
         assert(n_l >= 0);
         m_upper.resize(n_u+1);
         m_lower.resize(n_l+1);
-        for (size_t i=0; i<m_upper.size(); i++)
-          {
-            m_upper[i].resize(dim);
-          }
-        for (size_t i=0; i<m_lower.size(); i++)
-          {
-            m_lower[i].resize(dim);
-          }
+        for (auto &x : m_upper)
+          x.resize(dim);
+        for (auto &x : m_lower)
+          x.resize(dim);
       }
+
+
 
       int band_matrix::dim() const
       {
@@ -1364,6 +1690,8 @@ namespace aspect
           }
       }
 
+
+
       double &band_matrix::operator () (int i, int j)
       {
         int k = j - i;       // what band is the entry
@@ -1375,6 +1703,8 @@ namespace aspect
         else
           return m_lower[-k][i];
       }
+
+
 
       double band_matrix::operator () (int i, int j) const
       {
@@ -1388,17 +1718,23 @@ namespace aspect
           return m_lower[-k][i];
       }
 
+
+
       double band_matrix::saved_diag(int i) const
       {
         assert( (i >= 0) && (i < dim()) );
         return m_lower[0][i];
       }
 
+
+
       double &band_matrix::saved_diag(int i)
       {
         assert( (i >= 0) && (i < dim()) );
         return m_lower[0][i];
       }
+
+
 
       void band_matrix::lu_decompose()
       {
@@ -1440,6 +1776,8 @@ namespace aspect
           }
       }
 
+
+
       std::vector<double> band_matrix::l_solve(const std::vector<double> &b) const
       {
         assert( this->dim() == static_cast<int>(b.size()) );
@@ -1455,6 +1793,7 @@ namespace aspect
           }
         return x;
       }
+
 
 
       std::vector<double> band_matrix::r_solve(const std::vector<double> &b) const
@@ -1473,6 +1812,8 @@ namespace aspect
         return x;
       }
 
+
+
       std::vector<double> band_matrix::lu_solve(const std::vector<double> &b,
                                                 bool is_lu_decomposed)
       {
@@ -1488,6 +1829,7 @@ namespace aspect
         x = this->r_solve(y);
         return x;
       }
+
 
 
       void spline::set_points(const std::vector<double> &x,
@@ -1618,6 +1960,8 @@ namespace aspect
           }
       }
 
+
+
       double spline::operator() (double x) const
       {
         size_t n = m_x.size();
@@ -1645,8 +1989,8 @@ namespace aspect
           }
         return interpol;
       }
-
     } // namespace tk
+
 
 
     std::string
@@ -1657,6 +2001,8 @@ namespace aspect
                                           ASPECT_SOURCE_DIR);
     }
 
+
+
     std::string parenthesize_if_nonempty (const std::string &s)
     {
       if (s.size() > 0)
@@ -1665,13 +2011,14 @@ namespace aspect
         return "";
     }
 
+
+
     bool
     has_unique_entries (const std::vector<std::string> &strings)
     {
       const std::set<std::string> set_of_strings(strings.begin(),strings.end());
       return (set_of_strings.size() == strings.size());
     }
-
 
 
 
@@ -1978,7 +2325,7 @@ namespace aspect
       if ((strain_rate.norm() == 0) || (dviscosities_dstrain_rate.norm() == 0))
         return 1;
 
-      const double norm_a_b = std::sqrt((strain_rate*strain_rate)*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));;//std::sqrt((deviator(strain_rate)*deviator(strain_rate))*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));
+      const double norm_a_b = std::sqrt((strain_rate*strain_rate)*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));//std::sqrt((deviator(strain_rate)*deviator(strain_rate))*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));
       const double contract_b_a = (dviscosities_dstrain_rate*strain_rate);
       const double one_minus_part = 1 - (contract_b_a / norm_a_b);
       const double denom = one_minus_part * one_minus_part * norm_a_b;
@@ -2127,6 +2474,8 @@ namespace aspect
       return symmetrize(result);
     }
 
+
+
     template <int dim>
     NaturalCoordinate<dim>::NaturalCoordinate(Point<dim> &position,
                                               const GeometryModel::Interface<dim> &geometry_model)
@@ -2134,6 +2483,8 @@ namespace aspect
       coordinate_system = geometry_model.natural_coordinate_system();
       coordinates = geometry_model.cartesian_to_natural_coordinates(position);
     }
+
+
 
     template <int dim>
     NaturalCoordinate<dim>::NaturalCoordinate(const std::array<double, dim> &coord,
@@ -2148,6 +2499,16 @@ namespace aspect
     {
       return coordinates;
     }
+
+
+
+    template <int dim>
+    const std::array<double,dim> &NaturalCoordinate<dim>::get_coordinates() const
+    {
+      return coordinates;
+    }
+
+
 
     template <>
     std::array<double,1> NaturalCoordinate<2>::get_surface_coordinates() const
@@ -2176,6 +2537,8 @@ namespace aspect
 
       return coordinate;
     }
+
+
 
     template <>
     std::array<double,2> NaturalCoordinate<3>::get_surface_coordinates() const
@@ -2206,6 +2569,8 @@ namespace aspect
       return coordinate;
     }
 
+
+
     template <int dim>
     double NaturalCoordinate<dim>::get_depth_coordinate() const
     {
@@ -2226,6 +2591,7 @@ namespace aspect
 
       return 0;
     }
+
 
 
     template <int dim, typename VectorType>
@@ -2302,7 +2668,6 @@ namespace aspect
 
 
 
-
     template <int dim>
     VectorFunctionFromVelocityFunctionObject<dim>::
     VectorFunctionFromVelocityFunctionObject
@@ -2349,6 +2714,72 @@ namespace aspect
       const Tensor<1,dim> v = function_object(p);
       for (unsigned int d=0; d<dim; ++d)
         values(d) = v[d];
+    }
+
+
+
+    void linear_solver_failed(const std::string &solver_name,
+                              const std::string &function_name,
+                              const std::vector<SolverControl> &solver_controls,
+                              const std::exception &exc,
+                              const MPI_Comm &mpi_communicator,
+                              const std::string &output_filename)
+    {
+      if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
+        {
+          std::ostringstream exception_message;
+          exception_message << std::scientific
+                            << "The " + solver_name
+                            << " in " + function_name
+                            << " did not converge. " << std::endl << std::endl;
+
+          if (solver_controls.front().last_step() != numbers::invalid_unsigned_int)
+            exception_message << "The initial residual was: "
+                              << solver_controls.front().initial_value() << std::endl;
+
+          if (solver_controls.back().last_step() != numbers::invalid_unsigned_int)
+            exception_message << "The final residual is: "
+                              << solver_controls.back().last_value() << std::endl;
+
+          exception_message << "The required residual for convergence is: "
+                            << solver_controls.front().tolerance() << std::endl;
+
+          if (output_filename != "")
+            {
+              // output solver history
+              std::ofstream f((output_filename).c_str());
+
+              for (const auto &solver_control: solver_controls)
+                {
+                  // Skip the output if no iterations were run for this solver
+                  if (solver_control.last_step() == numbers::invalid_unsigned_int)
+                    continue;
+
+                  // Add an empty line between solvers
+                  if (&solver_control != &(solver_controls.front()))
+                    f << std::endl;
+
+                  unsigned int j=0;
+                  for (const auto &residual: solver_control.get_history_data())
+                    f << j++ << ' ' << residual << std::endl;
+                }
+
+              f.close();
+
+              exception_message << "See " << output_filename
+                                << " for the full convergence history." << std::endl;
+            }
+
+          exception_message << std::endl
+                            << "The solver reported the following error:"
+                            << std::endl;
+          exception_message << exc.what();
+
+          AssertThrow (false,
+                       ExcMessage (exception_message.str()));
+        }
+      else
+        throw QuietException();
     }
 
 

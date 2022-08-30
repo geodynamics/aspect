@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -51,7 +51,7 @@ namespace aspect
            * Destructor. Made virtual so that derived classes can be created
            * and destroyed through pointers to the base class.
            */
-          virtual ~Interface ();
+          virtual ~Interface () = default;
 
           /**
            * Initialization function. This function is called once at the
@@ -199,7 +199,7 @@ namespace aspect
       register_particle_integrator (const std::string &name,
                                     const std::string &description,
                                     void (*declare_parameters_function) (ParameterHandler &),
-                                    Interface<dim> *(*factory_function) ());
+                                    std::unique_ptr<Interface<dim>> (*factory_function) ());
 
       /**
        * A function that given the name of a model returns a pointer to an
@@ -212,7 +212,7 @@ namespace aspect
        * @ingroup ParticleIntegrators
        */
       template <int dim>
-      Interface<dim> *
+      std::unique_ptr<Interface<dim>>
       create_particle_integrator (ParameterHandler &prm);
 
 
@@ -252,11 +252,11 @@ namespace aspect
   namespace ASPECT_REGISTER_PARTICLE_INTEGRATOR_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::Particle::Integrator::register_particle_integrator<2>, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::Particle::Integrator::register_particle_integrator<2>, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::Particle::Integrator::register_particle_integrator<3>, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::Particle::Integrator::register_particle_integrator<3>, \
+                                name, description); \
   }
     }
   }

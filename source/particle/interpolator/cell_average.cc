@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -33,10 +33,10 @@ namespace aspect
     {
       template <int dim>
       std::vector<std::vector<double>>
-                                    CellAverage<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                                                           const std::vector<Point<dim>> &positions,
-                                                                           const ComponentMask &selected_properties,
-                                                                           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+      CellAverage<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
+                                             const std::vector<Point<dim>> &positions,
+                                             const ComponentMask &selected_properties,
+                                             const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
 
@@ -97,6 +97,9 @@ namespace aspect
             unsigned int non_empty_neighbors = 0;
             for (unsigned int i=0; i<neighbors.size(); ++i)
               {
+                // Only recursively evaluate with cells whose particles can be accessed safely.
+                if (!neighbors[i]->is_locally_owned())
+                  continue;
                 // Only recursively call this function if the neighbor cell contains
                 // particles (else we end up in an endless recursion)
                 if (particle_handler.n_particles_in_cell(neighbors[i]) == 0)

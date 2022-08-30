@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -19,6 +19,7 @@
  */
 
 #include <aspect/particle/integrator/euler.h>
+#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {
@@ -26,10 +27,6 @@ namespace aspect
   {
     namespace Integrator
     {
-      /**
-       * Euler scheme integrator, where $y_{n+1} = y_n + \\Delta t\\, v(y_n)$.
-       * This requires only one step per integration, and doesn't involve any extra data.
-       */
       template <int dim>
       void
       Euler<dim>::local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
@@ -43,13 +40,19 @@ namespace aspect
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
 
+        const bool geometry_has_periodic_boundary = (this->get_geometry_model().get_periodic_boundary_pairs().size() != 0);
         typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
 
         for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
              it != end_particle; ++it, ++old_velocity)
           {
             const Point<dim> loc = it->get_location();
-            it->set_location(loc + dt * (*old_velocity));
+            Point<dim> new_location = loc + dt * (*old_velocity);
+
+            if (geometry_has_periodic_boundary)
+              this->get_geometry_model().adjust_positions_for_periodicity(new_location);
+
+            it->set_location(new_location);
           }
       }
     }

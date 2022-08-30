@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -28,7 +28,7 @@ namespace aspect
   {
     template <int dim>
     AsciiData<dim>::AsciiData ()
-    {}
+      = default;
 
 
     template <int dim>
@@ -57,7 +57,7 @@ namespace aspect
       const double pressure = Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
                                                                                     position,
                                                                                     0);
-      return -pressure * normal_vector;;
+      return -pressure * normal_vector;
     }
 
 

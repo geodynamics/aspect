@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -96,7 +96,7 @@ namespace aspect
       {
         material_inputs.position[0] = particle->get_location();
 
-#if DEAL_II_VERSION_GTE(10,0,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
         material_inputs.current_cell = typename DoFHandler<dim>::active_cell_iterator(*particle->get_surrounding_cell(),
                                                                                       &(this->get_dof_handler()));
 #else
@@ -146,7 +146,7 @@ namespace aspect
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
-                                                     ElasticStress<dim>::get_property_information() const
+      ElasticStress<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
 

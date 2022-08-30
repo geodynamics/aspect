@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+ Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -44,10 +44,10 @@ namespace aspect
            * given positions.
            */
           std::vector<std::vector<double>>
-                                        properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                                             const std::vector<Point<dim>> &positions,
-                                                             const ComponentMask &selected_properties,
-                                                             const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const override;
+          properties_at_points(const ParticleHandler<dim> &particle_handler,
+                               const std::vector<Point<dim>> &positions,
+                               const ComponentMask &selected_properties,
+                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const override;
 
           // avoid -Woverloaded-virtual:
           using Interface<dim>::properties_at_points;

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -266,21 +266,25 @@ namespace aspect
         // center is less than 1.e-5 of the distance between vertices (as
         // measured by the minimum distance from any of the other vertices
         // to the first vertex), then we call this a horizontal face.
-        constexpr unsigned int n_vertices = GeometryInfo<dim>::vertices_per_face;
-        std::array<double, n_vertices>     distances_to_center;
-        std::array<double, n_vertices - 1> distances_to_first_vertex;
+        constexpr unsigned int max_n_vertices_per_face = (dim==2 ? 2 : 4);
+        std::array<double, max_n_vertices_per_face>     distances_to_center;
+        std::array<double, max_n_vertices_per_face - 1> distances_to_first_vertex;
         distances_to_center[0] = face->vertex(0).norm_square();
-        for (unsigned int i = 1; i < n_vertices; ++i)
+        for (unsigned int i = 1; i < face->n_vertices(); ++i)
           {
+            AssertIndexRange (i, distances_to_center.size());
+            AssertIndexRange (i-1, distances_to_first_vertex.size());
+
             distances_to_center[i] = face->vertex(i).norm_square();
             distances_to_first_vertex[i - 1] =
               (face->vertex(i) - face->vertex(0)).norm_square();
           }
         const auto minmax_distance =
-          std::minmax_element(distances_to_center.begin(), distances_to_center.end());
+          std::minmax_element(distances_to_center.begin(),
+                              distances_to_center.begin()+face->n_vertices());
         const auto min_distance_to_first_vertex =
           std::min_element(distances_to_first_vertex.begin(),
-                           distances_to_first_vertex.end());
+                           distances_to_first_vertex.begin()+face->n_vertices()-1);
 
         // So, if this is a "horizontal" face, then just compute the normal
         // vector as the one from the center to the point 'p', adequately
@@ -360,10 +364,10 @@ namespace aspect
 
       template <int dim>
       std::unique_ptr<Manifold<dim,dim>>
-                                      ChunkGeometry<dim>::
-                                      clone() const
+      ChunkGeometry<dim>::
+      clone() const
       {
-        return std_cxx14::make_unique<ChunkGeometry>(*this);
+        return std::make_unique<ChunkGeometry>(*this);
       }
 
 
@@ -551,8 +555,8 @@ namespace aspect
                   std::pair<std::string,types::boundary_id>("east",   3)
                 };
 
-            return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                             &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+            return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                             std::end(mapping));
           }
 
           case 3:
@@ -566,8 +570,8 @@ namespace aspect
                   std::pair<std::string,types::boundary_id>("north",  5)
                 };
 
-            return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                             &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+            return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                             std::end(mapping));
           }
         }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -81,13 +81,15 @@ namespace aspect
       // look up material properties
       MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
+      // compute the adiabat by referring to the Adiabatic conditions model
       in.position[0]=position;
       in.temperature[0]=this->get_adiabatic_conditions().temperature(position);
       in.pressure[0]=this->get_adiabatic_conditions().pressure(position);
       in.velocity[0]= Tensor<1,dim> ();
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         in.composition[0][c] = function->value(Point<1>(depth),c);
-      in.strain_rate.resize(0); // adiabat has strain=0.
+      in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties |
+                                MaterialModel::MaterialProperties::thermal_conductivity;
       this->get_material_model().evaluate(in, out);
 
       const double kappa = ( (this->get_parameters().formulation_temperature_equation ==
@@ -330,7 +332,7 @@ namespace aspect
               try
                 {
                   function
-                    = std_cxx14::make_unique<Functions::ParsedFunction<1>>(n_compositional_fields);
+                    = std::make_unique<Functions::ParsedFunction<1>>(n_compositional_fields);
                   function->parse_parameters (prm);
                 }
               catch (...)
@@ -364,6 +366,12 @@ namespace aspect
                                               "adiabatic",
                                               "Temperature is prescribed as an adiabatic "
                                               "profile with upper and lower thermal boundary layers, "
-                                              "whose ages are given as input parameters.")
+                                              "whose ages are given as input parameters. "
+                                              "Note that this plugin uses the 'Adiabatic conditions model' "
+                                              "to compute the adiabat. Thus, the results depend on variables "
+                                              "defined outside of this specific subsection; "
+                                              "e.g. the globally defined 'Adiabatic surface temperature', "
+                                              "and the variables defined in the 'Material model' section "
+                                              "including densities, heat capacities and thermal expansivities.")
   }
 }

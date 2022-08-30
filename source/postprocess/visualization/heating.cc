@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -38,8 +38,11 @@ namespace aspect
       Heating<dim>::
       Heating ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        Interface<dim>("W/m/m/m")
       {}
+
+
 
       template <int dim>
       std::vector<std::string>
@@ -49,11 +52,13 @@ namespace aspect
         std::vector<std::string> names = this->get_heating_model_manager().get_active_heating_model_names();
 
         // make the names valid names for output variables via DataOut
-        for (unsigned int i=0; i<names.size(); ++i)
-          std::replace(names[i].begin(), names[i].end(), ' ', '_');
+        for (auto &name : names)
+          std::replace(name.begin(), name.end(), ' ', '_');
 
         return names;
       }
+
+
 
       template <int dim>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
@@ -65,6 +70,8 @@ namespace aspect
                 DataComponentInterpretation::component_is_scalar);
       }
 
+
+
       template <int dim>
       UpdateFlags
       Heating<dim>::
@@ -72,6 +79,8 @@ namespace aspect
       {
         return update_gradients | update_values  | update_quadrature_points | update_JxW_values;
       }
+
+
 
       template <int dim>
       void
@@ -104,11 +113,7 @@ namespace aspect
 
         // we need the cell as input for the material model because some heating models
         // want to access the solution vector.
-#if DEAL_II_VERSION_GTE(9,3,0)
         in.current_cell = input_data.template get_cell<dim>();
-#else
-        in.current_cell = input_data.template get_cell<DoFHandler<dim>> ();
-#endif
 
         // we need an fevalues object to get the melt velocities
         std::vector<Point<dim>> quadrature_points(n_quadrature_points);
@@ -175,7 +180,9 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(Heating,
                                                   "heating",
                                                   "A visualization output object that generates output "
-                                                  "for all the heating terms used in the energy equation.")
+                                                  "for all the heating terms used in the energy equation."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\watt\\per\\cubic\\meter}.")
     }
   }
 }
