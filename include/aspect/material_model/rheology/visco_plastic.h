@@ -189,12 +189,6 @@ namespace aspect
           double min_strain_rate;
 
           /**
-           * Reference strain rate for the first non-linear iteration
-           * in the first time step.
-           */
-          double ref_strain_rate;
-
-          /**
            * Enumeration for selecting which viscosity averaging scheme to use.
            */
           MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
@@ -219,40 +213,14 @@ namespace aspect
            */
           bool use_elasticity;
 
-          /*
-           * Object for computing plastic stresses, viscosities, and additional outputs
-           */
-          Rheology::DruckerPrager<dim> drucker_prager_plasticity;
 
-          /*
-           * Input parameters for the drucker prager plasticity.
-           */
-          Rheology::DruckerPragerParameters drucker_prager_parameters;
-
-          /**
-           * Objects for computing viscous creep viscosities.
-           */
-          Rheology::DiffusionCreep<dim> diffusion_creep;
-          Rheology::DislocationCreep<dim> dislocation_creep;
-          std::unique_ptr<Rheology::FrankKamenetskii<dim>> frank_kamenetskii_rheology;
-
-          /*
-           * Input parameters for computing creep viscosities.
-           */
-          Rheology::DiffusionCreepParameters diffusion_parameters; 
-          Rheology::DislocationCreepParameters dislocation_parameters;
-
-          /**
-           * Whether to use the adiabatic pressure instead of the full pressure (default)
-           * when calculating creep (diffusion, dislocation, and peierls) viscosity.
-           * This may be helpful in models where the full pressure has an unusually
-           * large negative value arising from large negative dynamic pressure,
-           * resulting in solver convergence issue and in some cases a viscosity
-           * of zero.
-           */
-          bool use_adiabatic_pressure_in_creep;
-          
         private:
+
+          /**
+           * Reference strain rate for the first non-linear iteration
+           * in the first time step.
+           */
+          double ref_strain_rate;
 
           /**
            * Minimum and maximum viscosities used to improve the
@@ -291,7 +259,15 @@ namespace aspect
            */
           bool allow_negative_pressures_in_plasticity;
 
-
+          /**
+           * Whether to use the adiabatic pressure instead of the full pressure (default)
+           * when calculating creep (diffusion, dislocation, and peierls) viscosity.
+           * This may be helpful in models where the full pressure has an unusually
+           * large negative value arising from large negative dynamic pressure,
+           * resulting in solver convergence issue and in some cases a viscosity
+           * of zero.
+           */
+          bool use_adiabatic_pressure_in_creep;
 
           /**
            * List of exponents controlling the behaviour of the stress limiter
@@ -304,7 +280,12 @@ namespace aspect
            */
           double adiabatic_temperature_gradient_for_viscosity;
 
-          
+          /**
+           * Objects for computing viscous creep viscosities.
+           */
+          Rheology::DiffusionCreep<dim> diffusion_creep;
+          Rheology::DislocationCreep<dim> dislocation_creep;
+          std::unique_ptr<Rheology::FrankKamenetskii<dim>> frank_kamenetskii_rheology;
 
           /**
            * Whether to include Peierls creep in the constitutive formulation.
@@ -322,6 +303,16 @@ namespace aspect
            * viscoelastic viscosity or plastic viscosity.
            */
           Rheology::ConstantViscosityPrefactors<dim> constant_viscosity_prefactors;
+
+          /*
+           * Object for computing plastic stresses, viscosities, and additional outputs
+           */
+          Rheology::DruckerPrager<dim> drucker_prager_plasticity;
+
+          /*
+           * Input parameters for the drucker prager plasticity.
+           */
+          Rheology::DruckerPragerParameters drucker_prager_parameters;
 
       };
     }
