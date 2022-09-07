@@ -96,6 +96,11 @@ namespace aspect
        * The current friction angle.
        */
       std::vector<double> current_friction_angles;
+
+      /**
+       * The current cohesion.
+       */
+      std::vector<double> current_cohesions;
     };
 
     namespace Rheology
@@ -174,14 +179,12 @@ namespace aspect
            * MaterialModelOutputs object that is handed over, if it exists.
            * Does nothing otherwise.
            */
-          void fill_plastic_outputs (const unsigned int point_index,
-                                     const std::vector<double> &volume_fractions,
-                                     const bool plastic_yielding,
-                                     const MaterialModel::MaterialModelInputs<dim> &in,
-                                     MaterialModel::MaterialModelOutputs<dim> &out,
-                                     const std::vector<double> &phase_function_values = std::vector<double>(),
-                                     const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
-
+          void fill_plastic_outputs(const unsigned int point_index,
+                                    const std::vector<double> &volume_fractions,
+                                    const bool plastic_yielding,
+                                    const MaterialModel::MaterialModelInputs<dim> &in,
+                                    MaterialModel::MaterialModelOutputs<dim> &out,
+                                    const IsostrainViscosities &isostrain_viscosities) const;
 
           /**
            * Minimum strain rate used to stabilize the strain rate dependent rheology.

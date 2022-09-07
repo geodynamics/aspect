@@ -219,13 +219,14 @@ namespace aspect
 
           // Compute the effective viscosity if requested and retrieve whether the material is plastically yielding
           bool plastic_yielding = false;
+          IsostrainViscosities isostrain_viscosities;
           if (in.requests_property(MaterialProperties::viscosity))
             {
               // Currently, the viscosities for each of the compositional fields are calculated assuming
               // isostrain amongst all compositions, allowing calculation of the viscosity ratio.
               // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
               // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
-              const IsostrainViscosities isostrain_viscosities =
+              isostrain_viscosities =
                 rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
 
               // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
@@ -238,8 +239,8 @@ namespace aspect
               // This avoids for example division by zero for harmonic averaging (as plastic_yielding
               // holds values that are either 0 or 1), but might not be consistent with the viscosity
               // averaging chosen.
-              std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(),volume_fractions.end());
-              plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(),max_composition)];
+              std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
+              plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(), max_composition)];
 
               // Compute viscosity derivatives if they are requested
               if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
@@ -255,7 +256,12 @@ namespace aspect
           rheology->strain_rheology.fill_reaction_outputs(in, i, rheology->min_strain_rate, plastic_yielding, out);
 
           // Fill plastic outputs if they exist.
-          rheology->fill_plastic_outputs(i,volume_fractions,plastic_yielding,in,out, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
+          // The values in isostrain_viscosities only make sense when the calculate_isostrain_viscosities function
+          // has been called. TODO check here for in.requests_property(MaterialProperties::viscosity) or
+          // in fill_plastic_outputs as is done now?
+          // TODO do we even need a separate function? We could compute the PlasticAdditionalOutputs here like
+          // the ElasticAdditionalOutputs.
+          rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
 
           if (rheology->use_elasticity)
             {
