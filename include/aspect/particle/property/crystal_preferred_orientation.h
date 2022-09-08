@@ -82,8 +82,8 @@ namespace aspect
        *
        * We store the same number of grains for all minerals (e.g. olivine and enstatite
        * grains), although their volume fractions may not be the same. This is because we need a minimum number
-       * of grains per tracer to perform reliable statistics on it. This minimum should be the same for both
-       * olivine and enstatite.
+       * of grains per tracer to perform reliable statistics on it. This minimum should be the same for all
+       * minerals.
        *
        * @ingroup ParticleProperties
        */
@@ -198,7 +198,6 @@ namespace aspect
 
           /**
            * Packs information from variables into the global particle data array. Intended for use by other parts of ASPECT.
-           * The parameters are explained in the general class documentation.
            * The parameters are explained in the general class documentation.
            */
           void
