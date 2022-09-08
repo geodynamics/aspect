@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2020 by the authors of the ASPECT code.
+ Copyright (C) 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -157,7 +157,7 @@ namespace aspect
           need_update () const;
 
           /**
-           * The CPO of late particles is initialized by interpolating from existing pariticles.
+           * The CPO of late particles is initialized by interpolating from existing particles.
            */
           InitializationModeForLateParticles
           late_initialization_mode () const;
@@ -340,7 +340,7 @@ namespace aspect
           unsigned int n_minerals;
 
           /**
-           * A vector containing the deformatation type selectors provided by the user.
+           * A vector containing the deformation type selectors provided by the user.
            * Should be one of the following: "Olivine: Karato 2008", "Olivine: A-fabric",
            * "Olivine: B-fabric", "Olivine: C-fabric", "Olivine: D-fabric", "Olivine: E-fabric",
            * "Enstatite" or "Passive".

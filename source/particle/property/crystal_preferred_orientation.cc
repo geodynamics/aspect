@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 by the authors of the ASPECT code.
+  Copyright (C) 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -330,7 +330,7 @@ namespace aspect
         // of grains per tracer to perform reliable statistics on it. This minimum is the same for all phases.
         // and enstatite.
         //
-        // Futhermore, for this plugin the following dim's are always 3. When using 2D an infinitely thin 3D domain is assumed.
+        // Furthermore, for this plugin the following dims are always 3. When using 2D an infinitely thin 3D domain is assumed.
         //
         // The rotation matrix is a direction cosine matrix, representing the orientation of the grain in the domain.
 
