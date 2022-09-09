@@ -224,6 +224,7 @@ namespace aspect
       }
 
 
+
       template <int dim, int spacedim>
       void compute_no_normal_flux_constraints_shell(const DoFHandler<dim,spacedim> &dof_handler,
                                                     const MGConstrainedDoFs        &mg_constrained_dofs,
@@ -303,6 +304,8 @@ namespace aspect
                         }
                 }
       }
+
+
 
       template <int dim>
       void compute_no_normal_flux_constraints_box (const DoFHandler<dim>    &dof,
@@ -1602,6 +1605,7 @@ namespace aspect
     MGTransferMatrixFree<dim,GMGNumberType> transfer;
     transfer.build(dof_handler_projection);
 
+    // Explicitly pick the version with template argument double to convert
     transfer.interpolate_to_mg(dof_handler_projection,
                                level_viscosity_vector,
                                active_viscosity_vector);
@@ -2841,13 +2845,17 @@ namespace aspect
               AffineConstraints<double> user_level_constraints;
               user_level_constraints.reinit(relevant_dofs);
 
-              internal::TangentialBoundaryFunctions::compute_no_normal_flux_constraints_shell(dof_handler_v,
-                                                                                              mg_constrained_dofs_A_block,
-                                                                                              mapping,
-                                                                                              level,
-                                                                                              0,
-                                                                                              no_flux_boundary,
-                                                                                              user_level_constraints);
+              const IndexSet &refinement_edge_indices =
+                mg_constrained_dofs_A_block.get_refinement_edge_indices(level);
+              dealii::VectorTools::compute_no_normal_flux_constraints_on_level(
+                dof_handler_v,
+                0,
+                no_flux_boundary,
+                user_level_constraints,
+                mapping,
+                refinement_edge_indices,
+                level);
+
               user_level_constraints.close();
               mg_constrained_dofs_A_block.add_user_constraints(level,user_level_constraints);
 
