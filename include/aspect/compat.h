@@ -22,9 +22,6 @@
 #define _aspect_compat_h
 
 #include <aspect/global.h>
-#include <deal.II/numerics/vector_tools.h>
-#include <deal.II/hp/fe_values.h>
-#include <deal.II/grid/manifold.h>
 // C++11 related includes.
 #include <array>
 #include <functional>
@@ -84,11 +81,10 @@ namespace big_mpi
 }
 
 
-#if DEAL_II_VERSION_GTE(9,5,0)
-
-using dealii::VectorTools::compute_no_normal_flux_constraints_on_level;
-
-#else
+#if !DEAL_II_VERSION_GTE(9,5,0)
+#include <deal.II/numerics/vector_tools.h>
+#include <deal.II/hp/fe_values.h>
+#include <deal.II/grid/manifold.h>
 namespace dealii
 {
   namespace VectorTools

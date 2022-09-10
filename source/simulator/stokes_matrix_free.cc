@@ -1605,7 +1605,6 @@ namespace aspect
     MGTransferMatrixFree<dim,GMGNumberType> transfer;
     transfer.build(dof_handler_projection);
 
-    // Explicitly pick the version with template argument double to convert
     transfer.interpolate_to_mg(dof_handler_projection,
                                level_viscosity_vector,
                                active_viscosity_vector);
