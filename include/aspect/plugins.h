@@ -326,9 +326,13 @@ namespace aspect
         // used to register a plugin, since we would then no
         // longer be able to identify the plugin
         for (const auto &p : *plugins)
-          Assert (std::get<0>(p) != name,
-                  ExcMessage ("A plugin with name <" + name + "> has "
-                              "already been registered!"));
+          {
+            Assert (std::get<0>(p) != name,
+                    ExcMessage ("A plugin with name <" + name + "> has "
+                                "already been registered!"));
+            (void)p;
+          }
+
 
         // now add one record to the list
         plugins->emplace_back (name,
