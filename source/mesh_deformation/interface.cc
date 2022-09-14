@@ -1060,14 +1060,17 @@ namespace aspect
             {
               AffineConstraints<double> user_level_constraints;
               user_level_constraints.reinit(relevant_dofs);
+              const IndexSet &refinement_edge_indices =
+                mg_constrained_dofs.get_refinement_edge_indices(level);
+              dealii::VectorTools::compute_no_normal_flux_constraints_on_level(
+                mesh_deformation_dof_handler,
+                0,
+                no_flux_boundary,
+                user_level_constraints,
+                mapping,
+                refinement_edge_indices,
+                level);
 
-              internal::TangentialBoundaryFunctions::compute_no_normal_flux_constraints_shell(mesh_deformation_dof_handler,
-                                                                                              mg_constrained_dofs,
-                                                                                              mapping,
-                                                                                              level,
-                                                                                              0,
-                                                                                              no_flux_boundary,
-                                                                                              user_level_constraints);
               user_level_constraints.close();
               mg_constrained_dofs.add_user_constraints(level,user_level_constraints);
 

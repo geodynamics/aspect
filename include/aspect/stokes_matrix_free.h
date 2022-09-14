@@ -56,7 +56,6 @@ namespace aspect
   {
     namespace TangentialBoundaryFunctions
     {
-
       template <int dim>
       void compute_no_normal_flux_constraints_box (const DoFHandler<dim>    &dof,
                                                    const types::boundary_id  bid,
