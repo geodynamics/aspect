@@ -47,7 +47,7 @@ namespace aspect
 
       enum class AdvectionMethod
       {
-        forward_euler, backward_euler, crank_nicolson
+        forward_euler, backward_euler
       };
 
       enum class CPODerivativeAlgorithm
@@ -75,10 +75,7 @@ namespace aspect
        *         2.2. rotation_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
        *                                      => 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
        *
-       * Last used data entry is n_minerals * (n_grains * 10 + 2). In case the Crank-Nicolson
-       * advection scheme is used, the derivative data is stored after the main data and each grain
-       * stores twice the amount of data. The last data entry in this case is:
-       * n_minerals * (n_grains * 10 + 2) + n_minerals * (n_grains * 10).
+       * Last used data entry is n_minerals * (n_grains * 10 + 2).
        *
        * We store the same number of grains for all minerals (e.g. olivine and enstatite
        * grains), although their volume fractions may not be the same. This is because we need a minimum number
@@ -181,36 +178,6 @@ namespace aspect
           std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const;
 
-
-          /**
-           * Unpacks data from the global particle data into variables. Intended for use by other parts of aspect.
-           * The parameters are explained in the general class documentation.
-           */
-          void
-          unpack_particle_data(const unsigned int cpo_index,
-                               const ArrayView<double> &data,
-                               std::vector<unsigned int> &deformation_type,
-                               std::vector<double> &volume_fraction_mineral,
-                               std::vector<std::vector<double>> &volume_fractions_mineral,
-                               std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral,
-                               std::vector<std::vector<double>> &volume_fractions_mineral_derivatives = {},
-                               std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral_derivatives = {}) const;
-
-          /**
-           * Packs information from variables into the global particle data array. Intended for use by other parts of ASPECT.
-           * The parameters are explained in the general class documentation.
-           */
-          void
-          pack_particle_data(const unsigned int cpo_data_position,
-                             const ArrayView<double> &data,
-                             std::vector<unsigned int> &deformation_type,
-                             std::vector<double> &volume_fraction_mineral,
-                             std::vector<std::vector<double>> &volume_fractions_mineral,
-                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral,
-                             std::vector<std::vector<double>> &volume_fractions_mineral_derivatives = {},
-                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral_derivatives = {}) const;
-
-
           /**
            * Computes the volume fraction and grain orientation derivatives of all the grains of a mineral.
            *
@@ -223,11 +190,11 @@ namespace aspect
            * @param ref_resolved_shear_stress is the reference resolved shear stress of the mineral.
            */
           std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
-          compute_derivatives(const std::vector<double> &volume_fractions,
-                              const std::vector<Tensor<2,3>> &rotation_matrices,
+          compute_derivatives(const unsigned int cpo_index,
+                              const ArrayView<double> &data,
+                              const unsigned int mineral_i,
                               const SymmetricTensor<2,3> &strain_rate,
                               const Tensor<2,3> &velocity_gradient_tensor,
-                              const double volume_fraction_mineral,
                               const std::array<double,4> &ref_resolved_shear_stress) const;
 
           /**
@@ -255,7 +222,93 @@ namespace aspect
           unsigned int
           get_number_of_minerals();
 
+          /**
+           * return a reference to the value in the data array representing the
+           * deformation type.
+           */
+          inline
+          double &ref_deformation_type(const unsigned int cpo_data_position,
+                                       const ArrayView<double> &data,
+                                       const unsigned int mineral_i) const
+          {
+            return data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)];
+          }
+
+          /**
+           * Return a reference to the value in the data array representing the
+           * volume fraction of a mineral.
+           */
+          inline
+          double &ref_volume_fraction_mineral(const unsigned int cpo_data_position,
+                                              const ArrayView<double> &data,
+                                              const unsigned int mineral_i) const
+          {
+            return data[cpo_data_position + 1 + mineral_i *(n_grains * 10 + 2)];
+          }
+
+          /**
+           * Return a reference to the value in the data array representing the
+           * volume fractions of a grain in a mineral.
+           */
+          inline
+          double &ref_volume_fractions_grains(const unsigned int cpo_data_position,
+                                              const ArrayView<double> &data,
+                                              const unsigned int mineral_i,
+                                              const unsigned int grain_i) const
+          {
+            return data[cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)];
+          }
+
+          /**
+           * Gets the rotation matrix for a grain in a mineral and store it in the
+           * tensor provided as an parameter.
+           */
+          inline
+          void get_rotation_matrix_grains(const unsigned int cpo_data_position,
+                                          const ArrayView<double> &data,
+                                          const unsigned int mineral_i,
+                                          const unsigned int grain_i,
+                                          Tensor<2,3> &rotation_matrix) const
+          {
+            for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
+              {
+                const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(i);
+                rotation_matrix[index] = data[cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2) + i];
+              }
+          }
+
+          /**
+           * Returns a reference to the entry in the data array which reprents
+           * the [i][j] index of the rotation matrix for the grain_i in mineral_i.
+           */
+          inline
+          double &ref_rotation_matrix_grains_indices(const unsigned int cpo_data_position,
+                                                     const ArrayView<double> &data,
+                                                     const unsigned int mineral_i,
+                                                     const unsigned int grain_i,
+                                                     const unsigned int i,
+                                                     const unsigned int j) const
+          {
+            return data[cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2) + Tensor<2,dim>::component_to_unrolled_index(TableIndices<2>(i,j))];
+          }
+
         private:
+          /**
+           * Stores the rotation matrix for a grain in a mineral in the data array.
+           */
+          inline
+          void set_rotation_matrix_grains(const unsigned int cpo_data_position,
+                                          const ArrayView<double> &data,
+                                          const unsigned int mineral_i,
+                                          const unsigned int grain_i,
+                                          const Tensor<2,3> &rotation_matrix) const
+          {
+            for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
+              {
+                const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(i);
+                data[cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2) + i] = rotation_matrix[index];
+              }
+          }
 
           /**
            * Computes a random rotation matrix.
@@ -274,10 +327,11 @@ namespace aspect
            * @param rotation_matrices are the current rotation matrices of the grains in a mineral.
            */
           double
-          advect_forward_euler(const double dt,
-                               const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives,
-                               std::vector<double> &volume_fractions,
-                               std::vector<Tensor<2,3>> &rotation_matrices) const;
+          advect_forward_euler(const unsigned int cpo_data_position,
+                               const ArrayView<double> &data,
+                               const unsigned int mineral_i,
+                               const double dt,
+                               const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives) const;
           /**
            * Updates the volume fractions and rotation matrices with a Backward Euler scheme:
            * $x_{t,n} = x_{t-1} + dt x_{t,n-1}  \frac{\partial x_t}{\partial t}$, where $n$ is
@@ -289,34 +343,11 @@ namespace aspect
            * @param rotation_matrices are the current rotation matrices of the grains in a mineral.
            */
           double
-          advect_backward_euler(const double dt,
-                                const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives,
-                                std::vector<double> &volume_fractions,
-                                std::vector<Tensor<2,3>> &rotation_matrices) const;
-
-          /**
-           * Updates the volume fractions and rotation matrices with a Crank-Nicolson scheme.
-           * $x_{t,n} = x_{t-1} + dt * 0.5 * (x_{t,n-1} * \frac{\partial x_{t-1}}{\partial t}
-           * + x_{t,n-1} * \frac{\partial x_{t}}{\partial t})$, where $n$ is the $n^{\text{th}}$
-           * iteration. The function returns the sum of the new volume fractions.
-           * @param dt is the timestep
-           * @param derivatives is a pair containing the derivatives for the volume fractions and
-           * orientations respectively.
-           * @param volume_fractions are the current volume fractions of the grains in a mineral.
-           * @param rotation_matrices are the current rotation matrices of the grains in a mineral.
-           * @param previous_volume_fraction_derivatives are the volume fraction derivatives from
-           * the previous timestep.
-           * @param previous_rotation_matrices_derivatives are the rotation matrices derivatives from
-           * the previous timestep.
-           */
-          double
-          advect_Crank_Nicolson(const double dt,
-                                const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives,
-                                std::vector<double> &volume_fractions,
-                                std::vector<Tensor<2,3>> &rotation_matrices,
-                                std::vector<double> &previous_volume_fraction_derivatives,
-                                std::vector<Tensor<2,3>> &previous_rotation_matrices_derivatives) const;
-
+          advect_backward_euler(const unsigned int cpo_data_position,
+                                const ArrayView<double> &data,
+                                const unsigned int mineral_i,
+                                const double dt,
+                                const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives) const;
 
 
           /**
