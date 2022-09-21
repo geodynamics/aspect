@@ -1,0 +1,3 @@
+New: The graphical output of a computation with mesh deformation can now be optionally done on the undeformed reference mesh ("set Output undeformed mesh = true") and the displacement can be written as a separate vector field ("set Output mesh displacement = true").
+<br>
+(Timo Heister, 2022/07/16)
