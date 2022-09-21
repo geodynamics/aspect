@@ -362,7 +362,7 @@ namespace aspect
           /**
            * Random number generator used for initalization of particles
            */
-          mutable boost::lagged_fibonacci44497 random_number_generator;
+          mutable boost::mt19937 random_number_generator;
           unsigned int random_number_seed;
 
           unsigned int n_grains;

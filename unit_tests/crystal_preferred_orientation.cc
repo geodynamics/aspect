@@ -344,25 +344,25 @@ TEST_CASE("CPO core: Spin tensor")
     CHECK(data[0] == Approx(-1.0));//isnan(data[0])); // default fabric type which is only computed on a update
     CHECK(data[1] == Approx(0.5)); // default volume fraction olivine
     CHECK(data[2] == Approx(0.2));
-    CHECK(data[3] == Approx(0.159063));
-    CHECK(data[4] == Approx(-0.11941));
-    CHECK(data[5] == Approx(0.9800204275));
-    CHECK(data[6] == Approx(-0.0888556));
-    CHECK(data[7] == Approx(-0.990362));
-    CHECK(data[8] == Approx(-0.1062486256));
-    CHECK(data[9] == Approx(0.983261702));
-    CHECK(data[10] == Approx(-0.0701800114));
-    CHECK(data[11] == Approx(-0.1681403917));
+    CHECK(data[3] == Approx(0.8794381492));
+    CHECK(data[4] == Approx(-0.4757482965));
+    CHECK(data[5] == Approx(-0.015877661));
+    CHECK(data[6] == Approx(-0.197154988));
+    CHECK(data[7] == Approx(-0.394402755));
+    CHECK(data[8] == Approx(0.8975390674));
+    CHECK(data[9] == Approx(-0.4332648756));
+    CHECK(data[10] == Approx(-0.7861997362));
+    CHECK(data[11] == Approx(-0.4406489786));
     CHECK(data[12] == Approx(0.2));
-    CHECK(data[13] == Approx(0.4095335744));
-    CHECK(data[14] == Approx(-0.3401753011));
-    CHECK(data[15] == Approx(0.8465004524));
-    CHECK(data[16] == Approx(0.7605716382));
-    CHECK(data[17] == Approx(0.639714977));
-    CHECK(data[18] == Approx(-0.1108852174));
-    CHECK(data[19] == Approx(-0.5037986052));
-    CHECK(data[20] == Approx(0.6892354553));
-    CHECK(data[21] == Approx(0.5207124471));
+    CHECK(data[13] == Approx(-0.911475687));
+    CHECK(data[14] == Approx(0.4113536692));
+    CHECK(data[15] == Approx(0.0004804047));
+    CHECK(data[16] == Approx(-0.3056521145));
+    CHECK(data[17] == Approx(-0.6780433033));
+    CHECK(data[18] == Approx(0.6684564786));
+    CHECK(data[19] == Approx(0.2752977604));
+    CHECK(data[20] == Approx(0.6091349914));
+    CHECK(data[21] == Approx(0.7437511045));
     CHECK(data[22] == Approx(0.2));
     CHECK(data[32] == Approx(0.2));
     CHECK(data[42] == Approx(0.2));
@@ -373,7 +373,7 @@ TEST_CASE("CPO core: Spin tensor")
     CHECK(data[74] == Approx(0.2));
     CHECK(data[84] == Approx(0.2));
     CHECK(data[94] == Approx(0.2));
-    CHECK(data[103] == Approx(-0.816855));
+    CHECK(data[103] == Approx(-0.0688278144));
 
     std::vector<double> volume_fractions(5,0.2);
     std::vector<dealii::Tensor<2,3>> rotation_matrices_minerals(5);
