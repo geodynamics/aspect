@@ -48,6 +48,11 @@ namespace aspect
         double activation_volume;
         double stress_exponent;
         double grain_size_exponent;
+
+	double wet_prefactor;
+	double wet_activation_energy;
+	double wet_activation_volume;
+	double water_fugacity_exponent;
       };
 
       template <int dim>
@@ -121,7 +126,7 @@ namespace aspect
         private:
 
           /**
-           * List of diffusion creep prefactors A.
+           * List of dry diffusion creep prefactors A_dry.
            */
           std::vector<double> prefactors_diffusion;
 
@@ -136,19 +141,44 @@ namespace aspect
           std::vector<double> grain_size_exponents_diffusion;
 
           /**
-           * List of diffusion creep activation energies E.
+           * List of dry diffusion creep activation energies E_dry.
            */
           std::vector<double> activation_energies_diffusion;
 
           /**
-           * List of diffusion creep activation volumes V.
+           * List of dry diffusion creep activation volumes V_dry.
            */
           std::vector<double> activation_volumes_diffusion;
+
+	  /**
+	   * List of wet diffusion creep activation volumes V_wet
+	   */
+	  std::vector<double> wet_activation_volumes_diffusion;
+
+	  /**
+	   * List of wet diffusion creep activation energies E_wet
+	   */
+	  std::vector<double> wet_activation_energies_diffusion;
+
+	  /**
+	   * List of wet diffusion creep prefactors A_wet.
+	   */
+	  std::vector<double> wet_prefactors_diffusion;
+
+	  /**
+	   * List of diffusion creep water fugacity exponents.
+	   */
+	  std::vector<double> water_fugacity_exponents_diffusion;
 
           /**
            * Diffusion creep grain size d.
            */
           double grain_size;
+
+	  /**
+	   * Whether to use water fugacity in the rheology
+	   */
+	  bool use_water_fugacity_diffusion;
       };
     }
   }
