@@ -79,7 +79,7 @@ $\rho\mathbf g$ can be found:
       -3z -10xyz
     \end{array}
   \right)
-  +1-2y)\beta \mu
+  +(1-2y)\beta \mu
   \left(
     \begin{array}{c}
       x+y+2xy^2+x^3 \\

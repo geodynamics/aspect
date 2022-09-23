@@ -43,8 +43,8 @@ compare favorably to the results of {cite:t}`schmalholz:2011` in
 {cite:t}`glerum:etal:2018,hillebrand:etal:2014` and the effect of viscosity and material averaging was
 explored in {cite}`glerum:etal:2018`.
 
-:::{admonition} TODO
-:class: error
+:::{figure-md} fig:slab_detachment_evolution
+<img src="results.*" alt="Screenshot"  width="85%"/>
 
-Figure fig:slab_detachment_evolution missing in the manual pdf. Not sure what its supposed to look like.
+Slab detachment benchmark: a,b) velocity and strain rate fields at $t=0$. c,d,e) and f,g,h) time evolution of the viscosity and slab composition fields at $t=0, 6, 12\text{ Myr}$.
 :::

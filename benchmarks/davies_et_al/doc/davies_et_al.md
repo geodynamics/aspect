@@ -10,8 +10,8 @@ being written) for a 2D spherical Earth that is nondimensionalized such that
 :name: tab:davies_et_al
 |                   |                                  |
 |:------------------|:---------------------------------|
-| $r_{\min}$ = 1.22 | $\left. T \right|_{r_{min}}$ = 1 |
-| $r_{\max}$ = 2.22 | $\left. T \right|_{r_{max}}$ = 0 |
+| $r_{\min}$ = 1.22 | $ T \|_{r_{min}} = 1$ |
+| $r_{\max}$ = 2.22 | $ T \|_{r_{max}} = 0$ |
 ```
 
 The benchmark is run for a series of approximations (Boussinesq, Extended
