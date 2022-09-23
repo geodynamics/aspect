@@ -54,30 +54,6 @@ namespace aspect
 
   namespace internal
   {
-    namespace TangentialBoundaryFunctions
-    {
-      template <int dim>
-      void compute_no_normal_flux_constraints_box (const DoFHandler<dim>    &dof,
-                                                   const types::boundary_id  bid,
-                                                   const unsigned int first_vector_component,
-                                                   MGConstrainedDoFs         &mg_constrained_dofs);
-      template <int dim>
-      void
-      add_constraint(const std::array<types::global_dof_index,dim> &dof_indices,
-                     const Tensor<1, dim> &constraining_vector,
-                     AffineConstraints<double> &constraints,
-                     const double inhomogeneity = 0);
-
-      template <int dim, int spacedim>
-      void compute_no_normal_flux_constraints_shell(const DoFHandler<dim,spacedim> &dof_handler,
-                                                    const MGConstrainedDoFs        &mg_constrained_dofs,
-                                                    const Mapping<dim> &mapping,
-                                                    const unsigned int level,
-                                                    const unsigned int first_vector_component,
-                                                    const std::set<types::boundary_id> &boundary_ids,
-                                                    AffineConstraints<double> &constraints);
-    }
-
     /**
      * Matrix-free operators must use deal.II defined vectors, while the rest of the ASPECT
      * software is based on Trilinos vectors. Here we define functions which copy between the

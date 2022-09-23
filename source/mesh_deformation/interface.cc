@@ -1025,19 +1025,6 @@ namespace aspect
       mg_constrained_dofs.make_zero_boundary_constraints(mesh_deformation_dof_handler,
                                                          zero_mesh_deformation_boundary_indicators);
 
-      {
-        // Handle no normal flux, copied from GMG Stokes solver.
-        const std::set<types::boundary_id> no_flux_boundary = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
-        if (!no_flux_boundary.empty() && !sim.geometry_model->has_curved_elements())
-          for (const auto bid : no_flux_boundary)
-            {
-              internal::TangentialBoundaryFunctions::compute_no_normal_flux_constraints_box(mesh_deformation_dof_handler,
-                                                                                            bid,
-                                                                                            0 /*first_vector_component*/,
-                                                                                            mg_constrained_dofs);
-            }
-      }
-
       mg_matrices.clear_elements();
       mg_matrices.resize(0, n_levels-1);
 
@@ -1056,7 +1043,7 @@ namespace aspect
 
           std::set<types::boundary_id> no_flux_boundary
             = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
-          if (!no_flux_boundary.empty() && sim.geometry_model->has_curved_elements())
+          if (!no_flux_boundary.empty())
             {
               AffineConstraints<double> user_level_constraints;
               user_level_constraints.reinit(relevant_dofs);
