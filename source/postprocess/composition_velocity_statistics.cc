@@ -19,7 +19,7 @@
 */
 
 
-#include "composition_velocity_statistics.h"
+#include <aspect/postprocess/composition_velocity_statistics.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 
@@ -81,23 +81,23 @@ namespace aspect
       std::vector<double> global_area_integral(local_area_integral.size());
       Utilities::MPI::sum(local_area_integral, this->get_mpi_communicator(), global_area_integral);
 
-      // compute the RMS velocity for each compositional field and for the slab
+      // compute the RMS velocity for each compositional field and for the selected compositonal fields combined
       std::vector<double> vrms_per_composition(local_area_integral.size());
-      double velocity_square_integral_slab = 0., area_integral_slab = 0.;
+      double velocity_square_integral_selected_fields = 0., area_integral_selected_fields = 0.;
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
           vrms_per_composition[c] = std::sqrt(global_velocity_square_integral[c]) /
                                     std::sqrt(global_area_integral[c]);
 
-          const std::vector<std::string>::iterator slab_it = std::find(slab_compositions.begin(), slab_compositions.end(), this->introspection().name_for_compositional_index(c));
-          if (slab_it != slab_compositions.end())
+          const std::vector<std::string>::iterator selected_field_it = std::find(selected_fields.begin(), selected_fields.end(), this->introspection().name_for_compositional_index(c));
+          if (selected_field_it != selected_fields.end())
             {
-              velocity_square_integral_slab += global_velocity_square_integral[c];
-              area_integral_slab += global_area_integral[c];
+              velocity_square_integral_selected_fields += global_velocity_square_integral[c];
+              area_integral_selected_fields += global_area_integral[c];
             }
         }
 
-      const double vrms_slab = std::sqrt(velocity_square_integral_slab) / std::sqrt(area_integral_slab);
+      const double vrms_selected_fields = std::sqrt(velocity_square_integral_selected_fields) / std::sqrt(area_integral_selected_fields);
 
       const std::string unit = (this->convert_output_to_years()) ? "m/year" : "m/s";
       const double time_scaling = (this->convert_output_to_years()) ? year_in_seconds : 1.0;
@@ -119,11 +119,11 @@ namespace aspect
             }
         }
 
-      // Also output the slab vrms
-      statistics.add_value("RMS velocity (" + unit + ") for slab ",
-                           time_scaling * vrms_slab);
+      // Also output the selected fields vrms
+      statistics.add_value("RMS velocity (" + unit + ") for the selected field ",
+                           time_scaling * vrms_selected_fields);
 
-      const std::string column = {"RMS velocity (" + unit + ") for slab "};
+      const std::string column = {"RMS velocity (" + unit + ") for the selected field "};
 
       statistics.set_precision(column, 8);
       statistics.set_scientific(column, true);
@@ -137,9 +137,9 @@ namespace aspect
                  << " " << unit;
           output << " // ";
         }
-      output << time_scaling *vrms_slab;
+      output << time_scaling *vrms_selected_fields;
 
-      return std::pair<std::string, std::string>("RMS velocity for compositions and slab:",
+      return std::pair<std::string, std::string>("RMS velocity for compositions and combined selected fields:",
                                                  output.str());
     }
 
@@ -153,10 +153,10 @@ namespace aspect
       {
         prm.enter_subsection("Composition velocity statistics");
         {
-          prm.declare_entry("Names of slab compositional fields", "",
+          prm.declare_entry("Names of selected compositional fields", "",
                             Patterns::List(Patterns::Anything()),
                             "A list of names for each of the compositional fields that "
-                            "makes up the subducting plate.");
+                            "you want to compute the combined RMS velocity for.");
         }
         prm.leave_subsection();
       }
@@ -173,12 +173,12 @@ namespace aspect
       {
         prm.enter_subsection("Composition velocity statistics");
         {
-          slab_compositions = Utilities::split_string_list(prm.get("Names of slab compositional fields"));
+          selected_fields = Utilities::split_string_list(prm.get("Names of selected compositional fields"));
 
-          AssertThrow((slab_compositions.size() > 0) &&
-                      (slab_compositions.size() <= this->n_compositional_fields()),
+          AssertThrow((selected_fields.size() > 0) &&
+                      (selected_fields.size() <= this->n_compositional_fields()),
                       ExcMessage("The length of the list of names for the compositional "
-                                 "fields that make up the slabs must be larger than zero "
+                                 "fields for which the RMS velocity is to be summed must be larger than zero "
                                  "and smaller or equal to the number of compositional fields."));
         }
         prm.leave_subsection();
