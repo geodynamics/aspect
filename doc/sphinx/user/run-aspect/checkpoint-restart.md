@@ -1,3 +1,4 @@
+(sec:checkpoint-restart)=
 # Checkpoint/restart support
 
 If you do long runs, especially when using parallel computations, there are a
