@@ -1,0 +1,189 @@
+
+*** Timestep 1054:  t=0.492509 seconds, dt=0.000450269 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1055:  t=0.49296 seconds, dt=0.000450269 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1056:  t=0.49341 seconds, dt=0.000450269 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1057:  t=0.49386 seconds, dt=0.000450269 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1058:  t=0.49431 seconds, dt=0.000450269 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1059:  t=0.494761 seconds, dt=0.000450269 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1060:  t=0.495211 seconds, dt=0.000450269 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1061:  t=0.495661 seconds, dt=0.000450269 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1062:  t=0.496112 seconds, dt=0.000450269 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1063:  t=0.496562 seconds, dt=0.000450269 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1064:  t=0.497012 seconds, dt=0.000450269 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1065:  t=0.497462 seconds, dt=0.000450269 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system... 3+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1066:  t=0.497913 seconds, dt=0.000450269 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1067:  t=0.498363 seconds, dt=0.000450269 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system... 3+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1068:  t=0.498813 seconds, dt=0.000450269 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1069:  t=0.499263 seconds, dt=0.000450269 seconds
+   Solving temperature system... 1 iterations.
+   Solving Stokes system... 3+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1070:  t=0.499714 seconds, dt=0.000450269 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+*** Timestep 1071:  t=0.5 seconds, dt=0.000286341 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 3+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.9 m/s, 69.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -4.885 W, 4.885 W
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      21.8s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |      1072 |      2.16s |       9.9% |
+| Assemble temperature system      |      1072 |      6.51s |        30% |
+| Build Stokes preconditioner      |         1 |   0.00946s |         0% |
+| Build temperature preconditioner |      1072 |      1.27s |       5.8% |
+| Initialization                   |         1 |     0.171s |      0.78% |
+| Postprocessing                   |      1072 |      4.42s |        20% |
+| Setup dof systems                |         1 |   0.00305s |         0% |
+| Setup initial conditions         |         1 |   0.00425s |         0% |
+| Setup matrices                   |         1 |   0.00639s |         0% |
+| Solve Stokes system              |      1072 |      4.66s |        21% |
+| Solve temperature system         |      1072 |     0.533s |       2.4% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 22s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.5.0-pre&sha=&src=code
+-----------------------------------------------------------------------------

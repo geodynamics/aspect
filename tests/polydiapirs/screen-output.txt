@@ -1,0 +1,171 @@
+*** Timestep 2613:  t=249.015 seconds, dt=0.1 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 45+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0.000742 m/s, 0.00544 m/s
+     Compositions min/max/mass:                         -0.04751/1.03/0.2805 // -0.05107/1.025/0.2815
+     Average density / Average viscosity / Total mass:  97.37 kg/m^3, 67.29 Pa s, 218.1 kg
+     Writing stokes residuals                           output_polydiapirs/stokes_residuals.txt
+
+*** Timestep 2614:  t=249.115 seconds, dt=0.1 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 47+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0.000742 m/s, 0.00544 m/s
+     Compositions min/max/mass:                         -0.04752/1.03/0.2805 // -0.0511/1.025/0.2815
+     Average density / Average viscosity / Total mass:  97.37 kg/m^3, 67.29 Pa s, 218.1 kg
+     Writing stokes residuals                           output_polydiapirs/stokes_residuals.txt
+
+*** Timestep 2615:  t=249.215 seconds, dt=0.1 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 46+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0.000741 m/s, 0.00545 m/s
+     Compositions min/max/mass:                         -0.04752/1.03/0.2805 // -0.05113/1.025/0.2815
+     Average density / Average viscosity / Total mass:  97.37 kg/m^3, 67.29 Pa s, 218.1 kg
+     Writing stokes residuals                           output_polydiapirs/stokes_residuals.txt
+
+*** Timestep 2616:  t=249.315 seconds, dt=0.1 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 47+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0.000741 m/s, 0.00545 m/s
+     Compositions min/max/mass:                         -0.04752/1.03/0.2805 // -0.05115/1.025/0.2815
+     Average density / Average viscosity / Total mass:  97.37 kg/m^3, 67.29 Pa s, 218.1 kg
+     Writing stokes residuals                           output_polydiapirs/stokes_residuals.txt
+
+*** Timestep 2617:  t=249.415 seconds, dt=0.1 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 50+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0.00074 m/s, 0.00545 m/s
+     Compositions min/max/mass:                         -0.04752/1.03/0.2805 // -0.05117/1.025/0.2815
+     Average density / Average viscosity / Total mass:  97.37 kg/m^3, 67.29 Pa s, 218.1 kg
+     Writing stokes residuals                           output_polydiapirs/stokes_residuals.txt
+
+*** Timestep 2618:  t=249.515 seconds, dt=0.1 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 50+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0.00074 m/s, 0.00545 m/s
+     Compositions min/max/mass:                         -0.04752/1.03/0.2805 // -0.0512/1.025/0.2815
+     Average density / Average viscosity / Total mass:  97.37 kg/m^3, 67.29 Pa s, 218.1 kg
+     Writing stokes residuals                           output_polydiapirs/stokes_residuals.txt
+
+*** Timestep 2619:  t=249.615 seconds, dt=0.1 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 53+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0.00074 m/s, 0.00545 m/s
+     Compositions min/max/mass:                         -0.04752/1.03/0.2805 // -0.05122/1.025/0.2815
+     Average density / Average viscosity / Total mass:  97.37 kg/m^3, 67.29 Pa s, 218.1 kg
+     Writing stokes residuals                           output_polydiapirs/stokes_residuals.txt
+
+*** Timestep 2620:  t=249.715 seconds, dt=0.1 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 43+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0.000739 m/s, 0.00545 m/s
+     Compositions min/max/mass:                         -0.04752/1.03/0.2805 // -0.05123/1.025/0.2815
+     Average density / Average viscosity / Total mass:  97.37 kg/m^3, 67.29 Pa s, 218.1 kg
+     Writing stokes residuals                           output_polydiapirs/stokes_residuals.txt
+
+*** Timestep 2621:  t=249.815 seconds, dt=0.1 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 50+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0.000739 m/s, 0.00545 m/s
+     Compositions min/max/mass:                         -0.04752/1.03/0.2805 // -0.05125/1.025/0.2815
+     Average density / Average viscosity / Total mass:  97.37 kg/m^3, 67.29 Pa s, 218.1 kg
+     Writing stokes residuals                           output_polydiapirs/stokes_residuals.txt
+
+*** Timestep 2622:  t=249.915 seconds, dt=0.1 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 50+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0.000738 m/s, 0.00545 m/s
+     Compositions min/max/mass:                         -0.04751/1.03/0.2805 // -0.05126/1.025/0.2815
+     Average density / Average viscosity / Total mass:  97.37 kg/m^3, 67.29 Pa s, 218.1 kg
+     Writing stokes residuals                           output_polydiapirs/stokes_residuals.txt
+
+*** Timestep 2623:  t=250 seconds, dt=0.0853878 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 44+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                          output_polydiapirs/solution/solution-00050
+     RMS, max velocity:                                 0.000738 m/s, 0.00545 m/s
+     Compositions min/max/mass:                         -0.04751/1.03/0.2805 // -0.05128/1.025/0.2815
+     Average density / Average viscosity / Total mass:  97.37 kg/m^3, 67.29 Pa s, 218.1 kg
+     Writing stokes residuals                           output_polydiapirs/stokes_residuals.txt
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |  2.28e+04s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |      2624 |  1.85e+03s |       8.1% |
+| Assemble composition system      |      5248 |  5.98e+03s |        26% |
+| Assemble temperature system      |      2624 |  3.09e+03s |        14% |
+| Build Stokes preconditioner      |      2624 |  2.28e+03s |        10% |
+| Build composition preconditioner |      5248 |       721s |       3.2% |
+| Initialization                   |         1 |     0.173s |         0% |
+| Postprocessing                   |      2624 |  1.32e+03s |       5.8% |
+| Setup dof systems                |         1 |     0.301s |         0% |
+| Setup initial conditions         |         1 |      1.01s |         0% |
+| Setup matrices                   |         1 |     0.972s |         0% |
+| Solve Stokes system              |      2624 |  6.41e+03s |        28% |
+| Solve composition system         |      5248 |       282s |       1.2% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 22763s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.5.0-pre&sha=&src=code
+-----------------------------------------------------------------------------
