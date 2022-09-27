@@ -54,6 +54,47 @@ namespace aspect
 
   namespace internal
   {
+    namespace TangentialBoundaryFunctions
+    {
+      // TODO: move to deal.ii
+      template <int dim>
+      void import_to_mg_constraints(
+        const DoFHandler<dim> &mesh_deformation_dof_handler,
+        const IndexSet &relevant_dofs,
+        const unsigned int level,
+        MGLevelObject<AffineConstraints<double>> &level_constraints,
+        MGConstrainedDoFs &mg_constrained_dofs)
+      {
+        // import to mg_constraints
+        AffineConstraints<double> imhomogenous_constraints;
+        imhomogenous_constraints.reinit(relevant_dofs);
+        IndexSet boundary_indices;
+        auto line = (level_constraints[level].get_lines()).begin();
+        auto line_end = (level_constraints[level].get_lines()).end();
+
+        for (; line != line_end; ++line)
+          {
+            const unsigned int line_index = line->index;
+            const std::vector<std::pair<types::global_dof_index, double>>
+            *constraint_entries = level_constraints[level].get_constraint_entries(line_index);
+            if (constraint_entries == nullptr)
+              {
+                boundary_indices.add_index(line_index);
+              }
+            else
+              {
+                imhomogenous_constraints.add_line(line_index);
+                imhomogenous_constraints.add_entries(line_index, *constraint_entries);
+              }
+          }
+        imhomogenous_constraints.close();
+        mg_constrained_dofs.add_user_constraints(level, imhomogenous_constraints);
+        mg_constrained_dofs.add_boundary_indices(mesh_deformation_dof_handler,
+                                                 level,
+                                                 boundary_indices);
+      }
+    }
+
     /**
      * Matrix-free operators must use deal.II defined vectors, while the rest of the ASPECT
      * software is based on Trilinos vectors. Here we define functions which copy between the
@@ -686,6 +727,17 @@ namespace aspect
       MGTransferMatrixFree<dim,GMGNumberType> mg_transfer_Schur_complement;
 
       std::vector<std::shared_ptr<MatrixFree<dim,double>>> matrix_free_objects;
+
+      /**
+      * Store Dirichlet boundary dofs on each level.
+      */
+      std::vector<IndexSet> level_boundary_indices;
+
+      /**
+       * One vector on each multigrid level for the velocity constraints
+       * on the boundaries.
+       */
+      MGLevelObject<AffineConstraints<double>> mg_level_constraints;
   };
 }
 

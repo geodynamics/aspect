@@ -2370,6 +2370,9 @@ namespace aspect
       mg_constrained_dofs_A_block.clear();
       mg_constrained_dofs_A_block.initialize(dof_handler_v);
 
+      level_boundary_indices.clear();
+      level_boundary_indices.resize(sim.triangulation.n_global_levels());
+
       std::set<types::boundary_id> dirichlet_boundary = sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators();
       for (const auto &it: sim.boundary_velocity_manager.get_active_boundary_velocity_names())
         {
@@ -2399,7 +2402,10 @@ namespace aspect
                         Assert (false, ExcInternalError());
                     }
                 }
-              mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, {bdryid}, mask);
+              MGTools::make_boundary_list(dof_handler_v,
+              {bdryid},
+              level_boundary_indices,
+              mask);
             }
           else
             {
@@ -2408,9 +2414,10 @@ namespace aspect
             }
         }
 
-      // Unconditionally call this function, even if the set is empty. Otherwise, the data structure
-      // for boundary indices will not be created (if mesh has no Dirichlet conditions).
-      mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, dirichlet_boundary);
+      MGTools::make_boundary_list(dof_handler_v,
+                                  dirichlet_boundary,
+                                  level_boundary_indices,
+                                  ComponentMask(dim, true));
 
       //Schur complement matrix GMG
       dof_handler_p.distribute_mg_dofs();
@@ -2497,14 +2504,15 @@ namespace aspect
       mg_matrices_A_block.clear_elements();
       mg_matrices_A_block.resize(0, n_levels-1);
 
+      mg_level_constraints.resize(0, n_levels-1);
+
       for (unsigned int level=0; level<n_levels; ++level)
         {
           IndexSet relevant_dofs;
           DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
-          AffineConstraints<double> level_constraints;
-          level_constraints.reinit(relevant_dofs);
-          level_constraints.add_lines(mg_constrained_dofs_A_block.get_boundary_indices(level));
-          level_constraints.close();
+
+          mg_level_constraints[level].clear();
+          mg_level_constraints[level].reinit(relevant_dofs);
 
           const Mapping<dim> &mapping =
             (sim.mesh_deformation) ? sim.mesh_deformation->get_level_mapping(level) : *sim.mapping;
@@ -2522,18 +2530,22 @@ namespace aspect
                 dof_handler_v,
                 0,
                 no_flux_boundary,
-                user_level_constraints,
+                mg_level_constraints[level],
                 mapping,
                 refinement_edge_indices,
                 level);
 
-              user_level_constraints.close();
-              mg_constrained_dofs_A_block.add_user_constraints(level,user_level_constraints);
-
-              // let Dirichlet values win over no normal flux:
-              level_constraints.merge(user_level_constraints, AffineConstraints<double>::left_object_wins);
-              level_constraints.close();
             }
+
+          mg_level_constraints[level].add_lines(level_boundary_indices[level]);
+          mg_level_constraints[level].close();
+
+          internal::TangentialBoundaryFunctions::import_to_mg_constraints(
+            dof_handler_v,
+            relevant_dofs,
+            level,
+            mg_level_constraints,
+            mg_constrained_dofs_A_block);
 
           {
             typename MatrixFree<dim,GMGNumberType>::AdditionalData additional_data;
@@ -2545,7 +2557,7 @@ namespace aspect
             std::shared_ptr<MatrixFree<dim,GMGNumberType>>
             mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
 
-            mg_mf_storage_level->reinit(mapping, dof_handler_v, level_constraints,
+            mg_mf_storage_level->reinit(mapping, dof_handler_v, mg_level_constraints[level],
                                         QGauss<1>(sim.parameters.stokes_velocity_degree+1),
                                         additional_data);
 
