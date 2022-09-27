@@ -144,7 +144,7 @@ namespace aspect
         if (use_diffusion_creep)
           {
             diffusion_creep_parameters = diffusion_creep->compute_creep_parameters(composition, phase_function_values, n_phases_per_composition);
-            eta_diff = diffusion_creep->compute_viscosity(pressure, temperature, composition, phase_function_values, n_phases_per_composition);
+            eta_diff = diffusion_creep->compute_viscosity(pressure, temperature, composition, 1, phase_function_values, n_phases_per_composition);
           }
 
         if (use_dislocation_creep)
@@ -241,7 +241,7 @@ namespace aspect
         // dictated by make_strain_rate_additional_outputs_names
         if (use_diffusion_creep)
           {
-            const std::pair<double, double> diff_edot_and_deriv = diffusion_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, diffusion_creep_parameters);
+            const std::pair<double, double> diff_edot_and_deriv = diffusion_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, 1, diffusion_creep_parameters);
             partial_strain_rates[0] = diff_edot_and_deriv.first;
           }
 
@@ -292,7 +292,7 @@ namespace aspect
         std::pair<double, double> creep_edot_and_deriv = std::make_pair(0., 0.);
 
         if (use_diffusion_creep)
-          creep_edot_and_deriv = creep_edot_and_deriv + diffusion_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, diffusion_creep_parameters);
+          creep_edot_and_deriv = creep_edot_and_deriv + diffusion_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, 1, diffusion_creep_parameters);
 
         if (use_dislocation_creep)
           creep_edot_and_deriv = creep_edot_and_deriv + dislocation_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, dislocation_creep_parameters);

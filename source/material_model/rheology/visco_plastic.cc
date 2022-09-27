@@ -131,6 +131,8 @@ namespace aspect
                              min_strain_rate);
 
         // Calculate viscosities for each of the individual compositional phases
+	const unsigned int water_concentration_index = this->introspection().compositional_index_for_name("water_concentration");
+	const double water_concentration = in.composition[i][water_concentration_index];
         for (unsigned int j=0; j < volume_fractions.size(); ++j)
           {
             // Step 1: viscous behavior
@@ -162,7 +164,7 @@ namespace aspect
               const double viscosity_diffusion
                 = (viscous_flow_law != dislocation
                    ?
-                   diffusion_creep.compute_viscosity(pressure_for_creep, temperature_for_viscosity, j,
+                   diffusion_creep.compute_viscosity(pressure_for_creep, temperature_for_viscosity, j, water_concentration,
                                                      phase_function_values,
                                                      n_phases_per_composition)
                    :

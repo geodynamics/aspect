@@ -106,6 +106,7 @@ namespace aspect
           compute_viscosity (const double pressure,
                              const double temperature,
                              const unsigned int composition,
+			     const double water_concentration,
                              const std::vector<double> &phase_function_values = std::vector<double>(),
                              const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
 
@@ -121,12 +122,13 @@ namespace aspect
           compute_strain_rate_and_derivative (const double stress,
                                               const double pressure,
                                               const double temperature,
+					      const double water_concentration,
                                               const DiffusionCreepParameters creep_parameters) const;
 
         private:
 
           /**
-           * List of dry diffusion creep prefactors A_dry.
+           * List of diffusion creep prefactors A.
            */
           std::vector<double> prefactors_diffusion;
 
@@ -141,27 +143,27 @@ namespace aspect
           std::vector<double> grain_size_exponents_diffusion;
 
           /**
-           * List of dry diffusion creep activation energies E_dry.
+           * List of diffusion creep activation energies E.
            */
           std::vector<double> activation_energies_diffusion;
 
           /**
-           * List of dry diffusion creep activation volumes V_dry.
+           * List of diffusion creep activation volumes V.
            */
           std::vector<double> activation_volumes_diffusion;
 
 	  /**
-	   * List of wet diffusion creep activation volumes V_wet
+	   * List of partial diffusion creep activation volumes for an H2O component
 	   */
 	  std::vector<double> wet_activation_volumes_diffusion;
 
 	  /**
-	   * List of wet diffusion creep activation energies E_wet
+	   * List of partial diffusion creep activation energies for an H2O component
 	   */
 	  std::vector<double> wet_activation_energies_diffusion;
 
 	  /**
-	   * List of wet diffusion creep prefactors A_wet.
+	   * List of partial diffusion creep prefactors for an H2O component
 	   */
 	  std::vector<double> wet_prefactors_diffusion;
 
@@ -176,7 +178,7 @@ namespace aspect
           double grain_size;
 
 	  /**
-	   * Whether to use water fugacity in the rheology
+	   * Whether to use water fugacity to modify the diffusion creep rheology
 	   */
 	  bool use_water_fugacity_diffusion;
       };
