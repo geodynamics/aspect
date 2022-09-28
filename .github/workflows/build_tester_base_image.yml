@@ -1,4 +1,4 @@
-name: github-docker-tester
+name: build-tester-base-image
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
     - cron:  '30 1 * * *'
 
 concurrency:
-  group: docker-tester-build
+  group: build-tester-base-image
 
 permissions:
   contents: read
