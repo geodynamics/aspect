@@ -52,6 +52,8 @@ namespace aspect
             creep_parameters.activation_energy = activation_energies_dislocation[composition];
             creep_parameters.activation_volume = activation_volumes_dislocation[composition];
             creep_parameters.stress_exponent = stress_exponents_dislocation[composition];
+	    creep_parameters.water_fugacity_exponent = water_fugacity_exponents_dislocation[composition];
+
           }
         else
           {
@@ -65,6 +67,8 @@ namespace aspect
                                                  activation_volumes_dislocation , composition);
             creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
                                                stress_exponents_dislocation, composition);
+	    creep_parameters.water_fugacity_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+			                               water_fugacity_exponents_dislocation, composition);
           }
 
         return creep_parameters;
@@ -78,6 +82,7 @@ namespace aspect
                                                 const double pressure,
                                                 const double temperature,
                                                 const unsigned int composition,
+						const double water_concentration,
                                                 const std::vector<double> &phase_function_values,
                                                 const std::vector<unsigned int> &n_phases_per_composition) const
       {
@@ -90,10 +95,17 @@ namespace aspect
         // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor,
         // E: activation energy, P: pressure,
         // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
+	//
+	// If use_water_fugacity_dislocation = true, this equation is modified:
+	//    viscosity = 0.5 * A^(-1/n) * C_H2O^(r) *  edot_ii^((1-n)/n) * exp((E + P*V)/(nRT))
+	// C_H2O: water concentration in ppm H/Si, r: water fugacity exponent.
+
         double viscosity_dislocation = 0.5 * std::pow(p.prefactor,-1/p.stress_exponent) *
-                                       std::exp((p.activation_energy + pressure*p.activation_volume)/
-                                                (constants::gas_constant*temperature*p.stress_exponent)) *
-                                       std::pow(strain_rate,((1. - p.stress_exponent)/p.stress_exponent));
+                                      std::exp((p.activation_energy + pressure*p.activation_volume)/
+                                               (constants::gas_constant*temperature*p.stress_exponent)) *
+                                      std::pow(strain_rate,((1. - p.stress_exponent)/p.stress_exponent));
+	if (use_water_fugacity_dislocation)
+	  viscosity_dislocation *= std::pow(std::max(water_concentration, 1.), -p.water_fugacity_exponent/p.stress_exponent);
 
         Assert (viscosity_dislocation > 0.0,
                 ExcMessage ("Negative dislocation viscosity detected. This is unphysical and should not happen. "
@@ -118,6 +130,7 @@ namespace aspect
       DislocationCreep<dim>::compute_strain_rate_and_derivative (const double stress,
                                                                  const double pressure,
                                                                  const double temperature,
+								 const double water_concentration,
                                                                  const DislocationCreepParameters creep_parameters) const
       {
         // Power law creep equation:
@@ -125,17 +138,29 @@ namespace aspect
         //   d(edot_ii_partial)/d(stress) = A * n * stress^(n-1) * exp(-(E + P*V)/(RT))
         // A: prefactor, edot_ii_partial: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
         // stress: deviatoric stress, E: activation energy, P: pressure,
-        // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
-        const double strain_rate_dislocation = creep_parameters.prefactor *
-                                               std::pow(stress,creep_parameters.stress_exponent) *
-                                               std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
-                                                        (constants::gas_constant*temperature));
+	// V; activation volume, n: stress exponent, R: gas constant, T: temperature.
+	//
+	// If use_water_fugacity_dislocation = true, this equation is modified:
+	//   edot_ii_partial = A * stress^n * C_H2O^(r) * exp(-(E + P*V)/(RT))
+	//   d(edot_ii_partial)/d(stress) = A * n * stress^(n-1) * C_H2O^(r) *  exp(-(E + P*V)/(RT))
+	// C_H2O: water concentration in ppm H/Si, r: water fugacity exponent.
 
-        const double dstrain_rate_dstress_dislocation = creep_parameters.prefactor *
-                                                        creep_parameters.stress_exponent *
-                                                        std::pow(stress,creep_parameters.stress_exponent-1.) *
-                                                        std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
-                                                                 (constants::gas_constant*temperature));
+        double strain_rate_dislocation = creep_parameters.prefactor *
+                                                  std::pow(stress,creep_parameters.stress_exponent) *
+                                                  std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
+                                                           (constants::gas_constant*temperature));
+
+        double dstrain_rate_dstress_dislocation = creep_parameters.prefactor *
+                                                           creep_parameters.stress_exponent *
+                                                           std::pow(stress,creep_parameters.stress_exponent-1.) *
+                                                           std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
+                                                                    (constants::gas_constant*temperature));
+
+	if (use_water_fugacity_dislocation)
+	  {
+	    strain_rate_dislocation *= std::pow(std::max(water_concentration, 1.), creep_parameters.water_fugacity_exponent);
+	    dstrain_rate_dstress_dislocation *= std::pow(std::max(water_concentration, 1.), creep_parameters.water_fugacity_exponent);
+	  }
 
         return std::make_pair(strain_rate_dislocation, dstrain_rate_dstress_dislocation);
       }
@@ -169,6 +194,17 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\meter\\cubed\\per\\mole}.");
+        prm.declare_entry ("Use water fugacity in dislocation creep", "false",
+                           Patterns::Bool(),
+                           "Whether or not to include water fugacity in the dislocation creep rheology. Setting this to false "
+                           "gives the default dislocation creep rheology. If set to true, a compositional field named 'water' "
+                           "must exist, and the material model will query the water content at each mesh point and include "
+                           "that in the calculation for the viscosty.");
+        prm.declare_entry ("Water fugacity exponents for dislocation creep", "1.0",
+                           Patterns::Anything(),
+                           "List of water fugacity exponents, $r$, for background material and compositional fields, "
+                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "If only one value is given, then all use the same value. Units: None.");
       }
 
 
@@ -210,6 +246,14 @@ namespace aspect
                                                                                "Activation volumes for dislocation creep",
                                                                                true,
                                                                                expected_n_phases_per_composition);
+        water_fugacity_exponents_dislocation = Utilities::parse_map_to_double_array(prm.get("Water fugacity exponents for dislocation creep"),
+                                                                                  list_of_composition_names,
+                                                                                  has_background_field,
+                                                                                  "Water fugacity exponents for dislocation creep",
+                                                                                  true,
+                                                                                  expected_n_phases_per_composition);
+        use_water_fugacity_dislocation = prm.get_bool("Use water fugacity in dislocation creep");
+
 
         // Check that there are no prefactor entries set to zero,
         // for example because the entry is for a field
@@ -218,6 +262,10 @@ namespace aspect
         // are computed anyway and this will lead to division by zero.
         for (const double prefactor : prefactors_dislocation)
           AssertThrow(prefactor > 0., ExcMessage("The dislocation prefactor should be larger than zero."));
+
+	AssertThrow(this->introspection().compositional_name_exists("water_concentration"),
+                    ExcMessage("The water fugacity modified dislocation creep rheology only "
+                               "works if there is a compositional field called water_concentration."))
       }
     }
   }

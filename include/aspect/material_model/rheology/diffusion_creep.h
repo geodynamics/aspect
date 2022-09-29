@@ -48,10 +48,6 @@ namespace aspect
         double activation_volume;
         double stress_exponent;
         double grain_size_exponent;
-
-	double wet_prefactor;
-	double wet_activation_energy;
-	double wet_activation_volume;
 	double water_fugacity_exponent;
       };
 
@@ -151,21 +147,6 @@ namespace aspect
            * List of diffusion creep activation volumes V.
            */
           std::vector<double> activation_volumes_diffusion;
-
-	  /**
-	   * List of partial diffusion creep activation volumes for an H2O component
-	   */
-	  std::vector<double> wet_activation_volumes_diffusion;
-
-	  /**
-	   * List of partial diffusion creep activation energies for an H2O component
-	   */
-	  std::vector<double> wet_activation_energies_diffusion;
-
-	  /**
-	   * List of partial diffusion creep prefactors for an H2O component
-	   */
-	  std::vector<double> wet_prefactors_diffusion;
 
 	  /**
 	   * List of diffusion creep water fugacity exponents.

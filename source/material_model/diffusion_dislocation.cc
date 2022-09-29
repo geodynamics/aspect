@@ -84,8 +84,8 @@ namespace aspect
                  && stress_iteration < stress_max_iteration_number)
             {
 
-              const std::pair<double, double> diff_edot_and_deriv = diffusion_creep.compute_strain_rate_and_derivative(stress_ii, pressure, temperature, 1, diffusion_creep_parameters);
-              const std::pair<double, double> disl_edot_and_deriv = dislocation_creep.compute_strain_rate_and_derivative(stress_ii, pressure, temperature, dislocation_creep_parameters);
+              const std::pair<double, double> diff_edot_and_deriv = diffusion_creep.compute_strain_rate_and_derivative(stress_ii, pressure, temperature, 1., diffusion_creep_parameters);
+              const std::pair<double, double> disl_edot_and_deriv = dislocation_creep.compute_strain_rate_and_derivative(stress_ii, pressure, temperature, 1., dislocation_creep_parameters);
 
               strain_rate_residual = diff_edot_and_deriv.first + disl_edot_and_deriv.first - edot_ii;
               strain_rate_deriv = diff_edot_and_deriv.second + disl_edot_and_deriv.second ;

@@ -45,6 +45,7 @@ namespace aspect
         double activation_energy;
         double activation_volume;
         double stress_exponent;
+	double water_fugacity_exponent;
       };
 
       template <int dim>
@@ -98,6 +99,7 @@ namespace aspect
                              const double pressure,
                              const double temperature,
                              const unsigned int composition,
+			     const double water_concentration,
                              const std::vector<double> &phase_function_values = std::vector<double>(),
                              const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
 
@@ -113,6 +115,7 @@ namespace aspect
           compute_strain_rate_and_derivative (const double stress,
                                               const double pressure,
                                               const double temperature,
+					      const double water_concentration,
                                               const DislocationCreepParameters creep_parameters) const;
 
         private:
@@ -136,6 +139,16 @@ namespace aspect
            * List of dislocation creep activation volumes V.
            */
           std::vector<double> activation_volumes_dislocation;
+
+	  /**
+	   * List of dislocation creep water fugacity exponents
+	   */
+	  std::vector<double> water_fugacity_exponents_dislocation;
+
+	  /**
+	   * Whether to use water fugacity to modify the dislocation creep rheology
+	   */
+	  bool use_water_fugacity_dislocation;
 
       };
     }

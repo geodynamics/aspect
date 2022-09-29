@@ -174,7 +174,7 @@ namespace aspect
               const double viscosity_dislocation
                 = (viscous_flow_law != diffusion
                    ?
-                   dislocation_creep.compute_viscosity(edot_ii, pressure_for_creep, temperature_for_viscosity, j,
+                   dislocation_creep.compute_viscosity(edot_ii, pressure_for_creep, temperature_for_viscosity, j, water_concentration,
                                                        phase_function_values,
                                                        n_phases_per_composition)
                    :
