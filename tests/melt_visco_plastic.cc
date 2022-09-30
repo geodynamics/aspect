@@ -45,10 +45,10 @@ namespace aspect
      * and filled in the MaterialModel::Interface::evaluate() function.
      */
     template <int dim>
-    class PlasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    class PlasticAdditionalOutputs2 : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
-        PlasticAdditionalOutputs(const unsigned int n_points);
+        PlasticAdditionalOutputs2(const unsigned int n_points);
 
         virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 
@@ -65,11 +65,6 @@ namespace aspect
          * the current object.
          */
         std::vector<double> friction_angles;
-
-        /**
-         * The plastic yield stress.
-         */
-        std::vector<double> yield_stresses;
 
         /**
          * The area where the viscous stress exceeds the plastic yield strength,
@@ -267,27 +262,25 @@ namespace aspect
         std::vector<std::string> names;
         names.emplace_back("current_cohesions");
         names.emplace_back("current_friction_angles");
-        names.emplace_back("current_yield_stresses");
         names.emplace_back("plastic_yielding");
         return names;
       }
     }
 
     template <int dim>
-    PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
+    PlasticAdditionalOutputs2<dim>::PlasticAdditionalOutputs2 (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
       cohesions(n_points, numbers::signaling_nan<double>()),
       friction_angles(n_points, numbers::signaling_nan<double>()),
-      yield_stresses(n_points, numbers::signaling_nan<double>()),
       yielding(n_points, numbers::signaling_nan<double>())
     {}
 
     template <int dim>
     std::vector<double>
-    PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    PlasticAdditionalOutputs2<dim>::get_nth_output(const unsigned int idx) const
     {
-      AssertIndexRange (idx, 4);
+      AssertIndexRange (idx, 3);
       switch (idx)
         {
           case 0:
@@ -297,9 +290,6 @@ namespace aspect
             return friction_angles;
 
           case 2:
-            return yield_stresses;
-
-          case 3:
             return yielding;
 
           default:
@@ -580,12 +570,11 @@ namespace aspect
               const double cohesion = MaterialUtilities::average_value(volume_fractions, cohesions, viscosity_averaging);
               const double angle_internal_friction = MaterialUtilities::average_value(volume_fractions, angles_internal_friction, viscosity_averaging);
 
-              PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
+              PlasticAdditionalOutputs2<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs2<dim>>();
               if (plastic_out != nullptr)
                 {
                   plastic_out->cohesions[i] = cohesion;
                   plastic_out->friction_angles[i] = angle_internal_friction;
-                  plastic_out->yield_stresses[i] = yield_strength;
                   plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
                 }
 
@@ -1019,11 +1008,11 @@ namespace aspect
     void
     MeltViscoPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PlasticAdditionalOutputs<dim>>() == nullptr)
+      if (out.template get_additional_output<PlasticAdditionalOutputs2<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::PlasticAdditionalOutputs<dim>> (n_points));
+            std::make_unique<MaterialModel::PlasticAdditionalOutputs2<dim>> (n_points));
         }
     }
 
