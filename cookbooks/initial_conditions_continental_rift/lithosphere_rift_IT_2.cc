@@ -77,7 +77,7 @@ namespace aspect
       double distance_to_rift_axis = 1e23;
       Point<dim-1> surface_position;
       std::pair<double, unsigned int> distance_to_L_polygon;
-      for (typename std::list<std::unique_ptr<InitialComposition::Interface<dim> > >::const_iterator it = initial_composition_manager->get_active_initial_composition_conditions().begin();
+      for (typename std::list<std::unique_ptr<InitialComposition::Interface<dim>>>::const_iterator it = initial_composition_manager->get_active_initial_composition_conditions().begin();
            it != initial_composition_manager->get_active_initial_composition_conditions().end();
            ++it)
         if ( InitialComposition::LithosphereRift<dim> *ic = dynamic_cast<InitialComposition::LithosphereRift<dim> *> ((*it).get()))
@@ -260,14 +260,16 @@ namespace aspect
       }
       prm.leave_subsection();
 
+      prm.enter_subsection ("Compositional fields");
+      {
+        list_of_composition_names = Utilities::split_string_list (prm.get("Names of fields"));
+      }
+      prm.leave_subsection();
+
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Visco Plastic");
         {
-          // The material model viscoplastic prefixes an entry for the background material
-          const std::vector<double> temp_densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
-                                                     n_fields+1,
-                                                     "Densities");
           const std::vector<double> temp_thermal_diffusivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal diffusivities"))),
                                                                  n_fields+1,
                                                                  "Thermal diffusivities");
@@ -275,9 +277,30 @@ namespace aspect
                                                            n_fields+1,
                                                            "Heat capacities");
 
-          densities.push_back(temp_densities[id_upper+1]);
-          densities.push_back(temp_densities[id_lower+1]);
-          densities.push_back(temp_densities[id_mantle_L+1]);
+          n_phases_for_each_composition = std::make_unique<std::vector<unsigned int>>();
+          const std::vector<double> temp_densities = Utilities::parse_map_to_double_array (prm.get("Densities"),
+                                                     list_of_composition_names,
+                                                     /*has_background_field=*/true,
+                                                     "Densities",
+                                                     true,
+                                                     n_phases_for_each_composition);
+
+          // Assemble a list of phase densities for each composition.
+          // Add 1 for background material.
+          std::vector<std::vector<double>> densities_per_composition(this->n_compositional_fields()+1);
+          unsigned int counter = 0;
+          for (unsigned int i = 0; i < (*n_phases_for_each_composition).size(); ++i)
+            {
+              for (unsigned int j = 0; j < (*n_phases_for_each_composition)[i]; ++j)
+                {
+                  densities_per_composition[i].push_back(temp_densities[counter]);
+                  ++counter;
+                }
+            }
+
+          densities.push_back(densities_per_composition[id_upper+1][0]);
+          densities.push_back(densities_per_composition[id_lower+1][0]);
+          densities.push_back(densities_per_composition[id_mantle_L+1][0]);
 
           // Thermal diffusivity kappa = k/(rho*cp), so thermal conducitivity k = kappa*rho*cp
           conductivities.push_back(temp_thermal_diffusivities[id_upper+1] * densities[0] * temp_heat_capacities[id_upper+1]);

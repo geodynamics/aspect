@@ -153,6 +153,16 @@ namespace aspect
          * first time step.
          */
         std::shared_ptr<const aspect::InitialComposition::Manager<dim>> initial_composition_manager;
+
+        /**
+         * Vector containing the number of phases for each composition.
+         */
+        std::unique_ptr<std::vector<unsigned int>> n_phases_for_each_composition;
+
+        /**
+         * Vector containing the names of the compositional fields.
+         */
+        std::vector<std::string> list_of_composition_names;
     };
   }
 }
