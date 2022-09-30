@@ -37,5 +37,5 @@ jobs:
           cache-from: type=registry,ref=ubuntu:20.04
           cache-to: type=inline
           push: true
-          tags: geodynamics/aspect-tester:latest
+          tags: geodynamics/aspect-tester:focal-dealii-master
 

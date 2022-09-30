@@ -107,7 +107,7 @@ jobs:
             compare-tests: "OFF"
             result-file: "changes-test-results-9.4.diff"
             container-options: '--name container'
-          - image: "geodynamics/aspect-tester:latest"
+          - image: "geodynamics/aspect-tester:focal-dealii-master"
             run-tests: "ON"
             compare-tests: "OFF"
             result-file: "changes-test-results-master.diff"
