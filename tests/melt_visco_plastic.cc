@@ -67,6 +67,11 @@ namespace aspect
         std::vector<double> friction_angles;
 
         /**
+         * The plastic yield stress.
+         */
+        std::vector<double> yield_stresses;
+
+        /**
          * The area where the viscous stress exceeds the plastic yield strength,
          * and viscosity is rescaled back to the yield envelope.
          */
@@ -262,6 +267,7 @@ namespace aspect
         std::vector<std::string> names;
         names.emplace_back("current_cohesions");
         names.emplace_back("current_friction_angles");
+        names.emplace_back("current_yield_stresses");
         names.emplace_back("plastic_yielding");
         return names;
       }
@@ -273,6 +279,7 @@ namespace aspect
       NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
       cohesions(n_points, numbers::signaling_nan<double>()),
       friction_angles(n_points, numbers::signaling_nan<double>()),
+      yield_stresses(n_points, numbers::signaling_nan<double>()),
       yielding(n_points, numbers::signaling_nan<double>())
     {}
 
@@ -280,7 +287,7 @@ namespace aspect
     std::vector<double>
     PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
-      AssertIndexRange (idx, 3);
+      AssertIndexRange (idx, 4);
       switch (idx)
         {
           case 0:
@@ -290,6 +297,9 @@ namespace aspect
             return friction_angles;
 
           case 2:
+            return yield_stresses;
+
+          case 3:
             return yielding;
 
           default:
@@ -575,6 +585,7 @@ namespace aspect
                 {
                   plastic_out->cohesions[i] = cohesion;
                   plastic_out->friction_angles[i] = angle_internal_friction;
+                  plastic_out->yield_stresses[i] = yield_strength;
                   plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
                 }
 
