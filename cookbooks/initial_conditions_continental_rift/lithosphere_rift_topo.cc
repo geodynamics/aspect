@@ -43,10 +43,27 @@ namespace aspect
       const unsigned int id_lower = this->introspection().compositional_index_for_name("lower");
       const unsigned int id_mantle_L = this->introspection().compositional_index_for_name("mantle_L");
 
-      densities.push_back(temp_densities[0]);
-      densities.push_back(temp_densities[id_upper+1]);
-      densities.push_back(temp_densities[id_lower+1]);
-      densities.push_back(temp_densities[id_mantle_L+1]);
+      // Assemble a list of phase densities for each composition.
+      // Add 1 for background material.
+      std::vector<std::vector<double>> densities_per_composition(this->n_compositional_fields()+1);
+      unsigned int counter = 0;
+      for (unsigned int i = 0; i < (*n_phases_for_each_composition).size(); ++i)
+        {
+          for (unsigned int j = 0; j < (*n_phases_for_each_composition)[i]; ++j)
+            {
+              densities_per_composition[i].push_back(temp_densities[counter]);
+              ++counter;
+            }
+        }
+
+      // Get the relevant densities for the lithosphere.
+      densities.push_back(densities_per_composition[0][0]);
+      densities.push_back(densities_per_composition[id_upper+1][0]);
+      densities.push_back(densities_per_composition[id_lower+1][0]);
+      densities.push_back(densities_per_composition[id_mantle_L+1][0]);
+      std::cout << "Assembling final densities: " << densities_per_composition[0][0] << ", ";
+      std::cout << densities_per_composition[id_upper+1][0] << ", " << densities_per_composition[id_lower+1][0];
+      std::cout  << ", " <<  densities_per_composition[id_mantle_L+1][0] <<  std::endl;
 
       // The reference column
       ref_rgh = 0;
@@ -225,15 +242,23 @@ namespace aspect
       }
       prm.leave_subsection();
 
+      prm.enter_subsection ("Compositional fields");
+      {
+        list_of_composition_names = Utilities::split_string_list (prm.get("Names of fields"));
+      }
+      prm.leave_subsection();
 
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Visco Plastic");
         {
-          // The material model viscoplastic prefixes an entry for the background material
-          temp_densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
-                                                                   n_fields+1,
-                                                                   "Densities");
+          n_phases_for_each_composition = std::make_unique<std::vector<unsigned int>>();
+          temp_densities = Utilities::parse_map_to_double_array (prm.get("Densities"),
+                                                                 list_of_composition_names,
+                                                                 /*has_background_field=*/true,
+                                                                 "Densities",
+                                                                 true,
+                                                                 n_phases_for_each_composition);
         }
         prm.leave_subsection();
       }
