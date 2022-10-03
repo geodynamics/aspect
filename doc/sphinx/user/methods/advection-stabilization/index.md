@@ -1,4 +1,4 @@
-
+(sec:advection-stabilization)=
 # Advection Stabilization
 
 ASPECT implements several advection schemes for
