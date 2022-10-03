@@ -249,6 +249,11 @@ namespace aspect
           ptmp.reinit(src);
         }
 
+      // This needs to be done explicitly, as GMRES does not
+      // initialize the data of the vector dst before calling
+      // us. Otherwise we might use random data as our initial guess.
+      dst = 0.0;
+
       // either solve with the Schur complement matrix (if do_solve_Schur_complement==true)
       // or just apply one preconditioner sweep (for the first few
       // iterations of our two-stage outer GMRES iteration)
@@ -269,7 +274,6 @@ namespace aspect
             {
               try
                 {
-                  dst.block(1) = 0.0;
                   solver.solve(Schur_complement_block,
                                dst.block(1), src.block(1),
                                Schur_complement_preconditioner);
@@ -313,7 +317,6 @@ namespace aspect
           SolverCG<dealii::LinearAlgebra::distributed::Vector<double>> solver(solver_control);
           try
             {
-              dst.block(0) = 0.0;
               solver.solve(A_block, dst.block(0), utmp.block(0),
                            A_block_preconditioner);
               n_iterations_A_ += solver_control.last_step();
