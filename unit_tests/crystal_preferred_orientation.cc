@@ -163,72 +163,85 @@ TEST_CASE("CPO core: Store and Load")
   std::vector<double> data_array(70,-1.);
   dealii::ArrayView<double> data(&data_array[0],70);
 
-  cpo.ref_volume_fraction_mineral(cpo_data_position,data,0) = 0.7;
-  cpo.ref_volume_fraction_mineral(cpo_data_position,data,1) = 0.3;
+  cpo.set_volume_fraction_mineral(cpo_data_position,data,0,0.7);
+  cpo.set_volume_fraction_mineral(cpo_data_position,data,1,0.3);
 
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,0,0,0) = 0;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,0,0,1) = 1./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,0,0,2) = 2./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,0,1,0) = 3./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,0,1,1) = 4./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,0,1,2) = 5./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,0,2,0) = 6./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,0,2,1) = 7./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,0,2,2) = 8./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,1,0,0) = 9./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,1,0,1) = 10./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,1,0,2) = 11./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,1,1,0) = 12./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,1,1,1) = 13./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,1,1,2) = 14./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,1,2,0) = 15./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,1,2,1) = 16./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,1,2,2) = 17./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,2,0,0) = 18./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,2,0,1) = 19./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,2,0,2) = 20./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,2,1,0) = 21./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,2,1,1) = 22./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,2,1,2) = 23./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,2,2,0) = 24./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,2,2,1) = 25./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,0,2,2,2) = 26./1000.;
+  using namespace dealii;
+  Tensor<2,3> rotation_matrix;
+  rotation_matrix[TableIndices<2>(0,0)] = 0;
+  rotation_matrix[TableIndices<2>(0,1)] = 1./1000.;
+  rotation_matrix[TableIndices<2>(0,2)] = 2./1000.;
+  rotation_matrix[TableIndices<2>(1,0)] = 3./1000.;
+  rotation_matrix[TableIndices<2>(1,1)] = 4./1000.;
+  rotation_matrix[TableIndices<2>(1,2)] = 5./1000.;
+  rotation_matrix[TableIndices<2>(2,0)] = 6./1000.;
+  rotation_matrix[TableIndices<2>(2,1)] = 7./1000.;
+  rotation_matrix[TableIndices<2>(2,2)] = 8./1000.;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data,0,0,rotation_matrix);
 
-  cpo.ref_volume_fractions_grains(cpo_data_position,data,0,0) = 0.1;
-  cpo.ref_volume_fractions_grains(cpo_data_position,data,0,1) = 0.2;
-  cpo.ref_volume_fractions_grains(cpo_data_position,data,0,2) = 0.3;
+  rotation_matrix[TableIndices<2>(0,0)] = 9./1000.;
+  rotation_matrix[TableIndices<2>(0,1)] = 10./1000.;
+  rotation_matrix[TableIndices<2>(0,2)] = 11./1000.;
+  rotation_matrix[TableIndices<2>(1,0)] = 12./1000.;
+  rotation_matrix[TableIndices<2>(1,1)] = 13./1000.;
+  rotation_matrix[TableIndices<2>(1,2)] = 14./1000.;
+  rotation_matrix[TableIndices<2>(2,0)] = 15./1000.;
+  rotation_matrix[TableIndices<2>(2,1)] = 16./1000.;
+  rotation_matrix[TableIndices<2>(2,2)] = 17./1000.;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data,0,1,rotation_matrix);
 
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,0,0,0) = 27./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,0,0,1) = 28./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,0,0,2) = 29./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,0,1,0) = 30./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,0,1,1) = 31./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,0,1,2) = 32./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,0,2,0) = 33./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,0,2,1) = 34./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,0,2,2) = 35./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,1,0,0) = 36./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,1,0,1) = 37./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,1,0,2) = 38./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,1,1,0) = 39./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,1,1,1) = 40./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,1,1,2) = 41./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,1,2,0) = 42./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,1,2,1) = 43./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,1,2,2) = 44./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,2,0,0) = 45./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,2,0,1) = 46./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,2,0,2) = 47./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,2,1,0) = 48./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,2,1,1) = 49./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,2,1,2) = 50./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,2,2,0) = 51./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,2,2,1) = 52./1000.;
-  cpo.ref_rotation_matrix_grains_indices(cpo_data_position,data,1,2,2,2) = 53./1000.;
+  rotation_matrix[TableIndices<2>(0,0)] = 18./1000.;
+  rotation_matrix[TableIndices<2>(0,1)] = 19./1000.;
+  rotation_matrix[TableIndices<2>(0,2)] = 20./1000.;
+  rotation_matrix[TableIndices<2>(1,0)] = 21./1000.;
+  rotation_matrix[TableIndices<2>(1,1)] = 22./1000.;
+  rotation_matrix[TableIndices<2>(1,2)] = 23./1000.;
+  rotation_matrix[TableIndices<2>(2,0)] = 24./1000.;
+  rotation_matrix[TableIndices<2>(2,1)] = 25./1000.;
+  rotation_matrix[TableIndices<2>(2,2)] = 26./1000.;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data,0,2,rotation_matrix);
 
-  cpo.ref_volume_fractions_grains(cpo_data_position,data,1,0) = 0.4;
-  cpo.ref_volume_fractions_grains(cpo_data_position,data,1,1) = 0.5;
-  cpo.ref_volume_fractions_grains(cpo_data_position,data,1,2) = 0.6;
+  cpo.set_volume_fractions_grains(cpo_data_position,data,0,0,0.1);
+  cpo.set_volume_fractions_grains(cpo_data_position,data,0,1,0.2);
+  cpo.set_volume_fractions_grains(cpo_data_position,data,0,2,0.3);
+
+
+  rotation_matrix[TableIndices<2>(0,0)] = 27./1000.;
+  rotation_matrix[TableIndices<2>(0,1)] = 28./1000.;
+  rotation_matrix[TableIndices<2>(0,2)] = 29./1000.;
+  rotation_matrix[TableIndices<2>(1,0)] = 30./1000.;
+  rotation_matrix[TableIndices<2>(1,1)] = 31./1000.;
+  rotation_matrix[TableIndices<2>(1,2)] = 32./1000.;
+  rotation_matrix[TableIndices<2>(2,0)] = 33./1000.;
+  rotation_matrix[TableIndices<2>(2,1)] = 34./1000.;
+  rotation_matrix[TableIndices<2>(2,2)] = 35./1000.;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data,1,0,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = 36./1000.;
+  rotation_matrix[TableIndices<2>(0,1)] = 37./1000.;
+  rotation_matrix[TableIndices<2>(0,2)] = 38./1000.;
+  rotation_matrix[TableIndices<2>(1,0)] = 39./1000.;
+  rotation_matrix[TableIndices<2>(1,1)] = 40./1000.;
+  rotation_matrix[TableIndices<2>(1,2)] = 41./1000.;
+  rotation_matrix[TableIndices<2>(2,0)] = 42./1000.;
+  rotation_matrix[TableIndices<2>(2,1)] = 43./1000.;
+  rotation_matrix[TableIndices<2>(2,2)] = 44./1000.;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data,1,1,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = 45./1000.;
+  rotation_matrix[TableIndices<2>(0,1)] = 46./1000.;
+  rotation_matrix[TableIndices<2>(0,2)] = 47./1000.;
+  rotation_matrix[TableIndices<2>(1,0)] = 48./1000.;
+  rotation_matrix[TableIndices<2>(1,1)] = 49./1000.;
+  rotation_matrix[TableIndices<2>(1,2)] = 50./1000.;
+  rotation_matrix[TableIndices<2>(2,0)] = 51./1000.;
+  rotation_matrix[TableIndices<2>(2,1)] = 52./1000.;
+  rotation_matrix[TableIndices<2>(2,2)] = 53./1000.;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data,1,2,rotation_matrix);
+
+  cpo.set_volume_fractions_grains(cpo_data_position,data,1,0,0.4);
+  cpo.set_volume_fractions_grains(cpo_data_position,data,1,1,0.5);
+  cpo.set_volume_fractions_grains(cpo_data_position,data,1,2,0.6);
 
   std::vector<unsigned int> deformation_types_ref = {(unsigned int)aspect::Particle::Property::DeformationType::passive,
                                                      (unsigned int)aspect::Particle::Property::DeformationType::passive
@@ -237,8 +250,8 @@ TEST_CASE("CPO core: Store and Load")
   data[0] = 20847932.2;
   data[65] = 6541684.3;
 
-  cpo.ref_deformation_type(cpo_data_position,data,0) = (double)aspect::Particle::Property::DeformationType::passive;
-  cpo.ref_deformation_type(cpo_data_position,data,1) = (double)aspect::Particle::Property::DeformationType::passive;
+  cpo.set_deformation_type(cpo_data_position,data,0,(double)aspect::Particle::Property::DeformationType::passive);
+  cpo.set_deformation_type(cpo_data_position,data,1,(double)aspect::Particle::Property::DeformationType::passive);
 
 
   CHECK(data[0] == Approx(20847932.2)); // before data position

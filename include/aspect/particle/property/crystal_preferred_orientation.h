@@ -223,85 +223,143 @@ namespace aspect
           get_number_of_minerals();
 
           /**
-           * return a reference to the value in the data array representing the
-           * deformation type.
+           * @brief Returns the value in the data array representing the deformation type.
+           *
+           * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
+           * @param data The particle data vector.
+           * @param mineral_i The mineral to get the value of the deformation type for.
            */
           inline
-          double &ref_deformation_type(const unsigned int cpo_data_position,
-                                       const ArrayView<double> &data,
-                                       const unsigned int mineral_i) const
+          double get_deformation_type(const unsigned int cpo_data_position,
+                                      const ArrayView<double> &data,
+                                      const unsigned int mineral_i) const
           {
             return data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)];
           }
 
           /**
-           * Return a reference to the value in the data array representing the
-           * volume fraction of a mineral.
+           * @brief Sets the value in the data array representing the deformation type.
+           *
+           * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
+           * @param data The particle data vector.
+           * @param mineral_i The mineral to set the value deformation type for.
+           * @param deformation_type The value of the of the deformation type to set.
            */
           inline
-          double &ref_volume_fraction_mineral(const unsigned int cpo_data_position,
-                                              const ArrayView<double> &data,
-                                              const unsigned int mineral_i) const
+          void set_deformation_type(const unsigned int cpo_data_position,
+                                    const ArrayView<double> &data,
+                                    const unsigned int mineral_i,
+                                    const double deformation_type) const
+          {
+            data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)] = deformation_type;
+          }
+
+          /**
+           * @brief Returns the value in the data array representing the volume fraction of a mineral.
+           *
+           * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
+           * @param data The particle data vector.
+           * @param mineral_i The mineral to get the value of the volume fraction of a mineral for.
+           */
+          inline
+          double get_volume_fraction_mineral(const unsigned int cpo_data_position,
+                                             const ArrayView<double> &data,
+                                             const unsigned int mineral_i) const
           {
             return data[cpo_data_position + 1 + mineral_i *(n_grains * 10 + 2)];
           }
 
           /**
-           * Return a reference to the value in the data array representing the
-           * volume fractions of a grain in a mineral.
+           * @brief Sets the value in the data array representing the volume fraction of a mineral.
+           *
+           * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
+           * @param data The particle data vector.
+           * @param mineral_i The mineral to set the value of the volume fraction of a mineral for.
+           * @param volume_fraction_mineral The value of the of the volume fraction of a mineral to set.
            */
           inline
-          double &ref_volume_fractions_grains(const unsigned int cpo_data_position,
-                                              const ArrayView<double> &data,
-                                              const unsigned int mineral_i,
-                                              const unsigned int grain_i) const
+          void set_volume_fraction_mineral(const unsigned int cpo_data_position,
+                                           const ArrayView<double> &data,
+                                           const unsigned int mineral_i,
+                                           const double volume_fraction_mineral) const
+          {
+            data[cpo_data_position + 1 + mineral_i *(n_grains * 10 + 2)] = volume_fraction_mineral;
+          }
+
+          /**
+           * @brief Returns the value in the data array representing the volume fraction of a grain.
+           *
+           * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
+           * @param data The particle data vector.
+           * @param mineral_i The mineral to get the value of the volume fraction of a grain for.
+           * @param grain_i The grain to get the value of the volume fraction of.
+           */
+          inline
+          double get_volume_fractions_grains(const unsigned int cpo_data_position,
+                                             const ArrayView<double> &data,
+                                             const unsigned int mineral_i,
+                                             const unsigned int grain_i) const
           {
             return data[cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)];
           }
 
           /**
-           * Gets the rotation matrix for a grain in a mineral and store it in the
-           * tensor provided as an parameter.
+           * @brief Sets the value in the data array representing the volume fraction of a grain.
+           *
+           * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
+           * @param data The particle data vector.
+           * @param mineral_i The mineral to set the value of the volume fraction of a grain for.
+           * @param grain_i The grain to set the value of the volume fraction of.
+           * @param volume_fractions_grains The value of the of the volume fraction of a grain to set.
            */
           inline
-          void get_rotation_matrix_grains(const unsigned int cpo_data_position,
-                                          const ArrayView<double> &data,
-                                          const unsigned int mineral_i,
-                                          const unsigned int grain_i,
-                                          Tensor<2,3> &rotation_matrix) const
+          void set_volume_fractions_grains(const unsigned int cpo_data_position,
+                                           const ArrayView<double> &data,
+                                           const unsigned int mineral_i,
+                                           const unsigned int grain_i,
+                                           const double volume_fractions_grains) const
           {
+            data[cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)] = volume_fractions_grains;
+          }
+
+          /**
+           * @brief Gets the rotation matrix for a grain in a mineral.
+           *
+           * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
+           * @param data The particle data vector.
+           * @param mineral_i The mineral to get the value of the rotation matrix of a grain for.
+           * @param grain_i The grain to get the value of the rotation matrix of.
+           * @return Tensor<2,3> The rotation matrix of a grain in a mineral
+           */
+          inline
+          Tensor<2,3> get_rotation_matrix_grains(const unsigned int cpo_data_position,
+                                                 const ArrayView<double> &data,
+                                                 const unsigned int mineral_i,
+                                                 const unsigned int grain_i) const
+          {
+            Tensor<2,3> rotation_matrix;
             for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
               {
                 const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(i);
                 rotation_matrix[index] = data[cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2) + i];
               }
+            return rotation_matrix;
           }
 
           /**
-           * Returns a reference to the entry in the data array which reprents
-           * the [i][j] index of the rotation matrix for the grain_i in mineral_i.
-           */
-          inline
-          double &ref_rotation_matrix_grains_indices(const unsigned int cpo_data_position,
-                                                     const ArrayView<double> &data,
-                                                     const unsigned int mineral_i,
-                                                     const unsigned int grain_i,
-                                                     const unsigned int i,
-                                                     const unsigned int j) const
-          {
-            return data[cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2) + Tensor<2,dim>::component_to_unrolled_index(TableIndices<2>(i,j))];
-          }
-
-        private:
-          /**
-           * Stores the rotation matrix for a grain in a mineral in the data array.
+           * @brief Sets the rotation matrix for a grain in a mineral.
+           *
+           * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
+           * @param data The particle data vector.
+           * @param mineral_i The mineral to set the value of the rotation matrix of a grain for.
+           * @param grain_i The grain to get the value of the rotation matrix of.
            */
           inline
           void set_rotation_matrix_grains(const unsigned int cpo_data_position,
                                           const ArrayView<double> &data,
                                           const unsigned int mineral_i,
                                           const unsigned int grain_i,
-                                          const Tensor<2,3> &rotation_matrix) const
+                                          const Tensor<2,3> rotation_matrix) const
           {
             for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
               {
@@ -310,6 +368,8 @@ namespace aspect
               }
           }
 
+
+        private:
           /**
            * Computes a random rotation matrix.
            */
@@ -317,14 +377,19 @@ namespace aspect
           compute_random_rotation_matrix(Tensor<2,3> &rotation_matrix) const;
 
           /**
+           * @brief Updates the volume fractions and rotation matrices with a Forward Euler scheme.
+           *
            * Updates the volume fractions and rotation matrices with a Forward Euler scheme:
            * $x_t = x_{t-1} + dt * x_{t-1} * \frac{dx_t}{dt}$. The function returns the sum of
            * the new volume fractions.
-           * @param dt is the timestep.
-           * @param derivatives is a pair containing the derivatives for the volume fractions and
+           *
+           * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
+           * @param data The particle data vector.
+           * @param mineral_i Which mineral to advect for.
+           * @param dt The time step used for the advection step
+           * @param derivatives A pair containing the derivatives for the volume fractions and
            * orientations respectively.
-           * @param volume_fractions are the current volume fractions of the grains in a mineral.
-           * @param rotation_matrices are the current rotation matrices of the grains in a mineral.
+           * @return double The sum of all volume fractions.
            */
           double
           advect_forward_euler(const unsigned int cpo_data_position,
@@ -332,15 +397,21 @@ namespace aspect
                                const unsigned int mineral_i,
                                const double dt,
                                const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives) const;
+
           /**
+           * @brief Updates the volume fractions and rotation matrices with a Backward Euler scheme.
+           *
            * Updates the volume fractions and rotation matrices with a Backward Euler scheme:
-           * $x_{t,n} = x_{t-1} + dt x_{t,n-1}  \frac{\partial x_t}{\partial t}$, where $n$ is
-           * the $n^{\text{th}}$ iteration. The function returns the sum of the new volume fractions.
-           * @param dt is the timestep.
-           * @param derivatives is a pair containing the derivatives for the volume fractions and
+           * $x_t = x_{t-1} + dt * x_{t-1} * \frac{dx_t}{dt}$. The function returns the sum of
+           * the new volume fractions.
+           *
+           * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
+           * @param data The particle data vector.
+           * @param mineral_i Which mineral to advect for.
+           * @param dt The time step used for the advection step
+           * @param derivatives A pair containing the derivatives for the volume fractions and
            * orientations respectively.
-           * @param volume_fractions are the current volume fractions of the grains in a mineral.
-           * @param rotation_matrices are the current rotation matrices of the grains in a mineral.
+           * @return double The sum of all volume fractions.
            */
           double
           advect_backward_euler(const unsigned int cpo_data_position,

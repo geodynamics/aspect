@@ -260,13 +260,10 @@ namespace aspect
             velocity_gradient_3d[2][2] = velocity_gradient[2][2];
           }
 
-        std::vector<unsigned int> deformation_types;
-        std::vector<double> volume_fraction_mineral;
-
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
 
-            ref_deformation_type(data_position,data,mineral_i) = (unsigned int)DeformationType::passive;
+            set_deformation_type(data_position,data,mineral_i,static_cast<unsigned int>(DeformationType::passive));
 
             const std::array<double,4> ref_resolved_shear_stress = {{1e60,1e60,1e60,1e60}};
 
@@ -278,7 +275,9 @@ namespace aspect
             * derivatives are used to advect the particle properties.
             */
             double sum_volume_mineral = 0;
-            std::pair<std::vector<double>, std::vector<Tensor<2,3>>> derivatives_grains = this->compute_derivatives(data_position,data,mineral_i,
+            std::pair<std::vector<double>, std::vector<Tensor<2,3>>> derivatives_grains = this->compute_derivatives(data_position,
+                                                                                            data,
+                                                                                            mineral_i,
                                                                                             strain_rate_3d,
                                                                                             velocity_gradient_3d,
                                                                                             ref_resolved_shear_stress);
@@ -287,13 +286,19 @@ namespace aspect
               {
                 case AdvectionMethod::forward_euler:
 
-                  sum_volume_mineral = this->advect_forward_euler(data_position,data,mineral_i,dt,
+                  sum_volume_mineral = this->advect_forward_euler(data_position,
+                                                                  data,
+                                                                  mineral_i,
+                                                                  dt,
                                                                   derivatives_grains);
 
                   break;
 
                 case AdvectionMethod::backward_euler:
-                  sum_volume_mineral = this->advect_backward_euler(data_position,data,mineral_i,dt,
+                  sum_volume_mineral = this->advect_backward_euler(data_position,
+                                                                   data,
+                                                                   mineral_i,
+                                                                   dt,
                                                                    derivatives_grains);
 
                   break;
@@ -308,10 +313,11 @@ namespace aspect
 
             for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
               {
-                ref_volume_fractions_grains(data_position,data,mineral_i,grain_i) *= inv_sum_volume_mineral;
-                Assert(isfinite(ref_volume_fractions_grains(data_position,data,mineral_i,grain_i)),
+                const double volume_fraction_grains = get_volume_fractions_grains(data_position,data,mineral_i,grain_i)*inv_sum_volume_mineral;
+                set_volume_fractions_grains(data_position,data,mineral_i,grain_i,volume_fraction_grains);
+                Assert(isfinite(get_volume_fractions_grains(data_position,data,mineral_i,grain_i)),
                        ExcMessage("volume_fractions_grains[mineral_i]" + std::to_string(grain_i) + "] is not finite: "
-                                  + std::to_string(ref_volume_fractions_grains(data_position,data,mineral_i,grain_i)) + ", inv_sum_volume_mineral = "
+                                  + std::to_string(get_volume_fractions_grains(data_position,data,mineral_i,grain_i)) + ", inv_sum_volume_mineral = "
                                   + std::to_string(inv_sum_volume_mineral) + "."));
 
                 /**
@@ -319,8 +325,7 @@ namespace aspect
                  * Follows same method as in matlab version from Thissen (see https://github.com/cthissen/Drex-MATLAB/)
                  * of finding the nearest orthonormal matrix using the SVD
                  */
-                Tensor<2,3> rotation_matrix;
-                get_rotation_matrix_grains(data_position,data,mineral_i,grain_i,rotation_matrix);
+                Tensor<2,3> rotation_matrix = get_rotation_matrix_grains(data_position,data,mineral_i,grain_i);
                 for (size_t i = 0; i < 3; ++i)
                   {
                     for (size_t j = 0; j < 3; ++j)
@@ -424,16 +429,18 @@ namespace aspect
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
           {
             // Do the volume fraction of the grain
-            Assert(std::isfinite(ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i)),ExcMessage("volume_fractions[grain_i] is not finite before it is set."));
-            ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i) = ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i) + dt * ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i) * derivatives.first[grain_i];
-            Assert(std::isfinite(ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i)),ExcMessage("volume_fractions[grain_i] is not finite. grain_i = "
-                   + std::to_string(grain_i) + ", volume_fractions[grain_i] = " + std::to_string(ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i))
+            Assert(std::isfinite(get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i)),ExcMessage("volume_fractions[grain_i] is not finite before it is set."));
+            double volume_fraction_grains = get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
+            volume_fraction_grains =  volume_fraction_grains + dt * volume_fraction_grains * derivatives.first[grain_i];
+            set_volume_fractions_grains(cpo_index,data,mineral_i,grain_i, volume_fraction_grains);
+            Assert(std::isfinite(get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i)),ExcMessage("volume_fractions[grain_i] is not finite. grain_i = "
+                   + std::to_string(grain_i) + ", volume_fractions[grain_i] = " + std::to_string(get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i))
                    + ", derivatives.first[grain_i] = " + std::to_string(derivatives.first[grain_i])));
 
-            sum_volume_fractions += ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
+            sum_volume_fractions += get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
 
             // Do the rotation matrix for this grain
-            get_rotation_matrix_grains(cpo_index,data,mineral_i,grain_i,rotation_matrix);
+            rotation_matrix = get_rotation_matrix_grains(cpo_index,data,mineral_i,grain_i);
             rotation_matrix += dt * rotation_matrix * derivatives.second[grain_i];
             set_rotation_matrix_grains(cpo_index,data,mineral_i,grain_i,rotation_matrix);
           }
@@ -457,19 +464,19 @@ namespace aspect
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
           {
             // Do the volume fraction of the grain
-            double vf_old = ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
-            double vf_new = ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
+            double vf_old = get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
+            double vf_new = get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
             Assert(std::isfinite(vf_new),ExcMessage("vf_new is not finite before it is set."));
             for (size_t iteration = 0; iteration < property_advection_max_iterations; ++iteration)
               {
                 Assert(std::isfinite(vf_new),ExcMessage("vf_new is not finite before it is set. grain_i = "
-                                                        + std::to_string(grain_i) + ", volume_fractions[grain_i] = " + std::to_string(ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i))
+                                                        + std::to_string(grain_i) + ", volume_fractions[grain_i] = " + std::to_string(get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i))
                                                         + ", derivatives.first[grain_i] = " + std::to_string(derivatives.first[grain_i])));
 
-                vf_new = ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i) + dt * vf_new * derivatives.first[grain_i];
+                vf_new = get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i) + dt * vf_new * derivatives.first[grain_i];
 
-                Assert(std::isfinite(ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i)),ExcMessage("volume_fractions[grain_i] is not finite. grain_i = "
-                       + std::to_string(grain_i) + ", volume_fractions[grain_i] = " + std::to_string(ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i))
+                Assert(std::isfinite(get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i)),ExcMessage("volume_fractions[grain_i] is not finite. grain_i = "
+                       + std::to_string(grain_i) + ", volume_fractions[grain_i] = " + std::to_string(get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i))
                        + ", derivatives.first[grain_i] = " + std::to_string(derivatives.first[grain_i])));
                 if (std::fabs(vf_new-vf_old) < property_advection_tolerance)
                   {
@@ -478,11 +485,11 @@ namespace aspect
                 vf_old = vf_new;
               }
 
-            ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i) = vf_new;
-            sum_volume_fractions += ref_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
+            set_volume_fractions_grains(cpo_index,data,mineral_i,grain_i,vf_new);
+            sum_volume_fractions += vf_new;
 
             // Do the rotation matrix for this grain
-            get_rotation_matrix_grains(cpo_index,data,mineral_i,grain_i,cosine_ref);
+            cosine_ref = get_rotation_matrix_grains(cpo_index,data,mineral_i,grain_i);
             Tensor<2,3> cosine_old = cosine_ref;
             Tensor<2,3> cosine_new = cosine_ref;
 
