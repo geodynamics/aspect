@@ -23,6 +23,7 @@
 #include <world_builder/grains.h>
 #include <world_builder/world.h>
 
+#include <aspect/citation_info.h>
 #include <aspect/utilities.h>
 
 namespace aspect
@@ -49,6 +50,7 @@ namespace aspect
       void
       CrystalPreferredOrientation<dim>::initialize ()
       {
+        CitationInfo::add("CPO");
         const unsigned int my_rank = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
         this->random_number_generator.seed(random_number_seed+my_rank);
       }
