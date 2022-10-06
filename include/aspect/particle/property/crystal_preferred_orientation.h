@@ -37,12 +37,12 @@ namespace aspect
     {
       enum class DeformationType
       {
-        passive
+        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite
       };
 
       enum class DeformationTypeSelector
       {
-        passive
+        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, olivine_karato_2008
       };
 
       enum class AdvectionMethod
@@ -194,9 +194,27 @@ namespace aspect
           compute_derivatives(const unsigned int cpo_index,
                               const ArrayView<double> &data,
                               const unsigned int mineral_i,
-                              const SymmetricTensor<2,3> &strain_rate,
+                              const SymmetricTensor<2,3> &strain_rate_3d,
                               const Tensor<2,3> &velocity_gradient_tensor,
-                              const std::array<double,4> &ref_resolved_shear_stress) const;
+                              const Point<dim> &position,
+                              const double temperature,
+                              const double pressure,
+                              const Tensor<1,dim> &velocity,
+                              const std::vector<double> &compositions,
+                              const SymmetricTensor<2,dim> &strain_rate,
+                              const SymmetricTensor<2,dim> &compressible_strain_rate,
+                              const double water_content) const;
+
+
+          std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
+          compute_derivatives_drex_2004(const unsigned int cpo_index,
+                                        const ArrayView<double> &data,
+                                        const unsigned int mineral_i,
+                                        const SymmetricTensor<2,3> &strain_rate_3d,
+                                        const Tensor<2,3> &velocity_gradient_tensor,
+                                        const std::array<double,4> ref_resolved_shear_stress,
+                                        const bool prevent_nondimensionalization = false) const;
+
 
           /**
            * Declare the parameters this class takes through input files.
@@ -222,6 +240,39 @@ namespace aspect
            */
           unsigned int
           get_number_of_minerals() const;
+
+          /**
+           * @brief Deterimens the deformation type from the deformation type selector.
+           *
+           * @param stress
+           * @param water_content
+           * @return DeformationType
+           */
+          DeformationType
+          determine_deformation_type(const DeformationTypeSelector deformation_type_selector,
+                                     const Point<dim> &position,
+                                     const double temperature,
+                                     const double pressure,
+                                     const Tensor<1,dim> &velocity,
+                                     const std::vector<double> &compositions,
+                                     const SymmetricTensor<2,dim> &strain_rate,
+                                     const SymmetricTensor<2,dim> &compressible_strain_rate,
+                                     const double water_content) const;
+
+          /**
+           * @brief Computes the deformation type given the stress and water content according to the
+           * table in Karato 2008.
+           *
+           * @param stress
+           * @param water_content
+           */
+          DeformationType
+          determine_deformation_type_karato_2008(const double stress,
+                                                 const double water_content) const;
+
+          std::array<double,4>
+          reference_resolved_shear_stress_from_deformation_type(DeformationType deformation_type,
+                                                                double max_value = 1e60) const;
 
           /**
            * @brief Returns the value in the data array representing the deformation type.
@@ -481,6 +532,34 @@ namespace aspect
            * The tensor representation of the permutation symbol.
            */
           Tensor<3,3> permutation_operator_3d;
+
+          /// D-Rex variables
+
+          /**
+           * Stress exponent
+           */
+          double stress_exponent;
+
+          /**
+           * efficientcy of nucleation parameter.
+           * lamda_m in equation 8 of Kamisnki et al. (2004, Geophys. J. Int)
+           */
+          double nucleation_efficientcy;
+
+          /**
+           * An exponent described in equation 10 of Kaminsty and Ribe (2001, EPSL)
+           */
+          double exponent_p;
+
+          /**
+           * The Grain Boundary Sliding threshold
+           */
+          double threshold_GBS;
+
+          /**
+           * grain boundery mobility
+           */
+          double mobility;
 
       };
     }
