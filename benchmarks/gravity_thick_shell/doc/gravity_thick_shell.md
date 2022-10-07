@@ -1,3 +1,4 @@
+(sec:benchmarks:thick-shell-gravity)=
 # Thick shell gravity benchmark
 
 *This section was contributed by Cedric Thieulot.*
