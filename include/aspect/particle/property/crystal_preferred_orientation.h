@@ -35,21 +35,55 @@ namespace aspect
   {
     namespace Property
     {
+      /**
+       * @brief The type of deformation used by the CPO code.
+       *
+       * passive: Only to be used with the spin tensor CPO Derivative algorithm.
+       * olivine_a_fabric: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a Olivine A Fabric, which influences the relative strenght of the slip planes.
+       * olivine_b_fabric: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a Olivine B Fabric, which influences the relative strenght of the slip planes.
+       * olivine_c_fabric: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a Olivine C Fabric, which influences the relative strenght of the slip planes.
+       * olivine_d_fabric: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a Olivine D Fabric, which influences the relative strenght of the slip planes.
+       * olivine_e_fabric: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a Olivine E Fabric, which influences the relative strenght of the slip planes.
+       * enstatite: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a enstatite Fabric, which influences the relative strenght of the slip planes.
+       */
       enum class DeformationType
       {
         passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite
       };
 
+
+      /**
+       * @brief The type of deformation selector used by the CPO code.
+       *
+       * The selector is a input parameter and it can either set a deformation type directly or deterimine the deformation type through an algorithm.
+       * The deformation type selector is used to determine/select the the deformation type. It can be a fixed deformation type, for example,
+       * by setting it to olivine_a_fabric, or it can be dynamically chosen, which is what the olivine_karato_2008 option does.
+       *
+       * passive: Only to be used with the spin tensor CPO Derivative algorithm.
+       * olivine_a_fabric to olivine_e_fabric: Only to be used with the D-Rex CPO Derivative algorithm.
+       *  Sets the deformation type of the mineral to a Olivine A-E Fabric, which influences the relative strenght of the slip planes. See table 1 in Fraters and Billen (2021).
+       * enstatite: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a enstatite Fabric, which influences the relative strenght of the slip planes.
+       * olivine_karato_2008: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a olivine fabric based on the table in Karato 2008.
+       */
       enum class DeformationTypeSelector
       {
         passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, olivine_karato_2008
       };
 
+      /**
+       * @brief The type of Advection method used to advect the CPO properties.
+       */
       enum class AdvectionMethod
       {
         forward_euler, backward_euler
       };
 
+      /**
+       * @brief The algorithm used to compute the derivatives of the grain size and rotation matrix used in the advection.
+       *
+       * spin_tensor: Rotates the CPO properties soly with the rotation of the particle itself.
+       * drex_2004: Rotates the CPO properties based on the D-Rex 2004 algorithm.
+       */
       enum class CPODerivativeAlgorithm
       {
         spin_tensor, drex_2004
@@ -243,10 +277,6 @@ namespace aspect
 
           /**
            * @brief Deterimens the deformation type from the deformation type selector.
-           *
-           * @param stress
-           * @param water_content
-           * @return DeformationType
            */
           DeformationType
           determine_deformation_type(const DeformationTypeSelector deformation_type_selector,
@@ -262,14 +292,17 @@ namespace aspect
           /**
            * @brief Computes the deformation type given the stress and water content according to the
            * table in Karato 2008.
-           *
-           * @param stress
-           * @param water_content
            */
           DeformationType
           determine_deformation_type_karato_2008(const double stress,
                                                  const double water_content) const;
 
+          /**
+           * @brief Computes the reference resolved shear stress (RRSS) based on the selected deformation type.
+           *
+           * The inactive plane should theoretically be infinitly strong, but this is nummerically not disirable,
+           * so an optional max_value can be set to indicate an inactive plane.
+           */
           std::array<double,4>
           reference_resolved_shear_stress_from_deformation_type(DeformationType deformation_type,
                                                                 double max_value = 1e60) const;
@@ -533,8 +566,10 @@ namespace aspect
            */
           Tensor<3,3> permutation_operator_3d;
 
-          /// D-Rex variables
-
+          /**
+           * @name D-Rex variables
+           */
+          /** @{ */
           /**
            * Stress exponent
            */
@@ -560,6 +595,8 @@ namespace aspect
            * grain boundery mobility
            */
           double mobility;
+
+          /** @} */
 
       };
     }

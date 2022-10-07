@@ -243,7 +243,7 @@ namespace aspect
                     ExcMessage("Particle property CPO only works if"
                                "there is a compositional field called water."));
         const unsigned int water_idx = this->introspection().compositional_index_for_name("water");
-        double water_content = solution[this->introspection().component_indices.compositional_fields[water_idx]];
+        const double water_content = solution[this->introspection().component_indices.compositional_fields[water_idx]];
 
         // get the composition of the particle
         std::vector<double> compositions;
@@ -570,17 +570,17 @@ namespace aspect
             case CPODerivativeAlgorithm::drex_2004:
             {
 
-              DeformationType deformation_type = determine_deformation_type(deformation_type_selector[mineral_i],
-                                                                            position,
-                                                                            temperature,
-                                                                            pressure,
-                                                                            velocity,
-                                                                            compositions,
-                                                                            strain_rate,
-                                                                            compressible_strain_rate,
-                                                                            water_content);
+              const DeformationType deformation_type = determine_deformation_type(deformation_type_selector[mineral_i],
+                                                                                  position,
+                                                                                  temperature,
+                                                                                  pressure,
+                                                                                  velocity,
+                                                                                  compositions,
+                                                                                  strain_rate,
+                                                                                  compressible_strain_rate,
+                                                                                  water_content);
 
-              set_deformation_type(cpo_index,data,mineral_i,static_cast<unsigned int>(DeformationType::passive));
+              set_deformation_type(cpo_index,data,mineral_i,static_cast<unsigned int>(deformation_type));
 
               const std::array<double,4> ref_resolved_shear_stress = reference_resolved_shear_stress_from_deformation_type(deformation_type);
 
@@ -624,8 +624,6 @@ namespace aspect
                                                                       const std::array<double,4> ref_resolved_shear_stress,
                                                                       const bool prevent_nondimensionalization) const
       {
-        SymmetricTensor<2,3> strain_rate_nondimensional = strain_rate_3d;
-        Tensor<2,3> velocity_gradient_tensor_nondimensional = velocity_gradient_tensor;
         // This if statement is only there for the unit test. In normal sitations it should always be set to false,
         // because the nondimensionalization should always be done (in this exact way), unless you really know what
         // you are doing.
@@ -636,15 +634,13 @@ namespace aspect
             nondimensionalization_value = std::max(std::abs(eigenvalues[0]),std::abs(eigenvalues[2]));
 
             Assert(!std::isnan(nondimensionalization_value), ExcMessage("The second invariant of the strain rate is not a number."));
-
-            // Make the strain-rate and velocity gradient tensor non-dimensional
-            // by dividing it through the second invariant
-            if (nondimensionalization_value != 0)
-              {
-                strain_rate_nondimensional /= nondimensionalization_value;
-                velocity_gradient_tensor_nondimensional /=  nondimensionalization_value;
-              }
           }
+
+
+        // Make the strain-rate and velocity gradient tensor non-dimensional
+        // by dividing it through the second invariant
+        const Tensor<2,3> strain_rate_nondimensional = nondimensionalization_value != 0 ? strain_rate_3d : strain_rate_3d/nondimensionalization_value;
+        const Tensor<2,3> velocity_gradient_tensor_nondimensional = nondimensionalization_value != 0 ? velocity_gradient_tensor : velocity_gradient_tensor/nondimensionalization_value;
 
         // create output variables
         std::vector<double> deriv_volume_fractions(n_grains);
@@ -656,7 +652,6 @@ namespace aspect
         std::vector<double> strain_energy(n_grains);
         double mean_strain_energy = 0;
 
-        // loop over grains
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
           {
             // Compute the Schmidt tensor for this grain (nu), s is the slip system.
@@ -665,35 +660,27 @@ namespace aspect
             Tensor<2,3> G;
             Tensor<1,3> w;
             Tensor<1,4> beta({1.0, 1.0, 1.0, 1.0});
+            std::vector<Tensor<1,3>> slip_normal_reference {Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})};
+            std::vector<Tensor<1,3>> slip_direction_reference {Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})};
 
             // these are variables we only need for olivine, but we need them for both
             // within this if bock and the next ones
-            // todo: initialize to dealii uninitialized value
-            unsigned int index_max_q = 0;
-            unsigned int index_intermediate_q = 0;
-            unsigned int index_min_q = 0;
-            unsigned int index_inactive_q = 0;
+            // Ordered vector where the first entry is the max/weakest and the last entry in the inactive slip system.
+            std::vector<unsigned int> indices(4,0);
 
             // compute G and beta
             Tensor<1,4> bigI;
-            // this should be equal to a_cosine_matrices[grain_i]*a_cosine_matrices[grain_i]?
-            // todo: check and maybe replace?
             const Tensor<2,3> rotation_matrix = get_rotation_matrix_grains(cpo_index,data,mineral_i,grain_i);
-            for (unsigned int i = 0; i < 3; ++i)
+            const Tensor<2,3> rotation_matrix_transposed = transpose(rotation_matrix);
+            for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
               {
-                for (unsigned int j = 0; j < 3; ++j)
-                  {
-                    bigI[0] = bigI[0] + strain_rate_nondimensional[i][j] * rotation_matrix[0][i] * rotation_matrix[1][j];
-
-                    bigI[1] = bigI[1] + strain_rate_nondimensional[i][j] * rotation_matrix[0][i] * rotation_matrix[2][j];
-
-                    bigI[2] = bigI[2] + strain_rate_nondimensional[i][j] * rotation_matrix[2][i] * rotation_matrix[1][j];
-
-                    bigI[3] = bigI[3] + strain_rate_nondimensional[i][j] * rotation_matrix[2][i] * rotation_matrix[0][j];
-                  }
+                const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
+                const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
+                const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global);
+                bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
               }
 
-            if (bigI[0] == 0.0 && bigI[1] == 0.0 && bigI[2] == 0.0 && bigI[3] == 0.0)
+            if (bigI.norm() < 1e-10)
               {
                 // In this case there is no shear, only (posibily) a rotation. So \gamma_y and/or G should be zero.
                 // Which is the default value, so do nothing.
@@ -712,33 +699,26 @@ namespace aspect
                 // and assign them to special variables. Because all the variables are absolute values,
                 // we can set them to a negative value to ignore them. This should be faster then deleting
                 // the element, which would require allocation. (not tested)
-                index_max_q = std::distance(q_abs.begin(),max_element(q_abs.begin(), q_abs.end()));
+                for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
+                  {
+                    indices[slip_system_i] = std::distance(q_abs.begin(),max_element(q_abs.begin(), q_abs.end()));
+                    q_abs[indices[slip_system_i]] = -1;
+                  }
 
-                q_abs[index_max_q] = -1;
+                // compute the ordered beta vector, which is the relative slip rates of the active slips systems.
+                // Test whether the max element is not equal to zero.
+                Assert(bigI[indices[0]] != 0.0, ExcMessage("Internal error: bigI is zero."));
+                beta[indices[0]] = 1.0; // max q_abs, weak system (most deformation) "s=1"
 
-                index_intermediate_q = std::distance(q_abs.begin(),max_element(q_abs.begin(), q_abs.end()));
+                const double ratio = tau[indices[0]]/bigI[indices[0]];
+                for (unsigned int slip_system_i = 1; slip_system_i < 4-1; ++slip_system_i)
+                  {
+                    const double beta_tmp = ratio * (bigI[indices[slip_system_i]]/tau[indices[slip_system_i]]);
+                    beta[indices[slip_system_i]] = beta_tmp * std::pow(std::abs(beta_tmp), stress_exponent-1);
+                  }
+                beta[indices.back()] = 0.0;
 
-                q_abs[index_intermediate_q] = -1;
-
-                index_min_q = std::distance(q_abs.begin(),max_element(q_abs.begin(), q_abs.end()));
-
-                q_abs[index_min_q] = -1;
-
-                index_inactive_q = std::distance(q_abs.begin(),max_element(q_abs.begin(), q_abs.end()));
-
-                // todo: explain
-                Assert(bigI[index_max_q] != 0.0, ExcMessage("Internal error: bigI is zero."));
-                double ratio = tau[index_max_q]/bigI[index_max_q];
-
-                double q_intermediate = ratio * (bigI[index_intermediate_q]/tau[index_intermediate_q]);
-
-                double q_min = ratio * (bigI[index_min_q]/tau[index_min_q]);
-
-                beta[index_max_q] = 1.0; // max q_abs, weak system (most deformation) "s=1"
-                beta[index_intermediate_q] = q_intermediate * std::pow(std::abs(q_intermediate), stress_exponent-1);
-                beta[index_min_q] = q_min * std::pow(std::abs(q_min), stress_exponent-1);
-                beta[index_inactive_q] = 0.0;
-
+                // Now compute the Crystal rate of deformation tensor.
                 for (unsigned int i = 0; i < 3; i++)
                   {
                     for (unsigned int j = 0; j < 3; j++)
@@ -753,16 +733,13 @@ namespace aspect
 
             // Now calculate the analytic solution to the deformation minimization problem
             // compute gamma (equation 7, Kaminiski & Ribe, 2001)
-            // todo: expand
             double top = 0;
             double bottom = 0;
             for (unsigned int i = 0; i < 3; ++i)
               {
                 // Following the Drex code, which differs from EPSL paper,
                 // which says gamma_nu depends on i+1: actually uses i+2
-                unsigned int ip2 = i + 2;
-                if (ip2 > 2)
-                  ip2 = ip2-3;
+                const unsigned int ip2 = (i==0) ? (i+2) : (i-1);
 
                 top = top - (velocity_gradient_tensor_nondimensional[i][ip2]-velocity_gradient_tensor_nondimensional[ip2][i])*(G[i][ip2]-G[ip2][i]);
                 bottom = bottom - (G[i][ip2]-G[ip2][i])*(G[i][ip2]-G[ip2][i]);
@@ -774,11 +751,10 @@ namespace aspect
                   }
               }
             // see comment on if all BigI are zero. In that case gamma should be zero.
-            double gamma = bottom != 0.0 ? top/bottom : 0;
+            const double gamma = bottom != 0.0 ? top/bottom : 0;
 
             // compute w (equation 8, Kaminiski & Ribe, 2001)
-            // todo: explain what w is
-            // todo: there was a loop around this in the phyton code, discuss/check
+            // w is the Rotation rate vector of the crystallographic axes of grain
             w[0] = 0.5*(velocity_gradient_tensor_nondimensional[2][1]-velocity_gradient_tensor_nondimensional[1][2]) - 0.5*(G[2][1]-G[1][2])*gamma;
             w[1] = 0.5*(velocity_gradient_tensor_nondimensional[0][2]-velocity_gradient_tensor_nondimensional[2][0]) - 0.5*(G[0][2]-G[2][0])*gamma;
             w[2] = 0.5*(velocity_gradient_tensor_nondimensional[1][0]-velocity_gradient_tensor_nondimensional[0][1]) - 0.5*(G[1][0]-G[0][1])*gamma;
@@ -787,27 +763,17 @@ namespace aspect
             // For olivine: DREX only sums over 1-3. But Thissen's matlab code corrected
             // this and writes each term using the indices created when calculating bigI.
             // Note tau = RRSS = (tau_m^s/tau_o), this why we get tau^(p-n)
-            const double rhos1 = std::pow(tau[index_max_q],exponent_p-stress_exponent) *
-                                 std::pow(std::abs(gamma*beta[index_max_q]),exponent_p/stress_exponent);
+            for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
+              {
+                const double rhos = std::pow(tau[indices[slip_system_i]],exponent_p-stress_exponent) *
+                                    std::pow(std::abs(gamma*beta[indices[slip_system_i]]),exponent_p/stress_exponent);
+                strain_energy[grain_i] += rhos * exp(-nucleation_efficientcy * rhos * rhos);
 
-            const double rhos2 = std::pow(tau[index_intermediate_q],exponent_p-stress_exponent) *
-                                 std::pow(std::abs(gamma*beta[index_intermediate_q]),exponent_p/stress_exponent);
+                Assert(isfinite(strain_energy[grain_i]), ExcMessage("strain_energy[" + std::to_string(grain_i) + "] is not finite: " + std::to_string(strain_energy[grain_i])
+                                                                    + ", rhos (" + std::to_string(slip_system_i) + ") = " + std::to_string(rhos)
+                                                                    + ", nucleation_efficientcy = " + std::to_string(nucleation_efficientcy) + "."));
+              }
 
-            const double rhos3 = std::pow(tau[index_min_q],exponent_p-stress_exponent) *
-                                 std::pow(std::abs(gamma*beta[index_min_q]),exponent_p/stress_exponent);
-
-            const double rhos4 = std::pow(tau[index_inactive_q],exponent_p-stress_exponent) *
-                                 std::pow(std::abs(gamma*beta[index_inactive_q]),exponent_p/stress_exponent);
-
-            strain_energy[grain_i] = (rhos1 * exp(-nucleation_efficientcy * rhos1 * rhos1)
-                                      + rhos2 * exp(-nucleation_efficientcy * rhos2 * rhos2)
-                                      + rhos3 * exp(-nucleation_efficientcy * rhos3 * rhos3)
-                                      + rhos4 * exp(-nucleation_efficientcy * rhos4 * rhos4));
-
-
-            Assert(isfinite(strain_energy[grain_i]), ExcMessage("strain_energy[" + std::to_string(grain_i) + "] is not finite: " + std::to_string(strain_energy[grain_i])
-                                                                + ", rhos1 = " + std::to_string(rhos1) + ", rhos2 = " + std::to_string(rhos2) + ", rhos3 = " + std::to_string(rhos3)
-                                                                + ", rhos4= " + std::to_string(rhos4) + ", nucleation_efficientcy = " + std::to_string(nucleation_efficientcy) + "."));
 
             // compute the derivative of the cosine matrix a: \frac{\partial a_{ij}}{\partial t}
             // (Eq. 9, Kaminski & Ribe 2001)
@@ -1004,6 +970,9 @@ namespace aspect
               break;
 
             default:
+              AssertThrow(false,
+                          ExcMessage("Deformation type enum with number " + std::to_string(static_cast<unsigned int>(deformation_type))
+                                     + " was not found."));
               break;
           }
         return ref_resolved_shear_stress;
@@ -1109,8 +1078,7 @@ namespace aspect
 
                 prm.declare_entry ("Mobility", "50",
                                    Patterns::Double(0),
-                                   "The intrinsic grain boundary mobility for both olivine and enstatite. "
-                                   "Todo: split for olivine and enstatite.");
+                                   "The dimensionless intrinsic grain boundary mobility for both olivine and enstatite.");
 
                 prm.declare_entry ("Volume fractions minerals", "0.5, 0.5",
                                    Patterns::List(Patterns::Double(0)),
@@ -1120,8 +1088,7 @@ namespace aspect
                 prm.declare_entry ("Stress exponents", "3.5",
                                    Patterns::Double(0),
                                    "This is the power law exponent that characterizes the rheology of the "
-                                   "slip systems. It is used in equation 11 of Kaminski et al., 2004. "
-                                   "This is used for both olivine and enstatite. Todo: split?");
+                                   "slip systems. It is used in equation 11 of Kaminski et al., 2004.");
 
                 prm.declare_entry ("Exponents p", "1.5",
                                    Patterns::Double(0),
@@ -1134,7 +1101,7 @@ namespace aspect
 
                 prm.declare_entry ("Threshold GBS", "0.3",
                                    Patterns::Double(0),
-                                   "This is the grain-boundary sliding threshold. ");
+                                   "This is the dimensionless grain-boundary sliding threshold. ");
               }
               prm.leave_subsection();
             }
