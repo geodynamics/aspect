@@ -1,0 +1,2 @@
+
+The maximum relative increase is bounded now by a factor of 1.91. Where before it was not bounded. (Laila Busaleh, 2022/09/15)
