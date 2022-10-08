@@ -167,15 +167,19 @@ namespace aspect
                        "Units: Years or seconds, depending on the ``Use years "
                        "in output instead of seconds'' parameter.");
 
-    prm.declare_entry ("Maximum relative increase in time step", "86.0",
+    prm.declare_entry ("Maximum relative increase in time step", "91.0",
                        Patterns::Double (0.),
-                       "Set a percentage with which the time step is limited to increase. Generally the "
+                       "Set a percentage with which the time step is limited to increase . Generally the "
                        "time step based on the CFL number should be sufficient, but for complicated models "
                        "which may suddenly drastically change behavior, it may be useful to limit the increase "
                        "in the time step, without limiting the time step size of the whole simulation to a "
                        "particular number. For example, if this parameter is set to $50$, then that means that "
                        "the time step can at most increase by 50\\% from one time step to the next, or by a "
                        "factor of 1.5. "
+                       "Here the default value is set to be 91% because the best available step-size ratio bound"
+                       "guaranteeing stability in the PDE context seems to be 1.91, from E. Emmrich (2006)."
+                       "Although that bound was proved in the context of semilinear parabolic problem"
+           
                        "Units: \\%.");
 
     prm.declare_entry ("Use conduction timestep", "false",
