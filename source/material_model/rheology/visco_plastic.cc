@@ -267,12 +267,10 @@ namespace aspect
             // Get a pointer to the mobility postprocessor
             const Postprocess::MobilityStatistics<dim> &mobility_statistics =
               this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
-            const double average_mobility = mobility_statistics.get_average_mobility();
-            const double average_mobility_t0 = mobility_statistics.get_average_mobility_t0();       
-
-            //sensitivity value
+            //const double average_mobility = mobility_statistics.get_average_mobility();
+            //const double average_mobility_t0 = mobility_statistics.get_average_mobility_t0();       
+            const double DMob = mobility_statistics.get_DMob();
             const double alpha = 1;
-            double DMob = average_mobility - average_mobility_t0;
 
             double friction_terms = alpha * drucker_prager_parameters.angle_internal_friction * DMob;             
             
@@ -280,10 +278,8 @@ namespace aspect
             double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1] - friction_terms;
             
             //limit friction 
-            if (current_friction < 0.5 * drucker_prager_parameters.angle_internal_friction)
-              current_friction = 0.5 * drucker_prager_parameters.angle_internal_friction;
-            else if (current_friction > 1.5 * drucker_prager_parameters.angle_internal_friction)             
-              current_friction = 1.5 * drucker_prager_parameters.angle_internal_friction; 
+            current_friction = std::max(0.5*drucker_prager_parameters.angle_internal_friction, current_friction);
+            current_friction = std::min(1.5*drucker_prager_parameters.angle_internal_friction, current_friction);
 
             // Step 5: plastic yielding
 
@@ -803,11 +799,10 @@ namespace aspect
                // Get a pointer to the mobility postprocessor
                const Postprocess::MobilityStatistics<dim> &mobility_statistics =
                         this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
-               const double average_mobility = mobility_statistics.get_average_mobility();
-               const double average_mobility_t0 = mobility_statistics.get_average_mobility_t0(); 
-
+               //const double average_mobility = mobility_statistics.get_average_mobility();
+               //const double average_mobility_t0 = mobility_statistics.get_average_mobility_t0(); 
+               const double DMob = mobility_statistics.get_DMob(); 
                const double alpha = 1;
-               double DMob = average_mobility - average_mobility_t0;
    
                double friction_terms = alpha * drucker_prager_parameters.angle_internal_friction * DMob;
               
@@ -815,10 +810,8 @@ namespace aspect
                double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1] - friction_terms;
 
                //limit friction
-               if (current_friction < 0.5 * drucker_prager_parameters.angle_internal_friction)
-                 current_friction = 0.5 * drucker_prager_parameters.angle_internal_friction;
-               else if (current_friction > 1.5 * drucker_prager_parameters.angle_internal_friction)
-                 current_friction = 1.5 * drucker_prager_parameters.angle_internal_friction;
+               current_friction = std::max(0.5*drucker_prager_parameters.angle_internal_friction, current_friction);
+               current_friction = std::min(1.5*drucker_prager_parameters.angle_internal_friction, current_friction);
 
                 // Also convert radians to degrees
                 plastic_out->friction_angles[i] += 180.0/numbers::PI * volume_fractions[j] * current_friction;

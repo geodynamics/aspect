@@ -144,9 +144,15 @@ namespace aspect
         {  
           average_mobility = combined_mobility/(average_interval/output_interval);
           combined_mobility = 0;
-          if (this->get_time() > 320e6 && this->get_time() <= 340e6)
+          DMob = 0; 
+          if (this->get_time() > 320e6*year_in_seconds && this->get_time() <= 340e6*year_in_seconds)
           {
             average_mobility_t0 = average_mobility;
+          }
+          if (this->get_time() >= 360e6*year_in_seconds)
+          {
+            DMob = average_mobility - average_mobility_t0; 
+            //std::cout << average_mobility_t0 << std::endl;
           }
         } 
 
@@ -231,6 +237,7 @@ namespace aspect
       ar &combined_mobility;
       ar &average_mobility;
       ar &average_mobility_t0;
+      ar &DMob;
       ar &last_output_time;
       ar &last_average_time;
     }
@@ -321,20 +328,28 @@ namespace aspect
     //  return combined_mobility;
     //}
 
-    template <int dim>
-    double
-    MobilityStatistics<dim>::get_average_mobility() const
-    {
+    //template <int dim>
+    //double
+    //MobilityStatistics<dim>::get_average_mobility() const
+    //{
       //Elodie Feb 2022
-      return average_mobility;
-    }
+    //  return average_mobility;
+    //}
+
+    //template <int dim>
+    //double
+    //MobilityStatistics<dim>::get_average_mobility_t0() const
+    //{
+    //Elodie July 2022
+    //return average_mobility_t0;
+    //}
 
     template <int dim>
     double
-    MobilityStatistics<dim>::get_average_mobility_t0() const
+    MobilityStatistics<dim>::get_DMob() const
     {
-    //Elodie July 2022
-    return average_mobility_t0;
+      //Elodie July 2022
+      return DMob;
     }
   }
 }

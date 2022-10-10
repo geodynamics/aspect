@@ -50,11 +50,13 @@ namespace aspect
         std::pair<std::string,std::string>
         execute (TableHandler &statistics) override;
  
-        double get_average_mobility() const;
+        //double get_average_mobility() const;
 
-        double get_average_mobility_t0() const;
+        //double get_average_mobility_t0() const;
         
-        //double get_combined_mobility() const;     
+        //double get_combined_mobility() const;  
+        
+        double get_DMob() const;
      
         /**
          * Declare the parameters this class takes through input files.
@@ -114,6 +116,7 @@ namespace aspect
 
           double average_mobility = 0;  
           double average_mobility_t0 = 0;
+          double DMob = 0;
     };
   }
 }
