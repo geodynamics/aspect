@@ -802,7 +802,7 @@ namespace aspect
                //const double average_mobility = mobility_statistics.get_average_mobility();
                //const double average_mobility_t0 = mobility_statistics.get_average_mobility_t0(); 
                const double DMob = mobility_statistics.get_DMob(); 
-               const double alpha = 1;
+               const double alpha = 2;
    
                double friction_terms = alpha * drucker_prager_parameters.angle_internal_friction * DMob;
               
