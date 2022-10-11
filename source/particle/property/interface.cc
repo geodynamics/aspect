@@ -31,7 +31,6 @@
 #include <deal.II/grid/grid_tools.h>
 
 #include <list>
-#include <memory>
 
 namespace aspect
 {
@@ -410,7 +409,7 @@ namespace aspect
         particle_properties.reserve(property_information.n_components());
 
         unsigned int property_index = 0;
-        for (typename std::list<std::shared_ptr<Interface<dim>>>::const_iterator
+        for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p, ++property_index)
           {
             switch ((*p)->late_initialization_mode())
@@ -559,7 +558,7 @@ namespace aspect
                                          const std::vector<Tensor<1,dim>> &gradients) const
       {
         unsigned int plugin_index = 0;
-        for (typename std::list<std::shared_ptr<Interface<dim>>>::const_iterator
+        for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p,++plugin_index)
           {
             (*p)->update_particle_property(property_information.get_position_by_plugin_index(plugin_index),
@@ -640,25 +639,6 @@ namespace aspect
                                "with the name <" + name + ">, but no such plugin could "
                                "be found."));
         return std::distance(plugin_names.begin(),plugin);
-      }
-
-
-
-      template <int dim>
-      std::shared_ptr<Interface<dim>>
-      Manager<dim>::get_plugin_pointer_by_name(const std::string &name) const
-      {
-        const std::vector<std::string>::const_iterator plugin = std::find(plugin_names.begin(),
-                                                                          plugin_names.end(),
-                                                                          name);
-
-        AssertThrow(plugin != plugin_names.end(),
-                    ExcMessage("The particle property manager was asked for a plugin "
-                               "with the name <" + name + ">, but no such plugin could "
-                               "be found."));
-        typename std::list<std::shared_ptr<Interface<dim>>>::const_iterator it = property_list.begin();
-        advance(it, std::distance(plugin_names.begin(),plugin));
-        return *it;
       }
 
 
