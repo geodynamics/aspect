@@ -653,6 +653,11 @@ namespace aspect
           unsigned int get_plugin_index_by_name(const std::string &name) const;
 
           /**
+           * Get the plugin index of the particle plugin specified by @p name.
+           */
+          std::shared_ptr<Interface<dim>> get_plugin_pointer_by_name(const std::string &name) const;
+
+          /**
            * Get the number of components required to represent this particle's
            * properties.
            *
@@ -757,7 +762,7 @@ namespace aspect
            * A list of property objects that have been requested in the
            * parameter file.
            */
-          std::list<std::unique_ptr<Interface<dim>>> property_list;
+          std::list<std::shared_ptr<Interface<dim>>> property_list;
 
           /**
            * A class that stores all information about the particle properties,
