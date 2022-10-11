@@ -249,6 +249,8 @@ namespace aspect
         Assert(initial_residual->size() == introspection.n_compositional_fields, ExcInternalError());
       }
 
+    std::vector<AdvectionField> fields_advected_by_particles;
+
     for (unsigned int c=0; c < introspection.n_compositional_fields; ++c)
       {
         const AdvectionField adv_field (AdvectionField::composition(c));
@@ -294,7 +296,8 @@ namespace aspect
 
             case Parameters<dim>::AdvectionFieldMethod::particles:
             {
-              interpolate_particle_properties(adv_field);
+              // handle all particle fields together to increase efficiency
+              fields_advected_by_particles.push_back(adv_field);
               break;
             }
 
@@ -335,6 +338,10 @@ namespace aspect
               AssertThrow(false,ExcNotImplemented());
           }
       }
+
+    if (fields_advected_by_particles.size() > 0)
+      interpolate_particle_property_vector(fields_advected_by_particles);
+
 
     // for consistency we update the current linearization point only after we have solved
     // all fields, so that we use the same point in time for every field when solving
