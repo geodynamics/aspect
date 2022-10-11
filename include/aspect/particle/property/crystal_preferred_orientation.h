@@ -214,13 +214,13 @@ namespace aspect
            * Return the number of grains per particle
            */
           unsigned int
-          get_number_of_grains();
+          get_number_of_grains() const;
 
           /**
            * Return the number of minerals per particle
            */
           unsigned int
-          get_number_of_minerals();
+          get_number_of_minerals() const;
 
           /**
            * @brief Returns the value in the data array representing the deformation type.
