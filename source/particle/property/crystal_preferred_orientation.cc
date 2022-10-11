@@ -557,7 +557,7 @@ namespace aspect
 
       template<int dim>
       unsigned int
-      CrystalPreferredOrientation<dim>::get_number_of_grains()
+      CrystalPreferredOrientation<dim>::get_number_of_grains() const
       {
         return n_grains;
       }
@@ -566,7 +566,7 @@ namespace aspect
 
       template<int dim>
       unsigned int
-      CrystalPreferredOrientation<dim>::get_number_of_minerals()
+      CrystalPreferredOrientation<dim>::get_number_of_minerals() const
       {
         return n_minerals;
       }
