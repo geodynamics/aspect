@@ -661,14 +661,7 @@ namespace aspect
           template <typename ParticlePropertyType>
           inline
           bool
-          has_matching_property () const
-          {
-            for (const auto &p : property_list)
-              if (Plugins::plugin_type_matches<ParticlePropertyType>(*p))
-                return true;
-
-            return false;
-          }
+          has_matching_property () const;
 
           /**
            * Go through the list of all particle properties that have been selected
@@ -681,22 +674,7 @@ namespace aspect
           template <typename ParticlePropertyType>
           inline
           const ParticlePropertyType &
-          get_matching_property () const
-          {
-            AssertThrow(has_matching_property<ParticlePropertyType> (),
-                        ExcMessage("You asked Particle::Property::Manager::has_matching_property() for a "
-                                   "particle property of type <" + boost::core::demangle(typeid(ParticlePropertyType).name()) + "> "
-                                   "that could not be found in the current model. Activate this "
-                                   "particle property in the input file."));
-
-            typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator property;
-            for (const auto &p : property_list)
-              if (Plugins::plugin_type_matches<ParticlePropertyType>(*p))
-                return Plugins::get_plugin_as_type<ParticlePropertyType>(*p);
-
-            // We will never get here, because we had the Assert above. Just to avoid warnings.
-            return Plugins::get_plugin_as_type<ParticlePropertyType>(*(*property));
-          }
+          get_matching_property () const;
 
           /**
            * Get the number of components required to represent this particle's
@@ -811,6 +789,44 @@ namespace aspect
            */
           ParticlePropertyInformation property_information;
       };
+
+      /* -------------------------- inline and template functions ---------------------- */
+
+
+      template <int dim>
+      template <typename ParticlePropertyType>
+      inline
+      bool
+      Manager<dim>::has_matching_property () const
+      {
+        for (const auto &p : property_list)
+          if (Plugins::plugin_type_matches<ParticlePropertyType>(*p))
+            return true;
+
+        return false;
+      }
+
+
+      template <int dim>
+      template <typename ParticlePropertyType>
+      inline
+      const ParticlePropertyType &
+      Manager<dim>::get_matching_property () const
+      {
+        AssertThrow(has_matching_property<ParticlePropertyType> (),
+                    ExcMessage("You asked Particle::Property::Manager::has_matching_property() for a "
+                               "particle property of type <" + boost::core::demangle(typeid(ParticlePropertyType).name()) + "> "
+                               "that could not be found in the current model. Activate this "
+                               "particle property in the input file."));
+
+        typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator property;
+        for (const auto &p : property_list)
+          if (Plugins::plugin_type_matches<ParticlePropertyType>(*p))
+            return Plugins::get_plugin_as_type<ParticlePropertyType>(*p);
+
+        // We will never get here, because we had the Assert above. Just to avoid warnings.
+        return Plugins::get_plugin_as_type<ParticlePropertyType>(*(*property));
+      }
 
 
       /**
