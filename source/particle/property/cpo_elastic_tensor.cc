@@ -165,12 +165,12 @@ namespace aspect
 
 
         SymmetricTensor<2,6> S_average = voigt_average_elastic_tensor(cpo_particle_property,
-                                                                cpo_data_position,
-                                                                data);
+                                                                      cpo_data_position,
+                                                                      data);
 
         Particle::Property::CpoElasticTensor<dim>::set_elastic_tensor(data_position,
-                                                                       data,
-                                                                       S_average);
+                                                                      data,
+                                                                      S_average);
 
 
       }
