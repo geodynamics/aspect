@@ -138,9 +138,6 @@ namespace aspect
     void
     Viscoelastic<dim>::parse_parameters (ParameterHandler &prm)
     {
-      AssertThrow(this->get_parameters().enable_elasticity == true,
-                  ExcMessage ("Material model Viscoelastic only works if 'Enable elasticity' is set to true"));
-
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Viscoelastic");
