@@ -511,16 +511,10 @@ void signal_handler(int signal)
     {
       std::cerr << "Unexpected signal " << signal << " received\n";
     }
-#if DEAL_II_USE_CXX11
-  // Kill the program without performing any other cleanup, which is likely to
-  // lead to a deadlock
+
+  // Kill the program without performing any other cleanup, which would likely
+  // lead to a deadlock.
   std::_Exit(EXIT_FAILURE);
-#else
-  // Kill the program, or at least try to. The problem when we get here is
-  // that calling std::exit invokes at_exit() functions that may still hang
-  // the MPI system
-  std::exit(1);
-#endif
 }
 
 
