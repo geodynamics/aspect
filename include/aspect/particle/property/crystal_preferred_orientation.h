@@ -39,7 +39,7 @@ namespace aspect
        * @brief The type of deformation used by the CPO code.
        *
        * passive: Only to be used with the spin tensor CPO Derivative algorithm.
-       * olivine_a_fabric: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a Olivine A Fabric, which influences the relative strenght of the slip planes.
+       * olivine_a_fabric: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a Olivine A Fabric, which influences the relative strength of the slip planes.
        * olivine_b_fabric: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a Olivine B Fabric, which influences the relative strenght of the slip planes.
        * olivine_c_fabric: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a Olivine C Fabric, which influences the relative strenght of the slip planes.
        * olivine_d_fabric: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a Olivine D Fabric, which influences the relative strenght of the slip planes.
@@ -56,12 +56,12 @@ namespace aspect
        * @brief The type of deformation selector used by the CPO code.
        *
        * The selector is a input parameter and it can either set a deformation type directly or deterimine the deformation type through an algorithm.
-       * The deformation type selector is used to determine/select the the deformation type. It can be a fixed deformation type, for example,
+       * The deformation type selector is used to determine/select the deformation type. It can be a fixed deformation type, for example,
        * by setting it to olivine_a_fabric, or it can be dynamically chosen, which is what the olivine_karato_2008 option does.
        *
        * passive: Only to be used with the spin tensor CPO Derivative algorithm.
        * olivine_a_fabric to olivine_e_fabric: Only to be used with the D-Rex CPO Derivative algorithm.
-       *  Sets the deformation type of the mineral to a Olivine A-E Fabric, which influences the relative strenght of the slip planes. See table 1 in Fraters and Billen (2021).
+       *  Sets the deformation type of the mineral to a Olivine A-E Fabric, which influences the relative strength of the slip planes. See table 1 in Fraters and Billen (2021).
        * enstatite: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a enstatite Fabric, which influences the relative strenght of the slip planes.
        * olivine_karato_2008: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a olivine fabric based on the table in Karato 2008.
        */
@@ -276,7 +276,7 @@ namespace aspect
           get_number_of_minerals() const;
 
           /**
-           * @brief Deterimens the deformation type from the deformation type selector.
+           * @brief Determines the deformation type from the deformation type selector.
            */
           DeformationType
           determine_deformation_type(const DeformationTypeSelector deformation_type_selector,
@@ -300,7 +300,7 @@ namespace aspect
           /**
            * @brief Computes the reference resolved shear stress (RRSS) based on the selected deformation type.
            *
-           * The inactive plane should theoretically be infinitly strong, but this is nummerically not disirable,
+           * The inactive plane should theoretically be infinitly strong, but this is nummerically not desirable,
            * so an optional max_value can be set to indicate an inactive plane.
            */
           std::array<double,4>
@@ -576,13 +576,13 @@ namespace aspect
           double stress_exponent;
 
           /**
-           * efficientcy of nucleation parameter.
-           * lamda_m in equation 8 of Kamisnki et al. (2004, Geophys. J. Int)
+           * efficiency of nucleation parameter.
+           * lambda_m in equation 8 of Kaminski et al. (2004, Geophys. J. Int)
            */
           double nucleation_efficientcy;
 
           /**
-           * An exponent described in equation 10 of Kaminsty and Ribe (2001, EPSL)
+           * An exponent described in equation 10 of Kaminski and Ribe (2001, EPSL)
            */
           double exponent_p;
 
@@ -592,7 +592,7 @@ namespace aspect
           double threshold_GBS;
 
           /**
-           * grain boundery mobility
+           * grain boundary mobility
            */
           double mobility;
 

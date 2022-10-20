@@ -664,8 +664,8 @@ namespace aspect
             std::vector<Tensor<1,3>> slip_direction_reference {Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})};
 
             // these are variables we only need for olivine, but we need them for both
-            // within this if bock and the next ones
-            // Ordered vector where the first entry is the max/weakest and the last entry in the inactive slip system.
+            // within this if block and the next ones
+            // Ordered vector where the first entry is the max/weakest and the last entry is the inactive slip system.
             std::vector<unsigned int> indices(4,0);
 
             // compute G and beta
@@ -682,7 +682,7 @@ namespace aspect
 
             if (bigI.norm() < 1e-10)
               {
-                // In this case there is no shear, only (posibily) a rotation. So \gamma_y and/or G should be zero.
+                // In this case there is no shear, only (possibly) a rotation. So \gamma_y and/or G should be zero.
                 // Which is the default value, so do nothing.
               }
             else
@@ -690,7 +690,7 @@ namespace aspect
                 // compute the element wise absolute value of the element wise
                 // division of BigI by tau (tau = ref_resolved_shear_stress).
                 std::vector<double> q_abs(4);
-                for (unsigned int i = 0; i < 4; i++)
+                for (unsigned int i = 0; i < 4; ++i)
                   {
                     q_abs[i] = std::abs(bigI[i] / tau[i]);
                   }
@@ -705,7 +705,7 @@ namespace aspect
                     q_abs[indices[slip_system_i]] = -1;
                   }
 
-                // compute the ordered beta vector, which is the relative slip rates of the active slips systems.
+                // compute the ordered beta vector, which is the relative slip rates of the active slip systems.
                 // Test whether the max element is not equal to zero.
                 Assert(bigI[indices[0]] != 0.0, ExcMessage("Internal error: bigI is zero."));
                 beta[indices[0]] = 1.0; // max q_abs, weak system (most deformation) "s=1"
@@ -718,8 +718,8 @@ namespace aspect
                   }
                 beta[indices.back()] = 0.0;
 
-                // Now compute the Crystal rate of deformation tensor.
-                for (unsigned int i = 0; i < 3; i++)
+                // Now compute the crystal rate of deformation tensor.
+                for (unsigned int i = 0; i < 3; ++i)
                   {
                     for (unsigned int j = 0; j < 3; j++)
                       {
@@ -737,8 +737,8 @@ namespace aspect
             double bottom = 0;
             for (unsigned int i = 0; i < 3; ++i)
               {
-                // Following the Drex code, which differs from EPSL paper,
-                // which says gamma_nu depends on i+1: actually uses i+2
+                // Following the actual Drex implementation we use i+2, which differs
+                // from the EPSL paper, which says gamma_nu depends on i+1
                 const unsigned int ip2 = (i==0) ? (i+2) : (i-1);
 
                 top = top - (velocity_gradient_tensor_nondimensional[i][ip2]-velocity_gradient_tensor_nondimensional[ip2][i])*(G[i][ip2]-G[ip2][i]);
@@ -751,7 +751,7 @@ namespace aspect
                   }
               }
             // see comment on if all BigI are zero. In that case gamma should be zero.
-            const double gamma = bottom != 0.0 ? top/bottom : 0;
+            const double gamma = (bottom != 0.0) ? top/bottom : 0.0;
 
             // compute w (equation 8, Kaminiski & Ribe, 2001)
             // w is the Rotation rate vector of the crystallographic axes of grain
@@ -759,7 +759,7 @@ namespace aspect
             w[1] = 0.5*(velocity_gradient_tensor_nondimensional[0][2]-velocity_gradient_tensor_nondimensional[2][0]) - 0.5*(G[0][2]-G[2][0])*gamma;
             w[2] = 0.5*(velocity_gradient_tensor_nondimensional[1][0]-velocity_gradient_tensor_nondimensional[0][1]) - 0.5*(G[1][0]-G[0][1])*gamma;
 
-            // Compute strain energy for this grain (abrivated Estr)
+            // Compute strain energy for this grain (abbreviated Estr)
             // For olivine: DREX only sums over 1-3. But Thissen's matlab code corrected
             // this and writes each term using the indices created when calculating bigI.
             // Note tau = RRSS = (tau_m^s/tau_o), this why we get tau^(p-n)
@@ -767,7 +767,7 @@ namespace aspect
               {
                 const double rhos = std::pow(tau[indices[slip_system_i]],exponent_p-stress_exponent) *
                                     std::pow(std::abs(gamma*beta[indices[slip_system_i]]),exponent_p/stress_exponent);
-                strain_energy[grain_i] += rhos * exp(-nucleation_efficientcy * rhos * rhos);
+                strain_energy[grain_i] += rhos * std::exp(-nucleation_efficientcy * rhos * rhos);
 
                 Assert(isfinite(strain_energy[grain_i]), ExcMessage("strain_energy[" + std::to_string(grain_i) + "] is not finite: " + std::to_string(strain_energy[grain_i])
                                                                     + ", rhos (" + std::to_string(slip_system_i) + ") = " + std::to_string(rhos)
@@ -941,7 +941,7 @@ namespace aspect
               ref_resolved_shear_stress[3] = 1;
               break;
 
-            // from Kaminski and Ribe, GRL 2002and
+            // from Kaminski and Ribe, GRL 2002 and
             // Becker et al., 2007 (http://www-udc.ig.utexas.edu/external/becker/preprints/bke07.pdf)
             case DeformationType::olivine_d_fabric :
               ref_resolved_shear_stress[0] = 1;
@@ -950,7 +950,7 @@ namespace aspect
               ref_resolved_shear_stress[3] = max_value;
               break;
 
-            // Kaminski, Ribe and Browaeys, JGI, 2004 (same as in the matlab code)and
+            // Kaminski, Ribe and Browaeys, GJI, 2004 (same as in the matlab code) and
             // Becker et al., 2007 (http://www-udc.ig.utexas.edu/external/becker/preprints/bke07.pdf)
             case DeformationType::olivine_e_fabric :
               ref_resolved_shear_stress[0] = 2;
@@ -960,7 +960,7 @@ namespace aspect
               break;
 
             // from Kaminski and Ribe, GJI 2004.
-            // Todo: this one is not used in practice, since there is an optimalisation in
+            // Todo: this one is not used in practice, since there is an optimization in
             // the code. So maybe remove it in the future.
             case DeformationType::enstatite :
               ref_resolved_shear_stress[0] = max_value;
@@ -1094,7 +1094,7 @@ namespace aspect
                                    Patterns::Double(0),
                                    "This is exponent p as defined in equation 11 of Kaminski et al., 2004. ");
 
-                prm.declare_entry ("Nucleation efficientcy", "5",
+                prm.declare_entry ("Nucleation efficiency", "5",
                                    Patterns::Double(0),
                                    "This is the dimensionless nucleation rate as defined in equation 8 of "
                                    "Kaminski et al., 2004. ");
@@ -1241,7 +1241,7 @@ namespace aspect
                 volume_fractions_minerals = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Volume fractions minerals")));
                 stress_exponent = prm.get_double("Stress exponents");
                 exponent_p = prm.get_double("Exponents p");
-                nucleation_efficientcy = prm.get_double("Nucleation efficientcy");
+                nucleation_efficiency = prm.get_double("Nucleation efficiency");
                 threshold_GBS = prm.get_double("Threshold GBS");
               }
               prm.leave_subsection();
