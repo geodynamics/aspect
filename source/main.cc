@@ -803,6 +803,8 @@ int main (int argc, char *argv[])
                 << "Aborting!" << std::endl
                 << "----------------------------------------------------"
                 << std::endl;
+
+      MPI_Abort(MPI_COMM_WORLD, 1);
       return 1;
     }
   catch (std::exception &exc)
@@ -817,6 +819,8 @@ int main (int argc, char *argv[])
                 << "Aborting!" << std::endl
                 << "----------------------------------------------------"
                 << std::endl;
+
+      MPI_Abort(MPI_COMM_WORLD, 1);
       return 1;
     }
   catch (aspect::QuietException &)
@@ -830,6 +834,8 @@ int main (int argc, char *argv[])
       // other ranks to be printed before the MPI implementation might kill
       // the computation.
       std::this_thread::sleep_for(std::chrono::seconds(5));
+
+      MPI_Abort(MPI_COMM_WORLD, 1);
       return 1;
     }
   catch (...)
@@ -841,6 +847,8 @@ int main (int argc, char *argv[])
                 << "Aborting!" << std::endl
                 << "----------------------------------------------------"
                 << std::endl;
+
+      MPI_Abort(MPI_COMM_WORLD, 1);
       return 1;
     }
 
