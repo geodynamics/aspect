@@ -1198,6 +1198,41 @@ namespace aspect
       return sorted_vec;
     }
 
+    /**
+     * Get volume weighted rotation matrices, using random draws to convert
+     * to a discrete number of orientations, weighted by volume.
+     * The input is a vector of volume fractions and a vector of rotation matrices.
+     * The vectors need to have the same length.
+     *
+     * @param volume_fraction a vector of doubles representing the volume fraction of each grain
+     * @param rotation_matrices a vector of 2nd order 3D tensors representing the rotation matrix of each grain
+     * @param n_output_matrices The number of rotation matrices which are output by this function. This can be
+     * different from the number of entries in the volume fraction and rotation matrices vectors.
+     * @param random_number_generator a reference to a mt19937 random number generator.
+     */
+    std::vector<Tensor<2,3>>
+    rotation_matrices_random_draw_volume_weighting(const std::vector<double> volume_fractions,
+                                                   const std::vector<Tensor<2,3>> rotation_matrices,
+                                                   const unsigned int n_output_matrices,
+                                                   std::mt19937 &random_number_generator);
+
+    /**
+    * Wraps angle between 0 and 360 degrees.
+    */
+    double wrap_angle(const double angle);
+
+    /**
+     * Compute Z-X-Z Euler angles from rotation matrix.
+     * The Z-X-Z indicates the order of axis axis rotations to generate the Euler angles.
+     */
+    std::vector<double> zxz_euler_angles_from_rotation_matrix(const Tensor<2,3> &rotation_matrix);
+
+    /**
+     * Compute rotation matrix from Z-X-Z Euler angles
+     * The Z-X-Z indicates the order of axis axis rotations to generate the Euler angles.
+     */
+    Tensor<2,3> zxz_euler_angles_to_rotation_matrix(double phi1, double theta, double phi2);
+
   }
 }
 #endif
