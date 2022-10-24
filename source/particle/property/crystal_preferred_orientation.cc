@@ -53,6 +53,15 @@ namespace aspect
         CitationInfo::add("CPO");
         const unsigned int my_rank = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
         this->random_number_generator.seed(random_number_seed+my_rank);
+
+        // Don't assert when called by the unit tester.
+        if (this->simulator_is_past_initialization())
+          {
+            AssertThrow(this->introspection().compositional_name_exists("water"),
+                        ExcMessage("Particle property CPO only works if"
+                                   "there is a compositional field called water."));
+            water_index = this->introspection().compositional_index_for_name("water");
+          }
       }
 
 
@@ -229,7 +238,7 @@ namespace aspect
 
         // Calculate strain rate from velocity gradients
         const SymmetricTensor<2,dim> strain_rate = symmetrize (velocity_gradient);
-        const SymmetricTensor<2,dim> compressible_strain_rate
+        const SymmetricTensor<2,dim> deviatoric_strain_rate
           = (this->get_material_model().is_compressible()
              ?
              strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
@@ -238,16 +247,11 @@ namespace aspect
 
         const double pressure = solution[this->introspection().component_indices.pressure];
         const double temperature = solution[this->introspection().component_indices.temperature];
-        // Only assert in debug mode, because it should already be checked during initialization.
-        AssertThrow(this->introspection().compositional_name_exists("water"),
-                    ExcMessage("Particle property CPO only works if"
-                               "there is a compositional field called water."));
-        const unsigned int water_idx = this->introspection().compositional_index_for_name("water");
-        const double water_content = solution[this->introspection().component_indices.compositional_fields[water_idx]];
+        const double water_content = solution[this->introspection().component_indices.compositional_fields[water_index]];
 
         // get the composition of the particle
         std::vector<double> compositions;
-        for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
+        for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
           {
             const unsigned int solution_component = this->introspection().component_indices.compositional_fields[i];
             compositions.push_back(solution[solution_component]);
@@ -267,8 +271,8 @@ namespace aspect
           {
             strain_rate_3d[0][2] = strain_rate[0][2];
             strain_rate_3d[1][2] = strain_rate[1][2];
-            //sym: strain_rate_3d[2][0] = strain_rate[2][0];
-            //sym: strain_rate_3d[2][1] = strain_rate[2][1];
+            //sym: strain_rate_3d[2][0] = strain_rate[0][2];
+            //sym: strain_rate_3d[2][1] = strain_rate[1][2];
             strain_rate_3d[2][2] = strain_rate[2][2];
           }
         Tensor<2,3> velocity_gradient_3d;
@@ -307,7 +311,7 @@ namespace aspect
                                                            velocity,
                                                            compositions,
                                                            strain_rate,
-                                                           compressible_strain_rate,
+                                                           deviatoric_strain_rate,
                                                            water_content);
 
             switch (advection_method)
@@ -349,7 +353,7 @@ namespace aspect
                                   + std::to_string(inv_sum_volume_mineral) + "."));
 
                 /**
-                 * Correct direction cosine matrices numerical error (orthnormality) after integration
+                 * Correct direction rotation matrices numerical error (orthnormality) after integration
                  * Follows same method as in matlab version from Thissen (see https://github.com/cthissen/Drex-MATLAB/)
                  * of finding the nearest orthonormal matrix using the SVD
                  */
@@ -556,7 +560,7 @@ namespace aspect
                                                             const Tensor<1,dim> &velocity,
                                                             const std::vector<double> &compositions,
                                                             const SymmetricTensor<2,dim> &strain_rate,
-                                                            const SymmetricTensor<2,dim> &compressible_strain_rate,
+                                                            const SymmetricTensor<2,dim> &deviatoric_strain_rate,
                                                             const double water_content) const
       {
         std::pair<std::vector<double>, std::vector<Tensor<2,3>>> derivatives;
@@ -577,7 +581,7 @@ namespace aspect
                                                                                   velocity,
                                                                                   compositions,
                                                                                   strain_rate,
-                                                                                  compressible_strain_rate,
+                                                                                  deviatoric_strain_rate,
                                                                                   water_content);
 
               set_deformation_type(cpo_index,data,mineral_i,static_cast<unsigned int>(deformation_type));
@@ -660,13 +664,13 @@ namespace aspect
             Tensor<2,3> G;
             Tensor<1,3> w;
             Tensor<1,4> beta({1.0, 1.0, 1.0, 1.0});
-            std::vector<Tensor<1,3>> slip_normal_reference {Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})};
-            std::vector<Tensor<1,3>> slip_direction_reference {Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})};
+            std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
+            std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
 
             // these are variables we only need for olivine, but we need them for both
             // within this if block and the next ones
             // Ordered vector where the first entry is the max/weakest and the last entry is the inactive slip system.
-            std::vector<unsigned int> indices(4,0);
+            std::array<unsigned int,4> indices;
 
             // compute G and beta
             Tensor<1,4> bigI;
@@ -689,7 +693,7 @@ namespace aspect
               {
                 // compute the element wise absolute value of the element wise
                 // division of BigI by tau (tau = ref_resolved_shear_stress).
-                std::vector<double> q_abs(4);
+                std::array<double,4> q_abs;
                 for (unsigned int i = 0; i < 4; ++i)
                   {
                     q_abs[i] = std::abs(bigI[i] / tau[i]);
@@ -701,7 +705,7 @@ namespace aspect
                 // the element, which would require allocation. (not tested)
                 for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
                   {
-                    indices[slip_system_i] = std::distance(q_abs.begin(),max_element(q_abs.begin(), q_abs.end()));
+                    indices[slip_system_i] = std::distance(q_abs.begin(),std::max_element(q_abs.begin(), q_abs.end()));
                     q_abs[indices[slip_system_i]] = -1;
                   }
 
@@ -713,8 +717,7 @@ namespace aspect
                 const double ratio = tau[indices[0]]/bigI[indices[0]];
                 for (unsigned int slip_system_i = 1; slip_system_i < 4-1; ++slip_system_i)
                   {
-                    const double beta_tmp = ratio * (bigI[indices[slip_system_i]]/tau[indices[slip_system_i]]);
-                    beta[indices[slip_system_i]] = beta_tmp * std::pow(std::abs(beta_tmp), stress_exponent-1);
+                    beta[indices[slip_system_i]] = std::pow(std::abs(ratio * (bigI[indices[slip_system_i]]/tau[indices[slip_system_i]])), stress_exponent);
                   }
                 beta[indices.back()] = 0.0;
 
@@ -733,16 +736,18 @@ namespace aspect
 
             // Now calculate the analytic solution to the deformation minimization problem
             // compute gamma (equation 7, Kaminiski & Ribe, 2001)
+
+            // Top is the numerator and bottom is the denominator in equation 7.
             double top = 0;
             double bottom = 0;
             for (unsigned int i = 0; i < 3; ++i)
               {
                 // Following the actual Drex implementation we use i+2, which differs
                 // from the EPSL paper, which says gamma_nu depends on i+1
-                const unsigned int ip2 = (i==0) ? (i+2) : (i-1);
+                const unsigned int i_offset = (i==0) ? (i+2) : (i-1);
 
-                top = top - (velocity_gradient_tensor_nondimensional[i][ip2]-velocity_gradient_tensor_nondimensional[ip2][i])*(G[i][ip2]-G[ip2][i]);
-                bottom = bottom - (G[i][ip2]-G[ip2][i])*(G[i][ip2]-G[ip2][i]);
+                top = top - (velocity_gradient_tensor_nondimensional[i][i_offset]-velocity_gradient_tensor_nondimensional[i_offset][i])*(G[i][i_offset]-G[i_offset][i]);
+                bottom = bottom - (G[i][i_offset]-G[i_offset][i])*(G[i][i_offset]-G[i_offset][i]);
 
                 for (unsigned int j = 0; j < 3; ++j)
                   {
@@ -760,22 +765,23 @@ namespace aspect
             w[2] = 0.5*(velocity_gradient_tensor_nondimensional[1][0]-velocity_gradient_tensor_nondimensional[0][1]) - 0.5*(G[1][0]-G[0][1])*gamma;
 
             // Compute strain energy for this grain (abbreviated Estr)
-            // For olivine: DREX only sums over 1-3. But Thissen's matlab code corrected
+            // For olivine: DREX only sums over 1-3. But Christopher Thissen's matlab
+            // code (https://github.com/cthissen/Drex-MATLAB) corrected
             // this and writes each term using the indices created when calculating bigI.
             // Note tau = RRSS = (tau_m^s/tau_o), this why we get tau^(p-n)
             for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
               {
                 const double rhos = std::pow(tau[indices[slip_system_i]],exponent_p-stress_exponent) *
                                     std::pow(std::abs(gamma*beta[indices[slip_system_i]]),exponent_p/stress_exponent);
-                strain_energy[grain_i] += rhos * std::exp(-nucleation_efficientcy * rhos * rhos);
+                strain_energy[grain_i] += rhos * std::exp(-nucleation_efficiency * rhos * rhos);
 
                 Assert(isfinite(strain_energy[grain_i]), ExcMessage("strain_energy[" + std::to_string(grain_i) + "] is not finite: " + std::to_string(strain_energy[grain_i])
                                                                     + ", rhos (" + std::to_string(slip_system_i) + ") = " + std::to_string(rhos)
-                                                                    + ", nucleation_efficientcy = " + std::to_string(nucleation_efficientcy) + "."));
+                                                                    + ", nucleation_efficiency = " + std::to_string(nucleation_efficiency) + "."));
               }
 
 
-            // compute the derivative of the cosine matrix a: \frac{\partial a_{ij}}{\partial t}
+            // compute the derivative of the rotation matrix: \frac{\partial a_{ij}}{\partial t}
             // (Eq. 9, Kaminski & Ribe 2001)
             deriv_a_cosine_matrices[grain_i] = 0;
             const double volume_fraction_grain = get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
@@ -819,7 +825,7 @@ namespace aspect
                                                                    const Tensor<1,dim> &velocity,
                                                                    const std::vector<double> &compositions,
                                                                    const SymmetricTensor<2,dim> &strain_rate,
-                                                                   const SymmetricTensor<2,dim> &compressible_strain_rate,
+                                                                   const SymmetricTensor<2,dim> &deviatoric_strain_rate,
                                                                    const double water_content) const
       {
         // Now compute what type of deformation takes place.
@@ -855,7 +861,7 @@ namespace aspect
               this->get_material_model().evaluate(material_model_inputs, material_model_outputs);
               double eta = material_model_outputs.viscosities[0];
 
-              const SymmetricTensor<2,dim> stress = 2*eta*compressible_strain_rate +
+              const SymmetricTensor<2,dim> stress = 2*eta*deviatoric_strain_rate +
                                                     pressure * unit_symmetric_tensor<dim>();
               const std::array< double, dim > eigenvalues = dealii::eigenvalues(stress);
               double differential_stress = eigenvalues[0]-eigenvalues[dim-1];
@@ -1055,7 +1061,7 @@ namespace aspect
                                      "figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).");
 
 
-                  prm.declare_entry ("Volume fractions minerals", "0.5, 0.5",
+                  prm.declare_entry ("Volume fractions minerals", "0.7, 0.3",
                                      Patterns::List(Patterns::Double(0)),
                                      "The volume fractions for the different minerals. "
                                      "There need to be the same number of values as there are minerals."
@@ -1101,7 +1107,9 @@ namespace aspect
 
                 prm.declare_entry ("Threshold GBS", "0.3",
                                    Patterns::Double(0),
-                                   "This is the dimensionless grain-boundary sliding threshold. ");
+                                   "The Dimensionless Grain Boundary Sliding (GBS) threshold. "
+                                   "This is a grain size threshold below which grain deform by GBS and "
+                                   "become strain-free grains.");
               }
               prm.leave_subsection();
             }
