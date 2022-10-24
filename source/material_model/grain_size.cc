@@ -205,12 +205,12 @@ namespace aspect
                        const SymmetricTensor<2,dim> &strain_rate,
                        const Tensor<1,dim>          &/*velocity*/,
                        const Point<dim>             &position,
-                       const unsigned int            field_index,
+                       const unsigned int            grain_size_index,
                        const int                     crossed_transition) const
     {
       // we want to iterate over the grain size evolution here, as we solve in fact an ordinary differential equation
       // and it is not correct to use the starting grain size (and introduces instabilities)
-      const double original_grain_size = compositional_fields[field_index];
+      const double original_grain_size = compositional_fields[grain_size_index];
       if ((original_grain_size != original_grain_size) || this->get_timestep() == 0.0
           || original_grain_size < std::numeric_limits<double>::min())
         return 0.0;
@@ -298,7 +298,7 @@ namespace aspect
             }
 
           grain_size += grain_size_change;
-          current_composition[field_index] = grain_size;
+          current_composition[grain_size_index] = grain_size;
 
           Assert(grain_size > 0,
                  ExcMessage("The grain size became smaller than zero. This is not valid, "
@@ -314,7 +314,7 @@ namespace aspect
       // TODO: recrystallize first, and then do grain size growth/reduction for grains that crossed the transition
       // in dependence of the distance they have moved
       double phase_grain_size_reduction = 0.0;
-      if (this->introspection().name_for_compositional_index(field_index) == "grain_size"
+      if (this->introspection().name_for_compositional_index(grain_size_index) == "grain_size"
           &&
           this->get_timestep_number() > 0)
         {

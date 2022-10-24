@@ -343,7 +343,7 @@ namespace aspect
                            const SymmetricTensor<2,dim> &strain_rate,
                            const Tensor<1,dim>          &velocity,
                            const Point<dim>             &position,
-                           const unsigned int            field_index,
+                           const unsigned int            grain_size_index,
                            const int                     crossed_transition) const;
 
         /**
