@@ -340,7 +340,7 @@ namespace aspect
       }
 
     if (fields_advected_by_particles.size() > 0)
-      interpolate_particle_property_vector(fields_advected_by_particles);
+      interpolate_particle_properties(fields_advected_by_particles);
 
 
     // for consistency we update the current linearization point only after we have solved

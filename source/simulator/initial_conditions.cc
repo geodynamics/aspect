@@ -197,13 +197,13 @@ namespace aspect
   void Simulator<dim>::interpolate_particle_properties (const AdvectionField &advection_field)
   {
     std::vector<AdvectionField> advection_fields(1,advection_field);
-    interpolate_particle_property_vector(advection_fields);
+    interpolate_particle_properties(advection_fields);
   }
 
 
 
   template <int dim>
-  void Simulator<dim>::interpolate_particle_property_vector (const std::vector<AdvectionField> &advection_fields)
+  void Simulator<dim>::interpolate_particle_properties (const std::vector<AdvectionField> &advection_fields)
   {
     TimerOutput::Scope timer (computing_timer, "Particles: Interpolate");
 
@@ -273,7 +273,10 @@ namespace aspect
     // that share the same base element. Otherwise the element support points
     // are not guaranteed to be identical.
     for (const auto &advection_field: advection_fields)
-      Assert (advection_field.base_element(introspection) == base_element_index, ExcInternalError());
+      {
+        (void) advection_field;
+        Assert (advection_field.base_element(introspection) == base_element_index, ExcInternalError());
+      }
 
     // get the temperature/composition support points
     const std::vector<Point<dim>> support_points
