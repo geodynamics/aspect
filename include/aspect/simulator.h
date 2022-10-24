@@ -831,8 +831,16 @@ namespace aspect
 
       /**
        * Interpolate a particular particle property to the solution field.
+       *
+       * @deprecated: Use interpolate_particle_property_vector() instead.
        */
-      void interpolate_particle_properties (const AdvectionField &advection_field);
+      void interpolate_particle_properties (const AdvectionField &advection_field) DEAL_II_DEPRECATED;
+
+      /**
+       * Interpolate the corresponding particle properties into the given
+       * @p advection_fields solution fields.
+       */
+      void interpolate_particle_properties (const std::vector<AdvectionField> &advection_fields);
 
       /**
        * Solve the Stokes linear system.
