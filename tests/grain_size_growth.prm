@@ -133,7 +133,7 @@ subsection Material model
     set Grain growth activation volume       = 0.0
     set Grain growth rate constant           = 4E-045
     set Grain growth exponent                = 10
-    set Use paleowattmeter                   = false
+    set Grain size evolution formulation     = paleowattmeter
     set Reciprocal required strain           = 0
 
     # Faul and Jackson 2007

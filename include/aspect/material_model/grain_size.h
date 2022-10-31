@@ -198,11 +198,55 @@ namespace aspect
          * set to false we use the approach of Hall, C. E.,
          * Parmentier, E. M. (2003). Influence of grain size evolution on
          * convective instability. Geochemistry, Geophysics, Geosystems, 4(3).
+         * Or: TODO add Mulyukova reference.
          */
-        bool use_paleowattmeter;
         std::vector<double> grain_boundary_energy;
         std::vector<double> boundary_area_change_work_fraction;
         std::vector<double> geometric_constant;
+
+        /**
+          * A struct that contains information about which
+          * formulation of grain size evolution should be used.
+          */
+        struct Formulation
+        {
+          /**
+           * This enum lists available options that
+           * determine the dynamic recrystallization.
+           */
+          enum Kind
+          {
+            paleowattmeter,
+            paleopiezometer,
+            pinned_grain_damage
+          };
+
+          /**
+           * This function translates an input string into the
+           * available enum options.
+           */
+          static
+          Kind
+          parse(const std::string &input)
+          {
+            if (input == "paleowattmeter")
+              return Formulation::paleowattmeter;
+            else if (input == "paleopiezometer")
+              return Formulation::paleopiezometer;
+            else if (input == "pinned grain damage")
+              return Formulation::pinned_grain_damage;
+            else
+              AssertThrow(false, ExcNotImplemented());
+
+            return Formulation::Kind();
+          }
+        };
+
+        /**
+         * A variable that records the formulation of how to evolve grain size.
+         * See the type of this variable for a description of available options.
+        */
+        typename Formulation::Kind grain_size_evolution_formulation;
 
         /**
          * Parameters controlling the viscosity.

@@ -105,7 +105,7 @@ subsection Material model
     set Average specific grain boundary energy = 1.0
     set Work fraction for boundary area change = 0.1
     set Geometric constant                   = 3
-    set Use paleowattmeter                          = true
+    set Grain size evolution formulation     = paleowattmeter
     set Reciprocal required strain                  = 10
 
     # Faul and Jackson 2007
