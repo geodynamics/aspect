@@ -1033,16 +1033,18 @@ namespace aspect
                              "Units: \\si{\\meter}.");
           prm.declare_entry ("Grain size evolution formulation", "paleowattmeter",
                              Patterns::Selection ("paleowattmeter|paleopiezometer|pinned grain damage"),
-                             "A flag indicating whether the computation should be use the "
+                             "A flag indicating whether the material model should use the "
                              "paleowattmeter approach of Austin and Evans (2007) for grain size reduction "
-                             "in the dislocation creep regime (if true) or the paleopiezometer approach "
-                             "from Hall and Parmetier (2003) (if false). TODO update.");
+                             "in the dislocation creep regime, the paleopiezometer approach "
+                             "from Hall and Parmetier (2003), or the pinned grain damage approach "
+                             "from Mulyukova and Bercovici (2018).");
           prm.declare_entry ("Use paleowattmeter", "default",
                              Patterns::Selection ("true|false|default"),
-                             "A flag indicating whether the computation should be use the "
+                             "A flag indicating whether the computation should use the "
                              "paleowattmeter approach of Austin and Evans (2007) for grain size reduction "
                              "in the dislocation creep regime (if true) or the paleopiezometer approach "
-                             "from Hall and Parmetier (2003) (if false).");
+                             "from Hall and Parmetier (2003) (if false). This parameter has been removed. "
+                             "Use 'Grain size evolution formulation' instead.");
           prm.declare_entry ("Average specific grain boundary energy", "1.0",
                              Patterns::List (Patterns::Double (0.)),
                              "The average specific grain boundary energy $\\gamma$. "
@@ -1284,11 +1286,12 @@ namespace aspect
           reciprocal_required_strain            = Utilities::string_to_double
                                                   (Utilities::split_string_list(prm.get ("Reciprocal required strain")));
 
-          grain_size_evolution_formulation                    = Formulation::parse(prm.get("Grain size evolution formulation"));
+          grain_size_evolution_formulation      = Formulation::parse(prm.get("Grain size evolution formulation"));
 
-          std::string use_paleowattmeter = prm.get ("Use paleowattmeter");
+          const std::string use_paleowattmeter  = prm.get ("Use paleowattmeter");
           Assert(use_paleowattmeter == "default",
-                 ExcMessage("The parameter 'Use paleowattmeter' is deprecated. Use the parameter 'Grain size evolution formulation instead'."));
+                 ExcMessage("The parameter 'Use paleowattmeter' has been removed. "
+                            "Use the parameter 'Grain size evolution formulation instead'."));
 
 
           grain_boundary_energy                 = Utilities::string_to_double

@@ -192,13 +192,6 @@ namespace aspect
 
         /**
          * Parameters controlling the dynamic grain recrystallization.
-         * (following paleowattmeter as described in Austin, N. J., & Evans, B.
-         * (2007). Paleowattmeters: A scaling relation for dynamically
-         * recrystallized grain size. Geology, 35(4), 343-346.). If this is
-         * set to false we use the approach of Hall, C. E.,
-         * Parmentier, E. M. (2003). Influence of grain size evolution on
-         * convective instability. Geochemistry, Geophysics, Geosystems, 4(3).
-         * Or: TODO add Mulyukova reference.
          */
         std::vector<double> grain_boundary_energy;
         std::vector<double> boundary_area_change_work_fraction;
@@ -212,7 +205,23 @@ namespace aspect
         {
           /**
            * This enum lists available options that
-           * determine the dynamic recrystallization.
+           * determine the equations being used for grain size evolution.
+           *
+           * We currently support three approaches:
+           *
+           * 'paleowattmeter':
+           * Austin, N. J., & Evans, B. (2007). Paleowattmeters: A scaling
+           * relation for dynamically recrystallized grain size. Geology, 354), 343-346.).
+           *
+           * 'paleopiezometer':
+           * Hall, C. E., Parmentier, E. M. (2003). Influence of grain size
+           * evolution on convective instability. Geochemistry, Geophysics,
+           * Geosystems, 4(3).
+           *
+           * 'pinned_grain_damage':
+           * Mulyukova, E., & Bercovici, D. (2018). Collapse of passive margins
+           * by lithospheric damage and plunging grain size. Earth and Planetary
+           * Science Letters, 484, 341-352.
            */
           enum Kind
           {
