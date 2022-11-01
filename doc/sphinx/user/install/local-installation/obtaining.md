@@ -16,11 +16,9 @@ in the ASPECT directory created by the
 `git clone` command above. If you did not set `$DEAL_II_DIR` you have to
 supply cmake with the location:
 
-     cmake -DDEAL_II_DIR=/u/username/deal-installed/ ..
+     cmake -DDEAL_II_DIR=/home/username/deal-installed/ ..
 
 This will create an "out-of-source" build, where the build
-directory is different from the source directory. While in-source builds
-(where you run `cmake .` in your source directory) are supported, we strongly
-recommend an out-of-source build as described above. Specifically, running the
-whole test suite (see {ref}`sec:extending:running-tests`) is only
-supported this way.
+directory is different from the source directory, which is the
+only supported option. (We do not support in-source builds where the source
+and build directory are identical).
