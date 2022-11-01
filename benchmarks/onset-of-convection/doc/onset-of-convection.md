@@ -1,3 +1,4 @@
+(sec:benchmarks:onset_of_convection)=
 # Onset of convection benchmark
 
 *This section was contributed by Max Rudolph, based on a course assignment for

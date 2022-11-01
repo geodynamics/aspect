@@ -6,28 +6,24 @@
 The input file for this model can be found at
 [cookbooks/onset_of_convection/onset_of_convection.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/onset_of_convection/onset_of_convection.prm).
 
-This model is a copy of the onset of convection benchmark described in
-Section&nbsp;{ref}`sec:benchmark-onset-of-convection`, with the difference
+This model is a copy of the onset of convection benchmark described in {ref}`sec:benchmarks:onset_of_convection`, with the difference
 that parameter values are specified explicitly in the input file (rather than
 through an ipython notebook). The setup is based on a linear stability
-analysis for the onset of convection given in Turcotte and Schubert (Turcotte
-and Schubert 2014) (section 6.19). The parameters being used here are
+analysis for the onset of convection given in {cite:t}`turcotte:schubert:2014` (section 6.19). The parameters being used here are
 reasonable for the Earth's mantle. The cookbook folder contains a script
 [cookbooks/onset_of_convection/run.sh](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/onset_of_convection/run.sh) that can be used to run several
 models with small parameter variations. More details can be found in the
 example assignment below.
 
-.
 
 ```{figure-md} fig:convection-box-iterations
 <img src="convection_models.png" style="width:80.0%" />
 
  Onset of convection model with different Rayleigh numbers. Background colors show temperature.
 ```
-.
 
 Slides that describe the different forces controling convective motion (which
-is related to one of the questions in the assignment) can be found [here].
+is related to one of the questions in the assignment) can be found [here]( https://www.dropbox.com/s/0wqtg05w7713hdz/06_geophysics_lecture_01_29.pdf?dl=0).
 
 ## Example assignment: Onset of convection in celestial bodies
 
@@ -68,12 +64,12 @@ gravity is constant within your celestial mantle (which is an approximation
 that may be better or worse depending on the body you picked, but we will go
 with it for simplicity), and compute the gravitational acceleration using the
 formula:
-
-$$g = \frac{G M}{r^2}$$
-
+```{math}
+g = \frac{G M}{r^2}
+```
 where $G = 6.67430 \times 10^{-11}$ m<sup>3</sup> kg<sup>-1</sup>
-s<sup>-2</sup> is the gravitational constant, M is the mass of the body you
-picked and r is the radius of the body you picked (both of which you can
+s<sup>-2</sup> is the gravitational constant, $M$ is the mass of the body you
+picked and $r$ is the radius of the body you picked (both of which you can
 easily find online).
 
 To change the gravity, modify the line
@@ -388,20 +384,3 @@ data, etc. That is the advantage of using a command-line tool rather than a
 graphical tool, and can be very useful, for example, when you write a
 publication and a reviewer (or a collaborator, or adviser) asks you to run new
 models, but redo the same plots.
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-TS14" class="csl-entry">
-
-Turcotte, D. L., and G. Schubert. 2014. *Geodynamics*. 3rd ed. Cambridge.
-
-</div>
-
-</div>
-
-  [cookbooks/onset_of_convection/onset_of_convection.prm]: cookbooks/onset_of_convection/onset_of_convection.prm
-  [1]: #sec:benchmark-onset-of-convection
-  [cookbooks/onset_of_convection/run.sh]: cookbooks/onset_of_convection/run.sh
-  [here]: https://www.dropbox.com/s/0wqtg05w7713hdz/06_geophysics_lecture_01_29.pdf?dl=0
-  [cookbooks/onset_of_convection/]: cookbooks/onset_of_convection/
-  [cookbooks/onset_of_convection/plot.plt]: cookbooks/onset_of_convection/plot.plt
