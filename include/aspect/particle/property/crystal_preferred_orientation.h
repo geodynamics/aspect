@@ -99,7 +99,7 @@ namespace aspect
            */
           virtual
           void
-          initialize ();
+          initialize () override;
 
           /**
            * Initialization function. This function is called once at the
@@ -115,7 +115,7 @@ namespace aspect
           virtual
           void
           initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const;
+                                            std::vector<double> &particle_properties) const override;
 
           /**
            * Update function. This function is called every time an update is
@@ -144,20 +144,20 @@ namespace aspect
                                         const Point<dim> &position,
                                         const Vector<double> &solution,
                                         const std::vector<Tensor<1,dim>> &gradients,
-                                        const ArrayView<double> &particle_properties) const;
+                                        const ArrayView<double> &particle_properties) const override;
 
           /**
            * This implementation tells the particle manager that
            * we need to update particle properties every time step.
            */
           UpdateTimeFlags
-          need_update () const;
+          need_update () const override;
 
           /**
            * The CPO of late particles is initialized by interpolating from existing particles.
            */
           InitializationModeForLateParticles
-          late_initialization_mode () const;
+          late_initialization_mode () const override;
 
           /**
            * Return which data has to be provided to update the property.
@@ -165,7 +165,7 @@ namespace aspect
            */
           virtual
           UpdateFlags
-          get_needed_update_flags () const;
+          get_needed_update_flags () const override;
 
           /**
            * Set up the information about the names and number of components
@@ -176,7 +176,7 @@ namespace aspect
            */
           virtual
           std::vector<std::pair<std::string, unsigned int>>
-          get_property_information() const;
+          get_property_information() const override;
 
           /**
            * Computes the volume fraction and grain orientation derivatives of all the grains of a mineral.

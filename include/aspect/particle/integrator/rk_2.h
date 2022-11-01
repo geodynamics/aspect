@@ -100,7 +100,7 @@ namespace aspect
            */
           virtual
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm) override;
 
           /**
            * We need to tell the property manager how many intermediate properties this integrator requires,

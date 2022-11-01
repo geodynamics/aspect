@@ -97,25 +97,25 @@ inline void compare_rotation_matrices_approx(
        "           " << computed[2][0] << " " << computed[2][1] << " " << computed[2][2] << "\n" );
   const double tol = 1e-14;
   CHECK((
-          ((computed[0][0] == Approx(expected[0][0]) || std::fabs(computed[0][0] < tol))
-           && (computed[0][1] == Approx(expected[0][1]) || std::fabs(computed[0][1] < tol))
-           && (computed[0][2] == Approx(expected[0][2]) || std::fabs(computed[0][2] < tol))
-           && (computed[1][0] == Approx(expected[1][0]) || std::fabs(computed[1][0] < tol))
-           && (computed[1][1] == Approx(expected[1][1]) || std::fabs(computed[1][1] < tol))
-           && (computed[1][2] == Approx(expected[1][2]) || std::fabs(computed[1][2] < tol))
-           && (computed[2][0] == Approx(expected[2][0]) || std::fabs(computed[2][0] < tol))
-           && (computed[2][1] == Approx(expected[2][1]) || std::fabs(computed[2][1] < tol))
-           && (computed[2][2] == Approx(expected[2][2]) || std::fabs(computed[2][2] < tol)))
+          ((computed[0][0] == Approx(expected[0][0]) || std::fabs(computed[0][0]) < tol)
+           && (computed[0][1] == Approx(expected[0][1]) || std::fabs(computed[0][1]) < tol)
+           && (computed[0][2] == Approx(expected[0][2]) || std::fabs(computed[0][2]) < tol)
+           && (computed[1][0] == Approx(expected[1][0]) || std::fabs(computed[1][0]) < tol)
+           && (computed[1][1] == Approx(expected[1][1]) || std::fabs(computed[1][1]) < tol)
+           && (computed[1][2] == Approx(expected[1][2]) || std::fabs(computed[1][2]) < tol)
+           && (computed[2][0] == Approx(expected[2][0]) || std::fabs(computed[2][0]) < tol)
+           && (computed[2][1] == Approx(expected[2][1]) || std::fabs(computed[2][1]) < tol)
+           && (computed[2][2] == Approx(expected[2][2]) || std::fabs(computed[2][2]) < tol))
           ||
-          ((computed[0][0] == Approx(-expected[0][0]) || std::fabs(computed[0][0] < tol))
-           && (computed[0][1] == Approx(-expected[0][1]) || std::fabs(computed[0][1] < tol))
-           && (computed[0][2] == Approx(-expected[0][2]) || std::fabs(computed[0][2] < tol))
-           && (computed[1][0] == Approx(-expected[1][0]) || std::fabs(computed[1][0] < tol))
-           && (computed[1][1] == Approx(-expected[1][1]) || std::fabs(computed[1][1] < tol))
-           && (computed[1][2] == Approx(-expected[1][2]) || std::fabs(computed[1][2] < tol))
-           && (computed[2][0] == Approx(-expected[2][0]) || std::fabs(computed[2][0] < tol))
-           && (computed[2][1] == Approx(-expected[2][1]) || std::fabs(computed[2][1] < tol))
-           && (computed[2][2] == Approx(-expected[2][2]) || std::fabs(computed[2][2] < tol)))));
+          ((computed[0][0] == Approx(-expected[0][0]) || std::fabs(computed[0][0]) < tol)
+           && (computed[0][1] == Approx(-expected[0][1]) || std::fabs(computed[0][1]) < tol)
+           && (computed[0][2] == Approx(-expected[0][2]) || std::fabs(computed[0][2]) < tol)
+           && (computed[1][0] == Approx(-expected[1][0]) || std::fabs(computed[1][0]) < tol)
+           && (computed[1][1] == Approx(-expected[1][1]) || std::fabs(computed[1][1]) < tol)
+           && (computed[1][2] == Approx(-expected[1][2]) || std::fabs(computed[1][2]) < tol)
+           && (computed[2][0] == Approx(-expected[2][0]) || std::fabs(computed[2][0]) < tol)
+           && (computed[2][1] == Approx(-expected[2][1]) || std::fabs(computed[2][1]) < tol)
+           && (computed[2][2] == Approx(-expected[2][2]) || std::fabs(computed[2][2]) < tol))));
 }
 
 TEST_CASE("CPO core: Store and Load")
