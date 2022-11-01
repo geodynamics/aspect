@@ -113,7 +113,7 @@
 
 (parameters:Solver_20parameters/Newton_20solver_20parameters/Maximum_20linear_20Stokes_20solver_20tolerance)=
 ### __Parameter name:__ Maximum linear Stokes solver tolerance
-**Default value:** 0.9
+**Default value:** 1e-2
 
 **Pattern:** [Double 0...1 (inclusive)]
 
