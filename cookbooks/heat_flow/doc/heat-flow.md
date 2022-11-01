@@ -6,29 +6,26 @@
 The input file for this model can be found at
 [cookbooks/heat_flow/heat-flow.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/heat_flow/heat-flow.prm)
 
-The model is loosely based on the cookbook describing how to model convection
-in a box with prescribed, variable velocity boundary conditions
-(Section&nbsp;{ref}`sec:cookbooks-platelike`).
+The model is loosely based on the cookbook describing how to model
+{ref}`sec:cookbooks:platelike-boundary`.
 
 The model features the spreading of plates at a mid-ocean ridge, with the
-ridge being in the center of the model. Its vertical extent is 100&nbsp;km and
+ridge being in the center of the model. Its vertical extent is 100 km and
 material flows in from the bottom, and then leaves the domain at the sides.
 The initial temperature is the adiabatic temperature of the mantle, which
 corresponds to a plate age of 0, and temperature is fixed at the top, so that
 a cold thermal boundary develops over time at the top model boundary.
 
-.
 
 ```{figure-md} fig:convection-box-iterations
 <img src="mid-ocean-ridge.png" style="width:60.0%" />
 
  Setup of the mid-ocean-ridge model that illustrates the cooling of the lithosphere. Background colors show temperature, streamlines illustrate the flow.
 ```
-.
 
 An example that shows how this model can be used to visualize lithospheric
 thickness and how it changes over time and in dependence of the spreading rate
-can be found in [this presentation].
+can be found in [this presentation](https://www.dropbox.com/s/tdfj9pi2mdq0fhe/04_geophysics_lecture_01_13.pdf?dl=0).
 
 ## Shear heating and radiogenic heating
 
@@ -36,7 +33,7 @@ The model can also be modified to include radiogenic heat production and shear
 heating. The corresponding input file is located at
 [cookbooks/heat_flow/heat-flow-terms.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/heat_flow/heat-flow-terms.prm), and it switches on postprocessors
 that generate graphical output for the different heating terms. An example
-exercise is described in [this presentation (last slide)].
+exercise is described in [this presentation (last slide)](https://www.dropbox.com/s/jh2v6vgje4cft5n/05_geophysics_lecture_01_27.pdf?dl=0).
 
 ## Example assignment: Heat flux
 
@@ -83,8 +80,8 @@ what area of the model conductive heat flux is dominant, and where convective
 heat flux is dominant.
 
 Hint: You can save screenshots in ParaView under the menu option
-`File \rightarrow Save screenshot`. VirtualBox also has a menu option to take
-screenshots under `View \rightarrow Take Screenshot (Host+E)`. Alternatively,
+`File` &#8594; `Save screenshot`. VirtualBox also has a menu option to take
+screenshots under `View` &#8594; `Take Screenshot (Host+E)`. Alternatively,
 you can press the Host + E keys (by default, the Host key is Right Ctrl on
 Windows machines or Right Cmd on a Mac).
 
@@ -173,8 +170,7 @@ transport. Why does it have this effect?
 
 ### Discuss the predictions of your model.
 
-Measurements (given in Harris, R. N., and M. K. McNutt (2007), Heat flow on
-hot spot swells: Evidence for fluid flow, J. Geophys. Res.,112, B03407) show
+Measurements (given in {cite:t}`harris:mcnutt:2007`) show
 that the heat flux anomaly at the ocean floor above many hot spots is on the
 order of 1 mW/m$^2$ (Reunion) to 14 mW/m$^2$ (Hawaii/Oahu). Does your model
 predict heat flux anomalies of this magnitude? If there are differences, what
@@ -193,9 +189,7 @@ ocean island?
 
 ### Hot spot heat flux
 
-Values are taken from Schubert, Gerald, Donald Lawson Turcotte, and Peter
-Olson. Mantle convection in the Earth and planets. Cambridge University Press,
-2001 (and are based on Sleep 1990).
+Values are taken from {cite:t}`schubert:etal:2001` and are based on {cite:t}`sleep:1990`.
 
 | Hot spot        | Heat flux ($10^9$ W) |
 |:----------------|---------------------:|
@@ -236,11 +230,3 @@ Olson. Mantle convection in the Earth and planets. Cambridge University Press,
 | Tasman, East    |                   38 |
 | Tristan         |                   71 |
 | Yellowstone     |                   62 |
-
-  [cookbooks/heat_flow/heat-flow.prm]: cookbooks/heat_flow/heat-flow.prm
-  [1]: #sec:cookbooks-platelike
-  [this presentation]: https://www.dropbox.com/s/tdfj9pi2mdq0fhe/04_geophysics_lecture_01_13.pdf?dl=0
-  [cookbooks/heat_flow/heat-flow-terms.prm]: cookbooks/heat_flow/heat-flow-terms.prm
-  [this presentation (last slide)]: https://www.dropbox.com/s/jh2v6vgje4cft5n/05_geophysics_lecture_01_27.pdf?dl=0
-  [cookbooks/heat_flow/]: cookbooks/heat_flow/
-  [cookbooks/heat_flow/heat-flow-plume.prm]: cookbooks/heat_flow/heat-flow-plume.prm
