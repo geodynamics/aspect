@@ -19,15 +19,16 @@ behaviour that controls the model results.
 The course is designed to teach general concepts of geophysics, and it
 includes the following cookbooks:
 
-1. {ref}`sec:cookbooks:convection-box-particles` (using the files in `cookbooks/convection-box-particles/`)
+1. {ref}`sec:cookbooks:convection-box-particles` (using the files in [cookbooks/convection-box-particles](https://github.com/geodynamics/aspect/tree/main/cookbooks/convection-box-particles))
 
-2.  {ref}`sec:cookbooks:heat-flow` (using the files in `cookbooks/heat_flow`)
+2.  {ref}`sec:cookbooks:heat-flow` (using the files in [cookbooks/heat_flow](https://github.com/geodynamics/aspect/tree/main/cookbooks/heat_flow))
 
-3.  {ref}`sec:cookbooks:onset_of_convection`(using the files in `cookbooks/onset_of_convection`)
+3.  {ref}`sec:cookbooks:onset_of_convection`(using the files in [cookbooks/onset_of_convection](https://github.com/geodynamics/aspect/tree/main/cookbooks/onset_of_convection))
 
-4. {ref}`sec:cookbooks:magnetic_stripes` (using the files in `cookbooks/magnetic_stripes`)
+4. {ref}`sec:cookbooks:magnetic_stripes` (using the files in [cookbooks/magnetic_stripes](https://github.com/geodynamics/aspect/tree/main/cookbooks/magnetic_stripes))
 
 :::{toctree}
+:hidden:
 cookbooks/convection-box-particles/doc/convection-box-particles.md
 cookbooks/heat_flow/doc/heat-flow.md
 cookbooks/onset_of_convection/doc/onset_of_convection.md
