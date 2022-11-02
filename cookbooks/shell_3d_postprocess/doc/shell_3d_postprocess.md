@@ -15,11 +15,11 @@ shell geometry model and a simple material model.
 The relevant section in the input file that determines the postprocessed
 output is as follows:
 
-``` prmfile
+```{literalinclude} shell_3d_postprocess.part.prm
 ```
 
 This initial condition results in distinct flow cells that cause local up- and
-downwellings (Figure&nbsp;[1]). This flow deflects the top and bottom
+downwellings ({numref}`fig:pp`). This flow deflects the top and bottom
 boundaries of the mantle away from their reference height, a process known as
 dynamic topography. The deflection of the surfaces and density perturbations
 within the mantle also cause a perturbation in the gravitational field of the
@@ -31,13 +31,13 @@ Dynamic topography is calculated at the surface and bottom of the domain
 through a stress balancing approach where we assume that the radial stress at
 the surface is balanced by excess (or deficit) topography. We use the
 consistent boundary flux (CBF) method to calculate the radial stress at the
-surface (Zhong, Gurnis, and Hulbert 1993). For the bottom surface we define
+surface {cite}`zhong:etal:1993`. For the bottom surface we define
 positive values as up (out) and negative values are down (in), analogous to
 the deformation of the upper surface. Dynamic topography can be outputted in
 text format (which writes the Euclidean coordinates followed by the
 corresponding topography value) or as part of the visualization. The upwelling
 and downwelling flow along the equator causes alternating topography high and
-lows at the top and bottom surface (Figure&nbsp;[1]). In Figure&nbsp;[1]
+lows at the top and bottom surface ({numref}`fig:pp`). In {numref}`fig:pp`
 c, d we have subtracted the mean dynamic topography from the output field as a
 postprocessing step outside of . Since mass is conserved within the Earth, the
 mean dynamic topography should always be zero, however, the outputted values
@@ -66,19 +66,3 @@ spherical shell geometry model.
 
  Panel (a) shows an equatorial cross section of the temperature distribution and resulting flow from a harmonic perturbation. Panel (b) shows the resulting geoid, and panels (c) and (d) show the resulting surface and bottom topography. Note that we have subtracted the mean surface and bottom topography in the respective panels (c and d) as a postprocessing step outside of Aspect.
 ```
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-ZGH93" class="csl-entry">
-
-Zhong, Shijie, Michael Gurnis, and Gregory Hulbert. 1993. "Accurate
-Determination of Surface Normal Stress in Viscous Flow from a Consistent
-Boundary Flux Method." *Physics of the Earth and Planetary Interiors* 78
-(1-2): 1--8. <https://doi.org/10.1016/0031-9201(93)90078-n>.
-
-</div>
-
-</div>
-
-  [cookbooks/shell_3d_postprocess/shell_3d_postprocess.prm]: cookbooks/shell_3d_postprocess/shell_3d_postprocess.prm
-  [1]: #fig:pp
