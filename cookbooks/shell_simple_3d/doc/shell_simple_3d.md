@@ -4,13 +4,13 @@ The setup from the previous section can of course be extended to 3d shell
 geometries as well -- though at significant computational cost. In fact,
 the number of modifications necessary is relatively small, as we will discuss
 below. To show an example up front, a picture of the temperature field one
-gets from such a simulation is shown in Fig.&nbsp;[1]. The corresponding
+gets from such a simulation is shown in {numref}`fig:simple-shell-3d`. The corresponding
 movie can be found at <http://youtu.be/j63MkEc0RRw>.
 
 ```{figure-md} fig:simple-shell-3d
 <img src="x-movie0700.png" style="width:70.0%" />
 
- Convection in a spherical shell: Snapshot of isosurfaces of the temperature field at time t\approx \num{1.06e9} years with a quarter of the geometry cut away. The surface shows vectors indicating the flow velocity and direction.
+ Convection in a spherical shell: Snapshot of isosurfaces of the temperature field at time $t\approx 1.06\times10^{9}$ years with a quarter of the geometry cut away. The surface shows vectors indicating the flow velocity and direction.
 ```
 
 ## The input file.
@@ -23,7 +23,7 @@ interspersed with comments (the full input file can also be found in
 [cookbooks/shell_simple_3d/shell_simple_3d.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/shell_simple_3d/shell_simple_3d.prm)). Let us start from the top
 where everything looks the same except that we set the dimension to 3:
 
-``` prmfile
+```{literalinclude} part1.part.prm
 ```
 
 The next section concerns the geometry. The geometry model remains unchanged
@@ -33,7 +33,7 @@ also only has two boundaries (the inner one has indicator zero, the outer one
 indicator one) and consequently these are the only ones we need to list in the
 "Boundary velocity model" section:
 
-``` prmfile
+```{literalinclude} part2.part.prm
 ```
 
 Next, since we convinced ourselves that the temperature range from 973 to 4273
@@ -48,7 +48,7 @@ hotter at the core mantle boundary than at the surface). What the real value
 for this temperature difference is, is unclear from current research, but it
 is thought to be around 1000 Kelvin, so let us choose these values.
 
-``` prmfile
+```{literalinclude} part3.part.prm
 ```
 
 The second component to this is that we found that without adiabatic effects,
@@ -60,7 +60,7 @@ arbitrary anyway, we opt to just assume a constant temperature in the middle
 between the inner and outer temperature boundary values and let the simulation
 find the exact shape of the boundary layers itself:
 
-``` prmfile
+```{literalinclude} part4.part.prm
 ```
 
 As before, we need to determine how many mesh refinement steps we want. In 3d,
@@ -69,7 +69,7 @@ choose the following values that lead to meshes that have, after an initial
 transitory phase, between 1.5 and 2.2 million cells and 50--75 million
 unknowns:
 
-``` prmfile
+```{literalinclude} amr.part.prm
 ```
 
 Second to last, we specify what we want to do with the solutions it computes.
@@ -81,7 +81,7 @@ rather, we group all of these into a single file to keep file systems
 reasonably happy. Likewise, to accommodate the large amount of data, we output
 depth averaged fields in VTU format since it is easier to visualize:
 
-``` prmfile
+```{literalinclude} postprocess.part.prm
 ```
 
 Finally, we realize that when we run very large parallel computations, nodes
@@ -91,7 +91,7 @@ checkpoint the computations every 50 time steps and can then resume it at the
 last saved state if necessary (see
 Section&nbsp;{ref}`sec:checkpoint-restart`):
 
-``` prmfile
+```{literalinclude} checkpoint.part.prm
 ```
 
 ## Evaluation.
@@ -104,15 +104,15 @@ are also a number of things that are already order of magnitude correct here.
 
 For example, if we look at the heat flux this model produces, we find that the
 convection here produces approximately the correct number. Wikipedia's
-article on [Earth's internal heat budget][1] states that the overall
-heat flux through the Earth surface is about $\num{47e12}$ W (i.e., 47
+article on [Earth's internal heat budget](http://en.wikipedia.org/wiki/Earth's_internal_heat_budget)[^footnote1] states that the overall
+heat flux through the Earth surface is about $47\times10^{12}$ W (i.e., 47
 terawatts) of which an estimated 12--30 TW are primordial heat released
-from cooling the Earth and 15--41 TW from radiogenic heating.[2] Our
+from cooling the Earth and 15--41 TW from radiogenic heating.[^footnote2] Our
 model does not include radiogenic heating (though has a number of
 `Heating models` to switch this on, see
-Section&nbsp;{ref}`parameters:Heating_20model`) but we can compare what the
+{ref}`parameters:Heating_20model`) but we can compare what the
 model gives us in terms of heat flux through the inner and outer boundaries of
-our shell geometry. This is shown in the left panel of Fig.&nbsp;[3] where
+our shell geometry. This is shown in {numref}`fig:shell-simple-3d-eval-1` where
 we plot the heat flux through boundaries zero and one, corresponding to the
 core-mantle boundary and Earth's surface. always computes heat fluxes in
 outward direction, so the flux through boundary zero will be negative,
@@ -126,40 +126,32 @@ boundary, and an estimated heat loss due to cooling of the mantle of
 7--15 TW (values again taken from Wikipedia).
 
 
-```{figure-md} fig:shell-simple-3d-eval
+```{figure-md} fig:shell-simple-3d-eval-1
 <img src="heatflux.png" style="width:48.0%" />
 
- Evaluating the 3d spherical shell model. Left: Outward heat fluxes through the inner and outer boundaries of the shell. Right: Average and maximal velocities in the mantle.
+ Evaluating the 3d spherical shell model. Outward heat fluxes through the inner and outer boundaries of the shell.
 ```
 
-```{figure-md} fig:shell-simple-3d-eval
+```{figure-md} fig:shell-simple-3d-eval-2
 <img src="velocities.png" style="width:48.0%" />
 
- Evaluating the 3d spherical shell model. Left: Outward heat fluxes through the inner and outer boundaries of the shell. Right: Average and maximal velocities in the mantle.
+ Evaluating the 3d spherical shell model. Average and maximal velocities in the mantle.
 ```
 
 A second measure of whether these results make sense is to compare velocities
-in the mantle with what is known from observations. As shown in the right
-panel of Fig.&nbsp;[3], the maximal velocities settle to values on the order
+in the mantle with what is known from observations. As shown in {numref}`fig:shell-simple-3d-eval-2`, the maximal velocities settle to values on the order
 of 3 cm/year (each of the peaks in the line for the maximal velocity
 corresponds to a particularly large plume rising or falling). This is, again,
 at least not very far from what we know to be correct and we should expect
 that with a more elaborate material model we should be able to get even closer
 to reality.
 
-[1] Not necessarily the most scientific source, but easily accessible and
+[^footnote1]: Not necessarily the most scientific source, but easily accessible and
 typically about right in terms of numbers. The numbers stated here are those
 listed on Wikipedia at the time this section was written in March 2014.
 
-[2] As a point of reference, for the mantle an often used number for the
-release of heat due to radioactive decay is $\num{7.4e-12}$ W/kg. Taking a
-density of $3300\; \si{kg}/\si{m}^3$ and a volume of $10^{12}\; \si{m}^3$
-would yield roughly $\num{2.4e13}$ W of heat produced. This back of the
+[^footnote2]: As a point of reference, for the mantle an often used number for the
+release of heat due to radioactive decay is $7.4\times 10^{-12}$ W/kg. Taking a
+density of $3300\; \text{ kg}/\text{m}^3$ and a volume of $10^{12}\; \text{ m}^3$
+would yield roughly $2.4\times 10^{13}$ W of heat produced. This back of the
 envelope calculation lies within the uncertain range stated above.
-
-  [1]: #fig:simple-shell-3d
-  [cookbooks/shell_simple_3d/shell_simple_3d.prm]: cookbooks/shell_simple_3d/shell_simple_3d.prm
-  [2]: #sec:checkpoint-restart
-  [Earth's internal heat budget]: http://en.wikipedia.org/wiki/Earth's_internal_heat_budget
-  [3]: #parameters:Heating_20model
-  [3]: #fig:shell-simple-3d-eval
