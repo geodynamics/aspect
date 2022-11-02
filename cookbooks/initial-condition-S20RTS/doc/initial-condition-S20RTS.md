@@ -7,29 +7,31 @@ temperature field. If we want to model convection in the Earth's mantle
 we want to choose an initial temperature distribution that captures the
 Earth's buoyancy structure. In this cookbook we present how to use
 temperature perturbations based on the shear wave velocity model S20RTS
-(Ritsema and Heijst 2000) to initialize a mantle convection calculation.
+{cite}`S20RTS` to initialize a mantle convection calculation.
 
 ## The input shear wave model.
 
 The current version of can read in the shear wave velocity models S20RTS
-(Ritsema and Heijst 2000) and S40RTS (Ritsema et al. 2011), which are located
-in [data/initial-temperature/S40RTS/]. Those models provide spherical
+{cite}`S20RTS` and S40RTS {cite}`S40RTS`, which are located
+in [data/initial-temperature/S40RTS/](https://github.com/cmills1095/aspect/tree/main/data/initial-temperature/S40RTS). Those models provide spherical
 harmonic coefficients up do degree 20 and 40, respectively, for 21 depth
 layers. The interpolation with depth is done through a cubic spline
 interpolation. The input files `S20RTS.sph` and `S40RTS.sph` were downloaded
-from <http://www.earth.lsa.umich.edu/~jritsema/Research.html> and have the
+from <https://sites.lsa.umich.edu/jeroen-ritsema/research/> and have the
 following format (this example is S20RTS):
 
-``` prmfile
+```{literalinclude} S20RTS.input.sph
 ```
 
 The first number in the first line denotes the maximum degree. This is
 followed in the next line by the spherical harmonic coefficients from the
 surface down to the CMB. The coefficients are arranged in the following way:
-$a_{00}$
-$a_{10}$ $a_{11}$ $b_{11}$
-$a_{20}$ $a_{21}$ $b_{21}$ $a_{22}$ $b_{22}$
-...
+```{math}
+&a_{00} \\
+&a_{10}\;a_{11}\;b_{11} \\
+&a_{20}\;a_{21}\;b_{21}\;a_{22}\;b_{22} \\
+&...
+```
 $a_{yz}$ is the cosine coefficient of degree $y$ and order $z$; $b_{yz}$ is
 the sine coefficient of degree $y$ and order $z$. The depth layers are
 specified in the file `Spline_knots.txt` by a normalized depth value ranging
@@ -51,7 +53,7 @@ referenced to other absolute values and this should be taken into account when
 interpreting absolute values of temperature, density and other physical
 parameters in ASPECT.
 
-## Setting up the model.
+## Setting up the ASPECT model.
 
 For this cookbook we will use the parameter file provided in
 [cookbooks/initial-condition-S20RTS/S20RTS.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/initial-condition-S20RTS/S20RTS.prm), which uses a 3d spherical
@@ -60,7 +62,7 @@ only sensible for a 3D spherical shell with Earth-like dimensions.
 
 The relevant section in the input file is as follows:
 
-``` prmfile
+```{literalinclude} S20RTS.part.prm
 ```
 
 For this initial condition model we need to first specify the data directory
@@ -101,46 +103,46 @@ approximate thermal boundary layers.
 ## Visualizing 3D models.
 
 In this cookbook we calculate the instantaneous solution to examine the flow
-field. Figures&nbsp;[1] and [2] show some of the output for a resolution
-of 2 global refinement steps ([1]c and [2]a, c, e) as used in the
+field. {numref}`fig:ic-1` and {numref}`fig:ic-2` show some of the output for a resolution
+of 2 global refinement steps ({numref}`fig:ic-1`c and {numref}`fig:ic-2`a, c, e) as used in the
 cookbook, as well as 4 global refinement steps (other panels in these
 figures). Computations with 4 global refinements are expensive, and
 consequently this is not the default for this cookbook. For example, as of
 2017, it takes 64 cores approximately 2 hours of walltime to finish this
-cookbook with 4 global refinements. Figure&nbsp;[1]a and b shows the density
+cookbook with 4 global refinements. {numref}`fig:ic-1`a and b shows the density
 variation that has been obtained from scaling S20RTS in the way described
 above. One can see the two large low shear wave velocity provinces underneath
 Africa and the Pacific that lead to upwelling if they are assumed to be
 buoyant (as is done in this case). One can also see the subducting slabs
 underneath South America and the Philippine region that lead to local
-downwelling. Figure&nbsp;[1]c and d shows the heat flux density at the
+downwelling. {numref}`fig:ic-1`c and d shows the heat flux density at the
 surface for 2 refinement steps (c, colorbar ranges from 13 to 19 mW/$m^2$) and
 for 4 refinement steps (d, colorbar ranges from 35 to 95 mW/$m^2$). A first
 order correlation with upper mantle features such as high heat flow at mid
 ocean ridges and low heat flow at cratons is correctly initialized by the
 tomography model. The mantle flow and buoyancy variations produce dynamic
 topography on the top and bottom surface, which is shown for 2 refinement
-steps ([2]a and c, respectively) and 4 refinement steps ([2]b and d,
+steps ({numref}`fig:ic-2`a and c, respectively) and 4 refinement steps ({numref}`fig:ic-2`b and d,
 respectively). One can see that subduction zones are visible as depressed
 surface topography due to the downward flow, while regions such as Iceland,
 Hawaii, or mid ocean ridges are elevated due to (deep and) shallow upward
 flow. The core mantle boundary topography shows that the upwelling large low
 shear wave velocity provinces deflect the core mantle boundary up.
-Figure&nbsp;[2]e and f shows geoid perturbations for 2 and 4 global
+{numref}`fig:ic-2`e and f shows geoid perturbations for 2 and 4 global
 refinement steps, respectively. The geoid anomalies show a strong correlation
 with the surface dynamic topography. This is in part expected given that the
 geoid anomalies are driven by the deflection of the upper and lower surface as
 well as internal density variations. The relative importance of these
 different contributors is dictated by the Earth's viscosity profile. Due
 to the isoviscous assumption in this cookbook, we don't properly recover
-patterns of the observed geoid. Lastly, Figure&nbsp;[2]g and h shows geoid
+patterns of the observed geoid. Lastly, {numref}`fig:ic-2`g and h shows geoid
 perturbations for 2 and 4 global refinement steps, respectively.
 
 As discussed in the previous cookbook, dynamic topography does not necessarily
 average to zero if the resolution is not high enough. While one can simply
 subtract the mean as a postprocessing step this should be done with caution
 since a non-zero mean indicates that the refinement is not sufficiently high
-to resolve the convective flow. In Figure&nbsp;[2]a-d we refrained from
+to resolve the convective flow. In {numref}`fig:ic-2`a-d we refrained from
 subtracting the mean but indicated it at the bottom left of each panel. The
 mean dynamic topography approaches zero for increasing refinement.
 Furthermore, the mean bottom dynamic topography is closer to zero than the
@@ -168,33 +170,5 @@ spectral based code shows good agreement (see
 ```{figure-md} fig:ic-2
 <img src="Fig_cookbook_V4-02.png" />
 
- The first row of this figure shows the surface dynamic topography resulting from the flow shown in Figure&#xA0;1 for a global refinement of 2 (a, cookbook) and 4 (b). The colorbar ranges from -2400m to 400m for panel (a) and from -2000m to 1600m for panel (b). The second row shows the dynamic topography at the core mantle boundary for the same model and a refinement of 2 (c, cookbook) and 4 (d). Averages of the dynamic topography fields are indicated at the bottom left of each panel. The third row shows the geoid anomalies from this model at the surface for refinement of 2 (e, cookbook) and 4 (f). The fourth row shows the gravity anomalies from this model at the surface for refinement of 2 (g, cookbook) and 4 (h)
+ The first row of this figure shows the surface dynamic topography resulting from the flow shown in {numref}`fig:ic-1` for a global refinement of 2 (a, cookbook) and 4 (b). The colorbar ranges from -2400m to 400m for panel (a) and from -2000m to 1600m for panel (b). The second row shows the dynamic topography at the core mantle boundary for the same model and a refinement of 2 (c, cookbook) and 4 (d). Averages of the dynamic topography fields are indicated at the bottom left of each panel. The third row shows the geoid anomalies from this model at the surface for refinement of 2 (e, cookbook) and 4 (f). The fourth row shows the gravity anomalies from this model at the surface for refinement of 2 (g, cookbook) and 4 (h)
 ```
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-S40RTS" class="csl-entry">
-
-Ritsema, J., A. Deuss, H. J. van Heijst, and J. H. Woodhouse. 2011.
-"S40rts: A Degree-40 Shear-Velocity Model for the Mantle from New
-Rayleigh Wave Dispersion, Teleseismic Traveltime and Normal-Mode Splitting
-Function Measurements." *Geophysical Journal International* 184:
-1223--36.
-
-</div>
-
-<div id="ref-S20RTS" class="csl-entry">
-
-Ritsema, J., and H. J. van Heijst. 2000. "Seismic Imaging of Structural
-Heterogeneity in Earth's Mantle: Evidence for Large-Scale Mantle
-Flow." *Sci. Progr.* 83: 243--59.
-
-</div>
-
-</div>
-
-  [data/initial-temperature/S40RTS/]: data/initial-temperature/S40RTS/
-  [cookbooks/initial-condition-S20RTS/S20RTS.prm]: cookbooks/initial-condition-S20RTS/S20RTS.prm
-  [1]: #sec:shell-simple-3d
-  [1]: #fig:ic-1
-  [2]: #fig:ic-2
