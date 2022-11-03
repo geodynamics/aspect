@@ -179,15 +179,16 @@ namespace aspect
           get_property_information() const override;
 
           /**
-           * Computes the volume fraction and grain orientation derivatives of all the grains of a mineral.
+           * @brief Computes the volume fraction and grain orientation derivatives of all the grains of a mineral.
            *
-           * @param volume_fractions are the current volume fractions of the grains in a mineral.
-           * @param rotation_matrices are the current rotation matrices of the grains in a mineral.
+           * @param cpo_index The index in the particle data array where the cpo data starts
+           * @param data The particle data array.
+           * @param mineral_i The mineral index for which to compute the derivatives.
            * @param strain_rate is the strain-rate at the location of the particle.
            * @param velocity_gradient_tensor is the velocity gradient tensor at the location of the particle.
-           * @param volume_fraction_mineral is the volume fraction of the current mineral with respect to
-           * the other minerals in the particle.
            * @param ref_resolved_shear_stress is the reference resolved shear stress of the mineral.
+           * @return A pair containing the derivatives for
+           * the change is size in the first part and the derivatives for the change in rotation in the second part.
            */
           std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
           compute_derivatives(const unsigned int cpo_index,
@@ -353,6 +354,7 @@ namespace aspect
            * @param data The particle data vector.
            * @param mineral_i The mineral to set the value of the rotation matrix of a grain for.
            * @param grain_i The grain to get the value of the rotation matrix of.
+           * @param rotation_matrix The rotation matrix to set for the grain in the mineral.
            */
           inline
           void set_rotation_matrix_grains(const unsigned int cpo_data_position,
