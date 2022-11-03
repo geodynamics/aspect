@@ -187,7 +187,7 @@ namespace aspect
            * @param strain_rate is the strain-rate at the location of the particle.
            * @param velocity_gradient_tensor is the velocity gradient tensor at the location of the particle.
            * @param ref_resolved_shear_stress is the reference resolved shear stress of the mineral.
-           * @return std::pair<std::vector<double>, std::vector<Tensor<2,3>>> A pair containing the derivatives for
+           * @return A pair containing the derivatives for
            * the change is size in the first part and the derivatives for the change in rotation in the second part.
            */
           std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
