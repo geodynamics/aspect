@@ -57,5 +57,12 @@ while ( <STDIN> )
     last;
   }
 
+  if ($_ =~ m/^Aborting!/)
+  {
+    print "$_";
+    print "(rest of the output replaced by default.sh script)\n";
+    last;
+  }
+
   print "$_";
 }
