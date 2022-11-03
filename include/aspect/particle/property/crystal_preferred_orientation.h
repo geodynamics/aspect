@@ -359,7 +359,7 @@ namespace aspect
                                           const ArrayView<double> &data,
                                           const unsigned int mineral_i,
                                           const unsigned int grain_i,
-                                          const Tensor<2,3> rotation_matrix) const
+                                          const Tensor<2,3> &rotation_matrix) const
           {
             for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
               {
