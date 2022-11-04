@@ -15,10 +15,10 @@ velocities as boundary condition.
 ## Acquiring a plate reconstruction.
 
 The plate reconstruction that is used in this cookbook is included in the
-`data/boundary-velocity/gplates/` directory of your installation. For a new
+`data/boundary-velocity/gplates/` directory of your ASPECT installation. For a new
 model setup however, a user eventually needs to create her own data files, and
 so we will briefly discuss the process of acquiring a usable plate
-reconstruction and transferring it into a format usable by . Both the
+reconstruction and transferring it into a format usable by ASPECT. Both the
 necessary software and data are provided by the GPlates project. GPlates is an
 open-source software for interactive visualization of plate tectonics. It is
 developed by the EarthByte Project in the School of Geosciences at the
@@ -34,33 +34,33 @@ continuously closing plates from 140 Ma to the present." The data is
 provided under a Creative Commons Attribution 3.0 Unported License
 (<http://creativecommons.org/licenses/by/3.0/>).
 
-## Converting GPlates data to input.
+## Converting GPlates data to ASPECT input.
 
 After loading the data files into GPlates (\*.gpml for plate polygons, \*.rot
 for plate rotations over time) the user needs to convert the GPlates data to
-velocity information usable in . The purpose of this step is to convert from
+velocity information usable in ASPECT. The purpose of this step is to convert from
 the description GPlates uses internally (namely a representation of plates as
 polygons that rotate with a particular velocity around a pole) to one that can
-be used by (which needs velocity vectors defined at individual points at the
+be used by ASPECT (which needs velocity vectors defined at individual points at the
 surface).
 
 With loaded plate polygon and rotation information the conversion from GPlates
-data to -readable velocity files is rather straightforward. First the user
+data to ASPECT-readable velocity files is rather straightforward. First the user
 needs to generate (or import) so-called "velocity domain points,"
 which are discrete sets of points at which GPlates will evaluate velocity
 information. This is done using the "Features $\rightarrow$ Generate
 Velocity Domain Points $\rightarrow$ Latitude Longitude" menu option.
-Because is using an adaptive mesh it is not possible for GPlates to generate
+Because ASPECT is using an adaptive mesh it is not possible for GPlates to generate
 velocity information at the precise surface node positions like for CitcomS or
 Terra (the other currently available interfaces). Instead GPlates will output
 the information on a general Latitude/Longitude grid with nodes on all
-crossing points. then internally interpolates this information to the current
+crossing points. ASPECT then internally interpolates this information to the current
 node locations during the model run. This requires the user to choose a
 sensible resolution of the GPlates output, which can be adjusted in the
 "Generate Latitude/Longitude Velocity Domain Points" dialog of
 GPlates. In general a resolution that resolves the important features is
 necessary, while a resolution that is higher than the maximal mesh size for
-the model is unnecessary and only increases the computational cost and memory
+the ASPECT model is unnecessary and only increases the computational cost and memory
 consumption of the model.
 
 **Important note:** The Mesh creation routine in GPlates has significantly
@@ -69,7 +69,7 @@ sure that the number of longitude intervals is set as twice the number of
 latitude intervals, the "Place node points at centre of
 latitude/longitude cells" box is **un**checked and the
 "Latitude/Longitude extents" are set to "Use Global
-Extents." does check for most possible combinations that can not be read
+Extents." ASPECT does check for most possible combinations that can not be read
 and will cancel the calculation in these cases, however some mistakes can not
 be checked against from the information provided in the GPlates file.
 
@@ -80,20 +80,20 @@ $\rightarrow$ Export" menu. In this dialog the user may specify the time
 instant or range at which the velocities shall be exported. The only necessary
 option is to include the "Velocities" data type in the "Add
 Export" sub-dialog. The velocities need to be exported in the native
-GPlates `*.gpml` format, which is based on XML and can be read by . In case of
+GPlates `*.gpml` format, which is based on XML and can be read by ASPECT. In case of
 a time-range the user needs to add a pattern specifier to the name to create a
-series of files. The `%u` flag is especially suited for the interaction with ,
+series of files. The `%u` flag is especially suited for the interaction with ASPECT,
 since it can easily be replaced by a calculated file index (see also
 [0.0.1.5]).
 
-## Setting up the model.
+## Setting up the ASPECT model.
 
 For this cookbook we will use the parameter file provided in
 [cookbooks/gplates/gplates_2d.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/gplates/gplates_2d.prm) which uses the 2d shell geometry
-previously discussed in Section&nbsp;{ref}`sec:shell-simple-2d`. ASPECT's
+previously discussed in {ref}`sec:cookbooks:shell_simple_2d`. ASPECT's
 GPlates plugin allows for the use of two- and three-dimensional models
 incorporating the GPlates velocities. Since the output by GPlates is
-three-dimensional in any case, internally handles the 2D model by rotating the
+three-dimensional in any case, ASPECT internally handles the 2D model by rotating the
 model plane to the orientation specified by the user and projecting the plate
 velocities into this plane. The user specifies the orientation of the model
 plane by prescribing two points that define a plane together with the
@@ -107,7 +107,7 @@ slices through the Earth with realistic boundary conditions.
 
 The relevant section of the input file is then as follows:
 
-``` prmfile
+```{literalinclude} gplates.part.prm
 ```
 
 In the "Boundary velocity model" subsection the user prescribes
@@ -118,7 +118,7 @@ the surface of a spherical shell (boundary number 1 in the above provided
 parameter file). In case you are familiar with this kind of modeling and the
 plugin you could however also use it to prescribe mantle movements *below* a
 lithosphere model. All plugin specific options may be set in
-section&nbsp;{ref}`parameters:Boundary_20velocity_20model`. Possible options
+{ref}`parameters:Boundary_20velocity_20model`. Possible options
 include the data directory and file name of the velocity file/files, the time
 step (in model units, mostly seconds or years depending on the
 `Use years in output instead of seconds` flag) and the points
@@ -129,26 +129,26 @@ that define the 2D plane.
 The implementation of plate velocities in both two- and three-dimensional
 model setups allows for an easy comparison and test for common sources of
 error in the interpretation of model results. The left top figure in
-Fig.&nbsp;[1] shows a modification of the above presented parameter file by
+{numref}`fig:gv-1` shows a modification of the above presented parameter file by
 setting `Dimension = 3` and
 `Initial global refinement = 3`. The top right plot of
-Fig.&nbsp;[1] shows an example of three independent two-dimensional
+{numref}`fig:gv-1` shows an example of three independent two-dimensional
 computations of the same reduced resolution. The models were prescribed to be
 orthogonal slices by setting:
 
-``` prmfile
+```{literalinclude} slice1.part.prm
 ```
 
 and
 
-``` prmfile
+```{literalinclude} slice2.part.prm
 ```
 
 The results of these models are plotted simultaneously in a single
 three-dimensional figure in their respective model planes. The necessary
 information to rotate the 2D models to their respective planes (rotation axis
 and angle) is provided by the GPlates plugin in the beginning of the model
-output. The bottom plot of Fig.&nbsp;[1] finally shows the results of the
+output. The bottom plot of {numref}`fig:gv-1` finally shows the results of the
 original [cookbooks/gplates/gplates_2d.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/gplates/gplates_2d.prm) also in the three mentioned
 planes.
 
@@ -157,7 +157,7 @@ equal resolution and additional 2D output for a higher resolution an
 interesting question to ask would be: What additional information can be
 created by either using three-dimensional geometry or higher resolution in
 mantle convection models with prescribed boundary velocities. As one can see
-in the comparison between the top right and bottom plot in Fig.&nbsp;[1]
+in the comparison between the top right and bottom plot in {numref}`fig:gv-1`
 additional resolution clearly improves the geometry of small scale features
 like the shape of up- and downwellings as well as the maximal temperature
 deviation from the background mantle. However, the limitation to two
@@ -174,7 +174,7 @@ resolution) predict a westward subduction.
 Finally we would like to emphasize that these models (especially the used
 material model) are way too simplified to draw any scientific conclusion out
 of it. Rather it is thought as a proof-of-concept what is possible with the
-dimension independent approach of and its plugins.
+dimension independent approach of ASPECT and its plugins.
 
 ```{figure-md} fig:gv-1
 <img src="gplates-comparison.png" />
@@ -188,7 +188,7 @@ The example presented above uses a constant velocity boundary field that
 equals the present day plate movements. For a number of purposes one may want
 to use a prescribed velocity boundary condition that changes over time, for
 example to investigate the effect of trench migration on subduction. Therefore
-'s GPlates plugin is able to read in multiple velocity files and
+ASPECT's GPlates plugin is able to read in multiple velocity files and
 linearly interpolate between pairs of files to the current model time. To
 achieve this, one needs to use the `%d` wildcard in the velocity file name,
 which represents the current velocity file index (e.g.
@@ -206,24 +206,4 @@ Additionally, the parameter `Velocity file start time` allows for a period of
 no-slip boundary conditions before starting the use of the GPlates plugin.
 This is a comfort implementation, which could also be achieved by using the
 checkpointing possibility described in
-section&nbsp;{ref}`sec:checkpoint-restart`.
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-GTZDSMBSMB12" class="csl-entry">
-
-Gurnis, M., M. Turner, S. Zahirovic, L. DiCaprio, S. Spasojevic, R. D.
-M&uuml;ller, J. Boyden, M. Seton, V. C. Manea, and D. J. Bower. 2012.
-"Plate Tectonic Reconstructions with Continuously Closing Plates."
-*Computers & Geosciences* 38: 35--42.
-
-</div>
-
-</div>
-
-  [0.0.1.5]: #sec:time-dependent-gplates-velocities
-  [cookbooks/gplates/gplates_2d.prm]: cookbooks/gplates/gplates_2d.prm
-  [1]: #sec:shell-simple-2d
-  [2]: #parameters:Boundary_20velocity_20model
-  [1]: #fig:gv-1
-  [3]: #sec:checkpoint-restart
+{ref}`sec:checkpoint-restart`.
