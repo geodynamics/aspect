@@ -72,7 +72,7 @@ unknowns:
 ```{literalinclude} amr.part.prm
 ```
 
-Second to last, we specify what we want to do with the solutions it computes.
+Second to last, we specify what we want ASPECT to do with the solutions it computes.
 Here, we compute the same statistics as before, and we again generate
 graphical output every million years. Computations of this size typically run
 with &nbsp;1000 MPI processes, and it is not efficient to let every one of
@@ -108,13 +108,13 @@ article on [Earth's internal heat budget](http://en.wikipedia.org/wiki/Earth's_i
 heat flux through the Earth surface is about $47\times10^{12}$ W (i.e., 47
 terawatts) of which an estimated 12--30 TW are primordial heat released
 from cooling the Earth and 15--41 TW from radiogenic heating.[^footnote2] Our
-model does not include radiogenic heating (though has a number of
+model does not include radiogenic heating (though ASPECT has a number of
 `Heating models` to switch this on, see
 {ref}`parameters:Heating_20model`) but we can compare what the
 model gives us in terms of heat flux through the inner and outer boundaries of
 our shell geometry. This is shown in {numref}`fig:shell-simple-3d-eval-1` where
 we plot the heat flux through boundaries zero and one, corresponding to the
-core-mantle boundary and Earth's surface. always computes heat fluxes in
+core-mantle boundary and Earth's surface. ASPECT always computes heat fluxes in
 outward direction, so the flux through boundary zero will be negative,
 indicating the we have a net flux *into* the mantle as expected. The figure
 indicates that after some initial jitters, heat flux from the core to the

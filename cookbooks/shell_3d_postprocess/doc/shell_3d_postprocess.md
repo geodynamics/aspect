@@ -39,7 +39,7 @@ corresponding topography value) or as part of the visualization. The upwelling
 and downwelling flow along the equator causes alternating topography high and
 lows at the top and bottom surface ({numref}`fig:pp`). In {numref}`fig:pp`
 c, d we have subtracted the mean dynamic topography from the output field as a
-postprocessing step outside of . Since mass is conserved within the Earth, the
+postprocessing step outside of ASPECT. Since mass is conserved within the Earth, the
 mean dynamic topography should always be zero, however, the outputted values
 might not fulfill this constraint if the resolution of the model is not high
 enough to provide an accurate solution. This cookbook only uses a refinement

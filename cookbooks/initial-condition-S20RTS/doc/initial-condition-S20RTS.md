@@ -2,7 +2,7 @@
 
 *This section was contributed by Jacqueline Austermann*
 
-For any model run with we have to choose an initial condition for the
+For any model run with ASPECT we have to choose an initial condition for the
 temperature field. If we want to model convection in the Earth's mantle
 we want to choose an initial temperature distribution that captures the
 Earth's buoyancy structure. In this cookbook we present how to use
@@ -11,7 +11,7 @@ temperature perturbations based on the shear wave velocity model S20RTS
 
 ## The input shear wave model.
 
-The current version of can read in the shear wave velocity models S20RTS
+The current version of ASPECT can read in the shear wave velocity models S20RTS
 {cite}`S20RTS` and S40RTS {cite}`S40RTS`, which are located
 in [data/initial-temperature/S40RTS/](https://github.com/cmills1095/aspect/tree/main/data/initial-temperature/S40RTS). Those models provide spherical
 harmonic coefficients up do degree 20 and 40, respectively, for 21 depth
