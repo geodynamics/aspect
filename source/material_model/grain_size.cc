@@ -257,6 +257,51 @@ namespace aspect
     template <int dim>
     double
     GrainSize<dim>::
+    moment_of_grain_size_distribution (const int n) const
+    {
+      // This function normalizes the grain size distribution using the nth moment.
+      // Description can be found in eq 8 of Bercovici and Richard (2012)
+      const double sigma = 0.8;
+
+      return exp (n * n * sigma * sigma / 2.);
+    }
+
+
+    template <int dim>
+    double
+    GrainSize<dim>::
+    roughness_to_grain_size_factor (const double volume_fraction_phase_one)  const
+    {
+      // This factor is used to convert the roughness equation into mean grain size
+      // Refer to Appendix H.1, eqs 8, F.28 in Bercovici and Richard (2012) for more details.
+      const double b1 = 1./20 ;
+      const double c1 = 3 * b1 * moment_of_grain_size_distribution(4) / (8 * moment_of_grain_size_distribution (2));
+
+      const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
+
+      const double h1 = c1 * (1 - volume_fraction_phase_one);
+      const double h2 = c1 * (1 - volume_fraction_phase_two);
+
+      return (volume_fraction_phase_one /sqrt (h1)  + volume_fraction_phase_two/sqrt(h2)) ;
+    }
+
+
+    template <int dim>
+    double
+    GrainSize<dim>::
+    phase_distribution_function (const double volume_fraction_phase_one)  const
+    {
+      // This factor is used in pinned grain size formulation of the Mulyukova and Bercovici (2018).
+      const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
+
+      return (volume_fraction_phase_one * volume_fraction_phase_two);
+    }
+
+
+
+    template <int dim>
+    double
+    GrainSize<dim>::
     grain_size_change (const double                  temperature,
                        const double                  pressure,
                        const std::vector<double>    &compositional_fields,
