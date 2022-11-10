@@ -1,3 +1,4 @@
+(sec:cookbooks:platelike-boundary)=
 # Convection in a box with prescribed, variable velocity boundary conditions
 
 A similarly simple setup to the ones considered in the previous subsections is
