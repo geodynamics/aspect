@@ -13,7 +13,7 @@ temperature perturbations based on the shear wave velocity model S20RTS
 
 The current version of ASPECT can read in the shear wave velocity models S20RTS
 {cite}`S20RTS` and S40RTS {cite}`S40RTS`, which are located
-in [data/initial-temperature/S40RTS/](https://github.com/cmills1095/aspect/tree/main/data/initial-temperature/S40RTS). Those models provide spherical
+in [data/initial-temperature/S40RTS/](https://github.com/geodynamics/aspect/tree/main/data/initial-temperature/S40RTS). Those models provide spherical
 harmonic coefficients up do degree 20 and 40, respectively, for 21 depth
 layers. The interpolation with depth is done through a cubic spline
 interpolation. The input files `S20RTS.sph` and `S40RTS.sph` were downloaded
