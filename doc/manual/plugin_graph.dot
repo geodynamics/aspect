@@ -486,6 +486,9 @@ N6aspect8Particle8Property9InterfaceILi2EEE [label="Particle property interface"
 N6aspect8Particle8Property11CompositionILi2EEE [label="composition", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect8Particle8Property11CompositionILi2EEE -> N6aspect8Particle8Property9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect8Particle8Property11CompositionILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect8Particle8Property27CrystalPreferredOrientationILi2EEE [label="crystal\npreferred\norientation", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect8Particle8Property27CrystalPreferredOrientationILi2EEE -> N6aspect8Particle8Property9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect8Particle8Property27CrystalPreferredOrientationILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect8Particle8Property13ElasticStressILi2EEE [label="elastic stress", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect8Particle8Property13ElasticStressILi2EEE -> N6aspect8Particle8Property9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect8Particle8Property13ElasticStressILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
@@ -548,12 +551,18 @@ SimulatorAccess -> N6aspect11Postprocess7CommandILi2EEE [style="dotted", arrowhe
 N6aspect11Postprocess21CompositionStatisticsILi2EEE [label="composition\nstatistics", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess21CompositionStatisticsILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess21CompositionStatisticsILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect11Postprocess29CompositionVelocityStatisticsILi2EEE [label="composition\nvelocity\nstatistics", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess29CompositionVelocityStatisticsILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess29CompositionVelocityStatisticsILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess14CoreStatisticsILi2EEE [label="core\nstatistics", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess14CoreStatisticsILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess14CoreStatisticsILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess12DepthAverageILi2EEE [label="depth average", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess12DepthAverageILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess12DepthAverageILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect11Postprocess12DomainVolumeILi2EEE [label="domain volume\nstatistics", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess12DomainVolumeILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess12DomainVolumeILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess17DynamicTopographyILi2EEE [label="dynamic\ntopography", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess17DynamicTopographyILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess17DynamicTopographyILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
