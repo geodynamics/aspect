@@ -1037,20 +1037,20 @@ namespace aspect
           prm.declare_entry ("Grain growth activation volume", "8e-6",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation volume for grain growth $V_g$. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: \\si{\\meter\\cubed\\per\\mole}.");
           prm.declare_entry ("Grain growth exponent", "3.",
                              Patterns::List (Patterns::Double (0.)),
                              "The exponent of the grain growth law $p_g$. This is an experimentally determined "
                              "grain growth constant. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: none.");
           prm.declare_entry ("Grain growth rate constant", "1.5e-5",
                              Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the Ostwald ripening grain growth law $G_0$. "
                              "This is dependent on water content, which is assumed to be "
                              "50 H/$10^6$ Si for the default value. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: \\si{\\meter}$^{p_g}$\\si{\\per\\second}.");
           prm.declare_entry ("Minimum grain size", "5e-6",
                              Patterns::Double (0.),
@@ -1076,17 +1076,17 @@ namespace aspect
           prm.declare_entry ("Average specific grain boundary energy", "1.0",
                              Patterns::List (Patterns::Double (0.)),
                              "The average specific grain boundary energy $\\gamma$. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: \\si{\\joule\\per\\meter\\squared}.");
           prm.declare_entry ("Work fraction for boundary area change", "0.1",
                              Patterns::List (Patterns::Double (0.)),
                              "The fraction $\\chi$ of work done by dislocation creep to change the grain boundary area. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: \\si{\\joule\\per\\meter\\squared}.");
           prm.declare_entry ("Geometric constant", "3.",
                              Patterns::List (Patterns::Double (0.)),
                              "The geometric constant $c$ used in the paleowattmeter grain size reduction law. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: none.");
           prm.declare_entry ("Dislocation viscosity iteration threshold", "1e-3",
                              Patterns::Double (0.),
@@ -1106,48 +1106,48 @@ namespace aspect
           prm.declare_entry ("Dislocation creep exponent", "3.5",
                              Patterns::List (Patterns::Double (0.)),
                              "The power-law exponent $n_{dis}$ for dislocation creep. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: none.");
           prm.declare_entry ("Dislocation activation energy", "4.8e5",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation energy for dislocation creep $E_{dis}$. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: \\si{\\joule\\per\\mole}.");
           prm.declare_entry ("Dislocation activation volume", "1.1e-5",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation volume for dislocation creep $V_{dis}$. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: \\si{\\meter\\cubed\\per\\mole}.");
           prm.declare_entry ("Dislocation creep prefactor", "4.5e-15",
                              Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the dislocation creep law $A_{dis}$. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: \\si{\\pascal}$^{-n_{dis}}$\\si{\\per\\second}.");
           prm.declare_entry ("Diffusion creep exponent", "1.",
                              Patterns::List (Patterns::Double (0.)),
                              "The power-law exponent $n_{diff}$ for diffusion creep. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: none.");
           prm.declare_entry ("Diffusion activation energy", "3.35e5",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation energy for diffusion creep $E_{diff}$. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: \\si{\\joule\\per\\mole}.");
           prm.declare_entry ("Diffusion activation volume", "4e-6",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation volume for diffusion creep $V_{diff}$. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: \\si{\\meter\\cubed\\per\\mole}.");
           prm.declare_entry ("Diffusion creep prefactor", "7.4e-15",
                              Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the diffusion creep law $A_{diff}$. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: \\si{\\meter}$^{p_{diff}}$\\si{\\pascal}$^{-n_{diff}}$\\si{\\per\\second}.");
           prm.declare_entry ("Diffusion creep grain size exponent", "3.",
                              Patterns::List (Patterns::Double (0.)),
                              "The diffusion creep grain size exponent $p_{diff}$ that determines the "
                              "dependence of viscosity on grain size. "
-                             "List must have one more entry than the Phase transition depths."
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: none.");
           prm.declare_entry ("Maximum temperature dependence of viscosity", "100.",
                              Patterns::Double (0.),
