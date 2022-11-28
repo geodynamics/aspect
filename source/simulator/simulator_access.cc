@@ -311,7 +311,12 @@ namespace aspect
     return simulator->current_linearization_point;
   }
 
-
+  template <int dim>
+  const LinearAlgebra::BlockVector &
+  SimulatorAccess<dim>::get_initial_linearization_point () const
+  {
+    return simulator->initial_linearization_point;
+  }
 
   template <int dim>
   const LinearAlgebra::BlockVector &

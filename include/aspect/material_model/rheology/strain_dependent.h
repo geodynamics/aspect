@@ -24,6 +24,7 @@
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include<deal.II/fe/component_mask.h>
 #include <deal.II/matrix_free/fe_point_evaluation.h>
