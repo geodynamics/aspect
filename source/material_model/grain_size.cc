@@ -1033,6 +1033,7 @@ namespace aspect
           prm.declare_entry ("Grain growth activation energy", "3.5e5",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation energy for grain growth $E_g$. "
+                             "List must have one more entry than the Phase transition depths. "
                              "Units: \\si{\\joule\\per\\mole}.");
           prm.declare_entry ("Grain growth activation volume", "8e-6",
                              Patterns::List (Patterns::Double (0.)),
@@ -1061,11 +1062,13 @@ namespace aspect
           prm.declare_entry ("Reciprocal required strain", "10.",
                              Patterns::List (Patterns::Double (0.)),
                              "This parameter ($\\lambda$) gives an estimate of the strain necessary "
-                             "to achieve a new grain size. ");
+                             "to achieve a new grain size. "
+                             "List must have one more entry than the Phase transition depths.");
           prm.declare_entry ("Recrystallized grain size", "",
                              Patterns::List (Patterns::Double (0.)),
                              "The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. "
                              "When set to zero, grain size will not be reduced. "
+                             "List must have the same number of entries as Phase transition depths. "
                              "Units: \\si{\\meter}.");
           prm.declare_entry ("Use paleowattmeter", "true",
                              Patterns::Bool (),
