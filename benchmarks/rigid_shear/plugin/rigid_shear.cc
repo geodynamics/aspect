@@ -91,9 +91,9 @@ namespace aspect
       {
         public:
           FunctionRigidShear(const unsigned int n_components,
-          const bool transient) 
-          : Function<dim>(n_components),
-          transient_(transient) {}
+                             const bool transient)
+            : Function<dim>(n_components),
+              transient_(transient) {}
 
           virtual void vector_value(const Point<dim> &p,
                                     Vector<double> &values) const
@@ -105,7 +105,7 @@ namespace aspect
             values[0] = std::sin(pi*(p[0]-phase)) * std::cos(pi*p[1]);
 
             if (transient_ == true)
-               values[0] += std::exp(t);
+              values[0] += std::exp(t);
 
             values[1] = -std::cos(pi*(p[0]-phase)) * std::sin(pi*p[1]);
             values[2] = 2.0 * pi * std::cos(pi*(p[0]-phase)) * std::cos(pi*p[1]);
@@ -113,7 +113,7 @@ namespace aspect
             return;
           }
 
-          private:
+        private:
           bool transient_;
       };
     }
@@ -237,7 +237,7 @@ namespace aspect
           const bool transient = material_model.use_transient_solution();
           const double phase = (transient == true) ? AnalyticSolutions::phase_function(t) : 0.0;
 
-        const double forcing_term = - 4.0 * pi * pi * std::cos(pi*(pos[0] - phase)) * std::sin(pi*pos[1]);
+          const double forcing_term = - 4.0 * pi * pi * std::cos(pi*(pos[0] - phase)) * std::sin(pi*pos[1]);
 
           Tensor<1,dim> gravity;
           gravity[0] =  0.0;
@@ -269,7 +269,7 @@ namespace aspect
             = Plugins::get_plugin_as_type<const RigidShearMaterial<dim>>(this->get_material_model());
 
           AnalyticSolutions::FunctionRigidShear<dim> ref_func(this->introspection().n_components,
-          material_model.use_transient_solution());
+                                                              material_model.use_transient_solution());
           ref_func.set_time(this->get_time());
 
           AssertThrow(Plugins::plugin_type_matches<const RigidShearMaterial<dim>>(this->get_material_model()),
