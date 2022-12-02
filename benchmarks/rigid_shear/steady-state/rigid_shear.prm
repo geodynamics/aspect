@@ -34,32 +34,32 @@ end
 
 
 subsection Compositional fields
-  set Number of fields = 2
-  set Names of fields = density_comp, forcing_term_y
-  set Compositional field methods = particles, particles
-  set Mapped particle properties = density_comp:function, forcing_term_y:forcing_term_y
+  set Number of fields = 1
+  set Names of fields = density_comp
+  set Compositional field methods = particles
+  set Mapped particle properties = density_comp:function
 end
 
 
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = sin(pi*x)*sin(pi*y); - 4.0 * pi * pi * cos(pi*x)*sin(pi*y)
+    set Function expression = sin(pi*x)*sin(pi*y) + 2.0
   end
 end
 
 
 subsection Material model
-  set Model name = rigid shear time dependent
+  set Model name = rigid shear
 end
 
+subsection Rigid shear benchmark
+  set Use analytical density = false
+  set Use transient solution = false
+end
 
 subsection Gravity model
-  set Model name = function
-
-  subsection Function
-    set Function expression = 0.0; 1.0
-  end
+  set Model name = rigid shear
 end
 
 
@@ -96,10 +96,10 @@ subsection Postprocess
   subsection Particles
     set Time between data output = 0.1
     set Data output format = vtu
-    set List of particle properties = function, rigid shear forcing term
+    set List of particle properties = function
 
     subsection Function
-      set Function expression = sin(pi*x)*sin(pi*y)
+      set Function expression = sin(pi*x)*sin(pi*y) + 2.0
     end
 
     set Integration scheme = rk2
@@ -107,7 +107,7 @@ subsection Postprocess
     set Update ghost particles = true
     set Minimum particles per cell = 9
     set Maximum particles per cell = 16384
-    set Particle generator name = reference cell #random uniform
+    set Particle generator name = reference cell
     set Number of particles = 8192
 
     subsection Generator

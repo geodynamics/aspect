@@ -2,4 +2,4 @@
 # is available. See the benchmark folder for more information.
 set Dimension = 2
 
-include $ASPECT_SOURCE_DIR/benchmarks/rigid_shear/time-dependent/rigid_shear.prm
+include $ASPECT_SOURCE_DIR/benchmarks/rigid_shear/steady-state/rigid_shear.prm
