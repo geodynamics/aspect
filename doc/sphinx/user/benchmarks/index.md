@@ -49,6 +49,7 @@ benchmarks/burstedde/doc/burstedde.md
 benchmarks/slab_detachment/doc/slab_detachment.md
 benchmarks/hollow_sphere/doc/hollow_sphere.md
 benchmarks/annulus/doc/annulus.md
+benchmarks/rigid_shear/doc/rigid_shear.md
 ../cookbooks/cookbooks/stokes/doc/stokes.md
 benchmarks/viscosity_grooves/doc/viscosity_grooves.md
 ../cookbooks/cookbooks/latent-heat/doc/latent-heat.md
