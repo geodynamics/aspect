@@ -68,7 +68,7 @@ namespace aspect
       double
       phase_function(const double t)
       {
-        return std::exp(t)-1;
+        return std::exp(t)-1.;
       }
 
       template<int dim>
@@ -93,28 +93,28 @@ namespace aspect
           FunctionRigidShear(const unsigned int n_components,
                              const bool transient)
             : Function<dim>(n_components),
-              transient_(transient) {}
+              transient(transient) {}
 
           virtual void vector_value(const Point<dim> &p,
                                     Vector<double> &values) const
           {
             const double pi = numbers::PI;
             const double t = this->get_time();
-            const double phase = (transient_ == true) ? phase_function(t) : 0.0;
+            const double phase = (transient == true) ? phase_function(t) : 0.0;
 
             values[0] = std::sin(pi*(p[0]-phase)) * std::cos(pi*p[1]);
 
-            if (transient_ == true)
+            if (transient == true)
               values[0] += std::exp(t);
 
             values[1] = -std::cos(pi*(p[0]-phase)) * std::sin(pi*p[1]);
             values[2] = 2.0 * pi * std::cos(pi*(p[0]-phase)) * std::cos(pi*p[1]);
-            values[4] = density(p,t,transient_);
+            values[4] = density(p,t,transient);
             return;
           }
 
         private:
-          bool transient_;
+          bool transient;
       };
     }
 
@@ -131,9 +131,7 @@ namespace aspect
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
-          double t = 0.0;
-          if (this->simulator_is_past_initialization() == true)
-            t = this->get_time();
+          const double t = (this->simulator_is_past_initialization()) ? this->get_time() : 0.0;
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -227,9 +225,7 @@ namespace aspect
         virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const
         {
           const double pi = numbers::PI;
-          double t = 0.0;
-          if (this->simulator_is_past_initialization() == true)
-            t = this->get_time();
+          const double t = (this->simulator_is_past_initialization()) ? this->get_time() : 0.0;
 
           const RigidShearMaterial<dim> &
           material_model
