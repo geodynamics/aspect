@@ -1,0 +1,137 @@
+# A description of the time-dependent "Rigid shear" benchmark for which a known
+# solution is available. See Gassmoeller et al. "Benchmarking the accuracy of
+# higher order particle methods in geodynamic models of transient flow" for a
+# discussion.
+
+set Additional shared libraries            = ../plugin/librigid_shear.so
+
+set Dimension                              = 2
+set End time                               = 1.098612289
+set Output directory                       = output
+
+set Pressure normalization                 = volume
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Use years in output instead of seconds = false
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set X repetitions = 2
+    set Y extent = 1
+    set X periodic = true
+  end
+end
+
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+    #set Stokes solver type = block GMG
+    set Krylov method for cheap solver steps = IDR(s)
+  end
+end
+
+
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom: function, top: function
+
+  subsection Function
+    set Function expression = sin(pi*(x-exp(t)+1))*cos(pi*y) + exp(t); 0
+  end
+end
+
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = density_comp
+  #set Compositional field methods = particles
+  #set Mapped particle properties = density_comp:function
+end
+
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = sin(pi*x)*sin(pi*y) + 2
+  end
+end
+
+
+subsection Material model
+  set Material averaging = harmonic average only viscosity
+  set Model name = rigid shear
+end
+
+subsection Rigid shear benchmark
+  set Use analytical density = false
+  set Use transient solution = true
+end
+
+
+subsection Gravity model
+  set Model name = rigid shear
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators =
+  set List of model names =
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = (x<0.5) ? 0.4 : 0.6
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 3
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, rigid shear
+
+  subsection Visualization
+    set Time between graphical output = 0.1
+    set List of output variables = material properties, gravity
+  end
+
+  subsection Particles
+    set Time between data output = 0.1
+    set Data output format = vtu
+    set List of particle properties = function
+
+    subsection Function
+      set Function expression = sin(pi*x)*sin(pi*y) + 2
+    end
+
+    set Integration scheme = rk2
+    set Interpolation scheme = bilinear least squares
+    set Update ghost particles = true
+    set Minimum particles per cell = 12
+    set Maximum particles per cell = 16384
+    set Particle generator name = random uniform
+    set Number of particles = 8192
+    set Load balancing strategy = add particles
+
+    subsection Interpolator
+      subsection Quadratic least squares
+        set Use boundary extrapolation = true
+      end
+    end
+  end
+end
