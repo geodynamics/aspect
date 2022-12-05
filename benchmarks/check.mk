@@ -74,6 +74,11 @@ main: dummy
 # example/: dummy
 #	@$(def); run_prm $@ test.prm
 
+annulus/: dummy
+	+@$(def); make_lib $@/plugin
+	@$(def); run_all_prms $@/instantaneous
+	@$(def); run_all_prms $@/transient
+
 blankenbach/: dummy
 	+@$(def); make_lib $@/plugin
 	@$(def); run_all_prms $@
