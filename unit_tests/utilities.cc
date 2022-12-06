@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -64,7 +64,7 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=1")
 
   std::vector<std::string> column_names = {"a", "b"};
   Table<1,double> table(2);
-  std::vector<Table<1,double> > raw_data(2, table);
+  std::vector<Table<1,double>> raw_data(2, table);
 
   std::vector<std::vector<double>> coordinate_values(1, std::vector<double>({1.0, 2.0}));
   // c1:
@@ -74,7 +74,8 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=1")
   raw_data[1](0) = 5.0;
   raw_data[1](1) = 3.0;
 
-  lookup.reinit(column_names, std::move(coordinate_values), std::move(raw_data));
+  lookup.reinit(column_names, std::move(coordinate_values), std::move(raw_data),
+                MPI_COMM_SELF, numbers::invalid_unsigned_int);
 
   INFO(lookup.get_data(Point<1>(1.5), 0));
   INFO(lookup.get_data(Point<1>(1.5), 1));
@@ -93,7 +94,7 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=2")
   aspect::Utilities::StructuredDataLookup<2> lookup(1 /*n_components*/, 1.0 /*scaling*/);
 
   std::vector<std::string> column_names = {"topography"};
-  std::vector<Table<2,double> > raw_data(1, Table<2,double>(3,3));
+  std::vector<Table<2,double>> raw_data(1, Table<2,double>(3,3));
   std::vector<std::vector<double>> coordinate_values(2, std::vector<double>(3, 0.));
 
   // x:
@@ -111,7 +112,8 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=2")
   raw_data[0](1,2) = 0.0;
   raw_data[0](2,2) = 0.0;
 
-  lookup.reinit(column_names, std::move(coordinate_values), std::move(raw_data));
+  lookup.reinit(column_names, std::move(coordinate_values), std::move(raw_data),
+                MPI_COMM_SELF, numbers::invalid_unsigned_int);
 
   REQUIRE(lookup.get_data(Point<2>(1.0,6.0),0) == Approx(5.0));
   REQUIRE(lookup.get_data(Point<2>(2.0,6.0),0) == Approx(5.5));
@@ -124,7 +126,7 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=2 equid")
   aspect::Utilities::StructuredDataLookup<2> lookup(1 /*n_components*/, 1.0 /*scaling*/);
 
   std::vector<std::string> column_names = {"topography"};
-  std::vector<Table<2,double> > raw_data(1, Table<2,double>(3,3));
+  std::vector<Table<2,double>> raw_data(1, Table<2,double>(3,3));
   std::vector<std::vector<double>> coordinate_values(2, std::vector<double>(3, 0.));
 
   // x:
@@ -142,7 +144,8 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=2 equid")
   raw_data[0](1,2) = 0.0;
   raw_data[0](2,2) = 0.0;
 
-  lookup.reinit(column_names, std::move(coordinate_values), std::move(raw_data));
+  lookup.reinit(column_names, std::move(coordinate_values), std::move(raw_data),
+                MPI_COMM_SELF, numbers::invalid_unsigned_int);
 
   REQUIRE(lookup.get_data(Point<2>(1.0,6.0),0) == Approx(5.0));
   REQUIRE(lookup.get_data(Point<2>(1.5,6.0),0) == Approx(5.5));

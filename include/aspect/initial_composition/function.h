@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -74,7 +74,7 @@ namespace aspect
         /**
          * A function object representing the compositional fields.
          */
-        std::unique_ptr<Functions::ParsedFunction<dim> > function;
+        std::unique_ptr<Functions::ParsedFunction<dim>> function;
 
         /**
          * The coordinate representation to evaluate the function. Possible

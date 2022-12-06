@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -35,7 +35,7 @@ namespace aspect
     MaterialStatistics<dim>::execute (TableHandler &statistics)
     {
       // create a quadrature formula based on the temperature element alone.
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
+      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.temperature;
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -48,6 +48,7 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::viscosity;
 
       double local_volume = 0.0;
       double local_mass = 0.0;

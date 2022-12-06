@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -41,7 +41,7 @@ namespace aspect
       void
       Composition<dim>::update_particle_property(const unsigned int data_position,
                                                  const Vector<double> &solution,
-                                                 const std::vector<Tensor<1,dim> > &/*gradients*/,
+                                                 const std::vector<Tensor<1,dim>> &/*gradients*/,
                                                  typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
@@ -66,7 +66,7 @@ namespace aspect
       }
 
       template <int dim>
-      std::vector<std::pair<std::string, unsigned int> >
+      std::vector<std::pair<std::string, unsigned int>>
       Composition<dim>::get_property_information() const
       {
 
@@ -76,7 +76,7 @@ namespace aspect
                                "Please add compositional fields to your model, or remove "
                                "this particle property."));
 
-        std::vector<std::pair<std::string,unsigned int> > property_information;
+        std::vector<std::pair<std::string,unsigned int>> property_information;
 
 
 

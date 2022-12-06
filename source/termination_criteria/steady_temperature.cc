@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,7 +36,7 @@ namespace aspect
        * two or more entries. Otherwise the function does not change the list.
        */
       void trim_time_temperature_list (const double necessary_time_in_steady_state,
-                                       std::list<std::pair<double, double> > &time_temperature_list)
+                                       std::list<std::pair<double, double>> &time_temperature_list)
       {
         // Remove old times until we're at the correct time period
         // but ensure at least two entries remain in the list (one old, one current timestep)
@@ -53,10 +53,9 @@ namespace aspect
 
     template <int dim>
     bool
-    SteadyTemperature<dim>::execute(void)
+    SteadyTemperature<dim>::execute()
     {
-      const QGauss<dim> quadrature_formula (this->get_fe()
-                                            .base_element(this->introspection().base_elements.temperature).degree+1);
+      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.temperature;
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -108,13 +107,13 @@ namespace aspect
       double T_min, T_max, T_prev, time_prev, T_sum=0, T_mean, deviation_max;
       T_min = T_max = T_prev = time_temperature.front().second;
       time_prev = time_temperature.front().first;
-      for (auto it=time_temperature.begin(); it!=time_temperature.end(); ++it)
+      for (const auto &it : time_temperature)
         {
-          T_min = std::min(T_min, (*it).second);
-          T_max = std::max(T_max, (*it).second);
-          T_sum += (((*it).second + T_prev)/2.0)*((*it).first-time_prev);
-          time_prev = (*it).first;
-          T_prev = (*it).second;
+          T_min = std::min(T_min, it.second);
+          T_max = std::max(T_max, it.second);
+          T_sum += ((it.second + T_prev)/2.0)*(it.first-time_prev);
+          time_prev = it.first;
+          T_prev = it.second;
         }
 
       T_mean = T_sum/(time_temperature.back().first-time_temperature.front().first);

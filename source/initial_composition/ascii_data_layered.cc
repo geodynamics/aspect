@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -29,7 +29,7 @@ namespace aspect
   {
     template <int dim>
     AsciiDataLayered<dim>::AsciiDataLayered ()
-    {}
+      = default;
 
 
     template <int dim>

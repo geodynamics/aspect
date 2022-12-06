@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/material_model/simple.h>
 #include <aspect/global.h>
 
@@ -8,11 +28,13 @@
 namespace aspect
 {
   /**
-   * This is the "NSinker" benchmark defined in \cite May2015496 in the implementation
-   * of \cite rudi2017weighted. It creates a number of spherical high-viscosity, high-density
-   * sinking spheres in a box geometry that provide a challenge for the Stokes preconditioner.
-   * The difficulty of the problem is determined by the number of sinkers and the viscosity
-   * contrast between sinkers and background.
+   * This is the "NSinker" benchmark as defined in Rudi et al. (2017),
+   * which is based on May et al. (2014). It creates a number of
+   * spherical high-viscosity, high-density sinking spheres in a box
+   * geometry that provide a challenge for the Stokes preconditioner.
+   * The difficulty of the problem is determined by the number of
+   * sinkers and the viscosity contrast between sinkers and
+   * background.
    */
   namespace NSinkerBenchmark
   {
@@ -135,16 +157,6 @@ namespace aspect
 
 
 
-        /**
-         * The reference viscosity was chosen to coincide with the reference length scale of
-         * a box of size 1 (0.01) so that the resulting pressure scaling is equal to one, and
-         * therefore does not influence the scaling of the equations.
-         */
-        virtual double reference_viscosity () const
-        {
-          return 0.01;
-        }
-
       private:
         /**
          * Ratio of viscosities between sinkers and background material.
@@ -165,7 +177,7 @@ namespace aspect
         /**
          * Centers for the sinkers provided by Cedric Thielot (pers. comm. from Dave May)
          */
-        std::vector<Point<3> > centers;
+        std::vector<Point<3>> centers;
 
         /**
          * Parameters for evaluating viscosity

@@ -65,6 +65,12 @@ namespace aspect
       class Manager;
     }
 
+    namespace internal
+    {
+      template <int dim>
+      class SolutionEvaluators;
+    }
+
     /**
      * This class manages the storage and handling of particles. It provides
      * interfaces to generate and store particles, functions to initialize,
@@ -283,30 +289,30 @@ namespace aspect
         /**
          * Generation scheme for creating particles in this world
          */
-        std::unique_ptr<Generator::Interface<dim> > generator;
+        std::unique_ptr<Generator::Interface<dim>> generator;
 
         /**
          * Integration scheme for moving particles in this world
          */
-        std::unique_ptr<Integrator::Interface<dim> > integrator;
+        std::unique_ptr<Integrator::Interface<dim>> integrator;
 
         /**
          * Interpolation scheme for moving particles in this world
          */
-        std::unique_ptr<Interpolator::Interface<dim> > interpolator;
+        std::unique_ptr<Interpolator::Interface<dim>> interpolator;
 
         /**
          * The property manager stores information about the additional
          * particle properties and handles the initialization and update of
          * these properties.
          */
-        std::unique_ptr<Property::Manager<dim> > property_manager;
+        std::unique_ptr<Property::Manager<dim>> property_manager;
 
         /**
          * Particle handler object that is responsible for storing and
          * managing the internal particle structures.
          */
-        std::unique_ptr<Particles::ParticleHandler<dim> > particle_handler;
+        std::unique_ptr<Particles::ParticleHandler<dim>> particle_handler;
 
         /**
          * Particle handler object that is responsible for storing and
@@ -385,16 +391,6 @@ namespace aspect
         apply_particle_per_cell_bounds();
 
         /**
-         * TODO: Implement this for arbitrary meshes.
-         * This function checks if the @p lost_particles moved across a
-         * periodic boundary and tries to reinsert them into
-         * @p moved_particles_cell or @p moved_particles_domain. All particles
-         * that can not be found are discarded.
-         */
-        void
-        move_particles_back_into_mesh();
-
-        /**
          * Advect the particle positions by one integration step. Needs to be
          * called until integrator->continue() returns false.
          */
@@ -416,6 +412,20 @@ namespace aspect
                                const typename ParticleHandler<dim>::particle_iterator &end_particle);
 
         /**
+         * Update the particle properties of one cell.
+         *
+         * This version of the function above uses the deal.II class FEPointEvaluation,
+         * which allows for a faster evaluation of the solution under certain conditions.
+         * Check the place where this function is called for a list of conditions
+         * (they will change while FEPointEvaluation is generalized).
+         */
+        void
+        local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle,
+                               internal::SolutionEvaluators<dim> &evaluators);
+
+        /**
          * Advect the particles of one cell. Performs only one step for
          * multi-step integrators. Needs to be called until integrator->continue()
          * evaluates to false. Particles that moved out of their old cell
@@ -427,6 +437,25 @@ namespace aspect
         local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle);
+
+        /**
+         * Advect the particles of one cell. Performs only one step for
+         * multi-step integrators. Needs to be called until integrator->continue()
+         * evaluates to false. Particles that moved out of their old cell
+         * during this advection step are removed from the local multimap and
+         * stored in @p particles_out_of_cell for further treatment (sorting
+         * them into the new cell).
+         *
+         * This version of the above function uses the deal.II class FEPointEvaluation,
+         * which allows for a faster evaluation of the solution under certain conditions.
+         * Check the place where this function is called for a list of conditions
+         * (they will change while FEPointEvaluation is generalized).
+         */
+        void
+        local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle,
+                               internal::SolutionEvaluators<dim> &evaluators);
 
         /**
          * This function registers the necessary functions to the

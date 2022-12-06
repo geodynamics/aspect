@@ -10,7 +10,7 @@
 # all of the boundaries, but not with a mix of free slip and
 # prescribed velocity boundary conditions.
 # ---------------------
-set Adiabatic surface temperature          = 1580               # default: 0
+set Adiabatic surface temperature          = 1580
 set CFL number                             = 1.0
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Output directory                       = test
@@ -42,8 +42,8 @@ subsection Boundary temperature model
   set List of model names = initial temperature
 
   subsection Box
-    set Top temperature = 293 # default: 6000
-    set Bottom temperature = 1580  # default: 0
+    set Top temperature = 293
+    set Bottom temperature = 1580
   end
 end
 
@@ -61,7 +61,7 @@ subsection Boundary velocity model
 end
 
 subsection Geometry model
-  set Model name = box # default:
+  set Model name = box
 
   subsection Box
     set X extent  = 70000
@@ -111,8 +111,8 @@ subsection Mesh refinement
   set Coarsening fraction                      = 0.005
   set Refinement fraction                      = 0.0
 
-  set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 6                    # default: 2
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 6
   set Strategy                                 = minimum refinement function, composition
   set Time steps between mesh refinement       = 0
 
@@ -167,7 +167,7 @@ subsection Postprocess
     set Number of grouped files       = 0
     set Interpolate output            = false
     set Output format                 = vtu
-    set Time between graphical output = 0                                                                               # default: 1e8
+    set Time between graphical output = 0
   end
 
 end

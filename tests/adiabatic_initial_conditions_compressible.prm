@@ -6,7 +6,7 @@ set End time                               = 0
 set Start time                             = 0
 set End time                               = 0
 set Surface pressure                       = 0
-set Use years in output instead of seconds = false  # default: true
+set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 
 
@@ -64,9 +64,9 @@ subsection Material model
     set Reference compressibility = 4e-12
     set Reference density             = 3300
     set Reference specific heat       = 1250
-    set Thermal conductivity          = 4.125 # default: 4.7
+    set Thermal conductivity          = 4.125
     set Thermal expansion coefficient = 2e-5
-    set Viscosity                     = 1    # default: 5e24
+    set Viscosity                     = 1
   end
 end
 

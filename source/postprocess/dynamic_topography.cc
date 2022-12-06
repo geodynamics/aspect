@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -35,12 +35,15 @@ namespace aspect
     DynamicTopography<dim>::execute (TableHandler &)
     {
       const Postprocess::BoundaryPressures<dim> &boundary_pressures =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryPressures<dim> >();
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryPressures<dim>>();
 
       // Get the average pressure at the top and bottom boundaries.
       // This will be used to compute the dynamic pressure at the boundaries.
       const double surface_pressure = boundary_pressures.pressure_at_top();
       const double bottom_pressure = boundary_pressures.pressure_at_bottom();
+
+      const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      const types::boundary_id bottom_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
 
       // If the gravity vector is pointed *up*, as determined by representative points
       // at the surface and at depth, then we are running backwards advection, and need
@@ -80,8 +83,8 @@ namespace aspect
 
       // Storage for shape function values for the current solution.
       // Used for constructing the known side of the CBF system.
-      std::vector<Tensor<1,dim> > phi_u (dofs_per_cell);
-      std::vector<SymmetricTensor<2,dim> > epsilon_phi_u (dofs_per_cell);
+      std::vector<Tensor<1,dim>> phi_u (dofs_per_cell);
+      std::vector<SymmetricTensor<2,dim>> epsilon_phi_u (dofs_per_cell);
       std::vector<double> div_phi_u (dofs_per_cell);
       std::vector<double> div_solution(n_q_points);
 
@@ -104,8 +107,8 @@ namespace aspect
 
       // Possibly keep track of the dynamic topography values for
       // later surface output.
-      std::vector<std::pair<Point<dim>, double> > stored_values_surface;
-      std::vector<std::pair<Point<dim>, double> > stored_values_bottom;
+      std::vector<std::pair<Point<dim>, double>> stored_values_surface;
+      std::vector<std::pair<Point<dim>, double>> stored_values_bottom;
       visualization_values.reinit(this->get_triangulation().n_active_cells());
       visualization_values = 0.;
 
@@ -116,26 +119,22 @@ namespace aspect
           {
             // see if the cell is at the *top* or *bottom* boundary, not just any boundary
             unsigned int face_idx = numbers::invalid_unsigned_int;
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            for (const unsigned int f : cell->face_indices())
               {
-                const double depth_face_center = this->get_geometry_model().depth (cell->face(f)->center());
-                const double upper_depth_cutoff = cell->face(f)->minimum_vertex_distance()/3.0;
-                const double lower_depth_cutoff = this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.0;
-
-                // Check if cell is at upper and lower surface at the same time
-                if (depth_face_center < upper_depth_cutoff && depth_face_center > lower_depth_cutoff)
-                  AssertThrow(false, ExcMessage("Your geometry model is so small that the upper and lower boundary of "
-                                                "the domain are bordered by the same cell. "
-                                                "Consider using a higher mesh resolution.") );
-
-                // Check if the face is at the top or bottom boundary
-                if (depth_face_center < upper_depth_cutoff || depth_face_center > lower_depth_cutoff)
+                if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                   {
+                    // If the cell is at the top boundary, assign face_idx.
+                    face_idx = f;
+                    break;
+                  }
+                else if (cell->at_boundary(f) && cell->face(f)->boundary_id() == bottom_boundary_id)
+                  {
+                    // If the cell is at the bottom boundary, assign face_idx.
                     face_idx = f;
                     break;
                   }
               }
-
+            // If the cell is not at the boundary, jump to the next cell.
             if (face_idx == numbers::invalid_unsigned_int)
               continue;
 
@@ -148,12 +147,8 @@ namespace aspect
             // Evaluate the material model in the cell volume.
             MaterialModel::MaterialModelInputs<dim> in_volume(fe_volume_values, cell, this->introspection(), this->get_solution());
             MaterialModel::MaterialModelOutputs<dim> out_volume(fe_volume_values.n_quadrature_points, this->n_compositional_fields());
+            in_volume.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::viscosity;
             this->get_material_model().evaluate(in_volume, out_volume);
-
-            // Evaluate the material model on the cell face.
-            MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, this->introspection(), this->get_solution());
-            MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-            this->get_material_model().evaluate(in_face, out_face);
 
             // Get solution values for the divergence of the velocity, which is not
             // computed by the material model.
@@ -222,19 +217,19 @@ namespace aspect
                                            update_values | update_normal_vectors
                                            | update_gradients | update_quadrature_points);
 
-      std::vector<Tensor<1,dim> > stress_support_values( support_quadrature.size() );
+      std::vector<Tensor<1,dim>> stress_support_values( support_quadrature.size() );
       std::vector<double> topo_values( support_quadrature.size() );
       std::vector<types::global_dof_index> face_dof_indices (dofs_per_face);
 
       // Also construct data structures for getting the dynamic topography at the cell face
       // midpoints. This is a more practical thing for text output and visualization.
-      QGauss<dim-1> output_quadrature(quadrature_degree);
+      const QGauss<dim-1> output_quadrature(quadrature_degree);
       FEFaceValues<dim> fe_output_values (this->get_mapping(),
                                           this->get_fe(),
                                           output_quadrature,
                                           update_values | update_normal_vectors | update_gradients |
                                           update_quadrature_points | update_JxW_values);
-      std::vector<Tensor<1,dim> > stress_output_values( output_quadrature.size() );
+      std::vector<Tensor<1,dim>> stress_output_values( output_quadrature.size() );
 
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -247,34 +242,24 @@ namespace aspect
             // is true and will be changed to false if it's at the lower boundary. If the
             // cell is at neither boundary the loop will continue to the next cell.
             bool at_upper_surface = true;
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            for (const unsigned int f : cell->face_indices())
               {
-                const double depth_face_center = this->get_geometry_model().depth (cell->face(f)->center());
-                const double upper_depth_cutoff = cell->face(f)->minimum_vertex_distance()/3.0;
-                const double lower_depth_cutoff = this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.0;
-
-                // Check if cell is at upper and lower surface at the same time
-                if (depth_face_center < upper_depth_cutoff && depth_face_center > lower_depth_cutoff)
-                  AssertThrow(false, ExcMessage("Your geometry model is so small that the upper and lower boundary of "
-                                                "the domain are bordered by the same cell. "
-                                                "Consider using a higher mesh resolution.") );
-
-                // Check if the face is at the top boundary
-                if (depth_face_center < upper_depth_cutoff)
+                if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                   {
-                    at_upper_surface = true;
+                    // If the cell is at the top boundary, assign face_idx.
                     face_idx = f;
+                    at_upper_surface = true;
                     break;
                   }
-                // or at the bottom boundary
-                else if (depth_face_center > lower_depth_cutoff)
+                else if (cell->at_boundary(f) && cell->face(f)->boundary_id() == bottom_boundary_id)
                   {
+                    // If the cell is at the bottom boundary, assign face_idx.
                     face_idx = f;
                     at_upper_surface = false;
                     break;
                   }
               }
-
+            // If the cell is not at the boundary, jump to the next cell.
             if (face_idx == numbers::invalid_unsigned_int)
               continue;
 
@@ -283,6 +268,7 @@ namespace aspect
             // Evaluate the material model on the cell face.
             MaterialModel::MaterialModelInputs<dim> in_support(fe_support_values, cell, this->introspection(), this->get_solution());
             MaterialModel::MaterialModelOutputs<dim> out_support(fe_support_values.n_quadrature_points, this->n_compositional_fields());
+            in_support.requested_properties = MaterialModel::MaterialProperties::density;
             this->get_material_model().evaluate(in_support, out_support);
 
             fe_support_values[this->introspection().extractors.velocities].get_function_values(topo_vector, stress_support_values);
@@ -307,12 +293,16 @@ namespace aspect
                     if (at_upper_surface)
                       {
                         const double delta_rho = out_support.densities[support_index] - density_above;
+                        AssertThrow(std::abs(delta_rho) > std::numeric_limits<double>::min(),
+                                    ExcMessage("delta_rho is close or equal to zero at the surface."));
                         dynamic_topography = (-stress_support_values[support_index]*normal - surface_pressure)
                                              / delta_rho / gravity_norm;
                       }
                     else
                       {
                         const double delta_rho = out_support.densities[support_index] - density_below;
+                        AssertThrow(std::abs(delta_rho) > std::numeric_limits<double>::min(),
+                                    ExcMessage("delta_rho is close or equal to zero at the bottom."));
                         dynamic_topography = (-stress_support_values[support_index]*normal - bottom_pressure)
                                              / delta_rho / gravity_norm;
                       }
@@ -327,6 +317,7 @@ namespace aspect
             // Evaluate the material model on the cell face.
             MaterialModel::MaterialModelInputs<dim> in_output(fe_output_values, cell, this->introspection(), this->get_solution());
             MaterialModel::MaterialModelOutputs<dim> out_output(fe_output_values.n_quadrature_points, this->n_compositional_fields());
+            in_output.requested_properties = MaterialModel::MaterialProperties::density;
             this->get_material_model().evaluate(in_output, out_output);
 
             fe_output_values[this->introspection().extractors.velocities].get_function_values(topo_vector, stress_output_values);
@@ -422,7 +413,7 @@ namespace aspect
     void
     DynamicTopography<dim>::output_to_file(const bool upper,
                                            std::vector<std::pair<Point<dim>,
-                                           double> > &stored_values)
+                                           double>> &stored_values)
     {
       std::ostringstream output;
 
@@ -442,12 +433,10 @@ namespace aspect
       if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
         filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
 
-      const unsigned int max_data_length = Utilities::MPI::max (output.str().size()+1,
-                                                                this->get_mpi_communicator());
-      const unsigned int mpi_tag = 123;
+      const std::vector<std::string> data = Utilities::MPI::gather(this->get_mpi_communicator(), output.str());
 
-      // on processor 0, collect all of the data the individual processors send
-      // and concatenate them into one file
+      // On processor 0, collect all of the data the individual processors sent
+      // and concatenate them into one file:
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           std::ofstream file (filename.c_str());
@@ -456,40 +445,8 @@ namespace aspect
                << ((dim==2)? "x y " : "x y z ")
                << (upper ? "surface topography" : "bottom topography") << std::endl;
 
-          // first write out the data we have created locally
-          file << output.str();
-
-          std::string tmp;
-          tmp.resize (max_data_length, '\0');
-
-          // then loop through all of the other processors and collect
-          // data, then write it to the file
-          for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-            {
-              MPI_Status status;
-              // get the data. note that MPI says that an MPI_Recv may receive
-              // less data than the length specified here. since we have already
-              // determined the maximal message length, we use this feature here
-              // rather than trying to find out the exact message length with
-              // a call to MPI_Probe.
-              const int ierr = MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
-                                         this->get_mpi_communicator(), &status);
-              AssertThrowMPI(ierr);
-
-              // output the string. note that 'tmp' has length max_data_length,
-              // but we only wrote a certain piece of it in the MPI_Recv, ended
-              // by a \0 character. write only this part by outputting it as a
-              // C string object, rather than as a std::string
-              file << tmp.c_str();
-            }
-        }
-      else
-        // on other processors, send the data to processor zero. include the \0
-        // character at the end of the string
-        {
-          const int ierr = MPI_Send (&output.str()[0], output.str().size()+1, MPI_CHAR, 0, mpi_tag,
-                                     this->get_mpi_communicator());
-          AssertThrowMPI(ierr);
+          for (const auto &str : data)
+            file << str;
         }
     }
 

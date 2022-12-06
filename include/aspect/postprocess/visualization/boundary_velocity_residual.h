@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -65,7 +65,7 @@ namespace aspect
            */
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const override;
+                                std::vector<Vector<double>> &computed_quantities) const override;
 
           /**
            * Let the postprocessor manager know about the other postprocessors
@@ -73,6 +73,9 @@ namespace aspect
            */
           std::list<std::string>
           required_other_postprocessors() const override;
+
+          std::string
+          get_physical_units () const override;
       };
     }
   }

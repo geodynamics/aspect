@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -41,7 +41,7 @@ namespace aspect
       // to prevent a division-by-zero, and a floating point exception.
       // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
       // strain rate (often simplified as epsilondot_ii)
-      const double edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
+      const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.)),
                                       min_strain_rate);
 
 
@@ -72,11 +72,11 @@ namespace aspect
           // Start with the assumption that all strain is accommodated by diffusion creep:
           // If the diffusion creep prefactor is very small, that means that the diffusion viscosity is very large.
           // In this case, use the maximum viscosity instead to compute the starting guess.
-          double stress_ii = (prefactor_stress_diffusion > (0.5 / max_visc)
+          double stress_ii = (prefactor_stress_diffusion > (0.5 / maximum_viscosity)
                               ?
                               edot_ii/prefactor_stress_diffusion
                               :
-                              0.5 / max_visc);
+                              0.5 / maximum_viscosity);
           double strain_rate_residual = 2*strain_rate_residual_threshold;
           double strain_rate_deriv = 0;
           unsigned int stress_iteration = 0;
@@ -128,7 +128,7 @@ namespace aspect
 
                       const double diffusion_viscosity = std::min(std::max(diffusion_prefactor * diffusion_grain_size_dependence
                                                                            * diffusion_strain_rate_dependence * diffusion_T_and_P_dependence,
-                                                                           min_visc), max_visc);
+                                                                           minimum_viscosity), maximum_viscosity);
 
                       const double dislocation_prefactor = 0.5 * std::pow(dislocation_creep_parameters.prefactor,-1.0/dislocation_creep_parameters.stress_exponent);
                       const double dislocation_strain_rate_dependence = std::pow(dislocation_strain_rate, (1.-dislocation_creep_parameters.stress_exponent)/dislocation_creep_parameters.stress_exponent);
@@ -137,7 +137,7 @@ namespace aspect
 
                       const double dislocation_viscosity = std::min(std::max(dislocation_prefactor * dislocation_strain_rate_dependence
                                                                              * dislocation_T_and_P_dependence,
-                                                                             min_visc), max_visc);
+                                                                             minimum_viscosity), maximum_viscosity);
 
                       diffusion_strain_rate = dislocation_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
                       dislocation_strain_rate = diffusion_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
@@ -161,7 +161,7 @@ namespace aspect
             }
 
           // The effective viscosity, with minimum and maximum bounds
-          composition_viscosities[j] = std::min(std::max(stress_ii/edot_ii/2, min_visc), max_visc);
+          composition_viscosities[j] = std::min(std::max(stress_ii/edot_ii/2, minimum_viscosity), maximum_viscosity);
         }
       return composition_viscosities;
     }
@@ -200,6 +200,9 @@ namespace aspect
           // calculate effective viscosity
           if (in.requests_property(MaterialProperties::viscosity))
             {
+              Assert(std::isfinite(in.strain_rate[i].norm()),
+                     ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                                "not filled by the caller."));
               // Currently, the viscosities for each of the compositional fields are calculated assuming
               // isostrain amongst all compositions, allowing calculation of the viscosity ratio.
               // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
@@ -246,14 +249,6 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    DiffusionDislocation<dim>::
-    reference_viscosity () const
-    {
-      return ref_visc;
-    }
-
-    template <int dim>
     bool
     DiffusionDislocation<dim>::
     is_compressible () const
@@ -280,27 +275,6 @@ namespace aspect
                              "Upper cutoff for effective viscosity. Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Effective viscosity coefficient", "1.0", Patterns::Double(0.),
                              "Scaling coefficient for effective viscosity.");
-          prm.declare_entry ("Reference viscosity", "1e22", Patterns::Double(0.),
-                             "The reference viscosity that is used for pressure scaling. "
-                             "To understand how pressure scaling works, take a look at "
-                             "\\cite{KHB12}. In particular, the value of this parameter "
-                             "would not affect the solution computed by \\aspect{} if "
-                             "we could do arithmetic exactly; however, computers do "
-                             "arithmetic in finite precision, and consequently we need to "
-                             "scale quantities in ways so that their magnitudes are "
-                             "roughly the same. As explained in \\cite{KHB12}, we scale "
-                             "the pressure during some computations (never visible by "
-                             "users) by a factor that involves a reference viscosity. This "
-                             "parameter describes this reference viscosity."
-                             "\n\n"
-                             "For problems with a constant viscosity, you will generally want "
-                             "to choose the reference viscosity equal to the actual viscosity. "
-                             "For problems with a variable viscosity, the reference viscosity "
-                             "should be a value that adequately represents the order of "
-                             "magnitude of the viscosities that appear, such as an average "
-                             "value or the value one would use to compute a Rayleigh number."
-                             "\n\n"
-                             "Units: \\si{\\pascal\\second}.");
 
           // Viscosity iteration parameters
           prm.declare_entry ("Strain rate residual tolerance", "1e-22", Patterns::Double(0.),
@@ -421,10 +395,9 @@ namespace aspect
           // Reference and minimum/maximum values
           reference_T = prm.get_double("Reference temperature");
           min_strain_rate = prm.get_double("Minimum strain rate");
-          min_visc = prm.get_double ("Minimum viscosity");
-          max_visc = prm.get_double ("Maximum viscosity");
+          minimum_viscosity = prm.get_double ("Minimum viscosity");
+          maximum_viscosity = prm.get_double ("Maximum viscosity");
           veff_coefficient = prm.get_double ("Effective viscosity coefficient");
-          ref_visc = prm.get_double ("Reference viscosity");
 
           // Iteration parameters
           strain_rate_residual_threshold = prm.get_double ("Strain rate residual tolerance");
@@ -449,11 +422,11 @@ namespace aspect
           // Rheological parameters
           // Diffusion creep parameters
           diffusion_creep.initialize_simulator (this->get_simulator());
-          diffusion_creep.parse_parameters(prm, std::make_shared<std::vector<unsigned int>>(n_fields));
+          diffusion_creep.parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_fields));
 
           // Dislocation creep parameters
           dislocation_creep.initialize_simulator (this->get_simulator());
-          dislocation_creep.parse_parameters(prm, std::make_shared<std::vector<unsigned int>>(n_fields));
+          dislocation_creep.parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_fields));
 
 
         }

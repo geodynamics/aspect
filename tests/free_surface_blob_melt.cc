@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/global.h>
 #include <aspect/melt.h>
 
@@ -25,7 +45,6 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
-        virtual double reference_viscosity () const;
         virtual double reference_darcy_coefficient () const;
         /**
          * @}
@@ -122,7 +141,7 @@ namespace aspect
         }
 
       // fill melt outputs if they exist
-      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
+      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
 
       if (melt_out != nullptr)
         {
@@ -149,14 +168,6 @@ namespace aspect
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         melt_fractions[q] = 0.0;
       return;
-    }
-
-    template <int dim>
-    double
-    MeltFreeSurface<dim>::
-    reference_viscosity () const
-    {
-      return eta;
     }
 
     template <int dim>

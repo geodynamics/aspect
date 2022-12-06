@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -29,6 +29,15 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
+      ArtificialViscosity<dim>::
+      ArtificialViscosity ()
+        :
+        CellDataVectorCreator<dim>("W/m/K")
+      {}
+
+
+
+      template <int dim>
       std::pair<std::string, Vector<float> *>
       ArtificialViscosity<dim>::execute() const
       {
@@ -54,7 +63,9 @@ namespace aspect
                                                   "artificial viscosity",
                                                   "A visualization output object that generates output "
                                                   "showing the value of the artificial viscosity on each "
-                                                  "cell.")
+                                                  "cell."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\watt\\per\\meter\\per\\kelvin}.")
     }
   }
 }

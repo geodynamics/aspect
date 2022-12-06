@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -28,8 +28,6 @@
 #include <aspect/particle/world.h>
 #include <aspect/simulator.h>
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 
 
 namespace aspect
@@ -41,7 +39,7 @@ namespace aspect
     ParticleCountStatistics<dim>::execute (TableHandler &statistics)
     {
       const Postprocess::Particles<dim> &particle_postprocessor =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >();
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim>>();
 
       const Particle::ParticleHandler<dim> &particle_handler =
         particle_postprocessor.get_particle_world().get_particle_handler();

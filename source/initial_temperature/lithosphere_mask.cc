@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -46,7 +46,7 @@ namespace aspect
         if (LAB_depth_source == File)
           {
             const std::string filename = data_directory+LAB_file_name;
-            this->get_pcout() << "   Loading Ascii data lookup file " << filename << "." << std::endl;
+            this->get_pcout() << "   Loading Ascii data lookup file " << filename << '.' << std::endl;
 
             lab_depths.load_file(filename,this->get_mpi_communicator());
           }

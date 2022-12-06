@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -87,14 +87,39 @@ namespace aspect
          *
          * The data in @p data_table consists of a Table for each of the @p n_components components.
          *
-         * The last two arguments are rvalue references, and the function will
-         * move the data so provided into another storage location. In other
-         * words, after the call, the variables passed as the last two
-         * arguments may be empty or otherwise altered.
+         * The `coordinate_values` and `data_table` arguments are rvalue references,
+         * and the function will move the data so provided into another storage
+         * location. In other words, after the call, the variables passed as the
+         * second and third arguments may be empty or otherwise altered.
+         *
+         * If ASPECT is built on deal.II version 9.4 or higher, this class
+         * is able to share data between processes located on the same
+         * machine. In this case, if the last argument, `root_process` is
+         * set to anything other than `numbers::invalid_unsigned_int`, then only the
+         * indicated root process within the given MPI communicator needs to
+         * pass in valid arguments whereas on all other processes the values
+         * of `column_names`, `coordinate_values`, and `data_table` are
+         * ignored. Instead, the indicated root process will make sure that
+         * the other processes obtain valid data, for example by sharing
+         * data tables in shared memory spaces. This reduces both the
+         * computational effort in reading data from disk and parsing it on
+         * all processes, and can vastly reduce the amount of memory required
+         * on machines where many processor cores have access to shared memory
+         * resources.
+         *
+         * If `root_process` equals `numbers::invalid_unsigned_int`, then
+         * every process needs to pass data for all arguments and the
+         * `mpi_communicator` argument is ignored.
+         *
+         * If ASPECT is built on a version of deal.II 9.3 or older,
+         * then all processes need to pass in valid values for the first
+         * three arguments and the last two arguments are ignored.
          */
         void reinit(const std::vector<std::string> &column_names,
                     std::vector<std::vector<double>> &&coordinate_values,
-                    std::vector<Table<dim,double> > &&data_table);
+                    std::vector<Table<dim,double>> &&data_table,
+                    const MPI_Comm &mpi_communicator = MPI_COMM_SELF,
+                    const unsigned int root_process = numbers::invalid_unsigned_int);
 
         /**
          * Loads a data text file. Throws an exception if the file does not
@@ -234,10 +259,10 @@ namespace aspect
 
         /**
          * Computes the table indices given the size @p sizes of the
-         * i-th entry.
+         * entry with index @p idx.
          */
         TableIndices<dim>
-        compute_table_indices(const TableIndices<dim> &sizes, const unsigned int i) const;
+        compute_table_indices(const TableIndices<dim> &sizes, const std::size_t idx) const;
 
     };
 
@@ -388,15 +413,6 @@ namespace aspect
         int current_file_number;
 
         /**
-         * Time from which on the data file with number 'First data file
-         * number' is used as boundary condition. Previous to this time, 0 is
-         * returned for every field. Depending on the setting of the global
-         * 'Use years in output instead of seconds' flag in the input file,
-         * this number is either interpreted as seconds or as years."
-         */
-        double first_data_file_model_time;
-
-        /**
          * Number of the first data file to be loaded when the model time is
          * larger than 'First data file model time'.
          */
@@ -434,13 +450,13 @@ namespace aspect
          * data we get from text files.
          */
         std::map<types::boundary_id,
-            std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim-1> > > lookups;
+            std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim-1>>> lookups;
 
         /**
          * Map between the boundary id and the old data objects.
          */
         std::map<types::boundary_id,
-            std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim-1> > > old_lookups;
+            std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim-1>>> old_lookups;
 
         /**
          * Handles the update of the data in lookup.
@@ -470,7 +486,7 @@ namespace aspect
      * A base class that implements initial conditions determined from a
      * AsciiData input file.
      */
-    template <int dim>
+    template <int dim, int spacedim=dim>
     class AsciiDataInitial : public Utilities::AsciiDataBase<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -492,7 +508,7 @@ namespace aspect
          * Returns the data component at the given position.
          */
         double
-        get_data_component (const Point<dim>                    &position,
+        get_data_component (const Point<spacedim>               &position,
                             const unsigned int                   component) const;
 
       protected:
@@ -500,7 +516,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim> > lookup;
+        std::unique_ptr<aspect::Utilities::StructuredDataLookup<spacedim>> lookup;
     };
 
 
@@ -556,7 +572,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std::vector<std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim-1> >> lookups;
+        std::vector<std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim-1>>> lookups;
 
       private:
 
@@ -666,7 +682,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std::unique_ptr<aspect::Utilities::StructuredDataLookup<1> > lookup;
+        std::unique_ptr<aspect::Utilities::StructuredDataLookup<1>> lookup;
     };
 
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -43,7 +43,6 @@ namespace aspect
         virtual void parse_parameters(ParameterHandler &prm);
 
         virtual bool is_compressible () const;
-        virtual double reference_viscosity () const;
 
         virtual void create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
 
@@ -52,7 +51,7 @@ namespace aspect
         /**
          * Pointer to the material model used as the base model
          */
-        std::unique_ptr<MaterialModel::Interface<dim> > base_model;
+        std::unique_ptr<MaterialModel::Interface<dim>> base_model;
 
         /**
          * Parameter determining the decay rate.
@@ -98,14 +97,6 @@ namespace aspect
       return base_model->is_compressible();
     }
 
-    template <int dim>
-    double
-    ExponentialDecay<dim>::
-    reference_viscosity() const
-    {
-      return base_model->reference_viscosity();
-    }
-
 
     template <int dim>
     void
@@ -125,7 +116,7 @@ namespace aspect
           out.reaction_terms[q][c] = 0.0;
 
       // fill melt reaction rates if they exist
-      ReactionRateOutputs<dim> *reaction_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
+      ReactionRateOutputs<dim> *reaction_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
 
       if (reaction_out != NULL)
         {
@@ -182,7 +173,7 @@ namespace aspect
           // create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
           // leave the current section
-          base_model.reset(create_material_model<dim>(prm.get("Base model")));
+          base_model = create_material_model<dim>(prm.get("Base model"));
           if (Plugins::plugin_type_matches<SimulatorAccess<dim>>(*base_model))
             Plugins::get_plugin_as_type<SimulatorAccess<dim>>(*base_model).initialize_simulator (this->get_simulator());
 
@@ -203,11 +194,11 @@ namespace aspect
     void
     ExponentialDecay<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<ReactionRateOutputs<dim> >() == NULL)
+      if (out.template get_additional_output<ReactionRateOutputs<dim>>() == NULL)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points, this->n_compositional_fields()));
+            std::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points, this->n_compositional_fields()));
         }
     }
   }
@@ -285,8 +276,8 @@ namespace aspect
   {
     public:
       RefFunction () : Function<dim>(dim+3) {}
-      virtual void vector_value (const Point< dim > &/*position*/,
-                                 Vector< double >   &values) const
+      virtual void vector_value (const Point<dim> &/*position*/,
+                                 Vector<double>   &values) const
       {
         values[0] = 0.0; // velocity x
         values[1] = 0.0; // velocity z

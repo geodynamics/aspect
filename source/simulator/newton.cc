@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,7 +36,7 @@ namespace aspect
     MaterialModelDerivatives (const unsigned int n_points)
     {
       viscosity_derivative_wrt_pressure.resize(n_points, numbers::signaling_nan<double>());
-      viscosity_derivative_wrt_strain_rate.resize(n_points, numbers::signaling_nan<SymmetricTensor<2,dim> >());
+      viscosity_derivative_wrt_strain_rate.resize(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>());
     }
 
   }
@@ -48,29 +48,31 @@ namespace aspect
   NewtonHandler<dim>::
   set_assemblers (Assemblers::Manager<dim> &assemblers) const
   {
-    assemblers.stokes_preconditioner.push_back(std_cxx14::make_unique<aspect::Assemblers::NewtonStokesPreconditioner<dim> >());
-    assemblers.stokes_system.push_back(std_cxx14::make_unique<aspect::Assemblers::NewtonStokesIncompressibleTerms<dim> >());
+    assemblers.stokes_preconditioner.push_back(std::make_unique<aspect::Assemblers::NewtonStokesPreconditioner<dim>>());
+    assemblers.stokes_system.push_back(std::make_unique<aspect::Assemblers::NewtonStokesIncompressibleTerms<dim>>());
 
     if (this->get_material_model().is_compressible())
       {
-        assemblers.stokes_preconditioner.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::StokesCompressiblePreconditioner<dim> >());
+        // The compressible part of the preconditioner is only necessary if we use the simplified A block
+        if (this->get_parameters().use_full_A_block_preconditioner == false)
+          assemblers.stokes_preconditioner.push_back(
+            std::make_unique<aspect::Assemblers::StokesCompressiblePreconditioner<dim>>());
 
         assemblers.stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::NewtonStokesCompressibleStrainRateViscosityTerm<dim> >());
+          std::make_unique<aspect::Assemblers::NewtonStokesCompressibleStrainRateViscosityTerm<dim>>());
       }
 
     if (this->get_parameters().formulation_mass_conservation ==
         Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
       {
         assemblers.stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::NewtonStokesImplicitReferenceDensityCompressibilityTerm<dim> >());
+          std::make_unique<aspect::Assemblers::NewtonStokesImplicitReferenceDensityCompressibilityTerm<dim>>());
       }
     else if (this->get_parameters().formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::reference_density_profile)
       {
         assemblers.stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::NewtonStokesReferenceDensityCompressibilityTerm<dim> >());
+          std::make_unique<aspect::Assemblers::NewtonStokesReferenceDensityCompressibilityTerm<dim>>());
       }
     else if (this->get_parameters().formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::incompressible)
@@ -81,7 +83,14 @@ namespace aspect
              Parameters<dim>::Formulation::MassConservation::isentropic_compression)
       {
         assemblers.stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::NewtonStokesIsentropicCompressionTerm<dim> >());
+          std::make_unique<aspect::Assemblers::NewtonStokesIsentropicCompressionTerm<dim>>());
+      }
+    else if (this->get_parameters().formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::projected_density_field)
+      {
+        CitationInfo::add("pda");
+        assemblers.stokes_system.push_back(
+          std::make_unique<aspect::Assemblers::NewtonStokesProjectedDensityFieldTerm<dim>>());
       }
     else
       AssertThrow(false,
@@ -92,13 +101,13 @@ namespace aspect
     if (!this->get_boundary_traction().empty())
       {
         assemblers.stokes_system_on_boundary_face.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim> >());
+          std::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim>>());
       }
 
     // add the terms necessary to normalize the pressure
     if (this->pressure_rhs_needs_compatibility_modification())
       assemblers.stokes_system.push_back(
-        std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> >());
+        std::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim>>());
   }
 
 
@@ -108,12 +117,12 @@ namespace aspect
   NewtonHandler<dim>::
   create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
   {
-    if (output.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >() != nullptr)
+    if (output.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>() != nullptr)
       return;
 
     const unsigned int n_points = output.viscosities.size();
     output.additional_outputs.push_back(
-      std_cxx14::make_unique<MaterialModel::MaterialModelDerivatives<dim>>(n_points));
+      std::make_unique<MaterialModel::MaterialModelDerivatives<dim>>(n_points));
   }
 
 
@@ -177,11 +186,11 @@ namespace aspect
                              "(1.0-(residual/switch\\_initial\\_residual)))$, where switch\\_initial\\_residual is the "
                              "residual at the time when the Newton solver is switched on.");
 
-          prm.declare_entry ("Maximum linear Stokes solver tolerance", "0.9",
+          prm.declare_entry ("Maximum linear Stokes solver tolerance", "1e-2",
                              Patterns::Double (0., 1.),
                              "The linear Stokes solver tolerance is dynamically chosen for the Newton solver, based "
-                             "on the Eisenstat walker 1994 paper (https://doi.org/10.1137/0917003), equation 2.2. "
-                             "Because this value can become larger then one, we limit this value by this parameter.");
+                             "on the Eisenstat Walker (1994) paper (https://doi.org/10.1137/0917003), equation 2.2. "
+                             "Because this value can become larger than one, we limit this value by this parameter.");
 
           prm.declare_entry ("Stabilization preconditioner", "SPD",
                              Patterns::Selection ("SPD|PD|symmetric|none"),

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,6 +33,15 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
+      template <int dim>
+      ISARotationTimescale<dim>::
+      ISARotationTimescale ()
+        :
+        CellDataVectorCreator<dim>("s")
+      {}
+
+
+
       template<int dim>
       std::pair<std::string, Vector<float> *> ISARotationTimescale<dim>::execute() const
       {
@@ -49,8 +58,6 @@ namespace aspect
         // Set up material models
         MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                    this->n_compositional_fields());
-        MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                     this->n_compositional_fields());
 
         // Loop over cells and calculate tauISA in each one
         // Note that we start after timestep 0 because we need the strain rate,
@@ -94,13 +101,15 @@ namespace aspect
                                                   "A visualization output object that generates output "
                                                   "showing the timescale for the rotation of grains "
                                                   "toward the infinite strain axis. Kaminski and Ribe "
-                                                  "(2002, Gcubed) call this quantity $\\tau_{ISA}$ and "
-                                                  "define it as "
-                                                  "$\\tau_{ISA} \\approx \\frac{1}{\\dot{\\epsilon}}$ "
+                                                  "(see \\cite{Kaminski2002}) call this quantity "
+                                                  "$\\tau_\\text{ISA}$ and define it as "
+                                                  "$\\tau_\\text{ISA} \\approx \\frac{1}{\\dot{\\epsilon}}$ "
                                                   "where $\\dot{\\epsilon}$ is the largest eigenvalue "
                                                   "of the strain rate tensor. It can be used, "
                                                   "along with the grain lag angle $\\Theta$, "
-                                                  "to calculate the grain orientation lag parameter.")
+                                                  "to calculate the grain orientation lag parameter."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\second}.")
     }
   }
 }

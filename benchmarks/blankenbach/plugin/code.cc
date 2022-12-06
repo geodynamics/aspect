@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -63,7 +63,6 @@ namespace aspect
       };
       std::vector<entry> entries;
 
-      //      const QTrapez<dim> quadrature_formula;
       const QMidpoint<dim> quadrature_formula;
 
       const unsigned int n_q_points =  quadrature_formula.size();
@@ -140,7 +139,7 @@ namespace aspect
       f << std::scientific << std::setprecision(15);
 
       // Note: POINTS is only useful if our mesh is a structured grid
-      f << "# POINTS: " << n_x << " " << n_y << "\n";
+      f << "# POINTS: " << n_x << ' ' << n_y << "\n";
       f << "# x y T\n";
 
       for (unsigned int idx = 0; idx< entries.size(); ++idx)

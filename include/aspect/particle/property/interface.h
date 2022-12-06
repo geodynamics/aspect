@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -96,7 +96,7 @@ namespace aspect
            * Particle::Property::Interface<dim>::get_property_information()
            * functions of all property plugins.
            */
-          ParticlePropertyInformation(const std::vector<std::vector<std::pair<std::string,unsigned int> > > &property_information);
+          ParticlePropertyInformation(const std::vector<std::vector<std::pair<std::string,unsigned int>>> &property_information);
 
           /**
            * Checks if the particle property specified by @p name exists
@@ -312,7 +312,7 @@ namespace aspect
            * Destructor. Made virtual so that derived classes can be created
            * and destroyed through pointers to the base class.
            */
-          virtual ~Interface ();
+          virtual ~Interface () = default;
 
           /**
            * Initialization function. This function is called once at the
@@ -368,7 +368,7 @@ namespace aspect
           void
           update_particle_property (const unsigned int data_position,
                                     const Vector<double> &solution,
-                                    const std::vector<Tensor<1,dim> > &gradients,
+                                    const std::vector<Tensor<1,dim>> &gradients,
                                     typename ParticleHandler<dim>::particle_iterator &particle) const;
 
           /**
@@ -405,7 +405,7 @@ namespace aspect
           update_one_particle_property (const unsigned int data_position,
                                         const Point<dim> &position,
                                         const Vector<double> &solution,
-                                        const std::vector<Tensor<1,dim> > &gradients,
+                                        const std::vector<Tensor<1,dim>> &gradients,
                                         const ArrayView<double> &particle_properties) const;
 
           /**
@@ -468,7 +468,7 @@ namespace aspect
            * number of components this property plugin defines.
            */
           virtual
-          std::vector<std::pair<std::string, unsigned int> >
+          std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const = 0;
 
 
@@ -498,6 +498,54 @@ namespace aspect
           virtual
           void
           parse_parameters (ParameterHandler &prm);
+      };
+
+      /**
+       * A particle property that provides storage space for
+       * the properties that particle integrators need to
+       * store. This is an internal property that is not
+       * intended for use outside of the particle integrators
+       * and that will not be written to output files.
+       *
+       * @ingroup ParticleProperties
+       */
+      template <int dim>
+      class IntegratorProperties : public Interface<dim>
+      {
+        public:
+          /**
+           * Initialization function. Since these properties are set and used
+           * by the integrator this function only resizes them to the correct
+           * size, but does not need to do any initialization.
+           */
+          void
+          initialize_one_particle_property (const Point<dim> &position,
+                                            std::vector<double> &particle_properties) const override;
+
+          /**
+           * Set up the information about the names and number of components
+           * this property requires. This depends on the chosen integration scheme.
+           *
+           * @return A vector that contains pairs of the property names and the
+           * number of components this property plugin defines.
+           */
+          std::vector<std::pair<std::string, unsigned int>>
+          get_property_information() const override;
+
+          /**
+           * Read the parameters this class needs to determine which integrator is used,
+           * and therefore how many properties to reserve.
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm) override;
+
+        private:
+          /**
+           * The number of integrator properties to store. This variable is initialized in
+           * parse_parameters().
+           */
+          unsigned int n_integrator_properties;
       };
 
 
@@ -555,7 +603,7 @@ namespace aspect
           void
           update_one_particle (typename ParticleHandler<dim>::particle_iterator &particle,
                                const Vector<double> &solution,
-                               const std::vector<Tensor<1,dim> > &gradients) const;
+                               const std::vector<Tensor<1,dim>> &gradients) const;
 
           /**
            * Returns an enum, which denotes at what time this class needs to
@@ -603,6 +651,30 @@ namespace aspect
            * Get the plugin index of the particle plugin specified by @p name.
            */
           unsigned int get_plugin_index_by_name(const std::string &name) const;
+
+          /**
+           * Go through the list of all particle properties that have been selected
+           * in the input file (and are consequently currently active) and return
+           * true if one of them has the desired type specified by the template
+           * argument.
+           */
+          template <typename ParticlePropertyType>
+          inline
+          bool
+          has_matching_property () const;
+
+          /**
+           * Go through the list of all particle properties that have been selected
+           * in the input file (and are consequently currently active) and see
+           * if one of them has the type specified by the template
+           * argument or can be casted to that type. If so, return a reference
+           * to it. If no property is active that matches the given type,
+           * throw an exception.
+           */
+          template <typename ParticlePropertyType>
+          inline
+          const ParticlePropertyType &
+          get_matching_property () const;
 
           /**
            * Get the number of components required to represent this particle's
@@ -668,7 +740,7 @@ namespace aspect
           register_particle_property (const std::string &name,
                                       const std::string &description,
                                       void (*declare_parameters_function) (ParameterHandler &),
-                                      Property::Interface<dim> *(*factory_function) ());
+                                      std::unique_ptr<Property::Interface<dim>> (*factory_function) ());
 
 
           /**
@@ -709,7 +781,7 @@ namespace aspect
            * A list of property objects that have been requested in the
            * parameter file.
            */
-          std::list<std::unique_ptr<Interface<dim> > > property_list;
+          std::list<std::unique_ptr<Interface<dim>>> property_list;
 
           /**
            * A class that stores all information about the particle properties,
@@ -717,6 +789,44 @@ namespace aspect
            */
           ParticlePropertyInformation property_information;
       };
+
+      /* -------------------------- inline and template functions ---------------------- */
+
+
+      template <int dim>
+      template <typename ParticlePropertyType>
+      inline
+      bool
+      Manager<dim>::has_matching_property () const
+      {
+        for (const auto &p : property_list)
+          if (Plugins::plugin_type_matches<ParticlePropertyType>(*p))
+            return true;
+
+        return false;
+      }
+
+
+      template <int dim>
+      template <typename ParticlePropertyType>
+      inline
+      const ParticlePropertyType &
+      Manager<dim>::get_matching_property () const
+      {
+        AssertThrow(has_matching_property<ParticlePropertyType> (),
+                    ExcMessage("You asked Particle::Property::Manager::has_matching_property() for a "
+                               "particle property of type <" + boost::core::demangle(typeid(ParticlePropertyType).name()) + "> "
+                               "that could not be found in the current model. Activate this "
+                               "particle property in the input file."));
+
+        typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator property;
+        for (const auto &p : property_list)
+          if (Plugins::plugin_type_matches<ParticlePropertyType>(*p))
+            return Plugins::get_plugin_as_type<ParticlePropertyType>(*p);
+
+        // We will never get here, because we had the Assert above. Just to avoid warnings.
+        return Plugins::get_plugin_as_type<ParticlePropertyType>(*(*property));
+      }
 
 
       /**
@@ -730,10 +840,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_PARTICLE_PROPERTY_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<2>,classname<2>> \
     dummy_ ## classname ## _2d (&aspect::Particle::Property::Manager<2>::register_particle_property, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<3>,classname<3>> \
     dummy_ ## classname ## _3d (&aspect::Particle::Property::Manager<3>::register_particle_property, \
                                 name, description); \
   }

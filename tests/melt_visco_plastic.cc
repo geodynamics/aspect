@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -45,10 +45,10 @@ namespace aspect
      * and filled in the MaterialModel::Interface::evaluate() function.
      */
     template <int dim>
-    class PlasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    class PlasticAdditionalOutputs2 : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
-        PlasticAdditionalOutputs(const unsigned int n_points);
+        PlasticAdditionalOutputs2(const unsigned int n_points);
 
         virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 
@@ -108,8 +108,6 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
-        virtual double reference_viscosity () const override;
-
         virtual double reference_darcy_coefficient () const override;
 
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
@@ -270,7 +268,7 @@ namespace aspect
     }
 
     template <int dim>
-    PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
+    PlasticAdditionalOutputs2<dim>::PlasticAdditionalOutputs2 (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
       cohesions(n_points, numbers::signaling_nan<double>()),
@@ -280,7 +278,7 @@ namespace aspect
 
     template <int dim>
     std::vector<double>
-    PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    PlasticAdditionalOutputs2<dim>::get_nth_output(const unsigned int idx) const
     {
       AssertIndexRange (idx, 3);
       switch (idx)
@@ -299,14 +297,6 @@ namespace aspect
         }
       // We will never get here, so just return something
       return cohesions;
-    }
-
-    template <int dim>
-    double
-    MeltViscoPlastic<dim>::
-    reference_viscosity () const
-    {
-      return ref_viscosity;
     }
 
     template <int dim>
@@ -370,7 +360,7 @@ namespace aspect
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                     std::vector<double> &melt_fractions) const
     {
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         melt_fractions[q] = melt_fraction(in.temperature[q],
                                           std::max(0.0, in.pressure[q]));
       return;
@@ -382,7 +372,7 @@ namespace aspect
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
       // 1) Initial viscosities and other material properties
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i]);
           out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, linear_viscosities, viscosity_averaging);
@@ -402,19 +392,19 @@ namespace aspect
       const std::vector<double> intrinsic_viscosities = out.viscosities;
 
       // 2) Retrieve fluid pressure and volumetric strain rate
-      std::vector<double> fluid_pressures(in.position.size());
-      std::vector<double> volumetric_strain_rates(in.position.size());
-      std::vector<double> volumetric_yield_strength(in.position.size());
+      std::vector<double> fluid_pressures(in.n_evaluation_points());
+      std::vector<double> volumetric_strain_rates(in.n_evaluation_points());
+      std::vector<double> volumetric_yield_strength(in.n_evaluation_points());
 
-      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
+      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
 
       if (this->include_melt_transport() )
         {
           if (in.current_cell.state() == IteratorState::valid)
             {
-              std::vector<Point<dim> > quadrature_positions(in.position.size());
+              std::vector<Point<dim>> quadrature_positions(in.n_evaluation_points());
 
-              for (unsigned int i=0; i < in.position.size(); ++i)
+              for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
                 quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
 
               // FEValues requires a quadrature and we provide the default quadrature
@@ -440,7 +430,7 @@ namespace aspect
           const double time_scale = this->convert_output_to_years() ? year_in_seconds : 1.0;
 
           // 3) Get porosity, melt density and update melt reaction terms
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               // get peridotite and porosity field indices
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
@@ -500,10 +490,10 @@ namespace aspect
             }
         }
 
-      if (in.strain_rate.size() )
+      if (in.requests_property(MaterialProperties::viscosity) )
         {
           // 5) Compute plastic weakening of the viscosity
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               // Compute volume fractions
               const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i]);
@@ -580,7 +570,7 @@ namespace aspect
               const double cohesion = MaterialUtilities::average_value(volume_fractions, cohesions, viscosity_averaging);
               const double angle_internal_friction = MaterialUtilities::average_value(volume_fractions, angles_internal_friction, viscosity_averaging);
 
-              PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim> >();
+              PlasticAdditionalOutputs2<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs2<dim>>();
               if (plastic_out != nullptr)
                 {
                   plastic_out->cohesions[i] = cohesion;
@@ -597,11 +587,11 @@ namespace aspect
         }
 
       // fill melt outputs if they exist
-      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
+      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
 
       if (melt_out != NULL)
         {
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
@@ -1018,11 +1008,11 @@ namespace aspect
     void
     MeltViscoPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PlasticAdditionalOutputs<dim> >() == nullptr)
+      if (out.template get_additional_output<PlasticAdditionalOutputs2<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::PlasticAdditionalOutputs<dim>> (n_points));
+            std::make_unique<MaterialModel::PlasticAdditionalOutputs2<dim>> (n_points));
         }
     }
 

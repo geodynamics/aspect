@@ -41,10 +41,6 @@ subsection Gravity model
 end
 
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
 subsection Initial temperature model
   set Model name = function
   subsection Function
@@ -69,7 +65,7 @@ end
 
 subsection Boundary composition model
   set Fixed composition boundary indicators = left, bottom
-  set Model name = box
+  set List of model names = box
 
   subsection Box
     set Left composition = -1.0

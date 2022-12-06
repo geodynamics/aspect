@@ -39,7 +39,6 @@ subsection Material model
     set Elastic shear moduli        = 1.e50, 1.e50, 1.e50, 1.e50, 3.e10, 3.e10
     set Fixed elastic time step     = 5
     set Use fixed elastic time step = false
-    set Use stress averaging        = false
     set Viscosity averaging scheme  = maximum composition
 
     set Cohesions                   = 1.e50

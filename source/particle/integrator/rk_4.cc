@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -19,6 +19,9 @@
  */
 
 #include <aspect/particle/integrator/rk_4.h>
+#include <aspect/particle/property/interface.h>
+#include <aspect/particle/world.h>
+#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {
@@ -32,12 +35,28 @@ namespace aspect
         integrator_substep(0)
       {}
 
+
+
+      template <int dim>
+      void
+      RK4<dim>::initialize ()
+      {
+        const auto &property_information = this->get_particle_world().get_property_manager().get_data_info();
+
+        property_index_k[0] = property_information.get_position_by_field_name("internal: integrator properties");
+        property_index_k[1] = property_index_k[0] + dim;
+        property_index_k[2] = property_index_k[1] + dim;
+        property_index_k[3] = property_index_k[2] + dim;
+      }
+
+
+
       template <int dim>
       void
       RK4<dim>::local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                      const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                                     const std::vector<Tensor<1,dim> > &old_velocities,
-                                     const std::vector<Tensor<1,dim> > &velocities,
+                                     const std::vector<Tensor<1,dim>> &old_velocities,
+                                     const std::vector<Tensor<1,dim>> &velocities,
                                      const double dt)
       {
         Assert(static_cast<unsigned int> (std::distance(begin_particle, end_particle)) == old_velocities.size(),
@@ -50,35 +69,118 @@ namespace aspect
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
 
-        // TODO: currently old_velocity is not used in this scheme, but it should,
-        // to make it at least second-order accurate in time.
-        typename std::vector<Tensor<1,dim> >::const_iterator old_velocity = old_velocities.begin();
-        typename std::vector<Tensor<1,dim> >::const_iterator velocity = velocities.begin();
+        const bool geometry_has_periodic_boundary = (this->get_geometry_model().get_periodic_boundary_pairs().size() != 0);
 
+        typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
+        typename std::vector<Tensor<1,dim>>::const_iterator velocity = velocities.begin();
+
+        std::array<Point<dim>,5> k;
         for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
              it != end_particle; ++it, ++velocity, ++old_velocity)
           {
-            const types::particle_index particle_id = it->get_id();
+            ArrayView<double> properties = it->get_properties();
+
             if (integrator_substep == 0)
               {
-                loc0[particle_id] = it->get_location();
-                k1[particle_id] = dt * (*old_velocity);
-                it->set_location(it->get_location() + 0.5*k1[particle_id]);
+                k[0] = it->get_location();
+                k[1] = dt * (*old_velocity);
+
+                Point<dim> new_location = k[0] + 0.5 * k[1];
+
+                // Check if we crossed a periodic boundary and if necessary adjust positions
+                if (geometry_has_periodic_boundary)
+                  this->get_geometry_model().adjust_positions_for_periodicity(new_location,
+                                                                              ArrayView<Point<dim>>(&k[0],2));
+
+                for (unsigned int i=0; i<dim; ++i)
+                  {
+                    properties[property_index_k[0] + i] = k[0][i];
+                    properties[property_index_k[1] + i] = k[1][i];
+                  }
+
+                it->set_location(new_location);
               }
             else if (integrator_substep == 1)
               {
-                k2[particle_id] = dt * (*old_velocity + *velocity) / 2.0;
-                it->set_location(loc0[particle_id] + 0.5*k2[particle_id]);
+                k[2] = dt * ((*old_velocity) + (*velocity)) / 2.0;
+                for (unsigned int i=0; i<dim; ++i)
+                  k[0][i] = properties[property_index_k[0] + i];
+
+                Point<dim> new_location = k[0] + 0.5 * k[2];
+
+                if (geometry_has_periodic_boundary)
+                  {
+                    for (unsigned int i=0; i<dim; ++i)
+                      k[1][i] = properties[property_index_k[1] + i];
+
+                    this->get_geometry_model().adjust_positions_for_periodicity(new_location,
+                                                                                ArrayView<Point<dim>>(&k[0],3));
+
+                    for (unsigned int i=0; i<dim; ++i)
+                      {
+                        properties[property_index_k[0] + i] = k[0][i];
+                        properties[property_index_k[1] + i] = k[1][i];
+                      }
+                  }
+
+                for (unsigned int i=0; i<dim; ++i)
+                  properties[property_index_k[2] + i] = k[2][i];
+
+                it->set_location(new_location);
               }
             else if (integrator_substep == 2)
               {
-                k3[particle_id] = dt * (*old_velocity + *velocity) / 2.0;
-                it->set_location(loc0[particle_id] + k3[particle_id]);
+                k[3] = dt * (*old_velocity + *velocity) / 2.0;
+                for (unsigned int i=0; i<dim; ++i)
+                  k[0][i] = properties[property_index_k[0] + i];
+
+                Point<dim> new_location = k[0] + k[3];
+
+                if (geometry_has_periodic_boundary)
+                  {
+                    for (unsigned int i=0; i<dim; ++i)
+                      {
+                        k[1][i] = properties[property_index_k[1] + i];
+                        k[2][i] = properties[property_index_k[2] + i];
+                      }
+
+                    this->get_geometry_model().adjust_positions_for_periodicity(new_location,
+                                                                                ArrayView<Point<dim>>(&k[0],4));
+
+                    for (unsigned int i=0; i<dim; ++i)
+                      {
+                        properties[property_index_k[0] + i] = k[0][i];
+                        properties[property_index_k[1] + i] = k[1][i];
+                        properties[property_index_k[2] + i] = k[2][i];
+                      }
+                  }
+
+                for (unsigned int i=0; i<dim; ++i)
+                  {
+                    properties[property_index_k[3] + i] = k[3][i];
+                  }
+
+                it->set_location(new_location);
               }
             else if (integrator_substep == 3)
               {
-                const Tensor<1,dim> k4 = dt * (*velocity);
-                it->set_location(loc0[particle_id] + (k1[particle_id] + 2.0*k2[particle_id] + 2.0*k3[particle_id] + k4)/6.0);
+                k[4] = dt * (*velocity);
+
+                for (unsigned int i=0; i<dim; ++i)
+                  {
+                    k[0][i] = properties[property_index_k[0] + i];
+                    k[1][i] = properties[property_index_k[1] + i];
+                    k[2][i] = properties[property_index_k[2] + i];
+                    k[3][i] = properties[property_index_k[3] + i];
+                  }
+
+                Point<dim> new_location = k[0] + (k[1] + 2.0*k[2] + 2.0*k[3] + k[4])/6.0;
+
+                // No need to fix intermediate values, this is the last integrator step
+                if (geometry_has_periodic_boundary)
+                  this->get_geometry_model().adjust_positions_for_periodicity(new_location);
+
+                it->set_location(new_location);
               }
             else
               {
@@ -88,99 +190,16 @@ namespace aspect
           }
       }
 
+
+
       template <int dim>
       bool
       RK4<dim>::new_integration_step()
       {
-        if (integrator_substep == 3)
-          {
-            loc0.clear();
-            k1.clear();
-            k2.clear();
-            k3.clear();
-          }
-
         integrator_substep = (integrator_substep+1)%4;
 
         // Continue until we're at the last step
         return (integrator_substep != 0);
-      }
-
-      template <int dim>
-      std::size_t
-      RK4<dim>::get_data_size() const
-      {
-        // If integration is finished, we do not need to transfer integrator
-        // data to other processors, because it will be deleted soon anyway.
-        // Skip the MPI transfer in this case.
-        if (integrator_substep == 3)
-          return 0;
-
-        return 4*dim*sizeof(double);
-      }
-
-      template <int dim>
-      const void *
-      RK4<dim>::read_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                          const void *data)
-      {
-        // If integration is finished, we do not need to transfer integrator
-        // data to other processors, because it will be deleted soon anyway.
-        // Skip the MPI transfer in this case.
-        if (integrator_substep == 3)
-          return data;
-
-        const double *integrator_data = static_cast<const double *> (data);
-
-        // Read location data
-        for (unsigned int i=0; i<dim; ++i)
-          loc0[particle->get_id()](i) = *integrator_data++;
-
-        // Read k1, k2 and k3
-        for (unsigned int i=0; i<dim; ++i)
-          k1[particle->get_id()][i] = *integrator_data++;
-
-        for (unsigned int i=0; i<dim; ++i)
-          k2[particle->get_id()][i] = *integrator_data++;
-
-        for (unsigned int i=0; i<dim; ++i)
-          k3[particle->get_id()][i] = *integrator_data++;
-
-        return static_cast<const void *> (integrator_data);
-      }
-
-      template <int dim>
-      void *
-      RK4<dim>::write_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                           void *data) const
-      {
-        // If integration is finished, we do not need to transfer integrator
-        // data to other processors, because it will be deleted soon anyway.
-        // Skip the MPI transfer in this case.
-        if (integrator_substep == 3)
-          return data;
-
-        double *integrator_data = static_cast<double *> (data);
-
-        // Write location data
-        typename std::map<types::particle_index, Point<dim> >::const_iterator it = loc0.find(particle->get_id());
-        for (unsigned int i=0; i<dim; ++i,++integrator_data)
-          *integrator_data = it->second(i);
-
-        // Write k1, k2 and k3
-        typename std::map<types::particle_index, Tensor<1,dim> >::const_iterator it_k = k1.find(particle->get_id());
-        for (unsigned int i=0; i<dim; ++i,++integrator_data)
-          *integrator_data = it_k->second[i];
-
-        it_k = k2.find(particle->get_id());
-        for (unsigned int i=0; i<dim; ++i,++integrator_data)
-          *integrator_data = it_k->second[i];
-
-        it_k = k3.find(particle->get_id());
-        for (unsigned int i=0; i<dim; ++i,++integrator_data)
-          *integrator_data = it_k->second[i];
-
-        return static_cast<void *> (integrator_data);
       }
     }
   }

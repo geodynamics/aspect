@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,8 +33,11 @@ namespace aspect
       Adiabat<dim>::
       Adiabat ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        Interface<dim>("K,Pa,kg/m/m/m,kg/m/m/m/m")
       {}
+
+
 
       template <int dim>
       std::vector<std::string>
@@ -75,7 +78,7 @@ namespace aspect
       void
       Adiabat<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
@@ -106,8 +109,12 @@ namespace aspect
                                                   "A visualization output "
                                                   "object that generates "
                                                   "adiabatic temperature, pressure, "
-                                                  "density, and density derivative "
-                                                  "as produced by AdiabaticConditions.")
+                                                  "density, and density derivative (with regard to depth)"
+                                                  "as produced by the \\texttt{AdiabaticConditions} class."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\kelvin}, \\si{\\pascal}, "
+                                                  "\\si{\\kilo\\gram\\per\\meter\\cubed\\per\\meter}, "
+                                                  "respectively, for the four components.")
     }
   }
 }

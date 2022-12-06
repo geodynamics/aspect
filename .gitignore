@@ -8,11 +8,13 @@
 /.settings
 /compile_commands.json
 /.vscode/
+/.cache/
 /AspectConfig.cmake
 /CMakeLists.txt.user*
 /CTestTestfile.cmake
 /Makefile
 /aspect
+/benchmarks/**/*.prm.out
 /benchmarks/**/CMakeCache.txt
 /benchmarks/**/CMakeFiles/
 /benchmarks/**/Makefile
@@ -33,6 +35,7 @@
 /doc/aspect.tag
 /doc/deal.tag
 /doc/doxygen/
+/doc/manual/svg-inkscape/
 /doc/manual.pdf
 /doc/manual/manual.aux
 /doc/manual/manual.bbl
@@ -62,3 +65,8 @@
 
 .idea/
 cmake-build-debug/
+
+# ninja temporary files (for plugins):
+build.ninja
+rules.ninja
+.ninja_*

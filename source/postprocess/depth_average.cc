@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,7 +33,7 @@
 #include <deal.II/numerics/data_out_stack.h>
 
 
-#include <math.h>
+#include <cmath>
 
 namespace aspect
 {
@@ -51,12 +51,12 @@ namespace aspect
         std::vector<std::string> averaging_variables;
         averaging_variables.reserve(variables.size());
 
-        for (unsigned int i=0; i<variables.size(); ++i)
-          if (!((variables[i] == "adiabatic_temperature")
-                || (variables[i] == "adiabatic_pressure")
-                || (variables[i] == "adiabatic_density")
-                || (variables[i] == "adiabatic_density_derivative")))
-            averaging_variables.emplace_back(variables[i]);
+        for (const auto &variable : variables)
+          if (!((variable == "adiabatic_temperature")
+                || (variable == "adiabatic_pressure")
+                || (variable == "adiabatic_density")
+                || (variable == "adiabatic_density_derivative")))
+            averaging_variables.emplace_back(variable);
         return averaging_variables;
       }
     }
@@ -145,7 +145,7 @@ namespace aspect
         {
           Triangulation<1> mesh;
           const Point<1> p(depth_bounds[0]);
-          std::vector<std::vector<double> > spacing(1,std::vector<double>(depth_bounds.size()-1,0.0));
+          std::vector<std::vector<double>> spacing(1,std::vector<double>(depth_bounds.size()-1,0.0));
           for (unsigned int i=0; i<spacing[0].size(); ++i)
             spacing[0][i]=depth_bounds[i+1]-depth_bounds[i];
 
@@ -164,8 +164,8 @@ namespace aspect
             {
               if (output_format_string != "txt")
                 {
-                  for (unsigned int j=0; j<variables.size(); ++j)
-                    data_out_stack.declare_data_vector (variables[j],
+                  for (const auto &variable : variables)
+                    data_out_stack.declare_data_vector (variable,
                                                         DataOutStack<1>::cell_vector);
 
                   for (unsigned int i=0; i<entries.size(); ++i)
@@ -233,8 +233,8 @@ namespace aspect
 
                   // Write the header
                   f << "#       time" << "        depth";
-                  for ( unsigned int i = 0; i < variables.size(); ++i)
-                    f << " " << variables[i];
+                  for (const auto &variable : variables)
+                    f << ' ' << variable;
                   f << std::endl;
 
                   // Output each data point in the entries object
@@ -321,7 +321,7 @@ namespace aspect
           const std::string variables =
             "all|temperature|composition|"
             "adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|"
-            "velocity magnitude|sinking velocity|Vs|Vp|"
+            "velocity magnitude|sinking velocity|rising velocity|Vs|Vp|log viscosity|"
             "viscosity|vertical heat flux|vertical mass flux|composition mass";
           prm.declare_entry("List of output variables", "all",
                             Patterns::MultipleSelection(variables.c_str()),
@@ -329,6 +329,14 @@ namespace aspect
                             "average in each depth slice. It defaults to averaging all "
                             "available quantities, but this can be an expensive operation, "
                             "so you may want to select only a few.\n\n"
+                            "Specifically, the sinking velocity is defined as the scalar "
+                            "product of the velocity and a unit vector in the direction of "
+                            "gravity, if positive (being zero if this product is negative, "
+                            "which would correspond to an upward velocity). "
+                            "The rising velocity is the opposite: the scalar product of "
+                            "the velocity and a unit vector in the direction opposite of "
+                            "gravity, if positive (being zero for downward velocities). "
+                            "\n\n"
                             "List of options:\n"
                             +variables);
         }
@@ -424,13 +432,16 @@ namespace aspect
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "sinking velocity") != output_variables.end() )
               variables.emplace_back("sinking_velocity");
 
+            if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "rising velocity") != output_variables.end() )
+              variables.emplace_back("rising_velocity");
+
             // handle seismic velocities, because they may, or may not be provided by the material model
             {
               MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
               this->get_material_model().create_additional_named_outputs(out);
 
               const bool material_model_provides_seismic_output =
-                (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >() != nullptr);
+                (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>() != nullptr);
 
               const bool output_vs = std::find( output_variables.begin(), output_variables.end(), "Vs") != output_variables.end();
               const bool output_vp = std::find( output_variables.begin(), output_variables.end(), "Vp") != output_variables.end();
@@ -457,6 +468,9 @@ namespace aspect
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
               variables.emplace_back("viscosity");
+
+            if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "log viscosity") != output_variables.end() )
+              variables.emplace_back("log_viscosity");
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical heat flux") != output_variables.end() )
               variables.emplace_back("vertical_heat_flux");

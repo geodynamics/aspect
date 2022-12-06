@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,8 @@ namespace aspect
       Stress ()
         :
         DataPostprocessorTensor<dim> ("stress",
-                                      update_values | update_gradients | update_quadrature_points)
+                                      update_values | update_gradients | update_quadrature_points),
+        Interface<dim>("Pa")
       {}
 
 
@@ -43,7 +44,7 @@ namespace aspect
       void
       Stress<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
@@ -56,6 +57,9 @@ namespace aspect
                                                    this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
+
+        // We do not need to compute anything but the viscosity
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
         // Compute the viscosity...
         this->get_material_model().evaluate(in, out);
@@ -99,7 +103,7 @@ namespace aspect
           }
 
         // average the values if requested
-        const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim> >();
+        const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim>>();
         if (!viz.output_pointwise_stress_and_strain())
           average_quantities(computed_quantities);
       }
@@ -127,7 +131,9 @@ namespace aspect
                                                   "in the compressible case. If elasticity is used, the "
                                                   "elastic contribution is being accounted for. "
                                                   "Note that the convention of positive "
-                                                  "compressive stress is followed. ")
+                                                  "compressive stress is followed."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\pascal}.")
     }
   }
 }

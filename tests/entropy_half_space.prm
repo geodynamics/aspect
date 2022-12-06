@@ -1,0 +1,13 @@
+# Conductive cooling of a half-space using the entropy method.
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/entropy_half_space.prm
+
+set End time = 1e7
+
+subsection Geometry model
+  subsection Box
+    set Y repetitions = 10
+  end
+end

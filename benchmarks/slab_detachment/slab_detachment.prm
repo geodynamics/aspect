@@ -60,7 +60,6 @@ subsection Material model
   subsection Visco Plastic
 
     set Reference temperature  = 273
-    set Reference viscosity    = 1.e22
 
     set Minimum strain rate = 1.e-20
     set Reference strain rate = 1.e-15
@@ -106,9 +105,6 @@ end
 
 # Temperature effects are not considered,
 # so we set everything to zero.
-subsection Boundary temperature model
-  set List of model names = box
-end
 subsection Initial temperature model
   set Model name = function
   subsection Function

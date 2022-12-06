@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,14 +33,6 @@ namespace aspect
     is_compressible () const
     {
       return equation_of_state.is_compressible ();
-    }
-
-    template <int dim>
-    double
-    Simpler<dim>::
-    reference_viscosity () const
-    {
-      return constant_rheology.compute_viscosity();
     }
 
     template <int dim>

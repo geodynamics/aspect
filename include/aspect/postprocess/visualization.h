@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -42,7 +42,7 @@ namespace aspect
       /**
        * Compute the arithmetic average over q for each m of the variable quantities[q](m).
        */
-      inline void average_quantities(std::vector<Vector<double> > &quantities)
+      inline void average_quantities(std::vector<Vector<double>> &quantities)
       {
         const unsigned int N = quantities.size();
         const unsigned int M = quantities[0].size();
@@ -125,11 +125,31 @@ namespace aspect
       {
         public:
           /**
+           * Constructor. The constructor takes as argument the physical
+           * units of the quantity (scalar or vector-valued) computed by
+           * derived classes. The empty string, "", refers to an unknown
+           * or nonexistent unit.
+           *
+           * If a visualization postprocessor generates more than one
+           * output component, and if the different components have different
+           * physical units, then they should be separated by commas. If
+           * the different components have the same physical units, these units
+           * need to be specified only once and will apply to all components.
+           *
+           * There are cases where the physical units can only be determined
+           * at a time later than when this constructor is called. An example
+           * is when a velocity is output as either `m/s` or `m/year`,
+           * depending on some run-time parameter. In those cases, derived
+           * classes should simply pass in an empty string to this constructor
+           * and instead overload the get_physical_units() function.
+           */
+          explicit Interface (const std::string &physical_units = "");
+
+          /**
            * Destructor. Does nothing but is virtual so that derived classes
            * destructors are also virtual.
            */
-          virtual
-          ~Interface ();
+          virtual ~Interface () = default;
 
           /**
            * Initialize function.
@@ -140,6 +160,21 @@ namespace aspect
            * Update any temporary information needed by the visualization postprocessor.
            */
           virtual void update();
+
+          /**
+           * Return the string representation of the physical units that a
+           * derived class has provided to the constructor of this class.
+           *
+           * As mentioned in the documentation of the constructor, there are
+           * cases where a derived class doesn't know the physical units yet
+           * that correspond to what is being output at the time the
+           * constructor is called. In that case, the derived class can
+           * overload this function and return the correct units when the
+           * visualization postprocessor is executed.
+           */
+          virtual
+          std::string
+          get_physical_units () const;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -186,7 +221,6 @@ namespace aspect
           std::list<std::string>
           required_other_postprocessors () const;
 
-
           /**
            * Save the state of this object to the argument given to this
            * function. This function is in support of checkpoint/restart
@@ -224,6 +258,12 @@ namespace aspect
            */
           virtual
           void load (const std::map<std::string, std::string> &status_strings);
+
+        private:
+          /**
+           * The physical units encoded by this visualization postprocessor.
+           */
+          const std::string physical_units;
       };
 
 
@@ -244,6 +284,13 @@ namespace aspect
       class CellDataVectorCreator : public Interface<dim>
       {
         public:
+          /**
+           * Constructor. The constructor takes as argument the physical
+           * units of the quantity (scalar or vector-valued) computed by
+           * derived classes.
+           */
+          explicit CellDataVectorCreator (const std::string &physical_units = "");
+
           /**
            * Destructor.
            */
@@ -353,7 +400,7 @@ namespace aspect
         register_visualization_postprocessor (const std::string &name,
                                               const std::string &description,
                                               void (*declare_parameters_function) (ParameterHandler &),
-                                              VisualizationPostprocessors::Interface<dim> *(*factory_function) ());
+                                              std::unique_ptr<VisualizationPostprocessors::Interface<dim>>(*factory_function) ());
 
         /**
          * A function that is used to indicate to the postprocessor manager which
@@ -511,11 +558,11 @@ namespace aspect
          * deal.II offers the possibility to write vtu files with higher order
          * representations of the output data. This means each cell will correctly
          * show the higher order representation of the output data instead of the
-         * linear interpolation between vertices that ParaView and Visit usually show.
+         * linear interpolation between vertices that ParaView and VisIt usually show.
          * Note that activating this option is safe and recommended, but requires that
          * (i) ``Output format'' is set to ``vtu'', (ii) ``Interpolate output'' is
          * set to true, (iii) you use a sufficiently new version of Paraview
-         * or Visit to read the files (Paraview version 5.5 or newer, and Visit version
+         * or VisIt to read the files (Paraview version 5.5 or newer, and VisIt version
          * to be determined), and (iv) you use deal.II version 9.1.0 or newer.
          */
         bool write_higher_order_output;
@@ -527,6 +574,23 @@ namespace aspect
          * by setting output_mesh_velocity to true.
          */
         bool output_mesh_velocity;
+
+        /**
+         * For mesh deformation computations ASPECT uses an Arbitrary-Lagrangian-
+         * Eulerian formulation to handle deforming the domain, so the mesh
+         * has a field that determines the displacement from the reference
+         * configuration. This may be written as an output field by setting
+         * this flag to true.
+         */
+        bool output_mesh_displacement;
+
+        /**
+         * For mesh deformation computations ASPECT uses an Arbitrary-Lagrangian-
+         * Eulerian formulation to handle deforming the domain, but we output the
+         * mesh in its deformed state if this flag is set to true. If set to false,
+         * the mesh is written undeformed.
+         */
+        bool output_undeformed_mesh;
 
         /**
          * File operations can potentially take a long time, blocking the
@@ -556,19 +620,18 @@ namespace aspect
          * A function that writes the text in the second argument to a file
          * with the name given in the first argument. The function is run on a
          * separate thread to allow computations to continue even though
-         * writing data is still continuing. The function takes over ownership
-         * of these arguments and deletes them at the end of its work.
+         * writing data is still continuing.
          */
         static
-        void writer (const std::string filename,
-                     const std::string temporary_filename,
-                     const std::string *file_contents);
+        void writer (const std::string &filename,
+                     const std::string &temporary_filename,
+                     const std::string &file_contents);
 
         /**
          * A list of postprocessor objects that have been requested in the
          * parameter file.
          */
-        std::list<std::unique_ptr<VisualizationPostprocessors::Interface<dim> > > postprocessors;
+        std::list<std::unique_ptr<VisualizationPostprocessors::Interface<dim>>> postprocessors;
 
         /**
          * A structure that keeps some history about past output operations.
@@ -610,21 +673,21 @@ namespace aspect
           std::string last_mesh_file_name;
 
           /**
-          * A list of pairs (time, pvtu_filename) that have so far been written
-          * and that we will pass to DataOutInterface::write_pvd_record to
-          * create a master file that can make the association between
-          * simulation time and corresponding file name (this is done because
-          * there is no way to store the simulation time inside the .pvtu or
-          * .vtu files).
-          */
-          std::vector<std::pair<double,std::string> > times_and_pvtu_names;
+           * A list of pairs (time, pvtu_filename) that have so far been written
+           * and that we will pass to DataOutInterface::write_pvd_record to
+           * create a master file that can make the association between
+           * simulation time and corresponding file name (this is done because
+           * there is no way to store the simulation time inside the .pvtu or
+           * .vtu files).
+           */
+          std::vector<std::pair<double,std::string>> times_and_pvtu_names;
 
           /**
            * A list of list of filenames, sorted by timestep, that correspond to
            * what has been created as output. This is used to create a master
            * .visit file for the entire simulation.
            */
-          std::vector<std::vector<std::string> > output_file_names_by_timestep;
+          std::vector<std::vector<std::string>> output_file_names_by_timestep;
 
           /**
            * A set of data related to XDMF file sections describing the HDF5
@@ -660,7 +723,7 @@ namespace aspect
          * directory, possibly one file written by each processor, belong to a
          * single time step and/or form the different time steps of a
          * simulation. For Paraview, this is a <code>.pvtu</code> file per
-         * time step and a <code>.pvd</code> for all time steps. For Visit it
+         * time step and a <code>.pvd</code> for all time steps. For VisIt it
          * is a <code>.visit</code> file per time step and one for all time
          * steps.
          *
@@ -689,7 +752,8 @@ namespace aspect
          */
         template <typename DataOutType>
         std::string write_data_out_data(DataOutType   &data_out,
-                                        OutputHistory &output_history) const;
+                                        OutputHistory &output_history,
+                                        const std::map<std::string,std::string> &visualization_field_names_and_units) const;
     };
   }
 
@@ -705,10 +769,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::VisualizationPostprocessors::Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::VisualizationPostprocessors::Interface<2>,classname<2>> \
     dummy_ ## classname ## _2d (&aspect::Postprocess::Visualization<2>::register_visualization_postprocessor, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::VisualizationPostprocessors::Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::Postprocess::VisualizationPostprocessors::Interface<3>,classname<3>> \
     dummy_ ## classname ## _3d (&aspect::Postprocess::Visualization<3>::register_visualization_postprocessor, \
                                 name, description); \
   }

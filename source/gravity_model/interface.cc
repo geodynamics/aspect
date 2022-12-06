@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,10 +34,6 @@ namespace aspect
   namespace GravityModel
   {
     template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
-    template <int dim>
     void
     Interface<dim>::initialize ()
     {}
@@ -68,8 +64,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<Interface<2> >,
-      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2>>,
+      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
 
@@ -79,7 +75,7 @@ namespace aspect
     register_gravity_model (const std::string &name,
                             const std::string &description,
                             void (*declare_parameters_function) (ParameterHandler &),
-                            Interface<dim> *(*factory_function) ())
+                            std::unique_ptr<Interface<dim>> (*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,
@@ -89,7 +85,7 @@ namespace aspect
 
 
     template <int dim>
-    Interface<dim> *
+    std::unique_ptr<Interface<dim>>
     create_gravity_model (ParameterHandler &prm)
     {
       std::string model_name;
@@ -155,11 +151,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<GravityModel::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<GravityModel::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<GravityModel::Interface<2>>::PluginInfo> *
+      internal::Plugins::PluginList<GravityModel::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<GravityModel::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<GravityModel::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<GravityModel::Interface<3>>::PluginInfo> *
+      internal::Plugins::PluginList<GravityModel::Interface<3>>::plugins = nullptr;
     }
   }
 
@@ -173,7 +169,7 @@ namespace aspect
   register_gravity_model<dim> (const std::string &, \
                                const std::string &, \
                                void ( *) (ParameterHandler &), \
-                               Interface<dim> *( *) ()); \
+                               std::unique_ptr<Interface<dim>>( *) ()); \
   \
   template  \
   void \
@@ -184,7 +180,7 @@ namespace aspect
   write_plugin_graph<dim> (std::ostream &); \
   \
   template \
-  Interface<dim> * \
+  std::unique_ptr<Interface<dim>> \
   create_gravity_model<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)

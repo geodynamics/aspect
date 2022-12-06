@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -45,15 +45,9 @@ namespace aspect
           const std::string datadirectory = Utilities::expand_ASPECT_SOURCE_DIR("$ASPECT_SOURCE_DIR/data/material-model/latent-heat-enthalpy-test/");
           const std::string material_file_names  = "testdata.txt";
 
-          material_lookup = std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>(datadirectory+material_file_names,
+          material_lookup = std::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>(datadirectory+material_file_names,
                             true,
                             this->get_mpi_communicator());
-        }
-
-        double
-        reference_viscosity () const
-        {
-          return 8.44e21;
         }
 
         bool
@@ -78,7 +72,7 @@ namespace aspect
 
           if (in.current_cell.state() == IteratorState::valid)
             {
-              const QTrapez<dim> quadrature_formula;
+              const QTrapezoid<dim> quadrature_formula;
               const unsigned int n_q_points = quadrature_formula.size();
 
               FEValues<dim> fe_values (this->get_mapping(),
@@ -87,8 +81,8 @@ namespace aspect
                                        update_values);
 
               std::vector<double> temperatures(n_q_points), pressures(n_q_points);
-              std::vector<std::vector<double> > compositions (quadrature_formula.size(),std::vector<double> (this->n_compositional_fields()));
-              std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+              std::vector<std::vector<double>> compositions (quadrature_formula.size(),std::vector<double> (this->n_compositional_fields()));
+              std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
               fe_values.reinit (in.current_cell);
 

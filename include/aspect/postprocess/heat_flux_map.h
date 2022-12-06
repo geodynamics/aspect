@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -70,13 +70,13 @@ namespace aspect
        * for several postprocessors.
        */
       template <int dim>
-      std::vector<std::vector<std::pair<double, double> > >
+      std::vector<std::vector<std::pair<double, double>>>
       compute_heat_flux_through_boundary_faces (const SimulatorAccess<dim> &simulator_access);
     }
 
     /**
      * A postprocessor that computes the point-wise heat flux density through the boundaries.
-
+     *
      * @ingroup Postprocessing
      */
     template <int dim>

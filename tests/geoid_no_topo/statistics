@@ -5,4 +5,6 @@
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
 # 7: Number of nonlinear iterations
-0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 0 
+# 8: Density at top (kg/m^3)
+# 9: Density at bottom (kg/m^3)
+0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 0 1.00000000e+00 1.00000000e+00

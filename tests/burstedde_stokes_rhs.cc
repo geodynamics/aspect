@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/material_model/simple.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/postprocess/interface.h>
@@ -78,8 +98,8 @@ namespace aspect
             beta_(beta)
           {}
 
-          virtual void vector_value (const Point< dim >   &pos,
-                                     Vector< double >   &values) const
+          virtual void vector_value (const Point<dim>   &pos,
+                                     Vector<double>   &values) const
           {
             Assert (dim == 3, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -170,7 +190,7 @@ namespace aspect
         {
 
           MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
-          *force = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
+          *force = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -267,14 +287,6 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-        /**
-         * @}
-         */
-        /**
          * Returns the viscosity value in the inclusion
          */
         double get_beta() const;
@@ -284,16 +296,6 @@ namespace aspect
          */
         double beta;
     };
-
-
-
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_viscosity () const
-    {
-      return 1.;
-    }
 
 
 
@@ -377,13 +379,13 @@ namespace aspect
     std::pair<std::string,std::string>
     BursteddePostprocessor<dim>::execute (TableHandler &statistics)
     {
-      std::unique_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim>> ref_func;
       {
         const BursteddeMaterial<dim> *
         material_model
           = dynamic_cast<const BursteddeMaterial<dim> *>(&this->get_material_model());
 
-        ref_func = std_cxx14::make_unique<AnalyticSolutions::FunctionBurstedde<dim>>(material_model->get_beta());
+        ref_func = std::make_unique<AnalyticSolutions::FunctionBurstedde<dim>>(material_model->get_beta());
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);

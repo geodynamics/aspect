@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -60,6 +60,15 @@ namespace aspect
       if (initialized)
         return;
 
+      // The simulator only keeps the initial conditions around for
+      // the first time step. As a consequence, we have to save a
+      // shared pointer to that object ourselves the first time we get
+      // here.
+      if ((reference_composition == initial_composition)
+          &&
+          (initial_composition_manager == nullptr))
+        initial_composition_manager = this->get_initial_composition_manager_pointer();
+
       temperatures.resize(n_points, numbers::signaling_nan<double>());
       pressures.resize(n_points, numbers::signaling_nan<double>());
       densities.resize(n_points, numbers::signaling_nan<double>());
@@ -70,7 +79,7 @@ namespace aspect
       MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
 
       // Constant properties on the reference profile
-      in.strain_rate.resize(0); // we do not need the viscosity
+      in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties;
       in.velocity[0] = Tensor <1,dim> ();
 
       // Check whether gravity is pointing up / out or down / in. In the normal case it should
@@ -144,7 +153,7 @@ namespace aspect
 
           if (reference_composition == initial_composition)
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              in.composition[0][c] = this->get_initial_composition_manager().initial_composition(representative_point, c);
+              in.composition[0][c] = initial_composition_manager->initial_composition(representative_point, c);
           else if (reference_composition == reference_function)
             {
               const double depth = this->get_geometry_model().depth(representative_point);
@@ -328,6 +337,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     ComputeProfile<dim>::parse_parameters (ParameterHandler &prm)
@@ -348,7 +358,7 @@ namespace aspect
           if ((this->n_compositional_fields() > 0) && (reference_composition == reference_function))
             {
               composition_function
-                = std_cxx14::make_unique<Functions::ParsedFunction<1>>(this->n_compositional_fields());
+                = std::make_unique<Functions::ParsedFunction<1>>(this->n_compositional_fields());
               try
                 {
                   composition_function->parse_parameters (prm);

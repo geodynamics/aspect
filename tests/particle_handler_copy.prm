@@ -37,10 +37,6 @@ subsection Gravity model
   end
 end
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
 subsection Initial temperature model
   set Model name = function
   subsection Function

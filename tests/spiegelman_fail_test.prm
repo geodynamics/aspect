@@ -1,6 +1,6 @@
 # This is the most difficult case of the Spiegelman benchmark. The
 # goal of this test is to show that the linear Newton solver fails
-# when the the matrix becomes non Symmetric Positive Definite, and
+# when the matrix becomes non Symmetric Positive Definite, and
 # is safed by forcing the matrix to be SPD. In the next timestep
 # the stabilization is reset to the user defined values.
 
@@ -34,10 +34,6 @@ subsection Solver parameters
     set Stabilization preconditioner = none
     set Stabilization velocity block = none
   end
-end
-
-subsection Boundary temperature model
-  set List of model names = box
 end
 
 

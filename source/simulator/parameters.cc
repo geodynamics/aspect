@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,9 +30,9 @@
 
 #include <deal.II/base/parameter_handler.h>
 
-#include <sys/stat.h>
-#include <stdlib.h>
 #include <boost/lexical_cast.hpp>
+#include <cstdlib>
+#include <sys/stat.h>
 
 namespace aspect
 {
@@ -169,7 +169,7 @@ namespace aspect
 
     prm.declare_entry ("Maximum relative increase in time step", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
                        Patterns::Double (0.),
-                       "Set a percentage with which the the time step is limited to increase. Generally the "
+                       "Set a percentage with which the time step is limited to increase. Generally the "
                        "time step based on the CFL number should be sufficient, but for complicated models "
                        "which may suddenly drastically change behavior, it may be useful to limit the increase "
                        "in the time step, without limiting the time step size of the whole simulation to a "
@@ -567,7 +567,7 @@ namespace aspect
       {
         prm.declare_entry ("Diffusion length scale", "1.e4",
                            Patterns::Double (0.),
-                           "Set a length scale for the diffusion of compositional fields if the "
+                           "Set a length scale for the diffusion of advection fields if the "
                            "``prescribed field with diffusion'' method is selected for a field. "
                            "More precisely, this length scale represents the square root of the "
                            "product of diffusivity and time in the diffusion equation, and controls "
@@ -776,7 +776,16 @@ namespace aspect
                          Patterns::Integer (0),
                          "The number of global refinement steps performed on "
                          "the initial coarse mesh, before the problem is first "
-                         "solved there.");
+                         "solved there."
+                         "\n\n"
+                         "Note that it is possible to supply conflicting refinement "
+                         "and coarsening settings, such as an 'Initial global refinement' "
+                         "of 4 and a 'Maximum refinement function' strategy that limits "
+                         "the refinement locally to 2. In this case, the tagging strategies "
+                         "such as the 'Maximum refinement function' will remove refinement "
+                         "flags in each initial global refinement step, such that the "
+                         "resulting mesh is not necessarily uniform or of the level "
+                         "given by the 'Initial global refinement' parameter.");
       prm.declare_entry ("Initial adaptive refinement", "0",
                          Patterns::Integer (0),
                          "The number of adaptive refinement steps performed after "
@@ -963,17 +972,17 @@ namespace aspect
                          "violating this condition is that the pressure may show "
                          "oscillations and not converge to the correct pressure."
                          "\n\n"
-                         "That said, people have often used $Q_1$ elements for both the"
+                         "That said, people have often used $Q_1$ elements for both the "
                          "velocity and pressure anyway. This is commonly referred to as "
-                         "using the Q1-Q1 method. It is, by default, not stable as "
-                         "mentioned above, but it can be made stable by adding small "
+                         "using the $Q_1-Q_1$ method. It is, by default, not stable as "
+                         "mentioned above, but it can be made stable by adding a small "
                          "amount of compressibility to the model. There are numerous "
                          "ways to do that. Today, the way that is generally considered "
                          "to be the best approach is the one by Dohrmann and Bochev "
                          "\\cite{DohrmannBochev2004}."
                          "\n\n"
                          "When this parameter is set to ``true'', then \\aspect{} "
-                         "will use this method by using $Q_k\times Q_k$ elements for "
+                         "will use this method by using $Q_k\\times Q_k$ elements for "
                          "velocity and pressure, respectively, where $k$ is the value "
                          "provided for the parameter ``Stokes velocity polynomial "
                          "degree''."
@@ -981,7 +990,8 @@ namespace aspect
                          "\\note{While \\aspect{} \\textit{allows} you to use this "
                          "  method, it is generally understood that this is not a "
                          "  great idea as it leads to rather low accuracy in "
-                         "  general. It also leads to substantial problems when "
+                         "  general as documented in \\cite{thba22}. "
+                         "  It also leads to substantial problems when "
                          "  using free surfaces. As a consequence, the presence "
                          "  of this parameter should not be seen as an "
                          "  endorsement of the method, or a suggestion to "
@@ -1006,6 +1016,15 @@ namespace aspect
                            "Select the method for stabilizing the advection equation. The original "
                            "method implemented is 'entropy viscosity' as described in \\cite {KHB12}. "
                            "SUPG is currently experimental.");
+
+        prm.declare_entry ("List of compositional fields with disabled boundary entropy viscosity", "",
+                           Patterns::List(Patterns::Anything()),
+                           "Select for which compositional fields to skip the entropy viscosity "
+                           "stabilization at dirichlet boundaries. This is "
+                           "only advisable for compositional fields"
+                           "that have intrinsic physical diffusion terms, otherwise "
+                           "oscillations may develop. The parameter should contain a list of "
+                           "compositional field names.");
 
         prm.declare_entry ("Use artificial viscosity smoothing", "false",
                            Patterns::Bool (),
@@ -1135,7 +1154,7 @@ namespace aspect
     prm.enter_subsection ("Temperature field");
     {
       prm.declare_entry ("Temperature method", "field",
-                         Patterns::Selection("field|prescribed field"),
+                         Patterns::Selection("field|prescribed field|prescribed field with diffusion|static"),
                          "A comma separated list denoting the solution method of the "
                          "temperature field. Each entry of the list must be "
                          "one of the currently implemented field types."
@@ -1153,7 +1172,23 @@ namespace aspect
                          "marked with this method, then the value of a specific additional material "
                          "model output, called the `PrescribedTemperatureOutputs' is interpolated "
                          "onto the temperature. This field does not change otherwise, it is not "
-                         "advected with the flow. \n"
+                         "advected with the flow. "
+                         "\n"
+                         "\\item ``prescribed field with diffusion'': If the temperature field is "
+                         "marked this way, the value of a specific additional material model output, "
+                         "called the `PrescribedTemperatureOutputs' is interpolated onto the field, as in "
+                         "the ``prescribed field'' method. Afterwards, the field is diffused based on "
+                         "a solver parameter, the diffusion length scale, smoothing the field. "
+                         "Specifically, the field is updated by solving the equation "
+                         "$(I-l^2 \\Delta) T_\\text{smoothed} = T_\\text{prescribed}$, "
+                         "where $l$ is the diffusion length scale. Note that this means that the amount "
+                         "of diffusion is independent of the time step size, and that the field is not "
+                         "advected with the flow."
+                         "\n"
+                         "\\item ``static'': If a temperature field is marked "
+                         "this way, then it does not evolve at all. Its values are "
+                         "simply set to the initial conditions, and will then "
+                         "never change."
                          "\\end{itemize}");
     }
     prm.leave_subsection();
@@ -1167,11 +1202,24 @@ namespace aspect
       prm.declare_entry ("Names of fields", "",
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
+      prm.declare_entry ("Types of fields", "unspecified",
+                         Patterns::List (Patterns::Selection("chemical composition|stress|grain size|porosity|density|generic|unspecified")),
+                         "A type for each of the compositional fields requested. "
+                         "Each entry of the list must be "
+                         "one of several recognized types: chemical composition, "
+                         "stress, grain size, porosity, general and unspecified. "
+                         "The generic type is intended to be a placeholder type "
+                         "that has no effect on the running of any material model, "
+                         "while the unspecified type is intended to tell ASPECT "
+                         "that the user has not explicitly indicated the type of "
+                         "field (facilitating parameter file checking). "
+                         "If a plugin such as a material model uses these types, "
+                         "the choice of type will affect how that module functions.");
       prm.declare_entry ("Compositional field methods", "",
-                         Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|prescribed field|prescribed field with diffusion")),
+                         Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|darcy field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
-                         "one of the currently implemented field types."
+                         "one of the currently implemented field methods."
                          "\n\n"
                          "These choices correspond to the following methods by which "
                          "compositional fields gain their values:"
@@ -1213,6 +1261,17 @@ namespace aspect
                          "advected with the melt velocity instead of the solid velocity. "
                          "This method can only be chosen if melt transport is active in the "
                          "model."
+                         "\n"
+                         "\\item ``darcy field'': If a compositional field is marked with this "
+                         "method, then its values are computed in each time step by "
+                         "advecting along the values of the previous time step using the "
+                         "fluid velocity prescribed by Darcy's Law, and applying reaction rates "
+                         "to it. In other words this corresponds to the usual notion of a composition "
+                         "field as mentioned in Section~\\ref{sec:compositional}, except that it is "
+                         "advected with the Darcy velocity instead of the solid velocity. This method "
+                         "requires there to be a compositional field named porosity that is advected "
+                         "the darcy field method. We calculate the fluid velocity $u_f$ using an "
+                         "approximation of Darcy's Law: $u_f = u_s - K_D / \\phi * (rho_s * g - rho_f * g)$."
                          "\n"
                          "\\item ``prescribed field'': The value of these fields is determined "
                          "in each time step from the material model. If a compositional field is "
@@ -1483,8 +1542,8 @@ namespace aspect
       std::sort (additional_refinement_times.begin(),
                  additional_refinement_times.end());
       if (convert_to_years == true)
-        for (unsigned int i=0; i<additional_refinement_times.size(); ++i)
-          additional_refinement_times[i] *= year_in_seconds;
+        for (double &additional_refinement_time : additional_refinement_times)
+          additional_refinement_time *= year_in_seconds;
 
       skip_solvers_on_initial_refinement = prm.get_bool("Skip solvers on initial refinement");
       skip_setup_initial_conditions_on_initial_refinement = prm.get_bool("Skip setup initial conditions on initial refinement");
@@ -1561,41 +1620,41 @@ namespace aspect
                              "'Nullspace removal/Remove nullspace' contains entries more than once. "
                              "This is not allowed. Please check your parameter file."));
 
-      for (unsigned int i=0; i<nullspace_names.size(); ++i)
+      for (const auto &nullspace_name : nullspace_names)
         {
-          if (nullspace_names[i]=="net rotation")
+          if (nullspace_name=="net rotation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_rotation);
-          else if (nullspace_names[i]=="net surface rotation")
+          else if (nullspace_name=="net surface rotation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_surface_rotation);
-          else if (nullspace_names[i]=="angular momentum")
+          else if (nullspace_name=="angular momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::angular_momentum);
-          else if (nullspace_names[i]=="net translation")
+          else if (nullspace_name=="net translation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_translation_x |
                                   NullspaceRemoval::net_translation_y | ( dim == 3 ?
                                                                           NullspaceRemoval::net_translation_z : 0) );
-          else if (nullspace_names[i]=="net x translation")
+          else if (nullspace_name=="net x translation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_translation_x);
-          else if (nullspace_names[i]=="net y translation")
+          else if (nullspace_name=="net y translation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_translation_y);
-          else if (nullspace_names[i]=="net z translation")
+          else if (nullspace_name=="net z translation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_translation_z);
-          else if (nullspace_names[i]=="linear x momentum")
+          else if (nullspace_name=="linear x momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_x);
-          else if (nullspace_names[i]=="linear y momentum")
+          else if (nullspace_name=="linear y momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_y);
-          else if (nullspace_names[i]=="linear z momentum")
+          else if (nullspace_name=="linear z momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_z);
-          else if (nullspace_names[i]=="linear momentum")
+          else if (nullspace_name=="linear momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_x |
                                   NullspaceRemoval::linear_momentum_y | ( dim == 3 ?
@@ -1675,6 +1734,9 @@ namespace aspect
                                                                                       (Utilities::split_string_list(prm.get ("Global composition minimum"))),
                                                                                       n_compositional_fields,
                                                                                       "Global composition minimum");
+        compositional_fields_with_disabled_boundary_entropy_viscosity =
+          Utilities::split_string_list(prm.get("List of compositional fields with disabled boundary entropy viscosity"));
+
       }
       prm.leave_subsection ();
 
@@ -1721,6 +1783,10 @@ namespace aspect
         temperature_method = AdvectionFieldMethod::fem_field;
       else if (x_temperature_method == "prescribed field")
         temperature_method = AdvectionFieldMethod::prescribed_field;
+      else if (x_temperature_method == "prescribed field with diffusion")
+        temperature_method = AdvectionFieldMethod::prescribed_field_with_diffusion;
+      else if (x_temperature_method == "static")
+        temperature_method = AdvectionFieldMethod::static_field;
       else
         AssertThrow(false,ExcNotImplemented());
     }
@@ -1784,6 +1850,42 @@ namespace aspect
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
 
+      // Process the compositional field types
+      // There are three valid cases:
+      // 1) The user doesn't specify types of fields. This choice should
+      // result in the default type being used for all fields.
+      // The default type is "unspecified".
+      // 2) The user specifies just one type of field. In this case, ASPECT
+      // should automatically assume that all fields have the same type.
+      // 3) The user specifies types for every compositional field.
+      std::vector<std::string> x_compositional_field_types
+        = Utilities::split_string_list
+          (prm.get ("Types of fields"));
+
+      AssertThrow ((x_compositional_field_types.size() == 1) ||
+                   (x_compositional_field_types.size() == n_compositional_fields),
+                   ExcMessage ("The length of the list of names for the field types of compositional "
+                               "fields needs to either have one entry or have a length equal to "
+                               "the number of compositional fields."));
+
+      // If only one method is specified apply this to all fields
+      if (x_compositional_field_types.size() == 1)
+        x_compositional_field_types = std::vector<std::string> (n_compositional_fields, x_compositional_field_types[0]);
+
+      // For backwards compatibility, convert a field named "density_field" without type to a density field
+      const unsigned int density_index = std::find(names_of_compositional_fields.begin(), names_of_compositional_fields.end(), "density_field")
+                                         - names_of_compositional_fields.begin();
+      if (density_index != n_compositional_fields && x_compositional_field_types[density_index] == "unspecified")
+        x_compositional_field_types[density_index] = "density";
+
+      AssertThrow (std::count(x_compositional_field_types.begin(), x_compositional_field_types.end(), "density") < 2,
+                   ExcMessage("There can only be one field of type 'density' in a simulation!"));
+
+      composition_descriptions.resize(n_compositional_fields);
+
+      for (unsigned int i=0; i<n_compositional_fields; ++i)
+        composition_descriptions[i].type = CompositionalFieldDescription::parse_type(x_compositional_field_types[i]);
+
       std::vector<std::string> x_compositional_field_methods
         = Utilities::split_string_list
           (prm.get ("Compositional field methods"));
@@ -1827,6 +1929,8 @@ namespace aspect
             compositional_field_methods[i] = AdvectionFieldMethod::static_field;
           else if (x_compositional_field_methods[i] == "melt field")
             compositional_field_methods[i] = AdvectionFieldMethod::fem_melt_field;
+          else if (x_compositional_field_methods[i] == "darcy field")
+            compositional_field_methods[i] = AdvectionFieldMethod::fem_darcy_field;
           else if (x_compositional_field_methods[i] == "prescribed field")
             compositional_field_methods[i] = AdvectionFieldMethod::prescribed_field;
           else if (x_compositional_field_methods[i] == "prescribed field with diffusion")
@@ -1857,6 +1961,17 @@ namespace aspect
                    || (x_mapped_particle_properties.size() == 0),
                    ExcMessage ("The list of names for the mapped particle property fields needs to either be empty or have a length equal to "
                                "the number of compositional fields that are interpolated from particle properties."));
+
+      if (std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::fem_darcy_field)
+          != compositional_field_methods.end())
+        {
+          const unsigned int porosity_idx = std::find(names_of_compositional_fields.begin(), names_of_compositional_fields.end(), "porosity")
+                                            - names_of_compositional_fields.begin();
+          AssertThrow (porosity_idx != n_compositional_fields,
+                       ExcMessage ("The Darcy advection field method only works if there is a compositional field named 'porosity'"));
+          AssertThrow (compositional_field_methods[porosity_idx] == AdvectionFieldMethod::fem_darcy_field,
+                       ExcMessage ("When using the Darcy advection field method, the porosity field must be advected with the darcy method."));
+        }
 
       for (const auto &p : x_mapped_particle_properties)
         {
@@ -1937,6 +2052,21 @@ namespace aspect
           // finally, put it into the list
           mapped_particle_properties.insert(std::make_pair(compositional_field_index,
                                                            std::make_pair(particle_property,atoi(component.c_str()))));
+        }
+
+      // Check that the names inside compositional_fields_with_disabled_boundary_entropy_viscosity
+      // are actually fields. We parse and store this value above, but only here do we know the
+      // names of the present fields.
+      for (const std::string &field_name: compositional_fields_with_disabled_boundary_entropy_viscosity)
+        {
+          AssertThrow(std::find(names_of_compositional_fields.begin(),
+                                names_of_compositional_fields.end(),
+                                field_name)
+                      != names_of_compositional_fields.end(),
+                      ExcMessage("The entry '" + field_name + "' in the parameter "
+                                 "<List of compositional fields with disabled boundary entropy viscosity> "
+                                 "is not a valid name of a compositional field "
+                                 "as specified in the <Compositional fields/Names of fields> parameter."));
         }
     }
     prm.leave_subsection ();
@@ -2057,7 +2187,7 @@ namespace aspect
             {
               AssertThrow (false, ExcMessage ("While parsing the entry <Boundary traction model/Prescribed "
                                               "traction indicators>, there was an error. Specifically, "
-                                              "the conversion function complained as follows: "
+                                              "the conversion function complained as follows:\n\n"
                                               + error));
             }
 
@@ -2089,7 +2219,7 @@ namespace aspect
         {
           AssertThrow (false, ExcMessage ("While parsing the entry <Boundary heat flux model/Fixed heat flux "
                                           "boundary indicators>, there was an error. Specifically, "
-                                          "the conversion function complained as follows: "
+                                          "the conversion function complained as follows:\n\n"
                                           + error));
         }
     }

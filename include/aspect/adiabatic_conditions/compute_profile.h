@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -162,7 +162,7 @@ namespace aspect
          * Function object that computes the reference composition profile
          * if the reference_composition variable is set to function.
          */
-        std::unique_ptr<Functions::ParsedFunction<1> > composition_function;
+        std::unique_ptr<Functions::ParsedFunction<1>> composition_function;
 
         /**
          * Whether to use the surface_conditions_function to determine surface
@@ -177,6 +177,14 @@ namespace aspect
          * (surface pressure(t), surface temperature(t)).
          */
         Functions::ParsedFunction<1> surface_condition_function;
+
+        /**
+         * A shared pointer to the initial composition object
+         * that ensures that the current object can continue
+         * to access the initial composition object beyond the
+         * first time step.
+         */
+        std::shared_ptr<const aspect::InitialComposition::Manager<dim>> initial_composition_manager;
 
         /**
          * Internal helper function. Returns the reference property at a

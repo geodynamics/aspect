@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -52,14 +52,6 @@ namespace aspect
     is_compressible () const
     {
       return true;
-    }
-
-    template <int dim>
-    double
-    PerpleXLookup<dim>::
-    reference_viscosity () const
-    {
-      return eta;
     }
 
     template <int dim>

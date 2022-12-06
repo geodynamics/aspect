@@ -1,0 +1,30 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libmagnetic_stripes.so>
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 256 (on 4 levels)
+Number of degrees of freedom: 5,916 (2,210+297+1,105+2,304)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping C_1 composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 35+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-magnetic_stripes/solution/solution-00000
+     Temperature min/avg/max:            293 K, 1573 K, 1600 K
+     Heat fluxes through boundary parts: 4.005e+05 W, 4.005e+05 W, -8.147e+05 W, 4.643e+05 W
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

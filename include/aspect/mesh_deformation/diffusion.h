@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -57,6 +57,8 @@ namespace aspect
          */
         void update() override;
 
+
+
         /**
          * A function that creates constraints for the velocity of certain mesh
          * vertices (e.g. the surface vertices) for a specific boundary.
@@ -67,6 +69,11 @@ namespace aspect
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  AffineConstraints<double> &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_id) const override;
+
+        /**
+         * Returns whether or not the plugin requires surface stabilization
+         */
+        bool needs_surface_stabilization () const override;
 
         /**
          * Declare parameters for the diffusion of the surface.

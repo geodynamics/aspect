@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -40,7 +40,7 @@ namespace aspect
       //
       // iterate it 'degree' times to make sure our evaluation points are
       // in fact the support points.
-      const QIterated<dim> quadrature_formula (QTrapez<1>(),
+      const QIterated<dim> quadrature_formula (QTrapezoid<1>(),
                                                this->get_fe().base_element(this->introspection().base_elements.pressure).degree);
       const unsigned int n_q_points = quadrature_formula.size();
 
@@ -111,10 +111,10 @@ namespace aspect
                                   "Average pressure (Pa)",
                                   "Maximal pressure (Pa)"
                                 };
-        for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+        for (auto &column : columns)
           {
-            statistics.set_precision (columns[i], 8);
-            statistics.set_scientific (columns[i], true);
+            statistics.set_precision (column, 8);
+            statistics.set_scientific (column, true);
           }
       }
 

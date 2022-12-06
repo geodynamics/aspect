@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -35,7 +35,7 @@ namespace aspect
     /**
      * A class that implements initial conditions for the compositional fields
      * based on the adiabatic density profile. Note that only the field
-     * with the name 'density_field' will be filled, for all other fields
+     * of the type 'density' will be filled, for all other fields
      * this plugin returns 0.0.
      *
      * @ingroup InitialCompositionModels

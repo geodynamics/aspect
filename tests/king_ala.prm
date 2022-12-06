@@ -64,8 +64,8 @@ set Output directory                       = output
 subsection Discretization
   subsection Stabilization parameters
     set alpha                                              = 2
-    set beta                                               = 0.005 # default: 0.078
-    set cR                                                 = 0.033 # default: 0.33
+    set beta                                               = 0.005
+    set cR                                                 = 0.033
   end
 end
 
@@ -213,7 +213,7 @@ end
 
 
 subsection Material model
-  #set Model name = simple compressible # default:
+  #set Model name = simple compressible
   set Model name = king material
   subsection King model
     set Reference density             = 1

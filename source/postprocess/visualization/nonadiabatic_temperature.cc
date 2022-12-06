@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,8 @@ namespace aspect
       NonadiabaticTemperature ()
         :
         DataPostprocessorScalar<dim> ("nonadiabatic_temperature",
-                                      update_values | update_quadrature_points)
+                                      update_values | update_quadrature_points),
+        Interface<dim>("K")
       {}
 
 
@@ -43,7 +44,7 @@ namespace aspect
       void
       NonadiabaticTemperature<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
@@ -72,7 +73,9 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(NonadiabaticTemperature,
                                                   "nonadiabatic temperature",
                                                   "A visualization output object that generates output "
-                                                  "for the non-adiabatic component of the temperature.")
+                                                  "for the non-adiabatic component of the temperature."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\kelvin}.")
     }
   }
 }

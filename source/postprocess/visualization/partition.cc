@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -37,7 +37,8 @@ namespace aspect
         // in order to determine the partition number. thus, no
         // need to specify any update flags
         DataPostprocessorScalar<dim> ("partition",
-                                      update_default)
+                                      update_default),
+        Interface<dim>("")  // no physical units
       {}
 
 
@@ -46,14 +47,14 @@ namespace aspect
       void
       Partition<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &/*input_data*/,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         Assert (computed_quantities[0].size() == 1, ExcInternalError());
 
-        for (unsigned int q=0; q<computed_quantities.size(); ++q)
+        for (auto &quantity : computed_quantities)
           {
             // simply get the partition number from the triangulation
-            computed_quantities[q](0) = this->get_triangulation().locally_owned_subdomain();
+            quantity(0) = this->get_triangulation().locally_owned_subdomain();
           }
       }
     }
@@ -72,7 +73,9 @@ namespace aspect
                                                   "partition",
                                                   "A visualization output object that generates output "
                                                   "for the parallel partition that every cell of the "
-                                                  "mesh is associated with.")
+                                                  "mesh is associated with."
+                                                  "\n\n"
+                                                  "Physical units: None.")
     }
   }
 }

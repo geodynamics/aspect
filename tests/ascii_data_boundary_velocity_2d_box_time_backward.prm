@@ -55,7 +55,6 @@ subsection Boundary velocity model
     set Data file name       = box_2d_%s.%d.txt
 
     set Data directory = $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/
-    set First data file model time = 1e5
     set First data file number = 2
     set Data file time step = 2e5
     set Decreasing file order = true

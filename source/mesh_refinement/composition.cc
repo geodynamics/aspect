@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -37,7 +37,8 @@ namespace aspect
                                "compositional fields are active!"));
       indicators = 0;
       Vector<float> this_indicator (indicators.size());
-      QGauss<dim-1> quadrature (this->introspection().polynomial_degree.compositional_fields+1);
+
+      const Quadrature<dim-1> &quadrature = this->introspection().face_quadratures.compositional_fields;
 
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         {

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,7 +30,7 @@ namespace aspect
   {
     template <int dim>
     RadioactiveDecay<dim>::RadioactiveDecay ()
-    {}
+      = default;
 
 
     template <int dim>
@@ -40,8 +40,11 @@ namespace aspect
               const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
-      AssertThrow(crust_composition_num < material_model_inputs.composition[0].size(),
-                  ExcMessage("The composition number of crust is larger than number of composition fields."));
+      if (is_crust_defined_by_composition)
+        {
+          AssertThrow(crust_composition_num < material_model_inputs.composition[0].size(),
+                      ExcMessage("The composition number of crust is larger than number of composition fields."));
+        }
 
       for (unsigned int q = 0; q < heating_model_outputs.heating_source_terms.size(); ++q)
         {

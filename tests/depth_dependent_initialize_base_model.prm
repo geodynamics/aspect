@@ -13,6 +13,7 @@ subsection Material model
   subsection Depth dependent model
     set Base model = ascii reference profile
     set Depth dependence method = None
+    set Reference viscosity = 1e21
   end
 
   subsection Ascii reference profile

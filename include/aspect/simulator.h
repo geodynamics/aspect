@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -831,8 +831,16 @@ namespace aspect
 
       /**
        * Interpolate a particular particle property to the solution field.
+       *
+       * @deprecated: Use interpolate_particle_property_vector() instead.
        */
-      void interpolate_particle_properties (const AdvectionField &advection_field);
+      void interpolate_particle_properties (const AdvectionField &advection_field) DEAL_II_DEPRECATED;
+
+      /**
+       * Interpolate the corresponding particle properties into the given
+       * @p advection_fields solution fields.
+       */
+      void interpolate_particle_properties (const std::vector<AdvectionField> &advection_fields);
 
       /**
        * Solve the Stokes linear system.
@@ -1051,7 +1059,7 @@ namespace aspect
        * Consequently, we just store a pointer to such an object, and create
        * the object pointed to at the top of set_assemblers().
        */
-      std::unique_ptr<Assemblers::Manager<dim> > assemblers;
+      std::unique_ptr<Assemblers::Manager<dim>> assemblers;
 
       /**
        * Determine, based on the run-time parameters of the current simulation,
@@ -1569,6 +1577,17 @@ namespace aspect
       get_extrapolated_advection_field_range (const AdvectionField &advection_field) const;
 
       /**
+       * Exchange coarsen/refinement flags set between processors so that
+       * we have the correct settings on all ghost cells.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       *
+       */
+      void exchange_refinement_flags();
+
+
+      /**
        * Check if timing output should be written in this timestep, and if so
        * write it.
        *
@@ -1659,41 +1678,6 @@ namespace aspect
                                         double                             &max_density,
                                         double                             &max_specific_heat,
                                         double                             &conductivity) const;
-
-      /**
-       * Extract the values of temperature, pressure, composition and optional
-       * strain rate for the current linearization point. These values are
-       * stored as input arguments for the material model. The compositional
-       * fields are extracted with the individual compositional fields as
-       * outer vectors and the values at each quadrature point as inner
-       * vectors, but the material model needs it the other way round. Hence,
-       * this vector of vectors is transposed.
-       *
-       * @param[in] input_solution A solution vector (or linear combination of
-       * such vectors) with as many entries as there are degrees of freedom in
-       * the mesh. It will be evaluated on the cell with which the FEValues
-       * object was last re-initialized.
-       * @param[in] input_finite_element_values The FEValues object that
-       * describes the finite element space in use and that is used to
-       * evaluate the solution values at the quadrature points of the current
-       * cell.
-       * @param[in] cell The cell on which we are currently evaluating
-       * the material model.
-       * @param[in] compute_strainrate A flag determining whether the strain
-       * rate should be computed or not in the output structure.
-       * @param[out] material_model_inputs The output structure that contains
-       * the solution values evaluated at the quadrature points.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void
-      compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                           const FEValuesBase<dim,dim>                                 &input_finite_element_values,
-                                           const typename DoFHandler<dim>::active_cell_iterator        &cell,
-                                           const bool                                                   compute_strainrate,
-                                           MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
-
 
       /**
        * Return whether the Stokes matrix depends on the values of the
@@ -1803,14 +1787,14 @@ namespace aspect
        * if we do not need the machinery for doing melt stuff, we do
        * not even allocate it.
        */
-      std::unique_ptr<MeltHandler<dim> > melt_handler;
+      std::unique_ptr<MeltHandler<dim>> melt_handler;
 
       /**
        * Unique pointer for an instance of the NewtonHandler. This way,
        * if we do not need the machinery for doing Newton stuff, we do
        * not even allocate it.
        */
-      std::unique_ptr<NewtonHandler<dim> > newton_handler;
+      std::unique_ptr<NewtonHandler<dim>> newton_handler;
 
       SimulatorSignals<dim>               signals;
 
@@ -1823,7 +1807,7 @@ namespace aspect
        *
        * Located here due to needing signals access
        */
-      std::unique_ptr<VolumeOfFluidHandler<dim> > volume_of_fluid_handler;
+      std::unique_ptr<VolumeOfFluidHandler<dim>> volume_of_fluid_handler;
 
       Introspection<dim>                  introspection;
 
@@ -1837,7 +1821,7 @@ namespace aspect
       std::ofstream log_file_stream;
 
       using TeeDevice = boost::iostreams::tee_device<std::ostream, std::ofstream>;
-      using TeeStream = boost::iostreams::stream< TeeDevice >;
+      using TeeStream = boost::iostreams::stream<TeeDevice>;
 
       TeeDevice iostream_tee_device;
       TeeStream iostream_tee_stream;
@@ -1879,6 +1863,18 @@ namespace aspect
       mutable TimerOutput                 computing_timer;
 
       /**
+       * A timer used to track the current wall time since the
+       * last snapshot (or since the program started).
+       */
+      Timer wall_timer;
+
+      /**
+       * The total wall time that has elapsed up to the last snapshot
+       * that was created.
+       */
+      double total_walltime_until_last_snapshot;
+
+      /**
        * In output_statistics(), where we output the statistics object above,
        * we do the actual writing on a separate thread. This variable is the
        * handle we get for this thread so that we can wait for it to finish,
@@ -1886,6 +1882,7 @@ namespace aspect
        * or if we want to terminate altogether.
        */
       std::thread                         output_statistics_thread;
+
       /**
        * @}
        */
@@ -1894,28 +1891,51 @@ namespace aspect
        * @name Variables that describe the physical setup of the problem
        * @{
        */
-      const std::unique_ptr<InitialTopographyModel::Interface<dim> >          initial_topography_model;
-      const std::unique_ptr<GeometryModel::Interface<dim> >                   geometry_model;
-      const IntermediaryConstructorAction                                     post_geometry_model_creation_action;
-      const std::unique_ptr<MaterialModel::Interface<dim> >                   material_model;
-      const std::unique_ptr<GravityModel::Interface<dim> >                    gravity_model;
-      BoundaryTemperature::Manager<dim>                                       boundary_temperature_manager;
-      BoundaryComposition::Manager<dim>                                       boundary_composition_manager;
-      const std::unique_ptr<PrescribedStokesSolution::Interface<dim> >        prescribed_stokes_solution;
-      InitialComposition::Manager<dim>                                        initial_composition_manager;
-      InitialTemperature::Manager<dim>                                        initial_temperature_manager;
-      const std::unique_ptr<AdiabaticConditions::Interface<dim> >             adiabatic_conditions;
+      const std::unique_ptr<InitialTopographyModel::Interface<dim>>          initial_topography_model;
+      const std::unique_ptr<GeometryModel::Interface<dim>>                   geometry_model;
+      const IntermediaryConstructorAction                                    post_geometry_model_creation_action;
+      const std::unique_ptr<MaterialModel::Interface<dim>>                   material_model;
+      const std::unique_ptr<GravityModel::Interface<dim>>                    gravity_model;
+      BoundaryTemperature::Manager<dim>                                      boundary_temperature_manager;
+      BoundaryComposition::Manager<dim>                                      boundary_composition_manager;
+      const std::unique_ptr<PrescribedStokesSolution::Interface<dim>>        prescribed_stokes_solution;
+
+      /**
+       * The following two variables are pointers to objects that describe
+       * the initial temperature and composition values. The Simulator
+       * class itself releases these pointers once they are no longer
+       * needed, somewhere during the first time step once it is known
+       * that they are no longer needed. However, plugins can have their
+       * own shared pointers to these objects, and the lifetime of the
+       * objects pointed to is then until the last of these plugins
+       * gets deleted.
+       */
+      std::shared_ptr<InitialTemperature::Manager<dim>>                      initial_temperature_manager;
+      std::shared_ptr<InitialComposition::Manager<dim>>                      initial_composition_manager;
+
+      const std::unique_ptr<AdiabaticConditions::Interface<dim>>             adiabatic_conditions;
 #ifdef ASPECT_WITH_WORLD_BUILDER
-      const std::unique_ptr<WorldBuilder::World>                              world_builder;
+      /**
+       * A pointer to the WorldBuilder object. Like the
+       * `initial_temperature_manager` and
+       * `initial_composition_manager` objects above, the Simulator
+       * object itself releases this pointer at the end of the
+       * initialization process (right after releasing the
+       * two mentioned initial condition objects). If a part of
+       * the plugin system still needs the world builder object
+       * after this point, it needs to keep its own shared pointer
+       * to it.
+       */
+      std::shared_ptr<WorldBuilder::World>                                   world_builder;
 #endif
-      BoundaryVelocity::Manager<dim>                                          boundary_velocity_manager;
-      std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim> > > boundary_traction;
-      const std::unique_ptr<BoundaryHeatFlux::Interface<dim> >                boundary_heat_flux;
+      BoundaryVelocity::Manager<dim>                                         boundary_velocity_manager;
+      std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim>>> boundary_traction;
+      const std::unique_ptr<BoundaryHeatFlux::Interface<dim>>                boundary_heat_flux;
 
       /**
        * The world holding the particles
        */
-      std::unique_ptr<Particle::World<dim> > particle_world;
+      std::unique_ptr<Particle::World<dim>> particle_world;
 
       /**
        * A copy of the particle handler to reset the particles
@@ -1977,7 +1997,7 @@ namespace aspect
        * a MappingQ1Eulerian object to describe the mesh deformation,
        * swapping it in for the original MappingQ or MappingCartesian object.
        */
-      std::unique_ptr<Mapping<dim> >                            mapping;
+      std::unique_ptr<Mapping<dim>>                            mapping;
 
       const FESystem<dim>                                       finite_element;
 
@@ -2089,12 +2109,12 @@ namespace aspect
        * if we do not need the machinery for doing mesh deformation stuff, we do
        * not even allocate it.
        */
-      std::unique_ptr<MeshDeformation::MeshDeformationHandler<dim> > mesh_deformation;
+      std::unique_ptr<MeshDeformation::MeshDeformationHandler<dim>> mesh_deformation;
 
       /**
        * Unique pointer for the matrix-free Stokes solver
        */
-      std::unique_ptr<StokesMatrixFreeHandler<dim> > stokes_matrix_free;
+      std::unique_ptr<StokesMatrixFreeHandler<dim>> stokes_matrix_free;
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;

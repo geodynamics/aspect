@@ -1,0 +1,16 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Maximum strain rate invariant residual magnitude on boundary with indicator 5 ("top") (1/s)
+# 12: Minimum strain rate invariant residual magnitude on boundary with indicator 5 ("top") (1/s)
+# 13: RMS strain rate invariant residual on boundary with indicator 5 ("top") (1/s)
+# 14: Visualization file name
+# 15: Surface visualization file name
+0 0.000000000000e+00 0.000000000000e+00 512 15468 4913 1 37 39 39 4.78650591e-06 1.30885303e-06 1.99100259e-06 output-box_simple_surface_strain_rate_residual/solution/solution-00000 output-box_simple_surface_strain_rate_residual/solution_surface/solution_surface-00000 

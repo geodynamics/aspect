@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -27,6 +27,12 @@
 
 #include <aspect/initial_composition/interface.h>
 #include <aspect/simulator_access.h>
+
+namespace WorldBuilder
+{
+  class World;
+}
+
 
 namespace aspect
 {
@@ -86,6 +92,12 @@ namespace aspect
          * should be evaluated for this compositional field.
          */
         std::vector<bool> relevant_compositions;
+
+        /**
+         * A pointer to the WorldBuilder object. Keeping this pointer ensures
+         * that the object doesn't go away while we still need it.
+         */
+        std::shared_ptr<const ::WorldBuilder::World> world_builder;
     };
   }
 }

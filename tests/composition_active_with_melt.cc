@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/material_model/interface.h>
 #include <aspect/melt.h>
 #include <deal.II/base/parameter_handler.h>
@@ -19,11 +39,6 @@ namespace aspect
       virtual bool is_compressible () const
       {
         return false;
-      }
-
-      virtual double reference_viscosity () const
-      {
-        return 0.2;
       }
 
       virtual double reference_darcy_coefficient () const
@@ -68,7 +83,7 @@ namespace aspect
           }
 
         // fill melt outputs if they exist
-        aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
+        aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim>>();
 
         if (melt_out != nullptr)
           {

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -75,9 +75,14 @@ namespace aspect
          * @}
          */
 
+        virtual
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
+
       private:
         // entropy change upon melting
         double melting_entropy_change;
+        bool   retrieve_entropy_change_from_material_model;
     };
   }
 }

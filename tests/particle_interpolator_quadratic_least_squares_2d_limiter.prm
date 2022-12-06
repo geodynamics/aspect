@@ -1,0 +1,26 @@
+# A test based on the 2d version of the SolKz benchmark that (1) tests to
+# ensure that the particle methodology when used with the Quadratic Least
+# Squares Particle Interpolation algorithm correctly computes the particle
+# version of the Solkz benchmark and (2) tests that the Quadratic Least
+# Squares limiter is properly limiting, without disproportionately
+# affecting the accuracy of the interpolation algorithm.
+
+include $ASPECT_SOURCE_DIR/tests/particle_interpolator_quadratic_least_squares_2d_add_particles.prm
+set Additional shared libraries            = ./libparticle_interpolator_quadratic_least_squares_2d_limiter.so
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+
+  subsection Particles
+    set Update ghost particles = true
+    set Load balancing strategy = none
+    set Minimum particles per cell = 7
+    subsection Interpolator
+      subsection Quadratic least squares
+        set Use quadratic least squares limiter = true
+        set Use boundary extrapolation = true
+      end
+    end
+  end
+end

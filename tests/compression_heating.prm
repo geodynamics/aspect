@@ -61,10 +61,6 @@ subsection Initial composition model
   end
 end
 
-subsection Boundary temperature model
-  set List of model names = initial temperature
-end
-
 subsection Boundary composition model
   set List of model names = initial composition
 end

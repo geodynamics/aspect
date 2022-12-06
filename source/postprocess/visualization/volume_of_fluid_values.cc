@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,7 +32,8 @@ namespace aspect
       VolumeOfFluidValues<dim>::
       VolumeOfFluidValues ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        Interface<dim>("")  // physical units of a fractional volume, so units of "1"
       {}
 
 
@@ -115,6 +116,7 @@ namespace aspect
       }
 
 
+
       template <int dim>
       void
       VolumeOfFluidValues<dim>::declare_parameters (ParameterHandler &prm)
@@ -127,12 +129,12 @@ namespace aspect
             {
               prm.declare_entry("Output interface reconstruction contour", "false",
                                 Patterns::Bool (),
-                                "Include fields defined such that the 0 contour is the fluid interface");
+                                "Include fields defined such that the 0 contour is the fluid interface.");
 
               // TODO: Fix this for curved geometries
               prm.declare_entry("Output interface normals", "false",
                                 Patterns::Bool (),
-                                "Include the internal data for the interface normal on the unit cells");
+                                "Include the internal data for the interface normal on the unit cells.");
             }
             prm.leave_subsection();
           }
@@ -140,6 +142,7 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
 
 
       template <int dim>
@@ -198,7 +201,9 @@ namespace aspect
                                                   "volume of fluid values",
                                                   "A visualization output object that outputs the volume fraction "
                                                   "and optionally a level set field and the interface normal "
-                                                  "vectors of volume of fluid fields.")
+                                                  "vectors of volume of fluid fields."
+                                                  "\n\n"
+                                                  "Physical units: None.")
     }
   }
 }

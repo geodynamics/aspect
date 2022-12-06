@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,6 +25,7 @@
 
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/rheology/ascii_depth_profile.h>
 
 namespace aspect
 {
@@ -64,15 +65,6 @@ namespace aspect
          * Return whether the model is compressible or not.
          */
         virtual bool is_compressible () const;
-        /**
-         * @}
-         */
-
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
         /**
          * @}
          */
@@ -123,9 +115,11 @@ namespace aspect
 
       private:
         /**
-         * Constant reference viscosity.
+         * Minimum/Maximum viscosity and lateral viscosity variations.
          */
-        double reference_eta;
+        double lateral_viscosity_prefactor;
+        double min_eta;
+        double max_eta;
 
         /**
          * The value for thermal conductivity. This model only
@@ -143,6 +137,12 @@ namespace aspect
          * Pointer to the StructuredDataLookup object that holds the material data.
          */
         std::unique_ptr<Utilities::StructuredDataLookup<2>> material_lookup;
+
+        /**
+         * Pointer to the rheology model used for depth-dependence from an
+         * ascii file
+         */
+        std::unique_ptr<Rheology::AsciiDepthProfile<dim>> depth_dependent_rheology;
     };
   }
 }

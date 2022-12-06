@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -57,11 +57,12 @@ namespace aspect
 
       // the values of the compositional fields are stored as block vectors for each field
       // we have to extract them in this structure
-      std::vector<std::vector<double> > prelim_composition_values (this->n_compositional_fields(),
+      std::vector<std::vector<double>> prelim_composition_values (this->n_compositional_fields(),
                                                                    std::vector<double> (quadrature.size()));
 
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())

@@ -16,7 +16,6 @@ subsection Material model
   subsection Viscoelastic
     set Use fixed elastic time step = true
     set Fixed elastic time step     = 1e2
-    set Use stress averaging        = true
     set Viscosity averaging scheme  = harmonic
   end
 

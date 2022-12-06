@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,6 +25,7 @@
 #include <aspect/material_model/equation_of_state/thermodynamic_table_lookup.h>
 
 #include <aspect/simulator_access.h>
+#include <deal.II/fe/component_mask.h>
 
 namespace aspect
 {
@@ -171,18 +172,8 @@ namespace aspect
          */
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        double reference_viscosity () const override;
-        /**
-         * @}
-         */
-
-        /**
          * Function to compute the material properties in @p out given the
-         * inputs in @p in. If MaterialModelInputs.strain_rate has the length
-         * 0, then the viscosity does not need to be computed.
+         * inputs in @p in.
          */
         void
         evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -214,6 +205,39 @@ namespace aspect
 
       private:
         /**
+         * Compute the pressure- and temperature-dependent thermal
+         * conductivity either as a constant value, or based on the
+         * equation given in Stackhouse et al., 2015: First-principles
+         * calculations of the lattice thermal conductivity of the
+         * lower mantle, or based on the equation given in Tosi et al.,
+         * 2013: Mantle dynamics with pressure- and temperature-dependent
+         * thermal expansivity and conductivity.
+         */
+        double thermal_conductivity (const double temperature,
+                                     const double pressure,
+                                     const Point<dim> &position) const;
+
+        /**
+         * Whether the compositional fields representing mass fractions
+         * should be normalized to one when computing their fractions
+         * (if false), or whether there is an additional composition
+         * (the background field) that is not represented by a
+         * compositional field, and makes up the remaining fraction of
+         * material if the compositional fields add up to less than one
+         * at any given location (if true).
+         */
+        bool has_background_field;
+
+        /**
+         * Pointer to a composition mask, which is meant to be filled with
+         * one entry per compositional field that determines if this
+         * field is considered to represent a mass fractions (if the entry
+         * is set to true) or not (if set to false). This is needed for
+         * averaging of material properties.
+         */
+        std::unique_ptr<ComponentMask> composition_mask;
+
+        /**
          * The thermodynamic lookup equation of state.
          */
         EquationOfState::ThermodynamicTableLookup<dim> equation_of_state;
@@ -226,16 +250,31 @@ namespace aspect
         bool use_lateral_average_temperature;
 
         /**
-         * Reference viscosity. Only used for pressure scaling purposes
-         * and returned by the reference_viscosity() function.
-         */
-        double reference_eta;
-
-        /**
-         * The value for thermal conductivity. This model only
-         * implements a constant thermal conductivity for the whole domain.
+         * The value of the thermal conductivity if a constant thermal
+         * conductivity is used for the whole domain.
          */
         double thermal_conductivity_value;
+
+        /**
+         * Enumeration for selecting which type of conductivity law to use.
+         */
+        enum ConductivityFormulation
+        {
+          constant,
+          p_T_dependent
+        } conductivity_formulation;
+
+        /**
+         * Parameters for the temperature- and pressure dependence of the
+         * thermal conductivity.
+         */
+        std::vector<double> conductivity_transition_depths;
+        std::vector<double> reference_thermal_conductivities;
+        std::vector<double> conductivity_pressure_dependencies;
+        std::vector<double> conductivity_reference_temperatures;
+        std::vector<double> conductivity_exponents;
+        std::vector<double> saturation_scaling;
+        double maximum_conductivity;
 
         /**
          * Information about lateral temperature averages.
@@ -269,6 +308,17 @@ namespace aspect
          * viscosity profile.
          */
         std::unique_ptr<internal::RadialViscosityLookup> radial_viscosity_lookup;
+
+        /**
+         * A function that fills the prescribed additional outputs in the
+         * MaterialModelOutputs object that is handed over, if it exists,
+         * in this case, densities for the projected density approximation.
+         * Does nothing otherwise.
+         */
+        void fill_prescribed_outputs (const unsigned int i,
+                                      const std::vector<double> &volume_fractions,
+                                      const MaterialModel::MaterialModelInputs<dim> &in,
+                                      MaterialModel::MaterialModelOutputs<dim> &out) const;
 
     };
   }

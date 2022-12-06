@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,7 @@ namespace aspect
      * equation for the current cell.
      */
     template <int dim>
-    class AdvectionSystem : public Assemblers::Interface<dim>,
+    class AdvectionSystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
       public SimulatorAccess<dim>
     {
       public:
@@ -44,6 +44,21 @@ namespace aspect
 
         std::vector<double>
         compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base) const override;
+    };
+
+    template <int dim>
+    class DarcySystem : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
+    {
+      public:
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
+
+        std::vector<double>
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base) const override;
+
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
     /**

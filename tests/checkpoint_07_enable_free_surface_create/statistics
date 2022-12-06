@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+# 12: Minimal temperature (K)
+# 13: Average temperature (K)
+# 14: Maximal temperature (K)
+# 15: RMS velocity (m/year)
+# 16: Max. velocity (m/year)
+0 0.000000000000e+00 0.000000000000e+00 768 7392 3264 0 56 59 174 output-checkpoint_07_enable_free_surface_create/solution/solution-00000 1.59900000e+03 1.60013520e+03 1.60100000e+03 1.56138836e-02 2.93831873e-02 
+1 4.007228995926e+06 4.007228995926e+06 768 7392 3264 7 31 33  99 output-checkpoint_07_enable_free_surface_create/solution/solution-00001 1.59900419e+03 1.60013507e+03 1.60099843e+03 1.55910246e-02 2.92839004e-02 
+2 8.026868927285e+06 4.019639931359e+06 768 7392 3264 8 24 26  78 output-checkpoint_07_enable_free_surface_create/solution/solution-00002 1.59899925e+03 1.60013483e+03 1.60100022e+03 1.55663999e-02 2.91912298e-02 
+3 1.205562274331e+07 4.028753816027e+06 768 7392 3264 8 28 30  90 output-checkpoint_07_enable_free_surface_create/solution/solution-00003 1.59898934e+03 1.60013446e+03 1.60100491e+03 1.55309277e-02 2.90636542e-02 
+4 1.609406103905e+07 4.038438295739e+06 768 7392 3264 8 28 30  90 output-checkpoint_07_enable_free_surface_create/solution/solution-00004 1.59896485e+03 1.60013399e+03 1.60101285e+03 1.54847428e-02 2.89017222e-02 
+5 2.014333863998e+07 4.049277600926e+06 768 7392 3264 8 27 29  87 output-checkpoint_07_enable_free_surface_create/solution/solution-00005 1.59894842e+03 1.60013349e+03 1.60101396e+03 1.54318731e-02 2.87163688e-02 
+6 2.420238655297e+07 4.059047912990e+06 768 7392 3264 8 25 27  81 output-checkpoint_07_enable_free_surface_create/solution/solution-00006 1.59894141e+03 1.60013302e+03 1.60101495e+03 1.53765673e-02 2.85200219e-02 
+7 2.826960195303e+07 4.067215400060e+06 768 7392 3264 8 23 25  75 output-checkpoint_07_enable_free_surface_create/solution/solution-00007 1.59894409e+03 1.60013262e+03 1.60101206e+03 1.53218477e-02 2.83223245e-02 
+8 3.000000000000e+07 1.730398046973e+06 768 7392 3264 6 17 19  57 output-checkpoint_07_enable_free_surface_create/solution/solution-00008 1.59894963e+03 1.60013248e+03 1.60100930e+03 1.52991482e-02 2.82391453e-02 

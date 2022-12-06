@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -125,7 +125,7 @@ namespace aspect
         RegisterHelper (void (*register_function) (const std::string &,
                                                    const std::string &,
                                                    void ( *)(ParameterHandler &),
-                                                   InterfaceClass * ( *)()),
+                                                   std::unique_ptr<InterfaceClass> ( *)()),
                         const char *name,
                         const char *description)
         {
@@ -140,9 +140,9 @@ namespace aspect
          * this class.
          */
         static
-        InterfaceClass *factory ()
+        std::unique_ptr<InterfaceClass> factory ()
         {
-          return new ModelClass();
+          return std::make_unique<ModelClass>();
         }
       };
 
@@ -157,17 +157,19 @@ namespace aspect
         /**
          * A type describing everything we need to know about a plugin.
          *
-         * The entries in the tuple are: - The name by which it can be
-         * selected. - A description of this plugin that will show up in the
-         * documentation in the parameter file. - A function that can declare
-         * the run-time parameters this plugin takes from the parameter file.
+         * The entries in the tuple are:
+         * - The name by which it can be selected.
+         * - A description of this plugin that will show up in the
+         *   documentation in the parameter file.
+         * - A function that can declare the run-time parameters this
+         *   plugin takes from the parameter file.
          * - A function that can produce objects of this plugin type.
          */
         using PluginInfo
         = std::tuple<std::string,
         std::string,
         void ( *) (ParameterHandler &),
-        InterfaceClass *( *) ()>;
+        std::unique_ptr<InterfaceClass>( *) ()>;
 
         /**
          * A pointer to a list of all registered plugins.
@@ -175,7 +177,7 @@ namespace aspect
          * The object is a pointer rather than an object for the following
          * reason: objects with static initializers (such as =0) are
          * initialized before any objects for which one needs to run
-         * constructors. consequently, we can be sure that this pointer is set
+         * constructors. Consequently, we can be sure that this pointer is set
          * to zero before we ever try to register a postprocessor, and
          * consequently whenever we run Manager::register_postprocessor, we
          * need not worry whether we try to add something to this list before
@@ -197,7 +199,7 @@ namespace aspect
         void register_plugin (const std::string &name,
                               const std::string &description,
                               void (*declare_parameters_function) (ParameterHandler &),
-                              InterfaceClass * (*factory_function) ());
+                              std::unique_ptr<InterfaceClass> (*factory_function) ());
 
         /**
          * Generate a list of names of the registered plugins separated by '|'
@@ -235,7 +237,7 @@ namespace aspect
          * function.
          */
         static
-        InterfaceClass *
+        std::unique_ptr<InterfaceClass>
         create_plugin (const std::string  &name,
                        const std::string &documentation);
 
@@ -250,7 +252,7 @@ namespace aspect
          * function.
          */
         static
-        InterfaceClass *
+        std::unique_ptr<InterfaceClass>
         create_plugin (const std::string  &name,
                        const std::string &documentation,
                        ParameterHandler &prm);
@@ -313,7 +315,7 @@ namespace aspect
       register_plugin (const std::string &name,
                        const std::string &description,
                        void (*declare_parameters_function) (ParameterHandler &),
-                       InterfaceClass * (*factory_function) ())
+                       std::unique_ptr<InterfaceClass> (*factory_function) ())
       {
         // see if this is the first time we get into this
         // function and if so initialize the static member variable
@@ -323,18 +325,20 @@ namespace aspect
         // verify that the same name has not previously been
         // used to register a plugin, since we would then no
         // longer be able to identify the plugin
-        for (typename std::list<PluginInfo>::const_iterator
-             p = plugins->begin();
-             p != plugins->end(); ++p)
-          Assert (std::get<0>(*p) != name,
-                  ExcMessage ("A plugin with name <" + name + "> has "
-                              "already been registered!"));
+        for (const auto &p : *plugins)
+          {
+            Assert (std::get<0>(p) != name,
+                    ExcMessage ("A plugin with name <" + name + "> has "
+                                "already been registered!"));
+            (void)p;
+          }
+
 
         // now add one record to the list
-        plugins->push_back (PluginInfo(name,
-                                       description,
-                                       declare_parameters_function,
-                                       factory_function));
+        plugins->emplace_back (name,
+                               description,
+                               declare_parameters_function,
+                               factory_function);
       }
 
 
@@ -357,13 +361,11 @@ namespace aspect
 
         // now create a pattern from all of these sorted names
         std::string pattern_of_names;
-        for (typename std::set<std::string>::const_iterator
-             p = names.begin();
-             p != names.end(); ++p)
+        for (const auto &name : names)
           {
             if (pattern_of_names.size() > 0)
               pattern_of_names += "|";
-            pattern_of_names += *p;
+            pattern_of_names += name;
           }
 
         return pattern_of_names;
@@ -384,7 +386,7 @@ namespace aspect
         for (typename std::list<PluginInfo>::const_iterator
              p = plugins->begin();
              p != plugins->end(); ++p)
-          names_and_descriptions[std::get<0>(*p)] = std::get<1>(*p);;
+          names_and_descriptions[std::get<0>(*p)] = std::get<1>(*p);
 
         // then output it all
         std::map<std::string,std::string>::const_iterator
@@ -433,7 +435,7 @@ namespace aspect
 
 
       template <typename InterfaceClass>
-      InterfaceClass *
+      std::unique_ptr<InterfaceClass>
       PluginList<InterfaceClass>::
       create_plugin (const std::string &name,
                      const std::string &documentation)
@@ -462,7 +464,7 @@ namespace aspect
              p != plugins->end(); ++p)
           if (std::get<0>(*p) == name)
             {
-              InterfaceClass *i = std::get<3>(*p)();
+              std::unique_ptr<InterfaceClass> i = std::get<3>(*p)();
               return i;
             }
 
@@ -473,13 +475,13 @@ namespace aspect
 
 
       template <typename InterfaceClass>
-      InterfaceClass *
+      std::unique_ptr<InterfaceClass>
       PluginList<InterfaceClass>::
       create_plugin (const std::string &name,
                      const std::string &documentation,
                      ParameterHandler  &prm)
       {
-        InterfaceClass *i = create_plugin(name, documentation);
+        std::unique_ptr<InterfaceClass> i = create_plugin(name, documentation);
         i->parse_parameters (prm);
         return i;
       }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -74,15 +74,6 @@ namespace aspect
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
         bool is_compressible () const override;
-        /**
-         * @}
-         */
-
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        double reference_viscosity () const override;
         /**
          * @}
          */

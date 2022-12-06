@@ -52,10 +52,6 @@ end
 ############### Parameters describing the temperature field
 # Note: The temperature plays no role in this model
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
 subsection Initial temperature model
   set Model name = function
   subsection Function
@@ -104,7 +100,7 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, composition statistics,particles
+  set List of postprocessors = velocity statistics, composition statistics, particles
 
   subsection Particles
     set Number of particles = 10

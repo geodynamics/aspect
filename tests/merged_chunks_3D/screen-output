@@ -1,0 +1,18 @@
+
+Number of active cells: 256 (on 1 levels)
+Number of degrees of freedom: 13,410 (7,803+405+2,601+2,601)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+98 iterations.
+
+   Postprocessing:
+     RMS, max velocity:        0.00646 m/year, 0.0124 m/year
+     Writing graphical output: output-merged_chunks_3D/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

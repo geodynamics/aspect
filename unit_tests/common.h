@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -58,7 +58,7 @@ inline void compare_tables_approx(
     {
       for (unsigned int j=0; j<computed.n_cols(); ++j)
         {
-          INFO("array index i,j=" << i << "," << j << ": ");
+          INFO("array index i,j=" << i << ',' << j << ": ");
           REQUIRE(computed[i][j] == Approx(expected[i][j]));
         }
     }

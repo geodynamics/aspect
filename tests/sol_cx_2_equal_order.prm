@@ -41,7 +41,7 @@ subsection Discretization
 
     set beta  = 0.078
 
-    set cR    = 0.5   # default: 0.11
+    set cR    = 0.5
   end
 
 end
@@ -78,8 +78,8 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0                       # default: 2
-  set Initial global refinement          = 2                       # default: 2
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
 
   set Strategy                           = density, temperature
 end
@@ -110,6 +110,6 @@ subsection Postprocess
 
     set Output format                 = gnuplot
 
-    set Time between graphical output = 0   # default: 1e8
+    set Time between graphical output = 0
   end
 end

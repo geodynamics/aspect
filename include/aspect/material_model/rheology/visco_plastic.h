@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,6 +25,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/material_model/rheology/strain_dependent.h>
+#include <aspect/material_model/rheology/friction_models.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
 #include <aspect/material_model/rheology/frank_kamenetskii.h>
@@ -70,15 +71,21 @@ namespace aspect
         std::vector<double> friction_angles;
 
         /**
+         * The plastic yield stress.
+         */
+        std::vector<double> yield_stresses;
+
+        /**
          * The area where the viscous stress exceeds the plastic yield stress,
          * and viscosity is rescaled back to the yield envelope.
          */
         std::vector<double> yielding;
+
     };
 
     /**
-       * A data structure with the output of calculate_isostrain_viscosities.
-       */
+     * A data structure with the output of calculate_isostrain_viscosities.
+     */
     struct IsostrainViscosities
     {
       /**
@@ -90,6 +97,16 @@ namespace aspect
        * The composition yielding.
        */
       std::vector<bool> composition_yielding;
+
+      /**
+       * The current friction angle.
+       */
+      std::vector<double> current_friction_angles;
+
+      /**
+       * The current cohesion.
+       */
+      std::vector<double> current_cohesions;
     };
 
     namespace Rheology
@@ -154,8 +171,7 @@ namespace aspect
            */
           void
           parse_parameters (ParameterHandler &prm,
-                            const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition =
-                              std::shared_ptr<std::vector<unsigned int>>());
+                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
           /**
            * Create the additional material model outputs object that contains the
@@ -169,16 +185,12 @@ namespace aspect
            * MaterialModelOutputs object that is handed over, if it exists.
            * Does nothing otherwise.
            */
-          void fill_plastic_outputs (const unsigned int point_index,
-                                     const std::vector<double> &volume_fractions,
-                                     const bool plastic_yielding,
-                                     const MaterialModel::MaterialModelInputs<dim> &in,
-                                     MaterialModel::MaterialModelOutputs<dim> &out) const;
-
-          /**
-           * Reference viscosity used by material models using this rheology.
-           */
-          double ref_visc;
+          void fill_plastic_outputs(const unsigned int point_index,
+                                    const std::vector<double> &volume_fractions,
+                                    const bool plastic_yielding,
+                                    const MaterialModel::MaterialModelInputs<dim> &in,
+                                    MaterialModel::MaterialModelOutputs<dim> &out,
+                                    const IsostrainViscosities &isostrain_viscosities) const;
 
           /**
            * Minimum strain rate used to stabilize the strain rate dependent rheology.
@@ -194,6 +206,11 @@ namespace aspect
            * Object for computing the strain dependence of the rheology model.
            */
           Rheology::StrainDependent<dim> strain_rheology;
+
+          /**
+           * Object for computing the friction dependence of the rheology model.
+           */
+          Rheology::FrictionModels<dim> friction_models;
 
           /**
            * Object for computing viscoelastic viscosities and stresses.
@@ -217,9 +234,10 @@ namespace aspect
           /**
            * Minimum and maximum viscosities used to improve the
            * stability of the rheology model.
+           * These parameters contain one value per composition and phase (potentially the same value).
            */
-          double min_visc;
-          double max_visc;
+          std::vector<double> minimum_viscosity;
+          std::vector<double> maximum_viscosity;
 
           /**
            * Enumeration for selecting which type of viscous flow law to use.
@@ -251,6 +269,16 @@ namespace aspect
           bool allow_negative_pressures_in_plasticity;
 
           /**
+           * Whether to use the adiabatic pressure instead of the full pressure (default)
+           * when calculating creep (diffusion, dislocation, and peierls) viscosity.
+           * This may be helpful in models where the full pressure has an unusually
+           * large negative value arising from large negative dynamic pressure,
+           * resulting in solver convergence issue and in some cases a viscosity
+           * of zero.
+           */
+          bool use_adiabatic_pressure_in_creep;
+
+          /**
            * List of exponents controlling the behaviour of the stress limiter
            * yielding mechanism.
            */
@@ -266,7 +294,7 @@ namespace aspect
            */
           Rheology::DiffusionCreep<dim> diffusion_creep;
           Rheology::DislocationCreep<dim> dislocation_creep;
-          std::unique_ptr<Rheology::FrankKamenetskii<dim> > frank_kamenetskii_rheology;
+          std::unique_ptr<Rheology::FrankKamenetskii<dim>> frank_kamenetskii_rheology;
 
           /**
            * Whether to include Peierls creep in the constitutive formulation.
@@ -276,7 +304,7 @@ namespace aspect
           /**
            * Object for computing Peierls creep viscosities.
            */
-          std::unique_ptr<Rheology::PeierlsCreep<dim> > peierls_creep;
+          std::unique_ptr<Rheology::PeierlsCreep<dim>> peierls_creep;
 
           /**
            * Object for computing the viscosity multiplied by a constant prefactor.

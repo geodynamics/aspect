@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,11 +30,6 @@ namespace aspect
   namespace Postprocess
   {
 // ------------------------------ Interface -----------------------------
-
-    template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
 
 
     template <int dim>
@@ -92,13 +87,13 @@ namespace aspect
 
 
     template <int dim>
-    std::list<std::pair<std::string,std::string> >
+    std::list<std::pair<std::string,std::string>>
     Manager<dim>::execute (TableHandler &statistics)
     {
       // call the execute() functions of all postprocessor objects we have
       // here in turns
-      std::list<std::pair<std::string,std::string> > output_list;
-      for (auto &p : postprocessors)
+      std::list<std::pair<std::string,std::string>> output_list;
+      for (const auto &p : postprocessors)
         {
           try
             {
@@ -169,8 +164,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<Interface<2> >,
-      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2>>,
+      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
 
@@ -236,7 +231,7 @@ namespace aspect
                      "all") != postprocessor_names.end())
         {
           postprocessor_names.clear();
-          for (typename std::list<typename aspect::internal::Plugins::PluginList<Interface<dim> >::PluginInfo>::const_iterator
+          for (typename std::list<typename aspect::internal::Plugins::PluginList<Interface<dim>>::PluginInfo>::const_iterator
                p = std::get<dim>(registered_plugins).plugins->begin();
                p != std::get<dim>(registered_plugins).plugins->end(); ++p)
             postprocessor_names.push_back (std::get<0>(*p));
@@ -260,7 +255,7 @@ namespace aspect
       // their own parameters
       for (unsigned int name=0; name<postprocessor_names.size(); ++name)
         {
-          postprocessors.push_back (std::unique_ptr<Interface<dim> >
+          postprocessors.push_back (std::unique_ptr<Interface<dim>>
                                     (std::get<dim>(registered_plugins)
                                      .create_plugin (postprocessor_names[name],
                                                      "Postprocessor plugins")));
@@ -286,8 +281,8 @@ namespace aspect
                                        ">, but the latter is not a valid name."));
 
               bool already_present = false;
-              for (unsigned int n=0; n<postprocessor_names.size(); ++n)
-                if (postprocessor_names[n] == p)
+              for (const auto &postprocessor_name : postprocessor_names)
+                if (postprocessor_name == p)
                   {
                     already_present = true;
                     break;
@@ -317,13 +312,13 @@ namespace aspect
       // have found a cycle in the dependencies and that is clearly a problem
       std::vector<bool> already_assigned (postprocessors.size(), false);
       std::vector<std::string> sorted_names;
-      std::vector<std::unique_ptr<Interface<dim> > > sorted_postprocessors;
+      std::vector<std::unique_ptr<Interface<dim>>> sorted_postprocessors;
       while (sorted_names.size() < postprocessors.size())
         {
           bool at_least_one_element_added = false;
 
           {
-            typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator
+            typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator
             pp = postprocessors.begin();
             for (unsigned int i=0; i<postprocessor_names.size(); ++i, ++pp)
               if (already_assigned[i] == false)
@@ -365,7 +360,7 @@ namespace aspect
               out << "While sorting postprocessors by their dependencies, "
                   "ASPECT encountered a cycle in dependencies. The following "
                   "postprocessors are involved:\n";
-              typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator
+              typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator
               pp = postprocessors.begin();
               for (unsigned int i=0; i<postprocessor_names.size(); ++i, ++pp)
                 if (already_assigned[i] == false)
@@ -397,7 +392,7 @@ namespace aspect
     Manager<dim>::register_postprocessor (const std::string &name,
                                           const std::string &description,
                                           void (*declare_parameters_function) (ParameterHandler &),
-                                          Interface<dim> *(*factory_function) ())
+                                          std::unique_ptr<Interface<dim>> (*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,
@@ -427,11 +422,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<Postprocess::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<Postprocess::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<Postprocess::Interface<2>>::PluginInfo> *
+      internal::Plugins::PluginList<Postprocess::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<Postprocess::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<Postprocess::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<Postprocess::Interface<3>>::PluginInfo> *
+      internal::Plugins::PluginList<Postprocess::Interface<3>>::plugins = nullptr;
     }
   }
 

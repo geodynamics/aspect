@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -111,11 +111,11 @@ namespace aspect
 
           std::vector<types::global_dof_index> local_dof_indices;
           std::vector<unsigned int>            dof_component_indices;
-          std::vector<SymmetricTensor<2,dim> > grads_phi_u;
+          std::vector<SymmetricTensor<2,dim>> grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<double>                  phi_p;
           std::vector<double>                  phi_p_c;
-          std::vector<Tensor<1,dim> >          grad_phi_p;
+          std::vector<Tensor<1,dim>>          grad_phi_p;
 
           /**
            * Material model inputs and outputs computed at the current
@@ -131,6 +131,8 @@ namespace aspect
            */
           const bool rebuild_stokes_matrix;
         };
+
+
 
         /**
          * A scratch object to store all necessary information to assemble
@@ -167,10 +169,10 @@ namespace aspect
           void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref,
                        const unsigned face_number_ref);
 
-          std::vector<Tensor<1,dim> >          phi_u;
-          std::vector<Tensor<1,dim> >          velocity_values;
+          std::vector<Tensor<1,dim>>          phi_u;
+          std::vector<Tensor<1,dim>>          velocity_values;
           std::vector<double>                  velocity_divergence;
-          std::vector<Tensor<1,dim> >          temperature_gradients;
+          std::vector<Tensor<1,dim>>          temperature_gradients;
 
           /**
            * Material model inputs and outputs computed at the current
@@ -203,6 +205,8 @@ namespace aspect
           const bool rebuild_newton_stokes_matrix;
         };
 
+
+
         /**
          * A scratch object to store all necessary information to assemble
          * the terms in the advection equations.
@@ -225,9 +229,9 @@ namespace aspect
 
           void reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref);
 
-          std::unique_ptr<FEFaceValues<dim> >    face_finite_element_values;
-          std::unique_ptr<FEFaceValues<dim> >    neighbor_face_finite_element_values;
-          std::unique_ptr<FESubfaceValues<dim> > subface_finite_element_values;
+          std::unique_ptr<FEFaceValues<dim>>    face_finite_element_values;
+          std::unique_ptr<FEFaceValues<dim>>    neighbor_face_finite_element_values;
+          std::unique_ptr<FESubfaceValues<dim>> subface_finite_element_values;
 
           std::vector<types::global_dof_index>   local_dof_indices;
 
@@ -240,45 +244,45 @@ namespace aspect
            * existing fields), and that they are also correspondingly indexed.
            */
           std::vector<double>         phi_field;
-          std::vector<Tensor<1,dim> > grad_phi_field;
+          std::vector<Tensor<1,dim>> grad_phi_field;
           std::vector<double>         laplacian_phi_field;
           std::vector<double>         face_phi_field;
-          std::vector<Tensor<1,dim> > face_grad_phi_field;
+          std::vector<Tensor<1,dim>> face_grad_phi_field;
           std::vector<double>         neighbor_face_phi_field;
-          std::vector<Tensor<1,dim> > neighbor_face_grad_phi_field;
+          std::vector<Tensor<1,dim>> neighbor_face_grad_phi_field;
 
-          std::vector<Tensor<1,dim> > old_velocity_values;
-          std::vector<Tensor<1,dim> > old_old_velocity_values;
+          std::vector<Tensor<1,dim>> old_velocity_values;
+          std::vector<Tensor<1,dim>> old_old_velocity_values;
 
           std::vector<double>         old_pressure;
           std::vector<double>         old_old_pressure;
-          std::vector<Tensor<1,dim> > old_pressure_gradients;
-          std::vector<Tensor<1,dim> > old_old_pressure_gradients;
+          std::vector<Tensor<1,dim>> old_pressure_gradients;
+          std::vector<Tensor<1,dim>> old_old_pressure_gradients;
 
-          std::vector<SymmetricTensor<2,dim> > old_strain_rates;
-          std::vector<SymmetricTensor<2,dim> > old_old_strain_rates;
+          std::vector<SymmetricTensor<2,dim>> old_strain_rates;
+          std::vector<SymmetricTensor<2,dim>> old_old_strain_rates;
 
           std::vector<double>         old_temperature_values;
           std::vector<double>         old_old_temperature_values;
 
           std::vector<double>         old_field_values;
           std::vector<double>         old_old_field_values;
-          std::vector<Tensor<1,dim> > old_field_grads;
-          std::vector<Tensor<1,dim> > old_old_field_grads;
+          std::vector<Tensor<1,dim>> old_field_grads;
+          std::vector<Tensor<1,dim>> old_old_field_grads;
           std::vector<double>         old_field_laplacians;
           std::vector<double>         old_old_field_laplacians;
 
-          std::vector<std::vector<double> > old_composition_values;
-          std::vector<std::vector<double> > old_old_composition_values;
+          std::vector<std::vector<double>> old_composition_values;
+          std::vector<std::vector<double>> old_old_composition_values;
 
           std::vector<double>         current_temperature_values;
-          std::vector<Tensor<1,dim> > current_velocity_values;
-          std::vector<Tensor<1,dim> > face_current_velocity_values;
-          std::vector<Tensor<1,dim> > mesh_velocity_values;
-          std::vector<Tensor<1,dim> > face_mesh_velocity_values;
+          std::vector<Tensor<1,dim>> current_velocity_values;
+          std::vector<Tensor<1,dim>> face_current_velocity_values;
+          std::vector<Tensor<1,dim>> mesh_velocity_values;
+          std::vector<Tensor<1,dim>> face_mesh_velocity_values;
 
-          std::vector<SymmetricTensor<2,dim> > current_strain_rates;
-          std::vector<std::vector<double> > current_composition_values;
+          std::vector<SymmetricTensor<2,dim>> current_strain_rates;
+          std::vector<std::vector<double>> current_composition_values;
           std::vector<double>         current_velocity_divergences;
 
           /**
@@ -321,6 +325,8 @@ namespace aspect
           double artificial_viscosity;
         };
       }
+
+
 
       /**
        * The CopyData arrays are similar to the Scratch arrays except they are
@@ -419,19 +425,20 @@ namespace aspect
            */
           FullMatrix<double>          local_matrix;
 
-          /** Local contributions to the global matrix from the face terms in the
-           * discontinuous Galerkin method. The vectors are of length
-           * GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
-           * so as to hold one matrix for each possible face or subface of the cell.
-           * The discontinuous Galerkin bilinear form contains terms arising from internal
-           * (to the cell) values and external (to the cell) values.
-           * _int_ext and ext_int hold the terms arising from the pairing between a cell
-           * and its neighbor, while _ext_ext is the pairing of the neighbor's dofs with
-           * themselves. In the continuous Galerkin case, these are unused, and set to size zero.
+          /**
+           * Local contributions to the global matrix from the face terms in the
+           * discontinuous Galerkin method. These arrays are of a length sufficient
+           * to hold one matrix for each possible face or subface of the cell.
+           * The discontinuous Galerkin bilinear form contains terms arising from
+           * internal (to the cell) values and external (to the cell) values.
+           * `_int_ext` and `_ext_int` hold the terms arising from the pairing
+           * between a cell and its neighbor, while `_ext_ext` is the pairing
+           * of the neighbor's dofs with themselves. In the continuous
+           * Galerkin case, these are unused, and set to size zero.
            */
-          std::vector<FullMatrix<double> >         local_matrices_int_ext;
-          std::vector<FullMatrix<double> >         local_matrices_ext_int;
-          std::vector<FullMatrix<double> >         local_matrices_ext_ext;
+          std::vector<FullMatrix<double>>         local_matrices_int_ext;
+          std::vector<FullMatrix<double>>         local_matrices_ext_int;
+          std::vector<FullMatrix<double>>         local_matrices_ext_ext;
 
           /**
            * Local contributions to the right hand side
@@ -439,7 +446,8 @@ namespace aspect
            */
           Vector<double>              local_rhs;
 
-          /** Denotes which face matrices have actually been assembled in the DG field
+          /**
+           * Denotes which face matrices have actually been assembled in the DG field
            * assembly. Entries for matrices not used (for example, those corresponding
            * to non-existent subfaces; or faces being assembled by the neighboring cell)
            * are set to false.
@@ -460,11 +468,12 @@ namespace aspect
           /**
            * Indices of the degrees of freedom corresponding to the temperature
            * or composition field on all possible neighboring cells. This is used
-           * in the discontinuous Galerkin method. The outer std::vector has
-           * length GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell,
+           * in the discontinuous Galerkin method. The outer array has a
+           * length sufficient to hold one element for each possible face
+           * and sub-face of the current cell. The object is not used
            * and has size zero if in the continuous Galerkin case.
            */
-          std::vector<std::vector<types::global_dof_index> >   neighbor_dof_indices;
+          std::vector<std::vector<types::global_dof_index>>   neighbor_dof_indices;
         };
       }
     }
@@ -476,6 +485,38 @@ namespace aspect
    */
   namespace Assemblers
   {
+
+    /**
+     * For a reference cell (which is typically obtained by asking the finite
+     * element to be used), determine how many interface matrices are needed.
+     * Since interface matrices are needed for as many neighbors as each
+     * cell can have, this is the number of faces for the given reference cell
+     * times the number of children each of these faces can have. This
+     * accommodates the fact that the neighbors of a cell can all be refined,
+     * though they can only be refined once.
+     */
+    unsigned int
+    n_interface_matrices (const ReferenceCell &reference_cell);
+
+    /**
+     * For a given reference cell, and a given face we are currently
+     * assembling on, return which element of an array of size
+     * `n_interface_matrices(reference_cell)` to use.
+     */
+    unsigned int
+    nth_interface_matrix (const ReferenceCell &reference_cell,
+                          const unsigned int face);
+
+    /**
+     * For a given reference cell, and a given face and sub-face we are
+     * currently assembling on, return which element of an array of size
+     * `n_interface_matrices(reference_cell)` to use.
+     */
+    unsigned int
+    nth_interface_matrix (const ReferenceCell &reference_cell,
+                          const unsigned int face,
+                          const unsigned int sub_face);
+
     /**
      * A base class for objects that implement assembly
      * operations.
@@ -494,7 +535,10 @@ namespace aspect
     class Interface
     {
       public:
-        virtual ~Interface ();
+        /**
+         * Destructor
+         */
+        virtual ~Interface () = default;
 
         /**
          * Execute this assembler object. This function performs the primary work
@@ -547,7 +591,9 @@ namespace aspect
          * This ensures the additional material model output is available when
          * execute() is called.
          */
-        virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
+        virtual
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
 
         /**
          * A required function for objects that implement the assembly of terms
@@ -566,6 +612,50 @@ namespace aspect
         std::vector<double>
         compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &) const;
     };
+
+
+
+    /**
+     * A base class for objects that implement assembly
+     * operations for advection-diffusion problems.
+     *
+     * This class implements functions that provide information
+     * for stabilization mechanisms.
+     */
+    template <int dim>
+    class AdvectionStabilizationInterface
+    {
+      public:
+        virtual ~AdvectionStabilizationInterface ();
+
+        /**
+         * This function returns a representative prefactor for the advection
+         * term of the equation for each quadrature point of the current cell.
+         * In the non-dimensional case this is simply 1.0, but for other
+         * quantities like temperature it is computed using physical units
+         * (like density and specific heat capacity).
+         * This information is useful for algorithms that depend on the
+         * magnitude of individual terms, like stabilization methods.
+         */
+        virtual
+        std::vector<double>
+        advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const;
+
+        /**
+         * This function returns a representative conductivity for the
+         * diffusion part of the equation for each quadrature point of the
+         * current cell. For the pure advection case this factor is 0.0, but
+         * for other quantities like temperature it is
+         * computed using physical units (like thermal conductivity).  This
+         * information is useful for algorithms depending on the magnitude of
+         * individual terms, like stabilization methods.
+         */
+        virtual
+        std::vector<double>
+        diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const;
+    };
+
+
 
     /**
      * A class that owns member variables representing
@@ -607,14 +697,14 @@ namespace aspect
          * A vector of pointers containing all assemblers for the Stokes preconditioner.
          * These assemblers are called once per cell.
          */
-        std::vector<std::unique_ptr<Assemblers::Interface<dim> > > stokes_preconditioner;
+        std::vector<std::unique_ptr<Assemblers::Interface<dim>>> stokes_preconditioner;
 
         /**
          * A vector of pointers containing all assemblers that compute
          * cell contributions for the Stokes system.
          * These assemblers are called once per cell.
          */
-        std::vector<std::unique_ptr<Assemblers::Interface<dim> > > stokes_system;
+        std::vector<std::unique_ptr<Assemblers::Interface<dim>>> stokes_system;
 
         /**
          * A vector of pointers containing all assemblers that compute face
@@ -623,13 +713,13 @@ namespace aspect
          * therefore they allow terms that only exist on boundary faces (e.g.
          * traction boundary conditions).
          */
-        std::vector<std::unique_ptr<Assemblers::Interface<dim> > > stokes_system_on_boundary_face;
+        std::vector<std::unique_ptr<Assemblers::Interface<dim>>> stokes_system_on_boundary_face;
 
         /**
          * A vector of pointers containing all assemblers for the advection systems.
          * These assemblers are called once per cell.
          */
-        std::vector<std::unique_ptr<Assemblers::Interface<dim> > > advection_system;
+        std::vector<std::unique_ptr<Assemblers::Interface<dim>>> advection_system;
 
         /**
          * A vector of pointers containing all assemblers for the Advection
@@ -638,7 +728,7 @@ namespace aspect
          * therefore they allow terms that only exist on boundary faces (e.g.
          * flux boundary conditions).
          */
-        std::vector<std::unique_ptr<Assemblers::Interface<dim> > > advection_system_on_boundary_face;
+        std::vector<std::unique_ptr<Assemblers::Interface<dim>>> advection_system_on_boundary_face;
 
         /**
          * A vector of pointers containing all assemblers for the Advection
@@ -647,7 +737,7 @@ namespace aspect
          * initialized inputs, therefore they allow terms that only exist on
          * interior faces (e.g. DG penalty terms).
          */
-        std::vector<std::unique_ptr<Assemblers::Interface<dim> > > advection_system_on_interior_face;
+        std::vector<std::unique_ptr<Assemblers::Interface<dim>>> advection_system_on_interior_face;
 
         /**
          * A structure that describes what information an assembler function

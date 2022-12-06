@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -47,19 +47,19 @@ namespace aspect
         // phases from different lookups if they have the same phase name.
         std::set<std::string> set_phase_volume_column_names;
 
-        // Resize the unique_phase_indices object
         unique_phase_indices.resize(n_material_lookups, std::vector<unsigned int>());
+        global_index_of_lookup_phase.resize (n_material_lookups, std::vector<unsigned int>());
 
         for (unsigned i = 0; i < n_material_lookups; i++)
           {
             if (material_file_format == perplex)
               material_lookup
-              .push_back(std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>(data_directory+material_file_names[i],
+              .push_back(std::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>(data_directory+material_file_names[i],
                          use_bilinear_interpolation,
                          this->get_mpi_communicator()));
             else if (material_file_format == hefesto)
               material_lookup
-              .push_back(std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::HeFESToReader>(data_directory+material_file_names[i],
+              .push_back(std::make_unique<MaterialModel::MaterialUtilities::Lookup::HeFESToReader>(data_directory+material_file_names[i],
                          data_directory+derivatives_file_names[i],
                          use_bilinear_interpolation,
                          this->get_mpi_communicator()));
@@ -91,6 +91,56 @@ namespace aspect
                 if (it == unique_phase_names.end())
                   unique_phase_names.push_back(phase_volume_column_name);
               }
+
+            // Do the same for the dominant phases
+            std::vector<std::string> phase_names_one_lookup = material_lookup[i]->get_dominant_phase_names();
+            for (const auto &phase_name : phase_names_one_lookup)
+              {
+                std::vector<std::string>::iterator it = std::find(list_of_dominant_phases.begin(),
+                                                                  list_of_dominant_phases.end(),
+                                                                  phase_name);
+
+                // Each lookup only stores the index for the individual lookup, so we have to know
+                // how to convert from the indices of the individual lookup to the index in the
+                // list_of_dominant_phases vector. Here we fill the global_index_of_lookup_phase
+                // object to contain the global indices.
+                global_index_of_lookup_phase[i].push_back(std::distance(list_of_dominant_phases.begin(), it));
+
+                if (it == list_of_dominant_phases.end())
+                  list_of_dominant_phases.push_back(phase_name);
+              }
+
+            // Make sure that either all or none of the tables have a column with the dominant phase.
+            AssertThrow(material_lookup[0]->has_dominant_phase() == material_lookup[i]->has_dominant_phase(),
+                        ExcMessage("Some of the lookup tables you read in contain outputs for the dominant phase, "
+                                   "as indicated by the column 'phase', but in at least of of the tables you use "
+                                   "this column is missing."));
+          }
+
+        // Since the visualization output can only contain numbers and not strings
+        // we have to output the index instead of the name of the phase.
+        // We write out a data file that contains the list of dominant phases so
+        // that it is clear which index corresponds to which phase from the table.
+        const std::string filename = (this->get_output_directory() +
+                                      "thermodynamic_lookup_table_phases.txt");
+
+        if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0
+            && list_of_dominant_phases.size() > 0)
+          {
+            std::ofstream file;
+            file.open(filename);
+            file << "# <index>  <phase> " << std::endl;
+            for (unsigned int p=0; p<list_of_dominant_phases.size(); ++p)
+              {
+                file << p
+                     << ' '
+                     << list_of_dominant_phases[p]
+                     << std::endl;
+              }
+            AssertThrow (file, ExcMessage("Writing data to <" + filename +
+                                          "> did not succeed in the `phase outputs' additional names outputs "
+                                          "visualization postprocessor."));
+            file.close();
           }
       }
 
@@ -111,57 +161,6 @@ namespace aspect
       is_compressible () const
       {
         return true;
-      }
-
-
-      template <int dim>
-      void
-      ThermodynamicTableLookup<dim>::
-      fill_mass_and_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                      std::vector<std::vector<double>> &mass_fractions,
-                                      std::vector<std::vector<double>> &volume_fractions) const
-      {
-        // Resize mass and volume fraction vectors
-        mass_fractions.resize(in.n_evaluation_points(), std::vector<double>(material_lookup.size(), 1.));
-        volume_fractions.resize(in.n_evaluation_points(), std::vector<double>(material_lookup.size(), 1.));
-
-        if (material_lookup.size() > 1)
-          {
-            for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
-              {
-                double summed_volumes = 0.;
-
-                if (has_background)
-                  {
-                    mass_fractions[i][0] = 1.;
-                    for (unsigned int j=1; j<material_lookup.size(); ++j)
-                      {
-                        const double mass_fraction = in.composition[i][j-1];
-                        mass_fractions[i][j] = mass_fraction;
-                        mass_fractions[i][0] -= mass_fraction;
-                        volume_fractions[i][j] = mass_fraction/material_lookup[j]->density(in.temperature[i],in.pressure[i]);
-                        summed_volumes += volume_fractions[i][j];
-                      }
-                    volume_fractions[i][0] = mass_fractions[i][0]/material_lookup[0]->density(in.temperature[i],in.pressure[i]);
-                    summed_volumes += volume_fractions[i][0];
-
-                  }
-                else
-                  {
-                    for (unsigned int j=0; j<material_lookup.size(); ++j)
-                      {
-                        const double mass_fraction = in.composition[i][j];
-                        mass_fractions[i][j] = mass_fraction;
-                        volume_fractions[i][j] = mass_fraction/material_lookup[j]->density(in.temperature[i],in.pressure[i]);
-                        summed_volumes += volume_fractions[i][j];
-                      }
-                  }
-
-                for (unsigned int j=0; j<material_lookup.size(); ++j)
-                  volume_fractions[i][j] /= summed_volumes;
-
-              }
-          }
       }
 
 
@@ -233,13 +232,43 @@ namespace aspect
         // the index j corresponds to the jth compositional field
         // the index k corresponds to the kth phase in the lookup
         std::vector<std::vector<double>> phase_volume_fractions(unique_phase_names.size(),
-                                                                std::vector<double>(in.n_evaluation_points(), 0.));
+                                                                 std::vector<double>(in.n_evaluation_points(), 0.));
         for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
           for (unsigned j = 0; j < material_lookup.size(); ++j)
             for (unsigned int k = 0; k < unique_phase_indices[j].size(); ++k)
               phase_volume_fractions[unique_phase_indices[j][k]][i] += volume_fractions[i][j] * material_lookup[j]->phase_volume_fraction(k,in.temperature[i],in.pressure[i]);
 
         phase_volume_fractions_out->output_values = phase_volume_fractions;
+      }
+
+
+
+      template <int dim>
+      void
+      ThermodynamicTableLookup<dim>::
+      fill_dominant_phases (const MaterialModel::MaterialModelInputs<dim> &in,
+                            const std::vector<std::vector<double>> &volume_fractions,
+                            PhaseOutputs<dim> &dominant_phases_out) const
+      {
+        Assert(material_lookup[0]->has_dominant_phase(),
+               ExcMessage("You are trying to fill in outputs for the dominant phase, "
+                          "but these values do not exist in the material lookup."));
+
+        // Each call to material_lookup[j]->dominant_phase(temperature,pressure)
+        // returns the phase with the largest volume fraction in that material lookup
+        // at the requested temperature and pressure.
+        // In the following function,
+        // the index i corresponds to the ith evaluation point
+        // the index j corresponds to the jth compositional field
+        std::vector<std::vector<double>> dominant_phase_indices(1, std::vector<double>(in.n_evaluation_points(),
+                                                                                        std::numeric_limits<double>::quiet_NaN()));
+        for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
+          {
+            const unsigned int dominant_material_index = std::distance(volume_fractions[i].begin(), std::max_element(volume_fractions[i].begin(), volume_fractions[i].end()));
+            const unsigned int dominant_phase_in_material = material_lookup[dominant_material_index]->dominant_phase(in.temperature[i],in.pressure[i]);
+            dominant_phase_indices[0][i] = global_index_of_lookup_phase[dominant_material_index][dominant_phase_in_material];
+          }
+        dominant_phases_out.output_values = dominant_phase_indices;
       }
 
 
@@ -252,11 +281,7 @@ namespace aspect
         std::array<std::pair<double, unsigned int>,2> derivative;
 
         // get the pressures and temperatures at the vertices of the cell
-#if DEAL_II_VERSION_GTE(9,3,0)
         const QTrapezoid<dim> quadrature_formula;
-#else
-        const QTrapez<dim> quadrature_formula;
-#endif
 
         const unsigned int n_q_points = quadrature_formula.size();
         FEValues<dim> fe_values (this->get_mapping(),
@@ -396,12 +421,15 @@ namespace aspect
                                                               MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         // fill seismic velocity outputs if they exist
-        if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
+        if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
           fill_seismic_velocities(in, out.densities, volume_fractions, seismic_out);
 
         // fill phase volume outputs if they exist
-        if (NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out = out.template get_additional_output<NamedAdditionalMaterialOutputs<dim> >())
+        if (NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out = out.template get_additional_output<NamedAdditionalMaterialOutputs<dim>>())
           fill_phase_volume_fractions(in, volume_fractions, phase_volume_fractions_out);
+
+        if (PhaseOutputs<dim> *dominant_phases_out = out.template get_additional_output<PhaseOutputs<dim>>())
+          fill_dominant_phases(in, volume_fractions, *dominant_phases_out);
       }
 
 
@@ -440,15 +468,6 @@ namespace aspect
                            "List with as many components as active "
                            "compositional fields (material data is assumed to "
                            "be in order with the ordering of the fields).");
-        prm.declare_entry ("Index of first mass fraction compositional field", "0",
-                           Patterns::Integer (0),
-                           "The index of the first compositional field which "
-                           "corresponds to the mass fraction of a material. "
-                           "The indexing starts at 0.");
-        prm.declare_entry ("Background material", "true",
-                           Patterns::Bool (),
-                           "Whether there is a background compositional "
-                           "field.");
         prm.declare_entry ("Material file format", "perplex",
                            Patterns::Selection ("perplex|hefesto"),
                            "The material file format to be read in the property "
@@ -487,46 +506,12 @@ namespace aspect
         latent_heat                  = prm.get_bool ("Latent heat");
         max_latent_heat_substeps     = prm.get_integer ("Maximum latent heat substeps");
 
-        has_background               = prm.get_bool ("Background material");
-
         if (prm.get ("Material file format") == "perplex")
           material_file_format       = perplex;
         else if (prm.get ("Material file format") == "hefesto")
           material_file_format       = hefesto;
         else
           AssertThrow (false, ExcNotImplemented());
-
-        // Check the number of material files.
-        // If the following comparison evaluates to be an equality, it
-        // implies that all compositional fields correspond to mass fractions.
-        if (has_background)
-          {
-            AssertThrow ((n_material_lookups <= this->n_compositional_fields() + 1),
-                         ExcMessage("The thermodynamic table lookup plugin requires that there is a material file "
-                                    "for every compositional field that corresponds to a mass fraction. "
-                                    "You have said that there is a background field and prescribed "
-                                    + Utilities::int_to_string(n_material_lookups)
-                                    + " material data files, but there are "
-                                    + Utilities::int_to_string(this->n_compositional_fields())
-                                    + " compositional fields. "
-                                    "The maximum number of material data files should therefore be "
-                                    + Utilities::int_to_string(this->n_compositional_fields() + 1)
-                                    + ". "));
-          }
-        else
-          {
-            AssertThrow ((n_material_lookups <= this->n_compositional_fields()),
-                         ExcMessage("The thermodynamic table lookup plugin requires that there is a material file "
-                                    "for every compositional field that corresponds to a mass fraction. "
-                                    "You have said that there is no background field and prescribed "
-                                    + Utilities::int_to_string(n_material_lookups)
-                                    + " material data files, but there are "
-                                    + Utilities::int_to_string(this->n_compositional_fields())
-                                    + " compositional fields. "
-                                    "The maximum number of material data files should therefore be "
-                                    + Utilities::int_to_string(this->n_compositional_fields())
-                                    + ". "));
-          }
 
         if (latent_heat)
           AssertThrow (n_material_lookups == 1,
@@ -540,19 +525,36 @@ namespace aspect
       void
       ThermodynamicTableLookup<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        if (out.template get_additional_output<NamedAdditionalMaterialOutputs<dim> >() == nullptr)
+        if (out.template get_additional_output<NamedAdditionalMaterialOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
-              std_cxx14::make_unique<MaterialModel::NamedAdditionalMaterialOutputs<dim>> (unique_phase_names, n_points));
+              std::make_unique<MaterialModel::NamedAdditionalMaterialOutputs<dim>> (unique_phase_names, n_points));
           }
 
-        if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == nullptr)
+        if (out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
-              std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+              std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
           }
+
+        if (out.template get_additional_output<PhaseOutputs<dim>>() == nullptr
+            && material_lookup[0]->has_dominant_phase())
+          {
+            const unsigned int n_points = out.n_evaluation_points();
+            out.additional_outputs.push_back(
+              std::make_unique<MaterialModel::PhaseOutputs<dim>> (n_points));
+          }
+      }
+
+
+
+      template <int dim>
+      const MaterialModel::MaterialUtilities::Lookup::MaterialLookup &
+      ThermodynamicTableLookup<dim>::get_material_lookup (unsigned int lookup_index) const
+      {
+        return *material_lookup[lookup_index].get();
       }
     }
   }

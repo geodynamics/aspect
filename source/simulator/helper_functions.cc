@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -119,7 +119,13 @@ namespace aspect
   typename Parameters<dim>::AdvectionFieldMethod::Kind
   Simulator<dim>::AdvectionField::advection_method(const Introspection<dim> &introspection) const
   {
-    return introspection.compositional_field_methods[compositional_variable];
+    if (field_type == temperature_field)
+      return introspection.temperature_method;
+    else if (field_type == compositional_field)
+      return introspection.compositional_field_methods[compositional_variable];
+
+    Assert (false, ExcInternalError());
+    return Parameters<dim>::AdvectionFieldMethod::fem_field;
   }
 
   template <int dim>
@@ -241,7 +247,7 @@ namespace aspect
     TerminationCriteria::Manager<dim>::write_plugin_graph(out);
 
     // end the graph
-    out << "}"
+    out << '}'
         << std::endl;
   }
 
@@ -267,22 +273,13 @@ namespace aspect
     if (output_statistics_thread.joinable())
       output_statistics_thread.join();
 
-    // TODO[C++14]: The following code could be made significantly simpler
-    // if we could just copy the statistics table as part of the capture
-    // list of the lambda function. In C++14, this would then simply be
-    // written as
-    //   [statistics_copy = this->statistics, this] () {...}
-    // (It would also be nice if we could use a std::unique_ptr, but since
-    // these can not be copied and since lambda captures don't allow move
-    // syntax for captured values, this also doesn't work. This can be done
-    // in C++14 by writing
-    //   [statistics_copy_ptr = std::move(statistics_copy_ptr), this] () {...}
-    // but, as mentioned above, if we could use C++14, we wouldn't have to
-    // use a pointer in the first place.)
-    std::shared_ptr<TableHandler> statistics_copy_ptr
-      = std_cxx14::make_unique<TableHandler>(statistics);
-    auto write_statistics
-      = [statistics_copy_ptr,this]()
+    // Write data in the background through a lambda function.
+    // This happening in the background means that we have
+    // to create a copy of the statistics table, since whatever is
+    // running in the foreground may continue to add entries to the
+    // statistics table at the same time.
+    output_statistics_thread = std::thread (
+                                 [statistics_copy_ptr = std::make_unique<TableHandler>(statistics),this]()
     {
       // First write everything into a string in memory
       std::ostringstream stream;
@@ -369,8 +366,7 @@ namespace aspect
       // run hasn't finished).
       statistics_last_write_size = statistics_contents.size();
       statistics_last_hash       = std::hash<std::string>()(statistics_contents);
-    };
-    output_statistics_thread = std::thread (write_statistics);
+    });
   }
 
 
@@ -430,6 +426,9 @@ namespace aspect
     MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
                                                  introspection.n_compositional_fields);
 
+    // We do not need to compute anything but the viscosity
+    in.requested_properties = MaterialModel::MaterialProperties::viscosity;
+
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
@@ -477,13 +476,13 @@ namespace aspect
     // use a quadrature formula that has one point at
     // the location of each degree of freedom in the
     // velocity element
-    const QIterated<dim> quadrature_formula (QTrapez<1>(),
+    const QIterated<dim> quadrature_formula (QTrapezoid<1>(),
                                              parameters.stokes_velocity_degree);
     const unsigned int n_q_points = quadrature_formula.size();
 
 
     FEValues<dim> fe_values (*mapping, finite_element, quadrature_formula, update_values);
-    std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+    std::vector<Tensor<1,dim>> velocity_values(n_q_points);
 
     double max_local_velocity = 0;
 
@@ -513,8 +512,13 @@ namespace aspect
   {
     if (pre_refinement_step < parameters.initial_adaptive_refinement)
       {
-        if (parameters.timing_output_frequency ==0)
-          computing_timer.print_summary ();
+        if (parameters.timing_output_frequency == 0)
+          {
+            computing_timer.print_summary ();
+            pcout << "-- Total wallclock time elapsed including restarts: "
+                  << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
+                  << 's' << std::endl;
+          }
 
         output_statistics();
 
@@ -534,6 +538,39 @@ namespace aspect
         pre_refinement_step = std::numeric_limits<unsigned int>::max();
         return false;
       }
+  }
+
+
+
+  template <int dim>
+  void Simulator<dim>::exchange_refinement_flags ()
+  {
+    // Communicate refinement flags on ghost cells from the owner of the
+    // cell. This is necessary to get consistent refinement, as mesh
+    // smoothing would undo some of the requested coarsening/refinement.
+
+    auto pack
+    = [] (const typename DoFHandler<dim>::active_cell_iterator &cell) -> std::uint8_t
+    {
+      if (cell->refine_flag_set())
+        return 1;
+      if (cell->coarsen_flag_set())
+        return 2;
+      return 0;
+    };
+    auto unpack
+    = [] (const typename DoFHandler<dim>::active_cell_iterator &cell, const std::uint8_t &flag) -> void
+    {
+      cell->clear_coarsen_flag();
+      cell->clear_refine_flag();
+      if (flag==1)
+        cell->set_refine_flag();
+      else if (flag==2)
+        cell->set_coarsen_flag();
+    };
+
+    GridTools::exchange_cell_data_to_ghosts<std::uint8_t, DoFHandler<dim>>
+    (dof_handler, pack, unpack);
   }
 
 
@@ -591,7 +628,12 @@ namespace aspect
 
     // if requested output a summary of the current timing information
     if (write_timing_output)
-      computing_timer.print_summary ();
+      {
+        computing_timer.print_summary ();
+        pcout << "-- Total wallclock time elapsed including restarts: "
+              << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
+              << 's' << std::endl;
+      }
   }
 
 
@@ -671,7 +713,7 @@ namespace aspect
   Simulator<dim>::
   get_extrapolated_advection_field_range (const AdvectionField &advection_field) const
   {
-    const QIterated<dim> quadrature_formula (QTrapez<1>(),
+    const QIterated<dim> quadrature_formula (QTrapezoid<1>(),
                                              advection_field.polynomial_degree(introspection));
 
     const unsigned int n_q_points = quadrature_formula.size();
@@ -753,7 +795,7 @@ namespace aspect
     hanging_constraints.close();
 
     Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
-    const std::vector<Point<dim> > mesh_support_points = finite_element.base_element(introspection.base_elements.velocities).get_unit_support_points();
+    const std::vector<Point<dim>> mesh_support_points = finite_element.base_element(introspection.base_elements.velocities).get_unit_support_points();
     FEValues<dim> mesh_points (*mapping, finite_element, mesh_support_points, update_quadrature_points);
     std::vector<types::global_dof_index> cell_dof_indices (finite_element.dofs_per_cell);
 
@@ -794,9 +836,11 @@ namespace aspect
     double my_area = 0.0;
     if (parameters.pressure_normalization == "surface")
       {
-        QGauss < dim - 1 > quadrature (parameters.stokes_velocity_degree + 1);
+        const types::boundary_id top_boundary_id = geometry_model->translate_symbolic_boundary_name_to_id("top");
 
+        const Quadrature<dim-1> &quadrature = this->introspection.face_quadratures.pressure;
         const unsigned int n_q_points = quadrature.size();
+
         FEFaceValues<dim> fe_face_values (*mapping, finite_element,  quadrature,
                                           update_JxW_values | update_values);
 
@@ -805,13 +849,10 @@ namespace aspect
         for (const auto &cell : dof_handler.active_cell_iterators())
           if (cell->is_locally_owned())
             {
-              for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+              for (const unsigned int face_no : cell->face_indices())
                 {
                   const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
-                  if (face->at_boundary()
-                      &&
-                      (geometry_model->depth (face->center()) <
-                       (face->diameter() / std::sqrt(1.*dim-1) / 3)))
+                  if (face->at_boundary() && face->boundary_id() == top_boundary_id)
                     {
                       fe_face_values.reinit (cell, face_no);
                       fe_face_values[extractor_pressure].get_function_values(vector,
@@ -819,9 +860,10 @@ namespace aspect
 
                       for (unsigned int q = 0; q < n_q_points; ++q)
                         {
+                          const double JxW = fe_face_values.JxW(q);
                           my_pressure += pressure_values[q]
-                                         * fe_face_values.JxW (q);
-                          my_area += fe_face_values.JxW (q);
+                                         * JxW;
+                          my_area += JxW;
                         }
                     }
                 }
@@ -829,9 +871,9 @@ namespace aspect
       }
     else if (parameters.pressure_normalization == "volume")
       {
-        const QGauss<dim> quadrature (parameters.stokes_velocity_degree + 1);
-
+        const Quadrature<dim> &quadrature = this->introspection.quadratures.pressure;
         const unsigned int n_q_points = quadrature.size();
+
         FEValues<dim> fe_values (*mapping, finite_element,  quadrature,
                                  update_JxW_values | update_values);
 
@@ -1311,7 +1353,7 @@ namespace aspect
     const unsigned int n_q_points_2 = quadrature_formula_2.size();
     const unsigned int n_q_points   = dim * n_q_points_2 * static_cast<unsigned int>(std::pow(n_q_points_1, dim-1));
 
-    std::vector< Point <dim> > quadrature_points;
+    std::vector<Point <dim>> quadrature_points;
     quadrature_points.reserve(n_q_points);
 
     switch (dim)
@@ -1393,11 +1435,13 @@ namespace aspect
       }
 
     Assert (quadrature_points.size() == n_q_points, ExcInternalError());
-    Quadrature<dim> quadrature_formula(quadrature_points);
+    const Quadrature<dim> quadrature_formula(quadrature_points);
 
     // Quadrature rules only used for the numerical integration for better accuracy
-    const QGauss<dim> quadrature_formula_0 (advection_field.polynomial_degree(introspection)+1);
-
+    const Quadrature<dim> &quadrature_formula_0
+      = (advection_field.is_temperature() ?
+         introspection.quadratures.temperature :
+         introspection.quadratures.compositional_fields);
     const unsigned int n_q_points_0 = quadrature_formula_0.size();
 
     // fe values for points evaluation
@@ -1618,10 +1662,10 @@ namespace aspect
     material_model->create_additional_named_outputs(out_T);
 
     MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs_C
-      = out_C.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
+      = out_C.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
     MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs_T
-      = out_T.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
+      = out_T.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
     AssertThrow(reaction_rate_outputs_C != nullptr && reaction_rate_outputs_T != nullptr,
                 ExcMessage("You are trying to use the operator splitting solver scheme, "
@@ -1662,7 +1706,7 @@ namespace aspect
               in_T.reinit(fe_values_T, cell, introspection, solution);
             }
 
-          std::vector<std::vector<double> > accumulated_reactions_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
+          std::vector<std::vector<double>> accumulated_reactions_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
           std::vector<double> accumulated_reactions_T (quadrature_T.size());
 
           // Make the reaction time steps: We have to update the values of compositional fields and the temperature.
@@ -1812,14 +1856,14 @@ namespace aspect
                                                    mpi_communicator);
 
     if (adv_field.is_temperature())
-      pcout << "   Copying properties into prescribed temperature field."
-            << std::endl;
+      pcout << "   Copying properties into prescribed temperature field... "
+            << std::flush;
     else
       {
         const std::string name_of_field = introspection.name_for_compositional_index(adv_field.compositional_variable);
 
-        pcout << "   Copying properties into prescribed compositional field " + name_of_field + "."
-              << std::endl;
+        pcout << "   Copying properties into prescribed compositional field " + name_of_field + "... "
+              << std::flush;
       }
 
     // Create an FEValues object that allows us to interpolate onto the solution
@@ -1841,9 +1885,9 @@ namespace aspect
     material_model->create_additional_named_outputs(out);
 
     MaterialModel::PrescribedFieldOutputs<dim> *prescribed_field_out
-      = out.template get_additional_output<MaterialModel::PrescribedFieldOutputs<dim> >();
+      = out.template get_additional_output<MaterialModel::PrescribedFieldOutputs<dim>>();
     MaterialModel::PrescribedTemperatureOutputs<dim> *prescribed_temperature_out
-      = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim> >();
+      = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim>>();
 
     // check if the material model computes the correct prescribed field outputs
     if (adv_field.is_temperature())
@@ -1922,8 +1966,14 @@ namespace aspect
     // updating the ghost elements of the 'solution' vector.
     const unsigned int advection_block = adv_field.block_index(introspection);
     distributed_vector.block(advection_block).compress(VectorOperation::insert);
-    current_constraints.distribute (distributed_vector);
+
+    if (adv_field.is_temperature() ||
+        adv_field.compositional_variable != introspection.find_composition_type(Parameters<dim>::CompositionalFieldDescription::density))
+      current_constraints.distribute (distributed_vector);
+
     solution.block(advection_block) = distributed_vector.block(advection_block);
+
+    pcout << "done." << std::endl;
   }
 
 
@@ -2007,7 +2057,7 @@ namespace aspect
                                "Please check the consistency of your input file."));
 
         const bool use_simplified_adiabatic_heating =
-          heating_model_manager.template get_matching_heating_model<HeatingModel::AdiabaticHeating<dim> >()
+          heating_model_manager.template get_matching_heating_model<HeatingModel::AdiabaticHeating<dim>>()
           .use_simplified_adiabatic_heating();
 
         AssertThrow(use_simplified_adiabatic_heating == true,
@@ -2024,7 +2074,7 @@ namespace aspect
   void
   Simulator<dim>::replace_outflow_boundary_ids(const unsigned int offset)
   {
-    const QGauss<dim-1> quadrature_formula (finite_element.base_element(introspection.base_elements.temperature).degree+1);
+    const Quadrature<dim-1> &quadrature_formula = introspection.face_quadratures.temperature;
 
     FEFaceValues<dim> fe_face_values (*mapping,
                                       finite_element,
@@ -2032,15 +2082,20 @@ namespace aspect
                                       update_values   | update_normal_vectors |
                                       update_quadrature_points | update_JxW_values);
 
-    std::vector<Tensor<1,dim> > face_current_velocity_values (fe_face_values.n_quadrature_points);
+    std::vector<Tensor<1,dim>> face_current_velocity_values (fe_face_values.n_quadrature_points);
+
+    // Do not replace the id on boundaries with tangential velocity
+    const std::set<types::boundary_id> &tangential_velocity_boundaries =
+      boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
 
     // Loop over all of the boundary faces, ...
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (!cell->is_artificial())
-        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+        for (const unsigned int face_number : cell->face_indices())
           {
-            typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
-            if (face->at_boundary())
+            const typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
+            if (face->at_boundary() &&
+                tangential_velocity_boundaries.find(face->boundary_id()) == tangential_velocity_boundaries.end())
               {
                 Assert(face->boundary_id() <= offset,
                        ExcMessage("If you do not 'Allow fixed temperature/composition on outflow boundaries', "
@@ -2074,9 +2129,9 @@ namespace aspect
     // Loop over all of the boundary faces...
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (!cell->is_artificial())
-        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+        for (const unsigned int face_number : cell->face_indices())
           {
-            typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
+            const typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
             if (face->at_boundary())
               {
                 // ... and reset all of the boundary ids we changed in replace_outflow_boundary_ids above.
@@ -2140,7 +2195,7 @@ namespace aspect
       {
         for (const auto it : intersection)
           {
-            const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > >::const_iterator
+            const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string>>>::const_iterator
             boundary_velocity_names = boundary_velocity_manager.get_active_boundary_velocity_names().find(it);
             Assert(boundary_velocity_names != boundary_velocity_manager.get_active_boundary_velocity_names().end(),
                    ExcInternalError());
@@ -2249,23 +2304,23 @@ namespace aspect
 
     // Check that the periodic boundaries do not have other boundary conditions set
     using periodic_boundary_set
-      = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >;
+      = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
 
     periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
 
-    for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
+    for (const auto &pb : pbs)
       {
         // Throw error if we are trying to use the same boundary for more than one boundary condition
-        AssertThrow( is_element( (*p).first.first, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
-                     is_element( (*p).first.second, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
-                     is_element( (*p).first.first, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
-                     is_element( (*p).first.second, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
-                     is_element( (*p).first.first, boundary_indicator_lists[0] ) == false && // zero velocity
-                     is_element( (*p).first.second, boundary_indicator_lists[0] ) == false && // zero velocity
-                     is_element( (*p).first.first, boundary_indicator_lists[1] ) == false && // tangential velocity
-                     is_element( (*p).first.second, boundary_indicator_lists[1] ) == false && // tangential velocity
-                     is_element( (*p).first.first, boundary_indicator_lists[3] ) == false && // prescribed traction or velocity
-                     is_element( (*p).first.second, boundary_indicator_lists[3] ) == false,  // prescribed traction or velocity
+        AssertThrow( is_element( pb.first.first, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
+                     is_element( pb.first.second, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
+                     is_element( pb.first.first, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
+                     is_element( pb.first.second, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
+                     is_element( pb.first.first, boundary_indicator_lists[0] ) == false && // zero velocity
+                     is_element( pb.first.second, boundary_indicator_lists[0] ) == false && // zero velocity
+                     is_element( pb.first.first, boundary_indicator_lists[1] ) == false && // tangential velocity
+                     is_element( pb.first.second, boundary_indicator_lists[1] ) == false && // tangential velocity
+                     is_element( pb.first.first, boundary_indicator_lists[3] ) == false && // prescribed traction or velocity
+                     is_element( pb.first.second, boundary_indicator_lists[3] ) == false,  // prescribed traction or velocity
                      ExcMessage("Periodic boundaries must not have boundary conditions set."));
       }
 
@@ -2275,11 +2330,9 @@ namespace aspect
       {
         // next make sure that all listed indicators are actually used by
         // this geometry
-        for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-          for (std::set<types::boundary_id>::const_iterator
-               p = boundary_indicator_lists[i].begin();
-               p != boundary_indicator_lists[i].end(); ++p)
-            AssertThrow (all_boundary_indicators.find (*p)
+        for (const auto &list : boundary_indicator_lists)
+          for (const auto &p : list)
+            AssertThrow (all_boundary_indicators.find (p)
                          != all_boundary_indicators.end(),
                          ExcMessage ("One of the boundary indicators listed in the input file "
                                      "is not used by the geometry model."));
@@ -2287,8 +2340,8 @@ namespace aspect
     else
       {
         // next make sure that there are no listed indicators
-        for (unsigned  int i = 0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-          AssertThrow (boundary_indicator_lists[i].empty(),
+        for (const auto &list : boundary_indicator_lists)
+          AssertThrow (list.empty(),
                        ExcMessage ("With the solver scheme `single Advection, no Stokes', "
                                    "one cannot set boundary conditions for velocity."));
       }
@@ -2419,6 +2472,7 @@ namespace aspect
   template void Simulator<dim>::maybe_write_timing_output () const; \
   template bool Simulator<dim>::maybe_write_checkpoint (const time_t, const bool); \
   template bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level); \
+  template void Simulator<dim>::exchange_refinement_flags (); \
   template void Simulator<dim>::maybe_refine_mesh (const double new_time_step, unsigned int &max_refinement_level); \
   template void Simulator<dim>::advance_time (const double step_size); \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \

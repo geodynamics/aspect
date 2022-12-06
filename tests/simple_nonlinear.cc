@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/simulator.h>
 #include <deal.II/grid/tria.h>
 #include <aspect/material_model/interface.h>
@@ -8,7 +28,7 @@
 
 #include <aspect/utilities.h>
 
-#include "../benchmarks/nonlinear_channel_flow/simple_nonlinear.cc"
+#include "../benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/simple_nonlinear.cc"
 
 template<int dim>
 int f(double parameter)
@@ -115,10 +135,10 @@ int f(double parameter)
   MaterialModelOutputs<dim> out_base(5,3);
   MaterialModelOutputs<dim> out_dviscositydstrainrate(5,3);
 
-  if (out_base.template get_additional_output<MaterialModelDerivatives<dim> >() != nullptr)
+  if (out_base.template get_additional_output<MaterialModelDerivatives<dim>>() != nullptr)
     throw "error";
 
-  out_base.additional_outputs.push_back(std_cxx14::make_unique<MaterialModelDerivatives<dim> > (5));
+  out_base.additional_outputs.push_back(std::make_unique<MaterialModelDerivatives<dim>> (5));
 
   // initialize the material we want to test.
   SimpleNonlinear<dim> mat;
@@ -148,7 +168,7 @@ int f(double parameter)
 
   // set up additional output for the derivatives
   MaterialModelDerivatives<dim> *derivatives;
-  derivatives = out_base.template get_additional_output<MaterialModelDerivatives<dim> >();
+  derivatives = out_base.template get_additional_output<MaterialModelDerivatives<dim>>();
   double temp;
 
   // have a bool so we know whether the test has succeed or not.

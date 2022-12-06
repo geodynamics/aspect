@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -38,7 +38,7 @@ namespace aspect
       indicators = 0;
 
       // create a vector in which we set the temperature block to
-      // be a finite element interpolation of the density.
+      // be a finite element interpolation of the nonadiabatic temperature.
       // we do so by setting up a quadrature formula with the
       // temperature unit support points, then looping over these
       // points, compute the output quantity at them, and writing
@@ -59,8 +59,6 @@ namespace aspect
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(),
                                                  this->n_compositional_fields());
 
-      // the values of the compositional fields are stored as block vectors for each field
-      // we have to extract them in this structure
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
@@ -68,12 +66,11 @@ namespace aspect
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                                                                                          in.temperature);
             in.position = fe_values.get_quadrature_points();
-            in.strain_rate.resize(0);// we are not reading the viscosity
 
             cell->get_dof_indices (local_dof_indices);
 
             // for each temperature dof, write into the output
-            // vector the density. note that quadrature points and
+            // vector the nonadiabatic temperature. note that quadrature points and
             // dofs are enumerated in the same order
             for (unsigned int i=0; i<this->get_fe().base_element(this->introspection().base_elements.temperature).dofs_per_cell; ++i)
               {

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -26,6 +26,7 @@
 #include <aspect/gravity_model/interface.h>
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/equation_of_state/interface.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/utilities.h>
 
@@ -184,6 +185,21 @@ namespace aspect
           return (drho - rho) / delta_press;
         }
 
+        unsigned int
+        MaterialLookup::dominant_phase (const double temperature,
+                                        const double pressure) const
+        {
+          if (!has_dominant_phase_column)
+            AssertThrow(false, ExcMessage("You can not ask for the column with the dominant phase if it does not exist in the data file."));
+          return value(temperature, pressure, dominant_phase_indices);
+        }
+
+        bool
+        MaterialLookup::has_dominant_phase() const
+        {
+          return has_dominant_phase_column;
+        }
+
         std::vector<std::string>
         MaterialLookup::phase_volume_column_names() const
         {
@@ -196,6 +212,13 @@ namespace aspect
                                               const double pressure) const
         {
           return value(temperature,pressure,phase_volume_fractions[phase_id],interpolation);
+        }
+
+
+        const std::vector<std::string> &
+        MaterialLookup::get_dominant_phase_names() const
+        {
+          return dominant_phase_names;
         }
 
         double
@@ -231,6 +254,23 @@ namespace aspect
                       (1-xi)*eta    *values[inT][inp+1] +
                       xi    *eta    *values[inT+1][inp+1]);
             }
+        }
+
+        unsigned int
+        MaterialLookup::value (const double temperature,
+                               const double pressure,
+                               const Table<2, unsigned int> &values) const
+        {
+          const double nT = get_nT(temperature);
+          const unsigned int inT = static_cast<unsigned int>(nT);
+
+          const double np = get_np(pressure);
+          const unsigned int inp = static_cast<unsigned int>(np);
+
+          Assert(inT<values.n_rows(), ExcMessage("Attempting to look up a temperature value with index greater than the number of rows."));
+          Assert(inp<values.n_cols(), ExcMessage("Attempting to look up a pressure value with index greater than the number of columns."));
+
+          return values[inT][inp];
         }
 
         std::array<double,2>
@@ -481,6 +521,7 @@ namespace aspect
           max_temp=std::numeric_limits<double>::lowest();
           n_temperature=0;
           n_pressure=0;
+          has_dominant_phase_column = false;
 
           std::string temp;
           // Read data from disk and distribute among processes
@@ -553,6 +594,7 @@ namespace aspect
           // Properties are stored in the order rho, alpha, cp, vp, vs, h
           std::vector<int> prp_indices(6, -1);
           std::vector<int> phase_column_indices;
+          unsigned int dominant_phase_column_index = numbers::invalid_unsigned_int;
 
           // First two columns should be P(bar) and T(K).
           // Here we find the order.
@@ -570,11 +612,11 @@ namespace aspect
             {
               first_natural_variable = column_name;
               in >> column_name;
-              AssertThrow(column_name == "P(bar)", ExcMessage("The second column name in PerpleX lookup file " + filename + " should be T(K)."))
+              AssertThrow(column_name == "P(bar)", ExcMessage("The second column name in PerpleX lookup file " + filename + " should be P(bar)."))
             }
           else
             {
-              AssertThrow(false, ExcMessage("The first column name in PerpleX lookup file " + filename + " should be P(bar) or T(K)."))
+              AssertThrow(false, ExcMessage("The first column name in the PerpleX lookup file " + filename + " should be P(bar) or T(K)."))
             }
 
           for (unsigned int n=2; n<n_columns; n++)
@@ -592,6 +634,11 @@ namespace aspect
                 prp_indices[4] = n;
               else if (column_name == "h,J/kg")
                 prp_indices[5] = n;
+              else if (column_name == "phase")
+                {
+                  has_dominant_phase_column = true;
+                  dominant_phase_column_index = n;
+                }
               else if (column_name.length() > 3)
                 {
                   if (column_name.substr(0,13).compare("vol_fraction_") == 0)
@@ -640,6 +687,9 @@ namespace aspect
           vs_values.reinit(n_temperature,n_pressure);
           enthalpy_values.reinit(n_temperature,n_pressure);
 
+          if (has_dominant_phase_column)
+            dominant_phase_indices.reinit(n_temperature,n_pressure);
+
           phase_volume_fractions.resize(phase_column_names.size());
           for (auto &phase_volume_fraction : phase_volume_fractions)
             phase_volume_fraction.reinit(n_temperature,n_pressure);
@@ -650,10 +700,14 @@ namespace aspect
           while (!in.eof())
             {
               std::vector<double> row_values(n_columns);
+              std::string phase;
 
               for (unsigned int n=0; n<n_columns; n++)
                 {
-                  in >> row_values[n]; // assigned as 0 if in.fail() == True
+                  if (n == dominant_phase_column_index)
+                    in >> phase;
+                  else
+                    in >> row_values[n]; // assigned as 0 if in.fail() == True
 
                   // P-T grids created with PerpleX-werami sometimes contain rows
                   // filled with NaNs at extreme P-T conditions where the thermodynamic
@@ -679,6 +733,9 @@ namespace aspect
               if (in.eof())
                 break;
 
+              if (std::find(dominant_phase_names.begin(), dominant_phase_names.end(), phase) == dominant_phase_names.end())
+                dominant_phase_names.push_back(phase);
+
               // The ordering of the first two columns in the PerpleX table files
               // dictates whether the inner loop is over temperature or pressure.
               // The first column is always the inner loop.
@@ -693,6 +750,12 @@ namespace aspect
                   vs_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[4]];
                   enthalpy_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[5]];
 
+                  if (has_dominant_phase_column)
+                    {
+                      std::vector<std::string>::iterator it = std::find(dominant_phase_names.begin(), dominant_phase_names.end(), phase);
+                      dominant_phase_indices[i%n_temperature][i/n_temperature] = std::distance(dominant_phase_names.begin(), it);
+                    }
+
                   for (unsigned int n=0; n<phase_volume_fractions.size(); n++)
                     {
                       phase_volume_fractions[n][i%n_temperature][i/n_temperature]=row_values[phase_column_indices[n]];
@@ -706,6 +769,12 @@ namespace aspect
                   vp_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[3]];
                   vs_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[4]];
                   enthalpy_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[5]];
+
+                  if (has_dominant_phase_column)
+                    {
+                      std::vector<std::string>::iterator it = std::find(dominant_phase_names.begin(), dominant_phase_names.end(), phase);
+                      dominant_phase_indices[i/n_pressure][i%n_pressure] = std::distance(dominant_phase_names.begin(), it);
+                    }
 
                   for (unsigned int n=0; n<phase_volume_fractions.size(); n++)
                     {
@@ -773,8 +842,19 @@ namespace aspect
                                   const std::vector<double> &densities,
                                   const bool return_as_fraction)
       {
+        Assert(masses.size() == densities.size(),
+               ExcMessage ("The mass fractions and densities vectors used for computing "
+                           "volumes from masses have to have the same length!"));
+
         const unsigned int n_fields = masses.size();
         std::vector<double> volumes(n_fields);
+
+        if (n_fields == 1 && return_as_fraction)
+          {
+            volumes[0] = 1.0;
+            return volumes;
+          }
+
         double sum_volumes = 0.0;
         for (unsigned int j=0; j < n_fields; ++j)
           {
@@ -875,6 +955,27 @@ namespace aspect
           }
         return averaged_parameter;
       }
+
+
+
+      template <int dim>
+      void
+      fill_averaged_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs,
+                                              const std::vector<double> &mass_fractions,
+                                              const std::vector<double> &volume_fractions,
+                                              const unsigned int i,
+                                              MaterialModelOutputs<dim> &out)
+      {
+        // The density, isothermal compressibility and thermal expansivity are volume-averaged
+        // The specific entropy derivatives and heat capacity are mass-averaged
+        out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
+        out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
+        out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
+        out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
+        out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
+        out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
+      }
+
 
 
       double phase_average_value (const std::vector<double> &phase_function_values,
@@ -1122,7 +1223,7 @@ namespace aspect
         // Retrieve the list of composition names
         const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-        n_phase_transitions_per_composition.reset(new std::vector<unsigned int>());
+        n_phase_transitions_per_composition = std::make_unique<std::vector<unsigned int>>();
 
         use_depth_instead_of_pressure = prm.get_bool ("Define transition by depth instead of pressure");
 
@@ -1192,6 +1293,11 @@ namespace aspect
     namespace MaterialUtilities
     {
 #define INSTANTIATE(dim) \
+  template void fill_averaged_equation_of_state_outputs<dim> (const EquationOfStateOutputs<dim> &, \
+                                                              const std::vector<double> &, \
+                                                              const std::vector<double> &, \
+                                                              const unsigned int, \
+                                                              MaterialModelOutputs<dim> &); \
   template struct PhaseFunctionInputs<dim>; \
   template class PhaseFunction<dim>;
 

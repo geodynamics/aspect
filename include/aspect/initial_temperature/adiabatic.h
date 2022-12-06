@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2012 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2012 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -128,7 +128,7 @@ namespace aspect
          * be used as a reference profile for calculating the thermal
          * diffusivity. The function depends only on depth.
          */
-        std::unique_ptr<Functions::ParsedFunction<1> > function;
+        std::unique_ptr<Functions::ParsedFunction<1>> function;
     };
   }
 }

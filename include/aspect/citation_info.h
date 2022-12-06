@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -48,7 +48,7 @@ namespace CitationInfo
    * Print the info text containing the citation info into the given
    * stream.
    */
-  template < class Stream>
+  template <class Stream>
   void print_info_block (Stream &stream)
   {
     stream << "-----------------------------------------------------------------------------\n"

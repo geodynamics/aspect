@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,6 +22,9 @@
 #include <aspect/parameters.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/mesh_refinement/volume_of_fluid_interface.h>
+#include <aspect/simulator/assemblers/interface.h>
+#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 
 #include <deal.II/base/work_stream.h>
 #include <deal.II/grid/filtered_iterator.h>
@@ -77,13 +80,13 @@ namespace aspect
           local_dof_indices(finite_element.dofs_per_cell),
           phi_field (volume_of_fluid_element.dofs_per_cell, numbers::signaling_nan<double>()),
           old_field_values (quadrature.size(), numbers::signaling_nan<double>()),
-          cell_i_n_values (quadrature.size(), numbers::signaling_nan<Tensor<1, dim> > ()),
+          cell_i_n_values (quadrature.size(), numbers::signaling_nan<Tensor<1, dim>> ()),
           cell_i_d_values (quadrature.size(), numbers::signaling_nan<double> ()),
-          face_current_velocity_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim> >()),
-          face_old_velocity_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim> >()),
-          face_old_old_velocity_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim> >()),
+          face_current_velocity_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim>>()),
+          face_old_velocity_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim>>()),
+          face_old_old_velocity_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim>>()),
           neighbor_old_values (face_quadrature.size(), numbers::signaling_nan<double>()),
-          neighbor_i_n_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim> >()),
+          neighbor_i_n_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim>>()),
           neighbor_i_d_values (face_quadrature.size(), numbers::signaling_nan<double>())
         {}
 
@@ -136,20 +139,18 @@ namespace aspect
           local_matrix (finite_element.dofs_per_cell,
                         finite_element.dofs_per_cell),
           local_rhs (finite_element.dofs_per_cell),
-          local_dof_indices (finite_element.dofs_per_cell)
-        {
-          TableIndices<2> mat_size(finite_element.dofs_per_cell,
-                                   finite_element.dofs_per_cell);
-          for (unsigned int i=0;
-               i < GeometryInfo<dim>::max_children_per_face *GeometryInfo<dim>::faces_per_cell;
-               ++i)
-            {
-              face_contributions_mask[i] = false;
-              local_face_rhs[i].reinit (finite_element.dofs_per_cell);
-              local_face_matrices_ext_ext[i].reinit(mat_size);
-              neighbor_dof_indices[i].resize(finite_element.dofs_per_cell);
-            }
-        }
+          local_face_rhs (Assemblers::n_interface_matrices(finite_element.reference_cell()),
+                          Vector<double>(finite_element.dofs_per_cell)),
+          local_face_matrices_ext_ext(Assemblers::n_interface_matrices(finite_element.reference_cell()),
+                                      FullMatrix<double>(finite_element.dofs_per_cell,
+                                                         finite_element.dofs_per_cell)),
+          face_contributions_mask(Assemblers::n_interface_matrices(finite_element.reference_cell()),
+                                  false),
+
+          local_dof_indices (finite_element.dofs_per_cell),
+          neighbor_dof_indices(Assemblers::n_interface_matrices(finite_element.reference_cell()),
+                               std::vector<types::global_dof_index>(finite_element.dofs_per_cell))
+        {}
 
 
 
@@ -160,15 +161,14 @@ namespace aspect
           local_rhs (data.local_rhs),
           local_face_rhs (data.local_face_rhs),
           local_face_matrices_ext_ext (data.local_face_matrices_ext_ext),
+          face_contributions_mask(data.face_contributions_mask),
           local_dof_indices (data.local_dof_indices),
           neighbor_dof_indices (data.neighbor_dof_indices)
         {
-          for (unsigned int i=0;
-               i < GeometryInfo<dim>::max_children_per_face *GeometryInfo<dim>::faces_per_cell;
-               ++i)
-            {
-              face_contributions_mask[i] = false;
-            }
+          // clear the flag that indicates that we have valid data in any
+          // of the matrices
+          for (unsigned int i=0; i < face_contributions_mask.size(); ++i)
+            face_contributions_mask[i] = false;
         }
       }
     }
@@ -200,7 +200,7 @@ namespace aspect
     parse_parameters (prm);
 
     this->get_signals().edit_finite_element_variables.connect(
-      [&](std::vector<VariableDeclaration<dim> > &vars)
+      [&](std::vector<VariableDeclaration<dim>> &vars)
     {
       this->edit_finite_element_variables(vars);
     });
@@ -216,7 +216,7 @@ namespace aspect
 
   template <int dim>
   void
-  VolumeOfFluidHandler<dim>::edit_finite_element_variables (std::vector<VariableDeclaration<dim> > &vars)
+  VolumeOfFluidHandler<dim>::edit_finite_element_variables (std::vector<VariableDeclaration<dim>> &vars)
   {
     for (unsigned int f=0; f<n_volume_of_fluid_fields; ++f)
       {
@@ -420,8 +420,9 @@ namespace aspect
     AssertThrow(!this->get_material_model().is_compressible(),
                 ExcMessage("Volume of Fluid Interface Tracking currently assumes incompressibility."));
 
-    AssertThrow(dynamic_cast<const MappingCartesian<dim> *>(&(this->get_mapping())),
-                ExcMessage("Volume of Fluid Interface Tracking currently requires Cartesian Mappings"));
+    AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()) ||
+                Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()),
+                ExcMessage("Volume of Fluid Interface Tracking currently requires a box geometry."));
 
     AssertThrow(!this->get_parameters().mesh_deformation_enabled,
                 ExcMessage("Volume of Fluid Interface Tracking is currently incompatible with the Free Surface implementation."));
@@ -432,7 +433,7 @@ namespace aspect
     if ( this->get_parameters().initial_adaptive_refinement > 0 ||
          this->get_parameters().adaptive_refinement_interval > 0 )
       {
-        AssertThrow(this->get_mesh_refinement_manager().template has_matching_mesh_refinement_strategy<MeshRefinement::VolumeOfFluidInterface<dim> >(),
+        AssertThrow(this->get_mesh_refinement_manager().template has_matching_mesh_refinement_strategy<MeshRefinement::VolumeOfFluidInterface<dim>>(),
                     ExcMessage("Volume of Fluid Interface Tracking requires that the 'volume of fluid interface' strategy be used for AMR"));
 
         AssertThrow(this->get_parameters().adaptive_refinement_interval <(1/this->get_parameters().CFL_number),
@@ -618,11 +619,9 @@ namespace aspect
                                                         sim.system_matrix,
                                                         sim.system_rhs);
 
-    /* In the following, we copy DG contributions element by element. This
-     * is allowed since there are no constraints imposed on discontinuous fields.
-     */
-    for (unsigned int f=0; f<GeometryInfo<dim>::max_children_per_face
-         * GeometryInfo<dim>::faces_per_cell; ++f)
+    // In the following, we copy DG contributions entry by entry. This
+    // is allowed since there are no constraints imposed on discontinuous fields.
+    for (unsigned int f=0; f<data.face_contributions_mask.size(); ++f)
       {
         if (data.face_contributions_mask[f])
           {

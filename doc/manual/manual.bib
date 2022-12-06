@@ -12,6 +12,46 @@
 @string{cmame = {Computer Methods in Applied Mechanics and Engineering}}
 @string{pnas = {Proceedings of the National Academy of Sciences}}
 
+@article{kiha92,
+  title={{Geoid anomalies and dynamic topography from convection in cylindrical geometry: applications to mantle plumes on Earth and Venus}},
+  author={W.S. Kiefer and B. Hager},
+  journal=gji,
+  volume={108},
+  number={},
+  pages={198--214},
+  year={1992}
+}
+
+@article{stca06,
+  title={{Models of large-scale viscous flow in the Earth's mantle with constraints from mineral physics and surface observations}},
+  author={B. Steinberger and A.R. Calderwood},
+  journal=gji,
+  volume={167},
+  doi={10.1111/j.1365-246X.2006.03131.x},
+  pages={1461-1481},
+  year={2006}
+}
+
+@article{reki04,
+  title={A numerical study of a mantle plume beneath the Tharsis Rise: Reconciling dynamic uplift and lithospheric support models},
+  author={Redmond, Hannah L and King, Scott D},
+  journal={Journal of Geophysical Research: Planets},
+  volume={109},
+  number={E9},
+  doi={10.1029/2003JE002228},
+  year={2004}
+}
+
+@Article{keki97,
+  title={The effect of temperature dependent viscosity on the structure of new plumes in the mantle: Results of a finite element model in a spherical, axisymmetric shell},
+  author={Kellogg, Louise H and King, Scott D},
+  journal=epsl,
+  volume={148},
+  number={1-2},
+  pages={13--26},
+  doi={10.1016/S0012-821X(97)00025-3},
+  year={1997}
+}
 
 @BOOK{SC:1961,
     AUTHOR       = {S. Chandrasekhar},
@@ -11526,11 +11566,47 @@ year = {1992}
   url          = {https://doi.org/10.5281/zenodo.3924604}
 }
 
+
+@software{aspect-doi-v2.3.0,
+  author       = {Wolfgang Bangerth and
+                  Juliane Dannberg and
+                  Menno Fraters and
+                  Rene Gassmoeller and
+                  Anne Glerum and
+                  Timo Heister and
+                  John Naliboff},
+  title        = {ASPECT v2.3.0},
+  month        = jul,
+  year         = 2021,
+  publisher    = {Zenodo},
+  version      = {v2.3.0},
+  doi          = {10.5281/zenodo.5131909},
+  url          = {https://doi.org/10.5281/zenodo.5131909}
+}
+
+@software{aspect-doi-v2.4.0,
+  author       = {Wolfgang Bangerth and
+                  Juliane Dannberg and
+                  Menno Fraters and
+                  Rene Gassmoeller and
+                  Anne Glerum and
+                  Timo Heister and
+		  Robert Myhill and
+                  John Naliboff},
+  title        = {ASPECT v2.4.0},
+  month        = jul,
+  year         = 2022,
+  publisher    = {Zenodo},
+  version      = {v2.4.0},
+  doi          = {10.5281/zenodo.6903424},
+  url          = {https://doi.org/10.5281/zenodo.6903424}
+}
+
 @misc{aspectmanual,
   title         = {{\textsc{ASPECT}: Advanced Solver for Problems in Earth's ConvecTion, User Manual}},
-  author        = {W. Bangerth and J. Dannberg and R. Gassm{\"o}ller and T. Heister and others},
-  year          = {2020},
-  month         = {June},
+  author        = {Bangerth, Wolfgang and Dannberg, Juliane and Fraters, Menno and Gassmoeller, Rene and Glerum, Anne and Heister, Timo and Myhill, Robert and Naliboff, John},
+  year          = {2022},
+  month         = {July},
   DOI           = {10.6084/m9.figshare.4865333},
   note          = {doi:10.6084/m9.figshare.4865333},
   URL           = {https://doi.org/10.6084/m9.figshare.4865333}
@@ -11866,10 +11942,13 @@ Year = {1968}}
 }
 
 @Article{clevenger_stokes19,
-  Title                    = {Comparison between Algebraic and Matrix-free Geometric Multigrid for a Stokes Problem},
+  Title                    = {Comparison Between Algebraic and Matrix-free Geometric Multigrid for a {S}tokes Problem on an Adaptive Mesh with Variable Viscosity},
   Author                   = {Thomas C. Clevenger and Timo Heister},
-  Journal                  = {arXiv preprint arXiv:1907.06696},
-  Year                     = {2019},
+  Journal                  = {Numerical Linear Algebra with Applications},
+  Year                     = {2021},
+  Month                    = mar,
+  Doi                      = {10.1002/nla.2375},
+  Publisher                = {Wiley},
   Url                      = {https://arxiv.org/abs/1907.06696}
 }
 
@@ -11878,16 +11957,12 @@ Year = {1968}}
   Author                   = {Thomas C. Clevenger and Timo Heister and Guido Kanschat and Martin Kronbichler},
   Journal                  = {ACM Trans. Math. Softw.},
   Year                     = {2020},
-
   Month                    = {Dec},
   Number                   = {1},
   Volume                   = {47},
-
   Doi                      = {10.1145/3425193},
   Url                      = {https://arxiv.org/abs/1904.03317}
 }
-
-
 
 @article{gassmoller2020formulations,
   title={On formulations of compressible mantle convection},
@@ -11938,4 +12013,98 @@ DOI = {10.5194/se-10-1785-2019}
   version      = {v0.3.0},
   doi          = {10.5281/zenodo.3900603},
   url          = {https://doi.org/10.5281/zenodo.3900603}
+}
+
+@article{Kaminski2002,
+  doi = {10.1029/2001gc000222},
+  url = {https://doi.org/10.1029/2001gc000222},
+  year = {2002},
+  month = aug,
+  publisher = {American Geophysical Union ({AGU})},
+  volume = {3},
+  number = {8},
+  pages = {1--17},
+  author = {{\'{E}}douard Kaminski and Neil M. Ribe},
+  title = {Timescales for the evolution of seismic anisotropy in mantle flow},
+  journal = {Geochemistry,  Geophysics,  Geosystems}
+}
+
+@article{stixrude2011thermodynamics,
+  title={Thermodynamics of mantle minerals-II. Phase equilibria},
+  author={Stixrude, Lars and Lithgow-Bertelloni, Carolina},
+  journal={Geophysical Journal International},
+  volume={184},
+  number={3},
+  pages={1180--1213},
+  year={2011},
+  publisher={Blackwell Publishing Ltd Oxford, UK}
+}
+
+@article{billen2018decoupling,
+  title={Decoupling of plate-asthenosphere motion caused by non-linear viscosity during slab folding in the transition zone},
+  author={Billen, Magali I and Arredondo, Katrina M},
+  journal={Physics of the Earth and Planetary Interiors},
+  volume={281},
+  pages={17--30},
+  year={2018},
+  publisher={Elsevier}
+}
+
+@phdthesis{Quinquis2014,
+author = {Quinquis, M},
+school = {Charles University},
+title = {{A numerical study of subduction zone dynamics using linear viscous to thermo-mechanical model setups including (de)hydration processes}},
+year = {2014}
+}
+
+@article{thba22,
+author={C. Thieulot and W. Bangerth},
+title={On the choice of finite element for applications in geodynamics},
+journal={Solid Earth},
+doi={10.5194/se-13-1-2022},
+volume={13},
+year={2022}
+}
+
+@article{connolly2005computation,
+  title={Computation of phase equilibria by linear programming: a tool for geodynamic modeling and its application to subduction zone decarbonation},
+  author={Connolly, James AD},
+  journal={Earth and Planetary Science Letters},
+  volume={236},
+  number={1-2},
+  pages={524--541},
+  year={2005},
+  publisher={Elsevier}
+}
+
+@article{ringwood1988nature,
+  title={Nature of the 650--km seismic discontinuity: implications for mantle dynamics and differentiation},
+  author={Ringwood, AE and Irifune, T},
+  journal={Nature},
+  volume={331},
+  number={6152},
+  pages={131--136},
+  year={1988},
+  publisher={Nature Publishing Group}
+}
+
+@article{nakagawa2009incorporating,
+  title={Incorporating self-consistently calculated mineral physics into thermochemical mantle convection simulations in a 3-D spherical shell and its influence on seismic anomalies in Earth's mantle},
+  author={Nakagawa, Takashi and Tackley, Paul J and Deschamps, Frederic and Connolly, James AD},
+  journal={Geochemistry, Geophysics, Geosystems},
+  volume={10},
+  number={3},
+  year={2009},
+  publisher={Wiley Online Library}
+}
+
+@article{van_dinther_seismic_2013,
+	title = {The seismic cycle at subduction thrusts: 2. Dynamic implications of geodynamic simulations validated with laboratory models},
+	volume = {118},
+  journal = {JGR Solid Earth},
+	pages = {1502--1525},
+	number = {4},
+	journaltitle = {Journal of Geophysical Research: Solid Earth},
+	author = {van Dinther, Y. and Gerya, T. V. and Dalguer, L. A. and Corbi, F. and Funiciello, F. and Mai, P. M.},
+	year = {2013}
 }

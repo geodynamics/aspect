@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -75,8 +75,6 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
-        double reference_viscosity () const override;
-
         double reference_darcy_coefficient () const override;
 
 

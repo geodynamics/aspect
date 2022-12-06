@@ -1,0 +1,20 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Visualization file name
+# 13: Number of advected particles
+# 14: Particle file name
+# 15: u_L2
+# 16: p_L2
+# 17: rho_L2
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 576 0 7  9  8 output-rigid_shear_steady_state/solution/solution-00000 5184 output-rigid_shear_steady_state/particles/particles-00000 3.49117695033268e-04 2.60074011232150e-02 7.55669318237575e-03 
+1 6.247722157405e-02 6.247722157405e-02 64 659 289 576 0 8 10 10                                                      "" 5184                                                        "" 3.49949716082824e-04 2.60084512260754e-02 7.63033022521832e-03 
+2 1.000000000000e-01 3.752277842595e-02 64 659 289 576 0 8 10 10 output-rigid_shear_steady_state/solution/solution-00001 5184 output-rigid_shear_steady_state/particles/particles-00001 3.48929539567650e-04 2.60082618440733e-02 7.59541956319281e-03 

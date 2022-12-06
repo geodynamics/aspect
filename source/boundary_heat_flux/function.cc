@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -29,15 +29,15 @@ namespace aspect
   namespace BoundaryHeatFlux
   {
     template <int dim>
-    std::vector<Tensor<1,dim> >
+    std::vector<Tensor<1,dim>>
     Function<dim>::
     heat_flux (const types::boundary_id /*boundary_indicator*/,
                const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                const MaterialModel::MaterialModelOutputs<dim> &/*material_model_outputs*/,
-               const std::vector<Tensor<1,dim> > &normal_vectors) const
+               const std::vector<Tensor<1,dim>> &normal_vectors) const
     {
       const unsigned int n_evaluation_points = material_model_inputs.position.size();
-      std::vector<Tensor<1,dim> > heat_flux(normal_vectors);
+      std::vector<Tensor<1,dim>> heat_flux(normal_vectors);
 
       for (unsigned int i=0; i<n_evaluation_points; ++i)
         {

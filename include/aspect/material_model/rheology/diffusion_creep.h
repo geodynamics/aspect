@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -75,8 +75,7 @@ namespace aspect
            */
           void
           parse_parameters (ParameterHandler &prm,
-                            const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition =
-                              std::shared_ptr<std::vector<unsigned int>>());
+                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
 
           /**

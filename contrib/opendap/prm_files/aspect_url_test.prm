@@ -28,11 +28,11 @@ end
 subsection Initial temperature model
    set Model name = adiabatic boundary
  subsection Adiabatic boundary
-    set Data directory    = 
+    set Data directory    =
     set Data file name       = http://balto.opendap.org/opendap/lithosphere_thickness/lithospheric_thickness.csv
-end 
-end 
-   
+end
+end
+
 
 subsection Boundary temperature model
   set List of model names = initial temperature
@@ -84,4 +84,3 @@ subsection Solver parameters
     set Number of cheap Stokes solver steps = 50
   end
 end
-

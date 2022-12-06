@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
@@ -37,7 +57,7 @@ int f()
   GeometryModel::EllipsoidalChunk<dim>::EllipsoidalChunkGeometry ellipsoidal_manifold;
   ellipsoidal_manifold.initialize(&topography);
 
-  std::vector<Point<2> > corners(2,Point<2>(-15.0,-15.0));
+  std::vector<Point<2>> corners(2,Point<2>(-15.0,-15.0));
   corners[1] *= -1.0;
 
   std::cout << "Simple sphere test" << std::endl;
@@ -47,7 +67,7 @@ int f()
                                                2890000.0,
                                                corners);
 
-  std::vector<Point<3> > test_points;
+  std::vector<Point<3>> test_points;
   test_points.push_back(Point<3> (6371000.0,0,0));
   test_points.push_back(Point<3> (6171000.0,0,0));
   test_points.push_back(Point<3> (3000000.0,3000000.0,0));

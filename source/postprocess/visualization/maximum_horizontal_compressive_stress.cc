@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -31,10 +31,19 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
+      MaximumHorizontalCompressiveStress<dim>::
+      MaximumHorizontalCompressiveStress ()
+        :
+        Interface<dim>("Pa")
+      {}
+
+
+
+      template <int dim>
       void
       MaximumHorizontalCompressiveStress<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
@@ -47,6 +56,9 @@ namespace aspect
                                                    this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
+
+        // We do not need to compute anything but the viscosity
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
         // Compute the viscosity...
         this->get_material_model().evaluate(in, out);
@@ -346,6 +358,8 @@ namespace aspect
                                                   "    is zero at these points.}"
                                                   "  \\label{fig:max-horizontal-compressive-stress}"
                                                   "\\end{figure}"
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\pascal}."
                                                  )
     }
   }

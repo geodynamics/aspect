@@ -1,29 +1,38 @@
-FROM tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5
+FROM dealii/dealii:v9.4.0-focal
 
 LABEL maintainer <rene.gassmoeller@mailbox.org>
 
 # we need a newer version of cmake to support unity builds:
-RUN cd $HOME/libs && wget https://github.com/Kitware/CMake/releases/download/v3.17.3/cmake-3.17.3-Linux-x86_64.tar.gz && tar xf cmake*.tar.gz && rm cmake*.tar.gz
-ENV PATH $HOME/libs/cmake-3.17.3-Linux-x86_64/bin:$PATH
+RUN cd $HOME && wget https://github.com/Kitware/CMake/releases/download/v3.17.3/cmake-3.17.3-Linux-x86_64.tar.gz && tar xf cmake*.tar.gz && rm cmake*.tar.gz
+ENV PATH $HOME/cmake-3.17.3-Linux-x86_64/bin:$PATH
+
+USER root
+RUN wget https://github.com/tjhei/astyle/releases/download/v2.04/astyle_2.04_linux.tar.gz && \
+        tar xf astyle_2.04_linux.tar.gz && \
+        cd astyle/build/gcc && make && \
+        make install && \
+        cd && \
+        rm -rf astyle* && \
+        astyle --version
+
+USER dealii
 
 # Build aspect, replace git checkout command to create image for release
 RUN git clone https://github.com/geodynamics/aspect.git ./aspect && \ 
     mkdir aspect/build-release && \
     cd aspect/build-release && \
-    git checkout master && \
+    git checkout main && \
     cmake -DCMAKE_BUILD_TYPE=Release \
-          -DASPECT_PRECOMPILE_HEADERS=ON \
           .. && \
-    make -j6 && \
+    make -j2 && \
     mv aspect ../aspect-release && \
     make clean && \
     cd .. && \
     mkdir build-debug && \
     cd build-debug && \
     cmake -DCMAKE_BUILD_TYPE=Debug \
-          -DASPECT_PRECOMPILE_HEADERS=ON \
           .. && \
-    make -j6 && \
+    make -j2 && \
     mv aspect $HOME/aspect/aspect && \
     make clean
 

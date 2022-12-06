@@ -3,6 +3,9 @@
 # Run all models in this directory. Modify the loops below for running only a
 # subset of models
 
+processes=8
+ASPECT_EXEC="../plugin/aspect"
+
 for stokes_degree in 2 3; do # 2 3
   for discontinuous_pressure in false; do # true
     for refinement in 2 3 4 5 6 7 8; do # 2 3 4 5 6 7 8
@@ -17,7 +20,7 @@ for stokes_degree in 2 3; do # 2 3
 
         echo "set Output directory = Q${stokes_degree}_P${discontinuous_pressure}_refinement${refinement}" >> current.prm
         echo "Starting Q${stokes_degree}_P${discontinuous_pressure}_refinement${refinement}"
-        cat rigid_shear.prm current.prm | mpirun -np 4 ../plugin/aspect --
+        cat rigid_shear.prm current.prm | mpirun -np $processes $ASPECT_EXEC --
     done
   done
 done

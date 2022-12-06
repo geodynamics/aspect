@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -111,14 +111,6 @@ namespace aspect
           return true;
         }
 
-
-        virtual double reference_viscosity () const
-        {
-          return (Di==0.0?1.0:Di)/Ra;
-        }
-        /**
-         * @}
-         */
 
         /**
          * @name Functions used in dealing with run-time parameters

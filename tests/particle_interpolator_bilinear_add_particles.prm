@@ -44,10 +44,6 @@ end
 
 ############### Parameters describing the temperature field
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
 subsection Initial temperature model
   set Model name = perturbed box
 end
@@ -119,9 +115,8 @@ subsection Postprocess
 
     subsection Interpolator
       subsection Bilinear least squares
-        set Use limiter = true
-        set Global particle property minimum = -1, 1
-        set Global particle property maximum = 1, 1e6
+        set Use linear least squares limiter = true, true
+        set Use boundary extrapolation = true, true
       end
     end
   end

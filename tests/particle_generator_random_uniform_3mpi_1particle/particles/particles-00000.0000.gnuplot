@@ -5,5 +5,5 @@
 # For a description of the GNUPLOT format see the GNUPLOT manual.
 #
 # <x> <y> <id> <velocity> <velocity> <function> <initial C_1> <initial position> <initial position> 
-0.412162 0.35922 0 0 0 0 1.65479e-07 0.412162 0.35922 
+0.571827 0.435603 0 0 0 0 2.71815e-11 0.571827 0.435603 
 

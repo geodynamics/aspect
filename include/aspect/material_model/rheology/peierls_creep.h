@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -50,6 +50,7 @@ namespace aspect
         double glide_parameter_p;
         double glide_parameter_q;
         double fitting_parameter;
+        double stress_cutoff;
       };
 
       /**
@@ -93,8 +94,7 @@ namespace aspect
            */
           void
           parse_parameters (ParameterHandler &prm,
-                            const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition =
-                              std::shared_ptr<std::vector<unsigned int>>());
+                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
           /**
            * Compute the viscosity based on the approximate Peierls creep flow law.
@@ -224,6 +224,8 @@ namespace aspect
            * to dislocation glide (q).
            */
           std::vector<double> glide_parameters_q;
+
+          std::vector<double> stress_cutoffs;
 
           /**
            * Parameters governing the iteration for the exact

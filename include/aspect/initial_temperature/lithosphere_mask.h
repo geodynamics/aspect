@@ -53,7 +53,7 @@ namespace aspect
 
           /**
            * Return LAB depth as a function of position (latitude and longitude). This
-          * function returns either a constant value or values from a text file,
+           * function returns either a constant value or values from a text file,
            * depending on the input parameters. Text files are read in
            * two dimensions so the third column (depth) is treated as data.
            */
@@ -130,10 +130,10 @@ namespace aspect
         initialize () override;
 
         /**
-          * Return the initial temperature as a function of position. For the
-          * current class, this function uses the given lithosphere temperature
-          * above the lithosphere-asthenosphere boundary and nans below.
-          */
+         * Return the initial temperature as a function of position. For the
+         * current class, this function uses the given lithosphere temperature
+         * above the lithosphere-asthenosphere boundary and nans below.
+         */
         double
         initial_temperature (const Point<dim> &position) const override;
 

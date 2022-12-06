@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -93,7 +93,7 @@ namespace aspect
 
       typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell;
       for (cell = coarse_grid.begin_active();  cell != coarse_grid.end();  ++cell)
-        for (unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell;  ++v)
+        for (unsigned int v = 0; v < cell->n_vertices();  ++v)
           if (vertex_touched[cell->vertex_index(v)] == false)
             {
               Point<dim> &vertex = cell->vertex(v);

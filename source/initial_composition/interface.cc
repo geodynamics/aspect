@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,11 +34,6 @@ namespace aspect
   namespace InitialComposition
   {
     template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
-
-    template <int dim>
     void
     Interface<dim>::initialize ()
     {}
@@ -64,7 +59,7 @@ namespace aspect
 
     template <int dim>
     Manager<dim>::~Manager()
-    {}
+      = default;
 
 
 
@@ -73,8 +68,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<Interface<2> >,
-      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2>>,
+      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
 
@@ -84,7 +79,7 @@ namespace aspect
     Manager<dim>::register_initial_composition (const std::string &name,
                                                 const std::string &description,
                                                 void (*declare_parameters_function) (ParameterHandler &),
-                                                Interface<dim> *(*factory_function) ())
+                                                std::unique_ptr<Interface<dim>> (*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,
@@ -142,7 +137,7 @@ namespace aspect
       // their own parameters
       for (const auto &model_name : model_names)
         {
-          initial_composition_objects.push_back (std::unique_ptr<Interface<dim> >
+          initial_composition_objects.push_back (std::unique_ptr<Interface<dim>>
                                                  (std::get<dim>(registered_plugins)
                                                   .create_plugin (model_name,
                                                                   "Initial composition model::Model names")));
@@ -184,7 +179,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::list<std::unique_ptr<Interface<dim> > > &
+    const std::list<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_initial_composition_conditions () const
     {
       return initial_composition_objects;
@@ -264,11 +259,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<InitialComposition::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<InitialComposition::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<InitialComposition::Interface<2>>::PluginInfo> *
+      internal::Plugins::PluginList<InitialComposition::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<InitialComposition::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<InitialComposition::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<InitialComposition::Interface<3>>::PluginInfo> *
+      internal::Plugins::PluginList<InitialComposition::Interface<3>>::plugins = nullptr;
     }
   }
 

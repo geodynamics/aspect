@@ -57,7 +57,6 @@ subsection Material model
     set Material file names              = test-steinberger-compressible/testdata.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false
-    set Reference viscosity              = 1e21
     set Number lateral average bands     = 40
   end
 end

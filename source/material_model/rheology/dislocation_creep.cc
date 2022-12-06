@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,7 @@ namespace aspect
     {
       template <int dim>
       DislocationCreep<dim>::DislocationCreep ()
-      {}
+        = default;
 
 
 
@@ -97,7 +97,8 @@ namespace aspect
 
         Assert (viscosity_dislocation > 0.0,
                 ExcMessage ("Negative dislocation viscosity detected. This is unphysical and should not happen. "
-                            "Check for negative parameters."));
+                            "Check for negative parameters. Temperature and pressure are "
+                            + Utilities::to_string(temperature) + " K, " + Utilities::to_string(pressure) + " Pa. "));
 
         // Creep viscosities become extremely large at low
         // temperatures and can therefore provoke floating-point overflow errors. In
@@ -175,7 +176,7 @@ namespace aspect
       template <int dim>
       void
       DislocationCreep<dim>::parse_parameters (ParameterHandler &prm,
-                                               const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
+                                               const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
         // Retrieve the list of composition names
         const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
@@ -209,6 +210,14 @@ namespace aspect
                                                                                "Activation volumes for dislocation creep",
                                                                                true,
                                                                                expected_n_phases_per_composition);
+
+        // Check that there are no prefactor entries set to zero,
+        // for example because the entry is for a field
+        // that is masked anyway, like strain. Despite
+        // these compositions being masked, their viscosities
+        // are computed anyway and this will lead to division by zero.
+        for (const double prefactor : prefactors_dislocation)
+          AssertThrow(prefactor > 0., ExcMessage("The dislocation prefactor should be larger than zero."));
       }
     }
   }

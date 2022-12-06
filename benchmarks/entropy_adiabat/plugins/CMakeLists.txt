@@ -1,4 +1,4 @@
-# Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+# Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -16,9 +16,9 @@
 # along with ASPECT; see the file LICENSE.  If not see
 # <http://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
 
-FIND_PACKAGE(Aspect 2.2.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
+FIND_PACKAGE(Aspect 2.4.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
 
 IF (NOT Aspect_FOUND)
   MESSAGE(FATAL_ERROR "\n"
@@ -35,5 +35,5 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 SET(TARGET "entropy_plugins")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED compute_entropy_profile.h compute_entropy_profile.cc entropy_model.h entropy_model.cc entropy_advection.cc entropy_advection.h)
+ADD_LIBRARY(${TARGET} SHARED compute_entropy_profile.h compute_entropy_profile.cc entropy_model.h entropy_model.cc entropy_advection.cc entropy_advection.h prescribed_temperature.cc prescribed_temperature.h)
 ASPECT_SETUP_PLUGIN(${TARGET})

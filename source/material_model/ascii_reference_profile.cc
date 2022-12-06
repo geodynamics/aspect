@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -105,7 +105,7 @@ namespace aspect
             out.reaction_terms[i][c] = 0.0;
 
           // fill seismic velocities outputs if they exist
-          if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
+          if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
             {
               if (seismic_vp_index != numbers::invalid_unsigned_int)
                 seismic_out->vp[i] = profile.get_data_component(profile_position,seismic_vp_index);
@@ -121,14 +121,6 @@ namespace aspect
         }
     }
 
-
-    template <int dim>
-    double
-    AsciiReferenceProfile<dim>::
-    reference_viscosity () const
-    {
-      return viscosity;
-    }
 
 
     template <int dim>
@@ -233,13 +225,13 @@ namespace aspect
     void
     AsciiReferenceProfile<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == nullptr
+      if (out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr
           && seismic_vp_index != numbers::invalid_unsigned_int
           && seismic_vs_index != numbers::invalid_unsigned_int)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+            std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
     }
   }
