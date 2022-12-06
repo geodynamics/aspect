@@ -35,6 +35,33 @@ namespace aspect
     using namespace dealii;
 
     /**
+     * A namespace for selecting how to determine the age of a
+     * boundary layer. Current options are:
+     *
+     *  'constant': A constant age independent of position.
+     *  'ascii_data': Age is specified in an ascii data file.
+     *  'function': Age is specified as a function in the input file.
+     */
+    namespace BoundaryLayerAgeModel
+    {
+      enum Kind
+      {
+        constant,
+        ascii_data,
+        function
+      };
+
+      /**
+       * Read the lithosphere age model from the parameter file,
+       * using the parameter name given in @p parameter_name, and return the
+       * enum that corresponds to this operation.
+       */
+      BoundaryLayerAgeModel::Kind
+      parse (const std::string &parameter_name,
+             const ParameterHandler &prm);
+    }
+
+    /**
      * A class that implements adiabatic initial conditions for the
      * temperature field and, optional, upper and lower thermal boundary
      * layers calculated using the half-space cooling model. The age of the
@@ -75,14 +102,19 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
       private:
-
+        /**
+         * The boundary identifier representing the 'surface' boundary as
+         * reported by the geometry model.
+         */
         types::boundary_id surface_boundary_id;
+
         /**
          * Age of the upper thermal boundary layer at the surface of the
          * model. If set to zero, no boundary layer will be present in the
          * model.
          */
         double age_top_boundary_layer;
+
         /* Age of the lower thermal boundary layer. */
         double age_bottom_boundary_layer;
 
@@ -108,16 +140,18 @@ namespace aspect
          * profile.
          */
         double subadiabaticity;
-        /*
-         * Whether seafloor ages should be read in from an ASCII file,
-         *  or input as a constant value
-         */
-        bool read_from_ascii_file;
+
+        /**
+         * Age model to use for the top boundary layer.
+        */
+        BoundaryLayerAgeModel::Kind top_boundary_layer_age_model;
+
         /*
          * Whether to use the half space cooling model, or the plate cooling
          * model
          */
         std::string cooling_model;
+
         /*
          * Depth to the base of the lithosphere for plate cooling model, in m
          */
@@ -140,6 +174,11 @@ namespace aspect
          * choices are depth, cartesian and spherical.
          */
         Utilities::Coordinates::CoordinateSystem coordinate_system;
+
+        /**
+         * Compute the top boundary layer age at the given position.
+        */
+        double top_boundary_layer_age(const Point<dim> &position) const;
     };
   }
 }

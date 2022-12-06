@@ -33,6 +33,31 @@ namespace aspect
 {
   namespace InitialTemperature
   {
+    namespace BoundaryLayerAgeModel
+    {
+      BoundaryLayerAgeModel::Kind
+      parse (const std::string &parameter_name,
+             const ParameterHandler &prm)
+      {
+        BoundaryLayerAgeModel::Kind age_model;
+        if (prm.get (parameter_name) == "constant")
+          age_model = constant;
+        else if (prm.get (parameter_name) == "function")
+          age_model = function;
+        else if (prm.get (parameter_name) == "ascii data")
+          age_model = ascii_data;
+        else
+          {
+            AssertThrow(false, ExcMessage("Not a valid boundary layer age model."));
+
+            // We will never get here, but we have to return something
+            // so the compiler does not complain
+            return constant;
+          }
+
+        return age_model;
+      }
+    }
 
     template <int dim>
     Adiabatic<dim>::Adiabatic ()
@@ -40,52 +65,77 @@ namespace aspect
       surface_boundary_id(numbers::invalid_unsigned_int)
     {}
 
+
+
     template <int dim>
     void
     Adiabatic<dim>::initialize ()
     {
-      if (read_from_ascii_file)
+      if (top_boundary_layer_age_model == BoundaryLayerAgeModel::ascii_data)
         {
           // Find the boundary indicator that represents the surface
           surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
-          std::set<types::boundary_id> surface_boundary_set;
-          surface_boundary_set.insert(surface_boundary_id);
 
           // The input ascii table contains one data column (LAB depths(m)) in addition to the coordinate columns.
-          Utilities::AsciiDataBoundary<dim>::initialize(surface_boundary_set,
+          Utilities::AsciiDataBoundary<dim>::initialize({surface_boundary_id},
                                                         1);
         }
     }
 
+
+
     template <int dim>
     double
     Adiabatic<dim>::
-    initial_temperature (const Point<dim> &position) const
+    top_boundary_layer_age (const Point<dim> &position) const
     {
-      // convert input ages to seconds
-      // TODO: make old parameter deprecated
-      Utilities::NaturalCoordinate<dim> point =
-        this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
+      // Top boundary layer age in seconds
+      double age_top = 0.0;
 
-      double age_top = age_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
-      if (this->convert_output_to_years())
-    	age_top *= year_in_seconds;
-
-      const double age_bottom = (this->convert_output_to_years() ? age_bottom_boundary_layer * year_in_seconds
-                                 : age_bottom_boundary_layer);
-      if (read_from_ascii_file)
+      if (top_boundary_layer_age_model == BoundaryLayerAgeModel::ascii_data)
         {
           // The input ascii contains the age of the seafloor. User must provide ages in seconds
           age_top = Utilities::AsciiDataBoundary<dim>::get_data_component(surface_boundary_id,
                                                                           position,
                                                                           0);
         }
+      else if (top_boundary_layer_age_model == BoundaryLayerAgeModel::constant)
+        {
+          age_top =    (this->convert_output_to_years() 
+          ? 
+          age_top_boundary_layer * year_in_seconds
+                        :
+                        age_top_boundary_layer);
+        }
+      else if (top_boundary_layer_age_model == BoundaryLayerAgeModel::function)
+        {
+          Utilities::NaturalCoordinate<dim> point =
+            this->get_geometry_model().cartesian_to_other_coordinates(position,
+            coordinate_system);
+
+          age_top = age_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
+          if (this->convert_output_to_years())
+            age_top *= year_in_seconds;
+        }
       else
         {
-          // convert input ages to seconds
-          age_top =    (this->convert_output_to_years() ? age_top_boundary_layer * year_in_seconds
-                        : age_top_boundary_layer);
+          Assert(false, ExcMessage("Unknown top boundary layer age model."));
         }
+
+      return age_top;
+    }
+
+
+    template <int dim>
+    double
+    Adiabatic<dim>::
+    initial_temperature (const Point<dim> &position) const
+    {
+
+      const double age_top = top_boundary_layer_age(position);
+      const double age_bottom = (this->convert_output_to_years() ? age_bottom_boundary_layer * year_in_seconds
+                                 : age_bottom_boundary_layer);
+
       // First, get the temperature of the adiabatic profile at a representative
       // point at the top and bottom boundary of the model
       // if adiabatic heating is switched off, assume a constant profile
@@ -122,10 +172,10 @@ namespace aspect
       MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
 
       // compute the adiabat by referring to the Adiabatic conditions model
-      in.position[0]=position;
-      in.temperature[0]=this->get_adiabatic_conditions().temperature(position);
-      in.pressure[0]=this->get_adiabatic_conditions().pressure(position);
-      in.velocity[0]= Tensor<1,dim> ();
+      in.position[0] = position;
+      in.temperature[0] = this->get_adiabatic_conditions().temperature(position);
+      in.pressure[0] = this->get_adiabatic_conditions().pressure(position);
+      in.velocity[0] = Tensor<1,dim> ();
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         in.composition[0][c] = function->value(Point<1>(depth),c);
       in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties |
@@ -143,6 +193,7 @@ namespace aspect
 
       double surface_cooling_temperature = 0;
       double bottom_heating_temperature = 0;
+
       if (cooling_model == "half-space cooling")
         {
           // analytical solution for the thermal boundary layer from half-space cooling model
@@ -357,20 +408,27 @@ namespace aspect
                              "This function is one-dimensional and depends only on depth. The format of this "
                              "functions follows the syntax understood by the "
                              "muparser library, see Section~\\ref{sec:muparser-format}.");
-          prm.declare_entry ("Use ASCII file for seafloor age", "false",
-                             Patterns::Bool (),
-                             "Whether to define seafloor ages with an ASCII data file.");
+          prm.declare_entry ("Top boundary layer age model", "constant",
+                             Patterns::Selection ("constant|function|ascii data"),
+                             "How to define the age of the top thermal boundary layer. "
+                             "Options are: 'constant' for a constant age specified by the "
+                             "parameter 'Age top boundary layer'; 'function' for an analytical "
+                             "function describing the age as specified in the subsection "
+                             "'Age function'; and 'ascii data' to use an 'ascii data' file "
+                             "specified by the parameter 'Data file name'.");
           prm.declare_entry ("Cooling model", "half-space cooling",
                              Patterns::Selection ("half-space cooling|plate cooling"),
                              "Whether to use the half space cooling model or the plate cooling model");
           prm.declare_entry ("Lithosphere thickness", "125e3",
                              Patterns::Double (0.),
                              "Thickness of the lithosphere for plate cooling model. \\si{\\m}");
+
           prm.enter_subsection("Function");
           {
             Functions::ParsedFunction<1>::declare_parameters (prm, 1);
           }
           prm.leave_subsection();
+
           prm.enter_subsection("Age function");
           {
             /**
@@ -381,7 +439,7 @@ namespace aspect
              * this allows for dimension independent expressions.
              */
             prm.declare_entry ("Coordinate system", "cartesian",
-                               Patterns::Selection ("cartesian|spherical|depth"),
+                               Patterns::Selection ("cartesian|spherical"),
                                "A selection that determines the assumed coordinate "
                                "system for the function variables. Allowed values "
                                "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
@@ -417,17 +475,24 @@ namespace aspect
       prm.enter_subsection ("Initial temperature model");
       {
         Utilities::AsciiDataBase<dim>::parse_parameters(prm, "Adiabatic");
+
         prm.enter_subsection("Adiabatic");
         {
+          top_boundary_layer_age_model = BoundaryLayerAgeModel::parse("Top boundary layer age model",
+                                                                      prm);
+
           age_top_boundary_layer = prm.get_double ("Age top boundary layer");
           age_bottom_boundary_layer = prm.get_double ("Age bottom boundary layer");
+
           radius = prm.get_double ("Radius");
           amplitude = prm.get_double ("Amplitude");
           perturbation_position = prm.get("Position");
+
           subadiabaticity = prm.get_double ("Subadiabaticity");
-          read_from_ascii_file = prm.get_bool ("Use ASCII file for seafloor age");
+
           cooling_model = prm.get ("Cooling model");
           lithosphere_thickness = prm.get_double ("Lithosphere thickness");
+
           if (n_compositional_fields > 0)
             {
               prm.enter_subsection("Function");
@@ -450,9 +515,10 @@ namespace aspect
 
               prm.leave_subsection();
             }
+
           prm.enter_subsection("Age function");
           {
-        	coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+            coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
           }
           try
             {

@@ -1,5 +1,6 @@
-# This test is used to check if the plate cooling model with seafloor ages
-# defined in an ASCII data file is calculated correctly.
+# This test is used to check if the half-space cooling model with seafloor ages
+# defined in an analytic function is calculated correctly. It is similar to
+# the adiabatic_plate_cooling test.
 
 set Dimension                              = 2
 set Output directory                       = adiabatic_plate_cooling
@@ -15,17 +16,21 @@ subsection Geometry model
   subsection Box
     set X extent = 150e3
     set Y extent = 150e3
-    set X repetitions = 10
-    set Y repetitions = 10
+    set X repetitions = 20
+    set Y repetitions = 20
   end
 end
 
 subsection Initial temperature model
   set Model name = adiabatic
   subsection Adiabatic
-    set Top boundary layer age model = ascii data
-    set Cooling model = plate cooling
-    set Lithosphere thickness = 125e3
+    set Top boundary layer age model = function
+    set Cooling model = half-space cooling
+
+    subsection Age function
+      set Function constants = cm=0.01, year=1
+      set Function expression = x / (1 * cm / year)
+    end
   end
 end
 
@@ -68,7 +73,7 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = temperature statistics
+  set List of postprocessors = temperature statistics, heat flux statistics
 
   subsection Visualization
     set Interpolate output = false
