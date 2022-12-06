@@ -101,9 +101,9 @@ namespace aspect
         }
       else if (top_boundary_layer_age_model == BoundaryLayerAgeModel::constant)
         {
-          age_top =    (this->convert_output_to_years() 
-          ? 
-          age_top_boundary_layer * year_in_seconds
+          age_top =    (this->convert_output_to_years()
+                        ?
+                        age_top_boundary_layer * year_in_seconds
                         :
                         age_top_boundary_layer);
         }
@@ -111,7 +111,7 @@ namespace aspect
         {
           Utilities::NaturalCoordinate<dim> point =
             this->get_geometry_model().cartesian_to_other_coordinates(position,
-            coordinate_system);
+                                                                      coordinate_system);
 
           age_top = age_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
           if (this->convert_output_to_years())
