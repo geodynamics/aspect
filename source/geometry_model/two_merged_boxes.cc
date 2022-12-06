@@ -296,7 +296,7 @@ namespace aspect
     double
     TwoMergedBoxes<dim>::maximal_depth() const
     {
-      return extents[dim-1];
+      return extents[dim-1] - lower_box_origin[dim-1];
     }
 
     template <int dim>

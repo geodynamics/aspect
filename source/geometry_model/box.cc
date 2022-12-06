@@ -297,7 +297,7 @@ namespace aspect
     double
     Box<dim>::maximal_depth() const
     {
-      return extents[dim-1] + topo_model->max_topography();
+      return extents[dim-1] - box_origin[dim-1] + topo_model->max_topography();
     }
 
     template <int dim>
