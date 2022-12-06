@@ -22,6 +22,8 @@
 #include <aspect/boundary_traction/initial_lithostatic_pressure.h>
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/initial_composition/interface.h>
+#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+#include <aspect/geometry_model/initial_topography_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
@@ -59,9 +61,6 @@ namespace aspect
       // but we use the initial temperature and composition and only calculate
       // a pressure profile with depth.
 
-      // The spacing of the depth profile
-      delta_z = this->get_geometry_model().maximal_depth() / (n_points-1);
-
       // The number of compositional fields
       const unsigned int n_compositional_fields = this->n_compositional_fields();
 
@@ -89,12 +88,27 @@ namespace aspect
 
       // Set the radius of the representative point to the surface radius for spherical domains
       // or set the vertical coordinate to the surface value for box domains.
+      // Also get the depth extent without including initial topography, and the vertical coordinate
+      // of the bottom boundary (radius for spherical and z-coordinate for cartesian domains).
+      double depth_extent = 0.;
       if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
-        spherical_representative_point[0] = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()).outer_radius();
+        {
+          spherical_representative_point[0] = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()).outer_radius();
+          // Spherical shell cannot include initial topography
+          depth_extent =  Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()).maximal_depth();
+        }
       else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
-        spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>(this->get_geometry_model()).outer_radius();
+        {
+          // Does not include initial topography
+          spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>(this->get_geometry_model()).outer_radius();
+          depth_extent = Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>(this->get_geometry_model()).maximal_depth();
+        }
       else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (this->get_geometry_model()))
-        spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()).outer_radius();
+        {
+          // Does not include initial topography
+          spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()).outer_radius();
+          depth_extent = Plugins::get_plugin_as_type<const GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()).maximal_depth();
+        }
       else if (Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>> (this->get_geometry_model()))
         {
           const GeometryModel::EllipsoidalChunk<dim> &gm = Plugins::get_plugin_as_type<const GeometryModel::EllipsoidalChunk<dim>> (this->get_geometry_model());
@@ -108,15 +122,53 @@ namespace aspect
           AssertThrow(gm.get_eccentricity() == 0.0, ExcMessage("This initial lithospheric pressure plugin cannot be used with a non-zero eccentricity. "));
 
           spherical_representative_point[0] = gm.get_semi_major_axis_a();
+          // Does not include initial topography
+          depth_extent = gm.maximal_depth();
         }
       else if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()))
-        spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::Sphere<dim>>(this->get_geometry_model()).radius();
+        {
+          AssertThrow(false, ExcMessage("Using the initial lithospheric pressure plugin does not make sense for a Sphere geometry."));
+          spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::Sphere<dim>>(this->get_geometry_model()).radius();
+          // Cannot include initial topography. Radius and maximum depth are the same.
+          depth_extent = spherical_representative_point[0];
+        }
       else if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
-        representative_point[dim-1]=  Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model()).get_extents()[dim-1];
+        {
+          representative_point[dim-1]=  Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model()).get_extents()[dim-1];
+          // Maximal_depth includes the maximum topography, while we need the topography at the
+          // representative point. Therefore, we only get the undeformed (uniform) depth.
+          depth_extent = representative_point[dim-1] - Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model()).get_origin()[dim-1];
+        }
       else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
-        representative_point[dim-1]=  Plugins::get_plugin_as_type<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()).get_extents()[dim-1];
+        {
+          representative_point[dim-1]=  Plugins::get_plugin_as_type<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()).get_extents()[dim-1];
+          // Maximal_depth includes the maximum topography, while we need the topography at the
+          // representative point. Therefore, we only get the undeformed (uniform) depth.
+          depth_extent = representative_point[dim-1] - Plugins::get_plugin_as_type<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()).get_origin()[dim-1];
+        }
       else
         AssertThrow(false, ExcNotImplemented());
+
+      // If present, retrieve initial topography at the reference point.
+      double topo = 0.;
+      if (!Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
+        {
+          // Get the surface x (,y) point
+          Point<dim-1> surface_point;
+          for (unsigned int d=0; d<dim-1; d++)
+            {
+              if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::CoordinateSystem::cartesian)
+                surface_point[d] = representative_point[d];
+              else
+                surface_point[d] = spherical_representative_point[d];
+
+            }
+          const InitialTopographyModel::Interface<dim> *topo_model = const_cast<InitialTopographyModel::Interface<dim>*>(&this->get_initial_topography_model());
+          topo = topo_model->value(surface_point);
+        }
+
+      // The spacing of the depth profile at the location of the representative point.
+      delta_z = (depth_extent + topo) / (n_points-1);
 
       // Set up the input for the density function of the material model.
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, n_compositional_fields);
@@ -251,6 +303,9 @@ namespace aspect
         }
 
       const unsigned int i = static_cast<unsigned int>(z/delta_z);
+      // If mesh deformation is allowed, the depth can become
+      // negative. However, the returned depth is capped at 0
+      // by the geometry models and thus always positive.
       Assert ((z/delta_z) >= 0, ExcInternalError());
       Assert (i+1 < pressure.size(), ExcInternalError());
 
@@ -348,7 +403,17 @@ namespace aspect
                                             "the number of integration points. "
                                             "The lateral coordinates of the point are used to calculate "
                                             "the lithostatic pressure profile with depth. This means that "
-                                            "the depth coordinate is not used."
+                                            "the depth coordinate is not used. "
+                                            "Note that when initial topography is included, the initial "
+                                            "topography at the user-provided representative point is used "
+                                            "to compute the profile. If at other points the (initial) topography "
+                                            "is higher, the behavior of this plugin at later timesteps depends "
+                                            "on the domain geometry. The depth returned by the geometry model "
+                                            "does (box geometries) or does not (spherical "
+                                            "geometries) include the initial topography. This depth is used "
+                                            "to interpolate between the points of the reference pressure profile. "
+                                            "Depths outside the reference profile get returned the pressure value "
+                                            "of the closest profile depth. "
                                             "\n\n"
                                             "Gravity is expected to point along the depth direction. ")
   }
