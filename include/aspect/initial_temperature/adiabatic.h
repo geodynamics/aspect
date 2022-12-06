@@ -24,6 +24,7 @@
 
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -42,9 +43,19 @@ namespace aspect
      * @ingroup InitialTemperatures
      */
     template <int dim>
-    class Adiabatic : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class Adiabatic : public Interface<dim>, public Utilities::AsciiDataBoundary<dim>
     {
       public:
+        /**
+         * Constructor.
+         */
+        Adiabatic ();
+
+        void initialize () override;
+
+        // avoid -Woverloaded-virtual:
+        using Utilities::AsciiDataBoundary<dim>::initialize;
+
         /**
          * Return the initial temperature as a function of position.
          */
@@ -64,6 +75,8 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
       private:
+
+        types::boundary_id surface_boundary_id;
         /**
          * Age of the upper thermal boundary layer at the surface of the
          * model. If set to zero, no boundary layer will be present in the
@@ -95,6 +108,20 @@ namespace aspect
          * profile.
          */
         double subadiabaticity;
+        /*
+         * Whether seafloor ages should be read in from an ASCII file,
+         *  or input as a constant value
+         */
+        bool read_from_ascii_file;
+        /*
+         * Whether to use the half space cooling model, or the plate cooling
+         * model
+         */
+        std::string cooling_model;
+        /*
+         * Depth to the base of the lithosphere for plate cooling model, in m
+         */
+        double lithosphere_thickness;
 
         /**
          * A function object representing the compositional fields that will
