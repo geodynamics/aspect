@@ -158,8 +158,11 @@ namespace aspect
       surface_boundary_set.insert(this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"));
       crustal_boundary_depth.initialize(surface_boundary_set, 1);
 
-      // We need to update our lateral averages after the Stokes solver because in the first iteration,
-      // our temperature filed is not prescribed leading to incorrect lateral averages and scaling of viscosities.
+      // The update() function updates the profile that stores the laterally averaged viscosity. 
+      // This is needed to compute the viscosity in the material model (since the viscosities are rescaled 
+      // so that the lateral average matches the reference profile). Since the viscosity depends on both 
+      // temperature and velocity, we want to update the lateral average profile after each temperature 
+      // and Stokes solve.
       this->get_signals().post_stokes_solver.connect([&](const SimulatorAccess<dim> &,
                                                          const unsigned int ,
                                                          const unsigned int ,
@@ -181,16 +184,16 @@ namespace aspect
       for (unsigned i = 0; i < n_material_data; i++)
         {
           if (material_file_format == perplex)
-            material_lookup.push_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
-                                      (new MaterialUtilities::Lookup::PerplexReader(data_directory+material_file_names[i],
-                                                                                    /*use_bilinear_interpolation*/ true,
-                                                                                    this->get_mpi_communicator())));
+            material_lookup.emplace_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
+                                        (new MaterialUtilities::Lookup::PerplexReader(data_directory+material_file_names[i],
+                                                                                      /*use_bilinear_interpolation*/ true,
+                                                                                      this->get_mpi_communicator())));
           else if (material_file_format == hefesto)
-            material_lookup.push_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
-                                      (new MaterialUtilities::Lookup::HeFESToReader(data_directory+material_file_names[i],
-                                                                                    data_directory+derivatives_file_names[i],
-                                                                                    /*use_bilinear_interpolation*/ true,
-                                                                                    this->get_mpi_communicator())));
+            material_lookup.emplace_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
+                                        (new MaterialUtilities::Lookup::HeFESToReader(data_directory+material_file_names[i],
+                                                                                      data_directory+derivatives_file_names[i],
+                                                                                      /*use_bilinear_interpolation*/ true,
+                                                                                      this->get_mpi_communicator())));
           else
             AssertThrow (false, ExcNotImplemented());
         }
@@ -221,8 +224,6 @@ namespace aspect
                                    " Consider reducing number of depth layers"
                                    " for averaging."));
         }
-
-      initialized = true;
     }
 
 
@@ -237,6 +238,7 @@ namespace aspect
       (void) maximal_depth;
 
       Assert(depth < maximal_depth, ExcInternalError());
+      Assert(depth > -maximal_depth*std::numeric_limits<double>::epsilon(), ExcInternalError());
 
       unsigned int depth_index;
       if (depth < reference_viscosity_coordinates.front())
@@ -680,11 +682,11 @@ namespace aspect
                                                                   pressure,
                                                                   dislocation_strain_rate,
                                                                   position);
-          ++i;
-
+                                                                  
           Assert(dis_viscosity > 0.0,
                  ExcMessage("Encountered negative dislocation viscosity in iteration " + std::to_string(i) +
                             ". Dislocation viscosity is: " + std::to_string(dis_viscosity)));
+          ++i;
         }
 
       Assert(i<dislocation_viscosity_iteration_number,ExcInternalError());
