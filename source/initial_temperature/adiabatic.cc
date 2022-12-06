@@ -44,14 +44,17 @@ namespace aspect
     void
     Adiabatic<dim>::initialize ()
     {
-      // Find the boundary indicator that represents the surface
-      surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
-      std::set<types::boundary_id> surface_boundary_set;
-      surface_boundary_set.insert(surface_boundary_id);
+      if (read_from_ascii_file)
+        {
+          // Find the boundary indicator that represents the surface
+          surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+          std::set<types::boundary_id> surface_boundary_set;
+          surface_boundary_set.insert(surface_boundary_id);
 
-      // The input ascii table contains one data column (LAB depths(m)) in addition to the coordinate columns.
-      Utilities::AsciiDataBoundary<dim>::initialize(surface_boundary_set,
-                                                    1);
+          // The input ascii table contains one data column (LAB depths(m)) in addition to the coordinate columns.
+          Utilities::AsciiDataBoundary<dim>::initialize(surface_boundary_set,
+                                                        1);
+        }
     }
 
     template <int dim>

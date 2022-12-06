@@ -1,3 +1,15 @@
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/initial-temperature/adiabatic/adiabatic.txt.
+
+
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
+
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 1,444 (882+121+441)
 
@@ -17,3 +29,6 @@ Number of degrees of freedom: 1,444 (882+121+441)
      Temperature min/avg/max: 293 K, 1130 K, 1623 K
 
 Termination requested by criterion: end time
+
+
+
