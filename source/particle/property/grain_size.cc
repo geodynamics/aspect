@@ -44,10 +44,6 @@ namespace aspect
         material_inputs  = MaterialModel::MaterialModelInputs<dim>(1, this->n_compositional_fields());
         material_outputs = MaterialModel::MaterialModelOutputs<dim>(1, this->n_compositional_fields());
 
-        AssertThrow(Plugins::plugin_type_matches<const MaterialModel::GrainSize<dim>>(this->get_material_model()),
-                    ExcMessage("This particle property only makes sense in "
-                               "combination with the grain_size material model."));
-
         AssertThrow(this->introspection().compositional_name_exists("grain_size"),
                     ExcMessage("This particle property only makes sense if "
                                "there is a compositional field named 'grain_size'."));
@@ -100,6 +96,8 @@ namespace aspect
         for (unsigned int d=0; d<dim; ++d)
           grad_u[d] = gradients[d];
         material_inputs.strain_rate[0] = symmetrize (grad_u);
+
+        material_inputs.requested_properties = MaterialModel::MaterialProperties::reaction_terms;
 
         this->get_material_model().evaluate(material_inputs,
                                             material_outputs);
@@ -156,7 +154,7 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_PROPERTY(GrainSize,
                                         "grain size",
                                         "A plugin in which the particle property is "
-                                        "defined as the evolving grain size of a particle."
+                                        "defined as the evolving grain size of a particle. "
                                         "See the grain_size material model "
                                         "documentation for more detailed information.")
 
