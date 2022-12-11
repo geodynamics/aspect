@@ -534,8 +534,8 @@ namespace aspect
               }
 
             // Assign incremental strain values to reaction terms
-            // First, obatain the old (plastic or viscous or total) strain 
-            // at the begining of the time step
+            // First, obtain the old (plastic or viscous or total)
+            // strain at the begining of the time step.
             std::vector<double> old_plastic_strain(in.n_evaluation_points());
             std::vector<double> old_viscous_strain(in.n_evaluation_points());
             std::vector<double> old_total_strain(in.n_evaluation_points());
