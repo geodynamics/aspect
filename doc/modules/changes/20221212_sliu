@@ -1,0 +1,6 @@
+Update: Changes to the internal logic and structure of the strain rheology.
+Added: A copy of the current_linearization_point at the beginning of each
+timestep to compute compositional reaction_terms for fields that are updated
+in an iterative Advection scheme.
+<br>
+(Sibiao Liu, John Naliboff, and Anne Glerum, 2022/12/12)

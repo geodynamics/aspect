@@ -29,7 +29,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 *** Timestep 1:  t=7.07107e+06 years, dt=7.07107e+06 years
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 13 iterations.
-   Solving viscous_strain system ... 11 iterations.
+   Solving viscous_strain system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+5 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00175222
@@ -47,11 +47,11 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 
 *** Timestep 2:  t=1.41421e+07 years, dt=7.07107e+06 years
    Solving temperature system... 0 iterations.
-   Solving plastic_strain system ... 15 iterations.
-   Solving viscous_strain system ... 13 iterations.
+   Solving plastic_strain system ... 14 iterations.
+   Solving viscous_strain system ... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+6 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00172535
+   Solving Stokes system... 0+5 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00154541
 
 
    Postprocessing:
@@ -66,11 +66,11 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 
 *** Timestep 3:  t=2.12132e+07 years, dt=7.07107e+06 years
    Solving temperature system... 0 iterations.
-   Solving plastic_strain system ... 15 iterations.
-   Solving viscous_strain system ... 12 iterations.
+   Solving plastic_strain system ... 14 iterations.
+   Solving viscous_strain system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000186238
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000218987
 
 
    Postprocessing:
@@ -85,11 +85,11 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 
 *** Timestep 4:  t=2.82843e+07 years, dt=7.07107e+06 years
    Solving temperature system... 0 iterations.
-   Solving plastic_strain system ... 15 iterations.
-   Solving viscous_strain system ... 13 iterations.
+   Solving plastic_strain system ... 14 iterations.
+   Solving viscous_strain system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000155037
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000167677
 
 
    Postprocessing:
@@ -105,14 +105,14 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 *** Timestep 5:  t=3.53553e+07 years, dt=7.07107e+06 years
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 14 iterations.
-   Solving viscous_strain system ... 13 iterations.
+   Solving viscous_strain system ... 15 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.90813e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000151887
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000408 m/year, 0.00069 m/year
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
 
 
@@ -124,14 +124,14 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 *** Timestep 6:  t=4.24264e+07 years, dt=7.07107e+06 years
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 14 iterations.
-   Solving viscous_strain system ... 13 iterations.
+   Solving viscous_strain system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.52807e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000111581
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000408 m/year, 0.00069 m/year
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
 
 
@@ -146,11 +146,11 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving viscous_strain system ... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.15952e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.14403e-05
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000408 m/year, 0.00069 m/year
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
 
 
@@ -161,15 +161,15 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 
 *** Timestep 8:  t=5e+07 years, dt=502525 years
    Solving temperature system... 0 iterations.
-   Solving plastic_strain system ... 12 iterations.
-   Solving viscous_strain system ... 9 iterations.
+   Solving plastic_strain system ... 13 iterations.
+   Solving viscous_strain system ... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.38886e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 4.62508e-05
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000408 m/year, 0.00069 m/year
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
      Writing graphical output:           output-visco_plastic_yield_plastic_viscous_strain_healing/solution/solution-00001
 

@@ -1,0 +1,143 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 25 (on 1 levels)
+Number of degrees of freedom: 520 (242+36+121+121)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.2/0.2/2e+09
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 5e+21 Pa s, 3.302e+13 kg
+     Temperature min/avg/max:                           273 K, 273 K, 273 K
+     RMS, max velocity:                                 7.77e-14 m/year, 2.03e-13 m/year
+     Writing graphical output:                          output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00000
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 1:  t=2e+06 years, dt=2e+06 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 19+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.17964
+
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.1622/0.1622/1.622e+09
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 5.946e+21 Pa s, 3.302e+13 kg
+     Temperature min/avg/max:                           273 K, 273 K, 273 K
+     RMS, max velocity:                                 1.8e-18 m/year, 4.17e-18 m/year
+     Writing graphical output:                          output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00001
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 2:  t=4e+06 years, dt=2e+06 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 19+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.47134
+
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.1243/0.1243/1.243e+09
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 6.891e+21 Pa s, 3.302e+13 kg
+     Temperature min/avg/max:                           273 K, 273 K, 273 K
+     RMS, max velocity:                                 1.2e-18 m/year, 3.56e-18 m/year
+     Writing graphical output:                          output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00002
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 3:  t=6e+06 years, dt=2e+06 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.2447
+
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.08652/0.08652/8.652e+08
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 7.837e+21 Pa s, 3.302e+13 kg
+     Temperature min/avg/max:                           273 K, 273 K, 273 K
+     RMS, max velocity:                                 1.32e-18 m/year, 3.31e-18 m/year
+     Writing graphical output:                          output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00003
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 4:  t=8e+06 years, dt=2e+06 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 23+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.2046
+
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.0487/0.0487/4.87e+08
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 8.783e+21 Pa s, 3.302e+13 kg
+     Temperature min/avg/max:                           273 K, 273 K, 273 K
+     RMS, max velocity:                                 2.28e-18 m/year, 4.53e-18 m/year
+     Writing graphical output:                          output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00004
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 5:  t=1e+07 years, dt=2e+06 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.22047
+
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.01087/0.01087/1.087e+08
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 9.728e+21 Pa s, 3.302e+13 kg
+     Temperature min/avg/max:                           273 K, 273 K, 273 K
+     RMS, max velocity:                                 5.43e-19 m/year, 1.51e-18 m/year
+     Writing graphical output:                          output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00005
+
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
