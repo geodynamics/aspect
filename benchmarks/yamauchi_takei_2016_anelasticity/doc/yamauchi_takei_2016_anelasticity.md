@@ -39,7 +39,7 @@ resulting in dissipation. Density is calculated using the expression
 :label: eq:density_P
 \rho (P,T) = \rho_{0}  \left\{ 1 - \left[\alpha(T - T_0)\right] + \frac{P}{K} \right\}
 ```
-where $\rho_{0} = 3291~\text{ kg . m}^{-3}$ and
+where $\rho_{0} = 3291~\text{ kg m}^{-3}$ and
 $\alpha = 3.59 \times 10^{-5}~\text{ K}^{-1}$ are the density and thermal
 expansivity corresponding to $T_{0} = 873~\text{ K}$, $P$ = pressure and
 $K = 115.2~\text{ GPa}$ is the bulk modulus. $J_1$ and $J_2$ are expressed as
@@ -127,11 +127,11 @@ In this benchmark, a 2D input ASCII file containing $V_S$ specified at 50 and
 temperature model that implements the $V_{S}(P,T)$ formulation detailed above.
 The default parameters governing the relationship between $V_S$ and
 temperature are set to the values calibrated by {cite:t}`yamauchi:takei:2016`, where $\mu_U^0 = 72.45~\text{ GPa}$,
-$\frac{\partial{\mu_U}}{\partial{T}} = -0.01094~\text{ GPa . K}^{-1}$,
+$\frac{\partial{\mu_U}}{\partial{T}} = -0.01094~\text{ GPa K}^{-1}$,
 $\frac{\partial{\mu_U}}{\partial{P}} = 1.987$,
-$\eta_r = 6.22 \times 10^{21}~\text{ Pa . s}$, $E_a = 452.5~\text{ kJ . mol}^{-1}$,
+$\eta_r = 6.22 \times 10^{21}~\text{ Pa s}$, $E_a = 452.5~\text{ kJ mol}^{-1}$,
 $V_a = 7.913 \times 10^{-6}~\text{ m}^{3}~\text{ mol}^{-1}$ and
-$\frac{\partial T_s}{\partial z} = 1.018~\text{ K . km}^{-1}$. As $V_S$ is a
+$\frac{\partial T_s}{\partial z} = 1.018~\text{ K km}^{-1}$. As $V_S$ is a
 complex function of temperature, a Brent minimization algorithm is used to
 find optimal values. {numref}`fig:anelasticity` shows that the implementation of this
 parameterization can accurately recreate the results shown by

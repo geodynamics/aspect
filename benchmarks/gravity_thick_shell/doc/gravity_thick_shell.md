@@ -95,11 +95,11 @@ in good agreement with the analytical profiles.
 ```{figure-md} fig:grav-thick-shell1
 <img src="gravity_g.*" width="100%" />
 
-Gravity benchmark for a thick shell. Gravitational potential computed ona  line from the center of a constant density shell to a radius of 10,000 km. The gray area indicates the region $R_{inner} \leq r \leq R_{outer}$ inside the shell, where the density is not zero.
+Gravity benchmark for a thick shell. Gravitational potential computed on a line from the center of a constant density shell to a radius of 10,000 km. The gray area indicates the region $R_{inner} \leq r \leq R_{outer}$ inside the shell, where the density is not zero.
 ```
 
 ```{figure-md} fig:grav-thick-shell2
 <img src="gravity_U.*" width="100%" />
 
-Gravity benchmark for a thick shell. Gravitational acceleration computed ona  line from the center of a constant density shell to a radius of 10,000 km. The gray area indicates the region $R_{inner} \leq r \leq R_{outer}$ inside the shell, where the density is not zero.
+Gravity benchmark for a thick shell. Gravitational acceleration computed on a line from the center of a constant density shell to a radius of 10,000 km. The gray area indicates the region $R_{inner} \leq r \leq R_{outer}$ inside the shell, where the density is not zero.
 ```
