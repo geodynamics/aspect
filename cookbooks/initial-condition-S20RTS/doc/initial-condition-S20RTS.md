@@ -1,3 +1,4 @@
+(sec:cookbooks-S20RTS)=
 # 3D convection with an Earth-like initial condition
 
 *This section was contributed by Jacqueline Austermann*
