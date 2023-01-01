@@ -712,7 +712,7 @@ The following properties are available:
 
 &lsquo;composition&rsquo;: Implementation of a plugin in which the particle property is defined by the compositional fields in the model. This can be used to track solid compositionevolution over time.
 
-&lsquo;crystal preferred orientation&rsquo;: The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO) on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation matrix. This allows for LPO evolution tracking with polycrystalline kinematic CrystalPreferredOrientation evolution models such as D-Rex (Kaminski and Ribe, 2001; Kaminski et al., 2004).
+&lsquo;crystal preferred orientation&rsquo;: The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO) on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation matrix. This allows for CPO evolution tracking with polycrystalline kinematic CrystalPreferredOrientation evolution models such as D-Rex (Kaminski and Ribe, 2001; Kaminski et al., 2004).
 
 &lsquo;elastic stress&rsquo;: A plugin in which the particle property tensor is defined as the total elastic stress a particle has accumulated. See the viscoelastic material model documentation for more detailed information.
 
@@ -894,6 +894,64 @@ Units: years if the &rsquo;Use years in output instead of seconds&rsquo; paramet
 
 **Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same number of MPI processes. It is implemented as final seed = user seed + MPI Rank.
 
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004)=
+## **Subsection:** Postprocess / Particles / Crystal Preferred Orientation / D-Rex 2004
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Exponents_20p)=
+### __Parameter name:__ Exponents p
+**Default value:** 1.5
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** This is exponent p as defined in equation 11 of Kaminski et al., 2004.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Minerals)=
+### __Parameter name:__ Minerals
+**Default value:** Olivine: Karato 2008, Enstatite
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** This determines what minerals and fabrics or fabric selectors are used used for the LPO calculation. The options are Olivine: A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Mobility)=
+### __Parameter name:__ Mobility
+**Default value:** 50
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The dimensionless intrinsic grain boundary mobility for both olivine and enstatite.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Nucleation_20efficiency)=
+### __Parameter name:__ Nucleation efficiency
+**Default value:** 5
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** This is the dimensionless nucleation rate as defined in equation 8 of Kaminski et al., 2004.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Stress_20exponents)=
+### __Parameter name:__ Stress exponents
+**Default value:** 3.5
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** This is the power law exponent that characterizes the rheology of the slip systems. It is used in equation 11 of Kaminski et al., 2004.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Threshold_20GBS)=
+### __Parameter name:__ Threshold GBS
+**Default value:** 0.3
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The Dimensionless Grain Boundary Sliding (GBS) threshold. This is a grain size threshold below which grain deform by GBS and become strain-free grains.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Volume_20fractions_20minerals)=
+### __Parameter name:__ Volume fractions minerals
+**Default value:** 0.5, 0.5
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The volume fraction for the different minerals. There need to be the same amount of values as there are minerals
+
 (parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains)=
 ## **Subsection:** Postprocess / Particles / Crystal Preferred Orientation / Initial grains
 (parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Model_20name)=
@@ -912,11 +970,11 @@ Units: years if the &rsquo;Use years in output instead of seconds&rsquo; paramet
 
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** This determines what minerals and fabrics or fabric selectors are used used for the LPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
+**Documentation:** This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
 
 (parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Uniform_20grains_20and_20random_20uniform_20rotations/Volume_20fractions_20minerals)=
 ### __Parameter name:__ Volume fractions minerals
-**Default value:** 0.5, 0.5
+**Default value:** 0.7, 0.3
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
