@@ -74,6 +74,11 @@ main: dummy
 # example/: dummy
 #	@$(def); run_prm $@ test.prm
 
+annulus/: dummy
+	+@$(def); make_lib $@/plugin
+	@$(def); run_all_prms $@/instantaneous
+	@$(def); run_all_prms $@/transient
+
 blankenbach/: dummy
 	+@$(def); make_lib $@/plugin
 	@$(def); run_all_prms $@
@@ -132,7 +137,8 @@ rayleigh_taylor_instability/: dummy
 rigid_shear/: dummy
 	+@$(def); make_lib $@/plugin
 	@$(def); run_all_prms $@/instantaneous
-	@$(def); run_all_prms $@/time-dependent
+	@$(def); run_all_prms $@/steady-state
+	@$(def); run_all_prms $@/transient
 
 sinking_block/: dummy
 	+@$(def); make_lib $@

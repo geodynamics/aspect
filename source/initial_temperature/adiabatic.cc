@@ -33,17 +33,51 @@ namespace aspect
 {
   namespace InitialTemperature
   {
+
+    template <int dim>
+    Adiabatic<dim>::Adiabatic ()
+      :
+      surface_boundary_id(numbers::invalid_unsigned_int)
+    {}
+
+    template <int dim>
+    void
+    Adiabatic<dim>::initialize ()
+    {
+      if (read_from_ascii_file)
+        {
+          // Find the boundary indicator that represents the surface
+          surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+          std::set<types::boundary_id> surface_boundary_set;
+          surface_boundary_set.insert(surface_boundary_id);
+
+          // The input ascii table contains one data column (LAB depths(m)) in addition to the coordinate columns.
+          Utilities::AsciiDataBoundary<dim>::initialize(surface_boundary_set,
+                                                        1);
+        }
+    }
+
     template <int dim>
     double
     Adiabatic<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      // convert input ages to seconds
-      const double age_top =    (this->convert_output_to_years() ? age_top_boundary_layer * year_in_seconds
-                                 : age_top_boundary_layer);
+      double age_top = 0;
       const double age_bottom = (this->convert_output_to_years() ? age_bottom_boundary_layer * year_in_seconds
                                  : age_bottom_boundary_layer);
-
+      if (read_from_ascii_file)
+        {
+          // The input ascii contains the age of the seafloor. User must provide ages in seconds
+          age_top = Utilities::AsciiDataBoundary<dim>::get_data_component(surface_boundary_id,
+                                                                          position,
+                                                                          0);
+        }
+      else
+        {
+          // convert input ages to seconds
+          age_top =    (this->convert_output_to_years() ? age_top_boundary_layer * year_in_seconds
+                        : age_top_boundary_layer);
+        }
       // First, get the temperature of the adiabatic profile at a representative
       // point at the top and bottom boundary of the model
       // if adiabatic heating is switched off, assume a constant profile
@@ -73,14 +107,12 @@ namespace aspect
                                  this->get_fixed_temperature_boundary_indicators())
                                :
                                adiabatic_bottom_temperature);
-
-      // get a representative profile of the compositional fields as an input
-      // for the material model
       const double depth = this->get_geometry_model().depth(position);
 
       // look up material properties
       MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
+
       // compute the adiabat by referring to the Adiabatic conditions model
       in.position[0]=position;
       in.temperature[0]=this->get_adiabatic_conditions().temperature(position);
@@ -101,18 +133,41 @@ namespace aspect
                              out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0])
                            );
 
-      // analytical solution for the thermal boundary layer from half-space cooling model
-      const double surface_cooling_temperature = age_top > 0.0 ?
-                                                 (T_surface - adiabatic_surface_temperature) *
-                                                 erfc(this->get_geometry_model().depth(position) /
-                                                      (2 * sqrt(kappa * age_top)))
-                                                 : 0.0;
-      const double bottom_heating_temperature = (age_bottom > 0.0 && this->get_adiabatic_conditions().is_initialized()) ?
-                                                (T_bottom - adiabatic_bottom_temperature + subadiabaticity)
-                                                * erfc((this->get_geometry_model().maximal_depth()
-                                                        - this->get_geometry_model().depth(position)) /
-                                                       (2 * sqrt(kappa * age_bottom)))
-                                                : 0.0;
+      double surface_cooling_temperature = 0;
+      double bottom_heating_temperature = 0;
+      if (cooling_model == "half-space cooling")
+        {
+          // analytical solution for the thermal boundary layer from half-space cooling model
+          surface_cooling_temperature = age_top > 0.0 ?
+                                        (T_surface - adiabatic_surface_temperature) *
+                                        erfc(this->get_geometry_model().depth(position) /
+                                             (2 * sqrt(kappa * age_top)))
+                                        : 0.0;
+          bottom_heating_temperature = (age_bottom > 0.0 && this->get_adiabatic_conditions().is_initialized()) ?
+                                       (T_bottom - adiabatic_bottom_temperature + subadiabaticity)
+                                       * erfc((this->get_geometry_model().maximal_depth()
+                                               - this->get_geometry_model().depth(position)) /
+                                              (2 * sqrt(kappa * age_bottom)))
+                                       : 0.0;
+        }
+
+      if (cooling_model == "plate cooling")
+        {
+          if (depth > lithosphere_thickness)
+            {
+              surface_cooling_temperature = 0;
+            }
+          else
+            {
+              const double exponential = -kappa * std::pow(numbers::PI, 2) * age_top / std::pow(lithosphere_thickness, 2);
+              double sum_terms = 0;
+              for (unsigned int n=1; n<11; ++n)
+                {
+                  sum_terms += 1/(double)n * std::exp(std::pow((double)n, 2) * exponential) * std::sin((double)n * depth * numbers::PI / lithosphere_thickness);
+                  surface_cooling_temperature = T_surface - adiabatic_surface_temperature + (adiabatic_surface_temperature - T_surface) * (depth / lithosphere_thickness + 2 / numbers::PI * sum_terms);
+                }
+            }
+        }
 
       // set the initial temperature perturbation
       // first: get the center of the perturbation, then check the distance to the
@@ -239,13 +294,16 @@ namespace aspect
                 : bottom_heating_temperature + subadiabatic_T);
     }
 
-
     template <int dim>
     void
     Adiabatic<dim>::declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection ("Initial temperature model");
       {
+        Utilities::AsciiDataBase<dim>::declare_parameters(prm,
+                                                          "$ASPECT_SOURCE_DIR/data/initial-temperature/adiabatic/",
+                                                          "adiabatic.txt",
+                                                          "Adiabatic");
         prm.enter_subsection("Adiabatic");
         {
           prm.declare_entry ("Age top boundary layer", "0.",
@@ -291,6 +349,15 @@ namespace aspect
                              "This function is one-dimensional and depends only on depth. The format of this "
                              "functions follows the syntax understood by the "
                              "muparser library, see Section~\\ref{sec:muparser-format}.");
+          prm.declare_entry ("Use ASCII file for seafloor age", "false",
+                             Patterns::Bool (),
+                             "Whether to define seafloor ages with an ASCII data file.");
+          prm.declare_entry ("Cooling model", "half-space cooling",
+                             Patterns::Selection ("half-space cooling|plate cooling"),
+                             "Whether to use the half space cooling model or the plate cooling model");
+          prm.declare_entry ("Lithosphere thickness", "125e3",
+                             Patterns::Double (0.),
+                             "Thickness of the lithosphere for plate cooling model. \\si{\\m}");
           prm.enter_subsection("Function");
           {
             Functions::ParsedFunction<1>::declare_parameters (prm, 1);
@@ -318,6 +385,7 @@ namespace aspect
 
       prm.enter_subsection ("Initial temperature model");
       {
+        Utilities::AsciiDataBase<dim>::parse_parameters(prm, "Adiabatic");
         prm.enter_subsection("Adiabatic");
         {
           age_top_boundary_layer = prm.get_double ("Age top boundary layer");
@@ -326,6 +394,9 @@ namespace aspect
           amplitude = prm.get_double ("Amplitude");
           perturbation_position = prm.get("Position");
           subadiabaticity = prm.get_double ("Subadiabaticity");
+          read_from_ascii_file = prm.get_bool ("Use ASCII file for seafloor age");
+          cooling_model = prm.get ("Cooling model");
+          lithosphere_thickness = prm.get_double ("Lithosphere thickness");
           if (n_compositional_fields > 0)
             {
               prm.enter_subsection("Function");

@@ -1,0 +1,80 @@
+# The 2D Stokes in an annulus benchmark, for which an
+# analytical solution is available. This is the rotating
+# version of the benchmark described in Gassmoeller et al. 2023.
+#
+# See the doc/ directory or manual for more information.
+
+# Most parameters are identical to the instantaneous version
+# of the benchmark. Refer to that parameter file for most settings.
+include $ASPECT_SOURCE_DIR/benchmarks/annulus/instantaneous/annulus.prm
+
+# Only list parameters that are specific for the transient benchmark
+set Additional shared libraries            = ../plugin/libannulus.so
+set Dimension                              = 2
+
+# for benchmark: t = log(1 + 4 pi)
+set End time                                = 2.6075939815049280917817614240391581472837221358084918109292273672
+
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = density_field
+end
+
+subsection Initial composition model
+  set List of model names = initial density
+end
+
+subsection Material model
+  set Material averaging = harmonic average only viscosity
+end
+
+subsection Annulus benchmark
+   set Use analytical density  = false
+   set Use transient solution  = true
+   set k                       = 4
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 2
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor, rotation statistics
+
+  subsection Dynamic topography
+    set Density above = 0
+    set Density below = 0
+  end
+
+  subsection Visualization
+    set List of output variables = density, gravity, AnnulusVisualizationPostprocessor
+    set Time between graphical output = 0.1
+  end
+
+  subsection Particles
+    set Time between data output = 2.6
+    set Integration scheme = rk2
+    set Interpolation scheme = bilinear least squares
+    set List of particle properties = particle density
+    set Update ghost particles = true
+    set Particle generator name = random uniform
+    set Number of particles = 49152
+    set Load balancing strategy = add particles
+    set Minimum particles per cell = 12
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+    set Number of cheap Stokes solver steps = 200
+    set Stokes solver type = block GMG
+    set Krylov method for cheap solver steps = IDR(s)
+  end
+end

@@ -69,6 +69,7 @@ ENDFOREACH()
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR}/include include)
 INCLUDE_DIRECTORIES(AFTER  contrib/catch)
 
+# Generate compile_commands.json for tooling (VS Code, etc.)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 LIST(APPEND CMAKE_MODULE_PATH

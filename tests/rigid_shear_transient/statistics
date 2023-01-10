@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+# 14: RMS velocity (m/s)
+# 15: Max. velocity (m/s)
+# 16: u_L2
+# 17: p_L2
+# 18: rho_L2
+0 0.000000000000e+00 0.000000000000e+00 128 1275 561 1152 0 0 18 20 54 output-rigid_shear_transient/solution/solution-00000 1.22470146e+00 1.99784952e+00 5.02550856553330e-04 3.67778670516381e-02 3.48379104309455e-04 
+1 3.125000000000e-02 3.125000000000e-02 128 1275 561 1152 0 6 22 24 72                                                   "" 1.25080310e+00 2.02920849e+00 7.76508291011945e-04 3.83515721782797e-02 6.07810300113464e-03 
+2 6.208254471182e-02 3.083254471182e-02 128 1275 561 1152 0 5 21 23 69                                                   "" 1.27760050e+00 2.06314708e+00 9.74432432800490e-04 3.99219208934368e-02 8.26698430425957e-03 
+3 9.236299036340e-02 3.028044565158e-02 128 1275 561 1152 0 5 20 22 66                                                   "" 1.30497921e+00 2.09484440e+00 1.08656220404426e-03 4.11975388105914e-02 9.20551442103182e-03 
+4 1.000000000000e-01 7.637009636605e-03 128 1275 561 1152 0 4 18 20 60 output-rigid_shear_transient/solution/solution-00001 1.31205423e+00 2.10406404e+00 1.09850385915263e-03 4.14082013994989e-02 9.25765301672370e-03 

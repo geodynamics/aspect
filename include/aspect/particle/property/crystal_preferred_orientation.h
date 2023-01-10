@@ -35,21 +35,52 @@ namespace aspect
   {
     namespace Property
     {
+      /**
+       * @brief The type of deformation used by the CPO code.
+       *
+       * passive: Only to be used with the spin tensor CPO Derivative algorithm.
+       * olivine_a_fabric to olivine_e_fabric: Only to be used with the D-Rex CPO Derivative algorithm.
+       *  Sets the deformation type of the mineral to a Olivine A-E Fabric, which influences the relative strength of the slip planes. See table 1 in Fraters and Billen (2021).
+       * enstatite: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a enstatite Fabric, which influences the relative strength of the slip planes.
+       */
       enum class DeformationType
       {
-        passive
+        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite
       };
 
+
+      /**
+       * @brief The type of deformation selector used by the CPO code.
+       *
+       * The selector is a input parameter and it can either set a deformation type directly or deterimine the deformation type through an algorithm.
+       * The deformation type selector is used to determine/select the deformation type. It can be a fixed deformation type, for example,
+       * by setting it to olivine_a_fabric, or it can be dynamically chosen, which is what the olivine_karato_2008 option does.
+       *
+       * passive: Only to be used with the spin tensor CPO Derivative algorithm.
+       * olivine_a_fabric to olivine_e_fabric: Only to be used with the D-Rex CPO Derivative algorithm.
+       *  Sets the deformation type of the mineral to a Olivine A-E Fabric, which influences the relative strength of the slip planes. See table 1 in Fraters and Billen (2021).
+       * enstatite: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a enstatite Fabric, which influences the relative strength of the slip planes.
+       * olivine_karato_2008: Only to be used with the D-Rex CPO Derivative algorithm. Sets the deformation type of the mineral to a olivine fabric based on the table in Karato 2008.
+       */
       enum class DeformationTypeSelector
       {
-        passive
+        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, olivine_karato_2008
       };
 
+      /**
+       * @brief The type of Advection method used to advect the CPO properties.
+       */
       enum class AdvectionMethod
       {
         forward_euler, backward_euler
       };
 
+      /**
+       * @brief The algorithm used to compute the derivatives of the grain size and rotation matrix used in the advection.
+       *
+       * spin_tensor: Rotates the CPO properties soly with the rotation of the particle itself.
+       * drex_2004: Rotates the CPO properties based on the D-Rex 2004 algorithm.
+       */
       enum class CPODerivativeAlgorithm
       {
         spin_tensor, drex_2004
@@ -179,23 +210,61 @@ namespace aspect
           get_property_information() const override;
 
           /**
-           * Computes the volume fraction and grain orientation derivatives of all the grains of a mineral.
+           * @brief Computes the volume fraction and grain orientation derivatives of all the grains of a mineral.
            *
-           * @param volume_fractions are the current volume fractions of the grains in a mineral.
-           * @param rotation_matrices are the current rotation matrices of the grains in a mineral.
-           * @param strain_rate is the strain-rate at the location of the particle.
-           * @param velocity_gradient_tensor is the velocity gradient tensor at the location of the particle.
-           * @param volume_fraction_mineral is the volume fraction of the current mineral with respect to
-           * the other minerals in the particle.
-           * @param ref_resolved_shear_stress is the reference resolved shear stress of the mineral.
+           * @param cpo_index The location where the CPO data starts in the data array.
+           * @param data The data array containing the CPO data.
+           * @param mineral_i The mineral for which to compute the derivatives for.
+           * @param strain_rate_3d The 3D strain rate at the location where the derivative is requested.
+           * @param velocity_gradient_tensor The velocity gradient tensor at the location where the derivative is requested.
+           * @param position the location for which the derivative is requested.
+           * @param temperature The temperature at the location where the derivative is requested.
+           * @param pressure The pressure at the location where the derivative is requested.
+           * @param velocity The veloicty at the location where the derivative is requested.
+           * @param compositions The compositios at the location where the derivative is requested.
+           * @param strain_rate The strain-rate at the location where the derivative is requested.
+           * @param deviatoric_strain_rate The deviatoric strain-rate at the location where the derivative is requested.
+           * @param water_content The water content at the location where the derivative is requested.
            */
           std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
           compute_derivatives(const unsigned int cpo_index,
                               const ArrayView<double> &data,
                               const unsigned int mineral_i,
-                              const SymmetricTensor<2,3> &strain_rate,
+                              const SymmetricTensor<2,3> &strain_rate_3d,
                               const Tensor<2,3> &velocity_gradient_tensor,
-                              const std::array<double,4> &ref_resolved_shear_stress) const;
+                              const Point<dim> &position,
+                              const double temperature,
+                              const double pressure,
+                              const Tensor<1,dim> &velocity,
+                              const std::vector<double> &compositions,
+                              const SymmetricTensor<2,dim> &strain_rate,
+                              const SymmetricTensor<2,dim> &deviatoric_strain_rate,
+                              const double water_content) const;
+
+          /**
+           * @brief Computes the CPO derivatives with the D-Rex 2004 algorithm.
+           *
+           * @param cpo_index The location where the CPO data starts in the data array.
+           * @param data The data array containing the CPO data.
+           * @param mineral_i The mineral for which to compute the derivatives for.
+           * @param strain_rate_3d The 3D strain rate
+           * @param velocity_gradient_tensor The velocity gradient tensor
+           * @param ref_resolved_shear_stress Represent one value per slip plane.
+           * The planes are ordered from weakest to strongest with relative values,
+           * where the inactive plane is infinity strong. So it is a measure of strength
+           * on each slip plane.
+           * @param prevent_nondimensionalization Prevent nondimensializing values internally.
+           * Only for unit testing purposes.
+           */
+          std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
+          compute_derivatives_drex_2004(const unsigned int cpo_index,
+                                        const ArrayView<double> &data,
+                                        const unsigned int mineral_i,
+                                        const SymmetricTensor<2,3> &strain_rate_3d,
+                                        const Tensor<2,3> &velocity_gradient_tensor,
+                                        const std::array<double,4> ref_resolved_shear_stress,
+                                        const bool prevent_nondimensionalization = false) const;
+
 
           /**
            * Declare the parameters this class takes through input files.
@@ -221,6 +290,47 @@ namespace aspect
            */
           unsigned int
           get_number_of_minerals() const;
+
+          /**
+           * @brief Determines the deformation type from the deformation type selector.
+           * If the provided @p deformation_type_selector is a specific deformation type,
+           * the function will simply return the corresponding deformation type. However,
+           * if the @p deformation_type_selector is an algorithm to determine the current
+           * deformation type (e.g. based on measured lab data or analytical models), then
+           * the function computes the appropriate deformation type at the given conditions
+           * and returns the compute deformation type.
+           */
+          DeformationType
+          determine_deformation_type(const DeformationTypeSelector deformation_type_selector,
+                                     const Point<dim> &position,
+                                     const double temperature,
+                                     const double pressure,
+                                     const Tensor<1,dim> &velocity,
+                                     const std::vector<double> &compositions,
+                                     const SymmetricTensor<2,dim> &strain_rate,
+                                     const SymmetricTensor<2,dim> &deviatoric_strain_rate,
+                                     const double water_content) const;
+
+          /**
+           * @brief Computes the deformation type given the stress and water content according to the
+           * table in Karato 2008.
+           */
+          DeformationType
+          determine_deformation_type_karato_2008(const double stress,
+                                                 const double water_content) const;
+
+          /**
+           * @brief Computes the reference resolved shear stress (RRSS) based on the selected deformation type.
+           *
+           * The inactive plane should theoretically be infinitly strong, but this is nummerically not desirable,
+           * so an optional max_value can be set to indicate an inactive plane.
+           *
+           * It is currently designed to return the relative strength of the slip planes for olivine, which are are 4,
+           * but this could be generalized.
+           */
+          std::array<double,4>
+          reference_resolved_shear_stress_from_deformation_type(DeformationType deformation_type,
+                                                                double max_value = 1e60) const;
 
           /**
            * @brief Returns the value in the data array representing the deformation type.
@@ -353,13 +463,14 @@ namespace aspect
            * @param data The particle data vector.
            * @param mineral_i The mineral to set the value of the rotation matrix of a grain for.
            * @param grain_i The grain to get the value of the rotation matrix of.
+           * @param rotation_matrix The rotation matrix to set for the grain in the mineral.
            */
           inline
           void set_rotation_matrix_grains(const unsigned int cpo_data_position,
                                           const ArrayView<double> &data,
                                           const unsigned int mineral_i,
                                           const unsigned int grain_i,
-                                          const Tensor<2,3> rotation_matrix) const
+                                          const Tensor<2,3> &rotation_matrix) const
           {
             for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
               {
@@ -441,6 +552,11 @@ namespace aspect
           unsigned int n_minerals;
 
           /**
+           * The index of the water composition.
+           */
+          unsigned int water_index;
+
+          /**
            * A vector containing the deformation type selectors provided by the user.
            * Should be one of the following: "Olivine: Karato 2008", "Olivine: A-fabric",
            * "Olivine: B-fabric", "Olivine: C-fabric", "Olivine: D-fabric", "Olivine: E-fabric",
@@ -479,6 +595,41 @@ namespace aspect
            * The tensor representation of the permutation symbol.
            */
           Tensor<3,3> permutation_operator_3d;
+
+          /**
+           * @name D-Rex variables
+           */
+          /** @{ */
+          /**
+           * Stress exponent
+           */
+          double stress_exponent;
+
+          /**
+           * efficiency of nucleation parameter.
+           * lambda_m in equation 8 of Kaminski et al. (2004, Geophys. J. Int)
+           */
+          double nucleation_efficiency;
+
+          /**
+           * An exponent described in equation 10 of Kaminski and Ribe (2001, EPSL)
+           */
+          double exponent_p;
+
+          /**
+           * The Dimensionless Grain Boundary Sliding (GBS) threshold.
+           * This is a grain size threshold below which grain deform by GBS and
+           * become strain-free grains.
+           */
+          double threshold_GBS;
+
+          /**
+           * Dimensionless grain boundary mobility as described by equation 14
+           * in Kaminski and Ribe (2001, EPSL).
+           */
+          double mobility;
+
+          /** @} */
 
       };
     }

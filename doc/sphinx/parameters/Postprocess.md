@@ -9,7 +9,7 @@
 ### __Parameter name:__ List of postprocessors
 **Default value:**
 
-**Pattern:** [MultipleSelection Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|core statistics|depth average|dynamic topography|entropy viscosity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particles|point values|pressure statistics|rotation statistics|spherical velocity statistics|temperature statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
+**Pattern:** [MultipleSelection Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|depth average|domain volume statistics|dynamic topography|entropy viscosity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particles|point values|pressure statistics|rotation statistics|spherical velocity statistics|temperature statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
 
 **Documentation:** A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text &lsquo;all&rsquo; indicates that all available postprocessors should be run after each time step.
 
@@ -31,11 +31,15 @@ The following postprocessors are available:
 
 &lsquo;composition statistics&rsquo;: A postprocessor that computes some statistics about the compositional fields, if present in this simulation. In particular, it computes maximal and minimal values of each field, as well as the total mass contained in this field as defined by the integral $m_i(t) = \int_\Omega c_i(\mathbf x,t) \; \text{d}x$.
 
+&lsquo;composition velocity statistics&rsquo;: A postprocessor that computes the root mean square velocity over the area spanned by each compositional field (i.e. where the field values are larger or equal to 0.5.
+
 &lsquo;core statistics&rsquo;: A postprocessor that computes some statistics about the core evolution. (Working only with dynamic core boundary temperature plugin)
 
 &lsquo;depth average&rsquo;: A postprocessor that computes depth averaged quantities and writes them into a file <depth_average.ext> in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section `Postprocess/Depth average` in the input file.
 
 In the output files, the $x$-value of each data point corresponds to the depth, whereas the $y$-value corresponds to the simulation time. The time is provided in seconds or, if the global &ldquo;Use years in output instead of seconds&rdquo; parameter is set, in years.
+
+&lsquo;domain volume statistics&rsquo;: A postprocessor that computes the total area (in 2d) or volume (in 3D) of the computational domain.
 
 &lsquo;dynamic topography&rsquo;: A postprocessor that computes a measure of dynamic topography based on the stress at the surface and bottom. The data is written into text files named &lsquo;dynamic\_topography.NNNNN&rsquo; in the output directory, where NNNNN is the number of the time step.
 
@@ -220,6 +224,16 @@ The file format then consists of lines with Euclidean coordinates followed by th
 **Pattern:** [Bool]
 
 **Documentation:** Select whether ASPECT should terminate if the command returns a non-zero exit status.
+
+(parameters:Postprocess/Composition_20velocity_20statistics)=
+## **Subsection:** Postprocess / Composition velocity statistics
+(parameters:Postprocess/Composition_20velocity_20statistics/Names_20of_20selected_20compositional_20fields)=
+### __Parameter name:__ Names of selected compositional fields
+**Default value:**
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** A list of names for each of the compositional fields that you want to compute the combined RMS velocity for.
 
 (parameters:Postprocess/Depth_20average)=
 ## **Subsection:** Postprocess / Depth average
@@ -690,13 +704,15 @@ Select one of the following models:
 ### __Parameter name:__ List of particle properties
 **Default value:**
 
-**Pattern:** [MultipleSelection composition|elastic stress|function|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
+**Pattern:** [MultipleSelection composition|crystal preferred orientation|elastic stress|function|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
 
 **Documentation:** A comma separated list of particle properties that should be tracked. By default none is selected, which means only position, velocity and id of the particles are output.
 
 The following properties are available:
 
 &lsquo;composition&rsquo;: Implementation of a plugin in which the particle property is defined by the compositional fields in the model. This can be used to track solid compositionevolution over time.
+
+&lsquo;crystal preferred orientation&rsquo;: The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO) on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation matrix. This allows for CPO evolution tracking with polycrystalline kinematic CrystalPreferredOrientation evolution models such as D-Rex (Kaminski and Ribe, 2001; Kaminski et al., 2004).
 
 &lsquo;elastic stress&rsquo;: A plugin in which the particle property tensor is defined as the total elastic stress a particle has accumulated. See the viscoelastic material model documentation for more detailed information.
 
@@ -827,6 +843,142 @@ Units: years if the &rsquo;Use years in output instead of seconds&rsquo; paramet
 **Pattern:** [Bool]
 
 **Documentation:** File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to &lsquo;true&rsquo; moves this process into a background thread, while the rest of the model continues.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation)=
+## **Subsection:** Postprocess / Particles / Crystal Preferred Orientation
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/CPO_20derivatives_20algorithm)=
+### __Parameter name:__ CPO derivatives algorithm
+**Default value:** Spin tensor
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Options: Spin tensor
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Number_20of_20grains_20per_20particle)=
+### __Parameter name:__ Number of grains per particle
+**Default value:** 50
+
+**Pattern:** [Integer range 1...2147483647 (inclusive)]
+
+**Documentation:** The number of grains of each different mineral each particle contains.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Property_20advection_20max_20iterations)=
+### __Parameter name:__ Property advection max iterations
+**Default value:** 100
+
+**Pattern:** [Integer range 0...2147483647 (inclusive)]
+
+**Documentation:** The Backward Euler property advection method involve internal iterations. This option allows for setting the maximum number of iterations. Note that when the iteration is ended by the max iteration amount an assert is thrown.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Property_20advection_20method)=
+### __Parameter name:__ Property advection method
+**Default value:** Backward Euler
+
+**Pattern:** [Anything]
+
+**Documentation:** Options: Forward Euler, Backward Euler
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Property_20advection_20tolerance)=
+### __Parameter name:__ Property advection tolerance
+**Default value:** 1e-10
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The Backward Euler property advection method involve internal iterations. This option allows for setting a tolerance. When the norm of tensor new - tensor old is smaller than this tolerance, the iteration is stopped.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Random_20number_20seed)=
+### __Parameter name:__ Random number seed
+**Default value:** 1
+
+**Pattern:** [Integer range 0...2147483647 (inclusive)]
+
+**Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same number of MPI processes. It is implemented as final seed = user seed + MPI Rank.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004)=
+## **Subsection:** Postprocess / Particles / Crystal Preferred Orientation / D-Rex 2004
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Exponents_20p)=
+### __Parameter name:__ Exponents p
+**Default value:** 1.5
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** This is exponent p as defined in equation 11 of Kaminski et al., 2004.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Minerals)=
+### __Parameter name:__ Minerals
+**Default value:** Olivine: Karato 2008, Enstatite
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** This determines what minerals and fabrics or fabric selectors are used used for the LPO calculation. The options are Olivine: A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Mobility)=
+### __Parameter name:__ Mobility
+**Default value:** 50
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The dimensionless intrinsic grain boundary mobility for both olivine and enstatite.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Nucleation_20efficiency)=
+### __Parameter name:__ Nucleation efficiency
+**Default value:** 5
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** This is the dimensionless nucleation rate as defined in equation 8 of Kaminski et al., 2004.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Stress_20exponents)=
+### __Parameter name:__ Stress exponents
+**Default value:** 3.5
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** This is the power law exponent that characterizes the rheology of the slip systems. It is used in equation 11 of Kaminski et al., 2004.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Threshold_20GBS)=
+### __Parameter name:__ Threshold GBS
+**Default value:** 0.3
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The Dimensionless Grain Boundary Sliding (GBS) threshold. This is a grain size threshold below which grain deform by GBS and become strain-free grains.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Volume_20fractions_20minerals)=
+### __Parameter name:__ Volume fractions minerals
+**Default value:** 0.5, 0.5
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The volume fraction for the different minerals. There need to be the same amount of values as there are minerals
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains)=
+## **Subsection:** Postprocess / Particles / Crystal Preferred Orientation / Initial grains
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Model_20name)=
+### __Parameter name:__ Model name
+**Default value:** Uniform grains and random uniform rotations
+
+**Pattern:** [Anything]
+
+**Documentation:** The model used to initialize the CPO for all particles. Currently &rsquo;Uniform grains and random uniform rotations&rsquo; is the only valid option.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Uniform_20grains_20and_20random_20uniform_20rotations)=
+## **Subsection:** Postprocess / Particles / Crystal Preferred Orientation / Initial grains / Uniform grains and random uniform rotations
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Uniform_20grains_20and_20random_20uniform_20rotations/Minerals)=
+### __Parameter name:__ Minerals
+**Default value:** Olivine: Karato 2008, Enstatite
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Uniform_20grains_20and_20random_20uniform_20rotations/Volume_20fractions_20minerals)=
+### __Parameter name:__ Volume fractions minerals
+**Default value:** 0.7, 0.3
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The volume fractions for the different minerals. There need to be the same number of values as there are minerals.Note that the currently implemented scheme is incompressible and does not allow chemical interaction or the formation of new phases
 
 (parameters:Postprocess/Particles/Function)=
 ## **Subsection:** Postprocess / Particles / Function
@@ -1073,6 +1225,18 @@ If the function you are describing represents a vector-valued function with mult
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
 **Documentation:** The number of radial shells of particles that will be generated around the central point.
+
+(parameters:Postprocess/Particles/Integrator)=
+## **Subsection:** Postprocess / Particles / Integrator
+(parameters:Postprocess/Particles/Integrator/RK2)=
+## **Subsection:** Postprocess / Particles / Integrator / RK2
+(parameters:Postprocess/Particles/Integrator/RK2/Higher_20order_20accurate_20in_20time)=
+### __Parameter name:__ Higher order accurate in time
+**Default value:** true
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to correctly evaluate old and current velocity solution to reach higher-order accuracy in time. If set to &rsquo;false&rsquo; only the old velocity solution is evaluated to simulate a first order method in time. This is only recommended for benchmark purposes.
 
 (parameters:Postprocess/Particles/Interpolator)=
 ## **Subsection:** Postprocess / Particles / Interpolator
@@ -1426,6 +1590,14 @@ Physical units: \si{\per\second}.
 
 **Documentation:** The file format to be used for graphical output. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described.
 
+(parameters:Postprocess/Visualization/Output_20mesh_20displacement)=
+### __Parameter name:__ Output mesh displacement
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain. The displacement vector from the reference configuration may be written as an output field by setting this parameter to true.
+
 (parameters:Postprocess/Visualization/Output_20mesh_20velocity)=
 ### __Parameter name:__ Output mesh velocity
 **Default value:** false
@@ -1433,6 +1605,14 @@ Physical units: \si{\per\second}.
 **Pattern:** [Bool]
 
 **Documentation:** For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain, so the mesh has its own velocity field.  This may be written as an output field by setting this parameter to true.
+
+(parameters:Postprocess/Visualization/Output_20undeformed_20mesh)=
+### __Parameter name:__ Output undeformed mesh
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain. By default, we output the deformed mesh. If this setting is set to true, the mesh will be written in the reference state without deformation instead. If you output the mesh displacement, you can obtain the deformed mesh by using the &rsquo;warp by vector&rsquo; ParaView filter.
 
 (parameters:Postprocess/Visualization/Point_2dwise_20stress_20and_20strain)=
 ### __Parameter name:__ Point-wise stress and strain

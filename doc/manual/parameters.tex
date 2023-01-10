@@ -6859,6 +6859,74 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Cooling model}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Cooling model}
+\label{parameters:Initial_20temperature_20model/Adiabatic/Cooling_20model}
+
+
+\index[prmindex]{Cooling model}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Cooling model}
+{\it Value:} half-space cooling
+
+
+{\it Default:} half-space cooling
+
+
+{\it Description:} Whether to use the half space cooling model or the plate cooling model
+
+
+{\it Possible values:} Any one of half-space cooling, plate cooling
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Data directory}
+\label{parameters:Initial_20temperature_20model/Adiabatic/Data_20directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/adiabatic/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/adiabatic/
+
+
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
+
+
+{\it Possible values:} A directory name
+\item {\it Parameter name:} {\tt Data file name}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Data file name}
+\label{parameters:Initial_20temperature_20model/Adiabatic/Data_20file_20name}
+
+
+\index[prmindex]{Data file name}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Data file name}
+{\it Value:} adiabatic.txt
+
+
+{\it Default:} adiabatic.txt
+
+
+{\it Description:} The file name of the model data.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Lithosphere thickness}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Lithosphere thickness}
+\label{parameters:Initial_20temperature_20model/Adiabatic/Lithosphere_20thickness}
+
+
+\index[prmindex]{Lithosphere thickness}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Lithosphere thickness}
+{\it Value:} 125e3
+
+
+{\it Default:} 125e3
+
+
+{\it Description:} Thickness of the lithosphere for plate cooling model. \si{\m}
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Position}
 \phantomsection\label{parameters:Initial temperature model/Adiabatic/Position}
 \label{parameters:Initial_20temperature_20model/Adiabatic/Position}
@@ -6893,6 +6961,23 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Scale factor}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Scale factor}
+\label{parameters:Initial_20temperature_20model/Adiabatic/Scale_20factor}
+
+
+\index[prmindex]{Scale factor}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Scale factor}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Subadiabaticity}
 \phantomsection\label{parameters:Initial temperature model/Adiabatic/Subadiabaticity}
 \label{parameters:Initial_20temperature_20model/Adiabatic/Subadiabaticity}
@@ -6912,6 +6997,23 @@ The function object in the Function subsection represents the compositional fiel
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Use ASCII file for seafloor age}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Use ASCII file for seafloor age}
+\label{parameters:Initial_20temperature_20model/Adiabatic/Use_20ASCII_20file_20for_20seafloor_20age}
+
+
+\index[prmindex]{Use ASCII file for seafloor age}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Use ASCII file for seafloor age}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to define seafloor ages with an ASCII data file.
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 
@@ -10131,7 +10233,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.0
 
 
-{\it Description:} The average specific grain boundary energy $\gamma$. Units: \si{\joule\per\meter\squared}.
+{\it Description:} The average specific grain boundary energy $\gamma$. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\meter\squared}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10199,7 +10301,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3.35e5
 
 
-{\it Description:} The activation energy for diffusion creep $E_{diff}$. Units: \si{\joule\per\mole}.
+{\it Description:} The activation energy for diffusion creep $E_{diff}$. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\mole}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10216,7 +10318,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 4e-6
 
 
-{\it Description:} The activation volume for diffusion creep $V_{diff}$. Units: \si{\meter\cubed\per\mole}.
+{\it Description:} The activation volume for diffusion creep $V_{diff}$. List must have one more entry than the Phase transition depths. Units: \si{\meter\cubed\per\mole}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10233,7 +10335,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.
 
 
-{\it Description:} The power-law exponent $n_{diff}$ for diffusion creep. Units: none.
+{\it Description:} The power-law exponent $n_{diff}$ for diffusion creep. List must have one more entry than the Phase transition depths. Units: none.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10250,7 +10352,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3.
 
 
-{\it Description:} The diffusion creep grain size exponent $p_{diff}$ that determines the dependence of viscosity on grain size. Units: none.
+{\it Description:} The diffusion creep grain size exponent $p_{diff}$ that determines the dependence of viscosity on grain size. List must have one more entry than the Phase transition depths. Units: none.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10267,7 +10369,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 7.4e-15
 
 
-{\it Description:} The prefactor for the diffusion creep law $A_{diff}$. Units: \si{\meter}$^{p_{diff}}$\si{\pascal}$^{-n_{diff}}$\si{\per\second}.
+{\it Description:} The prefactor for the diffusion creep law $A_{diff}$. List must have one more entry than the Phase transition depths. Units: \si{\meter}$^{p_{diff}}$\si{\pascal}$^{-n_{diff}}$\si{\per\second}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10284,7 +10386,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 4.8e5
 
 
-{\it Description:} The activation energy for dislocation creep $E_{dis}$. Units: \si{\joule\per\mole}.
+{\it Description:} The activation energy for dislocation creep $E_{dis}$. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\mole}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10301,7 +10403,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.1e-5
 
 
-{\it Description:} The activation volume for dislocation creep $V_{dis}$. Units: \si{\meter\cubed\per\mole}.
+{\it Description:} The activation volume for dislocation creep $V_{dis}$. List must have one more entry than the Phase transition depths. Units: \si{\meter\cubed\per\mole}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10318,7 +10420,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3.5
 
 
-{\it Description:} The power-law exponent $n_{dis}$ for dislocation creep. Units: none.
+{\it Description:} The power-law exponent $n_{dis}$ for dislocation creep. List must have one more entry than the Phase transition depths. Units: none.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10335,7 +10437,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 4.5e-15
 
 
-{\it Description:} The prefactor for the dislocation creep law $A_{dis}$. Units: \si{\pascal}$^{-n_{dis}}$\si{\per\second}.
+{\it Description:} The prefactor for the dislocation creep law $A_{dis}$. List must have one more entry than the Phase transition depths. Units: \si{\pascal}$^{-n_{dis}}$\si{\per\second}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10386,7 +10488,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3.
 
 
-{\it Description:} The geometric constant $c$ used in the paleowattmeter grain size reduction law. Units: none.
+{\it Description:} The geometric constant $c$ used in the paleowattmeter grain size reduction law. List must have one more entry than the Phase transition depths. Units: none.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10403,7 +10505,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3.5e5
 
 
-{\it Description:} The activation energy for grain growth $E_g$. Units: \si{\joule\per\mole}.
+{\it Description:} The activation energy for grain growth $E_g$. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\mole}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10420,7 +10522,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 8e-6
 
 
-{\it Description:} The activation volume for grain growth $V_g$. Units: \si{\meter\cubed\per\mole}.
+{\it Description:} The activation volume for grain growth $V_g$. List must have one more entry than the Phase transition depths. Units: \si{\meter\cubed\per\mole}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10437,7 +10539,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3.
 
 
-{\it Description:} The exponent of the grain growth law $p_g$. This is an experimentally determined grain growth constant. Units: none.
+{\it Description:} The exponent of the grain growth law $p_g$. This is an experimentally determined grain growth constant. List must have one more entry than the Phase transition depths. Units: none.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10454,7 +10556,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.5e-5
 
 
-{\it Description:} The prefactor for the Ostwald ripening grain growth law $G_0$. This is dependent on water content, which is assumed to be 50 H/$10^6$ Si for the default value. Units: \si{\meter}$^{p_g}$\si{\per\second}.
+{\it Description:} The prefactor for the Ostwald ripening grain growth law $G_0$. This is dependent on water content, which is assumed to be 50 H/$10^6$ Si for the default value. List must have one more entry than the Phase transition depths. Units: \si{\meter}$^{p_g}$\si{\per\second}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10743,7 +10845,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 10.
 
 
-{\it Description:} This parameter ($\lambda$) gives an estimate of the strain necessary to achieve a new grain size. 
+{\it Description:} This parameter ($\lambda$) gives an estimate of the strain necessary to achieve a new grain size. List must have one more entry than the Phase transition depths.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10760,7 +10862,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 
 
 
-{\it Description:} The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. When set to zero, grain size will not be reduced. Units: \si{\meter}.
+{\it Description:} The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. When set to zero, grain size will not be reduced. List must have the same number of entries as Phase transition depths. Units: \si{\meter}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10947,7 +11049,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 0.1
 
 
-{\it Description:} The fraction $\chi$ of work done by dislocation creep to change the grain boundary area. Units: \si{\joule\per\meter\squared}.
+{\it Description:} The fraction $\chi$ of work done by dislocation creep to change the grain boundary area. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\meter\squared}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -18016,11 +18118,15 @@ The following postprocessors are available:
 
 `composition statistics': A postprocessor that computes some statistics about the compositional fields, if present in this simulation. In particular, it computes maximal and minimal values of each field, as well as the total mass contained in this field as defined by the integral $m_i(t) = \int_\Omega c_i(\mathbf x,t) \; \text{d}x$.
 
+`composition velocity statistics': A postprocessor that computes the root mean square velocity over the area spanned by each compositional field (i.e. where the field values are larger or equal to 0.5.
+
 `core statistics': A postprocessor that computes some statistics about the core evolution. (Working only with dynamic core boundary temperature plugin)
 
 `depth average': A postprocessor that computes depth averaged quantities and writes them into a file $<$depth\_average.ext$>$ in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section \texttt{Postprocess/Depth average} in the input file.
 
 In the output files, the $x$-value of each data point corresponds to the depth, whereas the $y$-value corresponds to the simulation time. The time is provided in seconds or, if the global ``Use years in output instead of seconds'' parameter is set, in years.
+
+`domain volume statistics': A postprocessor that computes the total area (in 2d) or volume (in 3D) of the computational domain. 
 
 `dynamic topography': A postprocessor that computes a measure of dynamic topography based on the stress at the surface and bottom. The data is written into text files named `dynamic\_topography.NNNNN' in the output directory, where NNNNN is the number of the time step.
 
@@ -18105,7 +18211,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 `volume of fluid statistics': A postprocessor that computes some statistics about the volume-of-fluid fields.
 
 
-{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, boundary strain rate residual statistics, boundary velocity residual statistics, command, composition statistics, core statistics, depth average, dynamic topography, entropy viscosity statistics, geoid, global statistics, gravity calculation, heat flux densities, heat flux map, heat flux statistics, heating statistics, load balance statistics, mass flux statistics, material statistics, matrix statistics, maximum depth of field, melt statistics, memory statistics, mobility statistics, particle count statistics, particles, point values, pressure statistics, rotation statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, viscous dissipation statistics, visualization, volume of fluid statistics
+{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, boundary strain rate residual statistics, boundary velocity residual statistics, command, composition statistics, composition velocity statistics, core statistics, depth average, domain volume statistics, dynamic topography, entropy viscosity statistics, geoid, global statistics, gravity calculation, heat flux densities, heat flux map, heat flux statistics, heating statistics, load balance statistics, mass flux statistics, material statistics, matrix statistics, maximum depth of field, melt statistics, memory statistics, mobility statistics, particle count statistics, particles, point values, pressure statistics, rotation statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, viscous dissipation statistics, visualization, volume of fluid statistics
 \item {\it Parameter name:} {\tt Run postprocessors on nonlinear iterations}
 \phantomsection\label{parameters:Postprocess/Run postprocessors on nonlinear iterations}
 \label{parameters:Postprocess/Run_20postprocessors_20on_20nonlinear_20iterations}
@@ -18329,6 +18435,29 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 
 {\it Possible values:} A boolean value (true or false)
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Composition velocity statistics}
+\label{parameters:Postprocess/Composition_20velocity_20statistics}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Names of selected compositional fields}
+\phantomsection\label{parameters:Postprocess/Composition velocity statistics/Names of selected compositional fields}
+\label{parameters:Postprocess/Composition_20velocity_20statistics/Names_20of_20selected_20compositional_20fields}
+
+
+\index[prmindex]{Names of selected compositional fields}
+\index[prmindexfull]{Postprocess!Composition velocity statistics!Names of selected compositional fields}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of names for each of the compositional fields that you want to compute the combined RMS velocity for.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Depth average}
@@ -19306,6 +19435,8 @@ The following properties are available:
 
 `composition': Implementation of a plugin in which the particle property is defined by the compositional fields in the model. This can be used to track solid compositionevolution over time.
 
+`crystal preferred orientation': The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO) on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation matrix. This allows for CPO evolution tracking with polycrystalline kinematic CrystalPreferredOrientation evolution models such as D-Rex (Kaminski and Ribe, 2001; Kaminski et al., 2004).
+
 `elastic stress': A plugin in which the particle property tensor is defined as the total elastic stress a particle has accumulated. See the viscoelastic material model documentation for more detailed information.
 
 `function': Implementation of a model in which the particle property is set by evaluating an explicit function at the initial position of each particle. The function is defined in the parameters in section ``Particles|Function''. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
@@ -19333,7 +19464,7 @@ The following properties are available:
 `viscoplastic strain invariants': A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in \texttt{benchmarks/buiter\_et\_al\_2008\_jgr/plugin/},and is effectively the same as what the visco plastic material model uses for compositional fields.
 
 
-{\it Possible values:} A comma-separated list of any of composition, elastic stress, function, initial composition, initial position, integrated strain, integrated strain invariant, melt particle, pT path, position, reference position, strain rate, velocity, viscoplastic strain invariants
+{\it Possible values:} A comma-separated list of any of composition, crystal preferred orientation, elastic stress, function, initial composition, initial position, integrated strain, integrated strain invariant, melt particle, pT path, position, reference position, strain rate, velocity, viscoplastic strain invariants
 \item {\it Parameter name:} {\tt Load balancing strategy}
 \phantomsection\label{parameters:Postprocess/Particles/Load balancing strategy}
 \label{parameters:Postprocess/Particles/Load_20balancing_20strategy}
@@ -19540,6 +19671,306 @@ Units: years if the 'Use years in output instead of seconds' parameter is set; s
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Postprocess/Particles/Crystal Preferred Orientation}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt CPO derivatives algorithm}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/CPO derivatives algorithm}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/CPO_20derivatives_20algorithm}
+
+
+\index[prmindex]{CPO derivatives algorithm}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/CPO derivatives algorithm}
+{\it Value:} Spin tensor
+
+
+{\it Default:} Spin tensor
+
+
+{\it Description:} Options: Spin tensor
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
+\item {\it Parameter name:} {\tt Number of grains per particle}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/Number of grains per particle}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Number_20of_20grains_20per_20particle}
+
+
+\index[prmindex]{Number of grains per particle}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/Number of grains per particle}
+{\it Value:} 50
+
+
+{\it Default:} 50
+
+
+{\it Description:} The number of grains of each different mineral each particle contains.
+
+
+{\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Property advection max iterations}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/Property advection max iterations}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Property_20advection_20max_20iterations}
+
+
+\index[prmindex]{Property advection max iterations}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/Property advection max iterations}
+{\it Value:} 100
+
+
+{\it Default:} 100
+
+
+{\it Description:} The Backward Euler property advection method involve internal iterations. This option allows for setting the maximum number of iterations. Note that when the iteration is ended by the max iteration amount an assert is thrown.
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Property advection method}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/Property advection method}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Property_20advection_20method}
+
+
+\index[prmindex]{Property advection method}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/Property advection method}
+{\it Value:} Backward Euler
+
+
+{\it Default:} Backward Euler
+
+
+{\it Description:} Options: Forward Euler, Backward Euler
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Property advection tolerance}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/Property advection tolerance}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Property_20advection_20tolerance}
+
+
+\index[prmindex]{Property advection tolerance}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/Property advection tolerance}
+{\it Value:} 1e-10
+
+
+{\it Default:} 1e-10
+
+
+{\it Description:} The Backward Euler property advection method involve internal iterations. This option allows for setting a tolerance. When the norm of tensor new - tensor old is smaller than this tolerance, the iteration is stopped.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Random number seed}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/Random number seed}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Random_20number_20seed}
+
+
+\index[prmindex]{Random number seed}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/Random number seed}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same number of MPI processes. It is implemented as final seed = user seed + MPI Rank. 
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Postprocess/Particles/Crystal Preferred Orientation/D-Rex 2004}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Exponents p}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/D_2dRex 2004/Exponents p}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Exponents_20p}
+
+
+\index[prmindex]{Exponents p}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/D-Rex 2004/Exponents p}
+{\it Value:} 1.5
+
+
+{\it Default:} 1.5
+
+
+{\it Description:} This is exponent p as defined in equation 11 of Kaminski et al., 2004. 
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Minerals}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/D_2dRex 2004/Minerals}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Minerals}
+
+
+\index[prmindex]{Minerals}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/D-Rex 2004/Minerals}
+{\it Value:} Olivine: Karato 2008, Enstatite
+
+
+{\it Default:} Olivine: Karato 2008, Enstatite
+
+
+{\it Description:} This determines what minerals and fabrics or fabric selectors are used used for the LPO calculation. The options are Olivine: A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
+\item {\it Parameter name:} {\tt Mobility}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/D_2dRex 2004/Mobility}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Mobility}
+
+
+\index[prmindex]{Mobility}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/D-Rex 2004/Mobility}
+{\it Value:} 50
+
+
+{\it Default:} 50
+
+
+{\it Description:} The dimensionless intrinsic grain boundary mobility for both olivine and enstatite.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Nucleation efficiency}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/D_2dRex 2004/Nucleation efficiency}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Nucleation_20efficiency}
+
+
+\index[prmindex]{Nucleation efficiency}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/D-Rex 2004/Nucleation efficiency}
+{\it Value:} 5
+
+
+{\it Default:} 5
+
+
+{\it Description:} This is the dimensionless nucleation rate as defined in equation 8 of Kaminski et al., 2004. 
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Stress exponents}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/D_2dRex 2004/Stress exponents}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Stress_20exponents}
+
+
+\index[prmindex]{Stress exponents}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/D-Rex 2004/Stress exponents}
+{\it Value:} 3.5
+
+
+{\it Default:} 3.5
+
+
+{\it Description:} This is the power law exponent that characterizes the rheology of the slip systems. It is used in equation 11 of Kaminski et al., 2004.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Threshold GBS}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/D_2dRex 2004/Threshold GBS}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Threshold_20GBS}
+
+
+\index[prmindex]{Threshold GBS}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/D-Rex 2004/Threshold GBS}
+{\it Value:} 0.3
+
+
+{\it Default:} 0.3
+
+
+{\it Description:} The Dimensionless Grain Boundary Sliding (GBS) threshold. This is a grain size threshold below which grain deform by GBS and become strain-free grains.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Volume fractions minerals}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/D_2dRex 2004/Volume fractions minerals}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Volume_20fractions_20minerals}
+
+
+\index[prmindex]{Volume fractions minerals}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/D-Rex 2004/Volume fractions minerals}
+{\it Value:} 0.5, 0.5
+
+
+{\it Default:} 0.5, 0.5
+
+
+{\it Description:} The volume fraction for the different minerals. There need to be the same amount of values as there are minerals
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Particles/Crystal Preferred Orientation/Initial grains}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Model name}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/Initial grains/Model name}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Model_20name}
+
+
+\index[prmindex]{Model name}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/Initial grains/Model name}
+{\it Value:} Uniform grains and random uniform rotations
+
+
+{\it Default:} Uniform grains and random uniform rotations
+
+
+{\it Description:} The model used to initialize the CPO for all particles. Currently 'Uniform grains and random uniform rotations' is the only valid option.
+
+
+{\it Possible values:} Any string
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Postprocess/Particles/Crystal Preferred Orientation/Initial grains/Uniform grains and random uniform rotations}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Uniform_20grains_20and_20random_20uniform_20rotations}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Minerals}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/Initial grains/Uniform grains and random uniform rotations/Minerals}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Uniform_20grains_20and_20random_20uniform_20rotations/Minerals}
+
+
+\index[prmindex]{Minerals}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/Initial grains/Uniform grains and random uniform rotations/Minerals}
+{\it Value:} Olivine: Karato 2008, Enstatite
+
+
+{\it Default:} Olivine: Karato 2008, Enstatite
+
+
+{\it Description:} This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
+\item {\it Parameter name:} {\tt Volume fractions minerals}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/Initial grains/Uniform grains and random uniform rotations/Volume fractions minerals}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Uniform_20grains_20and_20random_20uniform_20rotations/Volume_20fractions_20minerals}
+
+
+\index[prmindex]{Volume fractions minerals}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/Initial grains/Uniform grains and random uniform rotations/Volume fractions minerals}
+{\it Value:} 0.7, 0.3
+
+
+{\it Default:} 0.7, 0.3
+
+
+{\it Description:} The volume fractions for the different minerals. There need to be the same number of values as there are minerals.Note that the currently implemented scheme is incompressible and does not allow chemical interaction or the formation of new phases
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Particles/Function}
 \label{parameters:Postprocess/Particles/Function}
@@ -20063,6 +20494,33 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Particles/Integrator}
+\label{parameters:Postprocess/Particles/Integrator}
+
+
+\subsection{Parameters in section \tt Postprocess/Particles/Integrator/RK2}
+\label{parameters:Postprocess/Particles/Integrator/RK2}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Higher order accurate in time}
+\phantomsection\label{parameters:Postprocess/Particles/Integrator/RK2/Higher order accurate in time}
+\label{parameters:Postprocess/Particles/Integrator/RK2/Higher_20order_20accurate_20in_20time}
+
+
+\index[prmindex]{Higher order accurate in time}
+\index[prmindexfull]{Postprocess!Particles!Integrator/RK2/Higher order accurate in time}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Whether to correctly evaluate old and current velocity solution to reach higher-order accuracy in time. If set to 'false' only the old velocity solution is evaluated to simulate a first order method in time. This is only recommended for benchmark purposes.
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Particles/Interpolator}
@@ -20598,6 +21056,23 @@ Physical units: \si{\per\second}.
 
 
 {\it Possible values:} Any one of none, dx, ucd, gnuplot, povray, eps, gmv, tecplot, tecplot\_binary, vtk, vtu, hdf5, svg, deal.II intermediate
+\item {\it Parameter name:} {\tt Output mesh displacement}
+\phantomsection\label{parameters:Postprocess/Visualization/Output mesh displacement}
+\label{parameters:Postprocess/Visualization/Output_20mesh_20displacement}
+
+
+\index[prmindex]{Output mesh displacement}
+\index[prmindexfull]{Postprocess!Visualization!Output mesh displacement}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain. The displacement vector from the reference configuration may be written as an output field by setting this parameter to true.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Output mesh velocity}
 \phantomsection\label{parameters:Postprocess/Visualization/Output mesh velocity}
 \label{parameters:Postprocess/Visualization/Output_20mesh_20velocity}
@@ -20612,6 +21087,23 @@ Physical units: \si{\per\second}.
 
 
 {\it Description:} For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain, so the mesh has its own velocity field.  This may be written as an output field by setting this parameter to true.
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Output undeformed mesh}
+\phantomsection\label{parameters:Postprocess/Visualization/Output undeformed mesh}
+\label{parameters:Postprocess/Visualization/Output_20undeformed_20mesh}
+
+
+\index[prmindex]{Output undeformed mesh}
+\index[prmindexfull]{Postprocess!Visualization!Output undeformed mesh}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain. By default, we output the deformed mesh. If this setting is set to true, the mesh will be written in the reference state without deformation instead. If you output the mesh displacement, you can obtain the deformed mesh by using the 'warp by vector' ParaView filter.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -22012,10 +22504,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Maximum linear Stokes solver tolerance}
 \index[prmindexfull]{Solver parameters!Newton solver parameters!Maximum linear Stokes solver tolerance}
-{\it Value:} 0.9
+{\it Value:} 1e-2
 
 
-{\it Default:} 0.9
+{\it Default:} 1e-2
 
 
 {\it Description:} The linear Stokes solver tolerance is dynamically chosen for the Newton solver, based on the Eisenstat Walker (1994) paper (https://doi.org/10.1137/0917003), equation 2.2. Because this value can become larger than one, we limit this value by this parameter.
