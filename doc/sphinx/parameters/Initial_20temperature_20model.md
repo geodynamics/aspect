@@ -149,6 +149,38 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Documentation:** The amplitude (in K) of the initial spherical temperature perturbation at the bottom of the model domain. This perturbation will be added to the adiabatic temperature profile, but not to the bottom thermal boundary layer. Instead, the maximum of the perturbation and the bottom boundary layer temperature will be used.
 
+(parameters:Initial_20temperature_20model/Adiabatic/Cooling_20model)=
+### __Parameter name:__ Cooling model
+**Default value:** half-space cooling
+
+**Pattern:** [Selection half-space cooling|plate cooling ]
+
+**Documentation:** Whether to use the half space cooling model or the plate cooling model
+
+(parameters:Initial_20temperature_20model/Adiabatic/Data_20directory)=
+### __Parameter name:__ Data directory
+**Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/adiabatic/
+
+**Pattern:** [DirectoryName]
+
+**Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+
+(parameters:Initial_20temperature_20model/Adiabatic/Data_20file_20name)=
+### __Parameter name:__ Data file name
+**Default value:** adiabatic.txt
+
+**Pattern:** [Anything]
+
+**Documentation:** The file name of the model data.
+
+(parameters:Initial_20temperature_20model/Adiabatic/Lithosphere_20thickness)=
+### __Parameter name:__ Lithosphere thickness
+**Default value:** 125e3
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Thickness of the lithosphere for plate cooling model. \si{\m}
+
 (parameters:Initial_20temperature_20model/Adiabatic/Position)=
 ### __Parameter name:__ Position
 **Default value:** center
@@ -165,6 +197,14 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Documentation:** The Radius (in m) of the initial spherical temperature perturbation at the bottom of the model domain.
 
+(parameters:Initial_20temperature_20model/Adiabatic/Scale_20factor)=
+### __Parameter name:__ Scale factor
+**Default value:** 1.
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+
 (parameters:Initial_20temperature_20model/Adiabatic/Subadiabaticity)=
 ### __Parameter name:__ Subadiabaticity
 **Default value:** 0.
@@ -174,6 +214,14 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 **Documentation:** If this value is larger than 0, the initial temperature profile will not be adiabatic, but subadiabatic. This value gives the maximal deviation from adiabaticity. Set to 0 for an adiabatic temperature profile. Units: \si{\kelvin}.
 
 The function object in the Function subsection represents the compositional fields that will be used as a reference profile for calculating the thermal diffusivity. This function is one-dimensional and depends only on depth. The format of this functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
+(parameters:Initial_20temperature_20model/Adiabatic/Use_20ASCII_20file_20for_20seafloor_20age)=
+### __Parameter name:__ Use ASCII file for seafloor age
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to define seafloor ages with an ASCII data file.
 
 (parameters:Initial_20temperature_20model/Adiabatic/Function)=
 ## **Subsection:** Initial temperature model / Adiabatic / Function

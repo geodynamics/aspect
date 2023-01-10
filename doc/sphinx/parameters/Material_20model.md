@@ -867,7 +867,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The average specific grain boundary energy $\gamma$. Units: \si{\joule\per\meter\squared}.
+**Documentation:** The average specific grain boundary energy $\gamma$. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\meter\squared}.
 
 (parameters:Material_20model/Grain_20size_20model/Bilinear_20interpolation)=
 ### __Parameter name:__ Bilinear interpolation
@@ -899,7 +899,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The activation energy for diffusion creep $E_{diff}$. Units: \si{\joule\per\mole}.
+**Documentation:** The activation energy for diffusion creep $E_{diff}$. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\mole}.
 
 (parameters:Material_20model/Grain_20size_20model/Diffusion_20activation_20volume)=
 ### __Parameter name:__ Diffusion activation volume
@@ -907,7 +907,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The activation volume for diffusion creep $V_{diff}$. Units: \si{\meter\cubed\per\mole}.
+**Documentation:** The activation volume for diffusion creep $V_{diff}$. List must have one more entry than the Phase transition depths. Units: \si{\meter\cubed\per\mole}.
 
 (parameters:Material_20model/Grain_20size_20model/Diffusion_20creep_20exponent)=
 ### __Parameter name:__ Diffusion creep exponent
@@ -915,7 +915,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The power-law exponent $n_{diff}$ for diffusion creep. Units: none.
+**Documentation:** The power-law exponent $n_{diff}$ for diffusion creep. List must have one more entry than the Phase transition depths. Units: none.
 
 (parameters:Material_20model/Grain_20size_20model/Diffusion_20creep_20grain_20size_20exponent)=
 ### __Parameter name:__ Diffusion creep grain size exponent
@@ -923,7 +923,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The diffusion creep grain size exponent $p_{diff}$ that determines the dependence of viscosity on grain size. Units: none.
+**Documentation:** The diffusion creep grain size exponent $p_{diff}$ that determines the dependence of viscosity on grain size. List must have one more entry than the Phase transition depths. Units: none.
 
 (parameters:Material_20model/Grain_20size_20model/Diffusion_20creep_20prefactor)=
 ### __Parameter name:__ Diffusion creep prefactor
@@ -931,7 +931,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The prefactor for the diffusion creep law $A_{diff}$. Units: \si{\meter}$^{p_{diff}}$\si{\pascal}$^{-n_{diff}}$\si{\per\second}.
+**Documentation:** The prefactor for the diffusion creep law $A_{diff}$. List must have one more entry than the Phase transition depths. Units: \si{\meter}$^{p_{diff}}$\si{\pascal}$^{-n_{diff}}$\si{\per\second}.
 
 (parameters:Material_20model/Grain_20size_20model/Dislocation_20activation_20energy)=
 ### __Parameter name:__ Dislocation activation energy
@@ -939,7 +939,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The activation energy for dislocation creep $E_{dis}$. Units: \si{\joule\per\mole}.
+**Documentation:** The activation energy for dislocation creep $E_{dis}$. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\mole}.
 
 (parameters:Material_20model/Grain_20size_20model/Dislocation_20activation_20volume)=
 ### __Parameter name:__ Dislocation activation volume
@@ -947,7 +947,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The activation volume for dislocation creep $V_{dis}$. Units: \si{\meter\cubed\per\mole}.
+**Documentation:** The activation volume for dislocation creep $V_{dis}$. List must have one more entry than the Phase transition depths. Units: \si{\meter\cubed\per\mole}.
 
 (parameters:Material_20model/Grain_20size_20model/Dislocation_20creep_20exponent)=
 ### __Parameter name:__ Dislocation creep exponent
@@ -955,7 +955,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The power-law exponent $n_{dis}$ for dislocation creep. Units: none.
+**Documentation:** The power-law exponent $n_{dis}$ for dislocation creep. List must have one more entry than the Phase transition depths. Units: none.
 
 (parameters:Material_20model/Grain_20size_20model/Dislocation_20creep_20prefactor)=
 ### __Parameter name:__ Dislocation creep prefactor
@@ -963,7 +963,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The prefactor for the dislocation creep law $A_{dis}$. Units: \si{\pascal}$^{-n_{dis}}$\si{\per\second}.
+**Documentation:** The prefactor for the dislocation creep law $A_{dis}$. List must have one more entry than the Phase transition depths. Units: \si{\pascal}$^{-n_{dis}}$\si{\per\second}.
 
 (parameters:Material_20model/Grain_20size_20model/Dislocation_20viscosity_20iteration_20number)=
 ### __Parameter name:__ Dislocation viscosity iteration number
@@ -987,7 +987,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The geometric constant $c$ used in the paleowattmeter grain size reduction law. Units: none.
+**Documentation:** The geometric constant $c$ used in the paleowattmeter grain size reduction law. List must have one more entry than the Phase transition depths. Units: none.
 
 (parameters:Material_20model/Grain_20size_20model/Grain_20growth_20activation_20energy)=
 ### __Parameter name:__ Grain growth activation energy
@@ -995,7 +995,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The activation energy for grain growth $E_g$. Units: \si{\joule\per\mole}.
+**Documentation:** The activation energy for grain growth $E_g$. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\mole}.
 
 (parameters:Material_20model/Grain_20size_20model/Grain_20growth_20activation_20volume)=
 ### __Parameter name:__ Grain growth activation volume
@@ -1003,7 +1003,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The activation volume for grain growth $V_g$. Units: \si{\meter\cubed\per\mole}.
+**Documentation:** The activation volume for grain growth $V_g$. List must have one more entry than the Phase transition depths. Units: \si{\meter\cubed\per\mole}.
 
 (parameters:Material_20model/Grain_20size_20model/Grain_20growth_20exponent)=
 ### __Parameter name:__ Grain growth exponent
@@ -1011,7 +1011,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The exponent of the grain growth law $p_g$. This is an experimentally determined grain growth constant. Units: none.
+**Documentation:** The exponent of the grain growth law $p_g$. This is an experimentally determined grain growth constant. List must have one more entry than the Phase transition depths. Units: none.
 
 (parameters:Material_20model/Grain_20size_20model/Grain_20growth_20rate_20constant)=
 ### __Parameter name:__ Grain growth rate constant
@@ -1019,7 +1019,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The prefactor for the Ostwald ripening grain growth law $G_0$. This is dependent on water content, which is assumed to be 50 H/$10^6$ Si for the default value. Units: \si{\meter}$^{p_g}$\si{\per\second}.
+**Documentation:** The prefactor for the Ostwald ripening grain growth law $G_0$. This is dependent on water content, which is assumed to be 50 H/$10^6$ Si for the default value. List must have one more entry than the Phase transition depths. Units: \si{\meter}$^{p_g}$\si{\per\second}.
 
 (parameters:Material_20model/Grain_20size_20model/Lower_20mantle_20grain_20size_20scaling)=
 ### __Parameter name:__ Lower mantle grain size scaling
@@ -1155,7 +1155,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** This parameter ($\lambda$) gives an estimate of the strain necessary to achieve a new grain size.
+**Documentation:** This parameter ($\lambda$) gives an estimate of the strain necessary to achieve a new grain size. List must have one more entry than the Phase transition depths.
 
 (parameters:Material_20model/Grain_20size_20model/Recrystallized_20grain_20size)=
 ### __Parameter name:__ Recrystallized grain size
@@ -1163,7 +1163,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. When set to zero, grain size will not be reduced. Units: \si{\meter}.
+**Documentation:** The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. When set to zero, grain size will not be reduced. List must have the same number of entries as Phase transition depths. Units: \si{\meter}.
 
 (parameters:Material_20model/Grain_20size_20model/Reference_20compressibility)=
 ### __Parameter name:__ Reference compressibility
@@ -1251,7 +1251,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The fraction $\chi$ of work done by dislocation creep to change the grain boundary area. Units: \si{\joule\per\meter\squared}.
+**Documentation:** The fraction $\chi$ of work done by dislocation creep to change the grain boundary area. List must have one more entry than the Phase transition depths. Units: \si{\joule\per\meter\squared}.
 
 (parameters:Material_20model/Latent_20heat)=
 ## **Subsection:** Material model / Latent heat
