@@ -183,6 +183,11 @@ namespace aspect
         double k_value;
 
         /**
+         * The index of the compositional field that represents the grain size.
+        */
+        unsigned int grain_size_index;
+
+        /**
          * Parameters controlling the grain size evolution.
          */
         std::vector<double> grain_growth_activation_energy;
@@ -255,7 +260,9 @@ namespace aspect
                                     const double      pressure,
                                     const std::vector<double>    &compositional_fields,
                                     const SymmetricTensor<2,dim> &,
-                                    const Point<dim> &position) const;
+                                    const Point<dim> &position,
+                                    const double adiabatic_temperature,
+                                    const double adiabatic_pressure) const;
 
         /**
          * This function calculates the dislocation viscosity. For this purpose
@@ -283,7 +290,9 @@ namespace aspect
                                                         const double      pressure,
                                                         const std::vector<double> &,
                                                         const SymmetricTensor<2,dim> &dislocation_strain_rate,
-                                                        const Point<dim> &position) const;
+                                                        const Point<dim> &position,
+                                                        const double adiabatic_temperature,
+                                                        const double adiabatic_pressure) const;
 
         double density (const double temperature,
                         const double pressure,
