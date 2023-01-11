@@ -244,8 +244,8 @@ namespace aspect
 
           // grain size growth due to Ostwald ripening
           const double m = grain_growth_exponent[phase_index];
-          const double grain_size_growth_rate = grain_growth_rate_constant[phase_index] / (m * pow(grain_size,m-1))
-                                                * exp(- (grain_growth_activation_energy[phase_index] + pressure * grain_growth_activation_volume[phase_index])
+          const double grain_size_growth_rate = grain_growth_rate_constant[phase_index] / (m * std::pow(grain_size,m-1))
+                                                * std::exp(- (grain_growth_activation_energy[phase_index] + pressure * grain_growth_activation_volume[phase_index])
                                                       / (constants::gas_constant * temperature));
           const double grain_size_growth = grain_size_growth_rate * grain_growth_timestep;
 
@@ -271,7 +271,7 @@ namespace aspect
             {
               // paleowattmeter: Austin and Evans (2007): Paleowattmeters: A scaling relation for dynamically recrystallized grain size. Geology 35, 343-346
               const double stress = 2.0 * second_strain_rate_invariant * current_viscosity;
-              const double grain_size_reduction_rate = 2.0 * stress * boundary_area_change_work_fraction[phase_index] * dislocation_strain_rate * pow(grain_size,2)
+              const double grain_size_reduction_rate = 2.0 * stress * boundary_area_change_work_fraction[phase_index] * dislocation_strain_rate * std::pow(grain_size,2)
                                                        / (geometric_constant[phase_index] * grain_boundary_energy[phase_index]);
               grain_size_reduction = grain_size_reduction_rate * grain_growth_timestep;
             }
@@ -355,7 +355,7 @@ namespace aspect
       // find out in which phase we are
       const unsigned int phase_index = get_phase_index(position, temperature, adiabatic_pressure);
 
-      double energy_term = exp((diffusion_activation_energy[phase_index] + diffusion_activation_volume[phase_index] * adiabatic_pressure)
+      double energy_term = std::exp((diffusion_activation_energy[phase_index] + diffusion_activation_volume[phase_index] * adiabatic_pressure)
                                / (diffusion_creep_exponent[phase_index] * constants::gas_constant * temperature));
 
       // If the adiabatic profile is already calculated we can use it to limit
@@ -363,7 +363,7 @@ namespace aspect
       if (this->get_adiabatic_conditions().is_initialized())
         {
           const double adiabatic_energy_term
-            = exp((diffusion_activation_energy[phase_index] + diffusion_activation_volume[phase_index] * adiabatic_pressure)
+            = std::exp((diffusion_activation_energy[phase_index] + diffusion_activation_volume[phase_index] * adiabatic_pressure)
                   / (diffusion_creep_exponent[phase_index] * constants::gas_constant * this->get_adiabatic_conditions().temperature(position)));
 
           const double temperature_dependence = energy_term / adiabatic_energy_term;
@@ -375,9 +375,9 @@ namespace aspect
 
       const double strain_rate_dependence = (1.0 - diffusion_creep_exponent[phase_index]) / diffusion_creep_exponent[phase_index];
 
-      return pow(diffusion_creep_prefactor[phase_index],-1.0/diffusion_creep_exponent[phase_index])
+      return std::pow(diffusion_creep_prefactor[phase_index],-1.0/diffusion_creep_exponent[phase_index])
              * std::pow(second_strain_rate_invariant,strain_rate_dependence)
-             * pow(grain_size, diffusion_creep_grain_size_exponent[phase_index]/diffusion_creep_exponent[phase_index])
+             * std::pow(grain_size, diffusion_creep_grain_size_exponent[phase_index]/diffusion_creep_exponent[phase_index])
              * energy_term;
     }
 
@@ -447,7 +447,7 @@ namespace aspect
       // find out in which phase we are
       const unsigned int phase_index = get_phase_index(position, temperature, adiabatic_pressure);
 
-      double energy_term = exp((dislocation_activation_energy[phase_index] + dislocation_activation_volume[phase_index] * adiabatic_pressure)
+      double energy_term = std::exp((dislocation_activation_energy[phase_index] + dislocation_activation_volume[phase_index] * adiabatic_pressure)
                                / (dislocation_creep_exponent[phase_index] * constants::gas_constant * temperature));
 
       // If we are past the initialization of the adiabatic profile, use it to
@@ -455,7 +455,7 @@ namespace aspect
       if (this->get_adiabatic_conditions().is_initialized())
         {
           const double adiabatic_energy_term
-            = exp((dislocation_activation_energy[phase_index] + dislocation_activation_volume[phase_index] * adiabatic_pressure)
+            = std::exp((dislocation_activation_energy[phase_index] + dislocation_activation_volume[phase_index] * adiabatic_pressure)
                   / (dislocation_creep_exponent[phase_index] * constants::gas_constant * this->get_adiabatic_conditions().temperature(position)));
 
           const double temperature_dependence = energy_term / adiabatic_energy_term;
@@ -1357,8 +1357,8 @@ namespace aspect
           pv_grain_size_scaling                 = prm.get_double ("Lower mantle grain size scaling");
 
           // scale recrystallized grain size, diffusion creep and grain growth prefactor accordingly
-          diffusion_creep_prefactor[diffusion_creep_prefactor.size()-1] *= pow(pv_grain_size_scaling,diffusion_creep_grain_size_exponent[diffusion_creep_grain_size_exponent.size()-1]);
-          grain_growth_rate_constant[grain_growth_rate_constant.size()-1] *= pow(pv_grain_size_scaling,grain_growth_exponent[grain_growth_exponent.size()-1]);
+          diffusion_creep_prefactor[diffusion_creep_prefactor.size()-1] *= std::pow(pv_grain_size_scaling,diffusion_creep_grain_size_exponent[diffusion_creep_grain_size_exponent.size()-1]);
+          grain_growth_rate_constant[grain_growth_rate_constant.size()-1] *= std::pow(pv_grain_size_scaling,grain_growth_exponent[grain_growth_exponent.size()-1]);
           if (recrystallized_grain_size.size()>0)
             recrystallized_grain_size[recrystallized_grain_size.size()-1] *= pv_grain_size_scaling;
 
