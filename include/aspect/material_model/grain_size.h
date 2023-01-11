@@ -282,18 +282,6 @@ namespace aspect
                                       const Point<dim> &position,
                                       const double viscosity_guess = 0) const;
 
-        /**
-         * This function calculates the dislocation viscosity for a given
-         * dislocation strain rate.
-         */
-        double dislocation_viscosity_fixed_strain_rate (const double      temperature,
-                                                        const double      pressure,
-                                                        const std::vector<double> &,
-                                                        const SymmetricTensor<2,dim> &dislocation_strain_rate,
-                                                        const Point<dim> &position,
-                                                        const double adiabatic_temperature,
-                                                        const double adiabatic_pressure) const;
-
         double density (const double temperature,
                         const double pressure,
                         const std::vector<double> &compositional_fields,

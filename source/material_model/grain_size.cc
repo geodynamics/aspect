@@ -417,58 +417,6 @@ namespace aspect
                                                         adiabatic_temperature,
                                                         adiabatic_pressure);
 
-      // Start the iteration with the full strain rate
-      double dis_viscosity;
-      if (viscosity_guess == 0)
-        dis_viscosity = dislocation_viscosity_fixed_strain_rate(temperature,
-                                                                pressure,
-                                                                std::vector<double>(),
-                                                                strain_rate,
-                                                                position,
-                                                                adiabatic_temperature,
-                                                                adiabatic_pressure);
-      else
-        dis_viscosity = viscosity_guess;
-
-      double dis_viscosity_old = 0;
-      unsigned int i = 0;
-      while ((std::abs((dis_viscosity-dis_viscosity_old) / dis_viscosity) > dislocation_viscosity_iteration_threshold)
-             && (i < dislocation_viscosity_iteration_number))
-        {
-          const SymmetricTensor<2,dim> dislocation_strain_rate = diff_viscosity
-                                                                 / (diff_viscosity + dis_viscosity) * strain_rate;
-          dis_viscosity_old = dis_viscosity;
-          dis_viscosity = dislocation_viscosity_fixed_strain_rate(temperature,
-                                                                  pressure,
-                                                                  std::vector<double>(),
-                                                                  dislocation_strain_rate,
-                                                                  position,
-                                                                  adiabatic_temperature,
-                                                                  adiabatic_pressure);
-          ++i;
-        }
-
-      Assert(i<dislocation_viscosity_iteration_number,ExcInternalError());
-
-      return dis_viscosity;
-    }
-
-
-
-    template <int dim>
-    double
-    GrainSize<dim>::
-    dislocation_viscosity_fixed_strain_rate (const double      temperature,
-                                             const double      /*pressure*/,
-                                             const std::vector<double> &,
-                                             const SymmetricTensor<2,dim> &dislocation_strain_rate,
-                                             const Point<dim> &position,
-                                             const double adiabatic_temperature,
-                                             const double adiabatic_pressure) const
-    {
-      const SymmetricTensor<2,dim> shear_strain_rate = dislocation_strain_rate - 1./dim * trace(dislocation_strain_rate) * unit_symmetric_tensor<dim>();
-      const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
-
       // find out in which phase we are
       const unsigned int phase_index = get_phase_index(position, temperature, adiabatic_pressure);
 
@@ -491,10 +439,37 @@ namespace aspect
         }
 
       const double strain_rate_dependence = (1.0 - dislocation_creep_exponent[phase_index]) / dislocation_creep_exponent[phase_index];
+      const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
+      const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
-      return dislocation_creep_prefactor[phase_index]
-             * std::pow(second_strain_rate_invariant,strain_rate_dependence)
-             * energy_term;
+      // Start the iteration with the full strain rate
+      double dis_viscosity;
+      if (viscosity_guess == 0)
+        dis_viscosity = dislocation_creep_prefactor[phase_index]
+                        * std::pow(second_strain_rate_invariant,strain_rate_dependence)
+                        * energy_term;
+      else
+        dis_viscosity = viscosity_guess;
+
+      double dis_viscosity_old = 0;
+      unsigned int i = 0;
+      while ((std::abs((dis_viscosity-dis_viscosity_old) / dis_viscosity) > dislocation_viscosity_iteration_threshold)
+             && (i < dislocation_viscosity_iteration_number))
+        {
+          const SymmetricTensor<2,dim> dislocation_strain_rate = diff_viscosity
+                                                                 / (diff_viscosity + dis_viscosity) * shear_strain_rate;
+          const double dislocation_strain_rate_invariant = std::sqrt(std::max(-second_invariant(dislocation_strain_rate), 0.));
+
+          dis_viscosity_old = dis_viscosity;
+          dis_viscosity = dislocation_creep_prefactor[phase_index]
+                          * std::pow(dislocation_strain_rate_invariant,strain_rate_dependence)
+                          * energy_term;
+          ++i;
+        }
+
+      Assert(i<dislocation_viscosity_iteration_number,ExcInternalError());
+
+      return dis_viscosity;
     }
 
 
