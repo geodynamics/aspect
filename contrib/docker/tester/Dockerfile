@@ -4,7 +4,7 @@ LABEL maintainer <rene.gassmoeller@mailbox.org>
 
 RUN DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -yq && \
   DEBIAN_FRONTEND=noninteractive apt install -yq --no-install-recommends \
-  build-essential ca-certificates cmake cmake-curses-gui file gcc g++ \
+  build-essential ca-certificates file gcc g++ \
   gfortran git libblas-dev liblapack-dev libopenmpi-dev \
   lsb-release ninja-build numdiff openmpi-bin \
   openmpi-common wget zlib1g-dev \
