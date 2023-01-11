@@ -484,6 +484,14 @@ namespace aspect
          * field provided.
          */
         std::vector<std::shared_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup>> material_lookup;
+
+        /**
+         * A shared pointer to the initial composition object
+         * that ensures that the current object can continue
+         * to access the initial composition object beyond the
+         * first time step.
+         */
+        std::shared_ptr<const aspect::InitialTemperature::Manager<dim>> initial_temperature_manager;
     };
 
   }
