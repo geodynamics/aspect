@@ -419,6 +419,23 @@ namespace aspect
         }
 
       const double strain_rate_dependence = (1.0 - dislocation_creep_exponent[phase_index]) / dislocation_creep_exponent[phase_index];
+
+      return dislocation_creep_prefactor[phase_index]
+             * std::pow(second_strain_rate_invariant,strain_rate_dependence)
+             * energy_term;
+    }
+
+
+
+    template <int dim>
+    double
+    GrainSize<dim>::
+    viscosity (const double temperature,
+               const double pressure,
+               const std::vector<double> &composition,
+               const SymmetricTensor<2,dim> &strain_rate,
+               const Point<dim> &position) const
+    {
       const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
       const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
@@ -1346,6 +1363,12 @@ namespace aspect
           grain_growth_rate_constant[grain_growth_rate_constant.size()-1] *= std::pow(pv_grain_size_scaling,grain_growth_exponent[grain_growth_exponent.size()-1]);
           if (recrystallized_grain_size.size()>0)
             recrystallized_grain_size[recrystallized_grain_size.size()-1] *= pv_grain_size_scaling;
+
+          // prefactors never appear without their exponents. perform some calculations here to save time later
+          for (unsigned int i=0; i<diffusion_creep_prefactor.size(); ++i)
+            diffusion_creep_prefactor[i] = std::pow(diffusion_creep_prefactor[i],-1.0/diffusion_creep_exponent[i]);
+          for (unsigned int i=0; i<dislocation_creep_prefactor.size(); ++i)
+            dislocation_creep_prefactor[i] = std::pow(dislocation_creep_prefactor[i],-1.0/dislocation_creep_exponent[i]);
 
           if (grain_size_evolution_formulation == Formulation::paleowattmeter)
             boundary_area_change_work_fraction[boundary_area_change_work_fraction.size()-1] /= pv_grain_size_scaling;
