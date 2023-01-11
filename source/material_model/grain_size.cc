@@ -380,7 +380,7 @@ namespace aspect
 
       const double strain_rate_dependence = (1.0 - diffusion_creep_exponent[phase_index]) / diffusion_creep_exponent[phase_index];
 
-      return std::pow(diffusion_creep_prefactor[phase_index],-1.0/diffusion_creep_exponent[phase_index])
+      return diffusion_creep_prefactor[phase_index]
              * std::pow(second_strain_rate_invariant,strain_rate_dependence)
              * std::pow(grain_size, diffusion_creep_grain_size_exponent[phase_index]/diffusion_creep_exponent[phase_index])
              * energy_term;
@@ -492,7 +492,7 @@ namespace aspect
 
       const double strain_rate_dependence = (1.0 - dislocation_creep_exponent[phase_index]) / dislocation_creep_exponent[phase_index];
 
-      return std::pow(dislocation_creep_prefactor[phase_index],-1.0/dislocation_creep_exponent[phase_index])
+      return dislocation_creep_prefactor[phase_index]
              * std::pow(second_strain_rate_invariant,strain_rate_dependence)
              * energy_term;
     }
@@ -1424,6 +1424,12 @@ namespace aspect
           grain_growth_rate_constant[grain_growth_rate_constant.size()-1] *= std::pow(pv_grain_size_scaling,grain_growth_exponent[grain_growth_exponent.size()-1]);
           if (recrystallized_grain_size.size()>0)
             recrystallized_grain_size[recrystallized_grain_size.size()-1] *= pv_grain_size_scaling;
+
+          // prefactors never appear without their exponents. perform some calculations here to save time later
+          for (unsigned int i=0; i<diffusion_creep_prefactor.size(); ++i)
+            diffusion_creep_prefactor[i] = std::pow(diffusion_creep_prefactor[i],-1.0/diffusion_creep_exponent[i]);
+          for (unsigned int i=0; i<dislocation_creep_prefactor.size(); ++i)
+            dislocation_creep_prefactor[i] = std::pow(dislocation_creep_prefactor[i],-1.0/dislocation_creep_exponent[i]);
 
           if (use_paleowattmeter)
             boundary_area_change_work_fraction[boundary_area_change_work_fraction.size()-1] /= pv_grain_size_scaling;
