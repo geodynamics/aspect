@@ -102,7 +102,7 @@ Arthur angle {cite}`kaus:2010,buiter:2012`.
 We can easily modify the previous input file to produce `crustal_model_3D.prm`
 which implements a similar setup, with the additional constraint that the
 position of the velocity discontinuity varies with the $y$-coordinate, as
-shown in {numref}`fig:bottombc`. The domain is now $128\times96\times16$km and the
+shown in {numref}`fig:bottombc`. The domain is now $128\times96\times16$ km and the
 boundary conditions are implemented as follows:
 
 ```{literalinclude} crustal_model_3D_part1.prm
@@ -112,7 +112,7 @@ The presence of an offset between the two velocity discontinuity zones leads
 to a transform fault which connects them.
 
 ```{figure-md} fig:bottombc
-<img src="bottombc2.png" />
+<img src="bottombc2.*" />
 
  Basal velocity boundary conditions and corresponding strain rate field for the 3D model.
 ```
@@ -124,7 +124,7 @@ as a function of their initial offset
 {cite}`allken:etal:2011,allken:etal:2012,allken:etal:2013`.
 
 ```{figure-md} fig:ext3D
-<img src="all3D.png" />
+<img src="all3D.*" />
 
  Finite element mesh, velocity, viscosity and strain rate fields at the end of the first time step after one level of strain rate-based adaptive mesh refinement.
 ```
