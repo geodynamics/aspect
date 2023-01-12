@@ -4,7 +4,7 @@
 
 The following cookbook will explain how to set up a model of a mid-ocean ridge
 that uses ASPECT's implementation of coupled magma/mantle dynamics (see
-Section&nbsp;{ref}`sec:melt_transport`) and melting and freezing of mantle
+Section&nbsp;{ref}`sec:methods:melt-transport`) and melting and freezing of mantle
 rock. In particular, it will outline
 
 1.  how to use operator splitting to accurately compute melting and freezing
@@ -17,7 +17,7 @@ rock. In particular, it will outline
     migration.
 
 How to set up a model with melt migration in general is explained in the
-previous cookbook {ref}`sec:cookbooks-melt-global`.
+previous cookbook {ref}`sec:cookbooks:global-melt`.
 
 As the flow at mid-ocean ridges can be assumed to be roughly symmetric with
 respect to the ridge axis in the center, we only model one half of the ridge
@@ -30,16 +30,16 @@ inducing corner flow. Material can flow out freely at the right model
 boundary. The model shows both how melt is focused towards the ridge axis, and
 how melting and freezing induces chemical heterogeneity in the mantle,
 generating the crust and lithosphere. A movie of the full model evolution can
-be found [online].
+be found [online](https://www.youtube.com/watch?v=f4Bc4lzdNP0).
 
-## The input file.
+## The input file
 
 One important problem in models with melting and freezing (and other
 reactions) is that these reactions can be much faster than the time step of
 the model. For mid-ocean ridges, melt is generally assumed to be in
 equilibrium with the solid, which means that the reaction is basically
-instantaneous. To model these type of processes, uses operator splitting (see
-also Section {ref}`sec:benchmark-operator_splitting`): Reactions are solved
+instantaneous. To model these type of processes, ASPECT uses operator splitting (see
+also {ref}`sec:benchmark:operator-splitting`): Reactions are solved
 on a different time scale than advection. For this model, this means that at
 the beginning of each time step, all melting reactions, including their latent
 heat effects, are solved using several shorter sub-time steps. In the input
@@ -47,10 +47,10 @@ file, we have to choose both the size of these sub-time steps and the rate (or
 characteristic time scale) of melting, and they have to be consistent in the
 sense that the operator splitting time step can not be larger than the
 reaction time scale. The melting model we use here is the anhydrous mantle
-melting model of (Katz, Spiegelman, and Langmuir 2003) for a peridotitic rock
+melting model of {cite:t}`katz:etal:2003` for a peridotitic rock
 composition, as implemented in the "melt simple" material model.
 
-``` prmfile
+```{literalinclude} melting_and_freezing.part.prm
 ```
 
 To make sure we reproduce the characteristic triangular melting region of a
@@ -65,7 +65,7 @@ a boundary condition for the stress. We accomplish this by using the
 automatically compute a 1d lithostatic pressure profile at a given point at
 the time of the model start and apply it as a boundary traction.
 
-``` prmfile
+```{literalinclude} boundary_conditions.part.prm
 ```
 
 Finally, we have to make sure that the resolution is high enough to model melt
@@ -77,7 +77,10 @@ compaction viscosity may jump, and there may be strong gradients or jumps in
 some solution variables such as the melt velocity and the compaction pressure.
 In addition, the characteristic length scale for melt transport, the
 compaction length $\delta$, depends on the porosity:
-$$\delta = \sqrt{\frac{(\xi+4\eta/3)k}{\eta_f}}.$$ While the melt viscosity
+```{math}
+\delta = \sqrt{\frac{(\xi+4\eta/3)k}{\eta_f}}.
+```
+While the melt viscosity
 $\eta_f$ is usually assumed to be constant, and the shear and compaction
 viscosities $\eta$ and $\xi$ increase with decreasing porosity $\phi$, the
 permeability $k \propto \phi^2$ or $k \propto \phi^3$ dominates this relation,
@@ -87,10 +90,10 @@ we want to make sure that regions where melt is present have a high
 resolution, and that this high resolution extends to all cells where the
 two-phase flow equations are solved.
 
-``` prmfile
+```{literalinclude} mesh_refinement.part.prm
 ```
 
-also supports an alternative method to make sure that regions with melt are
+ASPECT also supports an alternative method to make sure that regions with melt are
 sufficiently well resolved, relying directly on the compaction length, and we
 will discuss this method as a possible modification to this cookbook at the
 end of this section.
@@ -98,7 +101,7 @@ end of this section.
 The complete input file is located at
 [cookbooks/mid_ocean_ridge/mid_ocean_ridge.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/mid_ocean_ridge/mid_ocean_ridge.prm).
 
-## Model evolution.
+## Model evolution
 
 ```{figure-md} fig:mid-ocean-ridge
 <img src="mid_ocean_ridge.svg" style="width:50.0%" />
@@ -107,7 +110,7 @@ Mid-ocean ridge model after 8 million years. The top panel shows the depletion a
 ```
 
 When we look at the visualization output of this model (see also
-Figure&nbsp;[1]), we can see how the hot material flowing in from the bottom
+{numref}`fig:mid-ocean-ridge`), we can see how the hot material flowing in from the bottom
 starts to melt as it reaches lower and lower pressures and crosses the
 solidus. Simultaneously, melting makes the residual solid rock more depleted
 (as indicated by the positive values of the compositional field called
@@ -125,7 +128,7 @@ ridge shows two distinct layers: The top $\approx 7$ km are enriched material,
 and form the basaltic crust (negative peridotite field), and the $\approx 50$
 km below are depleted material, and form the lithosphere (positive peridotite
 field). A vertical profile at a distance of 80 km from the ridge axis showing
-this composition can be found in Figure&nbsp;[2].
+this composition can be found in {numref}`fig:mid-ocean-ridge-profile`.
 
 ```{figure-md} fig:mid-ocean-ridge-profile
 <img src="depletion_profile.svg" style="width:35.0%" />
@@ -133,19 +136,19 @@ this composition can be found in Figure&nbsp;[2].
 Vertical profile through the model domain at a distance of 80 km from the ridge axis at the end of the model run, showing the distribution of depletion and enrichment as indicated by the peridotite field.
 ```
 
-## Mesh refinement.
+## Mesh refinement
 
 Another option for making sure that melt migration is resolved properly in the
 model is using a refinement criterion that directly relates to the compaction
 length. This can be done in the mesh refinement section of the input file:
 
-``` prmfile
+```{literalinclude} compaction_length.part.prm
 ```
 
 This will lead to a higher resolution particularly in regions with low (but
 not zero) porosity, and can be useful to resolve the strong gradients in the
 melt velocity and compaction pressure that are to be expected in these places
-(see Figure&nbsp;[3]). Of course it is also possible to combine both methods
+(see {numref}`fig:mid-ocean-ridge-mesh`). Of course it is also possible to combine both methods
 for refining the mesh.
 
 ```{figure-md} fig:mid-ocean-ridge-mesh
@@ -154,7 +157,7 @@ for refining the mesh.
 Mesh after a time of 3.6 million years for a model using the composition threshold refinement strategy (left) and the compaction length refinement strategy (right) Background colors indicate the melt velocity. Its sharp gradients at the interface between regions with and without melt can only be resolved using the compaction length refinement strategy.
 ```
 
-## Extending the model.
+## Extending the model
 
 There are a number of parameters that influence the amount of melting, how
 fast the melt moves, and ultimately the distribution of crustal and
@@ -185,24 +188,3 @@ lithospheric material. Some ideas for adapting the model setup:
     the way up at the ridge axis, but freezes before it reaches the surface.
     Introducing a temperature-dependent rheology could improve this behavior
     (and in reality, plastic effects might also play a role).
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-KSL2003" class="csl-entry">
-
-Katz, Richard F., Marc Spiegelman, and Charles H. Langmuir. 2003. "A New
-Parameterization of Hydrous Mantle Melting." *Geochemistry, Geophysics,
-Geosystems* 4 (9): n/a--. <https://doi.org/10.1029/2002GC000433>.
-
-</div>
-
-</div>
-
-  [1]: #sec:melt_transport
-  [2]: #sec:cookbooks-melt-global
-  [online]: https://www.youtube.com/watch?v=f4Bc4lzdNP0
-  [3]: #sec:benchmark-operator_splitting
-  [cookbooks/mid_ocean_ridge/mid_ocean_ridge.prm]: cookbooks/mid_ocean_ridge/mid_ocean_ridge.prm
-  [1]: #fig:mid-ocean-ridge
-  [2]: #fig:mid-ocean-ridge-profile
-  [3]: #fig:mid-ocean-ridge-mesh

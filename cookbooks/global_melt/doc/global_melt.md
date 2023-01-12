@@ -1,3 +1,4 @@
+(sec:cookbooks:global-melt)=
 # Melt migration in a 2D mantle convection model
 
 *This section was contributed by Juliane Dannberg and is based on a section in
