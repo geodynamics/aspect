@@ -249,20 +249,12 @@ namespace aspect
          */
         bool advect_log_grainsize;
 
-
-        double viscosity (const double                  temperature,
-                          const double                  pressure,
-                          const std::vector<double>    &compositional_fields,
-                          const SymmetricTensor<2,dim> &strain_rate,
-                          const Point<dim>             &position) const;
-
-        double diffusion_viscosity (const double      temperature,
-                                    const double      pressure,
-                                    const std::vector<double>    &compositional_fields,
-                                    const SymmetricTensor<2,dim> &,
-                                    const Point<dim> &position,
+        double diffusion_viscosity (const double temperature,
                                     const double adiabatic_temperature,
-                                    const double adiabatic_pressure) const;
+                                    const double adiabatic_pressure,
+                                    const double grain_size,
+                                    const double second_strain_rate_invariant,
+                                    const Point<dim> &position) const;
 
         /**
          * This function calculates the dislocation viscosity. For this purpose
@@ -275,11 +267,12 @@ namespace aspect
          * unless a guess for the viscosity is provided, which can reduce the
          * number of iterations significantly.
          */
-        double dislocation_viscosity (const double      temperature,
-                                      const double      pressure,
-                                      const std::vector<double>    &compositional_fields,
+        double dislocation_viscosity (const double temperature,
+                                      const double adiabatic_temperature,
+                                      const double adiabatic_pressure,
                                       const SymmetricTensor<2,dim> &strain_rate,
                                       const Point<dim> &position,
+                                      const double diffusion_viscosity,
                                       const double viscosity_guess = 0) const;
 
         double density (const double temperature,

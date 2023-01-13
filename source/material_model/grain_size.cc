@@ -263,8 +263,8 @@ namespace aspect
           const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
           const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
-          const double current_diffusion_viscosity   = diffusion_viscosity(temperature, pressure, current_composition, strain_rate, position, adiabatic_temperature,adiabatic_pressure);
-          current_dislocation_viscosity              = dislocation_viscosity(temperature, pressure, current_composition, strain_rate, position, current_dislocation_viscosity);
+          const double current_diffusion_viscosity   = diffusion_viscosity(temperature, adiabatic_temperature, adiabatic_pressure, grain_size, second_strain_rate_invariant, position);
+          current_dislocation_viscosity              = dislocation_viscosity(temperature, adiabatic_temperature, adiabatic_pressure, strain_rate, position, current_diffusion_viscosity, current_dislocation_viscosity);
 
           double current_viscosity;
           if (std::abs(second_strain_rate_invariant) > 1e-30)
@@ -344,19 +344,13 @@ namespace aspect
     template <int dim>
     double
     GrainSize<dim>::
-    diffusion_viscosity (const double                  temperature,
-                         const double                  /*pressure*/,
-                         const std::vector<double>    &composition,
-                         const SymmetricTensor<2,dim> &strain_rate,
-                         const Point<dim>             &position,
+    diffusion_viscosity (const double temperature,
                          const double adiabatic_temperature,
-                         const double adiabatic_pressure) const
+                         const double adiabatic_pressure,
+                         const double grain_size,
+                         const double second_strain_rate_invariant,
+                         const Point<dim> &position) const
     {
-      const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
-      const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
-
-      const double grain_size = composition[grain_size_index];
-
       // find out in which phase we are
       const unsigned int phase_index = get_phase_index(position, temperature, adiabatic_pressure);
 
@@ -391,32 +385,14 @@ namespace aspect
     template <int dim>
     double
     GrainSize<dim>::
-    dislocation_viscosity (const double      temperature,
-                           const double      pressure,
-                           const std::vector<double> &composition,
+    dislocation_viscosity (const double temperature,
+                           const double adiabatic_temperature,
+                           const double adiabatic_pressure,
                            const SymmetricTensor<2,dim> &strain_rate,
                            const Point<dim> &position,
+                           const double diffusion_viscosity,
                            const double viscosity_guess) const
     {
-      const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized()
-                                           ?
-                                           this->get_adiabatic_conditions().temperature(position)
-                                           :
-                                           temperature;
-      const double adiabatic_pressure = this->get_adiabatic_conditions().is_initialized()
-                                        ?
-                                        this->get_adiabatic_conditions().pressure(position)
-                                        :
-                                        pressure;
-
-      const double diff_viscosity = diffusion_viscosity(temperature,
-                                                        pressure,
-                                                        composition,
-                                                        strain_rate,
-                                                        position,
-                                                        adiabatic_temperature,
-                                                        adiabatic_pressure);
-
       // find out in which phase we are
       const unsigned int phase_index = get_phase_index(position, temperature, adiabatic_pressure);
 
@@ -456,8 +432,8 @@ namespace aspect
       while ((std::abs((dis_viscosity-dis_viscosity_old) / dis_viscosity) > dislocation_viscosity_iteration_threshold)
              && (i < dislocation_viscosity_iteration_number))
         {
-          const SymmetricTensor<2,dim> dislocation_strain_rate = diff_viscosity
-                                                                 / (diff_viscosity + dis_viscosity) * shear_strain_rate;
+          const SymmetricTensor<2,dim> dislocation_strain_rate = diffusion_viscosity
+                                                                 / (diffusion_viscosity + dis_viscosity) * shear_strain_rate;
           const double dislocation_strain_rate_invariant = std::sqrt(std::max(-second_invariant(dislocation_strain_rate), 0.));
 
           dis_viscosity_old = dis_viscosity;
@@ -470,55 +446,6 @@ namespace aspect
       Assert(i<dislocation_viscosity_iteration_number,ExcInternalError());
 
       return dis_viscosity;
-    }
-
-
-
-    template <int dim>
-    double
-    GrainSize<dim>::
-    viscosity (const double temperature,
-               const double pressure,
-               const std::vector<double> &composition,
-               const SymmetricTensor<2,dim> &strain_rate,
-               const Point<dim> &position) const
-    {
-      const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
-      const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
-
-      const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized()
-                                           ?
-                                           this->get_adiabatic_conditions().temperature(position)
-                                           :
-                                           temperature;
-      const double adiabatic_pressure = this->get_adiabatic_conditions().is_initialized()
-                                        ?
-                                        this->get_adiabatic_conditions().pressure(position)
-                                        :
-                                        pressure;
-
-      const double diff_viscosity = diffusion_viscosity(temperature,
-                                                        pressure,
-                                                        composition,
-                                                        strain_rate,
-                                                        position,
-                                                        adiabatic_temperature,
-                                                        adiabatic_pressure);
-
-      double effective_viscosity;
-      if (std::abs(second_strain_rate_invariant) > 1e-30)
-        {
-          const double disl_viscosity = dislocation_viscosity(temperature,
-                                                              pressure,
-                                                              composition,
-                                                              strain_rate,
-                                                              position);
-          effective_viscosity = disl_viscosity * diff_viscosity / (disl_viscosity + diff_viscosity);
-        }
-      else
-        effective_viscosity = diff_viscosity;
-
-      return effective_viscosity;
     }
 
 
@@ -877,16 +804,15 @@ namespace aspect
                                                 in.pressure[i];
 
               const double diff_viscosity = diffusion_viscosity(in.temperature[i],
-                                                                pressure,
-                                                                composition,
-                                                                in.strain_rate[i],
-                                                                in.position[i],
                                                                 adiabatic_temperature,
-                                                                adiabatic_pressure);
+                                                                adiabatic_pressure,
+                                                                composition[grain_size_index],
+                                                                second_strain_rate_invariant,
+                                                                in.position[i]);
 
               if (std::abs(second_strain_rate_invariant) > 1e-30)
                 {
-                  disl_viscosity = dislocation_viscosity(in.temperature[i], pressure, composition, in.strain_rate[i], in.position[i]);
+                  disl_viscosity = dislocation_viscosity(in.temperature[i], adiabatic_temperature, adiabatic_pressure, in.strain_rate[i], in.position[i], diff_viscosity);
                   effective_viscosity = disl_viscosity * diff_viscosity / (disl_viscosity + diff_viscosity);
                 }
               else
