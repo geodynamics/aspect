@@ -24,6 +24,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: setup
       run: |
+        sudo apt-get update
         sudo apt-get install -y software-properties-common
         sudo add-apt-repository ppa:ginggs/deal.ii-9.3.2-backports
         sudo apt-get update
@@ -45,6 +46,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: setup
       run: |
+        sudo apt-get update
         sudo apt-get install -y software-properties-common
         sudo add-apt-repository ppa:ginggs/deal.ii-9.3.2-backports
         sudo apt-get update
