@@ -56,8 +56,7 @@ namespace aspect
       :
       NamedAdditionalMaterialOutputs<dim>(make_dislocation_viscosity_outputs_names()),
       dislocation_viscosities(n_points, numbers::signaling_nan<double>()),
-      diffusion_viscosities(n_points, numbers::signaling_nan<double>()),
-      boundary_area_change_work_fractions(n_points, numbers::signaling_nan<double>())
+      diffusion_viscosities(n_points, numbers::signaling_nan<double>())
     {}
 
 
@@ -66,7 +65,7 @@ namespace aspect
     std::vector<double>
     DislocationViscosityOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
-      AssertIndexRange (idx, 2);
+      AssertIndexRange (idx, 1);
       switch (idx)
         {
           case 0:
@@ -74,9 +73,6 @@ namespace aspect
 
           case 1:
             return diffusion_viscosities;
-
-          case 2:
-            return boundary_area_change_work_fractions;
 
           default:
             AssertThrow(false, ExcInternalError());
@@ -874,10 +870,6 @@ namespace aspect
           out.densities[i] = density(in.temperature[i], pressure, in.composition[i], in.position[i]);
           out.thermal_conductivities[i] = k_value;
           out.compressibilities[i] = compressibility(in.temperature[i], pressure, composition, in.position[i]);
-
-          if (DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>())
-            disl_viscosities_out->boundary_area_change_work_fractions[i] =
-              boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
 
           if (in.requests_property(MaterialProperties::reaction_terms))
             for (unsigned int c=0; c<composition.size(); ++c)

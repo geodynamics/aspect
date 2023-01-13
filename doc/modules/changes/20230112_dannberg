@@ -1,0 +1,9 @@
+New: There is now a new additional material model output called
+ShearHeatingOutputs that contains the fraction of the deformation
+work that is released as shear heating rather than being
+converted into other forms of energy, to be filled by the
+material model. The boundary_area_change_work_fractions variable
+(which provides the same information) has been removed from the
+DislocationViscosityOutputs in the grain size material model.
+<br>
+(Juliane Dannberg, 2023/01/12)
