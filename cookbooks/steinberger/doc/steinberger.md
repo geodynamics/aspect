@@ -8,13 +8,13 @@ fully compressible mantle convection model using the projected density
 approximation (where the density is interpolated onto the finite element grid
 to compute the density gradients in the mass conservation equation rather than
 approximating these gradients using a reference profile or
-temperature/pressure derivatives of the density, see (Gassm&ouml;ller et al.
-2020)). To compute the material properties, we read in a look-up table of
+temperature/pressure derivatives of the density, see {cite:t}`gassmoller:etal:2020`).
+To compute the material properties, we read in a look-up table of
 material properties in dependence of temperature and pressure, originally
-computed using a mineral physics software (in this case, Perple_X, (Connolly
-2005)). The table is based on the thermodynamic database of (Stixrude and
-Lithgow-Bertelloni 2011) and a pyrolitic composition (Ringwood and Irifune
-1988). Compared to a 1D profile, a temperature-pressure look-up table has the
+computed using a mineral physics software (in this case, Perple_X, {cite}`connolly:2005`).
+The table is based on the thermodynamic database of {cite:t}`stixrude:lithgow-bertelloni:2011`
+and a pyrolitic composition {cite}`ringwood:irifune:1988`.
+Compared to a 1D profile, a temperature-pressure look-up table has the
 advantage that material properties are accurate not only around one reference
 adiabat, but also for strongly deviating pressures and temperatures. This is
 particularly important at phase transitions, because their depth depends on
@@ -22,7 +22,7 @@ the temperature and pressure.
 
 This cookbook also demonstrates how to read in a viscosity profile from a data
 file. Specifically, we use the profile and lateral viscosity variations due to
-temperature from (Steinberger and Calderwood 2006), which are based on mineral
+temperature from {cite:t}`steinberger:calderwood:2006`, which are based on mineral
 physics constraints and surface observations.
 
 In addition, this cookbook shows the use of periodic boundary conditions.
@@ -35,17 +35,17 @@ that the mantle is 2900&nbsp;km deep. In the same section of the input file,
 we also need to specify that the model should have periodic boundaries in
 angular ($\phi$) direction:
 
-``` prmfile
+```{literalinclude} geometry.part.prm
 ```
 
 Both the top and bottom boundaries allow for free slip. Because the model has
 periodic side boundary conditions and free slip boundaries at top and bottom,
 the amount of rigid-body rotation in $\phi$ direction is not constrained. In
-other words: There is no unique solution. can remove this nullspace from the
-model (see Section&nbsp;{ref}`sec:nullspace`). Here, we do this by setting
+other words: There is no unique solution. ASPECT can remove this nullspace from the
+model (see {ref}`sec:methods:nullspace-removal`). Here, we do this by setting
 the net rotation to zero:
 
-``` prmfile
+```{literalinclude} nullspace.part.prm
 ```
 
 The temperature is fixed to 273&nbsp;K at the top and 3773&nbsp;K at the
@@ -54,7 +54,7 @@ profile, thermal boundary layers at the surface and the core-mantle boundary,
 and a small harmonic perturbation to initiate convection. The gravity profile
 in the model is based on PREM.
 
-## The equation of state.
+## The equation of state
 
 To use material properties from a temperature--pressure look-up table, we
 use the Steinberger material model. We have to specify the path to the
@@ -84,13 +84,13 @@ equation. In a case like that, we simply want to use these values without
 using additional latent heat terms because latent heat is already included
 automatically when using the properties from the look-up table. If the look-up
 table contains thermal expansivity and specific heat without the effect of
-phase transitions, then can compute latent heat effects based on the pressure
+phase transitions, then ASPECT can compute latent heat effects based on the pressure
 and temperature derivatives of the specific enthalpy (using the approach of
-(Nakagawa et al. 2009)). In our case, we simply do not include latent heat at
+{cite:t}`nakagawa:etal:2009`). In our case, we simply do not include latent heat at
 all in our model. So the look-up table is computed without latent heat
 effects, and we set the "Latent heat" parameter to `false`.
 
-``` prmfile
+```{literalinclude} lookup.part.prm
 ```
 
 In an actual research application, it would be appropriate (and consistent
@@ -100,10 +100,10 @@ often leads to numerical instabilities that one typically addresses by
 ensuring that either the resolution is fine enough so that each phase
 transitions is resolved by several mesh cells, or the energy equations needs
 to be solved for entropy instead of pressure (which is an option available in
-; in this case, the look-up table needs to be given in terms of entropy and
+ASPECT; in this case, the look-up table needs to be given in terms of entropy and
 pressure).
 
-## The look-up table format.
+## The look-up table format
 
 The format of these look-up tables is described in the documentation of the
 [aspect::MaterialModel::MaterialUtilities::Lookup::MaterialLookup] class.
@@ -172,7 +172,7 @@ example, the header of the table used in this cookbook is given below:
 
 Below this header, the table contains the actual data values, using one column
 for each of the property names given in the last line of the header. It is
-also useful to know that does not actually read in the values of the pressures
+also useful to know that ASPECT does not actually read in the values of the pressures
 and temperatures in the first two columns, but instead uses the minimum,
 increment, and number of values parameters given in the header, assuming a
 uniform step size. The first column is always assumed to be the inner loop
@@ -182,24 +182,26 @@ uniform step size. The first column is always assumed to be the inner loop
 
 The rheology of this model consists of two parts: The viscosity profile, and
 the lateral variations due to temperature. For each of these, we need to read
-in a data file. In this example, we use files that are based on (Steinberger
-and Calderwood 2006) for both. The viscosity profile is based on mineral
+in a data file. In this example, we use files that are based on
+{cite:t}`steinberger:calderwood:2006` for both. The viscosity profile is based on mineral
 physics and surface constrains, and the lateral viscosity variations use an
 Arrhenius law with a depth-dependent activation enthalpy. For more details and
-a derivation, see (Steinberger and Calderwood 2006).
+a derivation, see {cite:t}`steinberger:calderwood:2006`.
 
 Other rheology models can be used by reading in different files. The
 formatting of these files is the following: The radial viscosity file contains
 two columns, where the first is the viscosity in Pa&nbsp;s, and the second is
-the depth in km (note that this is an exception to the usual convention of
+the depth in km (note that this is an exception to the usual ASPECT convention of
 using SI units). The lateral viscosity file also contains two columns, the
 first being the activation enthalpy divided by the gas constant and the
 nondimensional stress exponent (which is 1 for diffusion creep/in the lower
 mantle, and 3.5 for dislocation creep/in the upper mantle and transition zone
-in the model of (Steinberger and Calderwood 2006)). The second column is
+in the model of {cite:t}`steinberger:calderwood:2006`). The second column is
 depth, again in km. Both parts are combined to compute the viscosity in the
 following way:
-$$\eta = \eta_\text{rad} \exp{ \left( -\frac{V_\text{lat} \Delta T}{T T_\text{ref}} \right)} ,$$
+```{math}
+\eta = \eta_\text{rad} \exp{ \left( -\frac{V_\text{lat} \Delta T}{T T_\text{ref}} \right)} ,
+```
 where $\eta_\text{rad}$ is the value from the radial viscosity file,
 $V_\text{lat}$ is the value from the lateral viscosity file, $T$ is
 temperature, $T_\text{ref}$ is the reference temperature profile, and
@@ -208,7 +210,7 @@ $\Delta T$ is the deviation from the reference temperature profile.
 This reference profile can be chosen in two different ways: On the one hand,
 it can be chosen as the laterally averaged temperature (and in this case, a
 number of depth slices for this lateral averaging can be specified as well).
-This is the original formulation of (Steinberger and Calderwood 2006), and the
+This is the original formulation of {cite:t}`steinberger:calderwood:2006`, and the
 default of the material model. On the other hand, the adiabatic temperature
 profile can be chosen as the reference. However, the radial profile needs to
 be adapted based on how this reference temperature is chosen. If the reference
@@ -225,20 +227,24 @@ the temperature in the model, which is why we choose it for this cookbook.
 The default data directory already contains two radial viscosity files, one
 for each of these cases. The file
 [data/material-model/steinberger/radial-visc.txt] is the original
-Steinberger and Calderwood (Steinberger and Calderwood 2006) profile (with an
+{cite:t}`steinberger:calderwood:2006` profile (with an
 interpolation between the original discrete layers) and for use with the
 laterally averaged temperature. The file
 [data/material-model/steinberger/radial-visc-simple.txt] is for use with the
 adiabatic profile. To illustrate the difference, the content of both files is
-plotted in Figure&nbsp;[2].
+plotted in {numref}`fig:steinberger-viscosity1` and {numref}`fig:steinberger-viscosity2`.
 
 
-```{figure-md} fig:steinberger-viscosity
+```{figure-md} fig:steinberger-viscosity1
 <img src="radial-visc.svg" style="width:48.0%" />
+
+Viscosity profile based on the original {cite:t}`steinberger:calderwood:2006` formulation, intended for use with a temperature-dependence of viscosity based on the laterally averaged temperature.
 ```
 
-```{figure-md} fig:steinberger-viscosity
+```{figure-md} fig:steinberger-viscosity2
 <img src="radial-visc-simple.svg" style="width:48.0%" />
+
+Modified viscosity profile without boundary layers, intended for use with a temperature dependence of viscosity based on an adiabatic temperature profile.
 ```
 
 In order to improve solver convergence, the material model has additional
@@ -249,7 +255,7 @@ magnitude), and we additionally limit the overall viscosity between
 $10^{20}$&nbsp;Pa&nbsp;s and $5 \times 10^{23}$&nbsp;Pa&nbsp;s. This allows
 the features of the flow field to be resolved.
 
-``` prmfile
+```{literalinclude} rheology.part.prm
 ```
 
 In the Earth, we would expect higher viscosities in the lithosphere and lower
@@ -262,11 +268,15 @@ realistic subduction in a model like this, one would have to either prescribe
 plate velocities at the surface (forcing plates to subduct) or take into
 account plastic yielding (so that the lithosphere can break).
 
-## The projected density approximation.
+:::{note}
+If the model takes too long to run, increase the minimum viscosity.
+:::
+
+## The projected density approximation
 
 Since our model is compressible, the most accurate way to solve the mass
-conservation equation implemented in is to use the 'projected density
-approximation.' This way, will compute the density gradients in the mass
+conservation equation implemented in ASPECT is to use the 'projected density
+approximation.' This way, ASPECT will compute the density gradients in the mass
 conservation directly from the density field (interpolated onto the finite
 element grid) rather than approximating it with a reference profile or
 temperature/pressure derivatives of the density.
@@ -281,114 +291,30 @@ density (rather than a reference profile) as well.
 
 To allow for the interpolation, we create a compositional field that we call
 'density_field.' We assign the field the type
-'density,' so that knows that this is the field it should use to
-compute the density gradient required to solve the equations. does not need to
+'density,' so that ASPECT knows that this is the field it should use to
+compute the density gradient required to solve the equations. ASPECT does not need to
 solve an equation for this field, it only needs to interpolate the density
 values onto it. This is covered by the compositional field method
 'prescribed field.' For fields of this type, the material model
 provides the values that should be interpolated onto the field.
 
-``` prmfile
+```{literalinclude} projected_density.part.prm
 ```
 
 The complete input file can be found in
 [cookbooks/steinberger/doc/steinberger.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/steinberger/doc/steinberger.prm).
 
-## Results.
+## Results
 
 We run the model for 300 million years. Over the time of the model evolution,
 some plumes rise and spread beneath the base of the lithosphere, and some cold
 downwellings detach from the base of the lithosphere. The temperature at the
 end of the model run and some of the material properties are shown in
-Figure&nbsp;[6].
+{numref}`fig:steinberger-end-state`.
 
 
 ```{figure-md} fig:steinberger-end-state
-<img src="temperature.png" style="width:48.0%" />
+<img src="endstate.png" style="width:96.0%" />
 
  End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity.
 ```
-
-```{figure-md} fig:steinberger-end-state
-<img src="viscosity.png" style="width:48.0%" />
-
- End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity.
-```
-
-```{figure-md} fig:steinberger-end-state
-<img src="density.png" style="width:48.0%" />
-
- End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity.
-```
-
-```{figure-md} fig:steinberger-end-state
-<img src="specific_heat.png" style="width:48.0%" />
-
- End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity.
-```
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-connolly2005computation" class="csl-entry">
-
-Connolly, James AD. 2005. "Computation of Phase Equilibria by Linear
-Programming: A Tool for Geodynamic Modeling and Its Application to Subduction
-Zone Decarbonation." *Earth and Planetary Science Letters* 236 (1-2):
-524--41.
-
-</div>
-
-<div id="ref-gassmoller2020formulations" class="csl-entry">
-
-Gassm&ouml;ller, Rene, Juliane Dannberg, Wolfgang Bangerth, Timo Heister, and
-Robert Myhill. 2020. "On Formulations of Compressible Mantle
-Convection." *Geophysical Journal International* 221 (2): 1264--80.
-<https://doi.org/10.1093/gji/ggaa078>.
-
-</div>
-
-<div id="ref-nakagawa2009incorporating" class="csl-entry">
-
-Nakagawa, Takashi, Paul J Tackley, Frederic Deschamps, and James AD Connolly.
-2009. "Incorporating Self-Consistently Calculated Mineral Physics into
-Thermochemical Mantle Convection Simulations in a 3-d Spherical Shell and Its
-Influence on Seismic Anomalies in Earth's Mantle." *Geochemistry,
-Geophysics, Geosystems* 10 (3).
-
-</div>
-
-<div id="ref-ringwood1988nature" class="csl-entry">
-
-Ringwood, AE, and T Irifune. 1988. "Nature of the 650--Km Seismic
-Discontinuity: Implications for Mantle Dynamics and Differentiation."
-*Nature* 331 (6152): 131--36.
-
-</div>
-
-<div id="ref-stca06" class="csl-entry">
-
-Steinberger, B., and A. R. Calderwood. 2006. "<span
-class="nocase">Models of large-scale viscous flow in the Earth's mantle
-with constraints from mineral physics and surface observations</span>."
-*Geophy.&nbsp;J.&nbsp;Int.* 167: 1461--81.
-<https://doi.org/10.1111/j.1365-246X.2006.03131.x>.
-
-</div>
-
-<div id="ref-stixrude2011thermodynamics" class="csl-entry">
-
-Stixrude, Lars, and Carolina Lithgow-Bertelloni. 2011. "Thermodynamics
-of Mantle Minerals-II. Phase Equilibria." *Geophysical Journal
-International* 184 (3): 1180--1213.
-
-</div>
-
-</div>
-
-  [1]: #sec:nullspace
-  [aspect::MaterialModel::MaterialUtilities::Lookup::MaterialLookup]: https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1MaterialModel_1_1MaterialUtilities_1_1Lookup_1_1MaterialLookup.html
-  [data/material-model/steinberger/radial-visc.txt]: data/material-model/steinberger/radial-visc.txt
-  [data/material-model/steinberger/radial-visc-simple.txt]: data/material-model/steinberger/radial-visc-simple.txt
-  [2]: #fig:steinberger-viscosity
-  [cookbooks/steinberger/doc/steinberger.prm]: cookbooks/steinberger/doc/steinberger.prm
-  [6]: #fig:steinberger-end-state

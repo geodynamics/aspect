@@ -1,24 +1,26 @@
+(sec:cookbooks:global-melt)=
 # Melt migration in a 2D mantle convection model
 
 *This section was contributed by Juliane Dannberg and is based on a section in
-(Dannberg and Heister 2016) by Juliane Dannberg and Timo Heister.*
+{cite:t}`dannberg:heister:2016` by Juliane Dannberg and Timo Heister.*
 
 The following cookbook will explain how to use ASPECT's implementation of
-coupled magma/mantle dynamics (see Section&nbsp;{ref}`sec:melt_transport`)
+coupled magma/mantle dynamics (see {ref}`sec:methods:melt-transport`)
 to set up a model of mantle convection that also includes melting and freezing
 of mantle rock, and the transport of melt according to the two-phase flow
-equations. The model setup is described in detail in (Dannberg and Heister
-2016), which can be found [here], and in the following we will go over a
+equations. The model setup is described in detail in {cite:t}`dannberg:heister:2016`,
+which can be found [here](https://academic.oup.com/gji/article/207/3/1343/2194516),
+and in the following we will go over a
 slightly simplified version in lower resolution. We will start by looking at a
 global mantle convection without melt migration, and will then discuss how the
 input file has to be modified in order to add melt transport. A movie that
 compares the evolution of the temperature field and the amount of melt present
-in both models in higher resolution can be found [online].
+in both models in higher resolution can be found [online](https://www.youtube.com/watch?v=Kwyp4Jvx6MU).
 
 The model setup is a 2D box with dimensions of $2900 \times 8700$&#8198;km,
 and it is heated from the bottom and cooled from the top. A full description
 can be found in Section&nbsp;4.7 "Influence of melt migration on a
-global-scale convection model" in (Dannberg and Heister 2016). In the
+global-scale convection model" in {cite:t}`dannberg:heister:2016`. In the
 first model we will look at, melting and freezing is only included passively:
 We use the `melt fraction` visualization postprocessor to compute how much
 melt is present for a given temperature and pressure at every given point in
@@ -31,7 +33,7 @@ below the solidus. The following input file (which can be found in
 [cookbooks/global_melt/global_no_melt.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/global_melt/global_no_melt.prm)) contains a detailed description
 of the different options required to set up such a model:
 
-``` prmfile
+```{literalinclude} global_no_melt.prm
 ```
 
 When we look at visualization output of this model, we can see that over time,
@@ -58,7 +60,7 @@ complete version of which can be found in
 [cookbooks/global_melt/global_melt.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/global_melt/global_melt.prm)) details the changes we have to make
 from the first model to set up a model with melt migration:
 
-``` prmfile
+```{literalinclude} global_melt.prm
 ```
 
 In the first few tens of millions of years, this models evolves similarly to
@@ -83,26 +85,6 @@ over time in comparison to the model without melt migration.
 Evolution of the model without (left) and with (right) melt migration.
 ```
 
-Figure&nbsp;[1] shows the time evolution of both models. A more complete
+{numref}`fig:global-melt` shows the time evolution of both models. A more complete
 comparison of the two models can be found in Section&nbsp;4.7 "Influence
-of melt migration on a global-scale convection model" in (Dannberg and
-Heister 2016).
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-dannberg_melt" class="csl-entry">
-
-Dannberg, J., and T. Heister. 2016. "Compressible Magma/Mantle Dynamics:
-3d, Adaptive Simulations in ASPECT." *Geophysical Journal International*
-207 (3): 1343--66. <https://doi.org/10.1093/gji/ggw329>.
-
-</div>
-
-</div>
-
-  [1]: #sec:melt_transport
-  [here]: https://doi.org/10.1093/gji/ggw329
-  [online]: http://youtu.be/Kwyp4Jvx6MU
-  [cookbooks/global_melt/global_no_melt.prm]: cookbooks/global_melt/global_no_melt.prm
-  [cookbooks/global_melt/global_melt.prm]: cookbooks/global_melt/global_melt.prm
-  [1]: #fig:global-melt
+of melt migration on a global-scale convection model" in {cite:t}`dannberg:heister:2016`).
