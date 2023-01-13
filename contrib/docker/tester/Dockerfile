@@ -23,11 +23,11 @@ RUN cd /opt && \
     cd candi && \
     mv /opt/local.cfg . && \
     ./candi.sh -p /opt -j2 && \
-    rm -rf /opt/tmp && \
-    ln -s /opt/astyle-2.04/astyle /usr/bin/astyle
+    rm -rf /opt/tmp
 
 # Set environment variables for this image to be used
 # by Github Actions
+ENV PATH="/opt/astyle-2.04:/opt/cmake-3.20.5-linux-x86_64/bin:$PATH"
 ENV DEAL_II_DIR /opt/deal.II-master
 ENV OMPI_MCA_btl_base_warn_component_unused=0
 ENV OMPI_MCA_mpi_yield_when_idle=1
@@ -37,6 +37,7 @@ ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 
 # Set environment variables for derived images, which
 # are build by Jenkins
+ONBUILD ENV PATH="/opt/astyle-2.04:/opt/cmake-3.20.5-linux-x86_64/bin:$PATH"
 ONBUILD ENV DEAL_II_DIR /opt/deal.II-master
 ONBUILD ENV OMPI_MCA_btl_base_warn_component_unused=0
 ONBUILD ENV OMPI_MCA_mpi_yield_when_idle=1
