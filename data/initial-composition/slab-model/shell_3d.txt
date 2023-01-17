@@ -1,0 +1,13 @@
+# Test data for slab model initial composition.
+# Only next line is parsed in format: [ny] [nz] because of keyword "POINTS:"
+# POINTS: 3 3
+phi theta depth(m) thickness(m)
+0       0       1000000. 0.
+0.7854  0       1000000. 0.
+1.5  0       1000000. 0.
+0       0.7854  0. 1000000.
+0.7854  0.7854  0. 1000000.
+1.5  0.7854  0. 0.
+0       1.5708  0. 1000000.
+0.7854  1.5708  0. 1000000.
+1.5 1.5708  0. 0.
