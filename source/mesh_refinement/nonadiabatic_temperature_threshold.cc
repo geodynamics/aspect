@@ -20,6 +20,7 @@
 
 
 #include <aspect/mesh_refinement/nonadiabatic_temperature_threshold.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
