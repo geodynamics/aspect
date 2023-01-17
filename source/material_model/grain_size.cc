@@ -22,6 +22,7 @@
 #include <aspect/material_model/grain_size.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/heating_model/shear_heating.h>
 #include <aspect/utilities.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -55,8 +56,7 @@ namespace aspect
       :
       NamedAdditionalMaterialOutputs<dim>(make_dislocation_viscosity_outputs_names()),
       dislocation_viscosities(n_points, numbers::signaling_nan<double>()),
-      diffusion_viscosities(n_points, numbers::signaling_nan<double>()),
-      boundary_area_change_work_fractions(n_points, numbers::signaling_nan<double>())
+      diffusion_viscosities(n_points, numbers::signaling_nan<double>())
     {}
 
 
@@ -65,7 +65,7 @@ namespace aspect
     std::vector<double>
     DislocationViscosityOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
-      AssertIndexRange (idx, 2);
+      AssertIndexRange (idx, 1);
       switch (idx)
         {
           case 0:
@@ -73,9 +73,6 @@ namespace aspect
 
           case 1:
             return diffusion_viscosities;
-
-          case 2:
-            return boundary_area_change_work_fractions;
 
           default:
             AssertThrow(false, ExcInternalError());
@@ -862,15 +859,17 @@ namespace aspect
                   disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
                   disl_viscosities_out->diffusion_viscosities[i] = std::min(std::max(min_eta,diff_viscosity),1e300);
                 }
+
+              if (HeatingModel::ShearHeatingOutputs<dim> *shear_heating_out = out.template get_additional_output<HeatingModel::ShearHeatingOutputs<dim>>())
+                {
+                  const double f = boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
+                  shear_heating_out->shear_heating_work_fractions[i] = 1. - f * out.viscosities[i] / std::min(std::max(min_eta,disl_viscosity),1e300);
+                }
             }
 
           out.densities[i] = density(in.temperature[i], pressure, in.composition[i], in.position[i]);
           out.thermal_conductivities[i] = k_value;
           out.compressibilities[i] = compressibility(in.temperature[i], pressure, composition, in.position[i]);
-
-          if (DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>())
-            disl_viscosities_out->boundary_area_change_work_fractions[i] =
-              boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
 
           if (in.requests_property(MaterialProperties::reaction_terms))
             for (unsigned int c=0; c<composition.size(); ++c)
@@ -1486,14 +1485,21 @@ namespace aspect
     void
     GrainSize<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      // These properties are useful as output, but will also be used by the
-      // heating model to reduce shear heating by the amount of work done to
-      // reduce grain size.
+      // These properties are useful as output.
       if (out.template get_additional_output<DislocationViscosityOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::DislocationViscosityOutputs<dim>> (n_points));
+        }
+
+      // These properties will be used by the heating model to reduce
+      // shear heating by the amount of work done to reduce grain size.
+      if (out.template get_additional_output<HeatingModel::ShearHeatingOutputs<dim>>() == nullptr)
+        {
+          const unsigned int n_points = out.n_evaluation_points();
+          out.additional_outputs.push_back(
+            std::make_unique<HeatingModel::ShearHeatingOutputs<dim>> (n_points));
         }
 
       // These properties are only output properties.

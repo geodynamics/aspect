@@ -61,14 +61,6 @@ namespace aspect
          * the current object.
          */
         std::vector<double> diffusion_viscosities;
-
-        /**
-         * This contains the fraction of the deformation work that is
-         * converted to surface energy of grains instead of thermal energy.
-         * It is used to reduce the shear heating by this fraction. If it
-         * is set to 0.0 it will not change the shear heating.
-         */
-        std::vector<double> boundary_area_change_work_fractions;
     };
 
 
