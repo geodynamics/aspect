@@ -3,9 +3,15 @@
 
 *This section was contributed by Juliane Dannberg and Rene Gassm&ouml;ller*
 
+:::{note}
+In this section, following {cite:t}`becker:etal:2003,dahlen:tromp:1998`, we denote the velocity gradient tensor as $\mathbf G$, where $\mathbf G = \nabla \mathbf u^T$,
+and $\mathbf u$ is the velocity. Note that this is different from the definition of the strain rate $\epsilon(\mathbf u)$, which only contains the symmetric part of $\mathbf G$. We then denote the deformation gradient (or deformation) tensor by $\mathbf F$, where $\mathbf F$ is the tensor that
+deforms an initial state $\mathbf x$ into an deformed state $\mathbf r = \mathbf F \mathbf x$.
+:::
+
 In many geophysical settings, material properties, and in particular the
 rheology, do not only depend on the current temperature, pressure and strain
-rate, but also on the history of the system. This can be incorporated in
+rate, but also on the history of the system. This can be incorporated in ASPECT
 models by tracking history variables through compositional fields. In this
 cookbook, we will show how to do this by tracking the strain that idealized
 little grains of finite size accumulate over time at every (Lagrangian) point
@@ -17,7 +23,7 @@ modifies the right-hand side of the corresponding advection equations to
 accumulate strain over time. This is done by adjusting the
 `out.reaction_terms` variable:
 
-``` c++
+```{literalinclude} finite_strain.cc
 ```
 
 Let us denote the accumulated deformation at time step $n$ as $\mathbf F^n$.
@@ -27,8 +33,8 @@ and the deformation gradient $\mathbf F^{n-1}$ accumulated up to the previous
 time step, in other words
 $\frac{\partial \mathbf F}{\partial t} = \mathbf G \mathbf F$, and
 $\mathbf F^0 = \mathbf I$, with $\mathbf I$ being the identity tensor. While
-we refer to other studies (McKenzie and Jackson 1983; Dahlen and Tromp 1998;
-Becker et al. 2003) for a derivation of this relationship, we can give an
+we refer to other studies {cite}`mckenzie:jackson:1983,dahlen:tromp:1998,becker:etal:2003`
+for a derivation of this relationship, we can give an
 intuitive example for the necessity to apply the velocity gradient to the
 already accumulated deformation, instead of simply integrating the velocity
 gradient over time. Consider a simple one-dimensional "grain" of
@@ -48,7 +54,7 @@ the definition of $\mathbf F$.
 
 In more general cases a visualization of $\mathbf F$ is not intuitive, because
 it contains rotational components that represent a rigid body rotation without
-deformation. Following (Becker et al. 2003) we can polar-decompose the tensor
+deformation. Following {cite:t}`becker:etal:2003` we can polar-decompose the tensor
 into a positive-definite and symmetric left stretching tensor $\mathbf L$, and
 an orthogonal rotation tensor $\mathbf Q$, as
 $\mathbf F = \mathbf L \mathbf Q$, therefore
@@ -58,7 +64,7 @@ deformation we are interested in, and its eigenvalues $\lambda_i$ and
 eigenvectors $\mathbf e_i$ describe the length and orientation of the
 half-axes of the finite strain ellipsoid. Moreover, we will represent the
 amount of relative stretching at every point by the ratio
-$\ln(\lambda_1/\lambda_2)$, called the *natural strain* (Ribe 1992).
+$\ln(\lambda_1/\lambda_2)$, called the *natural strain* {cite}`ribe:1992`.
 
 The full plugin implementing the integration of $\mathbf F$ can be found in
 [cookbooks/finite_strain/finite_strain.cc](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/finite_strain/finite_strain.cc) and can be compiled with
@@ -68,13 +74,13 @@ selected as material model. As it is derived from the "simple"
 material model, all input parameters for the material properties are read in
 from the subsection `Simple model`.
 
-``` prmfile
+```{literalinclude} finite_strain.part.prm
 ```
 
 ```{figure-md} fig:finite_strain
 <img src="finite_strain.svg" style="width:75.0%" />
 
-Accumulated finite strain in an example convection model, as described in Section <a href="#sec:finite-strain" data-reference-type="ref" data-reference="sec:finite-strain">0.0.1</a> at a time of 67.6&#xA0;Ma. Top panel: Temperature distribution. Bottom panel: Natural strain distribution. Additional black crosses are the scaled eigenvectors of the stretching tensor <span class="math inline"><strong>L</strong></span>, showing the direction of stretching and compression.
+Accumulated finite strain in an example convection model, as described in {ref}`sec:cookbooks:finite_strain` at a time of 67.6&#xA0;Ma. Top panel: Temperature distribution. Bottom panel: Natural strain distribution. Additional black crosses are the scaled eigenvectors of the stretching tensor <span class="math inline"><strong>L</strong></span>, showing the direction of stretching and compression.
 ```
 
 The plugin was tested against analytical solutions for the deformation
@@ -83,7 +89,7 @@ gradient tensor in simple and pure shear as described in
 [benchmarks/finite_strain/simple_shear.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/finite_strain/simple_shear.prm).
 
 We will demonstrate its use at the example of a 2D Cartesian convection model
-(Figure&nbsp;[1]): Heating from the bottom leads to the ascent of plumes
+({numref}`fig:finite_strain`): Heating from the bottom leads to the ascent of plumes
 from the boundary layer (top panel), and the amount of stretching is visible
 in the distribution of natural strain (color in lower panel). Additionally,
 the black crosses show the direction of stretching and compression (the
@@ -103,47 +109,14 @@ strain: Because the values of the compositional fields are part of what the
 material model gets as inputs, they can easily be used for computing material
 model outputs such as the viscosity.
 
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-Becker2003" class="csl-entry">
-
-Becker, Thorsten W., James B. Kellogg, G&ouml;ran Ekstr&ouml;m, and Richard J.
-O'Connell. 2003. "<span class="nocase">Comparison of azimuthal
-seismic anisotropy from surface waves and finite strain from global
-mantle-circulation models</span>." *Geophysical Journal International*
-155 (2): 696--714. <https://doi.org/10.1046/j.1365-246X.2003.02085.x>.
-
-</div>
-
-<div id="ref-dahlen1998theoretical" class="csl-entry">
-
-Dahlen, FA, and Jeroen Tromp. 1998. *Theoretical Global Seismology*. Princeton
-University Press.
-
-</div>
-
-<div id="ref-McKenzie1983" class="csl-entry">
-
-McKenzie, Dan, and James Jackson. 1983. "<span class="nocase">The
-relationship between strain rates, crustal thickening, palaeomagnetism, finite
-strain and fault movements within a deforming zone</span>." *Earth and
-Planetary Science Letters* 65 (1): 182--202.
-<https://doi.org/10.1016/0012-821X(83)90198-X>.
-
-</div>
-
-<div id="ref-Ribe1992" class="csl-entry">
-
-Ribe, Neil M. 1992. "<span class="nocase">On the relation between
-seismic anisotropy and finite strain</span>." *Journal of Geophysical
-Research* 97 (B6): 8737. <https://doi.org/10.1029/92JB00551>.
-
-</div>
-
-</div>
-
-  [cookbooks/finite_strain/finite_strain.cc]: cookbooks/finite_strain/finite_strain.cc
-  [cookbooks/finite_strain]: cookbooks/finite_strain
-  [benchmarks/finite_strain/pure_shear.prm]: benchmarks/finite_strain/pure_shear.prm
-  [benchmarks/finite_strain/simple_shear.prm]: benchmarks/finite_strain/simple_shear.prm
-  [1]: #fig:finite_strain
+:::{note}
+In this model we present the use of multiple compositional fields for other purposes than chemical composition.
+It would have been feasible to run the same model with particles that track the deformation gradient, as
+additionally implemented and tested in the simple shear and pure shear benchmarks mentioned in this section.
+Both approaches have specific advantages, and for scientific computations one needs to evaluate the more suitable
+strategy. Compositional fields cover the whole domain, but are affected by numerical diffusion, effectively reducing the
+maximum accumulated strain. Particles only provide finite strain values at discrete positions, but can, if this is desired, be used in
+fewer numbers and only a part of the model domain (and are much faster in this case). If however
+there needs to be a large number of particles (possibly because they are used for other purposes as well), then they
+can be much more expensive. Both approaches can be used to actively influence the rheology in the material model.
+:::
