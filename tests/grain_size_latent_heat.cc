@@ -197,7 +197,8 @@ namespace aspect
 
                   const double diff_viscosity = this->diffusion_viscosity(in.temperature[i],
                                                                           adiabatic_temperature,
-                                                                          adiabatic_pressure,                                                                composition[grain_size_index],
+                                                                          adiabatic_pressure,
+                                                                          composition[grain_size_index],
                                                                           second_strain_rate_invariant,
                                                                           in.position[i]);
 
