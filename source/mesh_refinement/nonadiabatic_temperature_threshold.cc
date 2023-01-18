@@ -56,8 +56,10 @@ namespace aspect
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                                                                                          temperature_values);
 
+            const unsigned int n_dofs_per_cell = this->get_fe().base_element(this->introspection().base_elements.temperature).dofs_per_cell;
+
             // if the nonadiabatic temperature exceeds the threshold, cell is marked for refinement
-            for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.temperature).dofs_per_cell; ++j)
+            for (unsigned int j=0; j<n_dofs_per_cell; ++j)
               {
                 const double adiabatic_temperature = this->get_adiabatic_conditions().temperature(fe_values.quadrature_point(j));
 
