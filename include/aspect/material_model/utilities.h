@@ -278,7 +278,7 @@ namespace aspect
        */
       std::vector<double>
       compute_only_composition_fractions(const std::vector<double> &compositional_fields,
-                                         const std::vector<unsigned int> &indices);
+                                         const std::vector<unsigned int> &indices_to_use);
 
       /**
        * For multicomponent material models: Given a vector of compositional

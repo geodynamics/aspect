@@ -404,10 +404,9 @@ namespace aspect
 
   template <int dim>
   const std::vector<unsigned int>
-  Introspection<dim>::get_indices_for_fields_of_type (const std::string &type_name) const
+  Introspection<dim>::get_indices_for_fields_of_type (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const
   {
     std::vector<unsigned int> indices;
-    typename Parameters<dim>::CompositionalFieldDescription::Type type = Parameters<dim>::CompositionalFieldDescription::parse_type(type_name);
 
     for (unsigned int i=0; i<n_compositional_fields; ++i)
       if (composition_descriptions[i].type == type)
@@ -420,10 +419,9 @@ namespace aspect
 
   template <int dim>
   const std::vector<std::string>
-  Introspection<dim>::get_names_for_fields_of_type (const std::string &type_name) const
+  Introspection<dim>::get_names_for_fields_of_type (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const
   {
     std::vector<std::string> names;
-    typename Parameters<dim>::CompositionalFieldDescription::Type type = Parameters<dim>::CompositionalFieldDescription::parse_type(type_name);
 
     for (unsigned int i=0; i<n_compositional_fields; ++i)
       if (composition_descriptions[i].type == type)
