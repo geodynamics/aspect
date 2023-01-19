@@ -39,8 +39,7 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      const std::set<types::boundary_id> boundary_ids = this->get_fixed_temperature_boundary_indicators();
-      Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids,
+      Utilities::AsciiDataBoundary<dim>::initialize(this->get_fixed_temperature_boundary_indicators(),
                                                     1);
     }
 
