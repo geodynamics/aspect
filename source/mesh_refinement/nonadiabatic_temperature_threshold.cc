@@ -46,6 +46,7 @@ namespace aspect
                                update_quadrature_points | update_values);
 
       std::vector<double> temperature_values (quadrature.size());
+      const unsigned int n_dofs_per_cell = this->get_fe().base_element(this->introspection().base_elements.temperature).dofs_per_cell;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
@@ -55,8 +56,6 @@ namespace aspect
             fe_values.reinit(cell);
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                                                                                          temperature_values);
-
-            const unsigned int n_dofs_per_cell = this->get_fe().base_element(this->introspection().base_elements.temperature).dofs_per_cell;
 
             // if the nonadiabatic temperature exceeds the threshold, cell is marked for refinement
             for (unsigned int j=0; j<n_dofs_per_cell; ++j)
