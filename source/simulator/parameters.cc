@@ -1203,11 +1203,11 @@ namespace aspect
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Types of fields", "unspecified",
-                         Patterns::List (Patterns::Selection("chemical composition|stress|grain size|porosity|density|generic|unspecified")),
+                         Patterns::List (Patterns::Selection("chemical composition|stress|strain|grain size|porosity|density|generic|unspecified")),
                          "A type for each of the compositional fields requested. "
                          "Each entry of the list must be "
                          "one of several recognized types: chemical composition, "
-                         "stress, grain size, porosity, general and unspecified. "
+                         "stress, strain, grain size, porosity, general and unspecified. "
                          "The generic type is intended to be a placeholder type "
                          "that has no effect on the running of any material model, "
                          "while the unspecified type is intended to tell ASPECT "
