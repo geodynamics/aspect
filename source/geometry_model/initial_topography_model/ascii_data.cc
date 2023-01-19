@@ -49,10 +49,7 @@ namespace aspect
     {
       surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
-      std::set<types::boundary_id> surface_boundary_set;
-      surface_boundary_set.insert(surface_boundary_id);
-
-      Utilities::AsciiDataBoundary<dim>::initialize(surface_boundary_set,
+      Utilities::AsciiDataBoundary<dim>::initialize({surface_boundary_id},
                                                     1);
     }
 
