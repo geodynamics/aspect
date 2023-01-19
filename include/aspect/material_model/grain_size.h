@@ -175,6 +175,11 @@ namespace aspect
         double k_value;
 
         /**
+         * The index of the compositional field that represents the grain size.
+        */
+        unsigned int grain_size_index;
+
+        /**
          * Parameters controlling the grain size evolution.
          */
         std::vector<double> grain_growth_activation_energy;
@@ -236,17 +241,11 @@ namespace aspect
          */
         bool advect_log_grainsize;
 
-
-        double viscosity (const double                  temperature,
-                          const double                  pressure,
-                          const std::vector<double>    &compositional_fields,
-                          const SymmetricTensor<2,dim> &strain_rate,
-                          const Point<dim>             &position) const;
-
-        double diffusion_viscosity (const double      temperature,
-                                    const double      pressure,
-                                    const std::vector<double>    &compositional_fields,
-                                    const SymmetricTensor<2,dim> &,
+        double diffusion_viscosity (const double temperature,
+                                    const double adiabatic_temperature,
+                                    const double adiabatic_pressure,
+                                    const double grain_size,
+                                    const double second_strain_rate_invariant,
                                     const Point<dim> &position) const;
 
         /**
@@ -260,22 +259,13 @@ namespace aspect
          * unless a guess for the viscosity is provided, which can reduce the
          * number of iterations significantly.
          */
-        double dislocation_viscosity (const double      temperature,
-                                      const double      pressure,
-                                      const std::vector<double>    &compositional_fields,
+        double dislocation_viscosity (const double temperature,
+                                      const double adiabatic_temperature,
+                                      const double adiabatic_pressure,
                                       const SymmetricTensor<2,dim> &strain_rate,
                                       const Point<dim> &position,
+                                      const double diffusion_viscosity,
                                       const double viscosity_guess = 0) const;
-
-        /**
-         * This function calculates the dislocation viscosity for a given
-         * dislocation strain rate.
-         */
-        double dislocation_viscosity_fixed_strain_rate (const double      temperature,
-                                                        const double      pressure,
-                                                        const std::vector<double> &,
-                                                        const SymmetricTensor<2,dim> &dislocation_strain_rate,
-                                                        const Point<dim> &position) const;
 
         double density (const double temperature,
                         const double pressure,
