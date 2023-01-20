@@ -2,6 +2,7 @@
 # Using lazy expression syntax for if-else-statements in function expressions
 
 *This section was contributed by Magali Billen*
+
 This cookbook provides an example to illustrate how to use the lazy-expression
 syntax for multiple, nested, if-else-statements in function expressions in the
 parameter file. It also shows how to set parameters in the input file so you
@@ -12,8 +13,10 @@ material parameters are constant within the box (set using the
 "simple" material model). The initial thermal structure has two
 parts divided at $xtr=2200$&nbsp;km. The temperature in each region is defined
 using the equation for a half-space cooling model:
-$$T(x,y) = T_s + (T_m  - T_s) \erf{(\frac{y}{2\sqrt{\kappa x/v}})}$$ where
-$\erf$ is the error function, $T_m$ is the mantle temperature, $T_s$ is the
+```{math}
+T(x,y) = T_s + (T_m  - T_s) \text{erf}{(\frac{y}{2\sqrt{\kappa x/v}})}
+```
+where $\text{erf}$ is the error function, $T_m$ is the mantle temperature, $T_s$ is the
 surface temperature, $y$ is depth, $x$ is horizontal distance, $\kappa$ is the
 thermal diffusivity, and $v$ is the plate velocity. The age of the plate is
 given by $x/v$. Note that the equation for the half-space cooling model is not
@@ -34,8 +37,7 @@ of refinement. We also often want to use different values of functions in
 different regions of the model (e.g., for the two plates as described above)
 and so we need to use if-statements to specify these regions. The function
 constants and expressions are read in using the muparser. The muparser accepts
-two different syntax options for if-statements (see also Section
-{ref}`sec:muparser-format`).
+two different syntax options for if-statements (see also {ref}`sec:run-aspect:parameters-overview:muparser-format`).
 
 1.  `if(condition, true-expression, false-expression)`
 
@@ -57,18 +59,18 @@ this structure:
 where T-sub is the function for the temperature of the subducting plate and
 T-ov is the function for the temperature of the overriding plate.
 
-``` prmfile
+```{literalinclude} temperature.part.prm
 ```
 
 Notice also that the boundary conditions for the temperature are defined in a
 separate subsection and depend on the geometry. The boundary conditions are
 insulating (zero flux) side-walls and fixed temperature at the top and bottom.
-Figure [1] shows the initial temperature on the full domain.
+{numref}`lazy-expression-tempic` shows the initial temperature on the full domain.
 
 ```{figure-md} lazy-expression-tempic
-<img src="initial_temperature.png" style="width:80.0%" />
+<img src="initial_temperature.*" style="width:80.0%" />
 
- Initial temperature condition for the lazy-expression syntax cookbook. [lazy-expression-tempic]
+Initial temperature condition for the lazy-expression syntax cookbook.
 ```
 
 The structure and refinement of the mesh are determined in two subsections of
@@ -79,7 +81,7 @@ as close as possible): this is done using the `repetitions` parameters in the
 of 5:1, we use 5 repetitions in the $x$ direction, dividing the domain into 5
 equidimensional elements each 1000 by 1000 km.
 
-``` prmfile
+```{literalinclude} repetitions.part.prm
 ```
 
 Further refinements will divide each sub-region multiple times keeping the
@@ -93,19 +95,19 @@ and initial adaptive refinement level (4) in the '`then`'
 statement (i.e., 7 here) and the value of initial global refinement in the
 '`else`' statement.
 
-``` prmfile
+```{literalinclude} mesh-refinement.part.prm
 ```
 
-Figure [2] zooms in on the region where the two plates meet and shows the
+{numref}`lazy-expression-tempic-zoom` zooms in on the region where the two plates meet and shows the
 temperature on a wireframe highlighting the element size refinement. Notice
 that the mesh refinement algorithm automatically adjusts the element size
 between the region that is specific to be a level 7 and the region at level 3
 to create a smooth transition in element size.
 
 ```{figure-md} lazy-expression-tempic-zoom
-<img src="initial_temperature_on_mesh_zoom.png" style="width:50.0%" />
+<img src="initial_temperature_on_mesh_zoom.*" style="width:50.0%" />
 
- Initial temperature condition for the lazy-expression syntax cookbook within the region where the two plates meet. The wireframe shows the element size refinement. [lazy-expression-tempic-zoom]
+Initial temperature condition for the lazy-expression syntax cookbook within the region where the two plates meet. The wireframe shows the element size refinement.
 ```
 
 Finally, in order to just test whether the initial temperature structure has
@@ -118,9 +120,5 @@ parameters to large values as noted below. However, remember that in that case
 the solution will not be converged -- it is only useful for checking that
 the initial condition is set correctly.
 
-``` prmfile
+```{literalinclude} check-initial-condition.part.prm
 ```
-
-  [1]: #sec:muparser-format
-  [1]: #lazy-expression-tempic
-  [2]: #lazy-expression-tempic-zoom
