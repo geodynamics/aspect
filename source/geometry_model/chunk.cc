@@ -267,8 +267,8 @@ namespace aspect
         // measured by the minimum distance from any of the other vertices
         // to the first vertex), then we call this a horizontal face.
         constexpr unsigned int max_n_vertices_per_face = (dim==2 ? 2 : 4);
-        std::array<double, max_n_vertices_per_face>     distances_to_center;
-        std::array<double, max_n_vertices_per_face - 1> distances_to_first_vertex;
+        std::array<double, max_n_vertices_per_face>     distances_to_center {};
+        std::array<double, max_n_vertices_per_face - 1> distances_to_first_vertex {};
         distances_to_center[0] = face->vertex(0).norm_square();
         for (unsigned int i = 1; i < face->n_vertices(); ++i)
           {

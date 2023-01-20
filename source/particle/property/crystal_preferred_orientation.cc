@@ -670,7 +670,7 @@ namespace aspect
             // these are variables we only need for olivine, but we need them for both
             // within this if block and the next ones
             // Ordered vector where the first entry is the max/weakest and the last entry is the inactive slip system.
-            std::array<unsigned int,4> indices;
+            std::array<unsigned int,4> indices {};
 
             // compute G and beta
             Tensor<1,4> bigI;
