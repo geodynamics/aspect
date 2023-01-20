@@ -44,7 +44,7 @@ Ra
 =\frac{\rho_0 g \alpha \Delta T (R\_{outer}-R\_{inner})^3}{\kappa \eta_0}
 =10^6.
 ```
-In {cite:t}`kellog:king:1997`, the dimensionless viscosity is
+In {cite:t}`kellogg:king:1997`, the dimensionless viscosity is
 temperature-dependent and defined as:
 ```{math}
 \eta'(T')
@@ -67,7 +67,7 @@ then multiplying the equation above by $\eta_0$, it follows that:
 ```
 so that $\eta(T_{patch})=\eta_0$.
 
-{cite:t}`kellog:king:1997` investigated three cases:
+{cite:t}`kellogg:king:1997` investigated three cases:
 $E/R \Delta T = \{0,0.25328,3\}$. Setting
 $R=8.31~\text{ J K}^{-1}\text{ mol}^{-1}$ and $\Delta T=3000\text{ K}$, the
 activation energy becomes $E=\{ 0, 6317.6 , 74829.6 \}\text{ J mol}^{-1}$,
@@ -81,7 +81,7 @@ The viscosity expression can be written as
 which is effectively a diffusion creep-type viscosity. We find that
 $A^{-1} = \{ 2.5\times 10^{22}, 1.98\times 10^{22} , 1.6\times 10^{21} \}\text{ Pa s}$,
 or $A = \{ 4\times 10^{-24}, 5.05\times 10^{-24},  6.26\times 10^{-23}\}$. As
-in {cite:t}`kellog:king:1997` the viscosity is limited to
+in {cite:t}`kellogg:king:1997` the viscosity is limited to
 $\eta\_{max}=1000\eta_0$.
 
 We run the model to steady state for the reason given in
