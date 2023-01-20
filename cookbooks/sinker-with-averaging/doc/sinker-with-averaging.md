@@ -109,7 +109,7 @@ averaging.
 ```{figure-md} fig:sinker-with-averaging-pressure
 <img src="q2q1.*" style="width:84.0%" />
 
- Visualization of the pressure field for the &#x201C;sinker&#x201D; problem. Left to right: No averaging, arithmetic averaging, harmonic averaging, geometric averaging, pick largest, project to Q_1. Top: 7 global refinement steps. Bottom: 8 global refinement steps. The minimal and maximal pressure values are indicated below every picture. This range is symmetric because we enforce that the average of the pressure equals zero. The color scale is adjusted to show only values between p=-3 and p=3.
+ Visualization of the pressure field for the "sinker" problem. Left to right: No averaging, arithmetic averaging, harmonic averaging, geometric averaging, pick largest, project to Q_1. Top: 7 global refinement steps. Bottom: 8 global refinement steps. The minimal and maximal pressure values are indicated below every picture. This range is symmetric because we enforce that the average of the pressure equals zero. The color scale is adjusted to show only values between p=-3 and p=3.
 ```
 
 ```{table} Number of outer GMRES iterations to solve the Stokes equations for various numbers of global mesh refinement steps and for different material averaging operations. The GMRES solver first tries to run 30 iterations with a cheaper preconditioner before switching to a more expensive preconditioner (see "Nonlinear solver tolerance" in Global Parameters).
@@ -159,7 +159,7 @@ the true pressure is in fact discontinuous along the edge of the circle.
 ```{figure-md} fig:sinker-with-averaging-pressure-q2q1iso
 <img src="q2q1plus.*" style="width:84.0%" />
 
- Visualization of the pressure field for the &#x201C;sinker&#x201D; problem. Like {numref}`fig:sinker-with-averaging-pressure` but using the locally conservative, enriched Stokes element. Pressure values are shown in {numref}`tab:sinker-with-averaging-max-pressure-q2q1iso`.
+ Visualization of the pressure field for the "sinker" problem. Like {numref}`fig:sinker-with-averaging-pressure` but using the locally conservative, enriched Stokes element. Pressure values are shown in {numref}`tab:sinker-with-averaging-max-pressure-q2q1iso`.
 ```
 
 ```{table} Maximal pressure values for the "sinker" benchmark, using the locally conservative, enriched Stokes element. The corresponding pressure solutions are shown in the preceding figure.

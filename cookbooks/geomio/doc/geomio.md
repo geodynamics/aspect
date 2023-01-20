@@ -31,8 +31,8 @@ or you can download geomIO [here](https://bitbucket.org/geomio/geomio/downloads/
 You will then need to add the geomIO
 source folders to your MATLAB path by running the file located in
 `/path/to/geomio/installation/InstallGeomIO.m`. An extensive documentation for
-how to use geomIO can be found [here](https://bitbucket.org/). Among other things, it explains [how
-to generate drawings in Inkscape](https://bitbucket.org/#drawing) that can be read in by geomIO, which
+how to use geomIO can be found [here](http://geomio-doc.bitbucket.org/). Among other things, it explains [how
+to generate drawings in Inkscape](http://geomio-doc.bitbucket.org/tuto2D.html#drawing) that can be read in by geomIO, which
 involves assigning new attributes to paths in Inkscape's XML editor. In
 particular, a new property 'phase' has to be added to each path,
 and set to a value corresponding to the index of the material that should be

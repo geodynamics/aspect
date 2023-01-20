@@ -80,7 +80,7 @@ from the subsection `Simple model`.
 ```{figure-md} fig:finite_strain
 <img src="finite_strain.svg" style="width:75.0%" />
 
-Accumulated finite strain in an example convection model, as described in {ref}`sec:cookbooks:finite_strain` at a time of 67.6&#xA0;Ma. Top panel: Temperature distribution. Bottom panel: Natural strain distribution. Additional black crosses are the scaled eigenvectors of the stretching tensor <span class="math inline"><strong>L</strong></span>, showing the direction of stretching and compression.
+Accumulated finite strain in an example convection model, as described in {ref}`sec:cookbooks:finite_strain` at a time of 67.6 Ma. Top panel: Temperature distribution. Bottom panel: Natural strain distribution. Additional black crosses are the scaled eigenvectors of the stretching tensor <span class="math inline"><strong>L</strong></span>, showing the direction of stretching and compression.
 ```
 
 The plugin was tested against analytical solutions for the deformation
