@@ -18,7 +18,7 @@ pressure and temperature in the graphical output. Here, we visualize a diagram
 of the phase transitions implemented in the visco plastic material model, as
 well as a lookup table in the Steinberger material model.
 
-## The input file.
+## The input file
 
 You can find the input file to run this cookbook example in
 [cookbooks/visualizing_phase_diagram/visualizing_phase_diagram.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/visualizing_phase_diagram/visualizing_phase_diagram.prm). For
@@ -37,21 +37,21 @@ each run, only one composition is assigned to the whole domain in order to
 visualize the diagrams of these two separately.
 
 The material model is then set up to mimic mantle phase transitions at 410,
-520, and 660&nbsp;km. Details of phase transitions are taken from (Billen and
-Arredondo 2018). A trick is needed to make this work: we assign the values of
+520, and 660&nbsp;km. Details of phase transitions are taken from {cite:t}`billen:arredondo:2018`.
+A trick is needed to make this work: we assign the values of
 the density to the field of heat capacity in the input file. To do this, We
 use the phase inputs implemented in the visco plastic plug-in. This serves the
 goal of visualizing values of reference densities of phases with the real
 density assigned with a constant value in the model. Inputs for this material
 model are listed here:
 
-``` prmfile
+```{literalinclude} material_model.prm
 ```
 
-## Results.
+## Results
 
 Visualization of the model results yields a phase diagram of a pyrolitic
-mantle (Figure [1]). The field shown here has the reference densities of the
+mantle ({numref}`fig:phase_diagram_ph_density`). The field shown here has the reference densities of the
 pyrolite phases, though settings of phase transitions are over-simplified. One
 may notice that three transitions (i.e., one in the olivine system, two in the
 spinel system) are included for the 660 interfaces, and they need to be
@@ -59,34 +59,34 @@ modified at a higher temperature. In spite of the complexities of mantle
 phases, the focus of this first example is to simply illustrate this approach
 of visualizing it. Beyond showing the diagram, We have also used the
 "lineout" feature in VisIt to export the data along two vertical
-lines at $T = \SI{1173}{K}$ and $T = \SI{1673}{K}$ (Figure [2]). The figure
-for $T = \SI{1173}{K}$ illustrates the buoyancy forces felt by a descending
+lines at $T = 1173\text{ K}$ and $T = 1673\text{ K}$ ({numref}`fig:phase_diagram_ph_profile`). The figure
+for $T = 1173\text{ K}$ illustrates the buoyancy forces felt by a descending
 cold slab within the mantle transition zone.
 
 Next, we shift to harzburgite by changing the values of the initial
 compositional field from 0 to 1. For this to occur, the following changes are
 needed:
 
-``` prmfile
+```{literalinclude} harzburgite.prm
 ```
 
 With this change, we can also visualize the phase diagram of harzburgite in
-Figure [1].
+{numref}`fig:phase_diagram_ph_density`.
 
 Moreover, We tested the pyrolitic lookup table used in the Steinberg material
-model (Figure [3]). The same setup of the initial condition is applied as in
+model ({numref}`phase_diagram_steinberg_density`). The same setup of the initial condition is applied as in
 the previous case. The densities, however, are not assigned to the heat
 capacity anymore. Thus the vertical axis would deviate from the axis of
 pressure a little bit. This second setup serves the goal of illustrating a
 more complex and thus more realistic model of phase transitions. Modification
 for the material model is listed below:
 
-``` prmfile
+```{literalinclude} steinberg.prm
 ```
 
 Compared to the first example, pyrolitic phases are illustrated on a much
 finer scale. Meanwhile, we can still tell the phase transitions at 410, 520,
-and $\SI{660}{km}$ depth, respectively, marked by linear boundaries analogous
+and $660\text{ km}$ depth, respectively, marked by linear boundaries analogous
 to a constant Clapeyron slope.
 
 .
@@ -101,37 +101,11 @@ to a constant Clapeyron slope.
 ```{figure-md} fig:phase_diagram_ph_profile
 <img src="pyrolite_linear.png" style="width:40.0%" />
 
- Visualization of phase diagrams: Profiles of pyrolitic density at T=\SI{1173}{K} (red) and \SI{1673}{K} (blue).
+ Visualization of phase diagrams: Profiles of pyrolitic density at $T=1173\text{ K}$ (red) and $1673\text{ K}$ (blue).
 ```
 
 ```{figure-md} fig:phase_diagram_steinberg_density
 <img src="steinberg.png" style="width:40.0%" />
 
- Visualization of phase diagrams: Density from lookup table of pyrolite from (Stixrude and Lithgow-Bertelloni 2011).
+ Visualization of phase diagrams: Density from lookup table of pyrolite from {cite:t}`stixrude:lithgow-bertelloni:2011`.
 ```
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-billen2018decoupling" class="csl-entry">
-
-Billen, Magali I, and Katrina M Arredondo. 2018. "Decoupling of
-Plate-Asthenosphere Motion Caused by Non-Linear Viscosity During Slab Folding
-in the Transition Zone." *Physics of the Earth and Planetary Interiors*
-281: 17--30.
-
-</div>
-
-<div id="ref-stixrude2011thermodynamics" class="csl-entry">
-
-Stixrude, Lars, and Carolina Lithgow-Bertelloni. 2011. "Thermodynamics
-of Mantle Minerals-II. Phase Equilibria." *Geophysical Journal
-International* 184 (3): 1180--1213.
-
-</div>
-
-</div>
-
-  [cookbooks/visualizing_phase_diagram/visualizing_phase_diagram.prm]: cookbooks/visualizing_phase_diagram/visualizing_phase_diagram.prm
-  [1]: #fig:phase_diagram_ph_density
-  [2]: #fig:phase_diagram_ph_profile
-  [3]: #fig:phase_diagram_steinberg_density
