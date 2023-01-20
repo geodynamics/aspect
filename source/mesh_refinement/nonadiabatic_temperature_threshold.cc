@@ -97,7 +97,7 @@ namespace aspect
         prm.enter_subsection("Nonadiabatic temperature threshold");
         {
           prm.declare_entry ("Threshold",
-                             "0",
+                             "",
                              Patterns::Double (0.),
                              "A threshold that the nonadiabatic temperature "
                              "will be evaluated against.");
