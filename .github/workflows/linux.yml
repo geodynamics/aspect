@@ -72,6 +72,10 @@ jobs:
     - name: check indentation
       run: |
         git diff --exit-code
+    - name: citation list
+      run: |
+        cd doc
+        latexmk -pdf -f citations-list.tex
     - name: compile
       run: |
         mkdir build
