@@ -97,10 +97,11 @@ namespace aspect
         prm.enter_subsection("Nonadiabatic temperature threshold");
         {
           prm.declare_entry ("Threshold",
-                             "",
+                             "100",
                              Patterns::Double (0.),
                              "A threshold that the nonadiabatic temperature "
-                             "will be evaluated against.");
+                             "will be evaluated against. "
+                             "Units: \\si{\\kelvin}");
           prm.declare_entry ("Temperature anomaly type",
                              "absolute value",
                              Patterns::Selection ("negative only|positive only|absolute value"),
