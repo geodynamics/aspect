@@ -96,6 +96,7 @@ namespace aspect
     std::vector<double>
     ShearHeatingOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
+      (void) idx;
       AssertIndexRange (idx, 0);
 
       return shear_heating_work_fractions;
