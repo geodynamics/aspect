@@ -174,9 +174,10 @@ namespace aspect
             }
 
           // Average by value of gamma function to get value of compositions
+          const std::vector<unsigned int> n_phase_transitions_per_composition = phase_function.n_phase_transitions_for_each_composition();
           phase_average_equation_of_state_outputs(eos_outputs_all_phases,
                                                   phase_function_values,
-                                                  phase_function.n_phase_transitions_for_each_composition(),
+                                                  n_phase_transitions_per_composition,
                                                   eos_outputs);
 
           const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i], volumetric_compositions);
@@ -191,8 +192,7 @@ namespace aspect
             {
               double thermal_diffusivity = 0.0;
 
-              for (unsigned int j=0; j < volume_fractions.size(); ++j)
-                thermal_diffusivity += volume_fractions[j] * thermal_diffusivities[j];
+              thermal_diffusivity = MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, thermal_diffusivities, MaterialUtilities::arithmetic);
 
               // Thermal conductivity at the given positions. If the temperature equation uses
               // the reference density profile formulation, use the reference density to
@@ -210,7 +210,8 @@ namespace aspect
             {
               // Use thermal conductivity values specified in the parameter file, if this
               // option was selected.
-              out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
+
+              out.thermal_conductivities[i] = MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, thermal_conductivities, MaterialUtilities::arithmetic);
             }
 
           out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
@@ -227,7 +228,7 @@ namespace aspect
               // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
               // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
               isostrain_viscosities =
-                rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
+                rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_values, n_phase_transitions_per_composition);
 
               // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
@@ -245,7 +246,7 @@ namespace aspect
               // Compute viscosity derivatives if they are requested
               if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
                     out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
-                rheology->compute_viscosity_derivatives(i, volume_fractions, isostrain_viscosities.composition_viscosities, in, out, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
+                rheology->compute_viscosity_derivatives(i, volume_fractions, isostrain_viscosities.composition_viscosities, in, out, phase_function_values, n_phase_transitions_per_composition);
             }
 
           // Now compute changes in the compositional fields (i.e. the accumulated strain).
@@ -325,7 +326,7 @@ namespace aspect
 
           // Equation of state parameters
           prm.declare_entry ("Thermal diffusivities", "0.8e-6",
-                             Patterns::List(Patterns::Double (0.)),
+                             Patterns::Anything(),
                              "List of thermal diffusivities, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  "
@@ -336,7 +337,7 @@ namespace aspect
                              "instead of calculating the values through the specified thermal diffusivities, "
                              "densities, and heat capacities. ");
           prm.declare_entry ("Thermal conductivities", "3.0",
-                             Patterns::List(Patterns::Double(0)),
+                             Patterns::Anything(),
                              "List of thermal conductivities, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
@@ -361,18 +362,18 @@ namespace aspect
           phase_function.initialize_simulator (this->get_simulator());
           phase_function.parse_parameters (prm);
 
-          std::vector<unsigned int> n_phase_transitions_for_each_composition
+          std::vector<unsigned int> n_phases_for_each_composition
           (phase_function.n_phase_transitions_for_each_composition());
 
           // We require one more entry for density, etc as there are phase transitions
           // (for the low-pressure phase before any transition).
-          for (unsigned int &n : n_phase_transitions_for_each_composition)
+          for (unsigned int &n : n_phases_for_each_composition)
             n += 1;
 
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters (prm,
-                                              std::make_unique<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
+                                              std::make_unique<std::vector<unsigned int>>(n_phases_for_each_composition));
 
 
           // Retrieve the list of composition names
@@ -384,18 +385,22 @@ namespace aspect
           thermal_diffusivities = Utilities::parse_map_to_double_array (prm.get("Thermal diffusivities"),
                                                                         list_of_composition_names,
                                                                         has_background_field,
-                                                                        "Thermal diffusivities");
+                                                                        "Thermal diffusivities",
+                                                                        true,
+                                                                        std::make_unique<std::vector<unsigned int>>(n_phases_for_each_composition));
 
           define_conductivities = prm.get_bool ("Define thermal conductivities");
 
           thermal_conductivities = Utilities::parse_map_to_double_array (prm.get("Thermal conductivities"),
                                                                          list_of_composition_names,
                                                                          has_background_field,
-                                                                         "Thermal conductivities");
+                                                                         "Thermal conductivities",
+                                                                         true,
+                                                                         std::make_unique<std::vector<unsigned int>>(n_phases_for_each_composition));
 
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
-          rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
+          rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phases_for_each_composition));
         }
         prm.leave_subsection();
       }

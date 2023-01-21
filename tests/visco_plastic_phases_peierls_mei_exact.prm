@@ -32,6 +32,8 @@ subsection Material model
 
     set Densities = background:3300|3400|3500, right:3600|3700|3800
     set Thermal expansivities = background:3.5e-5|2e-5|1.5e-5, right:3.5e-5|2e-5|1.5e-5
+    set Thermal diffusivities = background:0.8e-6|0.8e-6|0.8e-6, right:0.8e-6|0.8e-6|0.8e-6
+    set Thermal conductivities = background:3|3|3, right:3|3|3
     set Heat capacities = background:1200|1000|900, right:1200|1000|900
 
     set Reference strain rate                     = 9.326722654162315e-11
