@@ -178,9 +178,6 @@ namespace aspect
       void
       StrainDependent<dim>::parse_parameters (ParameterHandler &prm)
       {
-        // Get the number of fields for composition-dependent material properties
-        const unsigned int n_fields = this->n_compositional_fields() + 1;
-
         // number of required compositional fields for full finite strain tensor
         const unsigned int s = Tensor<2,dim>::n_independent_components;
 
@@ -289,34 +286,46 @@ namespace aspect
           }
 
 
+        // Retrieve the list of composition names
+        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-        start_plastic_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Start plasticity strain weakening intervals"))),
-                                                   n_fields,
+        // Establish that a background field is required here
+        const bool has_background_field = true;
+
+        start_plastic_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("Start plasticity strain weakening intervals"),
+                                                   list_of_composition_names,
+                                                   has_background_field,
                                                    "Start plasticity strain weakening intervals");
 
-        end_plastic_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("End plasticity strain weakening intervals"))),
-                                                 n_fields,
-                                                 "End plasticity strain weakening intervals");
+        end_plastic_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("End plasticity strain weakening intervals"),
+                                                                                       list_of_composition_names,
+                                                                                       has_background_field,
+                                                                                       "End plasticity strain weakening intervals");
 
-        start_viscous_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Start prefactor strain weakening intervals"))),
-                                                   n_fields,
+        start_viscous_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("Start prefactor strain weakening intervals"),
+                                                   list_of_composition_names,
+                                                   has_background_field,
                                                    "Start prefactor strain weakening intervals");
 
-        end_viscous_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("End prefactor strain weakening intervals"))),
-                                                 n_fields,
-                                                 "End prefactor strain weakening intervals");
+        end_viscous_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("End prefactor strain weakening intervals"),
+                                                                                       list_of_composition_names,
+                                                                                       has_background_field,
+                                                                                       "End prefactor strain weakening intervals");
 
-        viscous_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactor strain weakening factors"))),
-                                                                                   n_fields,
-                                                                                   "Prefactor strain weakening factors");
+        viscous_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Prefactor strain weakening factors"),
+                                                                                 list_of_composition_names,
+                                                                                 has_background_field,
+                                                                                 "Prefactor strain weakening factors");
 
-        cohesion_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Cohesion strain weakening factors"))),
-                                                                                    n_fields,
-                                                                                    "Cohesion strain weakening factors");
+        cohesion_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Cohesion strain weakening factors"),
+                                                                                  list_of_composition_names,
+                                                                                  has_background_field,
+                                                                                  "Cohesion strain weakening factors");
 
-        friction_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Friction strain weakening factors"))),
-                                                                                    n_fields,
-                                                                                    "Friction strain weakening factors");
+        friction_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Friction strain weakening factors"),
+                                                                                  list_of_composition_names,
+                                                                                  has_background_field,
+                                                                                  "Friction strain weakening factors");
 
         if (prm.get ("Strain healing mechanism") == "no healing")
           healing_mechanism = no_healing;
