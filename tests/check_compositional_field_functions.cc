@@ -43,7 +43,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
 
   std::cout << "Chemical composition field #0 (the background field) has value " << compositional_field_fractions[0] << "." << std::endl;
 
-  for (unsigned int i=0; i<2; ++i)
+  for (unsigned int i=0; i<3; ++i)
     std::cout << "Chemical composition field #" << i+1 << " is called " << names[i] << ", is in position "  << indices[i] << ", and has value " << compositional_field_fractions[i+1] << "." << std::endl;
 
   exit(0);

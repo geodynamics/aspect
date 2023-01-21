@@ -96,7 +96,7 @@ namespace aspect
             }
           else
             {
-              EquationOfStateOutputs<dim> eos_outputs_all_phases (phase_function.n_phases());
+              EquationOfStateOutputs<dim> eos_outputs_all_phases (n_phases);
               equation_of_state.evaluate(in, 0, eos_outputs_all_phases);
               reference_density = eos_outputs_all_phases.densities[0];
             }
@@ -136,8 +136,8 @@ namespace aspect
       // Store which components do not represent volumetric compositions (e.g. strain components).
       const ComponentMask volumetric_compositions = rheology->get_volumetric_composition_mask();
 
-      EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
-      EquationOfStateOutputs<dim> eos_outputs_all_phases (phase_function.n_phases());
+      EquationOfStateOutputs<dim> eos_outputs (this->introspection().n_chemical_composition_fields()+1);
+      EquationOfStateOutputs<dim> eos_outputs_all_phases (n_phases);
 
       std::vector<double> average_elastic_shear_moduli (in.n_evaluation_points());
 
@@ -176,10 +176,13 @@ namespace aspect
           // Average by value of gamma function to get value of compositions
           phase_average_equation_of_state_outputs(eos_outputs_all_phases,
                                                   phase_function_values,
-                                                  phase_function.n_phase_transitions_for_each_composition(),
+                                                  n_phase_transitions_for_each_chemical_composition,
                                                   eos_outputs);
 
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i], volumetric_compositions);
+          // TODO: Update rheology to only compute viscosity for chemical compositional fields
+          // Then remove volume_fractions_for_rheology
+          const std::vector<double> volume_fractions_for_rheology = MaterialUtilities::compute_composition_fractions(in.composition[i], volumetric_compositions);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i], this->introspection().chemical_composition_field_indices());
 
           // not strictly correct if thermal expansivities are different, since we are interpreting
           // these compositions as volume fractions, but the error introduced should not be too bad.
@@ -227,25 +230,26 @@ namespace aspect
               // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
               // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
               isostrain_viscosities =
-                rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
+                rheology->calculate_isostrain_viscosities(in, i, volume_fractions_for_rheology, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
 
               // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
               // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
               // of compositional field viscosities is consistent with any averaging scheme.
-              out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, isostrain_viscosities.composition_viscosities, rheology->viscosity_averaging);
+              out.viscosities[i] = MaterialUtilities::average_value(volume_fractions_for_rheology, isostrain_viscosities.composition_viscosities, rheology->viscosity_averaging);
 
               // Decide based on the maximum composition if material is yielding.
               // This avoids for example division by zero for harmonic averaging (as plastic_yielding
               // holds values that are either 0 or 1), but might not be consistent with the viscosity
               // averaging chosen.
-              std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
-              plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(), max_composition)];
+              std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions_for_rheology.begin(), volume_fractions_for_rheology.end());
+              plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions_for_rheology.begin(), max_composition)];
 
               // Compute viscosity derivatives if they are requested
               if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
                     out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
-                rheology->compute_viscosity_derivatives(i, volume_fractions,
+
+                rheology->compute_viscosity_derivatives(i, volume_fractions_for_rheology,
                                                         isostrain_viscosities.composition_viscosities,
                                                         in, out, phase_function_values,
                                                         phase_function.n_phase_transitions_for_each_composition());
@@ -283,12 +287,12 @@ namespace aspect
           // in fill_plastic_outputs as is done now?
           // TODO do we even need a separate function? We could compute the PlasticAdditionalOutputs here like
           // the ElasticAdditionalOutputs.
-          rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
+          rheology->fill_plastic_outputs(i, volume_fractions_for_rheology, plastic_yielding, in, out, isostrain_viscosities);
 
           if (this->get_parameters().enable_elasticity)
             {
               // Compute average elastic shear modulus
-              average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions,
+              average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions_for_rheology,
                                                                                  rheology->elastic_rheology.get_elastic_shear_moduli(),
                                                                                  rheology->viscosity_averaging);
 
@@ -383,29 +387,54 @@ namespace aspect
           phase_function.initialize_simulator (this->get_simulator());
           phase_function.parse_parameters (prm);
 
+          std::vector<unsigned int> n_phases_for_each_composition = phase_function.n_phases_for_each_composition();
+
+          // TODO ASPECT_3: Require all field types to be specified by the user
+          // Remove the following code block *and* replace following code snippets matching
+          // MaterialUtilities::make_csv_substring(prm.get("*"), indices) with
+          // prm.get("*")
+          // BEGIN CODE BLOCK
+          const std::vector<unsigned int> indices = this->introspection().chemical_composition_field_indices();
+
+          // Currently, phase_function.n_phases_for_each_composition() returns a list of length
+          // equal to the total number of compositions, whether or not they are chemical compositions.
+          // The equation_of_state (multicomponent incompressible) requires a list only for
+          // chemical compositions.
+          std::vector<unsigned int> n_phases_for_each_chemical_composition = {n_phases_for_each_composition[0]};
+          n_phase_transitions_for_each_chemical_composition = {n_phases_for_each_composition[0] - 1};
+          n_phases = n_phases_for_each_composition[0];
+          for (auto i : indices)
+            {
+              n_phases_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1]);
+              n_phase_transitions_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1] - 1);
+              n_phases += n_phases_for_each_composition[i+1];
+            }
+          // END CODE BLOCK
+
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters (prm,
-                                              std::make_unique<std::vector<unsigned int>>(phase_function.n_phases_for_each_composition()));
+                                              std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
 
+          // Make options file for parsing maps to double arrays
+          std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
+          chemical_field_names.insert(chemical_field_names.begin(),"background");
 
-          // Retrieve the list of composition names
-          const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+          std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+          compositional_field_names.insert(compositional_field_names.begin(),"background");
 
-          // Establish that a background field is required here
-          const bool has_background_field = true;
+          Utilities::MapParsing::Options options(chemical_field_names, "Thermal diffusivities");
+          options.list_of_allowed_keys = compositional_field_names;
+          options.allow_multiple_values_per_key = true;
+          options.n_values_per_key = n_phases_for_each_chemical_composition;
+          options.check_values_per_key = (options.n_values_per_key.size() != 0);
+          options.store_values_per_key = (options.n_values_per_key.size() == 0);
 
-          thermal_diffusivities = Utilities::parse_map_to_double_array (prm.get("Thermal diffusivities"),
-                                                                        list_of_composition_names,
-                                                                        has_background_field,
-                                                                        "Thermal diffusivities");
-
+          thermal_diffusivities = Utilities::MapParsing::parse_map_to_double_array(prm.get("Thermal diffusivities"), options);
           define_conductivities = prm.get_bool ("Define thermal conductivities");
 
-          thermal_conductivities = Utilities::parse_map_to_double_array (prm.get("Thermal conductivities"),
-                                                                         list_of_composition_names,
-                                                                         has_background_field,
-                                                                         "Thermal conductivities");
+          options.property_name = "Thermal conductivities";
+          thermal_conductivities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Thermal conductivities"), options);
 
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
