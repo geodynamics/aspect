@@ -791,6 +791,43 @@ namespace aspect
 
 
       std::vector<double>
+      compute_only_composition_fractions(const std::vector<double> &compositional_fields,
+                                         const std::vector<unsigned int> &indices)
+      {
+        std::vector<double> composition_fractions(indices.size()+1);
+
+        // Clip the compositional fields so they are between zero and one,
+        // and sum the compositional fields for normalization purposes.
+        double sum_composition = 0.0;
+        std::vector<double> x_comp (indices.size());
+
+        for (unsigned int i=0; i < x_comp.size(); ++i)
+          {
+            x_comp[i] = std::min(std::max(compositional_fields[indices[i]], 0.0), 1.0);
+            sum_composition += x_comp[i];
+          }
+
+        // Compute background field fraction
+        if (sum_composition >= 1.0)
+          composition_fractions[0] = 0.0;
+        else
+          composition_fractions[0] = 1.0 - sum_composition;
+
+        // Compute and possibly normalize field fractions
+        for (unsigned int i=0; i < x_comp.size(); ++i)
+          {
+            if (sum_composition >= 1.0)
+              composition_fractions[i+1] = x_comp[i]/sum_composition;
+            else
+              composition_fractions[i+1] = x_comp[i];
+          }
+
+        return composition_fractions;
+      }
+
+
+
+      std::vector<double>
       compute_composition_fractions(const std::vector<double> &compositional_fields,
                                     const ComponentMask &field_mask)
       {
@@ -1221,7 +1258,7 @@ namespace aspect
         const bool has_background_field = true;
 
         // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+        const std::vector<std::string> chemical_composition_field_names = this->introspection().get_names_for_fields_of_type("chemical composition");
 
         n_phase_transitions_per_composition = std::make_unique<std::vector<unsigned int>>();
 
@@ -1230,7 +1267,7 @@ namespace aspect
         if (use_depth_instead_of_pressure)
           {
             transition_depths          = Utilities::parse_map_to_double_array (prm.get("Phase transition depths"),
-                                                                               list_of_composition_names,
+                                                                               chemical_composition_field_names,
                                                                                has_background_field,
                                                                                "Phase transition depths",
                                                                                true,
@@ -1238,7 +1275,7 @@ namespace aspect
                                                                                true);
 
             transition_widths          = Utilities::parse_map_to_double_array (prm.get("Phase transition widths"),
-                                                                               list_of_composition_names,
+                                                                               chemical_composition_field_names,
                                                                                has_background_field,
                                                                                "Phase transition widths",
                                                                                true,
@@ -1248,7 +1285,7 @@ namespace aspect
         else
           {
             transition_pressures = Utilities::parse_map_to_double_array (prm.get("Phase transition pressures"),
-                                                                         list_of_composition_names,
+                                                                         chemical_composition_field_names,
                                                                          has_background_field,
                                                                          "Phase transition pressures",
                                                                          true,
@@ -1256,7 +1293,7 @@ namespace aspect
                                                                          true);
 
             transition_pressure_widths = Utilities::parse_map_to_double_array (prm.get("Phase transition pressure widths"),
-                                                                               list_of_composition_names,
+                                                                               chemical_composition_field_names,
                                                                                has_background_field,
                                                                                "Phase transition pressure widths",
                                                                                true,
@@ -1265,7 +1302,7 @@ namespace aspect
           }
 
         transition_temperatures = Utilities::parse_map_to_double_array (prm.get("Phase transition temperatures"),
-                                                                        list_of_composition_names,
+                                                                        chemical_composition_field_names,
                                                                         has_background_field,
                                                                         "Phase transition temperatures",
                                                                         true,
@@ -1273,7 +1310,7 @@ namespace aspect
                                                                         true);
 
         transition_slopes = Utilities::parse_map_to_double_array (prm.get("Phase transition Clapeyron slopes"),
-                                                                  list_of_composition_names,
+                                                                  chemical_composition_field_names,
                                                                   has_background_field,
                                                                   "Phase transition Clapeyron slopes",
                                                                   true,

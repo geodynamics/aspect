@@ -186,38 +186,38 @@ namespace aspect
                                              const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
         // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+        const std::vector<std::string> chemical_composition_field_names = this->introspection().get_names_for_fields_of_type("chemical composition");
 
         // Establish that a background field is required here
         const bool has_background_field = true;
 
         // Read parameters, each of size of number of composition + number of phases + 1
         prefactors_diffusion = Utilities::parse_map_to_double_array(prm.get("Prefactors for diffusion creep"),
-                                                                    list_of_composition_names,
+                                                                    chemical_composition_field_names,
                                                                     has_background_field,
                                                                     "Prefactors for diffusion creep",
                                                                     true,
                                                                     expected_n_phases_per_composition);
         stress_exponents_diffusion = Utilities::parse_map_to_double_array(prm.get("Stress exponents for diffusion creep"),
-                                                                          list_of_composition_names,
+                                                                          chemical_composition_field_names,
                                                                           has_background_field,
                                                                           "Prefactors for diffusion creep",
                                                                           true,
                                                                           expected_n_phases_per_composition);
         grain_size_exponents_diffusion = Utilities::parse_map_to_double_array(prm.get("Grain size exponents for diffusion creep"),
-                                                                              list_of_composition_names,
+                                                                              chemical_composition_field_names,
                                                                               has_background_field,
                                                                               "Grain size exponents for diffusion creep",
                                                                               true,
                                                                               expected_n_phases_per_composition);
         activation_energies_diffusion = Utilities::parse_map_to_double_array(prm.get("Activation energies for diffusion creep"),
-                                                                             list_of_composition_names,
+                                                                             chemical_composition_field_names,
                                                                              has_background_field,
                                                                              "Activation energies for diffusion creep",
                                                                              true,
                                                                              expected_n_phases_per_composition);
         activation_volumes_diffusion = Utilities::parse_map_to_double_array(prm.get("Activation volumes for diffusion creep"),
-                                                                            list_of_composition_names,
+                                                                            chemical_composition_field_names,
                                                                             has_background_field,
                                                                             "Activation volumes for diffusion creep",
                                                                             true,

@@ -1,0 +1,18 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 1198 11581 5129 15387  0  0  0  0 44 245 189 output-multicomponent_max_composition/solution/solution-00000 
+1 5.876527387935e+04 5.876527387935e+04 1198 11581 5129 15387 10 10 12 10 41 177 184                                                            "" 
+2 1.175266265874e+05 5.876135270802e+04 1198 11581 5129 15387 10 11 12 10 42 231 188                                                            "" 

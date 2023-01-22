@@ -205,12 +205,13 @@ namespace aspect
                                             const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
         // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+        const std::vector<std::string> chemical_composition_field_names = this->introspection().get_names_for_fields_of_type("chemical composition");
+
         // Establish that a background field is required here
         const bool has_background_field = true;
 
         angles_internal_friction = Utilities::parse_map_to_double_array(prm.get("Angles of internal friction"),
-                                                                        list_of_composition_names,
+                                                                        chemical_composition_field_names,
                                                                         has_background_field,
                                                                         "Angles of internal friction",
                                                                         true,
@@ -221,7 +222,7 @@ namespace aspect
           angle *= numbers::PI/180.0;
 
         cohesions = Utilities::parse_map_to_double_array(prm.get("Cohesions"),
-                                                         list_of_composition_names,
+                                                         chemical_composition_field_names,
                                                          has_background_field,
                                                          "Cohesions",
                                                          true,
