@@ -174,10 +174,9 @@ namespace aspect
             }
 
           // Average by value of gamma function to get value of compositions
-          const std::vector<unsigned int> n_phase_transitions_per_composition = phase_function.n_phase_transitions_for_each_composition();
           phase_average_equation_of_state_outputs(eos_outputs_all_phases,
                                                   phase_function_values,
-                                                  n_phase_transitions_per_composition,
+                                                  phase_function.n_phase_transitions_for_each_composition(),
                                                   eos_outputs);
 
           const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i], volumetric_compositions);
@@ -192,7 +191,7 @@ namespace aspect
             {
               double thermal_diffusivity = 0.0;
 
-              thermal_diffusivity = MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, thermal_diffusivities, MaterialUtilities::arithmetic);
+              thermal_diffusivity = MaterialUtilities::phase_average_value(phase_function_values, phase_function.n_phase_transitions_for_each_composition(), thermal_diffusivities, MaterialUtilities::arithmetic);
 
               // Thermal conductivity at the given positions. If the temperature equation uses
               // the reference density profile formulation, use the reference density to
@@ -211,7 +210,7 @@ namespace aspect
               // Use thermal conductivity values specified in the parameter file, if this
               // option was selected.
 
-              out.thermal_conductivities[i] = MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, thermal_conductivities, MaterialUtilities::arithmetic);
+              out.thermal_conductivities[i] = MaterialUtilities::phase_average_value(phase_function_values, phase_function.n_phase_transitions_for_each_composition(), thermal_conductivities, MaterialUtilities::arithmetic);
             }
 
           out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
@@ -228,7 +227,7 @@ namespace aspect
               // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
               // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
               isostrain_viscosities =
-                rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_values, n_phase_transitions_per_composition);
+                rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
 
               // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
@@ -246,7 +245,7 @@ namespace aspect
               // Compute viscosity derivatives if they are requested
               if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
                     out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
-                rheology->compute_viscosity_derivatives(i, volume_fractions, isostrain_viscosities.composition_viscosities, in, out, phase_function_values, n_phase_transitions_per_composition);
+                rheology->compute_viscosity_derivatives(i, volume_fractions, isostrain_viscosities.composition_viscosities, in, out, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
             }
 
           // Now compute changes in the compositional fields (i.e. the accumulated strain).
