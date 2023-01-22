@@ -1,0 +1,4 @@
+New: Thermal diffusivity in viscoplastic material
+models can now be influenced by phase transitions.
+<br>
+(Bob Myhill, 2023/01/22)
