@@ -1166,48 +1166,75 @@ namespace aspect
                 AssertThrow (false, ExcNotImplemented());
             }
 
-          molar_masses = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Molar masses"))),
-                                                                 n_endmembers,
-                                                                 "Molar masses");
-          number_of_atoms = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Number of atoms"))),
-                                                                    n_endmembers,
-                                                                    "Number of atoms");
-          reference_volumes = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference volumes"))),
-                                                                      n_endmembers,
-                                                                      "Reference volumes");
-          reference_thermal_expansivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference thermal expansivities"))),
-                                                                                    n_endmembers,
-                                                                                    "Reference thermal expansivities");
-          reference_bulk_moduli = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference bulk moduli"))),
-                                                                          n_endmembers,
-                                                                          "Reference bulk moduli");
-          bulk_modulus_pressure_derivatives = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("First derivatives of the bulk modulus"))),
-                                                                                      n_endmembers,
-                                                                                      "First derivatives of the bulk modulus");
-          bulk_modulus_second_pressure_derivatives = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Second derivatives of the bulk modulus"))),
-                                                     n_endmembers,
+          molar_masses = Utilities::parse_map_to_double_array (prm.get("Molar masses"),
+                                                               endmember_names,
+                                                               false,
+                                                               "Molar masses");
+
+          number_of_atoms = Utilities::parse_map_to_double_array (prm.get("Number of atoms"),
+                                                                  endmember_names,
+                                                                  false,
+                                                                  "Number of atoms");
+
+          reference_volumes = Utilities::parse_map_to_double_array (prm.get("Reference volumes"),
+                                                                    endmember_names,
+                                                                    false,
+                                                                    "Reference volumes");
+
+          reference_thermal_expansivities = Utilities::parse_map_to_double_array (prm.get("Reference thermal expansivities"),
+                                                                                  endmember_names,
+                                                                                  false,
+                                                                                  "Reference thermal expansivities");
+
+          reference_bulk_moduli = Utilities::parse_map_to_double_array (prm.get("Reference bulk moduli"),
+                                                                        endmember_names,
+                                                                        false,
+                                                                        "Reference bulk moduli");
+
+          bulk_modulus_pressure_derivatives = Utilities::parse_map_to_double_array (prm.get("First derivatives of the bulk modulus"),
+                                                                                    endmember_names,
+                                                                                    false,
+                                                                                    "First derivatives of the bulk modulus");
+
+          bulk_modulus_second_pressure_derivatives = Utilities::parse_map_to_double_array (prm.get("Second derivatives of the bulk modulus"),
+                                                     endmember_names,
+                                                     false,
                                                      "Second derivatives of the bulk modulus");
-          Einstein_temperatures = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Einstein temperatures"))),
-                                                                          n_endmembers,
-                                                                          "Einstein temperatures");
-          reference_enthalpies = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference enthalpies"))),
-                                                                         n_endmembers,
-                                                                         "Reference enthalpies");
-          reference_entropies = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference entropies"))),
-                                                                        n_endmembers,
-                                                                        "Reference entropies");
-          reference_specific_heats = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference specific heat capacities"))),
-                                                                             n_endmembers,
-                                                                             "Reference specific heat capacities");
-          specific_heat_linear_coefficients = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Linear coefficients for specific heat polynomial"))),
-                                                                                      n_endmembers,
-                                                                                      "Linear coefficients for specific heat polynomial");
-          specific_heat_second_coefficients = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Second coefficients for specific heat polynomial"))),
-                                                                                      n_endmembers,
-                                                                                      "Second coefficients for specific heat polynomial");
-          specific_heat_third_coefficients = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Third coefficients for specific heat polynomial"))),
-                                                                                     n_endmembers,
-                                                                                     "Third coefficients for specific heat polynomial");
+
+          Einstein_temperatures = Utilities::parse_map_to_double_array (prm.get("Einstein temperatures"),
+                                                                        endmember_names,
+                                                                        false,
+                                                                        "Einstein temperatures");
+
+          reference_enthalpies = Utilities::parse_map_to_double_array (prm.get("Reference enthalpies"),
+                                                                       endmember_names,
+                                                                       false,
+                                                                       "Reference enthalpies");
+
+          reference_entropies = Utilities::parse_map_to_double_array (prm.get("Reference entropies"),
+                                                                      endmember_names,
+                                                                      false,
+                                                                      "Reference entropies");
+
+          reference_specific_heats = Utilities::parse_map_to_double_array (prm.get("Reference specific heat capacities"),
+                                                                           endmember_names,
+                                                                           false,
+                                                                           "Reference specific heat capacities");
+
+          specific_heat_linear_coefficients = Utilities::parse_map_to_double_array (prm.get("Linear coefficients for specific heat polynomial"),
+                                                                                    endmember_names,
+                                                                                    false,
+                                                                                    "Linear coefficients for specific heat polynomial");
+
+          specific_heat_second_coefficients = Utilities::parse_map_to_double_array (prm.get("Second coefficients for specific heat polynomial"),
+                                                                                    endmember_names,
+                                                                                    false,
+                                                                                    "Second coefficients for specific heat polynomial");
+
+          specific_heat_third_coefficients = Utilities::parse_map_to_double_array (prm.get("Third coefficients for specific heat polynomial"),
+                                                                                   endmember_names,
+                                                                                   false,
+                                                                                   "Third coefficients for specific heat polynomial");
 
           // Check all lists have the correct length.
           AssertThrow(endmember_names.size() == endmember_states.size(),

@@ -382,9 +382,6 @@ namespace aspect
     void
     DiffusionDislocation<dim>::parse_parameters (ParameterHandler &prm)
     {
-      // increment by one for background:
-      const unsigned int n_fields = this->n_compositional_fields() + 1;
-
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection ("Diffusion dislocation");
@@ -409,17 +406,30 @@ namespace aspect
 
           // ---- Compositional parameters
           grain_size = prm.get_double("Grain size");
-          densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
-                                                              n_fields,
-                                                              "Densities");
-          thermal_expansivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal expansivities"))),
-                                                                          n_fields,
-                                                                          "Thermal expansivities");
+
+          // Retrieve the list of composition names
+          const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+
+          // Establish that a background field is required here
+          const bool has_background_field = true;
+
+          densities = Utilities::parse_map_to_double_array (prm.get("Densities"),
+                                                            list_of_composition_names,
+                                                            has_background_field,
+                                                            "Densities");
+
+          thermal_expansivities = Utilities::parse_map_to_double_array (prm.get("Thermal expansivities"),
+                                                                        list_of_composition_names,
+                                                                        has_background_field,
+                                                                        "Thermal expansivities");
 
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                                 prm);
 
           // Rheological parameters
+          // increment by one for background:
+          const unsigned int n_fields = this->n_compositional_fields() + 1;
+
           // Diffusion creep parameters
           diffusion_creep.initialize_simulator (this->get_simulator());
           diffusion_creep.parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_fields));

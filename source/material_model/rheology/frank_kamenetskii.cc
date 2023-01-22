@@ -77,9 +77,6 @@ namespace aspect
       void
       FrankKamenetskii<dim>::parse_parameters (ParameterHandler &prm)
       {
-        // increment by one for background:
-        const unsigned int n_fields = this->n_compositional_fields() + 1;
-
         AssertThrow (this->include_adiabatic_heating() == false,
                      ExcMessage("The Frank-Kamenetskii rheology is currently only implemented for "
                                 "models without adiabatic heating. Please implement the necessary "
@@ -90,12 +87,22 @@ namespace aspect
                                 "surface temperature (reference_temperature in equation for viscosity) "
                                 "is non-zero."));
 
-        viscosity_ratios_frank_kamenetskii = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Viscosity ratios for Frank Kamenetskii"))),
-                                                                                     n_fields,
-                                                                                     "Viscosity ratios for Frank Kamenetskii");
-        prefactors_frank_kamenetskii = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for Frank Kamenetskii"))),
-                                                                               n_fields,
-                                                                               "Prefactors for Frank Kamenetskii");
+        // Retrieve the list of composition names
+        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+
+        // Establish that a background field is required here
+        const bool has_background_field = true;
+
+        viscosity_ratios_frank_kamenetskii = Utilities::parse_map_to_double_array (prm.get("Viscosity ratios for Frank Kamenetskii"),
+                                                                                   list_of_composition_names,
+                                                                                   has_background_field,
+                                                                                   "Viscosity ratios for Frank Kamenetskii");
+
+
+        prefactors_frank_kamenetskii = Utilities::parse_map_to_double_array (prm.get("Prefactors for Frank Kamenetskii"),
+                                                                             list_of_composition_names,
+                                                                             has_background_field,
+                                                                             "Prefactors for Frank Kamenetskii");
       }
     }
   }

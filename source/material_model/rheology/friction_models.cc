@@ -206,10 +206,6 @@ namespace aspect
       void
       FrictionModels<dim>::parse_parameters (ParameterHandler &prm)
       {
-        // Get the number of fields for composition-dependent material properties
-        // including the background field.
-        const unsigned int n_fields = this->n_compositional_fields() + 1;
-
         // Friction dependence parameters
         if (prm.get ("Friction mechanism") == "none")
           friction_mechanism = static_friction;
@@ -223,9 +219,17 @@ namespace aspect
         // Dynamic friction parameters
         dynamic_characteristic_strain_rate = prm.get_double("Dynamic characteristic strain rate");
 
-        dynamic_angles_of_internal_friction = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Dynamic angles of internal friction"))),
-                                                                                      n_fields,
-                                                                                      "Dynamic angles of internal friction");
+        // Retrieve the list of composition names
+        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+
+        // Establish that a background field is required here
+        const bool has_background_field = true;
+
+        dynamic_angles_of_internal_friction = Utilities::parse_map_to_double_array (prm.get("Dynamic angles of internal friction"),
+                                                                                    list_of_composition_names,
+                                                                                    has_background_field,
+                                                                                    "Dynamic angles of internal friction");
+
         // Convert angles from degrees to radians
         for (double &angle : dynamic_angles_of_internal_friction)
           {
@@ -235,6 +239,11 @@ namespace aspect
           }
 
         dynamic_friction_smoothness_exponent = prm.get_double("Dynamic friction smoothness exponent");
+
+
+        // Get the number of fields for composition-dependent material properties
+        // including the background field.
+        const unsigned int n_fields = this->n_compositional_fields() + 1;
 
         // if friction is specified as a function
         if (friction_mechanism == function)
