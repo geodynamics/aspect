@@ -43,7 +43,7 @@ namespace aspect
       const DiffusionCreepParameters
       DiffusionCreep<dim>::compute_creep_parameters (const unsigned int composition,
                                                      const std::vector<double> &phase_function_values,
-                                                     const std::vector<unsigned int> &n_phases_per_composition) const
+                                                     const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         DiffusionCreepParameters creep_parameters;
         if (phase_function_values == std::vector<double>())
@@ -58,15 +58,15 @@ namespace aspect
         else
           {
             // Average among phases
-            creep_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                          prefactors_diffusion, composition,  MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
-            creep_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  activation_energies_diffusion, composition);
-            creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  activation_volumes_diffusion, composition);
-            creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                stress_exponents_diffusion, composition);
-            creep_parameters.grain_size_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.grain_size_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                    grain_size_exponents_diffusion, composition);
           }
         return creep_parameters;
@@ -80,11 +80,11 @@ namespace aspect
                                               const double temperature,
                                               const unsigned int composition,
                                               const std::vector<double> &phase_function_values,
-                                              const std::vector<unsigned int> &n_phases_per_composition) const
+                                              const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         const DiffusionCreepParameters p = compute_creep_parameters(composition,
                                                                     phase_function_values,
-                                                                    n_phases_per_composition);
+                                                                    n_phase_transitions_per_composition);
 
         // Power law creep equation
         //    viscosity = 0.5 * A^(-1) * d^(m) * exp((E + P*V)/(RT))

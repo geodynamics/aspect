@@ -45,7 +45,7 @@ namespace aspect
       const PeierlsCreepParameters
       PeierlsCreep<dim>::compute_creep_parameters (const unsigned int composition,
                                                    const std::vector<double> &phase_function_values,
-                                                   const std::vector<unsigned int> &n_phases_per_composition) const
+                                                   const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         PeierlsCreepParameters creep_parameters;
         if (phase_function_values == std::vector<double>())
@@ -65,23 +65,23 @@ namespace aspect
           {
             // Average among phases. This averaging is not strictly correct, but
             // it will not matter much if the parameters are similar across transitions.
-            creep_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                          prefactors, composition,  MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
-            creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                stress_exponents, composition);
-            creep_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  activation_energies, composition);
-            creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  activation_volumes, composition);
-            creep_parameters.peierls_stress = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.peierls_stress = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                               peierls_stresses, composition);
-            creep_parameters.glide_parameter_p = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.glide_parameter_p = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  glide_parameters_p, composition);
-            creep_parameters.glide_parameter_q = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.glide_parameter_q = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  glide_parameters_q, composition);
-            creep_parameters.fitting_parameter = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.fitting_parameter = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  fitting_parameters, composition);
-            creep_parameters.stress_cutoff = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.stress_cutoff = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                              stress_cutoffs, composition);
           }
         return creep_parameters;
@@ -96,7 +96,7 @@ namespace aspect
                                                         const double temperature,
                                                         const unsigned int composition,
                                                         const std::vector<double> &phase_function_values,
-                                                        const std::vector<unsigned int> &n_phases_per_composition) const
+                                                        const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         /**
          * An approximation of the Peierls creep formulation, where stress is replaced with strain rate
@@ -124,7 +124,7 @@ namespace aspect
          * R is the gas constant
          */
 
-        const PeierlsCreepParameters p = compute_creep_parameters(composition, phase_function_values, n_phases_per_composition);
+        const PeierlsCreepParameters p = compute_creep_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
 
         const double s = ( (p.activation_energy + pressure * p.activation_volume) / (constants::gas_constant * temperature)) *
                          p.glide_parameter_p * p.glide_parameter_q *
@@ -166,7 +166,7 @@ namespace aspect
                                                   const double temperature,
                                                   const unsigned int composition,
                                                   const std::vector<double> &phase_function_values,
-                                                  const std::vector<unsigned int> &n_phases_per_composition) const
+                                                  const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         /**
          * A generalised Peierls creep formulation. The Peierls creep expression
@@ -177,7 +177,7 @@ namespace aspect
          * The equation for the strain rate is given in
          * compute_exact_strain_rate_and_derivative.
          */
-        const PeierlsCreepParameters p = compute_creep_parameters(composition, phase_function_values, n_phases_per_composition);
+        const PeierlsCreepParameters p = compute_creep_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
 
         // The generalized Peierls creep flow law cannot be expressed as viscosity in
         // terms of strain rate, because there are two stress-dependent terms
@@ -241,7 +241,7 @@ namespace aspect
                                             const double temperature,
                                             const unsigned int composition,
                                             const std::vector<double> &phase_function_values,
-                                            const std::vector<unsigned int> &n_phases_per_composition) const
+                                            const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         double viscosity = 0.0;
 
@@ -249,12 +249,12 @@ namespace aspect
           {
             case viscosity_approximation:
             {
-              viscosity = compute_approximate_viscosity(strain_rate, pressure, temperature, composition, phase_function_values, n_phases_per_composition);
+              viscosity = compute_approximate_viscosity(strain_rate, pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition);
               break;
             }
             case exact:
             {
-              viscosity = compute_exact_viscosity(strain_rate, pressure, temperature, composition, phase_function_values, n_phases_per_composition);
+              viscosity = compute_exact_viscosity(strain_rate, pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition);
               break;
             }
             default:

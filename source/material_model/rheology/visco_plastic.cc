@@ -100,7 +100,7 @@ namespace aspect
                                        const unsigned int i,
                                        const std::vector<double> &volume_fractions,
                                        const std::vector<double> &phase_function_values,
-                                       const std::vector<unsigned int> &n_phases_per_composition) const
+                                       const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         IsostrainViscosities output_parameters;
 
@@ -166,7 +166,7 @@ namespace aspect
                    ?
                    diffusion_creep.compute_viscosity(pressure_for_creep, temperature_for_viscosity, j,
                                                      phase_function_values,
-                                                     n_phases_per_composition)
+                                                     n_phase_transitions_per_composition)
                    :
                    numbers::signaling_nan<double>());
 
@@ -176,7 +176,7 @@ namespace aspect
                    ?
                    dislocation_creep.compute_viscosity(edot_ii, pressure_for_creep, temperature_for_viscosity, j,
                                                        phase_function_values,
-                                                       n_phases_per_composition)
+                                                       n_phase_transitions_per_composition)
                    :
                    numbers::signaling_nan<double>());
 
@@ -216,7 +216,7 @@ namespace aspect
                 {
                   const double viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, pressure_for_creep, temperature_for_viscosity, j,
                                                                                     phase_function_values,
-                                                                                    n_phases_per_composition);
+                                                                                    n_phase_transitions_per_composition);
                   viscosity_pre_yield = (viscosity_pre_yield * viscosity_peierls) / (viscosity_pre_yield + viscosity_peierls);
                 }
             }
@@ -266,7 +266,7 @@ namespace aspect
             // Step 4a: calculate strain-weakened friction and cohesion
             const DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(j,
                                                                       phase_function_values,
-                                                                      n_phases_per_composition);
+                                                                      n_phase_transitions_per_composition);
             const double current_cohesion = drucker_prager_parameters.cohesion * weakening_factors[0];
             double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1];
 
@@ -337,14 +337,14 @@ namespace aspect
             // Step 6: limit the viscosity with specified minimum and maximum bounds
             const double maximum_viscosity_for_composition = MaterialModel::MaterialUtilities::phase_average_value(
                                                                phase_function_values,
-                                                               n_phases_per_composition,
+                                                               n_phase_transitions_per_composition,
                                                                maximum_viscosity,
                                                                j,
                                                                MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic
                                                              );
             const double minimum_viscosity_for_composition = MaterialModel::MaterialUtilities::phase_average_value(
                                                                phase_function_values,
-                                                               n_phases_per_composition,
+                                                               n_phase_transitions_per_composition,
                                                                minimum_viscosity,
                                                                j,
                                                                MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic
@@ -365,7 +365,7 @@ namespace aspect
                                     const MaterialModel::MaterialModelInputs<dim> &in,
                                     MaterialModel::MaterialModelOutputs<dim> &out,
                                     const std::vector<double> &phase_function_values,
-                                    const std::vector<unsigned int> &n_phases_per_composition) const
+                                    const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         MaterialModel::MaterialModelDerivatives<dim> *derivatives =
           out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
@@ -403,7 +403,7 @@ namespace aspect
 
                 std::vector<double> eta_component =
                   calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
-                                                  phase_function_values, n_phases_per_composition).composition_viscosities;
+                                                  phase_function_values, n_phase_transitions_per_composition).composition_viscosities;
 
                 // For each composition of the independent component, compute the derivative.
                 for (unsigned int composition_index = 0; composition_index < eta_component.size(); ++composition_index)
@@ -430,7 +430,7 @@ namespace aspect
 
             const std::vector<double> viscosity_difference =
               calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
-                                              phase_function_values, n_phases_per_composition).composition_viscosities;
+                                              phase_function_values, n_phase_transitions_per_composition).composition_viscosities;
 
             for (unsigned int composition_index = 0; composition_index < viscosity_difference.size(); ++composition_index)
               {
