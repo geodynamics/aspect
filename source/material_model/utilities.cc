@@ -1133,6 +1133,13 @@ namespace aspect
           return transition_pressures.size();
       }
 
+      template <int dim>
+      unsigned int
+      PhaseFunction<dim>::
+      n_phases () const
+      {
+        return n_phases_total;
+      }
 
       template <int dim>
       const std::vector<unsigned int> &
@@ -1141,6 +1148,12 @@ namespace aspect
         return *n_phase_transitions_per_composition;
       }
 
+      template <int dim>
+      const std::vector<unsigned int> &
+      PhaseFunction<dim>::n_phases_for_each_composition () const
+      {
+        return n_phases_per_composition;
+      }
 
 
       template <int dim>
@@ -1279,6 +1292,14 @@ namespace aspect
                                                                   true,
                                                                   n_phase_transitions_per_composition,
                                                                   true);
+
+        n_phases_total = 0;
+        n_phases_per_composition.clear();
+        for (unsigned int n : *n_phase_transitions_per_composition)
+          {
+            n_phases_per_composition.push_back(n+1);
+            n_phases_total += n+1;
+          }
       }
     }
   }

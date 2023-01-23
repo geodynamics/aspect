@@ -492,6 +492,11 @@ namespace aspect
           unsigned int n_phase_transitions () const;
 
           /**
+           * Return the total number of phases.
+           */
+          unsigned int n_phases () const;
+
+          /**
            * Return the Clapeyron slope (dp/dT of the transition) for
            * phase transition number @p phase_index.
            */
@@ -502,6 +507,12 @@ namespace aspect
            */
           const std::vector<unsigned int> &
           n_phase_transitions_for_each_composition () const;
+
+          /**
+           * Return how many phases there are for each composition.
+           */
+          const std::vector<unsigned int> &
+          n_phases_for_each_composition () const;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -547,6 +558,16 @@ namespace aspect
            * A vector that stores how many phase transitions there are for each compositional field.
            */
           std::unique_ptr<std::vector<unsigned int>> n_phase_transitions_per_composition;
+
+          /**
+           * A vector that stores how many phases there are for each compositional field.
+           */
+          std::vector<unsigned int> n_phases_per_composition;
+
+          /**
+           * Total number of phases over all compositional fields
+           */
+          unsigned int n_phases_total;
       };
     }
   }
