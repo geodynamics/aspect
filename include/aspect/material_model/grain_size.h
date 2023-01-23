@@ -258,6 +258,24 @@ namespace aspect
         typename Formulation::Kind grain_size_evolution_formulation;
 
         /**
+        * This function returns the fraction of shear heating energy partitioned
+        * into grain damage using the implementation by Mulyukova and Bercovici (2018)
+        * Collapse of passive margins by lithospheric damage
+        * and plunging grain size. Earth and Planetary Science Letters, 484, 341-352.
+        */
+        double  compute_partitioning_fraction (const double temperature) const;
+
+        /**
+         * Parameters controlling the partitioning of energy
+         * into grain damage in the pinned state.
+         */
+        double              partitioning_exponent;
+        double              max_f;
+        double              min_f;
+        double              mantle_temperature;
+        double              surface_temperature;
+
+        /**
          * Parameters controlling the viscosity.
          */
         double dislocation_viscosity_iteration_threshold;
