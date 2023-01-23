@@ -460,6 +460,20 @@ namespace aspect
       compositional_name_exists (const std::string &name) const;
 
       /**
+       * Get the indices of the compositional fields which are of a
+       * particular type (chemical composition, porosity, etc.).
+       */
+      const std::vector<unsigned int>
+      get_indices_for_fields_of_type (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const;
+
+      /**
+      * Get the names of the compositional fields which are of a
+      * particular type (chemical composition, porosity, etc.).
+       */
+      const std::vector<std::string>
+      get_names_for_fields_of_type (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const;
+
+      /**
        * A function that gets a component index as an input
        * parameter and returns if the component is one of the stokes system
        * (i.e. if it is the pressure or one of the velocity components).

@@ -1,0 +1,7 @@
+
+Loading shared library <./libcheck_compositional_field_functions.so>
+
+* Connecting signals
+Chemical composition field #0 (the background field) has value 0.7.
+Chemical composition field #1 is called Field_1, is in position 0, and has value 0.1.
+Chemical composition field #2 is called Field_5, is in position 4, and has value 0.2.

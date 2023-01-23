@@ -390,6 +390,7 @@ namespace aspect
       {
         chemical_composition,
         stress,
+        strain,
         grain_size,
         porosity,
         density,
@@ -409,6 +410,8 @@ namespace aspect
           return CompositionalFieldDescription::chemical_composition;
         else if (input == "stress")
           return CompositionalFieldDescription::stress;
+        else if (input == "strain")
+          return CompositionalFieldDescription::strain;
         else if (input == "grain size")
           return CompositionalFieldDescription::grain_size;
         else if (input == "porosity")

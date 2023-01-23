@@ -1,0 +1,13 @@
+New: ASPECT has new introspection functions 
+get_indices_for_fields_of_type and get_names_for_fields_of_type.
+There is also a new utilities function called
+compute_only_composition_fractions that takes a vector of
+compositional field values and a list of indices that designates
+which of those fields correspond to chemical compositions.
+It then calculates the missing fraction corresponding to the
+background field, and returns the full vector of fractions.
+
+New: The "Compositional fields / Types of fields" parameter in ASPECT 
+has a new type called "strain".
+<br>
+(Bob Myhill, 2023/01/19)
