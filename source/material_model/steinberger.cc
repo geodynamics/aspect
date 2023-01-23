@@ -289,11 +289,11 @@ namespace aspect
             {
               // We only want to compute mass/volume fractions for fields that are chemical compositions.
               std::vector<double> chemical_compositions;
-              const std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
+              const std::vector<CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
 
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
-                if (composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::chemical_composition
-                    || composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::unspecified)
+                if (composition_descriptions[c].type == CompositionalFieldDescription::chemical_composition
+                    || composition_descriptions[c].type == CompositionalFieldDescription::unspecified)
                   chemical_compositions.push_back(in.composition[i][c]);
 
               mass_fractions = MaterialUtilities::compute_composition_fractions(chemical_compositions, *composition_mask);
@@ -331,10 +331,10 @@ namespace aspect
       // set up variable to interpolate prescribed field outputs onto compositional field
       PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
 
-      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density)
+      if (this->introspection().composition_type_exists(CompositionalFieldDescription::density)
           && prescribed_field_out != nullptr)
         {
-          const unsigned int projected_density_index = this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density);
+          const unsigned int projected_density_index = this->introspection().find_composition_type(CompositionalFieldDescription::density);
           prescribed_field_out->prescribed_field_outputs[q][projected_density_index] = out.densities[q];
         }
     }
@@ -523,7 +523,7 @@ namespace aspect
           equation_of_state.parse_parameters(prm);
 
           // Check if compositional fields represent a composition
-          const std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
+          const std::vector<CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
 
           // All chemical compositional fields are assumed to represent mass fractions.
           // If the field type is unspecified (has not been set in the input file),
@@ -531,8 +531,8 @@ namespace aspect
           // backwards compatibility.
           composition_mask = std::make_unique<ComponentMask> (this->n_compositional_fields(), false);
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            if (composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::chemical_composition
-                || composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::unspecified)
+            if (composition_descriptions[c].type == CompositionalFieldDescription::chemical_composition
+                || composition_descriptions[c].type == CompositionalFieldDescription::unspecified)
               composition_mask->set(c, true);
 
           const unsigned int n_chemical_fields = composition_mask->n_selected_components();
@@ -575,7 +575,7 @@ namespace aspect
     {
       equation_of_state.create_additional_named_outputs(out);
 
-      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density)
+      if (this->introspection().composition_type_exists(CompositionalFieldDescription::density)
           && out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
