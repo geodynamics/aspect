@@ -867,8 +867,20 @@ namespace aspect
 
               if (HeatingModel::ShearHeatingOutputs<dim> *shear_heating_out = out.template get_additional_output<HeatingModel::ShearHeatingOutputs<dim>>())
                 {
-                  const double f = boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
-                  shear_heating_out->shear_heating_work_fractions[i] = 1. - f * out.viscosities[i] / std::min(std::max(min_eta,disl_viscosity),1e300);
+                  if (grain_size_evolution_formulation == Formulation::paleowattmeter ||
+                      grain_size_evolution_formulation == Formulation::paleopiezometer)
+                    {
+                      const double f = boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
+                      shear_heating_out->shear_heating_work_fractions[i] = 1. - f * out.viscosities[i] / std::min(std::max(min_eta,disl_viscosity),1e300);
+                    }
+                  else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
+                    {
+                      // TODO: f still needs to be updated with the new T-dependent parameter
+                      const double f = boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
+                      shear_heating_out->shear_heating_work_fractions[i] = 1. - f;
+                    }
+                  else
+                    AssertThrow(false, ExcNotImplemented());
                 }
             }
 
