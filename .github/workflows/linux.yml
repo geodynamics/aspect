@@ -50,7 +50,7 @@ jobs:
         sudo apt-get install -y software-properties-common
         sudo add-apt-repository ppa:ginggs/deal.ii-9.3.2-backports
         sudo apt-get update
-        sudo apt-get install -yq --no-install-recommends texlive-plain-generic texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python3-pip python-setuptools libdeal.ii-dev doxygen inkscape
+        sudo apt-get install -yq --no-install-recommends texlive-plain-generic texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python3-pip python-setuptools libdeal.ii-dev doxygen latexmk biber inkscape
         doxygen --version
 
         wget https://github.com/tjhei/astyle/releases/download/v2.04/astyle_2.04_linux.tar.gz
@@ -72,6 +72,10 @@ jobs:
     - name: check indentation
       run: |
         git diff --exit-code
+    - name: citation list
+      run: |
+        cd doc
+        latexmk -pdf -f citations-list.tex
     - name: compile
       run: |
         mkdir build
