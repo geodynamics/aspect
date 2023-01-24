@@ -113,12 +113,16 @@ namespace aspect
       void
       Elasticity<dim>::parse_parameters (ParameterHandler &prm)
       {
-        // Get the number of fields for composition-dependent material properties
-        const unsigned int n_fields = this->n_compositional_fields() + 1;
+        // Retrieve the list of composition names
+        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-        elastic_shear_moduli = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Elastic shear moduli"))),
-                                                                       n_fields,
-                                                                       "Elastic shear moduli");
+        // Establish that a background field is required here
+        const bool has_background_field = true;
+
+        elastic_shear_moduli = Utilities::parse_map_to_double_array (prm.get("Elastic shear moduli"),
+                                                                     list_of_composition_names,
+                                                                     has_background_field,
+                                                                     "Elastic shear moduli");
 
         // Stabilize elasticity through a viscous damper
         elastic_damper_viscosity = prm.get_double("Elastic damper viscosity");

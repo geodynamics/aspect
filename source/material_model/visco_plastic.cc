@@ -353,9 +353,6 @@ namespace aspect
     void
     ViscoPlastic<dim>::parse_parameters (ParameterHandler &prm)
     {
-      // increment by one for background:
-      const unsigned int n_fields = this->n_compositional_fields() + 1;
-
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection ("Visco Plastic");
@@ -370,15 +367,23 @@ namespace aspect
                                               std::make_unique<std::vector<unsigned int>>(phase_function.n_phases_for_each_composition()));
 
 
-          thermal_diffusivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal diffusivities"))),
-                                                                          n_fields,
-                                                                          "Thermal diffusivities");
+          // Retrieve the list of composition names
+          const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+
+          // Establish that a background field is required here
+          const bool has_background_field = true;
+
+          thermal_diffusivities = Utilities::parse_map_to_double_array (prm.get("Thermal diffusivities"),
+                                                                        list_of_composition_names,
+                                                                        has_background_field,
+                                                                        "Thermal diffusivities");
 
           define_conductivities = prm.get_bool ("Define thermal conductivities");
 
-          thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivities"))),
-                                                                           n_fields,
-                                                                           "Thermal conductivities");
+          thermal_conductivities = Utilities::parse_map_to_double_array (prm.get("Thermal conductivities"),
+                                                                         list_of_composition_names,
+                                                                         has_background_field,
+                                                                         "Thermal conductivities");
 
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());

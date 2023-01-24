@@ -611,9 +611,6 @@ namespace aspect
         // Retrieve the list of composition names
         const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-        // increment by one for background:
-        const unsigned int n_fields = this->n_compositional_fields() + 1;
-
         strain_rheology.initialize_simulator (this->get_simulator());
         strain_rheology.parse_parameters(prm);
 
@@ -714,9 +711,10 @@ namespace aspect
         drucker_prager_plasticity.parse_parameters(prm, expected_n_phases_per_composition);
 
         // Stress limiter parameter
-        exponents_stress_limiter  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress limiter exponents"))),
-                                                                            n_fields,
-                                                                            "Stress limiter exponents");
+        exponents_stress_limiter = Utilities::parse_map_to_double_array (prm.get("Stress limiter exponents"),
+                                                                         list_of_composition_names,
+                                                                         has_background_field,
+                                                                         "Stress limiter exponents");
 
         // Include an adiabat temperature gradient in flow laws
         adiabatic_temperature_gradient_for_viscosity = prm.get_double("Adiabat temperature gradient for viscosity");
