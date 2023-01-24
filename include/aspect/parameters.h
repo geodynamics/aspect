@@ -674,7 +674,7 @@ namespace aspect
      */
     unsigned int                   n_compositional_fields;
     std::vector<std::string>       names_of_compositional_fields;
-    std::vector<CompositionalFieldDescription>  composition_descriptions;
+    std::vector<aspect::CompositionalFieldDescription>  composition_descriptions;
 
     /**
      * A vector that contains the advection field method for every compositional
