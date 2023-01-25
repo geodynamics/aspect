@@ -82,10 +82,17 @@ namespace aspect
           parse_parameters (ParameterHandler &prm,
                             const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
+          /**
+           * Compute the parameters for the Drucker Prager plasticity.
+           * If @p n_phase_transitions_per_composition points to a vector of
+           * unsigned integers this is considered the number of phase transitions
+           * for each compositional field and viscosity will be first computed on
+           * each phase and then averaged for each compositional field.
+           */
           const DruckerPragerParameters
           compute_drucker_prager_parameters (const unsigned int composition,
                                              const std::vector<double> &phase_function_values = std::vector<double>(),
-                                             const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
+                                             const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
 
           /**
            * Compute the plastic yield stress based on the Drucker Prager yield criterion.

@@ -39,7 +39,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   const unsigned int composition = 0;
   const std::vector<double> volume_fractions = {1.};
   const std::vector<double> phase_function_values = std::vector<double>();
-  const std::vector<unsigned int> n_phases_per_composition = std::vector<unsigned int>(1);
+  const std::vector<unsigned int> n_phase_transitions_per_composition = std::vector<unsigned int>(1);
 
   // Next, we initialise instances of the composite rheology and
   // individual creep mechanisms.
@@ -78,7 +78,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   prm.set("Plastic damper viscosity", "1.e17");
   prm.set("Maximum yield stress", "5e8");
   drucker_prager->parse_parameters(prm, n_phases);
-  Rheology::DruckerPragerParameters p = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phases_per_composition);
+  Rheology::DruckerPragerParameters p = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
 
   // The creep components are arranged in series with each other.
   // This package of components is then arranged in parallel with

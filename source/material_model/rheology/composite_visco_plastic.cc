@@ -76,7 +76,7 @@ namespace aspect
                                                      const SymmetricTensor<2,dim> &strain_rate,
                                                      std::vector<double> &partial_strain_rates,
                                                      const std::vector<double> &phase_function_values,
-                                                     const std::vector<unsigned int> &n_phases_per_composition) const
+                                                     const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         double viscosity = 0.;
         partial_strain_rates.resize(5, 0.);
@@ -98,7 +98,7 @@ namespace aspect
                                                                strain_rate,
                                                                partial_strain_rates_composition,
                                                                phase_function_values,
-                                                               n_phases_per_composition));
+                                                               n_phase_transitions_per_composition));
                 for (unsigned int j=0; j < 5; ++j)
                   partial_strain_rates[j] += volume_fractions[composition] * partial_strain_rates_composition[j];
               }
@@ -124,7 +124,7 @@ namespace aspect
                                                                  const SymmetricTensor<2,dim> &strain_rate,
                                                                  std::vector<double> &partial_strain_rates,
                                                                  const std::vector<double> &phase_function_values,
-                                                                 const std::vector<unsigned int> &n_phases_per_composition) const
+                                                                 const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         // If strain rate is zero (like during the first time step) set it to some very small number
         // to prevent a division-by-zero, and a floating point exception.
@@ -143,14 +143,14 @@ namespace aspect
 
         if (use_diffusion_creep)
           {
-            diffusion_creep_parameters = diffusion_creep->compute_creep_parameters(composition, phase_function_values, n_phases_per_composition);
-            eta_diff = diffusion_creep->compute_viscosity(pressure, temperature, composition, phase_function_values, n_phases_per_composition);
+            diffusion_creep_parameters = diffusion_creep->compute_creep_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
+            eta_diff = diffusion_creep->compute_viscosity(pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition);
           }
 
         if (use_dislocation_creep)
           {
-            dislocation_creep_parameters = dislocation_creep->compute_creep_parameters(composition, phase_function_values, n_phases_per_composition);
-            eta_disl = dislocation_creep->compute_viscosity(edot_ii, pressure, temperature, composition, phase_function_values, n_phases_per_composition);
+            dislocation_creep_parameters = dislocation_creep->compute_creep_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
+            eta_disl = dislocation_creep->compute_viscosity(edot_ii, pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition);
           }
 
         if (use_peierls_creep)
@@ -167,7 +167,7 @@ namespace aspect
         // Drucker-Prager yield stress. Probably fine for a first guess.
         if (use_drucker_prager)
           {
-            drucker_prager_parameters = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phases_per_composition);
+            drucker_prager_parameters = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
             const double yield_stress = drucker_prager->compute_yield_stress(drucker_prager_parameters.cohesion,
                                                                              drucker_prager_parameters.angle_internal_friction,
                                                                              pressure,

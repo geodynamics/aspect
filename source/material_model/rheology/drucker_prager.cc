@@ -40,7 +40,7 @@ namespace aspect
       const DruckerPragerParameters
       DruckerPrager<dim>::compute_drucker_prager_parameters (const unsigned int composition,
                                                              const std::vector<double> &phase_function_values,
-                                                             const std::vector<unsigned int> &n_phases_per_composition) const
+                                                             const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         DruckerPragerParameters drucker_prager_parameters;
 
@@ -55,9 +55,9 @@ namespace aspect
         else
           {
             // Average among phases
-            drucker_prager_parameters.angle_internal_friction = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            drucker_prager_parameters.angle_internal_friction = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                                 angles_internal_friction, composition);
-            drucker_prager_parameters.cohesion = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            drucker_prager_parameters.cohesion = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  cohesions, composition);
           }
         return drucker_prager_parameters;
