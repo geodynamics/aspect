@@ -54,6 +54,7 @@ namespace aspect
             creep_parameters.activation_volume = activation_volumes_diffusion[composition];
             creep_parameters.stress_exponent = stress_exponents_diffusion[composition];
             creep_parameters.grain_size_exponent = grain_size_exponents_diffusion[composition];
+	    creep_parameters.water_fugacity_exponent = water_fugacity_exponents_diffusion[composition];
           }
         else
           {
@@ -68,6 +69,8 @@ namespace aspect
                                                stress_exponents_diffusion, composition);
             creep_parameters.grain_size_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
                                                    grain_size_exponents_diffusion, composition);
+	    creep_parameters.water_fugacity_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+                                               water_fugacity_exponents_diffusion, composition);
           }
         return creep_parameters;
       }
@@ -75,10 +78,11 @@ namespace aspect
 
 
       template <int dim>
-      double
+      double // Add position to args of this function
       DiffusionCreep<dim>::compute_viscosity (const double pressure,
                                               const double temperature,
                                               const unsigned int composition,
+					      const double water_concentration,
                                               const std::vector<double> &phase_function_values,
                                               const std::vector<unsigned int> &n_phases_per_composition) const
       {
@@ -91,11 +95,19 @@ namespace aspect
         // A: prefactor,
         // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
         // V; activation volume, R: gas constant, T: temperature.
+	//
+	// If use_water_fugacity_diffusion = true this equation is modified:
+	//    viscosity = 0.5 * A^(-1) * d^(m) * C_H2O^(-r) * exp((E + P*V)/(RT))
+	// C_H2O: water concentration in ppm H/Si, r: water fugacity exponent.
+
         double viscosity_diffusion = 0.5 / p.prefactor *
-                                     std::exp((p.activation_energy +
-                                               pressure*p.activation_volume)/
-                                              (constants::gas_constant*temperature)) *
-                                     std::pow(grain_size, p.grain_size_exponent);
+                                           std::exp((p.activation_energy +
+                                                     pressure*p.activation_volume)/
+                                                    (constants::gas_constant*temperature)) *
+                                           std::pow(grain_size, p.grain_size_exponent);
+
+	if (use_water_fugacity_diffusion)
+	    viscosity_diffusion *= std::pow(std::max(water_concentration, 1.), -p.water_fugacity_exponent);
 
         Assert (viscosity_diffusion > 0.0,
                 ExcMessage ("Negative diffusion viscosity detected. This is unphysical and should not happen. "
@@ -118,8 +130,9 @@ namespace aspect
       template <int dim>
       std::pair<double, double>
       DiffusionCreep<dim>::compute_strain_rate_and_derivative (const double stress,
-                                                               const double pressure,
+		                                               const double pressure,
                                                                const double temperature,
+							       const double water_concentration,
                                                                const DiffusionCreepParameters creep_parameters) const
       {
         // Power law creep equation
@@ -128,11 +141,20 @@ namespace aspect
         // A: prefactor, edot_ii_partial: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
         // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
         // V; activation volume, R: gas constant, T: temperature.
-        // For diffusion creep, n = 1 (strain rate is linearly dependent on stress).
-        const double dstrain_rate_dstress_diffusion = creep_parameters.prefactor *
-                                                      std::pow(grain_size, -creep_parameters.grain_size_exponent) *
-                                                      std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
-                                                               (constants::gas_constant*temperature));
+	//
+        // If use_water_fugacity_diffusion = true this equation is modified:
+        //    edot_ii_partial = A * stress^(n) * d^(-m) * C_H2O^(r) * exp(-(E + P*V)/(RT))
+	//    d(edot_ii_partial)/d(stress) = A * n * stress^(n-1) * d^(-m) * C_H2O^(r) * exp(-(E + P*V)/(RT))
+        // C_H2O: water concentration in ppm H/Si, r: water fugacity exponent
+	// For diffusion creep, n = 1 (strain rate is linearly dependent on stress)
+
+        double dstrain_rate_dstress_diffusion = creep_parameters.prefactor *
+                                                std::pow(grain_size, -creep_parameters.grain_size_exponent) *
+                                                std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
+                                                          (constants::gas_constant*temperature));
+
+	if (use_water_fugacity_diffusion)
+	  dstrain_rate_dstress_diffusion *= std::pow(std::max(water_concentration, 1.), creep_parameters.water_fugacity_exponent);
 
         const double strain_rate_diffusion = stress * dstrain_rate_dstress_diffusion;
 
@@ -176,6 +198,17 @@ namespace aspect
                            "Units: \\si{\\meter\\cubed\\per\\mole}.");
         prm.declare_entry ("Grain size", "1e-3", Patterns::Double (0.),
                            "Units: \\si{\\meter}.");
+	prm.declare_entry ("Use water fugacity in diffusion creep", "false",
+			   Patterns::Bool(),
+			   "Whether or not to include water fugacity in the diffusion creep rheology. Setting this to false "
+			   "gives the default diffusion creep rheology. If set to true, a compositional field named 'water' "
+			   "must exist, and the material model will query the water content at each mesh point and include "
+			   "that in the calculation for the viscosty. Wet rheological parameters must also be specified.");
+	prm.declare_entry ("Water fugacity exponents for diffusion creep", "1.0",
+			   Patterns::Anything(),
+			   "List of water fugacity exponents, $r$, for background material and compositional fields, "
+			   "for a total of N+1 values, where N is the number of compositional fields. "
+			   "If only one value is given, then all use the same value. Units: None.");
       }
 
 
@@ -222,7 +255,15 @@ namespace aspect
                                                                             "Activation volumes for diffusion creep",
                                                                             true,
                                                                             expected_n_phases_per_composition);
+	water_fugacity_exponents_diffusion = Utilities::parse_map_to_double_array(prm.get("Water fugacity exponents for diffusion creep"),
+									          list_of_composition_names,
+										  has_background_field,
+										  "Water fugacity exponents for diffusion creep",
+										  true,
+										  expected_n_phases_per_composition);
         grain_size = prm.get_double("Grain size");
+
+	use_water_fugacity_diffusion = prm.get_bool("Use water fugacity in diffusion creep");
 
         // Check that there are no entries set to zero,
         // for example because the entry is for a field
@@ -232,6 +273,10 @@ namespace aspect
         for (const double prefactor : prefactors_diffusion)
           AssertThrow(prefactor > 0.,
                       ExcMessage("The diffusion prefactor should be larger than zero."));
+
+	AssertThrow(this->introspection().compositional_name_exists("water_concentration"),
+                          ExcMessage("The water fugacity modified diffusion creep rheology only "
+                                     "works if there is a compositional field called water_concentration."));
       }
     }
   }

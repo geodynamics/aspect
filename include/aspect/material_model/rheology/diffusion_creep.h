@@ -48,6 +48,7 @@ namespace aspect
         double activation_volume;
         double stress_exponent;
         double grain_size_exponent;
+	double water_fugacity_exponent;
       };
 
       template <int dim>
@@ -101,6 +102,7 @@ namespace aspect
           compute_viscosity (const double pressure,
                              const double temperature,
                              const unsigned int composition,
+			     const double water_concentration,
                              const std::vector<double> &phase_function_values = std::vector<double>(),
                              const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
 
@@ -116,6 +118,7 @@ namespace aspect
           compute_strain_rate_and_derivative (const double stress,
                                               const double pressure,
                                               const double temperature,
+					      const double water_concentration,
                                               const DiffusionCreepParameters creep_parameters) const;
 
         private:
@@ -145,10 +148,20 @@ namespace aspect
            */
           std::vector<double> activation_volumes_diffusion;
 
+	  /**
+	   * List of diffusion creep water fugacity exponents.
+	   */
+	  std::vector<double> water_fugacity_exponents_diffusion;
+
           /**
            * Diffusion creep grain size d.
            */
           double grain_size;
+
+	  /**
+	   * Whether to use water fugacity to modify the diffusion creep rheology
+	   */
+	  bool use_water_fugacity_diffusion;
       };
     }
   }
