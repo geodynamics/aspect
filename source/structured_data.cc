@@ -25,6 +25,8 @@
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>
+#include <aspect/geometry_model/two_merged_chunks.h>
+#include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/geometry_model/initial_topography_model/ascii_data.h>
 #include <aspect/geometry_model/two_merged_chunks.h>
 
@@ -1375,28 +1377,18 @@ namespace aspect
 
 
 
-    template <int dim, int spacedim>
-    AsciiDataInitial<dim, spacedim>::AsciiDataInitial ()
-      = default;
+    template <int dim>
+    AsciiDataInitial<dim>::AsciiDataInitial ()
+      : slice_data(false),
+        rotation_matrix()
+    {}
 
 
 
-    template <int dim, int spacedim>
+    template <int dim>
     void
-    AsciiDataInitial<dim, spacedim>::initialize (const unsigned int components)
+    AsciiDataInitial<dim>::initialize (const unsigned int components)
     {
-      AssertThrow ((Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
-                   || (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
-                   || (Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (this->get_geometry_model()))
-                   || (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()))
-                   || (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
-                   || (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model())),
-                   ExcMessage ("This ascii data plugin can only be used when using "
-                               "a spherical shell, chunk, or box geometry."));
-
-      lookup = std::make_unique<Utilities::StructuredDataLookup<spacedim>> (components,
-                                                                             this->scale_factor);
-
       const std::string filename = this->data_directory + this->data_file_name;
 
       this->get_pcout() << std::endl << "   Loading Ascii data initial file "
@@ -1409,29 +1401,152 @@ namespace aspect
                               filename
                               +
                               "> not found!"));
-      lookup->load_file(filename, this->get_mpi_communicator());
+
+      if (slice_data == true)
+        {
+          slice_lookup = std::make_unique<Utilities::StructuredDataLookup<3>> (components,
+                                                                                this->scale_factor);
+          slice_lookup->load_file(filename, this->get_mpi_communicator());
+        }
+      else
+        {
+          lookup = std::make_unique<Utilities::StructuredDataLookup<dim>> (components,
+                                                                            this->scale_factor);
+          lookup->load_file(filename, this->get_mpi_communicator());
+        }
     }
 
 
 
-    template <int dim, int spacedim>
+    template <int dim>
     double
-    AsciiDataInitial<dim, spacedim>::
-    get_data_component (const Point<spacedim>                    &position,
-                        const unsigned int                   component) const
+    AsciiDataInitial<dim>::
+    get_data_component (const Point<dim> &position,
+                        const unsigned int component) const
     {
-      Point<spacedim> internal_position = position;
-
-      if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model())
-          || (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model())))
+      // Handle the special case of slicing through data first
+      if (slice_data == true)
         {
-          const std::array<double,spacedim> spherical_position =
-            Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
+          // This implies a SphericalShell, a 2D model, and a 3D dataset as asserted
+          // in the parse_parameters function below.
 
-          for (unsigned int i = 0; i < spacedim; i++)
-            internal_position[i] = spherical_position[i];
+          // Compute the coordinates of a 3d point based on the 2D position.
+          const Tensor<1,3> position_tensor({position[0], position[1], 0.0});
+          const Point<3> rotated_position (rotation_matrix * position_tensor);
+
+          const std::array<double,3> spherical_position =
+            Utilities::Coordinates::cartesian_to_spherical_coordinates(rotated_position);
+
+          return slice_lookup->get_data(Point<3>(Tensor<1,3>(ArrayView<const double>(spherical_position))),component);
         }
+
+      // else slice_data == false: model and dataset have the same dimension
+      const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
+
+      Point<dim> internal_position;
+      for (unsigned int i = 0; i < dim; ++i)
+        internal_position[i] = natural_position[i];
+
+      if (dim == 3)
+        {
+          // Unfortunately, the chunk model uses latitude as natural coordinate. We need to convert this
+          // to colatitude to be consistent with the input files for spherical shells and spheres.
+          if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()) ||
+              Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (this->get_geometry_model()) ||
+              Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>> (this->get_geometry_model()))
+            {
+              internal_position[2] = numbers::PI/2. - internal_position[2];
+            }
+        }
+
       return lookup->get_data(internal_position,component);
+    }
+
+
+
+    template <int dim>
+    void
+    AsciiDataInitial<dim>::declare_parameters (ParameterHandler  &prm,
+                                               const std::string &default_directory,
+                                               const std::string &default_filename,
+                                               const std::string &subsection_name)
+    {
+      Utilities::AsciiDataBase<dim>::declare_parameters(prm,
+                                                        default_directory,
+                                                        default_filename,
+                                                        subsection_name);
+
+      prm.enter_subsection (subsection_name);
+      {
+        prm.declare_entry("Slice dataset in 2D plane", "false",
+                          Patterns::Bool (),
+                          "Whether to use a 2D data slice of a 3D data file "
+                          "or the entire data file. Slicing a 3D dataset is "
+                          "only supported for 2D models.");
+        prm.declare_entry ("First point on slice", "0.0,1.0,0.0",
+                           Patterns::Anything (),
+                           "Point that determines the plane in which the 2D slice lies in. "
+                           "This variable is only used if 'Slice dataset in 2D plane' is true. "
+                           "The slice will go through this point, the point defined by the "
+                           "parameter 'Second point on slice', and the center of the model "
+                           "domain. After the rotation, this first point will lie along the "
+                           "(0,1,0) axis of the coordinate system. The coordinates of the "
+                           "point have to be given in Cartesian coordinates.");
+        prm.declare_entry ("Second point on slice", "1.0,0.0,0.0",
+                           Patterns::Anything (),
+                           "Second point that determines the plane in which the 2D slice lies in. "
+                           "This variable is only used if 'Slice dataset in 2D plane' is true. "
+                           "The slice will go through this point, the point defined by the "
+                           "parameter 'First point on slice', and the center of the model "
+                           "domain. The coordinates of the point have to be given in Cartesian "
+                           "coordinates.");
+      }
+      prm.leave_subsection();
+    }
+
+
+
+    template <int dim>
+    void
+    AsciiDataInitial<dim>::parse_parameters (ParameterHandler &prm,
+                                             const std::string &subsection_name)
+    {
+      Utilities::AsciiDataBase<dim>::parse_parameters(prm,
+                                                      subsection_name);
+
+      prm.enter_subsection(subsection_name);
+      {
+        slice_data = prm.get_bool ("Slice dataset in 2D plane");
+        if (slice_data == true)
+          {
+            AssertThrow (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()),
+                         ExcMessage ("Slicing an ascii dataset is only supported when using "
+                                     "a spherical shell geometry."));
+
+            AssertThrow(dim == 2,
+                        ExcMessage("The AsciiDataInitial class can only slice data in 2d models."));
+
+            std::vector<double> point_one = Utilities::string_to_double(Utilities::split_string_list(prm.get("First point on slice")));
+            std::vector<double> point_two = Utilities::string_to_double(Utilities::split_string_list(prm.get("Second point on slice")));
+
+            AssertThrow(point_one.size() == 3 && point_two.size() == 3,
+                        ExcMessage("The points on the slice in the Ascii data model need "
+                                   "to be given in three dimensions; in other words, as three "
+                                   "numbers, separated by commas."));
+
+            Point<3> first_point_on_slice;
+            Point<3> second_point_on_slice;
+
+            for (unsigned int d=0; d<3; d++)
+              first_point_on_slice[d] = point_one[d];
+
+            for (unsigned int d=0; d<3; d++)
+              second_point_on_slice[d] = point_two[d];
+
+            rotation_matrix = Utilities::compute_rotation_matrix_for_slice(first_point_on_slice, second_point_on_slice);
+          }
+      }
+      prm.leave_subsection();
     }
 
 
@@ -1537,9 +1652,8 @@ namespace aspect
     template class AsciiDataBoundary<3>;
     template class AsciiDataLayered<2>;
     template class AsciiDataLayered<3>;
-    template class AsciiDataInitial<2, 2>;
-    template class AsciiDataInitial<2, 3>;
-    template class AsciiDataInitial<3, 3>;
+    template class AsciiDataInitial<2>;
+    template class AsciiDataInitial<3>;
     template class AsciiDataProfile<1>;
     template class AsciiDataProfile<2>;
     template class AsciiDataProfile<3>;

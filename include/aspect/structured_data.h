@@ -486,7 +486,7 @@ namespace aspect
      * A base class that implements initial conditions determined from a
      * AsciiData input file.
      */
-    template <int dim, int spacedim=dim>
+    template <int dim>
     class AsciiDataInitial : public Utilities::AsciiDataBase<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -508,15 +508,52 @@ namespace aspect
          * Returns the data component at the given position.
          */
         double
-        get_data_component (const Point<spacedim>               &position,
-                            const unsigned int                   component) const;
+        get_data_component (const Point<dim> &position,
+                            const unsigned int component) const;
+
+        /**
+         * Declare the parameters all derived classes take from input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler  &prm,
+                            const std::string &default_directory,
+                            const std::string &default_filename,
+                            const std::string &subsection_name = "Ascii data model");
+
+        /**
+         * Read the parameters from the parameter file.
+         */
+        void
+        parse_parameters (ParameterHandler &prm,
+                          const std::string &subsection_name = "Ascii data model");
 
       protected:
         /**
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std::unique_ptr<aspect::Utilities::StructuredDataLookup<spacedim>> lookup;
+        std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim>> lookup;
+
+        /**
+         * Pointer to an object that reads and processes data we get from text
+         * files if the current model is a slice of the input file (e.g. a 2D
+         * model and a 3D data file).
+         */
+        std::unique_ptr<aspect::Utilities::StructuredDataLookup<3>> slice_lookup;
+
+        /**
+         * Whether to use a dataset that has the same spatial dimensions as
+         * the model or not. If true only a 2D slice of a 3D dataset is used.
+         */
+        bool slice_data;
+
+        /**
+         * The matrix that describes the rotation by which a 2D model
+         * needs to be transformed to a plane that contains the origin and
+         * the two prescribed points given in the input.
+         */
+        Tensor<2,3> rotation_matrix;
     };
 
 
