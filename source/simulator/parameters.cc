@@ -1884,7 +1884,7 @@ namespace aspect
       composition_descriptions.resize(n_compositional_fields);
 
       for (unsigned int i=0; i<n_compositional_fields; ++i)
-        composition_descriptions[i].type = CompositionalFieldDescription::parse_type(x_compositional_field_types[i]);
+        composition_descriptions[i].type = aspect::CompositionalFieldDescription::parse_type(x_compositional_field_types[i]);
 
       std::vector<std::string> x_compositional_field_methods
         = Utilities::split_string_list
