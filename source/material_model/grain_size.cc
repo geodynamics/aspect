@@ -1291,11 +1291,11 @@ namespace aspect
                                "size evolution. One choice of this parameter is the surface temperature of the seafloor, see "
                                "Mulyukova, E., & Bercovici, D. (2018) for details.");
             prm.declare_entry ("Minimum grain size reduction work fraction", "1e-12",
-                               Patterns::Double (0.),
+                               Patterns::Double (0., 1.),
                                "This parameter determines the minimum value of the partitioning coefficient, which governs "
                                "amount of shear heating partitioned into grain damage in the pinned state limit." );
             prm.declare_entry ("Maximum grain size reduction work fraction", "1e-1",
-                               Patterns::Double (0.),
+                               Patterns::Double (0., 1.),
                                "This parameter determines the maximum value of the partitioning coefficient, which governs "
                                "amount of shear heating partitioned into grain damage in the pinned state limit.");
             prm.declare_entry ("Grain size reduction work fraction exponent", "10",
