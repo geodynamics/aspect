@@ -205,8 +205,7 @@ namespace aspect
       const double partitioning_fraction = minimum_grain_size_reduction_work_fraction * std::pow((maximum_grain_size_reduction_work_fraction/minimum_grain_size_reduction_work_fraction),
                                            (power_term_numerator/power_term_denominator));
 
-      // Reduce the energy partitioned into the lower mantle to avoid large grain size contrast between upper and lower mantle
-      return partitioning_fraction/pv_grain_size_scaling;
+      return partitioning_fraction;
     }
 
 
