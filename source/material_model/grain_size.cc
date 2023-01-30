@@ -308,11 +308,13 @@ namespace aspect
                                                        / (geometric_constant[phase_index] * grain_boundary_energy[phase_index]);
               grain_size_reduction = grain_size_reduction_rate * grain_growth_timestep;
             }
-          else
+          else if (grain_size_evolution_formulation == Formulation::paleopiezometer)
             {
               // paleopiezometer: Hall and Parmentier (2003): Influence of grain size evolution on convective instability. Geochem. Geophys. Geosyst., 4(3).
               grain_size_reduction = reciprocal_required_strain[phase_index] * dislocation_strain_rate * grain_size * grain_growth_timestep;
             }
+          else
+            AssertThrow(false, ExcNotImplemented());
 
           grain_size_change = grain_size_growth - grain_size_reduction;
 
