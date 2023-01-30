@@ -196,13 +196,14 @@ namespace aspect
     GrainSize<dim>::
     compute_partitioning_fraction (const double temperature) const
     {
-      const double power_term_numerator    =  std::pow (mantle_temperature, partitioning_exponent) -
-                                              std::pow (temperature, partitioning_exponent);
+      const double power_term_numerator    =  std::pow (mantle_temperature, grain_size_reduction_work_fraction_exponent) -
+                                              std::pow (temperature, grain_size_reduction_work_fraction_exponent);
 
-      const double power_term_denominator  =  std::pow (mantle_temperature, partitioning_exponent) -
-                                              std::pow (surface_temperature, partitioning_exponent);
+      const double power_term_denominator  =  std::pow (mantle_temperature, grain_size_reduction_work_fraction_exponent) -
+                                              std::pow (surface_temperature, grain_size_reduction_work_fraction_exponent);
 
-      const double partitioning_fraction = min_f * (max_f/min_f) * (power_term_numerator/power_term_denominator);
+      const double partitioning_fraction = minimum_grain_size_reduction_work_fraction * std::pow((maximum_grain_size_reduction_work_fraction/minimum_grain_size_reduction_work_fraction),
+                                           (power_term_numerator/power_term_denominator));
 
       return partitioning_fraction;
     }
@@ -875,8 +876,7 @@ namespace aspect
                     }
                   else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
                     {
-                      // TODO: f still needs to be updated with the new T-dependent parameter
-                      const double f = boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
+                      const double f = compute_partitioning_fraction(in.temperature[i]);
                       shear_heating_out->shear_heating_work_fractions[i] = 1. - f;
                     }
                   else
@@ -1278,17 +1278,25 @@ namespace aspect
           {
             prm.declare_entry ("Mantle temperature", "1600",
                                Patterns::Double (0.),
-                               "This parameter determines the mantle temperature.");
+                               "This parameter determines the temperature at which the computed coefficient of shear energy "
+                               "partitioned into grain damage is minimum. This is used in the pinned state limit of the grain "
+                               "size evolution. One choice of this parameter is the mantle temperature at the ridge axis, "
+                               "see Mulyukova, E., & Bercovici, D. (2018) for details.");
             prm.declare_entry ("Surface temperature", "283",
                                Patterns::Double (0.),
-                               "This parameter determines the surface temperature.");
-            prm.declare_entry ("Min f", "1e-12",
+                               "This parameter determines the temperature at which the computed coefficient of shear energy "
+                               "partitioned into grain damage is maximum. This is used in the pinned state limit of the grain "
+                               "size evolution. One choice of this parameter is the surface temperature of the seafloor, see "
+                               "Mulyukova, E., & Bercovici, D. (2018) for details.");
+            prm.declare_entry ("Minimum grain size reduction work fraction", "1e-12",
                                Patterns::Double (0.),
-                               "This parameter determines the minimum value of the partitioning coefficient.");
-            prm.declare_entry ("Max f", "1e-1",
+                               "This parameter determines the minimum value of the partitioning coefficient, which governs "
+                               "amount of shear heating partitioned into grain damage in the pinned state limit." );
+            prm.declare_entry ("Maximum grain size reduction work fraction", "1e-1",
                                Patterns::Double (0.),
-                               "This parameter determines the maximum value of the partitioning coefficient.");
-            prm.declare_entry ("Partitioing exponent", "10",
+                               "This parameter determines the maximum value of the partitioning coefficient, which governs "
+                               "amount of shear heating partitioned into grain damage in the pinned state limit.");
+            prm.declare_entry ("Grain size reduction work fraction exponent", "10",
                                Patterns::Double (0.),
                                "This parameter determines the variability in how much shear heating is partitioned into "
                                "grain damage. A higher value suggests a wider temperature range over which the partitioning "
@@ -1381,11 +1389,11 @@ namespace aspect
             {
               prm.enter_subsection("Grain damage partitioning");
               {
-                partitioning_exponent           = prm.get_double ("Partitioing exponent");
-                max_f                           = prm.get_double ("Max f");
-                min_f                           = prm.get_double ("Min f");
-                mantle_temperature              = prm.get_double ("Mantle temperature");
-                surface_temperature             = prm.get_double ("Surface temperature");
+                grain_size_reduction_work_fraction_exponent = prm.get_double ("Grain size reduction work fraction exponent");
+                maximum_grain_size_reduction_work_fraction  = prm.get_double ("Maximum grain size reduction work fraction");
+                minimum_grain_size_reduction_work_fraction  = prm.get_double ("Minimum grain size reduction work fraction");
+                mantle_temperature                          = prm.get_double ("Mantle temperature");
+                surface_temperature                         = prm.get_double ("Surface temperature");
               }
               prm.leave_subsection();
             }

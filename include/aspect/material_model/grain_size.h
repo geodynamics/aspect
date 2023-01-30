@@ -269,9 +269,9 @@ namespace aspect
          * Parameters controlling the partitioning of energy
          * into grain damage in the pinned state.
          */
-        double              partitioning_exponent;
-        double              max_f;
-        double              min_f;
+        double              grain_size_reduction_work_fraction_exponent;
+        double              maximum_grain_size_reduction_work_fraction;
+        double              minimum_grain_size_reduction_work_fraction;
         double              mantle_temperature;
         double              surface_temperature;
 
