@@ -26,6 +26,7 @@
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/initial_topography_model/ascii_data.h>
+#include <aspect/geometry_model/two_merged_chunks.h>
 
 #include <boost/lexical_cast.hpp>
 
@@ -719,6 +720,7 @@ namespace aspect
     {
       AssertThrow ((Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
                    || (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
+                   || (Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (this->get_geometry_model()))
                    || (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()))
                    || (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
                    || (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model())),
@@ -796,7 +798,7 @@ namespace aspect
       switch (dim)
         {
           case 2:
-            if ((boundary_id == 2) || (boundary_id == 3))
+            if ((boundary_id == 2) || (boundary_id == 3) || (boundary_id == 4) || (boundary_id == 5))
               {
                 boundary_dimensions[0] = 0;
               }
@@ -809,11 +811,10 @@ namespace aspect
                 boundary_dimensions[0] = numbers::invalid_unsigned_int;
                 AssertThrow(false,ExcNotImplemented());
               }
-
             break;
 
           case 3:
-            if ((boundary_id == 4) || (boundary_id == 5))
+            if ((boundary_id == 4) || (boundary_id == 5) || (boundary_id == 8) || (boundary_id == 9))
               {
                 boundary_dimensions[0] = 0;
                 boundary_dimensions[1] = 1;
@@ -823,7 +824,7 @@ namespace aspect
                 boundary_dimensions[0] = 1;
                 boundary_dimensions[1] = 2;
               }
-            else if ((boundary_id == 2) || (boundary_id == 3))
+            else if ((boundary_id == 2) || (boundary_id == 3) || (boundary_id == 6) || (boundary_id == 7))
               {
                 boundary_dimensions[0] = 0;
                 boundary_dimensions[1] = 2;
@@ -1216,6 +1217,7 @@ namespace aspect
     {
       AssertThrow ((Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
                     Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()) ||
                     Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
                     Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model())) ||
                    Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()),
@@ -1385,6 +1387,7 @@ namespace aspect
     {
       AssertThrow ((Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
                    || (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
+                   || (Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (this->get_geometry_model()))
                    || (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()))
                    || (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
                    || (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model())),
