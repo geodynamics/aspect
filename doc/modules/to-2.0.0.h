@@ -7,10 +7,10 @@
  *
  * <ol>
  *
- * <li> Fixed: The mass reaction term on the right-hand side of the 
- * Stokes system in models with melt transport is now computed 
- * correctly (instead of being zero) in models with operator 
- * splitting. 
+ * <li> Fixed: The mass reaction term on the right-hand side of the
+ * Stokes system in models with melt transport is now computed
+ * correctly (instead of being zero) in models with operator
+ * splitting.
  * <br>
  * (Juliane Dannberg, 2018/05/08)
  *
@@ -20,7 +20,7 @@
  * <br>
  * (Rene Gassmoeller, Shangxin Liu, 2018/05/03)
  *
- * <li> Fixed: The material models <code>visco plastic</code> and <code>diffusion 
+ * <li> Fixed: The material models <code>visco plastic</code> and <code>diffusion
  * dislocation</code> now use the reference density to calculate thermal
  * conductivity if the <code>Temperature equation</code> formulation is set
  * to <code>reference density profile</code>.
@@ -45,43 +45,43 @@
  * until it is made more general, or used in a cookbook.
  * (Rene Gassmoeller, 2018/04/27)
  *
- * <li> New: Two new nonlinear solvers are now available: a defect correction Picard 
- * iteration and a Newton iteration nonlinear solver, both available trough the 
+ * <li> New: Two new nonlinear solvers are now available: a defect correction Picard
+ * iteration and a Newton iteration nonlinear solver, both available trough the
  * nonlinear solver called <code>Newton Stokes</code>.
  * <br>
- * The defect correction Picard (also called approximate Newton) iteration usually 
- * follows the same convergence pattern as the normal Picard iteration (linear 
- * convergence), but due to it's defect correction form can be more accurate and 
- * can make use of the Eisenstat Walker (1994) method of determining the optimal 
- * linear tolerance. It can be used by setting the <code>Max pre-Newton nonlinear 
- * iterations</code> larger or equal to the <code>Max nonlinear iterations</code> 
- * and the <code>Nonlinear Newton solver switch tolerance</code> to an unreachable 
+ * The defect correction Picard (also called approximate Newton) iteration usually
+ * follows the same convergence pattern as the normal Picard iteration (linear
+ * convergence), but due to it's defect correction form can be more accurate and
+ * can make use of the Eisenstat Walker (1994) method of determining the optimal
+ * linear tolerance. It can be used by setting the <code>Max pre-Newton nonlinear
+ * iterations</code> larger or equal to the <code>Max nonlinear iterations</code>
+ * and the <code>Nonlinear Newton solver switch tolerance</code> to an unreachable
  * tolerance.
  * <br>
- * The Newton iteration is a defect correction Picard which also uses the 
- * derivatives of the viscosity to the strain-rate and viscosity to the pressure 
- * to converge faster to the correct solution. In contrast to the (defect 
- * correction) Picard iteration, this iteration is not globally convergent. This 
- * means that only when the current solution is close enough to the real solution, 
- * the iteration converges quadratically. In many cases it is therefore advisable 
- * to first perform a few defect correction Picard iteration, before turning on 
+ * The Newton iteration is a defect correction Picard which also uses the
+ * derivatives of the viscosity to the strain-rate and viscosity to the pressure
+ * to converge faster to the correct solution. In contrast to the (defect
+ * correction) Picard iteration, this iteration is not globally convergent. This
+ * means that only when the current solution is close enough to the real solution,
+ * the iteration converges quadratically. In many cases it is therefore advisable
+ * to first perform a few defect correction Picard iteration, before turning on
  * the Newton solver.
  * <br>
- * Because the linear system resulting from the Newton iteration is not always 
- * stable (Symmetric Positive Definite), we have options available to stabilize 
- * it (see Fraters et al., in prep). This stabilization prevents the linear 
- * iterative solver from crashing by forcing the system to be SPD, but may slow 
- * down the convergence. We therefore implemented an option for a fail safe, 
+ * Because the linear system resulting from the Newton iteration is not always
+ * stable (Symmetric Positive Definite), we have options available to stabilize
+ * it (see Fraters et al., in prep). This stabilization prevents the linear
+ * iterative solver from crashing by forcing the system to be SPD, but may slow
+ * down the convergence. We therefore implemented an option for a fail safe,
  * which automatically turns on the stabilization when the linear solver crashes.
  * <br>
  * (Menno Fraters and Wolfgang Bangerth, 2018/04/26)
  *
- * <li> Fixed: The melt simple model now correctly always uses the Thermal 
- * bulk viscosity exponent parameter to compute the temperature 
- * dependence of the compaction/bulk viscosity (instead of the Thermal 
- * viscosity exponent that describes the temperature dependence of 
- * the shear viscosity, which was used before in certain cases and 
- * was not the correct parameter for the computation). 
+ * <li> Fixed: The melt simple model now correctly always uses the Thermal
+ * bulk viscosity exponent parameter to compute the temperature
+ * dependence of the compaction/bulk viscosity (instead of the Thermal
+ * viscosity exponent that describes the temperature dependence of
+ * the shear viscosity, which was used before in certain cases and
+ * was not the correct parameter for the computation).
  * <br>
  * (Juliane Dannberg, 2018/04/25)
  *
@@ -107,7 +107,7 @@
  * Newton Stokes -> iterated Advection and Newton Stokes
  * iterated IMPES -> iterated Advection and Stokes
  * Advection only -> single Advection, no Stokes
- * The old names still work, but should be considered as deprecated. 
+ * The old names still work, but should be considered as deprecated.
  * <br>
  * (Juliane Dannberg, 2018/04/17)
  *
@@ -127,21 +127,21 @@
  * <br>
  * (Rene Gassmoeller, 2018/04/10)
  *
- * <li> Overhaul of the melt solver. 
- * Changed: Models with melt transport now have a new preconditioner, 
- * and the linear system is solved in a different way: Based on the 
- * Darcy coefficient, each cell is classified as a melt cell 
- * (where the melt transport equations are solved) or not a melt 
+ * <li> Overhaul of the melt solver.
+ * Changed: Models with melt transport now have a new preconditioner,
+ * and the linear system is solved in a different way: Based on the
+ * Darcy coefficient, each cell is classified as a melt cell
+ * (where the melt transport equations are solved) or not a melt
  * cell (in this case, the compaction pressure dofs are constrained
  * to zero, and the equations that are solved are the Stokes system
- * without any melt-related terms). To achieve better convergence 
+ * without any melt-related terms). To achieve better convergence
  * for low melt fractions, the compaction pressure p_c is replaced
- * by a scaled compaction pressure p_c_bar, so that the linear 
- * system we are solving is different than before, and the solution 
- * vector now contains p_c_bar instead of p_c. 
- * The advantages of these changes are much lower iteration counts in 
- * models with low or zero porosity, and that we are now solving 
- * the Stokes system if no melt is present. 
+ * by a scaled compaction pressure p_c_bar, so that the linear
+ * system we are solving is different than before, and the solution
+ * vector now contains p_c_bar instead of p_c.
+ * The advantages of these changes are much lower iteration counts in
+ * models with low or zero porosity, and that we are now solving
+ * the Stokes system if no melt is present.
  * <br>
  * (Juliane Dannberg, 2018/04/06)
  *
@@ -175,11 +175,11 @@
  * <br>
  * (Rene Gassmoeller, 2018/03/21)
  *
- * <li> Overhaul of the melt simple material model. 
- * Fixed: The freezing of melt in the melt simple material model is 
- * now more consistent: The freezing rate parameter determines the 
- * freezing of all melt, and melt freezes if both the porosity and 
- * the depletion are larger than the equilibrium melt fraction. 
+ * <li> Overhaul of the melt simple material model.
+ * Fixed: The freezing of melt in the melt simple material model is
+ * now more consistent: The freezing rate parameter determines the
+ * freezing of all melt, and melt freezes if both the porosity and
+ * the depletion are larger than the equilibrium melt fraction.
  * Changed: The melt simple material model can now only be used
  * with operator splitting.
  * <br>
@@ -192,25 +192,25 @@
  * <br>
  * (Rene Gassmoeller, 2018/03/11)
  *
- * <li> Fixed: The melt material models now work correctly with operator 
+ * <li> Fixed: The melt material models now work correctly with operator
  * splitting and latent heat of melting. This is achieved by setting
- * a separate time scale for these reactions in the material model. 
+ * a separate time scale for these reactions in the material model.
  * <br>
  * (Juliane Dannberg, 2018/02/21)
  *
  * <li> Changed: If the velocity is zero, the time step size is now set to
- * the maximum time step input parameter instead of arbitrarily being 
+ * the maximum time step input parameter instead of arbitrarily being
  * set to 1 second.
  * <br>
  * (Juliane Dannberg, 2018/02/20)
  *
  * <li> New: There is now a new mesh refinement criterion that adds the
  * option to refine cells based on the compaction length, a
- * typical length scale of features in models with melt migration. 
+ * typical length scale of features in models with melt migration.
  * <br>
  * (Juliane Dannberg, 2018/02/12)
  *
- * <li> New: ASPECT now supports using the free surface in models with 
+ * <li> New: ASPECT now supports using the free surface in models with
  * melt migration, and with all nonlinear solver schemes.
  * <br>
  * (Juliane Dannberg, 2018/01/30)
@@ -218,7 +218,7 @@
  * <li> New: The 'initial profile' adiabatic conditions plugin was
  * renamed to 'compute profile' as it can
  * now use a function to change the adiabatic surface pressure
- * and temperature over time. If this option is used the 
+ * and temperature over time. If this option is used the
  * adiabatic reference profile will be recomputed for every
  * timestep based on the new function values. If the new
  * option is not set the behavior is unchanged.
@@ -232,7 +232,7 @@
  * (Rene Gassmoeller, 2018/01/19)
  *
  * <li> Changed: Removed min/max bounds on the specific heat capacity and
- * thermal expansivity inside the 'Steinberger' material model. 
+ * thermal expansivity inside the 'Steinberger' material model.
  * These bounds were only used if the 'Use latent heat' parameter
  * was set to true. To prevent silently changing the solution these
  * bounds were removed.
@@ -254,7 +254,7 @@
  * (Timo Heister, 2018/01/12)
  *
  * <li> Changed: The boundary velocity plugins are now controlled by
- * a manager class that allows assigning several plugins at the same boundary. 
+ * a manager class that allows assigning several plugins at the same boundary.
  * This behavior is identical to the boundary temperature and boundary
  * composition plugins with the additional possibiltiy of assigning different
  * plugins to different boundaries, and only prescribing certain
@@ -271,7 +271,7 @@
  * <li> New: A new material model 'damage rheology' is added.
  * This model uses a compositional field to store and evolve a
  * quantity that represents the grain size, which influences
- * the viscosity. All other material properties can be read from 
+ * the viscosity. All other material properties can be read from
  * data tables generated by Perplex or Hefesto, or set in a similar
  * way to the 'simple' material model. Details about the model
  * are available in Dannberg et al., 2017 in G-Cubed.
@@ -299,8 +299,8 @@
  * (Juliane Dannberg, Rene Gassmoeller, Timo Heister, 2017/11/22)
  *
  * <li> New: The option to prescribe a Stokes solution when using the
- * advection only solver scheme now also works in models where melt 
- * transport is used. 
+ * advection only solver scheme now also works in models where melt
+ * transport is used.
  * <br>
  * (Juliane Dannberg, 2017/11/21)
  *
@@ -311,9 +311,9 @@
  * (Rene Gassmoeller, 2017/11/15)
  *
  * <li> Changed: The screen output of the different solver schemes now has
- * the same style. All lines that output the total nonlinear residual 
- * of the system iterated over begin with 'Nonlinear residual' and 
- * then specify the system being solved. 
+ * the same style. All lines that output the total nonlinear residual
+ * of the system iterated over begin with 'Nonlinear residual' and
+ * then specify the system being solved.
  * <br>
  * (Juliane Dannberg, 2017/11/01)
  *
@@ -326,7 +326,7 @@
  * (Rene Gassmoeller, 2017/10/31)
  *
  * <li> Fixed: A forgotten factor of 2 in assembling the preconditioner for
- * the Stokes equation, and a forgotten term for compressible models, 
+ * the Stokes equation, and a forgotten term for compressible models,
  * led to a suboptimal performance of the solver. The
  * answers were always correct, but it took more iterations than
  * necessary. This is now fixed, and results in significantly fewer
@@ -352,13 +352,13 @@
  * <br>
  * (Rene Gassmoeller, 2017/10/19)
  *
- * <li> New: The new 'function' boundary composition plugin allows 
+ * <li> New: The new 'function' boundary composition plugin allows
  * to prescribe compositional field boundary conditions using
  * an analytical function. It supports the
  * coordinate systems cartesian, spherical, and depth.
  * <br>
  * (Matt Weller, Rene Gassmoeller, 2017/10/01)
- * 
+ *
  *
  * <li> New: The core of the Newton solver has been added to ASPECT and is functional.
  * This includes several tests to test that the Newton solver is functioning properly.
@@ -377,15 +377,15 @@
  * <br>
  * (Juliane Dannberg, 2017/09/13)
  *
- * <li> New: a new boundary temperature plugin that the core mantle boundary temperature evolves through time 
- * by calculating the heat flux through core mantle boundary and solving the core energy balance. 
- * A postprocessor of the core evolution is also added. It is used in our paper Zhang & O'Neill [2016] 
+ * <li> New: a new boundary temperature plugin that the core mantle boundary temperature evolves through time
+ * by calculating the heat flux through core mantle boundary and solving the core energy balance.
+ * A postprocessor of the core evolution is also added. It is used in our paper Zhang & O'Neill [2016]
  * and it could be useful for people interested in long term planetary evolution.
  * <br>
  * (Siqi Zhang & Craig O'Neill, 2017/08/22)
  *
  * <li> Fixed: Visualization postprocessors now get the current cell, and output
- * material properties that the material model computes using information 
+ * material properties that the material model computes using information
  * related to the current cell correctly.
  * <br>
  * (Juliane Dannberg, 2017/08/21)
@@ -395,9 +395,9 @@
  * <br>
  * (Juliane Dannberg, 2017/08/17)
  *
- * <li> New: There is now a new cookbook that describes how to use melt 
+ * <li> New: There is now a new cookbook that describes how to use melt
  * transport in a convection model. This change also includes a new
- * postprocessor that visualizes the melt fraction material property 
+ * postprocessor that visualizes the melt fraction material property
  * that is computed by some material models.
  * <br>
  * (Juliane Dannberg, 2017/08/14)
@@ -411,15 +411,15 @@
  * <li> New: With a recent developer version of deal.II (9.0.0.pre) ASPECT can now
  * output particle data using deal.II functionality. This allows compressed vtu
  * output, and the same MPI I/O grouping options that are already available for
- * the visualization postprocessor. The ascii particle output format no longer 
+ * the visualization postprocessor. The ascii particle output format no longer
  * exists and instead generates (nearly identically formatted) gnuplot output.
  * <br>
  * (Rene Gassmoeller, 2017/07/26)
  *
  * <li> Fixed: The diffusion dislocation and drucker prager material models
  * can now better handle cases where parameters or material model inputs
- * are slightly outside the range of what is expected for the mantle, 
- * and in these cases they now compute reasonable viscosities instead 
+ * are slightly outside the range of what is expected for the mantle,
+ * and in these cases they now compute reasonable viscosities instead
  * of triggering floating point exceptions.
  * <br>
  * (Juliane Dannberg, 2017/07/18)
@@ -428,19 +428,19 @@
  * <br>
  * (Shangxin Liu, 2017/07/14)
  *
- * <li> Changed: In models with melt transport, the stabilization now 
- * uses the maximum of solid and melt velocity, instead of using 
+ * <li> Changed: In models with melt transport, the stabilization now
+ * uses the maximum of solid and melt velocity, instead of using
  * the melt velocity alone.
  * <br>
  * (Juliane Dannberg, 2017/07/12)
  *
- * <li> New: ASPECT now supports operator splitting as a new solver scheme. 
- * This allows it to decouple advection and reactions between 
+ * <li> New: ASPECT now supports operator splitting as a new solver scheme.
+ * This allows it to decouple advection and reactions between
  * compositional fields, and can also be used for temperature changes
- * related to these reactions. As part of this scheme, material models 
- * now have an optional additional output that computes reaction rates, 
- * and heating models have a new output that compute the corresponding 
- * rate of change in temperature. An example is given in a new cookbook. 
+ * related to these reactions. As part of this scheme, material models
+ * now have an optional additional output that computes reaction rates,
+ * and heating models have a new output that compute the corresponding
+ * rate of change in temperature. An example is given in a new cookbook.
  * <br>
  * (Juliane Dannberg, 2017/07/04)
  *
@@ -451,7 +451,7 @@
  *
  * <li> New: Added a cookbook that uses the dynamic topography and geoid postprocessor in a simple
  * spherical shell harmonic perturbation model run. Added the geoid output and lower boundary
- * dynamic topography output to the existing 'S20RTS initial condition' cookbook. 
+ * dynamic topography output to the existing 'S20RTS initial condition' cookbook.
  * <br>
  * (Jacky Austermann, 2017/06/12)
  *
@@ -493,23 +493,23 @@
  * <li> New: ASPECT can now initialize the compositional field by supplying
  * a list of plugins and operators determining how each plugin modifies the
  * field. The operators are specified as a new input file parameter
- * 'List of model operators', which takes a comma-separated list 
- * taken from the selection add, subtract, minimum and maximum. This list 
- * defaults to add if it is not given in the parameter file. If it is given, 
- * it may either be of length 1 (in which case all plugins modify the 
- * compositional field in the same way), or of the same length as 
+ * 'List of model operators', which takes a comma-separated list
+ * taken from the selection add, subtract, minimum and maximum. This list
+ * defaults to add if it is not given in the parameter file. If it is given,
+ * it may either be of length 1 (in which case all plugins modify the
+ * compositional field in the same way), or of the same length as
  * 'List of model names'.
  * <br>
  * (Bob Myhill, 2017/05/16)
  *
- * <li> New: ASPECT can now create initial temperature conditions by supplying 
- * a list of plugins and operators determining how each plugin modifies the 
- * temperature field. The operators are specified as a new input file 
- * parameter 'List of model operators', which takes a comma-separated list 
- * taken from the selection add, subtract, minimum and maximum. This list 
- * defaults to add if it is not given in the parameter file. If it is given, 
- * it may either be of length 1 (in which case all plugins modify the 
- * temperature field in the same way), or of the same length as 
+ * <li> New: ASPECT can now create initial temperature conditions by supplying
+ * a list of plugins and operators determining how each plugin modifies the
+ * temperature field. The operators are specified as a new input file
+ * parameter 'List of model operators', which takes a comma-separated list
+ * taken from the selection add, subtract, minimum and maximum. This list
+ * defaults to add if it is not given in the parameter file. If it is given,
+ * it may either be of length 1 (in which case all plugins modify the
+ * temperature field in the same way), or of the same length as
  * 'List of model names'.
  * <br>
  * (Bob Myhill, 2017/05/16)
@@ -526,29 +526,29 @@
  * (Ian Rose, 2017/05/16)
  *
  * <li> New: Added a postprocessor which visualizes the spd factor for the newton solver. This factor is used in
- * the Newton solver to make sure the Jacobian stays Positive definite. For more info see the Utilities 
- * function compute_spd_factor. 
+ * the Newton solver to make sure the Jacobian stays Positive definite. For more info see the Utilities
+ * function compute_spd_factor.
  * <br>
  * (Menno Fraters 2017/05/16)
  *
  * <li> New: Rewrote the Drucker Prager material model into the new evaluate style and added the derivatives of the
- * viscosity wrt the strain-rate and pressure. Also created a test to test the derivatives against a finite 
- * difference derivative. 
+ * viscosity wrt the strain-rate and pressure. Also created a test to test the derivatives against a finite
+ * difference derivative.
  * <br>
  * (Menno Fraters 2017/05/16)
  *
- * <li> New: Added a simple nonlinear test, which contains a simple nonlinear material model 
+ * <li> New: Added a simple nonlinear test, which contains a simple nonlinear material model
  * which has the derivatives of the viscosity wrt the strain-rate and pressure and
- * tests the derivatives against a finite difference derivative. This will be useful later 
+ * tests the derivatives against a finite difference derivative. This will be useful later
  * on for benchmarks.
  * <br>
  * (Menno Fraters 2017/05/16)
  *
- * <li> New: A new particle property is added which indicates the presence of melt 
- * greater than the melt transport threshold at the particles position. If melt 
+ * <li> New: A new particle property is added which indicates the presence of melt
+ * greater than the melt transport threshold at the particles position. If melt
  * is not present a 0 is recorded. If melt is present a 1 is recorded. Only works
  * if there is a compositonal field named "porosity". A second new particle property
- * is also added which indicates the value for each compositional field. This can be 
+ * is also added which indicates the value for each compositional field. This can be
  * used as a preliminary way to track the petrological evolution of material.
  * <br>
  * (Joe Schools, Rene Gassmoeller, 2017/05/15)
@@ -561,7 +561,7 @@
  * <br>
  * (Ian Rose, 2017/05/15)
  *
- * <li> Changed: The default number of grouped files has been changed from 0 (i.e. the nunmber of 
+ * <li> Changed: The default number of grouped files has been changed from 0 (i.e. the nunmber of
  * processors) to 16 in order to keep the number of output files small if not explicitely
  * stated otherwise.
  * <br>
@@ -611,17 +611,17 @@
  * <br>
  * (Rene Gassmoeller, 2017/05/12)
  *
- * <li> New: ASPECT can now compute geoid in 3D spherical shell geometry. The geoid is 
- * calculated in spherical harmonic domain and the final results are transferred 
- * into spatial domain. The users can also choose to output the spherical harmonic 
- * coefficients of geoid, density contribution part, surface dynamic topography 
+ * <li> New: ASPECT can now compute geoid in 3D spherical shell geometry. The geoid is
+ * calculated in spherical harmonic domain and the final results are transferred
+ * into spatial domain. The users can also choose to output the spherical harmonic
+ * coefficients of geoid, density contribution part, surface dynamic topography
  * contribution part, and CMB dynamic topography contribution part respectively.
  * <br>
  * (Shangxin Liu, Ian Rose, 2017/05/11)
  *
- * <li> New: Added functions to compute weighted p norm averages (Utilities::weighted_p_norm_average) 
- * and the derivatives of these weighted p norm averages (Utilities::derivative_of_weighted_p_norm_average) 
- * to namespace Utilities. The derivatives function is templated to be able to compute derivatives which 
+ * <li> New: Added functions to compute weighted p norm averages (Utilities::weighted_p_norm_average)
+ * and the derivatives of these weighted p norm averages (Utilities::derivative_of_weighted_p_norm_average)
+ * to namespace Utilities. The derivatives function is templated to be able to compute derivatives which
  * are doubles and tensors.
  * <br>
  * (Menno Fraters 2017/05/10)
@@ -653,11 +653,11 @@
  * <br>
  * (Jonathan Perry-Houts, 2017/05/09)
  *
- * <li> Changed: The material model interface now contains a base class for 
- * named additional outputs and a derived class that that can be filled 
- * with output for the seismic velocities in the evaluate() function. 
+ * <li> Changed: The material model interface now contains a base class for
+ * named additional outputs and a derived class that that can be filled
+ * with output for the seismic velocities in the evaluate() function.
  * This replaces the member functions seismic_Vs and seismic_Vp in the
- * material model inteface, and can now be used to generate graphical 
+ * material model inteface, and can now be used to generate graphical
  * output for other quantities as well. This change also removes the
  * postprocessors 'seismic_vp', and 'seismic_vs'. Instead there is a
  * postprocessor 'named additional outputs' that outputs all available
@@ -666,16 +666,16 @@
  * <br>
  * (Juliane Dannberg, Timo Heister, 2017/05/09)
  *
- * <li> Added: A new heating model (compositional_heating) that 
+ * <li> Added: A new heating model (compositional_heating) that
  * allows users to specify a different internal heating rate
  * for each compositional field. Unlike the radioactive decay
- * heating model, the internal heating rate for each 
- * compositional field is constant through time. 
+ * heating model, the internal heating rate for each
+ * compositional field is constant through time.
  * <br>
  * (John Naliboff, 2017/05/08)
  *
  * <li> New: The dynamic topography post processor now also calculates the
- * topography at the bottom of the domain (and not only the upper surface). 
+ * topography at the bottom of the domain (and not only the upper surface).
  * <br>
  * (Jacky Austermann, 2017/05/08)
  *
@@ -686,7 +686,7 @@
  * <br>
  * (Timo Heister, 2017/04/29)
  *
- * <li> Changed: ASPECT's 'particles' were initially introduced as 'tracers', 
+ * <li> Changed: ASPECT's 'particles' were initially introduced as 'tracers',
  * and the naming scheme was never unified. In order to
  * use a more consistent and simpler to remember structure all remaining
  * references to 'tracers' have been replaced by 'particles'.
@@ -712,7 +712,7 @@
  * <li> Changed: The names for all boundary condition
  * plugins are now unified to the universal scheme 'boundary_property' that
  * is planned for ASPECT 2.0.
- * This change is unfortunately incompatible with existing user plugins, 
+ * This change is unfortunately incompatible with existing user plugins,
  * but the provided script doc/update_source_files_to_2.0.0.sed allows
  * an easy conversion of existing plugins to the new naming scheme.
  * Parameter files are not affected, because the naming of
@@ -743,7 +743,7 @@
  * <li> Changed: With a sufficiently new deal.II (9.0.0.pre),
  * the spherical shell geometry no longer uses boundary objects,
  * but lets the SphericalManifold class handle all geometry tasks.
- * Using older version of deal.II the manifold is used for mesh refinement, 
+ * Using older version of deal.II the manifold is used for mesh refinement,
  * and boundary objects are used otherwise.
  * This results in improved meshes for the side boundaries of octants
  * of 3D spheres in both cases.
@@ -753,15 +753,15 @@
  * <li> Changed: Entries about new contributions are no longer stored
  * in doc/modules/changes.h, but instead each contribution is stored as
  * a single file of the form YYYYMMDD_name in doc/modules/changes/.
- * This creates less conflicts when multiple parallel branches are 
+ * This creates less conflicts when multiple parallel branches are
  * merged.
  * <br>
  * (Rene Gassmoeller, 2017/04/17)
  *
- * <li> Changed: The visco_plastic material model now uses a single 
+ * <li> Changed: The visco_plastic material model now uses a single
  * compositional field for strain weakening, which can be calculated
- * with the integrated strain invariant particle property or an 
- * equivalent compositional field plugin located in the benchmark 
+ * with the integrated strain invariant particle property or an
+ * equivalent compositional field plugin located in the benchmark
  * buiter_et_al_2008_jgr.
  * <br>
  * (John Naliboff, 2017/04/14)
@@ -778,7 +778,7 @@
  * columns in the statistics file, and fixes a bug in the statistics file,
  * in which data from later timesteps was written into lines
  * of previous timesteps in case of nonlinear solver schemes. Additionally,
- * the postprocessor by default now outputs only a single line per 
+ * the postprocessor by default now outputs only a single line per
  * timestep also for nonlinear solver schemes. To restore the previous
  * behavior (one line per nonlinear iteration) there is a new input
  * parameter "Postprocess/Global statistics/Write statistics for each nonlinear
@@ -800,10 +800,10 @@
  * (Juliane Dannberg, 2017/04/12)
  *
  * <li> New: aspect now provides as script that -- when used together with
- * the deal.II parameter GUI program -- allows for a graphical creation and 
+ * the deal.II parameter GUI program -- allows for a graphical creation and
  * modification of input parameter files. All available parameters are listed,
  * including their documentation, type, allowed range, and default value. The
- * parameter file written by the GUI will only contain values that are 
+ * parameter file written by the GUI will only contain values that are
  * different from the default values, to keep the file easily readable.
  * <br>
  * (Timo Heister, Rene Gassmoeller, Juliane Dannberg, 2017/03/28)

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,35 +32,6 @@ namespace aspect
 {
   using namespace dealii;
 
-  namespace Assemblers
-  {
-    /**
-     * Apply stabilization to a cell of the system matrix. The
-     * stabilization is only added to cells on a free surface. The
-     * scheme is based on that of Kaus et. al., 2010. Called during
-     * assembly of the system matrix.
-     */
-    template <int dim>
-    class ApplyStabilization: public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        ApplyStabilization(const double stabilization_theta);
-
-        void
-        execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
-
-      private:
-        /**
-         * Stabilization parameter for the free surface. Should be between
-         * zero and one. A value of zero means no stabilization. See Kaus
-         * et. al. 2010 for more details.
-         */
-        const double free_surface_theta;
-    };
-  }
-
   namespace MeshDeformation
   {
     /**
@@ -86,6 +57,7 @@ namespace aspect
         void set_assemblers(const SimulatorAccess<dim> &simulator_access,
                             aspect::Assemblers::Manager<dim> &assemblers) const;
 
+
         /**
          * A function that creates constraints for the velocity of certain mesh
          * vertices (e.g. the surface vertices) for a specific boundary.
@@ -96,6 +68,11 @@ namespace aspect
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  AffineConstraints<double> &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_id) const override;
+
+        /**
+         * Returns whether or not the plugin requires surface stabilization
+         */
+        bool needs_surface_stabilization () const override;
 
         /**
          * Declare parameters for the free surface handling.
@@ -117,13 +94,6 @@ namespace aspect
                                              const IndexSet &mesh_locally_owned,
                                              const IndexSet &mesh_locally_relevant,
                                              LinearAlgebra::Vector &output) const;
-
-        /**
-         * Stabilization parameter for the free surface. Should be between
-         * zero and one. A value of zero means no stabilization.  See Kaus
-         * et. al. 2010 for more details.
-         */
-        double free_surface_theta;
 
         /**
          * A struct for holding information about how to advect the free surface.

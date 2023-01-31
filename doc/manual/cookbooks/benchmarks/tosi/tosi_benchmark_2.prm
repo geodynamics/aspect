@@ -1,8 +1,0 @@
-subsection Material model
-  subsection Tosi benchmark
-    set Pressure viscosity parameter  = 1
-    set Yield stress		      = 1
-    set Nonlinear viscosity constant  = 1e-3
-    set Initial viscosity	      = 0.115
-  end
-end

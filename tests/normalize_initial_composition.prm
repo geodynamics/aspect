@@ -4,10 +4,6 @@
 set Dimension                              = 2
 set End time                               = 0
 
-subsection Boundary temperature model
-  set List of model names = initial temperature
-end
-
 subsection Compositional fields
   set Number of fields          = 2
   set List of normalized fields   =  0,1

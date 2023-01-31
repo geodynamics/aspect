@@ -9,30 +9,30 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
 
    Postprocessing:
      Number of advected particles: 20000
-     RMS, max velocity:            0.352 m/s, 1.03 m/s
-     Compositions min/max/mass:    0/1/0.4006 // 0/1/0.3994
+     RMS, max velocity:            0.353 m/s, 1.03 m/s
+     Compositions min/max/mass:    0/1/0.4009 // 0/1/0.3978
      Temperature min/avg/max:      0 K, 0.5 K, 1 K
 
 *** Timestep 1:  t=0.015625 seconds, dt=0.015625 seconds
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system... 42+0 iterations.
 
    Postprocessing:
      Number of advected particles: 20000
      RMS, max velocity:            0.35 m/s, 1.03 m/s
-     Compositions min/max/mass:    0/1/0.4012 // 0/1/0.3987
+     Compositions min/max/mass:    0/1/0.4011 // 0/1/0.397
      Temperature min/avg/max:      0 K, 0.5 K, 1 K
 
 *** Timestep 2:  t=0.03 seconds, dt=0.014375 seconds
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 48+0 iterations.
+   Solving Stokes system... 53+0 iterations.
 
    Postprocessing:
      Number of advected particles: 20000
-     RMS, max velocity:            0.348 m/s, 1.03 m/s
-     Compositions min/max/mass:    0/1/0.401 // 0/1/0.3978
+     RMS, max velocity:            0.349 m/s, 1.03 m/s
+     Compositions min/max/mass:    0/1/0.4014 // 0/1/0.3975
      Temperature min/avg/max:      0 K, 0.5 K, 1 K
 
 Termination requested by criterion: end time

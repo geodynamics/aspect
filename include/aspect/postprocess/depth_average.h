@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -128,7 +128,7 @@ namespace aspect
         struct DataPoint
         {
           double time;
-          std::vector<std::vector<double> > values;
+          std::vector<std::vector<double>> values;
 
           template <class Archive>
           void serialize (Archive &ar, const unsigned int version);

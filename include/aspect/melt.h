@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -62,7 +62,7 @@ namespace aspect
          * An approximation for the fluid (melt) velocities
          * at the given positions.
          */
-        std::vector<Tensor<1,dim> > fluid_velocities;
+        std::vector<Tensor<1,dim>> fluid_velocities;
 
         /**
          * Fill the compaction pressures and fluid velocities.
@@ -114,7 +114,7 @@ namespace aspect
          * required for compressible models to describe volume changes
          * of melt in dependence of pressure, temperature etc.
          */
-        std::vector<Tensor<1,dim> > fluid_density_gradients;
+        std::vector<Tensor<1,dim>> fluid_density_gradients;
 
         /**
          * Do the requested averaging operation for the melt outputs.
@@ -149,8 +149,7 @@ namespace aspect
          * Destructor. Does nothing but is virtual so that derived classes
          * destructors are also virtual.
          */
-        virtual ~MeltFractionModel ()
-        {};
+        virtual ~MeltFractionModel () = default;
     };
 
     /**
@@ -261,7 +260,7 @@ namespace aspect
      * the case of melt migration on a single cell.
      */
     template <int dim>
-    class MeltAdvectionSystem : public MeltInterface<dim>
+    class MeltAdvectionSystem : public MeltInterface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>
     {
       public:
         void
@@ -392,7 +391,7 @@ namespace aspect
        * to set up the introspection object.
        */
       void edit_finite_element_variables(const Parameters<dim> &parameters,
-                                         std::vector<VariableDeclaration<dim> > &variables);
+                                         std::vector<VariableDeclaration<dim>> &variables);
 
       /**
        * Determine, based on the run-time parameters of the current simulation,
@@ -490,7 +489,7 @@ namespace aspect
        * initialization can be done together with the other objects related to melt
        * transport.
        */
-      const std::unique_ptr<aspect::BoundaryFluidPressure::Interface<dim> > boundary_fluid_pressure;
+      const std::unique_ptr<aspect::BoundaryFluidPressure::Interface<dim>> boundary_fluid_pressure;
 
       /**
        * is_melt_cell_vector[cell->active_cell_index()] says whether we want to

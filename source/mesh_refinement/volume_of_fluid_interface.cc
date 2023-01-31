@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -47,7 +47,7 @@ namespace aspect
       const QMidpoint<dim> qMidC;
 
       // Create a map from vertices to adjacent cells
-      const std::vector<std::set<typename Triangulation<dim>::active_cell_iterator> >
+      const std::vector<std::set<typename Triangulation<dim>::active_cell_iterator>>
       vertex_to_cells(GridTools::vertex_to_cell_map(this->get_triangulation()));
 
       std::set<typename Triangulation<dim>::active_cell_iterator> marked_cells;
@@ -111,7 +111,7 @@ namespace aspect
 
                 if (!refine_current_cell)
                   {
-                    for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                    for (const unsigned int f : cell->face_indices())
                       {
                         const bool cell_has_periodic_neighbor = cell->has_periodic_neighbor(f);
                         const typename DoFHandler<dim>::face_iterator face = cell->face(f);
@@ -128,17 +128,9 @@ namespace aspect
                             ||
                             (face->at_boundary() && cell->periodic_neighbor_is_coarser(f))
                             ||
-#if DEAL_II_VERSION_GTE(9,2,0)
                             (face->at_boundary() && neighbor->level() == cell->level() && neighbor->is_active()))
-#else
-                            (face->at_boundary() && neighbor->level() == cell->level() && neighbor->active()))
-#endif
                           {
-#if DEAL_II_VERSION_GTE(9,2,0)
                             if (neighbor->is_active() && !neighbor->is_artificial())
-#else
-                            if (neighbor->active() && !neighbor->is_artificial())
-#endif
                               {
                                 fe_values.reinit(neighbor);
                                 fe_values[volume_of_fluid_field].get_function_values(this->get_solution(),
@@ -245,7 +237,7 @@ namespace aspect
       for (; mcells != endmc; ++mcells)
         {
           typename parallel::distributed::Triangulation<dim>::active_cell_iterator mcell = *mcells;
-          for (unsigned int vertex_index=0; vertex_index<GeometryInfo<dim>::vertices_per_cell; ++vertex_index)
+          for (const unsigned int vertex_index : mcell->vertex_indices())
             {
               std::set<typename Triangulation<dim>::active_cell_iterator> neighbor_cells = vertex_to_cells[mcell->vertex_index(vertex_index)];
               typename std::set<typename Triangulation<dim>::active_cell_iterator>::const_iterator neighbor_cell = neighbor_cells.begin(),
@@ -253,11 +245,7 @@ namespace aspect
               for (; neighbor_cell!=end_neighbor_cell_index; ++neighbor_cell)
                 {
                   typename Triangulation<dim>::active_cell_iterator itr_tmp = *neighbor_cell;
-#if DEAL_II_VERSION_GTE(9,2,0)
                   if (itr_tmp->is_active() && itr_tmp->is_locally_owned())
-#else
-                  if (itr_tmp->active() && itr_tmp->is_locally_owned())
-#endif
                     {
                       itr_tmp->clear_coarsen_flag ();
                       itr_tmp->set_refine_flag ();
@@ -267,17 +255,13 @@ namespace aspect
             }
 
           // Check for periodic neighbors, and refine if existing
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : mcell->face_indices())
             {
               if (mcell->has_periodic_neighbor(f))
                 {
                   typename Triangulation<dim>::cell_iterator itr_tmp = mcell->periodic_neighbor(f);
 
-#if DEAL_II_VERSION_GTE(9,2,0)
                   if (itr_tmp->is_active() && itr_tmp->is_locally_owned())
-#else
-                  if (itr_tmp->active() && itr_tmp->is_locally_owned())
-#endif
                     {
                       itr_tmp->clear_coarsen_flag ();
                       itr_tmp->set_refine_flag ();
@@ -298,11 +282,7 @@ namespace aspect
                   }
                 else
                   {
-#if DEAL_II_VERSION_GTE(9,2,0)
                     if (cell->is_active())
-#else
-                    if (cell->active())
-#endif
                       {
                         cell->set_coarsen_flag();
                         cell->clear_refine_flag();

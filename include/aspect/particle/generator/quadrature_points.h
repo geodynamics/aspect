@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+ Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -44,24 +44,17 @@ namespace aspect
            * Here, Gauss quadrature of degree, (velocity_degree + 1), is used similarly to the assembly of the
            * Stokes matrix.
            *
-           * @param [in,out] particles A multimap between cells and their
-           * particles. This map will be filled in this function.
+           * @param [in,out] particle_handler The particle handler into which
+           * the generated particles should be inserted.
            */
           void
-          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles) override;
+          generate_particles(Particles::ParticleHandler<dim> &particle_handler) override;
 
-          /**
-           * Declare the parameters this class takes through input files.
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
-           */
-          void
-          parse_parameters (ParameterHandler &prm) override;
+          // avoid -Woverloaded-virtual
+          // TODO: remove this using directive once the following deprecated
+          // function in the interface class has been removed:
+          // generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
+          using Generator::Interface<dim>::generate_particles;
       };
     }
   }

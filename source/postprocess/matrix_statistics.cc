@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -24,8 +24,6 @@
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 
 namespace
 {
@@ -64,9 +62,7 @@ namespace
         // If the locale doesn't work, just give up
       }
 
-#ifdef ASPECT_USE_PETSC
-    // TODO: PETSc statistics, n_nonzero_elements doesn't exist.
-#else
+
     output << "Total " << matrix_name << " nnz: "
            << matrix.n_nonzero_elements() << std::endl;
 
@@ -78,7 +74,6 @@ namespace
           output << std::setw(12) << matrix.block(i,j).n_nonzero_elements();
         output << std::endl;
       }
-#endif
 
     return output.str();
   }

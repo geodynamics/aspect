@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -96,8 +96,8 @@ namespace aspect
             beta_(beta)
           {}
 
-          virtual void vector_value (const Point< dim >   &pos,
-                                     Vector< double >   &values) const
+          virtual void vector_value (const Point<dim>   &pos,
+                                     Vector<double>   &values) const
           {
             Assert (dim == 3, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -257,14 +257,6 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-        /**
-         * @}
-         */
-        /**
          * Returns the viscosity value in the inclusion
          */
         double get_beta() const;
@@ -274,16 +266,6 @@ namespace aspect
          */
         double beta;
     };
-
-
-
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_viscosity () const
-    {
-      return 1.;
-    }
 
 
 
@@ -441,7 +423,7 @@ namespace aspect
     std::pair<std::string,std::string>
     BursteddePostprocessor<dim>::execute (TableHandler &)
     {
-      std::unique_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim>> ref_func;
       {
         const BursteddeMaterial<dim> &
         material_model

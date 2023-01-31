@@ -1,0 +1,44 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,237 (578+81+289+289)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:       0.1/0.5/0.1729
+     Temperature min/avg/max:         0.1 K, 0.1729 K, 0.5 K
+     Writing graphical output:        output-artificial_viscosity_dirichlet_boundaries/solution/solution-00000
+     Max / average entropy viscosity: 0 W/(m*K), 0 W/(m*K)
+
+*** Timestep 1:  t=0.00625 years, dt=0.00625 years
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:       0.08732/0.5158/0.1729
+     Temperature min/avg/max:         0.08732 K, 0.1729 K, 0.5158 K
+     Writing graphical output:        output-artificial_viscosity_dirichlet_boundaries/solution/solution-00001
+     Max / average entropy viscosity: 0.00121 W/(m*K), 0.000906 W/(m*K)
+
+*** Timestep 2:  t=0.01 years, dt=0.00375 years
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:       0.08205/0.5233/0.1729
+     Temperature min/avg/max:         0.08205 K, 0.1729 K, 0.5233 K
+     Writing graphical output:        output-artificial_viscosity_dirichlet_boundaries/solution/solution-00002
+     Max / average entropy viscosity: 0.00121 W/(m*K), 0.000701 W/(m*K)
+
+Termination requested by criterion: end time
+
+
+

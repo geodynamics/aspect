@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,12 +33,7 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/fe/fe.h>
 #include <deal.II/fe/mapping_q.h>
-
-#if !DEAL_II_VERSION_GTE(9,1,0)
-#  include <deal.II/lac/constraint_matrix.h>
-#else
-#  include <deal.II/lac/affine_constraints.h>
-#endif
+#include <deal.II/lac/affine_constraints.h>
 
 namespace WorldBuilder
 {
@@ -190,8 +185,7 @@ namespace aspect
        * Destructor. Does nothing but is virtual so that derived classes
        * destructors are also virtual.
        */
-      virtual
-      ~SimulatorAccess ();
+      virtual ~SimulatorAccess () = default;
 
       /**
        * Initialize this class for a given simulator. This function is marked
@@ -496,9 +490,9 @@ namespace aspect
       get_dof_handler () const;
 
       /**
-       * Return a reference to the finite element that the DoFHandler that is
-       * used to discretize the variables at the current time step is built
-       * on. This is the finite element for the entire, couple problem, i.e.,
+       * Return a reference to the finite element that is
+       * used to discretize the variables at the current time step.
+       * This is the finite element for the entire, coupled problem, i.e.,
        * it contains sub-elements for velocity, pressure, temperature and all
        * other variables in this problem (e.g., compositional variables, if
        * used in this simulation).
@@ -530,17 +524,6 @@ namespace aspect
        */
       const MaterialModel::Interface<dim> &
       get_material_model () const;
-
-      /**
-       * This function simply calls Simulator<dim>::compute_material_model_input_values()
-       * with the given arguments.
-       */
-      void
-      compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                           const FEValuesBase<dim,dim>                                 &input_finite_element_values,
-                                           const typename DoFHandler<dim>::active_cell_iterator        &cell,
-                                           const bool                                                   compute_strainrate,
-                                           MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
 
       /**
        * Return a pointer to the gravity model description.
@@ -636,7 +619,7 @@ namespace aspect
        * Return a reference to the object that describes traction
        * boundary conditions.
        */
-      const std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim> > > &
+      const std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim>>> &
       get_boundary_traction () const;
 
       /**
@@ -654,6 +637,43 @@ namespace aspect
        * This can then, for example, be used to get the names of the initial temperature
        * models used in a computation, or to compute the initial temperature
        * for a given position.
+       *
+       * While the Simulator class creates a shared pointer to an initial
+       * temperature manager before the first time step, it releases
+       * the pointer once it no longer needs access to the initial
+       * compositions. As a consequence, you can only call this function
+       * during the first time step.
+       *
+       * If the Simulator's shared pointer were the only
+       * one that points to the initial temperature manager object, that
+       * would also destroy the object pointed to. However, plugin classes
+       * can have member variables that are *also* shared pointers to
+       * these manager objects, and if you initialize such a shared
+       * pointer from the result of this function -- typically in the
+       * `initialize()` function of a plugin class -- then the Simulator
+       * giving up its shared pointer does not actually destroy the
+       * manager object but extends its lifetime until the last plugin
+       * that has a pointer to it is destroyed itself. As a consequence,
+       * if you need access to the initial temperature in a plugin, you
+       * will need to keep a shared pointer to it around for as long
+       * as you need it.
+       */
+      std::shared_ptr<const InitialTemperature::Manager<dim>>
+      get_initial_temperature_manager_pointer () const;
+
+      /**
+       * Return a reference to the manager of the initial temperature model.
+       * This can then, for example, be used to get the names of the initial temperature
+       * models used in a computation.
+       *
+       * While the Simulator class creates a shared pointer to an initial
+       * temperature manager before the first time step, it releases
+       * the pointer once it no longer needs access to the initial
+       * temperature. As a consequence, you can only call this function
+       * during the first time step. If a plugin needs access to the initial
+       * temperature at a later time, it has to store its own shared
+       * pointer to that object, and that is what can be achieved using
+       * the get_initial_temperature_manager_pointer() function above.
        */
       const InitialTemperature::Manager<dim> &
       get_initial_temperature_manager () const;
@@ -670,6 +690,43 @@ namespace aspect
        * Return a pointer to the manager of the initial composition model.
        * This can then, for example, be used to get the names of the initial composition
        * models used in a computation.
+       *
+       * While the Simulator class creates a shared pointer to an initial
+       * composition manager before the first time step, it releases
+       * the pointer once it no longer needs access to the initial
+       * compositions. As a consequence, you can only call this function
+       * during the first time step.
+       *
+       * If the Simulator's shared pointer were the only
+       * one that points to the initial composition manager object, that
+       * would also destroy the object pointed to. However, plugin classes
+       * can have member variables that are *also* shared pointers to
+       * these manager objects, and if you initialize such a shared
+       * pointer from the result of this function -- typically in the
+       * `initialize()` function of a plugin class -- then the Simulator
+       * giving up its shared pointer does not actually destroy the
+       * manager object but extends its lifetime until the last plugin
+       * that has a pointer to it is destroyed itself. As a consequence,
+       * if you need access to the initial compositions in a plugin, you
+       * will need to keep a shared pointer to it around for as long
+       * as you need it.
+       */
+      std::shared_ptr<const InitialComposition::Manager<dim>>
+      get_initial_composition_manager_pointer () const;
+
+      /**
+       * Return a reference to the manager of the initial composition model.
+       * This can then, for example, be used to get the names of the initial composition
+       * models used in a computation.
+       *
+       * While the Simulator class creates a shared pointer to an initial
+       * composition manager before the first time step, it releases
+       * the pointer once it no longer needs access to the initial
+       * compositions. As a consequence, you can only call this function
+       * during the first time step. If a plugin needs access to the initial
+       * composition at a later time, it has to store its own shared
+       * pointer to that object, and that is what can be achieved using
+       * the get_initial_composition_manager_pointer() function above.
        */
       const InitialComposition::Manager<dim> &
       get_initial_composition_manager () const;
@@ -748,6 +805,7 @@ namespace aspect
        */
       const NewtonHandler<dim> &
       get_newton_handler () const;
+
 #ifdef ASPECT_WITH_WORLD_BUILDER
       /**
        * Return a reference to the world builder that controls the setup of
@@ -755,9 +813,30 @@ namespace aspect
        *
        * This call will only succeed if ASPECT was configured to use
        * the WorldBuilder.
+       *
+       * While the Simulator class creates a shared pointer to a
+       * WorldBuilder object before the first time step, it releases
+       * the pointer once it no longer needs access to the initial
+       * conditions. As a consequence, you can only call this function
+       * during the first time step. If a plugin needs access to the object
+       * so returned at a later time, it has to store its own shared
+       * pointer to that object, and that is what can be achieved using
+       * the get_world_builder_pointer() function below.
        */
       const WorldBuilder::World &
       get_world_builder () const;
+
+      /**
+       * This function is to get_world_builder() what
+       * get_initial_temperature_manager_pointer() is to
+       * the get_initial_temperature_manager() function: It returns a
+       * shared pointer so that objects that still need access to the
+       * WorldBuilder object after the Simulator class has released
+       * it, can extend the lifetime of the object pointed to by
+       * keeping a shared pointer to it.
+       */
+      std::shared_ptr<const WorldBuilder::World>
+      get_world_builder_pointer () const;
 #endif
       /**
        * Return a reference to the mesh deformation handler. This function will
@@ -844,7 +923,7 @@ namespace aspect
        */
       static
       void
-      get_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
+      get_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
                                          const unsigned int                      q,
                                          std::vector<double>                    &composition_values_at_q_point);
 
@@ -903,7 +982,7 @@ namespace aspect
       get_particle_world();
 
       /**
-       *  Return true if using the block GMG Stokes solver.
+       * Return true if using the block GMG Stokes solver.
        */
       bool is_stokes_matrix_free();
 

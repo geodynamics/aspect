@@ -2,7 +2,7 @@
 # Based on compaction_length_refinement.prm
 
 
-set Adiabatic surface temperature          = 1600               # default: 0
+set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 20
 

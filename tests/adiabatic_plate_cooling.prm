@@ -1,0 +1,78 @@
+# This test is used to check if the plate cooling model with seafloor ages
+# defined in an ASCII data file is calculated correctly.
+
+set Dimension                              = 2
+set Output directory                       = adiabatic_plate_cooling
+set Use years in output instead of seconds = true
+set End time                               = 1.
+set Pressure normalization                 = no
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1623   # Set to the mantle temperature
+
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 150e3
+    set Y extent = 150e3
+    set X repetitions = 10
+    set Y repetitions = 10
+  end
+end
+
+subsection Initial temperature model
+  set Model name = adiabatic
+  subsection Adiabatic
+    set Top boundary layer age model = ascii data
+    set Cooling model = plate cooling
+    set Lithosphere thickness = 125e3
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators = top, bottom
+  subsection Box
+    set Bottom temperature = 1623
+    set Top temperature = 293
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = simpler
+  subsection Simpler model
+    set Reference density        = 3300
+    set Reference specific heat  = 1000
+    set Reference temperature    = 1600
+    set Thermal conductivity     = 4.7
+    set Thermal expansion coefficient = 0.
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = temperature statistics
+
+  subsection Visualization
+    set Interpolate output = false
+    set Time between graphical output = 0.01
+    set List of output variables = viscosity, density, nonadiabatic temperature
+  end
+end

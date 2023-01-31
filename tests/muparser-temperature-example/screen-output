@@ -1,35 +1,35 @@
 
-Number of active cells: 20 (on 2 levels)
-Number of degrees of freedom: 348 (210+33+105)
+Number of active cells: 320 (on 4 levels)
+Number of degrees of freedom: 4,500 (2,754+369+1,377)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system... 24+0 iterations.
 
-Number of active cells: 50 (on 3 levels)
-Number of degrees of freedom: 845 (514+74+257)
-
-*** Timestep 0:  t=0 years, dt=0 years
-   Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-
-Number of active cells: 110 (on 4 levels)
-Number of degrees of freedom: 1,832 (1,118+155+559)
+Number of active cells: 260 (on 5 levels)
+Number of degrees of freedom: 4,166 (2,546+347+1,273)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
+   Solving Stokes system... 24+0 iterations.
+
+Number of active cells: 920 (on 6 levels)
+Number of degrees of freedom: 13,574 (8,322+1,091+4,161)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-muparser-temperature-example/solution/solution-00000
-     RMS, max velocity:        0.00299 m/year, 0.0148 m/year
-     Temperature min/avg/max:  273 K, 1622 K, 1673 K
+     RMS, max velocity:        0.00265 m/year, 0.0142 m/year
+     Temperature min/avg/max:  273 K, 1621 K, 1683 K
 
-Number of active cells: 110 (on 4 levels)
-Number of degrees of freedom: 1,832 (1,118+155+559)
+Number of active cells: 920 (on 6 levels)
+Number of degrees of freedom: 13,574 (8,322+1,091+4,161)
 
 Termination requested by criterion: end time
 

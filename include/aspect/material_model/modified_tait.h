@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -66,18 +66,9 @@ namespace aspect
          * context, compressibility means whether we should solve the continuity
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
-        * This model is compressible.
+         * This model is compressible.
          */
         bool is_compressible () const override;
-        /**
-         * @}
-         */
-
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        double reference_viscosity () const override;
         /**
          * @}
          */

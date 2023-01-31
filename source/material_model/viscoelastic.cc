@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -80,7 +80,7 @@ namespace aspect
                                                                                  average_elastic_shear_moduli[i]);
 
           // Fill the material properties that are part of the elastic additional outputs
-          if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
+          if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim>>())
             {
               elastic_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
             }
@@ -89,14 +89,6 @@ namespace aspect
       elastic_rheology.fill_elastic_force_outputs(in, average_elastic_shear_moduli, out);
       elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
 
-    }
-
-    template <int dim>
-    double
-    Viscoelastic<dim>::
-    reference_viscosity () const
-    {
-      return viscosities[0]; //background
     }
 
     template <int dim>
@@ -146,10 +138,6 @@ namespace aspect
     void
     Viscoelastic<dim>::parse_parameters (ParameterHandler &prm)
     {
-
-      // Get the number of fields for composition-dependent material properties
-      const unsigned int n_fields = this->n_compositional_fields() + 1;
-
       AssertThrow(this->get_parameters().enable_elasticity == true,
                   ExcMessage ("Material model Viscoelastic only works if 'Enable elasticity' is set to true"));
 
@@ -167,13 +155,21 @@ namespace aspect
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                                 prm);
 
-          // Parse viscoelastic properties
-          viscosities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Viscosities"))),
-                                                                n_fields,
-                                                                "Viscosities");
-          thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivities"))),
-                                                                           n_fields,
-                                                                           "Thermal conductivities");
+          // Retrieve the list of composition names
+          const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+
+          // Establish that a background field is required here
+          const bool has_background_field = true;
+
+          viscosities = Utilities::parse_map_to_double_array (prm.get("Viscosities"),
+                                                              list_of_composition_names,
+                                                              has_background_field,
+                                                              "Viscosities");
+
+          thermal_conductivities = Utilities::parse_map_to_double_array (prm.get("Thermal conductivities"),
+                                                                         list_of_composition_names,
+                                                                         has_background_field,
+                                                                         "Thermal conductivities");
         }
         prm.leave_subsection();
       }

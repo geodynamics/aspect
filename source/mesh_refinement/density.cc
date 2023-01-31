@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -63,6 +63,7 @@ namespace aspect
                                                  this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(),
                                                    this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::density;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())

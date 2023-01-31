@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,11 +36,6 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
-    template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
-
     template <int dim>
     void
     Interface<dim>::update ()
@@ -84,7 +79,7 @@ namespace aspect
 
     template <int dim>
     Manager<dim>::~Manager()
-    {}
+      = default;
 
 
 
@@ -105,8 +100,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<Interface<2> >,
-      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2>>,
+      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
 
@@ -115,7 +110,7 @@ namespace aspect
     Manager<dim>::register_boundary_temperature (const std::string &name,
                                                  const std::string &description,
                                                  void (*declare_parameters_function) (ParameterHandler &),
-                                                 Interface<dim> *(*factory_function) ())
+                                                 std::unique_ptr<Interface<dim>> (*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,
@@ -167,11 +162,16 @@ namespace aspect
               = std::set<types::boundary_id> (x_fixed_temperature_boundary_indicators.begin(),
                                               x_fixed_temperature_boundary_indicators.end());
 
-            // If model names have been set, but no boundaries on which to use them,
-            // ignore the set values, do not create objects that are never used.
+            // If no fixed temperature boundary indicators have been set, there should be no model_names chosen either.
+            // If that is indeed the case, clear the model_operators vector. Otherwise, raise an exception.
             if (fixed_temperature_boundary_indicators.size() == 0)
               {
-                model_names.clear();
+                AssertThrow(model_names.size() == 0,
+                            ExcMessage ("You have indicated that you wish to apply a boundary temperature "
+                                        "model, but the <Fixed temperature boundary indicators> parameter "
+                                        "is empty. Please use this parameter to specify the boundaries "
+                                        "on which the model(s) should be applied."));
+
                 model_operators.clear();
               }
           }
@@ -179,7 +179,7 @@ namespace aspect
           {
             AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Fixed temperature "
                                             "boundary indicators>, there was an error. Specifically, "
-                                            "the conversion function complained as follows: "
+                                            "the conversion function complained as follows:\n\n"
                                             + error));
           }
 
@@ -192,7 +192,7 @@ namespace aspect
       for (auto &model_name : model_names)
         {
           // create boundary temperature objects
-          boundary_temperature_objects.push_back (std::unique_ptr<Interface<dim> >
+          boundary_temperature_objects.push_back (std::unique_ptr<Interface<dim>>
                                                   (std::get<dim>(registered_plugins)
                                                    .create_plugin (model_name,
                                                                    "Boundary temperature::Model names")));
@@ -263,7 +263,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::vector<std::unique_ptr<Interface<dim> > > &
+    const std::vector<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_boundary_temperature_conditions () const
     {
       return boundary_temperature_objects;
@@ -407,11 +407,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<BoundaryTemperature::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<BoundaryTemperature::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<BoundaryTemperature::Interface<2>>::PluginInfo> *
+      internal::Plugins::PluginList<BoundaryTemperature::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<BoundaryTemperature::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<BoundaryTemperature::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<BoundaryTemperature::Interface<3>>::PluginInfo> *
+      internal::Plugins::PluginList<BoundaryTemperature::Interface<3>>::plugins = nullptr;
     }
   }
 

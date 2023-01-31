@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,7 +30,7 @@
 #include <deal.II/numerics/data_out_stack.h>
 
 
-#include <math.h>
+#include <cmath>
 #include <vector>
 
 namespace aspect
@@ -48,7 +48,7 @@ namespace aspect
 
     template <int dim>
     StokesResidual<dim>::StokesResidual ()
-    {}
+      = default;
 
 
 

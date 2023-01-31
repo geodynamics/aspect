@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -55,7 +55,7 @@ namespace aspect
       this->get_material_model().create_additional_named_outputs (out);
 
       MaterialModel::PrescribedTemperatureOutputs<dim> *prescribed_temperature_out
-        = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim> >();
+        = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim>>();
 
       // check if the material model computes prescribed temperature outputs
       AssertThrow(prescribed_temperature_out != NULL,
@@ -66,7 +66,8 @@ namespace aspect
       const unsigned int entropy_index = this->introspection().compositional_index_for_name("entropy");
 
       // Constant properties on the reference profile
-      in.strain_rate.resize(0); // we do not need the viscosity
+      // We only need the material model to compute the density
+      in.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::additional_outputs;
       in.velocity[0] = Tensor <1,dim> ();
       // The entropy along an adiabat is constant (equals the surface entropy)
       in.composition[0][entropy_index] = surface_entropy;

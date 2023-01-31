@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -137,7 +137,7 @@ namespace aspect
          * (if any nonlinear solver scheme would implement that at
          * some point).
          */
-        std::vector<std::pair<std::string, std::vector<unsigned int> > > advection_iterations;
+        std::vector<std::pair<std::string, std::vector<unsigned int>>> advection_iterations;
 
         /**
          * Whether to put every nonlinear iteration into a separate

@@ -1,4 +1,4 @@
-# Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+# Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -16,7 +16,7 @@
 # along with ASPECT; see the file LICENSE.  If not see
 # <http://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
 
 FIND_PACKAGE(Aspect 2.1.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
 

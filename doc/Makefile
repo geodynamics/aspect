@@ -16,18 +16,11 @@ change-files = $(shell find modules/changes/ -type f -not -name '.*')
 # Find all parameter files to be included in the manual and generate their
 # output targets (.prm.out). There are two types of targets: Every file inside
 # the /doc/ folders generates the output inside the same folder. Every file
-# outside the /doc/ folder generates a target inside the the doc folder. For
+# outside the /doc/ folder generates a target inside the doc folder. For
 # that we separate file and directory strings, attach 'doc/' to the directory
 # and '.out' to the file name and join them afterwards.
 aspect-doc-prms = $(shell find -L manual/cookbooks/ -path \*/doc/\* -name \*.prm 2>/dev/null)
 aspect-doc-prms-out = $(aspect-doc-prms:=.out)
-
-aspect-cookbook-prms = $(shell find -L manual/cookbooks/ -not -path \*/doc/\* -not -path \*output\* -name \*.prm 2>/dev/null)
-aspect-cookbook-file-names = $(notdir $(aspect-cookbook-prms))
-aspect-cookbook-dir-names = $(dir $(aspect-cookbook-prms))
-aspect-cookbook-file-names-out = $(addsuffix .out, $(aspect-cookbook-file-names))
-aspect-cookbook-dir-names-out = $(addsuffix doc/, $(aspect-cookbook-dir-names))
-aspect-cookbook-prms-out = $(join $(aspect-cookbook-dir-names-out), $(aspect-cookbook-file-names-out))
 
 default:
 	@echo "make targets:"
@@ -97,18 +90,18 @@ aspect.tag: $(aspect-files) $(change-files) modules/changes.h options.dox Makefi
 # need to ignore them the first time we run pdflatex, because of missing label
 # definitions, etc..
 manual.pdf: manual/manual.tex manual/manual.bib manual/parameters.tex \
-            $(aspect-manual-pix) $(aspect-doc-prms-out) $(aspect-cookbook-prms-out)
+            $(aspect-manual-pix) $(aspect-doc-prms-out) 
 	@if test -x "`which pdflatex`" \
                  -a -x "`which bibtex`" \
                  -a -x "`which makeindex`" ; then \
 	   (cd manual ; \
 		rm -f manual.{aux,bbl,blg,log,out,pdf,toc} prm*.{idx,ilg,ind} ; \
-		pdflatex --interaction=batchmode manual.tex;      \
+		pdflatex --shell-escape --interaction=batchmode manual.tex;      \
 		bibtex manual                                  && \
 		makeindex prmindex                             && \
-		pdflatex --interaction=batchmode manual.tex    && \
-		pdflatex --interaction=batchmode manual.tex    && \
-		pdflatex --interaction=batchmode manual.tex)   && \
+		pdflatex --shell-escape --interaction=batchmode manual.tex    && \
+		pdflatex --shell-escape --interaction=batchmode manual.tex    && \
+		pdflatex --shell-escape --interaction=batchmode manual.tex)   && \
 	   mv manual/manual.pdf . || \
 	   (echo                                                      && \
 	    echo "    Error: There were errors compiling manual.tex." && \

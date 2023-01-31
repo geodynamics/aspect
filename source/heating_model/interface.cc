@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,11 +36,6 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
-
     template <int dim>
     void
     Interface<dim>::initialize ()
@@ -121,7 +116,7 @@ namespace aspect
 
     template <int dim>
     Manager<dim>::~Manager()
-    {}
+      = default;
 
 
 
@@ -129,7 +124,7 @@ namespace aspect
     bool
     Manager<dim>::adiabatic_heating_enabled() const
     {
-      return has_matching_heating_model<HeatingModel::AdiabaticHeating<dim> >() ;
+      return has_matching_heating_model<HeatingModel::AdiabaticHeating<dim>>() ;
     }
 
 
@@ -138,7 +133,7 @@ namespace aspect
     bool
     Manager<dim>::shear_heating_enabled() const
     {
-      return has_matching_heating_model<HeatingModel::ShearHeating<dim> >() ;
+      return has_matching_heating_model<HeatingModel::ShearHeating<dim>>() ;
     }
 
 
@@ -148,8 +143,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<Interface<2> >,
-      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2>>,
+      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
 
@@ -158,7 +153,7 @@ namespace aspect
     Manager<dim>::register_heating_model (const std::string &name,
                                           const std::string &description,
                                           void (*declare_parameters_function) (ParameterHandler &),
-                                          Interface<dim> *(*factory_function) ())
+                                          std::unique_ptr<Interface<dim>> (*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,
@@ -189,7 +184,7 @@ namespace aspect
       // their own parameters
       for (auto &model_name : model_names)
         {
-          heating_model_objects.push_back (std::unique_ptr<Interface<dim> >
+          heating_model_objects.push_back (std::unique_ptr<Interface<dim>>
                                            (std::get<dim>(registered_plugins)
                                             .create_plugin (model_name,
                                                             "Heating model::Model names")));
@@ -232,7 +227,7 @@ namespace aspect
                                                                    this->n_compositional_fields());
 
       const MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
-        = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
+        = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
       for (const auto &heating_model : heating_model_objects)
         {
@@ -289,7 +284,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::list<std::unique_ptr<Interface<dim> > > &
+    const std::list<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_heating_models () const
     {
       return heating_model_objects;
@@ -379,11 +374,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<HeatingModel::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<HeatingModel::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<HeatingModel::Interface<2>>::PluginInfo> *
+      internal::Plugins::PluginList<HeatingModel::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<HeatingModel::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<HeatingModel::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<HeatingModel::Interface<3>>::PluginInfo> *
+      internal::Plugins::PluginList<HeatingModel::Interface<3>>::plugins = nullptr;
     }
   }
 

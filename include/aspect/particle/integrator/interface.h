@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -51,7 +51,15 @@ namespace aspect
            * Destructor. Made virtual so that derived classes can be created
            * and destroyed through pointers to the base class.
            */
-          virtual ~Interface ();
+          virtual ~Interface () = default;
+
+          /**
+           * Initialization function. This function is called once at the
+           * beginning of the program after parse_parameters is run.
+           */
+          virtual
+          void
+          initialize ();
 
           /**
            * Perform an integration step of moving the particles of one cell
@@ -76,8 +84,8 @@ namespace aspect
           void
           local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                               const std::vector<Tensor<1,dim> > &old_velocities,
-                               const std::vector<Tensor<1,dim> > &velocities,
+                               const std::vector<Tensor<1,dim>> &old_velocities,
+                               const std::vector<Tensor<1,dim>> &velocities,
                                const double dt) = 0;
 
           /**
@@ -191,7 +199,7 @@ namespace aspect
       register_particle_integrator (const std::string &name,
                                     const std::string &description,
                                     void (*declare_parameters_function) (ParameterHandler &),
-                                    Interface<dim> *(*factory_function) ());
+                                    std::unique_ptr<Interface<dim>> (*factory_function) ());
 
       /**
        * A function that given the name of a model returns a pointer to an
@@ -204,7 +212,7 @@ namespace aspect
        * @ingroup ParticleIntegrators
        */
       template <int dim>
-      Interface<dim> *
+      std::unique_ptr<Interface<dim>>
       create_particle_integrator (ParameterHandler &prm);
 
 
@@ -243,10 +251,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_PARTICLE_INTEGRATOR_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<2>,classname<2>> \
     dummy_ ## classname ## _2d (&aspect::Particle::Integrator::register_particle_integrator<2>, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<3>,classname<3>> \
     dummy_ ## classname ## _3d (&aspect::Particle::Integrator::register_particle_integrator<3>, \
                                 name, description); \
   }

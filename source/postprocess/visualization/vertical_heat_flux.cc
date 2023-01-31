@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,8 @@ namespace aspect
       VerticalHeatFlux ()
         :
         DataPostprocessorScalar<dim> ("vertical_heat_flux",
-                                      update_values | update_quadrature_points | update_gradients)
+                                      update_values | update_quadrature_points | update_gradients),
+        Interface<dim>("W/m/m")
       {}
 
 
@@ -43,7 +44,7 @@ namespace aspect
       void
       VerticalHeatFlux<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
@@ -52,7 +53,7 @@ namespace aspect
 
         //Create vector for the temperature gradients.  All the other things
         //we need are in MaterialModelInputs/Outputs
-        std::vector<Tensor<1,dim> > temperature_gradient(n_quadrature_points);
+        std::vector<Tensor<1,dim>> temperature_gradient(n_quadrature_points);
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           for (unsigned int d = 0; d < dim; ++d)
             temperature_gradient[q][d] = input_data.solution_gradients[q][this->introspection().component_indices.temperature][d];
@@ -63,6 +64,10 @@ namespace aspect
                                                    false);
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
+        in.requested_properties = MaterialModel::MaterialProperties::density |
+                                  MaterialModel::MaterialProperties::specific_heat |
+                                  MaterialModel::MaterialProperties::thermal_conductivity;
+
         this->get_material_model().evaluate(in, out);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
@@ -94,7 +99,9 @@ namespace aspect
                                                   "A visualization output object that generates output "
                                                   "for the heat flux in the vertical direction, which is "
                                                   "the sum of the advective and the conductive heat flux, "
-                                                  "with the sign convention of positive flux upwards.")
+                                                  "with the sign convention of positive flux upwards."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\watt\\per\\square\\meter}.")
     }
   }
 }

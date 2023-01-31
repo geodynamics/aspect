@@ -1,0 +1,4 @@
+include $ASPECT_SOURCE_DIR/cookbooks/onset_of_convection/onset_of_convection.prm
+
+set Dimension = 2
+set End time = 0

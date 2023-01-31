@@ -1,0 +1,3 @@
+Improved: The interpolation from particles to fields used to be done field-by-field, creating a lot of overhead in the interpolation algorithms. Now all particle properties are interpolated to fields at the same time, significantly reducing the time required for interpolation for models with many particle properties.
+<br>
+(Rene Gassmoeller, 2022/10/10)

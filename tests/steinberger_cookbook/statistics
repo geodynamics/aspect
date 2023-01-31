@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+# 14: RMS velocity (m/year)
+# 15: Max. velocity (m/year)
+# 16: Minimal temperature (K)
+# 17: Average temperature (K)
+# 18: Maximal temperature (K)
+# 19: Average nondimensional temperature (K)
+# 20: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 1 ("top") (W)
+# 22: Outward heat flux through boundary with indicator 2 ("left") (W)
+# 23: Outward heat flux through boundary with indicator 3 ("right") (W)
+0 0.000000000000e+00 0.000000000000e+00 768 7235 3201 3201 0 4294967295 268 271 1053 output-steinberger_cookbook/solution/solution-00000 6.20792525e-03 2.94414167e-02 2.73000000e+02 2.04467242e+03 3.77300000e+03 5.06192119e-01 -3.31090100e+05 5.07759731e+05 5.91390952e+04 -5.91390952e+04 
+1 2.000000000000e+06 2.000000000000e+06 768 7235 3201 3201 8 4294967295 163 165  645 output-steinberger_cookbook/solution/solution-00001 6.26501161e-03 2.96955820e-02 2.73000000e+02 2.04430330e+03 3.77300000e+03 5.06086658e-01 -3.65216785e+05 5.87859639e+05 3.31492209e+04 -3.31492209e+04 

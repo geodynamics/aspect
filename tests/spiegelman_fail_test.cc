@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/simulator.h>
 #include <deal.II/grid/tria.h>
 #include <aspect/simulator_access.h>
@@ -86,8 +106,6 @@ namespace aspect
          * This material model is incompressible.
          */
         virtual bool is_compressible () const;
-
-        virtual double reference_viscosity () const;
 
         virtual double reference_density () const;
 
@@ -245,7 +263,7 @@ namespace aspect
     {
       //set up additional output for the derivatives
       MaterialModelDerivatives<dim> *derivatives;
-      derivatives = out.template get_additional_output<MaterialModelDerivatives<dim> >();
+      derivatives = out.template get_additional_output<MaterialModelDerivatives<dim>>();
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
@@ -289,7 +307,7 @@ namespace aspect
               // this material model (a general powerlaw) we do not need to worry about how to
               // distribute the strain-rate and stress over the processes.
               std::vector<double> composition_viscosities(volume_fractions.size());
-              std::vector<SymmetricTensor<2,dim> > composition_viscosities_derivatives(volume_fractions.size());
+              std::vector<SymmetricTensor<2,dim>> composition_viscosities_derivatives(volume_fractions.size());
               std::vector<double> composition_dviscosities_dpressure(volume_fractions.size());
 
               const SymmetricTensor<2,dim> edot = use_deviator_of_strain_rate ? deviator(in.strain_rate[i]) : in.strain_rate[i];
@@ -434,14 +452,6 @@ namespace aspect
           for (unsigned int c=0; c < in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
         }
-    }
-
-    template <int dim>
-    double
-    SpiegelmanMaterial<dim>::
-    reference_viscosity () const
-    {
-      return ref_visc;
     }
 
     template <int dim>

@@ -1,0 +1,20 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Number of advected particles
+# 11: Particle file name
+# 12: Visualization file name
+# 13: Minimal particles per cell: 
+# 14: Average particles per cell: 
+# 15: Maximal particles per cell: 
+0 0.000000000000e+00 0.000000000000e+00 768 7235 3201 3201 0 0 50 output-particle_periodic_quarter_shell_2/particles/particles-00000 output-particle_periodic_quarter_shell_2/solution/solution-00000 0 0 7 
+1 8.181250000000e-03 8.181250000000e-03 768 7235 3201 3201 0 0 50 output-particle_periodic_quarter_shell_2/particles/particles-00001                                                               "" 0 0 4 
+2 1.636250000000e-02 8.181250000000e-03 768 7235 3201 3201 0 0 50 output-particle_periodic_quarter_shell_2/particles/particles-00002                                                               "" 0 0 6 
+3 2.454375000000e-02 8.181250000000e-03 768 7235 3201 3201 0 0 50 output-particle_periodic_quarter_shell_2/particles/particles-00003                                                               "" 0 0 7 
+4 3.272500000000e-02 8.181250000000e-03 768 7235 3201 3201 0 0 50 output-particle_periodic_quarter_shell_2/particles/particles-00004                                                               "" 0 0 7 

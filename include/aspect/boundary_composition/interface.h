@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2013 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2013 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -59,7 +59,7 @@ namespace aspect
          * Destructor. Made virtual to enforce that derived classes also have
          * virtual destructors.
          */
-        virtual ~Interface();
+        virtual ~Interface() = default;
 
         /**
          * Initialization function. This function is called once at the
@@ -200,7 +200,7 @@ namespace aspect
         register_boundary_composition (const std::string &name,
                                        const std::string &description,
                                        void (*declare_parameters_function) (ParameterHandler &),
-                                       Interface<dim> *(*factory_function) ());
+                                       std::unique_ptr<Interface<dim>> (*factory_function) ());
 
 
         /**
@@ -214,7 +214,7 @@ namespace aspect
          * Return a list of pointers to all boundary composition models
          * currently used in the computation, as specified in the input file.
          */
-        const std::vector<std::unique_ptr<Interface<dim> > > &
+        const std::vector<std::unique_ptr<Interface<dim>>> &
         get_active_boundary_composition_conditions () const;
 
         /**
@@ -295,7 +295,7 @@ namespace aspect
          * A list of boundary composition objects that have been requested in the
          * parameter file.
          */
-        std::vector<std::unique_ptr<Interface<dim> > > boundary_composition_objects;
+        std::vector<std::unique_ptr<Interface<dim>>> boundary_composition_objects;
 
         /**
          * A list of names of boundary composition objects that have been requested
@@ -366,8 +366,8 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "boundary composition model in the input file."));
 
-      typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator boundary_composition_model;
-      for (typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator
+      typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator boundary_composition_model;
+      for (typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator
            p = boundary_composition_objects.begin();
            p != boundary_composition_objects.end(); ++p)
         if (Plugins::plugin_type_matches<BoundaryCompositionType>(*(*p)))
@@ -403,10 +403,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_BOUNDARY_COMPOSITION_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryComposition::Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryComposition::Interface<2>,classname<2>> \
     dummy_ ## classname ## _2d (&aspect::BoundaryComposition::Manager<2>::register_boundary_composition, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryComposition::Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryComposition::Interface<3>,classname<3>> \
     dummy_ ## classname ## _3d (&aspect::BoundaryComposition::Manager<3>::register_boundary_composition, \
                                 name, description); \
   }

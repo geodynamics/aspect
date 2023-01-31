@@ -1,0 +1,100 @@
+# Test for static temperature field option. When the temperature field is static
+# the temperature field does not change with time, but other field like the
+# composition or elastic stress can be advected and changed in time.
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set Start time                 = 0.0
+set End time                               = 20e3
+set Output directory                       = static_temperature
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 500e3
+    set Y extent = 500e3
+  end
+end
+
+# spherical temperature anomaly (so get appreciable velocity in first time step)
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = r=50e3, p=250e3, Tref=1400
+    set Function expression = if(sqrt((x-p)*(x-p)+(y-p)*(y-p)) < r, 0, Tref)
+  end
+end
+
+subsection Temperature field
+  set Temperature method = static
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1400
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 1400
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81   #
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1400
+    set Thermal conductivity          = 3.3
+    set Thermal expansion coefficient = 3.0e-5
+    set Viscosity                     = 1e20
+  end
+end
+
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 2
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, visualization
+
+  subsection Visualization
+    set List of output variables      = density, viscosity, strain rate
+    set Output format                 = gnuplot
+  set Time between graphical output = 20e3
+    set Number of grouped files       = 0
+  end
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+end

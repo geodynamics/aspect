@@ -44,7 +44,7 @@ set Additional shared libraries            = ./libfinite_strain.so
 set Dimension                              = 2
 set End time                               = 1.0
 set Use years in output instead of seconds = false
-set Output directory                       = pure_shear
+set Output directory                       = output-pure_shear
 
 subsection Geometry model
   set Model name = box
@@ -96,10 +96,6 @@ end
 
 ############### Parameters describing the temperature field
 # Note: The temperature plays no role in this model
-
-subsection Boundary temperature model
-  set List of model names = box
-end
 
 subsection Initial temperature model
   set Model name = function

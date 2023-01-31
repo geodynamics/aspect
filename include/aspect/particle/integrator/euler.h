@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -22,6 +22,7 @@
 #define _aspect_particle_integrator_euler_h
 
 #include <aspect/particle/integrator/interface.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -38,7 +39,7 @@ namespace aspect
        * @ingroup ParticleIntegrators
        */
       template <int dim>
-      class Euler : public Interface<dim>
+      class Euler : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
@@ -61,9 +62,22 @@ namespace aspect
           void
           local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                               const std::vector<Tensor<1,dim> > &old_velocities,
-                               const std::vector<Tensor<1,dim> > &velocities,
+                               const std::vector<Tensor<1,dim>> &old_velocities,
+                               const std::vector<Tensor<1,dim>> &velocities,
                                const double dt) override;
+
+          /**
+           * We need to tell the property manager how many intermediate properties this integrator requires,
+           * so that it can allocate sufficient space for each particle. However, the integrator is not
+           * created at the time the property manager is set up and we can not reverse the order of creation,
+           * because the integrator needs to know where to store its properties, which requires the property manager
+           * to be finished setting up properties. Luckily the number of properties is constant, so we can make it
+           * a static property of this class. Therefore, the property manager can access this variable even
+           * before any object is constructed.
+           *
+           * The forward euler integrator does not need any intermediate storage space.
+           */
+          static const unsigned int n_integrator_properties = 0;
       };
 
     }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -110,11 +110,11 @@ namespace aspect
          * Vector of Points representing the points where the solution is to be evaluated
          * that can be used by VectorTools.
          */
-        std::vector<Point<dim> > evaluation_points_cartesian;
+        std::vector<Point<dim>> evaluation_points_cartesian;
         /**
          * The values of the solution at the evaluation points.
          */
-        std::vector<std::pair<double, std::vector<Vector<double> > > > point_values;
+        std::vector<std::pair<double, std::vector<Vector<double>>>> point_values;
         /**
          * Whether or not to interpret the evaluation points in the input file
          * as natural coordinates or not.

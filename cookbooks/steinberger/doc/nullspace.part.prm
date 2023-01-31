@@ -1,0 +1,3 @@
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end

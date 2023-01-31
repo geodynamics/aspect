@@ -159,7 +159,7 @@ subsection Discretization
     set beta  = 0.078
 
     # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
-    set cR    = 0.5   # default: 0.11
+    set cR    = 0.5
   end
 end
 
@@ -183,6 +183,6 @@ subsection Postprocess
     set Number of grouped files       = 0
     set Interpolate output            = false
     set Output format                 = vtu
-    set Time between graphical output = 2500                                                                               # default: 1e8
+    set Time between graphical output = 2500
   end
 end

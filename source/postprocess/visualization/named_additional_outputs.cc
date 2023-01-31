@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,8 +36,10 @@ namespace aspect
       NamedAdditionalOutputs<dim>::
       NamedAdditionalOutputs ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        Interface<dim>("")  // physical units depend on run-time parameters
       {}
+
 
 
       template <int dim>
@@ -62,8 +64,8 @@ namespace aspect
               {
                 std::vector<std::string> names = result->get_names();
 
-                for (unsigned int i=0; i<names.size(); ++i)
-                  property_names.push_back(names[i]);
+                for (const auto &name : names)
+                  property_names.push_back(name);
               }
           }
 
@@ -72,8 +74,8 @@ namespace aspect
                                "provided by the material model are named outputs. Either remove the postprocessor, or check why no "
                                "named output is provided."));
 
-        for (unsigned int i=0; i<property_names.size(); ++i)
-          std::replace(property_names[i].begin(),property_names[i].end(),' ', '_');
+        for (auto &property_name : property_names)
+          std::replace(property_name.begin(),property_name.end(),' ', '_');
       }
 
 
@@ -113,7 +115,7 @@ namespace aspect
       void
       NamedAdditionalOutputs<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,
@@ -174,7 +176,9 @@ namespace aspect
                                                   "This visualization postprocessor outputs whatever quantities the "
                                                   "material model can compute. What quantities these are is specific "
                                                   "to the material model in use for a simulation, and for many models "
-                                                  "in fact does not contain any named outputs at all.")
+                                                  "in fact does not contain any named outputs at all."
+                                                  "\n\n"
+                                                  "Physical units: Various, depending on what is being output.")
     }
   }
 }

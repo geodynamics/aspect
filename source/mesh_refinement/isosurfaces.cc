@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,13 +20,13 @@
 
 
 
+#include <algorithm>
+#include <aspect/geometry_model/interface.h>
 #include <aspect/mesh_refinement/isosurfaces.h>
 #include <aspect/utilities.h>
-#include <aspect/geometry_model/interface.h>
+#include <cmath>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
-#include <math.h>
-#include <algorithm>
 
 namespace aspect
 {
@@ -41,7 +41,7 @@ namespace aspect
         // same length.
         Assert(values.size() == min_values.size(),
                ExcMessage("internal error: Vector of values passed to the isosurface class "
-                          "function are_all_values_in_range, does not have the the correct size."));
+                          "function are_all_values_in_range, does not have the correct size."));
         for (unsigned int index = 0; index < values.size(); ++index)
           {
             if (values[index] < min_values[index] || values[index] > max_values[index])
@@ -144,7 +144,7 @@ namespace aspect
           }
         else
           {
-            return std::min(std::max((unsigned int)Utilities::string_to_int(string),minimum_refinement_level),maximum_refinement_level);
+            return std::min(std::max(static_cast<unsigned int>(Utilities::string_to_int(string)),minimum_refinement_level),maximum_refinement_level);
           }
 
       }
@@ -275,7 +275,7 @@ namespace aspect
                              "In this example the mesh refinement is kept between level 0 and level 2 if the temperature is between "
                              "300 and 600 and at level 2 when the compositional field C\\_1 is between 0.5 and 1. If both happen at "
                              "the same location and the current refinement level is 1, it means that the first isoline will not set any flag and the "
-                             "second isoline will set a refinement flag. This means the the cell will refine. If both the coarsening and refinement flags "
+                             "second isoline will set a refinement flag. This means the cell will be refined. If both the coarsening and refinement flags "
                              "are set, preference is given to refinement. "
                              "\n\n"
                              "The first two entries for each isosurface, describing the minimum and maximum grid levels, can be "
@@ -337,7 +337,7 @@ namespace aspect
                   std::vector<std::string> key_and_value = Utilities::split_string_list (*field_entry, ':');
                   AssertThrow(key_and_value.size() == 2,
                               ExcMessage("The isosurface property must have a key (e.g. Temperature) and two values separated by a | (e.g. (300 | 600)."));
-                  properties.push_back(internal::Property(key_and_value[0], compositions)); // convert key to property name
+                  properties.emplace_back(key_and_value[0], compositions); // convert key to property name
                   const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
                   AssertThrow(values.size() == 2,
                               ExcMessage("Both a maximum and a minimum value are required for each isosurface."));
@@ -393,7 +393,7 @@ namespace aspect
                                               "example for two isosurface entries is '0, 2, Temperature: 300 | 600; 2, 2, C\\_1: 0.5 | 1'. "
                                               "If both isoterm entries are triggered at the same location and the current refinement level is 1, "
                                               "it means that the first isoline will not set any flag and the second isoline will set a refinement flag. "
-                                              "This means the the cell will refine. If both the coarsening and refinement flags "
+                                              "This means the cell will be refined. If both the coarsening and refinement flags "
                                               "are set, preference is given to refinement. "
                                               "\n\n"
                                               "The minimum and maximum refinement levels per isosurface can be provided in absolute values relative to "

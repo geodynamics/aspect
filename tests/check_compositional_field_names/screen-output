@@ -1,0 +1,11 @@
+
+Loading shared library <./libcheck_compositional_field_names.so>
+
+* Connecting signals
+Field_1 is of type chemical composition
+Field_2 is of type stress
+Field_3 is of type grain size
+Field_4 is of type porosity
+Field_5 is of type chemical composition
+Field_6 is of type generic
+Field_7 is of type unspecified

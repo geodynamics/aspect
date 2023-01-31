@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -47,7 +47,7 @@ namespace aspect
       std::ostringstream screen_text;
 
       const BoundaryTemperature::DynamicCore<dim> &dynamic_core =
-        this->get_boundary_temperature_manager().template get_matching_boundary_temperature_model<BoundaryTemperature::DynamicCore<dim> >();
+        this->get_boundary_temperature_manager().template get_matching_boundary_temperature_model<BoundaryTemperature::DynamicCore<dim>>();
 
       core_data = dynamic_core.get_core_data();
 

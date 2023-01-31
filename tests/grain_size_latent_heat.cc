@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -64,7 +64,7 @@ namespace aspect
 
           if (in.current_cell.state() == IteratorState::valid)
             {
-              const QTrapez<dim> quadrature_formula;
+              const QTrapezoid<dim> quadrature_formula;
               const unsigned int n_q_points = quadrature_formula.size();
 
               FEValues<dim> fe_values (this->get_mapping(),
@@ -73,8 +73,8 @@ namespace aspect
                                        update_values);
 
               std::vector<double> temperatures(n_q_points), pressures(n_q_points);
-              std::vector<std::vector<double> > compositions (quadrature_formula.size(),std::vector<double> (this->n_compositional_fields()));
-              std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+              std::vector<std::vector<double>> compositions (quadrature_formula.size(),std::vector<double> (this->n_compositional_fields()));
+              std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
               fe_values.reinit (in.current_cell);
 
@@ -173,11 +173,45 @@ namespace aspect
                       crossed_transition = k;
 
               if (in.requests_property(MaterialProperties::viscosity))
-                out.viscosities[i] = std::min(std::max(this->min_eta,this->viscosity(in.temperature[i],
-                                                                                     in.pressure[i],
-                                                                                     composition,
-                                                                                     in.strain_rate[i],
-                                                                                     in.position[i])),this->max_eta);
+                {
+                  double effective_viscosity;
+                  double disl_viscosity = std::numeric_limits<double>::max();
+                  Assert(std::isfinite(in.strain_rate[i].norm()),
+                         ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                                    "not filled by the caller."));
+                  const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i] - 1./dim * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();
+                  const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
+
+                  const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized()
+                                                       ?
+                                                       this->get_adiabatic_conditions().temperature(in.position[i])
+                                                       :
+                                                       in.temperature[i];
+                  const double adiabatic_pressure = this->get_adiabatic_conditions().is_initialized()
+                                                    ?
+                                                    this->get_adiabatic_conditions().pressure(in.position[i])
+                                                    :
+                                                    in.pressure[i];
+
+                  const unsigned int grain_size_index = this->introspection().compositional_index_for_name("grain_size");
+
+                  const double diff_viscosity = this->diffusion_viscosity(in.temperature[i],
+                                                                          adiabatic_temperature,
+                                                                          adiabatic_pressure,
+                                                                          composition[grain_size_index],
+                                                                          second_strain_rate_invariant,
+                                                                          in.position[i]);
+
+                  if (std::abs(second_strain_rate_invariant) > 1e-30)
+                    {
+                      disl_viscosity = this->dislocation_viscosity(in.temperature[i], adiabatic_temperature, adiabatic_pressure, in.strain_rate[i], in.position[i],diff_viscosity);
+                      effective_viscosity = disl_viscosity * diff_viscosity / (disl_viscosity + diff_viscosity);
+                    }
+                  else
+                    effective_viscosity = diff_viscosity;
+
+                  out.viscosities[i] = std::min(std::max(this->min_eta,effective_viscosity),this->max_eta);
+                }
 
               out.densities[i] = this->density(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
 

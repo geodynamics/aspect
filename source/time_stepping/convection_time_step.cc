@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,7 +30,7 @@ namespace aspect
     double
     ConvectionTimeStep<dim>::execute()
     {
-      const QIterated<dim> quadrature_formula (QTrapez<1>(),
+      const QIterated<dim> quadrature_formula (QTrapezoid<1>(),
                                                this->get_parameters().stokes_velocity_degree);
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -40,8 +40,8 @@ namespace aspect
 
       const unsigned int n_q_points = quadrature_formula.size();
 
-      std::vector<Tensor<1,dim> > velocity_values(n_q_points);
-      std::vector<Tensor<1,dim> > fluid_velocity_values(n_q_points);
+      std::vector<Tensor<1,dim>> velocity_values(n_q_points);
+      std::vector<Tensor<1,dim>> fluid_velocity_values(n_q_points);
 
       double max_local_speed_over_meshsize = 0;
 

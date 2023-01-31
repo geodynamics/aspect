@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -91,12 +91,12 @@ namespace aspect
       void
       ElasticStress<dim>::update_particle_property(const unsigned int data_position,
                                                    const Vector<double> &solution,
-                                                   const std::vector<Tensor<1,dim> > &gradients,
+                                                   const std::vector<Tensor<1,dim>> &gradients,
                                                    typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         material_inputs.position[0] = particle->get_location();
 
-#if DEAL_II_VERSION_GTE(10,0,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
         material_inputs.current_cell = typename DoFHandler<dim>::active_cell_iterator(*particle->get_surrounding_cell(),
                                                                                       &(this->get_dof_handler()));
 #else
@@ -145,10 +145,10 @@ namespace aspect
 
 
       template <int dim>
-      std::vector<std::pair<std::string, unsigned int> >
+      std::vector<std::pair<std::string, unsigned int>>
       ElasticStress<dim>::get_property_information() const
       {
-        std::vector<std::pair<std::string,unsigned int> > property_information;
+        std::vector<std::pair<std::string,unsigned int>> property_information;
 
         //Check which fields are used in model and make an output for each.
         if (this->introspection().compositional_name_exists("ve_stress_xx"))

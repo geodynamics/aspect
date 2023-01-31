@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -28,8 +28,6 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 
 
 namespace aspect
@@ -45,8 +43,7 @@ namespace aspect
               ExcMessage ("This postprocessor can only be used if the geometry "
                           "is a sphere or spherical shell."));
 
-      const QGauss<dim> quadrature_formula (this->get_fe()
-                                            .base_element(this->introspection().base_elements.velocities).degree+1);
+      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.velocities;
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -55,7 +52,7 @@ namespace aspect
                                update_values   |
                                update_quadrature_points |
                                update_JxW_values);
-      std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+      std::vector<Tensor<1,dim>> velocity_values(n_q_points);
 
       double local_rad_velocity_square_integral = 0;
       double local_tan_velocity_square_integral = 0;
@@ -66,7 +63,7 @@ namespace aspect
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
                                                                                         velocity_values);
-            const std::vector<Point<dim> > &position_point = fe_values.get_quadrature_points();
+            const std::vector<Point<dim>> &position_point = fe_values.get_quadrature_points();
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
                 // create unit vector in radial direction
@@ -108,10 +105,10 @@ namespace aspect
                                 tan_vrms * year_in_seconds);
           statistics.add_value (columns[2],
                                 vrms * year_in_seconds);
-          for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+          for (auto &column : columns)
             {
-              statistics.set_precision (columns[i], 8);
-              statistics.set_scientific (columns[i], true);
+              statistics.set_precision (column, 8);
+              statistics.set_scientific (column, true);
             }
         }
       else
@@ -125,10 +122,10 @@ namespace aspect
           statistics.add_value (columns[0], rad_vrms);
           statistics.add_value (columns[1], tan_vrms);
           statistics.add_value (columns[2], vrms);
-          for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+          for (auto &column : columns)
             {
-              statistics.set_precision (columns[i], 8);
-              statistics.set_scientific (columns[i], true);
+              statistics.set_precision (column, 8);
+              statistics.set_scientific (column, true);
             }
         }
 

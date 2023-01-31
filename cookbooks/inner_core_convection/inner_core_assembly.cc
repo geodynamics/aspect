@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -71,8 +71,8 @@ namespace aspect
       execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
       {
-        internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
-        internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+        internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
+        internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
 
         const Introspection<dim> &introspection = this->introspection();
         const FiniteElement<dim> &fe            = this->get_fe();
@@ -127,7 +127,7 @@ namespace aspect
                  ExcMessage ("The phase boundary assembler can only be used with the "
                              "material model 'inner core material'!"));
 
-    assemblers.stokes_system_on_boundary_face.push_back (std_cxx14::make_unique<PhaseBoundaryAssembler<dim>>());
+    assemblers.stokes_system_on_boundary_face.push_back (std::make_unique<PhaseBoundaryAssembler<dim>>());
   }
 }
 

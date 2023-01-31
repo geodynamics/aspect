@@ -16,7 +16,7 @@
  * This makes interpolation more efficient, because the compositional
  * fields are solved one-by-one and therefore oftentimes only one
  * of the properties is actually needed. Interpolating all needed
- * properties in one call is still more efficient in the general case. 
+ * properties in one call is still more efficient in the general case.
  * <br>
  * (Rene Gassmoeller, 2017/02/15)
  *
@@ -37,8 +37,8 @@
  * in the 'basic statistics' postprocessor. Existing user plugins that
  * implement these funtions will continue to work, as long as the
  * functions are only used within that plugin. User plugins that called these
- * interface functions from outside can either cast the material model 
- * reference to a particular material model that implements these functions, 
+ * interface functions from outside can either cast the material model
+ * reference to a particular material model that implements these functions,
  * or use the recommended approach to determine reference properties described
  * above.
  * <br>
@@ -46,9 +46,9 @@
  *
  * <li> Changed: The 'basic statistics' postprocessor now uses a better
  * defined reference state to compute properties like the Rayleigh number.
- * In particular, it computes material properties for the prescribed 
- * adiabatic temperature and pressure conditions at the surface, instead 
- * of using the deprecated reference_property() functions of the material 
+ * In particular, it computes material properties for the prescribed
+ * adiabatic temperature and pressure conditions at the surface, instead
+ * of using the deprecated reference_property() functions of the material
  * model interface. This way it can also be used for other material models
  * than the 'simple' model, and also highlights possible inconsistencies
  * between the reference profile and reference temperatures assumed in the
@@ -74,7 +74,7 @@
  * <br>
  * (John Naliboff, 2017/01/20)
  *
- * <li> Changed: The finite strain cookbook used a way to compute 
+ * <li> Changed: The finite strain cookbook used a way to compute
  * the finite strain that was only appropriate for a small amount of
  * strain. This was fixed to a proper finite strain computation.
  * Added tests and benchmarks for the new formulation, and updated
@@ -124,7 +124,7 @@
  * Stokes' solver scheme.
  * <br>
  * (Juliane Dannberg, Rene Gassmoeller, 2016/11/22)
- * 
+ *
  * <li> Changed: The adiabatic profile now contains a reference density
  * profile, and the derivative of this reference density profile. The
  * InitialProfile adiabatic profile now relies on the adiabatic heating
@@ -138,13 +138,13 @@
  * (Timo Heister, Juliane Dannberg, Rene Gassmoeller, 2016/11/20)
  *
  * <li> New: The visco plastic material model now includes an option for
- * strain-weakening of cohesion and the internal angle of friction. 
- * Strain-weakeing of these properties is commonly used to help localize 
+ * strain-weakening of cohesion and the internal angle of friction.
+ * Strain-weakeing of these properties is commonly used to help localize
  * deformation in regions undergoing plastic failure. Note that using this
  * option requires tracking the finite strain tensor through particles or
- * compositional fields.    
+ * compositional fields.
  * <br>
- * (John Naliboff, 2016/11/10) 
+ * (John Naliboff, 2016/11/10)
  *
  * <li> New: Two particle generators were added. One, generates particles
  * at the quadrature points for each active cell in the triangulation.
@@ -180,7 +180,7 @@
  * (Rene Gassmoeller, 2016/10/14)
  *
  * <li> Changed: HDF5 particle output files are now named 'particles-...'
- * instead of 'particle-...' to be consistent with the vtu output. Also 
+ * instead of 'particle-...' to be consistent with the vtu output. Also
  * particle properties with more than one component are now correctly split
  * into scalar fields in the output files, if they have more or less components
  * than the number of spatial dimensions in the model.
@@ -265,14 +265,14 @@
  * (Rene Gassmoeller, 2016/08/02)
  *
  * <li> New: There is now an initial topography plugin which reads
- * from the prm file polygon definitions and set the initial topography 
+ * from the prm file polygon definitions and set the initial topography
  * to be constant within those polygons.
  * <br>
  * (Menno Fraters, 2016/07/26)
- * 
+ *
  * <li> Changed: Particle initialization no longer routinely computes
  * the solution at the particle positions, since it is usually not needed
- * and complicates the initialization process. Instead it evaluates the 
+ * and complicates the initialization process. Instead it evaluates the
  * initial conditions at the particle positions. It is still possible to
  * access the solution by evaluating it manually inside of particle
  * property plugins. Additionally the 'initial composition' property
@@ -283,8 +283,8 @@
  * <br>
  * (Rene Gassmoeller, 2016/07/18)
  *
- * <li> New: Added parameter “Adapt by fraction of cells” to switch between 
- * refining a certain number of cells based on the fraction of total error 
+ * <li> New: Added parameter “Adapt by fraction of cells” to switch between
+ * refining a certain number of cells based on the fraction of total error
  * (default behaviour) and the fraction of total number of cells
  * <br>
  * (Lev Karatun, 2016/07/20)
@@ -293,9 +293,9 @@
  * value in order to calculate backward advection.
  * <br>
  * (Jacky Austermann, 2016/07/13)
- * 
- * <li> New: There is a new postprocessor that outputs statistics to 
- * the screen about the memory usage and nonzero entries of matrices. 
+ *
+ * <li> New: There is a new postprocessor that outputs statistics to
+ * the screen about the memory usage and nonzero entries of matrices.
  * It can be called with the name 'matrix statistics'.
  * <br>
  * (Sam Cox, 2016/07/01)
@@ -325,19 +325,19 @@
  * <br>
  * (Timo Heister, 2016/06/28)
  *
- * <li> New: There is a new parameter gamma in the entropy viscosity 
- * stabilization that allows to scale the stabilization with the strain rate 
+ * <li> New: There is a new parameter gamma in the entropy viscosity
+ * stabilization that allows to scale the stabilization with the strain rate
  * (in addition to the velocity).
  * <br>
  * (Juliane Dannberg, 2016/06/28)
  *
  * <li> New: There is now a postprocessor that outputs the heatflux
- * density at each boundary face into a text file and a 
+ * density at each boundary face into a text file and a
  * postprocessor that outputs the heatflux density at each boundary
  * face for visualization.
  * <br>
  * (Jacky Austermann, 2016/06/28)
- *     
+ *
  * <li> New: There is a new function Utilities::real_spherical_harmonic
  * which calculates the values of a fully normalized real spherical harmonic.
  * <br>
@@ -374,27 +374,27 @@
  * <br>
  * (Rene Gassmoeller, 2016/06/24)
  *
- * <li> New: There is now the option to model melt transport (two-phase 
- * flow). This core of the implementations includes additional 
- * variables in the solution vector, a new assembler with an additional 
- * equation that will be solved and a modified advection equation for the 
- * porosity field, a new preconditioner for models with melt transport, and 
+ * <li> New: There is now the option to model melt transport (two-phase
+ * flow). This core of the implementations includes additional
+ * variables in the solution vector, a new assembler with an additional
+ * equation that will be solved and a modified advection equation for the
+ * porosity field, a new preconditioner for models with melt transport, and
  * additional melt outputs for the material model.
  * <br>
  * (Juliane Dannberg, Timo Heister, 2016/06/24)
  *
  * <li> New: Particles can now carry the integrated strain they have
  * experienced over the course of the model. They store all components
- * of the symmetric strain tensor, which can be converted into the 
+ * of the symmetric strain tensor, which can be converted into the
  * invariants or investigated individually.
  * <br>
  * (Rene Gassmoeller, 2016/06/10)
  *
  * <li> New: There is a new optional feature for the discontinuous temperature
- * and compositional solutions. After solving the advection equation, 
+ * and compositional solutions. After solving the advection equation,
  * a "bound preserving limiter" working as a correction procedure is applied
- * to the discontinuous advection fields. The limiter will stabilize the 
- * discontinuous advection solutions and keep it in the range of user defined 
+ * to the discontinuous advection fields. The limiter will stabilize the
+ * discontinuous advection solutions and keep it in the range of user defined
  * global maximum/minimum values. Whether or not the limiter is used is
  * determined by an entry to the parameter file.
  * <br>
@@ -425,7 +425,7 @@
  *
  * <li> New: There is now a visualization plugin to visualize the maximum
  * horizontal component of the compressive stress.
- * <br> 
+ * <br>
  * (Wolfgang Bangerth, D. Sarah Stamps, 2016/05/12)
  *
  * <li> New: There is a new visualization postprocessor "artificial viscosity

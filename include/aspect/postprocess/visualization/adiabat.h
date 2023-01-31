@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -59,7 +59,7 @@ namespace aspect
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const override;
+                                std::vector<Vector<double>> &computed_quantities) const override;
       };
     }
   }

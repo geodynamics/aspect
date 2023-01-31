@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,6 +23,7 @@
 
 #include <aspect/global.h>
 #include <aspect/material_model/utilities.h>
+#include <aspect/material_model/interface.h>
 
 
 
@@ -98,6 +99,8 @@ namespace aspect
       std::vector<double> entropy_derivative_temperature;
     };
 
+
+
     /**
      * This function takes the output of an equation of state @p eos_outputs_all_phases,
      * which contains the data for all compositions and all of their phases at the
@@ -114,7 +117,7 @@ namespace aspect
     void
     phase_average_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs_all_phases,
                                             const std::vector<double> &phase_function_values,
-                                            const std::vector<unsigned int> &n_phases_per_composition,
+                                            const std::vector<unsigned int> &n_phase_transitions_per_composition,
                                             EquationOfStateOutputs<dim> &eos_outputs);
   }
 }

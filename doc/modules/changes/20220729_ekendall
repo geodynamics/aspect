@@ -1,0 +1,4 @@
+Changed: Moved composition velocity statistics postprocessor from cookbook to main code. 
+Compatibility of the postprocessor's input parameter "Names of slab compositional fields" is broken by renaming it to the more general "Names of selected compositional fields".
+<br>
+(Elodie Kendall and Anne Glerum, 2022/07/29) 

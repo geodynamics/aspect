@@ -54,16 +54,18 @@ end
 subsection Initial temperature model
   # The actual initial temperature is irrelevant, because it
   # is recalculated from the entropy during the first timestep.
+  # The value below corresponds to the entropy of 2534 J/kg/K
+  # used as the top boundary condition.
   set Model name = function
 
   subsection Function
-    set Function expression = 1595
+    set Function expression = 1600.1243896484375
   end
 end
 
 
 set Surface pressure                       = 0
-set Adiabatic surface temperature          = 1595
+set Adiabatic surface temperature          = 1600.1243896484375
 
 subsection Adiabatic conditions model
   # The 'ascii data' option does not need the additional
@@ -74,7 +76,7 @@ subsection Adiabatic conditions model
   set Model name = compute entropy profile
 
   subsection Compute entropy profile
-    # Entropy equivalent to T=1595 K according to the used table
+    # Entropy equivalent to T=1600 K according to the used table
     set Surface entropy = 2534
   end
 
@@ -88,7 +90,7 @@ end
 # We prescribe temperatures according to the data table.
 # This output is computed in the material model.
 subsection Temperature field
-  set Temperature method = prescribed field
+  set Temperature method = prescribed field with diffusion
 end
 
 
@@ -105,7 +107,8 @@ end
 subsection Boundary temperature model
   # No temperature boundary conditions,
   # as the temperature equation is not solved
-  set Fixed temperature boundary indicators =
+  set Fixed temperature boundary indicators = top
+  set List of model names = initial temperature
 end
 
 
@@ -162,7 +165,12 @@ subsection Material model
   subsection Entropy model
     set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/
     set Material file name               = entropy-table/opxtable/material_table.txt
-    set Reference viscosity              = 1e22
+    set Thermal conductivity             = 0.1
+  end
+
+  subsection Depth dependent viscosity
+    set Data directory                   = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/data/
+    set Data file name                   = constant_viscosity.txt
   end
 end
 
@@ -178,7 +186,7 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics
 
   subsection Visualization
-     set Time between graphical output = 0
+     set Time between graphical output = 1e7
      set List of output variables      = material properties, adiabat, nonadiabatic pressure, nonadiabatic temperature
      subsection Material properties
        set List of material properties = density,thermal expansivity,specific heat,viscosity, compressibility

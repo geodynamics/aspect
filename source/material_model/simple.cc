@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -87,15 +87,6 @@ namespace aspect
 
           out.densities[i] = MaterialUtilities::average_value(volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
         }
-    }
-
-
-    template <int dim>
-    double
-    Simple<dim>::
-    reference_viscosity () const
-    {
-      return eta;
     }
 
 

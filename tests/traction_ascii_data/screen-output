@@ -3,9 +3,6 @@
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-traction/ascii-data/test/box_2d_left.0.txt.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-traction/ascii-data/test/box_2d_left.1.txt.
-
-
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
    This is either because ASPECT has already read all the files necessary to impose
    the requested boundary condition, or that the last available file has been read.

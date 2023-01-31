@@ -18,6 +18,7 @@ end
 
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = left, right, bottom, top
 end
 
 subsection Initial temperature model

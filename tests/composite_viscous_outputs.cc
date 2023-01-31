@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/simulator.h>
 #include <aspect/material_model/rheology/composite_visco_plastic.h>
 
@@ -15,14 +35,16 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   // First, we set up a few objects which are used by the rheology model.
   aspect::ParameterHandler prm;
   const std::vector<std::string> list_of_composition_names = simulator_access.introspection().get_composition_names();
-  auto n_phases = std::make_shared<std::vector<unsigned int>>(1); // 1 phase per composition
+  auto n_phases = std::make_unique<std::vector<unsigned int>>(1); // 1 phase per composition
   const unsigned int composition = 0;
   const std::vector<double> volume_fractions = {1.};
+  const std::vector<double> phase_function_values = std::vector<double>();
+  const std::vector<unsigned int> n_phase_transitions_per_composition = std::vector<unsigned int>(1);
 
   // Next, we initialise instances of the composite rheology and
   // individual creep mechanisms.
   std::unique_ptr<Rheology::CompositeViscoPlastic<dim>> composite_creep;
-  composite_creep = std_cxx14::make_unique<Rheology::CompositeViscoPlastic<dim>>();
+  composite_creep = std::make_unique<Rheology::CompositeViscoPlastic<dim>>();
   composite_creep->initialize_simulator (simulator_access.get_simulator());
   composite_creep->declare_parameters(prm);
   prm.set("Use plastic damper", "true");
@@ -31,30 +53,32 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   composite_creep->parse_parameters(prm, n_phases);
 
   std::unique_ptr<Rheology::DiffusionCreep<dim>> diffusion_creep;
-  diffusion_creep = std_cxx14::make_unique<Rheology::DiffusionCreep<dim>>();
+  diffusion_creep = std::make_unique<Rheology::DiffusionCreep<dim>>();
   diffusion_creep->initialize_simulator (simulator_access.get_simulator());
   diffusion_creep->declare_parameters(prm);
   diffusion_creep->parse_parameters(prm, n_phases);
 
   std::unique_ptr<Rheology::DislocationCreep<dim>> dislocation_creep;
-  dislocation_creep = std_cxx14::make_unique<Rheology::DislocationCreep<dim>>();
+  dislocation_creep = std::make_unique<Rheology::DislocationCreep<dim>>();
   dislocation_creep->initialize_simulator (simulator_access.get_simulator());
   dislocation_creep->declare_parameters(prm);
   dislocation_creep->parse_parameters(prm, n_phases);
 
   std::unique_ptr<Rheology::PeierlsCreep<dim>> peierls_creep;
-  peierls_creep = std_cxx14::make_unique<Rheology::PeierlsCreep<dim>>();
+  peierls_creep = std::make_unique<Rheology::PeierlsCreep<dim>>();
   peierls_creep->initialize_simulator (simulator_access.get_simulator());
   peierls_creep->declare_parameters(prm);
   peierls_creep->parse_parameters(prm, n_phases);
 
   std::unique_ptr<Rheology::DruckerPrager<dim>> drucker_prager;
-  drucker_prager = std_cxx14::make_unique<Rheology::DruckerPrager<dim>>();
+  drucker_prager = std::make_unique<Rheology::DruckerPrager<dim>>();
+  drucker_prager->initialize_simulator (simulator_access.get_simulator());
   drucker_prager->declare_parameters(prm);
   prm.set("Use plastic damper", "true");
   prm.set("Plastic damper viscosity", "1.e17");
   prm.set("Maximum yield stress", "5e8");
-  Rheology::DruckerPragerParameters p = drucker_prager->parse_parameters(1, prm);
+  drucker_prager->parse_parameters(prm, n_phases);
+  Rheology::DruckerPragerParameters p = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
 
   // The creep components are arranged in series with each other.
   // This package of components is then arranged in parallel with
@@ -109,10 +133,10 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       creep_stress = 2.*(viscosity*total_strain_rate - lim_visc*creep_strain_rate);
 
       // Print the output
-      std::cout << temperature << " " << viscosity << " " << creep_stress << " " << total_strain_rate;
+      std::cout << temperature << ' ' << viscosity << ' ' << creep_stress << ' ' << total_strain_rate;
       for (unsigned int i=0; i < partial_strain_rates.size(); ++i)
         {
-          std::cout << " " << partial_strain_rates[i]/total_strain_rate;
+          std::cout << ' ' << partial_strain_rates[i]/total_strain_rate;
         }
       std::cout << std::endl;
 
@@ -125,8 +149,8 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       prls_stress = 2.*partial_strain_rates[2]*peierls_creep->compute_viscosity(partial_strain_rates[2], pressure, temperature, composition);
       if (partial_strain_rates[3] > 0.)
         {
-          drpr_stress = 2.*partial_strain_rates[3]*drucker_prager->compute_viscosity(p.cohesions[0],
-                                                                                     p.angles_internal_friction[0],
+          drpr_stress = 2.*partial_strain_rates[3]*drucker_prager->compute_viscosity(p.cohesion,
+                                                                                     p.angle_internal_friction,
                                                                                      pressure,
                                                                                      partial_strain_rates[3],
                                                                                      p.max_yield_stress,

@@ -17,4 +17,6 @@ thermal conductivity: constant
 
 The provided lookup table was constructed with the software PERPLEX (Connolly, 2005) using the thermodynamic database by Stixrude (2011) and assuming a pyrolitic composition (Ringwood 1988).
 
+For more explanation, see the cookbook on "Convection using a pressure--temperature look-up table and the rheology of Steinberger and Calderwood (2006)". 
+
 

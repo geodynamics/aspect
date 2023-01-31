@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -37,6 +37,9 @@ namespace aspect
       g[dim-1] = -gravity_magnitude;
       return g;
     }
+
+
+
     template <int dim>
     void
     Vertical<dim>::declare_parameters (ParameterHandler &prm)
@@ -55,6 +58,7 @@ namespace aspect
       }
       prm.leave_subsection ();
     }
+
 
 
     template <int dim>
@@ -77,6 +81,8 @@ namespace aspect
     }
   }
 }
+
+
 
 // explicit instantiations
 namespace aspect

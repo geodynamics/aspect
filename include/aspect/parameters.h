@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -31,6 +31,8 @@
 namespace aspect
 {
   using namespace dealii;
+
+  struct CompositionalFieldDescription;
 
   // forward declaration:
   namespace GeometryModel
@@ -110,10 +112,12 @@ namespace aspect
         linear_momentum_x = 0x8,
         linear_momentum_y = 0x10,
         linear_momentum_z = 0x20,
-        linear_momentum   = 0x8+0x10+0x20,
+        linear_momentum   = linear_momentum_x+linear_momentum_y+linear_momentum_z,
         net_rotation      = 0x40,
         angular_momentum  = 0x80,
-        net_surface_rotation = 0x100
+        net_surface_rotation = 0x100,
+        any_translation = net_translation+linear_momentum,
+        any_rotation = net_rotation+angular_momentum+net_surface_rotation,
       };
     };
 
@@ -136,6 +140,7 @@ namespace aspect
         volume_of_fluid,
         static_field,
         fem_melt_field,
+        fem_darcy_field,
         prescribed_field,
         prescribed_field_with_diffusion
       };
@@ -374,6 +379,11 @@ namespace aspect
     };
 
     /**
+    Use the struct aspect::CompositionalFieldDescription
+    */
+    using CompositionalFieldDescription DEAL_II_DEPRECATED = aspect::CompositionalFieldDescription;
+
+    /**
      * Constructor. Fills the values of member functions from the given
      * parameter object.
      *
@@ -560,7 +570,7 @@ namespace aspect
      * mapped to one of the plugins of traction boundary conditions (e.g.
      * "function")
      */
-    std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_traction_boundary_indicators;
+    std::map<types::boundary_id, std::pair<std::string,std::string>> prescribed_traction_boundary_indicators;
 
     /**
      * A set of boundary ids on which the boundary_heat_flux objects
@@ -613,6 +623,8 @@ namespace aspect
     double                         global_temperature_min_preset;
     std::vector<double>            global_composition_max_preset;
     std::vector<double>            global_composition_min_preset;
+
+    std::vector<std::string>       compositional_fields_with_disabled_boundary_entropy_viscosity;
     /**
      * @}
      */
@@ -662,6 +674,7 @@ namespace aspect
      */
     unsigned int                   n_compositional_fields;
     std::vector<std::string>       names_of_compositional_fields;
+    std::vector<aspect::CompositionalFieldDescription>  composition_descriptions;
 
     /**
      * A vector that contains the advection field method for every compositional
@@ -678,7 +691,7 @@ namespace aspect
      * the component and it is of the format "[0][1][2]". In case no component
      * is specified it defaults to 0.
      */
-    std::map<unsigned int, std::pair<std::string,unsigned int> > mapped_particle_properties;
+    std::map<unsigned int, std::pair<std::string,unsigned int>> mapped_particle_properties;
 
     std::vector<unsigned int>      normalized_fields;
     /**

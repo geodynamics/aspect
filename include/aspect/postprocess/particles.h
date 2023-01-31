@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -65,35 +65,30 @@ namespace aspect
           /**
            * Implementation of the corresponding function of the base class.
            */
-          const std::vector<DataOutBase::Patch<0,dim> > &
+          const std::vector<DataOutBase::Patch<0,dim>> &
           get_patches () const override;
 
           /**
            * Implementation of the corresponding function of the base class.
            */
-          std::vector< std::string >
+          std::vector<std::string>
           get_dataset_names () const override;
 
           /**
            * Implementation of the corresponding function of the base class.
            */
-#if DEAL_II_VERSION_GTE(9,1,0)
           std::vector<
           std::tuple<unsigned int,
               unsigned int,
               std::string,
-              DataComponentInterpretation::DataComponentInterpretation> >
+              DataComponentInterpretation::DataComponentInterpretation>>
               get_nonscalar_data_ranges () const override;
-#else
-          std::vector<std::tuple<unsigned int, unsigned int, std::string> >
-          get_vector_data_ranges() const override;
-#endif
 
           /**
            * Output information that is filled by build_patches() and
            * written by the write function of the base class.
            */
-          std::vector<DataOutBase::Patch<0,dim> > patches;
+          std::vector<DataOutBase::Patch<0,dim>> patches;
 
           /**
            * A list of field names for all data components stored in patches.
@@ -103,17 +98,12 @@ namespace aspect
           /**
            * Store which of the data fields are vectors.
            */
-#if DEAL_II_VERSION_GTE(9,1,0)
           std::vector<
           std::tuple<unsigned int,
               unsigned int,
               std::string,
-              DataComponentInterpretation::DataComponentInterpretation> >
+              DataComponentInterpretation::DataComponentInterpretation>>
               vector_datasets;
-#else
-          std::vector<std::tuple<unsigned int, unsigned int, std::string> >
-          vector_datasets;
-#endif
       };
     }
 
@@ -230,21 +220,21 @@ namespace aspect
          * is done because there is no way to store the simulation
          * time inside the .pvtu or .vtu files).
          */
-        std::vector<std::pair<double,std::string> > times_and_pvtu_file_names;
+        std::vector<std::pair<double,std::string>> times_and_pvtu_file_names;
 
         /**
          * A corresponding variable that we use for the .visit files created
          * by DataOutInterface::write_visit_record. The second part of a
          * pair contains all files that together form a time step.
          */
-        std::vector<std::pair<double,std::vector<std::string> > > times_and_vtu_file_names;
+        std::vector<std::pair<double,std::vector<std::string>>> times_and_vtu_file_names;
 
         /**
          * A list of list of filenames, sorted by timestep, that correspond to
          * what has been created as output. This is used to create a master
          * .visit file for the entire simulation.
          */
-        std::vector<std::vector<std::string> > output_file_names_by_timestep;
+        std::vector<std::vector<std::string>> output_file_names_by_timestep;
 
         /**
          * A set of data related to XDMF file sections describing the HDF5
@@ -309,7 +299,7 @@ namespace aspect
          * directory, possibly one file written by each processor, belong to a
          * single time step and/or form the different time steps of a
          * simulation. For Paraview, this is a <code>.pvtu</code> file per
-         * time step and a <code>.pvd</code> for all time steps. For Visit it
+         * time step and a <code>.pvd</code> for all time steps. For VisIt it
          * is a <code>.visit</code> file per time step and one for all time
          * steps.
          *

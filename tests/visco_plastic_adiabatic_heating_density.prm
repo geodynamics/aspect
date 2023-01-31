@@ -59,7 +59,7 @@ end
 # All boundaries have a fixed temperature
 subsection Boundary temperature model
   set Fixed temperature boundary indicators  = bottom, top, left, right
-  set Model name = initial temperature
+  set List of model names = initial temperature
 end
 
 # The initial temperature profile is equal to the adiabatic temperature profile.

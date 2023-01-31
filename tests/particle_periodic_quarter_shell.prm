@@ -51,10 +51,6 @@ end
 ############### Parameters describing the temperature field
 # Note: The temperature plays no role in this model
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
 subsection Initial temperature model
   set Model name = function
   subsection Function
@@ -109,11 +105,18 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, composition statistics, particles, visualization
 
   subsection Particles
-    set Number of particles = 20
+    set Number of particles = 50
     set Time between data output = 5
-    set Data output format = vtu
+    set Data output format = gnuplot
+    set Integration scheme = euler
+    set Particle generator name = probability density function
     set List of particle properties = function, initial composition, initial position
 
+    subsection Generator
+      subsection Probability density function
+        set Function expression = (y < 0.1) ? 1.0 : ((x < 0.1) ? 1.0 : 0.0)
+      end
+    end
   end
 
 end

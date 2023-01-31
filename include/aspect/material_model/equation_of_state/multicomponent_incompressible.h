@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -87,14 +87,13 @@ namespace aspect
           /**
            * Read the parameters this class declares from the parameter file.
            * If @p expected_n_phases_per_composition points to a vector of
-           * unsigned integers this is considered the number of phase transitions
+           * unsigned integers this is considered the number of phases
            * for each compositional field and will be checked against the parsed
            * parameters.
            */
           void
           parse_parameters (ParameterHandler &prm,
-                            const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition =
-                              std::shared_ptr<std::vector<unsigned int>>());
+                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
         private:
           /**
@@ -120,13 +119,6 @@ namespace aspect
            * for the background field.
            */
           std::vector<double> specific_heats;
-
-          /**
-           * A vector that stores how many separate phases there are per compositional
-           * field. In other words if there is a background field without phase transitions
-           * and one more composition that has 2 phase transitions this vector would store {1,3}.
-           */
-          std::shared_ptr<std::vector<unsigned int> > n_phases_per_composition;
       };
     }
   }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -50,8 +50,9 @@ namespace aspect
     MeltInputs<dim>::MeltInputs (const unsigned int n_points)
       :
       compaction_pressures(n_points, numbers::signaling_nan<double>()),
-      fluid_velocities(n_points, numbers::signaling_nan<Tensor<1,dim> >())
+      fluid_velocities(n_points, numbers::signaling_nan<Tensor<1,dim>>())
     {}
+
 
 
     template <int dim>
@@ -68,6 +69,8 @@ namespace aspect
       const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
       fe_values[ex_p_c].get_function_values (solution, compaction_pressures);
     }
+
+
 
     template <int dim>
     void MeltOutputs<dim>::average (const MaterialAveraging::AveragingOperation operation,
@@ -89,6 +92,8 @@ namespace aspect
       // really be averaged, so avoid this for now
     }
 
+
+
     template <int dim>
     double
     MeltInterface<dim>::p_c_scale (const MaterialModel::MaterialModelInputs<dim> &inputs,
@@ -104,7 +109,7 @@ namespace aspect
       if (consider_is_melt_cell && !melt_handler.is_melt_cell(inputs.current_cell))
         return 0.0;
 
-      const MaterialModel::MeltOutputs<dim> *melt_outputs = outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+      const MaterialModel::MeltOutputs<dim> *melt_outputs = outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
       const double ref_K_D = this->reference_darcy_coefficient();
 
       double K_D = 0.0;
@@ -133,6 +138,8 @@ namespace aspect
     }
   }
 
+
+
   namespace Assemblers
   {
     namespace
@@ -158,6 +165,8 @@ namespace aspect
       }
     }
 
+
+
     template <int dim>
     void
     MeltInterface<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
@@ -167,17 +176,18 @@ namespace aspect
       const unsigned int n_points = outputs.viscosities.size();
 
       if (this->get_parameters().enable_additional_stokes_rhs
-          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == nullptr)
+          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >(n_points));
+            std::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>(n_points));
         }
 
       Assert(!this->get_parameters().enable_additional_stokes_rhs
              ||
-             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()->rhs_u.size()
+             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()->rhs_u.size()
              == n_points, ExcInternalError());
     }
+
 
 
     template <int dim>
@@ -186,8 +196,8 @@ namespace aspect
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
-      internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>& > (scratch_base);
-      internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>& > (data_base);
+      internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>&> (scratch_base);
+      internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>&> (data_base);
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -204,7 +214,7 @@ namespace aspect
                                                                        this->get_melt_handler(),
                                                                        true);
 
-      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
 
       const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
       const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
@@ -313,7 +323,7 @@ namespace aspect
           return 0.0;
 
         const Introspection<dim> &introspection = simulator_access->introspection();
-        const MaterialModel::MeltOutputs<dim> *melt_out = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+        const MaterialModel::MeltOutputs<dim> *melt_out = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
 
         Assert(melt_out != nullptr, ExcInternalError());
 
@@ -348,7 +358,7 @@ namespace aspect
         // The whole expression for the first term on the RHS would be
         // (u_s \cdot g) (\phi \rho_f \kappa_f + (1 - \phi) \rho_s \kappa_s).
         // However, we already have the term (u_s \cdot g) \rho_s \kappa_s in the
-        // assembly of the stokes system without melt. Because of that, we only
+        // assembly of the Stokes system without melt. Because of that, we only
         // need to have -\phi \rho_s \kappa_s here.
         fluid_pressure_RHS += is_compressible
                               ?
@@ -370,8 +380,8 @@ namespace aspect
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
-      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
-      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -393,9 +403,9 @@ namespace aspect
       const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
       const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
 
-      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
       const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
-      *force = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
+      *force = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
 
       const double pressure_scaling = this->get_pressure_scaling();
 
@@ -553,8 +563,8 @@ namespace aspect
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
-      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
-      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -568,7 +578,7 @@ namespace aspect
 
       const typename DoFHandler<dim>::face_iterator face = scratch.face_material_model_inputs.current_cell->face(scratch.face_number);
 
-      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.face_material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.face_material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
 
       std::vector<double> grad_p_f(n_face_q_points);
       this->get_melt_handler().get_boundary_fluid_pressure().fluid_pressure_gradient(
@@ -658,8 +668,8 @@ namespace aspect
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
-      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
-      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>&> (data_base);
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -675,14 +685,14 @@ namespace aspect
 
       const FEValuesExtractors::Scalar solution_field = scratch.advection_field->scalar_extractor(introspection);
 
-      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
 
       Assert(melt_outputs->compaction_viscosities[0] > 0.0,
              ExcMessage ("MeltOutputs have to be filled for models with melt transport. "
                          "At the moment, these outputs are not filled, or they do not have "
                          "reasonable values."));
 
-      std::vector<Tensor<1,dim> > fluid_velocity_values(n_q_points);
+      std::vector<Tensor<1,dim>> fluid_velocity_values(n_q_points);
       const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
       scratch.finite_element_values[ex_u_f].get_function_values (this->get_solution(),fluid_velocity_values);
 
@@ -862,7 +872,7 @@ namespace aspect
     compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch =
-        dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+        dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
 
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       std::vector<double> residuals(n_q_points);
@@ -955,8 +965,8 @@ namespace aspect
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
-      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
-      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = scratch.finite_element_values.get_fe();
@@ -990,8 +1000,8 @@ namespace aspect
     execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
-      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
-      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -1008,7 +1018,7 @@ namespace aspect
                                                                  &this->get_dof_handler());
 
       unsigned int face_no = numbers::invalid_unsigned_int;
-      for (face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+      for (face_no=0; face_no<cell->n_faces(); ++face_no)
         if (scratch.face_finite_element_values.get_face_index() == cell->face_index(face_no))
           break;
       Assert(face_no != numbers::invalid_unsigned_int,ExcInternalError());
@@ -1078,7 +1088,7 @@ namespace aspect
       system_matrix.block(block_idx, block_idx) = 0;
       system_rhs.block(block_idx) = 0;
 
-      const QGauss<dim> quadrature(this->get_parameters().stokes_velocity_degree+1);
+      const Quadrature<dim> &quadrature = this->introspection().quadratures.velocities;
       const FiniteElement<dim> &fe = this->get_fe();
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -1100,11 +1110,12 @@ namespace aspect
       FullMatrix<double> cell_matrix (fluid_velocity_dofs_per_cell, fluid_velocity_dofs_per_cell);
 
       std::vector<double> porosity_values(quadrature.size());
-      std::vector<Tensor<1,dim> > grad_p_f_values(quadrature.size());
-      std::vector<Tensor<1,dim> > u_s_values(quadrature.size());
+      std::vector<Tensor<1,dim>> grad_p_f_values(quadrature.size());
+      std::vector<Tensor<1,dim>> u_s_values(quadrature.size());
 
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
       create_material_model_outputs(out);
 
@@ -1146,11 +1157,11 @@ namespace aspect
 
             const bool is_melt_cell = this->get_melt_handler().is_melt_cell(in.current_cell);
 
-            MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+            MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
             Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
             const FEValuesExtractors::Vector fluid_velocity_extractor = this->introspection().variable("fluid velocity").extractor_vector();
 
-            std::vector<Tensor<1,dim> > phi_u_f(fluid_velocity_dofs_per_cell);
+            std::vector<Tensor<1,dim>> phi_u_f(fluid_velocity_dofs_per_cell);
 
             double K_D_over_phi = 1.0;
 
@@ -1265,9 +1276,11 @@ namespace aspect
                                update_quadrature_points | update_gradients | update_values);
 
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
+      // We only need access to the MeltOutputs in p_c_scale().
+      in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
+
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
       create_material_model_outputs(out);
-
 
       std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -1320,6 +1333,8 @@ namespace aspect
     }
   }
 
+
+
   template <int dim>
   bool
   MeltHandler<dim>::
@@ -1330,6 +1345,7 @@ namespace aspect
     else
       return (this->introspection().name_for_compositional_index(advection_field.compositional_variable) == "porosity");
   }
+
 
 
   namespace internal
@@ -1370,8 +1386,7 @@ namespace aspect
         material_model_outputs(scratch.material_model_outputs)
       {}
 
-      virtual ~PcConstraintsAssembleData ()
-      {}
+      virtual ~PcConstraintsAssembleData () = default;
 
       FEValues<dim>                            finite_element_values;
 
@@ -1457,6 +1472,8 @@ namespace aspect
 
   }
 
+
+
   template <int dim>
   void
   MeltHandler<dim>::
@@ -1464,11 +1481,7 @@ namespace aspect
   {
     IndexSet nonzero_pc_dofs(this->introspection().index_sets.system_relevant_set.size());
 
-#if DEAL_II_VERSION_GTE(9,3,0)
     const QTrapezoid<dim> quadrature_formula;
-#else
-    const QTrapez<dim> quadrature_formula;
-#endif
     const UpdateFlags cell_update_flags = update_quadrature_points | update_values | update_gradients;
     const FiniteElement<dim> &fe = this->get_fe();
 
@@ -1497,6 +1510,8 @@ namespace aspect
                                          this->introspection(),
                                          this->get_current_linearization_point(),
                                          false);
+            // We only need access to the MeltOutputs in p_c_scale().
+            material_model_inputs.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
             this->get_material_model().evaluate(material_model_inputs,
                                                 material_model_outputs);
@@ -1564,6 +1579,7 @@ namespace aspect
   }
 
 
+
   template <int dim>
   bool
   MeltHandler<dim>::
@@ -1571,6 +1587,7 @@ namespace aspect
   {
     return is_melt_cell_vector[cell->active_cell_index()];
   }
+
 
 
   template <int dim>
@@ -1584,6 +1601,7 @@ namespace aspect
   }
 
 
+
   template <int dim>
   const BoundaryFluidPressure::Interface<dim> &
   MeltHandler<dim>::
@@ -1593,11 +1611,12 @@ namespace aspect
   }
 
 
+
   template <int dim>
   void
   MeltHandler<dim>::
   edit_finite_element_variables(const Parameters<dim> &parameters,
-                                std::vector<VariableDeclaration<dim> > &variables)
+                                std::vector<VariableDeclaration<dim>> &variables)
   {
 
     if (!parameters.include_melt_transport)
@@ -1638,8 +1657,8 @@ namespace aspect
   MeltHandler<dim>::
   set_assemblers (Assemblers::Manager<dim> &assemblers) const
   {
-    assemblers.stokes_preconditioner.push_back(std_cxx14::make_unique<Assemblers::MeltStokesPreconditioner<dim> > ());
-    assemblers.stokes_system.push_back(std_cxx14::make_unique<Assemblers::MeltStokesSystem<dim> > ());
+    assemblers.stokes_preconditioner.push_back(std::make_unique<Assemblers::MeltStokesPreconditioner<dim>> ());
+    assemblers.stokes_system.push_back(std::make_unique<Assemblers::MeltStokesSystem<dim>> ());
 
     AssertThrow((this->get_parameters().formulation_mass_conservation ==
                  Parameters<dim>::Formulation::MassConservation::isentropic_compression) ||
@@ -1656,29 +1675,29 @@ namespace aspect
 
 
     assemblers.stokes_system_on_boundary_face.push_back(
-      std_cxx14::make_unique<aspect::Assemblers::MeltStokesSystemBoundary<dim> >());
+      std::make_unique<aspect::Assemblers::MeltStokesSystemBoundary<dim>>());
 
     // add the terms for traction boundary conditions
     if (!this->get_boundary_traction().empty())
       {
         assemblers.stokes_system_on_boundary_face.push_back(
-          std_cxx14::make_unique<Assemblers::MeltBoundaryTraction<dim> > ());
+          std::make_unique<Assemblers::MeltBoundaryTraction<dim>> ());
       }
 
     // add the terms necessary to normalize the pressure
     if (this->pressure_rhs_needs_compatibility_modification())
       {
         assemblers.stokes_system.push_back(
-          std_cxx14::make_unique<Assemblers::MeltPressureRHSCompatibilityModification<dim> > ());
+          std::make_unique<Assemblers::MeltPressureRHSCompatibilityModification<dim>> ());
       }
 
     assemblers.advection_system.push_back(
-      std_cxx14::make_unique<Assemblers::MeltAdvectionSystem<dim> > ());
+      std::make_unique<Assemblers::MeltAdvectionSystem<dim>> ());
 
     if (this->get_parameters().fixed_heat_flux_boundary_indicators.size() != 0)
       {
         assemblers.advection_system_on_boundary_face.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim> >());
+          std::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim>>());
         assemblers.advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
         assemblers.advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
       }
@@ -1802,13 +1821,13 @@ namespace aspect
   MeltHandler<dim>::
   create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
   {
-    if (output.template get_additional_output<MaterialModel::MeltOutputs<dim> >() != nullptr)
+    if (output.template get_additional_output<MaterialModel::MeltOutputs<dim>>() != nullptr)
       return;
 
     const unsigned int n_points = output.viscosities.size();
     const unsigned int n_comp = output.reaction_terms[0].size();
     output.additional_outputs.push_back(
-      std_cxx14::make_unique<MaterialModel::MeltOutputs<dim>> (n_points, n_comp));
+      std::make_unique<MaterialModel::MeltOutputs<dim>> (n_points, n_comp));
   }
 
 
@@ -1820,31 +1839,31 @@ namespace aspect
                                               internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
                                               internal::Assembly::CopyData::StokesSystem<dim>      &data) const
   {
-    const std::set<types::boundary_id> free_surface_boundary_indicators = this->get_mesh_deformation_handler().get_free_surface_boundary_indicators();
-    if (free_surface_boundary_indicators.empty())
+    const std::set<types::boundary_id> tmp_boundary_indicators_requiring_stabilization = this->get_mesh_deformation_handler().get_boundary_indicators_requiring_stabilization();
+    if (tmp_boundary_indicators_requiring_stabilization.empty())
       return;
 
     const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
     const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
 
-    // only apply on free surface faces
+    // only apply on mesh deformation surfaces that require stabilization
     if (cell->at_boundary() && cell->is_locally_owned())
-      for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+      for (const unsigned int face_no : cell->face_indices())
         if (cell->face(face_no)->at_boundary())
           {
             const types::boundary_id boundary_indicator
               = cell->face(face_no)->boundary_id();
 
-            if (free_surface_boundary_indicators.find(boundary_indicator) == free_surface_boundary_indicators.end())
+            if (tmp_boundary_indicators_requiring_stabilization.find(boundary_indicator) == tmp_boundary_indicators_requiring_stabilization.end())
               continue;
 
             scratch.face_finite_element_values.reinit(cell, face_no);
 
-            this->compute_material_model_input_values (this->get_solution(),
-                                                       scratch.face_finite_element_values,
-                                                       cell,
-                                                       true,
-                                                       scratch.face_material_model_inputs);
+            scratch.face_material_model_inputs.reinit  (scratch.face_finite_element_values,
+                                                        cell,
+                                                        this->introspection(),
+                                                        this->get_solution(),
+                                                        true);
 
             this->get_material_model().evaluate(scratch.face_material_model_inputs, scratch.face_material_model_outputs);
 
@@ -1927,7 +1946,7 @@ namespace aspect
     template class MeltAdvectionSystem<dim>; \
     template class MeltPressureRHSCompatibilityModification<dim>; \
     template class MeltBoundaryTraction<dim>; \
-  } \
+  }
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

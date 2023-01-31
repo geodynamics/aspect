@@ -34,13 +34,35 @@ An error occurred in file <trilinos_vector.h> in function
 The violated condition was: 
     dealii::numbers::is_finite(a)
 Additional information: 
-    In a significant number of places, deal.II checks that some intermediate value is a finite number (as opposed to plus or minus infinity, or NaN/Not a Number). In the current function, we encountered a number that is not finite (its value is (nan,0) and therefore violates the current assertion).
-
-This may be due to the fact that some operation in this function created such a value, or because one of the arguments you passed to the function already had this value from some previous operation. In the latter case, this function only triggered the error but may not actually be responsible for the computation of the number that is not finite.
-
-There are two common cases where this situation happens. First, your code (or something in deal.II) divides by zero in a place where this should not happen. Or, you are trying to solve a linear system with an unsuitable solver (such as an indefinite or non-symmetric linear system using a Conjugate Gradient solver); such attempts oftentimes yield an operation somewhere that tries to divide by zero or take the square root of a negative value.
-
-In any case, when trying to find the source of the error, recall that the location where you are getting this error is simply the first place in the program where there is a check that a number (e.g., an element of a solution vector) is in fact finite, but that the actual error that computed the number may have happened far earlier. To find this location, you may want to add checks for finiteness in places of your program visited before the place where this error is produced. One way to check for finiteness is to use the 'AssertIsFinite' macro.
+    In a significant number of places, deal.II checks that some
+    intermediate value is a finite number (as opposed to plus or minus
+    infinity, or NaN/Not a Number). In the current function, we
+    encountered a number that is not finite (its value is (nan,0) and
+    therefore violates the current assertion).
+    
+    This may be due to the fact that some operation in this function
+    created such a value, or because one of the arguments you passed to
+    the function already had this value from some previous operation. In
+    the latter case, this function only triggered the error but may not
+    actually be responsible for the computation of the number that is not
+    finite.
+    
+    There are two common cases where this situation happens. First, your
+    code (or something in deal.II) divides by zero in a place where this
+    should not happen. Or, you are trying to solve a linear system with an
+    unsuitable solver (such as an indefinite or non-symmetric linear
+    system using a Conjugate Gradient solver); such attempts oftentimes
+    yield an operation somewhere that tries to divide by zero or take the
+    square root of a negative value.
+    
+    In any case, when trying to find the source of the error, recall that
+    the location where you are getting this error is simply the first
+    place in the program where there is a check that a number (e.g., an
+    element of a solution vector) is in fact finite, but that the actual
+    error that computed the number may have happened far earlier. To find
+    this location, you may want to add checks for finiteness in places of
+    your program visited before the place where this error is produced.
+    One way to check for finiteness is to use the 'AssertIsFinite' macro.
 
 Stacktrace:
 (rest of the output replaced by default.sh script)

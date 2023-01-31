@@ -89,8 +89,8 @@ namespace aspect
           FunctionInclusion (double eta_B,
                              const unsigned int n_compositional_fields)
             : Function<dim>(dim+2+n_compositional_fields), eta_B_(eta_B) {}
-          virtual void vector_value (const Point< dim >   &p,
-                                     Vector< double >   &values) const
+          virtual void vector_value (const Point<dim>   &p,
+                                     Vector<double>   &values) const
           {
             double pos[2]= {p(0),p(1)};
             AnalyticSolutions::_Inclusion
@@ -247,17 +247,6 @@ namespace aspect
 
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const
-        {
-          return 1;
-        }
-        /**
-         * @}
-         */
-        /**
          * Returns the viscosity value in the inclusion
          */
         double get_eta_B() const
@@ -291,14 +280,14 @@ namespace aspect
         std::pair<std::string,std::string>
         execute (TableHandler &/*statistics*/)
         {
-          std::unique_ptr<Function<dim> > ref_func;
+          std::unique_ptr<Function<dim>> ref_func;
 
           AssertThrow(Plugins::plugin_type_matches<const InclusionMaterial<dim>>(this->get_material_model()),
                       ExcMessage("Postprocessor only works with the inclusion material model."));
 
           const InclusionMaterial<dim> &
           material_model
-            = Plugins::get_plugin_as_type<const InclusionMaterial<dim> >(this->get_material_model());
+            = Plugins::get_plugin_as_type<const InclusionMaterial<dim>>(this->get_material_model());
 
           ref_func.reset (new AnalyticSolutions::FunctionInclusion<dim>(
                             material_model.get_eta_B(),

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -82,8 +82,8 @@ namespace aspect
             geometry_model (geometry_model)
           {}
 
-          virtual void vector_value (const Point< dim >   &pos,
-                                     Vector< double >   &values) const
+          virtual void vector_value (const Point<dim>   &pos,
+                                     Vector<double>   &values) const
           {
             Assert (dim == 2, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -192,29 +192,11 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-        /**
-         * @}
-         */
-
         double get_epsilon() const;
 
         double epsilon;
 
     };
-
-
-    template <int dim>
-    double
-    ViscosityGroovesMaterial<dim>::
-    reference_viscosity () const
-    {
-      return 1.;
-    }
 
 
     template <int dim>
@@ -402,7 +384,7 @@ namespace aspect
     std::pair<std::string,std::string>
     ViscosityGroovesPostprocessor<dim>::execute (TableHandler &)
     {
-      std::shared_ptr<Function<dim> > ref_func;
+      std::shared_ptr<Function<dim>> ref_func;
       {
 
         ref_func.reset (new AnalyticSolutions::FunctionViscosityGrooves<dim>(this->get_geometry_model()));

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -35,7 +35,7 @@ namespace aspect
     evaluate(const MaterialModelInputs<dim> &in,
              MaterialModelOutputs<dim> &out) const
     {
-      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
+      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
 
       // The Composition reaction model has up to two compositional fields (plus one background field)
       // that can influence the density
@@ -118,14 +118,6 @@ namespace aspect
           out.thermal_conductivities[i] = k_value;
           out.compressibilities[i] = eos_outputs.compressibilities[0];
         }
-    }
-
-    template <int dim>
-    double
-    CompositionReaction<dim>::
-    reference_viscosity () const
-    {
-      return eta;
     }
 
 
@@ -231,12 +223,12 @@ namespace aspect
     CompositionReaction<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (this->get_parameters().use_operator_splitting
-          && out.template get_additional_output<ReactionRateOutputs<dim> >() == nullptr)
+          && out.template get_additional_output<ReactionRateOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points,
-                                                                             this->n_compositional_fields()));
+            std::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points,
+                                                                        this->n_compositional_fields()));
         }
     }
   }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -141,7 +141,7 @@ namespace aspect
           /**
            * Return a copy of this manifold.
            */
-          std::unique_ptr<Manifold<dim,dim> >
+          std::unique_ptr<Manifold<dim,dim>>
           clone() const override;
 
           /**
@@ -434,13 +434,13 @@ namespace aspect
 
       private:
         /**
-         * Minimum depth, longitude-depth or
+         * Minimum longitude-depth or
          * longitude-latitude-depth point
          */
         Point<dim> point1;
 
         /**
-         * Maximum depth, longitude-depth or
+         * Maximum longitude-depth or
          * longitude-latitude-depth point
          */
         Point<dim> point2;
@@ -448,7 +448,7 @@ namespace aspect
         /**
          * The number of cells in each coordinate direction
          */
-        unsigned int repetitions[dim];
+        std::vector<unsigned int> repetitions;
 
         /**
          * An object that describes the geometry.

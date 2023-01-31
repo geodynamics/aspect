@@ -61,7 +61,7 @@ subsection Discretization
     set beta  = 0.078
 
     # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
-    set cR    = 0.5   # default: 0.11
+    set cR    = 0.5
   end
 
 end
@@ -123,8 +123,8 @@ subsection Heating model
 end
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0                       # default: 2
-  set Initial global refinement          = 6                       # default: 2
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 6
 end
 
 

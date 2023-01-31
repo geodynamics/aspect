@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,7 @@ namespace aspect
     Function<dim>::
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
     {
-      Utilities::NaturalCoordinate<dim> point =
+      const Utilities::NaturalCoordinate<dim> point =
         this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
 
       return function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),n_comp);
@@ -89,7 +89,7 @@ namespace aspect
         try
           {
             function
-              = std_cxx14::make_unique<Functions::ParsedFunction<dim>>(this->n_compositional_fields());
+              = std::make_unique<Functions::ParsedFunction<dim>>(this->n_compositional_fields());
             function->parse_parameters (prm);
           }
         catch (...)

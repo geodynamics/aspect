@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -39,7 +39,7 @@ namespace aspect
     {
       const char *unit = (dim==2)? "W/m" : "W/m^2";
 
-      std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area =
+      std::vector<std::vector<std::pair<double, double>>> heat_flux_and_area =
         internal::compute_heat_flux_through_boundary_faces (*this);
 
       std::map<types::boundary_id, double> local_boundary_fluxes;
@@ -49,7 +49,7 @@ namespace aspect
       // Finally, sum over the processors and compute the ratio between the
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             if (cell->at_boundary(f))
               {
                 const types::boundary_id boundary_indicator
@@ -111,7 +111,7 @@ namespace aspect
 
           // finally have something for the screen
           screen_text.precision(4);
-          screen_text << p->second << " " << unit
+          screen_text << p->second << ' ' << unit
                       << (index == global_boundary_flux_densities.size()-1 ? "" : ", ");
         }
 

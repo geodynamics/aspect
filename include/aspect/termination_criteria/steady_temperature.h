@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -70,7 +70,7 @@ namespace aspect
          * previous time steps. This is used to determine when we have reached
          * steady state.
          */
-        std::list<std::pair<double, double> >   time_temperature;
+        std::list<std::pair<double, double>>   time_temperature;
     };
   }
 }

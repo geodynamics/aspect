@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -103,7 +103,7 @@ namespace aspect
       template <int dim>
       void
       MulticomponentIncompressible<dim>::parse_parameters (ParameterHandler &prm,
-                                                           const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
+                                                           const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
         reference_T = prm.get_double ("Reference temperature");
 

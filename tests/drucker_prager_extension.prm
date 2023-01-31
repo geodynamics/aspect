@@ -48,7 +48,6 @@ subsection Material model
   subsection Drucker Prager
     set Thermal conductivity          = 0.0
     set Reference density             = 2700.0
-    set Reference viscosity           = 1.0e24
     set Reference temperature         = 0.0
     set Thermal expansion coefficient = 0.0
     set Reference specific heat       = 1
@@ -84,13 +83,6 @@ end
 
 ############### Parameters describing the temperature field
 # We set the temperature to zero, as it is not important.
-
-subsection Boundary temperature model
-  set List of model names = box
-  subsection Box
-    set Left temperature = 0
-  end
-end
 
 subsection Initial temperature model
   set Model name = function

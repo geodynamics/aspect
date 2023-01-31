@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -133,8 +133,18 @@ namespace aspect
          * Return the set of periodic boundaries as described in the input
          * file.
          */
-        std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >
+        std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
         get_periodic_boundary_pairs () const override;
+
+        /**
+         * @copydoc Interface::adjust_positions_for_periodicity
+         *
+         * Apply a rotation to all points outside of the domain
+         * to account for periodicity.
+         */
+        void
+        adjust_positions_for_periodicity (Point<dim> &position,
+                                          const ArrayView<Point<dim>> &connected_positions = {}) const override;
 
         /**
          * @copydoc Interface::has_curved_elements()

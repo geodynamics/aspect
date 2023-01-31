@@ -120,6 +120,7 @@ subsection Material model
   subsection Depth dependent model
     set Base model = simple
     set Depth dependence method = None
+    set Reference viscosity = 1e25
   end
   subsection Simple model
     set Reference density             = 3300.0

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -60,7 +60,7 @@ namespace aspect
          * Destructor. Made virtual to enforce that derived classes also have
          * virtual destructors.
          */
-        virtual ~Interface();
+        virtual ~Interface() = default;
 
         /**
          * Initialization function. This function is called once at the
@@ -165,7 +165,7 @@ namespace aspect
         register_initial_composition (const std::string &name,
                                       const std::string &description,
                                       void (*declare_parameters_function) (ParameterHandler &),
-                                      Interface<dim> *(*factory_function) ());
+                                      std::unique_ptr<Interface<dim>> (*factory_function) ());
 
 
         /**
@@ -179,7 +179,7 @@ namespace aspect
          * Return a list of pointers to all initial composition models
          * currently used in the computation, as specified in the input file.
          */
-        const std::list<std::unique_ptr<Interface<dim> > > &
+        const std::list<std::unique_ptr<Interface<dim>>> &
         get_active_initial_composition_conditions () const;
 
         /**
@@ -242,7 +242,7 @@ namespace aspect
          * A list of initial composition objects that have been requested in the
          * parameter file.
          */
-        std::list<std::unique_ptr<Interface<dim> > > initial_composition_objects;
+        std::list<std::unique_ptr<Interface<dim>>> initial_composition_objects;
 
         /**
          * A list of names of initial composition objects that have been requested
@@ -309,7 +309,7 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "initial composition model in the input file."));
 
-      typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator initial_composition_model;
+      typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator initial_composition_model;
       for (const auto &p : initial_composition_objects)
         if (Plugins::plugin_type_matches<InitialCompositionType>(*p))
           return Plugins::get_plugin_as_type<InitialCompositionType>(*p);
@@ -345,10 +345,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::InitialComposition::Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::InitialComposition::Interface<2>,classname<2>> \
     dummy_ ## classname ## _2d (&aspect::InitialComposition::Manager<2>::register_initial_composition, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::InitialComposition::Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::InitialComposition::Interface<3>,classname<3>> \
     dummy_ ## classname ## _3d (&aspect::InitialComposition::Manager<3>::register_initial_composition, \
                                 name, description); \
   }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -24,6 +24,9 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+
+#include <deal.II/matrix_free/fe_point_evaluation.h>
+
 #include <array>
 
 namespace aspect
@@ -53,12 +56,11 @@ namespace aspect
         std::vector<double> dislocation_viscosities;
 
         /**
-         * This contains the fraction of the deformation work that is
-         * converted to surface energy of grains instead of thermal energy.
-         * It is used to reduce the shear heating by this fraction. If it
-         * is set to 0.0 it will not change the shear heating.
+         * Diffusion viscosities at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
          */
-        std::vector<double> boundary_area_change_work_fractions;
+        std::vector<double> diffusion_viscosities;
     };
 
 
@@ -104,8 +106,6 @@ namespace aspect
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
         bool is_compressible () const override;
-
-        double reference_viscosity () const override;
 
         void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                       typename Interface<dim>::MaterialModelOutputs &out) const override;
@@ -175,6 +175,11 @@ namespace aspect
         double k_value;
 
         /**
+         * The index of the compositional field that represents the grain size.
+        */
+        unsigned int grain_size_index;
+
+        /**
          * Parameters controlling the grain size evolution.
          */
         std::vector<double> grain_growth_activation_energy;
@@ -236,17 +241,11 @@ namespace aspect
          */
         bool advect_log_grainsize;
 
-
-        double viscosity (const double                  temperature,
-                          const double                  pressure,
-                          const std::vector<double>    &compositional_fields,
-                          const SymmetricTensor<2,dim> &strain_rate,
-                          const Point<dim>             &position) const;
-
-        double diffusion_viscosity (const double      temperature,
-                                    const double      pressure,
-                                    const std::vector<double>    &compositional_fields,
-                                    const SymmetricTensor<2,dim> &,
+        double diffusion_viscosity (const double temperature,
+                                    const double adiabatic_temperature,
+                                    const double adiabatic_pressure,
+                                    const double grain_size,
+                                    const double second_strain_rate_invariant,
                                     const Point<dim> &position) const;
 
         /**
@@ -260,22 +259,13 @@ namespace aspect
          * unless a guess for the viscosity is provided, which can reduce the
          * number of iterations significantly.
          */
-        double dislocation_viscosity (const double      temperature,
-                                      const double      pressure,
-                                      const std::vector<double>    &compositional_fields,
+        double dislocation_viscosity (const double temperature,
+                                      const double adiabatic_temperature,
+                                      const double adiabatic_pressure,
                                       const SymmetricTensor<2,dim> &strain_rate,
                                       const Point<dim> &position,
+                                      const double diffusion_viscosity,
                                       const double viscosity_guess = 0) const;
-
-        /**
-         * This function calculates the dislocation viscosity for a given
-         * dislocation strain rate.
-         */
-        double dislocation_viscosity_fixed_strain_rate (const double      temperature,
-                                                        const double      pressure,
-                                                        const std::vector<double> &,
-                                                        const SymmetricTensor<2,dim> &dislocation_strain_rate,
-                                                        const Point<dim> &position) const;
 
         double density (const double temperature,
                         const double pressure,
@@ -335,7 +325,7 @@ namespace aspect
                            const SymmetricTensor<2,dim> &strain_rate,
                            const Tensor<1,dim>          &velocity,
                            const Point<dim>             &position,
-                           const unsigned int            phase_index,
+                           const unsigned int            grain_size_index,
                            const int                     crossed_transition) const;
 
         /**
@@ -408,7 +398,16 @@ namespace aspect
          * material data files. There is one pointer/object per compositional
          * field provided.
          */
-        std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup> > material_lookup;
+        std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup>> material_lookup;
+
+        /**
+         * We cache the evaluators that are necessary to evaluate the temperature
+         * and pressure at the vertices of the current cell.
+         * By caching the evaluators, we can avoid recreating them
+         * every time we need them.
+         */
+        mutable std::unique_ptr<FEPointEvaluation<1, dim>> temperature_evaluator;
+        mutable std::unique_ptr<FEPointEvaluation<1, dim>> pressure_evaluator;
     };
 
   }

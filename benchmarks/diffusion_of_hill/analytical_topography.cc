@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -42,18 +42,15 @@ namespace aspect
     AnalyticalTopography<dim>::execute (TableHandler &statistics)
     {
       // Only allow use of the plugin with the box geometry model
-      AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()) ||
-                  Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()),
+      AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model()) ||
+                  Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()),
                   ExcMessage("Topography postprocessor is only implemented for the box geometry model. ") );
 
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
 
       // Get a quadrature rule that exists only on the corners
-#if DEAL_II_VERSION_GTE(9,3,0)
       const QTrapezoid<dim-1> face_corners;
-#else
-      const QTrapez<dim-1> face_corners;
-#endif
+
       FEFaceValues<dim> face_vals (this->get_mapping(), this->get_fe(), face_corners, update_quadrature_points);
 
       // have a stream into which we write the data. the text stream is then
@@ -73,11 +70,7 @@ namespace aspect
       // loop over all of the surface cells and save the elevation to stored_value
       for (const auto &cell : this->get_triangulation().active_cell_iterators())
         if (cell->is_locally_owned() && cell->at_boundary())
-#if DEAL_II_VERSION_GTE(9,3,0)
           for (const unsigned int face_no : cell->face_indices())
-#else
-          for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
-#endif
             if (cell->face(face_no)->at_boundary())
               {
                 if ( cell->face(face_no)->boundary_id() != relevant_boundary)
@@ -326,7 +319,7 @@ namespace aspect
         prm.enter_subsection("Topography");
         {
           prm.declare_entry ("Output to file", "false",
-                             Patterns::List(Patterns::Bool()),
+                             Patterns::Bool(),
                              "Whether or not to write topography to a text file named named "
                              "'topography.NNNNN' in the output directory.");
           prm.declare_entry ("Time between text output", "0.",

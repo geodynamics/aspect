@@ -4,7 +4,7 @@
 
 # MPI: 2
 
-set Adiabatic surface temperature          = 1600               # default: 0
+set Adiabatic surface temperature          = 1600
 set CFL number                             = 1.0
 set Maximum time step                      = 1e6
 set Nonlinear solver scheme                = iterated Advection and Stokes
@@ -46,8 +46,8 @@ subsection Boundary temperature model
   set List of model names = initial temperature
 
   subsection Initial temperature
-    set Minimal temperature = 293 # default: 6000
-    set Maximal temperature = 3700  # default: 0
+    set Minimal temperature = 293
+    set Maximal temperature = 3700
   end
 end
 
@@ -140,8 +140,8 @@ subsection Mesh refinement
   set Coarsening fraction                      = 0.05
   set Refinement fraction                      = 0.8
 
-  set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 3                    # default: 2
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 3
   set Strategy                                 = composition threshold, minimum refinement function #, nonadiabatic temperature
   set Time steps between mesh refinement       = 0
 

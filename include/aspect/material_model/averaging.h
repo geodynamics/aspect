@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -122,13 +122,6 @@ namespace aspect
          */
         bool is_compressible () const override;
 
-        /**
-         * Method to calculate reference viscosity for the depth-dependent model. The reference
-         * viscosity is determined by evaluating the depth-dependent part of the viscosity at
-         * the mean depth of the model.
-         */
-        double reference_viscosity () const override;
-
 
 
       private:
@@ -148,7 +141,7 @@ namespace aspect
          */
         void
         average (const AveragingOperation averaging_operation,
-                 const std::vector<Point<dim> >    &position,
+                 const std::vector<Point<dim>>    &position,
                  std::vector<double>           &values_out) const;
         /**
          * The bell shape limit variable stores the maximum extend of the bell
@@ -163,7 +156,7 @@ namespace aspect
         /**
          * Pointer to the material model used as the base model
          */
-        std::unique_ptr<MaterialModel::Interface<dim> > base_model;
+        std::unique_ptr<MaterialModel::Interface<dim>> base_model;
     };
   }
 }

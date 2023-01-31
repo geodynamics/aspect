@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,7 +20,6 @@
 
 
 #include <aspect/heating_model/shear_heating.h>
-#include <aspect/material_model/grain_size.h>
 
 
 namespace aspect
@@ -42,8 +41,8 @@ namespace aspect
 
       // Some material models provide dislocation viscosities and boundary area work fractions
       // as additional material outputs. If they are attached, use them.
-      const MaterialModel::DislocationViscosityOutputs<dim> *disl_viscosities_out =
-        material_model_outputs.template get_additional_output<MaterialModel::DislocationViscosityOutputs<dim> >();
+      const ShearHeatingOutputs<dim> *shear_heating_out =
+        material_model_outputs.template get_additional_output<ShearHeatingOutputs<dim>>();
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
@@ -61,17 +60,18 @@ namespace aspect
 
           heating_model_outputs.heating_source_terms[q] = stress * deviatoric_strain_rate;
 
-          // If dislocation viscosities and boundary area work fractions are provided, reduce the
-          // overall heating by this amount (which is assumed to increase surface energy)
-          if (disl_viscosities_out != nullptr)
+          // If shear heating work fractions are provided, reduce the
+          // overall heating by this amount (which is assumed to be converted into other forms of energy)
+          if (shear_heating_out != nullptr)
             {
-              heating_model_outputs.heating_source_terms[q] *= 1 - disl_viscosities_out->boundary_area_change_work_fractions[q] *
-                                                               material_model_outputs.viscosities[q] / disl_viscosities_out->dislocation_viscosities[q];
+              heating_model_outputs.heating_source_terms[q] *= shear_heating_out->shear_heating_work_fractions[q];
             }
 
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
     }
+
+
 
     template <int dim>
     void
@@ -79,6 +79,27 @@ namespace aspect
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
     {
       this->get_material_model().create_additional_named_outputs(material_model_outputs);
+    }
+
+
+
+    template <int dim>
+    ShearHeatingOutputs<dim>::ShearHeatingOutputs (const unsigned int n_points)
+      :
+      MaterialModel::NamedAdditionalMaterialOutputs<dim>({"shear_heating_work_fraction"}),
+                  shear_heating_work_fractions(n_points, numbers::signaling_nan<double>())
+    {}
+
+
+
+    template <int dim>
+    std::vector<double>
+    ShearHeatingOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      (void) idx;
+      AssertIndexRange (idx, 0);
+
+      return shear_heating_work_fractions;
     }
   }
 }
@@ -96,5 +117,12 @@ namespace aspect
                                   "\\varepsilon \\mathbf 1 \\right) : \\left( \\varepsilon - \\frac{1}{3} "
                                   "\\text{tr} \\varepsilon \\mathbf 1 \\right)$ to the "
                                   "right-hand side of the temperature equation.")
+
+#define INSTANTIATE(dim) \
+  template class ShearHeatingOutputs<dim>;
+
+    ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
   }
 }

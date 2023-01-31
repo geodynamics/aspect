@@ -1,0 +1,71 @@
+# A simple setup for testing the gravity postprocessor using the
+# sample scheme 'map'.
+# See the corresponding section in the manual for more information.
+
+# General parameters
+set Dimension                              = 3
+set End time                               = 0
+set Output directory                       = output-gravity-mantle
+set Nonlinear solver scheme                = no Advection, no Stokes
+
+# Model geometry
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Inner radius  = 3480e3
+    set Outer radius  = 6251e3
+  end
+end
+
+# Material model
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density             = 3300
+    set Thermal expansion coefficient = 3e-5
+  end
+end
+
+# Model initial temperature
+subsection Initial temperature model
+set Model name = S40RTS perturbation
+  subsection S40RTS perturbation
+    set Initial condition file name       = S40RTS.sph
+    set Spline knots depth file name      = Spline_knots.txt
+    set Remove degree 0 from perturbation = false
+    set Vs to density scaling             = 0.15
+    set Thermal expansion coefficient in initial temperature scaling = 3e-5
+    set Reference temperature             = 0
+  end
+end
+
+# Model gravity
+subsection Gravity model
+  set Model name = radial constant
+end
+
+# Mesh refinement
+subsection Mesh refinement
+  set Initial global refinement = 3
+end
+
+# Postprocessing
+subsection Postprocess
+  set List of postprocessors = gravity calculation,visualization, material statistics
+  subsection Visualization
+    set List of output variables = density, viscosity
+    set Time between graphical output = 0
+    set Interpolate output = false
+  end
+  subsection Gravity calculation
+    set Sampling scheme = map
+    set Minimum radius = 6621e3
+    set Minimum longitude = -180
+    set Maximum longitude = 179
+    set Number points longitude = 180
+    set Minimum latitude = -90
+    set Maximum latitude = +90
+    set Number points latitude  = 90
+    set Quadrature degree increase = 01
+  end
+end

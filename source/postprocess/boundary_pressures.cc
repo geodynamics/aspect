@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,13 +33,11 @@ namespace aspect
     std::pair<std::string,std::string>
     BoundaryPressures<dim>::execute (TableHandler &statistics)
     {
-      const QGauss<dim-1> quadrature_formula_face (this->get_fe()
-                                                   .base_element(this->introspection().base_elements.pressure)
-                                                   .degree+1);
+      const Quadrature<dim-1> &quadrature_formula = this->introspection().face_quadratures.pressure;
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
-                                        quadrature_formula_face,
+                                        quadrature_formula,
                                         update_values |
                                         update_gradients |
                                         update_quadrature_points |
@@ -50,26 +48,28 @@ namespace aspect
       double local_top_area = 0.;
       double local_bottom_area = 0.;
 
-      std::vector<double> pressure_vals( fe_face_values.n_quadrature_points );
+      std::vector<double> pressure_vals (fe_face_values.n_quadrature_points);
+
+      const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      const types::boundary_id bottom_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
 
       // loop over all of the surface cells and if one less than h/3 away from
       // the top or bottom surface, evaluate the pressure on that face
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned() && cell->at_boundary())
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             {
               bool cell_at_top = false;
               bool cell_at_bottom = false;
 
               // Test for top or bottom surface cell faces
-              if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
-                  < cell->face(f)->minimum_vertex_distance()/3.)
+              if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                 cell_at_top = true;
-              if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
-                  > (this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.))
+              if (cell->at_boundary(f) && cell->face(f)->boundary_id() == bottom_boundary_id)
                 cell_at_bottom = true;
 
-              if ( cell_at_top || cell_at_bottom )
+
+              if (cell_at_top || cell_at_bottom)
                 {
                   // evaluate the pressure on the face
                   fe_face_values.reinit (cell, f);
@@ -110,10 +110,10 @@ namespace aspect
         const char *columns[] = { "Pressure at top (Pa)",
                                   "Pressure at bottom (Pa)"
                                 };
-        for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+        for (auto &column : columns)
           {
-            statistics.set_precision (columns[i], 8);
-            statistics.set_scientific (columns[i], true);
+            statistics.set_precision (column, 8);
+            statistics.set_scientific (column, true);
           }
       }
 

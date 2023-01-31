@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -60,7 +60,7 @@ namespace aspect
          * Destructor. Made virtual to enforce that derived classes also have
          * virtual destructors.
          */
-        virtual ~Interface();
+        virtual ~Interface() = default;
 
         /**
          * Initialization function. This function is called once at the
@@ -162,7 +162,7 @@ namespace aspect
         register_initial_temperature (const std::string &name,
                                       const std::string &description,
                                       void (*declare_parameters_function) (ParameterHandler &),
-                                      Interface<dim> *(*factory_function) ());
+                                      std::unique_ptr<Interface<dim>> (*factory_function) ());
 
 
         /**
@@ -176,7 +176,7 @@ namespace aspect
          * Return a list of pointers to all initial temperature models
          * currently used in the computation, as specified in the input file.
          */
-        const std::list<std::unique_ptr<Interface<dim> > > &
+        const std::list<std::unique_ptr<Interface<dim>>> &
         get_active_initial_temperature_conditions () const;
 
         /**
@@ -240,7 +240,7 @@ namespace aspect
          * A list of initial temperature objects that have been requested in the
          * parameter file.
          */
-        std::list<std::unique_ptr<Interface<dim> > > initial_temperature_objects;
+        std::list<std::unique_ptr<Interface<dim>>> initial_temperature_objects;
 
         /**
          * A list of names of initial temperature objects that have been requested
@@ -297,8 +297,8 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "initial temperature model in the input file."));
 
-      typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator initial_temperature_model;
-      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
+      typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator initial_temperature_model;
+      for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
            p = initial_temperature_objects.begin();
            p != initial_temperature_objects.end(); ++p)
         if (Plugins::plugin_type_matches<InitialTemperatureType>(*(*p)))
@@ -333,10 +333,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::InitialTemperature::Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::InitialTemperature::Interface<2>,classname<2>> \
     dummy_ ## classname ## _2d (&aspect::InitialTemperature::Manager<2>::register_initial_temperature, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::InitialTemperature::Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::InitialTemperature::Interface<3>,classname<3>> \
     dummy_ ## classname ## _3d (&aspect::InitialTemperature::Manager<3>::register_initial_temperature, \
                                 name, description); \
   }

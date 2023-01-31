@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -42,8 +42,8 @@ namespace aspect
      * The viscosity is computed according to the Drucker Prager frictional
      * plasticity criterion based on a user-defined internal angle of friction $\phi$
      * and cohesion $C$. In 3D:
-     * $\sigma_y = \frac{6 C \cos(\phi)}{\sqrt(3) (3+\sin(\phi))} +
-     * \frac{2 P \sin(\phi)}{\sqrt(3) (3+\sin(\phi))}$,
+     * $\sigma_y = \frac{6 C \cos(\phi)}{\sqrt{3} (3+\sin(\phi))} +
+     * \frac{6 P \sin(\phi)}{\sqrt{3} (3+\sin(\phi))}$,
      * where $P$ is the pressure.
      * See for example Zienkiewicz, O. C., Humpheson, C. and Lewis, R. W. (1975),
      * G&eacute;otechnique 25, No. 4, 671-689.
@@ -111,15 +111,6 @@ namespace aspect
          */
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        double reference_viscosity () const override;
-        /**
-         * @}
-         */
-
-        /**
          * @name Functions used in dealing with run-time parameters
          * @{
          */
@@ -142,7 +133,6 @@ namespace aspect
       private:
 
         double reference_T;
-        double reference_eta;
         double thermal_conductivities;
 
         EquationOfState::LinearizedIncompressible<dim> equation_of_state;

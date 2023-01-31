@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -68,6 +68,16 @@ namespace aspect
                                                   boundary_id,
                                                   function,
                                                   mesh_velocity_constraints);
+    }
+
+
+
+    template <int dim>
+    bool
+    BoundaryFunction<dim>::
+    needs_surface_stabilization () const
+    {
+      return false;
     }
 
 

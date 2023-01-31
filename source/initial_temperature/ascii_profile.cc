@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -31,7 +31,7 @@ namespace aspect
   {
     template <int dim>
     AsciiProfile<dim>::AsciiProfile ()
-    {}
+      = default;
 
 
     template <int dim>

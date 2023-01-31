@@ -37,61 +37,61 @@ Number of degrees of freedom: 9,109 (3,518+448+1,759+3,384)
    Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 5774
-     RMS, max velocity:            0.0138 m/year, 0.0374 m/year
-     Compositions min/max/mass:    0/1/1.566e+10
+     Number of advected particles: 5770
+     RMS, max velocity:            0.0138 m/year, 0.0373 m/year
+     Compositions min/max/mass:    0/1/1.565e+10
 
 Number of active cells: 376 (on 7 levels)
 Number of degrees of freedom: 9,109 (3,518+448+1,759+3,384)
 
-*** Timestep 2:  t=224283 years, dt=110967 years
+*** Timestep 2:  t=224388 years, dt=111073 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Number of advected particles: 5877
-     RMS, max velocity:            0.014 m/year, 0.0379 m/year
-     Compositions min/max/mass:    0/1/1.563e+10
+     RMS, max velocity:            0.014 m/year, 0.0378 m/year
+     Compositions min/max/mass:    0/1/1.569e+10
 
 Number of active cells: 364 (on 7 levels)
 Number of degrees of freedom: 8,858 (3,430+437+1,715+3,276)
 
-*** Timestep 3:  t=332606 years, dt=108323 years
+*** Timestep 3:  t=332958 years, dt=108569 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 5953
+     Number of advected particles: 5941
      RMS, max velocity:            0.0141 m/year, 0.0381 m/year
-     Compositions min/max/mass:    0/1/1.562e+10
+     Compositions min/max/mass:    0/1/1.568e+10
 
 Number of active cells: 370 (on 7 levels)
 Number of degrees of freedom: 9,042 (3,510+447+1,755+3,330)
 
-*** Timestep 4:  t=446275 years, dt=113669 years
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27+0 iterations.
-
-   Postprocessing:
-     Number of advected particles: 6039
-     RMS, max velocity:            0.0142 m/year, 0.0384 m/year
-     Compositions min/max/mass:    0/1/1.558e+10
-
-Number of active cells: 394 (on 7 levels)
-Number of degrees of freedom: 9,492 (3,654+465+1,827+3,546)
-
-*** Timestep 5:  t=500000 years, dt=53725.5 years
+*** Timestep 4:  t=446755 years, dt=113797 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 26+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 6115
-     RMS, max velocity:            0.0143 m/year, 0.0388 m/year
-     Compositions min/max/mass:    0/1/1.562e+10
+     Number of advected particles: 6036
+     RMS, max velocity:            0.0143 m/year, 0.0385 m/year
+     Compositions min/max/mass:    0/1/1.564e+10
+
+Number of active cells: 400 (on 7 levels)
+Number of degrees of freedom: 9,624 (3,702+471+1,851+3,600)
+
+*** Timestep 5:  t=500000 years, dt=53244.8 years
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 6139
+     RMS, max velocity:            0.0144 m/year, 0.0388 m/year
+     Compositions min/max/mass:    0/1/1.567e+10
 
 Number of active cells: 406 (on 7 levels)
 Number of degrees of freedom: 9,743 (3,742+476+1,871+3,654)

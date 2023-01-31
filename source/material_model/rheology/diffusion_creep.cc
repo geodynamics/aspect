@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -35,7 +35,7 @@ namespace aspect
     {
       template <int dim>
       DiffusionCreep<dim>::DiffusionCreep ()
-      {}
+        = default;
 
 
 
@@ -43,7 +43,7 @@ namespace aspect
       const DiffusionCreepParameters
       DiffusionCreep<dim>::compute_creep_parameters (const unsigned int composition,
                                                      const std::vector<double> &phase_function_values,
-                                                     const std::vector<unsigned int> &n_phases_per_composition) const
+                                                     const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         DiffusionCreepParameters creep_parameters;
         if (phase_function_values == std::vector<double>())
@@ -58,15 +58,15 @@ namespace aspect
         else
           {
             // Average among phases
-            creep_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                          prefactors_diffusion, composition,  MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
-            creep_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  activation_energies_diffusion, composition);
-            creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  activation_volumes_diffusion, composition);
-            creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                stress_exponents_diffusion, composition);
-            creep_parameters.grain_size_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.grain_size_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                    grain_size_exponents_diffusion, composition);
           }
         return creep_parameters;
@@ -80,14 +80,14 @@ namespace aspect
                                               const double temperature,
                                               const unsigned int composition,
                                               const std::vector<double> &phase_function_values,
-                                              const std::vector<unsigned int> &n_phases_per_composition) const
+                                              const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         const DiffusionCreepParameters p = compute_creep_parameters(composition,
                                                                     phase_function_values,
-                                                                    n_phases_per_composition);
+                                                                    n_phase_transitions_per_composition);
 
         // Power law creep equation
-        //    viscosity = 0.5 * A^(-1/n) * d^(m/n) * exp((E + P*V)/(nRT))
+        //    viscosity = 0.5 * A^(-1) * d^(m) * exp((E + P*V)/(RT))
         // A: prefactor,
         // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
         // V; activation volume, R: gas constant, T: temperature.
@@ -99,7 +99,8 @@ namespace aspect
 
         Assert (viscosity_diffusion > 0.0,
                 ExcMessage ("Negative diffusion viscosity detected. This is unphysical and should not happen. "
-                            "Check for negative parameters."));
+                            "Check for negative parameters. Temperature and pressure are "
+                            + Utilities::to_string(temperature) + " K, " + Utilities::to_string(pressure) + " Pa. "));
 
         // Creep viscosities become extremely large at low
         // temperatures and can therefore provoke floating-point overflow errors. In
@@ -182,7 +183,7 @@ namespace aspect
       template <int dim>
       void
       DiffusionCreep<dim>::parse_parameters (ParameterHandler &prm,
-                                             const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
+                                             const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
         // Retrieve the list of composition names
         const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
@@ -222,6 +223,15 @@ namespace aspect
                                                                             true,
                                                                             expected_n_phases_per_composition);
         grain_size = prm.get_double("Grain size");
+
+        // Check that there are no entries set to zero,
+        // for example because the entry is for a field
+        // that is masked anyway, like strain. Despite
+        // these compositions being masked, their viscosities
+        // are computed anyway and this will lead to division by zero.
+        for (const double prefactor : prefactors_diffusion)
+          AssertThrow(prefactor > 0.,
+                      ExcMessage("The diffusion prefactor should be larger than zero."));
       }
     }
   }

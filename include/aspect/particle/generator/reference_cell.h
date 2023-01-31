@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+ Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -47,11 +47,17 @@ namespace aspect
            * Uniform here means the particles will be generated with
            * an equal spacing in each spatial dimension.
            *
-           * @param [in,out] particles A multimap between cells and their
-           * particles. This map will be filled in this function.
+           * @param [in,out] particle_handler The particle handler into which
+           * the generated particles should be inserted.
            */
           void
-          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles) override;
+          generate_particles(Particles::ParticleHandler<dim> &particle_handler) override;
+
+          // avoid -Woverloaded-virtual
+          // TODO: remove this using directive once the following deprecated
+          // function in the interface class has been removed:
+          // generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
+          using Generator::Interface<dim>::generate_particles;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -72,7 +78,7 @@ namespace aspect
            *
            * @return A vector container of points each of size dim.
            */
-          std::vector<Point<dim> > generate_particle_positions_in_unit_cell();
+          std::vector<Point<dim>> generate_particle_positions_in_unit_cell();
 
           /**
            * Number of particles to create for each spatial dimension as

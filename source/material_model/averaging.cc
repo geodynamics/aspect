@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -64,7 +64,7 @@ namespace aspect
     template <int dim>
     void
     Averaging<dim>::average (const AveragingOperation averaging_operation,
-                             const std::vector<Point<dim> >    &position,
+                             const std::vector<Point<dim>>    &position,
                              std::vector<double>           &values_out) const
     {
       // if an output field has not been filled (because it was
@@ -394,7 +394,7 @@ namespace aspect
           // create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
           // leave the current section
-          base_model.reset(create_material_model<dim>(prm.get("Base model")));
+          base_model = create_material_model<dim>(prm.get("Base model"));
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
             sim->initialize_simulator (this->get_simulator());
 
@@ -417,14 +417,6 @@ namespace aspect
     is_compressible () const
     {
       return base_model->is_compressible();
-    }
-
-    template <int dim>
-    double
-    Averaging<dim>::
-    reference_viscosity() const
-    {
-      return base_model->reference_viscosity();
     }
   }
 }

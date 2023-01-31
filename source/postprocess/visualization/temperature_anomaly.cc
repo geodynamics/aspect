@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -37,9 +37,11 @@ namespace aspect
       TemperatureAnomaly ()
         :
         DataPostprocessorScalar<dim> ("temperature_anomaly",
-                                      update_values | update_quadrature_points )
-      {
-      }
+                                      update_values | update_quadrature_points ),
+        Interface<dim>("K")
+      {}
+
+
 
       template <int dim>
       void
@@ -81,11 +83,12 @@ namespace aspect
       }
 
 
+
       template <int dim>
       void
       TemperatureAnomaly<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const double max_depth = this->get_geometry_model().maximal_depth();
         const unsigned int n_quadrature_points = input_data.solution_values.size();
@@ -106,6 +109,8 @@ namespace aspect
             computed_quantities[q](0) = temperature - depth_average_temperature;
           }
       }
+
+
 
       template <int dim>
       void
@@ -138,6 +143,9 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
+
+
       template <int dim>
       void
       TemperatureAnomaly<dim>::parse_parameters(ParameterHandler &prm)
@@ -174,7 +182,9 @@ namespace aspect
                                                   "temperature anomaly",
                                                   "A visualization output postprocessor that outputs the temperature minus the depth-average of the temperature."
                                                   "The average temperature is calculated using the lateral averaging function from the ``depth average'' "
-                                                  "postprocessor and interpolated linearly between the layers specified through ``Number of depth slices''")
+                                                  "postprocessor and interpolated linearly between the layers specified through ``Number of depth slices''."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\kelvin}.")
     }
   }
 }

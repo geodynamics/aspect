@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,6 +33,7 @@
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/two_merged_boxes.h>
+#include <aspect/geometry_model/two_merged_chunks.h>
 
 namespace aspect
 {
@@ -93,6 +94,8 @@ namespace aspect
         spherical_representative_point[0] = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()).outer_radius();
       else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
         spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>(this->get_geometry_model()).outer_radius();
+      else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (this->get_geometry_model()))
+        spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()).outer_radius();
       else if (Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>> (this->get_geometry_model()))
         {
           const GeometryModel::EllipsoidalChunk<dim> &gm = Plugins::get_plugin_as_type<const GeometryModel::EllipsoidalChunk<dim>> (this->get_geometry_model());
@@ -119,6 +122,7 @@ namespace aspect
       // Set up the input for the density function of the material model.
       typename MaterialModel::Interface<dim>::MaterialModelInputs in0(1, n_compositional_fields);
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out0(1, n_compositional_fields);
+      in0.requested_properties = MaterialModel::MaterialProperties::density;
 
       // Where to calculate the density
       // for cartesian domains
@@ -139,8 +143,11 @@ namespace aspect
       for (unsigned int c=0; c<n_compositional_fields; ++c)
         in0.composition[0][c] = this->get_initial_composition_manager().initial_composition(in0.position[0], c);
 
-      // We do not need the viscosity.
-      in0.strain_rate.resize(0);
+      // Hopefully the material model won't needed in0.strain_rate, we
+      // leave it as NaNs.
+
+      // We set all entries of the velocity vector to zero since this is the lithostatic case.
+      in0.velocity[0] = Tensor<1,dim> ();
 
       // Evaluate the material model to get the density.
       this->get_material_model().evaluate(in0, out0);
@@ -166,6 +173,7 @@ namespace aspect
           // Set up the input for the density function of the material model
           typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, n_compositional_fields);
           typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, n_compositional_fields);
+          in.requested_properties = MaterialModel::MaterialProperties::density;
 
           // Where to calculate the density:
           // for cartesian domains
@@ -193,8 +201,11 @@ namespace aspect
           for (unsigned int c=0; c<n_compositional_fields; ++c)
             in.composition[0][c] = this->get_initial_composition_manager().initial_composition(in.position[0], c);
 
-          // We do not need the viscosity.
-          in.strain_rate.resize(0);
+          // We only need the density from the material model
+          in.requested_properties = MaterialModel::MaterialProperties::density;
+
+          // We set all entries of the velocity vector to zero since this is the lithostatic case.
+          in.velocity[0] = Tensor<1,dim> ();
 
           // Evaluate the material model to get the density at the current point.
           this->get_material_model().evaluate(in, out);

@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: RMS velocity (m/s)
+# 12: Max. velocity (m/s)
+# 13: Minimal temperature (K)
+# 14: Average temperature (K)
+# 15: Maximal temperature (K)
+# 16: Average nondimensional temperature (K)
+# 17: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 18: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 19: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 20: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 21: Visualization file name
+# 22: Minimum topography (m)
+# 23: Maximum topography (m)
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089  0 11 13 13 8.58206668e+00 1.27931155e+01 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 0.00000000e+00 0.00000000e+00 -1.00000204e+00 1.00000213e+00 output-gmg_mesh_deform_topo/solution/solution-00000  0.00000000e+00 0.00000000e+00 
+1 2.400000000000e-03 2.400000000000e-03 256 2467 1089 21 18 20 20 3.19215830e+01 1.24762171e+02 0.00000000e+00 5.24260643e-01 1.00000000e+00 5.24260643e-01 0.00000000e+00 0.00000000e+00 -1.00988061e+00 3.67900600e+00 output-gmg_mesh_deform_topo/solution/solution-00001 -1.76974492e-01 0.00000000e+00 

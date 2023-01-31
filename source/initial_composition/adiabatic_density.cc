@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,7 +32,7 @@ namespace aspect
     AdiabaticDensity<dim>::
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
     {
-      if (n_comp == this->introspection().compositional_index_for_name("density_field"))
+      if (n_comp == this->introspection().find_composition_type(CompositionalFieldDescription::density))
         return this->get_adiabatic_conditions().density(position);
 
       return 0.0;
@@ -48,7 +48,7 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(AdiabaticDensity,
                                               "adiabatic density",
                                               "Specify the initial composition as the adiabatic reference density at "
-                                              "each position. Note that only the field with the name 'density\\_field' "
-                                              "will be filled for all other fields this plugin returns 0.0.")
+                                              "each position. Note that only the field of the type 'density' "
+                                              "will be filled. For all other fields this plugin returns 0.0.")
   }
 }

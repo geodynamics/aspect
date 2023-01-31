@@ -1,0 +1,6 @@
+New: There is now a new mesh refinement plugin called
+"Nonadiabatic temperature threshold" that uses the temperature
+anomaly (compared to the adiabat) to mark additional cells for
+refinement.
+<br>
+(Juliane Dannberg, 2023/01/17)

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -98,8 +98,6 @@ namespace aspect
          */
         bool is_compressible () const override;
 
-        double reference_viscosity () const override;
-
         static
         void
         declare_parameters (ParameterHandler &prm);
@@ -121,10 +119,9 @@ namespace aspect
          * which involves a division by the strain rate. Units: 1/s.
          */
         double min_strain_rate;
-        double min_visc;
-        double max_visc;
+        double minimum_viscosity;
+        double maximum_viscosity;
         double veff_coefficient;
-        double ref_visc;
 
         double strain_rate_residual_threshold;
         unsigned int stress_max_iteration_number;

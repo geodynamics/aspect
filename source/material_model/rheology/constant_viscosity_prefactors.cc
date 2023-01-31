@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,7 @@ namespace aspect
     {
       template <int dim>
       ConstantViscosityPrefactors<dim>::ConstantViscosityPrefactors ()
-      {}
+        = default;
 
 
 
@@ -65,12 +65,16 @@ namespace aspect
       void
       ConstantViscosityPrefactors<dim>::parse_parameters (ParameterHandler &prm)
       {
-        // increment by one for background:
-        const unsigned int n_fields = this->n_compositional_fields() + 1;
+        // Retrieve the list of composition names
+        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-        constant_viscosity_prefactors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Constant viscosity prefactors"))),
-                                                                                n_fields,
-                                                                                "Constant viscosity prefactors");
+        // Establish that a background field is required here
+        const bool has_background_field = true;
+
+        constant_viscosity_prefactors = Utilities::parse_map_to_double_array (prm.get("Constant viscosity prefactors"),
+                                                                              list_of_composition_names,
+                                                                              has_background_field,
+                                                                              "Constant viscosity prefactors");
       }
     }
   }

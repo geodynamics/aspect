@@ -1,0 +1,11 @@
+subsection Formulation
+  set Mass conservation = projected density field
+  set Temperature equation = real density
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = density_field
+  set Types of fields = density
+  set Compositional field methods = prescribed field
+end

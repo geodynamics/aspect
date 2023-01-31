@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -25,12 +25,11 @@
 #include <aspect/simulator_access.h>
 
 #include <deal.II/particles/particle.h>
+#include <deal.II/particles/generators.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/exceptions.h>
 
-DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-#include <boost/random.hpp>
-DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
+#include <random>
 
 #include <map>
 
@@ -78,7 +77,7 @@ namespace aspect
            * Destructor. Made virtual so that derived classes can be created
            * and destroyed through pointers to the base class.
            */
-          ~Interface () override;
+          ~Interface () override = default;
 
           /**
            * Initialization function. This function is called once at the
@@ -103,9 +102,25 @@ namespace aspect
            * @param [in,out] particles A multimap between cells and their
            * particles. This map will be filled in this function.
            */
+          DEAL_II_DEPRECATED
           virtual
           void
-          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles) = 0;
+          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles);
+
+          /**
+           * Generate particles. Every derived class
+           * has to decide on the method and number of particles to generate,
+           * for example using input parameters declared in their
+           * declare_parameters and parse_parameters functions. This function
+           * should generate the particles and insert them into @p particle_handler
+           * by calling its respective functions.
+           *
+           * @param [in,out] particle_handler The particle handler into which
+           * the generated particles should be inserted.
+           */
+          virtual
+          void
+          generate_particles(Particles::ParticleHandler<dim> &particle_handler);
 
           /**
            * Generate one particle in the given cell. This function's main purpose
@@ -113,7 +128,7 @@ namespace aspect
            * after refinement. Of course it can also be utilized by derived classes
            * to generate the initial particle distribution.
            */
-          std::pair<Particles::internal::LevelInd,Particle<dim> >
+          std::pair<Particles::internal::LevelInd,Particle<dim>>
           generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
                              const types::particle_index id);
 
@@ -146,16 +161,45 @@ namespace aspect
            * In case the position is not in the local domain this function
            * throws an exception of type ExcParticlePointNotInDomain, which
            * can be caught in the calling plugin.
+           *
+           * @deprecated: This function uses an old return type and is deprecated.
+           * Use the insert_particle_at_position() function below instead.
            */
-          std::pair<Particles::internal::LevelInd,Particle<dim> >
+          DEAL_II_DEPRECATED
+          std::pair<Particles::internal::LevelInd,Particle<dim>>
           generate_particle(const Point<dim> &position,
                             const types::particle_index id) const;
+
+          /**
+           * Generate a particle at the specified position and with the
+           * specified id and insert it into the @p particle_handler.
+           * Many derived classes use this functionality,
+           * therefore it is implemented here to avoid duplication.
+           * In case the position is not in the local domain this function
+           * throws an exception of type ExcParticlePointNotInDomain, which
+           * can be caught in the calling plugin. Note that since the cell
+           * in which the particle is generated is not known, it has to be
+           * found, which is an expensive operation.
+           *
+           * @param position Position of the particle.
+           * @param id The id of the particle.
+           * @param particle_handler The particle handler into which the particle
+           * should be inserted.
+           *
+           * @return An iterator to the inserted particle. If the position was
+           * not in the local domain, an iterator to particle_handler.end() is
+           * returned.
+           */
+          Particles::ParticleIterator<dim>
+          insert_particle_at_position(const Point<dim> &position,
+                                      const types::particle_index id,
+                                      Particles::ParticleHandler<dim> &particle_handler) const;
 
           /**
            * Random number generator. For reproducibility of tests it is
            * initialized in the constructor with a constant.
            */
-          boost::mt19937            random_number_generator;
+          std::mt19937            random_number_generator;
       };
 
       /**
@@ -178,7 +222,7 @@ namespace aspect
       register_particle_generator (const std::string &name,
                                    const std::string &description,
                                    void (*declare_parameters_function) (ParameterHandler &),
-                                   Interface<dim> *(*factory_function) ());
+                                   std::unique_ptr<Interface<dim>> (*factory_function) ());
 
       /**
        * A function that given the name of a model returns a pointer to an
@@ -191,7 +235,7 @@ namespace aspect
        * @ingroup ParticleGenerators
        */
       template <int dim>
-      Interface<dim> *
+      std::unique_ptr<Interface<dim>>
       create_particle_generator (ParameterHandler &prm);
 
       /**
@@ -230,10 +274,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_PARTICLE_GENERATOR_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<2>,classname<2 > > \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<2>,classname<2 >> \
     dummy_ ## classname ## _2d (&aspect::Particle::Generator::register_particle_generator<2>, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<3>,classname<3>> \
     dummy_ ## classname ## _3d (&aspect::Particle::Generator::register_particle_generator<3>, \
                                 name, description); \
   }

@@ -10,7 +10,7 @@ set End time                               = 0
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
-set Use years in output instead of seconds = false  # default: true
+set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 
 

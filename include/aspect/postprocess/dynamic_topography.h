@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -88,7 +88,7 @@ namespace aspect
          * Output the dynamic topography solution to
          * a file.
          */
-        void output_to_file(bool upper, std::vector<std::pair<Point<dim>, double> > &values);
+        void output_to_file(bool upper, std::vector<std::pair<Point<dim>, double>> &values);
 
         /**
          * A vector which stores the surface stress values calculated

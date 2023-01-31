@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+ Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -62,7 +62,7 @@ namespace aspect
 
     // Variables to do volume calculations
 
-    QGauss<dim> quadrature(max_degree);
+    const QGauss<dim> quadrature(max_degree);
 
     std::vector<double> xFEM_values(quadrature.size());
 
@@ -321,9 +321,9 @@ namespace aspect
               const std::vector<double> weights = fevalues.get_JxW_values();
 
               double cell_vol = 0.0;
-              for (unsigned int j=0; j<weights.size(); ++j)
+              for (const double weight : weights)
                 {
-                  cell_vol+=weights[j];
+                  cell_vol+=weight;
                 }
               for (unsigned int nind = 0; nind < n_candidate_normals; ++nind)
                 {
@@ -359,9 +359,9 @@ namespace aspect
                 const std::vector<double> weights = fevalues.get_JxW_values();
 
                 double cell_vol = 0.0;
-                for (unsigned int j=0; j<weights.size(); ++j)
+                for (const double weight : weights)
                   {
-                    cell_vol+=weights[j];
+                    cell_vol+=weight;
                   }
 
                 for (unsigned int nind = 0; nind < n_candidate_normals; ++nind)
@@ -457,7 +457,7 @@ namespace aspect
     const unsigned int volume_of_fluidN_c_index = volume_of_fluidN_var.first_component_index;
 
     const unsigned int base_element = composition_field.base_element(this->introspection());
-    const std::vector<Point<dim> > support_points = system_fe.base_element(base_element).get_unit_support_points();
+    const std::vector<Point<dim>> support_points = system_fe.base_element(base_element).get_unit_support_points();
 
     for (auto cell : this->get_dof_handler().active_cell_iterators ())
       {

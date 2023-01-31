@@ -13,6 +13,6 @@ subsection Solver parameters
 end
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0                       # default: 2
-  set Initial global refinement          = 3                       # default: 2
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
 end

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,7 +30,7 @@ namespace aspect
     {
       template <int dim>
       void
-      AsciiFile<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
+      AsciiFile<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
         const std::string filename = data_directory+data_filename;
 
@@ -50,15 +50,10 @@ namespace aspect
 
         while (in >> particle_position)
           {
-            // Try to add the particle. If it is not in this domain, do not
-            // worry about it and move on to next point.
-            try
-              {
-                particles.insert(this->generate_particle(particle_position,particle_index++));
-              }
-            catch (ExcParticlePointNotInDomain &)
-              {}
+            this->insert_particle_at_position(particle_position, particle_index, particle_handler);
+            ++particle_index;
           }
+        particle_handler.update_cached_numbers();
       }
 
 

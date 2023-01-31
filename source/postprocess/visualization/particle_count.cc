@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,11 +33,20 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
+      ParticleCount<dim>::
+      ParticleCount ()
+        :
+        CellDataVectorCreator<dim>("")  // no physical units
+      {}
+
+
+
+      template <int dim>
       std::pair<std::string, Vector<float> *>
       ParticleCount<dim>::execute() const
       {
         const Postprocess::Particles<dim> &particle_postprocessor =
-          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >();
+          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim>>();
 
         const Particle::ParticleHandler<dim> &particle_handler =
           particle_postprocessor.get_particle_world().get_particle_handler();
@@ -79,7 +88,9 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(ParticleCount,
                                                   "particle count",
                                                   "A visualization output object that generates output "
-                                                  "about the number of particles per cell.")
+                                                  "about the number of particles per cell."
+                                                  "\n\n"
+                                                  "Physical units: None.")
     }
   }
 }

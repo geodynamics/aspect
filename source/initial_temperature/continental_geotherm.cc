@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,7 @@ namespace aspect
   {
     template <int dim>
     ContinentalGeotherm<dim>::ContinentalGeotherm ()
-    {}
+      = default;
 
 
     template <int dim>
@@ -48,7 +48,7 @@ namespace aspect
                   ExcMessage("The continental geotherm initial temperature plugin requires the compositional heating plugin."));
 
       // Check that the required material model ("visco plastic") is used
-      AssertThrow(Plugins::plugin_type_matches<MaterialModel::ViscoPlastic<dim> >(this->get_material_model()),
+      AssertThrow(Plugins::plugin_type_matches<MaterialModel::ViscoPlastic<dim>>(this->get_material_model()),
                   ExcMessage("The continental geotherm initial temperature plugin requires the viscoplastic material model plugin."));
     }
 

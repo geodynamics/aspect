@@ -1,0 +1,11 @@
+subsection Material model
+  set Model name = Steinberger
+
+  # Parameters controlling the equation of state.
+  subsection Steinberger model
+    set Data directory         = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
+    set Material file names    = pyr-ringwood88.txt
+    set Bilinear interpolation = true
+    set Latent heat            = false
+  end
+end

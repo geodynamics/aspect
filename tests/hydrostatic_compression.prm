@@ -21,7 +21,7 @@ subsection Mesh refinement
 end
 
 
-set Adiabatic surface temperature          = 100.0               # default: 0
+set Adiabatic surface temperature          = 100.0
 set CFL number                             = 1.0
 
 # The number of space dimensions you want to run this program in.
@@ -63,7 +63,7 @@ end
 
 
 subsection Geometry model
-  set Model name = box # default:
+  set Model name = box
 
   subsection Box
     set X extent  = 1
@@ -89,7 +89,7 @@ end
 
 
 subsection Initial temperature model
-  set Model name = function # default:
+  set Model name = function
   subsection Function
     set Function expression = 100.0 + sin(2*pi*x) * cos(pi*z)
     set Variable names      = x,z
@@ -106,7 +106,7 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,1,2,3        # default:
+  set Fixed temperature boundary indicators   = 0,1,2,3
 end
 
 subsection Boundary velocity model

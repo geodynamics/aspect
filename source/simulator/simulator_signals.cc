@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -40,8 +40,8 @@ namespace aspect
   {
     namespace SimulatorSignals
     {
-      std::list<std::function<void (aspect::SimulatorSignals<2> &)> > connector_functions_2d;
-      std::list<std::function<void (aspect::SimulatorSignals<3> &)> > connector_functions_3d;
+      std::list<std::function<void (aspect::SimulatorSignals<2> &)>> connector_functions_2d;
+      std::list<std::function<void (aspect::SimulatorSignals<3> &)>> connector_functions_3d;
 
       static bool connector_functions_have_been_called = false;
 

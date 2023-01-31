@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,7 +33,8 @@ namespace aspect
       StrainRateTensor ()
         :
         DataPostprocessorTensor<dim> ("strain_rate_tensor",
-                                      update_gradients | update_quadrature_points)
+                                      update_gradients | update_quadrature_points),
+        Interface<dim>("1/s")
       {}
 
 
@@ -42,7 +43,7 @@ namespace aspect
       void
       StrainRateTensor<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points, ExcInternalError());
@@ -70,7 +71,7 @@ namespace aspect
                   = deviatoric_strain_rate[d][e];
           }
 
-        const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim> >();
+        const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim>>();
         if (!viz.output_pointwise_stress_and_strain())
           average_quantities(computed_quantities);
 
@@ -96,7 +97,9 @@ namespace aspect
                                                   "in the incompressible case and "
                                                   "$\\varepsilon(\\mathbf u)-"
                                                   "\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I$ "
-                                                  "in the compressible case.")
+                                                  "in the compressible case."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\per\\second}.")
     }
   }
 }

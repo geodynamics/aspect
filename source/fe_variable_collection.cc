@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,7 +30,7 @@ namespace aspect
 
   template <int dim>
   VariableDeclaration<dim>::VariableDeclaration(const std::string &name,
-                                                const std::shared_ptr<FiniteElement<dim> > &fe,
+                                                const std::shared_ptr<FiniteElement<dim>> &fe,
                                                 const unsigned int multiplicity,
                                                 const unsigned int n_blocks)
     : name(name),
@@ -49,7 +49,7 @@ namespace aspect
 
   template <int dim>
   VariableDeclaration<dim>::VariableDeclaration()
-  {}
+    = default;
 
   template <int dim>
   unsigned int
@@ -98,12 +98,12 @@ namespace aspect
 
   template <int dim>
   FEVariableCollection<dim>::FEVariableCollection()
-  {}
+    = default;
 
 
 
   template <int dim>
-  FEVariableCollection<dim>::FEVariableCollection(const std::vector<VariableDeclaration<dim> > &variable_definitions)
+  FEVariableCollection<dim>::FEVariableCollection(const std::vector<VariableDeclaration<dim>> &variable_definitions)
   {
     initialize(variable_definitions);
   }
@@ -112,7 +112,7 @@ namespace aspect
 
   template <int dim>
   void
-  FEVariableCollection<dim>::initialize(const std::vector<VariableDeclaration<dim> > &variable_definitions)
+  FEVariableCollection<dim>::initialize(const std::vector<VariableDeclaration<dim>> &variable_definitions)
   {
     variables.clear();
     variables.reserve(variable_definitions.size());
@@ -196,7 +196,7 @@ namespace aspect
 
 
   template <int dim>
-  const std::vector<FEVariable<dim> > &
+  const std::vector<FEVariable<dim>> &
   FEVariableCollection<dim>::get_variables() const
   {
     return variables;
@@ -253,7 +253,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template struct VariableDeclaration<dim>; \
   template struct FEVariable<dim>; \
-  template class FEVariableCollection<dim>; \
+  template class FEVariableCollection<dim>;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

@@ -36,6 +36,9 @@ namespace aspect
   {
     using namespace dealii;
 
+    template <int dim> struct MaterialModelOutputs;
+    template <int dim> struct EquationOfStateOutputs;
+
     /**
      * A namespace in which we define utility functions that
      * might be used in many different places in the material
@@ -89,10 +92,10 @@ namespace aspect
                   const double pressure) const;
 
             /**
-            * Computes the derivative of enthalpy for pressure, using the
-            * resolution of the read-in table to compute a finite-difference
-            * approximation of the derivative.
-            */
+             * Computes the derivative of enthalpy for pressure, using the
+             * resolution of the read-in table to compute a finite-difference
+             * approximation of the derivative.
+             */
             double
             dHdp (const double temperature,
                   const double pressure) const;
@@ -119,6 +122,21 @@ namespace aspect
                     const double pressure) const;
 
             /**
+             * Returns the index that indicates the phase with the largest volume
+             * fraction at a given temperature and pressure.
+             */
+            unsigned int
+            dominant_phase (const double temperature,
+                            const double pressure) const;
+
+            /**
+             * Returns whether a lookup has a column that indicates which is the
+             * phase with the largest volume fraction is this material.
+             */
+            bool
+            has_dominant_phase() const;
+
+            /**
              * Returns a vector of all the column names in the lookup file
              * that start with the character string vol_fraction_
              */
@@ -141,6 +159,16 @@ namespace aspect
             std::array<double,2>
             get_pT_steps() const;
 
+
+            /**
+             * Get the list of names of all of the dominant phases
+             * in a given lookup table as given by the phase column.
+             * The names of the phases are stored in the order they
+             * first appear in the table.
+             */
+            const std::vector<std::string> &
+            get_dominant_phase_names() const;
+
           protected:
             /**
              * Access that data value of the property that is stored in table
@@ -154,6 +182,16 @@ namespace aspect
                    const double pressure,
                    const Table<2, double> &values,
                    const bool interpol) const;
+
+            /**
+             * Access that data value of the property that is stored in table
+             * @p values at pressure @p pressure and temperature @p temperature
+             * using the closest point value.
+             */
+            unsigned int
+            value (const double temperature,
+                   const double pressure,
+                   const Table<2, unsigned int> &values) const;
 
             /**
              * Find the position in a data table given a temperature.
@@ -171,13 +209,14 @@ namespace aspect
             dealii::Table<2,double> vp_values;
             dealii::Table<2,double> vs_values;
             dealii::Table<2,double> enthalpy_values;
+            dealii::Table<2,unsigned int> dominant_phase_indices;
 
             /**
-            * The vector of column names corresponding to each phase,
-            * and a vector of tables containing the volume fractions of
-            * each phase at a given temperature and pressure.
-            * The ordering of both vectors is the same.
-            */
+             * The vector of column names corresponding to each phase,
+             * and a vector of tables containing the volume fractions of
+             * each phase at a given temperature and pressure.
+             * The ordering of both vectors is the same.
+             */
             std::vector<std::string> phase_column_names;
             std::vector<dealii::Table<2,double>> phase_volume_fractions;
 
@@ -192,6 +231,8 @@ namespace aspect
             unsigned int n_phases;
             unsigned int n_columns;
             bool interpolation;
+            bool has_dominant_phase_column;
+            std::vector<std::string> dominant_phase_names;
         };
 
         /**
@@ -220,7 +261,24 @@ namespace aspect
         };
       }
 
-
+      /**
+       * For multicomponent material models: Given a vector of compositional
+       * field values of length N, of which M indices correspond to mass or
+       * volume fractions, this function returns a vector of fractions
+       * of length M+1, corresponding to the fraction of a ``background
+       * material'' as the first entry, and fractions for each of the input
+       * fields as the following entries. The returned vector will sum to one.
+       * If the sum of the compositional_fields is greater than
+       * one, we assume that there is no background field (i.e., that field value
+       * is zero). Otherwise, the difference between the sum of the compositional
+       * fields and 1.0 is assumed to be the amount of the background field.
+       * This function makes no assumptions about the units of the
+       * compositional field values; for example, they could correspond to
+       * mass or volume fractions.
+       */
+      std::vector<double>
+      compute_only_composition_fractions(const std::vector<double> &compositional_fields,
+                                         const std::vector<unsigned int> &indices_to_use);
 
       /**
        * For multicomponent material models: Given a vector of compositional
@@ -257,7 +315,8 @@ namespace aspect
        * Given a vector of component masses,
        * and another of the corresponding densities, calculate the volumes
        * of each component. If return_as_fraction is true, the returned vector
-       * will sum to one.
+       * will sum to one. If the input vectors have a length of one, the
+       * returned volume fraction is one.
        */
       std::vector<double>
       compute_volumes_from_masses(const std::vector<double> &masses,
@@ -316,6 +375,32 @@ namespace aspect
                             const std::vector<double> &parameter_values,
                             const CompositionalAveragingOperation &average_type);
 
+
+
+      /**
+       * This function computes averages of multicomponent thermodynamic properties
+       * that are stored in a vector of EquationOfStateOutputs.
+       * Each @p eos_outputs contains the thermodynamic properties for
+       * all materials at a given evaluation point.
+       * The averaged properties are:
+       * density, isothermal compressibility, thermal_expansivity,
+       * the specific entropy derivatives with respect to pressure and temperature
+       * and the specific heat capacity. The first three of these properties
+       * are averaged by volume fraction, and the second three
+       * (the specific properties) are averaged by mass fraction.
+       * These averages are used to fill the corresponding attributes of
+       * a MaterialModelOutputs object.
+       */
+      template <int dim>
+      void
+      fill_averaged_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs,
+                                              const std::vector<double> &mass_fractions,
+                                              const std::vector<double> &volume_fractions,
+                                              const unsigned int i,
+                                              MaterialModelOutputs<dim> &out);
+
+
+
       /**
        * Utilities for material models with multiple phases
        */
@@ -325,7 +410,7 @@ namespace aspect
          * Enumeration for selecting which averaging scheme to use when
          * averaging the properties of different phases.
          * Select between arithmetic and logarithmic.
-        */
+         */
         enum PhaseAveragingOperation
         {
           arithmetic,
@@ -334,25 +419,25 @@ namespace aspect
       }
 
       /**
-      * Material models compute output quantities such as the viscosity, the
-      * density, etc. For some models, these values may depend on the phase in
-      * addition to the composition, and more than one phase field might have
-      * nonzero values at a given quadrature point. This means that properties
-      * for each composition have to be averaged based on the fractions of each
-      * phase field present. This function performs this type of averaging.
-      * The averaging is based on the choice in @p operation. Averaging is conducted
-      * over the phase functions given in @p phase_function_values, with
-      * @p parameter_values containing values of all individual phases. Unlike the average_value
-      * function defined for compositions, averaging in this function is calculated based
-      * on phase functions and the change of variables on the trajectory of phase boundaries.
-      * Thus on a single phase boundary, values of variables change gradually from one phase
-      * to the other. The values of the phase function used to average the properties varies
-      * between 0 and 1.
-      */
+       * Material models compute output quantities such as the viscosity, the
+       * density, etc. For some models, these values may depend on the phase in
+       * addition to the composition, and more than one phase field might have
+       * nonzero values at a given quadrature point. This means that properties
+       * for each composition have to be averaged based on the fractions of each
+       * phase field present. This function performs this type of averaging.
+       * The averaging is based on the choice in @p operation. Averaging is conducted
+       * over the phase functions given in @p phase_function_values, with
+       * @p parameter_values containing values of all individual phases. Unlike the average_value
+       * function defined for compositions, averaging in this function is calculated based
+       * on phase functions and the change of variables on the trajectory of phase boundaries.
+       * Thus on a single phase boundary, values of variables change gradually from one phase
+       * to the other. The values of the phase function used to average the properties varies
+       * between 0 and 1.
+       */
       double phase_average_value (const std::vector<double> &phase_function_values,
-                                  const std::vector<unsigned int> &n_phases_per_composition,
+                                  const std::vector<unsigned int> &n_phase_transitions_per_composition,
                                   const std::vector<double> &parameter_values,
-                                  const unsigned int composition,
+                                  const unsigned int composition_index,
                                   const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::arithmetic);
 
 
@@ -366,9 +451,9 @@ namespace aspect
       struct PhaseFunctionInputs
       {
         /**
-        * Constructor. Initializes the various variables of this
-        * structure with the input values.
-        */
+         * Constructor. Initializes the various variables of this
+         * structure with the input values.
+         */
         PhaseFunctionInputs(const double temperature,
                             const double pressure,
                             const double depth,
@@ -424,6 +509,11 @@ namespace aspect
           unsigned int n_phase_transitions () const;
 
           /**
+           * Return the total number of phases.
+           */
+          unsigned int n_phases () const;
+
+          /**
            * Return the Clapeyron slope (dp/dT of the transition) for
            * phase transition number @p phase_index.
            */
@@ -434,6 +524,12 @@ namespace aspect
            */
           const std::vector<unsigned int> &
           n_phase_transitions_for_each_composition () const;
+
+          /**
+           * Return how many phases there are for each composition.
+           */
+          const std::vector<unsigned int> &
+          n_phases_for_each_composition () const;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -478,7 +574,17 @@ namespace aspect
           /**
            * A vector that stores how many phase transitions there are for each compositional field.
            */
-          std::shared_ptr<std::vector<unsigned int> > n_phase_transitions_per_composition;
+          std::unique_ptr<std::vector<unsigned int>> n_phase_transitions_per_composition;
+
+          /**
+           * A vector that stores how many phases there are for each compositional field.
+           */
+          std::vector<unsigned int> n_phases_per_composition;
+
+          /**
+           * Total number of phases over all compositional fields
+           */
+          unsigned int n_phases_total;
       };
     }
   }

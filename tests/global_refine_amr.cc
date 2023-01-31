@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -73,7 +73,7 @@ namespace aspect
          cell = this->get_triangulation().begin_active();
          cell != this->get_triangulation().end(); ++cell)
       {
-        if (cell->is_locally_owned() && cell->center()[0]<0.5)
+        if (cell->is_locally_owned() && cell->center(true)[0]<0.5)
           cell->clear_refine_flag ();
       }
   }

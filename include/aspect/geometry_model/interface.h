@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -63,7 +63,7 @@ namespace aspect
          * Destructor. Made virtual to enforce that derived classes also have
          * virtual destructors.
          */
-        virtual ~Interface();
+        virtual ~Interface() = default;
 
         /**
          * Initialization function. This function is called once at the
@@ -305,8 +305,29 @@ namespace aspect
          * specifically use a geometry model with periodic boundary conditions
          */
         virtual
-        std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >
+        std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
         get_periodic_boundary_pairs () const;
+
+        /**
+         * Adjust positions to be inside the domain considering periodic boundary conditions.
+         *
+         * This function checks if @p position is outside the domain and if it could
+         * have reasonably crossed a periodic boundary. If so, it will adjust the position
+         * as described by the periodic boundary (e.g. a translation in a box, or a rotation
+         * in a spherical shell). Afterwards, if it adjusted @p position, it will also adjust
+         * all locations given in @p connected_positions (if any where given) in the same way.
+         * Adjusting @p connected_positions allows to adjust related temporary variables,
+         * e.g. the intermediate results of an ordinary differential equation solver
+         * that are used to compute differences/directions between points.
+         *
+         * This function does not check that the position after the adjustment is inside the
+         * domain; to check this is the responsibility of the calling function.
+         * A common application of this function are particles that crossed a periodic boundary.
+         */
+        virtual
+        void
+        adjust_positions_for_periodicity (Point<dim> &position,
+                                          const ArrayView<Point<dim>> &connected_positions = {}) const;
 
         /**
          * If true, the geometry contains cells with boundaries that are not
@@ -380,7 +401,7 @@ namespace aspect
     register_geometry_model (const std::string &name,
                              const std::string &description,
                              void (*declare_parameters_function) (ParameterHandler &),
-                             Interface<dim> *(*factory_function) ());
+                             std::unique_ptr<Interface<dim>> (*factory_function) ());
 
     /**
      * A function that given the name of a model returns a pointer to an
@@ -393,7 +414,7 @@ namespace aspect
      * @ingroup GeometryModels
      */
     template <int dim>
-    Interface<dim> *
+    std::unique_ptr<Interface<dim>>
     create_geometry_model (ParameterHandler &prm);
 
     /**
@@ -432,10 +453,10 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_GEOMETRY_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::GeometryModel::Interface<2>,classname<2> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::GeometryModel::Interface<2>,classname<2>> \
     dummy_ ## classname ## _2d (&aspect::GeometryModel::register_geometry_model<2>, \
                                 name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::GeometryModel::Interface<3>,classname<3> > \
+    aspect::internal::Plugins::RegisterHelper<aspect::GeometryModel::Interface<3>,classname<3>> \
     dummy_ ## classname ## _3d (&aspect::GeometryModel::register_geometry_model<3>, \
                                 name, description); \
   }

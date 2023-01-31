@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -77,7 +77,7 @@ namespace aspect
         /**
          * The polygons and their points are stored in this vector.
          */
-        std::vector<std::vector<Point<2> > > point_lists;
+        std::vector<std::vector<Point<2>>> point_lists;
 
     };
   }

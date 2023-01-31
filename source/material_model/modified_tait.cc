@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -112,16 +112,6 @@ namespace aspect
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
         }
-    }
-
-
-
-    template <int dim>
-    double
-    ModifiedTait<dim>::
-    reference_viscosity () const
-    {
-      return eta;
     }
 
 

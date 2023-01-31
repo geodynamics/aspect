@@ -9,19 +9,19 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
 
    Postprocessing:
      Number of advected particles: 20000
-     RMS, max velocity:            0.355 m/s, 0.786 m/s
-     Compositions min/max/mass:    0/1/0.4 // 0/1/0.3994
+     RMS, max velocity:            0.351 m/s, 0.775 m/s
+     Compositions min/max/mass:    0/1/0.4007 // 0/1/0.3978
      Temperature min/avg/max:      0 K, 0.5 K, 1 K
      Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00000
 
 *** Timestep 1:  t=0.015 seconds, dt=0.015 seconds
    Solving temperature system... 11 iterations.
-   Solving Stokes system... 61+0 iterations.
+   Solving Stokes system... 64+0 iterations.
 
    Postprocessing:
      Number of advected particles: 20000
-     RMS, max velocity:            0.343 m/s, 0.757 m/s
-     Compositions min/max/mass:    0/1/0.3996 // 0/1/0.3998
+     RMS, max velocity:            0.339 m/s, 0.748 m/s
+     Compositions min/max/mass:    0/1/0.4011 // 0/1/0.3978
      Temperature min/avg/max:      0 K, 0.5001 K, 1 K
      Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00001
 

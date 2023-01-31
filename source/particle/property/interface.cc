@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -20,6 +20,11 @@
 
 #include <aspect/particle/property/interface.h>
 #include <aspect/utilities.h>
+
+#include <aspect/particle/integrator/euler.h>
+#include <aspect/particle/integrator/rk_2.h>
+#include <aspect/particle/integrator/rk_4.h>
+
 
 #include <aspect/boundary_composition/interface.h>
 
@@ -44,7 +49,7 @@ namespace aspect
 
       ParticlePropertyInformation::ParticlePropertyInformation(const std::vector<
                                                                std::vector<
-                                                               std::pair<std::string,unsigned int> > > &properties)
+                                                               std::pair<std::string,unsigned int>>> &properties)
       {
         unsigned int global_component_index = 0;
         for (const auto &property : properties)
@@ -54,11 +59,10 @@ namespace aspect
 
             position_per_plugin.push_back(global_component_index);
 
-            for (unsigned int field_index = 0;
-                 field_index < property.size(); ++field_index)
+            for (const auto &entry : property)
               {
-                const std::string  name         = property[field_index].first;
-                const unsigned int n_components = property[field_index].second;
+                const std::string  name         = entry.first;
+                const unsigned int n_components = entry.second;
 
                 field_names.push_back(name);
                 components_per_field.push_back(n_components);
@@ -195,12 +199,6 @@ namespace aspect
 
 
       template <int dim>
-      Interface<dim>::~Interface ()
-      {}
-
-
-
-      template <int dim>
       void
       Interface<dim>::initialize ()
       {}
@@ -220,7 +218,7 @@ namespace aspect
       void
       Interface<dim>::update_particle_property (const unsigned int data_position,
                                                 const Vector<double> &solution,
-                                                const std::vector<Tensor<1,dim> > &gradients,
+                                                const std::vector<Tensor<1,dim>> &gradients,
                                                 typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         // call the deprecated version of this function
@@ -239,7 +237,7 @@ namespace aspect
       Interface<dim>::update_one_particle_property (const unsigned int,
                                                     const Point<dim> &,
                                                     const Vector<double> &,
-                                                    const std::vector<Tensor<1,dim> > &,
+                                                    const std::vector<Tensor<1,dim>> &,
                                                     const ArrayView<double> &) const
       {}
 
@@ -287,16 +285,64 @@ namespace aspect
 
 
       template <int dim>
+      void
+      IntegratorProperties<dim>::initialize_one_particle_property(const Point<dim> &/*position*/,
+                                                                  std::vector<double> &data) const
+      {
+        data.resize(data.size() + n_integrator_properties, 0.0);
+      }
+
+
+
+      template <int dim>
+      std::vector<std::pair<std::string, unsigned int>>
+      IntegratorProperties<dim>::get_property_information() const
+      {
+        return {{"internal: integrator properties", n_integrator_properties}};
+      }
+
+
+
+      template <int dim>
+      void
+      IntegratorProperties<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        std::string name;
+        prm.enter_subsection ("Postprocess");
+        {
+          prm.enter_subsection ("Particles");
+          {
+            name = prm.get ("Integration scheme");
+
+            if (name == "rk2")
+              n_integrator_properties = Particle::Integrator::RK2<dim>::n_integrator_properties;
+            else if (name == "rk4")
+              n_integrator_properties = Particle::Integrator::RK4<dim>::n_integrator_properties;
+            else if (name == "euler")
+              n_integrator_properties = Particle::Integrator::Euler<dim>::n_integrator_properties;
+            else
+              AssertThrow(false,
+                          ExcMessage("Unknown integrator scheme. The particle property 'Integrator properties' "
+                                     "does not know how many particle properties to store for this integration scheme."));
+          }
+          prm.leave_subsection ();
+        }
+        prm.leave_subsection ();
+      }
+
+
+
+      template <int dim>
       inline
       Manager<dim>::Manager ()
-      {}
+        = default;
 
 
 
       template <int dim>
       inline
       Manager<dim>::~Manager ()
-      {}
+        = default;
 
 
 
@@ -304,7 +350,7 @@ namespace aspect
       void
       Manager<dim>::initialize ()
       {
-        std::vector<std::vector<std::pair<std::string, unsigned int> > > info;
+        std::vector<std::vector<std::pair<std::string, unsigned int>>> info;
 
         // Get the property information of the selected plugins
         for (const auto &p : property_list)
@@ -363,7 +409,7 @@ namespace aspect
         particle_properties.reserve(property_information.n_components());
 
         unsigned int property_index = 0;
-        for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p, ++property_index)
           {
             switch ((*p)->late_initialization_mode())
@@ -395,12 +441,12 @@ namespace aspect
                   else
                     found_cell = cell;
 
-                  std::vector<std::vector<double> > interpolated_properties;
+                  std::vector<std::vector<double>> interpolated_properties;
 
                   try
                     {
                       interpolated_properties = interpolator.properties_at_points(particle_handler,
-                                                                                  std::vector<Point<dim> > (1,particle_location),
+                                                                                  std::vector<Point<dim>> (1,particle_location),
                                                                                   ComponentMask(property_information.n_components(),true),
                                                                                   found_cell);
                     }
@@ -453,7 +499,7 @@ namespace aspect
                   bool cell_at_fixed_boundary = false;
                   unsigned int boundary_face = numbers::invalid_unsigned_int;
                   double minimum_face_distance = std::numeric_limits<double>::max();
-                  for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                  for (const unsigned int f : cell->face_indices())
                     if (cell->at_boundary(f) && fixed_boundaries.count(cell->face(f)->boundary_id()) == 1)
                       {
                         const double face_center_distance = particle_location.distance_square(cell->face(f)->center(true));
@@ -468,8 +514,8 @@ namespace aspect
                   // If no Dirichlet boundary, interpolate
                   if (cell_at_fixed_boundary == false)
                     {
-                      const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particle_handler,
-                                                                                        std::vector<Point<dim> > (1,particle_location),
+                      const std::vector<std::vector<double>> interpolated_properties = interpolator.properties_at_points(particle_handler,
+                                                                                        std::vector<Point<dim>> (1,particle_location),
                                                                                         ComponentMask(property_information.n_components(),true),
                                                                                         found_cell);
                       for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
@@ -509,10 +555,10 @@ namespace aspect
       void
       Manager<dim>::update_one_particle (typename ParticleHandler<dim>::particle_iterator &particle,
                                          const Vector<double> &solution,
-                                         const std::vector<Tensor<1,dim> > &gradients) const
+                                         const std::vector<Tensor<1,dim>> &gradients) const
       {
         unsigned int plugin_index = 0;
-        for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
+        for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p,++plugin_index)
           {
             (*p)->update_particle_property(property_information.get_position_by_plugin_index(plugin_index),
@@ -638,8 +684,8 @@ namespace aspect
         std::tuple
         <void *,
         void *,
-        aspect::internal::Plugins::PluginList<Property::Interface<2> >,
-        aspect::internal::Plugins::PluginList<Property::Interface<3> > > registered_plugins;
+        aspect::internal::Plugins::PluginList<Property::Interface<2>>,
+        aspect::internal::Plugins::PluginList<Property::Interface<3>>> registered_plugins;
       }
 
 
@@ -702,7 +748,7 @@ namespace aspect
                            "all") != plugin_names.end())
               {
                 plugin_names.clear();
-                for (typename std::list<typename aspect::internal::Plugins::PluginList<aspect::Particle::Property::Interface<dim> >::PluginInfo>::const_iterator
+                for (typename std::list<typename aspect::internal::Plugins::PluginList<aspect::Particle::Property::Interface<dim>>::PluginInfo>::const_iterator
                      p = std::get<dim>(registered_plugins).plugins->begin();
                      p != std::get<dim>(registered_plugins).plugins->end(); ++p)
                   plugin_names.push_back (std::get<0>(*p));
@@ -716,19 +762,19 @@ namespace aspect
         // their own parameters
         for (auto &plugin_name : plugin_names)
           {
-            aspect::Particle::Property::Interface<dim> *
-            particle_property = std::get<dim>(registered_plugins)
-                                .create_plugin (plugin_name,
-                                                "Particle property plugins");
+            property_list.emplace_back (std::get<dim>(registered_plugins)
+                                        .create_plugin (plugin_name,
+                                                        "Particle property plugins"));
 
-            property_list.push_back (std::unique_ptr<Property::Interface<dim> >
-                                     (particle_property));
-
-            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*property_list.back()))
+            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_list.back().get()))
               sim->initialize_simulator (this->get_simulator());
 
             property_list.back()->parse_parameters (prm);
           }
+
+        // lastly store internal integrator properties
+        property_list.emplace_back (std::make_unique<IntegratorProperties<dim>>());
+        property_list.back()->parse_parameters (prm);
       }
 
 
@@ -739,7 +785,7 @@ namespace aspect
       register_particle_property (const std::string &name,
                                   const std::string &description,
                                   void (*declare_parameters_function) (ParameterHandler &),
-                                  Property::Interface<dim> *(*factory_function) ())
+                                  std::unique_ptr<Property::Interface<dim>> (*factory_function) ())
       {
         std::get<dim>(registered_plugins).register_plugin (name,
                                                            description,
@@ -769,11 +815,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<Particle::Property::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<Particle::Property::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<Particle::Property::Interface<2>>::PluginInfo> *
+      internal::Plugins::PluginList<Particle::Property::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<Particle::Property::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<Particle::Property::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<Particle::Property::Interface<3>>::PluginInfo> *
+      internal::Plugins::PluginList<Particle::Property::Interface<3>>::plugins = nullptr;
     }
   }
 

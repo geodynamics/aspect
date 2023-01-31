@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -35,7 +35,8 @@ namespace aspect
       Depth ()
         :
         DataPostprocessorScalar<dim> ("depth",
-                                      update_quadrature_points)
+                                      update_quadrature_points),
+        Interface<dim>("m")
       {}
 
 
@@ -44,7 +45,7 @@ namespace aspect
       void
       Depth<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
@@ -70,7 +71,11 @@ namespace aspect
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(Depth,
                                                   "depth",
-                                                  "A visualization output postprocessor that outputs the depth for all points inside the domain, as determined by the geometry model.")
+                                                  "A visualization output postprocessor that outputs "
+                                                  "the depth for all points inside the domain, as "
+                                                  "determined by the geometry model."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\meter}.")
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -299,16 +299,11 @@ namespace aspect
             // processors
             catch (const std::exception &exc)
               {
-                if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
-                  AssertThrow (false,
-                               ExcMessage (std::string("The iterative (bottom right) solver in BlockSchurPreconditioner::vmult "
-                                                       "did not converge to a tolerance of "
-                                                       + Utilities::to_string(solver_control.tolerance()) +
-                                                       ". It reported the following error:\n\n")
-                                           +
-                                           exc.what()))
-                  else
-                    throw QuietException();
+                Utilities::linear_solver_failed("iterative (bottom right) solver",
+                                                "BlockSchurPreconditioner::vmult",
+                                                std::vector<SolverControl> {solver_control},
+                                                exc,
+                                                src.block(0).get_mpi_communicator());
               }
           }
 
@@ -341,16 +336,11 @@ namespace aspect
           // processors
           catch (const std::exception &exc)
             {
-              if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
-                AssertThrow (false,
-                             ExcMessage (std::string("The iterative (top left) solver in BlockSchurPreconditioner::vmult "
-                                                     "did not converge to a tolerance of "
-                                                     + Utilities::to_string(solver_control.tolerance()) +
-                                                     ". It reported the following error:\n\n")
-                                         +
-                                         exc.what()))
-                else
-                  throw QuietException();
+              Utilities::linear_solver_failed("iterative (top left) solver",
+                                              "BlockSchurPreconditioner::vmult",
+                                              std::vector<SolverControl> {solver_control},
+                                              exc,
+                                              src.block(0).get_mpi_communicator());
             }
         }
       else
@@ -362,38 +352,7 @@ namespace aspect
 
   }
 
-  namespace
-  {
-    void linear_solver_failed(const std::string &solver_name,
-                              const std::string &output_filename,
-                              const std::vector<SolverControl> &solver_controls,
-                              const std::exception &exc)
-    {
-      // output solver history
-      std::ofstream f((output_filename).c_str());
 
-      for (unsigned int i=0; i<solver_controls.size(); ++i)
-        {
-          if (i>0)
-            f << "\n";
-
-          // Only request the solver history if a history has actually been created
-          for (unsigned int j=0; j<solver_controls[i].get_history_data().size(); ++j)
-            f << j << " " << solver_controls[i].get_history_data()[j] << "\n";
-        }
-
-      f.close();
-
-      AssertThrow (false,
-                   ExcMessage ("The " + solver_name
-                               + " did not converge. It reported the following error:\n\n"
-                               +
-                               exc.what()
-                               + "\n The required residual for convergence is: " + std::to_string(solver_controls.front().tolerance())
-                               + ".\n See " + output_filename
-                               + " for convergence history."));
-    }
-  }
 
   template <int dim>
   double Simulator<dim>::solve_advection (const AdvectionField &advection_field)
@@ -520,15 +479,13 @@ namespace aspect
                                       advection_field.compositional_variable,
                                       solver_control);
 
-        if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-          {
-            linear_solver_failed("iterative advection solver",
-                                 parameters.output_directory+"solver_history.txt",
-                                 std::vector<SolverControl> {solver_control},
-                                 exc);
-          }
-        else
-          throw QuietException();
+
+        Utilities::linear_solver_failed("iterative advection solver",
+                                        "Simulator::solve_advection",
+                                        std::vector<SolverControl> {solver_control},
+                                        exc,
+                                        mpi_communicator,
+                                        parameters.output_directory+"solver_history.txt");
       }
 
     // signal successful solver
@@ -788,7 +745,7 @@ namespace aspect
         distributed_stokes_rhs.block(block_vel) = system_rhs.block(block_vel);
         distributed_stokes_rhs.block(block_p) = system_rhs.block(block_p);
 
-        PrimitiveVectorMemory< LinearAlgebra::BlockVector > mem;
+        PrimitiveVectorMemory<LinearAlgebra::BlockVector> mem;
 
         // create Solver controls for the cheap and expensive solver phase
         SolverControl solver_control_cheap (parameters.n_cheap_stokes_solver_steps,
@@ -837,14 +794,28 @@ namespace aspect
                           distributed_stokes_rhs,
                           preconditioner_cheap);
 
+            // Success. Print all iterations to screen (0 expensive iterations).
+            pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
+                      solver_control_cheap.last_step():
+                      0)
+                  << "+0"
+                  << " iterations." << std::endl;
+
             final_linear_residual = solver_control_cheap.last_value();
           }
 
         // step 1b: take the stronger solver in case
         // the simple solver failed and attempt solving
         // it in n_expensive_stokes_solver_steps steps or less.
-        catch (const SolverControl::NoConvergence &)
+        catch (const SolverControl::NoConvergence &exc)
           {
+            // The cheap solver failed or never ran.
+            // Print the number of cheap iterations to screen to indicate we
+            // try the expensive solver next.
+            pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
+                      solver_control_cheap.last_step():
+                      0) << '+' << std::flush;
+
             // use the value defined by the user
             // OR
             // at least a restart length of 100 for melt models
@@ -859,14 +830,21 @@ namespace aspect
 
             try
               {
-                AssertThrow (parameters.n_expensive_stokes_solver_steps>0,
-                             ExcMessage ("The Stokes solver did not converge in the number of requested cheap iterations and "
-                                         "you requested 0 for ``Maximum number of expensive Stokes solver steps''. Aborting."));
+                // if no expensive steps allowed, we have failed, rethrow exception
+                if (parameters.n_expensive_stokes_solver_steps == 0)
+                  {
+                    pcout << "0 iterations." << std::endl;
+                    throw exc;
+                  }
 
                 solver.solve(stokes_block,
                              distributed_stokes_solution,
                              distributed_stokes_rhs,
                              preconditioner_expensive);
+
+                // Success. Print expensive iterations to screen.
+                pcout << solver_control_expensive.last_step()
+                      << " iterations." << std::endl;
 
                 final_linear_residual = solver_control_expensive.last_value();
               }
@@ -881,19 +859,18 @@ namespace aspect
                                            solver_control_cheap,
                                            solver_control_expensive);
 
-                if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-                  {
-                    linear_solver_failed("iterative Stokes solver",
-                                         parameters.output_directory+"solver_history.txt",
-                                         parameters.n_cheap_stokes_solver_steps > 0 ?
-                                         std::vector<SolverControl> {solver_control_cheap, solver_control_expensive} :
-                                         std::vector<SolverControl> {solver_control_expensive},
-                                         exc);
-                  }
-                else
-                  {
-                    throw QuietException();
-                  }
+                std::vector<SolverControl> solver_controls;
+                if (parameters.n_cheap_stokes_solver_steps > 0)
+                  solver_controls.push_back(solver_control_cheap);
+                if (parameters.n_expensive_stokes_solver_steps > 0)
+                  solver_controls.push_back(solver_control_expensive);
+
+                Utilities::linear_solver_failed("iterative Stokes solver",
+                                                "Simulator::solve_stokes",
+                                                solver_controls,
+                                                exc,
+                                                mpi_communicator,
+                                                parameters.output_directory+"solver_history.txt");
               }
           }
 
@@ -915,17 +892,6 @@ namespace aspect
         // into the ghosted one with all solution components
         solution.block(block_vel) = distributed_stokes_solution.block(block_vel);
         solution.block(block_p) = distributed_stokes_solution.block(block_p);
-
-        // print the number of iterations to screen
-        pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
-                  solver_control_cheap.last_step():
-                  0)
-              << '+'
-              << (solver_control_expensive.last_step() != numbers::invalid_unsigned_int ?
-                  solver_control_expensive.last_step():
-                  0)
-              << " iterations.";
-        pcout << std::endl;
       }
 
 

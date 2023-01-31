@@ -1,0 +1,7 @@
+# A description of the rigid shear benchmark for which a known solution
+# is available. See the benchmark folder for more information.
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/rigid_shear/transient/rigid_shear.prm
+
+set End time = 0.1

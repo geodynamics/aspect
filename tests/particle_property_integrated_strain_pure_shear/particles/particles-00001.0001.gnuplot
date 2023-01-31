@@ -5,7 +5,5 @@
 # For a description of the GNUPLOT format see the GNUPLOT manual.
 #
 # <x> <y> <id> <integrated strain_0> <integrated strain_1> <integrated strain_2> <integrated strain_3> 
-0.722487 0.566604 6 0.740727 -0.786413 0.746301 0.554655 
-
-0.951191 0.675704 9 0.514211 -0.834187 0.853461 0.564815 
+0.936983 0.541549 8 0.649579 -0.779975 0.815183 0.56374 
 

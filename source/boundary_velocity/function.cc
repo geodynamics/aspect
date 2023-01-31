@@ -44,7 +44,7 @@ namespace aspect
     {
       Tensor<1,dim> velocity;
 
-      Utilities::NaturalCoordinate<dim> point =
+      const Utilities::NaturalCoordinate<dim> point =
         this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
 
       for (unsigned int d=0; d<dim; ++d)

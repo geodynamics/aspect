@@ -10,7 +10,7 @@
 <Piece NumberOfPoints="5" NumberOfCells="5" >
   <Points>
     <DataArray type="Float32" NumberOfComponents="3" format="binary">
-AQAAADwAAAA8AAAAOAAAAA==eNp7XP/I7uKObXYMQFC99phdVsd7MLte7KfdlyozGxCbW0PO3qR7D1j8/UdD+9DDn8FsAKjPE9k=
+AQAAADwAAAA8AAAANwAAAA==eNp7/YzBPjRI04YBCN6dZ7Ev+OINZm+Ry7CPW59nB2I396rZ/5WaA2Z3VwrZ2+guAbMBKXoQQA==
     </DataArray>
   </Points>
 
@@ -29,7 +29,7 @@ AQAAAAUAAAAFAAAACwAAAA==eNpjZAQCAAAUAAY=
     <DataArray type="Float32" Name="id" format="binary">
 AQAAABQAAAAUAAAAFQAAAA==eNpjYACBBnsg4QBEQNzgAAAQhwJA    </DataArray>
     <DataArray type="Float32" Name="initial anomaly" format="binary">
-AQAAABQAAAAUAAAAHAAAAA==eNoTWmVm0hDfrMPA0GBfHj/FiGFGqxYAQUcGVw==    </DataArray>
+AQAAABQAAAAUAAAAGwAAAA==eNpjYGiwZwDiIykLrQ+8YzeP22hkBgA/Mwbm    </DataArray>
   </PointData>
  </Piece>
  </UnstructuredGrid>
