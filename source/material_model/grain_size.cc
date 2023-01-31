@@ -1400,6 +1400,12 @@ namespace aspect
               prm.leave_subsection();
             }
 
+          AssertThrow( (maximum_grain_size_reduction_work_fraction > 0. && maximum_grain_size_reduction_work_fraction < 1.),
+                       ExcMessage("Error: Maximum grain size reduction fraction must be between (0, 1)!"));
+
+          AssertThrow( (minimum_grain_size_reduction_work_fraction > 0. && minimum_grain_size_reduction_work_fraction < 1.),
+                       ExcMessage("Error: Minimum grain size reduction fraction must be between (0, 1)!"));
+
           // rheology parameters
           dislocation_viscosity_iteration_threshold = prm.get_double("Dislocation viscosity iteration threshold");
           dislocation_viscosity_iteration_number = prm.get_integer("Dislocation viscosity iteration number");
