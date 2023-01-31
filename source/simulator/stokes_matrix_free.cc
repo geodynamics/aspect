@@ -185,7 +185,6 @@ namespace aspect
         const double                                                    A_block_tolerance;
         const double                                                    Schur_complement_tolerance;
         mutable dealii::LinearAlgebra::distributed::BlockVector<double> utmp;
-        mutable dealii::LinearAlgebra::distributed::BlockVector<double> ptmp;
     };
 
     template <class StokesMatrixType, class ABlockMatrixType, class SchurComplementMatrixType,
@@ -244,10 +243,7 @@ namespace aspect
                                        const dealii::LinearAlgebra::distributed::BlockVector<double>  &src) const
     {
       if (utmp.size()==0)
-        {
-          utmp.reinit(src);
-          ptmp.reinit(src);
-        }
+        utmp.reinit(src);
 
       // This needs to be done explicitly, as GMRES does not
       // initialize the data of the vector dst before calling
@@ -301,9 +297,8 @@ namespace aspect
       dst.block(1) *= -1.0;
 
       {
-        ptmp = dst;
-        ptmp.block(0) = 0.0;
-        stokes_matrix.vmult(utmp, ptmp); // B^T
+        // the u-block of dst only contains zeros
+        stokes_matrix.vmult(utmp, dst); // B^T
         utmp.block(0) *= -1.0;
         utmp.block(0) += src.block(0);
       }
