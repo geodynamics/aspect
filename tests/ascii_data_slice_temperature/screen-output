@@ -1,0 +1,20 @@
+
+
+   Loading Ascii data initial file ASPECT_DIR/data/initial-composition/ascii-data/test/shell_3d_2.txt.
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 45+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.00104 m/year, 0.00207 m/year
+     Temperature min/avg/max: 8.868 K, 14.53 K, 22.06 K
+
+Termination requested by criterion: end time
+
+
+
