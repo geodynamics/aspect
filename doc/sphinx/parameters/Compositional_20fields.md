@@ -60,6 +60,6 @@ The format of valid entries for this parameter is that of a map given as &ldquo;
 ### __Parameter name:__ Types of fields
 **Default value:** unspecified
 
-**Pattern:** [List of <[Selection chemical composition|stress|grain size|porosity|density|generic|unspecified ]> of length 0...4294967295 (inclusive)]
+**Pattern:** [List of <[Selection chemical composition|stress|strain|grain size|porosity|density|generic|unspecified ]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A type for each of the compositional fields requested. Each entry of the list must be one of several recognized types: chemical composition, stress, grain size, porosity, general and unspecified. The generic type is intended to be a placeholder type that has no effect on the running of any material model, while the unspecified type is intended to tell ASPECT that the user has not explicitly indicated the type of field (facilitating parameter file checking). If a plugin such as a material model uses these types, the choice of type will affect how that module functions.
+**Documentation:** A type for each of the compositional fields requested. Each entry of the list must be one of several recognized types: chemical composition, stress, strain, grain size, porosity, general and unspecified. The generic type is intended to be a placeholder type that has no effect on the running of any material model, while the unspecified type is intended to tell ASPECT that the user has not explicitly indicated the type of field (facilitating parameter file checking). If a plugin such as a material model uses these types, the choice of type will affect how that module functions.

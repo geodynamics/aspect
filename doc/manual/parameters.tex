@@ -3646,10 +3646,10 @@ The format of valid entries for this parameter is that of a map given as ``key1:
 {\it Default:} unspecified
 
 
-{\it Description:} A type for each of the compositional fields requested. Each entry of the list must be one of several recognized types: chemical composition, stress, grain size, porosity, general and unspecified. The generic type is intended to be a placeholder type that has no effect on the running of any material model, while the unspecified type is intended to tell ASPECT that the user has not explicitly indicated the type of field (facilitating parameter file checking). If a plugin such as a material model uses these types, the choice of type will affect how that module functions.
+{\it Description:} A type for each of the compositional fields requested. Each entry of the list must be one of several recognized types: chemical composition, stress, strain, grain size, porosity, general and unspecified. The generic type is intended to be a placeholder type that has no effect on the running of any material model, while the unspecified type is intended to tell ASPECT that the user has not explicitly indicated the type of field (facilitating parameter file checking). If a plugin such as a material model uses these types, the choice of type will affect how that module functions.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any one of chemical composition, stress, grain size, porosity, density, generic, unspecified]
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any one of chemical composition, stress, strain, grain size, porosity, density, generic, unspecified]
 \end{itemize}
 
 \subsection{Parameters in section \tt Discretization}
@@ -6997,26 +6997,104 @@ The function object in the Function subsection represents the compositional fiel
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Use ASCII file for seafloor age}
-\phantomsection\label{parameters:Initial temperature model/Adiabatic/Use ASCII file for seafloor age}
-\label{parameters:Initial_20temperature_20model/Adiabatic/Use_20ASCII_20file_20for_20seafloor_20age}
+\item {\it Parameter name:} {\tt Top boundary layer age model}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Top boundary layer age model}
+\label{parameters:Initial_20temperature_20model/Adiabatic/Top_20boundary_20layer_20age_20model}
 
 
-\index[prmindex]{Use ASCII file for seafloor age}
-\index[prmindexfull]{Initial temperature model!Adiabatic!Use ASCII file for seafloor age}
-{\it Value:} false
+\index[prmindex]{Top boundary layer age model}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Top boundary layer age model}
+{\it Value:} constant
 
 
-{\it Default:} false
+{\it Default:} constant
 
 
-{\it Description:} Whether to define seafloor ages with an ASCII data file.
+{\it Description:} How to define the age of the top thermal boundary layer. Options are: 'constant' for a constant age specified by the parameter 'Age top boundary layer'; 'function' for an analytical function describing the age as specified in the subsection 'Age function'; and 'ascii data' to use an 'ascii data' file specified by the parameter 'Data file name'.
 
 
-{\it Possible values:} A boolean value (true or false)
+{\it Possible values:} Any one of constant, function, ascii data
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Initial temperature model/Adiabatic/Age function}
+\label{parameters:Initial_20temperature_20model/Adiabatic/Age_20function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Coordinate system}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Age function/Coordinate system}
+\label{parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Coordinate_20system}
+
+
+\index[prmindex]{Coordinate system}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Age function/Coordinate system}
+{\it Value:} cartesian
+
+
+{\it Default:} cartesian
+
+
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+
+
+{\it Possible values:} Any one of cartesian, spherical
+\item {\it Parameter name:} {\tt Function constants}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Age function/Function constants}
+\label{parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Function_20constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Age function/Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Function expression}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Age function/Function expression}
+\label{parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Function_20expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Age function/Function expression}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Variable names}
+\phantomsection\label{parameters:Initial temperature model/Adiabatic/Age function/Variable names}
+\label{parameters:Initial_20temperature_20model/Adiabatic/Age_20function/Variable_20names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Initial temperature model!Adiabatic!Age function/Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} Any string
+\end{itemize}
 
 \subsection{Parameters in section \tt Initial temperature model/Adiabatic/Function}
 \label{parameters:Initial_20temperature_20model/Adiabatic/Function}
