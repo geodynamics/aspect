@@ -74,6 +74,145 @@ namespace aspect
                                  const unsigned int N,
                                  const std::string &id_text);
 
+    namespace MapParsing
+    {
+      /**
+       * A struct that bundles all the available options for
+       * parse_map_to_double_array().
+       */
+      struct Options
+      {
+        /* A list of N valid key names that are allowed
+         * to appear in the map. If this list is empty
+         * it is assumed to be equal to the list of
+         * required keys. If this list is longer than
+         * list_of_required_keys, every key that is
+         * allowed but not required will be ignored when
+         * parsing the map.
+         */
+        std::vector<std::string> list_of_allowed_keys;
+
+        /* A list of N valid key names that are required
+         * to appear in the map. Only these keys will be
+         * parsed into the map structure and the order of
+         * these keys determines the order of entries
+         * in the output vector.
+         */
+        std::vector<std::string> list_of_required_keys;
+
+        /*
+         * A name that identifies the type of property
+         * that is being parsed by this function and that is used in generating
+         * error messages if the map does not conform to the expected format.
+         */
+        std::string property_name;
+
+        /*
+         * If true allow having multiple values
+         * for each key. If false only allow a single value per key. In either
+         * case each key is only allowed to appear once. Multiple values
+         * for a key are delimited by a "|" character, as in
+         * "key1: value1|value2|value3, key2: value1|value2".
+         */
+        bool allow_multiple_values_per_key;
+
+        /*
+         * Whether to allow that some keys in list_of_required_keys are
+         * not set to any values, i.e. they do not appear at all.
+         * This also allows a completely empty map.
+         */
+        bool allow_missing_keys;
+
+        /*
+         * Whether to store the number of values
+         * per key in n_values_per_key while creating
+         * the map. This allows to query the input
+         * structure and check that subsequent calls to
+         * parse other input parameters have the same
+         * structure.
+         */
+        bool store_values_per_key;
+
+        /*
+         * Whether to check the number of values
+         * per key in the map against values stored
+         * in n_values_per_key. This allows to
+         * check that subsequent calls to
+         * parse other input parameters have the same
+         * structure.
+         */
+        bool check_values_per_key;
+
+        /*
+         * A vector of unsigned
+         * integers that is used by store_values_per_key and
+         * check_values_per_key to either store the current map
+         * structure or check the map structure against an existing
+         * map. This parameter is only used if either of these
+         * two parameters are set to true
+         */
+        std::vector<unsigned int> n_values_per_key;
+
+        /**
+         * Delete the default constructor, because we want to ensure that
+         * at least the required options are always set.
+         */
+        Options() = delete;
+
+        /**
+         * A constructor for options that only sets the required
+         * parameters and leaves all other parameters at their default values.
+         * By default the @p list_of_required_keys will be used as both
+         * the list of allowed and list of required keys. In other words
+         * exactly these keys and no other keys are allowed to appear
+         * in the input and all of the keys have to be specified and will
+         * be included in the output. For a documentation of the parameters
+         * see the documentation of the member variables of this class.
+         */
+        Options(const std::vector<std::string> &list_of_required_keys,
+                const std::string &property_name)
+          :
+          list_of_allowed_keys(list_of_required_keys),
+          list_of_required_keys(list_of_required_keys),
+          property_name(property_name),
+          allow_multiple_values_per_key(false),
+          allow_missing_keys(false),
+          store_values_per_key(false),
+          check_values_per_key(false),
+          n_values_per_key()
+        {}
+      };
+
+      /**
+       * This function takes a string argument that is interpreted as a map
+       * of the form "key1 : value1, key2 : value2, etc", and then parses
+       * it to return a vector of these values. The parsing and output
+       * is controlled by @p options, which provides control over which keys
+       * (and how many) are allowed and required, whether multiple values
+       * per keys are allowed, whether the structure of the map is recorded
+       * while parsing, or checked against an existing structure and some other
+       * options. See the documentation of MapParsing::Options for available
+       * settings.
+       *
+       * @param[in] input_string The string representation of the map
+       *   to be parsed.
+       * @param[in] options An object of type MapParsing::Options() that contains
+       *   the parsing options that are considered by this function. See the
+       *   documentation of Options() for the available settings.
+       *
+       * @return A vector of values that are parsed from the @p input_string according
+       *   to the provided @p options and is sorted according to the member variable
+       *   list_of_required_keys inside @p options.
+       *   If multiple values per key are allowed, the vector contains first all
+       *   values for key 1, then all values for key 2 and so forth. Using the
+       *   n_values_per_key vector inside @p options allows the caller to
+       *   associate entries in the returned vector with specific keys.
+       */
+      std::vector<double>
+      parse_map_to_double_array(const std::string &input_string,
+                                Options &options);
+    }
+
     /**
      * This function takes a string argument that is interpreted as a map
      * of the form "key1 : value1, key2 : value2, etc", and then parses
@@ -142,6 +281,10 @@ namespace aspect
      *   values for key 1, then all values for key 2 and so forth. Using the
      *   @p n_values_per_key vector allows the caller to associate entries in the
      *   returned vector with specific keys.
+     *
+     * @deprecated: This function is deprecated in favor of the more general
+     *   Utilities::MapParsing::parse_map_to_double_array() function. Please
+     *   use the other function instead.
      */
     std::vector<double>
     parse_map_to_double_array (const std::string &key_value_map,
