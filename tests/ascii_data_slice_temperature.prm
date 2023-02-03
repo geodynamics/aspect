@@ -29,7 +29,7 @@ end
 
 
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = bottom, top, 
+  set Tangential velocity boundary indicators = bottom, top,
 end
 
 
