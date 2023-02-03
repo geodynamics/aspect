@@ -1746,7 +1746,7 @@ namespace aspect
       constraints.distribute (old_distributed_system);
       old_solution = old_distributed_system;
 
-      initialize_current_linearization_point();
+      current_linearization_point = distributed_system;
 
       // do the same as above, but for the mesh deformation solution
       if (parameters.mesh_deformation_enabled)

@@ -1,0 +1,29 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+# 12: Minimal temperature (K)
+# 13: Average temperature (K)
+# 14: Maximal temperature (K)
+# 15: Average nondimensional temperature (K)
+# 16: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 17: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 18: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 19: Outward heat flux through boundary with indicator 3 ("top") (W)
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089  0 29 31 31 output-no_dirichlet_on_outflow_refine/solution/solution-00000 1.50000001e+03 1.64062500e+03 1.75000000e+03 4.01785696e-02 0.00000000e+00 0.00000000e+00 -1.41473691e+07 1.36898620e+07 
+1 2.434262978899e+05 2.434262978899e+05 256 2467 1089 15 14 16 32 output-no_dirichlet_on_outflow_refine/solution/solution-00001 1.50000001e+03 1.64082333e+03 1.76000000e+03 4.02352348e-02 0.00000000e+00 0.00000000e+00 -1.42039063e+07 1.36901825e+07 
+2 4.861457676920e+05 2.427194698021e+05 256 2467 1089 15 14 16 32 output-no_dirichlet_on_outflow_refine/solution/solution-00002 1.50000001e+03 1.64098598e+03 1.76000000e+03 4.02817064e-02 0.00000000e+00 0.00000000e+00 -1.41894002e+07 1.36906203e+07 
+3 7.285950696503e+05 2.424493019583e+05 256 2467 1089 14 14 16 32 output-no_dirichlet_on_outflow_refine/solution/solution-00003 1.50000001e+03 1.64115328e+03 1.76000000e+03 4.03295066e-02 0.00000000e+00 0.00000000e+00 -1.41969879e+07 1.36911500e+07 
+4 9.709011498949e+05 2.423060802446e+05 256 2467 1089 14 13 15 30 output-no_dirichlet_on_outflow_refine/solution/solution-00004 1.50000001e+03 1.64131954e+03 1.76046472e+03 4.03770106e-02 0.00000000e+00 0.00000000e+00 -1.41964780e+07 1.36917087e+07 
+5 1.213101183090e+06 2.422000331954e+05 256 2467 1089 13 13 15 30 output-no_dirichlet_on_outflow_refine/solution/solution-00005 1.50000001e+03 1.64148243e+03 1.76078456e+03 4.04235508e-02 0.00000000e+00 0.00000000e+00 -1.41957699e+07 1.36922564e+07 
+6 1.455202399180e+06 2.421012160895e+05 256 2467 1089 13 12 14 28 output-no_dirichlet_on_outflow_refine/solution/solution-00006 1.50000001e+03 1.64164247e+03 1.76059754e+03 4.04692764e-02 0.00000000e+00 0.00000000e+00 -1.41955911e+07 1.36927807e+07 
+7 1.697201362256e+06 2.419989630763e+05 256 2467 1089 13 12 14 28 output-no_dirichlet_on_outflow_refine/solution/solution-00007 1.50000001e+03 1.64180060e+03 1.76076352e+03 4.05144563e-02 0.00000000e+00 0.00000000e+00 -1.41957141e+07 1.36932786e+07 
+8 1.939088398346e+06 2.418870360903e+05 256 2467 1089 13 12 14 28 output-no_dirichlet_on_outflow_refine/solution/solution-00008 1.50000001e+03 1.64195716e+03 1.76098116e+03 4.05591869e-02 0.00000000e+00 0.00000000e+00 -1.41958184e+07 1.36937454e+07 
+9 2.000000000000e+06 6.091160165363e+04 256 2467 1089  8  8 10 20 output-no_dirichlet_on_outflow_refine/solution/solution-00009 1.50000001e+03 1.64199635e+03 1.76090836e+03 4.05703837e-02 0.00000000e+00 0.00000000e+00 -1.41958282e+07 1.36938578e+07 
