@@ -36,15 +36,7 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      if (slice_data == true)
-        {
-          rotation_matrix = Utilities::compute_rotation_matrix_for_slice(first_point_on_slice, second_point_on_slice);
-          ascii_data_slice->initialize(this->n_compositional_fields());
-        }
-      else
-        {
-          ascii_data_initial->initialize(this->n_compositional_fields());
-        }
+      ascii_data_initial->initialize(this->n_compositional_fields());
     }
 
 
@@ -54,15 +46,6 @@ namespace aspect
     initial_composition (const Point<dim> &position,
                          const unsigned int n_comp) const
     {
-      if (slice_data == true)
-        {
-          // Compute the coordinates of a 3d point based on the 2D position.
-          Tensor<1,3> position_tensor({position[0], position[1], 0.0});
-          Point<3> position_3d (rotation_matrix * position_tensor);
-
-          return ascii_data_slice->get_data_component(position_3d, n_comp);
-        }
-
       return ascii_data_initial->get_data_component(position,n_comp);
     }
 
@@ -73,36 +56,9 @@ namespace aspect
     {
       prm.enter_subsection("Initial composition model");
       {
-        Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/",
-                                                          "box_2d.txt");
-
-        prm.enter_subsection("Ascii data model");
-        {
-          prm.declare_entry("Slice dataset in 2D plane", "false",
-                            Patterns::Bool (),
-                            "Whether to use a 2D data slice of a 3D data file "
-                            "or the entire data file. Slicing a 3D dataset is "
-                            "only supported for 2D models.");
-          prm.declare_entry ("First point on slice", "0.0,1.0,0.0",
-                             Patterns::Anything (),
-                             "Point that determines the plane in which the 2D slice lies in. "
-                             "This variable is only used if 'Slice dataset in 2D plane' is true. "
-                             "The slice will go through this point, the point defined by the "
-                             "parameter 'Second point on slice', and the center of the model "
-                             "domain. After the rotation, this first point will lie along the "
-                             "(0,1,0) axis of the coordinate system. The coordinates of the "
-                             "point have to be given in Cartesian coordinates.");
-          prm.declare_entry ("Second point on slice", "1.0,0.0,0.0",
-                             Patterns::Anything (),
-                             "Second point that determines the plane in which the 2D slice lies in. "
-                             "This variable is only used if 'Slice dataset in 2D plane' is true. "
-                             "The slice will go through this point, the point defined by the "
-                             "parameter 'First point on slice', and the center of the model "
-                             "domain. The coordinates of the point have to be given in Cartesian "
-                             "coordinates.");
-        }
-        prm.leave_subsection();
+        Utilities::AsciiDataInitial<dim>::declare_parameters(prm,
+                                                             "$ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/",
+                                                             "box_2d.txt");
       }
       prm.leave_subsection();
     }
@@ -114,41 +70,9 @@ namespace aspect
     {
       prm.enter_subsection("Initial composition model");
       {
-        prm.enter_subsection("Ascii data model");
-        {
-          slice_data = prm.get_bool ("Slice dataset in 2D plane");
-          std::vector<double> point_one = Utilities::string_to_double(Utilities::split_string_list(prm.get("First point on slice")));
-          std::vector<double> point_two = Utilities::string_to_double(Utilities::split_string_list(prm.get("Second point on slice")));
-
-          AssertThrow(point_one.size() == 3 && point_two.size() == 3,
-                      ExcMessage("The points on the slice in the Ascii data model need "
-                                 "to be given in three dimensions; in other words, as three "
-                                 "numbers, separated by commas."));
-
-          for (unsigned int d=0; d<3; d++)
-            first_point_on_slice[d] = point_one[d];
-
-          for (unsigned int d=0; d<3; d++)
-            second_point_on_slice[d] = point_two[d];
-        }
-        prm.leave_subsection();
-
-        if (slice_data == true)
-          {
-            AssertThrow(dim==2,
-                        ExcMessage("The ascii data plugin can only slice data in 2d models."));
-
-            ascii_data_slice = std::make_unique<Utilities::AsciiDataInitial<dim,3>>();
-            ascii_data_slice->initialize_simulator(this->get_simulator());
-            ascii_data_slice->parse_parameters(prm);
-          }
-        else
-          {
-            ascii_data_initial = std::make_unique<Utilities::AsciiDataInitial<dim>>();
-            ascii_data_initial->initialize_simulator(this->get_simulator());
-            ascii_data_initial->parse_parameters(prm);
-          }
-
+        ascii_data_initial = std::make_unique<Utilities::AsciiDataInitial<dim>>();
+        ascii_data_initial->initialize_simulator(this->get_simulator());
+        ascii_data_initial->parse_parameters(prm);
       }
       prm.leave_subsection();
     }
