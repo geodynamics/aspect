@@ -8,7 +8,7 @@ top, and the middle. The way to describe this situation is to simply add the
 following block of definitions to the parameter file (you can find the full
 parameter file in [cookbooks/composition_passive/composition_passive.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive/composition_passive.prm):
 
-``` prmfile
+```{literalinclude} passive.part.prm
 ```
 
 Running this simulation yields results such as the ones shown in
@@ -95,7 +95,7 @@ mass contained in the $i$th compositional field is
 $m_i(t)=\int_\Omega c_i(\mathbf x,t)$. This can easily be achieve in the
 following way, by adding the `composition statistics` postprocessor:
 
-``` prmfile
+```{literalinclude} postprocess.part.prm
 ```
 
 While the scheme we use to advect the compositional fields is not strictly
