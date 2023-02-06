@@ -870,8 +870,10 @@ namespace aspect
 
               if (HeatingModel::ShearHeatingOutputs<dim> *shear_heating_out = out.template get_additional_output<HeatingModel::ShearHeatingOutputs<dim>>())
                 {
-                  if (grain_size_evolution_formulation == Formulation::paleowattmeter ||
-                      grain_size_evolution_formulation == Formulation::paleopiezometer)
+                  AssertThrow(grain_size_evolution_formulation == Formulation::paleopiezometer,
+                              ExcMessage("Shear heating output is not created with the Paleopiezometer grain damage formulation."));
+
+                  if (grain_size_evolution_formulation == Formulation::paleowattmeter)
                     {
                       const double f = boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
                       shear_heating_out->shear_heating_work_fractions[i] = 1. - f * out.viscosities[i] / std::min(std::max(min_eta,disl_viscosity),1e300);
