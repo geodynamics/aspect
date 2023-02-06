@@ -34,16 +34,15 @@ completely unchanged from the passive case. The only difference is the use of
 the following section (the complete input file can be found in
 [cookbooks/composition_active/composition_active.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_active/composition_active.prm):
 
-``` prmfile
+```{literalinclude} active.part.prm
 ```
 
 To debug the model, we will also want to visualize the density in our
 graphical output files. This is done using the following addition to the
 postprocessing section, using the `density` visualization plugin:
 
-``` prmfile
+```{literalinclude} postprocess.part.prm
 ```
-
 
 ```{figure-md} fig:composition-active-composition
 <img src="visit0007.png" style="width:30.0%" />

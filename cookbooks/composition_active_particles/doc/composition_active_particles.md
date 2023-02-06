@@ -18,14 +18,14 @@ This cookbook,
 modifies two sections of the input file. First, particles are added under the
 `Postprocess` section:
 
-``` prmfile
+```{literalinclude} particles.part.prm
 ```
 
 Here, each particle will carry the `velocity` and `initial composition`
 properties. In order to use the particle initial composition value to modify
 the flow through the material model, we now modify the `Composition` section:
 
-``` prmfile
+```{literalinclude} composition.part.prm
 ```
 
 What this does is the following: It says that there will be two compositional

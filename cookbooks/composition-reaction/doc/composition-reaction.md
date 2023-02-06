@@ -20,7 +20,7 @@ material to move upwards, get partially converted to the second material,
 which then sinks down again. This means we want to change the initial
 conditions for the compositional fields:
 
-``` prmfile
+```{literalinclude} initial.part.prm
 ```
 
 Moreover, instead of the `simple` material model, we will use the
@@ -32,9 +32,8 @@ field. This can be done by changing the following section (the complete input
 file can be found in
 [cookbooks/composition-reaction/composition-reaction.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition-reaction/composition-reaction.prm)).
 
-``` prmfile
+```{literalinclude} material.part.prm
 ```
-
 
 ```{figure-md} fig:composition-reaction
 <img src="0.png" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,

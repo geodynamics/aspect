@@ -8,7 +8,7 @@ top, and the middle. The way to describe this situation is to simply add the
 following block of definitions to the parameter file (you can find the full
 parameter file in [cookbooks/composition_passive/composition_passive.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive/composition_passive.prm):
 
-``` prmfile
+```{literalinclude} passive.part.prm
 ```
 
 Running this simulation yields results such as the ones shown in
@@ -95,7 +95,7 @@ mass contained in the $i$th compositional field is
 $m_i(t)=\int_\Omega c_i(\mathbf x,t)$. This can easily be achieve in the
 following way, by adding the `composition statistics` postprocessor:
 
-``` prmfile
+```{literalinclude} postprocess.part.prm
 ```
 
 While the scheme we use to advect the compositional fields is not strictly
@@ -112,7 +112,7 @@ functions, the mass appears stable at a value of 0.403646 (the exact value,
 namely the area that was initially filled by each material, is 0.4; the
 difference is a result of the fact that we can't exactly represent the
 step function on our mesh with the finite element space). In fact, the maximal
-difference in this value between time steps 1 and 500 is only $\num{1.1e-6}$.
+difference in this value between time steps 1 and 500 is only $1.1\times 10^{-6}$.
 In other words, these numbers show that the compositional field approach is
 almost exactly mass conservative.
 

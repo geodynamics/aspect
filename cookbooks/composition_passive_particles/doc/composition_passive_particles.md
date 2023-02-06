@@ -7,7 +7,7 @@ input file, which is otherwise just a minor variation of the
 the previous Section&nbsp;{ref}`sec:cookbooks-composition`. In particular,
 the postprocess section now looks like this:
 
-``` prmfile
+```{literalinclude} particles.part.prm
 ```
 
 The 1000 particles we are asking here are initially uniformly distributed
@@ -91,7 +91,7 @@ in which we add the following lines to the `Particles` subsection (we also
 increase the number of particles compared to the previous section to make the
 visualizations below more obvious):
 
-``` prmfile
+```{literalinclude} particle-properties.part.prm
 ```
 
 These commands make sure that every particle will carry four different
