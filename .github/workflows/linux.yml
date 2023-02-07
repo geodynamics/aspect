@@ -76,6 +76,8 @@ jobs:
       run: |
         cd doc
         latexmk -pdf -f citations-list.tex
+        grep WARN citations-list.blg && echo "warnings found!" && exit 1
+        echo "OK"
     - name: compile
       run: |
         mkdir build
