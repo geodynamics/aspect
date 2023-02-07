@@ -34,7 +34,7 @@ $b=5$, we would get:
 ```
 
 
-## Solving a nonlinear system$
+## Solving a nonlinear system
 
 Making the problem non-linear in our context means that $A$ becomes dependent on $x$. We
 can write this down as $A(x)$. So our equation becomes:
@@ -100,7 +100,7 @@ This means that we need to find the point where $x$ is equal to $0.5*sqrt(1+x^2)
 
 ```
 
-The Picard iteration transforms $x = 0.5*sqrt(1+x^2)$ into $x_{k+1} = 0.5*sqrt(1+x_k^2)$. This means to start the iteration, we will need an initial guess where the solution is. Let's pick $x_0 = 2$.
+The Picard iteration transforms $x = 0.5\cdot\sqrt{1+x^2}$ into $x_{k+1} = 0.5 \cdot\sqrt{1+x_k^2}$. This means to start the iteration, we will need an initial guess where the solution is. Let's pick $x_0 = 2$.
 
 
 ```{tikz} The blue line is the location of our initial guess, $x_0 = 2$.
@@ -116,7 +116,7 @@ The Picard iteration transforms $x = 0.5*sqrt(1+x^2)$ into $x_{k+1} = 0.5*sqrt(1
 
 ```
 
-Following the iteration, we set our next x ($x_1$) equal to our $y = 0.5*sqrt(1+(2^2)) \approx 1.11803$
+Following the iteration, we set our next x ($x_1$) equal to our $y = 0.5\cdot\sqrt{1+(2^2)} \approx 1.11803$
 
 
 ```{tikz} The blue line is the location of our initial guess and the $x=y$ step (red).
@@ -155,7 +155,7 @@ We then use the new $x$ location to compute a new $y$ and set $x_2$ to that new 
 
 ```
 
-Note that the closer the iteration gets to the solution, the slower the iteration converges. As shown in {numref}`user_methods_nonlinear_solvers_new_and_original_function`, the solution to this equation is the solution to the original equation. We can check that by substituting the $x_{solution}$, which converges to $\frac{1}{sqrt(3)}$ into our original equation, and we get 0.5. In this case with the four iterations shown in {numref}`user_methods_nonlinear_solvers_new_and_original_function`, the final residual is $0.5-\frac{1}{0.589624}*0.589624 = -0.00790859$.
+Note that the closer the iteration gets to the solution, the slower the iteration converges. As shown in {numref}`user_methods_nonlinear_solvers_new_and_original_function`, the solution to this equation is the solution to the original equation. We can check that by substituting the $x_{solution}$, which converges to $\frac{1}{\sqrt{3}}$ into our original equation, and we get 0.5. In this case with the four iterations shown in {numref}`user_methods_nonlinear_solvers_new_and_original_function`, the final residual is $0.5-\frac{1}{0.589624}*0.589624 = -0.00790859$.
 
 
 In the context of ASPECT, the Picard iteration is usually written as
@@ -243,7 +243,7 @@ Some strategies to achieve this, also called globalization, will be discussed in
     \draw[red,thick, ->>, domain=2:2.5] plot (\x,-0.41*\x+1.73);
 :::
 
-### solving $\frac{1}{sqrt(1+x^2)}x = 0.5$
+### Solving $\frac{1}{\sqrt{1+x^2}}x = 0.5$
 
 Now that we have a general understanding of how the Newton solver works, let's apply it to the equation we solved above with the Picard iteration. The method is going to be the same, but now we are stopping the derivative at the line $y = 0.5$ instead of $y = 0$. If we would take the initial guess at $x=2$ the iteration would diverge, so we are taking the result from the first iteration of the Picard iteration, which is $x = 1.11803$. This is a common tactic to achieve convergence in the Newton iteration and will be discussed further in the section {ref}`user_methods_nonlinear_solvers_globalization`.
 
@@ -293,7 +293,7 @@ solution every time is called a defect correction scheme.
 For reasons beyond the scope of this section, depending on the rheology model, the Jacobian
 matrix may sometimes be the equivalent of figure {numref}`user_methods_nonlinear_solvers_sin_3`, which
 means that the linear solver will fail. To stabilize this, there are some stabilization
-options available in ASPECT based on {cite}`FBTGS19`, of which the most important is the
+options available in ASPECT based on {cite}`fraters:etal:2019`, of which the most important is the
 SPD option. When you need to choose, it is important to know that the unstabilized version
 will always converge at the same speed or faster than the stabilized version. Theoretically
 this means that you will only want to stabilize when needed. This is an option for the Newton
@@ -375,4 +375,4 @@ logscale y axis. This will allow you to see the convergence behavior much more c
 than by just looking at the numbers in the ASPECT output file. Furthermore, it allows
 for a much better comparison with the convergence behavior of the Newton solver and
 between different settings of the Newton solver. For examples of such plots and more advice,
-please see section 3 of {cite}`FBTGS19`.
+please see section 3 of {cite}`fraters:etal:2019`.
