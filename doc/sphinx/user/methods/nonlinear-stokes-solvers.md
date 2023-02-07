@@ -155,7 +155,7 @@ We then use the new $x$ location to compute a new $y$ and set $x_2$ to that new 
 
 ```
 
-Note that the closer the iteration gets to the solution, the slower the iteration converges. As shown in {numref}`user_methods_nonlinear_solvers_new_and_original_function`, the solution to this equation is the solution to the original equation. We can check that by substituting the $x_{solution}$, which converges to $\frac{1}{\sqrt{3}}$ into our original equation, and we get 0.5. In this case with the four iterations shown in {numref}`user_methods_nonlinear_solvers_new_and_original_function`, the final residual is $0.5-\frac{1}{0.589624}*0.589624 = -0.00790859$.
+Note that the closer the iteration gets to the solution, the slower the iteration converges. As shown in {numref}`user_methods_nonlinear_solvers_new_and_original_function`, the solution to this equation is the solution to the original equation. We can check that by substituting the $x_{solution}$, which converges to $\frac{1}{\sqrt{3}}$ into our original equation, and we get 0.5. In this case with the four iterations shown in {numref}`user_methods_nonlinear_solvers_new_and_original_function`, the final residual is $0.5-\frac{1}{0.589624} \cdot 0.589624 = -0.00790859$.
 
 
 In the context of ASPECT, the Picard iteration is usually written as
