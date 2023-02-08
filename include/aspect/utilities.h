@@ -82,7 +82,7 @@ namespace aspect
        */
       struct Options
       {
-        /* A list of N valid key names that are allowed
+        /* A list of valid key names that are allowed
          * to appear in the map. If this list is empty
          * it is assumed to be equal to the list of
          * required keys. If this list is longer than
@@ -92,7 +92,7 @@ namespace aspect
          */
         std::vector<std::string> list_of_allowed_keys;
 
-        /* A list of N valid key names that are required
+        /* A list of valid key names that are required
          * to appear in the map. Only these keys will be
          * parsed into the map structure and the order of
          * these keys determines the order of entries
@@ -101,14 +101,14 @@ namespace aspect
         std::vector<std::string> list_of_required_keys;
 
         /*
-         * A name that identifies the type of property
-         * that is being parsed by this function and that is used in generating
+         * A name that identifies the type of input property (e.g. 'density', 'viscosity')
+         * that is being parsed by this function. This name is used in generating
          * error messages if the map does not conform to the expected format.
          */
         std::string property_name;
 
         /*
-         * If true allow having multiple values
+         * If true, allow multiple values
          * for each key. If false only allow a single value per key. In either
          * case each key is only allowed to appear once. Multiple values
          * for a key are delimited by a "|" character, as in
@@ -117,7 +117,7 @@ namespace aspect
         bool allow_multiple_values_per_key;
 
         /*
-         * Whether to allow that some keys in list_of_required_keys are
+         * Whether to allow for some keys in list_of_required_keys to be
          * not set to any values, i.e. they do not appear at all.
          * This also allows a completely empty map.
          */
@@ -126,8 +126,8 @@ namespace aspect
         /*
          * Whether to store the number of values
          * per key in n_values_per_key while creating
-         * the map. This allows to query the input
-         * structure and check that subsequent calls to
+         * the map. This vector can be later accessed
+         * and used (for example) to check that subsequent calls to
          * parse other input parameters have the same
          * structure.
          */

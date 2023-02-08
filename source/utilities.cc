@@ -262,6 +262,8 @@ namespace aspect
         {
           std::multimap<std::string, double> parsed_map;
 
+          // Parse the input string, if it follows the structure of
+          // 'key1:value1, key2:value2', or 'key1:value1|value2, ...'.
           if (Patterns::Map(Patterns::Anything(),
                             Patterns::List(Patterns::Double(),
                                            0,
@@ -323,10 +325,10 @@ namespace aspect
                     }
                 }
             }
+          // Parse the input string, if it follows the structure of
+          // 'value1, value2, value3' with as many entries as allowed keys.
           else if (Patterns::List(Patterns::Double(),options.list_of_allowed_keys.size(),options.list_of_allowed_keys.size()).match(input_string))
             {
-              // Handle the format of a comma separated list of doubles with as many entries
-              // as allowed keys, with no keywords
               const std::vector<double> values = possibly_extend_from_1_to_N (dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(input_string)),
                                                                               options.list_of_allowed_keys.size(),
                                                                               options.property_name);
@@ -338,10 +340,10 @@ namespace aspect
                   parsed_map.emplace(options.list_of_allowed_keys[i],values[i]);
                 }
             }
+          // Parse the input string, if it follows the structure of
+          // 'value1, value2, value3' with one entry or as many entries as required keys.
           else if (Patterns::List(Patterns::Double(),1,options.list_of_required_keys.size()).match(input_string))
             {
-              // Handle the format of a comma separated list of doubles with as many entries
-              // as requested keys, with no keywords
               const std::vector<double> values = possibly_extend_from_1_to_N (dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(input_string)),
                                                                               options.list_of_required_keys.size(),
                                                                               options.property_name);
