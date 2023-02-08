@@ -1,0 +1,8 @@
+Fixed: The Allow fixed temperature on outflow boundaries = false
+option (and the equivalent option for composition) now also work
+in time steps where the mesh is refined. In addition, if this
+parameter is set to false, fixed temperature/composition are now
+no longer applied to the boundary in cases where the flow normal
+to the boundary is zero (as is the case in time step 0).
+<br>
+(Juliane Dannberg, Rene Gassmoeller, 2023/02/03)
