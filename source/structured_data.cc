@@ -1015,6 +1015,7 @@ namespace aspect
       get_boundary_dimensions (const types::boundary_id boundary_id)
       {
         std::array<unsigned int,dim-1> boundary_dimensions;
+        boundary_dimensions.fill(numbers::invalid_unsigned_int);
 
         switch (dim)
           {
@@ -1029,7 +1030,6 @@ namespace aspect
                 }
               else
                 {
-                  boundary_dimensions[0] = numbers::invalid_unsigned_int;
                   AssertThrow(false,ExcNotImplemented());
                 }
               break;
@@ -1052,16 +1052,12 @@ namespace aspect
                 }
               else
                 {
-                  boundary_dimensions[0] = numbers::invalid_unsigned_int;
-                  boundary_dimensions[1] = numbers::invalid_unsigned_int;
                   AssertThrow(false,ExcNotImplemented());
                 }
 
               break;
 
             default:
-              for (unsigned int d=0; d<dim-1; ++d)
-                boundary_dimensions[d] = numbers::invalid_unsigned_int;
               AssertThrow(false,ExcNotImplemented());
           }
         return boundary_dimensions;
@@ -1080,7 +1076,7 @@ namespace aspect
                                       const aspect::GeometryModel::Interface<dim> &geometry_model)
       {
         const std::array<double,dim> natural_position = geometry_model.cartesian_to_natural_coordinates(position);
-        Point<dim> data_coordinates = Utilities::convert_array_to_point(natural_position);
+        Point<dim> data_coordinates = Utilities::convert_array_to_point<dim>(natural_position);
 
         // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
         // to allow for consistent data files between chunk geometries and spherical geometries.
