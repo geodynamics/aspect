@@ -684,10 +684,6 @@ namespace aspect
               status = nc_inq_var (ncid, varid, name, &xtype, &ndims, dimids,
                                    &natts);
               AssertThrowNetCDF(status);
-              std::cout << "var " << varid << "'" << name << "' has ndims = " << ndims << ": ";
-              for (int d=0; d<ndims; ++d)
-                std::cout << " " << dimids[d];
-              std::cout << std::endl;
 
               if (ndims == dim)
                 {
@@ -717,14 +713,8 @@ namespace aspect
                     {
                       varids_to_use.push_back(varid);
                       data_column_names.push_back(name);
-                      std::cout << "\tusing variable." << std::endl;
                     }
-                  else
-                    std::cout << "\tignoring variable with different dims." << std::endl;
-
                 }
-              else
-                std::cout << "\tignoring variable with the wrong number of dims." << std::endl;
             }
 
         }
@@ -757,11 +747,6 @@ namespace aspect
 
                   found = true;
 
-                  std::cout << "var " << varid << "'" << name << "' has ndims = " << ndims << ": ";
-                  for (int d=0; d<ndims; ++d)
-                    std::cout << " " << dimids[d];
-                  std::cout << std::endl;
-
                   if (ndims == dim)
                     {
                       bool use = true;
@@ -792,8 +777,6 @@ namespace aspect
 
 
                       varids_to_use.push_back(varid);
-                      std::cout << "\tusing variable." << std::endl;
-
                     }
                   else
                     AssertThrow(false, ExcMessage(
@@ -842,8 +825,6 @@ namespace aspect
             coordinate_values[d].resize(new_table_points[d]);
             status = nc_get_var_double(ncid, varid, coordinate_values[d].data());
             AssertThrowNetCDF(status);
-
-            std::cout << "coordinate " << d << " length= " << new_table_points[d] << " data=  " << coordinate_values[d][0] << ' ' << coordinate_values[d][1] << " ..." << std::endl;
           }
       }
 
@@ -883,8 +864,6 @@ namespace aspect
 
       // ready to go:
       this->reinit(data_column_names, std::move(coordinate_values),std::move(data_tables));
-
-      std::cout << "load_netcdf: OK" << std::endl;
 #endif
     }
 
