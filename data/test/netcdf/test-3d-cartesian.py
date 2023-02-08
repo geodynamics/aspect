@@ -1,4 +1,4 @@
-'''Create example NetCDF files
+'''Create example NetCDF file
 
 see https://unidata.github.io/netcdf4-python/ for more information
 
