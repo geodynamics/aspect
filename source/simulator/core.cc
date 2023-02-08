@@ -1746,6 +1746,10 @@ namespace aspect
       constraints.distribute (old_distributed_system);
       old_solution = old_distributed_system;
 
+      // We need the current linearization point at the start of the new time step
+      // when we set the boundary conditions for advected fields (to determine parts
+      // of the boundary with outflow). Therefore, we here set it to the solution
+      // vector, but it will be reinitialized the next time the equations are solved.
       current_linearization_point = distributed_system;
 
       // do the same as above, but for the mesh deformation solution
