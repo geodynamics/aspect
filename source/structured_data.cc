@@ -703,12 +703,12 @@ namespace aspect
     template <int dim>
     AsciiDataBoundary<dim>::AsciiDataBoundary ()
       :
-      current_file_number(0),
-      first_data_file_number(0),
+      current_file_number(numbers::invalid_unsigned_int),
+      first_data_file_number(numbers::invalid_unsigned_int),
       decreasing_file_order(false),
-      data_file_time_step(0.0),
-      time_weight(0.0),
-      time_dependent(true),
+      data_file_time_step(numbers::signaling_nan<double>()),
+      time_weight(numbers::signaling_nan<double>()),
+      time_dependent(false),
       lookups(),
       old_lookups()
     {}
@@ -737,19 +737,8 @@ namespace aspect
                                         (components,
                                          this->scale_factor)));
 
-          old_lookups.insert(std::make_pair(boundary_id,
-                                            std::make_unique<Utilities::StructuredDataLookup<dim-1>>
-                                            (components,
-                                             this->scale_factor)));
-
           // Set the first file number and load the first files
           current_file_number = first_data_file_number;
-
-          const int next_file_number =
-            (decreasing_file_order) ?
-            current_file_number - 1
-            :
-            current_file_number + 1;
 
           const std::string filename (create_filename (current_file_number, boundary_id));
 
@@ -765,16 +754,19 @@ namespace aspect
                                   "> not found!"));
           lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
 
-          // If the boundary condition is constant, switch off time_dependence
-          // immediately. If not, also load the second file for interpolation.
-          // This catches the case that many files are present, but the
-          // parameter file requests a single file.
-          if (filename == create_filename (current_file_number+1, boundary_id))
+          if (time_dependent == true)
             {
-              end_time_dependence ();
-            }
-          else
-            {
+              old_lookups.insert(std::make_pair(boundary_id,
+                                                std::make_unique<Utilities::StructuredDataLookup<dim-1>>
+                                                (components,
+                                                 this->scale_factor)));
+
+              const int next_file_number =
+                (decreasing_file_order) ?
+                current_file_number - 1
+                :
+                current_file_number + 1;
+
               const std::string filename (create_filename (next_file_number, boundary_id));
               if (Utilities::fexists(filename))
                 {
@@ -784,7 +776,10 @@ namespace aspect
                   lookups.find(boundary_id)->second->load_file(filename, this->get_mpi_communicator());
                 }
               else
-                end_time_dependence ();
+                {
+                  // next file not found, issue warning and end looking for new files
+                  end_time_dependence (true);
+                }
             }
         }
     }
@@ -923,16 +918,16 @@ namespace aspect
     void
     AsciiDataBoundary<dim>::update ()
     {
-      // always initialize with the start time during model setup, even
-      // when restarting (to have identical setup in both cases)
-      double model_time = this->get_parameters().start_time;
-
-      // if we are past initialization use the current time instead
-      if (this->simulator_is_past_initialization())
-        model_time = this->get_time();
-
       if (time_dependent == true)
         {
+          // always initialize with the start time during model setup, even
+          // when restarting (to have identical setup in both cases)
+          double model_time = this->get_parameters().start_time;
+
+          // if we are past initialization use the current time instead
+          if (this->simulator_is_past_initialization())
+            model_time = this->get_time();
+
           const double time_steps_since_start = model_time / data_file_time_step;
           // whether we need to update our data files. This looks so complicated
           // because we need to catch increasing and decreasing file orders and all
@@ -1016,28 +1011,32 @@ namespace aspect
           lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
         }
 
-      // If next file does not exist, end time dependent part with current_time_step.
+      // If next file does not exist, end time dependent part with current_time_step and issue warning.
       else
-        end_time_dependence ();
+        end_time_dependence (true);
     }
 
 
 
     template <int dim>
     void
-    AsciiDataBoundary<dim>::end_time_dependence ()
+    AsciiDataBoundary<dim>::end_time_dependence (const bool issue_warning)
     {
       // no longer consider the problem time dependent from here on out
       // this cancels all attempts to read files at the next time steps
       time_dependent = false;
-      // Give warning if first processor
-      this->get_pcout() << std::endl
-                        << "   From this timestep onwards, ASPECT will not attempt to load new Ascii data files." << std::endl
-                        << "   This is either because ASPECT has already read all the files necessary to impose" << std::endl
-                        << "   the requested boundary condition, or that the last available file has been read." << std::endl
-                        << "   If the Ascii data represented a time-dependent boundary condition," << std::endl
-                        << "   that time-dependence ends at this timestep  (i.e. the boundary condition" << std::endl
-                        << "   will continue unchanged from the last known state into the future)." << std::endl << std::endl;
+
+      if (issue_warning == true)
+        {
+          // Give warning if first processor
+          this->get_pcout() << std::endl
+                            << "   From this timestep onwards, ASPECT will not attempt to load new Ascii data files." << std::endl
+                            << "   This is either because ASPECT has already read all the files necessary to impose" << std::endl
+                            << "   the requested boundary condition, or that the last available file has been read." << std::endl
+                            << "   If the Ascii data represented a time-dependent boundary condition," << std::endl
+                            << "   that time-dependence ends at this timestep  (i.e. the boundary condition" << std::endl
+                            << "   will continue unchanged from the last known state into the future)." << std::endl << std::endl;
+        }
     }
 
 
@@ -1130,7 +1129,8 @@ namespace aspect
     AsciiDataBoundary<dim>::declare_parameters (ParameterHandler  &prm,
                                                 const std::string &default_directory,
                                                 const std::string &default_filename,
-                                                const std::string &subsection_name)
+                                                const std::string &subsection_name,
+                                                const bool declare_time_dependent_parameters)
     {
       Utilities::AsciiDataBase<dim>::declare_parameters(prm,
                                                         default_directory,
@@ -1139,37 +1139,50 @@ namespace aspect
 
       prm.enter_subsection (subsection_name);
       {
-        prm.declare_entry ("Data file name",
-                           default_filename,
-                           Patterns::Anything (),
-                           "The file name of the model data. Provide file in format: "
-                           "(File name).\\%s\\%d, where \\%s is a string specifying "
-                           "the boundary of the model according to the names of the boundary "
-                           "indicators (of the chosen geometry model), and \\%d is any sprintf "
-                           "integer qualifier specifying the format of the current file number.");
-        prm.declare_entry ("Data file time step", "1e6",
-                           Patterns::Double (0.),
-                           "Time step between following data files. "
-                           "Depending on the setting of the global `Use years in output instead of seconds' flag "
-                           "in the input file, this number is either interpreted as seconds or as years. "
-                           "The default is one million, i.e., either one million seconds or one million years.");
-        prm.declare_entry ("First data file model time", "0",
-                           Patterns::Double (0.),
-                           "The `First data file model time' parameter "
-                           "has been deactivated and will be removed in a future release. "
-                           "Do not use this paramter and instead provide data files "
-                           "starting from the model start time.");
-        prm.declare_entry ("First data file number", "0",
-                           Patterns::Integer (),
-                           "Number of the first velocity file to be loaded when the model time "
-                           "is larger than `First velocity file model time'.");
-        prm.declare_entry ("Decreasing file order", "false",
-                           Patterns::Bool (),
-                           "In some cases the boundary files are not numbered in increasing "
-                           "but in decreasing order (e.g. `Ma BP'). If this flag is set to "
-                           "`True' the plugin will first load the file with the number "
-                           "`First data file number' and decrease the file number during "
-                           "the model run.");
+        if (declare_time_dependent_parameters == true)
+          {
+            prm.declare_entry ("Data file name",
+                               default_filename,
+                               Patterns::Anything (),
+                               "The file name of the model data. Provide file in format: "
+                               "(File name).\\%s\\%d, where \\%s is a string specifying "
+                               "the boundary of the model according to the names of the boundary "
+                               "indicators (of the chosen geometry model), and \\%d is any sprintf "
+                               "integer qualifier specifying the format of the current file number.");
+            prm.declare_entry ("Data file time step", "1e6",
+                               Patterns::Double (0.),
+                               "Time step between following data files. "
+                               "Depending on the setting of the global `Use years in output instead of seconds' flag "
+                               "in the input file, this number is either interpreted as seconds or as years. "
+                               "The default is one million, i.e., either one million seconds or one million years.");
+            prm.declare_entry ("First data file model time", "0",
+                               Patterns::Double (0.),
+                               "The `First data file model time' parameter "
+                               "has been deactivated and will be removed in a future release. "
+                               "Do not use this paramter and instead provide data files "
+                               "starting from the model start time.");
+            prm.declare_entry ("First data file number", "0",
+                               Patterns::Integer (),
+                               "Number of the first velocity file to be loaded when the model time "
+                               "is larger than `First velocity file model time'.");
+            prm.declare_entry ("Decreasing file order", "false",
+                               Patterns::Bool (),
+                               "In some cases the boundary files are not numbered in increasing "
+                               "but in decreasing order (e.g. `Ma BP'). If this flag is set to "
+                               "`True' the plugin will first load the file with the number "
+                               "`First data file number' and decrease the file number during "
+                               "the model run.");
+          }
+        else
+          {
+            prm.declare_entry ("Data file name",
+                               default_filename,
+                               Patterns::Anything (),
+                               "The file name of the model data. Provide file in format: "
+                               "(File name).\\%s, where \\%s is a string specifying "
+                               "the boundary of the model according to the names of the boundary "
+                               "indicators (of the chosen geometry model).");
+          }
       }
       prm.leave_subsection();
     }
@@ -1178,29 +1191,47 @@ namespace aspect
     template <int dim>
     void
     AsciiDataBoundary<dim>::parse_parameters (ParameterHandler &prm,
-                                              const std::string &subsection_name)
+                                              const std::string &subsection_name,
+                                              const bool parse_time_dependent_parameters)
     {
       Utilities::AsciiDataBase<dim>::parse_parameters(prm,
                                                       subsection_name);
 
       prm.enter_subsection(subsection_name);
       {
-        data_file_time_step             = prm.get_double ("Data file time step");
-        const double first_data_file_model_time      = prm.get_double ("First data file model time");
-
-        AssertThrow (first_data_file_model_time == 0.0,
-                     ExcMessage("The `First data file model time' parameter "
-                                "has been deactivated and will be removed in a future release. "
-                                "Do not use this parameter and instead provide data files "
-                                "starting from the model start time."));
-
-        first_data_file_number          = prm.get_integer("First data file number");
-        decreasing_file_order           = prm.get_bool   ("Decreasing file order");
-
-        if (this->convert_output_to_years() == true)
+        if (parse_time_dependent_parameters == true)
           {
-            data_file_time_step        *= year_in_seconds;
+            data_file_time_step             = prm.get_double ("Data file time step");
+            const double first_data_file_model_time      = prm.get_double ("First data file model time");
+
+            AssertThrow (first_data_file_model_time == 0.0,
+                         ExcMessage("The `First data file model time' parameter "
+                                    "has been deactivated and will be removed in a future release. "
+                                    "Do not use this parameter and instead provide data files "
+                                    "starting from the model start time."));
+
+            first_data_file_number          = prm.get_integer("First data file number");
+            decreasing_file_order           = prm.get_bool   ("Decreasing file order");
+
+            if (this->convert_output_to_years() == true)
+              {
+                data_file_time_step        *= year_in_seconds;
+              }
           }
+        else
+          {
+            AssertThrow (create_filename (0, 0) == create_filename (1, 0),
+                         ExcMessage("A boundary data file name was used that contained a placeholder for "
+                                    "the current file number, but this AsciiDataBoundary object does not support "
+                                    "time dependent information. Please remove the timestep placeholder."));
+          }
+
+        // if filename does not contain a placeholder for timestep, no time dependence
+        // do not issue a warning, the parameter file is specifying exactly one file.
+        if (create_filename (0, 0) == create_filename (1, 0))
+          end_time_dependence (false);
+        else
+          time_dependent = true;
       }
       prm.leave_subsection();
     }
