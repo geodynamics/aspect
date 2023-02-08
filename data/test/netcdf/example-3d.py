@@ -1,6 +1,9 @@
-''' Create example NetCDF files
+'''Create example NetCDF files
 
 see https://unidata.github.io/netcdf4-python/ for more information
+
+These are used in the ASPECT unit tests located in
+./unit_tests/netcdf.cc to check that we can load files correctly.
 
 '''
 
