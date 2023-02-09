@@ -698,6 +698,24 @@ namespace aspect
       prm.leave_subsection();
     }
 
+    namespace
+    {
+      template <int dim>
+      void
+      check_supported_geometry_models(const GeometryModel::Interface<dim> &geometry_model)
+      {
+        AssertThrow ((Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (geometry_model))
+                     || (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (geometry_model))
+                     || (Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (geometry_model))
+                     || (Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>> (geometry_model))
+                     || (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (geometry_model))
+                     || (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (geometry_model))
+                     || (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (geometry_model)),
+                     ExcMessage ("This ascii data plugin can only be used with supported "
+                                 "geometry models."));
+      }
+    }
+
 
 
     template <int dim>
@@ -720,15 +738,7 @@ namespace aspect
     AsciiDataBoundary<dim>::initialize(const std::set<types::boundary_id> &boundary_ids,
                                        const unsigned int components)
     {
-      AssertThrow ((Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
-                   || (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
-                   || (Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (this->get_geometry_model()))
-                   || (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()))
-                   || (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
-                   || (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model())),
-                   ExcMessage ("This ascii data plugin can only be used when using "
-                               "a spherical shell, chunk, box or two merged boxes geometry."));
-
+      check_supported_geometry_models(this->get_geometry_model());
 
       for (const auto &boundary_id : boundary_ids)
         {
@@ -790,63 +800,6 @@ namespace aspect
     }
 
 
-
-    template <int dim>
-    std::array<unsigned int,dim-1>
-    AsciiDataBoundary<dim>::get_boundary_dimensions (const types::boundary_id boundary_id) const
-    {
-      std::array<unsigned int,dim-1> boundary_dimensions;
-
-      switch (dim)
-        {
-          case 2:
-            if ((boundary_id == 2) || (boundary_id == 3) || (boundary_id == 4) || (boundary_id == 5))
-              {
-                boundary_dimensions[0] = 0;
-              }
-            else if ((boundary_id == 0) || (boundary_id == 1))
-              {
-                boundary_dimensions[0] = 1;
-              }
-            else
-              {
-                boundary_dimensions[0] = numbers::invalid_unsigned_int;
-                AssertThrow(false,ExcNotImplemented());
-              }
-            break;
-
-          case 3:
-            if ((boundary_id == 4) || (boundary_id == 5) || (boundary_id == 8) || (boundary_id == 9))
-              {
-                boundary_dimensions[0] = 0;
-                boundary_dimensions[1] = 1;
-              }
-            else if ((boundary_id == 0) || (boundary_id == 1))
-              {
-                boundary_dimensions[0] = 1;
-                boundary_dimensions[1] = 2;
-              }
-            else if ((boundary_id == 2) || (boundary_id == 3) || (boundary_id == 6) || (boundary_id == 7))
-              {
-                boundary_dimensions[0] = 0;
-                boundary_dimensions[1] = 2;
-              }
-            else
-              {
-                boundary_dimensions[0] = numbers::invalid_unsigned_int;
-                boundary_dimensions[1] = numbers::invalid_unsigned_int;
-                AssertThrow(false,ExcNotImplemented());
-              }
-
-            break;
-
-          default:
-            for (unsigned int d=0; d<dim-1; ++d)
-              boundary_dimensions[d] = numbers::invalid_unsigned_int;
-            AssertThrow(false,ExcNotImplemented());
-        }
-      return boundary_dimensions;
-    }
 
     namespace
     {
@@ -1042,6 +995,132 @@ namespace aspect
 
 
 
+    namespace
+    {
+      /**
+       * Determines which of the dimensions of a position are aligned with
+       * a certain @p boundary_id. E.g. the left boundary of a box
+       * model extents in the y and z direction (position[1] and
+       * position[2]), therefore the function would return [1,2] for dim==3
+       * or [1] for dim==2. We are lucky that these indices are identical
+       * for all existing geometries (if we use natural coordinates),
+       * therefore we do not need to distinguish between them. If we
+       * introduce a geometry model for which boundaries are not aligned
+       * with natural coordinates this needs to become a function in
+       * the interface of the geometry model and needs to be specialized
+       * for distinct geometry models.
+       */
+      template <int dim>
+      std::array<unsigned int,dim-1>
+      get_boundary_dimensions (const types::boundary_id boundary_id)
+      {
+        std::array<unsigned int,dim-1> boundary_dimensions;
+        boundary_dimensions.fill(numbers::invalid_unsigned_int);
+
+        switch (dim)
+          {
+            case 2:
+              if ((boundary_id == 2) || (boundary_id == 3) || (boundary_id == 4) || (boundary_id == 5))
+                {
+                  boundary_dimensions[0] = 0;
+                }
+              else if ((boundary_id == 0) || (boundary_id == 1))
+                {
+                  boundary_dimensions[0] = 1;
+                }
+              else
+                {
+                  AssertThrow(false,ExcNotImplemented());
+                }
+              break;
+
+            case 3:
+              if ((boundary_id == 4) || (boundary_id == 5) || (boundary_id == 8) || (boundary_id == 9))
+                {
+                  boundary_dimensions[0] = 0;
+                  boundary_dimensions[1] = 1;
+                }
+              else if ((boundary_id == 0) || (boundary_id == 1))
+                {
+                  boundary_dimensions[0] = 1;
+                  boundary_dimensions[1] = 2;
+                }
+              else if ((boundary_id == 2) || (boundary_id == 3) || (boundary_id == 6) || (boundary_id == 7))
+                {
+                  boundary_dimensions[0] = 0;
+                  boundary_dimensions[1] = 2;
+                }
+              else
+                {
+                  AssertThrow(false,ExcNotImplemented());
+                }
+
+              break;
+
+            default:
+              AssertThrow(false,ExcNotImplemented());
+          }
+        return boundary_dimensions;
+      }
+
+
+
+      /**
+       * Convert a point @p position in cartesian coordinates into the set of coordinates
+       * used in the structured data input files, i.e. coordinates in the
+       * natural coordinate system of the given @p geometry_model.
+       */
+      template <int dim>
+      Point<dim>
+      data_coordinates_from_position (const Point<dim> &position,
+                                      const aspect::GeometryModel::Interface<dim> &geometry_model)
+      {
+        const std::array<double,dim> natural_position = geometry_model.cartesian_to_natural_coordinates(position);
+        Point<dim> data_coordinates = Utilities::convert_array_to_point<dim>(natural_position);
+
+        // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
+        // to allow for consistent data files between chunk geometries and spherical geometries.
+        if (dim == 3 &&
+            (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (geometry_model) ||
+             Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (geometry_model) ||
+             Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>> (geometry_model)))
+          {
+            data_coordinates[2] = numbers::PI/2. - data_coordinates[2];
+          }
+
+        return data_coordinates;
+      }
+
+
+
+      /**
+       * Convert a point @p data_coordinates using coordinates appropriate for
+       * volumetric structured data input files (e.g. produced by the
+       * data_coordinates_from_position() function above) into appropriate
+       * coordinates on the boundary given by @p boundary_indicator.
+       * Because all existing geometry models use boundaries that are aligned
+       * with natural coordinate directions this means finding the correct components
+       * of the input coordinates and returning a point with one dimension less
+       * than the input point that is determined by these coordinates.
+       */
+      template <int dim>
+      Point<dim-1>
+      boundary_coordinates_from_data_coordinates (const Point<dim> &data_coordinates,
+                                                  const types::boundary_id boundary_indicator)
+      {
+        const std::array<unsigned int,dim-1> boundary_dimensions =
+          get_boundary_dimensions<dim>(boundary_indicator);
+
+        Point<dim-1> boundary_coordinates;
+        for (unsigned int i = 0; i < dim-1; i++)
+          boundary_coordinates[i] = data_coordinates[boundary_dimensions[i]];
+
+        return boundary_coordinates;
+      }
+    }
+
+
+
     template <int dim>
     double
     AsciiDataBoundary<dim>::
@@ -1049,33 +1128,17 @@ namespace aspect
                         const Point<dim>                    &position,
                         const unsigned int                   component) const
     {
-      const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
-
-      Point<dim> internal_position;
-      for (unsigned int i = 0; i < dim; i++)
-        internal_position[i] = natural_position[i];
-
-      // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
-      if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()) && dim == 3)
-        {
-          internal_position[2] = numbers::PI/2. - internal_position[2];
-        }
-
-      const std::array<unsigned int,dim-1> boundary_dimensions =
-        get_boundary_dimensions(boundary_indicator);
-
-      Point<dim-1> data_position;
-      for (unsigned int i = 0; i < dim-1; i++)
-        data_position[i] = internal_position[boundary_dimensions[i]];
+      const Point<dim> data_coordinates = data_coordinates_from_position(position, this->get_geometry_model());
+      const Point<dim-1> boundary_coordinates = boundary_coordinates_from_data_coordinates(data_coordinates, boundary_indicator);
 
       Assert (lookups.find(boundary_indicator) != lookups.end(),
               ExcInternalError());
-      const double data = lookups.find(boundary_indicator)->second->get_data(data_position,component);
+      const double data = lookups.find(boundary_indicator)->second->get_data(boundary_coordinates,component);
 
       if (!time_dependent)
         return data;
 
-      const double old_data = old_lookups.find(boundary_indicator)->second->get_data(data_position,component);
+      const double old_data = old_lookups.find(boundary_indicator)->second->get_data(boundary_coordinates,component);
 
       return time_weight * data + (1 - time_weight) * old_data;
     }
@@ -1087,31 +1150,15 @@ namespace aspect
                                              const Point<dim>                    &position,
                                              const unsigned int                   component) const
     {
-      const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
+      const Point<dim> data_coordinates = data_coordinates_from_position(position, this->get_geometry_model());
+      const Point<dim-1> boundary_coordinates = boundary_coordinates_from_data_coordinates(data_coordinates, boundary_indicator);
 
-      Point<dim> internal_position;
-      for (unsigned int i = 0; i < dim; i++)
-        internal_position[i] = natural_position[i];
-
-      // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
-      if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr && dim == 3)
-        {
-          internal_position[2] = numbers::PI/2. - internal_position[2];
-        }
-
-      const std::array<unsigned int,dim-1> boundary_dimensions =
-        get_boundary_dimensions(boundary_indicator);
-
-      Point<dim-1> data_position;
-      for (unsigned int i = 0; i < dim-1; ++i)
-        data_position[i] = internal_position[boundary_dimensions[i]];
-
-      const Tensor<1,dim-1>  gradients = lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
+      const Tensor<1,dim-1>  gradients = lookups.find(boundary_indicator)->second->get_gradients(boundary_coordinates,component);
 
       if (!time_dependent)
         return gradients;
 
-      const Tensor<1,dim-1> old_gradients = old_lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
+      const Tensor<1,dim-1> old_gradients = old_lookups.find(boundary_indicator)->second->get_gradients(boundary_coordinates,component);
 
       return time_weight * gradients + (1 - time_weight) * old_gradients;
     }
@@ -1217,14 +1264,7 @@ namespace aspect
     void
     AsciiDataLayered<dim>::initialize(const unsigned int components)
     {
-      AssertThrow ((Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
-                    Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) ||
-                    Plugins::plugin_type_matches<GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()) ||
-                    Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
-                    Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model())) ||
-                   Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()),
-                   ExcMessage ("This ascii data plugin can only be used when using "
-                               "a spherical shell, chunk, sphere, box or two merged boxes geometry."));
+      check_supported_geometry_models(this->get_geometry_model());
 
       // Create the lookups for each file
       number_of_layer_boundaries = data_file_names.size();
@@ -1252,34 +1292,23 @@ namespace aspect
     get_data_component (const Point<dim> &position,
                         const unsigned int component) const
     {
-      // Get the location of the component in the coordinate system of the ascii data input
-      const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
-
-      Point<dim> internal_position;
-      for (unsigned int i = 0; i < dim; i++)
-        internal_position[i] = natural_position[i];
-
-      // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
-      if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) && dim == 3)
-        {
-          internal_position[2] = numbers::PI/2. - internal_position[2];
-        }
+      const Point<dim> data_coordinates = data_coordinates_from_position(position, this->get_geometry_model());
 
       double vertical_position;
       Point<dim-1> horizontal_position;
       if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::CoordinateSystem::cartesian)
         {
           // in cartesian coordinates, the vertical component comes last
-          vertical_position = internal_position[dim-1];
+          vertical_position = data_coordinates[dim-1];
           for (unsigned int i = 0; i < dim-1; i++)
-            horizontal_position[i] = internal_position[i];
+            horizontal_position[i] = data_coordinates[i];
         }
       else
         {
           // in spherical coordinates, the vertical component comes first
-          vertical_position = internal_position[0];
+          vertical_position = data_coordinates[0];
           for (unsigned int i = 0; i < dim-1; i++)
-            horizontal_position[i] = internal_position[i+1];
+            horizontal_position[i] = data_coordinates[i+1];
         }
 
       // Find which layer we're in
@@ -1441,25 +1470,9 @@ namespace aspect
         }
 
       // else slice_data == false: model and dataset have the same dimension
-      const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
+      const Point<dim> data_coordinates = data_coordinates_from_position(position, this->get_geometry_model());
 
-      Point<dim> internal_position;
-      for (unsigned int i = 0; i < dim; ++i)
-        internal_position[i] = natural_position[i];
-
-      if (dim == 3)
-        {
-          // Unfortunately, the chunk model uses latitude as natural coordinate. We need to convert this
-          // to colatitude to be consistent with the input files for spherical shells and spheres.
-          if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()) ||
-              Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (this->get_geometry_model()) ||
-              Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>> (this->get_geometry_model()))
-            {
-              internal_position[2] = numbers::PI/2. - internal_position[2];
-            }
-        }
-
-      return lookup->get_data(internal_position,component);
+      return lookup->get_data(data_coordinates,component);
     }
 
 

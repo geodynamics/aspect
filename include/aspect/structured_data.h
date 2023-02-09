@@ -389,23 +389,6 @@ namespace aspect
                           const std::string &subsection_name = "Ascii data model");
 
       protected:
-
-        /**
-         * Determines which of the dimensions of the position is used to find
-         * the data point in the data grid. E.g. the left boundary of a box
-         * model extents in the y and z direction (position[1] and
-         * position[2]), therefore the function would return [1,2] for dim==3
-         * or [1] for dim==2. We are lucky that these indices are identical
-         * for the box and the spherical shell (if we use spherical
-         * coordinates for the spherical shell), therefore we do not need to
-         * distinguish between them. For the initial condition this function
-         * is trivial, because the position in the data grid is the same as
-         * the actual position (the function returns [0,1,2] or [0,1]), but
-         * for the boundary conditions it matters.
-         */
-        std::array<unsigned int,dim-1>
-        get_boundary_dimensions (const types::boundary_id boundary_id) const;
-
         /**
          * A variable that stores the currently used data file of a series. It
          * gets updated if necessary by update().
