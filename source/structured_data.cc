@@ -778,7 +778,7 @@ namespace aspect
               else
                 {
                   // next file not found, issue warning and end looking for new files
-                  end_time_dependence (true);
+                  end_time_dependence ();
                 }
             }
         }
@@ -1013,30 +1013,27 @@ namespace aspect
 
       // If next file does not exist, end time dependent part with current_time_step and issue warning.
       else
-        end_time_dependence (true);
+        end_time_dependence ();
     }
 
 
 
     template <int dim>
     void
-    AsciiDataBoundary<dim>::end_time_dependence (const bool issue_warning)
+    AsciiDataBoundary<dim>::end_time_dependence ()
     {
       // no longer consider the problem time dependent from here on out
       // this cancels all attempts to read files at the next time steps
       time_dependent = false;
 
-      if (issue_warning == true)
-        {
-          // Give warning if first processor
-          this->get_pcout() << std::endl
-                            << "   From this timestep onwards, ASPECT will not attempt to load new Ascii data files." << std::endl
-                            << "   This is either because ASPECT has already read all the files necessary to impose" << std::endl
-                            << "   the requested boundary condition, or that the last available file has been read." << std::endl
-                            << "   If the Ascii data represented a time-dependent boundary condition," << std::endl
-                            << "   that time-dependence ends at this timestep  (i.e. the boundary condition" << std::endl
-                            << "   will continue unchanged from the last known state into the future)." << std::endl << std::endl;
-        }
+      // Give warning if first processor
+      this->get_pcout() << std::endl
+                        << "   From this timestep onwards, ASPECT will not attempt to load new Ascii data files." << std::endl
+                        << "   This is either because ASPECT has already read all the files necessary to impose" << std::endl
+                        << "   the requested boundary condition, or that the last available file has been read." << std::endl
+                        << "   If the Ascii data represented a time-dependent boundary condition," << std::endl
+                        << "   that time-dependence ends at this timestep  (i.e. the boundary condition" << std::endl
+                        << "   will continue unchanged from the last known state into the future)." << std::endl << std::endl;
     }
 
 
@@ -1223,13 +1220,13 @@ namespace aspect
             AssertThrow (create_filename (0, 0) == create_filename (1, 0),
                          ExcMessage("A boundary data file name was used that contained a placeholder for "
                                     "the current file number, but this AsciiDataBoundary object does not support "
-                                    "time dependent information. Please remove the timestep placeholder."));
+                                    "time dependent information. Please remove the file number placeholder."));
           }
 
         // if filename does not contain a placeholder for timestep, no time dependence
         // do not issue a warning, the parameter file is specifying exactly one file.
         if (create_filename (0, 0) == create_filename (1, 0))
-          end_time_dependence (false);
+          time_dependent = false;
         else
           time_dependent = true;
       }

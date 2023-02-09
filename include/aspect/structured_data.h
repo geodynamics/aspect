@@ -495,7 +495,7 @@ namespace aspect
          * part of the boundary condition is over.
          */
         void
-        end_time_dependence (const bool issue_warning = true);
+        end_time_dependence ();
 
         /**
          * Create a filename out of the name template.
