@@ -2,14 +2,6 @@
 
    Loading Ascii data boundary file ASPECT_DIR/data/geometry-model/initial-topography-model/ascii-data/test/shell_2d_outer.0.txt.
 
-
-   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
-   This is either because ASPECT has already read all the files necessary to impose
-   the requested boundary condition, or that the last available file has been read.
-   If the Ascii data represented a time-dependent boundary condition,
-   that time-dependence ends at this timestep  (i.e. the boundary condition
-   will continue unchanged from the last known state into the future).
-
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 

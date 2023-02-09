@@ -373,20 +373,45 @@ namespace aspect
 
         /**
          * Declare the parameters all derived classes take from input files.
+         *
+         * @param prm The parameter handler in which the parameters are declared.
+         * @param default_directory The default value for the data directory parameter.
+         * @param default_filename The default value for the filename parameter.
+         * @param subsection_name The name of the parameter file subsection all
+         * parameters will be declared in. The function will enter this subsection,
+         * declare all parameters, then leave this subsection, to return @p prm in
+         * the same subsection it was in before.
+         * @param declare_time_dependent_parameters Whether to declare the parameter
+         * that are only needed for time dependent AsciiDataBoundary objects. If
+         * the caller already knows time dependence is not supported for the current
+         * application, disabling this parameter avoids introducing these parameters
+         * to the parameter handler.
          */
         static
         void
         declare_parameters (ParameterHandler  &prm,
                             const std::string &default_directory,
                             const std::string &default_filename,
-                            const std::string &subsection_name = "Ascii data model");
+                            const std::string &subsection_name = "Ascii data model",
+                            const bool declare_time_dependent_parameters = true);
 
         /**
          * Read the parameters from the parameter file.
+         *
+         * @param prm The parameter handler from which the parameters are parsed.
+         * @param subsection_name The name of the parameter file subsection all
+         * parameters will be parsed from. The function will enter this subsection,
+         * parse all parameters, then leave this subsection, to return @p prm in
+         * the same subsection it was in before.
+         * @param parse_time_dependent_parameters Whether to parse the parameter
+         * that are only needed for time dependent AsciiDataBoundary objects. This
+         * parameter always needs to be set to the same value that was handed over
+         * to declare_parameters().
          */
         void
         parse_parameters (ParameterHandler &prm,
-                          const std::string &subsection_name = "Ascii data model");
+                          const std::string &subsection_name = "Ascii data model",
+                          const bool parse_time_dependent_parameters = true);
 
       protected:
         /**
