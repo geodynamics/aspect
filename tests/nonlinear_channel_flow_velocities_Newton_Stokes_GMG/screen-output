@@ -159,7 +159,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 17+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 7.54312e-12, norm of the rhs: 346186, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 7.54311e-12, norm of the rhs: 346186, newton_derivative_scaling_factor: 0
 
 
    Postprocessing:
@@ -188,7 +188,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 17+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 8.45687e-12, norm of the rhs: 388123, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 8.45688e-12, norm of the rhs: 388123, newton_derivative_scaling_factor: 0
 
 
    Postprocessing:
@@ -205,7 +205,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 17+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 1.62118e-11, norm of the rhs: 744030, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 1.62118e-11, norm of the rhs: 744031, newton_derivative_scaling_factor: 0
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 17+0 iterations.
@@ -226,7 +226,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Initial Newton Stokes residual = 4.58943e+16, v = 4.58941e+16, p = 1.36198e+14
 
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 5.81066e-12, norm of the rhs: 266677
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 5.81066e-12, norm of the rhs: 266676
 
 
    Postprocessing:

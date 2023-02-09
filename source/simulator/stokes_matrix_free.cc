@@ -44,6 +44,7 @@
 
 #include <deal.II/grid/manifold.h>
 
+#include <deal.II/matrix_free/tools.h>
 
 namespace aspect
 {
@@ -797,6 +798,60 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
+  ::inner_cell_operation(FEEvaluation<dim,
+                         degree_v,
+                         degree_v+1,
+                         dim,
+                         number> &velocity) const
+  {
+    const bool use_viscosity_at_quadrature_points
+      = (cell_data->viscosity.size(1) == velocity.n_q_points);
+
+    const unsigned int cell = velocity.get_current_cell_index();
+    VectorizedArray<number> viscosity_x_2 = 2.0*cell_data->viscosity(cell, 0);
+
+    for (unsigned int q=0; q<velocity.n_q_points; ++q)
+      {
+        // Only update the viscosity if a Q1 projection is used.
+        if (use_viscosity_at_quadrature_points)
+          viscosity_x_2 = 2.0*cell_data->viscosity(cell, q);
+
+        SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
+          velocity.get_symmetric_gradient (q);
+        sym_grad_u *= viscosity_x_2;
+
+        if (cell_data->is_compressible)
+          {
+            const VectorizedArray<number> div = trace(sym_grad_u);
+            for (unsigned int d=0; d<dim; ++d)
+              sym_grad_u[d][d] -= 1.0/3.0*div;
+          }
+
+        velocity.submit_symmetric_gradient(sym_grad_u, q);
+      }
+  }
+
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
+  ::cell_operation(FEEvaluation<dim,
+                   degree_v,
+                   degree_v+1,
+                   dim,
+                   number> &velocity) const
+  {
+    velocity.evaluate (EvaluationFlags::gradients);
+    this->inner_cell_operation(velocity);
+    velocity.integrate(EvaluationFlags::gradients);
+  }
+
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
   ::local_apply (const dealii::MatrixFree<dim, number>                 &data,
                  dealii::LinearAlgebra::distributed::Vector<number>       &dst,
                  const dealii::LinearAlgebra::distributed::Vector<number> &src,
@@ -804,37 +859,17 @@ namespace aspect
   {
     FEEvaluation<dim,degree_v,degree_v+1,dim,number> velocity (data,0);
 
-    const bool use_viscosity_at_quadrature_points
-      = (cell_data->viscosity.size(1) == velocity.n_q_points);
-
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
-        VectorizedArray<number> viscosity_x_2 = 2.0*cell_data->viscosity(cell, 0);
-
         velocity.reinit (cell);
 
+        // Instead of calling
+        //   velocity.read_dof_values (src);
+        //   velocity.evaluate (EvaluationFlags::gradients);
+        // (the latter by calling cell_operation()), we use the more efficient
+        // combined gather_evaluate() and use inner_cell_operation().
         velocity.gather_evaluate (src, EvaluationFlags::gradients);
-
-        for (unsigned int q=0; q<velocity.n_q_points; ++q)
-          {
-            // Only update the viscosity if a Q1 projection is used.
-            if (use_viscosity_at_quadrature_points)
-              viscosity_x_2 = 2.0*cell_data->viscosity(cell, q);
-
-            SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
-              velocity.get_symmetric_gradient (q);
-            sym_grad_u *= viscosity_x_2;
-
-            if (cell_data->is_compressible)
-              {
-                const VectorizedArray<number> div = trace(sym_grad_u);
-                for (unsigned int d=0; d<dim; ++d)
-                  sym_grad_u[d][d] -= 1.0/3.0*div;
-              }
-
-            velocity.submit_symmetric_gradient(sym_grad_u, q);
-          }
-
+        this->inner_cell_operation(velocity);
         velocity.integrate_scatter (EvaluationFlags::gradients, dst);
       }
   }
@@ -863,9 +898,12 @@ namespace aspect
     dealii::LinearAlgebra::distributed::Vector<number> &inverse_diagonal =
       this->inverse_diagonal_entries->get_vector();
     this->data->initialize_dof_vector(inverse_diagonal);
-    unsigned int dummy = 0;
-    this->data->cell_loop (&ABlockOperator::local_compute_diagonal, this,
-                           inverse_diagonal, dummy);
+
+    MatrixFreeTools::compute_diagonal(
+      *(this->get_matrix_free()),
+      inverse_diagonal,
+      &MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::cell_operation,
+      this);
 
     this->set_constrained_entries_to_one(inverse_diagonal);
 
@@ -879,68 +917,6 @@ namespace aspect
                ExcMessage("No diagonal entry in a positive definite operator "
                           "should be zero or negative."));
         local_element = 1./local_element;
-      }
-  }
-
-
-
-  template <int dim, int degree_v, typename number>
-  void
-  MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
-  ::local_compute_diagonal (const MatrixFree<dim,number>                     &data,
-                            dealii::LinearAlgebra::distributed::Vector<number>  &dst,
-                            const unsigned int &,
-                            const std::pair<unsigned int,unsigned int>       &cell_range) const
-  {
-    FEEvaluation<dim,degree_v,degree_v+1,dim,number> velocity (data, 0);
-
-    const bool use_viscosity_at_quadrature_points
-      = (cell_data->viscosity.size(1) == velocity.n_q_points);
-
-    AlignedVector<VectorizedArray<number>> diagonal(velocity.dofs_per_cell);
-
-    for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
-      {
-        VectorizedArray<number> viscosity_x_2 = 2.0*cell_data->viscosity(cell, 0);
-
-        velocity.reinit (cell);
-        for (unsigned int i=0; i<velocity.dofs_per_cell; ++i)
-          {
-            for (unsigned int j=0; j<velocity.dofs_per_cell; ++j)
-              velocity.begin_dof_values()[j] = VectorizedArray<number>();
-            velocity.begin_dof_values()[i] = make_vectorized_array<number> (1.);
-
-            velocity.evaluate (EvaluationFlags::gradients);
-
-            for (unsigned int q=0; q<velocity.n_q_points; ++q)
-              {
-                // Only update the viscosity if a Q1 projection is used.
-                if (use_viscosity_at_quadrature_points)
-                  viscosity_x_2 = 2.0*cell_data->viscosity(cell, q);
-
-                SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
-                  velocity.get_symmetric_gradient (q);
-
-                sym_grad_u *= viscosity_x_2;
-
-                if (cell_data->is_compressible)
-                  {
-                    VectorizedArray<number> div = trace(sym_grad_u);
-                    for (unsigned int d=0; d<dim; ++d)
-                      sym_grad_u[d][d] -= 1.0/3.0*div;
-                  }
-
-                velocity.submit_symmetric_gradient(sym_grad_u, q);
-              }
-
-            velocity.integrate (EvaluationFlags::gradients);
-
-            diagonal[i] = velocity.begin_dof_values()[i];
-          }
-
-        for (unsigned int i=0; i<velocity.dofs_per_cell; ++i)
-          velocity.begin_dof_values()[i] = diagonal[i];
-        velocity.distribute_local_to_global (dst);
       }
   }
 

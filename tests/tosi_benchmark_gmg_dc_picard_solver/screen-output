@@ -28,7 +28,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 3.03311e-06, norm of the rhs: 6.00334e-06, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 20+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 4.72053e-07, norm of the rhs: 9.3432e-07, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 4.72054e-07, norm of the rhs: 9.34322e-07, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 7.45133e-08, norm of the rhs: 1.47482e-07, newton_derivative_scaling_factor: 0
@@ -53,88 +53,88 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.00960572, norm of the rhs: 0.000359155, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 17+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.00178143, norm of the rhs: 6.66072e-05, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.00178143, norm of the rhs: 6.66071e-05, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 17+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 0.000331186, norm of the rhs: 1.23829e-05, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 0.000331188, norm of the rhs: 1.2383e-05, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 17+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 6.24974e-05, norm of the rhs: 2.33676e-06, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 6.25003e-05, norm of the rhs: 2.33687e-06, newton_derivative_scaling_factor: 0
 
-   Solving Stokes system... 18+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 1.19564e-05, norm of the rhs: 4.47047e-07, newton_derivative_scaling_factor: 0
+   Solving Stokes system... 19+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 1.19532e-05, norm of the rhs: 4.46926e-07, newton_derivative_scaling_factor: 0
 
-   Solving Stokes system... 20+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 2.3382e-06, norm of the rhs: 8.74248e-08, newton_derivative_scaling_factor: 0
+   Solving Stokes system... 19+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 2.34531e-06, norm of the rhs: 8.76905e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 21+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 6.06719e-07, norm of the rhs: 2.2685e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 5.98971e-07, norm of the rhs: 2.23954e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 4.14894e-07, norm of the rhs: 1.55128e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 4.04411e-07, norm of the rhs: 1.51208e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 4.14207e-07, norm of the rhs: 1.54871e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 11: 3.84509e-07, norm of the rhs: 1.43767e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 3.91761e-07, norm of the rhs: 1.46478e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 4.00855e-07, norm of the rhs: 1.49879e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 23+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 13: 4.1023e-07, norm of the rhs: 1.53384e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 11: 3.85928e-07, norm of the rhs: 1.44297e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 14: 4.15203e-07, norm of the rhs: 1.55243e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 4.03219e-07, norm of the rhs: 1.50762e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 15: 3.9887e-07, norm of the rhs: 1.49136e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 13: 4.05484e-07, norm of the rhs: 1.51609e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 16: 4.18278e-07, norm of the rhs: 1.56393e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 14: 3.92341e-07, norm of the rhs: 1.46695e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 17: 3.85647e-07, norm of the rhs: 1.44192e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 15: 3.85757e-07, norm of the rhs: 1.44233e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 23+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 18: 4.0288e-07, norm of the rhs: 1.50636e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 16: 3.97984e-07, norm of the rhs: 1.48805e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 17: 3.97668e-07, norm of the rhs: 1.48687e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 18: 4.07528e-07, norm of the rhs: 1.52374e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 23+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 19: 4.17657e-07, norm of the rhs: 1.56161e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 19: 4.11934e-07, norm of the rhs: 1.54021e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 20: 4.02437e-07, norm of the rhs: 1.5047e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 20: 3.96068e-07, norm of the rhs: 1.48089e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 21: 3.87996e-07, norm of the rhs: 1.4507e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 21: 3.76074e-07, norm of the rhs: 1.40613e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 22: 3.96324e-07, norm of the rhs: 1.48184e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 22: 3.89123e-07, norm of the rhs: 1.45492e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 23: 3.91525e-07, norm of the rhs: 1.4639e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 23+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 24: 3.75003e-07, norm of the rhs: 1.40212e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 23: 4.01424e-07, norm of the rhs: 1.50091e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 25: 3.75995e-07, norm of the rhs: 1.40583e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 23+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 26: 3.74489e-07, norm of the rhs: 1.4002e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 24: 3.9774e-07, norm of the rhs: 1.48714e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 27: 4.16157e-07, norm of the rhs: 1.556e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 25: 4.02977e-07, norm of the rhs: 1.50672e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 28: 3.97073e-07, norm of the rhs: 1.48464e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 26: 3.95245e-07, norm of the rhs: 1.47781e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 29: 3.87557e-07, norm of the rhs: 1.44906e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 27: 3.84705e-07, norm of the rhs: 1.4384e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 30: 3.753e-07, norm of the rhs: 1.40323e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 28: 3.9845e-07, norm of the rhs: 1.48979e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 29: 3.7932e-07, norm of the rhs: 1.41827e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 30: 3.93739e-07, norm of the rhs: 1.47218e-08, newton_derivative_scaling_factor: 0
 
 
    Postprocessing:
@@ -151,91 +151,91 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0219036, norm of the rhs: 0.00101569
 
    Solving Stokes system... 18+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.00105964, norm of the rhs: 4.91369e-05, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.00105964, norm of the rhs: 4.91368e-05, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 17+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.00020547, norm of the rhs: 9.5279e-06, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.000205472, norm of the rhs: 9.52798e-06, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 18+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 3.99093e-05, norm of the rhs: 1.85064e-06, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 3.99031e-05, norm of the rhs: 1.85036e-06, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 19+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 7.87536e-06, norm of the rhs: 3.6519e-07, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 7.87922e-06, norm of the rhs: 3.65369e-07, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 20+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 1.6047e-06, norm of the rhs: 7.44117e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 1.602e-06, norm of the rhs: 7.42864e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 21+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 4.42823e-07, norm of the rhs: 2.05342e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 4.54377e-07, norm of the rhs: 2.107e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 3.13044e-07, norm of the rhs: 1.45162e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 3.35494e-07, norm of the rhs: 1.55573e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 3.20728e-07, norm of the rhs: 1.48725e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 23+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 3.33793e-07, norm of the rhs: 1.54784e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 3.24617e-07, norm of the rhs: 1.50529e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 11: 3.3899e-07, norm of the rhs: 1.57194e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 3.44729e-07, norm of the rhs: 1.59855e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 13: 3.3636e-07, norm of the rhs: 1.55974e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 23+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 3.27468e-07, norm of the rhs: 1.51851e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 14: 3.27014e-07, norm of the rhs: 1.5164e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 11: 3.06418e-07, norm of the rhs: 1.4209e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 3.33641e-07, norm of the rhs: 1.54713e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 13: 3.21018e-07, norm of the rhs: 1.4886e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 14: 3.15635e-07, norm of the rhs: 1.46364e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 15: 3.40908e-07, norm of the rhs: 1.58083e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 16: 3.28063e-07, norm of the rhs: 1.52127e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 17: 3.17701e-07, norm of the rhs: 1.47322e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 18: 3.14875e-07, norm of the rhs: 1.46011e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 19: 3.11263e-07, norm of the rhs: 1.44336e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 20: 3.22859e-07, norm of the rhs: 1.49714e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 21: 3.35174e-07, norm of the rhs: 1.55424e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 22: 3.36854e-07, norm of the rhs: 1.56203e-08, newton_derivative_scaling_factor: 0
-
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 23: 2.95006e-07, norm of the rhs: 1.36798e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 15: 3.03475e-07, norm of the rhs: 1.40725e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 23+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 24: 3.12755e-07, norm of the rhs: 1.45028e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 16: 3.01571e-07, norm of the rhs: 1.39842e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 25: 2.9721e-07, norm of the rhs: 1.3782e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 17: 3.08279e-07, norm of the rhs: 1.42953e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 26: 3.08754e-07, norm of the rhs: 1.43173e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 18: 3.25022e-07, norm of the rhs: 1.50716e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 23+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 19: 3.12401e-07, norm of the rhs: 1.44864e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 27: 3.17016e-07, norm of the rhs: 1.47004e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 20: 3.01684e-07, norm of the rhs: 1.39894e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 28: 3.09902e-07, norm of the rhs: 1.43705e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 21: 3.06543e-07, norm of the rhs: 1.42148e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 29: 3.1476e-07, norm of the rhs: 1.45958e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 22: 3.16246e-07, norm of the rhs: 1.46647e-08, newton_derivative_scaling_factor: 0
 
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 30: 3.17941e-07, norm of the rhs: 1.47433e-08, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 23: 3.19685e-07, norm of the rhs: 1.48242e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 23+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 24: 3.20494e-07, norm of the rhs: 1.48617e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 23+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 25: 3.3013e-07, norm of the rhs: 1.53085e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 26: 3.39799e-07, norm of the rhs: 1.57569e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 27: 3.25013e-07, norm of the rhs: 1.50712e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 28: 3.30171e-07, norm of the rhs: 1.53104e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 29: 3.18747e-07, norm of the rhs: 1.47807e-08, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 30: 3.1802e-07, norm of the rhs: 1.4747e-08, newton_derivative_scaling_factor: 0
 
 
    Postprocessing:
