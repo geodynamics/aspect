@@ -379,7 +379,7 @@ namespace aspect
     {
       AssertThrow(dim == 2,
                   ExcMessage("Periodic boundaries currently "
-                             "only work with 2D spherical shell."));
+                             "only work with 2d spherical shell."));
       AssertThrow(phi == 90,
                   ExcMessage("Periodic boundaries currently "
                              "only work with 90 degree opening angle in spherical shell."));
@@ -747,7 +747,7 @@ namespace aspect
           periodic = prm.get_bool ("Phi periodic");
           if (periodic)
             {
-              AssertThrow (dim == 2,  ExcMessage("Periodic boundaries in the spherical shell are only supported for 2D models."));
+              AssertThrow (dim == 2,  ExcMessage("Periodic boundaries in the spherical shell are only supported for 2d models."));
               AssertThrow (phi == 90, ExcMessage("Periodic boundaries in the spherical shell are only supported for an opening angle of 90 degrees."));
             }
 

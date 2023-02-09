@@ -518,7 +518,7 @@ namespace aspect
                                               "but the computation of properties is optimized in speed "
                                               "if they are."
                                               "\n"
-                                              "If the plugin is used in 2D it will use an equatorial "
+                                              "If the plugin is used in 2d it will use an equatorial "
                                               "slice of the seismic tomography model.")
   }
 }

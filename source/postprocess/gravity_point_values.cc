@@ -741,7 +741,7 @@ namespace aspect
           AssertThrow (! this->get_material_model().is_compressible(),
                        ExcMessage("This postprocessor was only tested for incompressible models so far."));
           AssertThrow (dim==3,
-                       ExcMessage("This postprocessor was only tested for 3D models."));
+                       ExcMessage("This postprocessor was only tested for 3d models."));
           output_interval = prm.get_double ("Time between gravity output");
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;

@@ -64,6 +64,6 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(DomainVolume,
                                   "domain volume statistics",
                                   "A postprocessor that computes the total area (in 2d) "
-                                  "or volume (in 3D) of the computational domain. ")
+                                  "or volume (in 3d) of the computational domain. ")
   }
 }

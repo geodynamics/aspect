@@ -394,8 +394,8 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BilinearLeastSquares,
                                             "bilinear least squares",
-                                            "Uses linear least squares to obtain the slopes and center of a 2D or "
-                                            "3D plane from the particle positions and a particular property value "
+                                            "Uses linear least squares to obtain the slopes and center of a 2d or "
+                                            "3d plane from the particle positions and a particular property value "
                                             "on those particles. "
                                             "Interpolate this property onto a vector of points. If the limiter is "
                                             "enabled then it will ensure the interpolated properties do not exceed the "

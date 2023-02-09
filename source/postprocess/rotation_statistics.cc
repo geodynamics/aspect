@@ -153,7 +153,7 @@ namespace aspect
                             "Whether to write the full moment of inertia tensor into the "
                             "statistics output instead of its norm for the current rotation "
                             "axis. This is a second-order symmetric tensor with "
-                            "6 components in 3D. In 2D this option has no effect, because "
+                            "6 components in 3d. In 2d this option has no effect, because "
                             "the rotation axis is fixed and thus the moment of inertia "
                             "is always a scalar.");
         }
@@ -192,7 +192,7 @@ namespace aspect
                                   "rotation statistics",
                                   "A postprocessor that computes some statistics about the "
                                   "rotational velocity of the model (i.e. integrated "
-                                  "net rotation and angular momentum). In 2D we assume the "
+                                  "net rotation and angular momentum). In 2d we assume the "
                                   "model to be a cross-section through an infinite domain in "
                                   "z direction, with a zero z-velocity. Thus, the z-axis is "
                                   "the only possible rotation axis and both moment of inertia "
