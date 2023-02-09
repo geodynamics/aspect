@@ -379,11 +379,11 @@ namespace aspect
                           :
                           dynamic_cast<FEValuesBase<dim> &>(fe_face_values));
 
-    // moment of inertia and angular momentum for 3D
+    // moment of inertia and angular momentum for 3d
     SymmetricTensor<2,dim> local_moment_of_inertia;
     Tensor<1,dim> local_angular_momentum;
 
-    // analogues to the moment of inertia and angular momentum for 2D
+    // analogues to the moment of inertia and angular momentum for 2d
     double local_scalar_moment_of_inertia = 0.0;
     double local_scalar_angular_momentum = 0.0;
 

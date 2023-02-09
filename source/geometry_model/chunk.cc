@@ -337,7 +337,7 @@ namespace aspect
               const double radius=v.norm();
               output_vertex[0] = radius;
               output_vertex[1] = std::atan2(v[1], v[0]);
-              // See 2D case
+              // See 2d case
               if (output_vertex[1] < 0.0)
                 if (output_vertex[1] < point1_lon - 100 * std::abs(point1_lon)*std::numeric_limits<double>::epsilon())
                   output_vertex[1] += 2.0 * numbers::PI;

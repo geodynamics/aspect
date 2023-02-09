@@ -738,8 +738,8 @@ namespace aspect
         global_CMB_flux = Utilities::MPI::sum (local_CMB_flux, this->get_mpi_communicator());
         global_CMB_area = Utilities::MPI::sum (local_CMB_area, this->get_mpi_communicator());
 
-        // Using area averaged heat-flux density times core mantle boundary area to calculate total heat-flux on the 3D sphere.
-        // By doing this, using dynamic core evolution with geometry other than 3D spherical shell becomes possible.
+        // Using area averaged heat-flux density times core mantle boundary area to calculate total heat-flux on the 3d sphere.
+        // By doing this, using dynamic core evolution with geometry other than 3d spherical shell becomes possible.
         double average_CMB_heatflux_density = global_CMB_flux / global_CMB_area;
         core_data.Q = average_CMB_heatflux_density * 4. * M_PI * Rc * Rc;
       }

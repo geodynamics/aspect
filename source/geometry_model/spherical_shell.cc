@@ -106,7 +106,7 @@ namespace aspect
               Assert(custom_mesh == slices || custom_mesh == list, ExcNotImplemented());
               // If we are using a custom mesh scheme, we need to create
               // a new triangulation to extrude (this will be a 1D line in
-              // 2D space, or a 2D surface in 3D space).
+              // 2d space, or a 2d surface in 3d space).
               Triangulation<dim-1,dim> sphere_mesh;
               GridGenerator::hyper_sphere (sphere_mesh);
               sphere_mesh.refine_global (initial_lateral_refinement);
