@@ -370,6 +370,22 @@ namespace aspect
                           const std::pair<unsigned int, unsigned int> &cell_range) const;
 
         /**
+         * This function doesn't do anything, it's created to use the matrixfree loop.
+         */
+        void local_apply_face (const dealii::MatrixFree<dim, number> &data,
+                               dealii::LinearAlgebra::distributed::Vector<number> &dst,
+                               const dealii::LinearAlgebra::distributed::Vector<number> &src,
+                               const std::pair<unsigned int, unsigned int> &face_range) const;
+
+        /**
+         * Apply the stabilization on free surface faces.
+         */
+        void local_apply_boundary_face (const dealii::MatrixFree<dim, number> &data,
+                                        dealii::LinearAlgebra::distributed::Vector<number> &dst,
+                                        const dealii::LinearAlgebra::distributed::Vector<number> &src,
+                                        const std::pair<unsigned int, unsigned int> &face_range) const;
+
+        /**
          * Computes the diagonal contribution from a cell matrix.
          */
         void local_compute_diagonal (const MatrixFree<dim,number>                     &data,
@@ -634,6 +650,16 @@ namespace aspect
       bool do_timings;
 
       /**
+       * If true, it will evaluate the Newton derivatives on GMG levels and apply them to ABlock.
+       */
+      bool use_level_newton_derivatives;
+
+      /**
+       * If true, it will evaluate the free surface stabilization term on GMG levels and apply them to ABlock.
+       */
+      bool use_level_free_surface_stabilization;
+
+      /**
        * The max/min of the evaluated viscosities.
        */
       double minimum_viscosity;
@@ -642,10 +668,14 @@ namespace aspect
       DoFHandler<dim> dof_handler_v;
       DoFHandler<dim> dof_handler_p;
       DoFHandler<dim> dof_handler_projection;
+      DoFHandler<dim> dof_handler_temperature;
+      DoFHandler<dim> dof_handler_composition;
 
       FESystem<dim> fe_v;
       FESystem<dim> fe_p;
       FESystem<dim> fe_projection;
+      FESystem<dim> fe_temperature;
+      FESystem<dim> fe_composition;
 
       /**
        * Store the data for the Stokes operator (viscosity, etc.) for the active cells.
@@ -660,6 +690,16 @@ namespace aspect
       // This variable is needed only in the setup in both evaluate_material_model()
       // and build_preconditioner(). It will be deleted after the last use.
       MGLevelObject<dealii::LinearAlgebra::distributed::Vector<GMGNumberType>> level_viscosity_vector;
+
+      // The following level variables are needed only in the setup in evaluate_material_model()
+      // when level data of the Newton derivatives or the free surface stabilization is used.
+      MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> level_linearization_point_velocity;
+
+      MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> level_linearization_point_pressure;
+
+      MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> level_linearization_point_temperature;
+
+      std::vector<MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>>> level_linearization_point_composition;
 
       using StokesMatrixType = MatrixFreeStokesOperators::StokesOperator<dim,velocity_degree,double>;
       using SchurComplementMatrixType = MatrixFreeStokesOperators::MassMatrixOperator<dim,velocity_degree-1,double>;
@@ -684,6 +724,9 @@ namespace aspect
 
       MGTransferMatrixFree<dim,GMGNumberType> mg_transfer_A_block;
       MGTransferMatrixFree<dim,GMGNumberType> mg_transfer_Schur_complement;
+      MGTransferMatrixFree<dim,GMGNumberType> transfer_temperature;
+      MGTransferMatrixFree<dim,GMGNumberType> transfer_composition;
+
 
       std::vector<std::shared_ptr<MatrixFree<dim,double>>> matrix_free_objects;
   };
