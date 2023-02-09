@@ -630,6 +630,7 @@ namespace aspect
     {
 #ifndef ASPECT_WITH_NETCDF
       (void)filename;
+      (void)data_column_names_;
       AssertThrow(false, ExcMessage("Loading NetCDF files is only supported if ASPECT is configured with the NetCDF library!"));
 #else
       TableIndices<dim> new_table_points;
