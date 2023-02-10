@@ -604,6 +604,17 @@ namespace aspect
          */
         MGConstrainedDoFs mg_constrained_dofs;
 
+        /**
+        * Store Dirichlet boundary dofs on each level.
+        */
+        std::vector<IndexSet> level_boundary_indices;
+
+        /**
+         * One vector on each multigrid level for the mesh displacement constraints
+         * on the boundaries.
+         */
+        MGLevelObject<AffineConstraints<double>> mg_level_constraints;
+
         friend class Simulator<dim>;
         friend class SimulatorAccess<dim>;
     };

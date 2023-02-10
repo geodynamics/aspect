@@ -550,6 +550,10 @@ namespace aspect
 
       old_mesh_displacements = mesh_displacements;
 
+
+      if (this->is_stokes_matrix_free())
+        mg_constrained_dofs.initialize(mesh_deformation_dof_handler);
+
       // Make the constraints for the elliptic problem.
       make_constraints();
 
@@ -645,8 +649,9 @@ namespace aspect
                                                               boundary_id_set);
               if ((this->is_stokes_matrix_free()))
                 {
-                  mg_constrained_dofs.make_zero_boundary_constraints(mesh_deformation_dof_handler,
-                                                                     boundary_id_set);
+                  MGTools::make_boundary_list(mesh_deformation_dof_handler,
+                                              boundary_id_set,
+                                              level_boundary_indices);
                 }
 
               const IndexSet local_lines = current_plugin_constraints.get_local_lines();
@@ -780,8 +785,9 @@ namespace aspect
         }
       if ((this->is_stokes_matrix_free()))
         {
-          mg_constrained_dofs.make_zero_boundary_constraints(mesh_deformation_dof_handler,
-                                                             boundary_id_set);
+          MGTools::make_boundary_list(mesh_deformation_dof_handler,
+                                      boundary_id_set,
+                                      level_boundary_indices);
         }
       mesh_velocity_constraints.merge(plugin_constraints,
                                       AffineConstraints<double>::left_object_wins);
@@ -1022,8 +1028,9 @@ namespace aspect
                     ExcMessage("Periodic boundary constraints are not supported in computing mesh displacements using GMG."));
       }
 
-      mg_constrained_dofs.make_zero_boundary_constraints(mesh_deformation_dof_handler,
-                                                         zero_mesh_deformation_boundary_indicators);
+      MGTools::make_boundary_list(mesh_deformation_dof_handler,
+                                  zero_mesh_deformation_boundary_indicators,
+                                  level_boundary_indices);
 
       mg_matrices.clear_elements();
       mg_matrices.resize(0, n_levels-1);
@@ -1034,10 +1041,9 @@ namespace aspect
           DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler,
                                                         level,
                                                         relevant_dofs);
-          AffineConstraints<double> level_constraints;
-          level_constraints.reinit(relevant_dofs);
-          level_constraints.add_lines(mg_constrained_dofs.get_boundary_indices(level));
-          level_constraints.close();
+
+          mg_level_constraints[level].clear();
+          mg_level_constraints[level].reinit(relevant_dofs);
 
           const Mapping<dim> &mapping = get_level_mapping(level);
 
@@ -1053,18 +1059,21 @@ namespace aspect
                 mesh_deformation_dof_handler,
                 0,
                 no_flux_boundary,
-                user_level_constraints,
+                mg_level_constraints[level],
                 mapping,
                 refinement_edge_indices,
                 level);
-
-              user_level_constraints.close();
-              mg_constrained_dofs.add_user_constraints(level,user_level_constraints);
-
-              // let Dirichlet values win over no normal flux:
-              level_constraints.merge(user_level_constraints, AffineConstraints<double>::left_object_wins);
-              level_constraints.close();
             }
+          mg_level_constraints[level].add_lines(level_boundary_indices[level]);
+          mg_level_constraints[level].close();
+
+          // import to mg_constraints
+          internal::TangentialBoundaryFunctions::import_to_mg_constraints(
+            mesh_deformation_dof_handler,
+            relevant_dofs,
+            level,
+            mg_level_constraints,
+            mg_constrained_dofs);
 
           typename MatrixFree<dim, double>::AdditionalData additional_data;
           additional_data.tasks_parallel_scheme =
@@ -1076,7 +1085,7 @@ namespace aspect
 
           mg_mf_storage_level->reinit(mapping,
                                       mesh_deformation_dof_handler,
-                                      level_constraints,
+                                      mg_level_constraints[level],
                                       QGauss<1>(mesh_deformation_fe_degree + 1),
                                       additional_data);
           mg_matrices[level].clear();
@@ -1326,6 +1335,12 @@ namespace aspect
           const unsigned int n_levels = this->get_triangulation().n_global_levels();
 
           level_displacements.resize(0, n_levels-1);
+
+          mg_level_constraints.resize(0, n_levels-1);
+
+          level_boundary_indices.clear();
+          level_boundary_indices.resize(n_levels);
+
           // Important! Preallocate level vectors with all needed ghost
           // entries. While interpolate_to_mg can create these vectors
           // automatically, they will not contain all ghost values that we
@@ -1398,6 +1413,9 @@ namespace aspect
           this->get_timestep_number() == 0)
         {
           TimerOutput::Scope timer (sim.computing_timer, "Mesh deformation initialize");
+
+          if (this->is_stokes_matrix_free())
+            mg_constrained_dofs.initialize(mesh_deformation_dof_handler);
 
           make_initial_constraints();
           if (this->is_stokes_matrix_free())
