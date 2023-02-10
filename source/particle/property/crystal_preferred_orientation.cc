@@ -1126,9 +1126,9 @@ namespace aspect
       void
       CrystalPreferredOrientation<dim>::parse_parameters (ParameterHandler &prm)
       {
-        AssertThrow(dim == 3, ExcMessage("CPO computations are currently only supported for 3D models. "
-                                         "2D computations will work when this assert is removed, but you will need to make sure that the "
-                                         "correct 3D strain-rate and velocity gradient tensors are provided to the algorithm."));
+        AssertThrow(dim == 3, ExcMessage("CPO computations are currently only supported for 3d models. "
+                                         "2d computations will work when this assert is removed, but you will need to make sure that the "
+                                         "correct 3d strain-rate and velocity gradient tensors are provided to the algorithm."));
 
         prm.enter_subsection("Postprocess");
         {

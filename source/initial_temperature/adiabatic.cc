@@ -443,7 +443,7 @@ namespace aspect
                                "A selection that determines the assumed coordinate "
                                "system for the function variables. Allowed values "
                                "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
-                               "are interpreted as r,phi or r,phi,theta in 2D/3D "
+                               "are interpreted as r,phi or r,phi,theta in 2d/3d "
                                "respectively with theta being the polar angle. `depth' "
                                "will create a function, in which only the first "
                                "parameter is non-zero, which is interpreted to "

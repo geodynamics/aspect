@@ -396,7 +396,7 @@ namespace aspect
       AssertThrow (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model())
                    &&
                    dim == 3,
-                   ExcMessage("The geoid postprocessor is currently only implemented for the 3D spherical shell geometry model."));
+                   ExcMessage("The geoid postprocessor is currently only implemented for the 3d spherical shell geometry model."));
 
       const GeometryModel::SphericalShell<dim> &geometry_model =
         Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
@@ -1075,6 +1075,6 @@ namespace aspect
                                   "and based on the real surface from the geometry model in case "
                                   "of a free surface. The geoid is computed "
                                   "from a spherical harmonic expansion, so the geometry "
-                                  "of the domain must be a 3D spherical shell.")
+                                  "of the domain must be a 3d spherical shell.")
   }
 }

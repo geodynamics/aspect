@@ -282,8 +282,8 @@ namespace aspect
                              Patterns::List(Patterns::Double()),
                              "The point where the pressure profile will be calculated. "
                              "Cartesian coordinates $(x,y,z)$ when geometry is a box, otherwise enter radius, "
-                             "longitude, and in 3D latitude. Note that the coordinate related to the depth "
-                             "($y$ in 2D cartesian, $z$ in 3D cartesian and radius in spherical coordinates) is "
+                             "longitude, and in 3d latitude. Note that the coordinate related to the depth "
+                             "($y$ in 2d cartesian, $z$ in 3d cartesian and radius in spherical coordinates) is "
                              "not used. "
                              "Units: \\si{\\meter} or degrees.");
           prm.declare_entry("Number of integration points", "1000",

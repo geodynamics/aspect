@@ -203,7 +203,7 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back(const Point<3> &space_point) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
+      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2d points."));
       return pull_back_topography(pull_back_ellipsoid (space_point, semi_major_axis_a, eccentricity));
 
     }
@@ -212,7 +212,7 @@ namespace aspect
     Point<2>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back(const Point<2> &space_point) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
+      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2d points."));
       return space_point;
 
     }
@@ -221,7 +221,7 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward(const Point<3> &chart_point) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
+      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2d points."));
       return push_forward_ellipsoid (push_forward_topography(chart_point), semi_major_axis_a, eccentricity);
     }
 
@@ -436,7 +436,7 @@ namespace aspect
     EllipsoidalChunk<dim>::parse_parameters(ParameterHandler &prm)
     {
       // only implemented for the 3d case
-      AssertThrow (dim == 3, ExcMessage ("2D has not been implemented."));
+      AssertThrow (dim == 3, ExcMessage ("2d has not been implemented."));
       prm.enter_subsection("Geometry model");
       {
         prm.enter_subsection("Ellipsoidal chunk");
@@ -841,7 +841,7 @@ namespace aspect
   {
     ASPECT_REGISTER_GEOMETRY_MODEL(EllipsoidalChunk,
                                    "ellipsoidal chunk",
-                                   "A 3D chunk geometry that accounts for Earth's ellipticity (default assuming the "
+                                   "A 3d chunk geometry that accounts for Earth's ellipticity (default assuming the "
                                    "WGS84 ellipsoid definition) which can be defined in non-coordinate directions. "
                                    "In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the "
                                    "same length so that there is only a semi-major axis and a semi-minor axis. "

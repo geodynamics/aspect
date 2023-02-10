@@ -220,7 +220,7 @@ namespace aspect
         if (weakening_mechanism == finite_strain_tensor)
           {
             AssertThrow(this->n_compositional_fields() >= s,
-                        ExcMessage("There must be enough compositional fields to track all components of the finite strain tensor (4 in 2D, 9 in 3D). "));
+                        ExcMessage("There must be enough compositional fields to track all components of the finite strain tensor (4 in 2d, 9 in 3d). "));
             // Assert that fields exist and that they are in the right order
             const unsigned int n_s11 = this->introspection().compositional_index_for_name("s11");
             const unsigned int n_s12 = this->introspection().compositional_index_for_name("s12");

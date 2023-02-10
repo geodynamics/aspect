@@ -94,7 +94,7 @@ namespace aspect
                              "will create a function, in which only the first "
                              "variable is non-zero, which is interpreted to "
                              "be the depth of the point. `spherical' coordinates "
-                             "are interpreted as r,phi or r,phi,theta in 2D/3D "
+                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
                              "respectively with theta being the polar angle.");
           /**
            * Let the function that describes the maximal level of refinement

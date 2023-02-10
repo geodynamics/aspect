@@ -256,7 +256,7 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_GENERATOR(UniformRadial,
                                          "uniform radial",
                                          "Generate a uniform distribution of particles "
-                                         "over a spherical domain in 2D or 3D. Uniform here means "
+                                         "over a spherical domain in 2d or 3d. Uniform here means "
                                          "the particles will be generated with an equal spacing in "
                                          "each spherical spatial dimension, i.e., the particles are "
                                          "created at positions that increase linearly with equal "

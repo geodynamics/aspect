@@ -93,7 +93,7 @@ namespace aspect
             Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>> (this->get_geometry_model());
 
           AssertThrow (dim == 2,
-                       ExcMessage ("Harmonic perturbation only implemented in 2D for chunk geometry"));
+                       ExcMessage ("Harmonic perturbation only implemented in 2d for chunk geometry"));
 
           // In case of chunk calculate spherical coordinates
           const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
@@ -170,7 +170,7 @@ namespace aspect
           prm.declare_entry ("Lateral wave number one", "3",
                              Patterns::Integer (),
                              "Doubled first lateral wave number of the harmonic perturbation. "
-                             "Equals the spherical harmonic degree in 3D spherical shells. "
+                             "Equals the spherical harmonic degree in 3d spherical shells. "
                              "In all other cases one equals half of a sine period over "
                              "the model domain. This allows for single up-/downswings. "
                              "Negative numbers reverse the sign of the perturbation but are "
@@ -178,7 +178,7 @@ namespace aspect
           prm.declare_entry ("Lateral wave number two", "2",
                              Patterns::Integer (),
                              "Doubled second lateral wave number of the harmonic perturbation. "
-                             "Equals the spherical harmonic order in 3D spherical shells. "
+                             "Equals the spherical harmonic order in 3d spherical shells. "
                              "In all other cases one equals half of a sine period over "
                              "the model domain. This allows for single up-/downswings. "
                              "Negative numbers reverse the sign of the perturbation.");
