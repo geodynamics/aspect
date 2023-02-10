@@ -94,6 +94,8 @@ namespace aspect
                                                                              const double para_bottom_depth,
                                                                              const std::vector<Point<2>> &para_corners)
     {
+      AssertThrow (dim == 3, ExcMessage("This manifold can currently only be used in 3d."));
+
       semi_major_axis_a = para_semi_major_axis_a;
       eccentricity = para_eccentricity;
       semi_minor_axis_b = para_semi_minor_axis_b;
@@ -105,8 +107,6 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_ellipsoid(const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
-
       // The following converts phi, theta and negative depth to x, y, z
       // Depth is measured perpendicular to the ellipsoid surface
       // (i.e. along a vector which does not generally pass through the origin)
@@ -137,7 +137,6 @@ namespace aspect
       // Subirana, Zornoza and Hernandez-Pajares, 2011:
       // https://gssc.esa.int/navipedia/index.php/Ellipsoidal_and_Cartesian_Coordinates_Conversion
 
-      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
       const double R      = semi_major_axis_a; // semi-major axis
       const double b      = R * std::sqrt(1 - eccentricity * eccentricity); // semi-minor axis
       const double p      = std::sqrt(x(0) * x(0) + x(1) * x(1)); // distance from origin projected onto x-y plane
@@ -159,7 +158,6 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_topography(const Point<3> &phi_theta_d_hat) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
       const double d_hat = phi_theta_d_hat[2]; // long, lat, depth
       Point<dim-1> phi_theta;
       const double rad_to_degree = 180/numbers::PI;
@@ -177,7 +175,6 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_topography(const Point<3> &phi_theta_d) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
       const double d = phi_theta_d[2];
       const double rad_to_degree = 180/numbers::PI;
       Point<dim-1> phi_theta;
@@ -193,8 +190,8 @@ namespace aspect
 
     /**
      * TODO: These functions (pull back and push forward) should be changed that they always
-     * take and return 3D points, because 2D points make no sense for an ellipsoid, even with
-     * a 2D triangulation. To do this correctly we need to add the spacedim to the triangulation
+     * take and return 3d points, because 2d points make no sense for an ellipsoid, even with
+     * a 2d triangulation. To do this correctly we need to add the spacedim to the triangulation
      * in ASPECT. What is now presented is just a temporary fix to get access to the pull back
      * function from outside. The push forward function can't be fixed in this way, because
      * it is used by a bind statement.
@@ -203,7 +200,6 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back(const Point<3> &space_point) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2d points."));
       return pull_back_topography(pull_back_ellipsoid (space_point, semi_major_axis_a, eccentricity));
 
     }
@@ -212,7 +208,6 @@ namespace aspect
     Point<2>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back(const Point<2> &space_point) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2d points."));
       return space_point;
 
     }
@@ -221,7 +216,6 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward(const Point<3> &chart_point) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2d points."));
       return push_forward_ellipsoid (push_forward_topography(chart_point), semi_major_axis_a, eccentricity);
     }
 
@@ -243,6 +237,7 @@ namespace aspect
     void
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::initialize(const InitialTopographyModel::Interface<dim> *topography_)
     {
+      AssertThrow (dim == 3, ExcMessage("This manifold can currently only be used in 3d."));
       topography = topography_;
     }
 
@@ -435,8 +430,8 @@ namespace aspect
     void
     EllipsoidalChunk<dim>::parse_parameters(ParameterHandler &prm)
     {
-      // only implemented for the 3d case
-      AssertThrow (dim == 3, ExcMessage ("2d has not been implemented."));
+      AssertThrow (dim == 3, ExcMessage("This geometry can currently only be used in 3d."));
+
       prm.enter_subsection("Geometry model");
       {
         prm.enter_subsection("Ellipsoidal chunk");
@@ -653,7 +648,7 @@ namespace aspect
       AssertThrow(false, ExcMessage("Function height_above_reference_surface is not yet implemented "
                                     "for the ellipsoidal chunk geometry model. "
                                     "Consider using a box, spherical shell, or chunk.") );
-      return -999;
+      return numbers::signaling_nan<double>();
     }
 
 
@@ -766,7 +761,6 @@ namespace aspect
     std::array<double,dim>
     EllipsoidalChunk<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
-      Assert(dim == 3,ExcMessage("This geometry model doesn't support 2d."));
       // the chunk manifold works internally with a vector with longitude, latitude, depth.
       // We need to output radius, longitude, latitude to be consistent.
       // Ignore the topography by calling pull_back_ellipsoid to avoid a loop when calling the
