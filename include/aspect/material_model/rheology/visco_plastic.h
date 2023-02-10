@@ -310,6 +310,8 @@ namespace aspect
            */
           Rheology::DruckerPragerParameters drucker_prager_parameters;
 
+          double alpha_mobility;
+
       };
     }
   }

@@ -270,7 +270,7 @@ namespace aspect
             //const double average_mobility = mobility_statistics.get_average_mobility();
             //const double average_mobility_t0 = mobility_statistics.get_average_mobility_t0();       
             const double DMob = mobility_statistics.get_DMob();
-            const double alpha = 3;
+            const double alpha = alpha_mobility;
 
             double friction_terms = alpha * drucker_prager_parameters.angle_internal_friction * DMob;             
             
@@ -497,7 +497,8 @@ namespace aspect
         Rheology::StrainDependent<dim>::declare_parameters (prm);
 
         Rheology::Elasticity<dim>::declare_parameters (prm);
-
+        prm.declare_entry ("Alpha mobility", "5", Patterns::Double (0.),
+                           "Sensitivity parameter to mobility function. Units: \\si{\\per\\second}.");
         // Reference and minimum/maximum values
         prm.declare_entry ("Minimum strain rate", "1.0e-20", Patterns::Double (0.),
                            "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}.");
@@ -650,6 +651,7 @@ namespace aspect
                                                                         expected_n_phases_per_composition);
 
         // Reference and minimum/maximum values
+        alpha_mobility = prm.get_double("Alpha mobility");
         min_strain_rate = prm.get_double("Minimum strain rate");
         ref_strain_rate = prm.get_double("Reference strain rate");
         ref_visc = prm.get_double ("Reference viscosity");
@@ -802,7 +804,7 @@ namespace aspect
                //const double average_mobility = mobility_statistics.get_average_mobility();
                //const double average_mobility_t0 = mobility_statistics.get_average_mobility_t0(); 
                const double DMob = mobility_statistics.get_DMob(); 
-               const double alpha = 3;
+               const double alpha = alpha_mobility;
    
                double friction_terms = alpha * drucker_prager_parameters.angle_internal_friction * DMob;
               
