@@ -79,7 +79,7 @@ namespace aspect
 
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                // Viscous dissipation D in 3D:
+                // Viscous dissipation D in 3d:
                 // D = 1/2 * volume_integral(deviatoric_stress*deviatoric_strain_rate)
                 //   = 1/2 * volume_integral(2*eta*deviatoric_strain_rate*deviatoric_strain_rate)
                 //   = volume_integral(eta*deviatoric_strain_rate*deviatoric_strain_rate)

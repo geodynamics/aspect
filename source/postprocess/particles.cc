@@ -69,7 +69,7 @@ namespace aspect
                                                     :
                                                     property_information.get_position_by_field_index(field_index);
 
-                // HDF5 only supports 3D vector output, therefore only treat output fields as vector if we
+                // HDF5 only supports 3d vector output, therefore only treat output fields as vector if we
                 // have a dimension of 3 and 3 components.
                 const bool field_is_vector = (only_group_3d_vectors == false
                                               ?

@@ -96,7 +96,7 @@ namespace aspect
         if (dim == 2)
           {
             // reserve the maximum number of critical points
-            // in 2D: one inside, 4 edges, and 4 corners
+            // in 2d: one inside, 4 edges, and 4 corners
             critical_points.reserve(1 + 4 + 4);
             // If finding the critical point of the function (or along a cell edge) would
             // require division by 0, or the solve of a singular matrix, then there is not
@@ -147,7 +147,7 @@ namespace aspect
         else if (dim == 3)
           {
             // reserve the maximum number of critical points
-            // in 3D: one inside, 6 faces, 12 edges, and 8 corners
+            // in 3d: one inside, 6 faces, 12 edges, and 8 corners
             critical_points.reserve(1 + 6 + 12 + 8);
             // If finding the critical point of the function (or along a cell edge) would
             // require division by 0, or the solve of a singular matrix, then there is not

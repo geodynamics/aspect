@@ -155,7 +155,7 @@ namespace aspect
         // of grains per tracer to perform reliable statistics on it. This minimum is the same for all phases.
         // and enstatite.
         //
-        // Furthermore, for this plugin the following dims are always 3. When using 2D an infinitely thin 3D domain is assumed.
+        // Furthermore, for this plugin the following dims are always 3. When using 2d an infinitely thin 3d domain is assumed.
         //
         // The rotation matrix is a direction cosine matrix, representing the orientation of the grain in the domain.
         // The fabric is determined later in the computations, so initialize it to -1.

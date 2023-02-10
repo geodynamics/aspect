@@ -1484,10 +1484,10 @@ namespace aspect
       // Handle the special case of slicing through data first
       if (slice_data == true)
         {
-          // This implies a SphericalShell, a 2D model, and a 3D dataset as asserted
+          // This implies a SphericalShell, a 2d model, and a 3d dataset as asserted
           // in the parse_parameters function below.
 
-          // Compute the coordinates of a 3d point based on the 2D position.
+          // Compute the coordinates of a 3d point based on the 2d position.
           const Tensor<1,3> position_tensor({position[0], position[1], 0.0});
           const Point<3> rotated_position (rotation_matrix * position_tensor);
 

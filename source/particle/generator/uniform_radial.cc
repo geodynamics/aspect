@@ -38,7 +38,7 @@ namespace aspect
 
         // Calculate number of particles per shell.
         // The number of particles depend on the fraction of the area
-        // (or length in 2D) that this shell occupies compared to the total domain
+        // (or length in 2d) that this shell occupies compared to the total domain
         std::vector<unsigned int> particles_per_layer(radial_layers);
         if (dim == 2)
           {

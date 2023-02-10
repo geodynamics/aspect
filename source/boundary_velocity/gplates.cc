@@ -42,8 +42,8 @@ namespace aspect
       GPlatesLookup<dim>::GPlatesLookup(const Tensor<1,2> &surface_point_one,
                                         const Tensor<1,2> &surface_point_two)
       {
-        // get the Cartesian coordinates of the points the 2D model will lie in
-        // this computation is done also for 3D since it is not expensive and the
+        // get the Cartesian coordinates of the points the 2d model will lie in
+        // this computation is done also for 3d since it is not expensive and the
         // template dim is currently not used here. Could be changed.
         const Tensor<1,3> point_one = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_one));
         const Tensor<1,3> point_two = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_two));
@@ -274,8 +274,8 @@ namespace aspect
         // Transform interpolated_velocity in cartesian coordinates
         const Tensor<1,3> interpolated_velocity_in_cart = sphere_to_cart_velocity(interpolated_velocity,spherical_point);
 
-        // Convert_tensor conveniently also handles the projection to the 2D plane by
-        // omitting the z-component of velocity (since the 2D model lies in the x-y plane).
+        // Convert_tensor conveniently also handles the projection to the 2d plane by
+        // omitting the z-component of velocity (since the 2d model lies in the x-y plane).
         const Tensor<1,dim> output_boundary_velocity = (dim == 2)
                                                        ?
                                                        convert_tensor<3,dim>(transpose(rotation_matrix) * interpolated_velocity_in_cart)

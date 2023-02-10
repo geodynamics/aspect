@@ -1233,7 +1233,7 @@ namespace aspect
                              "should be rotated onto the x-y-plane can not lie "
                              "at the origin of the coordinate system."));
 
-      // Set up the normal vector of an unrotated 2D spherical shell
+      // Set up the normal vector of an unrotated 2d spherical shell
       // that by default lies in the x-y plane.
       const Tensor<1,3> unrotated_normal_vector ({0.0,0.0,1.0});
 

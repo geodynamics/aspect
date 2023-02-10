@@ -44,8 +44,8 @@ namespace aspect
         }
       else
         {
-          // The two points are used in GPlates to find the 2D plane in which
-          // the model lies.  These values are not used for 3D geometries and
+          // The two points are used in GPlates to find the 2d plane in which
+          // the model lies.  These values are not used for 3d geometries and
           // are thus set to the default.
           Point<2> point_one(numbers::PI/2., 0.);
           Point<2> point_two(numbers::PI/2., numbers::PI/2.);

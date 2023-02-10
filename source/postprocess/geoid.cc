@@ -113,7 +113,7 @@ namespace aspect
       std::vector<std::vector<double>>
       composition_values(this->n_compositional_fields(), std::vector<double>(quadrature_formula.size()));
 
-      // Directly do the global 3D integral over each quadrature point of every cell (different from traditional way to do layer integral).
+      // Directly do the global 3d integral over each quadrature point of every cell (different from traditional way to do layer integral).
       // This is necessary because of ASPECT's adaptive mesh refinement feature.
       std::vector<double> SH_density_coecos;
       std::vector<double> SH_density_coesin;
