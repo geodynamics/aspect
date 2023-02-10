@@ -1254,7 +1254,7 @@ namespace aspect
     const unsigned int n_levels = sim.triangulation.n_global_levels();
     level_cell_data.resize(0,n_levels-1);
 
-    level_viscosity_vector = 0.;
+    MGLevelObject<dealii::LinearAlgebra::distributed::Vector<GMGNumberType>> level_viscosity_vector;
     level_viscosity_vector.resize(0,n_levels-1);
 
     // Project the active level viscosity vector to multilevel vector representations
@@ -2585,11 +2585,7 @@ namespace aspect
     for (unsigned int level=0; level < sim.triangulation.n_global_levels(); ++level)
       {
         mg_matrices_Schur_complement[level].compute_diagonal();
-
         mg_matrices_A_block[level].compute_diagonal();
-
-        // This vector is no longer needed. Resize to 0.
-        level_viscosity_vector[level].reinit(0);
       }
   }
 
