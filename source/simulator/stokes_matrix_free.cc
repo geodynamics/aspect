@@ -2428,8 +2428,7 @@ namespace aspect
       typename MatrixFree<dim,double>::AdditionalData additional_data;
       additional_data.tasks_parallel_scheme =
         MatrixFree<dim,double>::AdditionalData::none;
-      additional_data.mapping_update_flags = (update_values | update_gradients |
-                                              update_JxW_values | update_quadrature_points);
+      additional_data.mapping_update_flags = (update_gradients | update_JxW_values);
 
       if (sim.mesh_deformation
           && !sim.mesh_deformation->get_free_surface_boundary_indicators().empty())
@@ -2524,7 +2523,6 @@ namespace aspect
             IndexSet relevant_dofs;
             DoFTools::extract_locally_relevant_level_dofs(dof_handler_p, level, relevant_dofs);
             level_constraints_p.reinit(relevant_dofs);
-            // TODO: do we need level_constraints_p.add_lines(mg_constrained_dofs_Schur_complement.get_boundary_indices(level));
             level_constraints_p.close();
           }
 
@@ -2535,8 +2533,7 @@ namespace aspect
             typename MatrixFree<dim,GMGNumberType>::AdditionalData additional_data;
             additional_data.tasks_parallel_scheme =
               MatrixFree<dim,GMGNumberType>::AdditionalData::none;
-            additional_data.mapping_update_flags = (update_gradients | update_JxW_values |
-                                                    update_quadrature_points);
+            additional_data.mapping_update_flags = (update_gradients | update_JxW_values);
             additional_data.mg_level = level;
 
             mg_mf_storage_level->reinit(mapping,
