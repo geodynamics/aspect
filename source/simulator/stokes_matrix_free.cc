@@ -417,7 +417,7 @@ namespace aspect
                  const std::pair<unsigned int, unsigned int>           &cell_range) const
   {
     FEEvaluation<dim,degree_v,degree_v+1,dim,number> velocity (data, 0);
-    FEEvaluation<dim,degree_v-1,  degree_v+1,1,  number> pressure (data, 1);
+    FEEvaluation<dim,degree_v-1,  degree_v+1,1,  number> pressure (data, /*dofh*/1);
 
     const bool use_viscosity_at_quadrature_points
       = (cell_data->viscosity.size(1) == velocity.n_q_points);
@@ -603,7 +603,7 @@ namespace aspect
                  const dealii::LinearAlgebra::distributed::Vector<number> &src,
                  const std::pair<unsigned int, unsigned int>           &cell_range) const
   {
-    FEEvaluation<dim,degree_p,degree_p+2,1,number> pressure (data);
+    FEEvaluation<dim,degree_p,degree_p+2,1,number> pressure (data, /*dofh*/1);
 
     const bool use_viscosity_at_quadrature_points
       = (cell_data->viscosity.size(1) == pressure.n_q_points);
@@ -674,8 +674,8 @@ namespace aspect
       this->diagonal_entries->get_vector();
 
     unsigned int dummy = 0;
-    this->data->initialize_dof_vector(inverse_diagonal);
-    this->data->initialize_dof_vector(diagonal);
+    this->data->initialize_dof_vector(inverse_diagonal, /*dofh*/1);
+    this->data->initialize_dof_vector(diagonal, /*dofh*/1);
 
     this->data->cell_loop (&MassMatrixOperator::local_compute_diagonal, this,
                            diagonal, dummy);
@@ -706,7 +706,7 @@ namespace aspect
                             const unsigned int &,
                             const std::pair<unsigned int,unsigned int>       &cell_range) const
   {
-    FEEvaluation<dim,degree_p,degree_p+2,1,number> pressure (data, 0);
+    FEEvaluation<dim,degree_p,degree_p+2,1,number> pressure (data, 1);
 
     AlignedVector<VectorizedArray<number>> diagonal(pressure.dofs_per_cell);
 
@@ -2396,14 +2396,15 @@ namespace aspect
     }
 
     // Setup the matrix-free operators
+    std::shared_ptr<MatrixFree<dim,double>> stokes_mf_storage(new MatrixFree<dim,double>());
+    matrix_free_objects.push_back(stokes_mf_storage);
 
-    // Stokes matrix
+    // Matrixfree object
     {
       typename MatrixFree<dim,double>::AdditionalData additional_data;
       additional_data.tasks_parallel_scheme =
         MatrixFree<dim,double>::AdditionalData::none;
-      additional_data.mapping_update_flags = (update_values | update_gradients |
-                                              update_JxW_values | update_quadrature_points);
+      additional_data.mapping_update_flags = (update_gradients | update_JxW_values);
 
       if (sim.mesh_deformation
           && !sim.mesh_deformation->get_free_surface_boundary_indicators().empty())
@@ -2420,147 +2421,112 @@ namespace aspect
       stokes_constraints.push_back(&constraints_v);
       stokes_constraints.push_back(&constraints_p);
 
-      std::shared_ptr<MatrixFree<dim,double>>
-      stokes_mf_storage(new MatrixFree<dim,double>());
-      stokes_mf_storage->reinit(*sim.mapping,stokes_dofs, stokes_constraints,
+      stokes_mf_storage->reinit(*sim.mapping,
+                                stokes_dofs, stokes_constraints,
                                 QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
+    }
+
+    // Stokes matrix
+    {
       stokes_matrix.clear();
       stokes_matrix.initialize(stokes_mf_storage);
-      matrix_free_objects.push_back(stokes_mf_storage);
     }
 
     // ABlock matrix
     {
-      typename MatrixFree<dim,double>::AdditionalData additional_data;
-      additional_data.tasks_parallel_scheme =
-        MatrixFree<dim,double>::AdditionalData::none;
-      additional_data.mapping_update_flags = (update_values | update_gradients |
-                                              update_JxW_values | update_quadrature_points);
-      std::shared_ptr<MatrixFree<dim,double>>
-      ablock_mf_storage(new MatrixFree<dim,double>());
-      ablock_mf_storage->reinit(*sim.mapping,dof_handler_v, constraints_v,
-                                QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
-
       A_block_matrix.clear();
-      A_block_matrix.initialize(ablock_mf_storage);
-      matrix_free_objects.push_back(ablock_mf_storage);
+      std::vector<unsigned int> selected = {0}; // select velocity DoFHandler
+      A_block_matrix.initialize(stokes_mf_storage, selected);
     }
 
     // Schur complement block matrix
     {
-      typename MatrixFree<dim,double>::AdditionalData additional_data;
-      additional_data.tasks_parallel_scheme =
-        MatrixFree<dim,double>::AdditionalData::none;
-      additional_data.mapping_update_flags = (update_values | update_JxW_values |
-                                              update_quadrature_points);
-      std::shared_ptr<MatrixFree<dim,double>>
-      Schur_mf_storage(new MatrixFree<dim,double>());
-      Schur_mf_storage->reinit(*sim.mapping,dof_handler_p, constraints_p,
-                               QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
-
       Schur_complement_block_matrix.clear();
-      Schur_complement_block_matrix.initialize(Schur_mf_storage);
-      matrix_free_objects.push_back(Schur_mf_storage);
+      std::vector< unsigned int > selected = {1}; // select pressure DoFHandler
+      Schur_complement_block_matrix.initialize(stokes_mf_storage, selected , selected);
     }
 
     // GMG matrices
     {
       const unsigned int n_levels = sim.triangulation.n_global_levels();
 
-      // ABlock GMG
+      mg_matrices_Schur_complement.clear_elements();
+      mg_matrices_Schur_complement.resize(0, n_levels-1);
       mg_matrices_A_block.clear_elements();
       mg_matrices_A_block.resize(0, n_levels-1);
 
       for (unsigned int level=0; level<n_levels; ++level)
         {
-          IndexSet relevant_dofs;
-          DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
-          AffineConstraints<double> level_constraints;
-          level_constraints.reinit(relevant_dofs);
-          level_constraints.add_lines(mg_constrained_dofs_A_block.get_boundary_indices(level));
-          level_constraints.close();
-
+          AffineConstraints<double> level_constraints_v;
+          AffineConstraints<double> level_constraints_p;
           const Mapping<dim> &mapping =
             (sim.mesh_deformation) ? sim.mesh_deformation->get_level_mapping(level) : *sim.mapping;
 
-          std::set<types::boundary_id> no_flux_boundary
-            = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
-          if (!no_flux_boundary.empty())
-            {
-              AffineConstraints<double> user_level_constraints;
-              user_level_constraints.reinit(relevant_dofs);
-
-              const IndexSet &refinement_edge_indices =
-                mg_constrained_dofs_A_block.get_refinement_edge_indices(level);
-              dealii::VectorTools::compute_no_normal_flux_constraints_on_level(
-                dof_handler_v,
-                0,
-                no_flux_boundary,
-                user_level_constraints,
-                mapping,
-                refinement_edge_indices,
-                level);
-
-              user_level_constraints.close();
-              mg_constrained_dofs_A_block.add_user_constraints(level,user_level_constraints);
-
-              // let Dirichlet values win over no normal flux:
-              level_constraints.merge(user_level_constraints, AffineConstraints<double>::left_object_wins);
-              level_constraints.close();
-            }
-
           {
-            typename MatrixFree<dim,GMGNumberType>::AdditionalData additional_data;
-            additional_data.tasks_parallel_scheme =
-              MatrixFree<dim,GMGNumberType>::AdditionalData::none;
-            additional_data.mapping_update_flags = (update_gradients | update_JxW_values |
-                                                    update_quadrature_points);
-            additional_data.mg_level = level;
-            std::shared_ptr<MatrixFree<dim,GMGNumberType>>
-            mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
+            IndexSet relevant_dofs;
+            DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
+            level_constraints_v.reinit(relevant_dofs);
+            level_constraints_v.add_lines(mg_constrained_dofs_A_block.get_boundary_indices(level));
+            level_constraints_v.close();
 
-            mg_mf_storage_level->reinit(mapping, dof_handler_v, level_constraints,
-                                        QGauss<1>(sim.parameters.stokes_velocity_degree+1),
-                                        additional_data);
+            std::set<types::boundary_id> no_flux_boundary
+              = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
+            if (!no_flux_boundary.empty())
+              {
+                AffineConstraints<double> user_level_constraints;
+                user_level_constraints.reinit(relevant_dofs);
 
-            mg_matrices_A_block[level].clear();
-            mg_matrices_A_block[level].initialize(mg_mf_storage_level, mg_constrained_dofs_A_block, level);
-            matrix_free_objects.push_back(mg_mf_storage_level);
+                const IndexSet &refinement_edge_indices =
+                  mg_constrained_dofs_A_block.get_refinement_edge_indices(level);
+                dealii::VectorTools::compute_no_normal_flux_constraints_on_level(
+                  dof_handler_v,
+                  0,
+                  no_flux_boundary,
+                  user_level_constraints,
+                  mapping,
+                  refinement_edge_indices,
+                  level);
 
+                user_level_constraints.close();
+                mg_constrained_dofs_A_block.add_user_constraints(level,user_level_constraints);
+
+                // let Dirichlet values win over no normal flux:
+                level_constraints_v.merge(user_level_constraints, AffineConstraints<double>::left_object_wins);
+                level_constraints_v.close();
+              }
           }
-        }
+          {
+            IndexSet relevant_dofs;
+            DoFTools::extract_locally_relevant_level_dofs(dof_handler_p, level, relevant_dofs);
+            level_constraints_p.reinit(relevant_dofs);
+            level_constraints_p.close();
+          }
 
-      //Schur complement matrix GMG
-      mg_matrices_Schur_complement.clear_elements();
-      mg_matrices_Schur_complement.resize(0, n_levels-1);
-
-      for (unsigned int level=0; level<n_levels; ++level)
-        {
-          IndexSet relevant_dofs;
-          DoFTools::extract_locally_relevant_level_dofs(dof_handler_p, level, relevant_dofs);
-          AffineConstraints<double> level_constraints;
-          level_constraints.reinit(relevant_dofs);
-          level_constraints.close();
+          std::shared_ptr<MatrixFree<dim,GMGNumberType>> mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
+          matrix_free_objects.push_back(mg_mf_storage_level);
 
           {
             typename MatrixFree<dim,GMGNumberType>::AdditionalData additional_data;
             additional_data.tasks_parallel_scheme =
               MatrixFree<dim,GMGNumberType>::AdditionalData::none;
-            additional_data.mapping_update_flags = (update_values | update_JxW_values |
-                                                    update_quadrature_points);
+            additional_data.mapping_update_flags = (update_gradients | update_JxW_values);
             additional_data.mg_level = level;
-            std::shared_ptr<MatrixFree<dim,GMGNumberType>>
-            mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
 
-            const Mapping<dim> &mapping =
-              (sim.mesh_deformation) ? sim.mesh_deformation->get_level_mapping(level) : *sim.mapping;
-            mg_mf_storage_level->reinit(mapping, dof_handler_p, level_constraints,
-                                        QGauss<1>(sim.parameters.stokes_velocity_degree+1),
-                                        additional_data);
-
+            mg_mf_storage_level->reinit(mapping,
+            std::vector<const DoFHandler<dim>*> {&dof_handler_v, &dof_handler_p},
+            std::vector<const AffineConstraints<double>*> {&level_constraints_v, &level_constraints_p},
+            QGauss<1>(sim.parameters.stokes_velocity_degree+1),
+            additional_data);
+          }
+          {
+            mg_matrices_A_block[level].clear();
+            std::vector<unsigned int> selected = {0}; // select velocity DoFHandler
+            mg_matrices_A_block[level].initialize(mg_mf_storage_level, mg_constrained_dofs_A_block, level, selected);
+          }
+          {
             mg_matrices_Schur_complement[level].clear();
-            mg_matrices_Schur_complement[level].initialize(mg_mf_storage_level, mg_constrained_dofs_Schur_complement, level);
-            matrix_free_objects.push_back(mg_mf_storage_level);
+            std::vector<unsigned int> selected = {1}; // select pressure DoFHandler
+            mg_matrices_Schur_complement[level].initialize(mg_mf_storage_level, mg_constrained_dofs_Schur_complement, level, selected);
           }
         }
     }
