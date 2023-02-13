@@ -40,6 +40,7 @@ namespace aspect
         std::vector<std::string> names;
         names.emplace_back("current_cohesions");
         names.emplace_back("current_friction_angles");
+        names.emplace_back("current_yield_stresses");
         names.emplace_back("plastic_yielding");
         return names;
       }
@@ -53,6 +54,7 @@ namespace aspect
       NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
       cohesions(n_points, numbers::signaling_nan<double>()),
       friction_angles(n_points, numbers::signaling_nan<double>()),
+      yield_stresses(n_points, numbers::signaling_nan<double>()),
       yielding(n_points, numbers::signaling_nan<double>())
     {}
 
@@ -72,6 +74,9 @@ namespace aspect
             return friction_angles;
 
           case 2:
+            return yield_stresses;
+
+          case 3:          
             return yielding;
 
           default:
@@ -785,7 +790,14 @@ namespace aspect
           {
             plastic_out->cohesions[i] = 0;
             plastic_out->friction_angles[i] = 0;
+            plastic_out->yield_stresses[i] = 0;
             plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
+
+            // The max yield stress is the same for each composition, so we give the 0th field value.
+            const double max_yield_stress = drucker_prager_plasticity.compute_drucker_prager_parameters(0).max_yield_stress;
+            double pressure_for_plasticity = in.pressure[i];
+            if (allow_negative_pressures_in_plasticity == false)
+              pressure_for_plasticity = std::max(in.pressure[i], 0.0);
 
             // set to weakened values, or unweakened values when strain weakening is not used
             for (unsigned int j=0; j < volume_fractions.size(); ++j)
@@ -795,6 +807,7 @@ namespace aspect
                 const DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(j,
                                                                           phase_function_values,
                                                                           n_phases_per_composition);
+                                                                          
                 plastic_out->cohesions[i]   += volume_fractions[j] * (drucker_prager_parameters.cohesion * weakening_factors[0]);
  
                //Elodie Feb 2022             
@@ -817,6 +830,10 @@ namespace aspect
 
                 // Also convert radians to degrees
                 plastic_out->friction_angles[i] += 180.0/numbers::PI * volume_fractions[j] * current_friction;
+                plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress((drucker_prager_parameters.cohesion * weakening_factors[0]),
+                                                                                                                      current_friction,
+                                                                                                                      pressure_for_plasticity,
+                                                                                                                      drucker_prager_parameters.max_yield_stress);            
               }
           }
       }
