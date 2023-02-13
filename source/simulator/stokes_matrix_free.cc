@@ -256,7 +256,7 @@ namespace aspect
       // iterations of our two-stage outer GMRES iteration)
       if (do_solve_Schur_complement)
         {
-          // first solve with the bottom left block, which we have built
+          // first solve with the bottom right block, which we have built
           // as a mass matrix with the inverse of the viscosity
           SolverControl solver_control(100, src.block(1).l2_norm() * Schur_complement_tolerance,true);
 
@@ -663,10 +663,10 @@ namespace aspect
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>
   ::compute_diagonal ()
   {
-    this->inverse_diagonal_entries.
-    reset(new DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>());
-    this->diagonal_entries.
-    reset(new DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>());
+    this->inverse_diagonal_entries =
+      std::make_shared<DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>>();
+    this->diagonal_entries =
+      std::make_shared<DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>>();
 
     dealii::LinearAlgebra::distributed::Vector<number> &inverse_diagonal =
       this->inverse_diagonal_entries->get_vector();
@@ -893,8 +893,8 @@ namespace aspect
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
   ::compute_diagonal ()
   {
-    this->inverse_diagonal_entries.
-    reset(new DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>());
+    this->inverse_diagonal_entries =
+      std::make_shared<DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>>();
     dealii::LinearAlgebra::distributed::Vector<number> &inverse_diagonal =
       this->inverse_diagonal_entries->get_vector();
     this->data->initialize_dof_vector(inverse_diagonal);
@@ -927,8 +927,8 @@ namespace aspect
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
   ::set_diagonal (const dealii::LinearAlgebra::distributed::Vector<number> &diag)
   {
-    this->inverse_diagonal_entries.
-    reset(new DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>());
+    this->inverse_diagonal_entries =
+      std::make_shared<DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>>();
     dealii::LinearAlgebra::distributed::Vector<number> &inverse_diagonal =
       this->inverse_diagonal_entries->get_vector();
     this->data->initialize_dof_vector(inverse_diagonal);
@@ -2396,14 +2396,13 @@ namespace aspect
     }
 
     // Setup the matrix-free operators
-    std::shared_ptr<MatrixFree<dim,double>> stokes_mf_storage(new MatrixFree<dim,double>());
-    matrix_free_objects.push_back(stokes_mf_storage);
+    std::shared_ptr<MatrixFree<dim,double>> matrix_free = std::make_shared<MatrixFree<dim,double>>();
+    matrix_free_objects.push_back(matrix_free);
 
     // Matrixfree object
     {
       typename MatrixFree<dim,double>::AdditionalData additional_data;
-      additional_data.tasks_parallel_scheme =
-        MatrixFree<dim,double>::AdditionalData::none;
+      additional_data.tasks_parallel_scheme = MatrixFree<dim,double>::AdditionalData::none;
       additional_data.mapping_update_flags = (update_gradients | update_JxW_values);
 
       if (sim.mesh_deformation
@@ -2414,36 +2413,31 @@ namespace aspect
            update_normal_vectors |
            update_JxW_values);
 
-      std::vector<const DoFHandler<dim>*> stokes_dofs;
-      stokes_dofs.push_back(&dof_handler_v);
-      stokes_dofs.push_back(&dof_handler_p);
-      std::vector<const AffineConstraints<double> *> stokes_constraints;
-      stokes_constraints.push_back(&constraints_v);
-      stokes_constraints.push_back(&constraints_p);
+      std::vector<const DoFHandler<dim>*> stokes_dofs {&dof_handler_v, &dof_handler_p};
+      std::vector<const AffineConstraints<double> *> stokes_constraints {&constraints_v, &constraints_p};
 
-      stokes_mf_storage->reinit(*sim.mapping,
-                                stokes_dofs, stokes_constraints,
-                                QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
+      matrix_free->reinit(*sim.mapping, stokes_dofs, stokes_constraints,
+                          QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
     }
 
     // Stokes matrix
     {
       stokes_matrix.clear();
-      stokes_matrix.initialize(stokes_mf_storage);
+      stokes_matrix.initialize(matrix_free);
     }
 
     // ABlock matrix
     {
       A_block_matrix.clear();
       std::vector<unsigned int> selected = {0}; // select velocity DoFHandler
-      A_block_matrix.initialize(stokes_mf_storage, selected);
+      A_block_matrix.initialize(matrix_free, selected);
     }
 
     // Schur complement block matrix
     {
       Schur_complement_block_matrix.clear();
       std::vector< unsigned int > selected = {1}; // select pressure DoFHandler
-      Schur_complement_block_matrix.initialize(stokes_mf_storage, selected , selected);
+      Schur_complement_block_matrix.initialize(matrix_free, selected , selected);
     }
 
     // GMG matrices
@@ -2502,31 +2496,32 @@ namespace aspect
             level_constraints_p.close();
           }
 
-          std::shared_ptr<MatrixFree<dim,GMGNumberType>> mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
-          matrix_free_objects.push_back(mg_mf_storage_level);
+          std::shared_ptr<MatrixFree<dim,GMGNumberType>> matrix_free_level = std::make_shared<MatrixFree<dim,GMGNumberType>>();
+          matrix_free_objects.push_back(matrix_free_level);
 
           {
             typename MatrixFree<dim,GMGNumberType>::AdditionalData additional_data;
-            additional_data.tasks_parallel_scheme =
-              MatrixFree<dim,GMGNumberType>::AdditionalData::none;
+            additional_data.tasks_parallel_scheme = MatrixFree<dim,GMGNumberType>::AdditionalData::none;
             additional_data.mapping_update_flags = (update_gradients | update_JxW_values);
             additional_data.mg_level = level;
 
-            mg_mf_storage_level->reinit(mapping,
-            std::vector<const DoFHandler<dim>*> {&dof_handler_v, &dof_handler_p},
-            std::vector<const AffineConstraints<double>*> {&level_constraints_v, &level_constraints_p},
-            QGauss<1>(sim.parameters.stokes_velocity_degree+1),
-            additional_data);
+            std::vector<const DoFHandler<dim>*> stokes_dofs {&dof_handler_v, &dof_handler_p};
+            std::vector<const AffineConstraints<double> *> stokes_constraints {&level_constraints_v,&level_constraints_p};
+
+            matrix_free_level->reinit(mapping,
+                                      stokes_dofs, stokes_constraints,
+                                      QGauss<1>(sim.parameters.stokes_velocity_degree+1),
+                                      additional_data);
           }
           {
             mg_matrices_A_block[level].clear();
             std::vector<unsigned int> selected = {0}; // select velocity DoFHandler
-            mg_matrices_A_block[level].initialize(mg_mf_storage_level, mg_constrained_dofs_A_block, level, selected);
+            mg_matrices_A_block[level].initialize(matrix_free_level, mg_constrained_dofs_A_block, level, selected);
           }
           {
             mg_matrices_Schur_complement[level].clear();
             std::vector<unsigned int> selected = {1}; // select pressure DoFHandler
-            mg_matrices_Schur_complement[level].initialize(mg_mf_storage_level, mg_constrained_dofs_Schur_complement, level, selected);
+            mg_matrices_Schur_complement[level].initialize(matrix_free_level, mg_constrained_dofs_Schur_complement, level, selected);
           }
         }
     }
