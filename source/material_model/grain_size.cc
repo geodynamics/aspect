@@ -758,6 +758,9 @@ namespace aspect
     GrainSize<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
+      AssertThrow( (grain_size_evolution_formulation != Formulation::paleopiezometer || !this->get_heating_model_manager().shear_heating_enabled()),
+                   ExcMessage("Shear heating output should not be used with the Paleopiezometer grain damage formulation."));
+
       for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           // Use the adiabatic pressure instead of the real one, because of oscillations
@@ -870,9 +873,6 @@ namespace aspect
 
               if (HeatingModel::ShearHeatingOutputs<dim> *shear_heating_out = out.template get_additional_output<HeatingModel::ShearHeatingOutputs<dim>>())
                 {
-                  AssertThrow(grain_size_evolution_formulation == Formulation::paleopiezometer,
-                              ExcMessage("Shear heating output is not created with the Paleopiezometer grain damage formulation."));
-
                   if (grain_size_evolution_formulation == Formulation::paleowattmeter)
                     {
                       const double f = boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],pressure)];
