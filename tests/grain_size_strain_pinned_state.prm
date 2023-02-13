@@ -1,8 +1,8 @@
 # A test for the grain size material model using pinned state damage formulation. 
 # Over time the model maintains nearly constant temperatures, pressures and
 # strain rates. The grain size in the test approaches the equilibrium
-# grain size for t -> infinity. At 4 Myr the grain size is
-# 9.35850647e-04 m, which is close to the equilibrium value.
+# grain size for t -> infinity. At 4 Myr the equilibrium grain size should
+# 1.39858e-1 m.
 
 include grain_size_strain.prm
 
@@ -21,7 +21,7 @@ subsection Material model
     set Reference temperature            = 1600
     set Recrystallized grain size        =
 
-    set Grain growth activation energy       = 3e5
+    set Grain growth activation energy       = 39072
     set Grain growth activation volume       = 0.0
 #    set Grain growth rate constant           = 1.92E-010
     set Grain growth exponent                = 4
@@ -31,7 +31,7 @@ subsection Material model
 
     # Mulyukova and Bercovici (2018)
     # Diffusion creep
-    set Diffusion creep prefactor            =13.6e-24 # s^-1 Pa^-1 m^p
+    set Diffusion creep prefactor            =1e-40 # s^-1 Pa^-1 m^p
     set Diffusion creep exponent             =1.0 # 1 for diffusion creep
     set Diffusion creep grain size exponent  =3
     set Diffusion activation energy          =3e5 #J/mol
@@ -40,9 +40,9 @@ subsection Material model
     set Dislocation viscosity iteration threshold = 1e-3
     # Kawazoe et al. (2009)
     # Dislocation creep
-    set Dislocation creep prefactor          =1.1e-13 # s^-1 Pa^-n
+    set Dislocation creep prefactor          =1e-13 # s^-1 Pa^-n
     set Dislocation creep exponent           =3
-    set Dislocation activation energy        =530000 # J/mol
+    set Dislocation activation energy        =390720 # J/mol
     set Dislocation activation volume        =0 # m^3/mol
   end
 end
