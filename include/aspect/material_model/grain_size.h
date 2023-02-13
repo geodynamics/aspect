@@ -189,7 +189,6 @@ namespace aspect
         double              minimum_grain_size;
         std::vector<double> reciprocal_required_strain;
         std::vector<double> recrystallized_grain_size;
-        std::vector<double> volume_fraction_phase_one;
 
         /**
          * Parameters controlling the dynamic grain recrystallization.
@@ -277,14 +276,16 @@ namespace aspect
         double              surface_temperature;
 
         /**
-         * Functions controlling conversion from interface roughness to grain size,
-         * used in pinned state formulation of grain size evolution.
+         * Functions and parameters controlling conversion from interface roughness to grain size,
+         * used in pinned state formulation of grain damage.
          *
          * Detailed description of this approach can be found in Appendix H.1 of
          * Bercovici, David, and Yanick Ricard (2012).
          * Mechanisms for the generation of plate tectonics by two-phase grain-damage
          * and pinning. Physics of the Earth and Planetary Interiors 202 (2012): 27-55.
          */
+        std::vector<double> volume_fraction_phase_one;
+
         double moment_of_grain_size_distribution (const int n) const;
 
         double roughness_to_grain_size_factor    (const double volume_fraction_phase_one) const;

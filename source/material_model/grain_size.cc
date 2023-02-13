@@ -260,7 +260,7 @@ namespace aspect
     moment_of_grain_size_distribution (const int n) const
     {
       // This function normalizes the grain size distribution using the nth moment.
-      // Description can be found in eq 8 of Bercovici and Richard (2012)
+      // Description can be found in eq 8 of Bercovici and Ricard (2012)
       const double sigma = 0.8;
 
       return exp (n * n * sigma * sigma / 2.);
@@ -273,7 +273,7 @@ namespace aspect
     roughness_to_grain_size_factor (const double volume_fraction_phase_one)  const
     {
       // This factor is used to convert the roughness equation into mean grain size
-      // Refer to Appendix H.1, eqs 8, F.28 in Bercovici and Richard (2012) for more details.
+      // Refer to Appendix H.1, eqs 8, F.28 in Bercovici and Ricard (2012) for more details.
       const double b1 = 1./20 ;
       const double c1 = 3 * b1 * moment_of_grain_size_distribution(4) / (8 * moment_of_grain_size_distribution (2));
 
@@ -291,7 +291,7 @@ namespace aspect
     GrainSize<dim>::
     phase_distribution_function (const double volume_fraction_phase_one)  const
     {
-      // This factor is used in pinned grain size formulation of the Mulyukova and Bercovici (2018).
+      // This factor is used in pinned state grain damage formulation.
       const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
 
       return (volume_fraction_phase_one * volume_fraction_phase_two);
@@ -1180,10 +1180,10 @@ namespace aspect
                              "List must have the same number of entries as Phase transition depths. "
                              "Units: \\si{\\meter}.");
           prm.declare_entry ("Volume fraction of phase", "0.4",
-                             Patterns::List (Patterns::Double (0., 1.)),
-                             "The volume fraction of one of the phases in the two phases evolved using Bercovici and "
-                             "Richard (2012). The volume fraction of the other phase can be simply calculated by subtracting "
-                             "from one."
+                             Patterns::Double (0., 1.),
+                             "The volume fraction of one of the phases in the two-phase damage model of Bercovici and Ricard (2012). "
+                             "The volume fraction of the other phase can be simply calculated by subtracting from one. "
+                             "This parameter is only used in the pinned state grain damage formulation."
                              "Units: none.");
           prm.declare_entry ("Grain size evolution formulation", "paleowattmeter",
                              Patterns::Selection ("paleowattmeter|paleopiezometer|pinned grain damage"),
@@ -1481,8 +1481,8 @@ namespace aspect
 
           if (volume_fraction_phase_one.size()>1)
             for (unsigned int i=0; i<volume_fraction_phase_one.size(); ++i)
-              AssertThrow( (volume_fraction_phase_one[i] == 0. || volume_fraction_phase_one[i] == 1.),
-                           ExcMessage("Error: Volume fraction should be between (0, 1) to use two phase flow !"));
+              AssertThrow( (volume_fraction_phase_one[i] != 0. && volume_fraction_phase_one[i] != 1.),
+                           ExcMessage("Error: Volume fraction must be between (0, 1) to use two phase damage in the pinned state!"));
 
 
           grain_boundary_energy                 = Utilities::string_to_double
