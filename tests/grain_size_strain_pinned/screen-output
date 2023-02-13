@@ -1,0 +1,43 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 349 (162+25+81+81)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.001/0.001/1e+07
+     Temperature min/avg/max:                           1600 K, 1600 K, 1600 K
+     RMS, max velocity:                                 0.577 m/year, 0.972 m/year
+     Average density / Average viscosity / Total mass:  3400 kg/m^3, 5.77e+17 Pa s, 3.4e+13 kg
+     Writing graphical output:                          output-grain_size_strain_pinned/solution/solution-00000
+
+*** Timestep 1:  t=1 years, dt=1 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.0009999/0.0009999/9.999e+06
+     Temperature min/avg/max:                           1600 K, 1600 K, 1600 K
+     RMS, max velocity:                                 0.577 m/year, 0.972 m/year
+     Average density / Average viscosity / Total mass:  3400 kg/m^3, 5.768e+17 Pa s, 3.4e+13 kg
+     Writing graphical output:                          output-grain_size_strain_pinned/solution/solution-00001
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
