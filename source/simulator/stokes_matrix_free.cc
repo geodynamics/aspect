@@ -1217,6 +1217,21 @@ namespace aspect
                                                                      &dof_handler_projection);
               DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
 
+#ifdef DEBUG
+              {
+                // Verify that all MatrixFree objects iterate over cells in the same way:
+                typename DoFHandler<dim>::active_cell_iterator s_cell =
+                  Schur_complement_block_matrix.get_matrix_free()->get_cell_iterator(cell,i,1);
+                double distance_s = s_cell->center().distance(FEQ_cell->center());
+                Assert(distance_s < 1e-10, ExcInternalError());
+
+                typename DoFHandler<dim>::active_cell_iterator A_cell =
+                  A_block_matrix.get_matrix_free()->get_cell_iterator(cell,i);
+                double distance_A = A_cell->center().distance(FEQ_cell->center());
+                Assert(distance_A < 1e-10, ExcInternalError());
+              }
+#endif
+
               // For DGQ0, we simply use the viscosity at the single
               // support point of the element. For DGQ1, we must project
               // back to quadrature point values.
