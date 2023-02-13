@@ -1,0 +1,4 @@
+New: ASPECT detects when refinement does not actually change the mesh
+and skips the redundant computation.
+<br>
+(Timo Heister, 2023/02/13)

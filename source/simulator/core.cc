@@ -1687,12 +1687,28 @@ namespace aspect
       signals.pre_refinement_store_user_data(triangulation);
 
 
-      {
 
-      }
       exchange_refinement_flags();
 
       triangulation.prepare_coarsening_and_refinement();
+      bool any_flags_set = false;
+      {
+        for (const auto &cell:dof_handler.active_cell_iterators())
+          {
+            if (cell->refine_flag_set() || cell->coarsen_flag_set())
+              {
+                any_flags_set = true;
+                break;
+              }
+          }
+      }
+      const bool mesh_changed = Utilities::MPI::max(any_flags_set?1:0,mpi_communicator) == 1 ? true : false;
+      if (!mesh_changed)
+        {
+          pcout << "Skipping mesh refinement, because the mesh did not change.\n" << std::endl;
+          return;
+        }
+
       system_trans.prepare_for_coarsening_and_refinement(x_system);
 
       if (parameters.mesh_deformation_enabled)
