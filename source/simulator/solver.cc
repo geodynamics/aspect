@@ -271,7 +271,7 @@ namespace aspect
     {
       LinearAlgebra::Vector utmp(src.block(0));
 
-      // first solve with the bottom left block, which we have built
+      // first solve with the bottom right block, which we have built
       // as a mass matrix with the inverse of the viscosity
       {
         SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance);
