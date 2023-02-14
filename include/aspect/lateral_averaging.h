@@ -288,6 +288,23 @@ namespace aspect
       get_Vp_averages(std::vector<double> &values) const;
 
       /**
+       * Compute a lateral average of the plastic output friction_angles, cohesions and yield_stresses.
+       *
+       * @param values The output vector of laterally averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
+       */
+
+      void
+      get_friction_angles_averages(std::vector<double> &values) const;
+
+      void
+      get_cohesions_averages(std::vector<double> &values) const;
+
+      void
+      get_yield_stresses_averages(std::vector<double> &values) const;
+
+      /**
        * Compute a lateral average of the vertical heat flux, with the sign
        * convention of positive heat flux when it flows upwards.
        *

@@ -43,44 +43,45 @@ namespace aspect
   {
     using namespace dealii;
 
-    /**
-     * Additional output fields for the plastic parameters weakened (or hardened)
-     * by strain to be added to the MaterialModel::MaterialModelOutputs structure
-     * and filled in the MaterialModel::Interface::evaluate() function.
-     */
-    template <int dim>
-    class PlasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
-    {
-      public:
-        PlasticAdditionalOutputs(const unsigned int n_points);
+    // /**
+    //  * Additional output fields for the plastic parameters weakened (or hardened)
+    //  * by strain to be added to the MaterialModel::MaterialModelOutputs structure
+    //  * and filled in the MaterialModel::Interface::evaluate() function.
+    //  */
+    // template <int dim>
+    // class PlasticAdditionalOutputs : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    // // public NamedAdditionalMaterialOutputs<dim>
+    // {
+    //   public:
+    //     PlasticAdditionalOutputs(const unsigned int n_points);
 
-        std::vector<double> get_nth_output(const unsigned int idx) const override;
+    //     std::vector<double> get_nth_output(const unsigned int idx) const override;
 
-        /**
-         * Cohesions at the evaluation points passed to
-         * the instance of MaterialModel::Interface::evaluate() that fills
-         * the current object.
-         */
-        std::vector<double> cohesions;
+    //     /**
+    //      * Cohesions at the evaluation points passed to
+    //      * the instance of MaterialModel::Interface::evaluate() that fills
+    //      * the current object.
+    //      */
+    //     std::vector<double> cohesions;
 
-        /**
-         * Internal angles of friction at the evaluation points passed to
-         * the instance of MaterialModel::Interface::evaluate() that fills
-         * the current object.
-         */
-        std::vector<double> friction_angles;
+    //     /**
+    //      * Internal angles of friction at the evaluation points passed to
+    //      * the instance of MaterialModel::Interface::evaluate() that fills
+    //      * the current object.
+    //      */
+    //     std::vector<double> friction_angles;
 
-        /**
-         * The plastic yield stress.
-         */
-        std::vector<double> yield_stresses;        
+    //     /**
+    //      * The plastic yield stress.
+    //      */
+    //     std::vector<double> yield_stresses;        
 
-        /**
-         * The area where the viscous stress exceeds the plastic yield stress,
-         * and viscosity is rescaled back to the yield envelope.
-         */
-        std::vector<double> yielding;
-    };
+    //     /**
+    //      * The area where the viscous stress exceeds the plastic yield stress,
+    //      * and viscosity is rescaled back to the yield envelope.
+    //      */
+    //     std::vector<double> yielding;
+    // };
 
     /**
        * A data structure with the output of calculate_isostrain_viscosities.

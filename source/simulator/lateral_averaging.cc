@@ -211,6 +211,55 @@ namespace aspect
     };
 
 
+    template <int dim>
+    class FunctorDepthAveragePlasticity: public internal::FunctorBase<dim>
+    {
+      public:
+        FunctorDepthAveragePlasticity(bool friction_angles,bool cohesions,bool yield_stresses)
+          : friction_angles_(friction_angles),
+            cohesions_(cohesions),
+            yield_stresses_(yield_stresses)
+        {}
+
+        bool need_material_properties() const override
+        {
+          return true;
+        }
+
+        void
+        create_additional_material_model_outputs (const unsigned int n_points,
+                                                  MaterialModel::MaterialModelOutputs<dim> &outputs) const override
+        {
+          outputs.additional_outputs.push_back(
+            std::make_unique<MaterialModel::PlasticAdditionalOutputs<dim>> (n_points));
+        }
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs<dim> &out,
+                        const FEValues<dim> &,
+                        const LinearAlgebra::BlockVector &,
+                        std::vector<double> &output) override
+        {
+          const MaterialModel::PlasticAdditionalOutputs<dim> *plastic_outputs
+            = out.template get_additional_output<const MaterialModel::PlasticAdditionalOutputs<dim>>();
+
+          Assert(plastic_outputs != nullptr,ExcInternalError());
+
+          if (friction_angles_)
+            for (unsigned int q=0; q<output.size(); ++q)
+              output[q] = plastic_outputs->friction_angles[q];
+          else if (cohesions_) 
+            for (unsigned int q=0; q<output.size(); ++q)
+              output[q] = plastic_outputs->cohesions[q];
+          else if (yield_stresses_) 
+            for (unsigned int q=0; q<output.size(); ++q)       
+              output[q] = plastic_outputs->yield_stresses[q];
+        }
+
+        bool friction_angles_;
+        bool cohesions_;
+        bool yield_stresses_;
+    };
 
     template <int dim>
     class FunctorDepthAverageVsVp: public internal::FunctorBase<dim>
@@ -712,7 +761,26 @@ namespace aspect
                                       std::vector<std::string>(1,"Vp"))[0];
   }
 
+  template <int dim>
+  void LateralAveraging<dim>::get_friction_angles_averages(std::vector<double> &values) const
+  {
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"friction_angles"))[0];
+  }
 
+  template <int dim>
+  void LateralAveraging<dim>::get_cohesions_averages(std::vector<double> &values) const
+  {
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"cohesions"))[0];
+  }
+
+  template <int dim>
+  void LateralAveraging<dim>::get_yield_stresses_averages(std::vector<double> &values) const
+  {
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"yield_stresses"))[0];
+  }
 
   template <int dim>
   void LateralAveraging<dim>::get_vertical_heat_flux_averages(std::vector<double> &values) const
@@ -808,6 +876,18 @@ namespace aspect
           {
             functors.push_back(std::make_unique<FunctorDepthAverageVsVp<dim>> (false /* Vp */));
           }
+        else if (property_names[property_index] == "friction_angles")
+          {
+            functors.push_back(std::make_unique<FunctorDepthAveragePlasticity<dim>> (true, false, false));
+          }
+        else if (property_names[property_index] == "cohesions")
+          {
+            functors.push_back(std::make_unique<FunctorDepthAveragePlasticity<dim>> (false, true, false));
+          }
+        else if (property_names[property_index] == "yield_stresses")
+          {
+            functors.push_back(std::make_unique<FunctorDepthAveragePlasticity<dim>> (false, false, true));
+          }          
         else if (property_names[property_index] == "viscosity")
           {
             functors.push_back(std::make_unique<FunctorDepthAverageViscosity<dim>>());

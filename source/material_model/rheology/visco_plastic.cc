@@ -33,58 +33,58 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    namespace
-    {
-      std::vector<std::string> make_plastic_additional_outputs_names()
-      {
-        std::vector<std::string> names;
-        names.emplace_back("current_cohesions");
-        names.emplace_back("current_friction_angles");
-        names.emplace_back("current_yield_stresses");
-        names.emplace_back("plastic_yielding");
-        return names;
-      }
-    }
+    // namespace
+    // {
+    //   std::vector<std::string> make_plastic_additional_outputs_names()
+    //   {
+    //     std::vector<std::string> names;
+    //     names.emplace_back("current_cohesions");
+    //     names.emplace_back("current_friction_angles");
+    //     names.emplace_back("current_yield_stresses");
+    //     names.emplace_back("plastic_yielding");
+    //     return names;
+    //   }
+    // }
 
 
 
-    template <int dim>
-    PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
-      :
-      NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
-      cohesions(n_points, numbers::signaling_nan<double>()),
-      friction_angles(n_points, numbers::signaling_nan<double>()),
-      yield_stresses(n_points, numbers::signaling_nan<double>()),
-      yielding(n_points, numbers::signaling_nan<double>())
-    {}
+    // template <int dim>
+    // PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
+    //   :
+    //   NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
+    //   cohesions(n_points, numbers::signaling_nan<double>()),
+    //   friction_angles(n_points, numbers::signaling_nan<double>()),
+    //   yield_stresses(n_points, numbers::signaling_nan<double>()),
+    //   yielding(n_points, numbers::signaling_nan<double>())
+    // {}
 
 
 
-    template <int dim>
-    std::vector<double>
-    PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
-    {
-      AssertIndexRange (idx, 3);
-      switch (idx)
-        {
-          case 0:
-            return cohesions;
+    // template <int dim>
+    // std::vector<double>
+    // PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    // {
+    //   AssertIndexRange (idx, 3);
+    //   switch (idx)
+    //     {
+    //       case 0:
+    //         return cohesions;
 
-          case 1:
-            return friction_angles;
+    //       case 1:
+    //         return friction_angles;
 
-          case 2:
-            return yield_stresses;
+    //       case 2:
+    //         return yield_stresses;
 
-          case 3:          
-            return yielding;
+    //       case 3:          
+    //         return yielding;
 
-          default:
-            AssertThrow(false, ExcInternalError());
-        }
-      // We will never get here, so just return something
-      return cohesions;
-    }
+    //       default:
+    //         AssertThrow(false, ExcInternalError());
+    //     }
+    //   // We will never get here, so just return something
+    //   return cohesions;
+    // }
 
 
 
@@ -767,7 +767,7 @@ namespace aspect
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
-              std::make_unique<PlasticAdditionalOutputs<dim>> (n_points));
+              std::make_unique<MaterialModel::PlasticAdditionalOutputs<dim>> (n_points));
           }
       }
 
