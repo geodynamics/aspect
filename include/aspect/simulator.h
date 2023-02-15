@@ -834,7 +834,8 @@ namespace aspect
        *
        * @deprecated: Use interpolate_particle_property_vector() instead.
        */
-      void interpolate_particle_properties (const AdvectionField &advection_field) DEAL_II_DEPRECATED;
+      DEAL_II_DEPRECATED
+      void interpolate_particle_properties (const AdvectionField &advection_field);
 
       /**
        * Interpolate the corresponding particle properties into the given
