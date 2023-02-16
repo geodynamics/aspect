@@ -196,6 +196,15 @@ namespace aspect
 
       private:
         /**
+         * Wether to make the grid by gluing together two boxes, or just
+         * use one chunk to make the grid. Using two grids glued together
+         * is a safer option, since it forces the the boundary conditions
+         * to be always applied to the same depth, but using one grid allows
+         * for a more flexable usage of the adaptive refinement.
+         */
+        bool use_merged_grids;
+
+        /**
          * Extent of the whole model domain in x-, y-, and z-direction (in 3d).
          */
         Point<dim> extents;
