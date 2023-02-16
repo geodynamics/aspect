@@ -273,6 +273,15 @@ namespace aspect
 
       private:
         /**
+         * Wether to make the grid by gluing together two chunks, or just
+         * use one chunk to make the grid. Using two grids glued together
+         * is a safer option, since it forces the the boundary conditions
+         * to be always applied to the same depth, but using one grid allows
+         * for a more flexable usage of the adaptive refinement.
+         */
+        bool use_merged_grids;
+
+        /**
          * Minimum longitude-depth (2D) or
          * longitude-latitude-depth (3D) point
          * of the entire merged chunk.
