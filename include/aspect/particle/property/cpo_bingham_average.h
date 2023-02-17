@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2022 by the authors of the ASPECT code.
+ Copyright (C) 2023 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _aspect_particle_property_cpo_s_wave_anisotropy_h
-#define _aspect_particle_property_cpo_s_wave_anisotropy_h
+#ifndef _aspect_particle_property_cpo_bingham_average_h
+#define _aspect_particle_property_cpo_bingham_average_h
 
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
@@ -68,7 +68,7 @@ namespace aspect
            */
           virtual
           void
-          initialize ();
+          initialize () override;
 
           /**
            * Initialization function. This function is called once at the
@@ -84,7 +84,7 @@ namespace aspect
           virtual
           void
           initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const;
+                                            std::vector<double> &particle_properties) const override;
 
           /**
            * Update function. This function is called every time an update is
@@ -113,7 +113,7 @@ namespace aspect
                                         const Point<dim> &position,
                                         const Vector<double> &solution,
                                         const std::vector<Tensor<1,dim>> &gradients,
-                                        const ArrayView<double> &particle_properties) const;
+                                        const ArrayView<double> &particle_properties) const override;
 
           /**
            * This implementation tells the particle manager that
@@ -128,7 +128,7 @@ namespace aspect
            */
           virtual
           UpdateFlags
-          get_needed_update_flags () const;
+          get_needed_update_flags () const override;
 
           /**
            * Set up the information about the names and number of components
@@ -139,21 +139,52 @@ namespace aspect
            */
           virtual
           std::vector<std::pair<std::string, unsigned int>>
-          get_property_information() const;
+          get_property_information() const override;
 
           /**
-           * Computes the Bingham average
+           * Computes the Bingham average. This is a way to average directions. The method comes from
+           * https://courses.eas.ualberta.ca/eas421/lecturepages/orientation.html, where it is explained
+           * with the anology that each vector/pole has a weight on a sphere. This method allows to find
+           * the moment of inertia for spinning that sphere. Here we just use it to get three averaged
+           * axis associated with the densest clustering of points for each axis. the a to c axis vectors
+           * are stored in the first to last array respectively.
            */
           std::array<std::array<double,3>,3> compute_bingham_average(std::vector<Tensor<2,3>> matrices) const;
 
           /**
+           * Create a permutation vector which can be used by the apply_permutation function
+           * which shorts the vector in .. order.
+           *
+           * @param vector vector to sort
+           */
+          template <typename T>
+          std::vector<std::size_t>
+          sort_permutation(
+            const std::vector<T> &vector) const;
+
+          /**
+           * Applies a permutation vector to return a sorted verions of the vector.
+           *
+           * @param vector vector to sort
+           * @param permutation_vector The permutation vector used to sort the input vector.
+           * @return std::vector<T>
+           */
+          template <typename T>
+          std::vector<T>
+          apply_permutation(
+            const std::vector<T> &vec,
+            const std::vector<std::size_t> &permutation_vector) const;
+
+          /**
           * Get volume weighted euler angles, using random draws to convert
           * to a discrete number of orientations, weighted by volume.
-           */
+          * The input is a vector of volume fractions and a vector of rotation matrices.
+          * The vectors need to have the same length.
+          */
           std::vector<Tensor<2,3>>
-          random_draw_volume_weighting(std::vector<double> fv,
-                                       std::vector<Tensor<2,3>> matrices,
-                                       unsigned int n_output_grains) const;
+          random_draw_volume_weighting(const std::vector<double> volume_fraction,
+                                       const std::vector<Tensor<2,3>> rotation_matrices,
+                                       const unsigned int n_output_grains) const;
 
 
           /**
@@ -168,31 +199,48 @@ namespace aspect
            */
           virtual
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm) override;
 
         private:
+          /**
+           * stores the postition of the cpo data in the particle property vector
+           */
           unsigned int cpo_data_position;
 
-          double rad_to_degree = 180.0/M_PI;
-          double degree_to_rad = M_PI/180.0;
           /**
            * Random number generator. For reproducibility of tests it is
            * initialized in the constructor with a constant plus the MPI rank.
            */
-          mutable std::mt19937            random_number_generator;
+          mutable std::mt19937 random_number_generator;
 
+          /**
+           * the random number generator seed used to initialize the random number generator.
+           */
           unsigned int random_number_seed;
 
+          /**
+           * Number of grains
+           */
           unsigned int n_grains;
+
+          /**
+           * Number of minerals
+           */
           unsigned int n_minerals;
 
-          // when doing the random draw volume weighting, this sets how many samples are taken.
+          /**
+           * when doing the random draw volume weighting, this sets how many samples are taken.
+           */
           unsigned int n_samples;
 
           /**
-           * The tensor equivalent to the permutation symbol.
+           * The tensor equivalent to the permutation symbol (Levi-Civita symbol).
            */
           Tensor<3,3> permutation_operator_3d;
+
+          // utility values
+          double rad_to_degree = 180.0/M_PI;
+          double degree_to_rad = M_PI/180.0;
 
       };
     }
