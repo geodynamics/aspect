@@ -11,6 +11,7 @@ Number of mesh deformation degrees of freedom: 1394
    Solving Stokes system... 0+12 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.3798e-08
 
@@ -27,6 +28,7 @@ Number of mesh deformation degrees of freedom: 1466
    Solving Stokes system... 0+12 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.97036e-08
 
@@ -57,6 +59,7 @@ Number of mesh deformation degrees of freedom: 1466
    Solving Stokes system... 0+14 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.49028
 
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.75692e-08
 
@@ -72,6 +75,7 @@ Number of mesh deformation degrees of freedom: 1466
    Solving Stokes system... 0+14 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.60184
 
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+1 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.05228e-08
 
@@ -87,6 +91,7 @@ Number of mesh deformation degrees of freedom: 1466
    Solving Stokes system... 0+14 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.47092
 
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+1 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.82384e-08
 
@@ -102,6 +107,7 @@ Number of mesh deformation degrees of freedom: 1466
    Solving Stokes system... 0+13 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.364351
 
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+2 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 7.53612e-08
 
@@ -117,6 +123,7 @@ Number of mesh deformation degrees of freedom: 1466
    Solving Stokes system... 0+14 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.159509
 
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.04343e-08
 
@@ -135,6 +142,7 @@ Number of mesh deformation degrees of freedom: 1466
    Solving Stokes system... 0+13 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.103808
 
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.64318e-08
 
@@ -150,6 +158,7 @@ Number of mesh deformation degrees of freedom: 1466
    Solving Stokes system... 0+12 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.047098
 
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.78471e-08
 
@@ -165,8 +174,9 @@ Number of mesh deformation degrees of freedom: 1466
    Solving Stokes system... 0+12 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0264859
 
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.83786e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.83785e-08
 
 
    Postprocessing:
@@ -180,6 +190,7 @@ Number of mesh deformation degrees of freedom: 1466
    Solving Stokes system... 0+12 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.014045
 
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.20458e-08
 
@@ -195,6 +206,7 @@ Number of mesh deformation degrees of freedom: 1466
    Solving Stokes system... 0+11 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0085094
 
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.13106e-08
 

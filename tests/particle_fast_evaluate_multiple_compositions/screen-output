@@ -12,15 +12,16 @@ Number of mesh deformation degrees of freedom: 1610
    Solving 3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 33+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.48706e-16, 1.3735e-16, 1.48706e-16, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.48644e-16, 1.36927e-16, 1.48644e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Solving 3 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.48706e-16, 1.3735e-16, 1.48706e-16, 7.29825e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.48644e-16, 1.36927e-16, 1.48644e-16, 7.29825e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 7.29825e-08
 
 
