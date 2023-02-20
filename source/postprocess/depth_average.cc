@@ -122,14 +122,25 @@ namespace aspect
             // without decrementing j
             else
               {
+                const double max_depth = this->get_geometry_model().maximal_depth();
+                std::vector<Point<dim>> representative_points (n_depth_zones);
+                for (unsigned int k = 0; k<n_depth_zones; ++k)
+                  representative_points[k] = this->get_geometry_model().representative_point(k * max_depth / (n_depth_zones-1));
+
+                //representative_points[k] = this->get_geometry_model().representative_point(0.5 * (depth_bounds[k] + depth_bounds[k+1]));
+
                 if (variables[i-1] == "adiabatic_temperature")
-                  this->get_adiabatic_conditions().get_adiabatic_temperature_profile(data_point.values[i-1]);
+                  for (unsigned int k = 0; k<n_depth_zones; ++k)
+                    data_point.values[i-1][k] = this->get_adiabatic_conditions().temperature(representative_points[k]);
                 else if (variables[i-1] == "adiabatic_pressure")
-                  this->get_adiabatic_conditions().get_adiabatic_pressure_profile(data_point.values[i-1]);
+                  for (unsigned int k = 0; k<n_depth_zones; ++k)
+                    data_point.values[i-1][k] = this->get_adiabatic_conditions().pressure(representative_points[k]);
                 else if (variables[i-1] == "adiabatic_density")
-                  this->get_adiabatic_conditions().get_adiabatic_density_profile(data_point.values[i-1]);
+                  for (unsigned int k = 0; k<n_depth_zones; ++k)
+                    data_point.values[i-1][k] = this->get_adiabatic_conditions().density(representative_points[k]);
                 else if (variables[i-1] == "adiabatic_density_derivative")
-                  this->get_adiabatic_conditions().get_adiabatic_density_derivative_profile(data_point.values[i-1]);
+                  for (unsigned int k = 0; k<n_depth_zones; ++k)
+                    data_point.values[i-1][k] = this->get_adiabatic_conditions().density_derivative(representative_points[k]);
                 else
                   Assert(false,ExcInternalError());
               }
