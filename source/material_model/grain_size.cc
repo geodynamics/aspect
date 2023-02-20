@@ -274,15 +274,17 @@ namespace aspect
     {
       // This factor is used to convert the roughness equation into mean grain size
       // Refer to Appendix H.1, eqs 8, F.28 in Bercovici and Ricard (2012) for more details.
-      const double b1 = 1./20 ;
-      const double c1 = 3 * b1 * moment_of_grain_size_distribution(4) / (8 * moment_of_grain_size_distribution (2));
+      const double b1 = 1./20. ;
+      const double c1 = 3.0 * b1 * moment_of_grain_size_distribution(4) / (8.0 * moment_of_grain_size_distribution (2));
 
       const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
 
       const double h1 = c1 * (1 - volume_fraction_phase_one);
       const double h2 = c1 * (1 - volume_fraction_phase_two);
 
-      return (volume_fraction_phase_one /sqrt (h1)  + volume_fraction_phase_two/sqrt(h2)) ;
+      const double one_over_sqrt_h = volume_fraction_phase_one /std::sqrt (h1)  + volume_fraction_phase_two / std::sqrt(h2) ;
+
+      return (1./one_over_sqrt_h);
     }
 
 
@@ -358,9 +360,21 @@ namespace aspect
 
           // grain size growth due to Ostwald ripening
           const double m = grain_growth_exponent[phase_index];
-          const double grain_size_growth_rate = grain_growth_rate_constant[phase_index] / (m * std::pow(grain_size,m-1))
-                                                * std::exp(- (grain_growth_activation_energy[phase_index] + pressure * grain_growth_activation_volume[phase_index])
-                                                           / (constants::gas_constant * temperature));
+          double grain_size_growth_rate = 0.0;
+
+          // grain growth rate in the two-phase damage model
+          if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
+            grain_size_growth_rate = grain_growth_rate_constant[phase_index] * geometric_constant[phase_index] * phase_distribution_function (volume_fraction_phase_one)
+                                     / (m * std::pow(grain_size,m-1) * std::pow(roughness_to_grain_size_factor(volume_fraction_phase_one), m))
+                                     * std::exp(- (grain_growth_activation_energy[phase_index] + pressure * grain_growth_activation_volume[phase_index])
+                                                / (constants::gas_constant * temperature));
+          else
+            grain_size_growth_rate = grain_growth_rate_constant[phase_index] / (m * std::pow(grain_size,m-1))
+                                     * std::exp(- (grain_growth_activation_energy[phase_index] + pressure * grain_growth_activation_volume[phase_index])
+                                                / (constants::gas_constant * temperature));
+
+
+
           const double grain_size_growth = grain_size_growth_rate * grain_growth_timestep;
 
           // grain size reduction in dislocation creep regime
@@ -394,7 +408,8 @@ namespace aspect
               // pinned_grain_damage: Mulyukova and Bercovici (2018) Collapse of passive margins by lithospheric damage and plunging grain size. Earth and Planetary Science Letters, 484, 341-352.
               const double stress = 2.0 * second_strain_rate_invariant * current_viscosity;
               const double grain_size_reduction_rate = 2.0 * stress * compute_partitioning_fraction(temperature) * second_strain_rate_invariant * pow(grain_size,2)
-                                                       / (geometric_constant[phase_index] * grain_boundary_energy[phase_index]);
+                                                       * roughness_to_grain_size_factor (volume_fraction_phase_one) * roughness_to_grain_size_factor (volume_fraction_phase_one)
+                                                       / (geometric_constant[phase_index] * grain_boundary_energy[phase_index] * phase_distribution_function(volume_fraction_phase_one));
               grain_size_reduction = grain_size_reduction_rate * grain_growth_timestep;
             }
           else if (grain_size_evolution_formulation == Formulation::paleopiezometer)
