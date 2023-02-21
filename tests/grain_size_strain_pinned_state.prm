@@ -1,13 +1,12 @@
 # A test for the grain size material model using pinned state damage formulation. 
 # Over time the model maintains nearly constant temperatures, pressures and
 # strain rates. The grain size in the test approaches the equilibrium
-# grain size for t -> infinity. At 4 Myr the equilibrium grain size should
-# be 2.37501e-1 m.
+# grain size for t -> infinity. At 200 Myr the equilibrium grain size should
+# be 0.0165746 m.
 
 include grain_size_strain.prm
 
-set End time                               = 4e6
-set Output directory                       = grain_size_strain_pinned_state
+set Output directory                       = output_grain_size_strain_pinned_state
 
 subsection Material model
   set Model name = grain size
@@ -45,12 +44,9 @@ subsection Material model
     set Dislocation creep exponent           =3
     set Dislocation activation energy        =390720 # J/mol
     set Dislocation activation volume        =0 # m^3/mol
-  end
-end
 
-subsection Postprocess
-  set List of postprocessors = visualization
-  subsection Visualization
-    set Time between graphical output = 1e5
+    subsection Grain damage partitioning
+      set Minimum grain size reduction work fraction = 1e-6
+    end
   end
 end
