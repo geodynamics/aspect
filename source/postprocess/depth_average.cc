@@ -122,25 +122,37 @@ namespace aspect
             // without decrementing j
             else
               {
-                const double max_depth = this->get_geometry_model().maximal_depth();
-                std::vector<Point<dim>> representative_points (n_depth_zones);
-                for (unsigned int k = 0; k<n_depth_zones; ++k)
-                  representative_points[k] = this->get_geometry_model().representative_point(k * max_depth / (n_depth_zones-1));
-
-                //representative_points[k] = this->get_geometry_model().representative_point(0.5 * (depth_bounds[k] + depth_bounds[k+1]));
+                const auto &adiabat = this->get_adiabatic_conditions();
+                const auto &geometry = this->get_geometry_model();
 
                 if (variables[i-1] == "adiabatic_temperature")
                   for (unsigned int k = 0; k<n_depth_zones; ++k)
-                    data_point.values[i-1][k] = this->get_adiabatic_conditions().temperature(representative_points[k]);
+                    {
+                      const double temperature_top = adiabat.temperature(geometry.representative_point(depth_bounds[k]));
+                      const double temperature_bottom = adiabat.temperature(geometry.representative_point(depth_bounds[k+1]));
+                      data_point.values[i-1][k] = 0.5 * (temperature_top + temperature_bottom);
+                    }
                 else if (variables[i-1] == "adiabatic_pressure")
                   for (unsigned int k = 0; k<n_depth_zones; ++k)
-                    data_point.values[i-1][k] = this->get_adiabatic_conditions().pressure(representative_points[k]);
+                    {
+                      const double pressure_top = adiabat.pressure(geometry.representative_point(depth_bounds[k]));
+                      const double pressure_bottom = adiabat.pressure(geometry.representative_point(depth_bounds[k+1]));
+                      data_point.values[i-1][k] = 0.5 * (pressure_top + pressure_bottom);
+                    }
                 else if (variables[i-1] == "adiabatic_density")
                   for (unsigned int k = 0; k<n_depth_zones; ++k)
-                    data_point.values[i-1][k] = this->get_adiabatic_conditions().density(representative_points[k]);
+                    {
+                      const double density_top = adiabat.density(geometry.representative_point(depth_bounds[k]));
+                      const double density_bottom = adiabat.density(geometry.representative_point(depth_bounds[k+1]));
+                      data_point.values[i-1][k] = 0.5 * (density_top + density_bottom);
+                    }
                 else if (variables[i-1] == "adiabatic_density_derivative")
                   for (unsigned int k = 0; k<n_depth_zones; ++k)
-                    data_point.values[i-1][k] = this->get_adiabatic_conditions().density_derivative(representative_points[k]);
+                    {
+                      const double density_derivative_top = adiabat.density_derivative(geometry.representative_point(depth_bounds[k]));
+                      const double density_derivative_bottom = adiabat.density_derivative(geometry.representative_point(depth_bounds[k+1]));
+                      data_point.values[i-1][k] = 0.5 * (density_derivative_top + density_derivative_bottom);
+                    }
                 else
                   Assert(false,ExcInternalError());
               }
