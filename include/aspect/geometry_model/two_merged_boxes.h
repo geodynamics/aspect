@@ -196,11 +196,11 @@ namespace aspect
 
       private:
         /**
-         * Wether to make the grid by gluing together two boxes, or just
+         * Whether to make the grid by gluing together two boxes, or just
          * use one chunk to make the grid. Using two grids glued together
-         * is a safer option, since it forces the the boundary conditions
-         * to be always applied to the same depth, but using one grid allows
-         * for a more flexable usage of the adaptive refinement.
+         * is a safer option, since it forces the boundary conditions
+         * to be always applied to the same depth, but one unified grid allows
+         * for a more flexible usage of the adaptive refinement.
          */
         bool use_merged_grids;
 

@@ -463,10 +463,10 @@ namespace aspect
                              "is a safer option, since it forces the the boundary conditions "
                              "to be always applied to the same depth, but using one grid allows "
                              "for a more flexable usage of the adaptive refinement. Note that if "
-                             "there is no cell boudary exactly on the boundary between the lithosphere "
-                             "and the mantle, the velocity boundary will net be exactly at that depth. "
+                             "there is no cell boundary exactly on the boundary between the lithosphere "
+                             "and the mantle, the velocity boundary will not be exactly at that depth. "
                              "Therefore, using a merged grid is generally recommended over using one grid."
-                             "When using one grid, the lower repetitions are used and the upper "
+                             "When using one grid, the parameter for lower repetitions is used and the upper "
                              "repetitions are ignored.");
         }
         prm.leave_subsection();
