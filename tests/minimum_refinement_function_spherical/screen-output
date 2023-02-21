@@ -74,8 +74,7 @@ Number of degrees of freedom: 7,116 (4,370+561+2,185)
      Heat fluxes through boundary parts: 983.4 W, 1971 W, 0 W, 0 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average
 
-Number of active cells: 480 (on 6 levels)
-Number of degrees of freedom: 7,116 (4,370+561+2,185)
+Skipping mesh refinement, because the mesh did not change.
 
 Termination requested by criterion: end time
 

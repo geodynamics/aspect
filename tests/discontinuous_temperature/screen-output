@@ -70,8 +70,7 @@ Number of degrees of freedom: 1,813 (578+81+576+289+289)
      Temperature min/avg/max:   -0.002034 K, 0.5 K, 1 K
      Compositions min/max/mass: -0.02054/1.11/0.4167 // -0.004788/1.019/0.4583
 
-Number of active cells: 64 (on 4 levels)
-Number of degrees of freedom: 1,813 (578+81+576+289+289)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 5:  t=0.3125 seconds, dt=0.0625 seconds
    Solving temperature system... 3 iterations.
@@ -95,8 +94,7 @@ Number of degrees of freedom: 1,813 (578+81+576+289+289)
      Temperature min/avg/max:   -0.001959 K, 0.5 K, 1 K
      Compositions min/max/mass: -0.01831/1.106/0.4167 // -0.006268/1.014/0.4581
 
-Number of active cells: 64 (on 4 levels)
-Number of degrees of freedom: 1,813 (578+81+576+289+289)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 7:  t=0.4375 seconds, dt=0.0625 seconds
    Solving temperature system... 3 iterations.
@@ -120,8 +118,7 @@ Number of degrees of freedom: 1,813 (578+81+576+289+289)
      Temperature min/avg/max:   -0.005091 K, 0.5 K, 1 K
      Compositions min/max/mass: -0.01676/1.1/0.4167 // -0.007125/1.013/0.4581
 
-Number of active cells: 64 (on 4 levels)
-Number of degrees of freedom: 1,813 (578+81+576+289+289)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 9:  t=0.5625 seconds, dt=0.0625 seconds
    Solving temperature system... 4 iterations.
@@ -145,8 +142,7 @@ Number of degrees of freedom: 1,813 (578+81+576+289+289)
      Temperature min/avg/max:   -0.006984 K, 0.5 K, 1 K
      Compositions min/max/mass: -0.01631/1.093/0.4167 // -0.004574/1.01/0.458
 
-Number of active cells: 64 (on 4 levels)
-Number of degrees of freedom: 1,813 (578+81+576+289+289)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Solving temperature system... 4 iterations.
@@ -170,8 +166,7 @@ Number of degrees of freedom: 1,813 (578+81+576+289+289)
      Temperature min/avg/max:   -0.007153 K, 0.5 K, 1 K
      Compositions min/max/mass: -0.01569/1.088/0.4167 // -0.00434/1.012/0.4581
 
-Number of active cells: 64 (on 4 levels)
-Number of degrees of freedom: 1,813 (578+81+576+289+289)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 13:  t=0.8125 seconds, dt=0.0625 seconds
    Solving temperature system... 4 iterations.
@@ -195,8 +190,7 @@ Number of degrees of freedom: 1,813 (578+81+576+289+289)
      Temperature min/avg/max:   -0.0074 K, 0.5 K, 1 K
      Compositions min/max/mass: -0.01521/1.085/0.4167 // -0.003175/1.007/0.4581
 
-Number of active cells: 64 (on 4 levels)
-Number of degrees of freedom: 1,813 (578+81+576+289+289)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 15:  t=0.9375 seconds, dt=0.0625 seconds
    Solving temperature system... 3 iterations.
@@ -220,8 +214,7 @@ Number of degrees of freedom: 1,813 (578+81+576+289+289)
      Temperature min/avg/max:   -0.007179 K, 0.5 K, 1 K
      Compositions min/max/mass: -0.01536/1.085/0.4167 // -0.003116/1.006/0.4581
 
-Number of active cells: 64 (on 4 levels)
-Number of degrees of freedom: 1,813 (578+81+576+289+289)
+Skipping mesh refinement, because the mesh did not change.
 
 Termination requested by criterion: end time
 

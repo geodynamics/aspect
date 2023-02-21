@@ -1,9 +1,5 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
-Vectorization over 4 doubles = 256 bits (AVX), VECTORIZATION_LEVEL=2
------------------------------------------------------------------------------
------------------------------------------------------------------------------
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 128 (on 3 levels)
 Number of degrees of freedom: 5,355 (1,122+153+153+561+561+561+561+561+561+561)
 
@@ -55,7 +51,8 @@ Number of mesh deformation degrees of freedom: 320
    Solving Lith system ... 0 iterations.
    Solving Stokes system... 15+0 iterations.
 
-	Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because the mesh did not change.
+
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
@@ -75,7 +72,8 @@ Number of mesh deformation degrees of freedom: 320
      Topography min/max:        0 m, 0 m
      RMS, max velocity:         8.33 m/year, 24.4 m/year
 
-	Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because the mesh did not change.
+
 *** Timestep 1:  t=50 years, dt=50 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 0 iterations.
@@ -89,12 +87,13 @@ Number of mesh deformation degrees of freedom: 320
    Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -1.213e+09/1.283e+09/1.28e+20 // -1.283e+09/1.213e+09/-1.28e+20 // -23.79/23.79/3.849e+07 // -0.002975/1.001/3.341e+12 // -0.002225/0.9984/3.645e+11 // -0.002726/1.002/5.067e+11 // -0.0002547/1/1.242e+11
+     Compositions min/max/mass: -1.213e+09/1.283e+09/1.28e+20 // -1.283e+09/1.213e+09/-1.28e+20 // -23.79/23.79/3.483e+07 // -0.002975/1.001/3.341e+12 // -0.002225/0.9984/3.645e+11 // -0.002726/1.002/5.067e+11 // -0.0002547/1/1.242e+11
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -6.317e-06 m, 7.111e-05 m
      RMS, max velocity:         2.22 m/year, 6.68 m/year
 
-	Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because the mesh did not change.
+
 *** Timestep 2:  t=100 years, dt=50 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 0 iterations.
@@ -108,18 +107,14 @@ Number of mesh deformation degrees of freedom: 320
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -1.995e+08/1.872e+08/1.788e+19 // -1.872e+08/1.995e+08/-1.788e+19 // -18.35/18.52/5.438e+10 // -0.002941/1.001/3.342e+12 // -0.00167/0.9948/3.624e+11 // -0.002573/1.001/5.077e+11 // -4.521e-05/1/1.242e+11
+     Compositions min/max/mass: -1.995e+08/1.872e+08/1.788e+19 // -1.872e+08/1.995e+08/-1.788e+19 // -18.4/18.44/5.884e+10 // -0.002941/1.001/3.342e+12 // -0.00167/0.9948/3.624e+11 // -0.002573/1.001/5.077e+11 // -4.521e-05/1/1.242e+11
      Temperature min/avg/max:   293 K, 293 K, 293 K
-     Topography min/max:        5.585e-06 m, 5.414e-05 m
+     Topography min/max:        5.523e-06 m, 5.417e-05 m
      RMS, max velocity:         0.146 m/year, 0.391 m/year
 
-	Skipping mesh refinement, because the mesh did not change.
+Skipping mesh refinement, because the mesh did not change.
+
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

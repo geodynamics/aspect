@@ -112,8 +112,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Compositions min/max/mass: -0.1688/10.63/3.217 // -10.69/1.186/-2.539
 
-Number of active cells: 64 (on 4 levels)
-Number of degrees of freedom: 1,526 (578+81+289+289+289)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Solving temperature system... 13 iterations.

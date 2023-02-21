@@ -80,12 +80,10 @@ Number of degrees of freedom: 268 (162+25+81)
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00010
 
-Number of active cells: 16 (on 3 levels)
-Number of degrees of freedom: 268 (162+25+81)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:

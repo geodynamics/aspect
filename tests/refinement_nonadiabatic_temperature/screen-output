@@ -1,8 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
@@ -216,12 +212,10 @@ Number of degrees of freedom: 6,370 (3,906+511+1,953)
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -1.2 W, 1.2 W
 
-Number of active cells: 451 (on 6 levels)
-Number of degrees of freedom: 6,370 (3,906+511+1,953)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 15:  t=0.0183368 seconds, dt=0.000322007 seconds
    Solving temperature system... 13 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
@@ -327,9 +321,4 @@ Number of degrees of freedom: 6,666 (4,088+534+2,044)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
