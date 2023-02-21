@@ -66,11 +66,11 @@ namespace aspect
     {
       const unsigned int num_slices = values.size();
       const double max_depth = this->get_geometry_model().maximal_depth();
-      double depth = 0.0;
+      AssertThrow(num_slices > 1, ExcInternalError());
 
       for (unsigned int n = 0 ; n < num_slices; n++)
         {
-          depth = n * max_depth / (num_slices-1);
+          const double depth = n * max_depth / (num_slices-1);
           const Point<dim> p = this->get_geometry_model().representative_point(depth);
           values[n] = temperature(p);
         }
@@ -82,11 +82,11 @@ namespace aspect
     {
       const unsigned int num_slices = values.size();
       const double max_depth = this->get_geometry_model().maximal_depth();
-      double depth = 0.0;
+      AssertThrow(num_slices > 1, ExcInternalError());
 
       for (unsigned int n = 0 ; n < num_slices; n++)
         {
-          depth = n * max_depth / (num_slices-1);
+          const double depth = n * max_depth / (num_slices-1);
           const Point<dim> p = this->get_geometry_model().representative_point(depth);
           values[n] = pressure(p);
         }
@@ -97,11 +97,11 @@ namespace aspect
     {
       const unsigned int num_slices = values.size();
       const double max_depth = this->get_geometry_model().maximal_depth();
-      double depth = 0.0;
+      AssertThrow(num_slices > 1, ExcInternalError());
 
       for (unsigned int n = 0 ; n < num_slices; n++)
         {
-          depth = n * max_depth / (num_slices-1);
+          const double depth = n * max_depth / (num_slices-1);
           const Point<dim> p = this->get_geometry_model().representative_point(depth);
           values[n] = density(p);
         }
@@ -110,12 +110,13 @@ namespace aspect
     template <int dim>
     void Interface<dim>::get_adiabatic_density_derivative_profile(std::vector<double> &values) const
     {
-      const unsigned int n_slices = values.size();
+      const unsigned int num_slices = values.size();
       const double max_depth = this->get_geometry_model().maximal_depth();
+      AssertThrow(num_slices > 1, ExcInternalError());
 
-      for (unsigned int n = 0 ; n < n_slices; n++)
+      for (unsigned int n = 0 ; n < num_slices; n++)
         {
-          const double depth = n * max_depth / n_slices;
+          const double depth = n * max_depth / (num_slices-1);
           const Point<dim> p = this->get_geometry_model().representative_point(depth);
           values[n] = density_derivative(p);
         }
