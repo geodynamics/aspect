@@ -374,7 +374,9 @@ namespace aspect
     // don't need to force assembly of the matrix.
     if (stokes_matrix_depends_on_solution()
         ||
-        (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
+        (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0)
+        || parameters.mesh_deformation_enabled
+       )
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
     // set constraints for p_c if porosity is below a threshold
