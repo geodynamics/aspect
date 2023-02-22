@@ -367,11 +367,9 @@ namespace aspect
           // in the two-phase damage model grain growth depends on the proportion of the two phases
           if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
             grain_size_growth_rate *= geometric_constant[phase_index] * phase_distribution_function (volume_fraction_phase_one) /
-                                      std::pow(roughness_to_grain_size_factor(volume_fraction_phase_one), m)
+                                      std::pow(roughness_to_grain_size_factor(volume_fraction_phase_one), m);
 
-
-
-                                      const double grain_size_growth = grain_size_growth_rate * grain_growth_timestep;
+          const double grain_size_growth = grain_size_growth_rate * grain_growth_timestep;
 
           // grain size reduction in dislocation creep regime
           const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
