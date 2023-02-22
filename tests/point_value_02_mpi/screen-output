@@ -421,8 +421,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00040
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-Number of active cells: 16 (on 3 levels)
-Number of degrees of freedom: 349 (162+25+81+81)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 41:  t=0.000235535 years, dt=8.85454e-06 years
    Skipping temperature solve because RHS is zero.
@@ -524,8 +523,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00050
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-Number of active cells: 16 (on 3 levels)
-Number of degrees of freedom: 349 (162+25+81+81)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 51:  t=0.000554776 years, dt=1.31536e-05 years
    Skipping temperature solve because RHS is zero.

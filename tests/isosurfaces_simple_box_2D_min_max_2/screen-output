@@ -9,8 +9,7 @@ Number of degrees of freedom: 159 (50+9+25+25+25+25)
 
 *** Timestep 0:  t=0 years, dt=0 years
 
-Number of active cells: 4 (on 2 levels)
-Number of degrees of freedom: 159 (50+9+25+25+25+25)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 0:  t=0 years, dt=0 years
 
