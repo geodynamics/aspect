@@ -748,6 +748,16 @@ INSTALL(DIRECTORY include/ ${CMAKE_BINARY_DIR}/include/
   COMPONENT includes
   FILES_MATCHING PATTERN "*.h")
 
+# examples:
+INSTALL(DIRECTORY cookbooks/
+  DESTINATION cookbooks
+  COMPONENT examples
+  FILES_MATCHING PATTERN "*")
+INSTALL(DIRECTORY benchmarks/
+  DESTINATION benchmarks
+  COMPONENT examples
+  FILES_MATCHING PATTERN "*")
+
 # cmake stuff:
 INSTALL(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake
         DESTINATION "lib/cmake/Aspect/")
