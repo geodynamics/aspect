@@ -1,10 +1,12 @@
 
 Loading shared library <./libedit_parameters.so>
 
+Signal edit_parameters triggered!
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
+Signal start_timestep triggered!
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 23+0 iterations.
@@ -16,6 +18,7 @@ Number of degrees of freedom: 948 (578+81+289)
 Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 1:  t=751090 seconds, dt=751090 seconds
+Signal start_timestep triggered!
    Solving temperature system... 8 iterations.
    Solving Stokes system... 22+0 iterations.
 
@@ -23,10 +26,12 @@ Skipping mesh refinement, because the mesh did not change.
      Temperature min/avg/max: 0 K, 1.233 K, 10 K
      RMS, max velocity:       2.46e-08 m/s, 9.27e-08 m/s
 
+Signal edit_parameters triggered!
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
 *** Timestep 2:  t=1.38563e+06 seconds, dt=634541 seconds
+Signal start_timestep triggered!
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21+0 iterations.
@@ -35,10 +40,12 @@ Number of degrees of freedom: 844 (514+73+257)
      Temperature min/avg/max: 0 K, 1.289 K, 10 K
      RMS, max velocity:       2.83e-08 m/s, 1.04e-07 m/s
 
+Signal edit_parameters triggered!
 Number of active cells: 49 (on 4 levels)
 Number of degrees of freedom: 808 (492+70+246)
 
 *** Timestep 3:  t=1.9585e+06 seconds, dt=572867 seconds
+Signal start_timestep triggered!
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21+0 iterations.
@@ -47,10 +54,12 @@ Number of degrees of freedom: 808 (492+70+246)
      Temperature min/avg/max: 0 K, 1.328 K, 10 K
      RMS, max velocity:       3.44e-08 m/s, 1.26e-07 m/s
 
+Signal edit_parameters triggered!
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
 *** Timestep 4:  t=2.40911e+06 seconds, dt=450616 seconds
+Signal start_timestep triggered!
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 20+0 iterations.
@@ -62,6 +71,8 @@ Number of degrees of freedom: 844 (514+73+257)
 Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 5:  t=2.86541e+06 seconds, dt=456300 seconds
+Signal start_timestep triggered!
+Reducing CFL number!
    Solving temperature system... 9 iterations.
    Solving Stokes system... 20+0 iterations.
 
@@ -71,9 +82,21 @@ Skipping mesh refinement, because the mesh did not change.
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 6:  t=3.30995e+06 seconds, dt=444537 seconds
+*** Timestep 6:  t=3.08768e+06 seconds, dt=222269 seconds
+Signal start_timestep triggered!
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system... 18+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 1.393 K, 10 K
+     RMS, max velocity:       3.94e-08 m/s, 1.37e-07 m/s
+
+Skipping mesh refinement, because the mesh did not change.
+
+*** Timestep 7:  t=3.30732e+06 seconds, dt=219641 seconds
+Signal start_timestep triggered!
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.404 K, 10 K
@@ -81,51 +104,45 @@ Skipping mesh refinement, because the mesh did not change.
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 7:  t=3.74431e+06 seconds, dt=434359 seconds
+*** Timestep 8:  t=3.52459e+06 seconds, dt=217263 seconds
+Signal start_timestep triggered!
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 18+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max: 0 K, 1.415 K, 10 K
+     RMS, max velocity:       4.12e-08 m/s, 1.4e-07 m/s
+
+Skipping mesh refinement, because the mesh did not change.
+
+*** Timestep 9:  t=3.73957e+06 seconds, dt=214980 seconds
+Signal start_timestep triggered!
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.425 K, 10 K
-     RMS, max velocity:       4.24e-08 m/s, 1.42e-07 m/s
+     RMS, max velocity:       4.23e-08 m/s, 1.42e-07 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 8:  t=4.16938e+06 seconds, dt=425074 seconds
+*** Timestep 10:  t=3.95222e+06 seconds, dt=212658 seconds
+Signal start_timestep triggered!
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 0 K, 1.445 K, 10 K
-     RMS, max velocity:       4.51e-08 m/s, 1.46e-07 m/s
+     Temperature min/avg/max: 0 K, 1.435 K, 10 K
+     RMS, max velocity:       4.36e-08 m/s, 1.44e-07 m/s
 
 Skipping mesh refinement, because the mesh did not change.
-
-*** Timestep 9:  t=4.58344e+06 seconds, dt=414055 seconds
-   Solving temperature system... 10 iterations.
-   Solving Stokes system... 20+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 0 K, 1.465 K, 10 K
-     RMS, max velocity:       4.88e-08 m/s, 1.52e-07 m/s
-
-Reducing CFL number!
-Number of active cells: 49 (on 4 levels)
-Number of degrees of freedom: 808 (492+70+246)
-
-*** Timestep 10:  t=4.9824e+06 seconds, dt=398962 seconds
-   Solving temperature system... 9 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20+0 iterations.
-
-   Postprocessing:
-     Temperature min/avg/max: 0 K, 1.481 K, 10 K
-     RMS, max velocity:       5.67e-08 m/s, 1.67e-07 m/s
-
-Number of active cells: 52 (on 4 levels)
-Number of degrees of freedom: 844 (514+73+257)
 
 Termination requested by criterion: end step
 
 
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

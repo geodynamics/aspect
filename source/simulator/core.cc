@@ -597,6 +597,8 @@ namespace aspect
 
     nonlinear_iteration = 0;
 
+    signals.start_timestep(*this);
+
     // Copy particle handler to restore particle location and properties
     // before repeating a timestep
     if (particle_world.get() != nullptr)

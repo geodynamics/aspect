@@ -92,6 +92,14 @@ namespace aspect
     boost::signals2::signal<void (const SimulatorAccess<dim> &)>  post_set_initial_state;
 
     /**
+     * A signal that is called at the beginning of each time step.
+     *
+     * The functions (slots) that can attach to this signal need to take one
+     * argument: A SimulatorAccess object that describes the simulator.
+     */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &)>  start_timestep;
+
+    /**
      * A signal that is called at the end of setting up the
      * constraints for the current time step. This allows to add
      * more constraints on degrees of freedom, for example to fix
