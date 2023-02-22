@@ -216,6 +216,7 @@ namespace aspect
     {
       // This function normalizes the grain size distribution using the nth moment.
       // Description can be found in eq 8 of Bercovici and Richard (2012)
+      // This is the variance of the log-normal distribution
       const double sigma = 0.8;
 
       return exp (n * n * sigma * sigma / 2.);
@@ -272,8 +273,6 @@ namespace aspect
     GrainSize<dim>::
     roughness_to_grain_size_factor (const double volume_fraction_phase_one)  const
     {
-      // This factor is used to convert the roughness equation into mean grain size
-      // Refer to Appendix H.1, eqs 8, F.28 in Bercovici and Ricard (2012) for more details.
       const double b1 = 1./20. ;
       const double c1 = 3.0 * b1 * moment_of_grain_size_distribution(4) / (8.0 * moment_of_grain_size_distribution (2));
 
@@ -360,22 +359,19 @@ namespace aspect
 
           // grain size growth due to Ostwald ripening
           const double m = grain_growth_exponent[phase_index];
-          double grain_size_growth_rate = 0.0;
 
-          // grain growth rate in the two-phase damage model
+          double grain_size_growth_rate = grain_growth_rate_constant[phase_index] / (m * std::pow(grain_size,m-1))
+                                          * std::exp(- (grain_growth_activation_energy[phase_index] + pressure * grain_growth_activation_volume[phase_index])
+                                                     / (constants::gas_constant * temperature));
+
+          // in the two-phase damage model grain growth depends on the proportion of the two phases
           if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
-            grain_size_growth_rate = grain_growth_rate_constant[phase_index] * geometric_constant[phase_index] * phase_distribution_function (volume_fraction_phase_one)
-                                     / (m * std::pow(grain_size,m-1) * std::pow(roughness_to_grain_size_factor(volume_fraction_phase_one), m))
-                                     * std::exp(- (grain_growth_activation_energy[phase_index] + pressure * grain_growth_activation_volume[phase_index])
-                                                / (constants::gas_constant * temperature));
-          else
-            grain_size_growth_rate = grain_growth_rate_constant[phase_index] / (m * std::pow(grain_size,m-1))
-                                     * std::exp(- (grain_growth_activation_energy[phase_index] + pressure * grain_growth_activation_volume[phase_index])
-                                                / (constants::gas_constant * temperature));
+            grain_size_growth_rate *= geometric_constant[phase_index] * phase_distribution_function (volume_fraction_phase_one) /
+                                      std::pow(roughness_to_grain_size_factor(volume_fraction_phase_one), m)
 
 
 
-          const double grain_size_growth = grain_size_growth_rate * grain_growth_timestep;
+                                      const double grain_size_growth = grain_size_growth_rate * grain_growth_timestep;
 
           // grain size reduction in dislocation creep regime
           const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();

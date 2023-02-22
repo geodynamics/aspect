@@ -278,8 +278,11 @@ namespace aspect
         /**
          * Functions and parameters controlling conversion from interface roughness to grain size,
          * used in pinned state formulation of grain damage.
+         * The function roughness_to_grain_size_factor () returns the factor used to convert roughness
+         * into the euivalent mean grain size for a given volume fraction of a mineral in the two-phase
+         * damage model.
          *
-         * Detailed description of this approach can be found in Appendix H.1 of
+         * Detailed description of this approach can be found in Appendix H.1, eqs 8, F.28  of
          * Bercovici, David, and Yanick Ricard (2012).
          * Mechanisms for the generation of plate tectonics by two-phase grain-damage
          * and pinning. Physics of the Earth and Planetary Interiors 202 (2012): 27-55.
