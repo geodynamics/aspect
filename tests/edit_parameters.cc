@@ -18,7 +18,6 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include "aspect/parameters.h"
 #include <deal.II/base/parameter_handler.h>
 #include <aspect/global.h>
 #include <aspect/simulator_signals.h>
@@ -54,14 +53,14 @@ namespace aspect
   template <int dim>
   void on_start_timestep (const SimulatorAccess<dim> &simulator_access)
   {
-    simulator_access.get_pcout()<<"Signal start_timestep triggered!"<<std::endl;
+    simulator_access.get_pcout() << "Signal start_timestep triggered!" << std::endl;
     if (simulator_access.get_timestep_number() != numbers::invalid_unsigned_int
         &&
         simulator_access.get_timestep_number() >= switch_step
         &&
         !switched )
       {
-        simulator_access.get_pcout()<<"Reducing CFL number!"<<std::endl;
+        simulator_access.get_pcout() << "Reducing CFL number!" << std::endl;
         const_cast<Parameters<dim>&>(simulator_access.get_parameters()).CFL_number *= 0.5;
 
         switched = true;
