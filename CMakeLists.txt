@@ -754,7 +754,7 @@ INSTALL(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_D
 
 INSTALL(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h DESTINATION "include/aspect/")
 
-MESSAGE(STATUS "Writing config into detailed.log...")
+MESSAGE(STATUS "Writing configuration details into detailed.log...")
 INCLUDE(cmake/write_config)
 
 # print "info" if run for the first time:
