@@ -96,6 +96,7 @@ pipeline {
         cd build
         ninja
         '''
+        archiveArtifacts artifacts: 'build/detailed.log'
       }
     }
 
