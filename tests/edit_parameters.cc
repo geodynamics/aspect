@@ -39,8 +39,7 @@ namespace aspect
   {
     prm.declare_entry("Switch step", "0",
                       Patterns::Integer(0),
-                      "Switch the bottom boundary condition from fixed temperature to no-flux"
-                      "at the timestep given.");
+                      "Switch CFL at the timestep given.");
   }
 
   template <int dim>
@@ -52,20 +51,28 @@ namespace aspect
   }
 
   template <int dim>
-  void change_boundary_condition (const SimulatorAccess<dim> &simulator_access,
-                                  Parameters<dim> &parameters)
+  void on_start_timestep (const SimulatorAccess<dim> &simulator_access)
   {
+    simulator_access.get_pcout() << "Signal start_timestep triggered!" << std::endl;
     if (simulator_access.get_timestep_number() != numbers::invalid_unsigned_int
         &&
         simulator_access.get_timestep_number() >= switch_step
         &&
         !switched )
       {
-        simulator_access.get_pcout()<<"Reducing CFL number!"<<std::endl;
-        parameters.CFL_number *= 0.5;
+        simulator_access.get_pcout() << "Reducing CFL number!" << std::endl;
+        const_cast<Parameters<dim>&>(simulator_access.get_parameters()).CFL_number *= 0.5;
 
         switched = true;
       }
+  }
+
+
+  template <int dim>
+  void on_edit_parameters (const SimulatorAccess<dim> &simulator_access,
+                           Parameters<dim> &/*parameters*/)
+  {
+    simulator_access.get_pcout()<<"Signal edit_parameters triggered!"<<std::endl;
   }
 
   // Connect declare_parameters and parse_parameters to appropriate signals.
@@ -81,7 +88,8 @@ namespace aspect
   template <int dim>
   void signal_connector (SimulatorSignals<dim> &signals)
   {
-    signals.edit_parameters_pre_setup_dofs.connect (&change_boundary_condition<dim>);
+    signals.edit_parameters_pre_setup_dofs.connect (&on_edit_parameters<dim>);
+    signals.start_timestep.connect(&on_start_timestep<dim>);
   }
 
   // Tell ASPECT to send signals to the connector functions
