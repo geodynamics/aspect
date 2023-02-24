@@ -458,11 +458,11 @@ namespace aspect
           // grid creation paramters
           prm.declare_entry ("Use merged grids", "true",
                              Patterns::Bool (),
-                             "Wether to make the grid by gluing together two boxes, or just "
+                             "Whether to make the grid by gluing together two boxes, or just "
                              "use one chunk to make the grid. Using two grids glued together "
-                             "is a safer option, since it forces the the boundary conditions "
+                             "is a safer option, since it forces the boundary conditions "
                              "to be always applied to the same depth, but using one grid allows "
-                             "for a more flexable usage of the adaptive refinement. Note that if "
+                             "for a more flexible usage of the adaptive refinement. Note that if "
                              "there is no cell boundary exactly on the boundary between the lithosphere "
                              "and the mantle, the velocity boundary will not be exactly at that depth. "
                              "Therefore, using a merged grid is generally recommended over using one grid."
