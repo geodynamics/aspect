@@ -79,6 +79,11 @@ namespace aspect
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const = 0;
 
         /**
+         * Find the current values of the surface topograhy.
+         */
+        virtual void update ();
+
+        /**
          * Return the typical length scale one would expect of features in
          * this geometry, assuming realistic parameters.
          *
@@ -131,6 +136,15 @@ namespace aspect
          */
         virtual
         double depth(const Point<dim> &position) const = 0;
+
+        /**
+         * Function that uses the stored surface topography to calculate the depth
+         * including changes from mesh deformation. This will linearly interpolate
+         * between the two nearest surface points to get a depth for the given
+         * position.
+         */
+        virtual
+        double depth_including_mesh_deformation(const Point<dim> &position) const;
 
         /**
          * Return the height of the given position relative to the reference
