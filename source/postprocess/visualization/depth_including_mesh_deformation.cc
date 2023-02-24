@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,7 +19,7 @@
 */
 
 
-#include <aspect/postprocess/visualization/depth.h>
+#include <aspect/postprocess/visualization/depth_including_mesh_deformation.h>
 #include <aspect/geometry_model/interface.h>
 
 
@@ -31,8 +31,8 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      Depth<dim>::
-      Depth ()
+      DepthIncMeshDef<dim>::
+      DepthIncMeshDef ()
         :
         DataPostprocessorScalar<dim> ("depth",
                                       update_quadrature_points),
@@ -43,7 +43,7 @@ namespace aspect
 
       template <int dim>
       void
-      Depth<dim>::
+      DepthIncMeshDef<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                             std::vector<Vector<double>> &computed_quantities) const
       {
@@ -54,7 +54,7 @@ namespace aspect
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            computed_quantities[q](0) = this->get_geometry_model().depth (input_data.evaluation_points[q]);
+            computed_quantities[q](0) = this->get_geometry_model().depth_including_mesh_deformation (input_data.evaluation_points[q]);
           }
       }
     }
@@ -69,23 +69,12 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(Depth,
-                                                  "depth",
+      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(DepthIncMeshDef,
+                                                  "depth including mesh deformation",
                                                   "A visualization output postprocessor that outputs "
                                                   "the depth for all points inside the domain, as "
-                                                  "determined by the initial surface of the geometry model. "
-                                                  "\n\n"
-                                                  "It is worth comparing this visualization postprocessor with the "
-                                                  "one called ``surface elevation''. The current one is used to visualize a volume "
-                                                  "variable, whereas the latter only outputs information on "
-                                                  "the surface. Moreover ``depth'' is based on a member function of "
-                                                  "the geometry models that is documented as never returning a "
-                                                  "number less than zero -- in other words, it returns the depth "
-                                                  "of an evaluation point with regard to a reference surface that "
-                                                  "defines a zero depth, but for points that lie above this "
-                                                  "reference surface, it returns zero. As a consequence, it cannot "
-                                                  "be used to visualize positive elevations, whereas the the one "
-                                                  "called ``surface elevation'' can."
+                                                  "determined by the current model surface. This plugin "
+                                                  "will include changes to the surface from mesh deformation."
                                                   "\n\n"
                                                   "Physical units: \\si{\\meter}.")
     }

@@ -32,6 +32,17 @@ namespace aspect
   namespace GeometryModel
   {
     template <int dim>
+    double
+    Interface<dim>::depth_including_mesh_deformation(const Point<dim> &) const
+    {
+      AssertThrow(false,
+                  ExcMessage("The depth including mesh deformation function only works with a 2D box geometry model."));
+
+      return 0;
+    }
+
+
+    template <int dim>
     std::map<std::string,types::boundary_id>
     Interface<dim>::get_symbolic_boundary_names_map() const
     {

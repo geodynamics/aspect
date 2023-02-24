@@ -654,6 +654,8 @@ namespace aspect
     heating_model_manager.update();
     adiabatic_conditions->update();
     mesh_refinement_manager.update();
+
+
     if (parameters.mesh_deformation_enabled)
       mesh_deformation->update();
 
@@ -1859,6 +1861,9 @@ namespace aspect
         // calculate global volume after deforming mesh
         global_volume = GridTools::volume (triangulation, *mapping);
         signals.post_mesh_deformation(*this);
+
+        // We update this after mesh deformation so the most recent surface is kept.
+        geometry_model->update();
       }
 
     // Compute the reactions of compositional fields and temperature in case of operator splitting.

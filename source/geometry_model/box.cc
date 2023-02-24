@@ -29,6 +29,7 @@
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/grid_tools.h>
+#include <deal.II/base/function_lib.h>
 
 
 namespace aspect
@@ -266,6 +267,150 @@ namespace aspect
 
       const double d = extents[dim-1] + topo - (position(dim-1)-box_origin[dim-1]);
       return std::min (std::max (d, 0.), maximal_depth());
+    }
+
+    template <int dim>
+    void
+    Box<dim>::
+    update ()
+    {
+        this->get_pcout() << "   Updating surface values... " <<std::endl;
+        TimerOutput::Scope timer_section(this->get_computing_timer(), "Geometry model surface update");
+
+        // loop over all of the surface cells and save the elevation to a stored value.
+        // This needs to be sent to 1 processor, sorted, and broadcast so that every processor knows the entire surface.
+        // (Does bcast create memory of the entire variable on every processor or only a pointer to the one stored on 0?)
+        std::vector<std::vector<double>> local_surface_height;
+        Table<dim-1, double> data_table;
+        const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
+        const QTrapezoid<dim-1> face_corners;
+        FEFaceValues<dim> fe_face_values(this->get_mapping(),
+                                          this->get_fe(),
+                                          face_corners,
+                                          update_quadrature_points);
+
+        // Loop over all corners at the surface and save their position.
+        // TODO: Update this to work in 3D. Spherical?
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+          if (cell->is_locally_owned() && cell->at_boundary())
+            for (const unsigned int face_no : cell->face_indices())
+              if (cell->face(face_no)->at_boundary())
+                {
+                  if ( cell->face(face_no)->boundary_id() != relevant_boundary)
+                    continue;
+
+                  fe_face_values.reinit(cell, face_no);
+
+                  for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
+                    {
+                      const Point<dim> vertex = fe_face_values.quadrature_point(corner);
+
+                      // We can't push back a point so we convert it into a vector.
+                      // This is needed later to keep the vertexes together when sorting.
+                      std::vector<double> vertex_row;
+                      for(unsigned int i=0; i<dim; ++i)
+                        vertex_row.push_back(vertex[i]);
+
+                      local_surface_height.push_back(vertex_row);
+                    }
+                }
+
+        // Combine all local_surfaces and broadcast back.
+        std::vector<std::vector<double>> temp_surface;
+        if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          // Save the surface stored on processor 0
+          for (unsigned int i=0; i<local_surface_height.size(); i++)
+                  temp_surface.push_back(local_surface_height[i]);
+
+          // Save the surface stored on all other processors. will this need to be sorted
+          // when using more than only a few processors?
+          for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
+          {
+            // First, find out the size of the array a process wants to send.
+           MPI_Status status;
+           int incoming_size = 0;
+           MPI_Recv(&incoming_size, 1, MPI_INT, p, 42, this->get_mpi_communicator(), &status);
+
+            std::vector<std::vector<double>> nonlocal_surface_height(incoming_size, std::vector<double>(dim));
+
+            for (unsigned int i=0; i<nonlocal_surface_height.size(); ++i)
+              MPI_Recv(&nonlocal_surface_height[i][0], dim, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
+
+            for (unsigned int i=0; i<nonlocal_surface_height.size(); ++i)
+                    temp_surface.push_back(nonlocal_surface_height[i]);
+          }
+
+          // Sort the points. This may not be necessary in 2D.
+          std::sort(temp_surface.begin(), temp_surface.end());
+
+          // Define a comparison to remove duplicate surface points.
+          bool (*compareRows)(const std::vector<double>&, const std::vector<double>&) = [](const std::vector<double>& row1, const std::vector<double>& row2) {
+            return row1 == row2;
+          };
+
+          // Remove non-unique rows from the sorted 2D vector
+          auto last = std::unique(temp_surface.begin(), temp_surface.end(), compareRows);
+          temp_surface.erase(last, temp_surface.end());
+
+          // First, bcast the size so that other processors can resize the relevant vector
+          // to store the incoming data.
+          int vector_size = temp_surface.size();
+
+          TableIndices<dim-1> size_idx;
+          for (unsigned int d=0; d<dim-1; ++d)
+              size_idx[d] = vector_size;
+
+          data_table.TableBase<dim-1,double>::reinit(size_idx);
+          TableIndices<dim-1> idx;
+			
+          if(dim==2)
+          {
+              for (unsigned int x=0; x<(data_table.size()[0]); ++x)
+              {
+                idx[0] = x;
+                data_table(idx) = temp_surface[x][1];
+              }
+          }
+
+          Utilities::MPI::broadcast(this->get_mpi_communicator(), temp_surface, 0);
+        }
+        else
+        {
+          // Send local surface data.
+          int vector_size = local_surface_height.size();
+          MPI_Send(&vector_size, 1, MPI_INT, 0, 42, this->get_mpi_communicator());
+
+          for (unsigned int i=0; i<local_surface_height.size(); i++)
+              MPI_Ssend(&local_surface_height[i][0], dim, MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
+
+          // Do I need to resize the temp_surface variable when using this broadcast?
+          temp_surface = Utilities::MPI::broadcast(this->get_mpi_communicator(), temp_surface, 0);
+        }
+		
+        data_table.replicate_across_communicator (this->get_mpi_communicator(), 0);
+		
+		std::array<std::vector<double>, dim-1> coordinates;
+        for(unsigned int i=0; i<temp_surface.size(); ++i)
+        {
+            coordinates[0].push_back(temp_surface[i][0]);
+        }
+
+		surface_function = new Functions::InterpolatedTensorProductGridData<dim-1> (coordinates, data_table);
+    }
+
+    template <int dim>
+    double
+    Box<dim>::depth_including_mesh_deformation(const Point<dim> &position) const
+    {
+      // Convert the point to dim-1, as we aren't interested in the vertical component
+      // for the function.
+      Point<dim-1> p;
+      for (unsigned int d=0; d<dim-1; ++d)
+        p[d] = position[d];
+
+      double depth_from_surface = surface_function->value(p) - position[dim-1];
+      return std::max (depth_from_surface, 0.);
     }
 
 
