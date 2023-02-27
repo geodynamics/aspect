@@ -65,29 +65,41 @@ namespace aspect
     TwoMergedChunks<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-      // The two triangulations that will be merged into coarse_grid.
-      Triangulation<dim> lower_coarse_grid;
-      Triangulation<dim> upper_coarse_grid;
+      if (use_merged_grids)
+        {
+          // The two triangulations that will be merged into coarse_grid.
+          Triangulation<dim> lower_coarse_grid;
+          Triangulation<dim> upper_coarse_grid;
 
-      // Create the lower box.
-      GridGenerator::subdivided_hyper_rectangle (lower_coarse_grid,
-                                                 lower_repetitions,
-                                                 point1,
-                                                 point4,
-                                                 false);
+          // Create the lower box.
+          GridGenerator::subdivided_hyper_rectangle (lower_coarse_grid,
+                                                     lower_repetitions,
+                                                     point1,
+                                                     point4,
+                                                     false);
 
-      // Create the upper box.
-      GridGenerator::subdivided_hyper_rectangle (upper_coarse_grid,
-                                                 upper_repetitions,
-                                                 point3,
-                                                 point2,
-                                                 false);
+          // Create the upper box.
+          GridGenerator::subdivided_hyper_rectangle (upper_coarse_grid,
+                                                     upper_repetitions,
+                                                     point3,
+                                                     point2,
+                                                     false);
 
-      // Merge the lower and upper mesh into one coarse_grid.
-      // Now we have at least two cells.
-      GridGenerator::merge_triangulations(lower_coarse_grid,
-                                          upper_coarse_grid,
-                                          coarse_grid);
+          // Merge the lower and upper mesh into one coarse_grid.
+          // Now we have at least two cells.
+          GridGenerator::merge_triangulations(lower_coarse_grid,
+                                              upper_coarse_grid,
+                                              coarse_grid);
+        }
+      else
+        {
+          GridGenerator::subdivided_hyper_rectangle (coarse_grid,
+                                                     lower_repetitions,
+                                                     point1,
+                                                     point2,
+                                                     false);
+
+        }
 
       // Transform box into spherical chunk
       GridTools::transform (
@@ -516,6 +528,20 @@ namespace aspect
                              "Number of cells in latitude. This value is ignored "
                              "if the simulation is in 2d");
 
+          prm.declare_entry ("Use merged grids", "true",
+                             Patterns::Bool (),
+                             "Whether to make the grid by gluing together two boxes, or just "
+                             "use one chunk to make the grid. Using two grids glued together "
+                             "is a safer option, since it forces the boundary conditions "
+                             "to be always applied to the same depth, but using one grid allows "
+                             "for a more flexible usage of the adaptive refinement. Note that if "
+                             "there is no cell boundary exactly on the boundary between the lithosphere "
+                             "and the mantle, the velocity boundary will not be exactly at that depth. "
+                             "Therefore, using a merged "
+                             "grid is generally recommended over using one grid. "
+                             "When using one grid, the parameter for lower repetitions is used and the upper "
+                             "repetitions are ignored.");
+
         }
         prm.leave_subsection();
       }
@@ -586,7 +612,7 @@ namespace aspect
               AssertThrow (point2[2] < 0.5*numbers::PI,
                            ExcMessage ("Maximum latitude needs to be less than 90 degrees."));
             }
-
+          use_merged_grids = prm.get_bool ("Use merged grids");
         }
         prm.leave_subsection();
       }

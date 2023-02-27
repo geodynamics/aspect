@@ -78,31 +78,42 @@ namespace aspect
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &total_coarse_grid) const
     {
       std::vector<unsigned int> lower_rep_vec(lower_repetitions, lower_repetitions+dim);
-      std::vector<unsigned int> upper_rep_vec(upper_repetitions, upper_repetitions+dim);
+      if (use_merged_grids)
+        {
+          std::vector<unsigned int> upper_rep_vec(upper_repetitions, upper_repetitions+dim);
 
-      // the two triangulations that will be merged
-      Triangulation<dim> lower_coarse_grid;
-      Triangulation<dim> upper_coarse_grid;
+          // the two triangulations that will be merged
+          Triangulation<dim> lower_coarse_grid;
+          Triangulation<dim> upper_coarse_grid;
 
-      // create lower_coarse_grid mesh
-      GridGenerator::subdivided_hyper_rectangle (lower_coarse_grid,
-                                                 lower_rep_vec,
-                                                 lower_box_origin,
-                                                 lower_box_origin+lower_extents,
-                                                 false);
+          // create lower_coarse_grid mesh
+          GridGenerator::subdivided_hyper_rectangle (lower_coarse_grid,
+                                                     lower_rep_vec,
+                                                     lower_box_origin,
+                                                     lower_box_origin+lower_extents,
+                                                     false);
 
-      // create upper_coarse_grid mesh
-      GridGenerator::subdivided_hyper_rectangle (upper_coarse_grid,
-                                                 upper_rep_vec,
-                                                 upper_box_origin,
-                                                 upper_box_origin+upper_extents,
-                                                 false);
+          // create upper_coarse_grid mesh
+          GridGenerator::subdivided_hyper_rectangle (upper_coarse_grid,
+                                                     upper_rep_vec,
+                                                     upper_box_origin,
+                                                     upper_box_origin+upper_extents,
+                                                     false);
 
-      // merge the lower and upper mesh into one total_coarse_grid.
-      // now we have at least two cells
-      GridGenerator::merge_triangulations(lower_coarse_grid,
-                                          upper_coarse_grid,
-                                          total_coarse_grid);
+          // merge the lower and upper mesh into one total_coarse_grid.
+          // now we have at least two cells
+          GridGenerator::merge_triangulations(lower_coarse_grid,
+                                              upper_coarse_grid,
+                                              total_coarse_grid);
+        }
+      else
+        {
+          GridGenerator::subdivided_hyper_rectangle (total_coarse_grid,
+                                                     lower_rep_vec,
+                                                     lower_box_origin,
+                                                     upper_box_origin+upper_extents,
+                                                     false);
+        }
 
       // set the boundary indicators
       set_boundary_indicators(total_coarse_grid);
@@ -443,6 +454,20 @@ namespace aspect
                              Patterns::Bool (),
                              "Whether the box should be periodic in Y direction in the lithosphere. "
                              "This value is ignored if the simulation is in 2d. ");
+
+          // grid creation paramters
+          prm.declare_entry ("Use merged grids", "true",
+                             Patterns::Bool (),
+                             "Whether to make the grid by gluing together two boxes, or just "
+                             "use one chunk to make the grid. Using two grids glued together "
+                             "is a safer option, since it forces the boundary conditions "
+                             "to be always applied to the same depth, but using one grid allows "
+                             "for a more flexible usage of the adaptive refinement. Note that if "
+                             "there is no cell boundary exactly on the boundary between the lithosphere "
+                             "and the mantle, the velocity boundary will not be exactly at that depth. "
+                             "Therefore, using a merged grid is generally recommended over using one grid."
+                             "When using one grid, the parameter for lower repetitions is used and the upper "
+                             "repetitions are ignored.");
         }
         prm.leave_subsection();
       }
@@ -506,7 +531,7 @@ namespace aspect
             }
 
           height_lith = extents[dim-1] - thickness_lith;
-
+          use_merged_grids = prm.get_bool ("Use merged grids");
         }
         prm.leave_subsection();
       }
