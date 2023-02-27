@@ -32,8 +32,12 @@ recommend the following workflow:
 You are all set. Repeat steps 1-6 of this process as necessary when updating
 your model parameters.
 
-[^footnote1]: Please note that Version 1.22 of the virtual machine contains a bug that breaks this command. Use the following command instead:
+[^footnote1]: Please note that Version 1.22 of the virtual machine contains a bug that breaks this command.
+    Use the following command instead:
 
     ``` ksh
     ~/aspect/build/aspect-release your_input_file.prm
     ```
+
+    You can replace `aspect-release` with `aspect-debug` to run in debug mode instead.
+    See {ref}`sec:run-aspect:debug-mode` for details on when to use debug or release mode.
