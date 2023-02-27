@@ -44,7 +44,6 @@ namespace aspect
         std::vector<std::string> names;
         names.emplace_back("dislocation_viscosity");
         names.emplace_back("diffusion_viscosity");
-        names.emplace_back("boundary_area_change_work_fraction");
         return names;
       }
     }
@@ -65,7 +64,7 @@ namespace aspect
     std::vector<double>
     DislocationViscosityOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
-      AssertIndexRange (idx, 1);
+      AssertIndexRange (idx, 2);
       switch (idx)
         {
           case 0:
@@ -1473,7 +1472,7 @@ namespace aspect
         }
 
       // These properties are only output properties.
-      if (out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
+      if (use_table_properties && out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
