@@ -86,7 +86,16 @@ namespace aspect
         update ();
 
         /**
-         * Return the boundary velocity as a function of position.
+         * Return the velocity that is to hold at a particular position on
+         * the boundary of the domain.
+         *
+         * @param boundary_indicator The boundary indicator of the part of the
+         * boundary of the domain on which the point is located at which we
+         * are requesting the velocity.
+         * @param position The position of the point at which we ask for the
+         * velocity.
+         *
+         * @return Boundary velocity at position @p position.
          */
         virtual
         Tensor<1,dim>

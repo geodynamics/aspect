@@ -41,30 +41,21 @@ namespace aspect
     Interface<dim>::update ()
     {}
 
+
+
     template <int dim>
     void
     Interface<dim>::initialize ()
     {}
 
-    template <int dim>
-    double
-    Interface<dim>::boundary_composition (const types::boundary_id /*boundary_indicator*/,
-                                          const Point<dim>        &/*position*/,
-                                          const unsigned int       /*compositional_field*/) const
-    {
-      AssertThrow(false,
-                  ExcMessage("The boundary composition plugin has to implement a function called `composition' "
-                             "with four arguments or a function `boundary_composition' with three arguments. "
-                             "The function with four arguments is deprecated and will "
-                             "be removed in a later version of ASPECT."));
-      return numbers::signaling_nan<double>();
-    }
+
 
     template <int dim>
     void
     Interface<dim>::
     declare_parameters (dealii::ParameterHandler &)
     {}
+
 
 
     template <int dim>
