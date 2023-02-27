@@ -101,7 +101,7 @@ namespace aspect
         double
         boundary_composition (const types::boundary_id boundary_indicator,
                               const Point<dim> &position,
-                              const unsigned int compositional_field) const;
+                              const unsigned int compositional_field) const = 0;
 
         /**
          * Declare the parameters this class takes through input files. The

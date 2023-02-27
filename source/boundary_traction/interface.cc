@@ -46,45 +46,13 @@ namespace aspect
     {}
 
 
-    template <int dim>
-    Tensor<1,dim>
-    Interface<dim>::traction (const Point<dim> &,
-                              const Tensor<1,dim> &) const
-    {
-      /**
-       * We can only get here if the new-style boundary_traction function (with
-       * two arguments) calls it. This means that the derived class did not override
-       * the new-style boundary_velocity function, and because we are here, it also
-       * did not override this old-style boundary_velocity function (with one argument).
-       */
-      Assert (false, ExcMessage ("A derived class needs to override either the "
-                                 "boundary_traction(position, normal_vector) "
-                                 "(deprecated) or boundary_traction(types::boundary_id, "
-                                 "position, normal_vector) function."));
-
-      return Tensor<1,dim>();
-    }
-
-
-    DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-    template <int dim>
-    Tensor<1,dim>
-    Interface<dim>::boundary_traction (const types::boundary_id /*boundary_indicator*/,
-                                       const Point<dim> &position,
-                                       const Tensor<1,dim> &normal_vector) const
-    {
-      // Call the old-style function without the boundary id to maintain backwards
-      // compatibility. Normally the derived class should override this function.
-      return this->traction(position, normal_vector);
-    }
-    DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
-
 
     template <int dim>
     void
     Interface<dim>::
     declare_parameters (dealii::ParameterHandler &)
     {}
+
 
 
     template <int dim>
