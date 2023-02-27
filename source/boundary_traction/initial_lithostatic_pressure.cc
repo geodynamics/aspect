@@ -228,15 +228,16 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     InitialLithostaticPressure<dim>::
-    traction (const Point<dim> &p,
-              const Tensor<1,dim> &normal) const
+    boundary_traction (const types::boundary_id /*boundary_indicator*/,
+                       const Point<dim> &position,
+                       const Tensor<1,dim> &normal_vector) const
     {
       // We want to set the normal component to the vertical boundary
       // to the lithostatic pressure, the rest of the traction
       // components are left set to zero. We get the lithostatic pressure
       // from a linear interpolation of the calculated profile.
       Tensor<1,dim> traction;
-      traction = -interpolate_pressure(p) * normal;
+      traction = -interpolate_pressure(position) * normal_vector;
 
       return traction;
     }
