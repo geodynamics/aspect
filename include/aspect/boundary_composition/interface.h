@@ -218,21 +218,6 @@ namespace aspect
         get_active_boundary_composition_conditions () const;
 
         /**
-         * Go through the list of all boundary composition models that have been selected in
-         * the input file (and are consequently currently active) and see if one
-         * of them has the desired type specified by the template argument. If so,
-         * return a pointer to it. If no boundary composition model is active
-         * that matches the given type, return a nullptr.
-         *
-         * @deprecated Use has_matching_boundary_composition_model() and
-         * get_matching_boundary_composition_model() instead.
-         */
-        template <typename BoundaryCompositionType>
-        DEAL_II_DEPRECATED
-        BoundaryCompositionType *
-        find_boundary_composition_model () const;
-
-        /**
          * Go through the list of all boundary composition models that have been selected
          * in the input file (and are consequently currently active) and return
          * true if one of them has the desired type specified by the template
@@ -324,19 +309,6 @@ namespace aspect
         bool allow_fixed_composition_on_outflow_boundaries;
     };
 
-
-
-    template <int dim>
-    template <typename BoundaryCompositionType>
-    inline
-    BoundaryCompositionType *
-    Manager<dim>::find_boundary_composition_model () const
-    {
-      for (const auto &p : boundary_composition_objects)
-        if (BoundaryCompositionType *x = dynamic_cast<BoundaryCompositionType *> ( p.get()) )
-          return x;
-      return nullptr;
-    }
 
 
     template <int dim>

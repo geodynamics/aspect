@@ -234,18 +234,6 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * Go through the list of all boundary velocity models that have been selected in
-         * the input file (and are consequently currently active) and see if one
-         * of them has the desired type specified by the template argument. If so,
-         * return a pointer to it. If no boundary velocity model is active
-         * that matches the given type, return a nullptr.
-         */
-        template <typename BoundaryVelocityType>
-        DEAL_II_DEPRECATED
-        BoundaryVelocityType *
-        find_boundary_velocity_model () const;
-
-        /**
          * Go through the list of all boundary velocity models that have been selected
          * in the input file (and are consequently currently active) and return
          * true if one of them has the desired type specified by the template
@@ -319,20 +307,6 @@ namespace aspect
         std::set<types::boundary_id> tangential_velocity_boundary_indicators;
     };
 
-
-
-    template <int dim>
-    template <typename BoundaryVelocityType>
-    inline
-    BoundaryVelocityType *
-    Manager<dim>::find_boundary_velocity_model () const
-    {
-      for (const auto &boundary : boundary_velocity_objects)
-        for (const auto &p : boundary.second)
-          if (BoundaryVelocityType *x = dynamic_cast<BoundaryVelocityType *> ( p.get()) )
-            return x;
-      return nullptr;
-    }
 
 
     template <int dim>

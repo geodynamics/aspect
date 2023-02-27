@@ -562,16 +562,6 @@ namespace aspect
       bool has_boundary_temperature () const;
 
       /**
-       * Return a reference to the object that describes the temperature
-       * boundary values.
-       *
-       * @deprecated: Use get_boundary_temperature_manager() instead.
-       */
-      DEAL_II_DEPRECATED
-      const BoundaryTemperature::Interface<dim> &
-      get_boundary_temperature () const;
-
-      /**
        * Return an reference to the manager of the boundary temperature models.
        * This can then, for example, be used to get the names of the initial temperature
        * models used in a computation, or to compute the initial temperature
@@ -597,16 +587,6 @@ namespace aspect
       bool has_boundary_composition () const;
 
       /**
-       * Return a reference to the object that describes the composition
-       * boundary values.
-       *
-       * @deprecated: Use get_boundary_composition_manager() instead.
-       */
-      DEAL_II_DEPRECATED
-      const BoundaryComposition::Interface<dim> &
-      get_boundary_composition () const;
-
-      /**
        * Return an reference to the manager of the boundary composition models.
        * This can then, for example, be used to get the names of the boundary composition
        * models used in a computation, or to compute the boundary composition
@@ -621,16 +601,6 @@ namespace aspect
        */
       const std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim>>> &
       get_boundary_traction () const;
-
-      /**
-       * Return a pointer to the object that describes the temperature initial
-       * values.
-       *
-       * @deprecated Use <code> get_initial_temperature_manager </code> instead.
-       */
-      DEAL_II_DEPRECATED
-      const InitialTemperature::Interface<dim> &
-      get_initial_temperature () const;
 
       /**
        * Return a reference to the manager of the initial temperature models.
@@ -677,14 +647,6 @@ namespace aspect
        */
       const InitialTemperature::Manager<dim> &
       get_initial_temperature_manager () const;
-
-      /**
-       * Return a pointer to the object that describes the composition initial
-       * values.
-       */
-      DEAL_II_DEPRECATED
-      const InitialComposition::Interface<dim> &
-      get_initial_composition () const;
 
       /**
        * Return a pointer to the manager of the initial composition model.
@@ -940,25 +902,6 @@ namespace aspect
        */
       TableHandler &get_statistics_object() const;
 
-
-      /**
-       * This function can be used to find out whether the list of
-       * postprocessors that are run at the end of each time step
-       * contains an object of the given template type. If so, the function
-       * returns a pointer to the postprocessor object of this type. If
-       * no postprocessor of this type has been selected in the input
-       * file (or, has been required by another postprocessor using the
-       * Postprocess::Interface::required_other_postprocessors()
-       * mechanism), then the function returns a nullptr.
-       *
-       * @deprecated Use get_postprocess_manager().has_matching_postprocessor()
-       * and get_postprocess_manager().get_matching_postprocessor() instead.
-       */
-      template <typename PostprocessorType>
-      DEAL_II_DEPRECATED
-      PostprocessorType *
-      find_postprocessor () const;
-
       /**
        * Return a reference to the melt handler.
        */
@@ -1017,18 +960,6 @@ namespace aspect
        */
       const Simulator<dim> *simulator;
   };
-
-  template <int dim>
-  template <typename PostprocessorType>
-  inline
-  PostprocessorType *
-  SimulatorAccess<dim>::find_postprocessor () const
-  {
-    if (get_postprocess_manager().template has_matching_postprocessor<PostprocessorType>())
-      return &get_postprocess_manager().template get_matching_postprocessor<PostprocessorType>();
-
-    return nullptr;
-  }
 }
 
 

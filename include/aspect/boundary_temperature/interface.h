@@ -251,18 +251,6 @@ namespace aspect
         get_active_boundary_temperature_conditions () const;
 
         /**
-         * Go through the list of all boundary temperature models that have been selected in
-         * the input file (and are consequently currently active) and see if one
-         * of them has the desired type specified by the template argument. If so,
-         * return a pointer to it. If no boundary temperature model is active
-         * that matches the given type, return a nullptr.
-         */
-        template <typename BoundaryTemperatureType>
-        DEAL_II_DEPRECATED
-        BoundaryTemperatureType *
-        find_boundary_temperature_model () const;
-
-        /**
          * Go through the list of all boundary temperature models that have been selected
          * in the input file (and are consequently currently active) and return
          * true if one of them has the desired type specified by the template
@@ -354,19 +342,6 @@ namespace aspect
         bool allow_fixed_temperature_on_outflow_boundaries;
     };
 
-
-
-    template <int dim>
-    template <typename BoundaryTemperatureType>
-    inline
-    BoundaryTemperatureType *
-    Manager<dim>::find_boundary_temperature_model () const
-    {
-      for (const auto &p : boundary_temperature_objects)
-        if (BoundaryTemperatureType *x = dynamic_cast<BoundaryTemperatureType *> ( p.get()) )
-          return x;
-      return nullptr;
-    }
 
 
     template <int dim>

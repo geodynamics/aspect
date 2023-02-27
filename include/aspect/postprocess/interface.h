@@ -153,7 +153,8 @@ namespace aspect
          * we can ensure using the current function). To do so, a postprocessor
          * of course needs to be able to access these other postprocessors.
          * This can be done by deriving your postprocessor from
-         * SimulatorAccess, and then using the SimulatorAccess::find_postprocessor()
+         * SimulatorAccess, and then using the
+         * SimulatorAccess::get_postprocess_manager::get_matching_postprocessor
          * function.
          */
         virtual
@@ -227,21 +228,6 @@ namespace aspect
          */
         std::list<std::pair<std::string,std::string>>
         execute (TableHandler &statistics);
-
-        /**
-         * Go through the list of all postprocessors that have been selected
-         * in the input file (and are consequently currently active) and see
-         * if one of them has the desired type specified by the template
-         * argument. If so, return a pointer to it. If no postprocessor is
-         * active that matches the given type, return a nullptr.
-         *
-         * @deprecated Use has_matching_postprocessor() and
-         * get_matching_postprocessor() instead.
-         */
-        template <typename PostprocessorType>
-        DEAL_II_DEPRECATED
-        PostprocessorType *
-        find_postprocessor () const;
 
         /**
          * Go through the list of all postprocessors that have been selected
@@ -385,20 +371,6 @@ namespace aspect
 
       for (auto &p : postprocessors)
         p->load (saved_text);
-    }
-
-
-
-    template <int dim>
-    template <typename PostprocessorType>
-    inline
-    PostprocessorType *
-    Manager<dim>::find_postprocessor () const
-    {
-      for (auto &p : postprocessors)
-        if (PostprocessorType *x = dynamic_cast<PostprocessorType *> ( p.get()) )
-          return x;
-      return nullptr;
     }
 
 
