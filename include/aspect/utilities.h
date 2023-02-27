@@ -25,6 +25,7 @@
 #include <aspect/global.h>
 
 #include <array>
+#include <random>
 #include <deal.II/base/point.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/table_indices.h>
@@ -1064,6 +1065,41 @@ namespace aspect
          */
         const std::function<Tensor<1,dim> (const Point<dim> &)> function_object;
     };
+
+    /**
+     * Create a permutation vector which can be used by the apply_permutation function
+     * which shorts the vector in increasing order.
+     *
+     * @param vector vector to sort
+     */
+    template <typename T>
+    std::vector<std::size_t>
+    sort_permutation(const std::vector<T> &vector);
+
+    /**
+     * Applies a permutation vector to return a sorted verions of the vector.
+     *
+     * @param vector vector to sort
+     * @param permutation_vector The permutation vector used to sort the input vector.
+     * @return std::vector<T>
+     */
+    template <typename T>
+    std::vector<T>
+    apply_permutation(
+      const std::vector<T> &vec,
+      const std::vector<std::size_t> &permutation_vector);
+
+    /**
+     * Get volume weighted rotation matrices, using random draws to convert
+     * to a discrete number of orientations, weighted by volume.
+     * The input is a vector of volume fractions and a vector of rotation matrices.
+     * The vectors need to have the same length.
+     */
+    std::vector<Tensor<2,3>>
+    random_draw_volume_weighting_rotation_matrices(const std::vector<double> volume_fraction,
+                                                   const std::vector<Tensor<2,3>> rotation_matrices,
+                                                   const unsigned int n_output_grains,
+                                                   std::mt19937 random_number_generator);
   }
 }
 

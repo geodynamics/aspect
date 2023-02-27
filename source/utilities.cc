@@ -2869,6 +2869,82 @@ namespace aspect
         throw QuietException();
     }
 
+    template <typename T>
+    std::vector<std::size_t>
+    sort_permutation(
+      const std::vector<T> &vec)
+    {
+      std::vector<std::size_t> p(vec.size());
+      std::iota(p.begin(), p.end(), 0);
+      std::sort(p.begin(), p.end(),
+                [&](std::size_t i, std::size_t j)
+      {
+        return vec[i] < vec[j];
+      });
+      return p;
+    }
+
+    template <typename T>
+    std::vector<T>
+    apply_permutation(
+      const std::vector<T> &vec,
+      const std::vector<std::size_t> &p)
+    {
+      std::vector<T> sorted_vec(vec.size());
+      std::transform(p.begin(), p.end(), sorted_vec.begin(),
+                     [&](std::size_t i)
+      {
+        return vec[i];
+      });
+      return sorted_vec;
+    }
+
+    std::vector<Tensor<2,3>>
+    random_draw_volume_weighting_rotation_matrices(const std::vector<double> volume_fraction,
+                                                   const std::vector<Tensor<2,3>> rotation_matrices,
+                                                   const unsigned int n_output_grains,
+                                                   std::mt19937 random_number_generator)
+    {
+      unsigned int n_grains = volume_fraction.size();
+
+      // Get volume weighted euler angles, using random draws to convert odf
+      // to a discrete number of orientations, weighted by volume
+      // 1a. Sort the volume fractions and matrices based on the volume fractions size
+      const auto p = sort_permutation(volume_fraction);
+
+      const std::vector<double> fv_sorted = apply_permutation(volume_fraction, p);
+      const std::vector<Tensor<2,3>> matrices_sorted = apply_permutation(rotation_matrices, p);
+
+      // 2. Get cumulative weight for volume fraction
+      std::vector<double> cum_weight(n_grains);
+      std::partial_sum(fv_sorted.begin(),fv_sorted.end(),cum_weight.begin());
+
+      // 3. Generate random indices
+      std::uniform_real_distribution<> dist(0, cum_weight[n_grains-1]);
+      std::vector<double> idxgrain(n_output_grains);
+      for (unsigned int grain_i = 0; grain_i < n_output_grains; ++grain_i)
+        {
+          idxgrain[grain_i] = dist(random_number_generator);
+        }
+
+      // 4. Find the maximum cum_weight that is less than the random value.
+      // the euler angle index is +1. For example, if the idxGrain(g) < cumWeight(1),
+      // the index should be 1 not zero)
+      std::vector<Tensor<2,3>> matrices_out(n_output_grains);
+      for (unsigned int grain_i = 0; grain_i < n_output_grains; ++grain_i)
+        {
+          const std::vector<double>::iterator selected_matrix =
+            std::lower_bound(cum_weight.begin(),
+                             cum_weight.end(),
+                             idxgrain[grain_i]);
+
+          const unsigned int matrix_index =
+            std::distance(cum_weight.begin(), selected_matrix);
+
+          matrices_out[grain_i] = matrices_sorted[matrix_index];
+        }
+      return matrices_out;
+    }
 
 
 // Explicit instantiations
@@ -2978,5 +3054,15 @@ namespace aspect
                                                const unsigned int n_rows,
                                                const unsigned int n_columns,
                                                const std::string &property_name);
+
+    template std::vector<double>
+    apply_permutation(
+      const std::vector<double> &vec,
+      const std::vector<std::size_t> &permutation_vector);
+
+    template std::vector<Tensor<2,3>>
+    apply_permutation(
+      const std::vector<Tensor<2,3>> &vec,
+      const std::vector<std::size_t> &permutation_vector);
   }
 }
