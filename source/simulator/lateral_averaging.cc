@@ -102,6 +102,8 @@ namespace aspect
                 output[i] = adiabat.density(fe_values.quadrature_point(i));
               else if (property == Property::density_derivative)
                 output[i] = adiabat.density_derivative(fe_values.quadrature_point(i));
+              else
+                AssertThrow(false, ExcNotImplemented());
             }
         }
 
