@@ -39,28 +39,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-    namespace
-    {
-      // This function takes a vector of variables names and returns a vector
-      // of the same variable names, except it removes all variables that are
-      // not computed by the LateralAveraging class. In other words the
-      // returned vector is a proper input for LateralAveraging<dim>::get_averages().
-      std::vector<std::string>
-      filter_non_averaging_variables(const std::vector<std::string> &variables)
-      {
-        std::vector<std::string> averaging_variables;
-        averaging_variables.reserve(variables.size());
-
-        for (const auto &variable : variables)
-          if (!((variable == "adiabatic_temperature")
-                || (variable == "adiabatic_pressure")
-                || (variable == "adiabatic_density")
-                || (variable == "adiabatic_density_derivative")))
-            averaging_variables.emplace_back(variable);
-        return averaging_variables;
-      }
-    }
-
     template <int dim>
     template <class Archive>
     void DepthAverage<dim>::DataPoint::serialize (Archive &ar,
@@ -101,40 +79,7 @@ namespace aspect
       data_point.time       = this->get_time();
 
       // Add all the requested fields
-      {
-        const std::vector<std::string> averaging_variables = filter_non_averaging_variables(variables);
-
-        // Compute averaged variables
-        data_point.values = this->get_lateral_averaging().compute_lateral_averages(depth_bounds,averaging_variables);
-
-        // Grow data_point.values to include adiabatic properties, and reorder
-        // starting from end (to avoid unnecessary copies), and fill in the adiabatic variables.
-        data_point.values.resize(variables.size(), std::vector<double> (n_depth_zones));
-        for (unsigned int i = variables.size(), j = averaging_variables.size(); i>0; --i)
-          {
-            // Swap averaged values to correct field, and move to next one
-            if (variables[i-1] == averaging_variables[j-1])
-              {
-                data_point.values[i-1].swap(data_point.values[j-1]);
-                --j;
-              }
-            // We are in an adiabatic property field, compute it and move on
-            // without decrementing j
-            else
-              {
-                if (variables[i-1] == "adiabatic_temperature")
-                  this->get_adiabatic_conditions().get_adiabatic_temperature_profile(data_point.values[i-1]);
-                else if (variables[i-1] == "adiabatic_pressure")
-                  this->get_adiabatic_conditions().get_adiabatic_pressure_profile(data_point.values[i-1]);
-                else if (variables[i-1] == "adiabatic_density")
-                  this->get_adiabatic_conditions().get_adiabatic_density_profile(data_point.values[i-1]);
-                else if (variables[i-1] == "adiabatic_density_derivative")
-                  this->get_adiabatic_conditions().get_adiabatic_density_derivative_profile(data_point.values[i-1]);
-                else
-                  Assert(false,ExcInternalError());
-              }
-          }
-      }
+      data_point.values = this->get_lateral_averaging().compute_lateral_averages(depth_bounds,variables);
       entries.push_back (data_point);
 
       // On the root process, write out the file. do this using the DataOutStack
