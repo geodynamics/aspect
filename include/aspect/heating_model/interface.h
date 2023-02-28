@@ -163,26 +163,12 @@ namespace aspect
          * the temperature equation) at each quadrature point as defined in
          * @p material_model_inputs, setting them to zero if they are not to
          * be used in the computation.
-         *
-         * The default implementation calls specific_heating_rate to make
-         * this implementation backwards compatible.
          */
         virtual
         void
         evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
-
-        /**
-         * Return the specific heating rate as a function of position.
-         */
-        DEAL_II_DEPRECATED
-        virtual
-        double
-        specific_heating_rate (const double temperature,
-                               const double pressure,
-                               const std::vector<double> &compositional_fields,
-                               const Point<dim> &position) const;
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const = 0;
 
         /**
          * Declare the parameters this class takes through input files. The
