@@ -117,4 +117,4 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Value of the gravity vector in $m/s^2$ directed along negative y (2D) or z (3D) axis (if the magnitude is positive.
+**Documentation:** Value of the gravity vector in $m/s^2$ directed along negative y (2d) or z (3d) axis (if the magnitude is positive.

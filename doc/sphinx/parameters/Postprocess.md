@@ -39,7 +39,7 @@ The following postprocessors are available:
 
 In the output files, the $x$-value of each data point corresponds to the depth, whereas the $y$-value corresponds to the simulation time. The time is provided in seconds or, if the global &ldquo;Use years in output instead of seconds&rdquo; parameter is set, in years.
 
-&lsquo;domain volume statistics&rsquo;: A postprocessor that computes the total area (in 2d) or volume (in 3D) of the computational domain.
+&lsquo;domain volume statistics&rsquo;: A postprocessor that computes the total area (in 2d) or volume (in 3d) of the computational domain.
 
 &lsquo;dynamic topography&rsquo;: A postprocessor that computes a measure of dynamic topography based on the stress at the surface and bottom. The data is written into text files named &lsquo;dynamic\_topography.NNNNN&rsquo; in the output directory, where NNNNN is the number of the time step.
 
@@ -50,7 +50,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 &lsquo;entropy viscosity statistics&rsquo;: A postprocessor that computes the maximum and volume averagedentropy viscosity stabilization for the temperature field.
 
-&lsquo;geoid&rsquo;: A postprocessor that computes a representation of the geoid based on the density structure in the mantle, as well as the topography at the surface and core mantle boundary (CMB) if desired. The topography is based on the dynamic topography postprocessor in case of no free surface, and based on the real surface from the geometry model in case of a free surface. The geoid is computed from a spherical harmonic expansion, so the geometry of the domain must be a 3D spherical shell.
+&lsquo;geoid&rsquo;: A postprocessor that computes a representation of the geoid based on the density structure in the mantle, as well as the topography at the surface and core mantle boundary (CMB) if desired. The topography is based on the dynamic topography postprocessor in case of no free surface, and based on the real surface from the geometry model in case of a free surface. The geoid is computed from a spherical harmonic expansion, so the geometry of the domain must be a 3d spherical shell.
 
 &lsquo;global statistics&rsquo;: A postprocessor that outputs all the global statistics information, e.g. the time of the simulation, the timestep number, number of degrees of freedom and solver iterations for each timestep. The postprocessor can output different formats, the first printing one line in the statistics file per nonlinear solver iteration (if a nonlinear solver scheme is selected). The second prints one line per timestep, summing the information about all nonlinear iterations in this line. Note that this postprocessor is always active independent on whether or not it is selected in the parameter file.
 
@@ -104,7 +104,7 @@ In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates o
 
 &lsquo;pressure statistics&rsquo;: A postprocessor that computes some statistics about the pressure field.
 
-&lsquo;rotation statistics&rsquo;: A postprocessor that computes some statistics about the rotational velocity of the model (i.e. integrated net rotation and angular momentum). In 2D we assume the model to be a cross-section through an infinite domain in z direction, with a zero z-velocity. Thus, the z-axis is the only possible rotation axis and both moment of inertia and angular momentum are scalar instead of tensor quantities.
+&lsquo;rotation statistics&rsquo;: A postprocessor that computes some statistics about the rotational velocity of the model (i.e. integrated net rotation and angular momentum). In 2d we assume the model to be a cross-section through an infinite domain in z direction, with a zero z-velocity. Thus, the z-axis is the only possible rotation axis and both moment of inertia and angular momentum are scalar instead of tensor quantities.
 
 &lsquo;spherical velocity statistics&rsquo;: A postprocessor that computes radial, tangential and total RMS velocity.
 
@@ -197,7 +197,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 **Pattern:** [Bool]
 
-**Documentation:** Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.GPlates data is always interpreted to be in east and north directions and is not affected by this parameter.
+**Documentation:** Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.GPlates data is always interpreted to be in east and north directions and is not affected by this parameter.
 
 (parameters:Postprocess/Command)=
 ## **Subsection:** Postprocess / Command
@@ -690,7 +690,7 @@ Select one of the following models:
 
 **Documentation:** Select one of the following models:
 
-&lsquo;bilinear least squares&rsquo;: Uses linear least squares to obtain the slopes and center of a 2D or 3D plane from the particle positions and a particular property value on those particles. Interpolate this property onto a vector of points. If the limiter is enabled then it will ensure the interpolated properties do not exceed the range of the minimum and maximum of the values of the property on the particles. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
+&lsquo;bilinear least squares&rsquo;: Uses linear least squares to obtain the slopes and center of a 2d or 3d plane from the particle positions and a particular property value on those particles. Interpolate this property onto a vector of points. If the limiter is enabled then it will ensure the interpolated properties do not exceed the range of the minimum and maximum of the values of the property on the particles. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
 
 &lsquo;cell average&rsquo;: Return the arithmetic average of all particle properties in the given cell, or in the neighboring cells if the given cell is empty. In case the neighboring cells are also empty, and &rsquo;Allow cells without particles&rsquo; is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
 
@@ -704,7 +704,7 @@ Select one of the following models:
 ### __Parameter name:__ List of particle properties
 **Default value:**
 
-**Pattern:** [MultipleSelection composition|crystal preferred orientation|elastic stress|function|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
+**Pattern:** [MultipleSelection composition|crystal preferred orientation|elastic stress|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
 
 **Documentation:** A comma separated list of particle properties that should be tracked. By default none is selected, which means only position, velocity and id of the particles are output.
 
@@ -717,6 +717,8 @@ The following properties are available:
 &lsquo;elastic stress&rsquo;: A plugin in which the particle property tensor is defined as the total elastic stress a particle has accumulated. See the viscoelastic material model documentation for more detailed information.
 
 &lsquo;function&rsquo;: Implementation of a model in which the particle property is set by evaluating an explicit function at the initial position of each particle. The function is defined in the parameters in section &ldquo;Particles|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+
+&lsquo;grain size&rsquo;: A plugin in which the particle property is defined as the evolving grain size of a particle. See the grain_size material model documentation for more detailed information.
 
 &lsquo;initial composition&rsquo;: Implementation of a plugin in which the particle property is given as the initial composition at the particle&rsquo;s initial position. The particle gets as many properties as there are compositional fields.
 
@@ -798,9 +800,9 @@ The following properties are available:
 
 &lsquo;reference cell&rsquo;: Generates a uniform distribution of particles per cell and spatial direction in the unit cell and transforms each of the particles back to real region in the model domain. Uniform here means the particles will be generated with an equal spacing in each spatial dimension.
 
-&lsquo;uniform box&rsquo;: Generate a uniform distribution of particles over a rectangular domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spatial dimension. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
+&lsquo;uniform box&rsquo;: Generate a uniform distribution of particles over a rectangular domain in 2d or 3d. Uniform here means the particles will be generated with an equal spacing in each spatial dimension. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 
-&lsquo;uniform radial&rsquo;: Generate a uniform distribution of particles over a spherical domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
+&lsquo;uniform radial&rsquo;: Generate a uniform distribution of particles over a spherical domain in 2d or 3d. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 
 (parameters:Postprocess/Particles/Particle_20weight)=
 ### __Parameter name:__ Particle weight
@@ -1320,7 +1322,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to write the full moment of inertia tensor into the statistics output instead of its norm for the current rotation axis. This is a second-order symmetric tensor with 6 components in 3D. In 2D this option has no effect, because the rotation axis is fixed and thus the moment of inertia is always a scalar.
+**Documentation:** Whether to write the full moment of inertia tensor into the statistics output instead of its norm for the current rotation axis. This is a second-order symmetric tensor with 6 components in 3d. In 2d this option has no effect, because the rotation axis is fixed and thus the moment of inertia is always a scalar.
 
 (parameters:Postprocess/Rotation_20statistics/Use_20constant_20density_20of_20one)=
 ### __Parameter name:__ Use constant density of one
@@ -1528,7 +1530,7 @@ Physical units: \si{\pascal}.
 
 Physical units: None.
 
-&lsquo;spherical velocity components&rsquo;: A visualization output object that outputs the polar coordinates components $v_r$ and $v_\phi$ of the velocity field in 2D and the spherical coordinates components $v_r$, $v_{\phi}$ and $v_{\theta}$ of the velocity field in 3D.
+&lsquo;spherical velocity components&rsquo;: A visualization output object that outputs the polar coordinates components $v_r$ and $v_\phi$ of the velocity field in 2d and the spherical coordinates components $v_r$, $v_{\phi}$ and $v_{\theta}$ of the velocity field in 3d.
 
 Physical units: $\frac{\text{m}}{\text{s}}$ or $\frac{\text{m}}{\text{year}}$, depending on settings in the input file.
 

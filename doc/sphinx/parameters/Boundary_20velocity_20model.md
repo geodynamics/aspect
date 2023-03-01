@@ -115,7 +115,7 @@ The names of the boundaries listed here can either by numbers (in which case the
 
 **Pattern:** [Bool]
 
-**Documentation:** Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.
+**Documentation:** Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.
 
 (parameters:Boundary_20velocity_20model/Function)=
 ## **Subsection:** Boundary velocity model / Function
@@ -125,7 +125,7 @@ The names of the boundaries listed here can either by numbers (in which case the
 
 **Pattern:** [Selection cartesian|spherical|depth ]
 
-**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo;, &lsquo;spherical&rsquo;, and &lsquo;depth&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. &lsquo;depth&rsquo; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo;, &lsquo;spherical&rsquo;, and &lsquo;depth&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. &lsquo;depth&rsquo; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 
 (parameters:Boundary_20velocity_20model/Function/Function_20constants)=
 ### __Parameter name:__ Function constants
@@ -153,7 +153,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Bool]
 
-**Documentation:** Specify velocity as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive velocities point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.
+**Documentation:** Specify velocity as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive velocities point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.
 
 (parameters:Boundary_20velocity_20model/Function/Variable_20names)=
 ### __Parameter name:__ Variable names
@@ -219,7 +219,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** Point that determines the plane in which a 2D model lies in. Has to be in the format &lsquo;a,b&rsquo; where a and b are theta (polar angle) and phi in radians. This value is not utilized in 3D geometries, and can therefore be set to the default or any user-defined quantity.
+**Documentation:** Point that determines the plane in which a 2d model lies in. Has to be in the format &lsquo;a,b&rsquo; where a and b are theta (polar angle) and phi in radians. This value is not utilized in 3d geometries, and can therefore be set to the default or any user-defined quantity.
 
 (parameters:Boundary_20velocity_20model/GPlates_20model/Point_20two)=
 ### __Parameter name:__ Point two
@@ -227,7 +227,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** Point that determines the plane in which a 2D model lies in. Has to be in the format &lsquo;a,b&rsquo; where a and b are theta (polar angle) and phi in radians. This value is not utilized in 3D geometries, and can therefore be set to the default or any user-defined quantity.
+**Documentation:** Point that determines the plane in which a 2d model lies in. Has to be in the format &lsquo;a,b&rsquo; where a and b are theta (polar angle) and phi in radians. This value is not utilized in 3d geometries, and can therefore be set to the default or any user-defined quantity.
 
 (parameters:Boundary_20velocity_20model/GPlates_20model/Scale_20factor)=
 ### __Parameter name:__ Scale factor
