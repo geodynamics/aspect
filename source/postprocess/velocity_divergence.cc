@@ -56,46 +56,56 @@ namespace aspect
                                update_gradients);
       std::vector<Tensor<1,dim>> velocity_values(n_q_points);
       std::vector<Tensor<2,dim>> velocity_gradients(n_q_points);
-      //  std::vector<Tensor<2,dim>> velocity_gradients (quadrature_formula.size(), Tensor<2,dim>());
+
+     // Create vector of flags for each cell to indicate whether it is a subduction or rift zone
+      std::vector<bool> is_subduction(this->get_dof_handler().n_locally_owned_dofs(), false);
+     // Create vector of flags for each cell to indicate whether it is a subduction or rift zone
+      std::vector<bool> is_rift(this->get_dof_handler().n_locally_owned_dofs(), false);
+
 
       double local_rad_velocity_square_integral = 0;
       double local_tan_velocity_square_integral = 0;
       double local_divergence_integral = 0;
+      const double threshold_multiplier_subduction = 2;
+      const double threshold_multiplier_rift = 2;
+      const double radius_top = 6371000 - 100000;
 
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+      {
+
         if (cell->is_locally_owned())
           {
+
+            // bool subduction = false;
+            // bool rifts = false;       
             fe_values.reinit (cell);
             fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
                                                                                         velocity_values);
-            fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_solution(),
-                                                                                         velocity_gradients);
             const std::vector<Point<dim>> &position_point = fe_values.get_quadrature_points();
+            
             for (unsigned int q = 0; q < n_q_points; ++q)
+            {
+              const double radius = position_point[q].norm();
+              if (radius < radius_top)
               {
+                
 
-                Tensor<2,dim> grad_vel = velocity_gradients[q];
-                double divergence = 0.0;            
-                for (unsigned int d = 0; d < dim; ++d)
-                  divergence += grad_vel[d][d];
-                local_divergence_integral += divergence * fe_values.JxW(q);                    
-                // create unit vector in radial direction
-                const Tensor<1,dim> radial_unit_vector = position_point[q] / position_point[q].norm();
+                  // create unit vector in radial direction
+                  const Tensor<1,dim> radial_unit_vector = position_point[q] / position_point[q].norm();
 
-                // compute the radial velocity by multiplying with the radial unit vector
-                const double radial_vel = (velocity_values[q] * radial_unit_vector);
-                local_rad_velocity_square_integral += (radial_vel * radial_vel) *
-                                                      fe_values.JxW(q);
-                // compute the tangential velocity by subtracting the radial velocity from the velocity
-                const Tensor<1,dim> tangential_vel = velocity_values[q] -  radial_vel * radial_unit_vector;
-                local_tan_velocity_square_integral += (tangential_vel * tangential_vel) *
-                                                      fe_values.JxW(q);
+                  // compute the radial velocity by multiplying with the radial unit vector
+                  const double radial_vel = (velocity_values[q] * radial_unit_vector);
+                  local_rad_velocity_square_integral += (radial_vel * radial_vel) * fe_values.JxW(q);
+
+                  // compute the tangential velocity by subtracting the radial velocity from the velocity
+                  const Tensor<1,dim> tangential_vel = velocity_values[q] -  radial_vel * radial_unit_vector;
+                  local_tan_velocity_square_integral += (tangential_vel * tangential_vel) * fe_values.JxW(q);
               }
+            }
           }
+        }
 
-      const double global_divergence_integral = Utilities::MPI::sum(local_divergence_integral, this->get_mpi_communicator());
-      const double average_divergence = global_divergence_integral / this->get_volume();
 
       // compute the global sums
       const double global_rad_velocity_square_integral
@@ -109,14 +119,101 @@ namespace aspect
       const double tan_vrms = std::sqrt(global_tan_velocity_square_integral / this->get_volume());
       const double vrms = std::sqrt(rad_vrms*rad_vrms + tan_vrms*tan_vrms);
 
-        // count the number of subduction zones and rifts using a threshold value
-      const double threshold = 0.0;
+
+
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+      {
+        // Get cell index
+        const unsigned int cell_index = cell->active_cell_index();
+
+        if (cell->is_locally_owned())
+          {
+
+            // bool subduction = false;
+            // bool rifts = false;       
+            fe_values.reinit (cell);
+            fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_solution(),
+                                                                                         velocity_gradients);
+            const std::vector<Point<dim>> &position_point = fe_values.get_quadrature_points();
+            
+
+            for (unsigned int q = 0; q < n_q_points; ++q)
+            {
+              const double radius = position_point[q].norm();
+              if (radius > radius_top)
+              {
+                  // compute the RMS velocity
+                  // const double local_vrms_cell = std::sqrt(local_rad_velocity_square_integral_cell + local_tan_velocity_square_integral_cell) / n_q_points;    
+
+                  Tensor<2,dim> grad_vel = velocity_gradients[q];
+                  double divergence = 0.0;
+                  for (unsigned int d = 0; d < dim; ++d)
+                      divergence += grad_vel[d][d];
+                  local_divergence_integral += divergence * fe_values.JxW(q);
+              
+
+                // Check if divergence is less than or greater than threshold
+                // Check if divergence is less than or greater than threshold and set flag
+              if (divergence < -threshold_multiplier_subduction* vrms)
+                  is_subduction[cell_index] = true;
+              else if (divergence > threshold_multiplier_rift* vrms)
+                  is_rift[cell_index] = true;   
+              }             
+
+            }
+          }
+
+          // If flag is set for current cell, set flag for all neighboring cells to true
+          if (is_subduction[cell_index])
+          {
+              for (unsigned int face_index = 0; face_index < GeometryInfo<dim>::faces_per_cell; ++face_index)
+              {              
+                  const auto &neighbor = cell->neighbor(face_index);
+                  if (neighbor->is_locally_owned())
+                  {
+                    const unsigned int neighbor_index = neighbor->active_cell_index();
+                    is_subduction[neighbor_index] = true;
+                  }  
+              }
+          }
+
+          // If flag is set for current cell, set flag for all neighboring cells to true
+          if (is_rift[cell_index])
+          {
+              for (unsigned int face_index = 0; face_index < GeometryInfo<dim>::faces_per_cell; ++face_index)
+              {              
+                  const auto &neighbor = cell->neighbor(face_index);
+                  if (neighbor->is_locally_owned())
+                  {
+                    const unsigned int neighbor_index = neighbor->active_cell_index();
+                    is_rift[neighbor_index] = true;
+                  }  
+              }
+          }           
+
+      }
+
+      const double global_divergence_integral = Utilities::MPI::sum(local_divergence_integral, this->get_mpi_communicator());
+      const double average_divergence = global_divergence_integral / this->get_volume();
+
+      // Count number of subduction zones 
       unsigned int num_subduction_zones = 0;
       unsigned int num_rifts = 0;
-      if (average_divergence < threshold)
-        num_subduction_zones = 1;
-      else if (average_divergence > threshold)
-        num_rifts = 1;
+      for (const auto &flag : is_subduction)
+      {
+        if (flag)
+          flag > 0 ? ++num_subduction_zones : 0;
+      }      
+
+      // Count number of rifts
+      for (const auto &flag : is_rift)
+      {
+        if (flag)
+          flag > 0 ? ++num_rifts : 0;
+      }      
+
+
+
 
       if (this->convert_output_to_years() == true)
         {
