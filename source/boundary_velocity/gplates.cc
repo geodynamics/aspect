@@ -81,7 +81,7 @@ namespace aspect
                    << "   Input point 2 normalized cartesian coordinates: " << point_two  << std::endl
                    << "   Input point 2 rotated model coordinates: " << transpose(rotation_matrix) * point_two << std::endl
                    << std::endl <<  std::setprecision(2)
-                   << "   Model will be rotated by " << -rotation_angle * 180.0 / numbers::PI
+                   << "   Model will be rotated by " << -rotation_angle * constants::radians_to_degree
                    << " degrees around axis " << rotation_axis << std::endl
                    << "   The ParaView rotation angles are: " << angles[0] << ' ' << angles [1] << ' ' << angles[2] << std::endl
                    << "   The inverse ParaView rotation angles are: " << back_angles[0] << ' ' << back_angles [1] << ' ' << back_angles[2]
@@ -396,7 +396,7 @@ namespace aspect
           }
 
         double theta = atan2(sinTheta, cosTheta);
-        orientation[1] = - theta * 180 / numbers::PI;
+        orientation[1] = - theta * constants::radians_to_degree;
 
         // now rotate about x axis
         double d = sqrt(x2*x2 + y2*y2 + z2*z2);
@@ -419,7 +419,7 @@ namespace aspect
           }
 
         double phi = atan2(sinPhi, cosPhi);
-        orientation[0] = phi * 180 / numbers::PI;
+        orientation[0] = phi * constants::radians_to_degree;
 
         // finally, rotate about z
         double x3p = x3*cosTheta - z3*sinTheta;
@@ -439,7 +439,7 @@ namespace aspect
           }
 
         double alpha = atan2(sinAlpha, cosAlpha);
-        orientation[2] = alpha * 180 / numbers::PI;
+        orientation[2] = alpha * constants::radians_to_degree;
         return orientation;
       }
 

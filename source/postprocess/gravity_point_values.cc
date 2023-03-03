@@ -495,8 +495,8 @@ namespace aspect
               // write output.
               // g_gradient is here given in eotvos E (1E = 1e-9 per square seconds):
               output << satellite_positions_spherical[p][0] << ' '
-                     << satellite_positions_spherical[p][1] *180. / numbers::PI << ' '
-                     << satellite_positions_spherical[p][2] *180. / numbers::PI << ' '
+                     << satellite_positions_spherical[p][1] * constants::radians_to_degree << ' '
+                     << satellite_positions_spherical[p][2] * constants::radians_to_degree << ' '
                      << satellite_position[0] << ' '
                      << satellite_position[1] << ' '
                      << satellite_position[2] << ' '

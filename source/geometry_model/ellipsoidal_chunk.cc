@@ -160,9 +160,8 @@ namespace aspect
     {
       const double d_hat = phi_theta_d_hat[2]; // long, lat, depth
       Point<dim-1> phi_theta;
-      const double rad_to_degree = 180/numbers::PI;
       if (dim == 3)
-        phi_theta = Point<dim-1>(phi_theta_d_hat[0] * rad_to_degree,phi_theta_d_hat[1] * rad_to_degree);
+        phi_theta = Point<dim-1>(phi_theta_d_hat[0] * constants::radians_to_degree,phi_theta_d_hat[1] * constants::radians_to_degree);
       const double h = topography != nullptr ? topography->value(phi_theta) : 0;
       const double d = d_hat + (d_hat + bottom_depth)/bottom_depth*h;
       const Point<3> phi_theta_d (phi_theta_d_hat[0],
@@ -176,7 +175,7 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_topography(const Point<3> &phi_theta_d) const
     {
       const double d = phi_theta_d[2];
-      const double rad_to_degree = 180/numbers::PI;
+      const double rad_to_degree = constants::radians_to_degree;
       Point<dim-1> phi_theta;
       if (dim == 3)
         phi_theta = Point<dim-1>(phi_theta_d[0] * rad_to_degree,phi_theta_d[1] * rad_to_degree);
@@ -743,7 +742,6 @@ namespace aspect
 
       // dim = 3
       const Point<dim> ellipsoidal_point = manifold.pull_back(point);
-      const double rad_to_degree = 180.0/numbers::PI;
 
       // compare deflection from the ellipsoid surface
       if (ellipsoidal_point[dim-1] > 0.0+std::numeric_limits<double>::epsilon()*bottom_depth ||
@@ -751,7 +749,7 @@ namespace aspect
         return false;
 
       // compare lon/lat
-      if (!Utilities::polygon_contains_point<dim>(corners, Point<2>(ellipsoidal_point[0]*rad_to_degree,ellipsoidal_point[1]*rad_to_degree)))
+      if (!Utilities::polygon_contains_point<dim>(corners, Point<2>(ellipsoidal_point[0]*constants::radians_to_degree,ellipsoidal_point[1]*constants::radians_to_degree)))
         return false;
 
       return true;
