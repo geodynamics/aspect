@@ -114,13 +114,15 @@ namespace aspect
                       else
                         satellite_positions_spherical[p][0] = minimum_radius;
                       if (n_points_longitude > 1)
-                        satellite_positions_spherical[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / (n_points_longitude - 1)) * i) * numbers::PI / 180.;
+                        satellite_positions_spherical[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / 
+                        (n_points_longitude - 1)) * i) * constants::degree_to_radians;
                       else
-                        satellite_positions_spherical[p][1] = minimum_colongitude * numbers::PI / 180.;
+                        satellite_positions_spherical[p][1] = minimum_colongitude * constants::degree_to_radians;
                       if (n_points_latitude > 1)
-                        satellite_positions_spherical[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) / (n_points_latitude - 1)) * j) * numbers::PI / 180.;
+                        satellite_positions_spherical[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) / 
+                        (n_points_latitude - 1)) * j) * constants::degree_to_radians;
                       else
-                        satellite_positions_spherical[p][2] = minimum_colatitude * numbers::PI / 180.;
+                        satellite_positions_spherical[p][2] = minimum_colatitude * constants::degree_to_radians;
                       ++p;
                     }
                 }
@@ -154,10 +156,10 @@ namespace aspect
               else
                 satellite_positions_spherical[p][0] = radius_list[p];
               if (longitude_list[p] < 0)
-                satellite_positions_spherical[p][1] = (360 + longitude_list[p]) * numbers::PI / 180.;
+                satellite_positions_spherical[p][1] = (360 + longitude_list[p]) * constants::degree_to_radians;
               else
-                satellite_positions_spherical[p][1] = (longitude_list[p]) * numbers::PI / 180.;
-              satellite_positions_spherical[p][2] = (90 - latitude_list[p]) * numbers::PI / 180. ;
+                satellite_positions_spherical[p][1] = (longitude_list[p]) * constants::degree_to_radians;
+              satellite_positions_spherical[p][2] = (90 - latitude_list[p]) * constants::degree_to_radians;
             }
         }
 

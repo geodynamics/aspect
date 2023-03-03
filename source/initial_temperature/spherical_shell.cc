@@ -61,7 +61,7 @@ namespace aspect
       const double phi   = std::atan2(position(0),position(1));
       const double s_mod = s
                            +
-                           0.2 * s * (1-s) * std::sin(angular_mode*phi +(90 + 2*rotation_offset)*numbers::PI/180 ) * scale;
+                           0.2 * s * (1-s) * std::sin(angular_mode*phi + (90 + 2*rotation_offset) * constants::degree_to_radians ) * scale;
 
       // Check that a boundary temperature is prescribed
       AssertThrow (this->has_boundary_temperature(),

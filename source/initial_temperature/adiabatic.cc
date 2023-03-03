@@ -241,7 +241,7 @@ namespace aspect
                 Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
 
               const double inner_radius = shell_geometry_model.inner_radius();
-              const double half_opening_angle = numbers::PI/180.0 * 0.5 * shell_geometry_model.opening_angle();
+              const double half_opening_angle = constants::degree_to_radians * 0.5 * shell_geometry_model.opening_angle();
               if (dim==2)
                 {
                   // choose the center of the perturbation at half angle along the inner radius

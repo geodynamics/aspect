@@ -70,7 +70,7 @@ namespace aspect
 
       // For spherical(-like) domains, modify the representative point:
       // go from degrees to radians...
-      const double degrees_to_radians = dealii::numbers::PI/180.0;
+      const double degrees_to_radians = constants::degree_to_radians;
       std::array<double, dim> spherical_representative_point;
       for (unsigned int d=0; d<dim; d++)
         spherical_representative_point[d] = representative_point[d];

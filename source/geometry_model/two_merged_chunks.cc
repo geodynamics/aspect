@@ -558,9 +558,6 @@ namespace aspect
       {
         prm.enter_subsection("Chunk with lithosphere boundary indicators");
         {
-
-          const double degtorad = dealii::numbers::PI/180;
-
           Assert (dim >= 2, ExcInternalError());
           Assert (dim <= 3, ExcInternalError());
 
@@ -573,8 +570,8 @@ namespace aspect
           point4[0] = point3[0];
           lower_repetitions[0] = prm.get_integer("Inner chunk radius repetitions");
           upper_repetitions[0] = prm.get_integer("Outer chunk radius repetitions");
-          point1[1] = prm.get_double("Chunk minimum longitude") * degtorad;
-          point2[1] = prm.get_double("Chunk maximum longitude") * degtorad;
+          point1[1] = prm.get_double("Chunk minimum longitude") * constants::degree_to_radians;
+          point2[1] = prm.get_double("Chunk maximum longitude") * constants::degree_to_radians;
           point3[1] = point1[1];
           point4[1] = point2[1];
           lower_repetitions[1] = prm.get_integer("Longitude repetitions");
@@ -598,8 +595,8 @@ namespace aspect
 
           if (dim == 3)
             {
-              point1[2] = prm.get_double ("Chunk minimum latitude") * degtorad;
-              point2[2] = prm.get_double ("Chunk maximum latitude") * degtorad;
+              point1[2] = prm.get_double ("Chunk minimum latitude") * constants::degree_to_radians;
+              point2[2] = prm.get_double ("Chunk maximum latitude") * constants::degree_to_radians;
               point3[2] = point1[2];
               point4[2] = point2[2];
               lower_repetitions[2] = prm.get_integer ("Latitude repetitions");

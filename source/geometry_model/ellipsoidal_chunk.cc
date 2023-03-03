@@ -248,11 +248,11 @@ namespace aspect
 
       // Generate parallelepiped grid with one point (point 0) at (0,0,0) and the
       // other corners (respectively corner 1,2 and 4) placed relative to that point.
-      const Point<3> corner_points[dim] = {Point<dim>((corners[1][0]-corners[0][0])*numbers::PI/180,
-                                                      (corners[1][1]-corners[0][1])*numbers::PI/180,
+      const Point<3> corner_points[dim] = {Point<dim>((corners[1][0]-corners[0][0])*constants::degree_to_radians,
+                                                      (corners[1][1]-corners[0][1])*constants::degree_to_radians,
                                                       0),
-                                           Point<dim>((corners[3][0]-corners[0][0])*numbers::PI/180,
-                                                      (corners[3][1]-corners[0][1])*numbers::PI/180,
+                                           Point<dim>((corners[3][0]-corners[0][0])*constants::degree_to_radians,
+                                                      (corners[3][1]-corners[0][1])*constants::degree_to_radians,
                                                       0),
                                            Point<dim>(0,
                                                       0,
@@ -265,7 +265,9 @@ namespace aspect
       // Shift the grid point at (0,0,0) (and the rest of the
       // points with it) to the correct location at corner[0] at a
       // negative depth.
-      const Point<3> base_point(corners[0][0] *numbers::PI/180,corners[0][1] *numbers::PI/180,-bottom_depth);
+      const Point<3> base_point(corners[0][0] * constants::degree_to_radians, 
+      corners[0][1] * constants::degree_to_radians,
+      -bottom_depth);
       GridTools::shift(base_point,coarse_grid);
 
       // Transform to the ellipsoid surface
@@ -724,8 +726,8 @@ namespace aspect
              ExcMessage("Given depth must be less than or equal to the maximal depth of this geometry."));
 
       // Choose a point on the center axis of the domain
-      Point<dim> p = Point<3>((eastLongitude + westLongitude) * 0.5 * numbers::PI/180,
-                              (southLatitude + northLatitude) * 0.5 * numbers::PI/180,
+      Point<dim> p = Point<3>((eastLongitude + westLongitude) * 0.5 * constants::degree_to_radians,
+                              (southLatitude + northLatitude) * 0.5 * constants::degree_to_radians,
                               -depth);
 
       return manifold.push_forward(p);

@@ -519,7 +519,7 @@ namespace aspect
       point1[0] = R0;
       point2[0] = R1;
       point1[1] = 0.0;
-      point2[1] = phi / 180.0 * numbers::PI;
+      point2[1] = phi * constants::degree_to_radians;
       if (dim == 3)
         {
           point1[2] = 0.0;

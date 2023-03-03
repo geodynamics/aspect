@@ -208,8 +208,8 @@ namespace aspect
 
                 P_min[0] = prm.get_double ("Minimum radius");
                 P_max[0] = prm.get_double ("Maximum radius");
-                P_min[1] = prm.get_double ("Minimum longitude") * numbers::PI / 180.0;
-                P_max[1] = prm.get_double ("Maximum longitude") * numbers::PI / 180.0;
+                P_min[1] = prm.get_double ("Minimum longitude") * constants::degree_to_radians;
+                P_max[1] = prm.get_double ("Maximum longitude") * constants::degree_to_radians;
 
                 AssertThrow(P_max[1] > P_min[1],
                             ExcMessage("The maximum longitude you prescribed in the uniform radial"
@@ -223,8 +223,8 @@ namespace aspect
                   {
                     P_center[2] = prm.get_double ("Center z");
 
-                    P_min[2]    = prm.get_double ("Minimum latitude") * numbers::PI / 180.0;
-                    P_max[2]    = prm.get_double ("Maximum latitude") * numbers::PI / 180.0;
+                    P_min[2]    = prm.get_double ("Minimum latitude") * constants::degree_to_radians;
+                    P_max[2]    = prm.get_double ("Maximum latitude") * constants::degree_to_radians;
 
                     AssertThrow(P_max[2] > P_min[2],
                                 ExcMessage("The maximum latitude you prescribed in the uniform radial"

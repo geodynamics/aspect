@@ -763,8 +763,8 @@ namespace aspect
 
 
         ecoord[0] = radius/std::sqrt(1- ellipticity * ellipticity
-                                     * std::sin(numbers::PI * ecoord[2]/180)
-                                     * std::sin(numbers::PI * ecoord[2]/180));
+                                     * std::sin(constants::degree_to_radians * ecoord[2])
+                                     * std::sin(constants::degree_to_radians * ecoord[2]));
         return ecoord;
       }
 
