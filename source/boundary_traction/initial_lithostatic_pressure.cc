@@ -120,44 +120,44 @@ namespace aspect
         AssertThrow(false, ExcNotImplemented());
 
       // Set up the input for the density function of the material model.
-      typename MaterialModel::Interface<dim>::MaterialModelInputs in0(1, n_compositional_fields);
-      typename MaterialModel::Interface<dim>::MaterialModelOutputs out0(1, n_compositional_fields);
-      in0.requested_properties = MaterialModel::MaterialProperties::density;
+      typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, n_compositional_fields);
+      typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, n_compositional_fields);
+      in.requested_properties = MaterialModel::MaterialProperties::density;
 
       // Where to calculate the density
       // for cartesian domains
       if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()) ||
           Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
-        in0.position[0] = representative_point;
+        in.position[0] = representative_point;
       // and for spherical domains
       else
-        in0.position[0] = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point);
+        in.position[0] = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point);
 
       // We need the initial temperature at this point
-      in0.temperature[0] = this->get_initial_temperature_manager().initial_temperature(in0.position[0]);
+      in.temperature[0] = this->get_initial_temperature_manager().initial_temperature(in.position[0]);
 
       // and the surface pressure.
-      in0.pressure[0] = pressure[0];
+      in.pressure[0] = pressure[0];
 
       // Then the compositions at this point.
       for (unsigned int c=0; c<n_compositional_fields; ++c)
-        in0.composition[0][c] = this->get_initial_composition_manager().initial_composition(in0.position[0], c);
+        in.composition[0][c] = this->get_initial_composition_manager().initial_composition(in.position[0], c);
 
-      // Hopefully the material model won't needed in0.strain_rate, we
+      // Hopefully the material model won't needed in.strain_rate, we
       // leave it as NaNs.
 
       // We set all entries of the velocity vector to zero since this is the lithostatic case.
-      in0.velocity[0] = Tensor<1,dim> ();
+      in.velocity[0] = Tensor<1,dim> ();
 
       // Evaluate the material model to get the density.
-      this->get_material_model().evaluate(in0, out0);
-      const double density0 = out0.densities[0];
+      this->get_material_model().evaluate(in, out);
+      const double density0 = out.densities[0];
 
       // Get the magnitude of gravity. We assume
       // that gravity always points along the depth direction. This
       // may not strictly be true always but is likely a good enough
       // approximation here.
-      const double gravity0 = this->get_gravity_model().gravity_vector(in0.position[0]).norm();
+      const double gravity0 = this->get_gravity_model().gravity_vector(in.position[0]).norm();
 
       // Now integrate pressure downward using trapezoidal integration
       // p'(z) = rho(p,c,T) * |g| * delta_z
@@ -177,34 +177,34 @@ namespace aspect
             {
               // decrease z coordinate with depth increment
               representative_point[dim-1] -= delta_z;
-              in0.position[0] = representative_point;
+              in.position[0] = representative_point;
             }
           // and for spherical domains
           else
             {
               // decrease radius with depth increment
               spherical_representative_point[0] -= delta_z;
-              in0.position[0] = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point);
+              in.position[0] = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point);
             }
 
           // Retrieve the initial temperature at this point.
-          in0.temperature[0] = this->get_initial_temperature_manager().initial_temperature(in0.position[0]);
+          in.temperature[0] = this->get_initial_temperature_manager().initial_temperature(in.position[0]);
           // and use the previous pressure
-          in0.pressure[0] = pressure[i-1];
+          in.pressure[0] = pressure[i-1];
 
           // Retrieve the compositions at this point.
           for (unsigned int c=0; c<n_compositional_fields; ++c)
-            in0.composition[0][c] = this->get_initial_composition_manager().initial_composition(in0.position[0], c);
+            in.composition[0][c] = this->get_initial_composition_manager().initial_composition(in.position[0], c);
 
           // We set all entries of the velocity vector to zero since this is the lithostatic case.
-          in0.velocity[0] = Tensor<1,dim> ();
+          in.velocity[0] = Tensor<1,dim> ();
 
           // Evaluate the material model to get the density at the current point.
-          this->get_material_model().evaluate(in0, out0);
-          const double density = out0.densities[0];
+          this->get_material_model().evaluate(in, out);
+          const double density = out.densities[0];
 
           // Get the magnitude of gravity.
-          const double gravity = this->get_gravity_model().gravity_vector(in0.position[0]).norm();
+          const double gravity = this->get_gravity_model().gravity_vector(in.position[0]).norm();
 
           // Trapezoid integration
           pressure[i] = sum + delta_z * 0.5 * density * gravity;
