@@ -94,7 +94,7 @@ namespace aspect
                 friction_function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),volume_fraction_index);
 
               // Convert angles from degrees to radians
-              friction_from_function *= numbers::PI/180.0;
+              friction_from_function *= constants::degree_to_radians;
 
               return friction_from_function;
             }
@@ -235,7 +235,7 @@ namespace aspect
           {
             AssertThrow(angle <= 90,
                         ExcMessage("Dynamic angles of friction must be <= 90 degrees"));
-            angle *= numbers::PI/180.0;
+            angle *= constants::degree_to_radians;
           }
 
         dynamic_friction_smoothness_exponent = prm.get_double("Dynamic friction smoothness exponent");

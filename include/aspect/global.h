@@ -57,6 +57,16 @@ namespace aspect
     constexpr double celsius_to_kelvin = 273.15;
 
     /**
+     * Convert angles in degree to radians.
+     */
+    constexpr double degree_to_radians = dealii::numbers::PI / 180.;
+
+    /**
+     * Convert angles in radians to degrees.
+     */
+    constexpr double radians_to_degree = 180. / dealii::numbers::PI;
+
+    /**
      * Gas constant (also known as R) [J K^-1 mol^-1]
      */
     constexpr double gas_constant = 8.3144621;

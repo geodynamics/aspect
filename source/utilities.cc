@@ -745,12 +745,12 @@ namespace aspect
                                 * std::sin(th) * std::sin(th)),
                                (p - (ellipticity * ellipticity * radius * (std::cos(th)
                                                                            * std::cos(th) * std::cos(th)))))
-                    * (180. / numbers::PI);
+                    * constants::radians_to_degree;
 
         if (dim == 3)
           {
             ecoord[1] = std::atan2(position(1), position(0))
-                        * (180. / numbers::PI);
+                        * constants::radians_to_degree;
 
             /* Set all longitudes between [0,360]. */
             if (ecoord[1] < 0.)
@@ -763,8 +763,8 @@ namespace aspect
 
 
         ecoord[0] = radius/std::sqrt(1- ellipticity * ellipticity
-                                     * std::sin(numbers::PI * ecoord[2]/180)
-                                     * std::sin(numbers::PI * ecoord[2]/180));
+                                     * std::sin(constants::degree_to_radians * ecoord[2])
+                                     * std::sin(constants::degree_to_radians * ecoord[2]));
         return ecoord;
       }
 

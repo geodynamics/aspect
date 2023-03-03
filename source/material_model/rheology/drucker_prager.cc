@@ -218,7 +218,7 @@ namespace aspect
 
         // Convert angles from degrees to radians
         for (double &angle : angles_internal_friction)
-          angle *= numbers::PI/180.0;
+          angle *= constants::degree_to_radians;
 
         cohesions = Utilities::parse_map_to_double_array(prm.get("Cohesions"),
                                                          list_of_composition_names,

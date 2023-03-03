@@ -160,9 +160,8 @@ namespace aspect
     {
       const double d_hat = phi_theta_d_hat[2]; // long, lat, depth
       Point<dim-1> phi_theta;
-      const double rad_to_degree = 180/numbers::PI;
       if (dim == 3)
-        phi_theta = Point<dim-1>(phi_theta_d_hat[0] * rad_to_degree,phi_theta_d_hat[1] * rad_to_degree);
+        phi_theta = Point<dim-1>(phi_theta_d_hat[0] * constants::radians_to_degree,phi_theta_d_hat[1] * constants::radians_to_degree);
       const double h = topography != nullptr ? topography->value(phi_theta) : 0;
       const double d = d_hat + (d_hat + bottom_depth)/bottom_depth*h;
       const Point<3> phi_theta_d (phi_theta_d_hat[0],
@@ -176,10 +175,10 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_topography(const Point<3> &phi_theta_d) const
     {
       const double d = phi_theta_d[2];
-      const double rad_to_degree = 180/numbers::PI;
       Point<dim-1> phi_theta;
       if (dim == 3)
-        phi_theta = Point<dim-1>(phi_theta_d[0] * rad_to_degree,phi_theta_d[1] * rad_to_degree);
+        phi_theta = Point<dim-1>(phi_theta_d[0] * constants::radians_to_degree,
+                                 phi_theta_d[1] * constants::radians_to_degree);
       const double h = topography != nullptr ? topography->value(phi_theta) : 0;
       const double d_hat = bottom_depth * (d-h)/(bottom_depth+h);
       const Point<3> phi_theta_d_hat (phi_theta_d[0],
@@ -249,11 +248,11 @@ namespace aspect
 
       // Generate parallelepiped grid with one point (point 0) at (0,0,0) and the
       // other corners (respectively corner 1,2 and 4) placed relative to that point.
-      const Point<3> corner_points[dim] = {Point<dim>((corners[1][0]-corners[0][0])*numbers::PI/180,
-                                                      (corners[1][1]-corners[0][1])*numbers::PI/180,
+      const Point<3> corner_points[dim] = {Point<dim>((corners[1][0]-corners[0][0])*constants::degree_to_radians,
+                                                      (corners[1][1]-corners[0][1])*constants::degree_to_radians,
                                                       0),
-                                           Point<dim>((corners[3][0]-corners[0][0])*numbers::PI/180,
-                                                      (corners[3][1]-corners[0][1])*numbers::PI/180,
+                                           Point<dim>((corners[3][0]-corners[0][0])*constants::degree_to_radians,
+                                                      (corners[3][1]-corners[0][1])*constants::degree_to_radians,
                                                       0),
                                            Point<dim>(0,
                                                       0,
@@ -266,7 +265,9 @@ namespace aspect
       // Shift the grid point at (0,0,0) (and the rest of the
       // points with it) to the correct location at corner[0] at a
       // negative depth.
-      const Point<3> base_point(corners[0][0] *numbers::PI/180,corners[0][1] *numbers::PI/180,-bottom_depth);
+      const Point<3> base_point(corners[0][0] * constants::degree_to_radians,
+                                corners[0][1] * constants::degree_to_radians,
+                                -bottom_depth);
       GridTools::shift(base_point,coarse_grid);
 
       // Transform to the ellipsoid surface
@@ -725,8 +726,8 @@ namespace aspect
              ExcMessage("Given depth must be less than or equal to the maximal depth of this geometry."));
 
       // Choose a point on the center axis of the domain
-      Point<dim> p = Point<3>((eastLongitude + westLongitude) * 0.5 * numbers::PI/180,
-                              (southLatitude + northLatitude) * 0.5 * numbers::PI/180,
+      Point<dim> p = Point<3>((eastLongitude + westLongitude) * 0.5 * constants::degree_to_radians,
+                              (southLatitude + northLatitude) * 0.5 * constants::degree_to_radians,
                               -depth);
 
       return manifold.push_forward(p);
@@ -743,7 +744,6 @@ namespace aspect
 
       // dim = 3
       const Point<dim> ellipsoidal_point = manifold.pull_back(point);
-      const double rad_to_degree = 180.0/numbers::PI;
 
       // compare deflection from the ellipsoid surface
       if (ellipsoidal_point[dim-1] > 0.0+std::numeric_limits<double>::epsilon()*bottom_depth ||
@@ -751,7 +751,7 @@ namespace aspect
         return false;
 
       // compare lon/lat
-      if (!Utilities::polygon_contains_point<dim>(corners, Point<2>(ellipsoidal_point[0]*rad_to_degree,ellipsoidal_point[1]*rad_to_degree)))
+      if (!Utilities::polygon_contains_point<dim>(corners, Point<2>(ellipsoidal_point[0]*constants::radians_to_degree,ellipsoidal_point[1]*constants::radians_to_degree)))
         return false;
 
       return true;

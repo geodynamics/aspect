@@ -751,12 +751,12 @@ namespace aspect
           for (unsigned int i=0; i<surface_cell_spherical_coordinates.size(); ++i)
             {
               // Transfer the spherical coordinates to geographical coordinates.
-              lat = 90. - surface_cell_spherical_coordinates.at(i).first*(180./numbers::PI);
+              lat = 90. - surface_cell_spherical_coordinates.at(i).first * constants::radians_to_degree;
               lon = (surface_cell_spherical_coordinates.at(i).second <= numbers::PI
                      ?
-                     surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI)
+                     surface_cell_spherical_coordinates.at(i).second * constants::radians_to_degree
                      :
-                     surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI) - 360.);
+                     surface_cell_spherical_coordinates.at(i).second * constants::radians_to_degree - 360.);
 
               // Write the solution to the stream output.
               output << lon
@@ -838,12 +838,12 @@ namespace aspect
               for (unsigned int i=0; i<surface_cell_spherical_coordinates.size(); ++i)
                 {
                   // Transfer the spherical coordinates to geographical coordinates.
-                  lat = 90. - surface_cell_spherical_coordinates.at(i).first*(180./numbers::PI);
+                  lat = 90. - surface_cell_spherical_coordinates.at(i).first * constants::radians_to_degree;
                   lon = (surface_cell_spherical_coordinates.at(i).second <= numbers::PI
                          ?
-                         surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI)
+                         surface_cell_spherical_coordinates.at(i).second * constants::radians_to_degree
                          :
-                         surface_cell_spherical_coordinates.at(i).second*(180./numbers::PI) - 360.);
+                         surface_cell_spherical_coordinates.at(i).second * constants::radians_to_degree - 360.);
 
                   // Write the solution to the stream output.
                   output_gravity_anomaly << lon

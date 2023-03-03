@@ -589,8 +589,8 @@ namespace aspect
         cos_phi.resize(n_fields);
         for (unsigned int c = 0; c < n_fields; ++c)
           {
-            sin_phi[c] = std::sin(phi[c] * numbers::PI/180);
-            cos_phi[c] = std::cos(phi[c] * numbers::PI/180);
+            sin_phi[c] = std::sin(phi[c] * constants::degree_to_radians);
+            cos_phi[c] = std::cos(phi[c] * constants::degree_to_radians);
           }
 
         prefactor = get_vector_double("Viscous prefactors",n_fields,prm);

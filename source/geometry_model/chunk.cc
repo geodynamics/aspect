@@ -880,16 +880,13 @@ namespace aspect
       {
         prm.enter_subsection("Chunk");
         {
-
-          const double degtorad = dealii::numbers::PI/180;
-
           repetitions.resize(dim);
 
           point1[0] = prm.get_double ("Chunk inner radius");
           point2[0] = prm.get_double ("Chunk outer radius");
           repetitions[0] = prm.get_integer ("Radius repetitions");
-          point1[1] = prm.get_double ("Chunk minimum longitude") * degtorad;
-          point2[1] = prm.get_double ("Chunk maximum longitude") * degtorad;
+          point1[1] = prm.get_double ("Chunk minimum longitude") * constants::degree_to_radians;
+          point2[1] = prm.get_double ("Chunk maximum longitude") * constants::degree_to_radians;
           repetitions[1] = prm.get_integer ("Longitude repetitions");
 
           AssertThrow (point1[0] < point2[0],
@@ -908,8 +905,8 @@ namespace aspect
 
           if (dim == 3)
             {
-              point1[2] = prm.get_double ("Chunk minimum latitude") * degtorad;
-              point2[2] = prm.get_double ("Chunk maximum latitude") * degtorad;
+              point1[2] = prm.get_double ("Chunk minimum latitude") * constants::degree_to_radians;
+              point2[2] = prm.get_double ("Chunk maximum latitude") * constants::degree_to_radians;
               repetitions[2] = prm.get_integer ("Latitude repetitions");
 
               AssertThrow (point1[2] < point2[2],

@@ -245,7 +245,7 @@ namespace aspect
             maximum_viscosity          = prm.get_double ("Maximum viscosity");
             reference_strain_rate      = prm.get_double ("Reference strain rate");
             // Convert degrees to radians
-            angle_of_internal_friction = prm.get_double ("Angle of internal friction") * numbers::PI/180.0;
+            angle_of_internal_friction = prm.get_double ("Angle of internal friction") * constants::degree_to_radians;
             cohesion                   = prm.get_double ("Cohesion");
           }
           prm.leave_subsection();

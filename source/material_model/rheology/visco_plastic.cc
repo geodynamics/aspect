@@ -777,7 +777,7 @@ namespace aspect
               {
                 plastic_out->cohesions[i]   += volume_fractions[j] * cohesions[j];
                 // Also convert radians to degrees
-                plastic_out->friction_angles[i] += 180.0/numbers::PI * volume_fractions[j] * friction_angles_RAD[j];
+                plastic_out->friction_angles[i] += constants::radians_to_degree * volume_fractions[j] * friction_angles_RAD[j];
                 plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress(cohesions[j],
                                                   friction_angles_RAD[j],
                                                   pressure_for_plasticity,

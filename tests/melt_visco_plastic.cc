@@ -533,7 +533,7 @@ namespace aspect
                   const double tensile_strength_c = cohesions[c]/strength_reductions[c];
 
                   // Convert friction angle from degrees to radians
-                  double phi = angles_internal_friction[c] * numbers::PI/180.0;
+                  double phi = angles_internal_friction[c] * constants::degree_to_radians;
                   const double transition_pressure = (cohesions[c] * std::cos(phi) - tensile_strength_c) / (1.0 -  sin(phi));
 
                   double yield_strength_c = 0.0;
