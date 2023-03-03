@@ -155,7 +155,7 @@ TEST_CASE("Random draw volume weighted average rotation matrix")
 {
   std::vector<double> unsorted_volume_fractions = {2.,5.,1.,3.,6.,4.};
   std::vector<double> sorted_volume_fractions_ref = {1.,2.,3.,4.,5.,6.};
-  const std::vector<std::size_t> permutation = aspect::Utilities::sort_permutation<double>(unsorted_volume_fractions);
+  const std::vector<std::size_t> permutation = aspect::Utilities::compute_sorting_permutation<double>(unsorted_volume_fractions);
   const std::vector<double> sorted_volume_fractions = aspect::Utilities::apply_permutation<double>(unsorted_volume_fractions,permutation);
 
   for (unsigned int i = 0; i < sorted_volume_fractions.size(); i++)
@@ -190,7 +190,7 @@ TEST_CASE("Random draw volume weighted average rotation matrix")
 
   std::mt19937 random_number_generator;
   random_number_generator.seed(5);
-  const std::vector<dealii::Tensor<2,3>> result = aspect::Utilities::random_draw_volume_weighting_rotation_matrices(unsorted_volume_fractions,
+  const std::vector<dealii::Tensor<2,3>> result = aspect::Utilities::rotation_matrices_random_draw_volume_weighting(unsorted_volume_fractions,
                                                    unsorted_rotation_matrices,
                                                    25,
                                                    random_number_generator);

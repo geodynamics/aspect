@@ -1068,16 +1068,16 @@ namespace aspect
 
     /**
      * Create a permutation vector which can be used by the apply_permutation function
-     * which shorts the vector in increasing order.
+     * to put the vector in sorted order.
      *
      * @param vector vector to sort
      */
     template <typename T>
     std::vector<std::size_t>
-    sort_permutation(const std::vector<T> &vector);
+    compute_sorting_permutation(const std::vector<T> &vector);
 
     /**
-     * Applies a permutation vector to return a sorted verions of the vector.
+     * Applies a permutation vector to another vector and retuns the resulting vector.
      *
      * @param vector vector to sort
      * @param permutation_vector The permutation vector used to sort the input vector.
@@ -1094,12 +1094,18 @@ namespace aspect
      * to a discrete number of orientations, weighted by volume.
      * The input is a vector of volume fractions and a vector of rotation matrices.
      * The vectors need to have the same length.
+     *
+     * @param volume_fraction a vector of doubles representing the volume fraction of each grain
+     * @param rotation_matrices a vector of 2nd order 3D tensors representing the rotation matrix of each grain
+     * @param n_output_matrices The number of rotation matrices which are output by this function. This can be
+     * different from the number of entries in the volume fraction and rotation matrices vectors.
+     * @param random_number_generator a reference to a mt19937 random number generator.
      */
     std::vector<Tensor<2,3>>
-    random_draw_volume_weighting_rotation_matrices(const std::vector<double> volume_fraction,
+    rotation_matrices_random_draw_volume_weighting(const std::vector<double> volume_fractions,
                                                    const std::vector<Tensor<2,3>> rotation_matrices,
-                                                   const unsigned int n_output_grains,
-                                                   std::mt19937 random_number_generator);
+                                                   const unsigned int n_output_matrices,
+                                                   std::mt19937 &random_number_generator);
   }
 }
 
