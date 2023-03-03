@@ -170,11 +170,6 @@ namespace aspect
                                                        + std::string(" is bigger than the size of the pressure vector ")
                                                        + dealii::Utilities::int_to_string(pressure.size())));
 
-          // Set up the input for the density function of the material model
-          typename MaterialModel::Interface<dim>::MaterialModelInputs in(1, n_compositional_fields);
-          typename MaterialModel::Interface<dim>::MaterialModelOutputs out(1, n_compositional_fields);
-          in.requested_properties = MaterialModel::MaterialProperties::density;
-
           // Where to calculate the density:
           // for cartesian domains
           if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()) ||
@@ -182,37 +177,34 @@ namespace aspect
             {
               // decrease z coordinate with depth increment
               representative_point[dim-1] -= delta_z;
-              in.position[0] = representative_point;
+              in0.position[0] = representative_point;
             }
           // and for spherical domains
           else
             {
               // decrease radius with depth increment
               spherical_representative_point[0] -= delta_z;
-              in.position[0] = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point);
+              in0.position[0] = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_representative_point);
             }
 
           // Retrieve the initial temperature at this point.
-          in.temperature[0] = this->get_initial_temperature_manager().initial_temperature(in.position[0]);
+          in0.temperature[0] = this->get_initial_temperature_manager().initial_temperature(in0.position[0]);
           // and use the previous pressure
-          in.pressure[0] = pressure[i-1];
+          in0.pressure[0] = pressure[i-1];
 
           // Retrieve the compositions at this point.
           for (unsigned int c=0; c<n_compositional_fields; ++c)
-            in.composition[0][c] = this->get_initial_composition_manager().initial_composition(in.position[0], c);
-
-          // We only need the density from the material model
-          in.requested_properties = MaterialModel::MaterialProperties::density;
+            in0.composition[0][c] = this->get_initial_composition_manager().initial_composition(in0.position[0], c);
 
           // We set all entries of the velocity vector to zero since this is the lithostatic case.
-          in.velocity[0] = Tensor<1,dim> ();
+          in0.velocity[0] = Tensor<1,dim> ();
 
           // Evaluate the material model to get the density at the current point.
-          this->get_material_model().evaluate(in, out);
-          const double density = out.densities[0];
+          this->get_material_model().evaluate(in0, out0);
+          const double density = out0.densities[0];
 
           // Get the magnitude of gravity.
-          const double gravity = this->get_gravity_model().gravity_vector(in.position[0]).norm();
+          const double gravity = this->get_gravity_model().gravity_vector(in0.position[0]).norm();
 
           // Trapezoid integration
           pressure[i] = sum + delta_z * 0.5 * density * gravity;
