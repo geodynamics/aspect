@@ -66,7 +66,7 @@ namespace aspect
     Box<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-      std::vector<unsigned int> rep_vec(repetitions, repetitions+dim);
+      const std::vector<unsigned int> rep_vec(repetitions.begin(), repetitions.end());
       GridGenerator::subdivided_hyper_rectangle (coarse_grid,
                                                  rep_vec,
                                                  box_origin,

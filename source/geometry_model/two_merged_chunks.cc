@@ -71,16 +71,19 @@ namespace aspect
           Triangulation<dim> lower_coarse_grid;
           Triangulation<dim> upper_coarse_grid;
 
+          const std::vector<unsigned int> lower_rep_vec(lower_repetitions.begin(), lower_repetitions.end());
+          const std::vector<unsigned int> upper_rep_vec(upper_repetitions.begin(), upper_repetitions.end());
+
           // Create the lower box.
           GridGenerator::subdivided_hyper_rectangle (lower_coarse_grid,
-                                                     lower_repetitions,
+                                                     lower_rep_vec,
                                                      point1,
                                                      point4,
                                                      false);
 
           // Create the upper box.
           GridGenerator::subdivided_hyper_rectangle (upper_coarse_grid,
-                                                     upper_repetitions,
+                                                     upper_rep_vec,
                                                      point3,
                                                      point2,
                                                      false);
@@ -93,8 +96,9 @@ namespace aspect
         }
       else
         {
+          const std::vector<unsigned int> lower_rep_vec(lower_repetitions.begin(), lower_repetitions.end());
           GridGenerator::subdivided_hyper_rectangle (coarse_grid,
-                                                     lower_repetitions,
+                                                     lower_rep_vec,
                                                      point1,
                                                      point2,
                                                      false);
@@ -558,12 +562,6 @@ namespace aspect
       {
         prm.enter_subsection("Chunk with lithosphere boundary indicators");
         {
-          Assert (dim >= 2, ExcInternalError());
-          Assert (dim <= 3, ExcInternalError());
-
-          upper_repetitions.resize(dim);
-          lower_repetitions.resize(dim);
-
           point1[0] = prm.get_double("Chunk inner radius");
           point2[0] = prm.get_double("Chunk outer radius");
           point3[0] = prm.get_double("Chunk middle boundary radius");

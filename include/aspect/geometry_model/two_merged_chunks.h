@@ -313,8 +313,8 @@ namespace aspect
          * The number of cells in each coordinate direction
          * for the lower and upper chunk.
          */
-        std::vector<unsigned int> lower_repetitions;
-        std::vector<unsigned int> upper_repetitions;
+        std::array<unsigned int, dim> lower_repetitions;
+        std::array<unsigned int, dim> upper_repetitions;
 
         /**
          * An object that describes the geometry.

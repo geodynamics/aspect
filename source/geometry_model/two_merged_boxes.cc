@@ -77,10 +77,10 @@ namespace aspect
     TwoMergedBoxes<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &total_coarse_grid) const
     {
-      std::vector<unsigned int> lower_rep_vec(lower_repetitions, lower_repetitions+dim);
+      std::vector<unsigned int> lower_rep_vec(lower_repetitions.begin(), lower_repetitions.end());
       if (use_merged_grids)
         {
-          std::vector<unsigned int> upper_rep_vec(upper_repetitions, upper_repetitions+dim);
+          std::vector<unsigned int> upper_rep_vec(upper_repetitions.begin(), upper_repetitions.end());
 
           // the two triangulations that will be merged
           Triangulation<dim> lower_coarse_grid;

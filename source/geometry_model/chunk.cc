@@ -502,8 +502,9 @@ namespace aspect
     Chunk<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
+      const std::vector<unsigned int> rep_vec(repetitions.begin(), repetitions.end());
       GridGenerator::subdivided_hyper_rectangle (coarse_grid,
-                                                 repetitions,
+                                                 rep_vec,
                                                  point1,
                                                  point2,
                                                  true);
@@ -880,8 +881,6 @@ namespace aspect
       {
         prm.enter_subsection("Chunk");
         {
-          repetitions.resize(dim);
-
           point1[0] = prm.get_double ("Chunk inner radius");
           point2[0] = prm.get_double ("Chunk outer radius");
           repetitions[0] = prm.get_integer ("Radius repetitions");
