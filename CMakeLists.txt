@@ -38,8 +38,11 @@ IF ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   "begin a build in a different directory.")
 ENDIF()
 
-# Set the name of the project and target:
+# Set the name of the project and main target. If we are generating
+# ASPECT debug and release mode, we have the debug build as 'aspect'
+# and we populate a list of all targets (by default they are the same):
 SET(TARGET "aspect")
+SET(TARGETS "aspect")
 
 FILE(GLOB_RECURSE TARGET_SRC
      "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
@@ -298,7 +301,7 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/unit_tests/CMakeLists.txt)
   ADD_CUSTOM_TARGET(run_unit_tests
     COMMAND ${CMAKE_BINARY_DIR}/aspect --test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
-    DEPENDS aspect
+    DEPENDS ${TARGET}
     COMMENT "Running unit_tests ...")
 
   ADD_DEPENDENCIES(test run_unit_tests)
@@ -314,7 +317,7 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
 
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
 
-  SET(aspect_binary ${CMAKE_BINARY_DIR}/aspect)
+  SET(aspect_binary ${CMAKE_BINARY_DIR}/${TARGET})
 
   # set a flag so we don't need to rerun this configuration step every time:
   SET(ASPECT_NEED_TEST_CONFIGURE OFF CACHE BOOL "" FORCE)
@@ -340,7 +343,7 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
   ADD_CUSTOM_TARGET(run_tests
     COMMAND ${CMAKE_COMMAND} --build . --target test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    DEPENDS aspect
+    DEPENDS ${TARGET}
     COMMENT "Running tests ...")
 
   ADD_DEPENDENCIES(test run_tests)
@@ -384,6 +387,15 @@ ADD_CUSTOM_TARGET(debug
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   VERBATIM
   COMMENT "switching to DEBUG mode..."
+  )
+ADD_CUSTOM_TARGET(debugrelease
+  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=DebugRelease .
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Debug and Release mode. Now recompile with: ${_make_command}"
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  VERBATIM
+  COMMENT "switching to DEBUG/RELEASE mode..."
   )
 ENDIF()
 
@@ -496,14 +508,28 @@ IF(NOT ASPECT_ADDITIONAL_CXX_FLAGS STREQUAL "")
   MESSAGE(STATUS "  DEAL_II_CXX_FLAGS_RELEASE: ${DEAL_II_CXX_FLAGS_RELEASE}")
 ENDIF()
 
-ADD_EXECUTABLE(${TARGET} ${TARGET_SRC})
-DEAL_II_SETUP_TARGET(${TARGET})
+# Provide "release" and "debug" targets to switch compile mode
+IF(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
+  ADD_EXECUTABLE(${TARGET} ${TARGET_SRC})
+  DEAL_II_SETUP_TARGET(${TARGET} DEBUG)
+  ADD_EXECUTABLE(${TARGET}-release ${TARGET_SRC})
+  DEAL_II_SETUP_TARGET(${TARGET}-release RELEASE)
+  SET(TARGETS ${TARGET}-release ${TARGET})
+  # default for testing:
+  SET(TARGET ${TARGET})
+ELSE()
+  ADD_EXECUTABLE(${TARGET} ${TARGET_SRC})
+  DEAL_II_SETUP_TARGET(${TARGET})
+ENDIF()
 
 # deal.II does not define NDEBUG, but the world builder relies on it to disable
 # its asserts in release mode. Set it manually for anything but debug mode.
 # Note: If deal.II decides in the future to define this, this can be removed.
-IF (NOT CMAKE_BUILD_TYPE MATCHES Debug)
-    ADD_DEFINITIONS("-DNDEBUG")
+IF (CMAKE_BUILD_TYPE MATCHES Release)
+  ADD_DEFINITIONS("-DNDEBUG")
+ENDIF()
+IF (CMAKE_BUILD_TYPE MATCHES DebugRelease)
+  target_compile_definitions(${TARGET}-release PUBLIC "NDEBUG")
 ENDIF()
 
 # find zlib if it is installed in a non-standard location
@@ -513,14 +539,18 @@ IF("${ZLIB_DIR}" STREQUAL "")
 ENDIF()
 FIND_PACKAGE(ZLIB)
 INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
-TARGET_LINK_LIBRARIES(${TARGET} ${ZLIB_LIBRARY})
+FOREACH(_T ${TARGETS})
+  TARGET_LINK_LIBRARIES(${_T} ${ZLIB_LIBRARY})
+ENDFOREACH()
 
 FIND_PACKAGE(PerpleX QUIET
   HINTS ./contrib/perplex/install/ ../ ../../ ${PERPLEX_DIR} $ENV{PERPLEX_DIR})
 IF(${PerpleX_FOUND})
   MESSAGE(STATUS "PerpleX found at ${PerpleX_INCLUDE_DIR}")
   INCLUDE_DIRECTORIES(${PerpleX_INCLUDE_DIR})
-  TARGET_LINK_LIBRARIES(${TARGET} ${PerpleX_LIBRARIES})
+  FOREACH(_T ${TARGETS})
+    TARGET_LINK_LIBRARIES(${_T} ${PerpleX_LIBRARIES})
+  ENDFOREACH()
   SET(ASPECT_WITH_PERPLEX ON)
 ELSE()
   SET(ASPECT_WITH_PERPLEX OFF)
@@ -535,7 +565,9 @@ IF(ASPECT_WITH_LIBDAP)
   FIND_PACKAGE(LIBDAP)
   IF(${LIBDAP_FOUND})
     INCLUDE_DIRECTORIES(${LIBDAP_INCLUDE_DIRS})
-    TARGET_LINK_LIBRARIES(${TARGET} ${LIBDAP_LIBRARIES})
+    FOREACH(_T ${TARGETS})
+      TARGET_LINK_LIBRARIES(${_T} ${LIBDAP_LIBRARIES})
+    ENDFOREACH()
     MESSAGE(STATUS "LIBDAP found at ${LIBDAP_LIBRARY}\n")
   ELSE()
     MESSAGE(FATAL_ERROR "LIBDAP not found. Disable ASPECT_WITH_LIBDAP or specify a hint to your installation directory with LIBDAP_DIR.")
@@ -557,7 +589,9 @@ IF(ASPECT_WITH_NETCDF)
     MESSAGE(STATUS "  NETCDF_VERSION: ${NETCDF_VERSION}")
 
     INCLUDE_DIRECTORIES(${NETCDF_INCLUDE_DIRS})
-    TARGET_LINK_LIBRARIES(${TARGET} ${NETCDF_LIBRARIES})
+    FOREACH(_T ${TARGETS})
+      TARGET_LINK_LIBRARIES(${_T} ${NETCDF_LIBRARIES})
+    ENDFOREACH()
   ELSE()
     MESSAGE(FATAL_ERROR "NETCDF not found. Disable ASPECT_WITH_NETCDF or specify a hint to your installation directory with NETCDF_DIR.")
   ENDIF()
@@ -566,7 +600,9 @@ ENDIF()
 
 IF (ASPECT_USE_SHARED_LIBS)
   # some systems need to explicitly link to some libraries to use dlopen
-  TARGET_LINK_LIBRARIES(aspect ${CMAKE_DL_LIBS})
+  FOREACH(_T ${TARGETS})
+    TARGET_LINK_LIBRARIES(${_T} ${CMAKE_DL_LIBS})
+  ENDFOREACH()
 ENDIF()
 
 
@@ -636,6 +672,10 @@ IF (ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
   SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "" FORCE)
 ENDIF()
 
+IF (ASPECT_PRECOMPILE_HEADERS AND ${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
+  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "" FORCE)
+ENDIF()
+
 IF (ASPECT_PRECOMPILE_HEADERS)
   IF (CMAKE_VERSION VERSION_LESS 3.9)
     MESSAGE(STATUS "Enabling cotire to precompile external header files.")
@@ -645,21 +685,21 @@ IF (ASPECT_PRECOMPILE_HEADERS)
     # and unity build to pass. We need to exclude some headers that
     # frequently cause problems, and undefine some macros between source
     # files that would otherwise interfere with each other.
-    SET_TARGET_PROPERTIES (aspect PROPERTIES
+    SET_TARGET_PROPERTIES (${TARGET} PROPERTIES
         COTIRE_PREFIX_HEADER_IGNORE_PATH
         "/usr/include/;${CMAKE_SOURCE_DIR};${CMAKE_BINARY_DIR}")
 
     # This line activates the cotire module for the aspect target,
     # and therefore the whole precompilation
-    cotire(aspect)
+    cotire(${TARGET})
 
   ELSEIF (NOT CMAKE_VERSION VERSION_LESS 3.16)
     MESSAGE(STATUS "Precompiling common header files.")
     # Use the native cmake support to precompile some common headers
     # from ASPECT and deal.II that are frequently included, but rarely changed.
-    TARGET_PRECOMPILE_HEADERS(aspect PRIVATE
+    TARGET_PRECOMPILE_HEADERS(${TARGET} PRIVATE
       <aspect/global.h> <aspect/plugins.h> <aspect/introspection.h> <aspect/parameters.h>)
-    TARGET_PRECOMPILE_HEADERS(aspect PRIVATE
+    TARGET_PRECOMPILE_HEADERS(${TARGET} PRIVATE
       <deal.II/base/table_handler.h> <deal.II/base/timer.h>
       <deal.II/base/conditional_ostream.h> <deal.II/distributed/tria.h>
       <deal.II/dofs/dof_handler.h> <deal.II/fe/fe.h> <deal.II/fe/mapping_q.h>
@@ -673,17 +713,16 @@ ELSE()
   MESSAGE(STATUS "Disabling precompiling headers.")
 ENDIF()
 
-
-IF (ASPECT_UNITY_BUILD)
+IF (ASPECT_UNITY_BUILD AND NOT ${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
   IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
-    SET_PROPERTY(TARGET aspect PROPERTY UNITY_BUILD TRUE)
+    SET_PROPERTY(TARGET ${TARGET} PROPERTY UNITY_BUILD TRUE)
     MESSAGE(STATUS "Combining source files into unity build.")
   ELSEIF(CMAKE_VERSION VERSION_LESS 3.16)
     MESSAGE(FATAL_ERROR "ASPECT_UNITY_BUILD is currently only supported for CMake 3.16 and newer versions.")
   ENDIF()
 ELSE()
   IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
-    SET_PROPERTY(TARGET aspect PROPERTY UNITY_BUILD FALSE)
+    SET_PROPERTY(TARGET ${TARGET} PROPERTY UNITY_BUILD FALSE)
   ENDIF()
 
   MESSAGE(STATUS "Disabling unity build.")
@@ -735,12 +774,15 @@ ENDIF()
 ## installation
 #
 # binary:
-INSTALL(TARGETS aspect
+INSTALL(TARGETS ${TARGETS}
   RUNTIME DESTINATION bin
   COMPONENT runtime)
 
 # make sure we have the rpath to our dependencies set:
-SET_PROPERTY(TARGET aspect PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+FOREACH(_T ${TARGETS})
+  SET_PROPERTY(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+ENDFOREACH()
 
 # headers:
 INSTALL(DIRECTORY include/ ${CMAKE_BINARY_DIR}/include/
