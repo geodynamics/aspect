@@ -905,8 +905,8 @@ namespace aspect
 
           if (dim == 3)
             {
-              point1[2] = prm.get_double ("Chunk minimum latitude") * degtorad;
-              point2[2] = prm.get_double ("Chunk maximum latitude") * degtorad;
+              point1[2] = prm.get_double ("Chunk minimum latitude") * constants::degree_to_radians;
+              point2[2] = prm.get_double ("Chunk maximum latitude") * constants::degree_to_radians;
               repetitions[2] = prm.get_integer ("Latitude repetitions");
 
               AssertThrow (point1[2] < point2[2],

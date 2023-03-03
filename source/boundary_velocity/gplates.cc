@@ -81,7 +81,7 @@ namespace aspect
                    << "   Input point 2 normalized cartesian coordinates: " << point_two  << std::endl
                    << "   Input point 2 rotated model coordinates: " << transpose(rotation_matrix) * point_two << std::endl
                    << std::endl <<  std::setprecision(2)
-                   << "   Model will be rotated by " << -rotation_angle * constants::radians_to_degree
+                   << "   Model will be rotated by " << -rotation_angle *constants::radians_to_degree
                    << " degrees around axis " << rotation_axis << std::endl
                    << "   The ParaView rotation angles are: " << angles[0] << ' ' << angles [1] << ' ' << angles[2] << std::endl
                    << "   The inverse ParaView rotation angles are: " << back_angles[0] << ' ' << back_angles [1] << ' ' << back_angles[2]

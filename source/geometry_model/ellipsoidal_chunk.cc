@@ -175,10 +175,10 @@ namespace aspect
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_topography(const Point<3> &phi_theta_d) const
     {
       const double d = phi_theta_d[2];
-      const double rad_to_degree = constants::radians_to_degree;
       Point<dim-1> phi_theta;
       if (dim == 3)
-        phi_theta = Point<dim-1>(phi_theta_d[0] * rad_to_degree,phi_theta_d[1] * rad_to_degree);
+        phi_theta = Point<dim-1>(phi_theta_d[0] * constants::radians_to_degree,
+                                 phi_theta_d[1] * constants::radians_to_degree);
       const double h = topography != nullptr ? topography->value(phi_theta) : 0;
       const double d_hat = bottom_depth * (d-h)/(bottom_depth+h);
       const Point<3> phi_theta_d_hat (phi_theta_d[0],
@@ -265,9 +265,9 @@ namespace aspect
       // Shift the grid point at (0,0,0) (and the rest of the
       // points with it) to the correct location at corner[0] at a
       // negative depth.
-      const Point<3> base_point(corners[0][0] * constants::degree_to_radians, 
-      corners[0][1] * constants::degree_to_radians,
-      -bottom_depth);
+      const Point<3> base_point(corners[0][0] * constants::degree_to_radians,
+                                corners[0][1] * constants::degree_to_radians,
+                                -bottom_depth);
       GridTools::shift(base_point,coarse_grid);
 
       // Transform to the ellipsoid surface

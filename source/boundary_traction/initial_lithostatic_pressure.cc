@@ -70,16 +70,15 @@ namespace aspect
 
       // For spherical(-like) domains, modify the representative point:
       // go from degrees to radians...
-      const double degrees_to_radians = constants::degree_to_radians;
       std::array<double, dim> spherical_representative_point;
       for (unsigned int d=0; d<dim; d++)
         spherical_representative_point[d] = representative_point[d];
-      spherical_representative_point[1] *= degrees_to_radians;
+      spherical_representative_point[1] *= constants::degree_to_radians;
       // and go from latitude to colatitude.
       if (dim == 3)
         {
           spherical_representative_point[2] = 90.0 - spherical_representative_point[2];
-          spherical_representative_point[2] *= degrees_to_radians;
+          spherical_representative_point[2] *= constants::degree_to_radians;
         }
 
       // Check that the representative point lies in the domain.
