@@ -81,7 +81,7 @@ The format of valid entries for this parameter is that of a map given as &ldquo;
 
 **Pattern:** [Selection cartesian|spherical|depth ]
 
-**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo;, &lsquo;spherical&rsquo;, and &lsquo;depth&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. &lsquo;depth&rsquo; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo;, &lsquo;spherical&rsquo;, and &lsquo;depth&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. &lsquo;depth&rsquo; will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 
 (parameters:Boundary_20traction_20model/Function/Function_20constants)=
 ### __Parameter name:__ Function constants
@@ -109,7 +109,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Bool]
 
-**Documentation:** Specify traction as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive tractions point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.
+**Documentation:** Specify traction as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive tractions point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.
 
 (parameters:Boundary_20traction_20model/Function/Variable_20names)=
 ### __Parameter name:__ Variable names
@@ -135,4 +135,4 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The point where the pressure profile will be calculated. Cartesian coordinates $(x,y,z)$ when geometry is a box, otherwise enter radius, longitude, and in 3D latitude. Note that the coordinate related to the depth ($y$ in 2D cartesian, $z$ in 3D cartesian and radius in spherical coordinates) is not used. Units: \si{\meter} or degrees.
+**Documentation:** The point where the pressure profile will be calculated. Cartesian coordinates $(x,y,z)$ when geometry is a box, otherwise enter radius, longitude, and in 3d latitude. Note that the coordinate related to the depth ($y$ in 2d cartesian, $z$ in 3d cartesian and radius in spherical coordinates) is not used. Units: \si{\meter} or degrees.

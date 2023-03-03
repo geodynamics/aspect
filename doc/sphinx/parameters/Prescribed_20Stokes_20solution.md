@@ -37,6 +37,14 @@
 
 **Documentation:** The file name of the model data.
 
+(parameters:Prescribed_20Stokes_20solution/Ascii_20data_20model/First_20point_20on_20slice)=
+### __Parameter name:__ First point on slice
+**Default value:** 0.0,1.0,0.0
+
+**Pattern:** [Anything]
+
+**Documentation:** Point that determines the plane in which the 2d slice lies in. This variable is only used if &rsquo;Slice dataset in 2d plane&rsquo; is true. The slice will go through this point, the point defined by the parameter &rsquo;Second point on slice&rsquo;, and the center of the model domain. After the rotation, this first point will lie along the (0,1,0) axis of the coordinate system. The coordinates of the point have to be given in Cartesian coordinates.
+
 (parameters:Prescribed_20Stokes_20solution/Ascii_20data_20model/Scale_20factor)=
 ### __Parameter name:__ Scale factor
 **Default value:** 1.
@@ -44,6 +52,22 @@
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+
+(parameters:Prescribed_20Stokes_20solution/Ascii_20data_20model/Second_20point_20on_20slice)=
+### __Parameter name:__ Second point on slice
+**Default value:** 1.0,0.0,0.0
+
+**Pattern:** [Anything]
+
+**Documentation:** Second point that determines the plane in which the 2d slice lies in. This variable is only used if &rsquo;Slice dataset in 2d plane&rsquo; is true. The slice will go through this point, the point defined by the parameter &rsquo;First point on slice&rsquo;, and the center of the model domain. The coordinates of the point have to be given in Cartesian coordinates.
+
+(parameters:Prescribed_20Stokes_20solution/Ascii_20data_20model/Slice_20dataset_20in_202D_20plane)=
+### __Parameter name:__ Slice dataset in 2D plane
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to use a 2d data slice of a 3d data file or the entire data file. Slicing a 3d dataset is only supported for 2d models.
 
 (parameters:Prescribed_20Stokes_20solution/Compaction_20pressure_20function)=
 ## **Subsection:** Prescribed Stokes solution / Compaction pressure function

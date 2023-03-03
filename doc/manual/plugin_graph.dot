@@ -399,6 +399,9 @@ SimulatorAccess -> N6aspect14MeshRefinement25MinimumRefinementFunctionILi2EEE [s
 N6aspect14MeshRefinement23NonadiabaticTemperatureILi2EEE [label="nonadiabatic\ntemperature", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect14MeshRefinement23NonadiabaticTemperatureILi2EEE -> N6aspect14MeshRefinement9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect14MeshRefinement23NonadiabaticTemperatureILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect14MeshRefinement32NonadiabaticTemperatureThresholdILi2EEE [label="nonadiabatic\ntemperature\nthreshold", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect14MeshRefinement32NonadiabaticTemperatureThresholdILi2EEE -> N6aspect14MeshRefinement9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect14MeshRefinement32NonadiabaticTemperatureThresholdILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect14MeshRefinement15ParticleDensityILi2EEE [label="particle\ndensity", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect14MeshRefinement15ParticleDensityILi2EEE -> N6aspect14MeshRefinement9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect14MeshRefinement15ParticleDensityILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
@@ -494,6 +497,9 @@ N6aspect8Particle8Property13ElasticStressILi2EEE -> N6aspect8Particle8Property9I
 SimulatorAccess -> N6aspect8Particle8Property13ElasticStressILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect8Particle8Property8FunctionILi2EEE [label="function", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect8Particle8Property8FunctionILi2EEE -> N6aspect8Particle8Property9InterfaceILi2EEE [len=3, weight=50];
+N6aspect8Particle8Property9GrainSizeILi2EEE [label="grain size", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect8Particle8Property9GrainSizeILi2EEE -> N6aspect8Particle8Property9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect8Particle8Property9GrainSizeILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect8Particle8Property18InitialCompositionILi2EEE [label="initial\ncomposition", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect8Particle8Property18InitialCompositionILi2EEE -> N6aspect8Particle8Property9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect8Particle8Property18InitialCompositionILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];

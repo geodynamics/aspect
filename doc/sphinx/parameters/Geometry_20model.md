@@ -27,13 +27,13 @@ The dimensions of the model are specified by parameters of the following form: C
 
 When used in 2d, this geometry does not imply the use of a spherical coordinate system. Indeed, in 2d the geometry is simply a sector of an annulus in a Cartesian coordinate system and consequently would correspond to a sector of a cross section of the fluid filled space between two infinite cylinders where one has made the assumption that the velocity in direction of the cylinder axes is zero. This is consistent with the definition of what we consider the two-dimension case given in Section~\ref{sec:meaning-of-2d}. It is also possible to add initial topography to the chunk geometry, based on an ascii data file.
 
-&lsquo;chunk with lithosphere boundary indicators&rsquo;: A geometry which can be described as a chunk of a spherical shell, bounded by lines of longitude, latitude and radius. The side boundaries have two boundary indicators, so the user can prescribe different boundary conditions on these boundaries. The minimum and maximum longitude, (latitude) and depth of the chunk are set in the parameter file. The chunk geometry labels its 2*dim+2*(dim-1) sides as follows: &ldquo;lower west&rdquo; and &ldquo;lower east&rdquo;: minimum and maximum longitude of the lower part of the east and west side boundaries, &ldquo;upper west and upper east&rdquo;: minimum and maximum longitude of the upper part of the east and west side boundaries, &ldquo;lower south&rdquo; and &ldquo;lower north&rdquo;: minimum and maximum latitude of the lower part of the south and north side boundaries, &ldquo;upper south&rdquo; and &ldquo;upper north&rdquo;: minimum and maximum latitude of the upper part of the south and north side boundaries,
+&lsquo;chunk with lithosphere boundary indicators&rsquo;: A geometry which can be described as a chunk of a spherical shell, bounded by lines of longitude, latitude and radius. The side boundaries have two boundary indicators, so the user can prescribe different boundary conditions on these boundaries. The minimum and maximum longitude, (latitude) and depth of the chunk are set in the parameter file. The chunk geometry labels its 2*dim+2*(dim-1) sides as follows: &ldquo;lowerwest&rdquo; and &ldquo;lowereast&rdquo;: minimum and maximum longitude of the lower part of the east and west side boundaries, &ldquo;upperwest&rdquo; and &ldquo;uppereast&rdquo;: minimum and maximum longitude of the upper part of the east and west side boundaries, &ldquo;lowersouth&rdquo; and &ldquo;lowernorth&rdquo;: minimum and maximum latitude of the lower part of the south and north side boundaries, &ldquo;uppersouth&rdquo; and &ldquo;uppernorth&rdquo;: minimum and maximum latitude of the upper part of the south and north side boundaries,
 
-The dimensions of the model are specified by parameters of the following form: Chunk (minimum || maximum) (longitude || latitude): edges of geographical quadrangle (in degrees). Chunk (inner || outer || middle boundary) radius: Radii at bottom and top of chunk and the radius at which the lower boundary indicator along a side boundary transitions into the upper boundary indicator. (Longitude || Latitude) repetitions: number of cells in each coordinate direction.(Inner || Outer) chunk radius repetitions: number of cells in the radial coordinate direction for the lower part of the domain (up to the Middle boundary radius) and for the upper part of the domain.
+The dimensions of the model are specified by parameters of the following form: Chunk (minimum | maximum) (longitude | latitude): edges of geographical quadrangle (in degrees). Chunk (inner | outer | middle boundary) radius: Radii at bottom and top of chunk and the radius at which the lower boundary indicator along a side boundary transitions into the upper boundary indicator. (Longitude | Latitude) repetitions: number of cells in each coordinate direction.(Inner | Outer) chunk radius repetitions: number of cells in the radial coordinate direction for the lower part of the domain (up to the Middle boundary radius) and for the upper part of the domain.
 
 When used in 2d, this geometry does not imply the use of a spherical coordinate system. Indeed, in 2d the geometry is simply a sector of an annulus in a Cartesian coordinate system and consequently would correspond to a sector of a cross section of the fluid filled space between two infinite cylinders where one has made the assumption that the velocity in direction of the cylinder axes is zero. This is consistent with the definition of what we consider the two-dimension case given in Section~\ref{sec:meaning-of-2d}. It is also possible to add initial topography to the chunk geometry, based on an ascii data file.
 
-&lsquo;ellipsoidal chunk&rsquo;: A 3D chunk geometry that accounts for Earth&rsquo;s ellipticity (default assuming the WGS84 ellipsoid definition) which can be defined in non-coordinate directions. In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the same length so that there is only a semi-major axis and a semi-minor axis. The user has two options for creating an ellipsoidal chunk geometry: 1) by defining two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal chunk geometry will be created. 2) by defining three points a non-coordinate parallel ellipsoidal chunk will be created. The points are defined in the input file by longitude:latitude. It is also possible to define additional subdivisions of the mesh in each direction. The boundary of the domain is formed by linear interpolation in longitude-latitude space between adjacent points (i.e. [lon, lat](f) = [lon1*f + lon2*(1-f), lat1*f + lat2*(1-f)], where f is a value between 0 and 1). Faces of the model are defined as 0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.
+&lsquo;ellipsoidal chunk&rsquo;: A 3d chunk geometry that accounts for Earth&rsquo;s ellipticity (default assuming the WGS84 ellipsoid definition) which can be defined in non-coordinate directions. In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the same length so that there is only a semi-major axis and a semi-minor axis. The user has two options for creating an ellipsoidal chunk geometry: 1) by defining two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal chunk geometry will be created. 2) by defining three points a non-coordinate parallel ellipsoidal chunk will be created. The points are defined in the input file by longitude:latitude. It is also possible to define additional subdivisions of the mesh in each direction. The boundary of the domain is formed by linear interpolation in longitude-latitude space between adjacent points (i.e. [lon, lat](f) = [lon1*f + lon2*(1-f), lat1*f + lat2*(1-f)], where f is a value between 0 and 1). Faces of the model are defined as 0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.
 
 This geometry model supports initial topography for deforming the initial mesh.
 
@@ -182,6 +182,14 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The thickness of the lithosphere used to create additional boundary indicators to set specific boundary conditions for the lithosphere.
+
+(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Use_20merged_20grids)=
+### __Parameter name:__ Use merged grids
+**Default value:** true
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to make the grid by gluing together two boxes, or just use one chunk to make the grid. Using two grids glued together is a safer option, since it forces the boundary conditions to be always applied to the same depth, but using one grid allows for a more flexible usage of the adaptive refinement. Note that if there is no cell boundary exactly on the boundary between the lithosphere and the mantle, the velocity boundary will not be exactly at that depth. Therefore, using a merged grid is generally recommended over using one grid.When using one grid, the parameter for lower repetitions is used and the upper repetitions are ignored.
 
 (parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20extent)=
 ### __Parameter name:__ X extent
@@ -451,6 +459,14 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Documentation:** Number of cells in radial direction for the upper chunk.
 
+(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Use_20merged_20grids)=
+### __Parameter name:__ Use merged grids
+**Default value:** true
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to make the grid by gluing together two boxes, or just use one chunk to make the grid. Using two grids glued together is a safer option, since it forces the boundary conditions to be always applied to the same depth, but using one grid allows for a more flexible usage of the adaptive refinement. Note that if there is no cell boundary exactly on the boundary between the lithosphere and the mantle, the velocity boundary will not be exactly at that depth. Therefore, using a merged grid is generally recommended over using one grid. When using one grid, the parameter for lower repetitions is used and the upper repetitions are ignored.
+
 (parameters:Geometry_20model/Ellipsoidal_20chunk)=
 ## **Subsection:** Geometry model / Ellipsoidal chunk
 (parameters:Geometry_20model/Ellipsoidal_20chunk/Depth)=
@@ -585,7 +601,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Selection cartesian|spherical ]
 
-**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo; and &lsquo;spherical&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle.
+**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo; and &lsquo;spherical&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle.
 
 (parameters:Geometry_20model/Initial_20topography_20model/Function/Function_20constants)=
 ### __Parameter name:__ Function constants

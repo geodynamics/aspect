@@ -730,7 +730,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 {\it Description:} When the composition is fixed on a given boundary as determined by the list of 'Fixed composition boundary indicators', there might be parts of the boundary where material flows out and one may want to prescribe the composition only on those parts of the boundary where there is inflow. This parameter determines if compositions are only prescribed at these inflow parts of the boundary (if false) or everywhere on a given boundary, independent of the flow direction (if true). By default, this parameter is set to false, except in models with melt transport (see below). Note that in this context, `fixed' refers to the fact that these are the boundary indicators where Dirichlet boundary conditions are applied, and does not imply that the boundary composition is time-independent. 
 
-Mathematically speaking, the compositional fields satisfy an advection equation that has no diffusion. For this equation, one can only impose Dirichlet boundary conditions (i.e., prescribe a fixed compositional field value at the boundary) at those boundaries where material flows in. This would correspond to the ``false'' setting of this parameter, which is correspondingly the default. On the other hand, on a finite dimensional discretization such as the one one obtains from the finite element method, it is possible to also prescribe values on outflow boundaries, even though this may make no physical sense. This would then correspond to the ``true'' setting of this parameter.
+Mathematically speaking, the compositional fields satisfy an advection equation that has no diffusion. For this equation, one can only impose Dirichlet boundary conditions (i.e., prescribe a fixed compositional field value at the boundary) at those boundaries where material flows in. This would correspond to the ``false'' setting of this parameter, which is correspondingly the default. On the other hand, on a finite dimensional discretization such as the one one obtains from the finite element method, it is possible to also prescribe values on outflow boundaries, even though this may make no physical sense. This would then correspond to the ``true'' setting of this parameter. Note however that this parameter is only taken into account for the continuous field method and is not applied to the Discontinuous Galerkin (DG) field method. 
 
 A warning for models with melt transport: In models with fluid flow, some compositional fields (in particular the porosity) might be transported with the fluid velocity, and would need to set the constraints based on the fluid velocity. However, this is currently not possible, because we reuse the same matrix for all compositional fields, and therefore can not use different constraints for different fields. Consequently, we set this parameter to true by default in models where melt transport is enabled. Be aware that if you change this default setting, you will not use the melt velocity, but the solid velocity to determine on which parts of the boundaries there is outflow.
 
@@ -1176,7 +1176,7 @@ Because this class simply takes what the initial composition had described, this
 {\it Default:} cartesian
 
 
-{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are 'cartesian', 'spherical', and 'depth'. 'spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. 'depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are 'cartesian', 'spherical', and 'depth'. 'spherical' coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. 'depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 
 
 {\it Possible values:} Any one of cartesian, spherical, depth
@@ -1442,7 +1442,7 @@ The symbol $t$ indicating time that may appear in the formulas for the prescribe
 {\it Default:} cartesian
 
 
-{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 
 
 {\it Possible values:} Any one of cartesian, spherical, depth
@@ -2537,7 +2537,7 @@ Because this class simply takes what the initial temperature had described, this
 {\it Default:} cartesian
 
 
-{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 
 
 {\it Possible values:} Any one of cartesian, spherical, depth
@@ -2881,7 +2881,7 @@ The format of valid entries for this parameter is that of a map given as ``key1 
 {\it Default:} cartesian
 
 
-{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 
 
 {\it Possible values:} Any one of cartesian, spherical, depth
@@ -2936,7 +2936,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} false
 
 
-{\it Description:} Specify traction as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive tractions point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.
+{\it Description:} Specify traction as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive tractions point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -2993,7 +2993,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 
 
 
-{\it Description:} The point where the pressure profile will be calculated. Cartesian coordinates $(x,y,z)$ when geometry is a box, otherwise enter radius, longitude, and in 3D latitude. Note that the coordinate related to the depth ($y$ in 2D cartesian, $z$ in 3D cartesian and radius in spherical coordinates) is not used. Units: \si{\meter} or degrees.
+{\it Description:} The point where the pressure profile will be calculated. Cartesian coordinates $(x,y,z)$ when geometry is a box, otherwise enter radius, longitude, and in 3d latitude. Note that the coordinate related to the depth ($y$ in 2d cartesian, $z$ in 3d cartesian and radius in spherical coordinates) is not used. Units: \si{\meter} or degrees.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
@@ -3216,7 +3216,7 @@ The names of the boundaries listed here can either by numbers (in which case the
 {\it Default:} false
 
 
-{\it Description:} Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.
+{\it Description:} Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -3239,7 +3239,7 @@ The names of the boundaries listed here can either by numbers (in which case the
 {\it Default:} cartesian
 
 
-{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 
 
 {\it Possible values:} Any one of cartesian, spherical, depth
@@ -3294,7 +3294,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} false
 
 
-{\it Description:} Specify velocity as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive velocities point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.
+{\it Description:} Specify velocity as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive velocities point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -3436,7 +3436,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 1.570796,0.0
 
 
-{\it Description:} Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle) and phi in radians. This value is not utilized in 3D geometries, and can therefore be set to the default or any user-defined quantity.
+{\it Description:} Point that determines the plane in which a 2d model lies in. Has to be in the format `a,b' where a and b are theta (polar angle) and phi in radians. This value is not utilized in 3d geometries, and can therefore be set to the default or any user-defined quantity.
 
 
 {\it Possible values:} Any string
@@ -3453,7 +3453,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 1.570796,1.570796
 
 
-{\it Description:} Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle) and phi in radians. This value is not utilized in 3D geometries, and can therefore be set to the default or any user-defined quantity.
+{\it Description:} Point that determines the plane in which a 2d model lies in. Has to be in the format `a,b' where a and b are theta (polar angle) and phi in radians. This value is not utilized in 3d geometries, and can therefore be set to the default or any user-defined quantity.
 
 
 {\it Possible values:} Any string
@@ -4189,13 +4189,13 @@ The dimensions of the model are specified by parameters of the following form: C
 
 When used in 2d, this geometry does not imply the use of a spherical coordinate system. Indeed, in 2d the geometry is simply a sector of an annulus in a Cartesian coordinate system and consequently would correspond to a sector of a cross section of the fluid filled space between two infinite cylinders where one has made the assumption that the velocity in direction of the cylinder axes is zero. This is consistent with the definition of what we consider the two-dimension case given in Section~\ref{sec:meaning-of-2d}. It is also possible to add initial topography to the chunk geometry, based on an ascii data file. 
 
-`chunk with lithosphere boundary indicators': A geometry which can be described as a chunk of a spherical shell, bounded by lines of longitude, latitude and radius. The side boundaries have two boundary indicators, so the user can prescribe different boundary conditions on these boundaries. The minimum and maximum longitude, (latitude) and depth of the chunk are set in the parameter file. The chunk geometry labels its 2*dim+2*(dim-1) sides as follows: ``lower west'' and ``lower east'': minimum and maximum longitude of the lower part of the east and west side boundaries, ``upper west and upper east'': minimum and maximum longitude of the upper part of the east and west side boundaries, ``lower south'' and ``lower north'': minimum and maximum latitude of the lower part of the south and north side boundaries, ``upper south'' and ``upper north'': minimum and maximum latitude of the upper part of the south and north side boundaries, 
+`chunk with lithosphere boundary indicators': A geometry which can be described as a chunk of a spherical shell, bounded by lines of longitude, latitude and radius. The side boundaries have two boundary indicators, so the user can prescribe different boundary conditions on these boundaries. The minimum and maximum longitude, (latitude) and depth of the chunk are set in the parameter file. The chunk geometry labels its 2*dim+2*(dim-1) sides as follows: ``lowerwest'' and ``lowereast'': minimum and maximum longitude of the lower part of the east and west side boundaries, ``upperwest'' and ``uppereast'': minimum and maximum longitude of the upper part of the east and west side boundaries, ``lowersouth'' and ``lowernorth'': minimum and maximum latitude of the lower part of the south and north side boundaries, ``uppersouth'' and ``uppernorth'': minimum and maximum latitude of the upper part of the south and north side boundaries, 
 
-The dimensions of the model are specified by parameters of the following form: Chunk (minimum || maximum) (longitude || latitude): edges of geographical quadrangle (in degrees). Chunk (inner || outer || middle boundary) radius: Radii at bottom and top of chunk and the radius at which the lower boundary indicator along a side boundary transitions into the upper boundary indicator. (Longitude || Latitude) repetitions: number of cells in each coordinate direction.(Inner || Outer) chunk radius repetitions: number of cells in the radial coordinate direction for the lower part of the domain (up to the Middle boundary radius) and for the upper part of the domain. 
+The dimensions of the model are specified by parameters of the following form: Chunk (minimum | maximum) (longitude | latitude): edges of geographical quadrangle (in degrees). Chunk (inner | outer | middle boundary) radius: Radii at bottom and top of chunk and the radius at which the lower boundary indicator along a side boundary transitions into the upper boundary indicator. (Longitude | Latitude) repetitions: number of cells in each coordinate direction.(Inner | Outer) chunk radius repetitions: number of cells in the radial coordinate direction for the lower part of the domain (up to the Middle boundary radius) and for the upper part of the domain. 
 
 When used in 2d, this geometry does not imply the use of a spherical coordinate system. Indeed, in 2d the geometry is simply a sector of an annulus in a Cartesian coordinate system and consequently would correspond to a sector of a cross section of the fluid filled space between two infinite cylinders where one has made the assumption that the velocity in direction of the cylinder axes is zero. This is consistent with the definition of what we consider the two-dimension case given in Section~\ref{sec:meaning-of-2d}. It is also possible to add initial topography to the chunk geometry, based on an ascii data file. 
 
-`ellipsoidal chunk': A 3D chunk geometry that accounts for Earth's ellipticity (default assuming the WGS84 ellipsoid definition) which can be defined in non-coordinate directions. In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the same length so that there is only a semi-major axis and a semi-minor axis. The user has two options for creating an ellipsoidal chunk geometry: 1) by defining two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal chunk geometry will be created. 2) by defining three points a non-coordinate parallel ellipsoidal chunk will be created. The points are defined in the input file by longitude:latitude. It is also possible to define additional subdivisions of the mesh in each direction. The boundary of the domain is formed by linear interpolation in longitude-latitude space between adjacent points (i.e. [lon, lat](f) = [lon1*f + lon2*(1-f), lat1*f + lat2*(1-f)], where f is a value between 0 and 1). Faces of the model are defined as 0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.
+`ellipsoidal chunk': A 3d chunk geometry that accounts for Earth's ellipticity (default assuming the WGS84 ellipsoid definition) which can be defined in non-coordinate directions. In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the same length so that there is only a semi-major axis and a semi-minor axis. The user has two options for creating an ellipsoidal chunk geometry: 1) by defining two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal chunk geometry will be created. 2) by defining three points a non-coordinate parallel ellipsoidal chunk will be created. The points are defined in the input file by longitude:latitude. It is also possible to define additional subdivisions of the mesh in each direction. The boundary of the domain is formed by linear interpolation in longitude-latitude space between adjacent points (i.e. [lon, lat](f) = [lon1*f + lon2*(1-f), lat1*f + lat2*(1-f)], where f is a value between 0 and 1). Faces of the model are defined as 0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.
 
 This geometry model supports initial topography for deforming the initial mesh.
 
@@ -4501,6 +4501,23 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Use merged grids}
+\phantomsection\label{parameters:Geometry model/Box with lithosphere boundary indicators/Use merged grids}
+\label{parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Use_20merged_20grids}
+
+
+\index[prmindex]{Use merged grids}
+\index[prmindexfull]{Geometry model!Box with lithosphere boundary indicators!Use merged grids}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Whether to make the grid by gluing together two boxes, or just use one chunk to make the grid. Using two grids glued together is a safer option, since it forces the boundary conditions to be always applied to the same depth, but using one grid allows for a more flexible usage of the adaptive refinement. Note that if there is no cell boundary exactly on the boundary between the lithosphere and the mantle, the velocity boundary will not be exactly at that depth. Therefore, using a merged grid is generally recommended over using one grid.When using one grid, the parameter for lower repetitions is used and the upper repetitions are ignored.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt X extent}
 \phantomsection\label{parameters:Geometry model/Box with lithosphere boundary indicators/X extent}
 \label{parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20extent}
@@ -5074,6 +5091,23 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 
 {\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Use merged grids}
+\phantomsection\label{parameters:Geometry model/Chunk with lithosphere boundary indicators/Use merged grids}
+\label{parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Use_20merged_20grids}
+
+
+\index[prmindex]{Use merged grids}
+\index[prmindexfull]{Geometry model!Chunk with lithosphere boundary indicators!Use merged grids}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Whether to make the grid by gluing together two boxes, or just use one chunk to make the grid. Using two grids glued together is a safer option, since it forces the boundary conditions to be always applied to the same depth, but using one grid allows for a more flexible usage of the adaptive refinement. Note that if there is no cell boundary exactly on the boundary between the lithosphere and the mantle, the velocity boundary will not be exactly at that depth. Therefore, using a merged grid is generally recommended over using one grid. When using one grid, the parameter for lower repetitions is used and the upper repetitions are ignored.
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 \subsection{Parameters in section \tt Geometry model/Ellipsoidal chunk}
@@ -5359,7 +5393,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 {\it Default:} cartesian
 
 
-{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian' and `spherical'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. 
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian' and `spherical'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. 
 
 
 {\it Possible values:} Any one of cartesian, spherical
@@ -5885,7 +5919,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 1.
 
 
-{\it Description:} Value of the gravity vector in $m/s^2$ directed along negative y (2D) or z (3D) axis (if the magnitude is positive.
+{\it Description:} Value of the gravity vector in $m/s^2$ directed along negative y (2d) or z (3d) axis (if the magnitude is positive.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -6325,7 +6359,7 @@ The following composition models are available:
 
 `ascii data': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2', etc. in a 2d model and `x', `y', `z', `composition1', `composition2', etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions.
 
-`ascii data layered': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Each file defines a surface on which compositional fields are defined. Between the surfaces, the fields can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2' etc. in a 2d model and `x', `y', `z', `composition1', `composition2' etc. in a 3d model; i.e. the columns before the compositional field always contains the position of the surface along the vertical direction. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3D) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3D is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
+`ascii data layered': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Each file defines a surface on which compositional fields are defined. Between the surfaces, the fields can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2' etc. in a 2d model and `x', `y', `z', `composition1', `composition2' etc. in a 3d model; i.e. the columns before the compositional field always contains the position of the surface along the vertical direction. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3d) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3d is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
 
 `function': Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
@@ -6371,7 +6405,7 @@ The following composition models are available:
 
 `ascii data': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2', etc. in a 2d model and `x', `y', `z', `composition1', `composition2', etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions.
 
-`ascii data layered': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Each file defines a surface on which compositional fields are defined. Between the surfaces, the fields can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2' etc. in a 2d model and `x', `y', `z', `composition1', `composition2' etc. in a 3d model; i.e. the columns before the compositional field always contains the position of the surface along the vertical direction. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3D) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3D is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
+`ascii data layered': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Each file defines a surface on which compositional fields are defined. Between the surfaces, the fields can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2' etc. in a 2d model and `x', `y', `z', `composition1', `composition2' etc. in a 3d model; i.e. the columns before the compositional field always contains the position of the surface along the vertical direction. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3d) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3d is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
 
 `function': Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
@@ -6476,7 +6510,7 @@ When ``composition is specified, the initial model is treated as a standard comp
 {\it Default:} 0.0,1.0,0.0
 
 
-{\it Description:} Point that determines the plane in which the 2D slice lies in. This variable is only used if 'Slice dataset in 2D plane' is true. The slice will go through this point, the point defined by the parameter 'Second point on slice', and the center of the model domain. After the rotation, this first point will lie along the (0,1,0) axis of the coordinate system. The coordinates of the point have to be given in Cartesian coordinates.
+{\it Description:} Point that determines the plane in which the 2d slice lies in. This variable is only used if 'Slice dataset in 2d plane' is true. The slice will go through this point, the point defined by the parameter 'Second point on slice', and the center of the model domain. After the rotation, this first point will lie along the (0,1,0) axis of the coordinate system. The coordinates of the point have to be given in Cartesian coordinates.
 
 
 {\it Possible values:} Any string
@@ -6527,7 +6561,7 @@ When ``composition is specified, the initial model is treated as a standard comp
 {\it Default:} 1.0,0.0,0.0
 
 
-{\it Description:} Second point that determines the plane in which the 2D slice lies in. This variable is only used if 'Slice dataset in 2D plane' is true. The slice will go through this point, the point defined by the parameter 'First point on slice', and the center of the model domain. The coordinates of the point have to be given in Cartesian coordinates.
+{\it Description:} Second point that determines the plane in which the 2d slice lies in. This variable is only used if 'Slice dataset in 2d plane' is true. The slice will go through this point, the point defined by the parameter 'First point on slice', and the center of the model domain. The coordinates of the point have to be given in Cartesian coordinates.
 
 
 {\it Possible values:} Any string
@@ -6544,7 +6578,7 @@ When ``composition is specified, the initial model is treated as a standard comp
 {\it Default:} false
 
 
-{\it Description:} Whether to use a 2D data slice of a 3D data file or the entire data file. Slicing a 3D dataset is only supported for 2D models.
+{\it Description:} Whether to use a 2d data slice of a 3d data file or the entire data file. Slicing a 3d dataset is only supported for 2d models.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -6567,7 +6601,7 @@ When ``composition is specified, the initial model is treated as a standard comp
 {\it Default:} cartesian
 
 
-{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 
 
 {\it Possible values:} Any one of cartesian, spherical, depth
@@ -6674,7 +6708,7 @@ The following initial temperature models are available:
 
 `S40RTS perturbation': An initial temperature field in which the temperature is perturbed following the S20RTS or S40RTS shear wave velocity model by Ritsema and others, which can be downloaded here \url{http://www.earth.lsa.umich.edu/~jritsema/research.html}. Information on the vs model can be found in Ritsema, J., Deuss, A., van Heijst, H.J. \& Woodhouse, J.H., 2011. S40RTS: a degree-40 shear-velocity model for the mantle from new Rayleigh wave dispersion, teleseismic traveltime and normal-mode splitting function measurements, Geophys. J. Int. 184, 1223-1236. The scaling between the shear wave perturbation and the density perturbation can be constant and set by the user with the 'Vs to density scaling' parameter or depth-dependent and read in from a file. To convert density the user can specify the 'Thermal expansion coefficient in initial temperature scaling' parameter. The scaling is as follows: $\delta \ln \rho (r,\theta,\phi) = \xi \cdot \delta \ln v_s(r,\theta, \phi)$ and $\delta T(r,\theta,\phi) = - \frac{1}{\alpha} \delta \ln \rho(r,\theta,\phi)$. $\xi$ is the `vs to density scaling' parameter and $\alpha$ is the 'Thermal expansion coefficient in initial temperature scaling' parameter. The temperature perturbation is added to an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model). If a depth is specified in 'Remove temperature heterogeneity down to specified depth', there is no temperature perturbation prescribed down to that depth.
 Note the required file format if the vs to density scaling is read in from a file: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of points in the reference state as for example '\# POINTS: 3'. Following the comment lines there has to be a single line containing the names of all data columns, separated by arbitrarily many spaces. Column names are not allowed to contain spaces. The file can contain unnecessary columns, but for this plugin it needs to at least provide the columns named `depth' and `vs\_to\_density'. Note that the data lines in the file need to be sorted in order of increasing depth from 0 to the maximal depth in the model domain. Points in the model that are outside of the provided depth range will be assigned the maximum or minimum depth values, respectively. Points do not need to be equidistant, but the computation of properties is optimized in speed if they are.
-If the plugin is used in 2D it will use an equatorial slice of the seismic tomography model.
+If the plugin is used in 2d it will use an equatorial slice of the seismic tomography model.
 
 `SAVANI perturbation': An initial temperature field in which the temperature is perturbed following the SAVANI shear wave velocity model by Auer and others, which can be downloaded here \url{http://n.ethz.ch/~auerl/savani.tar.bz2}. Information on the vs model can be found in Auer, L., Boschi, L., Becker, T.W., Nissen-Meyer, T. \& Giardini, D., 2014. Savani: A variable resolution whole-mantle model of anisotropic shear velocity variations based on multiple data sets. Journal of Geophysical Research: Solid Earth 119.4 (2014): 3006-3034. The scaling between the shear wave perturbation and the density perturbation can be constant and set by the user with the 'Vs to density scaling' parameter or depth-dependent and read in from a file. To convert density the user can specify the 'Thermal expansion coefficient in initial temperature scaling' parameter. The scaling is as follows: $\delta \ln \rho (r,\theta,\phi) = \xi \cdot \delta \ln v_s(r,\theta, \phi)$ and $\delta T(r,\theta,\phi) = - \frac{1}{\alpha} \delta \ln \rho(r,\theta,\phi)$. $\xi$ is the `vs to density scaling' parameter and $\alpha$ is the 'Thermal expansion coefficient in initial temperature scaling' parameter. The temperature perturbation is added to an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model).If a depth is specified in 'Remove temperature heterogeneity down to specified depth', there is no temperature perturbation prescribed down to that depth.
 Note the required file format if the vs to density scaling is read in from a file: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of points in the reference state as for example '\# POINTS: 3'. Following the comment lines there has to be a single line containing the names of all data columns, separated by arbitrarily many spaces. Column names are not allowed to contain spaces. The file can contain unnecessary columns, but for this plugin it needs to at least provide the columns named `depth' and `vs\_to\_density'. Note that the data lines in the file need to be sorted in order of increasing depth from 0 to the maximal depth in the model domain. Points in the model that are outside of the provided depth range will be assigned the maximum or minimum depth values, respectively. Points do not need to be equidistant, but the computation of properties is optimized in speed if they are.
@@ -6685,7 +6719,7 @@ Note the required file format if the vs to density scaling is read in from a fil
 
 `ascii data': Implementation of a model in which the initial temperature is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `Temperature [K]' in a 2d model and  `x', `y', `z', `Temperature [K]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions.
 
-`ascii data layered': Implementation of a model in which the initial temperature is derived from files containing data in ascii format. Each file defines a surface on which temperature is defined. Between the surfaces, the temperatures can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `Temperature [K]' in a 2d model and `x', `y', `z', `Temperature [K]' in a 3d model; i.e. the last two columns always contain the position of the isotherm along the vertical direction, and the temperature at that point. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3D) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3D is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
+`ascii data layered': Implementation of a model in which the initial temperature is derived from files containing data in ascii format. Each file defines a surface on which temperature is defined. Between the surfaces, the temperatures can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `Temperature [K]' in a 2d model and `x', `y', `z', `Temperature [K]' in a 3d model; i.e. the last two columns always contain the position of the isotherm along the vertical direction, and the temperature at that point. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3d) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3d is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
 
 `ascii profile': Implementation of a model in which the initial temperature is read from a file that provides these values as a function of depth. Note the required format of the input data: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of points in the temperature profile, for example `\# POINTS: 10'. Following the comment lines, there has to be a single line containing the names of all data columns, separated by arbitrarily many spaces. Column names are not allowed to contain spaces. The file can contain unnecessary columns, but for this plugin it needs to at least provide columns named `depth' and`temperature'.Note that the data lines in the file need to be sorted in order of increasing depth from 0 to the maximal depth in the model domain. Points in the model that are outside of the provided depth range will be assigned the maximum or minimum depth values, respectively. Points do not need to be equidistant, but the computation of properties is optimized in speed if they are.
 
@@ -6753,7 +6787,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 `S40RTS perturbation': An initial temperature field in which the temperature is perturbed following the S20RTS or S40RTS shear wave velocity model by Ritsema and others, which can be downloaded here \url{http://www.earth.lsa.umich.edu/~jritsema/research.html}. Information on the vs model can be found in Ritsema, J., Deuss, A., van Heijst, H.J. \& Woodhouse, J.H., 2011. S40RTS: a degree-40 shear-velocity model for the mantle from new Rayleigh wave dispersion, teleseismic traveltime and normal-mode splitting function measurements, Geophys. J. Int. 184, 1223-1236. The scaling between the shear wave perturbation and the density perturbation can be constant and set by the user with the 'Vs to density scaling' parameter or depth-dependent and read in from a file. To convert density the user can specify the 'Thermal expansion coefficient in initial temperature scaling' parameter. The scaling is as follows: $\delta \ln \rho (r,\theta,\phi) = \xi \cdot \delta \ln v_s(r,\theta, \phi)$ and $\delta T(r,\theta,\phi) = - \frac{1}{\alpha} \delta \ln \rho(r,\theta,\phi)$. $\xi$ is the `vs to density scaling' parameter and $\alpha$ is the 'Thermal expansion coefficient in initial temperature scaling' parameter. The temperature perturbation is added to an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model). If a depth is specified in 'Remove temperature heterogeneity down to specified depth', there is no temperature perturbation prescribed down to that depth.
 Note the required file format if the vs to density scaling is read in from a file: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of points in the reference state as for example '\# POINTS: 3'. Following the comment lines there has to be a single line containing the names of all data columns, separated by arbitrarily many spaces. Column names are not allowed to contain spaces. The file can contain unnecessary columns, but for this plugin it needs to at least provide the columns named `depth' and `vs\_to\_density'. Note that the data lines in the file need to be sorted in order of increasing depth from 0 to the maximal depth in the model domain. Points in the model that are outside of the provided depth range will be assigned the maximum or minimum depth values, respectively. Points do not need to be equidistant, but the computation of properties is optimized in speed if they are.
-If the plugin is used in 2D it will use an equatorial slice of the seismic tomography model.
+If the plugin is used in 2d it will use an equatorial slice of the seismic tomography model.
 
 `SAVANI perturbation': An initial temperature field in which the temperature is perturbed following the SAVANI shear wave velocity model by Auer and others, which can be downloaded here \url{http://n.ethz.ch/~auerl/savani.tar.bz2}. Information on the vs model can be found in Auer, L., Boschi, L., Becker, T.W., Nissen-Meyer, T. \& Giardini, D., 2014. Savani: A variable resolution whole-mantle model of anisotropic shear velocity variations based on multiple data sets. Journal of Geophysical Research: Solid Earth 119.4 (2014): 3006-3034. The scaling between the shear wave perturbation and the density perturbation can be constant and set by the user with the 'Vs to density scaling' parameter or depth-dependent and read in from a file. To convert density the user can specify the 'Thermal expansion coefficient in initial temperature scaling' parameter. The scaling is as follows: $\delta \ln \rho (r,\theta,\phi) = \xi \cdot \delta \ln v_s(r,\theta, \phi)$ and $\delta T(r,\theta,\phi) = - \frac{1}{\alpha} \delta \ln \rho(r,\theta,\phi)$. $\xi$ is the `vs to density scaling' parameter and $\alpha$ is the 'Thermal expansion coefficient in initial temperature scaling' parameter. The temperature perturbation is added to an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model).If a depth is specified in 'Remove temperature heterogeneity down to specified depth', there is no temperature perturbation prescribed down to that depth.
 Note the required file format if the vs to density scaling is read in from a file: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of points in the reference state as for example '\# POINTS: 3'. Following the comment lines there has to be a single line containing the names of all data columns, separated by arbitrarily many spaces. Column names are not allowed to contain spaces. The file can contain unnecessary columns, but for this plugin it needs to at least provide the columns named `depth' and `vs\_to\_density'. Note that the data lines in the file need to be sorted in order of increasing depth from 0 to the maximal depth in the model domain. Points in the model that are outside of the provided depth range will be assigned the maximum or minimum depth values, respectively. Points do not need to be equidistant, but the computation of properties is optimized in speed if they are.
@@ -6764,7 +6798,7 @@ Note the required file format if the vs to density scaling is read in from a fil
 
 `ascii data': Implementation of a model in which the initial temperature is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `Temperature [K]' in a 2d model and  `x', `y', `z', `Temperature [K]' in a 3d model, which means that there has to be a single column containing the temperature. Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions.
 
-`ascii data layered': Implementation of a model in which the initial temperature is derived from files containing data in ascii format. Each file defines a surface on which temperature is defined. Between the surfaces, the temperatures can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `Temperature [K]' in a 2d model and `x', `y', `z', `Temperature [K]' in a 3d model; i.e. the last two columns always contain the position of the isotherm along the vertical direction, and the temperature at that point. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3D) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3D is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
+`ascii data layered': Implementation of a model in which the initial temperature is derived from files containing data in ascii format. Each file defines a surface on which temperature is defined. Between the surfaces, the temperatures can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `Temperature [K]' in a 2d model and `x', `y', `z', `Temperature [K]' in a 3d model; i.e. the last two columns always contain the position of the isotherm along the vertical direction, and the temperature at that point. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3d) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3d is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
 
 `ascii profile': Implementation of a model in which the initial temperature is read from a file that provides these values as a function of depth. Note the required format of the input data: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of points in the temperature profile, for example `\# POINTS: 10'. Following the comment lines, there has to be a single line containing the names of all data columns, separated by arbitrarily many spaces. Column names are not allowed to contain spaces. The file can contain unnecessary columns, but for this plugin it needs to at least provide columns named `depth' and`temperature'.Note that the data lines in the file need to be sorted in order of increasing depth from 0 to the maximal depth in the model domain. Points in the model that are outside of the provided depth range will be assigned the maximum or minimum depth values, respectively. Points do not need to be equidistant, but the computation of properties is optimized in speed if they are.
 
@@ -7035,7 +7069,7 @@ The function object in the Function subsection represents the compositional fiel
 {\it Default:} cartesian
 
 
-{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 
 
 {\it Possible values:} Any one of cartesian, spherical
@@ -7320,6 +7354,23 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
+\item {\it Parameter name:} {\tt First point on slice}
+\phantomsection\label{parameters:Initial temperature model/Ascii data model/First point on slice}
+\label{parameters:Initial_20temperature_20model/Ascii_20data_20model/First_20point_20on_20slice}
+
+
+\index[prmindex]{First point on slice}
+\index[prmindexfull]{Initial temperature model!Ascii data model!First point on slice}
+{\it Value:} 0.0,1.0,0.0
+
+
+{\it Default:} 0.0,1.0,0.0
+
+
+{\it Description:} Point that determines the plane in which the 2d slice lies in. This variable is only used if 'Slice dataset in 2d plane' is true. The slice will go through this point, the point defined by the parameter 'Second point on slice', and the center of the model domain. After the rotation, this first point will lie along the (0,1,0) axis of the coordinate system. The coordinates of the point have to be given in Cartesian coordinates.
+
+
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Interpolation scheme}
 \phantomsection\label{parameters:Initial temperature model/Ascii data model/Interpolation scheme}
 \label{parameters:Initial_20temperature_20model/Ascii_20data_20model/Interpolation_20scheme}
@@ -7354,6 +7405,40 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Second point on slice}
+\phantomsection\label{parameters:Initial temperature model/Ascii data model/Second point on slice}
+\label{parameters:Initial_20temperature_20model/Ascii_20data_20model/Second_20point_20on_20slice}
+
+
+\index[prmindex]{Second point on slice}
+\index[prmindexfull]{Initial temperature model!Ascii data model!Second point on slice}
+{\it Value:} 1.0,0.0,0.0
+
+
+{\it Default:} 1.0,0.0,0.0
+
+
+{\it Description:} Second point that determines the plane in which the 2d slice lies in. This variable is only used if 'Slice dataset in 2d plane' is true. The slice will go through this point, the point defined by the parameter 'First point on slice', and the center of the model domain. The coordinates of the point have to be given in Cartesian coordinates.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Slice dataset in 2D plane}
+\phantomsection\label{parameters:Initial temperature model/Ascii data model/Slice dataset in 2D plane}
+\label{parameters:Initial_20temperature_20model/Ascii_20data_20model/Slice_20dataset_20in_202D_20plane}
+
+
+\index[prmindex]{Slice dataset in 2D plane}
+\index[prmindexfull]{Initial temperature model!Ascii data model!Slice dataset in 2D plane}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to use a 2d data slice of a 3d data file or the entire data file. Slicing a 3d dataset is only supported for 2d models.
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 \subsection{Parameters in section \tt Initial temperature model/Ascii profile}
@@ -7487,7 +7572,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} cartesian
 
 
-{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 
 
 {\it Possible values:} Any one of cartesian, spherical, depth
@@ -7565,7 +7650,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 3
 
 
-{\it Description:} Doubled first lateral wave number of the harmonic perturbation. Equals the spherical harmonic degree in 3D spherical shells. In all other cases one equals half of a sine period over the model domain. This allows for single up-/downswings. Negative numbers reverse the sign of the perturbation but are not allowed for the spherical harmonic case.
+{\it Description:} Doubled first lateral wave number of the harmonic perturbation. Equals the spherical harmonic degree in 3d spherical shells. In all other cases one equals half of a sine period over the model domain. This allows for single up-/downswings. Negative numbers reverse the sign of the perturbation but are not allowed for the spherical harmonic case.
 
 
 {\it Possible values:} An integer $n$ such that $-2147483648\leq n \leq 2147483647$
@@ -7582,7 +7667,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 2
 
 
-{\it Description:} Doubled second lateral wave number of the harmonic perturbation. Equals the spherical harmonic order in 3D spherical shells. In all other cases one equals half of a sine period over the model domain. This allows for single up-/downswings. Negative numbers reverse the sign of the perturbation.
+{\it Description:} Doubled second lateral wave number of the harmonic perturbation. Equals the spherical harmonic order in 3d spherical shells. In all other cases one equals half of a sine period over the model domain. This allows for single up-/downswings. Negative numbers reverse the sign of the perturbation.
 
 
 {\it Possible values:} An integer $n$ such that $-2147483648\leq n \leq 2147483647$
@@ -8765,7 +8850,7 @@ The ratio of diffusion to dislocation strain rate is found by Newton's method, i
 
 `drucker prager': A material model that has constant values for all coefficients but the density and viscosity. The defaults for all coefficients are chosen to be similar to what is believed to be correct for Earth's mantle. All of the values that define this model are read from a section ``Material model/Drucker Prager'' in the input file, see Section~\ref{parameters:Material_20model/Drucker_20Prager}. Note that the model does not take into account any dependencies of material properties on compositional fields. 
 
-The viscosity is computed according to the Drucker Prager frictional plasticity criterion (non-associative) based on a user-defined internal friction angle $\phi$ and cohesion $C$. In 3D:  $\sigma_y = \frac{6 C \cos(\phi)}{\sqrt{3} (3+\sin(\phi))} + \frac{6 P \sin(\phi)}{\sqrt{3} (3+\sin(\phi))}$, where $P$ is the pressure. See for example Zienkiewicz, O. C., Humpheson, C. and Lewis, R. W. (1975), G\'{e}otechnique 25, No. 4, 671-689. With this formulation we circumscribe instead of inscribe the Mohr Coulomb yield surface. In 2D the Drucker Prager yield surface is the same as the Mohr Coulomb surface:  $\sigma_y = P \sin(\phi) + C \cos(\phi)$. Note that in 2D for $\phi=0$, these criteria revert to the von Mises criterion (no pressure dependence). See for example Thieulot, C. (2011), PEPI 188, 47-68. 
+The viscosity is computed according to the Drucker Prager frictional plasticity criterion (non-associative) based on a user-defined internal friction angle $\phi$ and cohesion $C$. In 3d:  $\sigma_y = \frac{6 C \cos(\phi)}{\sqrt{3} (3+\sin(\phi))} + \frac{6 P \sin(\phi)}{\sqrt{3} (3+\sin(\phi))}$, where $P$ is the pressure. See for example Zienkiewicz, O. C., Humpheson, C. and Lewis, R. W. (1975), G\'{e}otechnique 25, No. 4, 671-689. With this formulation we circumscribe instead of inscribe the Mohr Coulomb yield surface. In 2d the Drucker Prager yield surface is the same as the Mohr Coulomb surface:  $\sigma_y = P \sin(\phi) + C \cos(\phi)$. Note that in 2d for $\phi=0$, these criteria revert to the von Mises criterion (no pressure dependence). See for example Thieulot, C. (2011), PEPI 188, 47-68. 
 
 Note that we enforce the pressure to be positive to prevent negative yield strengths and viscosities. 
 
@@ -8848,15 +8933,15 @@ eq 0$), dislocation ($v_{\text{disl}}$, $n>1$, $m=0$) or composite $\frac{v_{\te
 
  Viscosity is limited through one of two different `yielding' mechanisms. 
 
-The first plasticity mechanism limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6C\cos(\phi) + 2P\sin(\phi)} {\sqrt{3}(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) exceeds the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models. See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
+The first plasticity mechanism limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3d is  $\sigma_y = \frac{6C\cos(\phi) + 2P\sin(\phi)} {\sqrt{3}(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2d. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2d form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) exceeds the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models. See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
 
-The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \dot{e}_{ii}\; dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first listed compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value initially. This value can be be quite small (e.g., 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional fields is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through particles.When only the second invariant of the strain is tracked, one has the option to track the full strain or only the plastic strain. In the latter case, strain is only tracked in case the material is plastically yielding, i.e. the viscous stress > yield stress. 
+The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \dot{e}_{ii}\; dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2d, 9 in 3d) for the finite strain tensor. These field(s) must be the first listed compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value initially. This value can be be quite small (e.g., 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional fields is computationally expensive in 3d. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through particles.When only the second invariant of the strain is tracked, one has the option to track the full strain or only the plastic strain. In the latter case, strain is only tracked in case the material is plastically yielding, i.e. the viscous stress > yield stress. 
 
 Viscous stress may also be limited by a non-linear stress limiter that has a form similar to the Peierls creep mechanism. This stress limiter assigns an effective viscosity $\sigma_{\text{eff}} = \frac{\tau_y}{2\varepsilon_y} {\frac{\varepsilon_{ii}}{\varepsilon_y}}^{\frac{1}{n_y}-1}$ Above $\tau_y$ is a yield stress, $\varepsilon_y$ is the reference strain rate, $\varepsilon_{ii}$ is the strain rate and $n_y$ is the stress limiter exponent.  The yield stress, $\tau_y$, is defined through the Drucker Prager yield criterion formulation. This method of limiting viscous stress has been used in various forms within the geodynamic literature \cite{chri92,vavv02,cibi13,cibi15}.When $n_y$ is 1, it essentially becomes a linear viscosity model, and in the limit $n_y\rightarrow \infty$ it converges to the standard viscosity rescaling method (concretely, values $n_y>20$ are large enough).
 
  The visco-plastic rheology described above may also be modified to include viscoelastic deformation, thus producing a viscoelastic plastic constitutive relationship. 
 
- The viscoelastic rheology behavior takes into account the elastic shear strength (e.g., shear modulus), while the tensile and volumetric strength (e.g., Young's and bulk modulus) are not considered. The model is incompressible and allows specifying an arbitrary number of compositional fields, where each field represents a different rock type or component of the viscoelastic stress tensor. The stress tensor in 2D and 3D, respectively, contains 3 or 6 components. The compositional fields representing these components must be named and listed in a very specific format, which is designed to minimize mislabeling stress tensor components as distinct 'compositional rock types' (or vice versa). For 2D models, the first three compositional fields must be labeled 'stress\_xx', 'stress\_yy' and 'stress\_xy'. In 3D, the first six compositional fields must be labeled 'stress\_xx', 'stress\_yy', 'stress\_zz', 'stress\_xy', 'stress\_xz', 'stress\_yz'. 
+ The viscoelastic rheology behavior takes into account the elastic shear strength (e.g., shear modulus), while the tensile and volumetric strength (e.g., Young's and bulk modulus) are not considered. The model is incompressible and allows specifying an arbitrary number of compositional fields, where each field represents a different rock type or component of the viscoelastic stress tensor. The stress tensor in 2d and 3d, respectively, contains 3 or 6 components. The compositional fields representing these components must be named and listed in a very specific format, which is designed to minimize mislabeling stress tensor components as distinct 'compositional rock types' (or vice versa). For 2d models, the first three compositional fields must be labeled 'stress\_xx', 'stress\_yy' and 'stress\_xy'. In 3d, the first six compositional fields must be labeled 'stress\_xx', 'stress\_yy', 'stress\_zz', 'stress\_xy', 'stress\_xz', 'stress\_yz'. 
 
  Combining this viscoelasticity implementation with non-linear viscous flow and plasticity produces a constitutive relationship commonly referred to as partial elastoviscoplastic (e.g., pEVP) in the geodynamics community. While extensively discussed and applied within the geodynamics literature, notable references include: Moresi et al. (2003), J. Comp. Phys., v. 184, p. 476-497. Gerya and Yuen (2007), Phys. Earth. Planet. Inter., v. 163, p. 83-105. Gerya (2010), Introduction to Numerical Geodynamic Modeling. Kaus (2010), Tectonophysics, v. 484, p. 36-47. Choi et al. (2013), J. Geophys. Res., v. 118, p. 2429-2444. Keller et al. (2013), Geophys. J. Int., v. 195, p. 1406-1442. 
 
@@ -8881,7 +8966,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
  The value for the components of this formula and additional parameters are read from the parameter file in subsection  'Material model/Visco Plastic'.
 
-`viscoelastic': An implementation of a simple linear viscoelastic rheology that only includes the deviatoric components of elasticity. Specifically, the viscoelastic rheology only takes into account the elastic shear strength (e.g., shear modulus), while the tensile and volumetric strength (e.g., Young's and bulk modulus) are not considered. The model is incompressible and allows specifying an arbitrary number of compositional fields, where each field represents a different rock type or component of the viscoelastic stress tensor. The stress tensor in 2D and 3D, respectively, contains 3 or 6 components. The compositional fields representing these components must be named and listed in a very specific format, which is designed to minimize mislabeling stress tensor components as distinct 'compositional rock types' (or vice versa). For 2D models, the first three compositional fields must be labeled 'stress\_xx', 'stress\_yy' and 'stress\_xy'. In 3D, the first six compositional fields must be labeled 'stress\_xx', 'stress\_yy', 'stress\_zz', 'stress\_xy', 'stress\_xz', 'stress\_yz'. 
+`viscoelastic': An implementation of a simple linear viscoelastic rheology that only includes the deviatoric components of elasticity. Specifically, the viscoelastic rheology only takes into account the elastic shear strength (e.g., shear modulus), while the tensile and volumetric strength (e.g., Young's and bulk modulus) are not considered. The model is incompressible and allows specifying an arbitrary number of compositional fields, where each field represents a different rock type or component of the viscoelastic stress tensor. The stress tensor in 2d and 3d, respectively, contains 3 or 6 components. The compositional fields representing these components must be named and listed in a very specific format, which is designed to minimize mislabeling stress tensor components as distinct 'compositional rock types' (or vice versa). For 2d models, the first three compositional fields must be labeled 'stress\_xx', 'stress\_yy' and 'stress\_xy'. In 3d, the first six compositional fields must be labeled 'stress\_xx', 'stress\_yy', 'stress\_zz', 'stress\_xy', 'stress\_xz', 'stress\_yz'. 
 
  Expanding the model to include non-linear viscous flow (e.g., diffusion/dislocation creep) and plasticity would produce a constitutive relationship commonly referred to as partial elastoviscoplastic (e.g., pEVP) in the geodynamics community. While extensively discussed and applied within the geodynamics literature, notable references include: Moresi et al. (2003), J. Comp. Phys., v. 184, p. 476-497. Gerya and Yuen (2007), Phys. Earth. Planet. Inter., v. 163, p. 83-105. Gerya (2010), Introduction to Numerical Geodynamic Modeling. Kaus (2010), Tectonophysics, v. 484, p. 36-47. Choi et al. (2013), J. Geophys. Res., v. 118, p. 2429-2444. Keller et al. (2013), Geophys. J. Int., v. 195, p. 1406-1442. 
 
@@ -8900,7 +8985,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
  The value of each compositional field representing distinct rock types at a point is interpreted to be a volume fraction of that rock type. If the sum of the compositional field volume fractions is less than one, then the remainder of the volume is assumed to be 'background material'.
 
- Several model parameters (densities, elastic shear moduli, thermal expansivities, thermal conductivies, specific heats) can be defined per-compositional field. For each material parameter the user supplies a comma delimited list of length N+1, where N is the number of compositional fields. The additional field corresponds to the value for background material. They should be ordered ''background, composition1, composition2...''. However, the first 3 (2D) or 6 (3D) composition fields correspond to components of the elastic stress tensor and their material values will not contribute to the volume fractions. If a single value is given, then all the compositional fields are given that value. Other lengths of lists are not allowed. For a given compositional field the material parameters are treated as constant, except density, which varies linearly with temperature according to the thermal expansivity. 
+ Several model parameters (densities, elastic shear moduli, thermal expansivities, thermal conductivies, specific heats) can be defined per-compositional field. For each material parameter the user supplies a comma delimited list of length N+1, where N is the number of compositional fields. The additional field corresponds to the value for background material. They should be ordered ''background, composition1, composition2...''. However, the first 3 (2d) or 6 (3d) composition fields correspond to components of the elastic stress tensor and their material values will not contribute to the volume fractions. If a single value is given, then all the compositional fields are given that value. Other lengths of lists are not allowed. For a given compositional field the material parameters are treated as constant, except density, which varies linearly with temperature according to the thermal expansivity. 
 
  When more than one compositional field is present at a point, they are averaged arithmetically. An exception is viscosity, which may be averaged arithmetically, harmonically, geometrically, or by selecting the viscosity of the composition field with the greatest volume fraction.
 
@@ -10203,7 +10288,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 0.
 
 
-{\it Description:} The value of the angle of internal friction $\phi$. For a value of zero, in 2D the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
+{\it Description:} The value of the angle of internal friction $\phi$. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -15532,7 +15617,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 0.
 
 
-{\it Description:} List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. For a value of zero, in 2D the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
+{\it Description:} List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. For a value of zero, in 2d the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
 
 
 {\it Possible values:} Any string
@@ -16751,7 +16836,7 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 {\it Default:} cartesian
 
 
-{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
 
 
 {\it Possible values:} Any one of cartesian, spherical, depth
@@ -17682,6 +17767,8 @@ The format of these functions follows the syntax understood by the muparser libr
 
 `nonadiabatic temperature': A mesh refinement criterion that computes refinement indicators from the excess temperature(difference between temperature and adiabatic temperature.
 
+`nonadiabatic temperature threshold': A mesh refinement criterion that computes refinement indicators from the temperature difference between the actual temperature and the adiabatic conditions (the nonadiabatic temperature). If the temperature anomaly exceeds the threshold given in the input file, the cell is marked for refinement.
+
 `particle density': A mesh refinement criterion that computes refinement indicators based on the density of particles. In practice this plugin equilibrates the number of particles per cell, leading to fine cells in high particle density regions and coarse cells in low particle density regions. This plugin is mostly useful for models with inhomogeneous particle density, e.g. when tracking an initial interface with a high particle density, or when the spatial particle density denotes the region of interest. Additionally, this plugin tends to balance the computational load between processes in parallel computations, because the particle and mesh density is more aligned.
 
 `slope': A class that implements a mesh refinement criterion intended for use with deforming mesh boundaries, like the free surface. It calculates a local slope based on the angle between the surface normal and the local gravity vector. Cells with larger angles are marked for refinement.
@@ -17713,7 +17800,7 @@ For complex equations such as those we solve here, this observation may not be s
 `volume of fluid interface': A class that implements a mesh refinement criterion, which ensures a minimum level of refinement near the volume of fluid interface boundary.
 
 
-{\it Possible values:} A comma-separated list of any of artificial viscosity, boundary, compaction length, composition, composition approximate gradient, composition gradient, composition threshold, density, isosurfaces, maximum refinement function, minimum refinement function, nonadiabatic temperature, particle density, slope, strain rate, temperature, thermal energy density, topography, velocity, viscosity, volume of fluid interface
+{\it Possible values:} A comma-separated list of any of artificial viscosity, boundary, compaction length, composition, composition approximate gradient, composition gradient, composition threshold, density, isosurfaces, maximum refinement function, minimum refinement function, nonadiabatic temperature, nonadiabatic temperature threshold, particle density, slope, strain rate, temperature, thermal energy density, topography, velocity, viscosity, volume of fluid interface
 \item {\it Parameter name:} {\tt Time steps between mesh refinement}
 \phantomsection\label{parameters:Mesh refinement/Time steps between mesh refinement}
 \label{parameters:Mesh_20refinement/Time_20steps_20between_20mesh_20refinement}
@@ -17965,7 +18052,7 @@ The first two entries for each isosurface, describing the minimum and maximum gr
 {\it Default:} depth
 
 
-{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `depth', `cartesian' and `spherical'. `depth' will create a function, in which only the first variable is non-zero, which is interpreted to be the depth of the point. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle.
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `depth', `cartesian' and `spherical'. `depth' will create a function, in which only the first variable is non-zero, which is interpreted to be the depth of the point. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle.
 
 
 {\it Possible values:} Any one of depth, cartesian, spherical
@@ -18043,7 +18130,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} depth
 
 
-{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `depth', `cartesian' and `spherical'. `depth' will create a function, in which only the first variable is non-zero, which is interpreted to be the depth of the point. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle.
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `depth', `cartesian' and `spherical'. `depth' will create a function, in which only the first variable is non-zero, which is interpreted to be the depth of the point. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle.
 
 
 {\it Possible values:} Any one of depth, cartesian, spherical
@@ -18102,6 +18189,46 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} Any string
+\end{itemize}
+
+\subsection{Parameters in section \tt Mesh refinement/Nonadiabatic temperature threshold}
+\label{parameters:Mesh_20refinement/Nonadiabatic_20temperature_20threshold}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Temperature anomaly type}
+\phantomsection\label{parameters:Mesh refinement/Nonadiabatic temperature threshold/Temperature anomaly type}
+\label{parameters:Mesh_20refinement/Nonadiabatic_20temperature_20threshold/Temperature_20anomaly_20type}
+
+
+\index[prmindex]{Temperature anomaly type}
+\index[prmindexfull]{Mesh refinement!Nonadiabatic temperature threshold!Temperature anomaly type}
+{\it Value:} absolute value
+
+
+{\it Default:} absolute value
+
+
+{\it Description:} What type of temperature anomaly should be considered when evaluating against the threshold: Only negative anomalies (negative only), only positive anomalies (positive only) or the absolute value of the nonadiabatic temperature.
+
+
+{\it Possible values:} Any one of negative only, positive only, absolute value
+\item {\it Parameter name:} {\tt Threshold}
+\phantomsection\label{parameters:Mesh refinement/Nonadiabatic temperature threshold/Threshold}
+\label{parameters:Mesh_20refinement/Nonadiabatic_20temperature_20threshold/Threshold}
+
+
+\index[prmindex]{Threshold}
+\index[prmindexfull]{Mesh refinement!Nonadiabatic temperature threshold!Threshold}
+{\it Value:} 100
+
+
+{\it Default:} 100
+
+
+{\it Description:} A threshold that the nonadiabatic temperature will be evaluated against. Units: \si{\kelvin}
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
 \subsection{Parameters in section \tt Mesh refinement/Volume of fluid interface}
@@ -18204,7 +18331,7 @@ The following postprocessors are available:
 
 In the output files, the $x$-value of each data point corresponds to the depth, whereas the $y$-value corresponds to the simulation time. The time is provided in seconds or, if the global ``Use years in output instead of seconds'' parameter is set, in years.
 
-`domain volume statistics': A postprocessor that computes the total area (in 2d) or volume (in 3D) of the computational domain. 
+`domain volume statistics': A postprocessor that computes the total area (in 2d) or volume (in 3d) of the computational domain. 
 
 `dynamic topography': A postprocessor that computes a measure of dynamic topography based on the stress at the surface and bottom. The data is written into text files named `dynamic\_topography.NNNNN' in the output directory, where NNNNN is the number of the time step.
 
@@ -18215,7 +18342,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 `entropy viscosity statistics': A postprocessor that computes the maximum and volume averagedentropy viscosity stabilization for the temperature field.
 
-`geoid': A postprocessor that computes a representation of the geoid based on the density structure in the mantle, as well as the topography at the surface and core mantle boundary (CMB) if desired. The topography is based on the dynamic topography postprocessor in case of no free surface, and based on the real surface from the geometry model in case of a free surface. The geoid is computed from a spherical harmonic expansion, so the geometry of the domain must be a 3D spherical shell.
+`geoid': A postprocessor that computes a representation of the geoid based on the density structure in the mantle, as well as the topography at the surface and core mantle boundary (CMB) if desired. The topography is based on the dynamic topography postprocessor in case of no free surface, and based on the real surface from the geometry model in case of a free surface. The geoid is computed from a spherical harmonic expansion, so the geometry of the domain must be a 3d spherical shell.
 
 `global statistics': A postprocessor that outputs all the global statistics information, e.g. the time of the simulation, the timestep number, number of degrees of freedom and solver iterations for each timestep. The postprocessor can output different formats, the first printing one line in the statistics file per nonlinear solver iteration (if a nonlinear solver scheme is selected). The second prints one line per timestep, summing the information about all nonlinear iterations in this line. Note that this postprocessor is always active independent on whether or not it is selected in the parameter file.
 
@@ -18269,7 +18396,7 @@ In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates o
 
 `pressure statistics': A postprocessor that computes some statistics about the pressure field.
 
-`rotation statistics': A postprocessor that computes some statistics about the rotational velocity of the model (i.e. integrated net rotation and angular momentum). In 2D we assume the model to be a cross-section through an infinite domain in z direction, with a zero z-velocity. Thus, the z-axis is the only possible rotation axis and both moment of inertia and angular momentum are scalar instead of tensor quantities.
+`rotation statistics': A postprocessor that computes some statistics about the rotational velocity of the model (i.e. integrated net rotation and angular momentum). In 2d we assume the model to be a cross-section through an infinite domain in z direction, with a zero z-velocity. Thus, the z-axis is the only possible rotation axis and both moment of inertia and angular momentum are scalar instead of tensor quantities.
 
 `spherical velocity statistics': A postprocessor that computes radial, tangential and total RMS velocity.
 
@@ -18453,7 +18580,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 {\it Default:} false
 
 
-{\it Description:} Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.GPlates data is always interpreted to be in east and north directions and is not affected by this parameter.
+{\it Description:} Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.GPlates data is always interpreted to be in east and north directions and is not affected by this parameter.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -19482,7 +19609,7 @@ Select one of the following models:
 
 {\it Description:} Select one of the following models:
 
-`bilinear least squares': Uses linear least squares to obtain the slopes and center of a 2D or 3D plane from the particle positions and a particular property value on those particles. Interpolate this property onto a vector of points. If the limiter is enabled then it will ensure the interpolated properties do not exceed the range of the minimum and maximum of the values of the property on the particles. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
+`bilinear least squares': Uses linear least squares to obtain the slopes and center of a 2d or 3d plane from the particle positions and a particular property value on those particles. Interpolate this property onto a vector of points. If the limiter is enabled then it will ensure the interpolated properties do not exceed the range of the minimum and maximum of the values of the property on the particles. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
 
 `cell average': Return the arithmetic average of all particle properties in the given cell, or in the neighboring cells if the given cell is empty. In case the neighboring cells are also empty, and 'Allow cells without particles' is set to true, the interpolator returns 0. Otherwise, an exception is thrown. 
 
@@ -19519,6 +19646,8 @@ The following properties are available:
 
 `function': Implementation of a model in which the particle property is set by evaluating an explicit function at the initial position of each particle. The function is defined in the parameters in section ``Particles|Function''. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
+`grain size': A plugin in which the particle property is defined as the evolving grain size of a particle. See the grain\_size material model documentation for more detailed information.
+
 `initial composition': Implementation of a plugin in which the particle property is given as the initial composition at the particle's initial position. The particle gets as many properties as there are compositional fields.
 
 `initial position': Implementation of a plugin in which the particle property is given as the initial position of the particle. This property is vector-valued with as many components as there are space dimensions. In practice, it is often most useful to only visualize one of the components of this vector, or the magnitude of the vector. For example, in a spherical mantle simulation, the magnitude of this property equals the starting radius of a particle, and is thereby indicative of which part of the mantle a particle comes from.
@@ -19542,7 +19671,7 @@ The following properties are available:
 `viscoplastic strain invariants': A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in \texttt{benchmarks/buiter\_et\_al\_2008\_jgr/plugin/},and is effectively the same as what the visco plastic material model uses for compositional fields.
 
 
-{\it Possible values:} A comma-separated list of any of composition, crystal preferred orientation, elastic stress, function, initial composition, initial position, integrated strain, integrated strain invariant, melt particle, pT path, position, reference position, strain rate, velocity, viscoplastic strain invariants
+{\it Possible values:} A comma-separated list of any of composition, crystal preferred orientation, elastic stress, function, grain size, initial composition, initial position, integrated strain, integrated strain invariant, melt particle, pT path, position, reference position, strain rate, velocity, viscoplastic strain invariants
 \item {\it Parameter name:} {\tt Load balancing strategy}
 \phantomsection\label{parameters:Postprocess/Particles/Load balancing strategy}
 \label{parameters:Postprocess/Particles/Load_20balancing_20strategy}
@@ -19653,9 +19782,9 @@ The following properties are available:
 
 `reference cell': Generates a uniform distribution of particles per cell and spatial direction in the unit cell and transforms each of the particles back to real region in the model domain. Uniform here means the particles will be generated with an equal spacing in each spatial dimension.
 
-`uniform box': Generate a uniform distribution of particles over a rectangular domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spatial dimension. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
+`uniform box': Generate a uniform distribution of particles over a rectangular domain in 2d or 3d. Uniform here means the particles will be generated with an equal spacing in each spatial dimension. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 
-`uniform radial': Generate a uniform distribution of particles over a spherical domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
+`uniform radial': Generate a uniform distribution of particles over a spherical domain in 2d or 3d. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 
 
 {\it Possible values:} Any one of ascii file, probability density function, quadrature points, random uniform, reference cell, uniform box, uniform radial
@@ -20782,7 +20911,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} false
 
 
-{\it Description:} Whether to write the full moment of inertia tensor into the statistics output instead of its norm for the current rotation axis. This is a second-order symmetric tensor with 6 components in 3D. In 2D this option has no effect, because the rotation axis is fixed and thus the moment of inertia is always a scalar.
+{\it Description:} Whether to write the full moment of inertia tensor into the statistics output instead of its norm for the current rotation axis. This is a second-order symmetric tensor with 6 components in 3d. In 2d this option has no effect, because the rotation axis is fixed and thus the moment of inertia is always a scalar.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -21052,7 +21181,7 @@ Physical units: \si{\pascal}.
 
 Physical units: None.
 
-`spherical velocity components': A visualization output object that outputs the polar coordinates components $v_r$ and $v_\phi$ of the velocity field in 2D and the spherical coordinates components $v_r$, $v_{\phi}$ and $v_{\theta}$ of the velocity field in 3D.
+`spherical velocity components': A visualization output object that outputs the polar coordinates components $v_r$ and $v_\phi$ of the velocity field in 2d and the spherical coordinates components $v_r$, $v_{\phi}$ and $v_{\theta}$ of the velocity field in 3d.
 
 Physical units: $\frac{\text{m}}{\text{s}}$ or $\frac{\text{m}}{\text{year}}$, depending on settings in the input file.
 
@@ -22011,6 +22140,23 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt First point on slice}
+\phantomsection\label{parameters:Prescribed Stokes solution/Ascii data model/First point on slice}
+\label{parameters:Prescribed_20Stokes_20solution/Ascii_20data_20model/First_20point_20on_20slice}
+
+
+\index[prmindex]{First point on slice}
+\index[prmindexfull]{Prescribed Stokes solution!Ascii data model!First point on slice}
+{\it Value:} 0.0,1.0,0.0
+
+
+{\it Default:} 0.0,1.0,0.0
+
+
+{\it Description:} Point that determines the plane in which the 2d slice lies in. This variable is only used if 'Slice dataset in 2d plane' is true. The slice will go through this point, the point defined by the parameter 'Second point on slice', and the center of the model domain. After the rotation, this first point will lie along the (0,1,0) axis of the coordinate system. The coordinates of the point have to be given in Cartesian coordinates.
+
+
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Scale factor}
 \phantomsection\label{parameters:Prescribed Stokes solution/Ascii data model/Scale factor}
 \label{parameters:Prescribed_20Stokes_20solution/Ascii_20data_20model/Scale_20factor}
@@ -22028,6 +22174,40 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Second point on slice}
+\phantomsection\label{parameters:Prescribed Stokes solution/Ascii data model/Second point on slice}
+\label{parameters:Prescribed_20Stokes_20solution/Ascii_20data_20model/Second_20point_20on_20slice}
+
+
+\index[prmindex]{Second point on slice}
+\index[prmindexfull]{Prescribed Stokes solution!Ascii data model!Second point on slice}
+{\it Value:} 1.0,0.0,0.0
+
+
+{\it Default:} 1.0,0.0,0.0
+
+
+{\it Description:} Second point that determines the plane in which the 2d slice lies in. This variable is only used if 'Slice dataset in 2d plane' is true. The slice will go through this point, the point defined by the parameter 'First point on slice', and the center of the model domain. The coordinates of the point have to be given in Cartesian coordinates.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Slice dataset in 2D plane}
+\phantomsection\label{parameters:Prescribed Stokes solution/Ascii data model/Slice dataset in 2D plane}
+\label{parameters:Prescribed_20Stokes_20solution/Ascii_20data_20model/Slice_20dataset_20in_202D_20plane}
+
+
+\index[prmindex]{Slice dataset in 2D plane}
+\index[prmindexfull]{Prescribed Stokes solution!Ascii data model!Slice dataset in 2D plane}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to use a 2d data slice of a 3d data file or the entire data file. Slicing a 3d dataset is only supported for 2d models.
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 \subsection{Parameters in section \tt Prescribed Stokes solution/Compaction pressure function}
@@ -23405,7 +23585,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3
 
 
-{\it Description:} Number of divisions per dimension when computing the initial volume fractions.If set to the default of 3 for a 2D model, then initialization will be based on the initialization criterion at $3^2=9$ points within each cell. If the initialization based on a composition style initial condition, a larger value may be desired for better approximation of the initial fluid fractions. Smaller values will suffice in the case of level set initializations due to the presence of more information to better approximate the initial fluid fractions.
+{\it Description:} Number of divisions per dimension when computing the initial volume fractions.If set to the default of 3 for a 2d model, then initialization will be based on the initialization criterion at $3^2=9$ points within each cell. If the initialization based on a composition style initial condition, a larger value may be desired for better approximation of the initial fluid fractions. Smaller values will suffice in the case of level set initializations due to the presence of more information to better approximate the initial fluid fractions.
 
 
 {\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
