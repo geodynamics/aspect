@@ -424,6 +424,7 @@ FILE(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
 #      ${_make_command}                - to compile and link ${TARGET}
 #      ${_make_command} debug          - to switch the build type to 'Debug'
 #      ${_make_command} release        - to switch the build type to 'Release'
+#      ${_make_command} debugrelease   - to switch the build type to compile both
 #      ${_make_command} clean          - to remove the generated executable as well as
 #                               all intermediate compilation files
 #      ${_make_command} distclean      - to clean the directory from all generated
@@ -672,39 +673,38 @@ IF (ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
   SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "" FORCE)
 ENDIF()
 
-IF (ASPECT_PRECOMPILE_HEADERS AND ${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
-  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "" FORCE)
-ENDIF()
-
 IF (ASPECT_PRECOMPILE_HEADERS)
   IF (CMAKE_VERSION VERSION_LESS 3.9)
     MESSAGE(STATUS "Enabling cotire to precompile external header files.")
     INCLUDE(cmake/cotire)
 
-    # Set some properties that are necessary for the header precompilations
-    # and unity build to pass. We need to exclude some headers that
-    # frequently cause problems, and undefine some macros between source
-    # files that would otherwise interfere with each other.
-    SET_TARGET_PROPERTIES (${TARGET} PROPERTIES
+    FOREACH(_T ${TARGETS})
+      # Set some properties that are necessary for the header precompilations
+      # and unity build to pass. We need to exclude some headers that
+      # frequently cause problems, and undefine some macros between source
+      # files that would otherwise interfere with each other.
+      SET_TARGET_PROPERTIES (${_T} PROPERTIES
         COTIRE_PREFIX_HEADER_IGNORE_PATH
         "/usr/include/;${CMAKE_SOURCE_DIR};${CMAKE_BINARY_DIR}")
 
-    # This line activates the cotire module for the aspect target,
-    # and therefore the whole precompilation
-    cotire(${TARGET})
+      # This line activates the cotire module for the aspect target,
+      # and therefore the whole precompilation
+      cotire(${_T})
+    ENDFOREACH()
 
   ELSEIF (NOT CMAKE_VERSION VERSION_LESS 3.16)
     MESSAGE(STATUS "Precompiling common header files.")
     # Use the native cmake support to precompile some common headers
     # from ASPECT and deal.II that are frequently included, but rarely changed.
-    TARGET_PRECOMPILE_HEADERS(${TARGET} PRIVATE
-      <aspect/global.h> <aspect/plugins.h> <aspect/introspection.h> <aspect/parameters.h>)
-    TARGET_PRECOMPILE_HEADERS(${TARGET} PRIVATE
-      <deal.II/base/table_handler.h> <deal.II/base/timer.h>
-      <deal.II/base/conditional_ostream.h> <deal.II/distributed/tria.h>
-      <deal.II/dofs/dof_handler.h> <deal.II/fe/fe.h> <deal.II/fe/mapping_q.h>
-      <deal.II/particles/particle_handler.h>)
-
+    FOREACH(_T ${TARGETS})
+      TARGET_PRECOMPILE_HEADERS(${_T} PRIVATE
+        <aspect/global.h> <aspect/plugins.h> <aspect/introspection.h> <aspect/parameters.h>)
+      TARGET_PRECOMPILE_HEADERS(${_T} PRIVATE
+        <deal.II/base/table_handler.h> <deal.II/base/timer.h>
+        <deal.II/base/conditional_ostream.h> <deal.II/distributed/tria.h>
+        <deal.II/dofs/dof_handler.h> <deal.II/fe/fe.h> <deal.II/fe/mapping_q.h>
+        <deal.II/particles/particle_handler.h>)
+    ENDFOREACH()
   ELSE()
     MESSAGE(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake 3.8 and older versions or 3.16 and newer versions.")
   ENDIF()
