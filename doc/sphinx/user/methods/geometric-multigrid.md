@@ -1,4 +1,4 @@
-
+(sec:gmg)=
 # Geometric Multigrid
 
 ASPECT can optionally use a Geometric Multigrid
