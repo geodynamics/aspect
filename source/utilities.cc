@@ -2869,36 +2869,6 @@ namespace aspect
         throw QuietException();
     }
 
-    template <typename T>
-    std::vector<std::size_t>
-    compute_sorting_permutation(
-      const std::vector<T> &vec)
-    {
-      std::vector<std::size_t> p(vec.size());
-      std::iota(p.begin(), p.end(), 0);
-      std::sort(p.begin(), p.end(),
-                [&](std::size_t i, std::size_t j)
-      {
-        return vec[i] < vec[j];
-      });
-      return p;
-    }
-
-    template <typename T>
-    std::vector<T>
-    apply_permutation(
-      const std::vector<T> &vec,
-      const std::vector<std::size_t> &p)
-    {
-      std::vector<T> sorted_vec(vec.size());
-      std::transform(p.begin(), p.end(), sorted_vec.begin(),
-                     [&](std::size_t i)
-      {
-        return vec[i];
-      });
-      return sorted_vec;
-    }
-
     std::vector<Tensor<2,3>>
     rotation_matrices_random_draw_volume_weighting(const std::vector<double> volume_fraction,
                                                    const std::vector<Tensor<2,3>> rotation_matrices,
@@ -3054,18 +3024,5 @@ namespace aspect
                                                const unsigned int n_rows,
                                                const unsigned int n_columns,
                                                const std::string &property_name);
-
-    template std::vector<std::size_t>
-    compute_sorting_permutation(const std::vector<double> &vector);
-
-    template std::vector<double>
-    apply_permutation(
-      const std::vector<double> &vec,
-      const std::vector<std::size_t> &permutation_vector);
-
-    template std::vector<Tensor<2,3>>
-    apply_permutation(
-      const std::vector<Tensor<2,3>> &vec,
-      const std::vector<std::size_t> &permutation_vector);
   }
 }

@@ -1073,8 +1073,19 @@ namespace aspect
      * @param vector vector to sort
      */
     template <typename T>
+    inline
     std::vector<std::size_t>
-    compute_sorting_permutation(const std::vector<T> &vector);
+    compute_sorting_permutation(const std::vector<T> &vector)
+    {
+      std::vector<std::size_t> p(vector.size());
+      std::iota(p.begin(), p.end(), 0);
+      std::sort(p.begin(), p.end(),
+                [&](std::size_t i, std::size_t j)
+      {
+        return vector[i] < vector[j];
+      });
+      return p;
+    }
 
     /**
      * Applies a permutation vector to another vector and retuns the resulting vector.
@@ -1084,10 +1095,20 @@ namespace aspect
      * @return std::vector<T>
      */
     template <typename T>
+    inline
     std::vector<T>
     apply_permutation(
-      const std::vector<T> &vec,
-      const std::vector<std::size_t> &permutation_vector);
+      const std::vector<T> &vector,
+      const std::vector<std::size_t> &permutation_vector)
+    {
+      std::vector<T> sorted_vec(vector.size());
+      std::transform(permutation_vector.begin(), permutation_vector.end(), sorted_vec.begin(),
+                     [&](std::size_t i)
+      {
+        return vector[i];
+      });
+      return sorted_vec;
+    }
 
     /**
      * Get volume weighted rotation matrices, using random draws to convert
