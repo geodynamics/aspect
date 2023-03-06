@@ -448,7 +448,7 @@ namespace aspect
         /**
          * The number of cells in each coordinate direction
          */
-        std::vector<unsigned int> repetitions;
+        std::array<unsigned int, dim> repetitions;
 
         /**
          * An object that describes the geometry.

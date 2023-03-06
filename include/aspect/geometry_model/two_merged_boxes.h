@@ -238,12 +238,12 @@ namespace aspect
         /**
          * The number of cells in each coordinate direction for the lower box.
          */
-        unsigned int lower_repetitions[dim];
+        std::array<unsigned int, dim> lower_repetitions;
 
         /**
          * The number of cells in each coordinate direction for the upper box.
          */
-        unsigned int upper_repetitions[dim];
+        std::array<unsigned int, dim> upper_repetitions;
 
         /**
          * The height where the lithospheric part of the vertical boundary begins
