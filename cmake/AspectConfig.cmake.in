@@ -30,12 +30,18 @@ SET(ASPECT_WITH_WORLD_BUILDER "@ASPECT_WITH_WORLD_BUILDER@")
 # force our build type to the one that is used by ASPECT:
 SET(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@" CACHE STRING "select debug or release mode" FORCE)
 
+
 MACRO(ASPECT_SETUP_PLUGIN _target)
   MESSAGE(STATUS "Setting up plugin:")
   MESSAGE(STATUS "  name <${_target}>")
   MESSAGE(STATUS "  using ASPECT_DIR ${Aspect_DIR}")
-  MESSAGE(STATUS "  in @CMAKE_BUILD_TYPE@ mode")
-  DEAL_II_SETUP_TARGET(${_target})
+  IF(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
+    MESSAGE(STATUS "  in forced debug mode")
+    DEAL_II_SETUP_TARGET(${_target} DEBUG)
+  ELSE()
+    MESSAGE(STATUS "  in ${CMAKE_BUILD_TYPE} mode")
+    DEAL_II_SETUP_TARGET(${_target})
+  ENDIF()
   SET_PROPERTY(TARGET ${_target} APPEND PROPERTY
     INCLUDE_DIRECTORIES "${Aspect_INCLUDE_DIRS}"
   )
