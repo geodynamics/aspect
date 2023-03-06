@@ -39,9 +39,6 @@
 #include <string>
 #include <vector>
 
-#ifndef __aspect__av_material_h
-#define __aspect__av_material_h
-
 #include <aspect/simulator_access.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>
@@ -829,4 +826,3 @@ namespace aspect
                                    "Transverse isotropic material model.")
   }
 }
-#endif

@@ -18,9 +18,6 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef aspect_rigid_shear_h
-#define aspect_rigid_shear_h
-
 #include <aspect/gravity_model/interface.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/postprocess/particles.h>
@@ -380,4 +377,3 @@ namespace aspect
                                   "benchmarks defined in the paper Gassmoeller et al. referenced above.")
   }
 }
-#endif
