@@ -23,6 +23,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -34,11 +37,12 @@ jobs:
 
       - name: Build and push Docker image for main
         if: contains(github.event_name, 'push')
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ./contrib/docker/docker/
-          cache-from: type=registry,ref=dealii/dealii:v9.4.0-focal
+          cache-from: type=registry,ref=ubuntu:22.04
           cache-to: type=inline
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: geodynamics/aspect:latest
 
@@ -47,8 +51,9 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./contrib/docker/docker/
-          cache-from: type=registry,ref=dealii/dealii:v9.4.0-focal
+          cache-from: type=registry,ref=ubuntu:22.04
           cache-to: type=inline
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: geodynamics/aspect:${{github.ref_name}}
 

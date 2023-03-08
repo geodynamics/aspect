@@ -17,8 +17,8 @@ docker pull geodynamics/aspect
 ```
 
 Note that the transfer size of the compressed image containing
-ASPECT and all its dependencies is about 2&nbsp;GB.
-When extracted the image requires about 7.3&nbsp;GB of disk space.
+ASPECT and all its dependencies is a few GB.
+When extracted the image requires less than 10 GB of disk space.
 
 Running the image is as simple as typing
 ``` ksh
