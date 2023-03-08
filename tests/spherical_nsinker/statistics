@@ -17,4 +17,4 @@
 # 17: MGTransfer memory consumption (MB) 
 # 18: Matrix-free cell data memory consumption (MB) 
 # 19: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 1 116 119 119 0.3390 0.3897 0.0712 1.0746 0.6582 0.3291 0.7186 0.0083 output-spherical_nsinker/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 768 21760 6930 1 116 119 119 0.3390 0.4053 0.0868 1.0746 0.6582 0.3291 0.7186 0.0083 output-spherical_nsinker/solution/solution-00000 
