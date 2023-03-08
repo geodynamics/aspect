@@ -1,5 +1,5 @@
 
-Loading shared library <./libcheck_compositional_field_names.so>
+Loading shared library <./libcheck_compositional_field_names.debug.so>
 
 * Connecting signals
 Field_1 is of type chemical composition

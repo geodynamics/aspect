@@ -1,5 +1,5 @@
 
-Loading shared library <./libvelocity_divergence.so>
+Loading shared library <./libvelocity_divergence.debug.so>
 
 Number of active cells: 8,192 (on 7 levels)
 Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)

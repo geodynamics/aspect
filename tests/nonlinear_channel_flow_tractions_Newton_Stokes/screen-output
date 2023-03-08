@@ -1,5 +1,5 @@
 
-Loading shared library <./libnonlinear_channel_flow_tractions_Newton_Stokes.so>
+Loading shared library <./libnonlinear_channel_flow_tractions_Newton_Stokes.debug.so>
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)

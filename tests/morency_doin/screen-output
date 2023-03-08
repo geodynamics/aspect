@@ -1,5 +1,5 @@
 
-Loading shared library <./libmorency_doin.so>
+Loading shared library <./libmorency_doin.debug.so>
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 22,214 (8,450+1,089+4,225+4,225+4,225)

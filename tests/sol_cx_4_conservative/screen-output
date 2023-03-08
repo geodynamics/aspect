@@ -1,5 +1,5 @@
 
-Loading shared library <./libsol_cx_4_conservative.so>
+Loading shared library <./libsol_cx_4_conservative.debug.so>
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 4,035 (2,178+768+1,089)

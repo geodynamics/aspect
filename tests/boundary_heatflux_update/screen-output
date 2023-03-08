@@ -1,5 +1,5 @@
 
-Loading shared library <./libboundary_heatflux_update.so>
+Loading shared library <./libboundary_heatflux_update.debug.so>
 
 Initializing boundary heat flux!
 Number of active cells: 1,024 (on 6 levels)

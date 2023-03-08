@@ -1,7 +1,5 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
-Loading shared library <./libvar_declaration_expansion.so>
+Loading shared library <./libvar_declaration_expansion.debug.so>
 Dimension 2:
 	vec_x
 	vec_y

@@ -1,5 +1,5 @@
 
-Loading shared library <./libmelt_force_vector.so>
+Loading shared library <./libmelt_force_vector.debug.so>
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 2,088 (851+578+81+289+289)

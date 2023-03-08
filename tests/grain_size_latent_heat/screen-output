@@ -1,5 +1,5 @@
 
-Loading shared library <./libgrain_size_latent_heat.so>
+Loading shared library <./libgrain_size_latent_heat.debug.so>
 
 Number of active cells: 320 (on 3 levels)
 Number of degrees of freedom: 6,201 (2,898+405+1,449+1,449)

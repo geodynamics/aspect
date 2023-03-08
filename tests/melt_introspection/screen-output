@@ -1,5 +1,5 @@
 
-Loading shared library <./libmelt_introspection.so>
+Loading shared library <./libmelt_introspection.debug.so>
 
 * Connecting signals
 * signals.edit_finite_element_variables:

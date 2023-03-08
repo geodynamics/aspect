@@ -1,5 +1,5 @@
 
-Loading shared library <./libartificial_postprocess.so>
+Loading shared library <./libartificial_postprocess.debug.so>
 
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 430 (162+25+81+81+81)

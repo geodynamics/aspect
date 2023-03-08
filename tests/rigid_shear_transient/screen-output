@@ -1,5 +1,5 @@
 
-Loading shared library <./librigid_shear_transient.so>
+Loading shared library <./librigid_shear_transient.debug.so>
 
 Number of active cells: 128 (on 4 levels)
 Number of degrees of freedom: 2,988 (1,122+153+561+1,152)

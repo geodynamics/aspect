@@ -1,5 +1,5 @@
 
-Loading shared library <./libcompressibility_vertical_pipe.so>
+Loading shared library <./libcompressibility_vertical_pipe.debug.so>
 
 Number of active cells: 8 (on 1 levels)
 Number of degrees of freedom: 270 (102+24+72+72)

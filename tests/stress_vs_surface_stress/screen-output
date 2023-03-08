@@ -1,5 +1,5 @@
 
-Loading shared library <./libstress_vs_surface_stress.so>
+Loading shared library <./libstress_vs_surface_stress.debug.so>
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 7,912 (2,178+289+1,089+1,089+1,089+1,089+1,089)

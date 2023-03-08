@@ -1,5 +1,5 @@
 
-Loading shared library <./libprescribed_temperature_with_diffusion.so>
+Loading shared library <./libprescribed_temperature_with_diffusion.debug.so>
 
 Number of active cells: 400 (on 2 levels)
 Number of degrees of freedom: 6,618 (4,010+603+2,005)

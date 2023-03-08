@@ -1,5 +1,5 @@
 
-Loading shared library <./libmesh_deformation_particles.so>
+Loading shared library <./libmesh_deformation_particles.debug.so>
 
 Number of active cells: 1 (on 1 levels)
 Number of degrees of freedom: 31 (18+4+9)

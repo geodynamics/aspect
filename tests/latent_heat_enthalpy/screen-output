@@ -1,5 +1,5 @@
 
-Loading shared library <./liblatent_heat_enthalpy.so>
+Loading shared library <./liblatent_heat_enthalpy.debug.so>
 
 Number of active cells: 1,600 (on 3 levels)
 Number of degrees of freedom: 23,632 (14,418+2,005+7,209)

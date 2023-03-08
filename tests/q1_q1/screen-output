@@ -1,5 +1,5 @@
 
-Loading shared library <./libq1_q1.so>
+Loading shared library <./libq1_q1.debug.so>
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 7,492 (2,178+1,089+4,225)

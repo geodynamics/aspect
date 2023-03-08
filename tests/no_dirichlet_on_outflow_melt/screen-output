@@ -1,5 +1,5 @@
 
-Loading shared library <./libno_dirichlet_on_outflow_melt.so>
+Loading shared library <./libno_dirichlet_on_outflow_melt.debug.so>
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)

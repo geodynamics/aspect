@@ -1,5 +1,5 @@
 
-Loading shared library <./libfree_surface_blob_melt.so>
+Loading shared library <./libfree_surface_blob_melt.debug.so>
 
 Number of active cells: 640 (on 4 levels)
 Number of degrees of freedom: 19,352 (5,346+2,617+5,346+697+2,673+2,673)

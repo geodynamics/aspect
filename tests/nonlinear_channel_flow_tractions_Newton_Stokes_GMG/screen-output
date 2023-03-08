@@ -1,5 +1,5 @@
 
-Loading shared library <./libnonlinear_channel_flow_tractions_Newton_Stokes_GMG.so>
+Loading shared library <./libnonlinear_channel_flow_tractions_Newton_Stokes_GMG.debug.so>
 
 Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 4,096 (on 7 levels)

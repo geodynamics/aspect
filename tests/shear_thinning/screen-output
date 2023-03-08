@@ -1,5 +1,5 @@
 
-Loading shared library <./libshear_thinning.so>
+Loading shared library <./libshear_thinning.debug.so>
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)

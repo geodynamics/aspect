@@ -1,7 +1,5 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
-Loading shared library <./libspiegelman_material.so>
+Loading shared library <./libspiegelman_material.debug.so>
 
 Test for p = -1000
 pressure on quadrature point 0: Finite difference = 3.45536e+10. Analytical derivative = 3.45536e+10

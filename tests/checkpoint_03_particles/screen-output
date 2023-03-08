@@ -1,5 +1,5 @@
 
-Loading shared library <./libcheckpoint_03_particles.so>
+Loading shared library <./libcheckpoint_03_particles.debug.so>
 * starting from beginning:
 Executing the following command:
 cd output-checkpoint_03_particles ; (cat ASPECT_DIR/tests/checkpoint_03_particles.prm  ;  echo 'set Output directory = output1.tmp'  ;  rm -rf output1.tmp ; mkdir output1.tmp ) | ../../aspect -- > /dev/null

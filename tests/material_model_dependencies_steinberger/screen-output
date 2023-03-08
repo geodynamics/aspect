@@ -1,5 +1,5 @@
 
-Loading shared library <./libmaterial_model_dependencies_steinberger.so>
+Loading shared library <./libmaterial_model_dependencies_steinberger.debug.so>
 
 Number of active cells: 48 (on 3 levels)
 Number of degrees of freedom: 740 (450+65+225)

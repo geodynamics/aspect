@@ -1,5 +1,5 @@
 
-Loading shared library <./libmelt_restart.so>
+Loading shared library <./libmelt_restart.debug.so>
 * starting from beginning:
 Executing the following command:
 cd output-melt_restart ; (cat ASPECT_DIR/tests/melt_restart.prm  ;  echo 'set Output directory = output1.tmp'  ;  rm -rf output1.tmp ; mkdir output1.tmp ) | ../../aspect -- > /dev/null

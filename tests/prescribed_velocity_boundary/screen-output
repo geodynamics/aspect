@@ -1,5 +1,5 @@
 
-Loading shared library <./libprescribed_velocity_boundary.so>
+Loading shared library <./libprescribed_velocity_boundary.debug.so>
 
 Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 84 (50+9+25)

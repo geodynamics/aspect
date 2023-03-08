@@ -1,5 +1,5 @@
 
-Loading shared library <./libannulus.so>
+Loading shared library <./libannulus.debug.so>
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)

@@ -1,5 +1,5 @@
 
-Loading shared library <./libexponential_decay.so>
+Loading shared library <./libexponential_decay.debug.so>
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,237 (578+81+289+289)

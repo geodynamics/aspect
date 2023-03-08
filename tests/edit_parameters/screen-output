@@ -1,5 +1,5 @@
 
-Loading shared library <./libedit_parameters.so>
+Loading shared library <./libedit_parameters.debug.so>
 
 Signal edit_parameters triggered!
 Number of active cells: 64 (on 4 levels)
@@ -140,9 +140,4 @@ Skipping mesh refinement, because the mesh did not change.
 Termination requested by criterion: end step
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

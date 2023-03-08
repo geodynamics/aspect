@@ -1,7 +1,5 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
-Loading shared library <./libparticle_property_post_initialize_function.so>
+Loading shared library <./libparticle_property_post_initialize_function.debug.so>
 
 initialize
 initial position: post_initialized_info = 0
