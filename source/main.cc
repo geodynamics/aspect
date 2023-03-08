@@ -255,15 +255,39 @@ void possibly_load_shared_libs (const std::string &parameters)
 
       for (const auto &shared_lib : shared_libs_list)
         {
+          // The user can specify lib{target}.so, lib{target}.debug.so, or lib{target}.release.so but
+          // we need to load the correct file depending on our compilation mode. We will try to make
+          // it work regardless of what the users specified:
+          std::string filename = shared_lib;
+
+          auto delete_if_ends_with = [](std::string &a, const std::string &b)
+          {
+            if (a.size()<b.size())
+              return;
+            if (0==a.compare(a.size()-b.size(), b.size(), b))
+              a.erase(a.size()-b.size(), std::string::npos);
+          };
+
+          delete_if_ends_with(filename, ".debug.so");
+          delete_if_ends_with(filename, ".release.so");
+          delete_if_ends_with(filename, ".so");
+
+#ifdef DEBUG
+          filename.append(".debug.so");
+#else
+          filename.append(".release.so");
+#endif
+
           if (Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
             std::cout << "Loading shared library <"
-                      << shared_lib
+                      << filename
                       << '>' << std::endl;
 
-          void *handle = dlopen (shared_lib.c_str(), RTLD_LAZY);
+
+          void *handle = dlopen (filename.c_str(), RTLD_LAZY);
           AssertThrow (handle != nullptr,
                        ExcMessage (std::string("Could not successfully load shared library <")
-                                   + shared_lib + ">. The operating system reports "
+                                   + filename + ">. The operating system reports "
                                    + "that the error is this: <"
                                    + dlerror() + ">."));
 
