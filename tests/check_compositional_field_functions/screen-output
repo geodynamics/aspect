@@ -1,5 +1,5 @@
 
-Loading shared library <./libcheck_compositional_field_functions.so>
+Loading shared library <./libcheck_compositional_field_functions.debug.so>
 
 * Connecting signals
 Chemical composition field #0 (the background field) has value 0.7.

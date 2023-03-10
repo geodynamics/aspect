@@ -35,26 +35,42 @@ MACRO(ASPECT_SETUP_PLUGIN _target)
   MESSAGE(STATUS "Setting up plugin:")
   MESSAGE(STATUS "  name <${_target}>")
   MESSAGE(STATUS "  using ASPECT_DIR ${Aspect_DIR}")
+
+  # We create lib${_target}.debug.so, lib${_target}.release.so, or both
+  # depending on the compilation mode of ASPECT. Note that the user already
+  # created the target under the name ${_target}, so we only need to create
+  # a second target in the third case above.
+  # Note that you can not rename a target or change its filename, but you can
+  # modify the suffix. :-)
+
+  SET(_targets ${_target})
   IF(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
-    MESSAGE(STATUS "  in forced debug mode")
     DEAL_II_SETUP_TARGET(${_target} DEBUG)
+    SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".debug.so")
+
+    GET_TARGET_PROPERTY(_files ${_target} SOURCES)
+    ADD_LIBRARY(${_target}.release SHARED ${_files})
+    DEAL_II_SETUP_TARGET(${_target}.release RELEASE)
+    SET_TARGET_PROPERTIES(${_target}.release PROPERTIES SUFFIX ".so")
+
+    SET(_targets ${_target} ${_target}.release)
+  ELSEIF(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+    DEAL_II_SETUP_TARGET(${_target} DEBUG)
+    SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".debug.so")
   ELSE()
-    MESSAGE(STATUS "  in ${CMAKE_BUILD_TYPE} mode")
-    DEAL_II_SETUP_TARGET(${_target})
+    DEAL_II_SETUP_TARGET(${_target} RELEASE)
+    SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".release.so")
   ENDIF()
-  SET_PROPERTY(TARGET ${_target} APPEND PROPERTY
-    INCLUDE_DIRECTORIES "${Aspect_INCLUDE_DIRS}"
-  )
+  FOREACH(_T ${_targets})
+    SET_PROPERTY(TARGET ${_T} APPEND PROPERTY
+      INCLUDE_DIRECTORIES "${Aspect_INCLUDE_DIRS}")
+  ENDFOREACH()
 
   # workarounds for MAC OSX
   IF (APPLE)
     # avoid linker errors about missing functions inside ASPECT:
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
-
-    # make shared libraries end on .so not .dylib
-    SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".so")
   ENDIF()
-
 
   # automatically create a symbolic link to aspect in the current directory:
   ADD_CUSTOM_COMMAND(

@@ -1,5 +1,5 @@
 
-Loading shared library <./libsimple_nonlinear.so>
+Loading shared library <./libsimple_nonlinear.debug.so>
 
 Test for p = -1000 with dimension 2
 strain-rate: component = 0, point = 0, Finite difference = 3.4588e+30, Analytical derivative = 3.4588e+30

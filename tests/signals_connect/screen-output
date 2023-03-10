@@ -1,5 +1,5 @@
 
-Loading shared library <./libsignals_connect.so>
+Loading shared library <./libsignals_connect.debug.so>
 
 Connecting signals
 Number of active cells: 16 (on 3 levels)

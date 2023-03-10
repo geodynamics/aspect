@@ -1,5 +1,5 @@
 
-Loading shared library <./libtangurnis_tala_gmg.so>
+Loading shared library <./libtangurnis_tala_gmg.debug.so>
 
 Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 64 (on 4 levels)

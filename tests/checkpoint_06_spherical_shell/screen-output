@@ -1,5 +1,5 @@
 
-Loading shared library <./libcheckpoint_06_spherical_shell.so>
+Loading shared library <./libcheckpoint_06_spherical_shell.debug.so>
 * starting from beginning:
 Executing the following command:
 cd output-checkpoint_06_spherical_shell ; (cat ASPECT_DIR/tests/checkpoint_06_spherical_shell.prm  ;  echo 'set Output directory = output1.tmp'  ;  rm -rf output1.tmp ; mkdir output1.tmp ) | ../../aspect -- > /dev/null

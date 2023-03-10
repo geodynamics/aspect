@@ -1,5 +1,5 @@
 
-Loading shared library <./libfree_surface_relaxation.so>
+Loading shared library <./libfree_surface_relaxation.debug.so>
 
 Number of active cells: 1,000 (on 1 levels)
 Number of degrees of freedom: 13,494 (8,282+1,071+4,141)

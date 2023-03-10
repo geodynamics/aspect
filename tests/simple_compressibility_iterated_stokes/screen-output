@@ -1,5 +1,5 @@
 
-Loading shared library <./libsimple_compressibility_iterated_stokes.so>
+Loading shared library <./libsimple_compressibility_iterated_stokes.debug.so>
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)

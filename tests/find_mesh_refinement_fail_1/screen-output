@@ -1,5 +1,5 @@
 
-Loading shared library <./libfind_mesh_refinement_fail_1.so>
+Loading shared library <./libfind_mesh_refinement_fail_1.debug.so>
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)

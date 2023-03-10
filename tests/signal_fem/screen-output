@@ -1,5 +1,5 @@
 
-Loading shared library <./libsignal_fem.so>
+Loading shared library <./libsignal_fem.debug.so>
 
 * Connecting signals
 * signals.edit_finite_element_variables:

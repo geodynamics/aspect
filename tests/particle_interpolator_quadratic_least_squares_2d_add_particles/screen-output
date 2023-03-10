@@ -1,5 +1,5 @@
 
-Loading shared library <./libparticle_interpolator_quadratic_least_squares_2d_add_particles.so>
+Loading shared library <./libparticle_interpolator_quadratic_least_squares_2d_add_particles.debug.so>
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)

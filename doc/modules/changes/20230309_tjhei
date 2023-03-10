@@ -1,0 +1,7 @@
+New: Plugins in shared libraries now build libmy_plugin.debug.so
+or libmy_plugin.release.so depending on the current build type.
+The "Additional shared libraries" parameter value does not need
+to be adjusted, because ASPECT automatically loads the correct
+library when "./libmy_plugin.so" is specified.
+<br>
+(Timo Heister, 2023/03/09)

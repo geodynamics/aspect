@@ -1,5 +1,5 @@
 
-Loading shared library <./libdiscontinuous_temperature_blankenbach.so>
+Loading shared library <./libdiscontinuous_temperature_blankenbach.debug.so>
 
 
    Loading Ascii data initial file ASPECT_DIR/benchmarks/blankenbach/initial_temperature_case1c.txt.

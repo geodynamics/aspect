@@ -1,5 +1,5 @@
 
-Loading shared library <./libdoneahuerta_3.so>
+Loading shared library <./libdoneahuerta_3.debug.so>
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)

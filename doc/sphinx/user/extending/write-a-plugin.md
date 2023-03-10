@@ -41,25 +41,60 @@ to do:
         approach has the advantage that you do not need to worry much about
         how the file actually gets compiled. On the other hand, every time you
         modify the file, calling `make` requires not only compiling this one
-        file, but also link ASPECT.
+        file, but also linking the ASPECT binary.
         Furthermore, when you upgrade from one version of
         ASPECT to another, you need to remember to
         copy the `my_plugin.cc` file.
 
     -   Put the `my_plugin.cc` file into a directory of your choice and
-        compile it into a shared library yourself. This may be as easy as
-        calling
+        compile it into a shared library, which will be loaded by ASPECT.
+        While one could compile the `.cc` file with a command like
 
-             # NOTE: do not do this, but use the cmake command below!
+             # NOTE: Do not do this, but use the cmake command below!
              g++ -I/path/to/aspect/headers -I/path/to/deal.II/headers \
                  -fPIC -shared my_plugin.cc -o my_plugin.so
 
-        on Linux, but the command may be different on other systems. Now you
+        on Linux, but the command may be different on other systems.
+        Having to remember all of these
+        pieces is a hassle, and a much easier way is in fact to set up a
+        small CMake project for this. To this end, simply copy the file
+        [doc/plugin-CMakeLists.txt](https://github.com/geodynamics/aspect/blob/main/doc/plugin-CMakeLists.txt)
+        to the directory where you have your
+        plugin source files and rename it to `CMakeLists.txt`.
+
+        You can then just run the commands
+
+            cmake -DAspect_DIR=/path/to/aspect/build/ .
+            make
+
+        and it should compile your plugin files into a shared library
+        `libmy_plugin.so`. A concrete example of this process is discussed in
+        {ref}`sec:benchmark-run`. Of course, you may want to
+        choose different names for the source files `source_1.cc`, `source_2.cc`
+        or the name of the plugin `my_plugin` inside the `CMakeLists.txt`.
+
+        In essence, what the few lines inside the `CMakeLists.txt` do, is that
+        they find an
+        ASPECT installation (i.e., the directory where
+        you configured and compiled it as discussed in
+        {ref}`cha:installation`) in either the directory
+        explicitly specified in the `Aspect_DIR` variable passed to `cmake`, the
+        shell environment variable `ASPECT_DIR`, or just one directory up. It then
+        sets up compiler paths and similar, and the following lines simply define
+        the name of a plugin, list the source files for it, and define everything
+        that's necessary to compile them into a shared library. Calling
+        `make` on the command line then simply compiles everything.
+
+        Now you
         only need to tell ASPECT to load this
         shared library at startup so that the plugin becomes available at run
         time and can be selected from the input parameter file. This is done
         using the `Additional shared libraries` parameter in the input file,
-        see {ref}`parameters:Additional_20shared_20libraries`. This approach has the upside that you can
+        see {ref}`parameters:Additional_20shared_20libraries`:
+
+            set Additional shared libraries = ./libmy_plugin.so
+
+        This approach to build your own shared library has the upside that you can
         keep all files that define new plugins in your own directories where
         you also run the simulations, also making it easier to keep around
         your plugins as you upgrade your ASPECT
@@ -67,38 +102,13 @@ to do:
         library is a bit more that you need to do yourself. Nevertheless, this
         is the preferred approach.
 
-        In practice, the compiler line above can become tedious because it
-        includes paths to the ASPECT and
-        deal.II header files, but possibly also other
-        things such as Trilinos headers, etc. Having to remember all of these
-        pieces is a hassle, and a much easier way is in fact to set up a
-        mini-CMake project for this. To this end, simply copy the file
-        [doc/plugin-CMakeLists.txt](https://github.com/geodynamics/aspect/blob/main/doc/plugin-CMakeLists.txt)
-        to the directory where you have your
-        plugin source files and rename it to `CMakeLists.txt`.
+        Recently, ASPECT learned to build debug and optimized builds from a single
+        build directory as described in {ref}`sec:run-aspect:debug-mode`. Since then,
+        plugins will be compiled into `libmy_plugin.debug.so`, `libmy_plugin.release.so`,
+        or both depending on how ASPECT was configured. You do not need to modify the
+        `Additional shared libraries` to point to one or the other library, because ASPECT will automatically load the corresponding file if you just specify
+        `./libmy_plugin.so`.
 
-    You can then just run the commands
-
-         cmake -DAspect_DIR=/path/to/aspect/build/ .
-         make
-
-    and it should compile your plugin files into a shared library
-    `my_plugin.so`. A concrete example of this process is discussed in
-    {ref}`sec:benchmark-run`. Of course, you may want to
-    choose different names for the source files `source_1.cc`, `source_2.cc`
-    or the name of the plugin `my_plugin`.
-
-    In essence, what these few lines do is that they find an
-    ASPECT installation (i.e., the directory where
-    you configured and compiled it, which may be the same directory as where
-    you keep your sources, or a different one, as discussed in
-    {ref}`cha:installation`) in either the directory
-    explicitly specified in the `Aspect_DIR` variable passed to `cmake`, the
-    shell environment variable `ASPECT_DIR`, or just one directory up. It then
-    sets up compiler paths and similar, and the following lines simply define
-    the name of a plugin, list the source files for it, and define everything
-    that's necessary to compile them into a shared library. Calling
-    `make` on the command line then simply compiles everything.
 
 :::{note}
 Complex projects built on ASPECT often require plugins of more than just one kind. For

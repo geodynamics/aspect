@@ -1,5 +1,5 @@
 
-Loading shared library <./libinfill_density_flexure.so>
+Loading shared library <./libinfill_density_flexure.debug.so>
 
 
    Loading Ascii data boundary file ASPECT_DIR/benchmarks/infill_density/data/box_2d_top.0.txt.

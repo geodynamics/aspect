@@ -1,5 +1,5 @@
 
-Loading shared library <./libparticle_handler_copy.so>
+Loading shared library <./libparticle_handler_copy.debug.so>
 
 Connecting signals
 Number of active cells: 256 (on 5 levels)

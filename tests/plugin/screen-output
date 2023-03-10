@@ -1,5 +1,5 @@
 
-Loading shared library <./libplugin.so>
+Loading shared library <./libplugin.debug.so>
 srcdir='ASPECT_DIR'
 N6dealii13TriangulationILi2ELi2EEE N6aspect9SimulatorILi2EEE
 

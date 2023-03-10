@@ -1,5 +1,5 @@
 
-Loading shared library <./libtime_dependent_temperature_bc.so>
+Loading shared library <./libtime_dependent_temperature_bc.debug.so>
 
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)

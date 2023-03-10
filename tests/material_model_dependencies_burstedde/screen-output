@@ -1,5 +1,5 @@
 
-Loading shared library <./libmaterial_model_dependencies_burstedde.so>
+Loading shared library <./libmaterial_model_dependencies_burstedde.debug.so>
 
 Number of active cells: 64 (on 3 levels)
 Number of degrees of freedom: 3,041 (2,187+125+729)

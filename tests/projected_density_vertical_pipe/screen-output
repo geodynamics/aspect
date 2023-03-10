@@ -1,5 +1,5 @@
 
-Loading shared library <./libprojected_density_vertical_pipe.so>
+Loading shared library <./libprojected_density_vertical_pipe.debug.so>
 
 Number of active cells: 8 (on 1 levels)
 Number of degrees of freedom: 249 (102+24+72+51)

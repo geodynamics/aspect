@@ -1,5 +1,5 @@
 
-Loading shared library <./libcompressibility_lateral_pipe_transient_projected_density.so>
+Loading shared library <./libcompressibility_lateral_pipe_transient_projected_density.debug.so>
 
 Number of active cells: 32 (on 1 levels)
 Number of degrees of freedom: 1,062 (390+96+288+288)

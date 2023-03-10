@@ -1,7 +1,5 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
-Loading shared library <./libnatural_coordinates_conversion.so>
+Loading shared library <./libnatural_coordinates_conversion.debug.so>
 
 2D:
 Box 2D ok:                   point = 25000 50000, inter point = 25000, 50000, new_point = 25000 50000

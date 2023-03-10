@@ -1,5 +1,5 @@
 
-Loading shared library <./libsimple_shear_output_the_mobility.so>
+Loading shared library <./libsimple_shear_output_the_mobility.debug.so>
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)

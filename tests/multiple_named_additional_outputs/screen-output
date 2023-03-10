@@ -1,5 +1,5 @@
 
-Loading shared library <./libmultiple_named_additional_outputs.so>
+Loading shared library <./libmultiple_named_additional_outputs.debug.so>
 
 Number of active cells: 400 (on 2 levels)
 Number of degrees of freedom: 10,628 (4,010+603+2,005+2,005+2,005)
