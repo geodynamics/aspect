@@ -18,5 +18,4 @@ end
 
 subsection Nullspace removal
   set Remove nullspace = net rotation
-  set Remove rotational nullspace in linear solver = auto
 end

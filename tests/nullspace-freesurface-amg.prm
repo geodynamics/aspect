@@ -47,7 +47,6 @@ end
 
 subsection Nullspace removal
   set Remove nullspace = net rotation
-  set Remove rotational nullspace in linear solver = true
 end
 
 subsection Heating model
