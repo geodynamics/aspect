@@ -676,23 +676,27 @@ namespace aspect
               if (varid < ndims)
                 continue;
 
+              char  var_name[NC_MAX_NAME];
               nc_type xtype;
-              int ndims;
-              int dimids[NC_MAX_VAR_DIMS];
-              char  name[NC_MAX_NAME];
-              int natts;
+              int var_ndims;
+              int var_dimids[NC_MAX_VAR_DIMS];
+              int var_natts;
 
-              status = nc_inq_var (ncid, varid, name, &xtype, &ndims, dimids,
-                                   &natts);
+              status = nc_inq_var (ncid, varid, var_name, &xtype, &var_ndims, var_dimids,
+                                   &var_natts);
               AssertThrowNetCDF(status);
 
-              if (ndims == dim)
+              // only consider data that has dim variables:
+              if (var_ndims == dim)
                 {
                   bool use = true;
                   if (varids_to_use.size()>0)
                     {
+                      // This is not the first data column, so we can only use it if
+                      // it uses the same dim variables as the first data column we
+                      // found.
                       for (int i=0; i<dim; ++i)
-                        if (dimids_to_use[i]!=dimids[i])
+                        if (dimids_to_use[i]!=var_dimids[i])
                           {
                             use=false;
                             break;
@@ -700,11 +704,13 @@ namespace aspect
                     }
                   else
                     {
+                      // This is the first data column we found, so grab the ids of
+                      // the dimensions to use and store in dimids_to_use:
                       for (int i=0; i<dim; ++i)
                         {
                           size_t length;
-                          status = nc_inq_dim(ncid, dimids[i], nullptr, &length);
-                          dimids_to_use[i] = dimids[i];
+                          status = nc_inq_dim(ncid, var_dimids[i], nullptr, &length);
+                          dimids_to_use[i] = var_dimids[i];
                           // dimensions are specified in reverse order in the nc file:
                           new_table_points[dim-1-i] = length;
                         }
@@ -713,7 +719,7 @@ namespace aspect
                   if (use)
                     {
                       varids_to_use.push_back(varid);
-                      data_column_names.push_back(name);
+                      data_column_names.push_back(var_name);
                     }
                 }
             }
