@@ -550,7 +550,7 @@ namespace aspect
 
       old_mesh_displacements = mesh_displacements;
 
-      mg_constrained_dofs.initialize(mesh_deformation_dof_handler);
+      //      mg_constrained_dofs.initialize(mesh_deformation_dof_handler);
 
       // Make the constraints for the elliptic problem.
       make_constraints();
@@ -1401,7 +1401,7 @@ namespace aspect
         {
           TimerOutput::Scope timer (sim.computing_timer, "Mesh deformation initialize");
 
-          mg_constrained_dofs.initialize(mesh_deformation_dof_handler);
+          //          mg_constrained_dofs.initialize(mesh_deformation_dof_handler);
 
           make_initial_constraints();
           if (this->is_stokes_matrix_free())
