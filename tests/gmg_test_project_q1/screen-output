@@ -10,9 +10,9 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
     GMG n_levels: 3
     Viscosity range: 5e+19 - 1.5e+23
     GMG workload imbalance: 1
-    Stokes solver: 152+0 iterations.
-    Schur complement preconditioner: 153+0 iterations.
-    A block preconditioner: 153+0 iterations.
+    Stokes solver: 150+0 iterations.
+    Schur complement preconditioner: 151+0 iterations.
+    A block preconditioner: 151+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-gmg_test_project_q1/solution/solution-00000

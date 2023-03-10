@@ -51,7 +51,7 @@ Number of degrees of freedom: 7,200 (4,416+576+2,208)
 
 *** Timestep 3:  t=1.82305e+06 years, dt=334053 years
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.371 m/year, 0.564 m/year
@@ -61,7 +61,7 @@ Number of degrees of freedom: 7,200 (4,416+576+2,208)
 
 *** Timestep 4:  t=2.07395e+06 years, dt=250896 years
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-gmg_shell_2d_free_slip/solution/solution-00002
@@ -90,69 +90,69 @@ Number of degrees of freedom: 12,996 (7,968+1,044+3,984)
    Postprocessing:
      RMS, max velocity:                  0.601 m/year, 0.939 m/year
      Temperature min/avg/max:            973 K, 2505 K, 4425 K
-     Heat fluxes through boundary parts: 2.858e+07 W, 2.397e+07 W
+     Heat fluxes through boundary parts: 2.941e+07 W, 2.289e+07 W
      Writing depth average:              output-gmg_shell_2d_free_slip/depth_average
 
-*** Timestep 7:  t=2.53514e+06 years, dt=86989.9 years
+*** Timestep 7:  t=2.53514e+06 years, dt=86995 years
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.637 m/year, 1 m/year
      Temperature min/avg/max:            973 K, 2512 K, 4479 K
-     Heat fluxes through boundary parts: 3.308e+07 W, 2.723e+07 W
+     Heat fluxes through boundary parts: 3.33e+07 W, 2.705e+07 W
      Writing depth average:              output-gmg_shell_2d_free_slip/depth_average
 
-*** Timestep 8:  t=2.61755e+06 years, dt=82408.7 years
+*** Timestep 8:  t=2.61756e+06 years, dt=82415.5 years
    Solving temperature system... 14 iterations.
    Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.672 m/year, 1.06 m/year
      Temperature min/avg/max:            973 K, 2520 K, 4536 K
-     Heat fluxes through boundary parts: 3.74e+07 W, 3.046e+07 W
+     Heat fluxes through boundary parts: 3.748e+07 W, 3.047e+07 W
      Writing depth average:              output-gmg_shell_2d_free_slip/depth_average
 
-*** Timestep 9:  t=2.69608e+06 years, dt=78537.5 years
+*** Timestep 9:  t=2.6961e+06 years, dt=78545.3 years
    Solving temperature system... 13 iterations.
    Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.705 m/year, 1.12 m/year
      Temperature min/avg/max:            973 K, 2528 K, 4597 K
-     Heat fluxes through boundary parts: 4.226e+07 W, 3.418e+07 W
+     Heat fluxes through boundary parts: 4.233e+07 W, 3.417e+07 W
 
-*** Timestep 10:  t=2.77134e+06 years, dt=75259 years
+*** Timestep 10:  t=2.77137e+06 years, dt=75267.2 years
    Solving temperature system... 13 iterations.
    Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.735 m/year, 1.17 m/year
      Temperature min/avg/max:            973 K, 2536 K, 4661 K
-     Heat fluxes through boundary parts: 4.772e+07 W, 3.839e+07 W
+     Heat fluxes through boundary parts: 4.78e+07 W, 3.836e+07 W
      Writing depth average:              output-gmg_shell_2d_free_slip/depth_average
 
-Number of active cells: 1,230 (on 5 levels)
-Number of degrees of freedom: 17,790 (10,910+1,425+5,455)
+Number of active cells: 1,215 (on 5 levels)
+Number of degrees of freedom: 17,624 (10,808+1,412+5,404)
 
-*** Timestep 11:  t=2.84382e+06 years, dt=72478.1 years
-   Solving temperature system... 17 iterations.
-   Solving Stokes system... 45+0 iterations.
+*** Timestep 11:  t=2.84386e+06 years, dt=72486.5 years
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.757 m/year, 1.21 m/year
-     Temperature min/avg/max:            973 K, 2545 K, 4759 K
-     Heat fluxes through boundary parts: 3.352e+07 W, 3.897e+07 W
+     RMS, max velocity:                  0.755 m/year, 1.21 m/year
+     Temperature min/avg/max:            973 K, 2545 K, 4760 K
+     Heat fluxes through boundary parts: 3.68e+07 W, 3.727e+07 W
      Writing depth average:              output-gmg_shell_2d_free_slip/depth_average
 
-*** Timestep 12:  t=2.86e+06 years, dt=16178.5 years
+*** Timestep 12:  t=2.86e+06 years, dt=16142.2 years
    Solving temperature system... 11 iterations.
-   Solving Stokes system... 45+0 iterations.
+   Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.762 m/year, 1.22 m/year
+     RMS, max velocity:                  0.761 m/year, 1.22 m/year
      Temperature min/avg/max:            973 K, 2547 K, 4775 K
-     Heat fluxes through boundary parts: 3.5e+07 W, 4.062e+07 W
+     Heat fluxes through boundary parts: 3.619e+07 W, 3.989e+07 W
 
 Termination requested by criterion: end time
 
