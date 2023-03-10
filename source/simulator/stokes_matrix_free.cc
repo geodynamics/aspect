@@ -2485,9 +2485,9 @@ namespace aspect
                 AffineConstraints<double> user_level_constraints;
                 user_level_constraints.reinit(relevant_dofs);
 
-              sim.setup_nullspace_constraints(user_level_constraints,
-                                              dof_handler_v,
-                                              level);
+                sim.setup_nullspace_constraints(user_level_constraints,
+                                                dof_handler_v,
+                                                level);
 
                 const IndexSet &refinement_edge_indices =
                   mg_constrained_dofs_A_block.get_refinement_edge_indices(level);

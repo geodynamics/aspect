@@ -308,39 +308,22 @@ namespace aspect
                              "Sphere and SphericalShell geometries."));
 
     const bool mesh_deformation_enabled = (mesh_deformation != nullptr);
-    bool mesh_deformation_at_top = false;
-    bool mesh_deformation_at_bottom = false;
     if (mesh_deformation_enabled)
       {
-        // Check if mesh deformation happens at the top boundary, bottom boundary, of both:
-        const std::set<types::boundary_id> ids = mesh_deformation->get_active_mesh_deformation_boundary_indicators();
-
-        if (ids.find(geometry_model.get_symbolic_boundary_names_map()["top"]) != ids.end())
-          mesh_deformation_at_top = true;
-        if (is_spherical_shell && ids.find(geometry_model.get_symbolic_boundary_names_map()["bottom"]) != ids.end())
-          mesh_deformation_at_bottom = true;
-      }
-
-    if (mesh_deformation_at_top && is_sphere)
-      {
-        // Not sure what to do in this situation. For now, let's not add a constraint and hope that it works.
-        return;
-      }
-    if (mesh_deformation_at_top && mesh_deformation_at_bottom && is_spherical_shell)
-      {
-        // Again, not much we can do here...
+        // Mesh deformation is very likely to deform our geometry that it is no longer rotationally symmetric, so it would
+        // be incorrect to add constraints. Ideally, we would include a constraint when the deformation symmetric (for example
+        // if the deformation is all zero), but that is difficult to detect. Instead, lets do nothing and hope for the best.
         return;
       }
 
-    // Use the bottom surface unless we have mesh deformation at the bottom:
-    const double point_depth = ((is_sphere || (is_spherical_shell && mesh_deformation_at_bottom)) ? 0.0 : geometry_model.maximal_depth());
-
+    // Pick a point on the surface of the sphere/shell:
+    const double point_depth = 0.0;
     if (dim==2)
       {
-        // Pick a point at the desired depth. We assume that the
-        // representative point is in positive y direction, so we can
-        // fix the x component of velocity. This is true for shell and
-        // spherical shell implementations.
+        // Pick a point. We assume that the
+        // representative point is on the positive y axis (0,y), so we can
+        // fix the x component of velocity at that point. This is true for shell and
+        // spherical shell implementations, but let's make sure:
         const Point<dim> location = geometry_model.representative_point(point_depth);
         Assert(location[0] == 0. && location[1]>0., ExcInternalError());
 
@@ -361,8 +344,8 @@ namespace aspect
       }
     else if (dim==3)
       {
-        // Pick a point at the desired depth. We assume that the
-        // representative point is on the positive z axis. This is
+        // Pick a point. We assume that the
+        // representative point is on the positive z axis (0,0,z). This is
         // true for shell and spherical shell implementations. This
         // way we can fix the tangential components (x and y
         // velocity).
@@ -386,8 +369,8 @@ namespace aspect
         }
 
         {
-          // Construct point 2 by rotating location1 so it is on the positive x axis. Then constrain y velocity.
-          Point<dim> location2;
+          // Construct point 2 by rotating location1 so it is on the positive x axis. Then constrain the y velocity.
+          Point<dim> location2; // p=(1,0,0)  uy=0
           location2[0] = location1[dim-1];
           ComponentMask y_velocity_mask(dof_handler.get_fe().n_components(), false);
           y_velocity_mask.set(1, true);
