@@ -301,11 +301,13 @@ namespace aspect
     // won't be able to find a DoF on these finer levels. This
     // works okay, though.
 
+#ifdef DEBUG
     const bool is_spherical_shell = Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(geometry_model);
     const bool is_sphere = Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(geometry_model);
     Assert(is_spherical_shell || is_sphere,
            ExcNotImplemented("Nullspace constraints for rotation are currently only implemented for the "
                              "Sphere and SphericalShell geometries."));
+#endif
 
     const bool mesh_deformation_enabled = (mesh_deformation != nullptr);
     if (mesh_deformation_enabled)
