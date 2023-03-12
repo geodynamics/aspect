@@ -25,6 +25,7 @@
 #include <aspect/global.h>
 
 #include <array>
+#include <random>
 #include <deal.II/base/point.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/table_indices.h>
@@ -1064,6 +1065,68 @@ namespace aspect
          */
         const std::function<Tensor<1,dim> (const Point<dim> &)> function_object;
     };
+
+    /**
+     * Create a permutation vector which can be used by the apply_permutation function
+     * to put the vector in sorted order.
+     *
+     * @param vector vector to sort
+     */
+    template <typename T>
+    inline
+    std::vector<std::size_t>
+    compute_sorting_permutation(const std::vector<T> &vector)
+    {
+      std::vector<std::size_t> p(vector.size());
+      std::iota(p.begin(), p.end(), 0);
+      std::sort(p.begin(), p.end(),
+                [&](std::size_t i, std::size_t j)
+      {
+        return vector[i] < vector[j];
+      });
+      return p;
+    }
+
+    /**
+     * Applies a permutation vector to another vector and retuns the resulting vector.
+     *
+     * @param vector vector to sort
+     * @param permutation_vector The permutation vector used to sort the input vector.
+     * @return std::vector<T>
+     */
+    template <typename T>
+    inline
+    std::vector<T>
+    apply_permutation(
+      const std::vector<T> &vector,
+      const std::vector<std::size_t> &permutation_vector)
+    {
+      std::vector<T> sorted_vec(vector.size());
+      std::transform(permutation_vector.begin(), permutation_vector.end(), sorted_vec.begin(),
+                     [&](std::size_t i)
+      {
+        return vector[i];
+      });
+      return sorted_vec;
+    }
+
+    /**
+     * Get volume weighted rotation matrices, using random draws to convert
+     * to a discrete number of orientations, weighted by volume.
+     * The input is a vector of volume fractions and a vector of rotation matrices.
+     * The vectors need to have the same length.
+     *
+     * @param volume_fraction a vector of doubles representing the volume fraction of each grain
+     * @param rotation_matrices a vector of 2nd order 3D tensors representing the rotation matrix of each grain
+     * @param n_output_matrices The number of rotation matrices which are output by this function. This can be
+     * different from the number of entries in the volume fraction and rotation matrices vectors.
+     * @param random_number_generator a reference to a mt19937 random number generator.
+     */
+    std::vector<Tensor<2,3>>
+    rotation_matrices_random_draw_volume_weighting(const std::vector<double> volume_fractions,
+                                                   const std::vector<Tensor<2,3>> rotation_matrices,
+                                                   const unsigned int n_output_matrices,
+                                                   std::mt19937 &random_number_generator);
   }
 }
 

@@ -2869,6 +2869,52 @@ namespace aspect
         throw QuietException();
     }
 
+    std::vector<Tensor<2,3>>
+    rotation_matrices_random_draw_volume_weighting(const std::vector<double> volume_fraction,
+                                                   const std::vector<Tensor<2,3>> rotation_matrices,
+                                                   const unsigned int n_output_matrices,
+                                                   std::mt19937 &random_number_generator)
+    {
+      const unsigned int n_grains = volume_fraction.size();
+
+      // Get volume weighted euler angles, using random draws to convert odf
+      // to a discrete number of orientations, weighted by volume
+      // 1a. Sort the volume fractions and matrices based on the volume fractions size
+      const auto p = compute_sorting_permutation(volume_fraction);
+
+      const std::vector<double> fv_sorted = apply_permutation(volume_fraction, p);
+      const std::vector<Tensor<2,3>> matrices_sorted = apply_permutation(rotation_matrices, p);
+
+      // 2. Get cumulative weight for volume fraction
+      std::vector<double> cum_weight(n_grains);
+      std::partial_sum(fv_sorted.begin(),fv_sorted.end(),cum_weight.begin());
+
+      // 3. Generate random indices
+      std::uniform_real_distribution<> dist(0, cum_weight[n_grains-1]);
+      std::vector<double> idxgrain(n_output_matrices);
+      for (unsigned int grain_i = 0; grain_i < n_output_matrices; ++grain_i)
+        {
+          idxgrain[grain_i] = dist(random_number_generator);
+        }
+
+      // 4. Find the maximum cum_weight that is less than the random value.
+      // the euler angle index is +1. For example, if the idxGrain(g) < cumWeight(1),
+      // the index should be 1 not zero)
+      std::vector<Tensor<2,3>> matrices_out(n_output_matrices);
+      for (unsigned int grain_i = 0; grain_i < n_output_matrices; ++grain_i)
+        {
+          const std::vector<double>::iterator selected_matrix =
+            std::lower_bound(cum_weight.begin(),
+                             cum_weight.end(),
+                             idxgrain[grain_i]);
+
+          const unsigned int matrix_index =
+            std::distance(cum_weight.begin(), selected_matrix);
+
+          matrices_out[grain_i] = matrices_sorted[matrix_index];
+        }
+      return matrices_out;
+    }
 
 
 // Explicit instantiations
