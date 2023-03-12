@@ -175,17 +175,6 @@ namespace aspect
             const std::vector<T> &vec,
             const std::vector<std::size_t> &permutation_vector) const;
 
-          /**
-          * Get volume weighted euler angles, using random draws to convert
-          * to a discrete number of orientations, weighted by volume.
-          * The input is a vector of volume fractions and a vector of rotation matrices.
-          * The vectors need to have the same length.
-          */
-          std::vector<Tensor<2,3>>
-          random_draw_volume_weighting(const std::vector<double> volume_fraction,
-                                       const std::vector<Tensor<2,3>> rotation_matrices,
-                                       const unsigned int n_output_grains) const;
-
 
           /**
           * Declare the parameters this class takes through input files.

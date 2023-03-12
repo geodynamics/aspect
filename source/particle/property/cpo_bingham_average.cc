@@ -82,7 +82,7 @@ namespace aspect
                 rotation_matrices_grains[grain_i] = cpo_particle_property.get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i);
               }
 
-            const std::vector<Tensor<2,3>> weighted_rotation_matrices = random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples);
+            const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
             const std::array<std::array<double,3>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
 
             for (unsigned int i = 0; i < 3; i++)
@@ -114,7 +114,7 @@ namespace aspect
                 rotation_matrices_grains[grain_i] = cpo_particle_property.get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i);
               }
 
-            const std::vector<Tensor<2,3>> weighted_rotation_matrices = random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples);
+            const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
             std::array<std::array<double,3>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
 
             unsigned int counter = 0;
@@ -214,53 +214,6 @@ namespace aspect
           return vec[i];
         });
         return sorted_vec;
-      }
-
-      template<int dim>
-      std::vector<Tensor<2,3>>
-      CpoBinghamAverage<dim>::random_draw_volume_weighting(const std::vector<double> volume_fraction,
-                                                           const std::vector<Tensor<2,3>> rotation_matrices,
-                                                           const unsigned int n_output_grains) const
-      {
-
-        unsigned int n_grains = volume_fraction.size();
-
-        // Get volume weighted euler angles, using random draws to convert odf
-        // to a discrete number of orientations, weighted by volume
-        // 1a. Sort the volume fractions and matrices based on the volume fractions size
-        const auto p = sort_permutation(volume_fraction);
-
-        const std::vector<double> fv_sorted = apply_permutation(volume_fraction, p);
-        const std::vector<Tensor<2,3>> matrices_sorted = apply_permutation(rotation_matrices, p);
-
-        // 2. Get cumulative weight for volume fraction
-        std::vector<double> cum_weight(n_grains);
-        std::partial_sum(fv_sorted.begin(),fv_sorted.end(),cum_weight.begin());
-        // 3. Generate random indices
-        std::uniform_real_distribution<> dist(0, 1);
-        std::vector<double> idxgrain(n_output_grains);
-        for (unsigned int grain_i = 0; grain_i < n_output_grains; ++grain_i)
-          {
-            idxgrain[grain_i] = dist(this->random_number_generator);
-          }
-
-        // 4. Find the maximum cum_weight that is less than the random value.
-        // the euler angle index is +1. For example, if the idxGrain(g) < cumWeight(1),
-        // the index should be 1 not zero)
-        std::vector<Tensor<2,3>> matrices_out(n_output_grains);
-        for (unsigned int grain_i = 0; grain_i < n_output_grains; ++grain_i)
-          {
-            const std::vector<double>::iterator selected_matrix =
-              std::lower_bound(cum_weight.begin(),
-                               cum_weight.end(),
-                               idxgrain[grain_i]);
-
-            const unsigned int matrix_index =
-              std::distance(cum_weight.begin(), selected_matrix);
-
-            matrices_out[grain_i] = matrices_sorted[matrix_index];
-          }
-        return matrices_out;
       }
 
 
