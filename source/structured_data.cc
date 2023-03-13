@@ -31,6 +31,22 @@
 #include <aspect/geometry_model/two_merged_chunks.h>
 
 #include <boost/lexical_cast.hpp>
+#include <deal.II/base/exceptions.h>
+
+#ifdef ASPECT_WITH_NETCDF
+
+#include <netcdf.h>
+#define AssertThrowNetCDF(error_code) \
+  AssertThrow(error_code == NC_NOERR, dealii::ExcMessage("A NetCDF Error with code " + std::to_string(error_code) + " occured."))
+
+#else
+
+#define AssertThrowNetCDF(error_code) \
+  AssertThrow(false, ExcInternalError())
+
+#endif
+
+
 
 namespace aspect
 {
@@ -606,6 +622,257 @@ namespace aspect
                    root_process);
     }
 
+
+
+    template <int dim>
+    void
+    StructuredDataLookup<dim>::load_netcdf(const std::string &filename, const std::vector<std::string> &data_column_names_)
+    {
+#ifndef ASPECT_WITH_NETCDF
+      (void)filename;
+      (void)data_column_names_;
+      AssertThrow(false, ExcMessage("Loading NetCDF files is only supported if ASPECT is configured with the NetCDF library!"));
+#else
+      TableIndices<dim> new_table_points;
+      std::vector<std::string> coordinate_column_names(dim);
+      std::vector<Table<dim,double>> data_tables;
+      std::vector<std::string> data_column_names = data_column_names_;
+      std::vector<std::vector<double>> coordinate_values(dim);
+
+      int ncid;
+      int status;
+
+      status = nc_open(filename.c_str(), NC_NOWRITE, &ncid);
+      AssertThrowNetCDF(status);
+
+      int ndims, nvars, ngatts, unlimdimid;
+      status = nc_inq(ncid, &ndims, &nvars, &ngatts, &unlimdimid);
+      AssertThrowNetCDF(status);
+
+      // The number of dimensions ndims in the netcdf file can be
+      // different than dim. In fact, each variable (data column in
+      // our notation) has a subset of those dimensions associated
+      // with it. That also means that variables can have a different
+      // number of dimensions and/or a different subset. We can only
+      // use variables with dim dimensions (our template argument) and
+      // only those that all use the same dimids inside the netcdf
+      // file.
+      int dimids_to_use[dim]; // dimids of the coordinate columns to use
+      std::vector<int> varids_to_use; // all netCDF varids of the data columns
+
+      if (data_column_names.empty())
+        {
+          // The user did not ask for a specific list of data
+          // columns. Let's find all columns we can possible load. We
+          // find the first data column with the correct number of
+          // dims. This one will determine the dimids of the
+          // coordinates to use. Following that, we pick all other
+          // data columns with the same coordinates.
+
+          for (int varid=0; varid<nvars; ++varid)
+            {
+              // Each netCDF dimension also has an associated variable that stores the
+              // coordinate data. We are looking for data columns, so skip them:
+              if (varid < ndims)
+                continue;
+
+              char  var_name[NC_MAX_NAME];
+              nc_type xtype;
+              int var_ndims;
+              int var_dimids[NC_MAX_VAR_DIMS];
+              int var_natts;
+
+              status = nc_inq_var (ncid, varid, var_name, &xtype, &var_ndims, var_dimids,
+                                   &var_natts);
+              AssertThrowNetCDF(status);
+
+              // only consider data that has dim variables:
+              if (var_ndims == dim)
+                {
+                  bool use = true;
+                  if (varids_to_use.size()>0)
+                    {
+                      // This is not the first data column, so we can only use it if
+                      // it uses the same dim variables as the first data column we
+                      // found.
+                      for (int i=0; i<dim; ++i)
+                        if (dimids_to_use[i]!=var_dimids[i])
+                          {
+                            use=false;
+                            break;
+                          }
+                    }
+                  else
+                    {
+                      // This is the first data column we found, so grab the ids of
+                      // the dimensions to use and store in dimids_to_use:
+                      for (int i=0; i<dim; ++i)
+                        {
+                          size_t length;
+                          status = nc_inq_dim(ncid, var_dimids[i], nullptr, &length);
+                          dimids_to_use[i] = var_dimids[i];
+                          // dimensions are specified in reverse order in the nc file:
+                          new_table_points[dim-1-i] = length;
+                        }
+                    }
+
+                  if (use)
+                    {
+                      varids_to_use.push_back(varid);
+                      data_column_names.push_back(var_name);
+                    }
+                }
+            }
+
+        }
+      else
+        {
+          // The user wants a specific list of columns, so lets find them.
+
+          for (const auto &cur_name: data_column_names)
+            {
+              bool found = false;
+
+              for (int varid=0; varid<nvars; ++varid)
+                {
+                  // Each netCDF dimension also has an associated variable that stores the
+                  // coordinate data. We are looking for data columns, so skip them:
+                  if (varid < ndims)
+                    continue;
+
+                  nc_type xtype;
+                  int ndims;
+                  int dimids[NC_MAX_VAR_DIMS];
+                  char  name[NC_MAX_NAME];
+                  int natts;
+
+                  status = nc_inq_var (ncid, varid, name, &xtype, &ndims, dimids,
+                                       &natts);
+                  AssertThrowNetCDF(status);
+                  if (cur_name != name)
+                    continue;
+
+                  found = true;
+
+                  if (ndims == dim)
+                    {
+                      bool use = true;
+                      if (varids_to_use.size()>0)
+                        {
+                          for (int i=0; i<dim; ++i)
+                            if (dimids_to_use[i]!=dimids[i])
+                              {
+                                use=false;
+                                break;
+                              }
+                        }
+                      else
+                        {
+                          for (int i=0; i<dim; ++i)
+                            {
+                              size_t length;
+                              status = nc_inq_dim(ncid, dimids[i], nullptr, &length);
+                              dimids_to_use[i] = dimids[i];
+                              // dimensions are specified in reverse order in the nc file:
+                              new_table_points[dim-1-i] = length;
+                            }
+                        }
+
+                      AssertThrow(use, ExcMessage(
+                                    "You asked to include column '" + cur_name + "', but it unfortunately has different dimensions than the first column you chose."
+                                  ));
+
+
+                      varids_to_use.push_back(varid);
+                    }
+                  else
+                    AssertThrow(false, ExcMessage(
+                                  "You asked to include column '" + cur_name + "', but it unfortunately has an incorrect number of dimensions."
+                                ));
+
+                }
+              AssertThrow(found, ExcMessage(
+                            "You asked to include column '" + cur_name + "', but it was not found!"
+                          ));
+
+            }
+        }
+
+
+      // Extract names of the coordinates
+      for (int idx=0; idx<dim; ++idx)
+        {
+          char  name[NC_MAX_NAME];
+          size_t length;
+          status = nc_inq_dim(ncid, dimids_to_use[idx], name, &length);
+          AssertThrowNetCDF(status);
+          coordinate_column_names[idx] = name;
+        }
+
+      {
+        // Now load coordinate data
+
+        for (int d=0; d<dim; ++d)
+          {
+            // dimensions are specified in reverse order in the nc file:
+            int varid = dimids_to_use[dim-1-d];
+
+            nc_type xtype;
+            int ndims;
+            int dimids[NC_MAX_VAR_DIMS];
+            char  name[NC_MAX_NAME];
+            int natts;
+
+            status = nc_inq_var (ncid, varid, name, &xtype, &ndims, dimids,
+                                 &natts);
+            AssertThrow(ndims == 1, ExcMessage("A variable of a dimension should have only one dimension."));
+
+            AssertThrow(xtype == NC_DOUBLE || xtype == NC_FLOAT, ExcMessage("We only support float or double data."));
+
+            coordinate_values[d].resize(new_table_points[d]);
+            status = nc_get_var_double(ncid, varid, coordinate_values[d].data());
+            AssertThrowNetCDF(status);
+          }
+      }
+
+      {
+        // Finally load the data for each column
+        data_tables.resize(varids_to_use.size());
+        std::vector<double> raw_data;
+
+        for (unsigned int var = 0; var<varids_to_use.size(); ++var)
+          {
+            // Allocate space
+            data_tables[var].TableBase<dim,double>::reinit(new_table_points);
+            const std::size_t n_elements = data_tables[var].n_elements();
+            raw_data.resize(n_elements);
+
+            // Load the data
+            status = nc_get_var_double(ncid, varids_to_use[var], raw_data.data());
+            AssertThrowNetCDF(status);
+
+            // .. and copy it over:
+            for (std::size_t n = 0; n < n_elements; ++n)
+              {
+                TableIndices<dim> ind = compute_table_indices(new_table_points, n);
+                TableIndices<dim> ind_to_use;
+                for (int i=0; i<dim; ++i)
+                  ind_to_use[i] = ind[dimids_to_use[i]];
+
+                data_tables[var](ind) = raw_data[n];
+              }
+          }
+
+      }
+
+
+      status = nc_close(ncid);
+      AssertThrowNetCDF(status);
+
+      // ready to go:
+      this->reinit(data_column_names, std::move(coordinate_values),std::move(data_tables));
+#endif
+    }
 
     template <int dim>
     double

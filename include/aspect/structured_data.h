@@ -131,6 +131,16 @@ namespace aspect
                   const MPI_Comm &communicator);
 
         /**
+         * Fill the current object with data read from a NetCDF file
+         * with filename @p filename. This call will fail if ASPECT is not
+         * configured with NetCDF support.
+         *
+         * @p column_names specifies the list of data columns to load (in the specified order). If
+         * an empty vector is passed, all columns will be loaded.
+         */
+        void load_netcdf(const std::string &filename, const std::vector<std::string> &data_column_names = {});
+
+        /**
          * Returns the computed data (velocity, temperature, etc. - according
          * to the used plugin) in Cartesian coordinates.
          *
