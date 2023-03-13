@@ -95,14 +95,6 @@ namespace aspect
 
       private:
 
-
-        /**
-         * Get volume weighted euler angles, using random draws to convert
-         * to a discrete number of orientations, weighted by volume.
-         */
-        std::vector<std::vector<double>> random_draw_volume_weighting(const std::vector<double> &fv,
-                                                                       const std::vector<std::vector<double>> &angles) const;
-
         /**
          * Stores the simulation end time, so that it alwas procudes output
          * at the last timestep.
