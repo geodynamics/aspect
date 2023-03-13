@@ -235,6 +235,21 @@ namespace aspect
 
           Point<dim> position = it->get_location();
 
+          // always make a vector of rotation matrices
+          std::vector<std::vector<Tensor<2,3>>> rotation_matrices;
+          rotation_matrices.resize(n_minerals);
+          for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+            {
+              rotation_matrices[mineral_i].resize(n_grains);
+              for (unsigned int i_grain = 0; i_grain < n_grains; i_grain++)
+                {
+                  rotation_matrices[mineral_i][i_grain] = cpo_particle_property.get_rotation_matrix_grains(
+                                                            cpo_data_position,
+                                                            properties,
+                                                            mineral_i,
+                                                            i_grain);
+                }
+            }
           // write master file
           string_stream_master << id << " " << position << " " << properties[cpo_data_position] <<  std::endl;
 
@@ -249,11 +264,7 @@ namespace aspect
                   for (unsigned int i_grain = 0; i_grain < n_grains; i_grain++)
                     {
                       euler_angles[mineral_i][i_grain] = Utilities::zxz_euler_angles_from_rotation_matrix(
-                                                           cpo_particle_property.get_rotation_matrix_grains(
-                                                             cpo_data_position,
-                                                             properties,
-                                                             mineral_i,
-                                                             i_grain));
+                                                           rotation_matrices[mineral_i][i_grain]);
                     }
                 }
             }
@@ -315,11 +326,7 @@ namespace aspect
                             break;
 
                           case Output::RotationMatrix:
-                            string_stream_content_raw << cpo_particle_property.get_rotation_matrix_grains(
-                                                        cpo_data_position,
-                                                        properties,
-                                                        write_raw_cpo[property_i].first,
-                                                        grain_i) << " ";
+                            string_stream_content_raw << rotation_matrices[write_raw_cpo[property_i].first][grain_i]<< " ";
                             break;
 
                           case Output::EulerAngles:
@@ -340,6 +347,7 @@ namespace aspect
             }
           if (write_draw_volume_weighted_cpo.size() != 0)
             {
+              std::vector<std::vector<dealii::Tensor<2,3>>> weighted_rotation_matrices;
               std::vector<std::vector<std::vector<double>>> weighted_euler_angles;
 
               weighted_euler_angles.resize(n_minerals);
@@ -354,30 +362,16 @@ namespace aspect
                                                                       mineral_i,
                                                                       i_grain);
                     }
-                  weighted_euler_angles[mineral_i] = random_draw_volume_weighting(volume_fractions_grains[mineral_i], euler_angles[mineral_i]);
+                  weighted_rotation_matrices[mineral_i] = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains[mineral_i], rotation_matrices[mineral_i], n_grains, this->random_number_generator);
 
-                  Assert(weighted_euler_angles[mineral_i].size() == euler_angles[mineral_i].size(),
-                         ExcMessage("Weighted angles vector (size = " + std::to_string(weighted_euler_angles[mineral_i].size()) +
+                  Assert(weighted_rotation_matrices[mineral_i].size() == euler_angles[mineral_i].size(),
+                         ExcMessage("Weighted rotation matrices vector (size = " + std::to_string(weighted_rotation_matrices[mineral_i].size()) +
                                     ") has different size from input angles (size = " + std::to_string(euler_angles[mineral_i].size()) + ")."));
 
-                }
-
-
-              std::vector<std::vector<Tensor<2,3>>> weighted_a_cosine_matrices;
-
-              if (compute_weighted_A_matrix == true)
-                {
-                  weighted_a_cosine_matrices.resize(n_minerals);
-                  for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+                  for (unsigned int i_grain = 0; i_grain < n_grains; i_grain++)
                     {
-                      weighted_a_cosine_matrices[mineral_i].resize(weighted_euler_angles[mineral_i].size());
-
-                      for (unsigned int i = 0; i < weighted_euler_angles.size(); ++i)
-                        {
-                          weighted_a_cosine_matrices[mineral_i][i] = Utilities::zxz_euler_angles_to_rotation_matrix(weighted_euler_angles[mineral_i][i][0],
-                                                                     weighted_euler_angles[mineral_i][i][1],
-                                                                     weighted_euler_angles[mineral_i][i][2]);
-                        }
+                      weighted_euler_angles[mineral_i][i_grain] = Utilities::zxz_euler_angles_from_rotation_matrix(
+                                                                    weighted_rotation_matrices[mineral_i][i_grain]);
                     }
                 }
 
@@ -432,7 +426,7 @@ namespace aspect
                             break;
 
                           case Output::RotationMatrix:
-                            string_stream_content_draw_volume_weighting << weighted_a_cosine_matrices[write_draw_volume_weighted_cpo[property_i].first][grain_i] << " ";
+                            string_stream_content_draw_volume_weighting << weighted_rotation_matrices[write_draw_volume_weighted_cpo[property_i].first][grain_i] << " ";
                             break;
 
                           case Output::EulerAngles:
@@ -525,69 +519,6 @@ namespace aspect
                             particle_cpo_output);
       return std::make_pair("Writing particle cpo output:", particle_cpo_output);
     }
-
-    template<int dim>
-    std::vector<std::vector<double>>
-    CrystalPreferredOrientation<dim>::random_draw_volume_weighting(const std::vector<double> &fv,
-                                                                   const std::vector<std::vector<double>> &angles) const
-    {
-      // Get volume weighted euler angles, using random draws to convert odf
-      // to a discrete number of orientations, weighted by volume
-      // 1a. Get index that would sort volume fractions AND
-      //ix = np.argsort(fv[q,:]);
-      // 1b. Get the sorted volume and angle arrays
-      std::vector<double> fv_to_sort = fv;
-      std::vector<double> fv_sorted = fv;
-      std::vector<std::vector<double>> angles_sorted = angles;
-
-      unsigned int n_grains = fv_to_sort.size();
-
-      for (int i = n_grains-1; i >= 0; --i)
-        {
-          unsigned int index_max_fv = std::distance(fv_to_sort.begin(),max_element(fv_to_sort.begin(), fv_to_sort.end()));
-
-          fv_sorted[i] = fv_to_sort[index_max_fv];
-          angles_sorted[i] = angles[index_max_fv];
-          Assert(angles[index_max_fv].size() == 3, ExcMessage("angles vector (size = " + std::to_string(angles[index_max_fv].size()) +
-                                                              ") should have size 3."));
-          Assert(angles_sorted[i].size() == 3, ExcMessage("angles_sorted vector (size = " + std::to_string(angles_sorted[i].size()) +
-                                                          ") should have size 3."));
-          fv_to_sort[index_max_fv] = -1;
-        }
-
-
-      // 2. Get cumulative weight for volume fraction
-      std::vector<double> cum_weight(n_grains);
-      std::partial_sum(fv_sorted.begin(),fv_sorted.end(),cum_weight.begin());
-      // 3. Generate random indices
-      boost::random::uniform_real_distribution<> dist(0, 1);
-      std::vector<double> idxgrain(n_grains);
-      for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
-        idxgrain[grain_i] = dist(this->random_number_generator); //random.rand(ngrains,1);
-
-      // 4. Find the maximum cum_weight that is less than the random value.
-      // the euler angle index is +1. For example, if the idxGrain(g) < cumWeight(1),
-      // the index should be 1 not zero)
-      std::vector<std::vector<double>> angles_out(n_grains,std::vector<double>(3));
-      for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
-        {
-          unsigned int counter = 0;
-          for (unsigned int grain_j = 0; grain_j < n_grains; ++grain_j)
-            {
-              if (cum_weight[grain_j] < idxgrain[grain_i])
-                {
-                  counter++;
-                }
-              else
-                {
-                  break;
-                }
-            }
-          angles_out[grain_i] = angles_sorted[counter];
-        }
-      return angles_out;
-    }
-
 
 
     template <int dim>
