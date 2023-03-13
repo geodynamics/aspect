@@ -38,7 +38,7 @@ jobs:
         ./aspect --test
 
   linux:
-    #linux build including indent and documentation
+    #linux build including indent, examples and documentation
     name: indent+documentation
     runs-on: [ubuntu-20.04]
 
@@ -82,7 +82,8 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake -D ASPECT_PRECOMPILE_HEADERS=ON -D ASPECT_UNITY_BUILD=ON -D CMAKE_CXX_FLAGS='-Werror' ..
+        cmake -D ASPECT_PRECOMPILE_HEADERS=ON -D ASPECT_UNITY_BUILD=ON \
+        -D CMAKE_CXX_FLAGS='-Werror' -D ASPECT_INSTALL_EXAMPLES=ON ..
         make -j 2
         ./aspect --test
     - name: doc
