@@ -793,14 +793,21 @@ INSTALL(DIRECTORY include/ ${CMAKE_BINARY_DIR}/include/
   FILES_MATCHING PATTERN "*.h")
 
 # examples:
-INSTALL(DIRECTORY cookbooks/
-  DESTINATION cookbooks
-  COMPONENT examples
-  FILES_MATCHING PATTERN "*")
-INSTALL(DIRECTORY benchmarks/
-  DESTINATION benchmarks
-  COMPONENT examples
-  FILES_MATCHING PATTERN "*")
+SET(ASPECT_INSTALL_EXAMPLES OFF CACHE BOOL "If ON all cookbooks and benchmarks will be built and installed.")
+
+IF (ASPECT_INSTALL_EXAMPLES)
+  ADD_SUBDIRECTORY(benchmarks)
+  ADD_SUBDIRECTORY(cookbooks)
+
+  INSTALL(DIRECTORY cookbooks/
+    DESTINATION cookbooks
+    COMPONENT examples
+    FILES_MATCHING PATTERN "*")
+  INSTALL(DIRECTORY benchmarks/
+    DESTINATION benchmarks
+    COMPONENT examples
+    FILES_MATCHING PATTERN "*")
+ENDIF()
 
 # cmake stuff:
 INSTALL(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake

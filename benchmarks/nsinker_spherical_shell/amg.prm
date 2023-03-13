@@ -2,7 +2,7 @@
 #
 # This file uses the AMG instead of GMG solver
 
-set Additional shared libraries            = ./libnsinker.so
+set Additional shared libraries            = ./libnsinker_spherical_shell.so
 
 include gmg.prm
 

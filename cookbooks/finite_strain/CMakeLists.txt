@@ -32,7 +32,7 @@ ENDIF ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
-SET(TARGET "finite_strain")
+SET(TARGET "finite_strain_cookbook")
 PROJECT(${TARGET})
 
 ADD_LIBRARY(${TARGET} SHARED finite_strain.cc)
