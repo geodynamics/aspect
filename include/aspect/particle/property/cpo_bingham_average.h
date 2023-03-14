@@ -152,31 +152,6 @@ namespace aspect
           std::array<std::array<double,3>,3> compute_bingham_average(std::vector<Tensor<2,3>> matrices) const;
 
           /**
-           * Create a permutation vector which can be used by the apply_permutation function
-           * which shorts the vector in .. order.
-           *
-           * @param vector vector to sort
-           */
-          template <typename T>
-          std::vector<std::size_t>
-          sort_permutation(
-            const std::vector<T> &vector) const;
-
-          /**
-           * Applies a permutation vector to return a sorted verions of the vector.
-           *
-           * @param vector vector to sort
-           * @param permutation_vector The permutation vector used to sort the input vector.
-           * @return std::vector<T>
-           */
-          template <typename T>
-          std::vector<T>
-          apply_permutation(
-            const std::vector<T> &vec,
-            const std::vector<std::size_t> &permutation_vector) const;
-
-
-          /**
           * Declare the parameters this class takes through input files.
           */
           static
@@ -226,10 +201,6 @@ namespace aspect
            * The tensor equivalent to the permutation symbol (Levi-Civita symbol).
            */
           Tensor<3,3> permutation_operator_3d;
-
-          // utility values
-          double rad_to_degree = 180.0/M_PI;
-          double degree_to_rad = M_PI/180.0;
 
       };
     }

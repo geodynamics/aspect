@@ -30,8 +30,6 @@ namespace aspect
   {
     namespace Property
     {
-
-
       template <int dim>
       CpoBinghamAverage<dim>::CpoBinghamAverage ()
       {
@@ -42,6 +40,8 @@ namespace aspect
         permutation_operator_3d[1][0][2]  = -1;
         permutation_operator_3d[2][1][0]  = -1;
       }
+
+
 
       template <int dim>
       void
@@ -91,6 +91,8 @@ namespace aspect
           }
       }
 
+
+
       template <int dim>
       void
       CpoBinghamAverage<dim>::update_one_particle_property(const unsigned int data_position,
@@ -126,6 +128,7 @@ namespace aspect
                 }
           }
       }
+
 
 
       template<int dim>
@@ -184,38 +187,6 @@ namespace aspect
         };
       }
 
-      template<int dim>
-      template <typename T>
-      std::vector<std::size_t>
-      CpoBinghamAverage<dim>::sort_permutation(
-        const std::vector<T> &vec) const
-      {
-        std::vector<std::size_t> p(vec.size());
-        std::iota(p.begin(), p.end(), 0);
-        std::sort(p.begin(), p.end(),
-                  [&](std::size_t i, std::size_t j)
-        {
-          return vec[i] < vec[j];
-        });
-        return p;
-      }
-
-      template<int dim>
-      template <typename T>
-      std::vector<T>
-      CpoBinghamAverage<dim>::apply_permutation(
-        const std::vector<T> &vec,
-        const std::vector<std::size_t> &p) const
-      {
-        std::vector<T> sorted_vec(vec.size());
-        std::transform(p.begin(), p.end(), sorted_vec.begin(),
-                       [&](std::size_t i)
-        {
-          return vec[i];
-        });
-        return sorted_vec;
-      }
-
 
 
       template <int dim>
@@ -225,12 +196,16 @@ namespace aspect
         return update_output_step;
       }
 
+
+
       template <int dim>
       UpdateFlags
       CpoBinghamAverage<dim>::get_needed_update_flags () const
       {
         return update_default;
       }
+
+
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
@@ -247,6 +222,8 @@ namespace aspect
         return property_information;
       }
 
+
+
       template <int dim>
       void
       CpoBinghamAverage<dim>::declare_parameters (ParameterHandler &prm)
@@ -255,14 +232,14 @@ namespace aspect
         {
           prm.enter_subsection("Particles");
           {
-            prm.enter_subsection("CpoBinghamAverage");
+            prm.enter_subsection("CPO Bingham Average");
             {
               prm.declare_entry ("Random number seed", "1",
                                  Patterns::Integer (0),
                                  "The seed used to generate random numbers. This will make sure that "
                                  "results are reproducable as long as the problem is run with the "
                                  "same amount of MPI processes. It is implemented as final seed = "
-                                 "user seed + MPI Rank. ");
+                                 "Random number seed + MPI Rank. ");
 
               prm.declare_entry ("Number of samples", "0",
                                  Patterns::Double(0),
@@ -278,6 +255,7 @@ namespace aspect
       }
 
 
+
       template <int dim>
       void
       CpoBinghamAverage<dim>::parse_parameters (ParameterHandler &prm)
@@ -287,7 +265,7 @@ namespace aspect
         {
           prm.enter_subsection("Particles");
           {
-            prm.enter_subsection("CpoBinghamAverage");
+            prm.enter_subsection("CPO Bingham Average");
             {
               // Get a reference to the CPO particle property.
               const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
@@ -305,8 +283,6 @@ namespace aspect
           prm.leave_subsection ();
         }
         prm.leave_subsection ();
-
-
       }
     }
   }
