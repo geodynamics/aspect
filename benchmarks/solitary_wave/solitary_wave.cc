@@ -814,8 +814,11 @@ namespace aspect
               // interpolate between the values we have
               unsigned int k = i-1;
               while (initial_pressure[k] == 0.0)
-                k--;
-              Assert(k >= 0, ExcInternalError());
+                {
+                  Assert(k > 0, ExcInternalError());
+                  k--;
+                }
+
               unsigned int j = i+1;
               while (initial_pressure[j] == 0.0)
                 j++;

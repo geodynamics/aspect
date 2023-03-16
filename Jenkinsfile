@@ -89,6 +89,7 @@ pipeline {
         -D ASPECT_PRECOMPILE_HEADERS=ON \
         -D ASPECT_UNITY_BUILD=ON \
         -D ASPECT_RUN_ALL_TESTS='ON' \
+        -D ASPECT_INSTALL_EXAMPLES='ON' \
         ..
         '''
 
