@@ -83,7 +83,7 @@ namespace aspect
        */
       enum class CPODerivativeAlgorithm
       {
-        spin_tensor, drex_2004
+        spin_tensor, drex_2004, drexpp
       };
 
       /**
@@ -260,6 +260,41 @@ namespace aspect
                                         const std::array<double,4> ref_resolved_shear_stress,
                                         const bool prevent_nondimensionalization = false) const;
 
+
+          void
+          recrystalize_grains(const unsigned int cpo_index,
+                              const ArrayView<double> &data,
+                              const unsigned int mineral_i,
+                              const double recrystalized_grainsize,
+                              const std::vector<double> &recrystalized_fraction,
+                              std::vector<double> &strain_energy) const;
+
+
+          /**
+           * @brief Computes the CPO derivatives with the D-Rex 2004 algorithm.
+           *
+           * @param cpo_index The location where the CPO data starts in the data array.
+           * @param data The data array containing the CPO data.
+           * @param mineral_i The mineral for which to compute the derivatives for.
+           * @param strain_rate_3d The 3D strain rate
+           * @param velocity_gradient_tensor The velocity gradient tensor
+           * @param ref_resolved_shear_stress Represent one value per slip plane.
+           * The planes are ordered from weakest to strongest with relative values,
+           * where the inactive plane is infinity strong. So it is a measure of strength
+           * on each slip plane.
+           * @param recrystalized_grain_volume The volume of grains which recrystalize
+           * @param aggregate_recrystalization_increment How much of the aggregate is
+           * recrystalzing during this timestep
+           */
+          std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
+          compute_derivatives_drexpp(const unsigned int cpo_index,
+                                     const ArrayView<double> &data,
+                                     const unsigned int mineral_i,
+                                     const SymmetricTensor<2,3> &strain_rate_3d,
+                                     const Tensor<2,3> &velocity_gradient_tensor,
+                                     const std::array<double,4> ref_resolved_shear_stress,
+                                     const double recrystalized_grain_volume,
+                                     const double aggregate_recrystalization_increment) const;
 
           /**
            * Declare the parameters this class takes through input files.
