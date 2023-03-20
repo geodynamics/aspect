@@ -601,7 +601,7 @@ TEST_CASE("Fabric determination function")
 }
 
 
-TEST_CASE("CPO")
+TEST_CASE("CPO drex 2004")
 {
   using namespace dealii;
   using namespace aspect;
@@ -2569,6 +2569,88 @@ TEST_CASE("LPO elastic tensor decomposition")
                || (reference_hexa_permutated_SCCS[iii][0] == Approx(-hexa_permutated_SCCS[iii][0]).epsilon(epsilon)
                    && reference_hexa_permutated_SCCS[iii][1] == Approx(-hexa_permutated_SCCS[iii][1]).epsilon(epsilon)
                    && reference_hexa_permutated_SCCS[iii][2] == Approx(-hexa_permutated_SCCS[iii][2]).epsilon(epsilon))));
+      }
+  }
+}
+
+
+TEST_CASE("CPO drex++")
+{
+  using namespace dealii;
+  using namespace aspect;
+
+  // test recrystalize_grains function
+  {
+
+    // create data
+    const int dim3=3;
+
+    Particle::Property::CrystalPreferredOrientation<dim3> lpo_3d;
+    ParameterHandler prm;
+    lpo_3d.declare_parameters(prm);
+
+    prm.enter_subsection("Postprocess");
+    {
+      prm.enter_subsection("Particles");
+      {
+        prm.enter_subsection("Crystal Preferred Orientation");
+        {
+          prm.set("Random number seed","1");
+          prm.set("Number of grains per particle","10");
+
+          prm.enter_subsection("D-Rex++");
+          {
+            prm.set("Minerals","Olivine: A-fabric");
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+    }
+    prm.leave_subsection ();
+
+    lpo_3d.parse_parameters(prm);
+    lpo_3d.initialize();
+
+
+    Point<dim3> dummy_point;
+    std::vector<double> data;
+    lpo_3d.initialize_one_particle_property(dummy_point, data);
+    lpo_3d.set_volume_fractions_grains(0,data,0,0,0.24);
+    lpo_3d.set_volume_fractions_grains(0,data,0,1,0.12);
+    lpo_3d.set_volume_fractions_grains(0,data,0,2,0.02);
+    lpo_3d.set_volume_fractions_grains(0,data,0,3,0.01);
+    lpo_3d.set_volume_fractions_grains(0,data,0,4,0.0025);
+    lpo_3d.set_volume_fractions_grains(0,data,0,5,0.002);
+    lpo_3d.set_volume_fractions_grains(0,data,0,6,0.0025);
+    lpo_3d.set_volume_fractions_grains(0,data,0,7,0.0018);
+    lpo_3d.set_volume_fractions_grains(0,data,0,8,0.002);
+    lpo_3d.set_volume_fractions_grains(0,data,0,9,0.001);
+
+    double initial_volume = 0;
+    for (unsigned int i = 0; i < 10; ++i)
+      {
+        initial_volume += lpo_3d.get_volume_fractions_grains(0,data,0,i);
+      }
+
+    std::vector<double> recrystalization_fractions = {0.8,0.8,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5};
+    std::vector<double> strain_energy = {1,1,1,1,1,1,1,1,1,1,1};
+    lpo_3d.recrystalize_grains(0,data,0,0.05,recrystalization_fractions, strain_energy);
+
+    double final_volume = 0;
+    for (unsigned int i = 0; i < 10; ++i)
+      {
+        final_volume += lpo_3d.get_volume_fractions_grains(0,data,0,i);
+      }
+
+    CHECK(initial_volume == Approx(final_volume));
+
+    std::vector<double> final_volumes = {0.09, 0.07, 0.02, 0.01, 0.005, 0.05, 0.05, 0.05, 0.05, 0.0068};
+
+    for (unsigned int i = 0; i < final_volumes.size(); ++i)
+      {
+        CHECK(final_volumes[i] == Approx(lpo_3d.get_volume_fractions_grains(0,data,0,i)));
       }
   }
 }
