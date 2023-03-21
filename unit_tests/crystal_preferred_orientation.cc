@@ -141,10 +141,15 @@ TEST_CASE("CPO core: Store and Load")
         prm.enter_subsection("Initial grains");
         {
           prm.set("Model name","Uniform grains and random uniform rotations");
+
+          prm.set("Minerals","Passive,Passive");
+          //prm.enter_subsection("Uniform grains and random uniform rotations");
+          //{
           // Let the minerals just passively rotate with the rotation of
           // the particle caused by the flow.
-          prm.set("Minerals","Passive,Passive");
           prm.set("Volume fractions minerals","0.7,0.3");
+          //}
+          //prm.leave_subsection();
         }
         prm.leave_subsection();
       }
@@ -320,11 +325,14 @@ TEST_CASE("CPO core: Spin tensor")
           prm.set("Property advection method","Forward Euler");
           prm.enter_subsection("Initial grains");
           {
-            prm.set("Model name","Uniform grains and random uniform rotations");
+            prm.set("Minerals","Passive,Passive");
+            //prm.enter_subsection("Uniform grains and random uniform rotations");
+            //{
             // Let the minerals just passively rotate with the rotation of
             // the particle caused by the flow.
-            prm.set("Minerals","Passive,Passive");
             prm.set("Volume fractions minerals","0.5,0.5");
+            //}
+            //prm.leave_subsection();
           }
           prm.leave_subsection();
         }
@@ -622,8 +630,15 @@ TEST_CASE("CPO drex 2004")
         {
           prm.set("Random number seed","1");
           prm.set("Number of grains per particle","5");
-
-
+          prm.enter_subsection("Initial grains");
+          {
+            prm.set("Minerals","Olivine: A-fabric, Enstatite");
+          }
+          prm.leave_subsection();
+          //prm.enter_subsection("D-Rex 2004");
+          //{
+          //}
+          //prm.leave_subsection();
         }
         prm.leave_subsection ();
       }
@@ -835,6 +850,15 @@ TEST_CASE("CPO drex 2004")
         {
           prm.set("Random number seed","1");
           prm.set("Number of grains per particle","5");
+          prm.enter_subsection("Initial grains");
+          {
+            prm.set("Minerals","Olivine: A-fabric, Enstatite");
+          }
+          prm.leave_subsection();
+          //prm.enter_subsection("D-Rex 2004");
+          //{
+          //}
+          //prm.leave_subsection();
         }
         prm.leave_subsection ();
       }
@@ -1366,14 +1390,14 @@ TEST_CASE("CPO elastic tensor")
         prm.enter_subsection("Initial grains");
         {
           prm.set("Model name","Uniform grains and random uniform rotations");
-          prm.enter_subsection("Uniform grains and random uniform rotations");
-          {
-            // Let the minerals just passively rotate with the rotation of
-            // the particle caused by the flow.
-            prm.set("Minerals","Passive,Passive");
-            prm.set("Volume fractions minerals","0.7,0.3");
-          }
-          prm.leave_subsection();
+          prm.set("Minerals","Passive,Passive");
+          //prm.enter_subsection("Uniform grains and random uniform rotations");
+          //{
+          // Let the minerals just passively rotate with the rotation of
+          // the particle caused by the flow.
+          prm.set("Volume fractions minerals","0.7,0.3");
+          //}
+          //prm.leave_subsection();
         }
         prm.leave_subsection();
       }
@@ -2597,12 +2621,15 @@ TEST_CASE("CPO drex++")
         {
           prm.set("Random number seed","1");
           prm.set("Number of grains per particle","10");
-
-          prm.enter_subsection("D-Rex++");
+          prm.enter_subsection("Initial grains");
           {
             prm.set("Minerals","Olivine: A-fabric");
           }
           prm.leave_subsection();
+          //prm.enter_subsection("D-Rex++");
+          //{
+          //}
+          //prm.leave_subsection();
         }
         prm.leave_subsection ();
       }

@@ -162,14 +162,14 @@ namespace aspect
                     ExcMessage("No cpo property plugin found."));
         AssertThrow(manager.plugin_name_exists("cpo elastic tensor"),
                     ExcMessage("No cpo elastic tensor property plugin found."));
-        Assert(manager.plugin_name_exists("decompose elastic matrix"),
+        Assert(manager.plugin_name_exists("elastic tensor decomposition"),
                ExcMessage("No hexagonal axes property plugin found."));
 
-        AssertThrow(manager.check_plugin_order("crystal preferred orientation","decompose elastic matrix"),
-                    ExcMessage("To use the decompose elastic matrix plugin, the cpo plugin need to be defined before this plugin."));
+        AssertThrow(manager.check_plugin_order("crystal preferred orientation","elastic tensor decomposition"),
+                    ExcMessage("To use the elastic tensor decomposition plugin, the cpo plugin need to be defined before this plugin."));
 
-        AssertThrow(manager.check_plugin_order("cpo elastic tensor","decompose elastic matrix"),
-                    ExcMessage("To use the decompose elastic matrix plugin, the cpo elastic tensor plugin need to be defined before this plugin."));
+        AssertThrow(manager.check_plugin_order("cpo elastic tensor","elastic tensor decomposition"),
+                    ExcMessage("To use the elastic tensor decomposition plugin, the cpo elastic tensor plugin need to be defined before this plugin."));
 
         cpo_elastic_tensor_data_position = manager.get_data_info().get_position_by_plugin_index(manager.get_plugin_index_by_name("cpo elastic tensor"));
       }
