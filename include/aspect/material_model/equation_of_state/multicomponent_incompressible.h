@@ -124,6 +124,7 @@ namespace aspect
            */
           std::vector<double> isochoric_specific_heats;
 
+          std::vector<double> reference_thermal_diffusivities; 
 
           std::vector<double> reference_volumes;
 

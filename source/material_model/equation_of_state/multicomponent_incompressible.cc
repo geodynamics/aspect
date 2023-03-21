@@ -59,7 +59,7 @@ namespace aspect
               out.compressibilities[c] = reference_isothermal_compressibilities[c]/f;
               out.entropy_derivative_pressure[c] = 0.;
               out.entropy_derivative_temperature[c] = 0.;
-            }
+            } 
         }else if(use_Murnaghan)
         {
             for (unsigned int c=0; c < out.densities.size(); ++c)
@@ -78,6 +78,7 @@ namespace aspect
                 out.compressibilities[c] = reference_isothermal_compressibilities[c]/f;
                 out.entropy_derivative_pressure[c] = 0.;
                 out.entropy_derivative_temperature[c] = 0.;
+                out.thermal_diffusion_coefficients[c] = reference_thermal_diffusivities[c];
             }
         }else if(use_compressible_density_only)
         {
@@ -214,6 +215,12 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of compositional fields."
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+        prm.declare_entry ("Thermal diffusivities", "0.8e-6",
+                             Patterns::Anything(),
+                             "List of thermal diffusivities, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  "
+                             "Units: \\si{\\meter\\squared\\per\\second}.");                           
 
         prm.declare_entry ("Reference pressures", "1e5",
                            Patterns::Anything(),
@@ -340,6 +347,14 @@ namespace aspect
                                                                          "Heat capacities",
                                                                          true,
                                                                          expected_n_phases_per_composition);
+
+        reference_thermal_diffusivities = Utilities::parse_map_to_double_array (prm.get("Thermal diffusivities"),
+                                                              list_of_composition_names,
+                                                              has_background_field,
+                                                              "Thermal diffusivities",
+                                                              true,
+                                                              expected_n_phases_per_composition); 
+
         use_Birch_Murnaghan = prm.get_bool ("Use Birch-Murnaghan");
         use_Murnaghan = prm.get_bool ("Use Murnaghan");
         use_compressible_density_only = prm.get_bool ("Use compressible density only");

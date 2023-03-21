@@ -424,6 +424,7 @@ namespace aspect
       densities(n_points, numbers::signaling_nan<double>()),
       thermal_expansion_coefficients(n_points, numbers::signaling_nan<double>()),
       specific_heat(n_points, numbers::signaling_nan<double>()),
+      thermal_diffusion_coefficients(n_points, numbers::signaling_nan<double>()),
       thermal_conductivities(n_points, numbers::signaling_nan<double>()),
       compressibilities(n_points, numbers::signaling_nan<double>()),
       entropy_derivative_pressure(n_points, numbers::signaling_nan<double>()),
@@ -439,6 +440,7 @@ namespace aspect
       densities(source.densities),
       thermal_expansion_coefficients(source.thermal_expansion_coefficients),
       specific_heat(source.specific_heat),
+      thermal_diffusion_coefficients(source.thermal_diffusion_coefficients),
       thermal_conductivities(source.thermal_conductivities),
       compressibilities(source.compressibilities),
       entropy_derivative_pressure(source.entropy_derivative_pressure),
@@ -843,9 +845,11 @@ namespace aspect
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.densities);
         average_property (operation, projection_matrix, expansion_matrix,
-                          values_out.thermal_expansion_coefficients);
+                          values_out.thermal_expansion_coefficients);                         
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.specific_heat);
+        average_property (operation, projection_matrix, expansion_matrix,
+                          values_out.thermal_diffusion_coefficients);                           
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.thermal_conductivities);
         average_property (operation, projection_matrix, expansion_matrix,

@@ -198,18 +198,20 @@ namespace aspect
         density                        = 4,
         thermal_expansion_coefficient  = 8,
         specific_heat                  = 16,
-        thermal_conductivity           = 32,
-        compressibility                = 64,
-        entropy_derivative_pressure    = 128,
-        entropy_derivative_temperature = 256,
-        reaction_terms                 = 512,
+        thermal_diffusion_coefficient  = 32,
+        thermal_conductivity           = 64,
+        compressibility                = 128,
+        entropy_derivative_pressure    = 256,
+        entropy_derivative_temperature = 512,
+        reaction_terms                 = 1024,        
 
         equation_of_state_properties   = density |
                                          thermal_expansion_coefficient |
                                          specific_heat |
+                                         thermal_diffusion_coefficient |
                                          compressibility |
                                          entropy_derivative_pressure |
-                                         entropy_derivative_temperature,
+                                         entropy_derivative_temperature ,
         all_properties                 = equation_of_state_properties |
                                          viscosity |
                                          thermal_conductivity |
@@ -537,12 +539,19 @@ namespace aspect
        * as $\alpha = - \frac{1}{\rho} \frac{\partial\rho}{\partial T}$
        */
       std::vector<double> thermal_expansion_coefficients;
+  
 
       /**
        * Specific heat at the given positions.
        */
       std::vector<double> specific_heat;
 
+       /**
+       * Thermal expansion coefficients at the given positions. It is defined
+       * as $\alpha = - \frac{1}{\rho} \frac{\partial\rho}{\partial T}$
+       */
+      std::vector<double> thermal_diffusion_coefficients;   
+      
       /**
        * Thermal conductivity at the given positions.
        */
