@@ -19,7 +19,6 @@
  */
 
 #include <aspect/particle/property/cpo_bingham_average.h>
-#include <aspect/particle/property/crystal_preferred_orientation.h>
 #include <aspect/particle/world.h>
 
 #include <aspect/utilities.h>
@@ -67,10 +66,6 @@ namespace aspect
       CpoBinghamAverage<dim>::initialize_one_particle_property(const Point<dim> &,
                                                                std::vector<double> &data) const
       {
-        // Get a reference to the CPO particle property.
-        const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
-          this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>();
-
         std::vector<double> volume_fractions_grains(n_grains);
         std::vector<Tensor<2,3>> rotation_matrices_grains(n_grains);
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; mineral_i++)
@@ -78,15 +73,19 @@ namespace aspect
             // create volume fractions and rotation matrix vectors in the order that it is stored in the data array
             for (unsigned int grain_i = 0; grain_i < n_grains; grain_i++)
               {
-                volume_fractions_grains[grain_i] = cpo_particle_property.get_volume_fractions_grains(cpo_data_position,data,mineral_i,grain_i);
-                rotation_matrices_grains[grain_i] = cpo_particle_property.get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i);
+                volume_fractions_grains[grain_i] = cpo_particle_property->get_volume_fractions_grains(cpo_data_position,data,mineral_i,grain_i);
+                rotation_matrices_grains[grain_i] = cpo_particle_property->get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i);
               }
 
-            const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
+            const std::vector<Tensor<2,3>> weighted_rotation_matrices =
+              Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains,
+                                                                        rotation_matrices_grains,
+                                                                        n_samples,
+                                                                        this->random_number_generator);
             const std::array<std::array<double,3>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
 
-            for (unsigned int i = 0; i < 3; i++)
-              for (unsigned int j = 0; j < 3; j++)
+            for (unsigned int i = 0; i < 3; ++i)
+              for (unsigned int j = 0; j < 3; ++j)
                 data.emplace_back(bingham_average[i][j]);
           }
       }
@@ -101,10 +100,6 @@ namespace aspect
                                                            const std::vector<Tensor<1,dim>> &,
                                                            const ArrayView<double> &data) const
       {
-        // Get a reference to the CPO particle property.
-        const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
-          this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>();
-
         std::vector<double> volume_fractions_grains(n_grains);
         std::vector<Tensor<2,3>> rotation_matrices_grains(n_grains);
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; mineral_i++)
@@ -112,19 +107,17 @@ namespace aspect
             // create volume fractions and rotation matrix vectors in the order that it is stored in the data array
             for (unsigned int grain_i = 0; grain_i < n_grains; grain_i++)
               {
-                volume_fractions_grains[grain_i] = cpo_particle_property.get_volume_fractions_grains(cpo_data_position,data,mineral_i,grain_i);
-                rotation_matrices_grains[grain_i] = cpo_particle_property.get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i);
+                volume_fractions_grains[grain_i] = cpo_particle_property->get_volume_fractions_grains(cpo_data_position,data,mineral_i,grain_i);
+                rotation_matrices_grains[grain_i] = cpo_particle_property->get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i);
               }
 
             const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
             std::array<std::array<double,3>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
 
-            unsigned int counter = 0;
-            for (unsigned int i = 0; i < 3; i++)
-              for (unsigned int j = 0; j < 3; j++)
+            for (unsigned int i = 0; i < 3; ++i)
+              for (unsigned int j = 0; j < 3; ++j)
                 {
-                  data[data_position + mineral_i*9 + counter] = bingham_average[i][j];
-                  ++counter;
+                  data[data_position + mineral_i*9 + i*3 + j] = bingham_average[i][j];
                 }
           }
       }
@@ -267,13 +260,13 @@ namespace aspect
           {
             prm.enter_subsection("CPO Bingham Average");
             {
-              // Get a reference to the CPO particle property.
-              const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
-                this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>();
+              // Get a pointer to the CPO particle property.
+              cpo_particle_property = std::make_unique<const Particle::Property::CrystalPreferredOrientation<dim>> (
+                                        this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>());
 
               random_number_seed = prm.get_integer ("Random number seed");
-              n_grains = cpo_particle_property.get_number_of_grains();
-              n_minerals = cpo_particle_property.get_number_of_minerals();
+              n_grains = cpo_particle_property->get_number_of_grains();
+              n_minerals = cpo_particle_property->get_number_of_minerals();
               n_samples = prm.get_integer("Number of samples");
               if (n_samples == 0)
                 n_samples = n_grains;
