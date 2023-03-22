@@ -673,6 +673,8 @@ namespace aspect
     TimerOutput::Scope timer (computing_timer,
                               timer_section_name);
 
+    // Re-compute the pressure scaling factor.
+    pressure_scaling = compute_pressure_scaling_factor();
 
     if (rebuild_stokes_matrix == true)
       system_matrix = 0;
