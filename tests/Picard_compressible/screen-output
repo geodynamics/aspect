@@ -1,8 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 3,072 (on 5 levels)
 Number of degrees of freedom: 53,952 (25,344+3,264+12,672+12,672)
 
@@ -15,19 +11,19 @@ Number of degrees of freedom: 53,952 (25,344+3,264+12,672+12,672)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 73+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00881192
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00886673
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 69+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00057286
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000575252
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 55+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 7.89241e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 7.89675e-05
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 38+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 8.53242e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 8.53899e-06
 
 
    Postprocessing:
@@ -40,9 +36,4 @@ Number of degrees of freedom: 53,952 (25,344+3,264+12,672+12,672)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
