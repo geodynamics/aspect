@@ -643,8 +643,8 @@ namespace aspect
 
         // Make the strain-rate and velocity gradient tensor non-dimensional
         // by dividing it through the second invariant
-        const Tensor<2,3> strain_rate_nondimensional = nondimensionalization_value != 0 ? strain_rate_3d : strain_rate_3d/nondimensionalization_value;
-        const Tensor<2,3> velocity_gradient_tensor_nondimensional = nondimensionalization_value != 0 ? velocity_gradient_tensor : velocity_gradient_tensor/nondimensionalization_value;
+        const Tensor<2,3> strain_rate_nondimensional = nondimensionalization_value != 0 ? strain_rate_3d/nondimensionalization_value : strain_rate_3d;
+        const Tensor<2,3> velocity_gradient_tensor_nondimensional = nondimensionalization_value != 0 ? velocity_gradient_tensor/nondimensionalization_value : velocity_gradient_tensor;
 
         // create output variables
         std::vector<double> deriv_volume_fractions(n_grains);
@@ -1050,37 +1050,27 @@ namespace aspect
                                   Patterns::Anything(),
                                   "The model used to initialize the CPO for all particles. "
                                   "Currently 'Uniform grains and random uniform rotations' is the only valid option.");
-                prm.enter_subsection("Uniform grains and random uniform rotations");
-                {
-                  prm.declare_entry ("Minerals", "Olivine: Karato 2008, Enstatite",
-                                     Patterns::List(Patterns::Anything()),
-                                     "This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. "
-                                     "The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, "
-                                     "Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The "
-                                     "Karato 2008 selector selects a fabric based on stress and water content as defined in "
-                                     "figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).");
+
+                prm.declare_entry ("Minerals", "Olivine: Karato 2008, Enstatite",
+                                   Patterns::List(Patterns::Anything()),
+                                   "This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. "
+                                   "The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, "
+                                   "Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The "
+                                   "Karato 2008 selector selects a fabric based on stress and water content as defined in "
+                                   "figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).");
 
 
-                  prm.declare_entry ("Volume fractions minerals", "0.7, 0.3",
-                                     Patterns::List(Patterns::Double(0)),
-                                     "The volume fractions for the different minerals. "
-                                     "There need to be the same number of values as there are minerals."
-                                     "Note that the currently implemented scheme is incompressible and "
-                                     "does not allow chemical interaction or the formation of new phases");
-                }
-                prm.leave_subsection ();
+                prm.declare_entry ("Volume fractions minerals", "0.7, 0.3",
+                                   Patterns::List(Patterns::Double(0)),
+                                   "The volume fractions for the different minerals. "
+                                   "There need to be the same number of values as there are minerals."
+                                   "Note that the currently implemented scheme is incompressible and "
+                                   "does not allow chemical interaction or the formation of new phases");
               }
               prm.leave_subsection ();
 
               prm.enter_subsection("D-Rex 2004");
               {
-                prm.declare_entry ("Minerals", "Olivine: Karato 2008, Enstatite",
-                                   Patterns::List(Patterns::Anything()),
-                                   "This determines what minerals and fabrics or fabric selectors are used used for the LPO calculation. "
-                                   "The options are Olivine: A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, "
-                                   "Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. The "
-                                   "Karato 2008 selector selects a fabric based on stress and water content as defined in "
-                                   "figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).");
 
                 prm.declare_entry ("Mobility", "50",
                                    Patterns::Double(0),
@@ -1150,8 +1140,7 @@ namespace aspect
                 }
               else if (temp_cpo_derivative_algorithm ==  "D-Rex 2004")
                 {
-                  AssertThrow(false,
-                              ExcMessage("D-Rex 2004 has not been implemented yet."))
+                  cpo_derivative_algorithm = CPODerivativeAlgorithm::drex_2004;
                 }
               else
                 {
@@ -1180,66 +1169,63 @@ namespace aspect
                 AssertThrow(model_name == "Uniform grains and random uniform rotations",
                             ExcMessage("No model named " + model_name + "for CPO particle property initialization. "
                                        + "Only the model \"Uniform grains and random uniform rotations\" is available."));
-                prm.enter_subsection("Uniform grains and random uniform rotations");
-                {
-                  const std::vector<std::string> temp_deformation_type_selector = dealii::Utilities::split_string_list(prm.get("Minerals"));
-                  n_minerals = temp_deformation_type_selector.size();
-                  deformation_type_selector.resize(n_minerals);
 
-                  for (size_t mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
-                    {
-                      if (temp_deformation_type_selector[mineral_i] == "Passive")
-                        {
-                          deformation_type_selector[mineral_i] = DeformationTypeSelector::passive;
-                        }
-                      else if (temp_deformation_type_selector[mineral_i] == "Olivine: Karato 2008")
-                        {
-                          deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_karato_2008;
-                        }
-                      else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: A-fabric")
-                        {
-                          deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_a_fabric;
-                        }
-                      else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: B-fabric")
-                        {
-                          deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_b_fabric;
-                        }
-                      else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: C-fabric")
-                        {
-                          deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_c_fabric;
-                        }
-                      else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: D-fabric")
-                        {
-                          deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_d_fabric;
-                        }
-                      else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: E-fabric")
-                        {
-                          deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_e_fabric;
-                        }
-                      else if (temp_deformation_type_selector[mineral_i] ==  "Enstatite")
-                        {
-                          deformation_type_selector[mineral_i] = DeformationTypeSelector::enstatite;
-                        }
-                      else
-                        {
-                          AssertThrow(false,
-                                      ExcMessage("The fabric needs to be assigned one of the following comma-delimited values: Olivine: Karato 2008, "
-                                                 "Olivine: A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric,"
-                                                 "Olivine: E-fabric, Enstatite, Passive."))
-                        }
-                    }
+                const std::vector<std::string> temp_deformation_type_selector = dealii::Utilities::split_string_list(prm.get("Minerals"));
+                n_minerals = temp_deformation_type_selector.size();
+                deformation_type_selector.resize(n_minerals);
 
-                  volume_fractions_minerals = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Volume fractions minerals")));
-                  double volume_fractions_minerals_sum = 0;
-                  for (auto fraction : volume_fractions_minerals)
-                    {
-                      volume_fractions_minerals_sum += fraction;
-                    }
+                for (size_t mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+                  {
+                    if (temp_deformation_type_selector[mineral_i] == "Passive")
+                      {
+                        deformation_type_selector[mineral_i] = DeformationTypeSelector::passive;
+                      }
+                    else if (temp_deformation_type_selector[mineral_i] == "Olivine: Karato 2008")
+                      {
+                        deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_karato_2008;
+                      }
+                    else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: A-fabric")
+                      {
+                        deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_a_fabric;
+                      }
+                    else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: B-fabric")
+                      {
+                        deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_b_fabric;
+                      }
+                    else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: C-fabric")
+                      {
+                        deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_c_fabric;
+                      }
+                    else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: D-fabric")
+                      {
+                        deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_d_fabric;
+                      }
+                    else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: E-fabric")
+                      {
+                        deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_e_fabric;
+                      }
+                    else if (temp_deformation_type_selector[mineral_i] ==  "Enstatite")
+                      {
+                        deformation_type_selector[mineral_i] = DeformationTypeSelector::enstatite;
+                      }
+                    else
+                      {
+                        AssertThrow(false,
+                                    ExcMessage("The fabric needs to be assigned one of the following comma-delimited values: Olivine: Karato 2008, "
+                                               "Olivine: A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric,"
+                                               "Olivine: E-fabric, Enstatite, Passive."))
+                      }
+                  }
 
-                  AssertThrow(abs(volume_fractions_minerals_sum-1.0) < 2.0 * std::numeric_limits<double>::epsilon(),
-                              ExcMessage("The sum of the CPO volume fractions should be one."));
-                }
-                prm.leave_subsection();
+                volume_fractions_minerals = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Volume fractions minerals")));
+                double volume_fractions_minerals_sum = 0;
+                for (auto fraction : volume_fractions_minerals)
+                  {
+                    volume_fractions_minerals_sum += fraction;
+                  }
+
+                AssertThrow(abs(volume_fractions_minerals_sum-1.0) < 2.0 * std::numeric_limits<double>::epsilon(),
+                            ExcMessage("The sum of the CPO volume fractions should be one."));
               }
               prm.leave_subsection();
 
