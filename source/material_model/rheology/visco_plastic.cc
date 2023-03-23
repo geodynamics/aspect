@@ -95,7 +95,22 @@ namespace aspect
       ViscoPlastic<dim>::ViscoPlastic ()
       {}
 
+      template <int dim>
+      double
+      ViscoPlastic<dim>::get_alpha(double current_time) const
+      {
+          // Function to get alpha value at a given time
+            auto it = std::upper_bound(alpha_mobility_times.begin(), alpha_mobility_times.end(), current_time);
+            size_t index = std::distance(alpha_mobility_times.begin(), it);
 
+            if (index == 0) {
+              return alpha_mobility[0];
+            } else if (index >= alpha_mobility.size()) {
+              return alpha_mobility.back();
+            } else {
+              return alpha_mobility[index - 1];
+            }
+      }
 
       template <int dim>
       IsostrainViscosities
@@ -275,7 +290,12 @@ namespace aspect
             //const double average_mobility = mobility_statistics.get_average_mobility();
             //const double average_mobility_t0 = mobility_statistics.get_average_mobility_t0();       
             const double DMob = mobility_statistics.get_DMob();
-            const double alpha = alpha_mobility;
+
+            double current_time = this->get_time() / year_in_seconds;
+            // Get alpha at the current time
+            const double alpha = get_alpha(current_time);                     
+           
+            // const double alpha = alpha_mobility;
 
             double friction_terms = alpha * drucker_prager_parameters.angle_internal_friction * DMob;             
             
@@ -502,8 +522,10 @@ namespace aspect
         Rheology::StrainDependent<dim>::declare_parameters (prm);
 
         Rheology::Elasticity<dim>::declare_parameters (prm);
-        prm.declare_entry ("Alpha mobility", "5", Patterns::Double (0.),
+        prm.declare_entry ("Alpha mobility", "5", Patterns::List(Patterns::Double(0)),
                            "Sensitivity parameter to mobility function. Units: \\si{\\per\\second}.");
+        prm.declare_entry ("Alpha mobility transition times", "10e6", Patterns::List(Patterns::Double(0)),
+                           "Times at which to change Alpha mobility. Units: \\si{\\per\\second}.");                           
         // Reference and minimum/maximum values
         prm.declare_entry ("Minimum strain rate", "1.0e-20", Patterns::Double (0.),
                            "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}.");
@@ -656,7 +678,9 @@ namespace aspect
                                                                         expected_n_phases_per_composition);
 
         // Reference and minimum/maximum values
-        alpha_mobility = prm.get_double("Alpha mobility");
+        // alpha_mobility = prm.get_double("Alpha mobility");
+        alpha_mobility = Utilities::string_to_double(Utilities::split_string_list(prm.get("Alpha mobility")));
+        alpha_mobility_times = Utilities::string_to_double(Utilities::split_string_list(prm.get("Alpha mobility transition times")));
         min_strain_rate = prm.get_double("Minimum strain rate");
         ref_strain_rate = prm.get_double("Reference strain rate");
         ref_visc = prm.get_double ("Reference viscosity");
@@ -817,7 +841,11 @@ namespace aspect
                //const double average_mobility = mobility_statistics.get_average_mobility();
                //const double average_mobility_t0 = mobility_statistics.get_average_mobility_t0(); 
                const double DMob = mobility_statistics.get_DMob(); 
-               const double alpha = alpha_mobility;
+
+                double current_time = this->get_time() / year_in_seconds;
+                // Get alpha at the current time
+                const double alpha = get_alpha(current_time);                 
+              //  const double alpha = alpha_mobility;
    
                double friction_terms = alpha * drucker_prager_parameters.angle_internal_friction * DMob;
               

@@ -316,7 +316,12 @@ namespace aspect
            */
           Rheology::DruckerPragerParameters drucker_prager_parameters;
 
-          double alpha_mobility;
+          std::vector<double> alpha_mobility;
+          std::vector<double> alpha_mobility_times;
+
+
+          // Function to get alpha value at a given time
+          double get_alpha(double current_time) const;          
 
       };
     }
