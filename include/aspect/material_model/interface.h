@@ -1129,7 +1129,7 @@ namespace aspect
         /**
          * Function for NamedAdditionalMaterialOutputs interface
          */
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
          * A scalar value per evaluation point that specifies the prescribed dilation
