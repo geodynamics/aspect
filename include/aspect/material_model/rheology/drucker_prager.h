@@ -87,6 +87,15 @@ namespace aspect
                                              const std::vector<double> &phase_function_values = std::vector<double>(),
                                              const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
 
+          // Function to update angle_internal_friction and cohesion at a given time for the chosen phase
+          void 
+          update_friction_and_cohesion(const double current_time,
+                                            const double phase_index,
+                                            const std::vector<double> &times_to_change,
+                                            const std::vector<double> &friction_angles_to_change,
+                                            const std::vector<double> &cohesions_to_change,
+                                            std::vector<double> &angles_internal_friction,
+                                            std::vector<double> &cohesions) const;
           /**
            * Compute the plastic yield stress based on the Drucker Prager yield criterion.
            */
@@ -125,8 +134,18 @@ namespace aspect
 
         private:
 
-          std::vector<double> angles_internal_friction;
+          std::vector<double> angles_internal_friction; 
           std::vector<double> cohesions;
+
+          // Declare variables for the chosen composition and phase
+          double chosen_composition;
+          double chosen_phase;
+          std::vector<double> times_to_change; /* Vector of times to change */
+          std::vector<double> friction_angles_to_change;  /* Vector of friction angles to change */
+          std::vector<double> cohesions_to_change;  /* Vector of cohesions to change */
+
+
+
           double max_yield_stress;
 
           /**
