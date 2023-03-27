@@ -16,7 +16,7 @@ subsection Geometry model
   subsection Box
     set X extent = 100000
     set Y extent = 100000
-    set X periodic    = true
+ #   set X periodic    = true
   end
 end
 
@@ -44,7 +44,7 @@ subsection Gravity model
 end
 
 subsection Boundary traction model
-  set Prescribed traction boundary indicators = 0 x: function, 3 y: function # pressure bc: Prescribe a horizontal traction on the left boundary and vertical traction on the top boundary
+  set Prescribed traction boundary indicators = left x: function, top y: function # pressure bc: Prescribe a horizontal traction on the left boundary and vertical traction on the top boundary
 end
 
 subsection Boundary traction model
@@ -60,17 +60,16 @@ subsection Boundary traction model
     # Therefore:
     # Left boundary:  tau = - pressure(left) (-1;0) = - (50) (-1;0) = (50;0).
     # Top boundary: tau   = - pressure(top) (0;1) = - (-50) (0;1) = (0;50).
-    # Conveniently, the traction is the same on both boundaries.
-    set Function expression = if (y<y_extent, pressure, 0) ; if(x>0, -pressure, 0)
+    set Function expression = if (y<y_extent, pressure, 0)  ;  if(x>0, -pressure, 0)
   end
 end
 
 subsection Boundary velocity model
-  set Zero velocity boundary indicators       = 1, 2
+  set Zero velocity boundary indicators       = right, bottom
 end
 
 subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 0 y: function, 3 x: function # pressure bc: Prescribe a zero vertical velocity component on the left boundary and zero horizontal velocity on the top boundary
+  set Prescribed velocity boundary indicators = left y: function, top x: function # pressure bc: Prescribe a zero vertical velocity component on the left boundary and zero horizontal velocity on the top boundary
 end
 
 subsection Boundary velocity model
