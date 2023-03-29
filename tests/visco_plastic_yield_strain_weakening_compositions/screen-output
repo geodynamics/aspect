@@ -25,7 +25,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving weak_layer system ... 4 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0664792
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0664799
 
 
    Postprocessing:

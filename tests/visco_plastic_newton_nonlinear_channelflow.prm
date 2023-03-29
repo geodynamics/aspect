@@ -13,7 +13,7 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme = iterated Advection and Newton Stokes
 set Max nonlinear iterations = 150
-set Nonlinear solver tolerance = 1e-14
+set Nonlinear solver tolerance = 5e-12
 
 subsection Solver parameters
   subsection Stokes solver parameters

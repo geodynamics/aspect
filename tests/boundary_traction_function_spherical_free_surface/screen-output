@@ -80,7 +80,7 @@ Number of mesh deformation degrees of freedom: 9288
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.83168e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.69537e-08
 
 
    Postprocessing:
@@ -104,11 +104,11 @@ Number of mesh deformation degrees of freedom: 9288
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.88392e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.84197e-07
 
 
    Postprocessing:
-     Compositions min/max/mass: -1.235e+05/1.235e+05/3.089e+07 // -1.235e+05/1.235e+05/-3.089e+07 // -1.182e+05/4.016e+04/-5.46e+14
+     Compositions min/max/mass: -1.235e+05/1.235e+05/3.112e+07 // -1.235e+05/1.235e+05/-3.112e+07 // -1.182e+05/4.016e+04/-5.46e+14
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -0.09426 m, 0.02027 m
      RMS, max velocity:         0.00755 m/year, 0.0262 m/year

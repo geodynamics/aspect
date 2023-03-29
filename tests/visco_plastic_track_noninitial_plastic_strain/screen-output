@@ -25,7 +25,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving noninitial_plastic_strain system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+6 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00186566
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00186576
 
 
    Postprocessing:

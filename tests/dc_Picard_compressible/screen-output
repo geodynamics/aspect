@@ -1,8 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 3,072 (on 5 levels)
 Number of degrees of freedom: 53,952 (25,344+3,264+12,672+12,672)
 
@@ -16,16 +12,16 @@ Number of degrees of freedom: 53,952 (25,344+3,264+12,672+12,672)
       Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 3.96803e+15
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 35+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.000656926, norm of the rhs: 2.6067e+12, newton_derivative_scaling_factor: 0
+   Solving Stokes system... 36+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.000364927, norm of the rhs: 1.44804e+12, newton_derivative_scaling_factor: 0
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 38+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.000100749, norm of the rhs: 3.99774e+11, newton_derivative_scaling_factor: 0
+   Solving Stokes system... 23+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 6.90429e-05, norm of the rhs: 2.73964e+11, newton_derivative_scaling_factor: 0
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 35+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 8.95295e-06, norm of the rhs: 3.55256e+10, newton_derivative_scaling_factor: 0
+   Solving Stokes system... 24+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 7.99011e-06, norm of the rhs: 3.1705e+10, newton_derivative_scaling_factor: 0
 
 
    Postprocessing:
@@ -38,9 +34,4 @@ Number of degrees of freedom: 53,952 (25,344+3,264+12,672+12,672)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
