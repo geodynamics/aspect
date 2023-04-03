@@ -4,11 +4,12 @@
 
 #include grain_size_strain.prm
 set Dimension                              = 2
-set End time                               = 5000
+set End time                               = 100e6
+set Output directory                       = output-mulyukova-bercovici
 set Use years in output instead of seconds = true
 
 set Surface pressure                       = 0
-set Adiabatic surface temperature          = 1600
+set Adiabatic surface temperature          = 1100
 
 subsection Geometry model
   set Model name = box
@@ -50,7 +51,7 @@ end
 subsection Boundary traction model
   subsection Function
     set Variable names = x,y
-    set  Function constants = pressure = 50e6, y_extent = 100e6
+    set  Function constants = pressure = 50e6, y_extent = 1e5
     # We want to prescribe a pressure of 50 at the left boundary
     # and -50 at the top boundary.
     # The traction in this case is defined as:
@@ -97,7 +98,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,z
     set Function constants  =
-    set Function expression = if(z<50000,1e-3,1.0000001e-3)
+    set Function expression = if(z<5e4,1e-2,1.0000001e-2)
   end
 end
 
@@ -137,7 +138,6 @@ subsection Material model
     set Diffusion activation volume          =0 # m^3/mol
 
     set Dislocation viscosity iteration threshold = 1e-3
-    # Kawazoe et al. (2009)
     # Dislocation creep
     set Dislocation creep prefactor          =1.1e-13 # s^-1 Pa^-n
     set Dislocation creep exponent           =3
@@ -158,5 +158,9 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = composition statistics,temperature statistics, velocity statistics
+  set List of postprocessors = composition statistics,temperature statistics, velocity statistics, visualization
+  subsection Visualization
+    set List of output variables = viscosity
+    set Time steps between graphical output = 10
+  end
 end
