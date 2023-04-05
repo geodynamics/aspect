@@ -19,7 +19,8 @@ RUN cd /opt && \
     echo "NATIVE_OPTIMIZATIONS=ON" >> local.cfg && \
     echo "DEAL_II_VERSION=v9.4.2" >> local.cfg && \
     echo "BUILD_EXAMPLES=OFF" >> local.cfg && \
-    echo "DEAL_CONFOPTS=-D DEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_COMPLEX_VALUES=OFF -DDEAL_II_WITH_LAPACK=ON" >> local.cfg && \
+    echo "USE_64_BIT_INDICES=ON" >> local.cfg && \
+    echo "DEAL_CONFOPTS='-DDEAL_II_WITH_COMPLEX_VALUES=OFF -DDEAL_II_WITH_LAPACK=ON'" >> local.cfg && \
     ./candi.sh -j 2 --packages="once:cmake once:p4est once:trilinos once:hdf5 dealii" -p /opt && \
     rm -rf /opt/tmp
 
