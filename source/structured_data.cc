@@ -657,7 +657,7 @@ namespace aspect
       // use variables with dim dimensions (our template argument) and
       // only those that all use the same dimids inside the netcdf
       // file.
-      int dimids_to_use[dim]; // dimids of the coordinate columns to use
+      int dimids_to_use[dim] = {}; // dimids of the coordinate columns to use
       std::vector<int> varids_to_use; // all netCDF varids of the data columns
 
       if (data_column_names.empty())
@@ -740,27 +740,27 @@ namespace aspect
                   if (varid < ndims)
                     continue;
 
+                  char  var_name[NC_MAX_NAME];
                   nc_type xtype;
-                  int ndims;
-                  int dimids[NC_MAX_VAR_DIMS];
-                  char  name[NC_MAX_NAME];
-                  int natts;
+                  int var_ndims;
+                  int var_dimids[NC_MAX_VAR_DIMS];
+                  int var_natts;
 
-                  status = nc_inq_var (ncid, varid, name, &xtype, &ndims, dimids,
-                                       &natts);
+                  status = nc_inq_var (ncid, varid, var_name, &xtype, &var_ndims, var_dimids,
+                                       &var_natts);
                   AssertThrowNetCDF(status);
-                  if (cur_name != name)
+                  if (cur_name != var_name)
                     continue;
 
                   found = true;
 
-                  if (ndims == dim)
+                  if (var_ndims == dim)
                     {
                       bool use = true;
                       if (varids_to_use.size()>0)
                         {
                           for (int i=0; i<dim; ++i)
-                            if (dimids_to_use[i]!=dimids[i])
+                            if (dimids_to_use[i]!=var_dimids[i])
                               {
                                 use=false;
                                 break;
@@ -771,8 +771,8 @@ namespace aspect
                           for (int i=0; i<dim; ++i)
                             {
                               size_t length;
-                              status = nc_inq_dim(ncid, dimids[i], nullptr, &length);
-                              dimids_to_use[i] = dimids[i];
+                              status = nc_inq_dim(ncid, var_dimids[i], nullptr, &length);
+                              dimids_to_use[i] = var_dimids[i];
                               // dimensions are specified in reverse order in the nc file:
                               new_table_points[dim-1-i] = length;
                             }
