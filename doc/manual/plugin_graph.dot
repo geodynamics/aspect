@@ -221,6 +221,9 @@ SimulatorAccess -> N6aspect18InitialComposition8FunctionILi2EEE [style="dotted",
 N6aspect18InitialComposition8PorosityILi2EEE [label="porosity", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect18InitialComposition8PorosityILi2EEE -> N6aspect18InitialComposition9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect18InitialComposition8PorosityILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect18InitialComposition9SlabModelILi2EEE [label="slab model", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect18InitialComposition9SlabModelILi2EEE -> N6aspect18InitialComposition9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect18InitialComposition9SlabModelILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect18InitialComposition12WorldBuilderILi2EEE [label="world builder", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect18InitialComposition12WorldBuilderILi2EEE -> N6aspect18InitialComposition9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect18InitialComposition12WorldBuilderILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
@@ -489,6 +492,9 @@ N6aspect8Particle8Property9InterfaceILi2EEE [label="Particle property interface"
 N6aspect8Particle8Property11CompositionILi2EEE [label="composition", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect8Particle8Property11CompositionILi2EEE -> N6aspect8Particle8Property9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect8Particle8Property11CompositionILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect8Particle8Property17CpoBinghamAverageILi2EEE [label="cpo bingham\naverage", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect8Particle8Property17CpoBinghamAverageILi2EEE -> N6aspect8Particle8Property9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect8Particle8Property17CpoBinghamAverageILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect8Particle8Property27CrystalPreferredOrientationILi2EEE [label="crystal\npreferred\norientation", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect8Particle8Property27CrystalPreferredOrientationILi2EEE -> N6aspect8Particle8Property9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect8Particle8Property27CrystalPreferredOrientationILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];

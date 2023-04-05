@@ -9,7 +9,7 @@
 ### __Parameter name:__ List of model names
 **Default value:**
 
-**Pattern:** [MultipleSelection adiabatic density|ascii data|ascii data layered|function|porosity|world builder ]
+**Pattern:** [MultipleSelection adiabatic density|ascii data|ascii data layered|function|porosity|slab model|world builder ]
 
 **Documentation:** A comma-separated list of initial composition models that together describe the initial composition field. These plugins are loaded in the order given, and modify the existing composition field via the operators listed in &rsquo;List of model operators&rsquo;.
 
@@ -25,6 +25,8 @@ The following composition models are available:
 
 &lsquo;porosity&rsquo;: A class that implements initial conditions for the porosity field by computing the equilibrium melt fraction for the given initial condition and reference pressure profile. Note that this plugin only works if there is a compositional field called &lsquo;porosity&rsquo;, and the used material model implements the &rsquo;MeltFractionModel&rsquo; interface. For all compositional fields except porosity this plugin returns 0.0, and they are therefore not changed as long as the default &lsquo;add&rsquo; operator is selected for this plugin.
 
+&lsquo;slab model&rsquo;: An initial composition model that implements subducted slab geometries as a compositional field determined from an input file. The file defines the depth to the top of the slab and the slab thickness. The computed compositional value is 1 within the slabs and zero elsewhere. An example model that is included is Slab2 described in Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., Flamme, H., Furtney, M., \& Smoczyk, G. M. (2018). Slab2, a comprehensive subduction zone geometry model. Science, 362(6410), 58-61. The script to convert the Slab2 model into an aspect input data file is available in the directory data/initial-composition/slab-model/. Please note that Slab2 and the example data file assume spherical geometry (latitude, longitude coordinates), however, that is not necessary for this plugin, data files in cartesian coordinates will work with box geometries.
+
 &lsquo;world builder&rsquo;: Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter &rsquo;World builder file&rsquo;. It is possible to use the World Builder only for selected compositional fields by specifying the parameter &rsquo;List of relevant compositions&rsquo;.
 
 (parameters:Initial_20composition_20model/List_20of_20model_20operators)=
@@ -39,7 +41,7 @@ The following composition models are available:
 ### __Parameter name:__ Model name
 **Default value:** unspecified
 
-**Pattern:** [Selection adiabatic density|ascii data|ascii data layered|function|porosity|world builder|unspecified ]
+**Pattern:** [Selection adiabatic density|ascii data|ascii data layered|function|porosity|slab model|world builder|unspecified ]
 
 **Documentation:** Select one of the following models:
 
@@ -52,6 +54,8 @@ The following composition models are available:
 &lsquo;function&rsquo;: Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 &lsquo;porosity&rsquo;: A class that implements initial conditions for the porosity field by computing the equilibrium melt fraction for the given initial condition and reference pressure profile. Note that this plugin only works if there is a compositional field called &lsquo;porosity&rsquo;, and the used material model implements the &rsquo;MeltFractionModel&rsquo; interface. For all compositional fields except porosity this plugin returns 0.0, and they are therefore not changed as long as the default &lsquo;add&rsquo; operator is selected for this plugin.
+
+&lsquo;slab model&rsquo;: An initial composition model that implements subducted slab geometries as a compositional field determined from an input file. The file defines the depth to the top of the slab and the slab thickness. The computed compositional value is 1 within the slabs and zero elsewhere. An example model that is included is Slab2 described in Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., Flamme, H., Furtney, M., \& Smoczyk, G. M. (2018). Slab2, a comprehensive subduction zone geometry model. Science, 362(6410), 58-61. The script to convert the Slab2 model into an aspect input data file is available in the directory data/initial-composition/slab-model/. Please note that Slab2 and the example data file assume spherical geometry (latitude, longitude coordinates), however, that is not necessary for this plugin, data files in cartesian coordinates will work with box geometries.
 
 &lsquo;world builder&rsquo;: Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter &rsquo;World builder file&rsquo;. It is possible to use the World Builder only for selected compositional fields by specifying the parameter &rsquo;List of relevant compositions&rsquo;.
 
@@ -172,6 +176,32 @@ If the function you are describing represents a vector-valued function with mult
 **Pattern:** [Anything]
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+
+(parameters:Initial_20composition_20model/Slab_20model)=
+## **Subsection:** Initial composition model / Slab model
+(parameters:Initial_20composition_20model/Slab_20model/Data_20directory)=
+### __Parameter name:__ Data directory
+**Default value:** $ASPECT_SOURCE_DIR/data/initial-composition/slab-model/
+
+**Pattern:** [DirectoryName]
+
+**Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+
+(parameters:Initial_20composition_20model/Slab_20model/Data_20file_20name)=
+### __Parameter name:__ Data file name
+**Default value:** shell_3d.txt
+
+**Pattern:** [Anything]
+
+**Documentation:** The file name of the model data. Provide file in format: (File name).\%s, where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).
+
+(parameters:Initial_20composition_20model/Slab_20model/Scale_20factor)=
+### __Parameter name:__ Scale factor
+**Default value:** 1.
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Initial_20composition_20model/World_20builder)=
 ## **Subsection:** Initial composition model / World builder

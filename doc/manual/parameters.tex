@@ -16,7 +16,9 @@
 {\it Default:} 
 
 
-{\it Description:} A list of names of additional shared libraries that should be loaded upon starting up the program. The names of these files can contain absolute or relative paths (relative to the directory in which you call ASPECT). In fact, file names that do not contain any directory information (i.e., only the name of a file such as $<$myplugin.so$>$ will not be found if they are not located in one of the directories listed in the \texttt{LD\_LIBRARY\_PATH} environment variable. In order to load a library in the current directory, use $<$./myplugin.so$>$ instead.
+{\it Description:} A list of names of additional shared libraries that should be loaded upon starting up the program. The names of these files can contain absolute or relative paths (relative to the directory in which you call ASPECT). In fact, file names that do not contain any directory information (i.e., only the name of a file such as <libmyplugin.so> will not be found if they are not located in one of the directories listed in the \texttt{LD\_LIBRARY\_PATH} environment variable. In order to load a library in the current directory, use <./libmyplugin.so> instead.
+
+If you specify <./libmyplugin.so>, ASPECT will open either <./libmyplugin.debug.so> or <./libmyplugin.release.so> depending on the current ASPECT build type.
 
 The typical use of this parameter is so that you can implement additional plugins in your own directories, rather than in the ASPECT source directories. You can then simply compile these plugins into a shared library without having to re-compile all of ASPECT. See the section of the manual discussing writing extensions for more information on how to compile additional files into a shared library.
 
@@ -6365,10 +6367,12 @@ The following composition models are available:
 
 `porosity': A class that implements initial conditions for the porosity field by computing the equilibrium melt fraction for the given initial condition and reference pressure profile. Note that this plugin only works if there is a compositional field called `porosity', and the used material model implements the 'MeltFractionModel' interface. For all compositional fields except porosity this plugin returns 0.0, and they are therefore not changed as long as the default `add' operator is selected for this plugin.
 
+`slab model': An initial composition model that implements subducted slab geometries as a compositional field determined from an input file. The file defines the depth to the top of the slab and the slab thickness. The computed compositional value is 1 within the slabs and zero elsewhere. An example model that is included is Slab2 described in Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., Flamme, H., Furtney, M., \& Smoczyk, G. M. (2018). Slab2, a comprehensive subduction zone geometry model. Science, 362(6410), 58-61. The script to convert the Slab2 model into an aspect input data file is available in the directory data/initial-composition/slab-model/. Please note that Slab2 and the example data file assume spherical geometry (latitude, longitude coordinates), however, that is not necessary for this plugin, data files in cartesian coordinates will work with box geometries.
+
 `world builder': Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter 'World builder file'. It is possible to use the World Builder only for selected compositional fields by specifying the parameter 'List of relevant compositions'.
 
 
-{\it Possible values:} A comma-separated list of any of adiabatic density, ascii data, ascii data layered, function, porosity, world builder
+{\it Possible values:} A comma-separated list of any of adiabatic density, ascii data, ascii data layered, function, porosity, slab model, world builder
 \item {\it Parameter name:} {\tt List of model operators}
 \phantomsection\label{parameters:Initial composition model/List of model operators}
 \label{parameters:Initial_20composition_20model/List_20of_20model_20operators}
@@ -6411,12 +6415,14 @@ The following composition models are available:
 
 `porosity': A class that implements initial conditions for the porosity field by computing the equilibrium melt fraction for the given initial condition and reference pressure profile. Note that this plugin only works if there is a compositional field called `porosity', and the used material model implements the 'MeltFractionModel' interface. For all compositional fields except porosity this plugin returns 0.0, and they are therefore not changed as long as the default `add' operator is selected for this plugin.
 
+`slab model': An initial composition model that implements subducted slab geometries as a compositional field determined from an input file. The file defines the depth to the top of the slab and the slab thickness. The computed compositional value is 1 within the slabs and zero elsewhere. An example model that is included is Slab2 described in Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., Flamme, H., Furtney, M., \& Smoczyk, G. M. (2018). Slab2, a comprehensive subduction zone geometry model. Science, 362(6410), 58-61. The script to convert the Slab2 model into an aspect input data file is available in the directory data/initial-composition/slab-model/. Please note that Slab2 and the example data file assume spherical geometry (latitude, longitude coordinates), however, that is not necessary for this plugin, data files in cartesian coordinates will work with box geometries.
+
 `world builder': Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter 'World builder file'. It is possible to use the World Builder only for selected compositional fields by specifying the parameter 'List of relevant compositions'.
 
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying initial composition models and shouldn't be used. Please use 'List of model names' instead.
 
 
-{\it Possible values:} Any one of adiabatic density, ascii data, ascii data layered, function, porosity, world builder, unspecified
+{\it Possible values:} Any one of adiabatic density, ascii data, ascii data layered, function, porosity, slab model, world builder, unspecified
 \item {\it Parameter name:} {\tt Volume of fluid initialization type}
 \phantomsection\label{parameters:Initial composition model/Volume of fluid initialization type}
 \label{parameters:Initial_20composition_20model/Volume_20of_20fluid_20initialization_20type}
@@ -6660,6 +6666,63 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Possible values:} Any string
+\end{itemize}
+
+\subsection{Parameters in section \tt Initial composition model/Slab model}
+\label{parameters:Initial_20composition_20model/Slab_20model}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Initial composition model/Slab model/Data directory}
+\label{parameters:Initial_20composition_20model/Slab_20model/Data_20directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Initial composition model!Slab model!Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/initial-composition/slab-model/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-composition/slab-model/
+
+
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
+
+
+{\it Possible values:} A directory name
+\item {\it Parameter name:} {\tt Data file name}
+\phantomsection\label{parameters:Initial composition model/Slab model/Data file name}
+\label{parameters:Initial_20composition_20model/Slab_20model/Data_20file_20name}
+
+
+\index[prmindex]{Data file name}
+\index[prmindexfull]{Initial composition model!Slab model!Data file name}
+{\it Value:} shell\_3d.txt
+
+
+{\it Default:} shell\_3d.txt
+
+
+{\it Description:} The file name of the model data. Provide file in format: (File name).\%s, where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Scale factor}
+\phantomsection\label{parameters:Initial composition model/Slab model/Scale factor}
+\label{parameters:Initial_20composition_20model/Slab_20model/Scale_20factor}
+
+
+\index[prmindex]{Scale factor}
+\index[prmindexfull]{Initial composition model!Slab model!Scale factor}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
 \subsection{Parameters in section \tt Initial composition model/World builder}
@@ -7316,7 +7379,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/ascii-data/test/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -7327,10 +7390,10 @@ If the function you are describing represents a vector-valued function with mult
 
 \index[prmindex]{Data file name}
 \index[prmindexfull]{Initial temperature model!Ascii data model!Data file name}
-{\it Value:} initial\_isotherm\_500K\_box\_3d.txt
+{\it Value:} box\_2d.txt
 
 
-{\it Default:} initial\_isotherm\_500K\_box\_3d.txt
+{\it Default:} box\_2d.txt
 
 
 {\it Description:} The file name of the model data.
@@ -19640,6 +19703,8 @@ The following properties are available:
 
 `composition': Implementation of a plugin in which the particle property is defined by the compositional fields in the model. This can be used to track solid compositionevolution over time.
 
+`cpo bingham average': This is a particle property plugin which computes the Bingham average for the Crystal Preferred Orientation particle property plugin so that it can be visualized.
+
 `crystal preferred orientation': The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO) on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation matrix. This allows for CPO evolution tracking with polycrystalline kinematic CrystalPreferredOrientation evolution models such as D-Rex (Kaminski and Ribe, 2001; Kaminski et al., 2004).
 
 `elastic stress': A plugin in which the particle property tensor is defined as the total elastic stress a particle has accumulated. See the viscoelastic material model documentation for more detailed information.
@@ -19671,7 +19736,7 @@ The following properties are available:
 `viscoplastic strain invariants': A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in \texttt{benchmarks/buiter\_et\_al\_2008\_jgr/plugin/},and is effectively the same as what the visco plastic material model uses for compositional fields.
 
 
-{\it Possible values:} A comma-separated list of any of composition, crystal preferred orientation, elastic stress, function, grain size, initial composition, initial position, integrated strain, integrated strain invariant, melt particle, pT path, position, reference position, strain rate, velocity, viscoplastic strain invariants
+{\it Possible values:} A comma-separated list of any of composition, cpo bingham average, crystal preferred orientation, elastic stress, function, grain size, initial composition, initial position, integrated strain, integrated strain invariant, melt particle, pT path, position, reference position, strain rate, velocity, viscoplastic strain invariants
 \item {\it Parameter name:} {\tt Load balancing strategy}
 \phantomsection\label{parameters:Postprocess/Particles/Load balancing strategy}
 \label{parameters:Postprocess/Particles/Load_20balancing_20strategy}
@@ -19879,6 +19944,46 @@ Units: years if the 'Use years in output instead of seconds' parameter is set; s
 
 
 
+\subsection{Parameters in section \tt Postprocess/Particles/CPO Bingham Average}
+\label{parameters:Postprocess/Particles/CPO_20Bingham_20Average}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Number of samples}
+\phantomsection\label{parameters:Postprocess/Particles/CPO Bingham Average/Number of samples}
+\label{parameters:Postprocess/Particles/CPO_20Bingham_20Average/Number_20of_20samples}
+
+
+\index[prmindex]{Number of samples}
+\index[prmindexfull]{Postprocess!Particles!CPO Bingham Average/Number of samples}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} This determines how many samples are taken when using the random draw volume averaging. Setting it to zero means that the number of samples is set to be equal to the number of grains.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Random number seed}
+\phantomsection\label{parameters:Postprocess/Particles/CPO Bingham Average/Random number seed}
+\label{parameters:Postprocess/Particles/CPO_20Bingham_20Average/Random_20number_20seed}
+
+
+\index[prmindex]{Random number seed}
+\index[prmindexfull]{Postprocess!Particles!CPO Bingham Average/Random number seed}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} The seed used to generate random numbers. This will make sure that results are reproducable as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank. 
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\end{itemize}
+
 \subsection{Parameters in section \tt Postprocess/Particles/Crystal Preferred Orientation}
 \label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation}
 
@@ -20010,23 +20115,6 @@ Units: years if the 'Use years in output instead of seconds' parameter is set; s
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
-\item {\it Parameter name:} {\tt Minerals}
-\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/D_2dRex 2004/Minerals}
-\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Minerals}
-
-
-\index[prmindex]{Minerals}
-\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/D-Rex 2004/Minerals}
-{\it Value:} Olivine: Karato 2008, Enstatite
-
-
-{\it Default:} Olivine: Karato 2008, Enstatite
-
-
-{\it Description:} This determines what minerals and fabrics or fabric selectors are used used for the LPO calculation. The options are Olivine: A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
 \item {\it Parameter name:} {\tt Mobility}
 \phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/D_2dRex 2004/Mobility}
 \label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Mobility}
@@ -20118,6 +20206,23 @@ Units: years if the 'Use years in output instead of seconds' parameter is set; s
 \label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Minerals}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/Initial grains/Minerals}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Minerals}
+
+
+\index[prmindex]{Minerals}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/Initial grains/Minerals}
+{\it Value:} Olivine: Karato 2008, Enstatite
+
+
+{\it Default:} Olivine: Karato 2008, Enstatite
+
+
+{\it Description:} This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
 \item {\it Parameter name:} {\tt Model name}
 \phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/Initial grains/Model name}
 \label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Model_20name}
@@ -20135,38 +20240,13 @@ Units: years if the 'Use years in output instead of seconds' parameter is set; s
 
 
 {\it Possible values:} Any string
-\end{itemize}
-
-
-
-\subsection{Parameters in section \tt Postprocess/Particles/Crystal Preferred Orientation/Initial grains/Uniform grains and random uniform rotations}
-\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Uniform_20grains_20and_20random_20uniform_20rotations}
-
-\begin{itemize}
-\item {\it Parameter name:} {\tt Minerals}
-\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/Initial grains/Uniform grains and random uniform rotations/Minerals}
-\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Uniform_20grains_20and_20random_20uniform_20rotations/Minerals}
-
-
-\index[prmindex]{Minerals}
-\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/Initial grains/Uniform grains and random uniform rotations/Minerals}
-{\it Value:} Olivine: Karato 2008, Enstatite
-
-
-{\it Default:} Olivine: Karato 2008, Enstatite
-
-
-{\it Description:} This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
 \item {\it Parameter name:} {\tt Volume fractions minerals}
-\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/Initial grains/Uniform grains and random uniform rotations/Volume fractions minerals}
-\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Uniform_20grains_20and_20random_20uniform_20rotations/Volume_20fractions_20minerals}
+\phantomsection\label{parameters:Postprocess/Particles/Crystal Preferred Orientation/Initial grains/Volume fractions minerals}
+\label{parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Volume_20fractions_20minerals}
 
 
 \index[prmindex]{Volume fractions minerals}
-\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/Initial grains/Uniform grains and random uniform rotations/Volume fractions minerals}
+\index[prmindexfull]{Postprocess!Particles!Crystal Preferred Orientation/Initial grains/Volume fractions minerals}
 {\it Value:} 0.7, 0.3
 
 
