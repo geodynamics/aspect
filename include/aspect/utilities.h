@@ -1056,7 +1056,7 @@ namespace aspect
      * The input is a vector of volume fractions and a vector of rotation matrices.
      * The vectors need to have the same length.
      *
-     * @param volume_fraction a vector of doubles representing the volume fraction of each grain
+     * @param volume_fractions a vector of doubles representing the volume fraction of each grain
      * @param rotation_matrices a vector of 2nd order 3D tensors representing the rotation matrix of each grain
      * @param n_output_matrices The number of rotation matrices which are output by this function. This can be
      * different from the number of entries in the volume fraction and rotation matrices vectors.
