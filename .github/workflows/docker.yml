@@ -86,7 +86,7 @@ jobs:
           cache-to: type=inline
           platforms: linux/amd64
           push: true
-          tags: geodynamics/aspect_tacc:latest
+          tags: geodynamics/aspect:latest-tacc
 
       - name: Build and push Docker image for release
         if: contains(github.event_name, 'release')
@@ -97,4 +97,4 @@ jobs:
           cache-to: type=inline
           platforms: linux/amd64
           push: true
-          tags: geodynamics/aspect_tacc:${{github.ref_name}}
+          tags: geodynamics/aspect:${{github.ref_name}}-tacc
