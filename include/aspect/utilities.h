@@ -670,48 +670,7 @@ namespace aspect
     void
     extract_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
                                            const unsigned int q,
-                                           std::vector<double> &composition_values_at_q_point)
-    {
-      Assert(q<composition_values.size(), ExcInternalError());
-      Assert(composition_values_at_q_point.size() > 0,
-             ExcInternalError());
-
-      for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
-        {
-          Assert(composition_values[k].size() == composition_values_at_q_point.size(),
-                 ExcInternalError());
-          composition_values_at_q_point[k] = composition_values[k][q];
-        }
-    }
-
-    template <typename T>
-    inline
-    std::vector<T>
-    possibly_extend_from_1_to_N (const std::vector<T> &values,
-                                 const unsigned int N,
-                                 const std::string &id_text)
-    {
-      if (values.size() == 1)
-        {
-          return std::vector<T> (N, values[0]);
-        }
-      else if (values.size() == N)
-        {
-          return values;
-        }
-      else
-        {
-          // Non-specified behavior
-          AssertThrow(false,
-                      ExcMessage("Length of " + id_text + " list must be " +
-                                 "either one or " + Utilities::to_string(N) +
-                                 ". Currently it is " + Utilities::to_string(values.size()) + "."));
-        }
-
-      // This should never happen, but return an empty vector so the compiler
-      // will be happy
-      return std::vector<T> ();
-    }
+                                           std::vector<double> &composition_values_at_q_point);
 
     /**
      * Replace the string <tt>\$ASPECT_SOURCE_DIR</tt> in @p location by the current
@@ -1067,48 +1026,29 @@ namespace aspect
     };
 
     /**
-     * Create a permutation vector which can be used by the apply_permutation function
-     * to put the vector in sorted order.
+     * Create and return a permutation vector which can be used by the
+     * apply_permutation() function to put the vector in sorted order.
      *
      * @param vector vector to sort
      */
     template <typename T>
     inline
     std::vector<std::size_t>
-    compute_sorting_permutation(const std::vector<T> &vector)
-    {
-      std::vector<std::size_t> p(vector.size());
-      std::iota(p.begin(), p.end(), 0);
-      std::sort(p.begin(), p.end(),
-                [&](std::size_t i, std::size_t j)
-      {
-        return vector[i] < vector[j];
-      });
-      return p;
-    }
+    compute_sorting_permutation(const std::vector<T> &vector);
 
     /**
-     * Applies a permutation vector to another vector and retuns the resulting vector.
+     * Applies a permutation vector to another vector and return the resulting vector.
      *
      * @param vector vector to sort
      * @param permutation_vector The permutation vector used to sort the input vector.
-     * @return std::vector<T>
+     * @return The permuted input vector.
      */
     template <typename T>
     inline
     std::vector<T>
     apply_permutation(
       const std::vector<T> &vector,
-      const std::vector<std::size_t> &permutation_vector)
-    {
-      std::vector<T> sorted_vec(vector.size());
-      std::transform(permutation_vector.begin(), permutation_vector.end(), sorted_vec.begin(),
-                     [&](std::size_t i)
-      {
-        return vector[i];
-      });
-      return sorted_vec;
-    }
+      const std::vector<std::size_t> &permutation_vector);
 
     /**
      * Get volume weighted rotation matrices, using random draws to convert
@@ -1129,5 +1069,95 @@ namespace aspect
                                                    std::mt19937 &random_number_generator);
   }
 }
+
+
+// inline implementations:
+#ifndef DOXYGEN
+namespace aspect
+{
+  namespace Utilities
+  {
+
+    template <typename T>
+    inline
+    std::vector<T>
+    possibly_extend_from_1_to_N (const std::vector<T> &values,
+                                 const unsigned int N,
+                                 const std::string &id_text)
+    {
+      if (values.size() == 1)
+        {
+          return std::vector<T> (N, values[0]);
+        }
+      else if (values.size() == N)
+        {
+          return values;
+        }
+      else
+        {
+          // Non-specified behavior
+          AssertThrow(false,
+                      ExcMessage("Length of " + id_text + " list must be " +
+                                 "either one or " + Utilities::to_string(N) +
+                                 ". Currently it is " + Utilities::to_string(values.size()) + "."));
+        }
+
+      // This should never happen, but return an empty vector so the compiler
+      // will be happy
+      return std::vector<T> ();
+    }
+
+    inline
+    void
+    extract_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
+                                           const unsigned int q,
+                                           std::vector<double> &composition_values_at_q_point)
+    {
+      Assert(q<composition_values.size(), ExcInternalError());
+      Assert(composition_values_at_q_point.size() > 0,
+             ExcInternalError());
+
+      for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
+        {
+          Assert(composition_values[k].size() == composition_values_at_q_point.size(),
+                 ExcInternalError());
+          composition_values_at_q_point[k] = composition_values[k][q];
+        }
+    }
+
+    template <typename T>
+    inline
+    std::vector<std::size_t>
+    compute_sorting_permutation(const std::vector<T> &vector)
+    {
+      std::vector<std::size_t> p(vector.size());
+      std::iota(p.begin(), p.end(), 0);
+      std::sort(p.begin(), p.end(),
+                [&](std::size_t i, std::size_t j)
+      {
+        return vector[i] < vector[j];
+      });
+      return p;
+    }
+
+    template <typename T>
+    inline
+    std::vector<T>
+    apply_permutation(
+      const std::vector<T> &vector,
+      const std::vector<std::size_t> &permutation_vector)
+    {
+      std::vector<T> sorted_vec(vector.size());
+      std::transform(permutation_vector.begin(), permutation_vector.end(), sorted_vec.begin(),
+                     [&](std::size_t i)
+      {
+        return vector[i];
+      });
+      return sorted_vec;
+    }
+
+  }
+}
+#endif
 
 #endif
