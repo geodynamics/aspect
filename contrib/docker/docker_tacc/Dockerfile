@@ -13,16 +13,13 @@ RUN apt-get update && apt-get -yq upgrade && apt-get -yq install \
     bc \
     ninja-build
 
-RUN cd /opt && wget https://github.com/Kitware/CMake/releases/download/v3.17.3/cmake-3.17.3-Linux-x86_64.tar.gz && tar xf cmake*.tar.gz && rm cmake*.tar.gz
-ENV PATH /opt/cmake-3.17.3-Linux-x86_64/bin:$PATH
-
 RUN cd /opt && \
     git clone https://github.com/dealii/candi.git && \
     cd candi && \
-    echo "NATIVE_OPTIMIZATIONS=true" >> local.cfg && \
-    echo "STABLE_BUILD=false" >> local.cfg && \
+    echo "NATIVE_OPTIMIZATIONS=ON" >> local.cfg && \
     echo "DEAL_II_VERSION=v9.4.2" >> local.cfg && \
-    echo "DEAL_CONFOPTS=-D DEAL_II_WITH_64BIT_INDICES=ON -D DEAL_II_COMPONENT_EXAMPLES=OFF -DDEAL_II_WITH_COMPLEX_VALUES=OFF -DDEAL_II_WITH_LAPACK=ON" >> local.cfg && \
+    echo "BUILD_EXAMPLES=OFF" >> local.cfg && \
+    echo "DEAL_CONFOPTS=-D DEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_COMPLEX_VALUES=OFF -DDEAL_II_WITH_LAPACK=ON" >> local.cfg && \
     ./candi.sh -j 2 --packages="once:cmake once:p4est once:trilinos once:hdf5 dealii" -p /opt && \
     rm -rf /opt/tmp
 
