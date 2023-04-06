@@ -353,7 +353,7 @@ If the function you are describing represents a vector-valued function with mult
 
 (parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20file_20name)=
 ### __Parameter name:__ Data file name
-**Default value:** initial_isotherm_500K_box_3d.txt
+**Default value:** box_2d.txt
 
 **Pattern:** [Anything]
 

@@ -704,13 +704,15 @@ Select one of the following models:
 ### __Parameter name:__ List of particle properties
 **Default value:**
 
-**Pattern:** [MultipleSelection composition|crystal preferred orientation|elastic stress|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
+**Pattern:** [MultipleSelection composition|cpo bingham average|crystal preferred orientation|elastic stress|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
 
 **Documentation:** A comma separated list of particle properties that should be tracked. By default none is selected, which means only position, velocity and id of the particles are output.
 
 The following properties are available:
 
 &lsquo;composition&rsquo;: Implementation of a plugin in which the particle property is defined by the compositional fields in the model. This can be used to track solid compositionevolution over time.
+
+&lsquo;cpo bingham average&rsquo;: This is a particle property plugin which computes the Bingham average for the Crystal Preferred Orientation particle property plugin so that it can be visualized.
 
 &lsquo;crystal preferred orientation&rsquo;: The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO) on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation matrix. This allows for CPO evolution tracking with polycrystalline kinematic CrystalPreferredOrientation evolution models such as D-Rex (Kaminski and Ribe, 2001; Kaminski et al., 2004).
 
@@ -846,6 +848,24 @@ Units: years if the &rsquo;Use years in output instead of seconds&rsquo; paramet
 
 **Documentation:** File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to &lsquo;true&rsquo; moves this process into a background thread, while the rest of the model continues.
 
+(parameters:Postprocess/Particles/CPO_20Bingham_20Average)=
+## **Subsection:** Postprocess / Particles / CPO Bingham Average
+(parameters:Postprocess/Particles/CPO_20Bingham_20Average/Number_20of_20samples)=
+### __Parameter name:__ Number of samples
+**Default value:** 0
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** This determines how many samples are taken when using the random draw volume averaging. Setting it to zero means that the number of samples is set to be equal to the number of grains.
+
+(parameters:Postprocess/Particles/CPO_20Bingham_20Average/Random_20number_20seed)=
+### __Parameter name:__ Random number seed
+**Default value:** 1
+
+**Pattern:** [Integer range 0...2147483647 (inclusive)]
+
+**Documentation:** The seed used to generate random numbers. This will make sure that results are reproducable as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank.
+
 (parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation)=
 ## **Subsection:** Postprocess / Particles / Crystal Preferred Orientation
 (parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/CPO_20derivatives_20algorithm)=
@@ -906,14 +926,6 @@ Units: years if the &rsquo;Use years in output instead of seconds&rsquo; paramet
 
 **Documentation:** This is exponent p as defined in equation 11 of Kaminski et al., 2004.
 
-(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Minerals)=
-### __Parameter name:__ Minerals
-**Default value:** Olivine: Karato 2008, Enstatite
-
-**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
-
-**Documentation:** This determines what minerals and fabrics or fabric selectors are used used for the LPO calculation. The options are Olivine: A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
-
 (parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Mobility)=
 ### __Parameter name:__ Mobility
 **Default value:** 50
@@ -956,6 +968,14 @@ Units: years if the &rsquo;Use years in output instead of seconds&rsquo; paramet
 
 (parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains)=
 ## **Subsection:** Postprocess / Particles / Crystal Preferred Orientation / Initial grains
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Minerals)=
+### __Parameter name:__ Minerals
+**Default value:** Olivine: Karato 2008, Enstatite
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
+
 (parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Model_20name)=
 ### __Parameter name:__ Model name
 **Default value:** Uniform grains and random uniform rotations
@@ -964,17 +984,7 @@ Units: years if the &rsquo;Use years in output instead of seconds&rsquo; paramet
 
 **Documentation:** The model used to initialize the CPO for all particles. Currently &rsquo;Uniform grains and random uniform rotations&rsquo; is the only valid option.
 
-(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Uniform_20grains_20and_20random_20uniform_20rotations)=
-## **Subsection:** Postprocess / Particles / Crystal Preferred Orientation / Initial grains / Uniform grains and random uniform rotations
-(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Uniform_20grains_20and_20random_20uniform_20rotations/Minerals)=
-### __Parameter name:__ Minerals
-**Default value:** Olivine: Karato 2008, Enstatite
-
-**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
-
-**Documentation:** This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
-
-(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Uniform_20grains_20and_20random_20uniform_20rotations/Volume_20fractions_20minerals)=
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Volume_20fractions_20minerals)=
 ### __Parameter name:__ Volume fractions minerals
 **Default value:** 0.7, 0.3
 

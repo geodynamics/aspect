@@ -8,7 +8,9 @@
 
 **Pattern:** [List of <[FileName (Type: input)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of names of additional shared libraries that should be loaded upon starting up the program. The names of these files can contain absolute or relative paths (relative to the directory in which you call ASPECT). In fact, file names that do not contain any directory information (i.e., only the name of a file such as <myplugin.so> will not be found if they are not located in one of the directories listed in the `LD_LIBRARY_PATH` environment variable. In order to load a library in the current directory, use <./myplugin.so> instead.
+**Documentation:** A list of names of additional shared libraries that should be loaded upon starting up the program. The names of these files can contain absolute or relative paths (relative to the directory in which you call ASPECT). In fact, file names that do not contain any directory information (i.e., only the name of a file such as <libmyplugin.so> will not be found if they are not located in one of the directories listed in the `LD_LIBRARY_PATH` environment variable. In order to load a library in the current directory, use <./libmyplugin.so> instead.
+
+If you specify <./libmyplugin.so>, ASPECT will open either <./libmyplugin.debug.so> or <./libmyplugin.release.so> depending on the current ASPECT build type.
 
 The typical use of this parameter is so that you can implement additional plugins in your own directories, rather than in the ASPECT source directories. You can then simply compile these plugins into a shared library without having to re-compile all of ASPECT. See the section of the manual discussing writing extensions for more information on how to compile additional files into a shared library.
 
