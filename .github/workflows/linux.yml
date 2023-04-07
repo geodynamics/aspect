@@ -29,15 +29,11 @@ jobs:
         sudo add-apt-repository ppa:ginggs/deal.ii-9.3.2-backports
         sudo apt-get update
         sudo apt-get install -yq --no-install-recommends libdeal.ii-dev
-        #TODO: Remove this when github actions ships cmake 3.26.1 or younger
-        cd /opt && wget https://github.com/Kitware/CMake/releases/download/v3.26.1/cmake-3.26.1-linux-x86_64.tar.gz
-        tar -xzf cmake-3.26.1-linux-x86_64.tar.gz
-
     - name: compile
       run: |
         mkdir build-no-unity
         cd build-no-unity
-        /opt/cmake-3.26.1-linux-x86_64/bin/cmake -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF -D CMAKE_CXX_FLAGS='-Werror' ..
+        cmake -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF -D CMAKE_CXX_FLAGS='-Werror' ..
         make -j 2
         ./aspect --test
 
@@ -64,10 +60,6 @@ jobs:
         cd
         rm -rf astyle*
         astyle --version
-
-        #TODO: Remove this when github actions ships cmake 3.26.1 or younger
-        cd /opt && wget https://github.com/Kitware/CMake/releases/download/v3.26.1/cmake-3.26.1-linux-x86_64.tar.gz
-        tar -xzf cmake-3.26.1-linux-x86_64.tar.gz
     - name: make indent
       run: |
         ./contrib/utilities/indent
@@ -90,7 +82,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        /opt/cmake-3.26.1-linux-x86_64/bin/cmake -D ASPECT_PRECOMPILE_HEADERS=ON -D ASPECT_UNITY_BUILD=ON \
+        cmake -D ASPECT_PRECOMPILE_HEADERS=ON -D ASPECT_UNITY_BUILD=ON \
         -D CMAKE_CXX_FLAGS='-Werror' -D ASPECT_INSTALL_EXAMPLES=ON ..
         make -j 2
         ./aspect --test
