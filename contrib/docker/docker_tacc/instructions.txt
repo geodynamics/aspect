@@ -1,0 +1,9 @@
+# To use this docker image on TACC systems, login to a compute node.
+# Then run:
+
+module load tacc-singularity
+
+singularity pull docker://geodynamics/aspect:latest-tacc
+
+# Replace PARAMETERFILE with a parameter file.
+ibrun singularity run aspect_latest-tacc.sif aspect PARAMETERFILE
