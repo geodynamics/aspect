@@ -611,17 +611,19 @@ namespace aspect
                 AssertThrowMPI(ierr);
               }
         }
-#if DEAL_II_VERSION_GTE(9,5,0)
       else if (output_format == "parallel deal.II intermediate")
         {
+#if DEAL_II_VERSION_GTE(9,5,0)
           const std::string filename = this->get_output_directory() + "solution/"
                                        + solution_file_prefix + ".pd2";
 
           data_out.write_deal_II_intermediate_in_parallel(filename,
                                                           this->get_mpi_communicator(),
                                                           DataOutBase::CompressionLevel::default_compression);
-        }
+#else
+          AssertThrow(false, ExcMessage("Parallel deal.II intermediate output requires deal.II 9.5 or newer!"));
 #endif
+        }
       else   // Write in a different format than hdf5 or vtu. This case is supported, but is not
         // optimized for parallel output in that every process will write one file directly
         // into the output directory. This may or may not affect performance depending on
@@ -1124,7 +1126,8 @@ namespace aspect
 
           // now also see about the file format we're supposed to write in
           prm.declare_entry ("Output format", "vtu",
-                             Patterns::Selection (DataOutBase::get_output_format_names ()),
+                             Patterns::Selection (DataOutBase::get_output_format_names ()
+                                                  + "|parallel deal.II intermediate"),
                              "The file format to be used for graphical output. The list "
                              "of possible output formats that can be given here is documented "
                              "in the appendix of the manual where the current parameter "
