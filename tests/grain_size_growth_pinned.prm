@@ -16,10 +16,11 @@
 # with
 # d_0 = 8e-5 m         (initial grain size)
 # p   = 10             (grain size exponent)
-# A   = 2.0294e-46 1/m
+# A   = 6.668355e-41 1/m^p
 #
-# leading to a grain size of d=8.8957E-5 m at the
-# right boundary of the model.
+# leading to a grain size of d=9.74733E-5 m at the
+# right boundary of the model. The output after running
+# this model gives a grain size of d=9.71484E-5 m.
 
 include $ASPECT_SOURCE_DIR/tests/grain_size_growth.prm
 
