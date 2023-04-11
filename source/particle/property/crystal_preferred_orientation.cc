@@ -671,7 +671,6 @@ namespace aspect
                 {
                   diffusion_viscosities.emplace_back(rheology->compute_viscosity(pressure, temperature, 0, phase_function_values, phase_function.n_phase_transitions_for_each_composition()));
                 }
-              //const double diffusion_creep_strain_rate = rheology->compute_viscosity(pressure, temperature, 0, phase_function_values, phase_function.n_phase_transitions_for_each_composition()); // TODO: compute it
 
               const double diffusion_viscosity = MaterialModel::MaterialUtilities::average_value(volume_fractions, diffusion_viscosities, MaterialModel::MaterialUtilities::harmonic);
 
