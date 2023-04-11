@@ -20,6 +20,8 @@
 
 #include <aspect/particle/property/crystal_preferred_orientation.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <world_builder/grains.h>
 #include <world_builder/world.h>
 
@@ -639,6 +641,79 @@ namespace aspect
 
               const std::array<double,4> ref_resolved_shear_stress = reference_resolved_shear_stress_from_deformation_type(deformation_type);
 
+
+              // Compute the diffusion strain with the diffusion viscosity
+              const double gravity_norm = this->get_gravity_model().gravity_vector(position).norm();
+              const double reference_density = (this->get_adiabatic_conditions().is_initialized())
+                                               ?
+                                               this->get_adiabatic_conditions().density(position)
+                                               :
+                                               3300.;
+
+              // The phase index is set to invalid_unsigned_int, because it is only used internally
+              // in phase_average_equation_of_state_outputs to loop over all existing phases
+              MaterialModel::MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(temperature,
+                                                                                      pressure,
+                                                                                      this->get_geometry_model().depth(position),
+                                                                                      gravity_norm*reference_density,
+                                                                                      numbers::invalid_unsigned_int);
+              std::vector<double> phase_function_values(phase_function.n_phase_transitions(), 0.0);
+              // Compute value of phase functions
+              for (unsigned int j=0; j < phase_function.n_phase_transitions(); j++)
+                {
+                  phase_inputs.phase_index = j;
+                  phase_function_values[j] = phase_function.compute_value(phase_inputs);
+                }
+
+              const std::vector<double> volume_fractions = MaterialModel::MaterialUtilities::compute_composition_fractions(compositions);
+              std::vector<double> diffusion_viscosities;
+              for (unsigned int composition = 0; composition < volume_fractions.size(); composition++)
+                {
+                  diffusion_viscosities.emplace_back(rheology->compute_viscosity(pressure, temperature, 0, phase_function_values, phase_function.n_phase_transitions_for_each_composition()));
+                }
+              //const double diffusion_creep_strain_rate = rheology->compute_viscosity(pressure, temperature, 0, phase_function_values, phase_function.n_phase_transitions_for_each_composition()); // TODO: compute it
+
+              const double diffusion_viscosity = MaterialModel::MaterialUtilities::average_value(volume_fractions, diffusion_viscosities, MaterialModel::MaterialUtilities::harmonic);
+
+              // now compute the normal viscosity to be able to computes the stress
+              // Create the material model inputs and outputs to
+              // retrieve the current viscosity.
+              MaterialModel::MaterialModelInputs<dim> in = MaterialModel::MaterialModelInputs<dim>(1,compositions.size());
+              in.pressure[0] = pressure;
+              in.temperature[0] = temperature;
+              in.position[0] = position;
+              in.strain_rate[0] = strain_rate;
+              in.composition[0] = compositions;
+
+              in.requested_properties = MaterialModel::MaterialProperties::viscosity;
+
+              MaterialModel::MaterialModelOutputs<dim> out(1,
+                                                           this->n_compositional_fields());
+
+              this->get_material_model().evaluate(in, out);
+
+              // Compressive stress is positive in geoscience applications.
+              SymmetricTensor<2, dim> stress = pressure * unit_symmetric_tensor<dim>();
+
+              // Add elastic stresses if existent.
+              AssertThrow(this->get_parameters().enable_elasticity == false, ExcMessage("Elasticity not supported when computing the CPO stress"));
+
+              const double eta = out.viscosities[0];
+
+              stress += -2. * eta * deviatoric_strain_rate;
+
+
+              // Compute the deviatoric stress tensor after elastic stresses were added.
+              const SymmetricTensor<2, dim> deviatoric_stress = deviator(stress);
+
+              // Compute the second moment invariant of the deviatoric stress
+              // in the same way as the second moment invariant of the deviatoric
+              // strain rate is computed in the viscoplastic material model.
+              // TODO check that this is valid for the compressible case.
+              const double stress_invariant = std::sqrt(std::max(-second_invariant(deviatoric_stress), 0.));
+
+              const double diffusion_creep_strain_rate = stress_invariant/(2.0*diffusion_viscosity);
+
               return compute_derivatives_drexpp(cpo_index,
                                                 data,
                                                 mineral_i,
@@ -646,7 +721,8 @@ namespace aspect
                                                 velocity_gradient_tensor,
                                                 ref_resolved_shear_stress,
                                                 recrystalized_grain_volume,
-                                                aggregate_recrystalization_increment);
+                                                aggregate_recrystalization_increment,
+                                                diffusion_creep_strain_rate);
               break;
             }
             default:
@@ -983,7 +1059,8 @@ namespace aspect
                                                                    const Tensor<2,3> &velocity_gradient_tensor,
                                                                    const std::array<double,4> ref_resolved_shear_stress,
                                                                    const double recrystalized_grain_volume,
-                                                                   const double aggregate_recrystalization_increment) const
+                                                                   const double aggregate_recrystalization_increment,
+                                                                   const double diffusion_creep_strain_rate) const
       {
         // create output variables
         std::vector<double> deriv_volume_fractions(n_grains);
@@ -1148,7 +1225,6 @@ namespace aspect
           }
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
           {
-            const double diffusion_creep_strain_rate = 0.0; // TODO: compute it
             grain_boundary_sliding_fractions[grain_i] = std::sqrt(std::max(-second_invariant(deviator(strain_rate)),0.0)) - diffusion_creep_strain_rate;
             total_grain_boundary_sliding_fraction += grain_boundary_sliding_fractions[grain_i];
           }
@@ -1684,6 +1760,42 @@ namespace aspect
           prm.leave_subsection ();
         }
         prm.leave_subsection ();
+
+
+        prm.enter_subsection("Material model");
+        {
+          prm.enter_subsection ("Visco Plastic");
+          {
+            // Phase transition parameters
+            phase_function.initialize_simulator (this->get_simulator());
+            phase_function.parse_parameters (prm);
+
+            // Retrieve the list of composition names
+            const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+
+            // Establish that a background field is required here
+            const bool has_background_field = true;
+
+            thermal_diffusivities = Utilities::parse_map_to_double_array (prm.get("Thermal diffusivities"),
+                                                                          list_of_composition_names,
+                                                                          has_background_field,
+                                                                          "Thermal diffusivities");
+
+            define_conductivities = prm.get_bool ("Define thermal conductivities");
+
+            thermal_conductivities = Utilities::parse_map_to_double_array (prm.get("Thermal conductivities"),
+                                                                           list_of_composition_names,
+                                                                           has_background_field,
+                                                                           "Thermal conductivities");
+
+            rheology = std::make_unique<MaterialModel::Rheology::DiffusionCreep<dim>>();
+            rheology->initialize_simulator (this->get_simulator());
+            rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(phase_function.n_phases_for_each_composition()));
+          }
+          prm.leave_subsection();
+        }
+        prm.leave_subsection();
+
       }
     }
   }

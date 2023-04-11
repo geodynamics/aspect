@@ -22,6 +22,9 @@
 #define _aspect_particle_property_cpo_h
 
 #include <aspect/particle/property/interface.h>
+#include <aspect/material_model/rheology/diffusion_creep.h>
+#include <aspect/material_model/utilities.h>
+#include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <array>
 
@@ -294,7 +297,8 @@ namespace aspect
                                      const Tensor<2,3> &velocity_gradient_tensor,
                                      const std::array<double,4> ref_resolved_shear_stress,
                                      const double recrystalized_grain_volume,
-                                     const double aggregate_recrystalization_increment) const;
+                                     const double aggregate_recrystalization_increment,
+                                     const double diffusion_creep_strain_rate) const;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -659,6 +663,20 @@ namespace aspect
            */
           double mobility;
 
+          std::unique_ptr<MaterialModel::Rheology::DiffusionCreep<dim>> rheology;
+          std::vector<double> thermal_diffusivities;
+
+          /**
+           * Whether to use user-defined thermal conductivities instead of thermal diffusivities.
+           */
+          bool define_conductivities;
+
+          std::vector<double> thermal_conductivities;
+
+          /**
+           * Object that handles phase transitions.
+           */
+          MaterialModel::MaterialUtilities::PhaseFunction<dim> phase_function;
           /** @} */
 
       };
