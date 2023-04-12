@@ -345,7 +345,7 @@ namespace aspect
               }
 
             // normalize the volume fractions back to a total of 1 for each mineral
-            const double inv_sum_volume_mineral = 1.0/sum_volume_mineral;
+            const double inv_sum_volume_mineral = 1.0;///sum_volume_mineral;
 
             Assert(std::isfinite(inv_sum_volume_mineral),
                    ExcMessage("inv_sum_volume_mineral is not finite. sum_volume_enstatite = "
@@ -1247,12 +1247,28 @@ namespace aspect
           }
 
         // Secondly recrystalize grains
+        std::cout << "A: recrystalized_grain_volume = " << recrystalized_grain_volume << ", recrystalized_fractions = ";
+        for (unsigned int i = 0; i < recrystalized_fractions.size(); ++i)
+          std::cout << recrystalized_fractions[i] << ", ";
+        std::cout << ", volumes = ";
+        for (unsigned int i = 0; i < recrystalized_fractions.size(); ++i)
+          std::cout << get_volume_fractions_grains(cpo_index,data,mineral_i,i)  << ", ";
+        std::cout << std::endl;
+
         this->recrystalize_grains(cpo_index,
                                   data,
                                   mineral_i,
                                   recrystalized_grain_volume,
                                   recrystalized_fractions,
                                   strain_energy);
+
+        std::cout << "B: recrystalized_grain_volume = " << recrystalized_grain_volume << ", recrystalized_fractions = ";
+        for (unsigned int i = 0; i < recrystalized_fractions.size(); ++i)
+          std::cout << recrystalized_fractions[i] << ", ";
+        std::cout << ", volumes = ";
+        for (unsigned int i = 0; i < recrystalized_fractions.size(); ++i)
+          std::cout << get_volume_fractions_grains(cpo_index,data,mineral_i,i)  << ", ";
+        std::cout << std::endl;
 
         double mean_strain_energy = 0.0;
         // Change of volume fraction of grains by grain boundary migration
@@ -1284,6 +1300,14 @@ namespace aspect
                    ExcMessage("deriv_volume_fractions[" + std::to_string(grain_i) + "] is not finite: "
                               + std::to_string(deriv_volume_fractions[grain_i])));
           }
+
+        std::cout << "C: deriv_volume_fractions[grain_i] = " ;
+        for (unsigned int i = 0; i < recrystalized_fractions.size(); ++i)
+          std::cout << deriv_volume_fractions[i] << ", ";
+        std::cout << ", volumes = ";
+        for (unsigned int i = 0; i < recrystalized_fractions.size(); ++i)
+          std::cout << get_volume_fractions_grains(cpo_index,data,mineral_i,i)  << ", ";
+        std::cout << std::endl;
 
         return std::pair<std::vector<double>, std::vector<Tensor<2,3>>>(deriv_volume_fractions, deriv_a_cosine_matrices);
       }
