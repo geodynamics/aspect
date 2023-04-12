@@ -73,6 +73,7 @@ namespace aspect
       CrystalPreferredOrientation<dim>::compute_random_rotation_matrix(Tensor<2,3> &rotation_matrix) const
       {
 
+        const double dt = this -> get_time();  
         // This function is based on an article in Graphic Gems III, written by James Arvo, Cornell University (p 116-120).
         // The original code can be found on  http://www.realtimerendering.com/resources/GraphicsGems/gemsiii/rand_rotation.c
         // and is licenced according to this website with the following licence:
@@ -95,7 +96,7 @@ namespace aspect
 
         double theta = 2.0 * numbers::PI * one; // Rotation about the pole (Z)
         double phi = 2.0 * numbers::PI * two; // For direction of pole deflection.
-        double z = 2.0* three; //For magnitude of pole deflection.
+        double z = dt != 0.0 ? 0.1 * three : 2.0 * three; //For magnitude of pole deflection. 
 
         // Compute a vector V used for distributing points over the sphere
         // via the reflection I - V Transpose(V).  This formulation of V
@@ -191,7 +192,7 @@ namespace aspect
                 for (unsigned int grain_i = 0; grain_i < n_grains ; ++grain_i)
                   {
                     // set volume fraction
-                    if (n_grains < n_grains/10.)
+                    if (grain_i < n_grains/10.)
                       volume_fractions_grains[mineral_i][grain_i] = initial_volume_fraction;
                     else
                       {
@@ -635,7 +636,8 @@ namespace aspect
               const double homologous_T = 1770+273.15; // in Kelvin I assume. TODO: make this a function of temperature and pressure? Both are avaible as variables with those names here.
               const double aggregate_recrystalization_increment = const_C*exp(const_g*temperature/homologous_T)*strain; // TODO: compute actual value with equation 5
               // compute paleowatt/pizometer grainsize
-              const double recrystalized_grain_size = 0.5; // TODO: actually compute the grainsize with the paleowatt/pizometer
+              
+              const double recrystalized_grain_size = 0.01; // TODO: actually compute the grainsize with the paleowatt/pizometer
               const double half_recrystalized_grain_size = 0.5 * recrystalized_grain_size;
               const double recrystalized_grain_volume = (4./3.)*numbers::PI*half_recrystalized_grain_size*half_recrystalized_grain_size*half_recrystalized_grain_size;
 
@@ -712,6 +714,12 @@ namespace aspect
               const double stress_invariant = std::sqrt(std::max(-second_invariant(deviatoric_stress), 0.));
 
               const double diffusion_creep_strain_rate = stress_invariant/(2.0*diffusion_viscosity);
+              //const double eff_vis =std::max(second_invariant(deviatoric_strain_rate), 0.);
+              //const long double pre_exponent_term =(3*1*1.92*std::pow(1/10.0,10.))/(0.1*stress_invariant*((eff_vis-diffusion_creep_strain_rate)*3));
+              //const long double exponent_term = -1*(400*1000)/(8.314*temperature);
+              //const long double recrystalized_grain_size = pre_exponent_term*std::pow(std::exp(exponent_term),0.25); // TODO: actually compute the grainsize with the paleowatt/pizometer
+              //const long double half_recrystalized_grain_size = 0.5 * recrystalized_grain_size;
+              //const long double recrystalized_grain_volume = (4./3.)*numbers::PI*half_recrystalized_grain_size*half_recrystalized_grain_size*half_recrystalized_grain_size;
 
               return compute_derivatives_drexpp(cpo_index,
                                                 data,
