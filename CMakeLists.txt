@@ -149,6 +149,7 @@ if(ASPECT_WITH_WORLD_BUILDER)
     FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/*.cc")
   ENDIF()
   LIST(APPEND TARGET_SRC ${wb_files})
+  ADD_DEFINITIONS(-DWB_WITH_MPI)
 
   # generate config.cc and include it:
   IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
