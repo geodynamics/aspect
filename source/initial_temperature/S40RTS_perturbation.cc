@@ -25,8 +25,6 @@
 #include <aspect/simulator_access.h>
 #include <aspect/initial_composition/interface.h>
 #include <aspect/material_model/interface.h>
-#include <fstream>
-#include <iostream>
 #include <array>
 
 #include <boost/lexical_cast.hpp>

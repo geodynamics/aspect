@@ -356,7 +356,8 @@ read_until_end (std::istream &input)
  * std::cin instead.
  */
 std::string
-read_parameter_file(const std::string &parameter_file_name)
+read_parameter_file(const std::string &parameter_file_name,
+                    MPI_Comm comm)
 {
   using namespace dealii;
 
@@ -365,25 +366,17 @@ read_parameter_file(const std::string &parameter_file_name)
 
   if (parameter_file_name != "--")
     {
-      std::ifstream parameter_file(parameter_file_name.c_str());
-      if (!parameter_file)
+      if (i_am_proc_0 == true &&
+          aspect::Utilities::fexists(parameter_file_name) == false &&
+          (parameter_file_name=="parameter-file.prm"
+           || parameter_file_name=="parameter_file.prm"))
         {
-          if (parameter_file_name=="parameter-file.prm"
-              || parameter_file_name=="parameter_file.prm")
-            {
-              std::cerr << "***          You should not take everything literally!          ***\n"
-                        << "*** Please pass the name of an existing parameter file instead. ***" << std::endl;
-              exit(1);
-            }
-
-          if (i_am_proc_0)
-            std::cerr << "Error: Input parameter file <" << parameter_file_name << "> not found."
-                      << std::endl;
-          throw aspect::QuietException();
-          return "";
+          std::cerr << "***          You should not take everything literally!          ***\n"
+                    << "*** Please pass the name of an existing parameter file instead. ***" << std::endl;
+          exit(1);
         }
 
-      input_as_string = read_until_end (parameter_file);
+      input_as_string = aspect::Utilities::read_and_distribute_file_content(parameter_file_name, comm);
     }
   else
     {
@@ -776,7 +769,7 @@ int main (int argc, char *argv[])
 
       // See where to read input from, then do the reading and
       // put the contents of the input into a string.
-      const std::string raw_input_as_string = read_parameter_file(prm_name);
+      const std::string raw_input_as_string = read_parameter_file(prm_name, MPI_COMM_WORLD);
 
       // Replace $ASPECT_SOURCE_DIR in the input so that include statements
       // like "include $ASPECT_SOURCE_DIR/tests/bla.prm" work.

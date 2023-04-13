@@ -158,12 +158,11 @@ namespace aspect
        *
        * @param filename Name of the input file.
        */
-      void read_solitary_wave_solution (const std::string &filename)
+      void read_solitary_wave_solution (const std::string &filename,
+                                        MPI_Comm comm)
       {
         std::string temp;
-        std::ifstream in(filename.c_str(), std::ios::in);
-        AssertThrow (in,
-                     ExcMessage (std::string("Couldn't open file <") + filename + std::string(">")));
+        std::stringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
         while (!in.eof())
           {
@@ -195,13 +194,14 @@ namespace aspect
                              const double /*offset*/,
                              const double compaction_length,
                              const bool read_solution,
-                             const std::string file_name)
+                             const std::string file_name,
+                             MPI_Comm comm)
       {
         // non-dimensionalize the amplitude
         const double non_dim_amplitude = amplitude / background_porosity;
 
         if (read_solution)
-          read_solitary_wave_solution(file_name);
+          read_solitary_wave_solution(file_name, comm);
         else
           {
             porosity.resize(max_points);
@@ -582,7 +582,8 @@ namespace aspect
                                           offset,
                                           compaction_length,
                                           read_solution,
-                                          file_name);
+                                          file_name,
+                                          this->get_mpi_communicator());
     }
 
 
