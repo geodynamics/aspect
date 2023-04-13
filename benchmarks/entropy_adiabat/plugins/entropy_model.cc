@@ -24,8 +24,6 @@
 #include <aspect/utilities.h>
 
 #include <deal.II/base/table.h>
-#include <fstream>
-#include <iostream>
 
 
 namespace aspect

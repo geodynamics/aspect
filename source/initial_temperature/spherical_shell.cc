@@ -25,8 +25,6 @@
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
-#include <fstream>
-#include <iostream>
 #include <cstring>
 
 
