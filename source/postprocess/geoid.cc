@@ -744,6 +744,14 @@ namespace aspect
       // later sent to processor 0.
       std::ostringstream output;
 
+      // On processor 0, write the header lines
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          output << "# "
+                 << ((output_in_lat_lon == true)? "longitude latitude" : "x y z")
+                 << " geoid_anomaly" << std::endl;
+        }
+
       // Prepare the output data.
       if (output_in_lat_lon == true)
         {
@@ -782,21 +790,8 @@ namespace aspect
       const std::string filename = this->get_output_directory() +
                                    "geoid_anomaly." +
                                    dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
-      const std::vector<std::string> data = Utilities::MPI::gather(this->get_mpi_communicator(), output.str());
 
-      // On processor 0, collect all of the data the individual processors sent
-      // and concatenate them into one file:
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        {
-          std::ofstream file (filename.c_str());
-
-          file << "# "
-               << ((output_in_lat_lon == true)? "longitude latitude" : "x y z")
-               << " geoid_anomaly" << std::endl;
-
-          for (const auto &str : data)
-            file << str;
-        }
+      Utilities::collect_and_write_file_content(filename, output.str(), this->get_mpi_communicator());
 
       // Prepare the free-air gravity anomaly output.
       if (output_gravity_anomaly == true)
@@ -804,6 +799,14 @@ namespace aspect
           // Have a stream into which we write the gravity anomaly data. the text stream is then
           // later sent to processor 0.
           std::ostringstream output_gravity_anomaly;
+
+          // On processor 0, write the header lines:
+          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+            {
+              output_gravity_anomaly << "# "
+                                     << ((output_in_lat_lon == true)? "longitude latitude" : "x y z")
+                                     << " gravity_anomaly" << std::endl;
+            }
 
           // Compute the grid gravity anomaly based on spherical harmonics.
           std::vector<double> gravity_anomaly;
@@ -869,21 +872,8 @@ namespace aspect
           const std::string filename = this->get_output_directory() +
                                        "gravity_anomaly." +
                                        dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
-          const std::vector<std::string> data = Utilities::MPI::gather(this->get_mpi_communicator(), output_gravity_anomaly.str());
 
-          // On processor 0, collect all of the data the individual processors sent
-          // and concatenate them into one file:
-          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-            {
-              std::ofstream file (filename.c_str());
-
-              file << "# "
-                   << ((output_in_lat_lon == true)? "longitude latitude" : "x y z")
-                   << " gravity_anomaly" << std::endl;
-
-              for (const auto &str : data)
-                file << str;
-            }
+          Utilities::collect_and_write_file_content(filename, output_gravity_anomaly.str(), this->get_mpi_communicator());
         }
 
       return std::pair<std::string,std::string>("Writing geoid anomaly:",

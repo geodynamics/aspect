@@ -60,6 +60,14 @@ namespace aspect
       std::ostringstream output_stats;
       std::ostringstream output_file;
 
+      // On processor 0, write the file header
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          output_file << "# "
+                      << ((dim==2)? "x y" : "x y z")
+                      << " topography" << std::endl;
+        }
+
       // Choose stupidly large values for initialization
       double local_max_height = std::numeric_limits<double>::lowest();
       double local_min_height = std::numeric_limits<double>::max();
@@ -132,21 +140,9 @@ namespace aspect
       if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
         filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
 
-      const std::vector<std::string> data = Utilities::MPI::gather(this->get_mpi_communicator(), output_file.str());
-
-      // On processor 0, collect all of the data the individual processors sent
-      // and concatenate them into one file:
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        {
-          std::ofstream file (filename.c_str());
-
-          file << "# "
-               << ((dim==2)? "x y" : "x y z")
-               << " topography" << std::endl;
-
-          for (const auto &str : data)
-            file << str;
-        }
+      Utilities::collect_and_write_file_content(filename,
+                                                output_file.str(),
+                                                this->get_mpi_communicator());
 
       // if output_interval is positive, then update the last supposed output
       // time

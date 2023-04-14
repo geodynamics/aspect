@@ -565,7 +565,9 @@ namespace aspect
     /**
      * Reads the content of the ascii file @p filename on process 0 and
      * distributes the content by MPI_Bcast to all processes. The function
-     * returns the content of the file on all processes.
+     * returns the content of the file on all processes. The purpose of this
+     * function is to reduce parallel file access to a single file access on
+     * process 0.
      *
      * @param [in] filename The name of the ascii file to load. If the
      *  file name ends in `.gz`, then the function assumes that the file
@@ -582,6 +584,23 @@ namespace aspect
     std::string
     read_and_distribute_file_content(const std::string &filename,
                                      const MPI_Comm &comm);
+
+    /**
+     * Collect the content of @p file_content using MPI_Gather to process 0.
+     * Then write the content to the file @p filename on process 0.
+     * The purpose of this function is to reduce parallel file access to
+     * process 0. Note that this function assumes that the content from
+     * all processes fits into the memory of process 0.
+     *
+     * @param [in] filename The name of the file to write.
+     * @param [in] file_content The content that should be written to file.
+     * @param [in] comm The MPI communicator from which the content is
+     * collected.
+     */
+    void
+    collect_and_write_file_content(const std::string &filename,
+                                   const std::string &file_content,
+                                   const MPI_Comm &comm);
 
     /**
      * Creates a path as if created by the shell command "mkdir -p", therefore

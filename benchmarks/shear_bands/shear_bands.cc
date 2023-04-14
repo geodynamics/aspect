@@ -616,7 +616,15 @@ namespace aspect
       // write output that can be used to calculate the angle of the shear bands
       const unsigned int max_lvl = this->get_triangulation().n_global_levels();
 
-      std::vector<Point<3>> data;  //x, y, porosity
+      std::stringstream output;
+      output.precision (16);
+      output << std::scientific;
+
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          // write header
+          output << "x                      y                      porosity" << std::endl;
+        }
 
       // we want to have equidistant points in the output
       const QMidpoint<1> mp_rule;
@@ -642,61 +650,19 @@ namespace aspect
 
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
-              data.push_back(Point<3>(fe_values.quadrature_point (q) (0),
-                                      fe_values.quadrature_point (q) (1),
-                                      porosity_values[q]));
+              output << fe_values.quadrature_point (q) (0) << " "
+                     << fe_values.quadrature_point (q) (1) << " "
+                     << porosity_values[q] << std::endl;
             }
         }
-
-      unsigned int myid = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
-      unsigned int nprc = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
 
       std::string filename = this->get_output_directory() + "shear_bands_" +
                              Utilities::int_to_string(max_lvl) +
                              ".csv";
 
-      if (myid==0)
-        {
-          std::ofstream f (filename.c_str());
-          f.precision (16);
-          // write header
-          f << "x                      y                      porosity" << std::endl;
-          f << std::scientific;
-
-          // output my data
-          for (unsigned int i=0; i<data.size(); ++i)
-            f << data[i] << std::endl;
-
-          // receive data
-          for (unsigned int p=0; p<nprc-1; ++p)
-            {
-              MPI_Status status;
-              MPI_Probe(MPI_ANY_SOURCE, 42, this->get_mpi_communicator(), &status);
-              int incoming_size = 0;
-              MPI_Get_count(&status, MPI_BYTE, &incoming_size);
-              int n_points = incoming_size / sizeof(Point<3>);
-              data.resize(n_points);
-              //std::cout << "I got " << n_points << " points (" << incoming_size << " bytes) from " << status.MPI_SOURCE << std::endl;
-              MPI_Recv(&data[0], incoming_size, MPI_BYTE, status.MPI_SOURCE, 42, this->get_mpi_communicator(), &status);
-
-              // output received data
-              for (unsigned int i=0; i<data.size(); ++i)
-                f << data[i] << std::endl;
-            }
-
-        }
-      else
-        {
-          //send data
-          AssertThrow(data.size()>0, ExcInternalError());
-          //std::cout << "I am proc " << myid << " and I am sending " << data.size() << " entries (" << data.size()*sizeof(Point<3>) << " bytes)" << std::endl;
-          MPI_Send(&data[0], sizeof(Point<3>)*data.size(), MPI_BYTE, 0, 42, this->get_mpi_communicator());
-        }
-
-
+      Utilities::collect_and_write_file_content(filename, output.str(), this->get_mpi_communicator());
 
       return std::make_pair("writing:", filename);
-
     }
 
 
