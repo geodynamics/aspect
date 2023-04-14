@@ -107,14 +107,8 @@ namespace WorldBuilder
     path_level =0;
     // Now read in the world builder file into a file stream and
     // put it into a the rapidjason document
-    std::ifstream json_input_stream(filename.c_str());
 
-    // Get world builder file and check whether it exists
-    WBAssertThrow(json_input_stream.good(),
-                  "Could not find the world builder file at the specified location: " + filename);
-
-    WBAssert(json_input_stream, "Could not read the world builder file.");
-
+    std::stringstream json_input_stream(WorldBuilder::Utilities::read_and_distribute_file_content(filename));
     rapidjson::IStreamWrapper isw(json_input_stream);
 
     // relaxing sytax by allowing comments () for now, maybe also allow trailing commas and (kParseTrailingCommasFlag) and nan's, inf etc (kParseNanAndInfFlag)?
@@ -145,8 +139,6 @@ namespace WorldBuilder
                                                                             ));
 
     WBAssertThrow(parameters.IsObject(), "World builder file is is not an object.");
-    json_input_stream.close();
-
 
     SchemaDocument schema(declarations);
     SchemaValidator validator(schema);

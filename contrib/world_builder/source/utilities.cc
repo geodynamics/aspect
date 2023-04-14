@@ -20,6 +20,13 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <sstream>
+#include <fstream>
+
+#ifdef WB_WITH_MPI
+#define OMPI_SKIP_MPICXX 1
+#include <mpi.h>
+#endif
 
 #include <world_builder/assert.h>
 #include <world_builder/coordinate_systems/interface.h>
@@ -1346,6 +1353,119 @@ namespace WorldBuilder
       rot_matrix[2][1] = -sin(theta)*cos(phi1);
       rot_matrix[2][2] = cos(theta);
       return rot_matrix;
+    }
+
+    std::string
+    read_and_distribute_file_content(const std::string &filename)
+    {
+      std::string data_string;
+
+#ifdef WB_WITH_MPI
+      int mpi_initialized;
+      MPI_Initialized(&mpi_initialized);
+      if (mpi_initialized != 0)
+        {
+          const unsigned int invalid_unsigned_int = static_cast<unsigned int>(-1);
+
+          const MPI_Comm comm = MPI_COMM_WORLD;
+          int my_rank = invalid_unsigned_int;
+          MPI_Comm_rank(comm, &my_rank);
+          if (my_rank == 0)
+            {
+              std::size_t filesize;
+              std::ifstream filestream;
+              filestream.open(filename.c_str());
+
+              // Need to convert to unsigned int, because MPI_Bcast does not support
+              // size_t or const unsigned int
+              unsigned int invalid_file_size = invalid_unsigned_int;
+
+              if (!filestream)
+                {
+                  // broadcast failure state, then throw
+                  const int ierr = MPI_Bcast(&invalid_file_size, 1, MPI_UNSIGNED, 0, comm);
+                  WBAssertThrow (ierr,
+                                 std::string("Could not open file <") + filename + ">.");
+                }
+
+              // Read data from disk
+              std::stringstream datastream;
+
+              try
+                {
+                  datastream << filestream.rdbuf();
+                }
+              catch (const std::ios::failure &)
+                {
+                  // broadcast failure state, then throw
+                  const int ierr = MPI_Bcast(&invalid_file_size, 1, MPI_UNSIGNED, 0, comm);
+                  WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
+                  WBAssertThrow (false,
+                                 std::string("Could not read file content from <") + filename + ">.");
+                }
+
+              data_string = datastream.str();
+              filesize = data_string.size();
+
+              // Distribute data_size and data across processes
+              int ierr = MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
+              WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
+
+              // Receive and store data
+              ierr = MPI_Bcast(&data_string[0],
+                               filesize,
+                               MPI_CHAR,
+                               0,
+                               comm);
+              WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
+            }
+          else
+            {
+              // Prepare for receiving data
+              unsigned int filesize = 0;
+              int ierr = MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
+              WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
+              WBAssertThrow(filesize != invalid_unsigned_int,
+                            std::string("Could not open file <") + filename + ">.");
+
+              data_string.resize(filesize);
+
+              // Receive and store data
+              ierr = MPI_Bcast(&data_string[0],
+                               filesize,
+                               MPI_CHAR,
+                               0,
+                               comm);
+              WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
+            }
+        }
+      else
+        {
+          std::ifstream filestream;
+          filestream.open(filename.c_str());
+          if (!filestream)
+            {
+              WBAssertThrow (false,
+                             std::string("Could not open file <") + filename + ">.");
+            }
+          std::stringstream datastream;
+          datastream << filestream.rdbuf();
+          data_string = datastream.str();
+        }
+#else
+      std::ifstream filestream;
+      filestream.open(filename.c_str());
+      if (!filestream)
+        {
+          WBAssertThrow (false,
+                         std::string("Could not open file <") + filename + ">.");
+        }
+      std::stringstream datastream;
+      datastream << filestream.rdbuf();
+      data_string = datastream.str();
+#endif
+
+      return data_string;
     }
 
     template std::array<double,2> convert_point_to_array<2>(const Point<2> &point_);

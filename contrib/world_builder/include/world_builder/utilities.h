@@ -321,6 +321,16 @@ namespace WorldBuilder
      */
     std::array<std::array<double,3>,3>
     euler_angles_to_rotation_matrix(double phi1, double theta, double phi2);
+
+    /**
+     * Read a file and distribute the content over all MPI processes.
+     * If WB_WITH_MPI is not defined, this function will just read the file.
+     *
+     * @param filename The name of the file to read.
+     * @return The content of the file.
+    */
+    std::string
+    read_and_distribute_file_content(const std::string &filename);
   }
 }
 
