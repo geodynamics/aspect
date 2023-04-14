@@ -551,9 +551,34 @@ namespace aspect
     /**
      * Checks whether a file named @p filename exists and is readable.
      *
+     * Warning: This function performs file access on all MPI ranks that
+     * call it. This can lead to overloading the file system if the
+     * function is called on many MPI ranks. Only use this function if
+     * you are sure that the file access is performed on all MPI ranks
+     * and on a fast file system (e.g. a local drive).
+     *
+     * @return True if the file exists and is readable on all MPI ranks
+     * that call this function.
      * @param filename File to check existence
      */
     bool fexists(const std::string &filename);
+
+    /**
+     * Checks whether a file named @p filename exists and is readable
+     * on MPI rank 0. Afterwards, the result is broadcasted to all MPI
+     * ranks.
+     *
+     * Note that in contrast to the other fexists function, this function
+     * uses MPI to check the existence of the file only on MPI rank 0.
+     * This is useful to avoid overloading the file system and is sufficient
+     * if the subsequent file access is also only performed on MPI rank 0.
+     *
+     * @return True if the file exists and is readable on MPI rank 0.
+     * @param filename File to check existence
+     * @param comm MPI communicator to use.
+     */
+    bool fexists(const std::string &filename,
+                 MPI_Comm comm);
 
     /**
      * Checks to see if the user is trying to use data from a url.

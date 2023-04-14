@@ -455,7 +455,7 @@ namespace aspect
 
     // Then start with the actual deserialization.
     // First check existence of the two restart files
-    AssertThrow (Utilities::fexists(parameters.output_directory + "restart.mesh"),
+    AssertThrow (Utilities::fexists(parameters.output_directory + "restart.mesh", mpi_communicator),
                  ExcMessage ("You are trying to restart a previous computation, "
                              "but the restart file <"
                              +
@@ -463,7 +463,7 @@ namespace aspect
                              +
                              "> does not appear to exist!"));
 
-    AssertThrow (Utilities::fexists(parameters.output_directory + "restart.resume.z"),
+    AssertThrow (Utilities::fexists(parameters.output_directory + "restart.resume.z", mpi_communicator),
                  ExcMessage ("You are trying to restart a previous computation, "
                              "but the restart file <"
                              +

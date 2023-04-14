@@ -1331,6 +1331,24 @@ namespace aspect
 
 
     bool
+    fexists(const std::string &filename,
+            MPI_Comm comm)
+    {
+      bool file_exists = false;
+      if (Utilities::MPI::this_mpi_process(comm) == 0)
+        {
+          std::ifstream ifile(filename.c_str());
+
+          // return whether construction of the input file has succeeded;
+          // success requires the file to exist and to be readable
+          file_exists = static_cast<bool>(ifile);
+        }
+      return Utilities::MPI::broadcast(comm, file_exists);
+    }
+
+
+
+    bool
     filename_is_url(const std::string &filename)
     {
       if (filename.find("http://") == 0 || filename.find("https://") == 0 || filename.find("file://") == 0)

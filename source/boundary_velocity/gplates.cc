@@ -545,7 +545,7 @@ namespace aspect
                         << create_filename (current_file_number) << '.' << std::endl << std::endl;
 
       const std::string filename (create_filename (current_file_number));
-      if (Utilities::fexists(filename))
+      if (Utilities::fexists(filename, this->get_mpi_communicator()))
         lookup->load_file(filename,this->get_mpi_communicator());
       else
         AssertThrow(false,
@@ -568,7 +568,7 @@ namespace aspect
           const std::string filename (create_filename (next_file_number));
           this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
                             << filename << '.' << std::endl << std::endl;
-          if (Utilities::fexists(filename))
+          if (Utilities::fexists(filename, this->get_mpi_communicator()))
             {
               lookup.swap(old_lookup);
               lookup->load_file(filename,this->get_mpi_communicator());
@@ -658,7 +658,7 @@ namespace aspect
           const std::string filename (create_filename (current_file_number));
           this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
                             << filename << '.' << std::endl << std::endl;
-          if (Utilities::fexists(filename))
+          if (Utilities::fexists(filename, this->get_mpi_communicator()))
             {
               lookup.swap(old_lookup);
               lookup->load_file(filename,this->get_mpi_communicator());
@@ -679,7 +679,7 @@ namespace aspect
       const std::string filename (create_filename (next_file_number));
       this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
                         << filename << '.' << std::endl << std::endl;
-      if (Utilities::fexists(filename))
+      if (Utilities::fexists(filename, this->get_mpi_communicator()))
         {
           lookup.swap(old_lookup);
           lookup->load_file(filename,this->get_mpi_communicator());
