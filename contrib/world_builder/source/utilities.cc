@@ -1360,79 +1360,110 @@ namespace WorldBuilder
     {
       std::string data_string;
 
-      const unsigned int invalid_unsigned_int = static_cast<unsigned int>(-1);
-
-      const MPI_Comm comm = MPI_COMM_WORLD;
-      int my_rank = invalid_unsigned_int;
-      MPI_Comm_rank(comm, &my_rank);
-      if (my_rank == 0)
+#ifdef WB_WITH_MPI
+      int mpi_initialized;
+      MPI_Initialized(&mpi_initialized);
+      if (mpi_initialized != 0)
         {
-          std::size_t filesize;
-          std::ifstream filestream;
-          filestream.open(filename.c_str());
+          const unsigned int invalid_unsigned_int = static_cast<unsigned int>(-1);
 
-          // Need to convert to unsigned int, because MPI_Bcast does not support
-          // size_t or const unsigned int
-          unsigned int invalid_file_size = invalid_unsigned_int;
-
-          if (!filestream)
+          const MPI_Comm comm = MPI_COMM_WORLD;
+          int my_rank = invalid_unsigned_int;
+          MPI_Comm_rank(comm, &my_rank);
+          if (my_rank == 0)
             {
-              // broadcast failure state, then throw
-              const int ierr = MPI_Bcast(&invalid_file_size, 1, MPI_UNSIGNED, 0, comm);
-              WBAssertThrow (ierr,
-                             std::string("Could not open file <") + filename + ">.");
-            }
+              std::size_t filesize;
+              std::ifstream filestream;
+              filestream.open(filename.c_str());
 
-          // Read data from disk
-          std::stringstream datastream;
+              // Need to convert to unsigned int, because MPI_Bcast does not support
+              // size_t or const unsigned int
+              unsigned int invalid_file_size = invalid_unsigned_int;
 
-          try
-            {
-              datastream << filestream.rdbuf();
-            }
-          catch (const std::ios::failure &)
-            {
-              // broadcast failure state, then throw
-              const int ierr = MPI_Bcast(&invalid_file_size, 1, MPI_UNSIGNED, 0, comm);
+              if (!filestream)
+                {
+                  // broadcast failure state, then throw
+                  const int ierr = MPI_Bcast(&invalid_file_size, 1, MPI_UNSIGNED, 0, comm);
+                  WBAssertThrow (ierr,
+                                 std::string("Could not open file <") + filename + ">.");
+                }
+
+              // Read data from disk
+              std::stringstream datastream;
+
+              try
+                {
+                  datastream << filestream.rdbuf();
+                }
+              catch (const std::ios::failure &)
+                {
+                  // broadcast failure state, then throw
+                  const int ierr = MPI_Bcast(&invalid_file_size, 1, MPI_UNSIGNED, 0, comm);
+                  WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
+                  WBAssertThrow (false,
+                                 std::string("Could not read file content from <") + filename + ">.");
+                }
+
+              data_string = datastream.str();
+              filesize = data_string.size();
+
+              // Distribute data_size and data across processes
+              int ierr = MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
               WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
-              WBAssertThrow (false,
-                             std::string("Could not read file content from <") + filename + ">.");
+
+              // Receive and store data
+              ierr = MPI_Bcast(&data_string[0],
+                               filesize,
+                               MPI_CHAR,
+                               0,
+                               comm);
+              WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
             }
+          else
+            {
+              // Prepare for receiving data
+              unsigned int filesize = 0;
+              int ierr = MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
+              WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
+              WBAssertThrow(filesize != invalid_unsigned_int,
+                            std::string("Could not open file <") + filename + ">.");
 
-          data_string = datastream.str();
-          filesize = data_string.size();
+              data_string.resize(filesize);
 
-          // Distribute data_size and data across processes
-          int ierr = MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
-          WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
-
-          // Receive and store data
-          ierr = MPI_Bcast(&data_string[0],
-                           filesize,
-                           MPI_CHAR,
-                           0,
-                           comm);
-          WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
+              // Receive and store data
+              ierr = MPI_Bcast(&data_string[0],
+                               filesize,
+                               MPI_CHAR,
+                               0,
+                               comm);
+              WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
+            }
         }
       else
         {
-          // Prepare for receiving data
-          unsigned int filesize = 0;
-          int ierr = MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
-          WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
-          WBAssertThrow(filesize != invalid_unsigned_int,
-                        std::string("Could not open file <") + filename + ">.");
-
-          data_string.resize(filesize);
-
-          // Receive and store data
-          ierr = MPI_Bcast(&data_string[0],
-                           filesize,
-                           MPI_CHAR,
-                           0,
-                           comm);
-          WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
+          std::ifstream filestream;
+          filestream.open(filename.c_str());
+          if (!filestream)
+            {
+              WBAssertThrow (false,
+                             std::string("Could not open file <") + filename + ">.");
+            }
+          std::stringstream datastream;
+          datastream << filestream.rdbuf();
+          data_string = datastream.str();
         }
+#else
+      std::ifstream filestream;
+      filestream.open(filename.c_str());
+      if (!filestream)
+        {
+          WBAssertThrow (false,
+                         std::string("Could not open file <") + filename + ">.");
+        }
+      std::stringstream datastream;
+      datastream << filestream.rdbuf();
+      data_string = datastream.str();
+#endif
 
       return data_string;
     }
