@@ -417,6 +417,14 @@ namespace aspect
     {
       std::ostringstream output;
 
+      // On processor 0, write header lines
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          output << "# "
+                 << ((dim==2)? "x y " : "x y z ")
+                 << (upper ? "surface topography" : "bottom topography") << std::endl;
+        }
+
       for (unsigned int i=0; i<stored_values.size(); ++i)
         {
           output << std::setprecision(10)
@@ -433,21 +441,7 @@ namespace aspect
       if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
         filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
 
-      const std::vector<std::string> data = Utilities::MPI::gather(this->get_mpi_communicator(), output.str());
-
-      // On processor 0, collect all of the data the individual processors sent
-      // and concatenate them into one file:
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        {
-          std::ofstream file (filename.c_str());
-
-          file << "# "
-               << ((dim==2)? "x y " : "x y z ")
-               << (upper ? "surface topography" : "bottom topography") << std::endl;
-
-          for (const auto &str : data)
-            file << str;
-        }
+      Utilities::collect_and_write_file_content(filename, output.str(), this->get_mpi_communicator());
     }
 
 

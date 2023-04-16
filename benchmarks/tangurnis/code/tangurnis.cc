@@ -355,21 +355,20 @@ namespace aspect
     material_model = Plugins::get_plugin_as_type<const MaterialModel::TanGurnis<dim>>(this->get_material_model());
 
     double ref=1.0/this->get_triangulation().begin_active()->minimum_vertex_distance();
-    std::ofstream f ((this->get_output_directory() + "vel_" +
-                      Utilities::int_to_string(static_cast<unsigned int>(ref)) +
-                      ".csv").c_str());
-    f.precision (16);
-    f << material_model.parameter_Di() << ' '
-      << material_model.parameter_gamma() << ' '
-      << material_model.parameter_wavenumber() << ' '
-      << material_model.parameter_a();
 
-    // pad the first line to the same number of columns as the data below to make MATLAB happy
+    std::stringstream output;
+    output.precision (16);
+    output << material_model.parameter_Di() << ' '
+           << material_model.parameter_gamma() << ' '
+           << material_model.parameter_wavenumber() << ' '
+           << material_model.parameter_a();
+
+    // pad the first line to the same number ooutputcolumns as the data below to make MATLAB happy
     for (unsigned int i=4; i<7+this->get_heating_model_manager().get_active_heating_models().size(); ++i)
-      f << " -1";
+      output<< " -1";
 
-    f << std::endl;
-    f << std::scientific;
+    output<< std::endl;
+    output<< std::scientific;
 
 
     const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
@@ -417,7 +416,7 @@ namespace aspect
 
         for (unsigned int q = 0; q < n_q_points; ++q)
           {
-            f
+            output
                 <<  fe_values.quadrature_point (q) (0)
                 << ' ' << fe_values.quadrature_point (q) (1)
                 << ' ' << in.velocity[q][0]
@@ -427,11 +426,16 @@ namespace aspect
                 << ' ' << in.temperature[q];
 
             for (unsigned int i = 0; i < heating_model_objects.size(); ++i)
-              f << ' ' << heating_model_outputs[i].heating_source_terms[q];
+              output << ' ' << heating_model_outputs[i].heating_source_terms[q];
 
-            f  << std::endl;
+            output << std::endl;
           }
       }
+
+    const std::string filename = this->get_output_directory() + "vel_" +
+                                 Utilities::int_to_string(static_cast<unsigned int>(ref)) +
+                                 ".csv";
+    Utilities::collect_and_write_file_content(filename, output.str(), this->get_mpi_communicator());
 
     return std::make_pair("writing:", "output.csv");
   }

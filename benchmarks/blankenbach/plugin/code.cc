@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
@@ -134,18 +135,23 @@ namespace aspect
       }
 
 
-      std::ofstream f(filename.c_str());
+      std::stringstream f;
 
       f << std::scientific << std::setprecision(15);
 
-      // Note: POINTS is only useful if our mesh is a structured grid
-      f << "# POINTS: " << n_x << ' ' << n_y << "\n";
-      f << "# x y T\n";
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          // Note: POINTS is only useful if our mesh is a structured grid
+          f << "# POINTS: " << n_x << ' ' << n_y << "\n";
+          f << "# x y T\n";
+        }
 
       for (unsigned int idx = 0; idx< entries.size(); ++idx)
         f << entries[idx].p << ' ' << entries[idx].t << '\n';
 
-      f.close();
+      aspect::Utilities::collect_and_write_file_content(filename,
+                                                        f.str(),
+                                                        this->get_mpi_communicator());
 
       return std::make_pair (std::string ("Writing TemperatureAsciiOut:"),
                              filename);

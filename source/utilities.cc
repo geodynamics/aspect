@@ -1535,6 +1535,55 @@ namespace aspect
 
 
 
+    void
+    collect_and_write_file_content(const std::string &filename,
+                                   const std::string &file_content,
+                                   const MPI_Comm &comm)
+    {
+      const std::vector<std::string> collected_content = Utilities::MPI::gather(comm, file_content);
+
+      if (Utilities::MPI::this_mpi_process(comm) == 0)
+        {
+          std::ofstream filestream;
+          filestream.open(filename.c_str());
+
+          AssertThrow (filestream.good(),
+                       ExcMessage (std::string("Could not open file <") + filename + ">."));
+
+          try
+            {
+              for (const auto &content : collected_content)
+                filestream << content;
+
+              bool success = filestream.good();
+              const int ierr = MPI_Bcast(&success, 1, Utilities::internal::MPI::mpi_type_id(&success), 0, comm);
+              AssertThrowMPI(ierr);
+            }
+          catch (const std::ios::failure &)
+            {
+              // broadcast failure state, then throw
+              bool success = false;
+              const int ierr = MPI_Bcast(&success, 1, Utilities::internal::MPI::mpi_type_id(&success), 0, comm);
+              AssertThrowMPI(ierr);
+              AssertThrow (false,
+                           ExcMessage (std::string("Could not write content to file <") + filename + ">."));
+            }
+
+          filestream.close();
+        }
+      else
+        {
+          // Check that the file was written successfully
+          bool success;
+          int ierr = MPI_Bcast(&success, 1, Utilities::internal::MPI::mpi_type_id(&success), 0, comm);
+          AssertThrowMPI(ierr);
+          if (success == false)
+            throw QuietException();
+        }
+    }
+
+
+
     int
     mkdirp(std::string pathname,const mode_t mode)
     {
