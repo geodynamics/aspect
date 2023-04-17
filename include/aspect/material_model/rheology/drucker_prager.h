@@ -26,6 +26,7 @@
 
 #include <aspect/material_model/utilities.h>
 #include <aspect/simulator_access.h>
+#include <aspect/postprocess/mobility_statistics.h>
 namespace aspect
 {
   namespace MaterialModel
@@ -144,7 +145,9 @@ namespace aspect
           std::vector<double> friction_angles_to_change;  /* Vector of friction angles to change */
           std::vector<double> cohesions_to_change;  /* Vector of cohesions to change */
 
-
+          // Mobility function
+          double alpha_mobility;
+          double alpha_mobility_time;
 
           double max_yield_stress;
 

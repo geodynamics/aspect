@@ -64,7 +64,7 @@ namespace aspect
               update_friction_and_cohesion(current_time, chosen_phase, times_to_change,
                                             friction_angles_to_change, cohesions_to_change,
                                             angles_internal_friction_copy,
-                                            cohesions_copy);
+                                            cohesions_copy); 
             }            
             // Average among phases
             drucker_prager_parameters.angle_internal_friction = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
@@ -93,6 +93,20 @@ namespace aspect
           angles_internal_friction[phase_index] = friction_angles_to_change[index - 1];
           cohesions[phase_index] = cohesions_to_change[index - 1];
         }
+
+        // Get a pointer to the mobility postprocessor
+        const Postprocess::MobilityStatistics<dim> &mobility_statistics =
+                  this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
+        const double DMob = mobility_statistics.get_DMob(); 
+
+        double alpha = 0;
+        if (current_time > alpha_mobility_time && alpha_mobility > 0)
+        {
+          alpha = alpha_mobility;
+        }
+        double friction_terms = alpha * angles_internal_friction[phase_index] * DMob;
+        angles_internal_friction[phase_index] = angles_internal_friction[phase_index] - friction_terms;
+
       }
 
       template <int dim>
@@ -251,7 +265,12 @@ namespace aspect
         prm.declare_entry ("Times to change plasticity parameters", "0.",
                           Patterns::List(Patterns::Double(0)),
                           "List of times when the plasticity parameters for the chosen compositional phase will be updated. Units: years."
-                          );        
+                          );      
+         prm.declare_entry ("Alpha mobility", "5", Patterns::Double (0.),
+                           "Sensitivity parameter to mobility function. Units: \\si{\\per\\second}.");
+        prm.declare_entry ("Alpha mobility transition time", "10e6", Patterns::Double (0.),
+                           "Times at which to change Alpha mobility. Units: \\si{\\per\\second}.");                                   
+
       }
 
 
@@ -297,6 +316,9 @@ namespace aspect
         chosen_composition = prm.get_double("Index of the composition to change");
 
         chosen_phase = prm.get_double("Index of the compositional phase to change");
+        alpha_mobility = prm.get_double("Alpha mobility");
+        // alpha_mobility = Utilities::string_to_double(Utilities::split_string_list(prm.get("Alpha mobility")));
+        alpha_mobility_time = prm.get_double("Alpha mobility transition time");
         // Limit maximum value of the Drucker-Prager yield stress
         max_yield_stress = prm.get_double("Maximum yield stress");
 

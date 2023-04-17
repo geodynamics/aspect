@@ -33,7 +33,7 @@
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/simulator_access.h>
-#include <aspect/postprocess/mobility_statistics.h>
+// #include <aspect/postprocess/mobility_statistics.h>
 
 #include<deal.II/fe/component_mask.h>
 
@@ -216,6 +216,13 @@ namespace aspect
 
 
         private:
+    
+      /**
+            * Temperatures at the inner and outer boundaries.
+            */
+          double inner_temperature;
+          double outer_temperature; 
+
           std::vector<double> angles_internal_friction;
 
           /**
@@ -316,12 +323,12 @@ namespace aspect
            */
           Rheology::DruckerPragerParameters drucker_prager_parameters;
 
-          std::vector<double> alpha_mobility;
-          std::vector<double> alpha_mobility_times;
+          // double alpha_mobility;
+          // double alpha_mobility_time;
 
 
           // Function to get alpha value at a given time
-          double get_alpha(double current_time) const;          
+          // double get_alpha(double current_time) const;          
 
       };
     }
