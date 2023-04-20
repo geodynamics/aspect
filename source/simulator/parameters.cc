@@ -1502,7 +1502,7 @@ namespace aspect
       resume_computation = false;
     else if (prm.get ("Resume computation") == "auto")
       {
-        resume_computation = Utilities::fexists(output_directory+"restart.mesh");
+        resume_computation = Utilities::fexists(output_directory+"restart.mesh", mpi_communicator);
       }
     else
       AssertThrow (false, ExcMessage ("Resume computation parameter must be either `true', `false', or `auto'."));

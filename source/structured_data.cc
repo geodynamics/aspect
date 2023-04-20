@@ -1023,7 +1023,7 @@ namespace aspect
                             << filename << '.' << std::endl << std::endl;
 
 
-          AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
+          AssertThrow(Utilities::fexists(filename, this->get_mpi_communicator()) || filename_is_url(filename),
                       ExcMessage (std::string("Ascii data file <")
                                   +
                                   filename
@@ -1045,7 +1045,7 @@ namespace aspect
                 current_file_number + 1;
 
               const std::string filename (create_filename (next_file_number, boundary_id));
-              if (Utilities::fexists(filename))
+              if (Utilities::fexists(filename, this->get_mpi_communicator()))
                 {
                   this->get_pcout() << std::endl << "   Also loading next Ascii data boundary file "
                                     << filename << '.' << std::endl << std::endl;
@@ -1105,7 +1105,7 @@ namespace aspect
       const std::string boundary_name = this->get_geometry_model().translate_id_to_symbol_name(boundary_id);
 
       const std::string result = replace_placeholders(templ, boundary_name, filenumber);
-      if (fexists(result))
+      if (fexists(result, this->get_mpi_communicator()))
         return result;
 
       // Backwards compatibility check: people might still be using the old
@@ -1115,13 +1115,13 @@ namespace aspect
       if (boundary_name == "top")
         {
           compatible_result = replace_placeholders(templ, "surface", filenumber);
-          if (!fexists(compatible_result))
+          if (!fexists(compatible_result, this->get_mpi_communicator()))
             compatible_result = replace_placeholders(templ, "outer", filenumber);
         }
       else if (boundary_name == "bottom")
         compatible_result = replace_placeholders(templ, "inner", filenumber);
 
-      if (!fexists(result) && fexists(compatible_result))
+      if (!fexists(result, this->get_mpi_communicator()) && fexists(compatible_result, this->get_mpi_communicator()))
         {
           this->get_pcout() << "WARNING: Filename convention concerning geometry boundary "
                             "names changed. Please rename '" << compatible_result << "'"
@@ -1204,7 +1204,7 @@ namespace aspect
           const std::string filename (create_filename (current_file_number,boundary_id));
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                             << filename << '.' << std::endl << std::endl;
-          if (Utilities::fexists(filename))
+          if (Utilities::fexists(filename, this->get_mpi_communicator()))
             {
               lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
               lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
@@ -1225,7 +1225,7 @@ namespace aspect
       const std::string filename (create_filename (next_file_number,boundary_id));
       this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
                         << filename << '.' << std::endl << std::endl;
-      if (Utilities::fexists(filename))
+      if (Utilities::fexists(filename, this->get_mpi_communicator()))
         {
           lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
           lookups.find(boundary_id)->second->load_file(filename,this->get_mpi_communicator());
@@ -1566,7 +1566,7 @@ namespace aspect
       for (unsigned int i=0; i<number_of_layer_boundaries; ++i)
         {
           const std::string filename = data_directory + data_file_names[i];
-          AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
+          AssertThrow(Utilities::fexists(filename, this->get_mpi_communicator()) || filename_is_url(filename),
                       ExcMessage (std::string("Ascii data file <")
                                   +
                                   filename
@@ -1719,7 +1719,7 @@ namespace aspect
                         << filename << '.' << std::endl << std::endl;
 
 
-      AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
+      AssertThrow(Utilities::fexists(filename, this->get_mpi_communicator()) || filename_is_url(filename),
                   ExcMessage (std::string("Ascii data file <")
                               +
                               filename
@@ -1873,7 +1873,7 @@ namespace aspect
 
       const std::string filename = this->data_directory + this->data_file_name;
 
-      AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
+      AssertThrow(Utilities::fexists(filename, communicator) || filename_is_url(filename),
                   ExcMessage (std::string("Ascii data file <")
                               +
                               filename
