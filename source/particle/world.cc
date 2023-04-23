@@ -1145,6 +1145,47 @@ namespace aspect
           }
       }
 
+      namespace
+      {
+        template <int n_compositional_fields>
+        double
+        get_value(const Tensor<1,n_compositional_fields> &solution,
+                  const unsigned int component_index)
+        {
+          AssertIndexRange(component_index, n_compositional_fields);
+          return solution[component_index];
+        }
+
+        template <int n_compositional_fields>
+        double
+        get_value(const double &solution,
+                  const unsigned int component_index)
+        {
+          (void) component_index;
+          AssertIndexRange(component_index, 1);
+          return solution;
+        }
+
+        template <int dim, int n_compositional_fields>
+        Tensor<1,dim>
+        get_gradient(const Tensor<1,n_compositional_fields,Tensor<1,dim>> &gradient,
+                     const unsigned int component_index)
+        {
+          AssertIndexRange(component_index, n_compositional_fields);
+          return gradient[component_index];
+        }
+
+
+        template <int dim, int n_compositional_fields>
+        Tensor<1,dim>
+        get_gradient(const Tensor<1,dim> &gradient,
+                     const unsigned int component_index)
+        {
+          (void) component_index;
+          AssertIndexRange(component_index, 1);
+          return gradient;
+        }
+      }
 
 
       template <int dim, int n_compositional_fields>
@@ -1164,9 +1205,10 @@ namespace aspect
         solution[component_indices.pressure] = pressure->get_value(evaluation_point);
         solution[component_indices.temperature] = temperature.get_value(evaluation_point);
 
-        const typename FEPointEvaluation<n_compositional_fields, dim>::value_type composition_values = compositions.get_value(evaluation_point);
         for (unsigned int j=0; j<n_compositional_fields; ++j)
-          solution[component_indices.compositional_fields[j]] = dealii::internal::FEPointEvaluation::EvaluatorTypeTraits<dim, n_compositional_fields, double>::access(composition_values,j);
+          solution[component_indices.compositional_fields[j]] = get_value<n_compositional_fields>(
+                                                                  compositions.get_value(evaluation_point),
+                                                                  j);
 
         const unsigned int n_additional_compositions = additional_compositions.size();
         for (unsigned int j=0; j<n_additional_compositions; ++j)
@@ -1202,9 +1244,10 @@ namespace aspect
         gradients[component_indices.pressure] = pressure->get_gradient(evaluation_point);
         gradients[component_indices.temperature] = temperature.get_gradient(evaluation_point);
 
-        const typename FEPointEvaluation<n_compositional_fields, dim>::gradient_type composition_gradients = compositions.get_gradient(evaluation_point);
         for (unsigned int j=0; j<n_compositional_fields; ++j)
-          gradients[component_indices.compositional_fields[j]] = dealii::internal::FEPointEvaluation::EvaluatorTypeTraits<dim, n_compositional_fields, double>::access(composition_gradients,j);
+          gradients[component_indices.compositional_fields[j]] = get_gradient<dim,n_compositional_fields>(
+                                                                   compositions.get_gradient(evaluation_point),
+                                                                   j);
 
         const unsigned int n_additional_compositions = additional_compositions.size();
         for (unsigned int j=0; j<n_additional_compositions; ++j)
