@@ -1,9 +1,9 @@
 # This is a very simple test case that checks
 # that the implementation of the grain growth
-# laws with pinned grain damage formulation 
-# (Mulyukova and Bercovici (2018) are correct. 
-# All parameters, including temperature and pressure, are 
-# set to constant values and no dynamic recrystallisation 
+# laws with pinned grain damage formulation
+# (Mulyukova and Bercovici (2018) are correct.
+# All parameters, including temperature and pressure, are
+# set to constant values and no dynamic recrystallisation
 # is included (the reciprocal required strain is
 # set to zero). Material flows in from the left
 # and flows out at the right boundary with a constant
@@ -28,6 +28,6 @@ subsection Material model
 
   subsection Grain size model
     set Grain size evolution formulation  = pinned grain damage
-    
+
   end
 end

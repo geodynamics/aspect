@@ -1,4 +1,4 @@
-# A test for the grain size material model using pinned state damage formulation. 
+# A test for the grain size material model using pinned state damage formulation.
 # Over time the model maintains nearly constant temperatures, pressures and
 # strain rates. The grain size in the test approaches the equilibrium
 # grain size for t -> infinity. At 200 Myr the equilibrium grain size should
