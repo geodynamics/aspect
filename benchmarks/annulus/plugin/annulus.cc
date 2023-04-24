@@ -590,7 +590,7 @@ namespace aspect
 
 
         std::list<std::string>
-        required_other_postprocessors() const
+        required_other_postprocessors() const override
         {
           return std::list<std::string> (1, "dynamic topography");
         }

@@ -76,7 +76,7 @@ namespace aspect
       public:
         AnisotropicViscosity(const unsigned int n_points);
 
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
          * Stress-strain "director" tensors at the given positions. This
@@ -148,15 +148,14 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
 
         /**
          * Create AnisotropicViscosities.
          */
-        virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
     /**
@@ -168,15 +167,14 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
 
         /**
          * Create AdditionalMaterialOutputsStokesRHS if we need to do so.
          */
-        virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
 
@@ -385,18 +383,16 @@ namespace aspect
         /**
          * Compute the heating model outputs for this class.
          */
-        virtual
         void
         evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
 
         /**
          * Allow the heating model to attach additional material model outputs.
          */
-        virtual
         void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const;
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const override;
     };
 
 
@@ -488,14 +484,21 @@ namespace aspect
     class AV : public MaterialModel::Simple<dim>
     {
       public:
-        virtual void initialize();
-        virtual void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
-                               MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void initialize() override;
+
+        void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+                       MaterialModel::MaterialModelOutputs<dim> &out) const override;
+
         static void declare_parameters (ParameterHandler &prm);
-        virtual void parse_parameters (ParameterHandler &prm);
-        virtual bool is_compressible () const;
-        virtual double reference_density () const;
-        virtual void create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+        void parse_parameters (ParameterHandler &prm) override;
+
+        bool is_compressible () const override;
+
+        double reference_density () const;
+
+        void create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
+
       private:
         double eta_N, viscosity_ratio; //normal viscosity and ratio between the shear and the normal viscosities
         static int delta (const unsigned int i, const unsigned int j); //kronecker delta function

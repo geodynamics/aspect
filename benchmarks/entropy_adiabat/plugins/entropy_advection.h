@@ -38,14 +38,12 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>  &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
 
-        virtual
         std::vector<double>
-        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const;
+        compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch) const override;
 
         std::vector<double>
         advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const override;

@@ -42,29 +42,24 @@ namespace aspect
     class CompressibilityFormulations : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual
-        void initialize();
+        void initialize() override;
 
-        virtual
-        void update();
+        void update() override;
 
-        virtual
-        bool is_compressible () const;
+        bool is_compressible () const override;
 
-        virtual
         void
         evaluate (const MaterialModelInputs<dim> &in,
-                  MaterialModelOutputs<dim> &out) const;
+                  MaterialModelOutputs<dim> &out) const override;
 
-        virtual
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         static void
         declare_parameters (ParameterHandler &prm);
 
-        virtual void
-        parse_parameters (ParameterHandler &prm);
+        void
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

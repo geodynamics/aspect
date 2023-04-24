@@ -47,14 +47,14 @@ namespace aspect
          * Return whether the model is compressible or not. This model is
          * incompressible.
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
 
         /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in.
          */
-        virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                              typename Interface<dim>::MaterialModelOutputs &out) const;
+        void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+                      typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -70,9 +70,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
         /**
          * @}
          */

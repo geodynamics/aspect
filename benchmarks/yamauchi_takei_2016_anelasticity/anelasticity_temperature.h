@@ -65,7 +65,7 @@ namespace aspect
          * current class, this function returns value from the text files.
          */
         double
-        initial_temperature (const Point<dim> &position) const;
+        initial_temperature (const Point<dim> &position) const override;
 
         /**
          * Declare the parameters for the input files.
@@ -78,7 +78,7 @@ namespace aspect
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
 

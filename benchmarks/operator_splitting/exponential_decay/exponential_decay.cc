@@ -37,14 +37,16 @@ namespace aspect
     class ExponentialDecay : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
+
         static void declare_parameters (ParameterHandler &prm);
-        virtual void parse_parameters(ParameterHandler &prm);
 
-        virtual bool is_compressible () const;
+        void parse_parameters(ParameterHandler &prm) override;
 
-        virtual void create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+        bool is_compressible () const override;
+
+        void create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
       private:
 
@@ -68,13 +70,14 @@ namespace aspect
     class ExponentialDecayHeating : public HeatingModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
+
         static void declare_parameters (ParameterHandler &prm);
-        virtual void parse_parameters (ParameterHandler &prm);
+
+        void parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**
