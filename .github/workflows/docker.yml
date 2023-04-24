@@ -52,8 +52,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ github.repository_owner }}/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
+            ghcr.io/geodynamics/${{ github.repository }}:latest
+            geodynamics/${{ github.repository }}:latest
 
       - name: Build and push Docker image for release
         if: contains(github.event_name, 'release')
@@ -65,8 +65,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ github.repository_owner }}/${{ github.repository }}:${{github.ref_name}}
-            ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{github.ref_name}}
+            ghcr.io/geodynamics/${{ github.repository }}:${{github.ref_name}}
+            geodynamics/${{ github.repository }}:${{github.ref_name}}
 
   build-docker-tacc:
     runs-on: ubuntu-latest
@@ -104,8 +104,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ github.repository_owner }}/${{ github.repository }}:latest-tacc
-            ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest-tacc
+            ghcr.io/geodynamics/${{ github.repository }}:latest-tacc
+            geodynamics/${{ github.repository }}:latest-tacc
 
       - name: Build and push Docker image for release
         if: contains(github.event_name, 'release')
@@ -117,5 +117,5 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ github.repository_owner }}/${{ github.repository }}:${{github.ref_name}}-tacc
-            ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{github.ref_name}}-tacc
+            ghcr.io/geodynamics/${{ github.repository }}:${{github.ref_name}}-tacc
+            geodynamics/${{ github.repository }}:${{github.ref_name}}-tacc
