@@ -677,10 +677,41 @@ namespace aspect
 
               const std::vector<double> volume_fractions = MaterialModel::MaterialUtilities::compute_composition_fractions(compositions);
               std::vector<double> diffusion_viscosities;
+              const double strain_rate_inv = std::sqrt(std::max(-second_invariant(deviatoric_strain_rate), 0.));
               for (unsigned int composition = 0; composition < volume_fractions.size(); composition++)
                 {
+                  const MaterialModel::Rheology::DiffusionCreepParameters p_dif = rheology->compute_creep_parameters(composition,
+                                                                              phase_function_values,
+                                                                              phase_function.n_phase_transitions_for_each_composition());
+                  const double grain_size = 1e-3;
+                  // Power law creep equation
+                  //    viscosity = 0.5 * A^(-1) * d^(m) * exp((E + P*V)/(RT))
+                  // A: prefactor,
+                  // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
+                  // V; activation volume, R: gas constant, T: temperature.
+                  double viscosity_diffusion = 0.5 / p_dif.prefactor *
+                                               std::exp((p_dif.activation_energy +
+                                                         pressure*p_dif.activation_volume)/
+                                                        (constants::gas_constant*temperature)) *
+                                               std::pow(grain_size, p_dif.grain_size_exponent);
+
                   diffusion_viscosities.emplace_back(rheology->compute_viscosity(pressure, temperature, composition, phase_function_values, phase_function.n_phase_transitions_for_each_composition()));
-                  std::cout << composition << ": df_visco = " << diffusion_viscosities[composition] << std::endl;
+
+
+                  const MaterialModel::Rheology::DislocationCreepParameters p_dis = rheology_dis->compute_creep_parameters(composition,
+                                                                                    phase_function_values,
+                                                                                    phase_function.n_phase_transitions_for_each_composition());
+
+                  // Power law creep equation
+                  //    viscosity = 0.5 * A^(-1) * d^(m) * exp((E + P*V)/(RT))
+                  // A: prefactor,
+                  // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
+                  // V; activation volume, R: gas constant, T: temperature.
+                  double viscosity_dislocation = 0.5 * std::pow(p_dis.prefactor,-1/p_dis.stress_exponent) *
+                                                 std::exp((p_dis.activation_energy + pressure*p_dis.activation_volume)/
+                                                          (constants::gas_constant*temperature*p_dis.stress_exponent)) *
+                                                 std::pow(strain_rate_inv,((1. - p_dis.stress_exponent)/p_dis.stress_exponent));
+                  std::cout << composition << ": df_visco = " << diffusion_viscosities[composition] << ", df_vicso = " << viscosity_diffusion << ", ds_vicso = " << viscosity_dislocation << ", compo avg = " << 2./((1./viscosity_diffusion) + (1./viscosity_dislocation)) << std::endl;
                 }
 
               const double diffusion_viscosity = MaterialModel::MaterialUtilities::average_value(volume_fractions, diffusion_viscosities, MaterialModel::MaterialUtilities::harmonic);
@@ -1853,6 +1884,10 @@ namespace aspect
             rheology = std::make_unique<MaterialModel::Rheology::DiffusionCreep<dim>>();
             rheology->initialize_simulator (this->get_simulator());
             rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(phase_function.n_phases_for_each_composition()));
+
+            rheology_dis = std::make_unique<MaterialModel::Rheology::DislocationCreep<dim>>();
+            rheology_dis->initialize_simulator (this->get_simulator());
+            rheology_dis->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(phase_function.n_phases_for_each_composition()));
           }
           prm.leave_subsection();
         }

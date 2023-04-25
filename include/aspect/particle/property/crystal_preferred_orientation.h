@@ -23,6 +23,7 @@
 
 #include <aspect/particle/property/interface.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
+#include <aspect/material_model/rheology/dislocation_creep.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -664,6 +665,7 @@ namespace aspect
           double mobility;
 
           std::unique_ptr<MaterialModel::Rheology::DiffusionCreep<dim>> rheology;
+          std::unique_ptr<MaterialModel::Rheology::DislocationCreep<dim>> rheology_dis;
           std::vector<double> thermal_diffusivities;
 
           /**
