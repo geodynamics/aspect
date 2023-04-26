@@ -1270,9 +1270,9 @@ namespace aspect
         prm.declare_entry ("Phase transition temperature upper limits",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                            Patterns::Anything(),
-                           "A list of upper limits of temperature, determining a range where the "
-                           "the phase transition is activated. A negative value means there is no "
-                           "upper limit of temperature for the specific phase transition. "
+                           "A list of upper temperature limits for each phase transition. Above "
+                           "this temperature the respective phase transition is deactivated. The default "
+                           "value means there is no upper limit for any phase transitions. "
                            "List must have the same number of entries as Phase transition depths. "
                            "When the optional temperature limits are applied, the user has to be "
                            "careful about the consistency between adjacent phases. Phase transitions "
@@ -1283,9 +1283,9 @@ namespace aspect
         prm.declare_entry ("Phase transition temperature lower limits",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
                            Patterns::Anything(),
-                           "A list of lower limits of temperature, determining a range where the "
-                           "the phase transition is activated. A negative value means there is no "
-                           "lower limit of temperature for the specific phase transition. "
+                           "A list of lower temperature limits for each phase transition. Below "
+                           "this temperature the respective phase transition is deactivated. The default "
+                           "value means there is no lower limit for any phase transition. "
                            "List must have the same number of entries as Phase transition depths. "
                            "When the optional temperature limits are applied, the user has to be "
                            "careful about the consistency between adjacent phases. Phase transitions "
