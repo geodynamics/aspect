@@ -87,7 +87,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -1.213e+09/1.283e+09/1.28e+20 // -1.283e+09/1.213e+09/-1.28e+20 // -23.79/23.79/3.483e+07 // -0.002975/1.001/3.341e+12 // -0.002225/0.9984/3.645e+11 // -0.002726/1.002/5.067e+11 // -0.0002547/1/1.242e+11
+     Compositions min/max/mass: -1.213e+09/1.283e+09/1.28e+20 // -1.283e+09/1.213e+09/-1.28e+20 // -23.79/23.79/3.957e+07 // -0.002975/1.001/3.341e+12 // -0.002225/0.9984/3.645e+11 // -0.002726/1.002/5.067e+11 // -0.0002547/1/1.242e+11
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -6.317e-06 m, 7.111e-05 m
      RMS, max velocity:         2.22 m/year, 6.68 m/year

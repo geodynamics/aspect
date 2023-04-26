@@ -26,12 +26,15 @@ AQAAAAoAAAAKAAAACwAAAA==eNrj5IQBAAH5AFs=
     </DataArray>
   </Cells>
   <PointData Scalars="scalars">
-    <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="binary">
-AQAAAOABAADgAQAAlgAAAA==eNpjYECA+XuK91zPSLYFsQPcRW1h4k4MjHYaIUds0NVo3Ojf66/60xZdzccIQ1sm7pm70c1ZvHOZ7bImCbCahx4ue2DiHFoFNlMd+3ajq0E2E1lNMaevrXXohz34zMEFcJmDCyC74VTDXduIUxts0PV6NlTbbpvWuRddDXI4IKtxu61mu156/1585uACuMzBBQBykWJH    </DataArray>
-    <DataArray type="Float32" Name="p" format="binary">
-AQAAAKAAAACgAAAAbAAAAA==eNprk9Xzefl5r0/vT+XA7f+UA0HsUwzsZ0BsHwGVQJC40h/lQOumgkC9mgIwGyQHYr9vLICLb7k3L7DszDy4OIjdeXAeWG0juwpYrHZ1AZgNMhfEPvGlAC4OUmv6eB5cHMQ+rT4/EAB1YUss    </DataArray>
-    <DataArray type="Float32" Name="T" format="binary">
-AQAAAKAAAACgAAAAUAAAAA==eNpjcCh2YQDhD8quDA56rgwwPogNEgPiw1bargwN4a5CP2IgbKAciM1gEw8XZ+hoBWO4OJQPUgvWAxSD6weaCVYH1AsTR9EPEofyAeO+MZU=    </DataArray>
+    <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="binary" units="m/year">
+AQAAAOABAADgAQAAlgAAAA==eNpjYECA+XuK91zPSLYFsQPcRW1h4k4MjHYaIUds0NVo3Ojf66/60xZdzccIQ1sm7pm70c1ZvHOZ7bImCbCahx4ue2DiHFoFNlMd+3ajq0E2E1lNMaevrXXohz34zMEFcJmDCyC74VTDXduIUxts0PV6NlTbbpvWuRddDXI4IKtxu61mu156/1585uACuMzBBQBykWJH
+    </DataArray>
+    <DataArray type="Float32" Name="p" format="binary" units="Pa">
+AQAAAKAAAACgAAAAbAAAAA==eNprk9Xzefl5r0/vT+XA7f+UA0HsUwzsZ0BsHwGVQJC40h/lQOumgkC9mgIwGyQHYr9vLICLb7k3L7DszDy4OIjdeXAeWG0juwpYrHZ1AZgNMhfEPvGlAC4OUmv6eB5cHMQ+rT4/EAB1YUss
+    </DataArray>
+    <DataArray type="Float32" Name="T" format="binary" units="K">
+AQAAAKAAAACgAAAAUAAAAA==eNpjcCh2YQDhD8quDA56rgwwPogNEgPiw1bargwN4a5CP2IgbKAciM1gEw8XZ+hoBWO4OJQPUgvWAxSD6weaCVYH1AsTR9EPEofyAeO+MZU=
+    </DataArray>
   </PointData>
  </Piece>
 <FieldData>
@@ -56,12 +59,15 @@ AQAAAAoAAAAKAAAACwAAAA==eNrj5IQBAAH5AFs=
     </DataArray>
   </Cells>
   <PointData Scalars="scalars">
-    <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="binary">
-AQAAAOABAADgAQAAlgAAAA==eNrTuNG/11/1py0DENxYFWIExJtA7I8RhrZM3DN3g9gO7LF7nYEYXU0wUJ8WUD+6mgdcM3eD9KObs/TT4T2mB5TAatxuq9mul94PZov2VO++4LltL7oaZDOR1dxviN37sCEWrzm4AC5zcAFkNxgC3bUC6D50veeB5qkAzUVXgxwOyGrWAt0Lcjc+c3ABXObgAgBg0YQr    </DataArray>
-    <DataArray type="Float32" Name="p" format="binary">
-AQAAAKAAAACgAAAAXwAAAA==eNo7xcB+5skv1bM+AiqBubIqgSD2aaAYiA0SA+E7YiqBJ74UBPJYFYLZIDkQuzekEC5+Wn1+YGn2fLg4iP2ufT5YLUgPSAymH2QmiA3SCxMHqYXpB4mD2CAzATKfPkY=    </DataArray>
-    <DataArray type="Float32" Name="T" format="binary">
-AQAAAKAAAACgAAAAUQAAAA==eNpjcCh2YQDhD8quDAskXRlgfBAbJAbEtktlXBkawl3fsQdB2EA5EJvhiD9cnKGjFYzh4lA+SC1YD1AMrh9oJlgdUC9MHEU/SBzKBwBxQTMB    </DataArray>
+    <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="binary" units="m/year">
+AQAAAOABAADgAQAAlgAAAA==eNrTuNG/11/1py0DENxYFWIExJtA7I8RhrZM3DN3g9gO7LF7nYEYXU0wUJ8WUD+6mgdcM3eD9KObs/TT4T2mB5TAatxuq9mul94PZov2VO++4LltL7oaZDOR1dxviN37sCEWrzm4AC5zcAFkNxgC3bUC6D50veeB5qkAzUVXgxwOyGrWAt0Lcjc+c3ABXObgAgBg0YQr
+    </DataArray>
+    <DataArray type="Float32" Name="p" format="binary" units="Pa">
+AQAAAKAAAACgAAAAXwAAAA==eNo7xcB+5skv1bM+AiqBubIqgSD2aaAYiA0SA+E7YiqBJ74UBPJYFYLZIDkQuzekEC5+Wn1+YGn2fLg4iP2ufT5YLUgPSAymH2QmiA3SCxMHqYXpB4mD2CAzATKfPkY=
+    </DataArray>
+    <DataArray type="Float32" Name="T" format="binary" units="K">
+AQAAAKAAAACgAAAAUQAAAA==eNpjcCh2YQDhD8quDAskXRlgfBAbJAbEtktlXBkawl3fsQdB2EA5EJvhiD9cnKGjFYzh4lA+SC1YD1AMrh9oJlgdUC9MHEU/SBzKBwBxQTMB
+    </DataArray>
   </PointData>
  </Piece>
 <FieldData>
@@ -86,12 +92,15 @@ AQAAAAoAAAAKAAAACwAAAA==eNrj5IQBAAH5AFs=
     </DataArray>
   </Cells>
   <PointData Scalars="scalars">
-    <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="binary">
-AQAAAOABAADgAQAAlgAAAA==eNoLVv1pq3Wjfy8DENzLSLZdtqd4D4j9gGvm7o8RhrYgtn7IERtnBkY7dDXIAFkNCIS6i9qim5N4aoPNqYa7YPZa6f173W6rgdlbpnXu9W6oxlCDbCayGovQD3vKOH3xmoML4DIHF0B2w9omCZulO5dh6O117NstqVVgg64GORyQ1YDAFQ+XPfjMwQVwmYMLAAAhpGR3    </DataArray>
-    <DataArray type="Float32" Name="p" format="binary">
-AQAAAKAAAACgAAAAbAAAAA==eNo7zcB+5vnnvT4+AiqB2/8pB4LYrbJ6PiB270/lQJB4I7tK4IkvBYG1qwvAbJAciP2+sQAuflp9fqDp43lwcRC78+A8sFqlP8pgMb2aAjAbZC6Ibd1UABcHqS07Mw8uDmJvuTcvEACWIUso    </DataArray>
-    <DataArray type="Float32" Name="T" format="binary">
-AQAAAKAAAACgAAAAUAAAAA==eNpjcCh2YQDhD8quDA56rgwwPogNEgPiw1bargwN4a5CP2IgbKAciM1gEw8XZ+hoBWO4OJQPUgvWAxSD6weaCVYH1AsTR9EPEofyAeO+MZU=    </DataArray>
+    <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="binary" units="m/year">
+AQAAAOABAADgAQAAlgAAAA==eNoLVv1pq3Wjfy8DENzLSLZdtqd4D4j9gGvm7o8RhrYgtn7IERtnBkY7dDXIAFkNCIS6i9qim5N4aoPNqYa7YPZa6f173W6rgdlbpnXu9W6oxlCDbCayGovQD3vKOH3xmoML4DIHF0B2w9omCZulO5dh6O117NstqVVgg64GORyQ1YDAFQ+XPfjMwQVwmYMLAAAhpGR3
+    </DataArray>
+    <DataArray type="Float32" Name="p" format="binary" units="Pa">
+AQAAAKAAAACgAAAAbAAAAA==eNo7zcB+5vnnvT4+AiqB2/8pB4LYrbJ6PiB270/lQJB4I7tK4IkvBYG1qwvAbJAciP2+sQAuflp9fqDp43lwcRC78+A8sFqlP8pgMb2aAjAbZC6Ibd1UABcHqS07Mw8uDmJvuTcvEACWIUso
+    </DataArray>
+    <DataArray type="Float32" Name="T" format="binary" units="K">
+AQAAAKAAAACgAAAAUAAAAA==eNpjcCh2YQDhD8quDA56rgwwPogNEgPiw1bargwN4a5CP2IgbKAciM1gEw8XZ+hoBWO4OJQPUgvWAxSD6weaCVYH1AsTR9EPEofyAeO+MZU=
+    </DataArray>
   </PointData>
  </Piece>
  </UnstructuredGrid>

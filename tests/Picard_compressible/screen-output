@@ -6,32 +6,32 @@ Number of degrees of freedom: 53,952 (25,344+3,264+12,672+12,672)
    Solving temperature system... 0 iterations.
    Skipping plastic_strain composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 65+0 iterations.
+   Solving Stokes system... 54+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 73+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00886673
+   Solving Stokes system... 58+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00789213
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 69+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000575252
+   Solving Stokes system... 53+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00039627
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 55+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 7.89675e-05
+   Solving Stokes system... 40+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 5.98393e-05
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 38+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 8.53899e-06
+   Solving Stokes system... 25+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 6.8821e-06
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00238 m/year, 0.0173 m/year
-     Temperature min/avg/max:            273 K, 2037 K, 3500 K
+     RMS, max velocity:                  0.000626 m/year, 0.00264 m/year
+     Temperature min/avg/max:            273 K, 2086 K, 3500 K
      Compositions min/max/mass:          0/0/0
      Writing depth average:              output-Picard_compressible/depth_average
-     Heat fluxes through boundary parts: -1.397e+06 W, 1.855e+06 W
+     Heat fluxes through boundary parts: -1.302e+06 W, 1.616e+06 W
 
 Termination requested by criterion: end time
 

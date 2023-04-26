@@ -20,5 +20,5 @@ Additional information:
     <ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_4.txt>
     not found!
 
-Aborting!
+Stacktrace:
 (rest of the output replaced by default.sh script)

@@ -27,11 +27,14 @@ AQAAAAUAAAAFAAAACwAAAA==eNpjZAQCAAAUAAY=
   </Cells>
   <PointData Scalars="scalars">
     <DataArray type="Float32" Name="id" format="binary">
-AQAAABQAAAAUAAAAFwAAAA==eNpjYHBwYGBgAOIGewYwaHAAABSLAkA=    </DataArray>
+AQAAABQAAAAUAAAAFwAAAA==eNpjYHBwYGBgAOIGewYwaHAAABSLAkA=
+    </DataArray>
     <DataArray type="Float32" Name="porosity" format="binary">
-AQAAABQAAAAUAAAAGAAAAA==eNrjndFs1aukaMN1XdkGRPMC+QBAywYd    </DataArray>
+AQAAABQAAAAUAAAAGAAAAA==eNrjndFs1aukaMN1XdkGRPMC+QBAywYd
+    </DataArray>
     <DataArray type="Float32" Name="peridotite" format="binary">
-AQAAABQAAAAUAAAAGAAAAA==eNrjndFs1aukaMN1XdkGRPMC+QBAywYd    </DataArray>
+AQAAABQAAAAUAAAAGAAAAA==eNrjndFs1aukaMN1XdkGRPMC+QBAywYd
+    </DataArray>
   </PointData>
  </Piece>
  </UnstructuredGrid>
