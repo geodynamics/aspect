@@ -82,8 +82,8 @@ namespace aspect
         /**
          * Evaluate material properties.
          */
-        virtual void evaluate(const MaterialModelInputs<dim> &in,
-                              MaterialModelOutputs<dim> &out) const;
+        void evaluate(const MaterialModelInputs<dim> &in,
+                      MaterialModelOutputs<dim> &out) const override;
 
         /**
          * Return whether the model is compressible or not.  Incompressibility
@@ -93,15 +93,14 @@ namespace aspect
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
 
         static
         void
         declare_parameters (ParameterHandler &prm);
 
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         std::vector<double> densities;

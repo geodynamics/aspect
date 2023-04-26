@@ -327,22 +327,20 @@ namespace aspect
          * compute the analytical solution for the shape of the solitary wave.
          */
         void
-        initialize ();
+        initialize () override;
 
         /**
          * Return the boundary velocity as a function of position.
          */
-        virtual
         double
-        initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
+        initial_composition (const Point<dim> &position, const unsigned int n_comp) const override;
 
         static
         void
         declare_parameters (ParameterHandler &prm);
 
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         double
         get_amplitude () const;
@@ -374,12 +372,12 @@ namespace aspect
     class SolitaryWaveMaterial : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual bool is_compressible () const
+        bool is_compressible () const override
         {
           return false;
         }
 
-        virtual double reference_darcy_coefficient () const
+        double reference_darcy_coefficient () const override
         {
           // Make sure we keep track of the initial composition manager and
           // that it continues to live beyond the time when the simulator
@@ -420,12 +418,11 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
-        virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                              typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+        void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+                      typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 

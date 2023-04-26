@@ -629,8 +629,8 @@ namespace aspect
         public:
           FunctionSolKz(unsigned int n_components) : Function<dim>(n_components) {}
 
-          virtual void vector_value(const Point<dim> &p,
-                                    Vector<double> &values) const
+          void vector_value(const Point<dim> &p,
+                            Vector<double> &values) const override
           {
             double pos[2] = {p(0), p(1)};
             double total_stress[3], strain_rate[3];
@@ -656,8 +656,8 @@ namespace aspect
          * @name Physical parameters used in the basic equations
          * @{
          */
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -693,7 +693,7 @@ namespace aspect
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
-        virtual bool is_compressible() const
+        bool is_compressible() const override
         {
           return false;
         }
@@ -702,7 +702,7 @@ namespace aspect
          */
 
         void
-        parse_parameters(ParameterHandler &/*prm*/)
+        parse_parameters(ParameterHandler &/*prm*/) override
         {
           // Declare dependencies on solution variables
           this->model_dependence.viscosity = MaterialModel::NonlinearDependence::none;
@@ -728,9 +728,8 @@ namespace aspect
         /**
          * Generate graphical output from the current solution.
          */
-        virtual
         std::pair<std::string, std::string>
-        execute(TableHandler &/*statistics*/)
+        execute(TableHandler &/*statistics*/) override
         {
           AnalyticSolutions::FunctionSolKz<dim> ref_func(this->introspection().n_components);
 

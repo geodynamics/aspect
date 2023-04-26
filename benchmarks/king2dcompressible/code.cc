@@ -70,8 +70,8 @@ namespace aspect
         /**
         * Evaluate material properties.
         */
-        virtual void evaluate(const MaterialModelInputs<dim> &in,
-                              MaterialModelOutputs<dim> &out) const
+        void evaluate(const MaterialModelInputs<dim> &in,
+                      MaterialModelOutputs<dim> &out) const override
         {
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
@@ -106,7 +106,7 @@ namespace aspect
             }
         }
 
-        virtual bool is_compressible () const
+        bool is_compressible () const override
         {
           return true;
         }
@@ -126,9 +126,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
 
 

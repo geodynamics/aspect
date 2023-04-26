@@ -34,9 +34,9 @@ namespace aspect
     class FiniteStrain : public MaterialModel::Simple<dim>
     {
       public:
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
-        virtual void parse_parameters(ParameterHandler &prm);
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        void parse_parameters(ParameterHandler &prm) override;
     };
 
   }

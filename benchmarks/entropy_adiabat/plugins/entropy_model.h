@@ -52,9 +52,8 @@ namespace aspect
          * Initialization function. Loads the material data and sets up
          * pointers.
          */
-        virtual
         void
-        initialize ();
+        initialize () override;
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -64,7 +63,7 @@ namespace aspect
         /**
          * Return whether the model is compressible or not.
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
         /**
          * @}
          */
@@ -73,10 +72,9 @@ namespace aspect
          * Function to compute the material properties in @p out given the
          * inputs in @p in.
          */
-        virtual
         void
         evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                 MaterialModel::MaterialModelOutputs<dim> &out) const;
+                 MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -92,9 +90,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
         /**
          * @}
          */
@@ -108,9 +105,8 @@ namespace aspect
          * the Stokes equation). Also creates SeismicAdditionalOutputs for
          * postprocessing purposes.
          */
-        virtual
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
 
       private:

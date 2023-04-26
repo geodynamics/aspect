@@ -125,8 +125,8 @@ namespace aspect
     class RigidShearMaterial : public MaterialModel::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           const double t = (this->simulator_is_past_initialization()) ? this->get_time() : 0.0;
 
@@ -219,7 +219,7 @@ namespace aspect
     class RigidShearGravity : public aspect::GravityModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
-        virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const
+        Tensor<1,dim> gravity_vector (const Point<dim> &pos) const override
         {
           const double pi = numbers::PI;
           const double t = (this->simulator_is_past_initialization()) ? this->get_time() : 0.0;
@@ -253,9 +253,8 @@ namespace aspect
         /**
          * Generate error output for velocity, pressure, and density.
          */
-        virtual
         std::pair<std::string, std::string>
-        execute(TableHandler &statistics)
+        execute(TableHandler &statistics) override
         {
           const RigidShearMaterial<dim> &
           material_model

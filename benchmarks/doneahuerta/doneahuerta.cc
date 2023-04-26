@@ -67,8 +67,8 @@ namespace aspect
             Function<dim>(dim+2)
           {}
 
-          virtual void vector_value (const Point<dim>   &pos,
-                                     Vector<double>   &values) const
+          void vector_value (const Point<dim>   &pos,
+                             Vector<double>   &values) const override
           {
             Assert (dim == 2, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -97,10 +97,9 @@ namespace aspect
         /**
          * Return the boundary velocity as a function of position.
          */
-        virtual
         Tensor<1,dim>
         boundary_velocity (const types::boundary_id ,
-                           const Point<dim> &position) const;
+                           const Point<dim> &position) const override;
     };
 
 
@@ -119,8 +118,8 @@ namespace aspect
          * @name Physical parameters used in the basic equations
          * @{
          */
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -150,7 +149,7 @@ namespace aspect
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
         /**
          * @}
          */
@@ -164,9 +163,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
     };
 
 
@@ -231,7 +229,7 @@ namespace aspect
     class DoneaHuertaGravity : public aspect::GravityModel::Interface<dim>
     {
       public:
-        virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const;
+        Tensor<1,dim> gravity_vector (const Point<dim> &pos) const override;
     };
 
 
@@ -264,9 +262,8 @@ namespace aspect
         /**
          * Generate graphical output from the current solution.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
     };
 
     template <int dim>
