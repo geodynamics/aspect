@@ -1205,10 +1205,11 @@ namespace aspect
         solution[component_indices.pressure] = pressure->get_value(evaluation_point);
         solution[component_indices.temperature] = temperature.get_value(evaluation_point);
 
-        for (unsigned int j=0; j<n_compositional_fields; ++j)
-          solution[component_indices.compositional_fields[j]] = get_value<n_compositional_fields>(
-                                                                  compositions.get_value(evaluation_point),
-                                                                  j);
+        if (n_compositional_fields > 0)
+          for (unsigned int j=0; j<n_compositional_fields; ++j)
+            solution[component_indices.compositional_fields[j]] = get_value<n_compositional_fields>(
+                                                                    compositions.get_value(evaluation_point),
+                                                                    j);
 
         const unsigned int n_additional_compositions = additional_compositions.size();
         for (unsigned int j=0; j<n_additional_compositions; ++j)
@@ -1244,10 +1245,11 @@ namespace aspect
         gradients[component_indices.pressure] = pressure->get_gradient(evaluation_point);
         gradients[component_indices.temperature] = temperature.get_gradient(evaluation_point);
 
-        for (unsigned int j=0; j<n_compositional_fields; ++j)
-          gradients[component_indices.compositional_fields[j]] = get_gradient<dim,n_compositional_fields>(
-                                                                   compositions.get_gradient(evaluation_point),
-                                                                   j);
+        if (n_compositional_fields > 0)
+          for (unsigned int j=0; j<n_compositional_fields; ++j)
+            gradients[component_indices.compositional_fields[j]] = get_gradient<dim,n_compositional_fields>(
+                                                                     compositions.get_gradient(evaluation_point),
+                                                                     j);
 
         const unsigned int n_additional_compositions = additional_compositions.size();
         for (unsigned int j=0; j<n_additional_compositions; ++j)
