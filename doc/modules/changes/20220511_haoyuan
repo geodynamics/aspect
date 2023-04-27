@@ -1,14 +1,6 @@
-New:
-1. The lower and upper limits of temperature of phase transitions.
-Phase transitions could be actived within a temperature range, and deactived outside.
-2. The implementation of the phase functions are updated such that change of values is
-take as the differences between the next phase and the current phase, instead of the
-differences between adjacent phases.
-This feature comes with 4 tests for different compositions:
-pyrolite: $ASPECT_SOURCE_DIR/tests/visco_plastic_phases_pyrolite.prm
-pyrolite, complicated: $ASPECT_SOURCE_DIR/tests/visco_plastic_phases_pyrolite_complicated.prm
-harzburgite: $ASPECT_SOURCE_DIR/tests/visco_plastic_phases_harzburgite.prm
-basalt: $ASPECT_SOURCE_DIR/tests/visco_plastic_phases_basalt.prm
+New: Phase transitions can now be deactivated outside a given temperature range specified by
+upper and lower temperature limits for each phase transition. This allows to implement
+complex phase diagrams with transitions that intersect in pressure-temperature space.
 
 <br>
 (Haoyuan Li, 2022/05/11)
