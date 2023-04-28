@@ -1,0 +1,155 @@
+
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+Number of mesh deformation degrees of freedom: 480
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 19+0 iterations.
+
+Number of active cells: 300 (on 4 levels)
+Number of degrees of freedom: 4,752 (2,904+396+1,452)
+
+Number of mesh deformation degrees of freedom: 792
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 23+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-nullspace-freesurface-gmg/solution/solution-00000
+     RMS, max velocity:                  0.225 m/year, 0.372 m/year
+     Temperature min/avg/max:            973 K, 2469 K, 4273 K
+     Heat fluxes through boundary parts: 2.515e+07 W, -2.028e+07 W
+     Writing depth average:              output-nullspace-freesurface-gmg/depth_average
+
+*** Timestep 1:  t=274959 years, dt=274959 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 278+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.163 m/year, 0.38 m/year
+     Temperature min/avg/max:            973 K, 2470 K, 4273 K
+     Heat fluxes through boundary parts: 1.994e+07 W, 7.455e+07 W
+
+*** Timestep 2:  t=511676 years, dt=236717 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 196+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.146 m/year, 0.33 m/year
+     Temperature min/avg/max:            973 K, 2473 K, 4273 K
+     Heat fluxes through boundary parts: 2.196e+07 W, 6.694e+06 W
+
+*** Timestep 3:  t=766911 years, dt=255235 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 204+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.181 m/year, 0.367 m/year
+     Temperature min/avg/max:            973 K, 2476 K, 4273 K
+     Heat fluxes through boundary parts: 2.185e+07 W, 4.314e+07 W
+
+*** Timestep 4:  t=1.0412e+06 years, dt=274293 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 200+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-nullspace-freesurface-gmg/solution/solution-00001
+     RMS, max velocity:                  0.225 m/year, 0.407 m/year
+     Temperature min/avg/max:            973 K, 2480 K, 4273 K
+     Heat fluxes through boundary parts: 2.262e+07 W, 1.423e+07 W
+     Writing depth average:              output-nullspace-freesurface-gmg/depth_average
+
+*** Timestep 5:  t=1.31996e+06 years, dt=278759 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 197+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.279 m/year, 0.48 m/year
+     Temperature min/avg/max:            973 K, 2485 K, 4273 K
+     Heat fluxes through boundary parts: 2.429e+07 W, 1.826e+07 W
+
+Number of active cells: 294 (on 4 levels)
+Number of degrees of freedom: 4,654 (2,844+388+1,422)
+
+Number of mesh deformation degrees of freedom: 776
+*** Timestep 6:  t=1.57093e+06 years, dt=250965 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 140+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.335 m/year, 0.581 m/year
+     Temperature min/avg/max:            973 K, 2491 K, 4295 K
+     Heat fluxes through boundary parts: 2.238e+07 W, 2.33e+07 W
+
+*** Timestep 7:  t=1.77454e+06 years, dt=203615 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 178+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.39 m/year, 0.658 m/year
+     Temperature min/avg/max:            973 K, 2499 K, 4311 K
+     Heat fluxes through boundary parts: 2.107e+07 W, 4.25e+07 W
+
+*** Timestep 8:  t=1.96127e+06 years, dt=186724 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 148+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.447 m/year, 0.746 m/year
+     Temperature min/avg/max:            973 K, 2507 K, 4331 K
+     Heat fluxes through boundary parts: 2.711e+07 W, 6.317e+07 W
+
+*** Timestep 9:  t=2.13366e+06 years, dt=172396 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 129+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-nullspace-freesurface-gmg/solution/solution-00002
+     RMS, max velocity:                  0.504 m/year, 0.834 m/year
+     Temperature min/avg/max:            973 K, 2515 K, 4359 K
+     Heat fluxes through boundary parts: 3.059e+07 W, 9.43e+07 W
+     Writing depth average:              output-nullspace-freesurface-gmg/depth_average
+
+*** Timestep 10:  t=2.29386e+06 years, dt=160197 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 126+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.559 m/year, 0.919 m/year
+     Temperature min/avg/max:            973 K, 2525 K, 4396 K
+     Heat fluxes through boundary parts: 3.471e+07 W, 1.378e+08 W
+
+Number of active cells: 333 (on 4 levels)
+Number of degrees of freedom: 5,318 (3,252+440+1,626)
+
+Number of mesh deformation degrees of freedom: 880
+*** Timestep 11:  t=2.4e+06 years, dt=106140 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 100+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  0.599 m/year, 0.98 m/year
+     Temperature min/avg/max:            973 K, 2532 K, 4407 K
+     Heat fluxes through boundary parts: 2.939e+07 W, 1.862e+08 W
+
+Termination requested by criterion: end time
+
+
+

@@ -579,10 +579,20 @@ namespace aspect
     std::set<types::boundary_id> fixed_heat_flux_boundary_indicators;
 
     /**
-     * Selection of operations to perform to remove nullspace from velocity
-     * field.
+     * Selection of operations to perform to remove nullspace from the
+     * velocity field after we solve the Stokes equation.
      */
     typename NullspaceRemoval::Kind nullspace_removal;
+
+    /**
+     * If set to true we also add constraints for rotational modes as
+     * specified in @p nullspace_removal to be used by the linear
+     * solver. This will potentially make the linear system easier to
+     * solve. If set to false, the nullspace will only be removed
+     * after solving.
+     */
+    bool constrain_rotational_nullspace;
+
     /**
      * @}
      */
