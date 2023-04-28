@@ -24,6 +24,7 @@
 #include <aspect/particle/property/interface.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
+#include <aspect/material_model/rheology/visco_plastic.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -299,7 +300,10 @@ namespace aspect
                                      const std::array<double,4> ref_resolved_shear_stress,
                                      const double recrystalized_grain_volume,
                                      const double aggregate_recrystalization_increment,
-                                     const double diffusion_creep_strain_rate) const;
+                                     const std::vector<double> &volume_fractions,
+                                     const std::vector<double> &diffusion_pre_viscosities,
+                                     const std::vector<double> &diffusion_grain_size_exponent,
+                                     const std::vector<double> &dislocation_viscosities) const;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -664,8 +668,10 @@ namespace aspect
            */
           double mobility;
 
-          std::unique_ptr<MaterialModel::Rheology::DiffusionCreep<dim>> rheology;
-          std::unique_ptr<MaterialModel::Rheology::DislocationCreep<dim>> rheology_dis;
+          std::unique_ptr<MaterialModel::Rheology::DiffusionCreep<dim>> rheology_diff;
+          std::unique_ptr<MaterialModel::Rheology::DislocationCreep<dim>> rheology_disl;
+          std::unique_ptr<MaterialModel::Rheology::ViscoPlastic<dim>> rheology_vipl;
+          double min_strain_rate;
           std::vector<double> thermal_diffusivities;
 
           /**
