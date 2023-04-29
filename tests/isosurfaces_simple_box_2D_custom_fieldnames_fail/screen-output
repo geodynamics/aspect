@@ -17,5 +17,5 @@ Additional information:
     key was: C_2. The following keys are allowed for this model:
     Temperature, field1, FieldB, fIEld_C.
 
-Aborting!
+Stacktrace:
 (rest of the output replaced by default.sh script)

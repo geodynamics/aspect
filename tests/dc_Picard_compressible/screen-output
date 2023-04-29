@@ -5,31 +5,31 @@ Number of degrees of freedom: 53,952 (25,344+3,264+12,672+12,672)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping plastic_strain composition solve because RHS is zero.
-   Initial Newton Stokes residual = 3.96803e+15, v = 3.96803e+15, p = 0
+   Initial Newton Stokes residual = 3.96331e+15, v = 3.96331e+15, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 3.96331e+15
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.000246659, norm of the rhs: 9.77588e+11, newton_derivative_scaling_factor: 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 3.96803e+15
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 5.28531e-05, norm of the rhs: 2.09473e+11, newton_derivative_scaling_factor: 0
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 36+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.000364927, norm of the rhs: 1.44804e+12, newton_derivative_scaling_factor: 0
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 23+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 6.90429e-05, norm of the rhs: 2.73964e+11, newton_derivative_scaling_factor: 0
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 7.99011e-06, norm of the rhs: 3.1705e+10, newton_derivative_scaling_factor: 0
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 6.55152e-06, norm of the rhs: 2.59657e+10, newton_derivative_scaling_factor: 0
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00238 m/year, 0.0173 m/year
-     Temperature min/avg/max:            273 K, 2037 K, 3500 K
+     RMS, max velocity:                  0.000626 m/year, 0.00264 m/year
+     Temperature min/avg/max:            273 K, 2086 K, 3500 K
      Compositions min/max/mass:          0/0/0
      Writing depth average:              output-dc_Picard_compressible/depth_average
-     Heat fluxes through boundary parts: -1.397e+06 W, 1.855e+06 W
+     Heat fluxes through boundary parts: -1.302e+06 W, 1.616e+06 W
 
 Termination requested by criterion: end time
 

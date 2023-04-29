@@ -50,7 +50,7 @@ while ( <STDIN> )
     next
   }
 
-  if ($_ =~ m/^Stacktrace:/)
+  if ($_ =~ m/^\s*Stacktrace:/)
   {
     print "$_";
     print "(rest of the output replaced by default.sh script)\n";
