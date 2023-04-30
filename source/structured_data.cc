@@ -192,23 +192,12 @@ namespace aspect
                                       const MPI_Comm &mpi_communicator,
                                       const unsigned int root_process)
     {
-#if DEAL_II_VERSION_GTE(9,4,0)
-      const bool supports_shared_data = true;
-#else
-      const bool supports_shared_data = false;
-#endif
-
       // If this is the root process, or if the user did not request
-      // sharing, or if we don't support data sharing,
-      // then set up the various member variables we need to compute
-      // from the input data
-      if ((supports_shared_data == false)
+      // sharing, set up the various member variables we need to compute
+      // from the input data:
+      if ((root_process == numbers::invalid_unsigned_int)
           ||
-          (root_process == numbers::invalid_unsigned_int)
-          ||
-          ((supports_shared_data == true)
-           &&
-           (root_process != numbers::invalid_unsigned_int)
+          ((root_process != numbers::invalid_unsigned_int)
            &&
            (Utilities::MPI::this_mpi_process(mpi_communicator) == root_process)))
         {
@@ -248,16 +237,12 @@ namespace aspect
           coordinate_values_are_equidistant = data_is_equidistant<dim> (coordinate_values);
         }
 
-      // If deal.II is new enough to support sharing data, and if the
-      // caller of this function has actually requested this, then we have
+      // If the caller of this function requested it, then we have
       // set up member variables on the root process, but not on any of
       // the other processes. Broadcast the data to the remaining
       // processes
-      if ((supports_shared_data == true)
-          &&
-          (root_process != numbers::invalid_unsigned_int))
+      if (root_process != numbers::invalid_unsigned_int)
         {
-#if DEAL_II_VERSION_GTE(9,4,0)
           coordinate_values                 = Utilities::MPI::broadcast (mpi_communicator,
                                                                          coordinate_values,
                                                                          root_process);
@@ -282,7 +267,6 @@ namespace aspect
           for (unsigned int c = 0; c < components; ++c)
             data_table[c].replicate_across_communicator (mpi_communicator,
                                                          root_process);
-#endif
         }
 
       Assert(data_table.size() == components,
@@ -351,42 +335,26 @@ namespace aspect
     StructuredDataLookup<dim>::load_file(const std::string &filename,
                                          const MPI_Comm &comm)
     {
-#if DEAL_II_VERSION_GTE(9,4,0)
-      const bool supports_shared_data = true;
       const unsigned int root_process = 0;
-#else
-      const bool supports_shared_data = false;
-      const unsigned int root_process = numbers::invalid_unsigned_int;
-#endif
 
       std::vector<std::string> column_names;
       std::vector<Table<dim,double>> data_tables;
       std::vector<std::vector<double>> coordinate_values(dim);
 
-      // If this is the root process, or if we don't support data sharing,
-      // then set up the various member variables we need to compute
+      // If this is the root process, set up the various member variables we need to compute
       // from the input data
-      if ((supports_shared_data == false)
-          ||
-          ((supports_shared_data == true)
-           &&
-           (Utilities::MPI::this_mpi_process(comm) == root_process)))
+      if (Utilities::MPI::this_mpi_process(comm) == root_process)
         {
           // Grab the values already stored in this class (if they exist), this way we can
           // check if somebody changes the size of the table over time and error out (see below)
           TableIndices<dim> new_table_points = this->table_points;
 
-          // Read data from disk and distribute among processes. We only have to
-          // do the distributing if every process is supposed to read and parse
-          // the data (namely, if supports_shared_data==false), and so we only
-          // have to pass the 'real' communicator in that case; if we want
-          // to do the data sharing later on, just pass MPI_COMM_SELF (i.e.,
-          // a communicator with just a single MPI process) and in that case
-          // no sharing will happen.
+          // We do not need to distribute the contents as we are using shared data
+          // to place it later. Therefore, just pass MPI_COMM_SELF (i.e.,
+          // a communicator with just a single MPI process) and no distribution
+          // will happen.
           std::stringstream in(read_and_distribute_file_content(filename,
-                                                                (supports_shared_data==false ?
-                                                                 comm :
-                                                                 MPI_COMM_SELF)));
+                                                                MPI_COMM_SELF));
 
           // Read header lines and table size
           while (in.peek() == '#')
@@ -580,37 +548,33 @@ namespace aspect
                                   "lines against the POINTS header in the file."));
         }
 
-      // If deal.II is new enough to support sharing data, then we have
+      // If deal.II is new enough to support sharing data (since 9.4), then we have
       // set up member variables on the root process, but not on any of
       // the other processes. So broadcast the data to the remaining
       // processes -- the code above really only wrote into one
       // member variable ('components'), so that is the only one we
       // have to broadcast.
       //
-      // If data sharing is possible (deal.II version >= 9.3), then
-      // the first three arguments to the call to reinit() below will
+      // The first three arguments to the call to reinit() below will
       // only be read on the root process, and so it is totally ok
       // that we are passing empty tables on all other processes. In
       // the case of 'data_table', we do have to make sure that it is
       // an array of the right size, though, even though the array
       // contains only empty tables.
-      if (supports_shared_data == true)
-        {
-#if DEAL_II_VERSION_GTE(9,4,0)
-          components = Utilities::MPI::broadcast (comm,
-                                                  components,
+      {
+        components = Utilities::MPI::broadcast (comm,
+                                                components,
+                                                root_process);
+        coordinate_values = Utilities::MPI::broadcast (comm,
+                                                       coordinate_values,
+                                                       root_process);
+        column_names = Utilities::MPI::broadcast (comm,
+                                                  column_names,
                                                   root_process);
-          coordinate_values = Utilities::MPI::broadcast (comm,
-                                                         coordinate_values,
-                                                         root_process);
-          column_names = Utilities::MPI::broadcast (comm,
-                                                    column_names,
-                                                    root_process);
 
-          if (Utilities::MPI::this_mpi_process(comm) != root_process)
-            data_tables.resize (components);
-#endif
-        }
+        if (Utilities::MPI::this_mpi_process(comm) != root_process)
+          data_tables.resize (components);
+      }
 
       // Finally create the data. We want to call the move-version of reinit() so
       // that the data doesn't have to be copied, so use std::move on all big

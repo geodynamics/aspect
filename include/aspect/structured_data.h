@@ -92,10 +92,10 @@ namespace aspect
          * location. In other words, after the call, the variables passed as the
          * second and third arguments may be empty or otherwise altered.
          *
-         * If ASPECT is built on deal.II version 9.4 or higher, this class
+         * This class
          * is able to share data between processes located on the same
-         * machine. In this case, if the last argument, `root_process` is
-         * set to anything other than `numbers::invalid_unsigned_int`, then only the
+         * machine if the last argument `root_process` is
+         * set to anything other than `numbers::invalid_unsigned_int`. Then only the
          * indicated root process within the given MPI communicator needs to
          * pass in valid arguments whereas on all other processes the values
          * of `column_names`, `coordinate_values`, and `data_table` are
@@ -110,10 +110,6 @@ namespace aspect
          * If `root_process` equals `numbers::invalid_unsigned_int`, then
          * every process needs to pass data for all arguments and the
          * `mpi_communicator` argument is ignored.
-         *
-         * If ASPECT is built on a version of deal.II 9.3 or older,
-         * then all processes need to pass in valid values for the first
-         * three arguments and the last two arguments are ignored.
          */
         void reinit(const std::vector<std::string> &column_names,
                     std::vector<std::vector<double>> &&coordinate_values,
