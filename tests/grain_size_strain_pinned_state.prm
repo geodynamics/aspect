@@ -4,7 +4,7 @@
 # grain size for t -> infinity. At 200 Myr the equilibrium grain size should
 # be 0.0165746 m.
 
-include grain_size_strain.prm
+include $ASPECT_SOURCE_DIR/tests/grain_size_strain.prm
 
 set Output directory                       = output_grain_size_strain_pinned_state
 
