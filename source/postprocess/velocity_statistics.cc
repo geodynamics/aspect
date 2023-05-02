@@ -112,7 +112,7 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(VelocityStatistics,
                                   "velocity statistics",
-                                  "A postprocessor that computes some statistics about the "
-                                  "velocity field.")
+                                  "A postprocessor that computes the root mean square and "
+                                  "maximum velocity in the computational domain.")
   }
 }
