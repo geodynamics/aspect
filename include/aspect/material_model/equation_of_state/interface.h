@@ -97,6 +97,8 @@ namespace aspect
        * each composition and phase.
        */
       std::vector<double> entropy_derivative_temperature;
+
+      std::vector<double> thermal_diffusion_coefficients;
     };
 
 

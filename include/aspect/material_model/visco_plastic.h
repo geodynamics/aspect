@@ -246,14 +246,13 @@ namespace aspect
          */
         std::unique_ptr<Rheology::ViscoPlastic<dim>> rheology;
 
-        std::vector<double> thermal_diffusivities;
 
         /**
          * Whether to use user-defined thermal conductivities instead of thermal diffusivities.
          */
         bool define_conductivities;
 
-        std::vector<double> thermal_conductivities;
+        // std::vector<double> thermal_conductivities;
 
         /**
          * Object for computing the equation of state.

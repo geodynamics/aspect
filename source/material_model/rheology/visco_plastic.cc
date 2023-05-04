@@ -27,60 +27,62 @@
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/fe/fe_values.h>
+#include <iostream>
 
 namespace aspect
 {
   namespace MaterialModel
   {
-    namespace
-    {
-      std::vector<std::string> make_plastic_additional_outputs_names()
-      {
-        std::vector<std::string> names;
-        names.emplace_back("current_cohesions");
-        names.emplace_back("current_friction_angles");
-        names.emplace_back("current_yield_stresses");
-        names.emplace_back("plastic_yielding");
-        return names;
-      }
-    }
+    // namespace
+    // {
+    //   std::vector<std::string> make_plastic_additional_outputs_names()
+    //   {
+    //     std::vector<std::string> names;
+    //     names.emplace_back("current_cohesions");
+    //     names.emplace_back("current_friction_angles");
+    //     names.emplace_back("current_yield_stresses");
+    //     names.emplace_back("plastic_yielding");
+    //     return names;
+    //   }
+    // }
 
-    template <int dim>
-    PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs(const unsigned int n_points)
-      : NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
-        cohesions(n_points, numbers::signaling_nan<double>()),
-        friction_angles(n_points, numbers::signaling_nan<double>()),
-        yield_stresses(n_points, numbers::signaling_nan<double>()),
-        yielding(n_points, numbers::signaling_nan<double>())
-    {}
+    // template <int dim>
+    // PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
+    //   :
+    //   NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
+    //   cohesions(n_points, numbers::signaling_nan<double>()),
+    //   friction_angles(n_points, numbers::signaling_nan<double>()),
+    //   yield_stresses(n_points, numbers::signaling_nan<double>()),
+    //   yielding(n_points, numbers::signaling_nan<double>())
+    // {}
 
 
 
-    template <int dim>
-    std::vector<double>
-    PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
-    {
-      AssertIndexRange (idx, 4);
-      switch (idx)
-        {
-          case 0:
-            return cohesions;
+    // template <int dim>
+    // std::vector<double>
+    // PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    // {
+    //   AssertIndexRange (idx, 3);
+    //   switch (idx)
+    //     {
+    //       case 0:
+    //         return cohesions;
 
-          case 1:
-            return friction_angles;
+    //       case 1:
+    //         return friction_angles;
 
-          case 2:
-            return yield_stresses;
+    //       case 2:
+    //         return yield_stresses;
 
-          case 3:
-            return yielding;
+    //       case 3:          
+    //         return yielding;
 
-          default:
-            AssertThrow(false, ExcInternalError());
-        }
-      // We will never get here, so just return something
-      return cohesions;
-    }
+    //       default:
+    //         AssertThrow(false, ExcInternalError());
+    //     }
+    //   // We will never get here, so just return something
+    //   return cohesions;
+    // }
 
 
 
@@ -91,7 +93,22 @@ namespace aspect
       ViscoPlastic<dim>::ViscoPlastic ()
         = default;
 
+      // template <int dim>
+      // double
+      // ViscoPlastic<dim>::get_alpha(double current_time) const
+      // {
+      //     // Function to get alpha value at a given time
+      //       auto it = std::upper_bound(alpha_mobility_times.begin(), alpha_mobility_times.end(), current_time);
+      //       size_t index = std::distance(alpha_mobility_times.begin(), it);
 
+      //       if (index == 0) {
+      //         return alpha_mobility[0];
+      //       } else if (index >= alpha_mobility.size()) {
+      //         return alpha_mobility.back();
+      //       } else {
+      //         return alpha_mobility[index - 1];
+      //       }
+      // }
 
       template <int dim>
       IsostrainViscosities
@@ -142,7 +159,12 @@ namespace aspect
               // Choice of activation volume depends on whether there is an adiabatic temperature
               // gradient used when calculating the viscosity. This allows the same activation volume
               // to be used in incompressible and compressible models.
-              const double temperature_for_viscosity = in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*in.pressure[i];
+             // const double temperature_for_viscosity = in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*in.pressure[i];
+             //Elodie Sep 2022
+              double temperature_for_viscosity = in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*in.pressure[i];
+              //Elodie Sep 2022
+              temperature_for_viscosity = std::max(temperature_for_viscosity, outer_temperature);
+              temperature_for_viscosity = std::min(temperature_for_viscosity, inner_temperature);
               AssertThrow(temperature_for_viscosity != 0, ExcMessage(
                             "The temperature used in the calculation of the visco-plastic rheology is zero. "
                             "This is not allowed, because this value is used to divide through. It is probably "
@@ -268,17 +290,34 @@ namespace aspect
                                                                       phase_function_values,
                                                                       n_phase_transitions_per_composition);
             const double current_cohesion = drucker_prager_parameters.cohesion * weakening_factors[0];
-            double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1];
+  
+          //   //Elodie Feb 2022
+          //   // Get a pointer to the mobility postprocessor
+          //   const Postprocess::MobilityStatistics<dim> &mobility_statistics =
+          //     this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
+          //   //const double average_mobility = mobility_statistics.get_average_mobility();
+          //   //const double average_mobility_t0 = mobility_statistics.get_average_mobility_t0();       
+          //   const double DMob = mobility_statistics.get_DMob();
 
-            // Steb 4b: calculate friction angle dependent on strain rate if specified
-            // apply the strain rate dependence to the friction angle (including strain weakening  if present)
-            // Note: Maybe this should also be turned around to first apply strain rate dependence and then
-            // the strain weakening to the dynamic friction angle. Didn't come up with a clear argument for
-            // one order or the other.
-            current_friction = friction_models.compute_friction_angle(current_edot_ii,
-                                                                      j,
-                                                                      current_friction,
-                                                                      in.position[i]);
+          //   double current_time = this->get_time() / year_in_seconds;
+          //   // Get alpha at the current time
+          //   // const double alpha = get_alpha(current_time);                     
+          //  double alpha = 0;
+          //  if (current_time > alpha_mobility_time && alpha_mobility>0)
+          //  {
+          //   alpha = alpha_mobility;
+          //  }
+          //   // const double alpha = alpha_mobility;
+
+          //   double friction_terms = alpha * drucker_prager_parameters.angle_internal_friction * DMob;             
+            
+            //vary friction
+            double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1];
+            // - friction_terms;
+            
+            //limit friction 
+            current_friction = std::max(0.5*drucker_prager_parameters.angle_internal_friction, current_friction);
+            current_friction = std::min(1.5*drucker_prager_parameters.angle_internal_friction, current_friction);
             output_parameters.current_friction_angles[j] = current_friction;
             output_parameters.current_cohesions[j] = current_cohesion;
 
@@ -498,11 +537,18 @@ namespace aspect
       ViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)
       {
         Rheology::StrainDependent<dim>::declare_parameters (prm);
-
-        Rheology::FrictionModels<dim>::declare_parameters (prm);
-
+        //Elodie Oct 2022
+        prm.declare_entry ("Outer temperature", "0.",
+                             Patterns::Double (), 
+                             "Temperature at the outer boundary (lithosphere water/air). Units: \\si{\\kelvin}.");
+        prm.declare_entry ("Inner temperature", "6000.",
+                             Patterns::Double (), 
+                             "Temperature at the inner boundary (core mantle boundary). Units: \\si{\\kelvin}.");
         Rheology::Elasticity<dim>::declare_parameters (prm);
-
+        // prm.declare_entry ("Alpha mobility", "5", Patterns::Double (0.),
+        //                    "Sensitivity parameter to mobility function. Units: \\si{\\per\\second}.");
+        // prm.declare_entry ("Alpha mobility transition time", "10e6", Patterns::Double (0.),
+        //                    "Times at which to change Alpha mobility. Units: \\si{\\per\\second}.");                           
         // Reference and minimum/maximum values
         prm.declare_entry ("Minimum strain rate", "1.0e-20", Patterns::Double (0.),
                            "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}.");
@@ -605,6 +651,11 @@ namespace aspect
       ViscoPlastic<dim>::parse_parameters (ParameterHandler &prm,
                                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
+
+        //Elodie Oct 2022
+        inner_temperature = prm.get_double ("Inner temperature");
+        outer_temperature = prm.get_double ("Outer temperature");
+
         // Establish that a background field is required here
         const bool has_background_field = true;
 
@@ -625,7 +676,18 @@ namespace aspect
             elastic_rheology.parse_parameters(prm);
           }
 
+        //read in friction angle
+        angles_internal_friction = Utilities::parse_map_to_double_array(prm.get("Angles of internal friction"),
+                                                                        list_of_composition_names,
+                                                                        has_background_field,
+                                                                        "Angles of internal friction",
+                                                                        true,
+                                                                        expected_n_phases_per_composition);
+
         // Reference and minimum/maximum values
+        // alpha_mobility = prm.get_double("Alpha mobility");
+        // // alpha_mobility = Utilities::string_to_double(Utilities::split_string_list(prm.get("Alpha mobility")));
+        // alpha_mobility_time = prm.get_double("Alpha mobility transition time");
         min_strain_rate = prm.get_double("Minimum strain rate");
         ref_strain_rate = prm.get_double("Reference strain rate");
         minimum_viscosity = Utilities::parse_map_to_double_array (prm.get("Minimum viscosity"),
@@ -736,7 +798,7 @@ namespace aspect
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
-              std::make_unique<PlasticAdditionalOutputs<dim>> (n_points));
+              std::make_unique<MaterialModel::PlasticAdditionalOutputs<dim>> (n_points));
           }
       }
 
@@ -762,27 +824,57 @@ namespace aspect
             plastic_out->yield_stresses[i] = 0;
             plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
 
-            const std::vector<double> friction_angles_RAD = isostrain_viscosities.current_friction_angles;
-            const std::vector<double> cohesions = isostrain_viscosities.current_cohesions;
-
             // The max yield stress is the same for each composition, so we give the 0th field value.
             const double max_yield_stress = drucker_prager_plasticity.compute_drucker_prager_parameters(0).max_yield_stress;
-
             double pressure_for_plasticity = in.pressure[i];
             if (allow_negative_pressures_in_plasticity == false)
               pressure_for_plasticity = std::max(in.pressure[i], 0.0);
 
-            // average over the volume volume fractions
-            for (unsigned int j = 0; j < volume_fractions.size(); ++j)
+            // set to weakened values, or unweakened values when strain weakening is not used
+            for (unsigned int j=0; j < volume_fractions.size(); ++j)
               {
-                plastic_out->cohesions[i]   += volume_fractions[j] * cohesions[j];
-                // Also convert radians to degrees
-                plastic_out->friction_angles[i] += constants::radians_to_degree * volume_fractions[j] * friction_angles_RAD[j];
-                plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress(cohesions[j],
-                                                  friction_angles_RAD[j],
-                                                  pressure_for_plasticity,
-                                                  max_yield_stress);
+                // Calculate the strain weakening factors and weakened values
+                const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
+                const DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(j,
+                                                                          phase_function_values,
+                                                                          n_phases_per_composition);
+                                                                          
+                plastic_out->cohesions[i]   += volume_fractions[j] * (drucker_prager_parameters.cohesion * weakening_factors[0]);
+ 
+              //  //Elodie Feb 2022             
+              //  // Get a pointer to the mobility postprocessor
+              //  const Postprocess::MobilityStatistics<dim> &mobility_statistics =
+              //           this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
+              //  //const double average_mobility = mobility_statistics.get_average_mobility();
+              //  //const double average_mobility_t0 = mobility_statistics.get_average_mobility_t0(); 
+              //  const double DMob = mobility_statistics.get_DMob(); 
 
+              //   double current_time = this->get_time() / year_in_seconds;
+              //   // Get alpha at the current time
+              //   // const double alpha = get_alpha(current_time);                 
+              // //  const double alpha = alpha_mobility;
+
+              //   double alpha = 0;
+              //   if (current_time > alpha_mobility_time && alpha_mobility>0)
+              //   {
+              //     alpha = alpha_mobility;
+              //   }
+              //  double friction_terms = alpha * drucker_prager_parameters.angle_internal_friction * DMob;
+              
+               //vary friction   
+               double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1];
+              //  - friction_terms;
+
+               //limit friction
+               current_friction = std::max(0.5*drucker_prager_parameters.angle_internal_friction, current_friction);
+               current_friction = std::min(1.5*drucker_prager_parameters.angle_internal_friction, current_friction);
+
+                // Also convert radians to degrees
+                plastic_out->friction_angles[i] += 180.0/numbers::PI * volume_fractions[j] * current_friction;
+                plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress((drucker_prager_parameters.cohesion * weakening_factors[0]),
+                                                                                                                      current_friction,
+                                                                                                                      pressure_for_plasticity,
+                                                                                                                      drucker_prager_parameters.max_yield_stress);            
               }
           }
       }

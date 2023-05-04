@@ -1,18 +1,14 @@
 /*
   Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
-
   This file is part of ASPECT.
-
   ASPECT is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2, or (at your option)
   any later version.
-
   ASPECT is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-
   You should have received a copy of the GNU General Public License
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
@@ -100,25 +96,53 @@ namespace aspect
            * Vector of reference densities $\rho_0$ with one entry per composition and phase plus one
            * for the background field.
            */
-          std::vector<double> densities;
+          std::vector<double> reference_densities;       
+          
+          
+            /**
+           * Vector for reference temperatures, read from parameter file .
+           */
+          std::vector<double> reference_temperatures;
 
           /**
-           * The reference temperature $T_0$ used in the computation of the density.
-           * All components use the same reference temperature.
+           * Vector for reference compressibilities, read from parameter file.
            */
-          double reference_T;
+          std::vector<double> reference_isothermal_compressibilities;
 
           /**
-           * Vector of thermal expansivities with one entry per composition and phase plus one
-           * for the background field.
+           * Vector for isothermal bulk modulus pressure derivatives, read from parameter file.
            */
-          std::vector<double> thermal_expansivities;
+          std::vector<double> isothermal_bulk_modulus_pressure_derivatives;
 
           /**
-           * Vector of specific heat capacities with one entry per composition and phase plus one
-           * for the background field.
+           * Vector for reference thermal expansivities, read from parameter file.
            */
-          std::vector<double> specific_heats;
+          std::vector<double> reference_thermal_expansivities;
+
+          /**
+           * Vector for isochoric specific heats, read from parameter file.
+           */
+          std::vector<double> isochoric_specific_heats;
+
+          std::vector<double> reference_thermal_diffusivities; 
+
+          std::vector<double> reference_volumes;
+
+          std::vector<double> reference_bulk_moduli;
+
+          std::vector<double> reference_pressures;
+
+          bool use_Birch_Murnaghan;
+          bool use_Murnaghan;
+          bool use_compressible_density_only;
+          bool use_incompressibility;
+          bool use_incompressibility_adiabat;
+          bool use_gms_densities;
+          
+          bool use_conductivity_temperature_dependent;
+          double composition_number_affected;
+          double temperature_threshold;
+          double conductivity_increase_factor; 
       };
     }
   }

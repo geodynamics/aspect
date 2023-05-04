@@ -35,7 +35,9 @@ namespace aspect
       specific_heat_capacities(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
       compressibilities(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
       entropy_derivative_pressure(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
-      entropy_derivative_temperature(n_individual_compositions_and_phases, numbers::signaling_nan<double>())
+      entropy_derivative_temperature(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
+      thermal_diffusion_coefficients(n_individual_compositions_and_phases, numbers::signaling_nan<double>())
+
     {}
 
 
@@ -61,6 +63,8 @@ namespace aspect
             MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.entropy_derivative_pressure, c);
           eos_outputs.entropy_derivative_temperature[c] =
             MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.entropy_derivative_temperature, c);
+          eos_outputs.thermal_diffusion_coefficients[c] =
+            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.thermal_diffusion_coefficients, c);   
         }
     }
   }

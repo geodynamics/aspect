@@ -191,20 +191,22 @@ namespace aspect
         density                        = 4,
         thermal_expansion_coefficient  = 8,
         specific_heat                  = 16,
-        thermal_conductivity           = 32,
-        compressibility                = 64,
-        entropy_derivative_pressure    = 128,
-        entropy_derivative_temperature = 256,
-        reaction_terms                 = 512,
-        reaction_rates                 = 1024,
-        additional_outputs             = 2048,
+        thermal_diffusion_coefficient  = 32,
+        thermal_conductivity           = 64,
+        compressibility                = 128,
+        entropy_derivative_pressure    = 256,
+        entropy_derivative_temperature = 512,
+        reaction_terms                 = 1024,        
+        reaction_rates                 = 2048,
+        additional_outputs             = 4096,
 
         equation_of_state_properties   = density |
                                          thermal_expansion_coefficient |
                                          specific_heat |
+                                         thermal_diffusion_coefficient |
                                          compressibility |
                                          entropy_derivative_pressure |
-                                         entropy_derivative_temperature,
+                                         entropy_derivative_temperature ,
         all_properties                 = equation_of_state_properties |
                                          viscosity |
                                          thermal_conductivity |
@@ -534,12 +536,19 @@ namespace aspect
        * as $\alpha = - \frac{1}{\rho} \frac{\partial\rho}{\partial T}$
        */
       std::vector<double> thermal_expansion_coefficients;
+  
 
       /**
        * Specific heat at the given positions.
        */
       std::vector<double> specific_heat;
 
+       /**
+       * Thermal expansion coefficients at the given positions. It is defined
+       * as $\alpha = - \frac{1}{\rho} \frac{\partial\rho}{\partial T}$
+       */
+      std::vector<double> thermal_diffusion_coefficients;   
+      
       /**
        * Thermal conductivity at the given positions.
        */
@@ -931,6 +940,45 @@ namespace aspect
          */
         std::vector<double> vp;
     };
+
+    /**
+     * Additional output fields for the plastic parameters weakened (or hardened)
+     * by strain to be added to the MaterialModel::MaterialModelOutputs structure
+     * and filled in the MaterialModel::Interface::evaluate() function.
+     */
+    template <int dim>
+    class PlasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        PlasticAdditionalOutputs(const unsigned int n_points);
+
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
+
+        /**
+         * Cohesions at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> cohesions;
+
+        /**
+         * Internal angles of friction at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> friction_angles;
+
+        /**
+         * The plastic yield stress.
+         */
+        std::vector<double> yield_stresses;        
+
+        /**
+         * The area where the viscous stress exceeds the plastic yield stress,
+         * and viscosity is rescaled back to the yield envelope.
+         */
+        std::vector<double> yielding;
+    }; 
 
 
     /**

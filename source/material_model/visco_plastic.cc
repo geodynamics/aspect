@@ -186,32 +186,37 @@ namespace aspect
           out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
           out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
           out.specific_heat[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
+          //  thermal_diffusivity[i] * out.specific_heat[i] * out.densities[i];
+          out.thermal_diffusion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_diffusion_coefficients, MaterialUtilities::arithmetic);
+          // if (define_conductivities == false)
+          //   {
+          //     double thermal_diffusivity = 0.0;
 
-          if (define_conductivities == false)
-            {
-              double thermal_diffusivity = 0.0;
+          //     for (unsigned int j=0; j < volume_fractions.size(); ++j)
+          //     {
+          //       thermal_diffusivity += volume_fractions[j] * out.thermal_diffusion_coefficients;
+          //     }
+          //     // Thermal conductivity at the given positions. If the temperature equation uses
+          //     // the reference density profile formulation, use the reference density to
+          //     // calculate thermal conductivity. Otherwise, use the real density. If the adiabatic
+          //     // conditions are not yet initialized, the real density will still be used.
+          //     if (this->get_parameters().formulation_temperature_equation ==
+          //         Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile &&
+          //         this->get_adiabatic_conditions().is_initialized())
+          //       out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] *
+          //                                       this->get_adiabatic_conditions().density(in.position[i]);
+          //     else
+          //       out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] * out.densities[i];
+          //   }
+          // else
+          //   {
+          //     // Use thermal conductivity values specified in the parameter file, if this
+          //     // option was selected.
+          //     out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
+          //   }
 
-              for (unsigned int j=0; j < volume_fractions.size(); ++j)
-                thermal_diffusivity += volume_fractions[j] * thermal_diffusivities[j];
+           out.thermal_conductivities[i] = out.thermal_diffusion_coefficients[i] * out.specific_heat[i] * out.densities[i];
 
-              // Thermal conductivity at the given positions. If the temperature equation uses
-              // the reference density profile formulation, use the reference density to
-              // calculate thermal conductivity. Otherwise, use the real density. If the adiabatic
-              // conditions are not yet initialized, the real density will still be used.
-              if (this->get_parameters().formulation_temperature_equation ==
-                  Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile &&
-                  this->get_adiabatic_conditions().is_initialized())
-                out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] *
-                                                this->get_adiabatic_conditions().density(in.position[i]);
-              else
-                out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] * out.densities[i];
-            }
-          else
-            {
-              // Use thermal conductivity values specified in the parameter file, if this
-              // option was selected.
-              out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
-            }
 
           out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
           out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
@@ -324,23 +329,23 @@ namespace aspect
           Rheology::ViscoPlastic<dim>::declare_parameters(prm);
 
           // Equation of state parameters
-          prm.declare_entry ("Thermal diffusivities", "0.8e-6",
-                             Patterns::List(Patterns::Double (0.)),
-                             "List of thermal diffusivities, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  "
-                             "Units: \\si{\\meter\\squared\\per\\second}.");
-          prm.declare_entry ("Define thermal conductivities","false",
-                             Patterns::Bool (),
-                             "Whether to directly define thermal conductivities for each compositional field "
-                             "instead of calculating the values through the specified thermal diffusivities, "
-                             "densities, and heat capacities. ");
-          prm.declare_entry ("Thermal conductivities", "3.0",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of thermal conductivities, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value. "
-                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+          // prm.declare_entry ("Thermal diffusivities", "0.8e-6",
+          //                    Patterns::Anything(),
+          //                    "List of thermal diffusivities, for background material and compositional fields, "
+          //                    "for a total of N+1 values, where N is the number of compositional fields. "
+          //                    "If only one value is given, then all use the same value.  "
+          //                    "Units: \\si{\\meter\\squared\\per\\second}.");
+          // prm.declare_entry ("Define thermal conductivities","false",
+          //                    Patterns::Bool (),
+          //                    "Whether to directly define thermal conductivities for each compositional field "
+          //                    "instead of calculating the values through the specified thermal diffusivities, "
+          //                    "densities, and heat capacities. ");
+          // prm.declare_entry ("Thermal conductivities", "3.0",
+          //                    Patterns::List(Patterns::Double(0)),
+          //                    "List of thermal conductivities, for background material and compositional fields, "
+          //                    "for a total of N+1 values, where N is the number of compositional fields. "
+          //                    "If only one value is given, then all use the same value. "
+          //                    "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
         }
         prm.leave_subsection();
       }
@@ -353,6 +358,16 @@ namespace aspect
     void
     ViscoPlastic<dim>::parse_parameters (ParameterHandler &prm)
     {
+      //  const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr;
+       
+      //  // Establish that a background field is required here
+      //   const bool has_background_field = true;
+
+        // Retrieve the list of composition names
+        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();      
+      // increment by one for background:
+      const unsigned int n_fields = this->n_compositional_fields() + 1;
+
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection ("Visco Plastic");
@@ -367,23 +382,18 @@ namespace aspect
                                               std::make_unique<std::vector<unsigned int>>(phase_function.n_phases_for_each_composition()));
 
 
-          // Retrieve the list of composition names
-          const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+          // thermal_diffusivities = Utilities::parse_map_to_double_array (prm.get("Thermal diffusivities"),
+          //                                                              list_of_composition_names,
+          //                                                              has_background_field,
+          //                                                              "Thermal diffusivities",
+          //                                                              true,
+          //                                                              expected_n_phases_per_composition);
 
-          // Establish that a background field is required here
-          const bool has_background_field = true;
+          // define_conductivities = prm.get_bool ("Define thermal conductivities");
 
-          thermal_diffusivities = Utilities::parse_map_to_double_array (prm.get("Thermal diffusivities"),
-                                                                        list_of_composition_names,
-                                                                        has_background_field,
-                                                                        "Thermal diffusivities");
-
-          define_conductivities = prm.get_bool ("Define thermal conductivities");
-
-          thermal_conductivities = Utilities::parse_map_to_double_array (prm.get("Thermal conductivities"),
-                                                                         list_of_composition_names,
-                                                                         has_background_field,
-                                                                         "Thermal conductivities");
+          // thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivities"))),
+          //                                                                  n_fields,
+          //                                                                  "Thermal conductivities");
 
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());

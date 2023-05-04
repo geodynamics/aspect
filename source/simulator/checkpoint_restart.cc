@@ -631,7 +631,6 @@ namespace aspect
     ar &total_walltime_until_last_snapshot;
 
     ar &postprocess_manager;
-
     ar &statistics;
 
     // We do not serialize the statistics_last_write_size and

@@ -427,6 +427,7 @@ namespace aspect
       densities(n_points, numbers::signaling_nan<double>()),
       thermal_expansion_coefficients(n_points, numbers::signaling_nan<double>()),
       specific_heat(n_points, numbers::signaling_nan<double>()),
+      thermal_diffusion_coefficients(n_points, numbers::signaling_nan<double>()),
       thermal_conductivities(n_points, numbers::signaling_nan<double>()),
       compressibilities(n_points, numbers::signaling_nan<double>()),
       entropy_derivative_pressure(n_points, numbers::signaling_nan<double>()),
@@ -442,6 +443,7 @@ namespace aspect
       densities(source.densities),
       thermal_expansion_coefficients(source.thermal_expansion_coefficients),
       specific_heat(source.specific_heat),
+      thermal_diffusion_coefficients(source.thermal_diffusion_coefficients),
       thermal_conductivities(source.thermal_conductivities),
       compressibilities(source.compressibilities),
       entropy_derivative_pressure(source.entropy_derivative_pressure),
@@ -846,9 +848,11 @@ namespace aspect
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.densities);
         average_property (operation, projection_matrix, expansion_matrix,
-                          values_out.thermal_expansion_coefficients);
+                          values_out.thermal_expansion_coefficients);                         
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.specific_heat);
+        average_property (operation, projection_matrix, expansion_matrix,
+                          values_out.thermal_diffusion_coefficients);                           
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.thermal_conductivities);
         average_property (operation, projection_matrix, expansion_matrix,
@@ -938,7 +942,57 @@ namespace aspect
     }
 
 
+    namespace
+    {
+      std::vector<std::string> make_plastic_additional_outputs_names()
+      {
+        std::vector<std::string> names;
+        names.emplace_back("current_cohesions");
+        names.emplace_back("current_friction_angles");
+        names.emplace_back("current_yield_stresses");
+        names.emplace_back("plastic_yielding");
+        return names;
+      }
+    }
 
+    template <int dim>
+    PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
+      :
+      NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
+      cohesions(n_points, numbers::signaling_nan<double>()),
+      friction_angles(n_points, numbers::signaling_nan<double>()),
+      yield_stresses(n_points, numbers::signaling_nan<double>()),
+      yielding(n_points, numbers::signaling_nan<double>())
+    {}
+
+
+
+    template <int dim>
+    std::vector<double>
+    PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      AssertIndexRange (idx, 4);
+      switch (idx)
+        {
+          case 0:
+            return cohesions;
+
+          case 1:
+            return friction_angles;
+
+          case 2:
+            return yield_stresses;
+
+          case 3:          
+            return yielding;
+
+          default:
+            AssertThrow(false, ExcInternalError());
+        }
+      // We will never get here, so just return something
+      return cohesions;
+    }
+    
     namespace
     {
       std::vector<std::string> make_seismic_additional_outputs_names()
@@ -1159,6 +1213,8 @@ namespace aspect
   template class NamedAdditionalMaterialOutputs<dim>; \
   \
   template class SeismicAdditionalOutputs<dim>; \
+  \
+  template class PlasticAdditionalOutputs<dim>; \
   \
   template class ReactionRateOutputs<dim>; \
   \

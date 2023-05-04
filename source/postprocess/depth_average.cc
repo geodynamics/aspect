@@ -266,7 +266,7 @@ namespace aspect
           const std::string variables =
             "all|temperature|composition|"
             "adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|"
-            "velocity magnitude|sinking velocity|rising velocity|Vs|Vp|log viscosity|"
+            "velocity magnitude|sinking velocity|rising velocity|Vs|Vp|friction_angles|cohesions|yield_stresses|"
             "viscosity|vertical heat flux|vertical mass flux|composition mass";
           prm.declare_entry("List of output variables", "all",
                             Patterns::MultipleSelection(variables.c_str()),
@@ -410,6 +410,51 @@ namespace aspect
               if (output_vp)
                 variables.emplace_back("Vp");
             }
+
+            // handle seismic velocities, because they may, or may not be provided by the material model
+            {
+              MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
+              this->get_material_model().create_additional_named_outputs(out);
+     
+                // variables.emplace_back("friction_angles");
+
+
+                // variables.emplace_back("cohesions");
+
+                // variables.emplace_back("yield_stresses");  
+          
+              const bool material_model_provides_plastic_output =
+                (out.template get_additional_output<MaterialModel::PlasticAdditionalOutputs<dim>>() != nullptr);
+
+              const bool output_frictions = std::find( output_variables.begin(), output_variables.end(), "friction_angles") != output_variables.end();
+              const bool output_cohesions = std::find( output_variables.begin(), output_variables.end(), "cohesions") != output_variables.end();
+              const bool output_yield_stresses = std::find( output_variables.begin(), output_variables.end(), "yield_stresses") != output_variables.end();
+
+              if (output_frictions || output_cohesions|| output_yield_stresses)
+                AssertThrow(material_model_provides_plastic_output,
+                            ExcMessage("You requested seismic velocities from the 'Depth average' postprocessor, "
+                                       "but the material model does not provide seismic velocities. Either remove 'Vs' and "
+                                       "'Vp' from the 'List of output variables' parameter, or use a material model that "
+                                       "provides these velocities."));
+
+              if (output_all_variables && material_model_provides_plastic_output)
+                {
+                  variables.emplace_back("friction_angles");
+                  variables.emplace_back("cohesions");
+                  variables.emplace_back("yield_stresses");
+                }
+
+              if (output_frictions)
+                variables.emplace_back("friction_angles");
+
+              if (output_cohesions)
+                variables.emplace_back("cohesions");
+
+              if (output_yield_stresses)
+                variables.emplace_back("yield_stresses");   
+              }
+
+            
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
               variables.emplace_back("viscosity");
