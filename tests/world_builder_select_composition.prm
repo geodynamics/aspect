@@ -1,4 +1,4 @@
-# WORLD BUILDER
+# Enable if: ASPECT_WITH_WORLD_BUILDER
 # This test is a copy of world_builder_simple.prm and checks that we can select
 # a subset of compositions for which to evaluate the world builder.
 
