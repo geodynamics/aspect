@@ -1389,13 +1389,13 @@ namespace aspect
                                "This parameter determines the temperature at which the computed coefficient of shear energy "
                                "partitioned into grain damage is minimum. This is used in the pinned state limit of the grain "
                                "size evolution. One choice of this parameter is the mantle temperature at the ridge axis, "
-                               "see Mulyukova, E., & Bercovici, D. (2018) for details.");
+                               "see Mulyukova and Bercovici (2018) for details.");
             prm.declare_entry ("Surface temperature", "283",
                                Patterns::Double (0.),
                                "This parameter determines the temperature at which the computed coefficient of shear energy "
                                "partitioned into grain damage is maximum. This is used in the pinned state limit of the grain "
                                "size evolution. One choice of this parameter is the surface temperature of the seafloor, see "
-                               "Mulyukova, E., & Bercovici, D. (2018) for details.");
+                               "Mulyukova and Bercovici (2018) for details.");
             prm.declare_entry ("Minimum grain size reduction work fraction", "1e-12",
                                Patterns::Double (0., 1.),
                                "This parameter determines the minimum value of the partitioning coefficient, which governs "
