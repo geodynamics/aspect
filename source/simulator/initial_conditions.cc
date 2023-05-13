@@ -117,11 +117,68 @@ namespace aspect
            :
            introspection.component_masks.compositional_fields[n-1]);
 
-        VectorTools::interpolate(*mapping,
-                                 dof_handler,
-                                 advf_init_function,
-                                 initial_solution,
-                                 advf_mask);
+        try
+          {
+            VectorTools::interpolate(*mapping,
+                                     dof_handler,
+                                     advf_init_function,
+                                     initial_solution,
+                                     advf_mask);
+          }
+        // initial conditions that throw exceptions usually do not result in
+        // anything good because they result in an unwinding of the stack
+        // and, if only one processor triggers an exception, the
+        // destruction of objects often causes a deadlock. thus, if
+        // an exception is generated, catch it, print an error message,
+        // and abort the program
+        catch (std::exception &exc)
+          {
+            const std::string field_name = (advf.is_temperature()
+                                            ?
+                                            "temperature"
+                                            :
+                                            introspection.name_for_compositional_index(n-1));
+
+            std::cerr << std::endl << std::endl
+                      << "----------------------------------------------------"
+                      << std::endl;
+            std::cerr << "Exception on MPI process <"
+                      << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                      << "> while setting the initial condition for field <"
+                      << field_name
+                      << ">: " << std::endl
+                      << exc.what() << std::endl
+                      << "Aborting!" << std::endl
+                      << "----------------------------------------------------"
+                      << std::endl;
+
+            // terminate the program!
+            MPI_Abort (MPI_COMM_WORLD, 1);
+          }
+        catch (...)
+          {
+            const std::string field_name = (advf.is_temperature()
+                                            ?
+                                            "temperature"
+                                            :
+                                            introspection.name_for_compositional_index(n-1));
+
+            std::cerr << std::endl << std::endl
+                      << "----------------------------------------------------"
+                      << std::endl;
+            std::cerr << "Exception on MPI process <"
+                      << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                      << "> while setting the initial condition for field <"
+                      << field_name
+                      << ">: " << std::endl;
+            std::cerr << "Unknown exception!" << std::endl
+                      << "Aborting!" << std::endl
+                      << "----------------------------------------------------"
+                      << std::endl;
+
+            // terminate the program!
+            MPI_Abort (MPI_COMM_WORLD, 1);
+          }
 
         if (parameters.normalized_fields.size()>0 && n==1)
           for (const auto &cell : dof_handler.active_cell_iterators())
