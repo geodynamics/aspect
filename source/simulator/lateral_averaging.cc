@@ -956,7 +956,6 @@ namespace aspect
           {
             functors.push_back(std::make_unique<FunctorDepthAverageVsVp<dim>> (false /* Vp */));
           }
-        else if (property_name == "viscosity")
         else if (property_name == "friction_angles")
           {
             functors.push_back(std::make_unique<FunctorDepthAveragePlasticity<dim>> (true, false, false));

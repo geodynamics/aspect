@@ -266,8 +266,8 @@ namespace aspect
           // in fill_plastic_outputs as is done now?
           // TODO do we even need a separate function? We could compute the PlasticAdditionalOutputs here like
           // the ElasticAdditionalOutputs.
-          rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
-
+          rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out,phase_function_values,phase_function.n_phase_transitions_for_each_composition(), isostrain_viscosities);
+ 
           if (rheology->use_elasticity)
             {
               // Compute average elastic shear modulus

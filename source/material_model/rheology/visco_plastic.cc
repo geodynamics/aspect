@@ -665,8 +665,8 @@ namespace aspect
         strain_rheology.initialize_simulator (this->get_simulator());
         strain_rheology.parse_parameters(prm);
 
-        friction_models.initialize_simulator (this->get_simulator());
-        friction_models.parse_parameters(prm);
+        // friction_models.initialize_simulator (this->get_simulator());
+        // friction_models.parse_parameters(prm);
 
         use_elasticity = prm.get_bool ("Include viscoelasticity");
 
@@ -810,6 +810,8 @@ namespace aspect
                            const bool plastic_yielding,
                            const MaterialModel::MaterialModelInputs<dim> &in,
                            MaterialModel::MaterialModelOutputs<dim> &out,
+                           const std::vector<double> &phase_function_values,
+                           const std::vector<unsigned int> &n_phase_transitions_per_composition,
                            const IsostrainViscosities &isostrain_viscosities) const
       {
         PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
@@ -837,7 +839,7 @@ namespace aspect
                 const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
                 const DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(j,
                                                                           phase_function_values,
-                                                                          n_phases_per_composition);
+                                                                          n_phase_transitions_per_composition); 
                                                                           
                 plastic_out->cohesions[i]   += volume_fractions[j] * (drucker_prager_parameters.cohesion * weakening_factors[0]);
  

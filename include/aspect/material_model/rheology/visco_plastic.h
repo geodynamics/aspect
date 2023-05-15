@@ -234,6 +234,8 @@ namespace aspect
                                     const bool plastic_yielding,
                                     const MaterialModel::MaterialModelInputs<dim> &in,
                                     MaterialModel::MaterialModelOutputs<dim> &out,
+                                    const std::vector<double> &phase_function_values,
+                                    const std::vector<unsigned int> &n_phase_transitions_per_composition,
                                     const IsostrainViscosities &isostrain_viscosities) const;
 
           /**
