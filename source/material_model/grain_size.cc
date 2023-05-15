@@ -402,7 +402,7 @@ namespace aspect
               // pinned_grain_damage: Mulyukova and Bercovici (2018) Collapse of passive margins by lithospheric damage and plunging grain size. Earth and Planetary Science Letters, 484, 341-352.
               const double stress = 2.0 * second_strain_rate_invariant * current_viscosity;
               const double grain_size_reduction_rate = 2.0 * stress * compute_partitioning_fraction(temperature) * second_strain_rate_invariant * pow(grain_size,2)
-                                                       * roughness_to_grain_size_factor (volume_fraction_phase_one) * roughness_to_grain_size_factor (volume_fraction_phase_one)
+                                                       * roughness_to_grain_size_factor (volume_fraction_phase_one)
                                                        / (geometric_constant[phase_index] * grain_boundary_energy[phase_index] * phase_distribution_function(volume_fraction_phase_one));
               grain_size_reduction = grain_size_reduction_rate * grain_growth_timestep;
             }
