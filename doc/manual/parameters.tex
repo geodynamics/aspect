@@ -11489,6 +11489,40 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Phase transition temperature lower limits}
+\phantomsection\label{parameters:Material model/Latent heat/Phase transition temperature lower limits}
+\label{parameters:Material_20model/Latent_20heat/Phase_20transition_20temperature_20lower_20limits}
+
+
+\index[prmindex]{Phase transition temperature lower limits}
+\index[prmindexfull]{Material model!Latent heat!Phase transition temperature lower limits}
+{\it Value:} -1.7976931348623157e+308
+
+
+{\it Default:} -1.7976931348623157e+308
+
+
+{\it Description:} A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Phase transition temperature upper limits}
+\phantomsection\label{parameters:Material model/Latent heat/Phase transition temperature upper limits}
+\label{parameters:Material_20model/Latent_20heat/Phase_20transition_20temperature_20upper_20limits}
+
+
+\index[prmindex]{Phase transition temperature upper limits}
+\index[prmindexfull]{Material model!Latent heat!Phase transition temperature upper limits}
+{\it Value:} 1.7976931348623157e+308
+
+
+{\it Default:} 1.7976931348623157e+308
+
+
+{\it Description:} A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+
+
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Phase transition temperatures}
 \phantomsection\label{parameters:Material model/Latent heat/Phase transition temperatures}
 \label{parameters:Material_20model/Latent_20heat/Phase_20transition_20temperatures}
@@ -16319,6 +16353,40 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Phase transition temperature lower limits}
+\phantomsection\label{parameters:Material model/Visco Plastic/Phase transition temperature lower limits}
+\label{parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperature_20lower_20limits}
+
+
+\index[prmindex]{Phase transition temperature lower limits}
+\index[prmindexfull]{Material model!Visco Plastic!Phase transition temperature lower limits}
+{\it Value:} -1.7976931348623157e+308
+
+
+{\it Default:} -1.7976931348623157e+308
+
+
+{\it Description:} A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Phase transition temperature upper limits}
+\phantomsection\label{parameters:Material model/Visco Plastic/Phase transition temperature upper limits}
+\label{parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperature_20upper_20limits}
+
+
+\index[prmindex]{Phase transition temperature upper limits}
+\index[prmindexfull]{Material model!Visco Plastic!Phase transition temperature upper limits}
+{\it Value:} 1.7976931348623157e+308
+
+
+{\it Default:} 1.7976931348623157e+308
+
+
+{\it Description:} A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+
+
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Phase transition temperatures}
 \phantomsection\label{parameters:Material model/Visco Plastic/Phase transition temperatures}
 \label{parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperatures}
@@ -18470,7 +18538,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 `velocity boundary statistics': A postprocessor that computes some statistics about the velocity along the boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the min and max velocity magnitude is computed.
 
-`velocity statistics': A postprocessor that computes some statistics about the velocity field.
+`velocity statistics': A postprocessor that computes the root mean square and maximum velocity in the computational domain.
 
 `viscous dissipation statistics': A postprocessor that outputs the viscous rate of dissipation of energy for each compositional field (where the field has a value of 0.5 or more) as well as over the whole domain. When all the fields represent lithologies and there is no background field, the sum of the individual field's dissipation should equal that over the whole domain. The viscous dissipation is computed as: $\int_{V}\left(\sigma' \dot{\epsilon}' \right)$, where $\sigma'$  is the deviatoric stress and $\dot{\epsilon}'$ the deviatoric strain rate.Note then when shear heating is included in the temperature equation, it is better to use the 'heating statistics' postprocessor.
 
@@ -21342,7 +21410,7 @@ Physical units: \si{\per\second}.
 {\it Description:} The file format to be used for graphical output. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described.
 
 
-{\it Possible values:} Any one of none, dx, ucd, gnuplot, povray, eps, gmv, tecplot, tecplot\_binary, vtk, vtu, hdf5, svg, deal.II intermediate
+{\it Possible values:} Any one of none, dx, ucd, gnuplot, povray, eps, gmv, tecplot, tecplot\_binary, vtk, vtu, hdf5, svg, deal.II intermediate, parallel deal.II intermediate
 \item {\it Parameter name:} {\tt Output mesh displacement}
 \phantomsection\label{parameters:Postprocess/Visualization/Output mesh displacement}
 \label{parameters:Postprocess/Visualization/Output_20mesh_20displacement}

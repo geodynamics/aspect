@@ -174,7 +174,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect19BoundaryTemperature3BoxILi2EEE -->
 <g id="edge28" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect19BoundaryTemperature3BoxILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1252.24,-1061.46C1279.81,-1093.17 1314.08,-1133.82 1325.52,-1152.59 1372.04,-1228.89 1382.61,-1250.89 1404.25,-1337.59 1417.08,-1388.98 1420.41,-1450.27 1421.09,-1489.36"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1255.39,-1061.39C1278.08,-1086.62 1305.55,-1119.83 1325.52,-1152.59 1372.04,-1228.89 1382.61,-1250.89 1404.25,-1337.59 1417.08,-1388.98 1420.41,-1450.27 1421.09,-1489.36"/>
 <polygon fill="none" stroke="gray" points="1417.59,-1489.57 1421.21,-1499.52 1424.59,-1489.48 1417.59,-1489.57"/>
 </g>
 <!-- N6aspect19BoundaryTemperature14TwoMergedBoxesILi2EEE -->
@@ -275,7 +275,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect16BoundaryTraction8FunctionILi2EEE -->
 <g id="edge45" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect16BoundaryTraction8FunctionILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1254.48,-1061.34C1288.98,-1097.75 1334.66,-1144.9 1345.56,-1151.11 1375.56,-1168.19 1414.09,-1176.74 1442.44,-1180.97"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1246.19,-1061.44C1270.39,-1090.96 1306.04,-1128.62 1345.56,-1151.11 1375.56,-1168.19 1414.09,-1176.74 1442.44,-1180.97"/>
 <polygon fill="none" stroke="gray" points="1442.01,-1184.44 1452.4,-1182.34 1442.97,-1177.51 1442.01,-1184.44"/>
 </g>
 <!-- N6aspect16BoundaryTraction26InitialLithostaticPressureILi2EEE -->
@@ -337,7 +337,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect22InitialTopographyModel9AsciiDataILi2EEE -->
 <g id="edge59" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect22InitialTopographyModel9AsciiDataILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1253.52,-1061.21C1287.9,-1098.12 1333.97,-1146.11 1345.56,-1151.11 1401.04,-1175.04 1422.1,-1143.14 1481.46,-1154.38 1497.98,-1157.5 1515.53,-1163.39 1530.49,-1169.24"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1242.59,-1061.26C1266.09,-1092.55 1302.47,-1132.52 1345.56,-1151.11 1401.04,-1175.04 1422.1,-1143.14 1481.46,-1154.38 1497.98,-1157.5 1515.53,-1163.39 1530.49,-1169.24"/>
 <polygon fill="none" stroke="gray" points="1529.32,-1172.54 1539.9,-1173.05 1531.95,-1166.06 1529.32,-1172.54"/>
 </g>
 <!-- N6aspect22InitialTopographyModel8FunctionILi2EEE -->
@@ -349,7 +349,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect22InitialTopographyModel8FunctionILi2EEE -->
 <g id="edge61" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect22InitialTopographyModel8FunctionILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1254.97,-1061.23C1286.34,-1093.89 1327.24,-1135.68 1345.56,-1151.11 1393.61,-1191.56 1422.15,-1182.96 1461.48,-1231.93 1469.79,-1242.27 1469.82,-1246.6 1472.87,-1259.51 1477.56,-1279.42 1461.49,-1291.17 1476.18,-1305.41 1503.87,-1332.27 1525.25,-1300.63 1562.92,-1308.99 1575.4,-1311.76 1578.07,-1314.25 1589.47,-1320.06 1597.34,-1324.08 1605.57,-1328.78 1613.26,-1333.41"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1252.74,-1061.16C1278.03,-1088.22 1312.39,-1123.19 1345.56,-1151.11 1393.61,-1191.56 1422.15,-1182.96 1461.48,-1231.93 1469.79,-1242.27 1469.82,-1246.6 1472.87,-1259.51 1477.56,-1279.42 1461.49,-1291.17 1476.18,-1305.41 1503.87,-1332.27 1525.25,-1300.63 1562.92,-1308.99 1575.4,-1311.76 1578.07,-1314.25 1589.47,-1320.06 1597.34,-1324.08 1605.57,-1328.78 1613.26,-1333.41"/>
 <polygon fill="none" stroke="gray" points="1611.63,-1336.52 1621.98,-1338.77 1615.29,-1330.55 1611.63,-1336.52"/>
 </g>
 <!-- N6aspect13GeometryModel3BoxILi2EEE -->
@@ -567,7 +567,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect12HeatingModel8FunctionILi2EEE -->
 <g id="edge101" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect12HeatingModel8FunctionILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1252.24,-1061.46C1279.81,-1093.17 1314.08,-1133.82 1325.52,-1152.59 1372.04,-1228.89 1375.95,-1252.83 1404.25,-1337.59 1438,-1438.64 1498.4,-1758.52 1519.03,-1870.27"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1255.39,-1061.39C1278.08,-1086.62 1305.55,-1119.83 1325.52,-1152.59 1372.04,-1228.89 1375.95,-1252.83 1404.25,-1337.59 1438,-1438.64 1498.4,-1758.52 1519.03,-1870.27"/>
 <polygon fill="none" stroke="gray" points="1515.65,-1871.22 1520.9,-1880.42 1522.53,-1869.96 1515.65,-1871.22"/>
 </g>
 <!-- N6aspect12HeatingModel14LatentHeatMeltILi2EEE -->
@@ -580,7 +580,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect12HeatingModel14LatentHeatMeltILi2EEE -->
 <g id="edge104" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect12HeatingModel14LatentHeatMeltILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1252.24,-1061.46C1279.81,-1093.17 1314.08,-1133.82 1325.52,-1152.59 1372.04,-1228.89 1375.95,-1252.83 1404.25,-1337.59 1468.67,-1530.47 1448.19,-1588.94 1509.15,-1782.94 1513.13,-1795.59 1513.73,-1799.11 1520.38,-1810.58 1556.67,-1873.13 1610.85,-1937.52 1645,-1975.63"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1255.39,-1061.39C1278.08,-1086.62 1305.55,-1119.83 1325.52,-1152.59 1372.04,-1228.89 1375.95,-1252.83 1404.25,-1337.59 1468.67,-1530.47 1448.19,-1588.94 1509.15,-1782.94 1513.13,-1795.59 1513.73,-1799.11 1520.38,-1810.58 1556.67,-1873.13 1610.85,-1937.52 1645,-1975.63"/>
 <polygon fill="none" stroke="gray" points="1642.68,-1978.28 1651.97,-1983.35 1647.87,-1973.59 1642.68,-1978.28"/>
 </g>
 <!-- N6aspect12HeatingModel16RadioactiveDecayILi2EEE -->
@@ -593,7 +593,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect12HeatingModel16RadioactiveDecayILi2EEE -->
 <g id="edge106" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect12HeatingModel16RadioactiveDecayILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1252.24,-1061.46C1279.81,-1093.17 1314.08,-1133.82 1325.52,-1152.59 1372.04,-1228.89 1374.86,-1253.21 1404.25,-1337.59 1433.04,-1420.22 1432.73,-1443.19 1456.39,-1527.43 1478.5,-1606.14 1480.38,-1626.99 1507.15,-1704.23 1511.04,-1715.46 1512.06,-1718.3 1517.25,-1728.99 1519.34,-1733.27 1521.61,-1737.68 1523.96,-1742.04"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1255.39,-1061.39C1278.08,-1086.62 1305.55,-1119.83 1325.52,-1152.59 1372.04,-1228.89 1374.86,-1253.21 1404.25,-1337.59 1433.04,-1420.22 1432.73,-1443.19 1456.39,-1527.43 1478.5,-1606.14 1480.38,-1626.99 1507.15,-1704.23 1511.04,-1715.46 1512.06,-1718.3 1517.25,-1728.99 1519.34,-1733.27 1521.61,-1737.68 1523.96,-1742.04"/>
 <polygon fill="none" stroke="gray" points="1520.94,-1743.81 1528.82,-1750.89 1527.07,-1740.44 1520.94,-1743.81"/>
 </g>
 <!-- N6aspect12HeatingModel12ShearHeatingILi2EEE -->
@@ -668,7 +668,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect18InitialComposition8FunctionILi2EEE -->
 <g id="edge119" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect18InitialComposition8FunctionILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.63,-988.99C1317.82,-951.86 1410.99,-892.4 1411.48,-892.12 1488.55,-848.37 1512.93,-846.99 1589.72,-802.75 1616.25,-787.47 1645.18,-768.38 1666.55,-753.78"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.83,-986.97C1299.34,-960.58 1358.24,-922.34 1411.48,-892.12 1488.55,-848.37 1512.93,-846.99 1589.72,-802.75 1616.25,-787.47 1645.18,-768.38 1666.55,-753.78"/>
 <polygon fill="none" stroke="gray" points="1668.67,-756.57 1674.93,-748.02 1664.71,-750.8 1668.67,-756.57"/>
 </g>
 <!-- N6aspect18InitialComposition8PorosityILi2EEE -->
@@ -1094,7 +1094,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect13MaterialModel11MeltBoukareILi2EEE -->
 <g id="edge189" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect13MaterialModel11MeltBoukareILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1252.24,-1061.46C1279.81,-1093.17 1314.08,-1133.82 1325.52,-1152.59 1372.04,-1228.89 1375.95,-1252.83 1404.25,-1337.59 1431.99,-1420.66 1439.75,-1442.1 1451.53,-1528.89 1461.1,-1599.4 1461.33,-1681.99 1460.22,-1732.98"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1255.39,-1061.39C1278.08,-1086.62 1305.55,-1119.83 1325.52,-1152.59 1372.04,-1228.89 1375.95,-1252.83 1404.25,-1337.59 1431.99,-1420.66 1439.75,-1442.1 1451.53,-1528.89 1461.1,-1599.4 1461.33,-1681.99 1460.22,-1732.98"/>
 <polygon fill="none" stroke="gray" points="1456.72,-1732.98 1459.97,-1743.06 1463.72,-1733.15 1456.72,-1732.98"/>
 </g>
 <!-- N6aspect13MaterialModel10MeltGlobalILi2EEE -->
@@ -1106,7 +1106,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect13MaterialModel10MeltGlobalILi2EEE -->
 <g id="edge191" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect13MaterialModel10MeltGlobalILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1252.24,-1061.46C1279.81,-1093.17 1314.08,-1133.82 1325.52,-1152.59 1417.37,-1303.26 1399.33,-1360.46 1456.39,-1527.43 1460.59,-1539.7 1462.26,-1542.55 1467.5,-1554.41 1484.83,-1593.68 1489.46,-1603.4 1508.72,-1641.77 1512.65,-1649.6 1516.98,-1657.92 1521.17,-1665.85"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1255.39,-1061.39C1278.08,-1086.62 1305.55,-1119.83 1325.52,-1152.59 1417.37,-1303.26 1399.33,-1360.46 1456.39,-1527.43 1460.59,-1539.7 1462.26,-1542.55 1467.5,-1554.41 1484.83,-1593.68 1489.46,-1603.4 1508.72,-1641.77 1512.65,-1649.6 1516.98,-1657.92 1521.17,-1665.85"/>
 <polygon fill="none" stroke="gray" points="1518.22,-1667.75 1526,-1674.93 1524.39,-1664.46 1518.22,-1667.75"/>
 </g>
 <!-- N6aspect13MaterialModel10MeltSimpleILi2EEE -->
@@ -1243,7 +1243,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect14MeshRefinement19ArtificialViscosityILi2EEE -->
 <g id="edge216" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect14MeshRefinement19ArtificialViscosityILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.94,-992.63C1278.64,-982.78 1298.19,-973.31 1308.25,-970.93 1432.91,-941.46 1582.8,-994.58 1652.18,-1024.12"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.81,-989.85C1274.71,-982.14 1291.69,-974.84 1308.25,-970.93 1432.91,-941.46 1582.8,-994.58 1652.18,-1024.12"/>
 <polygon fill="none" stroke="gray" points="1650.85,-1027.36 1661.42,-1028.12 1653.63,-1020.93 1650.85,-1027.36"/>
 </g>
 <!-- N6aspect14MeshRefinement8BoundaryILi2EEE -->
@@ -1255,7 +1255,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect14MeshRefinement8BoundaryILi2EEE -->
 <g id="edge218" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect14MeshRefinement8BoundaryILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.94,-992.63C1278.64,-982.78 1298.19,-973.31 1308.25,-970.93 1368.22,-956.76 1548.91,-965.03 1629.76,-969.65"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.81,-989.85C1274.71,-982.14 1291.69,-974.84 1308.25,-970.93 1368.22,-956.76 1548.91,-965.03 1629.76,-969.65"/>
 <polygon fill="none" stroke="gray" points="1629.83,-973.16 1640.02,-970.24 1630.24,-966.17 1629.83,-973.16"/>
 </g>
 <!-- N6aspect14MeshRefinement16CompactionLengthILi2EEE -->
@@ -1268,7 +1268,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect14MeshRefinement16CompactionLengthILi2EEE -->
 <g id="edge220" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect14MeshRefinement16CompactionLengthILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.94,-992.63C1278.64,-982.78 1298.19,-973.31 1308.25,-970.93 1335.39,-964.51 1343.15,-969.42 1370.99,-970.93 1504.22,-978.14 1536.06,-1006.66 1669.44,-1003.35 1706.77,-1002.42 1715.73,-997.13 1752.41,-990.13 1799.03,-981.24 1810.48,-977.92 1856.65,-966.94 1900.55,-956.5 1950.34,-943.8 1985.98,-934.57"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.81,-989.85C1274.71,-982.14 1291.69,-974.84 1308.25,-970.93 1335.39,-964.51 1343.15,-969.42 1370.99,-970.93 1504.22,-978.14 1536.06,-1006.66 1669.44,-1003.35 1706.77,-1002.42 1715.73,-997.13 1752.41,-990.13 1799.03,-981.24 1810.48,-977.92 1856.65,-966.94 1900.55,-956.5 1950.34,-943.8 1985.98,-934.57"/>
 <polygon fill="none" stroke="gray" points="1987.31,-937.84 1996.1,-931.94 1985.55,-931.07 1987.31,-937.84"/>
 </g>
 <!-- N6aspect14MeshRefinement11CompositionILi2EEE -->
@@ -1280,7 +1280,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect14MeshRefinement11CompositionILi2EEE -->
 <g id="edge222" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect14MeshRefinement11CompositionILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.94,-992.63C1278.64,-982.78 1298.19,-973.31 1308.25,-970.93 1335.39,-964.51 1343.16,-969.31 1370.99,-970.93 1513.98,-979.22 1551.4,-976.54 1691.08,-1008.19 1759.99,-1023.81 1773.12,-1041.84 1841.49,-1059.67 1916.2,-1079.17 2004.88,-1093.61 2057.8,-1101.32"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.81,-989.85C1274.71,-982.14 1291.69,-974.84 1308.25,-970.93 1335.39,-964.51 1343.16,-969.31 1370.99,-970.93 1513.98,-979.22 1551.4,-976.54 1691.08,-1008.19 1759.99,-1023.81 1773.12,-1041.84 1841.49,-1059.67 1916.2,-1079.17 2004.88,-1093.61 2057.8,-1101.32"/>
 <polygon fill="none" stroke="gray" points="2057.5,-1104.82 2067.9,-1102.78 2058.5,-1097.89 2057.5,-1104.82"/>
 </g>
 <!-- N6aspect14MeshRefinement30CompositionApproximateGradientILi2EEE -->
@@ -1332,7 +1332,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect14MeshRefinement7DensityILi2EEE -->
 <g id="edge230" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect14MeshRefinement7DensityILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.94,-992.63C1278.64,-982.78 1298.19,-973.31 1308.25,-970.93 1335.39,-964.51 1343.16,-969.31 1370.99,-970.93 1513.98,-979.22 1549.01,-990.07 1691.08,-1008.19 1728.99,-1013.03 1772.2,-1019.08 1802.56,-1023.42"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.81,-989.85C1274.71,-982.14 1291.69,-974.84 1308.25,-970.93 1335.39,-964.51 1343.16,-969.31 1370.99,-970.93 1513.98,-979.22 1549.01,-990.07 1691.08,-1008.19 1728.99,-1013.03 1772.2,-1019.08 1802.56,-1023.42"/>
 <polygon fill="none" stroke="gray" points="1802.34,-1026.93 1812.73,-1024.88 1803.33,-1020 1802.34,-1026.93"/>
 </g>
 <!-- N6aspect14MeshRefinement11IsosurfacesILi2EEE -->
@@ -1344,7 +1344,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect14MeshRefinement11IsosurfacesILi2EEE -->
 <g id="edge232" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect14MeshRefinement11IsosurfacesILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.73,-1037.52C1306.02,-1057.12 1370.8,-1084.53 1370.99,-1084.53 1436.98,-1083.05 1454.36,-1066.36 1519.36,-1077.86 1565.03,-1085.93 1564.2,-1122.8 1610.11,-1129.38 1646.05,-1134.54 1655.29,-1115.02 1691.26,-1119.96 1737.71,-1126.34 1744.99,-1143.48 1788.89,-1159.94 1870.66,-1190.6 1967.47,-1222.69 2022.3,-1240.47"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.82,-1058.82C1274.32,-1069.27 1291.08,-1079.09 1308.25,-1084.53 1321.55,-1088.74 1357.06,-1084.84 1370.99,-1084.53 1436.98,-1083.05 1454.36,-1066.36 1519.36,-1077.86 1565.03,-1085.93 1564.2,-1122.8 1610.11,-1129.38 1646.05,-1134.54 1655.29,-1115.02 1691.26,-1119.96 1737.71,-1126.34 1744.99,-1143.48 1788.89,-1159.94 1870.66,-1190.6 1967.47,-1222.69 2022.3,-1240.47"/>
 <polygon fill="none" stroke="gray" points="2021.45,-1243.88 2032.04,-1243.63 2023.6,-1237.22 2021.45,-1243.88"/>
 </g>
 <!-- N6aspect14MeshRefinement25MaximumRefinementFunctionILi2EEE -->
@@ -1412,7 +1412,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect14MeshRefinement15ParticleDensityILi2EEE -->
 <g id="edge242" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect14MeshRefinement15ParticleDensityILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.73,-1037.52C1306.02,-1057.12 1370.8,-1084.53 1370.99,-1084.53 1436.98,-1083.05 1454.36,-1066.36 1519.36,-1077.86 1565.03,-1085.93 1564.2,-1122.8 1610.11,-1129.38 1646.05,-1134.54 1655.29,-1115.02 1691.26,-1119.96 1737.71,-1126.34 1743.94,-1146.59 1788.89,-1159.94 1885.15,-1188.52 1910.41,-1203.06 2010.82,-1202.29 2032.29,-1202.13 2055.81,-1197.55 2074.78,-1192.72"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.82,-1058.82C1274.32,-1069.27 1291.08,-1079.09 1308.25,-1084.53 1321.55,-1088.74 1357.06,-1084.84 1370.99,-1084.53 1436.98,-1083.05 1454.36,-1066.36 1519.36,-1077.86 1565.03,-1085.93 1564.2,-1122.8 1610.11,-1129.38 1646.05,-1134.54 1655.29,-1115.02 1691.26,-1119.96 1737.71,-1126.34 1743.94,-1146.59 1788.89,-1159.94 1885.15,-1188.52 1910.41,-1203.06 2010.82,-1202.29 2032.29,-1202.13 2055.81,-1197.55 2074.78,-1192.72"/>
 <polygon fill="none" stroke="gray" points="2075.77,-1196.07 2084.53,-1190.11 2073.96,-1189.31 2075.77,-1196.07"/>
 </g>
 <!-- N6aspect14MeshRefinement5SlopeILi2EEE -->
@@ -1461,7 +1461,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect14MeshRefinement20ThermalEnergyDensityILi2EEE -->
 <g id="edge250" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect14MeshRefinement20ThermalEnergyDensityILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.94,-992.63C1278.64,-982.78 1298.19,-973.31 1308.25,-970.93 1335.39,-964.51 1343.15,-969.42 1370.99,-970.93 1504.22,-978.14 1536.12,-998.02 1669.44,-1003.35 1745.93,-1006.4 1765.08,-999.89 1841.62,-998.47 1900.77,-997.38 1915.71,-993.25 1974.74,-997.32 1998.17,-998.94 2023.84,-1002.4 2045.93,-1005.91"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.81,-989.85C1274.71,-982.14 1291.69,-974.84 1308.25,-970.93 1335.39,-964.51 1343.15,-969.42 1370.99,-970.93 1504.22,-978.14 1536.12,-998.02 1669.44,-1003.35 1745.93,-1006.4 1765.08,-999.89 1841.62,-998.47 1900.77,-997.38 1915.71,-993.25 1974.74,-997.32 1998.17,-998.94 2023.84,-1002.4 2045.93,-1005.91"/>
 <polygon fill="none" stroke="gray" points="2045.38,-1009.36 2055.81,-1007.52 2046.5,-1002.45 2045.38,-1009.36"/>
 </g>
 <!-- N6aspect14MeshRefinement10TopographyILi2EEE -->
@@ -1485,7 +1485,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect14MeshRefinement8VelocityILi2EEE -->
 <g id="edge254" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect14MeshRefinement8VelocityILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.94,-992.63C1278.64,-982.78 1298.19,-973.31 1308.25,-970.93 1335.39,-964.51 1343.15,-969.42 1370.99,-970.93 1504.22,-978.14 1536.12,-998.02 1669.44,-1003.35 1745.93,-1006.4 1765.41,-991.23 1841.62,-998.47 1874.17,-1001.57 1910.35,-1009.9 1936.76,-1016.91"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.81,-989.85C1274.71,-982.14 1291.69,-974.84 1308.25,-970.93 1335.39,-964.51 1343.15,-969.42 1370.99,-970.93 1504.22,-978.14 1536.12,-998.02 1669.44,-1003.35 1745.93,-1006.4 1765.41,-991.23 1841.62,-998.47 1874.17,-1001.57 1910.35,-1009.9 1936.76,-1016.91"/>
 <polygon fill="none" stroke="gray" points="1936.16,-1020.38 1946.73,-1019.62 1938,-1013.62 1936.16,-1020.38"/>
 </g>
 <!-- N6aspect14MeshRefinement9ViscosityILi2EEE -->
@@ -1748,7 +1748,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect8Particle8Property13ElasticStressILi2EEE -->
 <g id="edge300" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect8Particle8Property13ElasticStressILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.73,-975.48C1299.28,-938.45 1353.21,-887.51 1373.63,-866.12 1468.14,-767.09 1477.67,-729.27 1575.38,-633.39 1596.34,-612.81 1607.23,-613.54 1626.12,-591.04 1632.47,-583.48 1692.56,-477.53 1727.18,-416.17"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.47,-976.98C1292.03,-947.01 1336.5,-905.02 1373.63,-866.12 1468.14,-767.09 1477.67,-729.27 1575.38,-633.39 1596.34,-612.81 1607.23,-613.54 1626.12,-591.04 1632.47,-583.48 1692.56,-477.53 1727.18,-416.17"/>
 <polygon fill="none" stroke="gray" points="1730.23,-417.89 1732.1,-407.46 1724.14,-414.45 1730.23,-417.89"/>
 </g>
 <!-- N6aspect8Particle8Property9GrainSizeILi2EEE -->
@@ -1862,7 +1862,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect8Particle8Property27ViscoPlasticStrainInvariantILi2EEE -->
 <g id="edge322" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect8Particle8Property27ViscoPlasticStrainInvariantILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.73,-975.48C1299.28,-938.45 1353.21,-887.51 1373.63,-866.12 1468.14,-767.09 1477.67,-729.27 1575.38,-633.39 1596.34,-612.81 1608.15,-614.28 1626.12,-591.04 1677.44,-524.68 1684.94,-501.19 1705.83,-419.94 1711.07,-399.58 1705.51,-393.26 1710.71,-372.88 1714.14,-359.45 1714.54,-355.28 1722.76,-344.11 1731.61,-332.08 1743.07,-320.84 1754.51,-311.14"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.47,-976.98C1292.03,-947.01 1336.5,-905.02 1373.63,-866.12 1468.14,-767.09 1477.67,-729.27 1575.38,-633.39 1596.34,-612.81 1608.15,-614.28 1626.12,-591.04 1677.44,-524.68 1684.94,-501.19 1705.83,-419.94 1711.07,-399.58 1705.51,-393.26 1710.71,-372.88 1714.14,-359.45 1714.54,-355.28 1722.76,-344.11 1731.61,-332.08 1743.07,-320.84 1754.51,-311.14"/>
 <polygon fill="none" stroke="gray" points="1756.88,-313.73 1762.4,-304.69 1752.45,-308.31 1756.88,-313.73"/>
 </g>
 <!-- N6aspect11Postprocess14StokesResidualILi2EEE -->
@@ -2979,7 +2979,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect19TerminationCriteria7EndStepILi2EEE -->
 <g id="edge500" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect19TerminationCriteria7EndStepILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.56,-982.23C1360.02,-902.89 1593.95,-716.94 1623.9,-681.92 1636.03,-667.74 1646.86,-650.14 1655.21,-634.81"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.5,-984.04C1353.44,-913.19 1564.89,-750.9 1623.9,-681.92 1636.03,-667.74 1646.86,-650.14 1655.21,-634.81"/>
 <polygon fill="none" stroke="gray" points="1658.5,-636.09 1660.08,-625.61 1652.31,-632.81 1658.5,-636.09"/>
 </g>
 <!-- N6aspect19TerminationCriteria7EndTimeILi2EEE -->
@@ -2991,7 +2991,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect19TerminationCriteria7EndTimeILi2EEE -->
 <g id="edge502" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect19TerminationCriteria7EndTimeILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.73,-975.48C1299.28,-938.45 1353.21,-887.51 1373.63,-866.12 1468.14,-767.09 1474.95,-726.41 1575.38,-633.39 1606.15,-604.89 1616.26,-600.42 1651.2,-577.21 1675.48,-561.08 1680.31,-553.98 1707.61,-543.77 1715.8,-540.71 1718.57,-542.69 1726.96,-540.24 1740.64,-536.24 1744.76,-535.97 1756.64,-528.09 1770.68,-518.77 1784.21,-506.05 1795.19,-494.42"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.47,-976.98C1292.03,-947.01 1336.5,-905.02 1373.63,-866.12 1468.14,-767.09 1474.95,-726.41 1575.38,-633.39 1606.15,-604.89 1616.26,-600.42 1651.2,-577.21 1675.48,-561.08 1680.31,-553.98 1707.61,-543.77 1715.8,-540.71 1718.57,-542.69 1726.96,-540.24 1740.64,-536.24 1744.76,-535.97 1756.64,-528.09 1770.68,-518.77 1784.21,-506.05 1795.19,-494.42"/>
 <polygon fill="none" stroke="gray" points="1797.83,-496.72 1802.01,-486.99 1792.67,-491.99 1797.83,-496.72"/>
 </g>
 <!-- N6aspect19TerminationCriteria14SteadyHeatFluxILi2EEE -->
@@ -3004,7 +3004,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect19TerminationCriteria14SteadyHeatFluxILi2EEE -->
 <g id="edge504" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect19TerminationCriteria14SteadyHeatFluxILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.73,-975.48C1299.28,-938.45 1353.21,-887.51 1373.63,-866.12 1468.14,-767.09 1474.95,-726.41 1575.38,-633.39 1601.42,-609.27 1674.36,-556.2 1707.61,-543.77 1715.8,-540.71 1718.57,-542.69 1726.96,-540.24 1740.64,-536.24 1743.5,-533.61 1756.64,-528.09 1789.27,-514.39 1825.91,-498.62 1854.02,-486.42"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.47,-976.98C1292.03,-947.01 1336.5,-905.02 1373.63,-866.12 1468.14,-767.09 1474.95,-726.41 1575.38,-633.39 1601.42,-609.27 1674.36,-556.2 1707.61,-543.77 1715.8,-540.71 1718.57,-542.69 1726.96,-540.24 1740.64,-536.24 1743.5,-533.61 1756.64,-528.09 1789.27,-514.39 1825.91,-498.62 1854.02,-486.42"/>
 <polygon fill="none" stroke="gray" points="1855.43,-489.63 1863.21,-482.43 1852.64,-483.21 1855.43,-489.63"/>
 </g>
 <!-- N6aspect19TerminationCriteria17SteadyTemperatureILi2EEE -->
@@ -3030,7 +3030,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect19TerminationCriteria17SteadyRMSVelocityILi2EEE -->
 <g id="edge508" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect19TerminationCriteria17SteadyRMSVelocityILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.73,-975.48C1299.28,-938.45 1353.21,-887.51 1373.63,-866.12 1468.14,-767.09 1477.67,-729.27 1575.38,-633.39 1596.34,-612.81 1604.02,-610.39 1626.12,-591.04 1647.53,-572.3 1670.97,-550.85 1689.88,-533.3"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.47,-976.98C1292.03,-947.01 1336.5,-905.02 1373.63,-866.12 1468.14,-767.09 1477.67,-729.27 1575.38,-633.39 1596.34,-612.81 1604.02,-610.39 1626.12,-591.04 1647.53,-572.3 1670.97,-550.85 1689.88,-533.3"/>
 <polygon fill="none" stroke="gray" points="1692.48,-535.66 1697.41,-526.29 1687.71,-530.54 1692.48,-535.66"/>
 </g>
 <!-- N6aspect19TerminationCriteria11UserRequestILi2EEE -->
@@ -3054,7 +3054,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect19TerminationCriteria11EndWalltimeILi2EEE -->
 <g id="edge512" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect19TerminationCriteria11EndWalltimeILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.62,-980.91C1336.37,-918.64 1488.53,-796.49 1546.46,-759.47 1595.06,-728.4 1655.11,-699 1692.8,-681.53"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1259.57,-978.22C1321.85,-924.78 1438.15,-828.69 1546.46,-759.47 1595.06,-728.4 1655.11,-699 1692.8,-681.53"/>
 <polygon fill="none" stroke="gray" points="1694.72,-684.5 1702.35,-677.15 1691.8,-678.14 1694.72,-684.5"/>
 </g>
 <!-- N6aspect19AdiabaticConditions9InterfaceILi2EEE -->
