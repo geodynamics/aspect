@@ -71,10 +71,8 @@ Reaction between compositional fields: Temperature fields at t=12. The black lin
 Reaction between compositional fields: Temperature fields at t=20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction.
 ```
 
-Results of this model are visualized in Fig&nbsp;[6]. What is visible is
+Results of this model are visualized in {numref}`fig:composition-reaction-0` -- {numref}`fig:composition-reaction-20`.
+What is visible is
 that over the course of the simulation, the material that starts at the bottom
 of the domain ascends, reaches the reaction depth and gets converted to the
 second material, which starts to sink down.
-
-  [cookbooks/composition-reaction/composition-reaction.prm]: cookbooks/composition-reaction/composition-reaction.prm
-  [6]: #fig:composition-reaction
