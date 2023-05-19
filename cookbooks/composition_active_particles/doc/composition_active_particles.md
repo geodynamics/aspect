@@ -47,7 +47,7 @@ fields.
 
 The syntax for interpolation from particles to fields then states that the
 `lower` field will be set to the interpolated value of the `initial lower`
-particle property at the end of each time step, and similarly for the `upper`
+particle property when solving for the composition, and similarly for the `upper`
 field. In turn, the `initial composition` particle property was using the same
 method that one would have used for the compositional field initialization if
 these fields were actually advected along in each time step.

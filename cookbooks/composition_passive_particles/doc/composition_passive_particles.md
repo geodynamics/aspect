@@ -4,7 +4,7 @@ parameters. We do so in the
 [cookbooks/composition_passive_particles/composition_passive_particles.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive_particles/composition_passive_particles.prm)
 input file, which is otherwise just a minor variation of the
 [cookbooks/composition_passive/composition_passive.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive/composition_passive.prm) case discussed in
-the previous Section&nbsp;{ref}`sec:cookbooks-composition`. In particular,
+the previous Section `sec:cookbooks-composition`. In particular,
 the postprocess section now looks like this:
 
 ```{literalinclude} particles.part.prm
@@ -14,11 +14,11 @@ The 1000 particles we are asking here are initially uniformly distributed
 throughout the domain and are, at the end of each time step, advected along
 with the velocity field just computed. (There are a number of options to
 decide which method to use for advecting particles, see
-Section&nbsp;{ref}`parameters:Postprocess/Particles`.)
+ {ref}`parameters:Postprocess/Particles`.)
 
 If you run this cookbook, information about all particles will be written into
 the output directory selected in the input file (as discussed in
-Section&nbsp;{ref}`sec:running-overview`). In the current case, in addition
+Section {ref}`sec:run-aspect:overview`). In the current case, in addition
 to the files already discussed there, a directory listing at the end of a run
 will show several particle related files:
 
@@ -41,7 +41,7 @@ drwxr-xr-x 2 bangerth bangerth   4096 Dec 11 10:08 solution
 Here, the `particles.pvd` and `particles.visit` files contain a list of all
 visualization files from all processors and time steps. These files can be
 loaded in much the same way as the `solution.pvd` and `solution.visit` files
-that were discussed in Section&nbsp;{ref}`sec:viz`. The actual data files
+that were discussed in Section&nbsp;{ref}`sec:run-aspect:visualizing-results`. The actual data files
 -- possibly a large number, but not of much immediate interest to users
 -- are located in the `particles` subdirectory.
 
@@ -51,17 +51,17 @@ correspond to particles (for example, `output/solution.visit` and
 `output/particles.visit`) and using a pseudo-color plot for the particles,
 selecting the "id" of particles to color each particle. By going
 to, for example, the output from the 72nd visualization output, this then
-results in a plot like the one shown in Fig.&nbsp;[1].
+results in a plot like the one shown in {numref}`fig:composition_passive_particles`.
 
 ```{figure-md} fig:composition_passive_particles
 <img src="solution-00072.png" style="width:50.0%" />
 
- Passively advected quantities visualized through both a [fig:composition_passive_particles] compositional field and a set of 1,000 particles, at t=7.2.
+ Passively advected quantities visualized through both a compositional field and a set of 1,000 particles, at t=7.2.
 ```
 
 The particles shown here are not too impressive in still pictures since they
 are colorized by their particle number, which does not carry any particular
-meaning other than the fact that it enumerates the particles.[1] The particle
+meaning other than the fact that it enumerates the particles.[^footnote1] The particle
 "id" can, however, be useful when viewing an animation of time
 steps. There, the different colors of particles allows the eye to follow the
 motion of a single particle. This is especially true if, after some time,
@@ -101,7 +101,7 @@ multiple components. (A full list of particle properties that can currently be
 selected can be found in
 Section&nbsp;{ref}`parameters:Postprocess/Particles`, and new particle
 properties can be added as plugins as described in
-Section&nbsp;{ref}`sec:write-plugin`.) The properties selected above do the
+Section&nbsp;{ref}`sec:extending:write-a-plugin`.) The properties selected above do the
 following:
 
 -   `initial position:` This particle property simply stores the initial
@@ -162,33 +162,33 @@ following:
     processes (e.g., in a subduction zone).
 
 
-```{figure-md} fig:composition_passive_particles_properties
+```{figure-md} fig:composition_passive_particles_properties-composition
 <img src="composition-C1.png" style="width:45.0%" />
 
- Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20.
+ Passively advected property composition C_1 visualized. The blue line is the 0.5-isocontour for the C_1 field.
 ```
 
-```{figure-md} fig:composition_passive_particles_properties
+```{figure-md} fig:composition_passive_particles_properties-particles
 <img src="particles-C1.png" style="width:45.0%" />
 
- Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20.
+ Passively advected particle property initial C_1 visualized. The blue line is the 0.5-isocontour for the C_1 field.
 ```
 
-```{figure-md} fig:composition_passive_particles_properties
+```{figure-md} fig:composition_passive_particles_properties-position-0
 <img src="initial-position-00000.png" style="width:45.0%" />
 
- Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20.
+ Passively advected particle properties visualized. Norm of the "initial position" of particles at t=0.
 ```
 
-```{figure-md} fig:composition_passive_particles_properties
+```{figure-md} fig:composition_passive_particles_properties-position-199
 <img src="initial-position-00199.png" style="width:45.0%" />
 
- Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20.
+ Passively advected particle properties visualized. Norm of the "initial position" of particles at t=20.
 ```
 
 The results of all of these properties can of course be visualized.
-Fig.&nbsp;[5] shows some of the pictures one can create with particles. The
-top row shows both the composition field $C_1$ (along with the mesh on which
+{numref}`fig:composition_passive_particles_properties-composition` -- {numref}`fig:composition_passive_particles_properties-position-199` shows some of the pictures one can create with particles. The
+first figures show both the composition field $C_1$ (along with the mesh on which
 it is defined) and the corresponding "initial $C_1$" particle
 property, at $t=7.2$. Because the compositional field does not undergo any
 reactions, it should of course simply be the initial composition advected
@@ -197,11 +197,11 @@ particle property. However, field-based compositions suffer from diffusion. On
 the other hand, the amount of diffusion can easily be decreased by mesh
 refinement.
 
-The bottom of the figure shows the norm of the "initial position"
+The last two figures show the norm of the "initial position"
 property at the initial time and at time $t=20$. These images therefore show
 how far from the origin each of the particles shown was at the initial time.
 
-[1] Particles are enumerated in a way so that first the first processor in a
+[^footnote1]: Particles are enumerated in a way so that first the first processor in a
 parallel computations numbers all of the particles on its first cell, then its
 second cell, and so on; then the second processor does the same with particles
 in the order of the cells it owns; etc. Thus, the "id" shown in
@@ -210,16 +210,3 @@ and how they belonged to the processors that participated in the computation
 at the time when particles were created. After some time, particles may of
 course have become well mixed. In any case, this ordering is of no real
 practical use.
-
-  [cookbooks/composition_passive_particles/composition_passive_particles.prm]:
-    cookbooks/composition_passive_particles/composition_passive_particles.prm
-  [cookbooks/composition_passive/composition_passive.prm]: cookbooks/composition_passive/composition_passive.prm
-  [1]: #sec:cookbooks-composition
-  [2]: #parameters:Postprocess/Particles
-  [3]: #sec:running-overview
-  [4]: #sec:viz
-  [1]: #fig:composition_passive_particles
-  [cookbooks/composition_passive_particles/composition_passive_particles_properties.prm]:
-    cookbooks/composition_passive_particles/composition_passive_particles_properties.prm
-  [5]: #sec:write-plugin
-  [5]: #fig:composition_passive_particles_properties
