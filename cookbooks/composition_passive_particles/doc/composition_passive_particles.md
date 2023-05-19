@@ -4,7 +4,7 @@ parameters. We do so in the
 [cookbooks/composition_passive_particles/composition_passive_particles.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive_particles/composition_passive_particles.prm)
 input file, which is otherwise just a minor variation of the
 [cookbooks/composition_passive/composition_passive.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/composition_passive/composition_passive.prm) case discussed in
-the previous Section `sec:cookbooks-composition`. In particular,
+the previous Section {ref}`sec:cookbooks-composition`. In particular,
 the postprocess section now looks like this:
 
 ```{literalinclude} particles.part.prm
