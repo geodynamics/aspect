@@ -7,7 +7,7 @@ Standard finite element discretizations of advection-diffusion equations
 introduce unphysical oscillations around steep gradients. Therefore,
 stabilization must be added to the discrete formulation to obtain correct
 solutions. In ASPECT, we use the Entropy Viscosity scheme developed by
-Guermond et al.&nbsp;in the paper {cite:t}`guer11`.
+{cite:t}`guermond:etal:2011`.
 In this scheme, an artificial viscosity is calculated on
 every cell and used to try to combat these oscillations that cause unwanted
 overshoot and undershoot. More information about how does this is located at
@@ -28,15 +28,13 @@ subsection in your parameter file.
 
 To show how this can be used in practice, let us consider the simple
 convection in a quarter of a 2d annulus cookbook in Section
-{ref}`sec:shell-simple-2d`, a radial compositional field was added to help
+{ref}`sec:cookbooks:shell_simple_2d`, a radial compositional field was added to help
 show the advantages of using the artificial viscosity smoothing feature.
 
 By applying the following changes shown below to the parameters of the already
-existing file
+existing file [cookbooks/shell_simple_2d/shell_simple_2d.prm](https://github.com/geodynamics/aspect/blob/main/cookbooks/shell_simple_2d/shell_simple_2d.prm),
 
-`cookbooks/shell_simple_2d/shell_simple_2d.prm`,
-
-```{literalinclude} cookbooks/shell_simple_2d/shell_simple_2d.prm
+```{literalinclude} shell_simple_2d_smoothing.part.prm
 ```
 
 it is possible to produce pictures of the simple convection in a quarter of a

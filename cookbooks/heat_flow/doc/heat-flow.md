@@ -17,7 +17,7 @@ corresponds to a plate age of 0, and temperature is fixed at the top, so that
 a cold thermal boundary develops over time at the top model boundary.
 
 
-```{figure-md} fig:convection-box-iterations
+```{figure-md} fig:heat-flow
 <img src="mid-ocean-ridge.png" style="width:60.0%" />
 
  Setup of the mid-ocean-ridge model that illustrates the cooling of the lithosphere. Background colors show temperature, streamlines illustrate the flow.

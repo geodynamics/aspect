@@ -15,7 +15,7 @@ computer, and to demonstrate how to visualize models results.
 
 .
 
-```{figure-md} fig:convection-box-iterations
+```{figure-md} fig:convection-box-iterations-particles
 <img src="convection-box.png" style="width:40.0%" />
 
  Setup of the tutorial model. Background colors show temperature, gray spheres illustrate particle positions.
