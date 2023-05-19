@@ -29,12 +29,12 @@ slip on all of $\partial\Omega$. The temperature plays no role in this
 benchmark. The prescribed density field and the resulting velocity field are
 shown in {numref}`fig:solcx1` and {numref}`fig:solcx2`.
 
-The SolCx benchmark was previously used in Section 4.1.1 of {cite}`DMGT11`
+The SolCx benchmark was previously used in Section 4.1.1 of {cite:t}`duretz:etal:2011`
 (references to earlier uses of the benchmark are available there) and its
-analytic solution is given in {cite}`Zho96`. ASPECT contains an implementation of this
-analytic solution taken from the Underworld package (see {cite}`MQLMAM07`
+analytic solution is given in {cite:t}`zhong:1996`. ASPECT contains an implementation of this
+analytic solution taken from the Underworld package (see {cite:t}`moresi:etal:2007`
 and <http://www.underworldproject.org/>, and correcting for the mismatch in
-sign between the implementation and the description in {cite}`DMGT11`).
+sign between the implementation and the description in {cite:t}`duretz:etal:2011`).
 
 ```{figure-md} fig:solcx1
 <img src="solcx-solution.*" id="fig:solcx1" alt="SolCx Stokes benchmark. The density perturbation field and overlaid to it some velocity vectors. The viscosity is very large in the right hand, leading to a stagnant flow in this region." />
@@ -48,7 +48,7 @@ SolCx Stokes benchmark. The pressure on a relatively coarse mesh, showing the in
 ```
 
 To run this benchmark, the following input file will do (see the files in
-`benchmarks/solcx/` to rerun the benchmark):
+[benchmarks/solcx/](https://github.com/geodynamics/aspect/tree/main/benchmarks/solcx) to rerun the benchmark):
 
 ```{literalinclude} solcx.prm
 ```
@@ -89,13 +89,13 @@ through the different parts of this file in more detail:
 -   The second-to-last part sets discretization parameters. Specifically, it
     determines what kind of Stokes element to choose (see
     [](parameters:Discretization) and the extensive
-    discussion in {cite}`kronbichler:etal:2012`). We do not
+    discussion in {cite:t}`kronbichler:etal:2012`). We do not
     adaptively refine the mesh but only do four global refinement steps at the
     very beginning. This is obviously a parameter worth playing with.
 -   The final section on postprocessors determines what to do with the
     solution once computed. Here, we do two things: we ask to compute the
-    error in the solution using the setup described in the Duretz et
-    al.&nbsp;paper {cite}`DMGT11`, and we request that output files for
+    error in the solution using the setup described in {cite:t}`duretz:etal:2011`, 
+    and we request that output files for
     later visualization are generated and placed in the output directory. The
     functions that compute the error automatically query which kind of
     material model had been chosen, i.e., they can know whether we are solving
@@ -139,8 +139,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 ```
 
 One can then visualize the solution in a number of different ways (see
-Section {ref}`sec:visualizing-results`), yielding pictures like those shown in
-{numref}`solcx1` and {numref}`solcx2`. One can also analyze the error
+Section {ref}`sec:run-aspect:visualizing-results`), yielding pictures like those shown in
+{numref}`fig:solcx1` and {numref}`fig:solcx2`. One can also analyze the error
 as shown in various different ways, for example as a function of the
 mesh refinement level, the element chosen, etc.; we have done so
-extensively in {cite}`kronbichler:etal:2012`.
+extensively in {cite:t}`kronbichler:etal:2012`.
