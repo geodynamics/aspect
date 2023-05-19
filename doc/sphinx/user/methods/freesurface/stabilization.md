@@ -11,4 +11,4 @@ step. ASPECT implements this stabilization, the
 details of which may be found in {cite:t}`kaus:etal:2010`.
 
 An example of a simple model which uses a free surface may be found in
-{ref}`sec:cookbooks:free_surface`.
+{ref}`sec:cookbooks:free-surface`.

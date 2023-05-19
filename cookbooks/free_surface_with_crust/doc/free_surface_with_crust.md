@@ -58,10 +58,10 @@ and `Upper viscosity` available to the input parameter file, and corresponding
 variables available in the class and used in the code snippet above. The
 entire code can be found in
 [cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc](https://github.com/geodynamics/aspect/blob/main/cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc).
-Refer to {ref}`sec:plugins` for more information about writing and running plugins.
+Refer to {ref}`sec:extending:idea-of-plugins` for more information about writing and running plugins.
 
 The following changes are necessary compared to the input file from the
-cookbook shown in {ref}`sec:cookbooks:free_surface` to include a
+cookbook shown in {ref}`sec:cookbooks:free-surface` to include a
 crust:
 
 -   Load the plugin implementing the new material model:
@@ -90,7 +90,7 @@ temperature anomaly reaches the base of the crustal layer (approximately at
 the time for which {numref}`fig:freesurfaceWC` shows the temperature profile). The
 crust's high viscosity reduces the temperature anomaly's velocity
 substantially, causing it to affect the surface topography at a later time.
-Just as the cookbook shown in {ref}`sec:cookbooks:freesurface`,
+Just as the cookbook shown in {ref}`sec:cookbooks:free-surface`,
 the topography returns to zero after some time.
 
 ```{figure-md} fig:freesurfaceWC

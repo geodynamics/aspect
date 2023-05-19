@@ -1,3 +1,4 @@
+(sec:cookbooks:shell_simple_3d)=
 # Simple convection in a spherical 3d shell
 
 The setup from the previous section can of course be extended to 3d shell

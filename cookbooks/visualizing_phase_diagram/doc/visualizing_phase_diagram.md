@@ -73,8 +73,8 @@ needed:
 With this change, we can also visualize the phase diagram of harzburgite in
 {numref}`fig:phase_diagram_ph_density`.
 
-Moreover, We tested the pyrolitic lookup table used in the Steinberg material
-model ({numref}`phase_diagram_steinberg_density`). The same setup of the initial condition is applied as in
+Moreover, We tested the pyrolitic lookup table used in the Steinberger material
+model ({numref}`fig:phase_diagram_steinberg_density`). The same setup of the initial condition is applied as in
 the previous case. The densities, however, are not assigned to the heat
 capacity anymore. Thus the vertical axis would deviate from the axis of
 pressure a little bit. This second setup serves the goal of illustrating a
