@@ -1351,6 +1351,22 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
 
+(parameters:Material_20model/Latent_20heat/Phase_20transition_20temperature_20lower_20limits)=
+### __Parameter name:__ Phase transition temperature lower limits
+**Default value:** -1.7976931348623157e+308
+
+**Pattern:** [Anything]
+
+**Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+
+(parameters:Material_20model/Latent_20heat/Phase_20transition_20temperature_20upper_20limits)=
+### __Parameter name:__ Phase transition temperature upper limits
+**Default value:** 1.7976931348623157e+308
+
+**Pattern:** [Anything]
+
+**Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+
 (parameters:Material_20model/Latent_20heat/Phase_20transition_20temperatures)=
 ### __Parameter name:__ Phase transition temperatures
 **Default value:**
@@ -3620,6 +3636,22 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Pattern:** [Anything]
 
 **Documentation:** A list of pressures where phase transitions occur. Values must monotonically increase. Define transition by depth instead of pressure must be set to false to use this parameter. Units: \si{\pascal}.
+
+(parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperature_20lower_20limits)=
+### __Parameter name:__ Phase transition temperature lower limits
+**Default value:** -1.7976931348623157e+308
+
+**Pattern:** [Anything]
+
+**Documentation:** A list of lower temperature limits for each phase transition. Below this temperature the respective phase transition is deactivated. The default value means there is no lower limit for any phase transition. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
+
+(parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperature_20upper_20limits)=
+### __Parameter name:__ Phase transition temperature upper limits
+**Default value:** 1.7976931348623157e+308
+
+**Pattern:** [Anything]
+
+**Documentation:** A list of upper temperature limits for each phase transition. Above this temperature the respective phase transition is deactivated. The default value means there is no upper limit for any phase transitions. List must have the same number of entries as Phase transition depths. When the optional temperature limits are applied, the user has to be careful about the consistency between adjacent phases. Phase transitions should be continuous in pressure-temperature space. We recommend producing a phase diagram with simple model setups to check the implementation as a starting point.Units: \si{\kelvin}.
 
 (parameters:Material_20model/Visco_20Plastic/Phase_20transition_20temperatures)=
 ### __Parameter name:__ Phase transition temperatures

@@ -115,7 +115,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 &lsquo;velocity boundary statistics&rsquo;: A postprocessor that computes some statistics about the velocity along the boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the min and max velocity magnitude is computed.
 
-&lsquo;velocity statistics&rsquo;: A postprocessor that computes some statistics about the velocity field.
+&lsquo;velocity statistics&rsquo;: A postprocessor that computes the root mean square and maximum velocity in the computational domain.
 
 &lsquo;viscous dissipation statistics&rsquo;: A postprocessor that outputs the viscous rate of dissipation of energy for each compositional field (where the field has a value of 0.5 or more) as well as over the whole domain. When all the fields represent lithologies and there is no background field, the sum of the individual field&rsquo;s dissipation should equal that over the whole domain. The viscous dissipation is computed as: $\int_{V}\left(\sigma&rsquo; \dot{\epsilon}&rsquo; \right)$, where $\sigma&rsquo;$  is the deviatoric stress and $\dot{\epsilon}&rsquo;$ the deviatoric strain rate.Note then when shear heating is included in the temperature equation, it is better to use the &rsquo;heating statistics&rsquo; postprocessor.
 
@@ -1598,7 +1598,7 @@ Physical units: \si{\per\second}.
 ### __Parameter name:__ Output format
 **Default value:** vtu
 
-**Pattern:** [Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot_binary|vtk|vtu|hdf5|svg|deal.II intermediate ]
+**Pattern:** [Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot_binary|vtk|vtu|hdf5|svg|deal.II intermediate|parallel deal.II intermediate ]
 
 **Documentation:** The file format to be used for graphical output. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described.
 
