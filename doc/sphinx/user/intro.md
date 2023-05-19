@@ -54,7 +54,7 @@ In addition, many have contributed to the development of ASPECT and deserve cred
 To this end, we ask that you cite the appropriate references if you publish results that were obtained to some part using ASPECT.
 For what exactly to cite and suggestions for acknowledgments, please see **<https://aspect.geodynamics.org/cite.html>**.
 
-Also see {cite:t}`aspectmanual,aspect-doi-v1.5.0,aspect-doi-v2.0.0,aspect-doi-v2.0.1,kronbichler:etal:2012,heister_aspect_methods2`.
+Also see {cite:t}`aspectmanual,aspect-doi-v1.5.0,aspect-doi-v2.0.0,aspect-doi-v2.0.1,kronbichler:etal:2012,heister:etal:2017`.
 
 ## Acknowledgments
 

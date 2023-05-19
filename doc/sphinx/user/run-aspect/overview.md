@@ -14,17 +14,19 @@ or, if you want to run the program in parallel, using something like
 to run with 4 processors. In either case, the argument denotes the (path and)
 name of a file that contains input parameters.[^footnote1] When you download
 ASPECT, there are a number of sample input files in
-the `cookbooks` directory, corresponding to the examples discussed in
+the [cookbooks](https://github.com/geodynamics/aspect/tree/main/cookbooks) directory,
+corresponding to the examples discussed in
 {ref}`cha:cookbooks`, and input files for some of the benchmarks discussed in
 {ref}`cha:benchmarks` are located in the
-`benchmarks` directory. A full description of all parameters one can specify
-in these files is given in {ref}`sec:parameter-documentation-home`.
+[benchmarks](https://github.com/geodynamics/aspect/tree/main/benchmarks) directory.
+A full description of all parameters one can specify
+in these files is given in {ref}`parameters`.
 
 Running ASPECT with an input file[^footnote2] will
 produce output that will look something like this (numbers will all be
 different, of course):
 
-``` ksh
+```
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
 --     . version 2.0.0-pre (include_dealii_version, c20eba0)
