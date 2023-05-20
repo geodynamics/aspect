@@ -69,4 +69,5 @@ benchmarks/gravity_mantle/doc/gravity_mantle.md
 benchmarks/buiter_et_al_2016_jsg/doc/buiter_et_al_2016_jsg.md
 benchmarks/compressibility_formulations/README.md
 benchmarks/entropy_adiabat/README.md
+benchmarks/geoid-spectral-comparison/README.md
 :::
