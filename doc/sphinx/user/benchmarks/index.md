@@ -70,4 +70,7 @@ benchmarks/buiter_et_al_2016_jsg/doc/buiter_et_al_2016_jsg.md
 benchmarks/compressibility_formulations/README.md
 benchmarks/entropy_adiabat/README.md
 benchmarks/geoid-spectral-comparison/README.md
+benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/README.md
+benchmarks/newton_solver_benchmark_set/spiegelman_et_al_2016/README.md
+benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/README.md
 :::
