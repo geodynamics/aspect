@@ -1,7 +1,8 @@
 The Spherical Shell NSinker benchmark
 =====================================
 
-This folder contains the "Spherical Shell NSinker" benchmark, which is
+[This folder](https://github.com/geodynamics/aspect/tree/main/benchmarks/nsinker_spherical_shell)
+contains the "Spherical Shell NSinker" benchmark, which is
 loosely based on the NSinker benchmark defined in
 
 Weighted BFBT Preconditioner for Stokes Flow Problems with Highly
