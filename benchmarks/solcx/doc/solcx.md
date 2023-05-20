@@ -94,7 +94,7 @@ through the different parts of this file in more detail:
     very beginning. This is obviously a parameter worth playing with.
 -   The final section on postprocessors determines what to do with the
     solution once computed. Here, we do two things: we ask to compute the
-    error in the solution using the setup described in {cite:t}`duretz:etal:2011`, 
+    error in the solution using the setup described in {cite:t}`duretz:etal:2011`,
     and we request that output files for
     later visualization are generated and placed in the output directory. The
     functions that compute the error automatically query which kind of

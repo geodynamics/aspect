@@ -1,4 +1,4 @@
-## The active case.
+# The active case.
 
 The next step, of course, is to make the flow actually depend on the
 composition. After all, compositional fields are not only intended to indicate
