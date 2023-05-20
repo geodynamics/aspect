@@ -29,7 +29,7 @@ Before we get there, however, we will review how one usually approaches
 setting up computations in {ref}`sec:cookbooks:overview`.
 
 :::{note}
-The input files discussed in the following sections can generally be found in the `cookbooks/` directory of your ASPECT installation.
+The input files discussed in the following sections can generally be found in the [cookbooks/](https://github.com/geodynamics/aspect/tree/main/cookbooks) directory of your ASPECT installation.
 :::
 
 :::{toctree}
