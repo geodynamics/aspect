@@ -75,4 +75,6 @@ benchmarks/newton_solver_benchmark_set/spiegelman_et_al_2016/README.md
 benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/README.md
 benchmarks/nsinker/README.md
 benchmarks/nsinker_spherical_shell/README.md
+benchmarks/time_dependent_annulus/README.md
+benchmarks/viscoelastic_plastic_shear_bands/README.md
 :::
