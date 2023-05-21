@@ -57,6 +57,8 @@ file:
     end
 
 
+**[Description of benchmark files](../README.md)**
+
 ```{figure-md} fig:RTi_grids_a
 <img src="grid.*" style="width:44.0%" />
 
@@ -77,3 +79,7 @@ and is found to match analytical results.
 
  Maximum velocity for three values of the \phi_1 parameter.
 ```
+
+:::{toctree}
+../README.md
+:::
