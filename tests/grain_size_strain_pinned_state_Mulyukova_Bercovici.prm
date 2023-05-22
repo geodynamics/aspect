@@ -4,9 +4,11 @@
 
 #include grain_size_strain.prm
 set Dimension                              = 2
-set End time                               = 100e6
-set Output directory                       = output-mulyukova-bercovici
+set End time                               = 1e8
+set Output directory                       = output-mulyukova-bercovici-1
 set Use years in output instead of seconds = true
+set Maximum time step                      = 5e4
+set Nonlinear solver scheme                = iterated Advection and Stokes
 
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1100
@@ -17,7 +19,7 @@ subsection Geometry model
   subsection Box
     set X extent = 100000
     set Y extent = 100000
- #   set X periodic    = true
+    set X periodic = true
   end
 end
 
@@ -45,13 +47,14 @@ subsection Gravity model
 end
 
 subsection Boundary traction model
-  set Prescribed traction boundary indicators = left x: function, top y: function # pressure bc: Prescribe a horizontal traction on the left boundary and vertical traction on the top boundary
+  set Prescribed traction boundary indicators = top x: function, bottom x: function # pressure bc: Prescribe a horizontal traction on the left boundary and vertical traction on the top boundary
 end
 
 subsection Boundary traction model
   subsection Function
     set Variable names = x,y
     set  Function constants = pressure = 50e6, y_extent = 1e5
+    # This is sqrt(50e6^2/2)
     # We want to prescribe a pressure of 50 at the left boundary
     # and -50 at the top boundary.
     # The traction in this case is defined as:
@@ -60,20 +63,15 @@ subsection Boundary traction model
     # (-1;0). On the top (0;1).
     # Therefore:
     # Left boundary:  tau = - pressure(left) (-1;0) = - (50) (-1;0) = (50;0).
-    # Top boundary: tau   = - pressure(top) (0;1) = - (-50) (0;1) = (0;50).
-    set Function expression = if (y<y_extent, pressure, 0)  ;  if(x>0, -pressure, 0)
+    # Top boundary: tau   = - pressure(top) (0;1) = - (50) (0;1) = (0;-50).
+    set Function expression = if (y>y_extent/2, pressure, -pressure)  ;  0
   end
 end
 
-subsection Boundary velocity model
-  set Zero velocity boundary indicators       = right, bottom
-end
 
 subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = left y: function, top x: function # pressure bc: Prescribe a zero vertical velocity component on the left boundary and zero horizontal velocity on the top boundary
-end
+  set Prescribed velocity boundary indicators = top y: function, bottom y: function 
 
-subsection Boundary velocity model
   subsection Function
     set Variable names = x,y
     set Function expression = 0;0
@@ -98,7 +96,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,z
     set Function constants  =
-    set Function expression = if(z<5e4,1e-2,1.0000001e-2)
+    set Function expression = 1e-2
   end
 end
 
@@ -131,7 +129,7 @@ subsection Material model
 
     # Mulyukova and Bercovici (2018)
     # Diffusion creep
-    set Diffusion creep prefactor            =13.6e-24 # s^-1 Pa^-1 m^p
+    set Diffusion creep prefactor            =27.2e-24 # s^-1 Pa^-1 m^p
     set Diffusion creep exponent             =1.0 # 1 for diffusion creep
     set Diffusion creep grain size exponent  =3
     set Diffusion activation energy          =3e5 #J/mol
@@ -139,10 +137,12 @@ subsection Material model
 
     set Dislocation viscosity iteration threshold = 1e-3
     # Dislocation creep
-    set Dislocation creep prefactor          =1.1e-13 # s^-1 Pa^-n
+    set Dislocation creep prefactor          =8.8e-13 # s^-1 Pa^-n
     set Dislocation creep exponent           =3
     set Dislocation activation energy        =530000 # J/mol
     set Dislocation activation volume        =0 # m^3/mol
+    
+    set Minimum grain size                   = 1e-8
 
     subsection Grain damage partitioning
       set Minimum grain size reduction work fraction = 5e-3
@@ -153,14 +153,18 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 4
+  set Initial global refinement          = 0
   set Time steps between mesh refinement = 0
 end
 
 subsection Postprocess
-  set List of postprocessors = composition statistics,temperature statistics, velocity statistics, visualization
+  set List of postprocessors = composition statistics,temperature statistics, velocity statistics, visualization, material statistics
   subsection Visualization
-    set List of output variables = viscosity
+    set List of output variables = viscosity, shear stress, stress, stress second invariant
     set Time steps between graphical output = 10
   end
+end
+
+subsection Nullspace removal
+  set Remove nullspace = net x translation
 end
