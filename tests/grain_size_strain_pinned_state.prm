@@ -2,7 +2,7 @@
 # Over time the model maintains nearly constant temperatures, pressures and
 # strain rates. The grain size in the test approaches the equilibrium
 # grain size for t -> infinity. At 200 Myr the equilibrium grain size should
-# be 0.0165746 m.
+# be 0.015124 m.
 
 include $ASPECT_SOURCE_DIR/tests/grain_size_strain.prm
 
