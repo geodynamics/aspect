@@ -1,0 +1,6 @@
+Changed: ASPECT's manual has been converted from LaTeX to Markdown to be
+hosted as a website on https://aspect-documentation.readthedocs.io.
+This change was made to make the manual more accessible to users and
+developers, and to make it easier to update the manual. 
+<br>
+(Chris Mills, Mack Gregory, Timo Heister, Wolfgang Bangerth, Rene Gassmoeller, and many others, 2023/05/23)
