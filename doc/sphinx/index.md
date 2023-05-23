@@ -5,7 +5,7 @@
 
 We are in the process of migrating the documentation from LaTeX producing a PDF file to Markedly Structured Text (MyST) and Sphinx producing this online documentation.
 
-Here is a quick reference for MyST and Sphinx commands: [**MyST Quick Reference**](quickref.md)
+Here is a quick reference for MyST and Sphinx commands: [**MyST Quick Reference**](user/extending/write-a-cookbook/quickref.md)
 
 ```
 
