@@ -66,7 +66,7 @@ grep '[^\\]%' parameters.tex && echo "Error, please remove '%'!" && exit 1
 
 cd ../..
 
-echo Creating parameters markdown files
+echo Convert parameters to markdown files
 ./contrib/utilities/jsontomarkdown.py output/parameters.json \
     || { echo "Conversion of parameters to markdown failed"; exit 1; }
 
