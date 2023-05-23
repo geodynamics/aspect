@@ -1,6 +1,6 @@
 # The viscoelastic plastic shear bands benchmarks
 
-The folders in [this directory](https://github.com/geodynamics/aspect/tree/main/benchmarks/viscoelastic_plastic_shear_bands) 
+The folders in [this directory](https://github.com/geodynamics/aspect/tree/main/benchmarks/viscoelastic_plastic_shear_bands)
 contain multiple benchmarks for examining the
 development of plastic shear bands using either a viscoelastic plastic
 or visco plastic formulation.
