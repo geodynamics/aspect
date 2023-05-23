@@ -16,7 +16,7 @@ models with small parameter variations. More details can be found in the
 example assignment below.
 
 
-```{figure-md} fig:convection-box-iterations
+```{figure-md} fig:onset-of-convection-models
 <img src="convection_models.png" style="width:80.0%" />
 
  Onset of convection model with different Rayleigh numbers. Background colors show temperature.

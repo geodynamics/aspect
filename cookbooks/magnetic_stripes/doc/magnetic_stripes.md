@@ -29,7 +29,7 @@ be found [here](https://www.youtube.com/watch?v=KeHNhWLL7ws). Slides with an int
 field can be found [here](https://www.dropbox.com/s/2kkw3ce2muvn4nh/08_geophysics_lecture_02_05.pdf?dl=0).
 
 
-```{figure-md} fig:convection-box-iterations
+```{figure-md} fig:magnetic-stripes
 <img src="mid-ocean-ridge.png" style="width:60.0%" />
 
  Setup of the mid-ocean ridge model. Background colors show temperature. Black and white colors at the top of the model illustrate the orientation of the magnetic field frozen in the rock when the melt generated at the mid-ocean ridge reaches the surface, crystallizes to form new sea floor, and the rock cools down. White lines illustrate the flow field.
