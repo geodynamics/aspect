@@ -37,7 +37,7 @@ the mesh is not refined with time.
 Similar to the crustal deformation examples above, this model contains a free
 surface. However, in this example the free surface is advected using the full
 velocity (e.g., normal projection) rather than only the vertical component. As
-this projection can lead to signficant surface mesh deformation and associated
+this projection can lead to significant surface mesh deformation and associated
 solver convergence issues, diffusion is applied to the free surface at each
 time step. Deformation is driven by constant horizontal ($x$-component)
 velocities (0.25 cm/yr) on the side boundaries ($y$-velocity component

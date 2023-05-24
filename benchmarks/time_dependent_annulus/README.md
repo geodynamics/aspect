@@ -6,7 +6,7 @@ Methods for Modeling Incompressible Stokes Flow. Geophys. J. Int.
 submitted.
 
 It features a spherical annulus with a circular flow and a
-time-indepedent analytical, but a time-dependent numerical solution,
+time-independent analytical, but a time-dependent numerical solution,
 which allows to quantify how errors in the advection equation
 influence the accuracy of the Stokes equation. In this example
 the benchmark uses particles to carry density, but it can be

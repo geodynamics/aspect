@@ -371,6 +371,6 @@ namespace aspect
                                   "is the difference between the model solution velocities and the input "
                                   "velocities (GPlates model or ascii data). Currently, the velocity residual "
                                   "statistics, i.e., min, max and the rms magnitude, is computed at the top "
-                                  "suface.")
+                                  "surface.")
   }
 }

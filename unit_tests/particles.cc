@@ -45,7 +45,7 @@ TEST_CASE("Particle Manager plugin names")
   REQUIRE(manager.plugin_name_exists("pT path") == false);
 
   // non-existed plugin
-  REQUIRE(manager.plugin_name_exists("non-existend plugin name") == false);
+  REQUIRE(manager.plugin_name_exists("non-existent plugin name") == false);
 
   // check that one is before the other
   REQUIRE(manager.check_plugin_order("composition", "position") == true);

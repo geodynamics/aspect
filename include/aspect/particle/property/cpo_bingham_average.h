@@ -165,7 +165,7 @@ namespace aspect
 
         private:
           /**
-           * stores the postition of the cpo data in the particle property vector
+           * stores the position of the cpo data in the particle property vector
            */
           unsigned int cpo_data_position;
 

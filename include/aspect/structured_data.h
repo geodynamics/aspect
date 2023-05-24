@@ -37,7 +37,7 @@ namespace aspect
      * StructuredDataLookup (formerly AsciiDataLookup) represents structured
      * data that can be read from files including in ascii format.
      *
-     * For ascii files the files need to be formated as follows:
+     * For ascii files the files need to be formatted as follows:
      * Note the required format of the input data: The first lines may contain
      * any number of comments if they begin with '#', but one of these lines
      * needs to contain the number of grid points in each dimension as for

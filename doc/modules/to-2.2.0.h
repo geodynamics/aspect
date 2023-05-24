@@ -66,7 +66,7 @@
  * (John Naliboff, 2020/04/04)
  *
  *
- * <li> New: Benchmark of bouyancy-driven viscoelastic plate
+ * <li> New: Benchmark of buoyancy-driven viscoelastic plate
  * flexure with a free surface from Choi et al., 2013,
  * JGR, v.118, p.2429-2444, doi:10.1002/jgrb.50148.
  * <br>
@@ -257,7 +257,7 @@
  * (Rene Gassmoeller, 2019/10/29)
  *
  * <li> Fixed: The volume of fluid composition advection algorithm the boundary fluxes
- * on inflow boundries with fixed composition incorrectly. This has been fixed by
+ * on inflow boundaries with fixed composition incorrectly. This has been fixed by
  * correcting the calculation for the amount of composition which is advected into
  * the modeled region during the assembly step.
  * <br>

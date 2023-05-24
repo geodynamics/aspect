@@ -1,5 +1,5 @@
 # This is a copy of the steinberger phases test,
-# but it uses to lookups intead of one to see if
+# but it uses to lookups instead of one to see if
 # phases indices are read in correctly.
 
 set CFL number                             = 1.0

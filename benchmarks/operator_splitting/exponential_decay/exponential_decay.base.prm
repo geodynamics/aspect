@@ -18,7 +18,7 @@ set Start time                             = 0
 set End time                               = 100
 set Use years in output instead of seconds = false
 
-# We use a new solver scheme otpion that enables the operator split.
+# We use a new solver scheme option that enables the operator split.
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Use operator splitting                 = true
 

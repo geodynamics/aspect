@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Instructions for how to use this scipt are provided in the README.
+# Instructions for how to use this script are provided in the README.
 
 path=$*
 

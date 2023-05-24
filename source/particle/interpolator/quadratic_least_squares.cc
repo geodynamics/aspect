@@ -37,39 +37,39 @@ namespace aspect
     namespace Interpolator
     {
       template <int dim>
-      double QuadraticLeastSquares<dim>::evaluate_interpolation_function(const Vector<double> &coefficents, const Point<dim> &position) const
+      double QuadraticLeastSquares<dim>::evaluate_interpolation_function(const Vector<double> &coefficients, const Point<dim> &position) const
       {
         if (dim == 2)
           {
-            return coefficents[0] +
-                   coefficents[1] * position[0] +
-                   coefficents[2] * position[1] +
-                   coefficents[3] * position[0] * position[1] +
-                   coefficents[4] * position[0] * position[0] +
-                   coefficents[5] * position[1] * position[1];
+            return coefficients[0] +
+                   coefficients[1] * position[0] +
+                   coefficients[2] * position[1] +
+                   coefficients[3] * position[0] * position[1] +
+                   coefficients[4] * position[0] * position[0] +
+                   coefficients[5] * position[1] * position[1];
           }
         else
           {
-            return coefficents[0] +
-                   coefficents[1] * position[0] +
-                   coefficents[2] * position[1] +
-                   coefficents[3] * position[2] +
-                   coefficents[4] * position[0] * position[1] +
-                   coefficents[5] * position[0] * position[2] +
-                   coefficents[6] * position[1] * position[2] +
-                   coefficents[7] * position[0] * position[0] +
-                   coefficents[8] * position[1] * position[1] +
-                   coefficents[9] * position[2] * position[2];
+            return coefficients[0] +
+                   coefficients[1] * position[0] +
+                   coefficients[2] * position[1] +
+                   coefficients[3] * position[2] +
+                   coefficients[4] * position[0] * position[1] +
+                   coefficients[5] * position[0] * position[2] +
+                   coefficients[6] * position[1] * position[2] +
+                   coefficients[7] * position[0] * position[0] +
+                   coefficients[8] * position[1] * position[1] +
+                   coefficients[9] * position[2] * position[2];
           }
       }
 
 
       template<int dim>
-      std::pair<double, double> QuadraticLeastSquares<dim>::get_interpolation_bounds(const Vector<double> &coefficents) const
+      std::pair<double, double> QuadraticLeastSquares<dim>::get_interpolation_bounds(const Vector<double> &coefficients) const
       {
         double interpolation_min = std::numeric_limits<double>::max();
         double interpolation_max = std::numeric_limits<double>::lowest();
-        for (const auto &critical_point : get_critical_points(coefficents))
+        for (const auto &critical_point : get_critical_points(coefficients))
           {
             bool critical_point_in_cell = true;
             for (unsigned int d = 0; d < dim; ++d)
@@ -79,7 +79,7 @@ namespace aspect
               }
             if (critical_point_in_cell)
               {
-                const double value_at_critical_point = evaluate_interpolation_function(coefficents, critical_point);
+                const double value_at_critical_point = evaluate_interpolation_function(coefficients, critical_point);
                 interpolation_min = std::min(interpolation_min, value_at_critical_point);
                 interpolation_max = std::max(interpolation_max, value_at_critical_point);
               }
@@ -89,10 +89,10 @@ namespace aspect
 
 
       template <int dim>
-      std::vector<Point<dim>> QuadraticLeastSquares<dim>::get_critical_points(const Vector<double> &coefficents) const
+      std::vector<Point<dim>> QuadraticLeastSquares<dim>::get_critical_points(const Vector<double> &coefficients) const
       {
         std::vector<Point<dim>> critical_points;
-        const double epsilon = 10. * coefficents.linfty_norm() * std::numeric_limits<double>::epsilon();
+        const double epsilon = 10. * coefficients.linfty_norm() * std::numeric_limits<double>::epsilon();
         if (dim == 2)
           {
             // reserve the maximum number of critical points
@@ -106,13 +106,13 @@ namespace aspect
 
             // compute the location of the global critical point
             Tensor<2, dim, double> critical_point_A;
-            critical_point_A[0][0] = 2 * coefficents[4];
-            critical_point_A[0][1] = coefficents[3];
-            critical_point_A[1][0] = coefficents[3];
-            critical_point_A[1][1] = 2 * coefficents[5];
+            critical_point_A[0][0] = 2 * coefficients[4];
+            critical_point_A[0][1] = coefficients[3];
+            critical_point_A[1][0] = coefficients[3];
+            critical_point_A[1][1] = 2 * coefficients[5];
             Tensor<1, dim, double> critical_point_b;
-            critical_point_b[0] = -coefficents[1];
-            critical_point_b[1] = -coefficents[2];
+            critical_point_b[0] = -coefficients[1];
+            critical_point_b[1] = -coefficients[2];
             if (std::abs(determinant(critical_point_A)) > epsilon)
               {
                 critical_points.emplace_back(invert(critical_point_A) * critical_point_b);
@@ -122,19 +122,19 @@ namespace aspect
             // critical point inside the unit cell, because the value at the edges can be a minimum, while
             // the critical point inside the cell is a maximum, or vice-versa. Additionally the critical
             // point could be a saddle point, in which case we would still need to find a minimum and maximum over the cell.
-            if (std::abs(coefficents[5]) > epsilon)
+            if (std::abs(coefficients[5]) > epsilon)
               {
-                critical_points.emplace_back(-0.5, -(2 * coefficents[2] - coefficents[3])/(4 * coefficents[5]));
-                critical_points.emplace_back( 0.5, -(2 * coefficents[2] + coefficents[3])/(4 * coefficents[5]));
+                critical_points.emplace_back(-0.5, -(2 * coefficients[2] - coefficients[3])/(4 * coefficients[5]));
+                critical_points.emplace_back( 0.5, -(2 * coefficients[2] + coefficients[3])/(4 * coefficients[5]));
               }
-            if (std::abs(coefficents[4]) > epsilon)
+            if (std::abs(coefficients[4]) > epsilon)
               {
-                critical_points.emplace_back(-(2 * coefficents[1] - coefficents[3])/(4 * coefficents[4]), -0.5);
-                critical_points.emplace_back(-(2 * coefficents[1] + coefficents[3])/(4 * coefficents[4]),  0.5);
+                critical_points.emplace_back(-(2 * coefficients[1] - coefficients[3])/(4 * coefficients[4]), -0.5);
+                critical_points.emplace_back(-(2 * coefficients[1] + coefficients[3])/(4 * coefficients[4]),  0.5);
               }
 
-            // Compute the critical value for each of the corners. This is neccessary even if critical points
-            // have already been found in previous steps, as the global critical point could be a minimium,
+            // Compute the critical value for each of the corners. This is necessary even if critical points
+            // have already been found in previous steps, as the global critical point could be a minimum,
             // and the edge critical points could also be minimums.
             for (double x = -0.5; x <= 0.5; ++x)
               {
@@ -158,19 +158,19 @@ namespace aspect
             // Compute the location of the global critical point
             {
               Tensor<2, dim, double> critical_point_A;
-              critical_point_A[0][0] = 2 * coefficents[7];
-              critical_point_A[0][1] = coefficents[4];
-              critical_point_A[0][2] = coefficents[5];
-              critical_point_A[1][0] = coefficents[4];
-              critical_point_A[1][1] = 2 * coefficents[8];
-              critical_point_A[1][2] = coefficents[6];
-              critical_point_A[2][0] = coefficents[5];
-              critical_point_A[2][1] = coefficents[6];
-              critical_point_A[2][2] = 2 * coefficents[9];
+              critical_point_A[0][0] = 2 * coefficients[7];
+              critical_point_A[0][1] = coefficients[4];
+              critical_point_A[0][2] = coefficients[5];
+              critical_point_A[1][0] = coefficients[4];
+              critical_point_A[1][1] = 2 * coefficients[8];
+              critical_point_A[1][2] = coefficients[6];
+              critical_point_A[2][0] = coefficients[5];
+              critical_point_A[2][1] = coefficients[6];
+              critical_point_A[2][2] = 2 * coefficients[9];
               Tensor<1, dim, double> critical_point_b;
-              critical_point_b[0] = -coefficents[1];
-              critical_point_b[1] = -coefficents[2];
-              critical_point_b[2] = -coefficents[3];
+              critical_point_b[0] = -coefficients[1];
+              critical_point_b[1] = -coefficients[2];
+              critical_point_b[2] = -coefficients[3];
               if (std::abs(determinant(critical_point_A)) > epsilon)
                 {
                   critical_points.emplace_back(invert(critical_point_A) * critical_point_b);
@@ -178,65 +178,65 @@ namespace aspect
             }
 
             // Compute the location of critical points along the faces of the cell.
-            // This is is neccessary even if we found a global critical point as it
+            // This is is necessary even if we found a global critical point as it
             // could be a minimum and the faces could have a maximum or vice-versa.
             Tensor<2, 2, double> critical_point_A;
             Tensor<1, 2, double> critical_point_b;
             Tensor<1, 2, double> critical_point_X;
             // The columns of this critical_point_A correspond to Y and Z.
-            critical_point_A[0][0] = 2 * coefficents[8];
-            critical_point_A[0][1] = coefficents[6];
-            critical_point_A[1][0] = coefficents[6];
-            critical_point_A[1][1] = 2 * coefficents[9];
+            critical_point_A[0][0] = 2 * coefficients[8];
+            critical_point_A[0][1] = coefficients[6];
+            critical_point_A[1][0] = coefficients[6];
+            critical_point_A[1][1] = 2 * coefficients[9];
             if (std::abs(determinant(critical_point_A)) > epsilon)
               {
                 const Tensor<2, 2, double> critical_point_A_inv = invert(critical_point_A);
                 double x = -0.5;
-                critical_point_b[0] = -(coefficents[2] + coefficents[4] * x);
-                critical_point_b[1] = -(coefficents[3] + coefficents[5] * x);
+                critical_point_b[0] = -(coefficients[2] + coefficients[4] * x);
+                critical_point_b[1] = -(coefficients[3] + coefficients[5] * x);
                 critical_point_X = critical_point_A_inv * critical_point_b;
                 critical_points.emplace_back(x, critical_point_X[0], critical_point_X[1]);
                 x = 0.5;
-                critical_point_b[0] = -(coefficents[2] + coefficents[4] * x);
-                critical_point_b[1] = -(coefficents[3] + coefficents[5] * x);
+                critical_point_b[0] = -(coefficients[2] + coefficients[4] * x);
+                critical_point_b[1] = -(coefficients[3] + coefficients[5] * x);
                 critical_point_X = critical_point_A_inv * critical_point_b;
                 critical_points.emplace_back(x, critical_point_X[0], critical_point_X[1]);
               }
             // The columns of this critical_point_A correspond to X and Z.
-            critical_point_A[0][0] = 2 * coefficents[7];
-            critical_point_A[0][1] = coefficents[5];
-            critical_point_A[1][0] = coefficents[5];
-            critical_point_A[1][1] = 2 * coefficents[9];
+            critical_point_A[0][0] = 2 * coefficients[7];
+            critical_point_A[0][1] = coefficients[5];
+            critical_point_A[1][0] = coefficients[5];
+            critical_point_A[1][1] = 2 * coefficients[9];
             if (std::abs(determinant(critical_point_A)) > epsilon)
               {
                 const Tensor<2, 2, double> critical_point_A_inv = invert(critical_point_A);
                 double y = -0.5;
-                critical_point_b[0] = -(coefficents[1] + coefficents[4] * y);
-                critical_point_b[1] = -(coefficents[3] + coefficents[6] * y);
+                critical_point_b[0] = -(coefficients[1] + coefficients[4] * y);
+                critical_point_b[1] = -(coefficients[3] + coefficients[6] * y);
                 critical_point_X = critical_point_A_inv * critical_point_b;
                 critical_points.emplace_back(critical_point_X[0], y, critical_point_X[1]);
                 y = 0.5;
-                critical_point_b[0] = -(coefficents[1] + coefficents[4] * y);
-                critical_point_b[1] = -(coefficents[3] + coefficents[6] * y);
+                critical_point_b[0] = -(coefficients[1] + coefficients[4] * y);
+                critical_point_b[1] = -(coefficients[3] + coefficients[6] * y);
                 critical_point_X = critical_point_A_inv * critical_point_b;
                 critical_points.emplace_back(critical_point_X[0], y, critical_point_X[1]);
               }
             // The columns of this critical_point_A correspond to X and Y.
-            critical_point_A[0][0] = 2 * coefficents[7];
-            critical_point_A[0][1] = coefficents[4];
-            critical_point_A[1][0] = coefficents[4];
-            critical_point_A[1][1] = 2 * coefficents[8];
+            critical_point_A[0][0] = 2 * coefficients[7];
+            critical_point_A[0][1] = coefficients[4];
+            critical_point_A[1][0] = coefficients[4];
+            critical_point_A[1][1] = 2 * coefficients[8];
             if (std::abs(determinant(critical_point_A)) > epsilon)
               {
                 const Tensor<2, 2, double> critical_point_A_inv = invert(critical_point_A);
                 double z = -0.5;
-                critical_point_b[0] = -(coefficents[1] + coefficents[5] * z);
-                critical_point_b[1] = -(coefficents[2] + coefficents[6] * z);
+                critical_point_b[0] = -(coefficients[1] + coefficients[5] * z);
+                critical_point_b[1] = -(coefficients[2] + coefficients[6] * z);
                 critical_point_X = critical_point_A_inv * critical_point_b;
                 critical_points.emplace_back(critical_point_X[0], critical_point_X[1], z);
                 z = 0.5;
-                critical_point_b[0] = -(coefficents[1] + coefficents[5] * z);
-                critical_point_b[1] = -(coefficents[2] + coefficents[6] * z);
+                critical_point_b[0] = -(coefficients[1] + coefficients[5] * z);
+                critical_point_b[1] = -(coefficients[2] + coefficients[6] * z);
                 critical_point_X = critical_point_A_inv * critical_point_b;
                 critical_points.emplace_back(critical_point_X[0], critical_point_X[1], z);
               }
@@ -245,33 +245,33 @@ namespace aspect
             // This is necessary even if critical points have been found in previous
             // steps, as the global critial point and critical points on faces could
             // all be minimums.
-            if (std::abs(coefficents[9]) > epsilon)
+            if (std::abs(coefficients[9]) > epsilon)
               {
                 for (double x = -0.5; x <= 0.5; ++x)
                   {
                     for (double y = -0.5; y <= 0.5; ++y)
                       {
-                        critical_points.emplace_back(x,y, -(coefficents[3] + coefficents[5] * x + coefficents[6] * y)/(2 * coefficents[9]));
+                        critical_points.emplace_back(x,y, -(coefficients[3] + coefficients[5] * x + coefficients[6] * y)/(2 * coefficients[9]));
                       }
                   }
               }
-            if (std::abs(coefficents[8]) > epsilon)
+            if (std::abs(coefficients[8]) > epsilon)
               {
                 for (double x = -0.5; x <= 0.5; ++x)
                   {
                     for (double z = -0.5; z <= 0.5; ++z)
                       {
-                        critical_points.emplace_back(x, -(coefficents[2] + coefficents[4] * x + coefficents[6] * z) / (2 * coefficents[8]), z);
+                        critical_points.emplace_back(x, -(coefficients[2] + coefficients[4] * x + coefficients[6] * z) / (2 * coefficients[8]), z);
                       }
                   }
               }
-            if (std::abs(coefficents[7]) > epsilon)
+            if (std::abs(coefficients[7]) > epsilon)
               {
                 for (double y = -0.5; y <= 0.5; ++y)
                   {
                     for (double z = -0.5; z <= 0.5; ++z)
                       {
-                        critical_points.emplace_back(-(coefficents[1] + coefficents[4] * y + coefficents[5] * z)/(2*coefficents[7]), y, z);
+                        critical_points.emplace_back(-(coefficients[1] + coefficients[4] * y + coefficients[5] * z)/(2*coefficents[7]), y, z);
                       }
                   }
               }
@@ -643,7 +643,7 @@ namespace aspect
             }
             prm.leave_subsection();
             // In general n_selected_components() requests an argument of the ComponentMask's size since it could be initialized to be entirely true without a size.
-            // Here it is given a size equal to n_property_components, so that argument is not neccessary.
+            // Here it is given a size equal to n_property_components, so that argument is not necessary.
             const bool limiter_enabled_for_at_least_one_property = (use_quadratic_least_squares_limiter.n_selected_components() != 0);
             AssertThrow(limiter_enabled_for_at_least_one_property == false || prm.get_bool("Update ghost particles") == true,
                         ExcMessage("If 'Use quadratic least squares limiter' is enabled for any particle property, then 'Update ghost particles' must be set to true"));

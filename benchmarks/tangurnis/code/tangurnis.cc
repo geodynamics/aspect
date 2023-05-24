@@ -450,7 +450,7 @@ namespace aspect
                                 "Tan Gurnis error",
                                 "A postprocessor that compares the solution of the benchmarks from "
                                 "the Tan/Gurnis (2007) paper with the one computed by ASPECT "
-                                "by outputing data that is compared using a matlab script.")
+                                "by outputting data that is compared using a matlab script.")
 
   namespace MaterialModel
   {

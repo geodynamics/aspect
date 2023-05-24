@@ -124,7 +124,7 @@ ENDIF()
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 PROJECT(${TARGET} CXX)
 
-SET(FORCE_COLORED_OUTPUT ON CACHE BOOL "Forces colored ouput when compiling with gcc and clang.")
+SET(FORCE_COLORED_OUTPUT ON CACHE BOOL "Forces colored output when compiling with gcc and clang.")
 
 SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "Whether to enable compiling aspect with the Geodynamic World Builder.")
 MESSAGE(STATUS "ASPECT_WITH_WORLD_BUILDER = '${ASPECT_WITH_WORLD_BUILDER}'")
@@ -670,7 +670,7 @@ ENDIF()
 
 IF (ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
   # Intel 19.1 produces internal compiler errors inside bundled boost with
-  # precompiled headers, so we deactive it:
+  # precompiled headers, so we deactivate it:
   SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "" FORCE)
 ENDIF()
 

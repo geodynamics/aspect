@@ -347,7 +347,7 @@ which we refer to as the Residual Scaling Method (RSM). If enabled, this automat
 computes $c_k = \max\left(0.0,1.0-\frac{r_k}{r_{N_{DC}}}\right)$, where $r_k$
 is the current nonlinear residual and $r_{N_{DC}}$ is the residual in the first iteration
 after switching to the Newton method. This option allows to more gradually switch to the
-Newton interation and also gradually switch back if the iteration diverges.
+Newton iteration and also gradually switch back if the iteration diverges.
 
 ### Line search
 A Newton update can be seen as a hint in which direction to go with a suggestion for

@@ -293,7 +293,7 @@ namespace aspect
                         "are then based on an iterated midpoint quadrature. "
                         "Resultant volume fractions outside of the bounds will be "
                         "coerced to the nearest valid value (ie 0 or 1). "
-                        "If ``level set`` is specified, the intial data will be assumed to "
+                        "If ``level set`` is specified, the initial data will be assumed to "
                         "be in the form of a signed distance level set function "
                         "(i.e. a function which is positive when in the "
                         "fluid, negative outside, and zero on the interface "
@@ -320,7 +320,7 @@ namespace aspect
           {
             // Add this field as the next volume of fluid field
             volume_of_fluid_field_names.push_back(names_of_compositional_fields[i]);
-            // Note that compositional field indicies include temperature as field 0, so increase index by 1
+            // Note that compositional field indices include temperature as field 0, so increase index by 1
             volume_of_fluid_composition_map_index[i+1] = n_volume_of_fluid_fields;
             ++n_volume_of_fluid_fields;
           }

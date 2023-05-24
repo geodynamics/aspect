@@ -81,7 +81,7 @@ end
 
 # The initial temperature is set to the value of the
 # Adiabatic surface temperature, in this case 1600 K,
-# but with a cold boudary layer at the surface and a
+# but with a cold boundary layer at the surface and a
 # hot thermal anomaly at the base of the model
 # representing a plume. The age of the cold top
 # boundary layer determines its thickness.

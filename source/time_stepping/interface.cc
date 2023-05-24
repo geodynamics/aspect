@@ -274,7 +274,7 @@ namespace aspect
       {
         prm.declare_entry("Minimum time step size", "0.",
                           Patterns::Double (0.),
-                          "Specifiy a minimum time step size (or 0 to disable).");
+                          "Specify a minimum time step size (or 0 to disable).");
 
         const std::string pattern_of_names
           = std::get<dim>(registered_plugins).get_pattern_of_names ();

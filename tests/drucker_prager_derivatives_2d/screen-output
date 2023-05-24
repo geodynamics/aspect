@@ -28,7 +28,7 @@ strain-rate: point = 2, component = 2, Finite difference = -2.49047e+31, Analyti
 strain-rate: point = 3, component = 2, Finite difference = -9.86089e+36, Analytical derivative = -9.99827e+36
    Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
 strain-rate: point = 4, component = 2, Finite difference = -2.26757e+33, Analytical derivative = -2.26757e+33
-Some parts of the test where not succesful.
+Some parts of the test where not successful.
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 1,444 (882+121+441)
 

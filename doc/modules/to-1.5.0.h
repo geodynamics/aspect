@@ -35,7 +35,7 @@
  * material property for a given model is to evaluate the material model
  * at reference conditions (given by the adiabatic profile) as implemented
  * in the 'basic statistics' postprocessor. Existing user plugins that
- * implement these funtions will continue to work, as long as the
+ * implement these functions will continue to work, as long as the
  * functions are only used within that plugin. User plugins that called these
  * interface functions from outside can either cast the material model
  * reference to a particular material model that implements these functions,
@@ -188,7 +188,7 @@
  * (Rene Gassmoeller, 2016/09/20)
  *
  * </li>
- * <li> New: Multiple particle properties can be intialized by specifying
+ * <li> New: Multiple particle properties can be initialized by specifying
  * multiple particle property function components as opposed to one particle
  * property.
  * <br>

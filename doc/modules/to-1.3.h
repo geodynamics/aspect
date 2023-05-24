@@ -60,7 +60,7 @@
  * (Timo Heister, 2015/04/15)
  *
  * <li> Fixed: To make the right-hand side of the Stokes equation compatible
- * to the matrix we need to apply a correction for inbalanced in-/outflow
+ * to the matrix we need to apply a correction for imbalanced in-/outflow
  * across the model boundaries. This correction was accidentally applied twice
  * in the first iteration of the iterated IMPES solver. This does not change
  * the results, because subsequent iterations will do it correctly, but it
@@ -138,7 +138,7 @@
  * <br>
  * (Rene Gassmoeller, 2015/02/02)
  *
- * <li> Fixed: There was a small bug in ASPECT 1.2 that only occured in the
+ * <li> Fixed: There was a small bug in ASPECT 1.2 that only occurred in the
  * adiabatic initial temperature plugin, when no temperature was prescribed at
  * any boundary, the model was compressible and a bottom thermal boundary
  * layer was included. This is fixed now.

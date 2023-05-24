@@ -52,7 +52,7 @@ end
 
 # The mesh will be deformed according to the displacement
 # of the surface nodes due to diffusion of the topography.
-# The mesh is allowed to move verticall along the left and
+# The mesh is allowed to move vertical along the left and
 # right boundary.
 subsection Mesh deformation
   set Mesh deformation boundary indicators = top: diffusion

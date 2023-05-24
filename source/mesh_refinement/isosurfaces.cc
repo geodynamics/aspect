@@ -281,8 +281,8 @@ namespace aspect
                              "The first two entries for each isosurface, describing the minimum and maximum grid levels, can be "
                              "two numbers or contain one of the key values 'min' and 'max'. This indicates the key will be replaced with "
                              "the global minimum and maximum refinement levels. The 'min' and 'max' keys also accept adding "
-                             "values to be added or substracted from them respectively. This is done by adding a '+' or '-' and a "
-                             "number behind them (e.g. min+2 or max-1). Note that you can't substract a value from a minimum value or "
+                             "values to be added or subtracted from them respectively. This is done by adding a '+' or '-' and a "
+                             "number behind them (e.g. min+2 or max-1). Note that you can't subtract a value from a minimum value or "
                              "add a value to the maximum value. If, for example, `max-4` drops below the minimum or `min+4` goes above the "
                              "maximum, it will simply use the global minimum and maximum values respectively. The same holds for any "
                              "mesh refinement level below the global minimum or above the global maximum.");

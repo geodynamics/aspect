@@ -721,7 +721,7 @@ namespace aspect
 
       /**
        * Initiate the assembly of the Stokes preconditioner matrix via
-       * assemble_stokes_preconditoner(), then set up the data structures to
+       * assemble_stokes_preconditioner(), then set up the data structures to
        * actually build a preconditioner from this matrix.
        *
        * This function is implemented in

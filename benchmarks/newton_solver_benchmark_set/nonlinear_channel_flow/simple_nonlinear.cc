@@ -316,7 +316,7 @@ namespace aspect
           // strain-rate deviator parameter
           prm.declare_entry ("Use deviator of strain-rate", "true",
                              Patterns::Bool(),
-                             "This value determines wheter to use the deviator of the strain-rate in computing the viscosity, "
+                             "This value determines whether to use the deviator of the strain-rate in computing the viscosity, "
                              "or simply the strain rate $\\varepsilon(\\mathbf u)$.");
         }
         prm.leave_subsection();

@@ -133,7 +133,7 @@ end
 
 
 # We also include the topography postprocessor, which just calculates
-# the maximum and minimun topography on your free surface at
+# the maximum and minimum topography on your free surface at
 # every time step.
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, topography

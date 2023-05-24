@@ -347,7 +347,7 @@
  *
  * <li> Changed: The hdf5 visualization output no longer automatically merges
  * vertices of adjacent cells to save disk space. This has lead to confusion
- * when investigating discontinous output properties, and is now an input
+ * when investigating discontinuous output properties, and is now an input
  * parameter that needs to be explicitly enabled.
  * <br>
  * (Rene Gassmoeller, 2017/10/19)
@@ -562,7 +562,7 @@
  * (Ian Rose, 2017/05/15)
  *
  * <li> Changed: The default number of grouped files has been changed from 0 (i.e. the nunmber of
- * processors) to 16 in order to keep the number of output files small if not explicitely
+ * processors) to 16 in order to keep the number of output files small if not explicitly
  * stated otherwise.
  * <br>
  * (Jacky Austermann, 2017/05/15)
@@ -657,7 +657,7 @@
  * named additional outputs and a derived class that that can be filled
  * with output for the seismic velocities in the evaluate() function.
  * This replaces the member functions seismic_Vs and seismic_Vp in the
- * material model inteface, and can now be used to generate graphical
+ * material model interface, and can now be used to generate graphical
  * output for other quantities as well. This change also removes the
  * postprocessors 'seismic_vp', and 'seismic_vs'. Instead there is a
  * postprocessor 'named additional outputs' that outputs all available

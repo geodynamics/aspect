@@ -52,7 +52,7 @@ namespace aspect
       /**
        * @brief The type of deformation selector used by the CPO code.
        *
-       * The selector is a input parameter and it can either set a deformation type directly or deterimine the deformation type through an algorithm.
+       * The selector is a input parameter and it can either set a deformation type directly or determine the deformation type through an algorithm.
        * The deformation type selector is used to determine/select the deformation type. It can be a fixed deformation type, for example,
        * by setting it to olivine_a_fabric, or it can be dynamically chosen, which is what the olivine_karato_2008 option does.
        *
@@ -322,7 +322,7 @@ namespace aspect
           /**
            * @brief Computes the reference resolved shear stress (RRSS) based on the selected deformation type.
            *
-           * The inactive plane should theoretically be infinitly strong, but this is nummerically not desirable,
+           * The inactive plane should theoretically be infinitely strong, but this is nummerically not desirable,
            * so an optional max_value can be set to indicate an inactive plane.
            *
            * It is currently designed to return the relative strength of the slip planes for olivine, which are are 4,
@@ -542,7 +542,7 @@ namespace aspect
           compute_derivatives_spin_tensor(const Tensor<2,3> &velocity_gradient_tensor) const;
 
           /**
-           * Random number generator used for initalization of particles
+           * Random number generator used for initialization of particles
            */
           mutable boost::mt19937 random_number_generator;
           unsigned int random_number_seed;

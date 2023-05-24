@@ -19,7 +19,7 @@
  * (Timo Heister, 2014/05/29)
  *
  * <li> Changed: The adiabatic reference profile is now defined in a plugin
- * architecture as well. Currently, only the old funtionality of having a
+ * architecture as well. Currently, only the old functionality of having a
  * constant profile, which is computed before the first timestep, is included.
  * However, now there is the possibility for more simple or more realistic
  * user-written plugins (like an analytic function, or a profile that is
@@ -136,7 +136,7 @@
  * (Juliane Dannberg, 2014/05/21)
  *
  * <li> New: There is now a simple compressible material model with constant
- * compressibility resulting in an exponential dependeny of density on
+ * compressibility resulting in an exponential dependency of density on
  * pressure and a linear dependence on temperature deviation from the
  * adiabatic profile. All other material properties are constant.
  * <br>

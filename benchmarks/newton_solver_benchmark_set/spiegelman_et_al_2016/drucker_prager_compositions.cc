@@ -546,7 +546,7 @@ namespace aspect
           // finite difference versus analytical
           prm.declare_entry ("Use analytical derivative", "false",
                              Patterns::Bool(),
-                             "A bool indicating wether to use finite differences to compute the derivative or to use "
+                             "A bool indicating whether to use finite differences to compute the derivative or to use "
                              "the analytical derivative.");
 
           prm.declare_entry ("Use deviator of strain-rate", "true",
