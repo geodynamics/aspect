@@ -43,7 +43,7 @@
  * A module for the definition of properties related to initial topography of
  * the geometry. The goal of this module is to return the elevation at a
  * certain point on the surface and store and manage all information related
- * to this propose.
+ * to this purpose.
  */
 
 /**
