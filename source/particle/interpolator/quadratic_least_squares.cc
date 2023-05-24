@@ -271,7 +271,7 @@ namespace aspect
                   {
                     for (double z = -0.5; z <= 0.5; ++z)
                       {
-                        critical_points.emplace_back(-(coefficients[1] + coefficients[4] * y + coefficients[5] * z)/(2*coefficents[7]), y, z);
+                        critical_points.emplace_back(-(coefficients[1] + coefficients[4] * y + coefficients[5] * z)/(2*coefficients[7]), y, z);
                       }
                   }
               }
