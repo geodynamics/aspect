@@ -1,0 +1,26 @@
+[default]
+# Don't check text that matches the following regexes'
+extend-ignore-re = [
+    '\\cite\{.*\}', # citations contain arbitrary keys
+]
+
+[default.extend-words]
+# Don't correct abbreviations of the Boussinesq approximation
+BA = "BA"
+ba = "ba"
+
+# Don't correct some other abbreviations
+FOT = "FOT"
+
+# Don't check the following files
+[files]
+extend-exclude = [
+    "*.svg",
+    "*.pvsm",
+    "*.vtu",
+    "contrib/catch/*",
+    "contrib/world_builder/*",
+    "*.bib", # bib entries contain many arbitrary abbreviations
+    "parameters.*", # parameters should be corrected in the original source
+    "doc/sphinx/parameters/*", # parameters should be corrected in the original source
+    ] 
