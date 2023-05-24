@@ -23,4 +23,5 @@ extend-exclude = [
     "*.bib", # bib entries contain many arbitrary abbreviations
     "parameters.*", # parameters should be corrected in the original source
     "doc/sphinx/parameters/*", # parameters should be corrected in the original source
+    "tests/prmbackslash*", # this test purposefully breaks words on different lines
     ] 
