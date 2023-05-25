@@ -276,7 +276,7 @@ int f(double parameter)
 
   if (Error)
     {
-      std::cout << "Some parts of the test where not succesfull." << std::endl;
+      std::cout << "Some parts of the test where not successful." << std::endl;
     }
   else
     {

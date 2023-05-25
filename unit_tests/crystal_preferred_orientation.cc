@@ -754,7 +754,7 @@ TEST_CASE("CPO")
     ref_resolved_shear_stress[0] = 1;
     ref_resolved_shear_stress[1] = 2;
     ref_resolved_shear_stress[2] = 3;
-    ref_resolved_shear_stress[3] = 1e60; // can't really use nummerical limits max or infinite, because need to be able to square it without becomming infinite. This is the value fortran D-Rex uses.
+    ref_resolved_shear_stress[3] = 1e60; // can't really use nummerical limits max or infinite, because need to be able to square it without becoming infinite. This is the value fortran D-Rex uses.
 
 
     std::pair<std::vector<double>, std::vector<Tensor<2,3>>> derivatives;
@@ -982,7 +982,7 @@ TEST_CASE("CPO")
     ref_resolved_shear_stress[0] = 1;
     ref_resolved_shear_stress[1] = 2;
     ref_resolved_shear_stress[2] = 3;
-    ref_resolved_shear_stress[3] = 1e60; // can't really use nummerical limits max or infinite, because need to be able to square it without becomming infinite. This is the value fortran D-Rex uses.
+    ref_resolved_shear_stress[3] = 1e60; // can't really use nummerical limits max or infinite, because need to be able to square it without becoming infinite. This is the value fortran D-Rex uses.
 
 
     std::pair<std::vector<double>, std::vector<Tensor<2,3>>> derivatives;

@@ -230,7 +230,7 @@ namespace aspect
               prm.declare_entry ("Random number seed", "1",
                                  Patterns::Integer (0),
                                  "The seed used to generate random numbers. This will make sure that "
-                                 "results are reproducable as long as the problem is run with the "
+                                 "results are reproducible as long as the problem is run with the "
                                  "same amount of MPI processes. It is implemented as final seed = "
                                  "Random number seed + MPI Rank. ");
 

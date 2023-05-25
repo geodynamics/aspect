@@ -245,7 +245,7 @@
  * Stokes equations. This generally caused the linear solver to fail or to
  * take many more iterations than necessary. The right-hand side pressure
  * compatibility modification is now applied correctly, fixing this problem
- * and allowing it to use periodic boudaries in compressible models.
+ * and allowing it to use periodic boundaries in compressible models.
  * <br>
  * (Juliane Dannberg, 2022/01/26)
  *

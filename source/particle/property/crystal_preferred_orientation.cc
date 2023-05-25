@@ -628,7 +628,7 @@ namespace aspect
                                                                       const std::array<double,4> ref_resolved_shear_stress,
                                                                       const bool prevent_nondimensionalization) const
       {
-        // This if statement is only there for the unit test. In normal sitations it should always be set to false,
+        // This if statement is only there for the unit test. In normal situations it should always be set to false,
         // because the nondimensionalization should always be done (in this exact way), unless you really know what
         // you are doing.
         double nondimensionalization_value = 1.0;
@@ -650,7 +650,7 @@ namespace aspect
         std::vector<double> deriv_volume_fractions(n_grains);
         std::vector<Tensor<2,3>> deriv_a_cosine_matrices(n_grains);
 
-        // create shorcuts
+        // create shortcuts
         const std::array<double, 4> &tau = ref_resolved_shear_stress;
 
         std::vector<double> strain_energy(n_grains);

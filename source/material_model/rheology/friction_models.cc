@@ -145,7 +145,7 @@ namespace aspect
                            "\\item ``function'': Specify the friction angle as a function of space and time "
                            "for each compositional field.");
 
-        // Dynamic friction paramters
+        // Dynamic friction parameters
         prm.declare_entry ("Dynamic characteristic strain rate", "1e-12",
                            Patterns::Double (0),
                            "The characteristic strain rate value at which the angle of friction is "

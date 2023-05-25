@@ -455,7 +455,7 @@ namespace aspect
                              "Whether the box should be periodic in Y direction in the lithosphere. "
                              "This value is ignored if the simulation is in 2d. ");
 
-          // grid creation paramters
+          // grid creation parameters
           prm.declare_entry ("Use merged grids", "true",
                              Patterns::Bool (),
                              "Whether to make the grid by gluing together two boxes, or just "

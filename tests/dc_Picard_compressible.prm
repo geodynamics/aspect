@@ -83,7 +83,7 @@ subsection Boundary temperature model
   end
 end
 
-#### Temperatur model
+#### Temperature model
 subsection Initial temperature model
   #set Model name = adiabatic
   set List of model names =  adiabatic, function

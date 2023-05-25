@@ -24,7 +24,7 @@ and plotted over the viscosity field is shown in {numref}`fig:solkz3`.
 ```{figure-md} fig:solkz1
 <img src="solkz-solution.*" alt="SolKz Stokes benchmark. The density perturbation field overlaid with velocity vectors. The viscosity grows exponentially in the vertical direction, leading to small velocities at the top despite the large density variations." />
 
-SolKz Stokes benchmark. The density pertubation field overlaid with velocity vectors. The viscosity grows exponentially in the vertical direction, leading to small velocities at the top despite the large density variations.
+SolKz Stokes benchmark. The density perturbation field overlaid with velocity vectors. The viscosity grows exponentially in the vertical direction, leading to small velocities at the top despite the large density variations.
 ```
 ```{figure-md} fig:solkz2
 <img src="solkz-solution-pressure.*" title="fig:" id="fig:solkz2" alt="SolKz Stokes benchmark pressure." />

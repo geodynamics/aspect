@@ -86,7 +86,7 @@ namespace aspect
   {
 
     /**
-     * This struct stores the data for the current linear operator that is requried to perform
+     * This struct stores the data for the current linear operator that is required to perform
      * matrix-vector products.
      *
      * The members of type Table<2, VectorizedArray<X>> contain values

@@ -76,7 +76,7 @@ def cart():
         for y in range(n_y):
             data_2[:,y,x] = 800. - np.array(coord_z)
 
-    # Finsh and close file
+    # Finish and close file
     ds.close()
 
 

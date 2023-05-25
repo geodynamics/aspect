@@ -194,7 +194,7 @@ subsection Postprocess
     end
     subsection LPO
       set Random number seed = 301
-      set Number of grains per praticle = 1000 #4394 #1000 #5000 #10000 #10000 ## Annotation: grain count
+      set Number of grains per particle = 1000 #4394 #1000 #5000 #10000 #10000 ## Annotation: grain count
       set Property advection method = Backward Euler #Forward Euler #Backward Euler #Crank-Nicolson #Backward Euler ## Annotation: Property advection method
       set Property advection tolerance = 1e-15
       subsection D-Rex 2004
@@ -203,7 +203,7 @@ subsection Postprocess
         set Volume fractions minerals = 0.7, 0.3 ## Annotation: Volume fractions minerals
         set Stress exponents = 3.5
         set Exponents p = 1.5
-        set Nucleation efficientcy = 5 ## Annotation: Nucleation efficientcy
+        set Nucleation efficiently = 5 ## Annotation: Nucleation efficiently
         set Threshold GBS = 0.3 ## Annotation: TGBS
       end
     end

@@ -120,7 +120,7 @@ def plot_rk2_error_over_resolution(statistics, timestep, output_file):
         ax.set_ylabel(ylabels[i_error])
         i = 3
 
-        # The density error is not reliable, becaue the analytical density error
+        # The density error is not reliable, because the analytical density error
         # is 0. Therefore we cannot compute the relative error.
         if i_error != 2:
             line3, = ax.loglog(h,error_values[models[i]][errors[i_error]], marker=markers[6], color=colors[6], label="relative RK2")

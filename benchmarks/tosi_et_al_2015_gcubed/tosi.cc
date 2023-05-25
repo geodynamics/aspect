@@ -452,7 +452,7 @@ namespace aspect
                              "as used in equation (8) of the paper.");
           prm.declare_entry ("Use analytical derivative", "false",
                              Patterns::Bool (),
-                             "Wether to use the analytical or the finite difference derivative for the Newton method.");
+                             "Whether to use the analytical or the finite difference derivative for the Newton method.");
         }
         prm.leave_subsection();
       }

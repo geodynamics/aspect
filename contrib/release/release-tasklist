@@ -432,7 +432,7 @@ This release includes the following significant changes:
   used the free surface. 
   (Rene Gassmoeller, Anne Glerum, Derek Neuharth, Marine Lasbleis)
 
-- New benchmarks: entropy equation, viscoelastic cantilever, bouyancy-driven
+- New benchmarks: entropy equation, viscoelastic cantilever, buoyancy-driven
   viscoelastic plate stress, advection in annulus, slab detachment benchmark,
   several advection benchmarks, rigid shear, polydiapirs, surface loading.
   (Wolfgang Bangerth, Fiona Clerc, Juliane Dannberg, Daniel Douglas, Rene

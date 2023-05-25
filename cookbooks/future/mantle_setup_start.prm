@@ -28,7 +28,7 @@ end
 
 # The melt scaling factor threshold controls the porosity above which melt is transported
 # in a given cell of the model. Since the value of 1e20 is never reached anywhere in the
-# model, setting the parameter to this value disables melt trasport. For the restart, this
+# model, setting the parameter to this value disables melt transport. For the restart, this
 # value is decreased to enable melt transport.
 subsection Melt settings
   set Include melt transport               = true

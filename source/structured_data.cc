@@ -37,7 +37,7 @@
 
 #include <netcdf.h>
 #define AssertThrowNetCDF(error_code) \
-  AssertThrow(error_code == NC_NOERR, dealii::ExcMessage("A NetCDF Error with code " + std::to_string(error_code) + " occured."))
+  AssertThrow(error_code == NC_NOERR, dealii::ExcMessage("A NetCDF Error with code " + std::to_string(error_code) + " occurred."))
 
 #else
 
@@ -1434,7 +1434,7 @@ namespace aspect
                                Patterns::Double (0.),
                                "The `First data file model time' parameter "
                                "has been deactivated and will be removed in a future release. "
-                               "Do not use this paramter and instead provide data files "
+                               "Do not use this parameter and instead provide data files "
                                "starting from the model start time.");
             prm.declare_entry ("First data file number", "0",
                                Patterns::Integer (),

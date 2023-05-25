@@ -81,7 +81,7 @@ end
 
 ############### Parameters describing the temperature field
 # Since we are interested in the flow of heat through
-# the top of the model, we set the temperture to 1
+# the top of the model, we set the temperature to 1
 # everywhere within the model except for the top
 # boundary, which is set to 0.
 

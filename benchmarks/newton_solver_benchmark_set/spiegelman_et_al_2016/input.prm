@@ -34,7 +34,7 @@ end
     set Variable names      = x,z
     set Function constants  = H = 30e3
     # The function below lays out the composition structure as described in the Spiegelman paper.
-    # It generates a composition at the bottom wich has a square with round eges sticking out in
+    # It generates a composition at the bottom which has a square with round eges sticking out in
     # the center.
     set Function expression = if(z < 0.25 * H,1, \
 if(z < (0.25+(1/12)-0.02)*H & x > (2-(1/12))*H & x < (2+(1/12))*H,1, \
