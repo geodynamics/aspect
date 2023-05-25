@@ -9,8 +9,8 @@ aligns to cell boundaries, leading to much larger difficulties in obtaining an
 accurate representation of the pressure. Specifically, the almost
 discontinuous pressure along this interface leads to oscillations in the
 numerical solution. This can be seen in the visualizations shown in
-{numref}`fig:inclusion1` and {numref}`fig:inclusion2`. As before, for details we refer to {cite:t}`DMGT11`. The
-analytic solution against which we compare is given in {cite:t}`SP03`. An extensive discussion of convergence properties is given in {cite:t}`kronbichler:etal:2012`.
+{numref}`fig:inclusion1` and {numref}`fig:inclusion2`. As before, for details we refer to {cite:t}`duretz:etal:2011`. The
+analytic solution against which we compare is given in {cite:t}`schmid:podladchikov:2003`. An extensive discussion of convergence properties is given in {cite:t}`kronbichler:etal:2012`.
 
 ```{figure-md} fig:inclusion1
 <img src="inclusion-solution.*" alt="The viscosity field when interpolated onto the mesh (internally, the &#x201C;exact&#x201D; viscosity field &#x2013; large inside a circle, small outside &#x2013; is used), and overlaid to it some velocity vectors." />

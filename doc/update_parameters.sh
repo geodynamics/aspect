@@ -66,8 +66,8 @@ grep '[^\\]%' parameters.tex && echo "Error, please remove '%'!" && exit 1
 
 cd ../..
 
-echo Creating parameters.md
-./contrib/utilities/jsontomarkdown.py output/parameters.json > doc/sphinx/parameters.md \
+echo Convert parameters to markdown files
+./contrib/utilities/jsontomarkdown.py output/parameters.json \
     || { echo "Conversion of parameters to markdown failed"; exit 1; }
 
 # The jsontomarkdown script currently can leave spaces at the ends of lines.  

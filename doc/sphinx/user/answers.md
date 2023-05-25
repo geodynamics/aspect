@@ -10,11 +10,7 @@ resources:
     <https://community.geodynamics.org/c/aspect>. This forum is where the
     ASPECT developers all hang out. Archived
     discussions from the archived aspect-devel mailing list can be downloaded
-    at <http://lists.geodynamics.org/pipermail/aspect-devel>.
-
-    :::{admonition} TODO
-    <http://lists.geodynamics.org/pipermail/aspect-devel> does not seem to be working.
-    :::
+    at <https://geodynamics.org/pipermail/aspect-devel/>.
 
 -   ASPECT is primarily based on the deal.II
     library (the dependency on Trilinos and p4est is primarily through

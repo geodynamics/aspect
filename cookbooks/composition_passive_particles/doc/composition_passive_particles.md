@@ -1,3 +1,5 @@
+# The passive case with particles
+
 In order to advect particles along with the flow field, one just needs to add
 the `particles` postprocessor to the list of postprocessors and specify a few
 parameters. We do so in the

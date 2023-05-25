@@ -67,4 +67,14 @@ benchmarks/gravity_thick_shell/doc/gravity_thick_shell.md
 benchmarks/infill_density/doc/infill_density.md
 benchmarks/gravity_mantle/doc/gravity_mantle.md
 benchmarks/buiter_et_al_2016_jsg/doc/buiter_et_al_2016_jsg.md
+benchmarks/compressibility_formulations/README.md
+benchmarks/entropy_adiabat/README.md
+benchmarks/geoid-spectral-comparison/README.md
+benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/README.md
+benchmarks/newton_solver_benchmark_set/spiegelman_et_al_2016/README.md
+benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/README.md
+benchmarks/nsinker/README.md
+benchmarks/nsinker_spherical_shell/README.md
+benchmarks/time_dependent_annulus/README.md
+benchmarks/viscoelastic_plastic_shear_bands/README.md
 :::

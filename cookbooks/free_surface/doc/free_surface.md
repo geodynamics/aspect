@@ -1,4 +1,4 @@
-(sec:cookbooks:free_surface)=
+(sec:cookbooks:free-surface)=
 # Using a free surface
 
 *This section was contributed by Ian Rose*.

@@ -8,12 +8,12 @@ temperature field. If we want to model convection in the Earth's mantle
 we want to choose an initial temperature distribution that captures the
 Earth's buoyancy structure. In this cookbook we present how to use
 temperature perturbations based on the shear wave velocity model S20RTS
-{cite}`S20RTS` to initialize a mantle convection calculation.
+{cite}`ritsema:vanheijst:2000` to initialize a mantle convection calculation.
 
 ## The input shear wave model.
 
 The current version of ASPECT can read in the shear wave velocity models S20RTS
-{cite}`S20RTS` and S40RTS {cite}`S40RTS`, which are located
+{cite}`ritsema:vanheijst:2000` and S40RTS {cite}`ritsema:etal:2011`, which are located
 in [data/initial-temperature/S40RTS/](https://github.com/geodynamics/aspect/tree/main/data/initial-temperature/S40RTS). Those models provide spherical
 harmonic coefficients up do degree 20 and 40, respectively, for 21 depth
 layers. The interpolation with depth is done through a cubic spline
@@ -58,7 +58,7 @@ parameters in ASPECT.
 
 For this cookbook we will use the parameter file provided in
 [cookbooks/initial-condition-S20RTS/S20RTS.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/initial-condition-S20RTS/S20RTS.prm), which uses a 3d spherical
-shell geometry similar to section {ref}`sec:shell-simple-3d`. This plugin is
+shell geometry similar to section {ref}`sec:cookbooks:shell_simple_3d`. This plugin is
 only sensible for a 3D spherical shell with Earth-like dimensions.
 
 The relevant section in the input file is as follows:

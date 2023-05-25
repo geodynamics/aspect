@@ -19,4 +19,5 @@ corresponding to the individual cookbook.
 parameter-file.md
 plugins.md
 manual-section.md
+quickref.md
 :::

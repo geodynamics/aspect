@@ -204,8 +204,8 @@ evaluate(const typename Interface<dim>::MaterialModelInputs &in,
 ```
 
 Using the method described in Sections&nbsp;{ref}`sec:benchmark-run` and
-{ref}`sec:write-plugin`, and the files in the
-`benchmarks/davies_et_al/case-2.3-plugin`, we can compile our new material
+{ref}`sec:extending:write-a-plugin`, and the files in the
+[benchmarks/davies_et_al/case-2.3-plugin](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-2.3-plugin), we can compile our new material
 model into a shared library that we can then reference from the input file.
 The complete input file for case 2.3 is located in
 [benchmarks/davies_et_al/case-2.3.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/davies_et_al/case-2.3.prm) and contains among others the

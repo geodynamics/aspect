@@ -96,6 +96,11 @@ def escape_doc_string(text) :
                  r'`\1`',
                  tmp)
 
+    # Finally escape some characters that have special meaning in markdown:
+    tmp = re.sub(r'\[(.*)\]\(',
+                 r'\[\1\](',
+                 tmp)
+
     return tmp;
 
 
@@ -148,7 +153,7 @@ def handle_subsection(data, cur_path, output_file):
 
 def handle_parameters(data):
     global_output_file = open("doc/sphinx/parameters/index.md", "w")
-    global_output_file.write("(sec:parameter-documentation-home)=\n"
+    global_output_file.write("(parameters)=\n"
                              "# Parameter Documentation\n"
                              ":::{admonition} Under construction\n"
                              ":class: warning\n"
@@ -165,6 +170,7 @@ def handle_parameters(data):
     global_parameters = open("doc/sphinx/parameters/global.md", "w")
     print("(parameters:global)=", file=global_parameters)
     print("# Global parameters\n\n", file=global_parameters)
+    print("## **Subsection:** No subsection\n\n", file=global_parameters)
 
     cur_path = []
     keys = list(data.keys())

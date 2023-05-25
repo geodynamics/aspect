@@ -25,4 +25,4 @@ This option should be chosen together with a material model that defines a densi
     Users should be careful when using this option, as some combinations may lead to unphysical model behavior.
 
 An example cookbook that shows a comparison between different approximations
-is discussed in {ref}`sec:cookbooks:geophysical:burnman`.
+is discussed in {ref}`sec:cookbooks:burnman`.

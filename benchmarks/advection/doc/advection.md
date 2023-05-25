@@ -1,3 +1,4 @@
+(sec:benchmarks:advection)=
 # Advection stabilization benchmarks
 
 The underlying PDEs of the temperature and compositional field are typically
@@ -22,6 +23,8 @@ Both benchmarks have the identical setup in the temperature and a
 compositional field. The only difference is that the temperature equation
 contains a (small) physical diffusion term.
 
+**[Description of benchmark files](../README.md)**
+
 ```{figure-md} fig:benchmark-drop
 <img src="drop.png" />
 
@@ -33,3 +36,7 @@ contains a (small) physical diffusion term.
 
  Rotating shapes benchmark at final time: Left: reference. Middle: Entropy viscosity. Right: SUPG.
 ```
+
+:::{toctree}
+../README.md
+:::

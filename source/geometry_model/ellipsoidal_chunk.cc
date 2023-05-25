@@ -846,7 +846,7 @@ namespace aspect
                                    "file by longitude:latitude. It is also possible to define additional subdivisions "
                                    "of the mesh in each direction. The boundary of the domain is formed by linear "
                                    "interpolation in longitude-latitude space between adjacent points "
-                                   "(i.e. [lon, lat](f) = [lon1*f + lon2*(1-f), lat1*f + lat2*(1-f)], "
+                                   "(i.e. $[lon, lat](f) = [lon1 \\cdot f + lon2 \\cdot(1-f), lat1 \\cdot f + lat2 \\cdot (1-f)]$, "
                                    "where f is a value between 0 and 1). Faces of the model are defined as "
                                    "0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.\n\n"
                                    "This geometry model supports initial topography for deforming the initial mesh.")

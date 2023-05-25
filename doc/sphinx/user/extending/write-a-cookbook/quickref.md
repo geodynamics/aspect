@@ -1,13 +1,8 @@
----
-orphan: true
----
 (sec:myst-quickref)=
 # MyST Quick reference
 
 :::{note}
 Everything in this file will look like garbage in a regular markdown viewer, like if you're viewing this on github. Viewing it on readthedocs will render everything properly.
-
-Also: numref will not work in this file since its not part of the main filetree. But it will work in anything thats a part of a toctree.
 :::
 
 ## Text
@@ -310,12 +305,12 @@ Captions are optional.
 ### Codeblocks from external files
 
 ````md
-```{literalinclude} ../manual/cookbooks/burnman/doc/material_model.part.prm
+```{literalinclude} /user/cookbooks/cookbooks/burnman/doc/material_model.part.prm
 ```
 ````
 
 becomes:
-```{literalinclude} ../manual/cookbooks/burnman/doc/material_model.part.prm
+```{literalinclude} /user/cookbooks/cookbooks/burnman/doc/material_model.part.prm
 ```
 
 When working in cookbooks, prm files should generally be in the same folder as the .md file referencing them, so the filepath will probably look more like this:
@@ -356,10 +351,6 @@ Please see {numref}`tab:quickref`.
 Figure labels cannot contain more than one dash, so we use colons instead.
 This is likely a bug.
 
-:::{note}
-The numref command doesn't work in this particular file because its not a part of the main file structure. It does work in the manual, as long as the file is in a toctree.
-:::
-
 ## Figures
 
 Format a figure like this:
@@ -373,7 +364,7 @@ This is the figure caption.
 to get this:
 
 ```{figure-md} fig:quickref
-<img src="_static/images/aspect_logo.*" alt="Screenshot"  width="100%"/>
+<img src="/_static/images/aspect_logo.*" alt="Screenshot"  width="100%"/>
 
 This is the figure caption.
 ```
@@ -411,10 +402,10 @@ Parameter files can be referenced like a link. You can leave the link name out t
 
 ```md
 [](parameters:CFL_20number)
-See all [particle interpolator parameters](parameters:Postprocess:Particles:Interpolator)
+See all [particle interpolator parameters](parameters:Postprocess/Particles/Interpolator)
 ```
 [](parameters:CFL_20number)
-See all [particle interpolator parameters](parameters:Postprocess:Particles:Interpolator)
+See all [particle interpolator parameters](parameters:Postprocess/Particles/Interpolator)
 
 ## Math
 

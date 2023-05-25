@@ -8,7 +8,7 @@ Alternatively, they may be parameterized as a function of the spatial variable $
 ASPECT allows both kinds of parameterizations.
 
 Note that below we will discuss examples of the dependence of coefficients on other quantities; which dependence is actually implemented in the code is a different matter.
-As we will discuss in {ref}`cha:parameters` and {ref}`cha:extending`, some versions of these models are already implemented and can be selected from the input parameter file; others are easy to add to ASPECT by providing self-contained descriptions of a set of coefficients that the rest of the code can then use without a need for further modifications.
+As we will discuss in {ref}`parameters` and {ref}`cha:extending`, some versions of these models are already implemented and can be selected from the input parameter file; others are easy to add to ASPECT by providing self-contained descriptions of a set of coefficients that the rest of the code can then use without a need for further modifications.
 
 Concretely, we consider the following coefficients and dependencies:
 

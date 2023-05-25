@@ -45,7 +45,7 @@ as described above, the density in the temperature equation is chosen as the
 reference density $\rho_0$ rather than the full density
 $\rho(1-\alpha(T-T_0))$ as we see it in the buoyancy term on the right hand
 side of the momentum equation. As is able to handle different approximations
-of the equations (see Section {ref}`sec:approximate-equations`), we also
+of the equations (see Section {ref}`sec:methods:approximate-equations`), we also
 have to specify in the input file that we want to use the Boussinesq
 approximation. The problem is completed by stating the velocity boundary
 conditions: tangential flow along all four of the boundaries of the box.
@@ -90,7 +90,7 @@ you can find the input file to run this cookbook example in
 ## Running the program.
 
 When you run this program for the first time, you are probably still running
-in debug mode (see Section&nbsp;{ref}`sec:debug-mode`) and you will get
+in debug mode (see Section&nbsp;{ref}`sec:run-aspect:debug-mode`) and you will get
 output like the following:
 
 ``` ksh
@@ -203,7 +203,7 @@ selected that we would like to compute velocity, temperature, and heat flux
 statistics. These statistics, among others, are listed in the statistics file
 whose head looks like this for the current input file:
 
-``` prmfile
+```
 # 1: Time step number
 # 2: Time (seconds)
 # 3: Time step size (seconds)
