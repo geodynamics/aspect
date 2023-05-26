@@ -1,4 +1,4 @@
-# A graphical user interface for editing ASPECT parameter files
+# A graphical user interface
 
 Preparing a parameter file in a text editor can be a tedious task, not only
 because the number of input parameters has grown considerably during the

@@ -152,6 +152,9 @@ section on how to debug deal.II programs.
 
 
 :::{toctree}
+---
+maxdepth: 1
+---
 idea-of-plugins.md
 write-a-plugin.md
 write-a-cookbook/index.md
