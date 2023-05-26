@@ -720,6 +720,29 @@ IF (ASPECT_UNITY_BUILD)
       SET_PROPERTY(TARGET ${_T} PROPERTY UNITY_BUILD TRUE)
     ENDFOREACH()
     MESSAGE(STATUS "Combining source files into unity build.")
+
+    # If cmake >= 3.18 we can also use unity groups
+    IF (NOT CMAKE_VERSION VERSION_LESS 3.18)
+      MESSAGE(STATUS "Using unity build groups.")
+      FOREACH(_T ${TARGETS})
+        SET_TARGET_PROPERTIES(${_T} PROPERTIES UNITY_BUILD_MODE GROUP)
+      ENDFOREACH()
+
+      # Collect all files and directories that contain source files and add them to a list
+      FILE(GLOB_RECURSE SRC_FILES_AND_DIRS LIST_DIRECTORIES true ${CMAKE_SOURCE_DIR}/source/*)
+      LIST(APPEND SRC_FILES_AND_DIRS ${CMAKE_SOURCE_DIR}/source ${CMAKE_SOURCE_DIR}/unit_tests)
+
+      # Create one unity build group per directory and add all files in that directory to the group
+      FOREACH(_D ${SRC_FILES_AND_DIRS})
+        IF (IS_DIRECTORY ${_D})
+          # Name the build group after the directory name
+          FILE(RELATIVE_PATH _GROUP_NAME ${CMAKE_SOURCE_DIR} ${_D})
+          STRING(REPLACE "/" "_" _GROUP_NAME ${_GROUP_NAME})
+          FILE(GLOB GROUP_FILES ${_D}/*.cc)
+          SET_SOURCE_FILES_PROPERTIES(${GROUP_FILES} PROPERTIES UNITY_GROUP ${_GROUP_NAME})
+        ENDIF()
+      ENDFOREACH()
+    ENDIF()
   ELSEIF(CMAKE_VERSION VERSION_LESS 3.16)
     MESSAGE(FATAL_ERROR "ASPECT_UNITY_BUILD is currently only supported for CMake 3.16 and newer versions.")
   ENDIF()
