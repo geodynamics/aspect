@@ -1,5 +1,5 @@
 (sec:extending-signals)=
-# Extending ASPECT through the signals mechanism
+# Extending ASPECT through signals
 
 Not all things you may want to do fit neatly into the list of plugins of the
 previous sections. Rather, there are cases where you may want to change things

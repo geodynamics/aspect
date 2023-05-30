@@ -1,5 +1,5 @@
 (sec:methods:choosing-a-formulation)=
-# Choosing a formulation in ASPECT
+# Choosing a formulation
 
 After discussing different reasonable approximations for modeling compressible or incompressible mantle convection, we will now describe the different steps one has to take to use one of these approximations in a computation.
 As noted towards the beginning of {ref}`sec:methods:approximate-equations`, one should choose a formulation that is adequate for the situation one wants to simulate, taking into account that other authors in previous studies may have used formulations not because they were suited to the situation but also because, possibly, they did not have software available that implemented the most suitable formulation.

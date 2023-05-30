@@ -1,4 +1,4 @@
-# Plugins and other additional file
+# Plugins and additional files
 
 In case you need other files (like shared libraries) to run your cookbook, you
 have to create a new folder in the [cookbooks](https://github.com/geodynamics/aspect/tree/main/cookbooks) directory that is named after

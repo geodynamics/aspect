@@ -1,4 +1,4 @@
-# Compatibility of plugins with newer ASPECT versions
+# Compatibility of plugins
 
 We strive to maintain compatibility for user written plugins with new versions
 of ASPECT for as long as possible. However,

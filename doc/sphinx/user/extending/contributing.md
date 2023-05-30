@@ -1,5 +1,5 @@
 (sec:extending:contributing)=
-# Contributing to ASPECT's development
+# How to contribute
 
 To end this section, let us repeat something already stated in the
 introduction:

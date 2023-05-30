@@ -21,9 +21,8 @@ Put single asterisks around text you *want to italicize*, but double asterisks a
 ### Heading 3
 #### Heading 4
 ```
-becomes:
+becomes (note that the first heading is not rendered to avoid a duplicate heading in the table of contents):
 
-# Heading 1
 ## Heading 2
 ### Heading 3
 #### Heading 4
