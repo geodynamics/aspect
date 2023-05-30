@@ -3,7 +3,7 @@
 ```{admonition} Community Project
 :class: information
 
-ASPECT is a community project. Contributions to software or documentation by every user is welcomed and encouraged. See [here](https://github.com/geodynamics/aspect/blob/main/CONTRIBUTING.md) for how to contribute.
+ASPECT is a community project. Contributions to software or documentation by every user are welcome and encouraged. See [here](https://github.com/geodynamics/aspect/blob/main/CONTRIBUTING.md) for how to contribute.
 ```
 
 ```{image} _static/images/aspect_logo.png
