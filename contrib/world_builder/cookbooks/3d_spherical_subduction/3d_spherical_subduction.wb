@@ -1,9 +1,9 @@
 {
-  "version":"0.4",
+  "version":"0.5",
   "coordinate system":{"model":"spherical", "depth method":"begin segment"},
   "cross section":[[0,0],[10,0]],
   "maximum distance between coordinates":0.01,
-  "interpolation":"monotone spline",
+  //"interpolation":"monotone spline",
   "features":
   [
     {"model":"mantle layer", "name":"upper mantle", "min depth":95e3, "max depth":660e3, "coordinates":[[-1,-1],[41,-1],[41,-1],[-1,-1]],
@@ -24,7 +24,7 @@
      "composition models":[{"model":"uniform","compositions":[2], "max depth":30e3},
                            {"model":"uniform","compositions":[3], "min depth":30e3, "max depth":120e3}]},
 
-    {"model":"subducting plate", "name":"Subducting plate", "coordinates":[[15,41],[15,25],[5,5],[5,-1]], "dip point":[20,0],
+    {"model":"subducting plate", "name":"Subducting plate", "coordinates":[[15,41],[15,25],[5,5],[5,-1]], "dip point":[80,0],
       "segments":[{"length":200e3, "thickness":[95e3], "angle":[0,45]}, {"length":400e3, "thickness":[95e3], "angle":[45]}, 
                   {"length":200e3, "thickness":[95e3], "angle":[45,0]},{"length":100e3, "thickness":[95e3], "angle":[0]}],
     "temperature models":[{"model":"plate model", "density":3300, "plate velocity":0.05 }],

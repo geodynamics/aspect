@@ -17,20 +17,15 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_parameters_h
-#define _world_builder_parameters_h
+#ifndef WORLD_BUILDER_PARAMETERS_H
+#define WORLD_BUILDER_PARAMETERS_H
 
-#include <string>
-#include <vector>
-#include <unordered_map>
 #include <map>
 #include <memory>
+#include <vector>
 
-
-#include <rapidjson/document.h>
 #include "rapidjson/schema.h"
-
-#include <world_builder/point.h>
+#include "world_builder/point.h"
 
 namespace WorldBuilder
 {
@@ -45,17 +40,22 @@ namespace WorldBuilder
     class Array;
     class Bool;
     class UnsignedInt;
-  }
+  } // namespace Types
 
   namespace Features
   {
     class Interface;
-  }
+  } // namespace Features
 
   namespace CoordinateSystems
   {
     class Interface;
-  }
+  } // namespace CoordinateSystems
+
+  namespace GravityModel
+  {
+    class Interface;
+  } // namespace GravityModel
 
   class World;
 
@@ -107,14 +107,23 @@ namespace WorldBuilder
       T get(const std::string &name);
 
       /**
-       * A specialized verions of get which can retun vecors/arrays.
+       * A specialized verions of get which can return vecors/arrays.
        * \param name The name of the entry to retrieved
        */
       template<class T>
       std::vector<T> get_vector(const std::string &name);
 
       /**
-       * A specialized verions of get which can retun vecors/arrays.
+       * A specialized verions of get which can return a value at points type.
+       * \param name The name of the entry to retrieved
+       * \param name additional points to be added to the list at either the default value or at the value of a single value array in the list
+       */
+      std::pair<std::vector<double>,std::vector<double>>
+                                                      get(const std::string &name,
+                                                          const std::vector<Point<2> > &addition_points = {});
+
+      /**
+       * A specialized verions of get which can return vecors/arrays.
        * This version is designed for the plugin system.
        * \param name The name of the entry to retrieved
        */
@@ -122,15 +131,15 @@ namespace WorldBuilder
       std::vector<T> get_vector(const std::string &name, std::vector<std::shared_ptr<A> > &, std::vector<std::shared_ptr<B> > &, std::vector<std::shared_ptr<C> > &);
 
       /**
-       * A specialized verions of get which can retun unique pointers.
+       * A specialized verions of get which can return unique pointers.
        * \param name The name of the entry to retrieved
        */
       template<class T>
       std::unique_ptr<T> get_unique_pointer(const std::string &name);
 
       /**
-       * A specialized verions of get which can retun unique pointers as an argument
-       * and returns a bool to indicate whether it was successfull or not.
+       * A specialized verions of get which can return unique pointers as an argument
+       * and returns a bool to indicate whether it was successful or not.
        * Note that this function will erase all information in the vector.
        * \param name The name of the entry to retrieved
        * \param vector A vector of unique pointers.
@@ -140,15 +149,15 @@ namespace WorldBuilder
       get_unique_pointers(const std::string &name, std::vector<std::unique_ptr<T> > &vector);
 
       /**
-       * A specialized verions of get which can retun shared pointers as an argument
-       * and returns a bool to indicate whether it was successfull or not.
+       * A specialized verions of get which can return shared pointers as an argument
+       * and returns a bool to indicate whether it was successful or not.
        * Note that this function will erase all information in the vector.
        * \param name The name of the entry to retrieved
        * \param vector A vector of shared pointers.
        */
       template<class T>
       bool
-      get_shared_pointers(const std::string &name, std::vector<std::shared_ptr<T> > &);
+      get_shared_pointers(const std::string &name, std::vector<std::shared_ptr<T> > & /*vector*/);
 
       /**
        * Checks for the existance of an entry in the parameter file.
@@ -197,13 +206,13 @@ namespace WorldBuilder
        * @param model_group_name The name of the model group which is declared.
        * @param parent_name The name of the parent declaration group.
        * @param declaration_map A map containing plugin names and plugin declaration functions
-       * @param requried_entries A vector containing what entries should be required from the user. Default value is empty.
+       * @param required_entries A vector containing what entries should be required from the user. Default value is empty.
        * @param extra_declarations A vector containing extra declarations common to all plugins in this group. Default value is empty.
        */
       void
       declare_model_entries(const std::string &model_group_name,
                             const std::string &parent_name,
-                            std::map<std::string, void ( *)(Parameters &,const std::string &)> declare_map,
+                            const std::map<std::string, void ( *)(Parameters &,const std::string &)> &declare_map,
                             const std::vector<std::string> &required_entries = {},
                             const std::vector<std::tuple<std::string,const WorldBuilder::Types::Interface &, std::string> > &extra_declarations = {});
 
@@ -247,6 +256,14 @@ namespace WorldBuilder
        * @see CoordinateSystem
        */
       std::unique_ptr<WorldBuilder::CoordinateSystems::Interface> coordinate_system;
+
+      /**
+       * A pointers to the gravity model. This variable is responsible for
+       * the gravity model and has ownership over it. Therefore a unique
+       * pointer are used.
+       * @see CoordinateSystem
+       */
+      std::unique_ptr<WorldBuilder::GravityModel::Interface> gravity_model;
 
       /**
        * This function return the current path as stored in the path variable
@@ -301,5 +318,5 @@ namespace WorldBuilder
        */
       std::string get_relative_path_without_arrays() const;
   };
-}
+} // namespace WorldBuilder
 #endif

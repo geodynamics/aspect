@@ -17,18 +17,23 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_features_oceanic_plate_temperature_plate_model_h
-#define _world_builder_features_oceanic_plate_temperature_plate_model_h
+#ifndef WORLD_BUILDER_FEATURES_OCEANIC_PLATE_MODELS_TEMPERATURE_PLATE_MODEL_H
+#define WORLD_BUILDER_FEATURES_OCEANIC_PLATE_MODELS_TEMPERATURE_PLATE_MODEL_H
 
-#include <world_builder/features/oceanic_plate_models/temperature/interface.h>
-#include <world_builder/features/utilities.h>
-#include <world_builder/world.h>
+
+#include "world_builder/features/oceanic_plate_models/temperature/interface.h"
+#include "world_builder/features/feature_utilities.h"
+#include "world_builder/objects/surface.h"
 
 
 namespace WorldBuilder
 {
+  class Parameters;
+  class World;
+
   namespace Features
   {
+    using namespace FeatureUtilities;
     namespace OceanicPlateModels
     {
       namespace Temperature
@@ -38,8 +43,11 @@ namespace WorldBuilder
          * for temperature and composition. These submodules determine what
          * the returned temperature or composition of the temperature and composition
          * functions of this class will be.
+         * In this plugin, the temperature of the plate is derived from the plate model,
+         * featuring continuous cooling of a plate from a spreading ridge by both vertical
+         * and horizontal heat conduction.
          */
-        class PlateModel : public Interface
+        class PlateModel final: public Interface
         {
           public:
             /**
@@ -50,7 +58,7 @@ namespace WorldBuilder
             /**
              * Destructor
              */
-            ~PlateModel();
+            ~PlateModel() override final;
 
             /**
              * declare and read in the world builder file into the parameters class
@@ -61,7 +69,7 @@ namespace WorldBuilder
             /**
              * declare and read in the world builder file into the parameters class
              */
-            void parse_entries(Parameters &prm) override final;
+            void parse_entries(Parameters &prm, const std::vector<Point<2>> &coordinates) override final;
 
 
             /**
@@ -69,6 +77,7 @@ namespace WorldBuilder
              * gravity and current temperature.
              */
             double get_temperature(const Point<3> &position,
+                                   const Objects::NaturalCoordinate &position_in_natural_coordinates,
                                    const double depth,
                                    const double gravity,
                                    double temperature,
@@ -79,17 +88,19 @@ namespace WorldBuilder
           private:
             // plate model temperature submodule parameters
             double min_depth;
+            Objects::Surface min_depth_surface;
             double max_depth;
+            Objects::Surface max_depth_surface;
             double top_temperature;
             double bottom_temperature;
             double spreading_velocity;
-            std::vector<Point<2> > ridge_coordinates;
-            Utilities::Operations operation;
+            std::vector<std::vector<Point<2> > > mid_oceanic_ridges;
+            Operations operation;
 
         };
-      }
-    }
-  }
-}
+      } // namespace Temperature
+    } // namespace OceanicPlateModels
+  } // namespace Features
+} // namespace WorldBuilder
 
 #endif

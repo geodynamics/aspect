@@ -402,7 +402,7 @@ RAPIDJSON_NAMESPACE_END
           \ref RAPIDJSON_ERRORS APIs.
 */
 #ifndef RAPIDJSON_ASSERT
-#include <world_builder/assert.h>
+#include "world_builder/assert.h"
 #define RAPIDJSON_ASSERT(x) WBAssertThrow(x, "RapidJSON error.")
 #endif // RAPIDJSON_ASSERT
 

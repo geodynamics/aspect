@@ -17,10 +17,11 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_wrapper_cpp_h
-#define _world_builder_wrapper_cpp_h
+#ifndef WORLD_BUILDER_WRAPPER_CPP_H
+#define WORLD_BUILDER_WRAPPER_CPP_H
 
 #include <string>
+#include "world_builder/deprecate.h"
 
 namespace wrapper_cpp
 {
@@ -47,11 +48,27 @@ namespace wrapper_cpp
        * This function return the temperature at a specific location given x, z, depth and
        * gravity.
        */
-      double temperature_2d(double x, double z, double depth, double gravity);
+      double temperature_2d(double x, double z, double depth);
 
       /**
        * This function return the temperature at a specific location given x, y, z, depth and
        * gravity.
+       */
+      double temperature_3d(double x, double y, double z, double depth);
+
+      /**
+       * DEPRECATED: Replaced by a temperature function without the gravity. This function will be removed in future versions.
+       * This function return the temperature at a specific location given x, z, depth and
+       * gravity.
+       * Note: gravity value is no longer used, instead use the gravity model from the input file.
+       */
+      double temperature_2d(double x, double z, double depth, double gravity);
+
+      /**
+       * DEPRECATED: Replaced by a temperature function without the gravity. This function will be removed in future versions.
+       * This function return the temperature at a specific location given x, y, z, depth and
+       * gravity.
+       * Note: gravity value is no longer used, instead use the gravity model from the input file.
        */
       double temperature_3d(double x, double y, double z, double depth, double gravity);
 
@@ -73,5 +90,5 @@ namespace wrapper_cpp
 
 
   };
-}
+} // namespace wrapper_cpp
 #endif

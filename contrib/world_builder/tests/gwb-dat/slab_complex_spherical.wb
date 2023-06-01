@@ -1,0 +1,39 @@
+{
+  "version":"0.5",
+  "coordinate system":{"model":"spherical", "depth method":"begin at end segment"},
+  "cross section":[[0,0],[10,0]],
+  "features":
+  [
+     {"model":"subducting plate", "name":"Subducting plate", "dip point":[135,45], "coordinates":
+     [
+     [-124.6385657573872,40.400869998897178], [-124.6337466475421,40.461963489125139],
+     [-124.7828272119969,41.415326020018654], [-124.94824856189911,42.478078166155967],
+     [-125.00090482237937,43.424739199265161], [-125.00841842599704,44.491089257144154],
+     [-125.06858829009502,45.496088910970172], [-125.29417950409515,46.457661619232738],
+     [-125.81304539981119,47.529552543485295], [-126.63269958086079,48.575129134706515],
+     [-127.75314204724395,49.623730752804363], [-128.18181418196917,49.982933141910962],
+     [-128.30963699620474,50.040858753763359], [-130.04454776264879,51.124572457229874]
+     ],
+      "segments":[
+           // 1: 0-50km, 2: 50-100km, 3: 100-150km, 4: 150-200km, 5: 200-250km, 6: 250-350km, 7: 350-450km, 8: rest length, usually to 800 (or earlier than 8 if length 0 earlier.).
+     {"length":240e3, "thickness":[300e3],"top truncation":[-100e3], "angle":[0,15],
+          "composition models":[{"model":"uniform", "compositions":[1], "max distance slab top":15e3}
+      ,{"model":"uniform", "compositions":[0], "fractions":[0], "min distance slab top":15e3, "max distance slab top":100e3}]},
+     {"length":150e3,"thickness":[300e3],"top truncation":[-100e3], "angle":[15,45],
+          "composition models":[{"model":"uniform", "compositions":[1], "max distance slab top":15e3}
+      ,{"model":"uniform", "compositions":[0], "fractions":[0], "min distance slab top":15e3, "max distance slab top":100e3}]},
+     {"length":70e3, "thickness":[300e3],"top truncation":[-100e3], "angle":[45,45],
+          "composition models":[{"model":"uniform", "compositions":[1], "max distance slab top":15e3}
+      ,{"model":"uniform", "compositions":[0], "fractions":[0], "min distance slab top":15e3, "max distance slab top":100e3}]},
+     {"length":70e3,"thickness":[300e3],"top truncation":[-100e3], "angle":[45,55]},
+     {"length":10e3,"thickness":[300e3],"top truncation":[-100e3], "angle":[55,55]},
+     {"length":260e3,"thickness":[300e3],"top truncation":[-100e3], "angle":[55,55]},
+     {"length":0,"thickness":[300e3],"top truncation":[-100e3], "angle":[55]},
+     {"length":0,"thickness":[300e3],"top truncation":[-100e3], "angle":[55]}
+                  ],
+     "temperature models":[{"model":"uniform", "temperature":100}],
+     "composition models":[{"model":"uniform", "compositions":[1], "max distance slab top":15e3},
+                           {"model":"uniform", "compositions":[0], "fractions":[0], "min distance slab top":15e3, "max distance slab top":100e3}]
+    }
+  ]
+}

@@ -17,21 +17,24 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_feature_types_bool_h
-#define _world_feature_types_bool_h
+#ifndef WORLD_BUILDER_TYPES_BOOL_H
+#define WORLD_BUILDER_TYPES_BOOL_H
 
-#include <world_builder/types/interface.h>
+
+#include "world_builder/types/interface.h"
 
 
 namespace WorldBuilder
 {
+  class Parameters;
+
   namespace Types
   {
 
     /**
      * This class represents a bool value with documentation
      */
-    class Bool : public Interface
+    class Bool final: public Interface
     {
       public:
         /**
@@ -47,7 +50,7 @@ namespace WorldBuilder
         /**
          * Destructor
          */
-        ~Bool();
+        ~Bool() override final;
 
 
         /**
@@ -68,7 +71,7 @@ namespace WorldBuilder
       private:
 
     };
-  }
-}
+  } // namespace Types
+} // namespace WorldBuilder
 
 #endif

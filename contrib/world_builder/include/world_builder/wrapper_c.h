@@ -17,8 +17,8 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_wrapper_c_h
-#define _world_builder_wrapper_c_h
+#ifndef WORLD_BUILDER_WRAPPER_C_H
+#define WORLD_BUILDER_WRAPPER_C_H
 
 #include <stdbool.h>
 
@@ -36,14 +36,15 @@ void create_world(void **ptr_ptr_world, const char *world_builder_file, const bo
 /**
  * This function return the temperature at a specific location given x, z, depth and
  * gravity.
+ * Note: gravity value is no longer used, instead use the gravity model from the input file.
  */
-void temperature_2d(void *ptr_ptr_world, double x, double z, double depth, double gravity, double *temperature);
+void temperature_2d(void *ptr_ptr_world, double x, double z, double depth, double *temperature);
 
 /**
  * This function return the temperature at a specific location given x, y, z, depth and
  * gravity.
  */
-void temperature_3d(void *ptr_ptr_world, double x, double y, double z, double depth, double gravity, double *temperature);
+void temperature_3d(void *ptr_ptr_world, double x, double y, double z, double depth, double *temperature);
 
 /**
  * This function return the composition at a specific location given x, z, depth and

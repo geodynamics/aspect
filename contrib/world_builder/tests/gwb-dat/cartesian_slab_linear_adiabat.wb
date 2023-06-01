@@ -1,0 +1,20 @@
+{
+  "version":"0.5",
+  "coordinate system":{"model":"cartesian"},
+  "gravity model":{"model":"uniform", "magnitude":10},
+  "cross section":[[0,0],[1000e3,0]],"surface temperature":273, "force surface temperature":true,
+  "potential mantle temperature":1673, "thermal expansion coefficient":3.1e-5, 
+  "specific heat":1000, "thermal diffusivity":1.0e-6,
+  "features":
+  [
+	{ "model":"subducting plate", "name":"Slab",   
+     "coordinates":[[2500e3,-100e3],[2500e3,100e3]], 
+     "dip point":[0,0],
+	  "segments":[{"length":200e3,"thickness":[300e3],"top truncation":[-100e3],"angle":[45]},
+	  {"length":460e3,"thickness":[300e3],"top truncation":[-300e3],"angle":[45]}],
+	 "temperature models":[{"model":"linear", "top temperature":10, "bottom temperature":-1, "max distance slab top":300e3}],
+	 "composition models":[
+	 {"model":"uniform", "compositions":[0], "max distance slab top":100e3}]
+	 }      
+  ]
+}

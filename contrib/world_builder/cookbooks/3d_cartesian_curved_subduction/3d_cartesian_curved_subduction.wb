@@ -1,5 +1,5 @@
 {
-  "version":"0.4",
+  "version":"0.5",
   "potential mantle temperature":1500,
   "thermal expansion coefficient":2.0e-5,
   "maximum distance between coordinates":100000,
@@ -32,7 +32,7 @@
                                 "max depth":30e3}]},
 
     // Defining a continental plate for the weak zone
-    {"model":"continental plate", "name":"Carribean weak zone",
+    {"model":"continental plate", "name":"Caribbean weak zone",
          "coordinates":[[-1e3,1000e3],[-1e3,750e3],[1536e3,749e3],
                         [1450e3,836e3],[1350e3,906e3],[1239e3,958e3],
                         [1122e3,989e3],[1000e3,1000e3],[650e3,1000e3]],

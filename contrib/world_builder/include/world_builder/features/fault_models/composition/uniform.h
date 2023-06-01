@@ -17,15 +17,16 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_features_fault_composition_uniform_h
-#define _world_builder_features_fault_composition_uniform_h
+#ifndef WORLD_BUILDER_FEATURES_FAULT_MODELS_COMPOSITION_UNIFORM_H
+#define WORLD_BUILDER_FEATURES_FAULT_MODELS_COMPOSITION_UNIFORM_H
 
-#include <world_builder/features/fault_models/composition/interface.h>
-#include <world_builder/world.h>
+
+#include "world_builder/features/fault_models/composition/interface.h"
 
 
 namespace WorldBuilder
 {
+
   namespace Features
   {
     namespace FaultModels
@@ -38,7 +39,7 @@ namespace WorldBuilder
          * the returned temperature or composition of the temperature and composition
          * functions of this class will be.
          */
-        class Uniform : public Interface
+        class Uniform final: public Interface
         {
           public:
             /**
@@ -49,7 +50,7 @@ namespace WorldBuilder
             /**
              * Destructor
              */
-            ~Uniform();
+            ~Uniform() override final;
 
             /**
              * declare and read in the world builder file into the parameters class
@@ -73,7 +74,8 @@ namespace WorldBuilder
                                    double composition,
                                    const double feature_min_depth,
                                    const double feature_max_depth,
-                                   const std::map<std::string,double> &distance_from_planes) const override final;
+                                   const WorldBuilder::Utilities::PointDistanceFromCurvedPlanes &distance_from_planes,
+                                   const AdditionalParameters &additional_parameters) const override final;
 
 
           private:
@@ -82,12 +84,12 @@ namespace WorldBuilder
             double max_depth;
             std::vector<unsigned int> compositions;
             std::vector<double> fractions;
-            std::string operation;
+            Operations operation;
 
         };
-      }
-    }
-  }
-}
+      } // namespace Composition
+    } // namespace FaultModels
+  } // namespace Features
+} // namespace WorldBuilder
 
 #endif

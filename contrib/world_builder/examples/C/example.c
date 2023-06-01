@@ -1,5 +1,5 @@
 
-#include <world_builder/wrapper_c.h>
+#include "world_builder/wrapper_c.h"
 #include <stdio.h>
 
 int main() {
@@ -11,7 +11,6 @@ int main() {
   double y = 500e3;
   double z = 0;
   double depth = 0;
-  double gravity = 10;
   unsigned int composition_number = 3;
   unsigned int random_number_seed = 1.0; // use a random number seed larger than zero
   double composition = 0;
@@ -24,11 +23,11 @@ int main() {
   create_world(&ptr_world, file_name, &has_output_dir, output_dir, random_number_seed);
 
   printf("2d temperature: \n");
-  temperature_2d(ptr_world,x,z,depth,gravity,&temperature);
+  temperature_2d(ptr_world,x,z,depth,&temperature);
   printf("temperature in C = %f \n", temperature);
 
   printf("3d temperature: \n");
-  temperature_3d(ptr_world,x,y,z,depth,gravity,&temperature);
+  temperature_3d(ptr_world,x,y,z,depth,&temperature);
   printf("temperature in C = %f \n", temperature);
 
   printf("2d composition: \n");

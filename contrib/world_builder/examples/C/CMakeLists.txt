@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.6)
-project(WorldBuidlerCExample C)
+project(WorldBuilderCExample C)
 include_directories("${CMAKE_BINARY_DIR}/../../include/" "${CMAKE_BINARY_DIR}/../../build/lib/")
 add_executable(WorldBuilderCExample "${CMAKE_CURRENT_SOURCE_DIR}/example.c")
 

@@ -5,7 +5,7 @@ JOURNAL = {Solid Earth},
 VOLUME = {10},
 YEAR = {2019},
 NUMBER = {5},
-PAGES = {1785--1807},
+PAGES = {1785\-\-1807},
 URL = {https://se.copernicus.org/articles/10/1785/2019/},
 DOI = {10.5194/se-10-1785-2019}
 }
@@ -16,7 +16,17 @@ DOI = {10.5194/se-10-1785-2019}
                   others},
   month        = jun,
   year         = 2021,
-  DOI          = {10.5281/zenodo.5014808]},
-  URL          = {https://doi.org/10.5281/zenodo.5014808]},
+  DOI          = {10.5281/zenodo.5014808},
+  URL          = {https://doi.org/10.5281/zenodo.5014808},
+}
+
+@misc{gwb-doi-v0.5.0,
+  title        = {{The Geodynamic World Builder} v0.5.0 [software]},
+  author       = {Menno Fraters and
+                  others},
+  month        = jun,
+  year         = 2021,
+  DOI          = {10.5281/zenodo.7998525},
+  URL          = {https://doi.org/10.5281/zenodo.7998525},
 }
 

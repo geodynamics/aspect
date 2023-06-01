@@ -1,0 +1,19 @@
+# Profiles across a slab dipping at 30 degrees 
+# Now define parameters:
+# dim = 2
+# compositions = 0
+# x z d T 
+2490e3 0 5e3
+2495e3 0 5e3
+2460e3 0 25e3
+2475e3 0 35e3
+2495e3 0 55e3
+2540e3 0 125e3
+2365e3 0 125e3
+2375e3 0 135e3
+2395e3 0 160e3
+2425e3 0 200e3
+2085e3 0 395e3
+2095e3 0 425e3
+2125e3 0 445e3
+2155e3 0 470e3

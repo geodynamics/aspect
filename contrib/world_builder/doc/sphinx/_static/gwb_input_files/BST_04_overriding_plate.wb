@@ -1,0 +1,13 @@
+{
+    "version":"0.5",
+    "coordinate system":{"model":"cartesian"},
+    "features":
+    [
+      {
+        "model":"oceanic plate", "name":"Overriding Plate", 
+        "coordinates":[[0,0],[0,1000e3],[1500e3,1000e3],[1600e3,350e3],[1500e3,0]],
+        "temperature models":[{"model":"uniform", "temperature":293}],
+        "composition models":[{"model":"uniform", "compositions":[0]}]
+      }
+    ]
+  }

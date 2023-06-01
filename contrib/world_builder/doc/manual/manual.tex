@@ -21,7 +21,7 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{fancyhdr}
-\usepackage{titletoc} %needed for chaning the table of contents
+\usepackage{titletoc} %needed for changing the table of contents
 %\usepackage{calc}
 
 \usepackage{enumitem}
@@ -165,9 +165,9 @@ The developers of the Geodynamic World Builder request that you cite the followi
 
 \noindent Fraters, M., Thieulot, C., van den Berg, A., and Spakman, W.: The Geodynamic World Builder: a solution for complex initial conditions in numerical modelling, Solid Earth., 10, 1785–1807, \url{https://doi.org/10.5194/se-10-1785-2019}, 2019.\\
 
-\noindent And cite the specific version of the software used. Version 0.4.0 can be cited as:\\
+\noindent And cite the specific version of the software used. Version 0.5.0 can be cited as:\\
 
-\noindent Menno Fraters and others. 2021, Jule 22. The Geodynamic World Builder v0.4.0. Zenodo. \url{https://doi.org/10.5281/zenodo.5014808}.
+\noindent Menno Fraters and others. 2021, Jule 22. The Geodynamic World Builder v0.5.0. Zenodo. \url{https://doi.org/10.5281/zenodo.7998525}.
 
 
 \section{Acknowledgments}
@@ -178,7 +178,7 @@ Data visualization is carried out with ParaView software \url{https://paraview.o
 
 \chapter{Installation}
 \label{chapter:installation}
-The world builder is currently official supports Linux, OSX and Windows operating systems. Each change to the library is tested against these platforms. The only requirement are a c++ compiler (tested both with gcc and clang) with at minimum c++11 is installed together with \cmake{} (\url{https://cmake.org/}). 
+The world builder is currently official supports Linux, OSX and Windows operating systems. Each change to the library is tested against these platforms. The only requirement are a c++ compiler (tested both with gcc and clang) with at minimum c++14 is installed together with \cmake{} (\url{https://cmake.org/}). 
 
 Section \ref{section:in_package} will go in depth about what is in the \GWB{} package when it is downloaded and installed completely. If you want to skip this explanation, go directly to section \ref{section:installation_for_different_cases}.
 
@@ -209,7 +209,7 @@ As long as these limits are kept in mind, there is no problem in using this kind
 
 \section{Installation guidelines for different cases}
 \label{section:installation_for_different_cases}
-When installing the \WB{} on a system, make sure \cmake{} is installed. If you want a Fortran wrapper then also make sure a Fortran compiler (gfortran is the prefered option, but other Fortran compilers should works as well) is installed. In you want a Python interface, make sure you have Python 3 installed. In the following section we will give examples of how to install it on different operating systems.
+When installing the \WB{} on a system, make sure \cmake{} is installed. If you want a Fortran wrapper then also make sure a Fortran compiler (gfortran is the preferred option, but other Fortran compilers should works as well) is installed. In you want a Python interface, make sure you have Python 3 installed. In the following section we will give examples of how to install it on different operating systems.
 \begin{remark}
 See the beginning of this chapter for more details the minimum requirements of the \WB{}.
 \end{remark}
@@ -222,7 +222,7 @@ There are many ways to install the prerequisites of the \WB{} per operating syst
     \item for a Fortran wrapper also run in a terminal \hl{sudo apt install gfortran}
     \item for a Python wrapper also run in a terminal \hl{sudo apt install swig python3-setuptools}
 \end{enumerate}
-\subsubsection{OSX no fortran compiler needed (recomended for normal use)}
+\subsubsection{OSX no fortran compiler needed (recommended for normal use)}
 The world builder can create a fortran wrapper to be able to link to fortran programs. If you don't explicitly need a fortran wrapper to be build you can use the following instructions:
 \begin{enumerate}
     \item if not already installed, install homebrew. Run in a terminal:\\ \hl{/usr/bin/ruby -e "\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
@@ -243,7 +243,7 @@ Note that if you already had a fortran compiler installed and cmake can find it,
     \item for a Python wrapper also run in a terminal \hl{brew install swig} 
 \end{enumerate}
 \subsubsection{OSX from Xcode 10 with fortran compiler}
-You will need to check where clang is installed. It should be installed in a folder called /Applications/Xcode.X.X.app/ or something similair, where the X represents a number. For Xcode 10 for example, use the following:
+You will need to check where clang is installed. It should be installed in a folder called /Applications/Xcode.X.X.app/ or something similar, where the X represents a number. For Xcode 10 for example, use the following:
 \begin{enumerate}
     \item if not already installed, install homebrew. Run in a terminal:\\ \hl{/usr/bin/ruby -e "\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
     \item run in a terminal \hl{brew install cmake} 
@@ -257,8 +257,8 @@ You will need to check where clang is installed. It should be installed in a fol
 \end{enumerate}
 \subsubsection{Windows}
 There are three main ways to install in on Windows. The recommended way is to use Linux subsystems for windows, see \url{https://docs.microsoft.com/en-us/windows/wsl/install-win10}. In this case, start the linux in windows terminal and follow the Linux installation description. If you want to have a native installation, the two main options are using MinGW or Visual Studio. 
-In both cases it might be possible to install both the Fortran wrapper and the Python wrapper, but we have not gotten it to work on our tester setup. Currently we know that with MinGW you can create a sucesssfull Fortran wrapper and with Visual Studio you can create a successfull Python wrapper. The problem with Python in MingWG is not enirerly clear, but it seems that only Visual Studio compilers are supported. So it may or may not be able to find the GWB Python module when it is compiled and installed. 
-The problem with Fortran with Visual Studio is that you need to install a Fortran compiler somehow, so if you know how to do that, please contibute.
+In both cases it might be possible to install both the Fortran wrapper and the Python wrapper, but we have not gotten it to work on our tester setup. Currently we know that with MinGW you can create a successful Fortran wrapper and with Visual Studio you can create a successful Python wrapper. The problem with Python in MingWG is not enirerly clear, but it seems that only Visual Studio compilers are supported. So it may or may not be able to find the GWB Python module when it is compiled and installed. 
+The problem with Fortran with Visual Studio is that you need to install a Fortran compiler somehow, so if you know how to do that, please contribute.
 \paragraph{Windows with MinGW}
 \begin{enumerate}
     \item if not already installed, install chocolatey: \url{https://chocolatey.org}. In a PowerShell, you can install it with the following command (in one line): \\ \hl{Set-ExecutionPolicy Bypass -Scope Process -Force; iex \\ ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))}
@@ -304,7 +304,7 @@ For Windows with Visual Studio:
 Now all the library, tester and the two programs, described in section \ref{section:in_package}, are ready for use.
 
 \subsection{Installing it as part of a cpp program}
-For this case, there are two options. Either compile the library and link it, or directly compile the library source files within your project. Compiling the \GWB seperately and linking it through the CPP wrapper is the recommended option.
+For this case, there are two options. Either compile the library and link it, or directly compile the library source files within your project. Compiling the \GWB separately and linking it through the CPP wrapper is the recommended option.
 
 \subsubsection{Compile the library and link it}
 First follow the instructions from section \ref{subsection:install_stand_aline}. The library can be found in the \hl{build/lib/} directory with the name \hl{libWorldBuilder.a}. Link your project with this file. 
@@ -319,7 +319,7 @@ The only file you need to include in your code is \hl{world\_builder/world.h}. I
 \subsection{Installing it as part of a c program}
 First follow the instructions from section \ref{subsection:install_stand_aline}. The library can be found in the \hl{build/lib/} directory with the name \hl{libWorldBuilder.a}. Link your project with this file. 
 \\
-The only file you need to include in your code is \hl{world\_builder/wrapper\_c.h}. Create a void variable which is a pointer to a pointer and set it so NULL (e.g. \hl{void **ptr\_ptr\_world}), and create a pointer to a c-string (e.g. \hl{char *world\_builder\_file}). Pass these variables to the \hl{create\_world} function. This function will create the \WB{} world. Now this pointer can be used to call the temperature and composition quering functions. When done with the \WB{}, call the \hl{release\_world} function. This will clean up the memory used by the world builder.
+The only file you need to include in your code is \hl{world\_builder/wrapper\_c.h}. Create a void variable which is a pointer to a pointer and set it so NULL (e.g. \hl{void **ptr\_ptr\_world}), and create a pointer to a c-string (e.g. \hl{char *world\_builder\_file}). Pass these variables to the \hl{create\_world} function. This function will create the \WB{} world. Now this pointer can be used to call the temperature and composition querying functions. When done with the \WB{}, call the \hl{release\_world} function. This will clean up the memory used by the world builder.
 \begin{remark}
 Do not forget to call release\_world, when done with the \WB{}.
 \end{remark}
@@ -414,7 +414,7 @@ To understand how the \WB{} file is structured, let's begin with a minimal examp
 
 \begin{javascriptcode}{A minimal \WB{} example}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "features":[]
 }
 \end{javascriptcode}
@@ -427,7 +427,7 @@ If you where to visualize the temperature and the compositions of this model, yo
 
 \begin{javascriptcode}[label={lst:code_minimal_example_default_coordinate_system}]{A minimal example explicitly showing the default coordinate system}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "coordinate system":{"model":"cartesian"},
   "features":[]
 }
@@ -449,7 +449,7 @@ The spherical coordinate system is a bit more complex. It works with radius (in 
     \centering
     \includegraphics[width=0.35\textwidth]{spherical_approximations_line}
     \includegraphics[width=0.35\textwidth]{spherical_approximations_spiral}
-    \caption{Two possible interpretations of what a line with a constant angle in a spherical geometry could mean. On the left side a line with a constant angle (of 45 degrees) relative to the the surface where it started. Although this is the most intuitive way of interpreting a plate going down with a certain dip, when using very long plates this means that the plate may go back out the earth again. Note that this will only happen with unrealistically long slabs and/or dips very close to zero. On the right side is the other interpretation, constant dip with resprect to the surface directly above it. This resutls in a logarithmic spiral.}
+    \caption{Two possible interpretations of what a line with a constant angle in a spherical geometry could mean. On the left side a line with a constant angle (of 45 degrees) relative to the surface where it started. Although this is the most intuitive way of interpreting a plate going down with a certain dip, when using very long plates this means that the plate may go back out the earth again. Note that this will only happen with unrealistically long slabs and/or dips very close to zero. On the right side is the other interpretation, constant dip with resprect to the surface directly above it. This resutls in a logarithmic spiral.}
     \label{fig:coordinate_systems_line_spiral}
 \end{figure}
 
@@ -457,11 +457,21 @@ The spherical coordinate system is a bit more complex. It works with radius (in 
 Note that currently only the constant angle relative to the surface where it started (the left side of figure \ref{fig:coordinate_systems_line_spiral}).
 \end{remark}
 
-The first option (line) is simpler, more intuitive and makes no assumptions about what a slab should do within the earth. The second option (spiral) is less intuitive, but implicitly includes gravity in the slab. There is a third option, which is a compromise between the first two. It uses the slab segments and recomputes the angle at the beginning of every segment. With small enough segments, this approximates the second option. We have implemented this option, because the implementation of the second option has proven to be difficult. So currently only the first and third option can be set through the \hl{depth method} parameter in the \hl{spherical} parameter, by setting the \hl{depth method} parameter to \hl{starting point} and \hl{begin point} respectively. Adding to the \WB{} file from the previous section by setting it to a spherical geometry, we get the following \WB{} file:
+The first option (line) is simpler, more intuitive and makes no assumptions about what a slab should do within the earth. The second option (spiral) is less intuitive, 
+but implicitly includes gravity in the slab. There are two more options, option three and four, which are a compromise between the first two. 
+Both option three and four use the slab segments and recomputes the angle at the beginning of every segment. 
+The third option of these two actually applies it directly at the beginning of the segment. This is most logical, but it can lead to discontiuities between two curved slab segments, 
+even though they have the same ending and starting angle respectively.
+The forth option applies the extra angle computed at the beginning of the segment to the end of the segment. This allows for a smmooth tranition and is generally recommended. 
+With small enough segments, both these approximates the second (spiral) option. We have implemented the other options because the implementation of the spiral option has proven to 
+be difficult and time consuming. 
+So currently only the first, third and fourth option can be set through the \hl{depth method} parameter in the \hl{spherical} parameter, by setting the \hl{depth method} parameter 
+to \hl{starting point}, \hl{begin point} and \hl{begin at end segment} respectively. 
+Adding to the \WB{} file from the previous section by setting it to a spherical geometry, we get the following \WB{} file:
 
 \begin{javascriptcode}{}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "coordinate system":{"model":"spherical", "depth method":"starting point"},
   "features":[]
 }
@@ -476,7 +486,7 @@ The world we live in is an inherently 3d world, and so is the \WB{}. So no matte
 
 \begin{javascriptcode}{An example showing how to use the cross section}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "cross section":[[100e3,100e3],[400e3,500e3]],
   "coordinate system":{"model":"cartesian"},
   "features":[]
@@ -494,7 +504,7 @@ Before we can make our first real model, there is one more topic to discuss: fea
 
 \begin{javascriptcode}{A example of a generic feature}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "cross section":[[100e3,100e3],[400e3,500e3]],
   "coordinate system":{"model":"cartesian"},
   "features":
@@ -508,11 +518,11 @@ Before we can make our first real model, there is one more topic to discuss: fea
 }
 \end{javascriptcode}
 
-A feature has a name and for every available property an array of models attached. Note that this example would not work in practice, because there is no feature implemented which is called \hl{feature model 1} or a temperature model with the name \hl{temperature model 1}. Only specific feature names are allowed, which will be introduced in section \ref{section:continetnal_plate} and can be found in the the \WB{} input file parameter reference (see Appendix \ref{chapter:WB_file_parameter_reference}). Note that there is no requirement to have the temperature models or compositional models keys in the feature object. If you leave them out, they will just not do anything. Let's now expand the generic example:
+A feature has a name and for every available property an array of models attached. Note that this example would not work in practice, because there is no feature implemented which is called \hl{feature model 1} or a temperature model with the name \hl{temperature model 1}. Only specific feature names are allowed, which will be introduced in section \ref{section:continetnal_plate} and can be found in the \WB{} input file parameter reference (see Appendix \ref{chapter:WB_file_parameter_reference}). Note that there is no requirement to have the temperature models or compositional models keys in the feature object. If you leave them out, they will just not do anything. Let's now expand the generic example:
 
 \begin{javascriptcode}{A example of two generic features use}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "cross section":[[100e3,100e3],[400e3,500e3]],
   "coordinate system":{"model":"cartesian"},
   "features":
@@ -548,7 +558,7 @@ The second required parameter is the parameter is \hl{coordinates}. This is alwa
 
 \begin{javascriptcode}{An example with a generic feature and the required parameters}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "cross section":[[100e3,100e3],[400e3,500e3]],
   "coordinate system":{"model":"cartesian"},
   "features":
@@ -584,7 +594,7 @@ We can now finally start building a useful geodynamic model. We begin with a con
 
 \begin{javascriptcode}[label=lst:simple_continental_plate]{An example of the most basic continental plate}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "features":
   [
     {
@@ -595,11 +605,11 @@ We can now finally start building a useful geodynamic model. We begin with a con
 }
 \end{javascriptcode}
 
-The example in listing \ref{lst:simple_continental_plate} is not yet functional since we need to attach temperature and compositional models to it. For the continental feature there are different models available. The simplest model for both temperature and composition are the uniform models. They set the temperature or a single compositions respectively to a specified value. In this case the only other paramter is the depth to which the continental plate goes. This is set by the \hl{depth} paramater in each models.
+The example in listing \ref{lst:simple_continental_plate} is not yet functional since we need to attach temperature and compositional models to it. For the continental feature there are different models available. The simplest model for both temperature and composition are the uniform models. They set the temperature or a single compositions respectively to a specified value. In this case the only other parameter is the depth to which the continental plate goes. This is set by the \hl{depth} parameter in each models.
 
 \begin{javascriptcode}{A first functioning continental plate example}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "features":
   [
     {
@@ -622,7 +632,7 @@ It is also possible to set a "min depth" for both the continental plate and the 
 
 \begin{javascriptcode}{A continental plate with two compositions with different fractions}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "features":
   [
     {
@@ -641,11 +651,11 @@ It is also possible to set a "min depth" for both the continental plate and the 
 }
 \end{javascriptcode}
 
-We have stated before that temperature and composition models get the previous tempeature or compostional value respectively, and that each model can decide wheter to use that value or not. Many temperature models give the option to the user. This is also the case with the uniform temperature models for the continental plate. By default it replaces the value, but the it can also be added or substracted. This is set with the operation key. Let's do that now, but do that in a second temperature model in the array.
+We have stated before that temperature and composition models get the previous tempeature or compositional value respectively, and that each model can decide whether to use that value or not. Many temperature models give the option to the user. This is also the case with the uniform temperature models for the continental plate. By default it replaces the value, but the it can also be added or subtracted. This is set with the operation key. Let's do that now, but do that in a second temperature model in the array.
 
 \begin{javascriptcode}{A continental plate with an add operation for the temperature model}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "features":
   [
     {
@@ -677,7 +687,7 @@ Continents with a constant temperature and composition are obviously not very re
 
 \begin{javascriptcode}{Using the linear temperature model}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "features":
   [
     {
@@ -697,7 +707,7 @@ We can also improve the compositional representation through having multiple com
 
 \begin{javascriptcode}{Using the linear temperature model}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "features":
   [
     {
@@ -724,13 +734,13 @@ Note that any layer beyond the continental plate depth is ignored. So in this ca
 With this you are now able to create your own continents. Congratulations and well done for reaching this point in the manual! Next up are Oceanic plates.
 
 \section{The oceanic plate}
-Oceanic plates are very similair to continental plates, with the exeption of the extra model: the \hl{plate model}. This name may sound confusing, since we have been talking about plates all the time. The reason we use this name is that this is the name commonly used in the geodynamics community, see for example \cite{fowler2005}. 
+Oceanic plates are very similar to continental plates, with the exception of the extra model: the \hl{plate model}. This name may sound confusing, since we have been talking about plates all the time. The reason we use this name is that this is the name commonly used in the geodynamics community, see for example \cite{fowler2005}. 
 
 This temperature model takes exactly the same parameters as the linear temperature model, but has two more parameters. The first one is the \hl{spreading velocity} in meters per second. The second one is a list of 2d points where the ridge is located. From the ridge defined by these points, the plate will symmetrically cool on each side.
 
 \begin{javascriptcode}{Using the oceanic plate's "plate model" temperature model}{}
 {
-  "version":"0.4",
+  "version":"0.5",
   "features":
   [
     {
@@ -753,11 +763,11 @@ This temperature model takes exactly the same parameters as the linear temperatu
 \end{javascriptcode}
 
 \section{The mantle layer}
-The \WB{} supports layering of the mantle. Teh mantle layer feature follows the same logic as the continental and oceanic plate. An example of a different compositional layer at the 660 is given in listing \ref{listing_mantle_layer_different_composition}.
+The \WB{} supports layering of the mantle. The mantle layer feature follows the same logic as the continental and oceanic plate. An example of a different compositional layer at the 660 is given in listing \ref{listing_mantle_layer_different_composition}.
 
 \begin{javascriptcode}{Using the oceanic plate's "plate model" temperature model}{listing_mantle_layer_different_composition}
 {
-  "version":"0.4",
+  "version":"0.5",
   "features":
   [
     {
@@ -778,7 +788,7 @@ While the continental plate, the oceanic plate and the mantle layer are all area
 
 \begin{javascriptcode}{Using the subducting plate constant segment}{}
 {
-"version":"0.4",
+"version":"0.5",
 "features":
 [
      {
@@ -793,7 +803,7 @@ Segments have three required values and two optional. Let's first discuss the re
 
 \begin{javascriptcode}{Using the subducting plate changing segment}{lst_json:simple_2d_subduction}
 {
-  "version":"0.4",
+  "version":"0.5",
   "cross section":[[0,50e3],[50e3,0]],
   "features":
   [
@@ -823,7 +833,7 @@ Now rises the question, what if you want to give the second segment a different 
 
 \begin{javascriptcode}{Using the subducting plate changing segment}{lst_json:simple_2d_subduction_layered_second_segment}
 {
-  "version":"0.4",
+  "version":"0.5",
   "cross section":[[0,50e3],[50e3,0]],
   "features":
   [
@@ -857,11 +867,11 @@ Now rises the question, what if you want to give the second segment a different 
     \label{fig:simple_2d_subduction_2}
 \end{figure}
 
-Although this is already an interesting model things might not only change down dip, but also along the trench. To explain how this is facilitated, let's first introduce a new term: sections. Sections are slices in the dip direction of the slab, and may consist of several segments. Each coordinate given by the user forms a section. All properties are computed for the two sections closed to the point we are requesting the data for and then we make a linear interpolation between those sections. By default all the sections of a slab are filled with the segments by the segments parameter. So if we want to change for example the temperature along the trench, we only need to change one of the sections. This is done through the sections parameter, which has as value an array of subducting plate features. The only difference is that you don't need (nor can) use the model parameter, because it has to be a subducting plate, and you have to provide the coordinate number which you want to change. In text that may more more complated then it is, so lets show extend the example a bit with some different sections.
+Although this is already an interesting model things might not only change down dip, but also along the trench. To explain how this is facilitated, let's first introduce a new term: sections. Sections are slices in the dip direction of the slab, and may consist of several segments. Each coordinate given by the user forms a section. All properties are computed for the two sections closed to the point we are requesting the data for and then we make a linear interpolation between those sections. By default all the sections of a slab are filled with the segments by the segments parameter. So if we want to change for example the temperature along the trench, we only need to change one of the sections. This is done through the sections parameter, which has as value an array of subducting plate features. The only difference is that you don't need (nor can) use the model parameter, because it has to be a subducting plate, and you have to provide the coordinate number which you want to change. In text that may be more complicated then it is, so lets show extend the example a bit with some different sections.
 
 \begin{javascriptcode}{Using the subducting plate changing segment}{lst_json:simple_2d_subduction_layered_second_segment_sections}
 {
-  "version":"0.4",
+  "version":"0.5",
   "cross section":[[0,99e3],[99e3,0]],
   "features":
   [
@@ -910,11 +920,11 @@ Although this is already an interesting model things might not only change down 
 
 The example in listing \ref{lst_json:simple_2d_subduction_layered_second_segment_sections} shows that an enormous amount of flexibility is available, but only to those who really need it. If you want something simple, your input file will be simple.
 
-The subducting plate has, like the oceanic plate, a special temperature model. This is also called the plate model. It it based on the \cite{mckenzie1970} paper. Because that paper assumes a constant angle, and the slabs in the \GWB{} are not constant, we compute an average angle at the the depth we are currently intrested in. Lets combine everything we know up to now and create a more realistic slab with a crust an a plate model. Feel free to visualize this yourself through the world builder visualizer or any other program.
+The subducting plate has, like the oceanic plate, a special temperature model. This is also called the plate model. It it based on the \cite{mckenzie1970} paper. Because that paper assumes a constant angle, and the slabs in the \GWB{} are not constant, we compute an average angle at the depth we are currently interested in. Lets combine everything we know up to now and create a more realistic slab with a crust an a plate model. Feel free to visualize this yourself through the world builder visualizer or any other program.
 
 \begin{javascriptcode}{Using the subducting plate changing segment}{lst_json:simple_2d_subduction_layered_second_segment}
 {
-  "version":"0.4",
+  "version":"0.5",
   "cross section":[[0,50e3],[50e3,0]],
   "features":
   [
@@ -942,10 +952,10 @@ The subducting plate has, like the oceanic plate, a special temperature model. T
 
 
 \section{Faults}
-Fault in the \WB{} work in a very similar way as subducting plates. The mayor difference is that where subducting plates measure distance based on the top of the plate, faults measure from the center of the fault. This means that faults modules are usually symmetric. For example, the \hl{uniform} composition model askes for min and max distance from fault center instead of slab top as with the subducting plate feature. This make faults symmetric around the center. Note that the thickness of the central layer is twice the max distance fault center, because it goes in both directions.
+Fault in the \WB{} work in a very similar way as subducting plates. The mayor difference is that where subducting plates measure distance based on the top of the plate, faults measure from the center of the fault. This means that faults modules are usually symmetric. For example, the \hl{uniform} composition model asks for min and max distance from fault center instead of slab top as with the subducting plate feature. This make faults symmetric around the center. Note that the thickness of the central layer is twice the max distance fault center, because it goes in both directions.
 
 \begin{javascriptcode}{Using the fault feature}{}
-"version":"0.4",
+"version":"0.5",
 "features":
 {
   {
@@ -1005,7 +1015,7 @@ This is a program which can be used to query the \WB{} from the command line, by
 This program helps with visualizing the \WB{} file by producing pvd files which can be opened with visualization programs like \paraview{}. It requires a \WB{} file and a grid file. A grid file is a file which contains information about what part of the \WB{} domain should be visualized. An example of a grid file can be found in Listing \ref{lst:code_example_grid_file}.
 
 \begin{bashcode}[label={lst:code_example_grid_file}]{An example of a grid file for a 3d Cartesian grid.}
-# ouput variables
+# output variables
 grid_type = cartesian
 dim = 3
 compositions = 2
@@ -1052,10 +1062,10 @@ There are several conversions used when writing code. Because the code is still 
     \item all class names are camel case (ClassName).
 \end{enumerate}
 \chapter{Structure and flow of the code}
-From version 0.2.0 to version 0.3.0 the structure has mostly been stabelized. On a high level the structure is very similair to that of \aspect{}, 
-with an extensive modular plugin system. Also the way to declare and parse parameters is very similair to \aspect{} and DEAL.II. Besides being a 
-good and proven strucutre for these kind of codes, these similairities are also on propose to allow for an easy transition for \WB{} and \aspect{}
-developers between the codes. This is also reflected in having similair conventions and the use of exactly the same indenting tool and version 
+From version 0.2.0 to version 0.3.0 the structure has mostly been stabilized. On a high level the structure is very similar to that of \aspect{}, 
+with an extensive modular plugin system. Also the way to declare and parse parameters is very similar to \aspect{} and DEAL.II. Besides being a 
+good and proven structure for these kind of codes, these similarities are also on propose to allow for an easy transition for \WB{} and \aspect{}
+developers between the codes. This is also reflected in having similar conventions and the use of exactly the same indenting tool and version 
 astyle (2.04). 
 
 The \GWB{} currently consists of three parts: the core library, the App and the Visualizer. The App and Visualizer are self contained
@@ -1071,13 +1081,13 @@ phase, the actual parsing phase starts. This means that the core files and plugi
 can perform extra checks on those values. After this phase is done, the plugins do not have access anymore to the parameters class. This is also the 
 last pahse of the construction of the world class.
 
-The three folders contain plugin systems. Writing a new plugin for the coordinate system and types is as easy as copying an exsiting plugin (both in the 
+The three folders contain plugin systems. Writing a new plugin for the coordinate system and types is as easy as copying an existing plugin (both in the 
 include and source folders!) and modifying it for your own purposes. The plugins in the features plugin system are a bit more complicated since they have 
-their owns plugin systems. If you want tomake a whole new feature you are adviced to make an issue on github so that you can get help with it from the 
+their owns plugin systems. If you want tomake a whole new feature you are advised to make an issue on github so that you can get help with it from the 
 developers and to allow discussion on the best approach. The features folder contains a folder for each features plugin (system). Each of those folders 
 contains a folder for the output provided by the world builder. That is at time of writing temperature, compositions and grains (experimental). Eeach of 
 those folders contains an interface file and at least one plugin. Adding a new plugin is, like with the coordinate and types plugins as easy as copying 
-and modifing one of those plugins (again, you need to do that for both the include and source files. So if you want to for example add a new temperature 
+and modifying one of those plugins (again, you need to do that for both the include and source files. So if you want to for example add a new temperature 
 plugin for the oceanic plate plugin system called "my cool oceanic plate temperature", you could copy the plate\_model.cc to my\_cool\_temperature.cc and 
 uniform.h to my\_cool\_temperature.h in their respective folders. You will need to change plate\_model to my\_cool\_temperature, PlateModel to MyCoolTemperature,
 etc.
@@ -1092,6 +1102,6 @@ In depth question of the structure and flow of the code can always be asked on g
 \chapter{\WB{} file parameter reference}
 %\setlistdepth{15}
 \label{chapter:WB_file_parameter_reference}
-\input{world_buider_declarations.tex}
+\input{world_builder_declarations.tex}
 
 \end{document}

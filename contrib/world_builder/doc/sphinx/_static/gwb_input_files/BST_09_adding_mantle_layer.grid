@@ -1,0 +1,22 @@
+# output variables
+grid_type = cartesian
+dim = 3
+compositions = 5
+
+# domain of the grid
+x_min = -1000e3
+x_max = 2000e3 
+y_min = 0e3
+y_max = 1000e3 
+z_min = 0 
+z_max = 600e3 
+
+# low res grid properties
+n_cell_x = 150 
+n_cell_y = 50
+n_cell_z = 30
+
+# shown grid properties
+# n_cell_x = 300 
+# n_cell_y = 100
+# n_cell_z = 60

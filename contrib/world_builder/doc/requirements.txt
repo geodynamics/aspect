@@ -1,0 +1,6 @@
+sphinx_book_theme
+myst-parser
+sphinx-copybutton
+sphinx-design
+sphinx-inline-tabs
+sphinxcontrib-bibtex
