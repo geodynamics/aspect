@@ -136,65 +136,70 @@ if(ASPECT_WITH_WORLD_BUILDER)
     SET(WORLD_BUILDER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/contrib/world_builder/" CACHE PATH "" FORCE)
   ENDIF()
 
-  # Always include the header files.
+  # add source and include dirs:
   INCLUDE_DIRECTORIES("${WORLD_BUILDER_SOURCE_DIR}/include/")
-
   INCLUDE("${WORLD_BUILDER_SOURCE_DIR}/cmake/version.cmake")
+
   MESSAGE(STATUS "Using World Builder version ${WORLD_BUILDER_VERSION} found at ${WORLD_BUILDER_SOURCE_DIR}.")
 
-  # add source and include dirs:
-  IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
-    FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/*.cc")
+  IF(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0)
+    ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
+    INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/world_builder/include/")
   ELSE()
-    FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/*.cc")
-  ENDIF()
-  LIST(APPEND TARGET_SRC ${wb_files})
-  ADD_DEFINITIONS(-DWB_WITH_MPI)
+    IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
+      FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/*.cc")
+    ELSE()
+      FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/*.cc")
+    ENDIF()
+    LIST(APPEND TARGET_SRC ${wb_files})
+    ADD_DEFINITIONS(-DWB_WITH_MPI)
 
-  # generate config.cc and include it:
-  IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
-    CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/source/world_builder/config.cc" @ONLY)
-    LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
-    FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder/config.h")
-  ELSE()
-    CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/include/world_builder/config.h.in" "${CMAKE_BINARY_DIR}/include/world_builder/config.h" @ONLY)
-    INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/include/")
-    FILE(REMOVE "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
-  ENDIF()
-
-  # Move some file to the end for unity builds to make sure other file come
-  # "before". Note: The current design keeps all ASPECT files (including
-  # ASPECT_UNITY_LAST files) before all GWB files. Mixing them will causes
-  # many issues with non-unique namespace names like Utilities.
-  IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
-    SET(UNITY_WB_LAST_FILES
-    "${WORLD_BUILDER_SOURCE_DIR}/source/parameters.cc")
-  ELSE()
-    SET(UNITY_WB_LAST_FILES
-    "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/parameters.cc")
-  ENDIF()
-
-  FOREACH(_source_file ${UNITY_WB_LAST_FILES})
-    LIST(FIND TARGET_SRC ${_source_file} _index)
-    IF(_index EQUAL -1)
-      MESSAGE(FATAL_ERROR "could not find ${_source_file}.")
+    # generate config.cc and include it:
+    IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
+      CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/source/world_builder/config.cc" @ONLY)
+      LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
+      FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder/config.h")
+    ELSE()
+      Message(STATUS "C ${CMAKE_BINARY_DIR}")
+      CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/include/world_builder/config.h.in" "${CMAKE_BINARY_DIR}/include/world_builder/config.h" @ONLY)
+      INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/include/")
+      FILE(REMOVE "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
     ENDIF()
 
-    LIST(REMOVE_ITEM TARGET_SRC ${_source_file})
-    LIST(APPEND TARGET_SRC ${_source_file})
-  ENDFOREACH()
+    # Move some file to the end for unity builds to make sure other file come
+    # "before". Note: The current design keeps all ASPECT files (including
+    # ASPECT_UNITY_LAST files) before all GWB files. Mixing them will causes
+    # many issues with non-unique namespace names like Utilities.
+    IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
+      SET(UNITY_WB_LAST_FILES
+      "${WORLD_BUILDER_SOURCE_DIR}/source/parameters.cc")
+    ELSE()
+      SET(UNITY_WB_LAST_FILES
+      "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/parameters.cc")
+    ENDIF()
 
-  FOREACH(_source_file ${wb_files})
-    # exclude the world builder files from including precompiled headers, they
-    # do not include ASPECT's dependencies at all.
-    SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE )
-    SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
-    # Temporarily disable world builder unity builds:
-    SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE )
-  ENDFOREACH()
+    FOREACH(_source_file ${UNITY_WB_LAST_FILES})
+      LIST(FIND TARGET_SRC ${_source_file} _index)
+      IF(_index EQUAL -1)
+        MESSAGE(FATAL_ERROR "could not find ${_source_file}.")
+      ENDIF()
 
-  SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY COTIRE_EXCLUDED TRUE )
-  SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
+      LIST(REMOVE_ITEM TARGET_SRC ${_source_file})
+      LIST(APPEND TARGET_SRC ${_source_file})
+    ENDFOREACH()
+
+    FOREACH(_source_file ${wb_files})
+      # exclude the world builder files from including precompiled headers, they
+      # do not include ASPECT's dependencies at all.
+      SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE )
+      SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
+      # Temporarily disable world builder unity builds:
+      SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE )
+    ENDFOREACH()
+
+    SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY COTIRE_EXCLUDED TRUE )
+    SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
+  ENDIF()
 ENDIF()
 
 
@@ -597,6 +602,12 @@ IF(ASPECT_WITH_NETCDF)
   ELSE()
     MESSAGE(FATAL_ERROR "NETCDF not found. Disable ASPECT_WITH_NETCDF or specify a hint to your installation directory with NETCDF_DIR.")
   ENDIF()
+ENDIF()
+
+IF(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILDER)
+  FOREACH(_T ${TARGETS})
+    TARGET_LINK_LIBRARIES(${_T} WorldBuilder)
+  ENDFOREACH()
 ENDIF()
 
 
