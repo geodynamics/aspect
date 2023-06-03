@@ -21,7 +21,6 @@
 #ifndef _aspect_config_h
 #define _aspect_config_h
 
-#cmakedefine ASPECT_SOURCE_DIR "@ASPECT_SOURCE_DIR@"
 #cmakedefine01 ASPECT_USE_SHARED_LIBS
 
 // optional features:
