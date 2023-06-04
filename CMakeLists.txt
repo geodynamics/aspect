@@ -650,21 +650,6 @@ CONFIGURE_FILE(
   ${CMAKE_BINARY_DIR}/include/aspect/config.h
   )
 
-# And finally generate the file
-CONFIGURE_FILE(
-  ${CMAKE_SOURCE_DIR}/cmake/config.prm.in
-  ${CMAKE_BINARY_DIR}/config.prm
-  )
-
-SET(ASPECT_SOURCE_DIR ${CMAKE_INSTALL_PREFIX})
-
-  # And finally generate the file
-CONFIGURE_FILE(
-  ${CMAKE_SOURCE_DIR}/cmake/config.prm.in
-  ${CMAKE_BINARY_DIR}/forinstall/config.prm
-  )
-
-SET(ASPECT_SOURCE_DIR ${CMAKE_SOURCE_DIR})
 
 # Check if we want to precompile header files. This speeds up compile time,
 # but can fail on some machines with old cmake, therefore it is disabled by
@@ -796,11 +781,6 @@ INSTALL(TARGETS ${TARGETS}
   RUNTIME DESTINATION bin
   COMPONENT runtime)
 
-# config files:
-INSTALL(FILES ${CMAKE_BINARY_DIR}/forinstall/config.prm
-  DESTINATION bin
-  COMPONENT config)
-
 # make sure we have the rpath to our dependencies set:
 
 FOREACH(_T ${TARGETS})
@@ -829,6 +809,11 @@ IF (ASPECT_INSTALL_EXAMPLES)
     COMPONENT examples
     FILES_MATCHING PATTERN "*")
 ENDIF()
+
+# data files:
+INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/data/
+  DESTINATION data
+  COMPONENT data)
 
 # cmake stuff:
 INSTALL(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake

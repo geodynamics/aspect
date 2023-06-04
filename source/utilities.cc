@@ -2150,24 +2150,16 @@ namespace aspect
     std::string
     expand_ASPECT_SOURCE_DIR (const std::string &location)
     {
-      ParameterHandler prm;
-      prm.declare_entry("ASPECT_SOURCE_DIR",
-                        ".",
-                        Patterns::Anything(),
-                        "The directory where the ASPECT source code is located. "
-                        "This is used to expand the string $ASPECT_SOURCE_DIR in "
-                        "the input file. If this parameter is not set, then the "
-                        "string $ASPECT_SOURCE_DIR is not expanded.");
-      try
-    {
-      const std::string input_as_string = aspect::Utilities::read_and_distribute_file_content("config.prm", MPI_COMM_WORLD);
-      prm.parse_input_from_string(input_as_string);
-      }
-      catch (...)
-    {
-    }
-      const std::string ASPECT_SOURCE_DIR = prm.get("ASPECT_SOURCE_DIR");
+      // Check for environment variable override to ASPECT_SOURCE_DIR
+      char const *ASPECT_SOURCE_DIR_env = getenv("ASPECT_SOURCE_DIR");
+      if (ASPECT_SOURCE_DIR_env != NULL)
+        {
+          return Utilities::replace_in_string(location,
+                                              "$ASPECT_SOURCE_DIR",
+                                              ASPECT_SOURCE_DIR_env);
+        }
 
+      // Otherwise, use the default define from config.h
       return Utilities::replace_in_string(location,
                                           "$ASPECT_SOURCE_DIR",
                                           ASPECT_SOURCE_DIR);
