@@ -10,7 +10,6 @@ set Output directory                       = output-shell_simple_2d
 
 subsection Material model
   set Model name = simple
-  set Material averaging = harmonic average only viscosity
 
   subsection Simple model
     set Thermal expansion coefficient = 4e-5
@@ -31,13 +30,8 @@ end
 
 
 subsection Boundary velocity model
-  set Zero velocity boundary indicators       = inner
+  set Zero velocity boundary indicators       = bottom
   set Tangential velocity boundary indicators = top, left, right
-end
-
-
-subsection Heating model
-  set List of model names =  shear heating
 end
 
 
@@ -49,6 +43,11 @@ subsection Boundary temperature model
     set Inner temperature = 4273
     set Outer temperature = 973
   end
+end
+
+
+subsection Heating model
+  set List of model names =  shear heating
 end
 
 
@@ -87,7 +86,11 @@ end
 
 subsection Solver parameters
   subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-7
     set Stokes solver type = block GMG
   end
+end
+
+
+subsection Material model
+  set Material averaging = harmonic average only viscosity
 end
