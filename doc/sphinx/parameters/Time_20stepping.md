@@ -30,7 +30,7 @@ A large reduction in time step size typically happens when velocities change abr
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Specifiy a minimum time step size (or 0 to disable).
+**Documentation:** Specify a minimum time step size (or 0 to disable).
 
 (parameters:Time_20stepping/Function)=
 ## **Subsection:** Time stepping / Function

@@ -23,9 +23,9 @@ The following postprocessors are available:
 
 &lsquo;boundary pressures&rsquo;: A postprocessor that computes the laterally averaged pressure at the top and bottom of the domain.
 
-&lsquo;boundary strain rate residual statistics&rsquo;: A postprocessor that computes some statistics about the surface strain rate residual along the top boundary. The residual is the difference between the second invariant of the model strain rate and the second strain rate invariant read from the input data file. Currently, the strain residual statistics, i.e., min, max and the rms magnitude, are computed at the top suface.
+&lsquo;boundary strain rate residual statistics&rsquo;: A postprocessor that computes some statistics about the surface strain rate residual along the top boundary. The residual is the difference between the second invariant of the model strain rate and the second strain rate invariant read from the input data file. Currently, the strain residual statistics, i.e., min, max and the rms magnitude, are computed at the top surface.
 
-&lsquo;boundary velocity residual statistics&rsquo;: A postprocessor that computes some statistics about the velocity residual along the top boundary. The velocity residual is the difference between the model solution velocities and the input velocities (GPlates model or ascii data). Currently, the velocity residual statistics, i.e., min, max and the rms magnitude, is computed at the top suface.
+&lsquo;boundary velocity residual statistics&rsquo;: A postprocessor that computes some statistics about the velocity residual along the top boundary. The velocity residual is the difference between the model solution velocities and the input velocities (GPlates model or ascii data). Currently, the velocity residual statistics, i.e., min, max and the rms magnitude, is computed at the top surface.
 
 &lsquo;command&rsquo;: A postprocessor that executes a command line process.
 
@@ -72,7 +72,7 @@ The &ldquo;heat flux densities&rdquo; postprocessor computes the same quantity a
 
 &lsquo;heating statistics&rsquo;: A postprocessor that computes some statistics about heating, averaged by volume.
 
-&lsquo;load balance statistics&rsquo;: A postprocessor that computes statistics about the distribution of cells, and if present particles across subdomains. In particular, it computes maximal, average and minimal number of cells across all ranks. If there are particles it also computes the maximal, average, and minimum number of particles across all ranks, and maximal, average, and minimal ratio between local number of particles and local number of cells across all processes. All of these numbers can be useful to assess the load balance between different MPI ranks, as the difference between the mimimal and maximal load should be as small as possible.
+&lsquo;load balance statistics&rsquo;: A postprocessor that computes statistics about the distribution of cells, and if present particles across subdomains. In particular, it computes maximal, average and minimal number of cells across all ranks. If there are particles it also computes the maximal, average, and minimum number of particles across all ranks, and maximal, average, and minimal ratio between local number of particles and local number of cells across all processes. All of these numbers can be useful to assess the load balance between different MPI ranks, as the difference between the minimal and maximal load should be as small as possible.
 
 &lsquo;mass flux statistics&rsquo;: A postprocessor that computes some statistics about the mass flux across boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the mass flux is computed in outward direction, i.e., from the domain to the outside, using the formula $\int_{\Gamma_i} \rho \mathbf v \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $\rho$ is the density as reported by the material model, $\mathbf v$ is the velocity, and $\mathbf n$ is the outward normal.
 
@@ -864,7 +864,7 @@ Units: years if the &rsquo;Use years in output instead of seconds&rsquo; paramet
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** The seed used to generate random numbers. This will make sure that results are reproducable as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank.
+**Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank.
 
 (parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation)=
 ## **Subsection:** Postprocess / Particles / Crystal Preferred Orientation
