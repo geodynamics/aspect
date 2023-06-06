@@ -155,12 +155,6 @@ def handle_parameters(data):
     global_output_file = open("doc/sphinx/parameters/index.md", "w")
     global_output_file.write("(parameters)=\n"
                              "# Parameter Documentation\n"
-                             ":::{admonition} Under construction\n"
-                             ":class: warning\n"
-                             "\n"
-                             "Migrating the ASPECT manual from LaTeX to Sphinx/MyST is not complete.\n"
-                             "If what you are looking for is not here, please see the PDF version.\n"
-                             ":::\n"
                              "\n"
                              ":::{toctree}\n"
                              "---\n"
