@@ -17,20 +17,18 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_features_interface_h
-#define _world_builder_features_interface_h
+#ifndef WORLD_BUILDER_FEATURES_INTERFACE_H
+#define WORLD_BUILDER_FEATURES_INTERFACE_H
 
-#include <map>
-#include <vector>
 
-#include <world_builder/world.h>
-#include <world_builder/parameters.h>
-#include <world_builder/point.h>
-#include <world_builder/utilities.h>
+#include "world_builder/grains.h"
+#include "world_builder/utilities.h"
+#include "world_builder/objects/distance_from_surface.h"
 
 namespace WorldBuilder
 {
   class World;
+  class Parameters;
 
 
   namespace Features
@@ -55,13 +53,6 @@ namespace WorldBuilder
         virtual
         ~Interface();
 
-
-        /**
-         * depricated
-         */
-        void
-        declare_interface_entries(Parameters &prm,
-                                  const CoordinateSystem coordinate_system);
         /**
          * helper function to parse coordinates.
          */
@@ -86,43 +77,26 @@ namespace WorldBuilder
 
 
         /**
-         * takes temperature and position and returns a temperature.
+         * takes a set of properties and a position and return a new set of properties
          */
         virtual
-        double temperature(const Point<3> &position,
-                           const double depth,
-                           const double gravity,
-                           double temperature) const = 0;
-        /**
-         * Returns a value for the requested composition (0 is not present,
-         * 1 is present) based on the given position and
-         */
-        virtual
-        double composition(const Point<3> &position,
-                           const double depth,
-                           const unsigned int composition_number,
-                           double value) const = 0;
-
-        /**
-         * Returns a value for the requested grains based on the
-         * given position and composition number
-         */
-        virtual
-        WorldBuilder::grains grains(const Point<3> &position,
-                                    const double depth,
-                                    const unsigned int composition_number,
-                                    WorldBuilder::grains value) const = 0;
-
+        void properties(const Point<3> &position_in_cartesian_coordinates,
+                        const Objects::NaturalCoordinate &position_in_natural_coordinates,
+                        const double depth,
+                        const std::vector<std::array<unsigned int,3>> &properties,
+                        const double gravity,
+                        const std::vector<size_t> &entry_in_output,
+                        std::vector<double> &output) const = 0;
 
         /**
          * A function to register a new type. This is part of the automatic
          * registration of the object factory.
          */
         static void registerType(const std::string &name,
-                                 void ( *)(Parameters &, const std::string &, const std::vector<std::string> &required_entries),
+                                 void ( * /*declare_entries*/)(Parameters &, const std::string &, const std::vector<std::string> &required_entries),
                                  ObjectFactory *factory);
 
-        const std::string get_name() const
+        std::string get_name() const
         {
           return name;
         };
@@ -133,6 +107,17 @@ namespace WorldBuilder
          * registration of the object factory.
          */
         static std::unique_ptr<Interface> create(const std::string &name, WorldBuilder::World *world);
+
+        /**
+        * Returns a PlaneDistances object that has the distance from and along a feature plane,
+        * calculated from the coordinates and the depth of the point.
+        */
+        virtual
+        Objects::PlaneDistances
+        distance_to_feature_plane(const Point<3> &position_in_cartesian_coordinates,
+                                  const Objects::NaturalCoordinate &position_in_natural_coordinates,
+                                  const double depth) const;
+
 
       protected:
         /**
@@ -162,20 +147,9 @@ namespace WorldBuilder
         std::vector<Point<2> > coordinates;
 
         /**
-         * A vector of one dimensional coordinates for this feature.
-         * If empty, this variables is interpretated just as
-         * {0,1,2,...,number of coordinates}. It allows for, for example,
-         * adding extra coordinates automatically, and still reference the
-         * user provided coordinates by the original number. Note that no
-         * whole numbers may be skiped. So for a list of 4 points, {0,0.5,1,2}
-         * is allowed, but {0,2,3,4} is not.
-         */
-        std::vector<double> one_dimensional_coordinates;
-
-        /**
          * The x and y spline
          */
-        WorldBuilder::Utilities::interpolation x_spline, y_spline;
+        WorldBuilder::Objects::BezierCurve bezier_curve;
 
 
         /**
@@ -235,7 +209,7 @@ namespace WorldBuilder
   }; \
   static klass##Factory global_##klass##Factory;
 
-  }
-}
+  } // namespace Features
+} // namespace WorldBuilder
 
 #endif

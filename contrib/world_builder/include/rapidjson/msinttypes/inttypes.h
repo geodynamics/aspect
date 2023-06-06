@@ -33,7 +33,8 @@
 // The above software in this distribution may have been modified by
 // THL A29 Limited ("Tencent Modifications").
 // All Tencent Modifications are Copyright (C) 2015 THL A29 Limited.
-
+namespace rapidjson
+{
 #ifndef _MSC_VER // [
 #error "Use this header only with Microsoft Visual C++ compilers!"
 #endif // _MSC_VER ]
@@ -54,11 +55,11 @@
 
 // 7.8 Format conversion of integer types
 
-typedef struct
-{
-  intmax_t quot;
-  intmax_t rem;
-} imaxdiv_t;
+  typedef struct
+  {
+    intmax_t quot;
+    intmax_t rem;
+  } imaxdiv_t;
 
 // 7.8.1 Macros for format specifiers
 
@@ -284,26 +285,26 @@ typedef struct
 // This is modified version of div() function from Microsoft's div.c found
 // in %MSVC.NET%\crt\src\div.c
 #ifdef STATIC_IMAXDIV // [
-static
+  static
 #else // STATIC_IMAXDIV ][
-_inline
+  _inline
 #endif // STATIC_IMAXDIV ]
-imaxdiv_t __cdecl imaxdiv(intmax_t numer, intmax_t denom)
-{
-  imaxdiv_t result;
+  imaxdiv_t __cdecl imaxdiv(intmax_t numer, intmax_t denom)
+  {
+    imaxdiv_t result;
 
-  result.quot = numer / denom;
-  result.rem = numer % denom;
+    result.quot = numer / denom;
+    result.rem = numer % denom;
 
-  if (numer < 0 && result.rem > 0)
-    {
-      // did division wrong; must fix up
-      ++result.quot;
-      result.rem -= denom;
-    }
+    if (numer < 0 && result.rem > 0)
+      {
+        // did division wrong; must fix up
+        ++result.quot;
+        result.rem -= denom;
+      }
 
-  return result;
-}
+    return result;
+  }
 
 // 7.8.2.3 The strtoimax and strtoumax functions
 #define strtoimax _strtoi64
@@ -316,3 +317,4 @@ imaxdiv_t __cdecl imaxdiv(intmax_t numer, intmax_t denom)
 #endif // _MSC_VER >= 1800
 
 #endif // _MSC_INTTYPES_H_ ]
+}

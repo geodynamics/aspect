@@ -17,14 +17,16 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_features_oceanic_plate_grains_random_uniform_distribution_h
-#define _world_builder_features_oceanic_plate_grains_random_uniform_distribution_h
+#ifndef WORLD_BUILDER_FEATURES_OCEANIC_PLATE_MODELS_GRAINS_RANDOM_UNIFORM_DISTRIBUTION_H
+#define WORLD_BUILDER_FEATURES_OCEANIC_PLATE_MODELS_GRAINS_RANDOM_UNIFORM_DISTRIBUTION_H
 
-#include <world_builder/features/oceanic_plate_models/grains/interface.h>
-#include <world_builder/world.h>
+
+#include "world_builder/features/oceanic_plate_models/grains/interface.h"
+#include "world_builder/objects/surface.h"
 
 namespace WorldBuilder
 {
+
   namespace Features
   {
     namespace OceanicPlateModels
@@ -37,7 +39,7 @@ namespace WorldBuilder
          * what the returned temperature or grains of the temperature and grains
          * functions of this class will be.
          */
-        class RandomUniformDistribution : public Interface
+        class RandomUniformDistribution final: public Interface
         {
           public:
             /**
@@ -48,7 +50,7 @@ namespace WorldBuilder
             /**
              * Destructor
              */
-            ~RandomUniformDistribution();
+            ~RandomUniformDistribution() override final;
 
             /**
              * declare and read in the world builder file into the parameters
@@ -77,14 +79,16 @@ namespace WorldBuilder
              * declare and read in the world builder file into the parameters
              * class
              */
-            void parse_entries(Parameters &prm) override final;
+            void parse_entries(Parameters &prm, const std::vector<Point<2>> &coordinates) override final;
 
             /**
              * Returns a grains based on the given position, composition (e.g.
              * olivine and/or enstatite)depth in the model, gravity and current grains.
              */
-            virtual WorldBuilder::grains
-            get_grains(const Point<3> &position, const double depth,
+            WorldBuilder::grains
+            get_grains(const Point<3> &position,
+                       const Objects::NaturalCoordinate &position_in_natural_coordinates,
+                       const double depth,
                        const unsigned int composition_number,
                        WorldBuilder::grains grains,
                        const double feature_min_depth,
@@ -93,7 +97,9 @@ namespace WorldBuilder
           private:
             // uniform grains submodule parameters
             double min_depth;
+            Objects::Surface min_depth_surface;
             double max_depth;
+            Objects::Surface max_depth_surface;
             std::vector<unsigned int> grains;
             std::vector<unsigned int> compositions;
             std::string operation;

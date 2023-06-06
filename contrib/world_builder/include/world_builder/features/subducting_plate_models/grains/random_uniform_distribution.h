@@ -17,14 +17,15 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_features_subducting_plate_grains_random_uniform_distribution_h
-#define _world_builder_features_subducting_plate_grains_random_uniform_distribution_h
+#ifndef WORLD_BUILDER_FEATURES_SUBDUCTING_PLATE_MODELS_GRAINS_RANDOM_UNIFORM_DISTRIBUTION_H
+#define WORLD_BUILDER_FEATURES_SUBDUCTING_PLATE_MODELS_GRAINS_RANDOM_UNIFORM_DISTRIBUTION_H
 
-#include <world_builder/features/subducting_plate_models/grains/interface.h>
-#include <world_builder/world.h>
+
+#include "world_builder/features/subducting_plate_models/grains/interface.h"
 
 namespace WorldBuilder
 {
+
   namespace Features
   {
     namespace SubductingPlateModels
@@ -37,7 +38,7 @@ namespace WorldBuilder
          * what the returned temperature or grains of the temperature and grains
          * functions of this class will be.
          */
-        class RandomUniformDistribution : public Interface
+        class RandomUniformDistribution final: public Interface
         {
           public:
             /**
@@ -48,7 +49,7 @@ namespace WorldBuilder
             /**
              * Destructor
              */
-            ~RandomUniformDistribution();
+            ~RandomUniformDistribution() override final;
 
             /**
              * declare and read in the world builder file into the parameters
@@ -83,14 +84,15 @@ namespace WorldBuilder
              * Returns a grains based on the given position, composition (e.g.
              * olivine and/or enstatite)depth in the model, gravity and current grains.
              */
-            virtual WorldBuilder::grains
+            WorldBuilder::grains
             get_grains(const Point<3> &position,
                        const double depth,
                        const unsigned int composition_number,
                        WorldBuilder::grains grains,
                        const double feature_min_depth,
                        const double feature_max_depth,
-                       const std::map<std::string,double> &distance_from_planes) const override final;
+                       const WorldBuilder::Utilities::PointDistanceFromCurvedPlanes &distance_from_planes,
+                       const AdditionalParameters &additional_parameters) const override final;
 
           private:
             // uniform grains submodule parameters

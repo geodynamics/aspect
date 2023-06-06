@@ -34,9 +34,9 @@ fi
 # collect all header and source files and process them in batches of 50 files
 # with up to 10 in parallel
 
-find include source app visualization tests/unit_tests \( -name '*.cc' -o -name '*.h' \) -print | xargs -n 50 -P 10 astyle --options=doc/astyle-2.04.rc
+find include source tests/unit_tests \( -name '*.cc' -o -name '*.h' \) -print | xargs -n 50 -P 10 astyle --options=doc/astyle-2.04.rc
 # remove execute permission on source files:
-find include source app visualization tests/unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 50 -P 10 chmod -x
+find include source tests/unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 50 -P 10 chmod -x
 
 # convert dos formatted files to unix file format by stripping out
 # carriage returns (15=0x0D):

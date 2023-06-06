@@ -1,0 +1,13 @@
+create world 
+2d temperature: 
+temperature in CPP = 1600.000000 
+2d temperature (deprecated): 
+temperature in CPP = 1600.000000 
+3d temperature: 
+temperature in CPP = 150.000000 
+3d temperature (deprecated): 
+temperature in CPP = 150.000000 
+2d composition: 
+composition in CPP = 0.000000 
+3d composition: 
+composition in CPP = 1.000000 

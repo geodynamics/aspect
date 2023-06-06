@@ -1,0 +1,69 @@
+/*
+  Copyright (C) 2018-2021 by the authors of the World Builder code.
+
+  This file is part of the World Builder.
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published
+   by the Free Software Foundation, either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+#ifndef WORLD_BUILDER_CONFIG_H_
+#define WORLD_BUILDER_CONFIG_H_
+
+
+#include <string>
+
+#define WORLD_BUILDER_VERSION_MAJOR @WORLD_BUILDER_VERSION_MAJOR@
+#define WORLD_BUILDER_VERSION_MINOR @WORLD_BUILDER_VERSION_MINOR@
+#define WORLD_BUILDER_VERSION_PATCH @WORLD_BUILDER_VERSION_PATCH@
+#define WORLD_BUILDER_VERSION_LABEL @WORLD_BUILDER_VERSION_LABEL@
+
+/**
+ * Returns true if the used World Builder version is greater or equal than the
+ * version specified by the three arguments. The internal implementation
+ * assumes that the number of minor and subminor versions is not larger
+ * than 100.
+ */
+#define WORLD_BUILDER_VERSION_GTE(major,minor,patch) \
+ ((@WORLD_BUILDER_VERSION_MAJOR@ * 10000 + \
+    @WORLD_BUILDER_VERSION_MINOR@ * 100 + \
+     @WORLD_BUILDER_VERSION_PATCH@) \
+    >=  \
+    (major)*10000 + (minor)*100 + (patch))
+
+namespace WorldBuilder
+{
+  namespace Version
+  {
+    // with c++20, this should be able to become a constexpr.
+    const std::string MAJOR = "@WORLD_BUILDER_VERSION_MAJOR@";
+    const std::string MINOR = "@WORLD_BUILDER_VERSION_MINOR@";
+    const std::string PATCH = "@WORLD_BUILDER_VERSION_PATCH@";
+    const std::string LABEL = "@WORLD_BUILDER_VERSION_LABEL@";
+
+    const std::string GIT_SHA1 = "@GIT_SHA1@";
+    const std::string GIT_BRANCH = "@GIT_BRANCH@";
+    const std::string GIT_DATE = "@GIT_DATE@";
+    const std::string GIT_COMMIT_SUBJECT = "@GIT_COMMIT_SUBJECT@";
+  }
+
+  namespace Data
+  {
+    const std::string WORLD_BUILDER_SOURCE_DIR = "@WORLD_BUILDER_SOURCE_DIR@";
+  }
+
+} // namespace WorldBuilder
+
+
+#endif /* WORLD_BUILDER_CONFIG_H_ */
+

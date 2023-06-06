@@ -19,10 +19,7 @@
 #ifndef WORLD_BUILDER_ASSERT_H_
 #define WORLD_BUILDER_ASSERT_H_
 
-#include <iostream>
-#include <string>
 #include <sstream>
-#include <stdexcept>
 
 namespace WorldBuilder
 {
@@ -61,6 +58,6 @@ namespace WorldBuilder
           throw std::runtime_error(smessage.str()); \
         } \
     } while (false)
-}
+} // namespace WorldBuilder
 
 #endif

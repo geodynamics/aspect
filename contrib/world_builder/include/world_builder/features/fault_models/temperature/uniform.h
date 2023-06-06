@@ -17,16 +17,17 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_features_fault_temperature_uniform_h
-#define _world_builder_features_fault_temperature_uniform_h
+#ifndef WORLD_BUILDER_FEATURES_FAULT_MODELS_TEMPERATURE_UNIFORM_H
+#define WORLD_BUILDER_FEATURES_FAULT_MODELS_TEMPERATURE_UNIFORM_H
 
-#include <world_builder/features/fault_models/temperature/interface.h>
-#include <world_builder/features/utilities.h>
-#include <world_builder/world.h>
+
+#include "world_builder/features/fault_models/temperature/interface.h"
+#include "world_builder/features/feature_utilities.h"
 
 
 namespace WorldBuilder
 {
+
   namespace Features
   {
     namespace FaultModels
@@ -39,7 +40,7 @@ namespace WorldBuilder
          * the returned temperature or composition of the temperature and composition
          * functions of this class will be.
          */
-        class Uniform : public Interface
+        class Uniform final: public Interface
         {
           public:
             /**
@@ -50,7 +51,7 @@ namespace WorldBuilder
             /**
              * Destructor
              */
-            ~Uniform();
+            ~Uniform() override final;
 
             /**
              * declare and read in the world builder file into the parameters class
@@ -74,7 +75,8 @@ namespace WorldBuilder
                                    double temperature,
                                    const double feature_min_depth,
                                    const double feature_max_depth,
-                                   const std::map<std::string,double> &distance_from_planes) const override final;
+                                   const WorldBuilder::Utilities::PointDistanceFromCurvedPlanes &distance_from_planes,
+                                   const AdditionalParameters &additional_parameters) const override final;
 
 
           private:
@@ -82,12 +84,12 @@ namespace WorldBuilder
             double min_depth;
             double max_depth;
             double temperature;
-            Utilities::Operations operation;
+            Operations operation;
 
         };
-      }
-    }
-  }
-}
+      } // namespace Temperature
+    } // namespace FaultModels
+  } // namespace Features
+} // namespace WorldBuilder
 
 #endif

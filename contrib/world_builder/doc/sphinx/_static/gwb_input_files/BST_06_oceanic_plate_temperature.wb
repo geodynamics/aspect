@@ -1,0 +1,20 @@
+{
+  "version":"0.5",
+  "coordinate system":{"model":"cartesian"},
+  "features":
+  [
+    {
+       "model":"oceanic plate", "name":"Overriding Plate", "max depth":100e3, 
+       "coordinates":[[0,0],[0,1000e3],[1500e3,1000e3],[1600e3,350e3],[1500e3,0]],
+       "temperature models":
+         [
+           {"model":"half space model", "max depth":100e3, "spreading velocity":0.04, 
+            "ridge coordinates":[[[400e3,-1],[-100e3,2000e3]]]}
+         ],
+       "composition models":
+         [
+           {"model":"uniform", "compositions":[0], "max depth":50e3}
+         ]
+    }
+  ]
+}

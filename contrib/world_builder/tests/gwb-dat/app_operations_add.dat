@@ -1,0 +1,11 @@
+# This is a comment in the data
+# file. 
+# Now define parameters:
+# dim = 2
+# compositions = 5
+# x z d T c1 c2 c3 c4 c5
+1 2 2
+2 2 2
+3 4 0
+560e3 1 0
+2000e3 1 0

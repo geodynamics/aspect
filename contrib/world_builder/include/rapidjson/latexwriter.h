@@ -16,7 +16,10 @@
 #define RAPIDJSON_LATEXWRITER_H_
 
 #include "writer.h"
+
 #include <iostream>
+#include <string>
+#include <vector>
 
 #ifdef __GNUC__
 RAPIDJSON_DIAG_PUSH
@@ -173,13 +176,13 @@ class LatexWriter : public Writer<OutputStream, SourceEncoding, TargetEncoding, 
           if (skip_next_push_back == false)
             {
               if (section_level <= 2)
-                begin += "\\section{" + get_path() + "}";
+                begin += "\\section{(" + std::to_string(section_level) + ") " + get_path() + "}";
               else if (section_level <= 5)
-                begin += "\\subsection{" + get_path() + "}";
+                begin += "\\subsection{(" + std::to_string(section_level) + ") " + get_path() + "}";
               else if (section_level <= 8)
-                begin += "\\subsubsection{" + get_path() + "}";
+                begin += "\\subsubsection{(" + std::to_string(section_level) + ") " + get_path() + "}";
               else
-                begin += "\\paragraph{" + get_path() + "}";
+                begin += "\\paragraph{(" + std::to_string(section_level) + ") " + get_path() + "}";
 
               open_new_itemize = true;
               level_type.push_back(0);
@@ -206,13 +209,13 @@ class LatexWriter : public Writer<OutputStream, SourceEncoding, TargetEncoding, 
           section_level++;
 
           if (section_level <= 2)
-            begin += "\\section{" + get_path() + "}";
+            begin += "\\section{(" + std::to_string(section_level) + ") " + get_path() + "}";
           else if (section_level <= 5)
-            begin += "\\subsection{" + get_path() + "}";
+            begin += "\\subsection{(" + std::to_string(section_level) + ") " + get_path() + "}";
           else if (section_level <= 8)
-            begin += "\\subsubsection{" + get_path() + "}";
+            begin += "\\subsubsection{(" + std::to_string(section_level) + ") " + get_path() + "}";
           else
-            begin += "\\paragraph{" + get_path() + "}";
+            begin += "\\paragraph{(" + std::to_string(section_level) + ") " + get_path() + "}";
 
           open_new_itemize = true;
         }
@@ -226,13 +229,13 @@ class LatexWriter : public Writer<OutputStream, SourceEncoding, TargetEncoding, 
 
           //begin += "C";
           if (section_level <= 2)
-            begin += "\\section{" + get_path() + "}";
+            begin += "\\section{(" + std::to_string(section_level) + ") " + get_path() + "}";
           else if (section_level <= 5)
-            begin += "\\subsection{" + get_path() + "}";
+            begin += "\\subsection{(" + std::to_string(section_level) + ") " + get_path() + "}";
           else if (section_level <= 8)
-            begin += "\\subsubsection{" + get_path() + "}";
+            begin += "\\subsubsection{(" + std::to_string(section_level) + ") " + get_path() + "}";
           else
-            begin += "\\paragraph{" + get_path() + "}";
+            begin += "\\paragraph{(" + std::to_string(section_level) + ") " + get_path() + "}";
 
           open_new_itemize = true;
           if (level_type.size() > 0 && (level_type.back() != 3 || level_type.size() == 0))
@@ -255,7 +258,7 @@ class LatexWriter : public Writer<OutputStream, SourceEncoding, TargetEncoding, 
         {
           if (open_new_itemize == true)
             {
-              item += "\\begin{itemize}";
+              item += "\\begin{itemize}[leftmargin=" + std::to_string(section_level) + "em]";
               itemize_open++;
             }
           level_type.push_back(1);
@@ -270,7 +273,7 @@ class LatexWriter : public Writer<OutputStream, SourceEncoding, TargetEncoding, 
         {
           if (open_new_itemize == true)
             {
-              item += "\\begin{itemize}";
+              item += "\\begin{itemize}[leftmargin=" + std::to_string(section_level) + "em]";
               itemize_open++;
             }
           section_level++;
@@ -289,7 +292,7 @@ class LatexWriter : public Writer<OutputStream, SourceEncoding, TargetEncoding, 
         {
           if (open_new_itemize == true)
             {
-              item += "\\begin{itemize}";
+              item += "\\begin{itemize}[leftmargin=" + std::to_string(section_level) + "em]";
               itemize_open++;
 
             }

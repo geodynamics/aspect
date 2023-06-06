@@ -17,24 +17,26 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_world_h
-#define _world_builder_world_h
+#ifndef WORLD_BUILDER_WORLD_H
+#define WORLD_BUILDER_WORLD_H
+
+#include "world_builder/grains.h"
+#include "world_builder/parameters.h"
+#include "world_builder/utilities.h"
+#include "world_builder/objects/distance_from_surface.h"
 
 #include <random>
 
-#include <world_builder/parameters.h>
-#include <world_builder/grains.h>
-
-
-
+/**
+* The global namespace for the Geodynamic World Builder
+*/
 namespace WorldBuilder
 {
-
 
   namespace Features
   {
     class Interface;
-  }
+  } // namespace Features
 
   class World
   {
@@ -51,14 +53,14 @@ namespace WorldBuilder
        * \param random_number_seed a double containing a seed for the random number generator.
        * The world builder uses a deterministic random number generator for some plugins. This
        * is a deterministic random number generator on prorpose because even though you might
-       * want to use random numbers to initialize some fields, the result should be reproducable.
+       * want to use random numbers to initialize some fields, the result should be reproducible.
        * Note that when the world builder is used in for example MPI programs you should supply
        * the world builder created each MPI process a different seed. You can use the MPI RANK
        * for this (seed is seed + MPI_RANK). Because the generator is deterministic (known and
        * documented algorithm), we can test the results and they should be the same even for different
        * compilers and machines.
        */
-      World(std::string filename, bool has_output_dir = false, const std::string &output_dir = "", unsigned long random_number_seed = 1);
+      World(std::string filename, bool has_output_dir = false, const std::string &output_dir = "", unsigned long random_number_seed = 1, const bool limit_debug_consistency_checks = false);
 
       /**
        * Destructor
@@ -77,15 +79,87 @@ namespace WorldBuilder
       void parse_entries(Parameters &prm);
 
       /**
+       * Returns different values at a single point in one go stored in a vector of doubles.
+       *
+       * The properties input decides what each entry means, and the output is generated in the
+       * same order as the properties input. The properties input consists of
+       * a 3D array, where the first entry identifies the property and the last two entries
+       * provide extra information about that property.
+       *
+       * Temperature is identified by 1 and no extra information is needed. So temperature
+       * input usually looks like {1,0,0}. A temperature query prodoces one entry in the output
+       * vector.
+       *
+       * Composition is identified by 2. This produces one
+       * value in the output. The second entry  identifies the composition number and the third
+       * number is not used. So a commposition query asking about composition 1 looks like this:
+       * {2,1,0}. A composition query prodoces one entry in the output vector.
+       *
+       * Grains are identified by 2. The second entry is the grain composition number and the third
+       * entry is the number of grains. A query about the grains, where it asks about composition 1
+       * (for example enstatite) and 500 grains, looks like this: {2,1,500}.
+       * A composition query prodoces n_grains*10 entries in the output vector. The first n_grains
+       * entries are the sizes of all the grains, and the other 9 entries are sets of rotation
+       * matrices. The rotation matrix entries are ordered [0][0],[0][1],[0][2],[1][0],[1][1],etc.
+       */
+      std::vector<double> properties(const std::array<double, 2> &point,
+                                     const double depth,
+                                     const std::vector<std::array<unsigned int,3>> &properties) const;
+
+      /**
+       * Returns different values at a single point in one go stored in a vector of doubles.
+       *
+       * The properties input decides what each entry means, and the output is generated in the
+       * same order as the properties input. The properties input consists of
+       * a 3D array, where the first entry identifies the property and the last two entries
+       * provide extra information about that property.
+       *
+       * Temperature is identified by 1 and no extra information is needed. So temperature
+       * input usually looks like {1,0,0}. A temperature query prodoces one entry in the output
+       * vector.
+       *
+       * Composition is identified by 2. This produces one
+       * value in the output. The second entry  identifies the composition number and the third
+       * number is not used. So a commposition query asking about composition 1 looks like this:
+       * {2,1,0}. A composition query prodoces one entry in the output vector.
+       *
+       * Grains are identified by 2. The second entry is the grain composition number and the third
+       * entry is the number of grains. A query about the grains, where it asks about composition 1
+       * (for example enstatite) and 500 grains, looks like this: {2,1,500}.
+       * A composition query prodoces n_grains*10 entries in the output vector. The first n_grains
+       * entries are the sizes of all the grains, and the other 9 entries are sets of rotation
+       * matrices. The rotation matrix entries are ordered [0][0],[0][1],[0][2],[1][0],[1][1],etc.
+       */
+      std::vector<double> properties(const std::array<double, 3> &point,
+                                     const double depth,
+                                     const std::vector<std::array<unsigned int,3>> &properties) const;
+
+      /**
        * Returns the temperature based on a 2d Cartesian point, the depth in the
        * model at that point and the gravity norm at that point.
        */
-      double temperature(const std::array<double, 2> &point, const double depth, const double gravity_norm) const;
+      double temperature(const std::array<double, 2> &point, const double depth) const;
 
       /**
        * Returns the temperature based on a 3d Cartesian point, the depth in the
        * model at that point and the gravity norm at that point.
        */
+      double temperature(const std::array<double, 3> &point, const double depth) const;
+
+      /**
+       * Returns the temperature based on a 2d Cartesian point, the depth in the
+       * model at that point and the gravity norm at that point.
+       * Note: gravity norm is no longer used, instead use the gravity model from the input file.
+       */
+      [[deprecated("Replaced by a temperature function without the gravity. This function will be removed in future versions.")]]
+      double temperature(const std::array<double, 2> &point, const double depth, const double gravity_norm) const;
+
+      /**
+       * Returns the temperature based on a 3d Cartesian point, the depth in the
+       * model at that point and the gravity norm at that point.
+       * Note: gravity norm is no longer used, instead use the gravity model from the input file.
+       */
+      [[deprecated("Replaced by a temperature function without the gravity. This function will be removed in future versions.")]]
       double temperature(const std::array<double, 3> &point, const double depth, const double gravity_norm) const;
 
       /**
@@ -117,6 +191,17 @@ namespace WorldBuilder
                                   const double depth,
                                   const unsigned int composition_number,
                                   size_t number_of_grains) const;
+      /**
+       * Returns a PlaneDistances object that has the distance from and along a feature plane,
+       * calculated from the coordinates and the depth of the point.
+       \param point the coordinates in the cartesian geometry
+       \param depth the depth of the point
+       \param name the name of the feature (i.e. the string provided to the key word "name" in the wb file)
+      */
+      Objects::PlaneDistances
+      distance_to_plane(const std::array<double, 3> &point,
+                        const double depth,
+                        const std::string &name) const;
 
       /**
        * The MPI rank. Set to zero if MPI is not available.
@@ -206,9 +291,18 @@ namespace WorldBuilder
        */
       std::mt19937 random_number_engine;
 
+      /**
+       * limits some of the consistency checks in debug mode.
+       * Current only prevents a check whether depth in spherical
+       * coordinates is consistent with the computed depth from
+       * x,y,z and provided radius.
+       * Note: Recommended to keep it at false, unless you know what you are doing.
+       */
+      bool limit_debug_consistency_checks;
+
 
 
   };
-}
+} // namespace WorldBuilder
 
 #endif

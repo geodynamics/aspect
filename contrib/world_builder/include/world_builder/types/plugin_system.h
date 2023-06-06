@@ -17,15 +17,17 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_feature_types_plugin_system_h
-#define _world_feature_types_plugin_system_h
+#ifndef WORLD_BUILDER_TYPES_PLUGIN_SYSTEM_H
+#define WORLD_BUILDER_TYPES_PLUGIN_SYSTEM_H
 
-#include <world_builder/types/interface.h>
-#include <world_builder/features/interface.h>
+
+#include "world_builder/features/interface.h"
 
 
 namespace WorldBuilder
 {
+  class Parameters;
+
   namespace Types
   {
 
@@ -33,7 +35,7 @@ namespace WorldBuilder
      * This class represents a plate tectonic feature class, such as the
      * continental plate class, oceanic plate class and subduction zone class.
      */
-    class PluginSystem : public Interface
+    class PluginSystem final: public Interface
     {
       public:
         /**
@@ -53,7 +55,7 @@ namespace WorldBuilder
         /**
          * Destructor
          */
-        ~PluginSystem();
+        ~PluginSystem() override final;
 
         /**
          * Todo
@@ -77,7 +79,7 @@ namespace WorldBuilder
       private:
 
     };
-  }
-}
+  } // namespace Types
+} // namespace WorldBuilder
 
 #endif

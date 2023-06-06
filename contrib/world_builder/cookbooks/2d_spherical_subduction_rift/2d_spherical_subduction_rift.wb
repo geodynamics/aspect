@@ -1,11 +1,11 @@
 {
-  "version":"0.4",
+  "version":"0.5",
   "coordinate system":{"model":"spherical", "depth method":"begin segment"},
   "cross section":[[0,0],[10,0]],
   "features":
   [
     {"model":"oceanic plate", "name":"oceanic plate", "coordinates":[[-1,-1],[11.5,-1],[11.5,1],[-1,1]],
-     "temperature models":[{"model":"plate model", "max depth":95e3, "bottom temperature":1600, "spreading velocity":0.005, "ridge coordinates":[[1,-1],[1,1]]}],
+     "temperature models":[{"model":"plate model", "max depth":95e3, "bottom temperature":1600, "spreading velocity":0.005, "ridge coordinates":[[[1,-1],[1,1]]]}],
      "composition models":[{"model":"uniform", "compositions":[0], "max depth":10e3},
                            {"model":"uniform", "compositions":[1], "min depth":10e3, "max depth":95e3}]},
 
