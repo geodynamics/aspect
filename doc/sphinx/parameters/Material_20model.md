@@ -537,7 +537,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant reference viscosity $\eta_r$ that is used to scale the non-dimenional depth-dependent viscosity prefactor. Units: \si{\pascal\second}.
+**Documentation:** The value of the constant reference viscosity $\eta_r$ that is used to scale the non-dimensional depth-dependent viscosity prefactor. Units: \si{\pascal\second}.
 
 (parameters:Material_20model/Depth_20dependent_20model/Scale_20factor)=
 ### __Parameter name:__ Scale factor

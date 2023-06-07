@@ -91,7 +91,7 @@ The names of the boundaries listed here can either by numbers (in which case the
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The &lsquo;First data file model time&rsquo; parameter has been deactivated and will be removed in a future release. Do not use this paramter and instead provide data files starting from the model start time.
+**Documentation:** The &lsquo;First data file model time&rsquo; parameter has been deactivated and will be removed in a future release. Do not use this parameter and instead provide data files starting from the model start time.
 
 (parameters:Boundary_20velocity_20model/Ascii_20data_20model/First_20data_20file_20number)=
 ### __Parameter name:__ First data file number

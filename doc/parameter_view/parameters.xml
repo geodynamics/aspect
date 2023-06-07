@@ -865,7 +865,7 @@ In some cases the boundary files are not numbered in increasing but in decreasin
 0
 </default_value>
 <documentation>
-The `First data file model time&apos; parameter has been deactivated and will be removed in a future release. Do not use this paramter and instead provide data files starting from the model start time.
+The `First data file model time&apos; parameter has been deactivated and will be removed in a future release. Do not use this parameter and instead provide data files starting from the model start time.
 </documentation>
 <pattern>
 1201
@@ -1561,7 +1561,7 @@ In some cases the boundary files are not numbered in increasing but in decreasin
 0
 </default_value>
 <documentation>
-The `First data file model time&apos; parameter has been deactivated and will be removed in a future release. Do not use this paramter and instead provide data files starting from the model start time.
+The `First data file model time&apos; parameter has been deactivated and will be removed in a future release. Do not use this parameter and instead provide data files starting from the model start time.
 </documentation>
 <pattern>
 1133
@@ -2566,7 +2566,7 @@ In some cases the boundary files are not numbered in increasing but in decreasin
 0
 </default_value>
 <documentation>
-The `First data file model time&apos; parameter has been deactivated and will be removed in a future release. Do not use this paramter and instead provide data files starting from the model start time.
+The `First data file model time&apos; parameter has been deactivated and will be removed in a future release. Do not use this parameter and instead provide data files starting from the model start time.
 </documentation>
 <pattern>
 1262
@@ -2869,7 +2869,7 @@ In some cases the boundary files are not numbered in increasing but in decreasin
 0
 </default_value>
 <documentation>
-The `First data file model time&apos; parameter has been deactivated and will be removed in a future release. Do not use this paramter and instead provide data files starting from the model start time.
+The `First data file model time&apos; parameter has been deactivated and will be removed in a future release. Do not use this parameter and instead provide data files starting from the model start time.
 </documentation>
 <pattern>
 1248
@@ -3843,7 +3843,7 @@ The dimensions of the model are specified by parameters of the following form: C
 
 When used in 2d, this geometry does not imply the use of a spherical coordinate system. Indeed, in 2d the geometry is simply a sector of an annulus in a Cartesian coordinate system and consequently would correspond to a sector of a cross section of the fluid filled space between two infinite cylinders where one has made the assumption that the velocity in direction of the cylinder axes is zero. This is consistent with the definition of what we consider the two-dimension case given in Section~\ref{sec:meaning-of-2d}. It is also possible to add initial topography to the chunk geometry, based on an ascii data file. 
 
-`ellipsoidal chunk&apos;: A 3d chunk geometry that accounts for Earth&apos;s ellipticity (default assuming the WGS84 ellipsoid definition) which can be defined in non-coordinate directions. In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the same length so that there is only a semi-major axis and a semi-minor axis. The user has two options for creating an ellipsoidal chunk geometry: 1) by defining two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal chunk geometry will be created. 2) by defining three points a non-coordinate parallel ellipsoidal chunk will be created. The points are defined in the input file by longitude:latitude. It is also possible to define additional subdivisions of the mesh in each direction. The boundary of the domain is formed by linear interpolation in longitude-latitude space between adjacent points (i.e. [lon, lat](f) = [lon1*f + lon2*(1-f), lat1*f + lat2*(1-f)], where f is a value between 0 and 1). Faces of the model are defined as 0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.
+`ellipsoidal chunk&apos;: A 3d chunk geometry that accounts for Earth&apos;s ellipticity (default assuming the WGS84 ellipsoid definition) which can be defined in non-coordinate directions. In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the same length so that there is only a semi-major axis and a semi-minor axis. The user has two options for creating an ellipsoidal chunk geometry: 1) by defining two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal chunk geometry will be created. 2) by defining three points a non-coordinate parallel ellipsoidal chunk will be created. The points are defined in the input file by longitude:latitude. It is also possible to define additional subdivisions of the mesh in each direction. The boundary of the domain is formed by linear interpolation in longitude-latitude space between adjacent points (i.e. $[lon, lat](f) = [lon1 \cdot f + lon2 \cdot(1-f), lat1 \cdot f + lat2 \cdot (1-f)]$, where f is a value between 0 and 1). Faces of the model are defined as 0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.
 
 This geometry model supports initial topography for deforming the initial mesh.
 
@@ -5910,7 +5910,7 @@ A comma separated list denoting the method to be used to initialize a compositio
 
 The format of valid entries for this parameter is that of a map given as ``key1:value1, key2:value2`` where each key must be the name of a compositional field using the volume of fluid advection method, and the value is one of ``composition`` or ``level set``. ``composition`` is the default
 
-When ``composition is specified, the initial model is treated as a standard composition field with bounds between 0 and 1 assumed, The initial fluid fractions are then based on an iterated midpoint quadrature. Resultant volume fractions outside of the bounds will be coerced to the nearest valid value (ie 0 or 1). If ``level set`` is specified, the intial data will be assumed to be in the form of a signed distance level set function (i.e. a function which is positive when in the fluid, negative outside, and zero on the interface and the magnitude is always the distance to the interface so the gradient is one everywhere).
+When ``composition is specified, the initial model is treated as a standard composition field with bounds between 0 and 1 assumed, The initial fluid fractions are then based on an iterated midpoint quadrature. Resultant volume fractions outside of the bounds will be coerced to the nearest valid value (ie 0 or 1). If ``level set`` is specified, the initial data will be assumed to be in the form of a signed distance level set function (i.e. a function which is positive when in the fluid, negative outside, and zero on the interface and the magnitude is always the distance to the interface so the gradient is one everywhere).
 </documentation>
 <pattern>
 99
@@ -9050,7 +9050,7 @@ A comma-separated list of depth values for use with the ``List&apos;&apos; ``Dep
 1.7976931348623157e+308
 </default_value>
 <documentation>
-The value of the constant reference viscosity $\eta_r$ that is used to scale the non-dimenional depth-dependent viscosity prefactor. Units: \si{\pascal\second}.
+The value of the constant reference viscosity $\eta_r$ that is used to scale the non-dimensional depth-dependent viscosity prefactor. Units: \si{\pascal\second}.
 </documentation>
 <pattern>
 766
@@ -17131,7 +17131,7 @@ A list of thresholds that every individual compositional field will be evaluated
 <documentation>
 A list of isosurfaces separated by semi-colons (;). Each isosurface entry consists of multiple entries separated by a comma. The first two entries indicate the minimum and maximum refinement levels respectively. The entries after the first two describe the fields the isosurface applies to, followed by a colon (:), which is again followed by the minimum and maximum property values separated by bar (|). An example for an isosurface is &apos;0, 2, Temperature: 300 | 600; 2, 2, C\_1: 0.5 | 1&apos;. In this example the mesh refinement is kept between level 0 and level 2 if the temperature is between 300 and 600 and at level 2 when the compositional field C\_1 is between 0.5 and 1. If both happen at the same location and the current refinement level is 1, it means that the first isoline will not set any flag and the second isoline will set a refinement flag. This means the cell will be refined. If both the coarsening and refinement flags are set, preference is given to refinement. 
 
-The first two entries for each isosurface, describing the minimum and maximum grid levels, can be two numbers or contain one of the key values &apos;min&apos; and &apos;max&apos;. This indicates the key will be replaced with the global minimum and maximum refinement levels. The &apos;min&apos; and &apos;max&apos; keys also accept adding values to be added or substracted from them respectively. This is done by adding a &apos;+&apos; or &apos;-&apos; and a number behind them (e.g. min+2 or max-1). Note that you can&apos;t substract a value from a minimum value or add a value to the maximum value. If, for example, `max-4` drops below the minimum or `min+4` goes above the maximum, it will simply use the global minimum and maximum values respectively. The same holds for any mesh refinement level below the global minimum or above the global maximum.
+The first two entries for each isosurface, describing the minimum and maximum grid levels, can be two numbers or contain one of the key values &apos;min&apos; and &apos;max&apos;. This indicates the key will be replaced with the global minimum and maximum refinement levels. The &apos;min&apos; and &apos;max&apos; keys also accept adding values to be added or subtracted from them respectively. This is done by adding a &apos;+&apos; or &apos;-&apos; and a number behind them (e.g. min+2 or max-1). Note that you can&apos;t subtract a value from a minimum value or add a value to the maximum value. If, for example, `max-4` drops below the minimum or `min+4` goes above the maximum, it will simply use the global minimum and maximum values respectively. The same holds for any mesh refinement level below the global minimum or above the global maximum.
 </documentation>
 <pattern>
 337
@@ -17378,9 +17378,9 @@ The following postprocessors are available:
 
 `boundary pressures&apos;: A postprocessor that computes the laterally averaged pressure at the top and bottom of the domain.
 
-`boundary strain rate residual statistics&apos;: A postprocessor that computes some statistics about the surface strain rate residual along the top boundary. The residual is the difference between the second invariant of the model strain rate and the second strain rate invariant read from the input data file. Currently, the strain residual statistics, i.e., min, max and the rms magnitude, are computed at the top suface.
+`boundary strain rate residual statistics&apos;: A postprocessor that computes some statistics about the surface strain rate residual along the top boundary. The residual is the difference between the second invariant of the model strain rate and the second strain rate invariant read from the input data file. Currently, the strain residual statistics, i.e., min, max and the rms magnitude, are computed at the top surface.
 
-`boundary velocity residual statistics&apos;: A postprocessor that computes some statistics about the velocity residual along the top boundary. The velocity residual is the difference between the model solution velocities and the input velocities (GPlates model or ascii data). Currently, the velocity residual statistics, i.e., min, max and the rms magnitude, is computed at the top suface.
+`boundary velocity residual statistics&apos;: A postprocessor that computes some statistics about the velocity residual along the top boundary. The velocity residual is the difference between the model solution velocities and the input velocities (GPlates model or ascii data). Currently, the velocity residual statistics, i.e., min, max and the rms magnitude, is computed at the top surface.
 
 `command&apos;: A postprocessor that executes a command line process.
 
@@ -17427,7 +17427,7 @@ The ``heat flux densities&apos;&apos; postprocessor computes the same quantity a
 
 `heating statistics&apos;: A postprocessor that computes some statistics about heating, averaged by volume. 
 
-`load balance statistics&apos;: A postprocessor that computes statistics about the distribution of cells, and if present particles across subdomains. In particular, it computes maximal, average and minimal number of cells across all ranks. If there are particles it also computes the maximal, average, and minimum number of particles across all ranks, and maximal, average, and minimal ratio between local number of particles and local number of cells across all processes. All of these numbers can be useful to assess the load balance between different MPI ranks, as the difference between the mimimal and maximal load should be as small as possible.
+`load balance statistics&apos;: A postprocessor that computes statistics about the distribution of cells, and if present particles across subdomains. In particular, it computes maximal, average and minimal number of cells across all ranks. If there are particles it also computes the maximal, average, and minimum number of particles across all ranks, and maximal, average, and minimal ratio between local number of particles and local number of cells across all processes. All of these numbers can be useful to assess the load balance between different MPI ranks, as the difference between the minimal and maximal load should be as small as possible.
 
 `mass flux statistics&apos;: A postprocessor that computes some statistics about the mass flux across boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the mass flux is computed in outward direction, i.e., from the domain to the outside, using the formula $\int_{\Gamma_i} \rho \mathbf v \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $\rho$ is the density as reported by the material model, $\mathbf v$ is the velocity, and $\mathbf n$ is the outward normal. 
 
@@ -18875,7 +18875,7 @@ This determines how many samples are taken when using the random draw volume ave
 1
 </default_value>
 <documentation>
-The seed used to generate random numbers. This will make sure that results are reproducable as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank. 
+The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank. 
 </documentation>
 <pattern>
 233
@@ -22164,7 +22164,7 @@ A large reduction in time step size typically happens when velocities change abr
 0.
 </default_value>
 <documentation>
-Specifiy a minimum time step size (or 0 to disable).
+Specify a minimum time step size (or 0 to disable).
 </documentation>
 <pattern>
 354
