@@ -842,11 +842,13 @@ int main (int argc, char *argv[])
     }
   catch (aspect::QuietException &)
     {
-      // Quietly treat an exception used on processors other than
-      // root when we already know that processor 0 will generate
-      // an exception. We do this to avoid creating too much
-      // (duplicate) screen output.
-
+      // Quietly treat an exception used on processors other than root
+      // when we already know that processor 0 will generate an
+      // exception. We do this to avoid creating too much (duplicate)
+      // screen output. Note that QuietException is not derived from
+      // std::exception, so the order of this and the previous 'catch'
+      // block does not matter.
+      //
       // Sleep a few seconds before aborting. This allows text output from
       // other ranks to be printed before the MPI implementation might kill
       // the computation.
