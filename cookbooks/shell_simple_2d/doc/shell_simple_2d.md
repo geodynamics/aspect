@@ -105,7 +105,7 @@ In the following, let us pick apart this input file:
     constant anyway. Also note that we re-entered the `Material model`
     subsection in order to change a value. Subsections can be entered multiple
     times in a single parameter file, however, this can get confusing quickly
-    and we discourage this use, unless it provides as benefit like grouping
+    and we discourage this use, unless it provides a benefit like grouping
     related parameters.
 
 
