@@ -2150,6 +2150,16 @@ namespace aspect
     std::string
     expand_ASPECT_SOURCE_DIR (const std::string &location)
     {
+      // Check for environment variable override to ASPECT_SOURCE_DIR
+      char const *ASPECT_SOURCE_DIR_env = getenv("ASPECT_SOURCE_DIR");
+      if (ASPECT_SOURCE_DIR_env != NULL)
+        {
+          return Utilities::replace_in_string(location,
+                                              "$ASPECT_SOURCE_DIR",
+                                              ASPECT_SOURCE_DIR_env);
+        }
+
+      // Otherwise, use the default define from config.h
       return Utilities::replace_in_string(location,
                                           "$ASPECT_SOURCE_DIR",
                                           ASPECT_SOURCE_DIR);

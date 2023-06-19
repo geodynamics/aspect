@@ -42,7 +42,8 @@ TEST_CASE("Utilities::AsciiDataLookup")
 
   //TODO: add support for setting data directly instead of relying on a file to load:
   aspect::Utilities::StructuredDataLookup<1> lookup(2 /*n_components*/, 1.0 /*scaling*/);
-  lookup.load_file(ASPECT_SOURCE_DIR "/data/boundary-velocity/ascii-data/test/box_2d_left.0.txt", MPI_COMM_WORLD);
+  const std::string data_filename = aspect::Utilities::expand_ASPECT_SOURCE_DIR("$ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/box_2d_left.0.txt");
+  lookup.load_file(data_filename, MPI_COMM_WORLD);
 
   INFO(lookup.get_data(Point<1>(330000./2.0),0));
   INFO(lookup.get_data(Point<1>(330000./2.0),1));

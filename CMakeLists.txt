@@ -821,6 +821,11 @@ IF (ASPECT_INSTALL_EXAMPLES)
     FILES_MATCHING PATTERN "*")
 ENDIF()
 
+# data files:
+INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/data/
+  DESTINATION data
+  COMPONENT data)
+
 # cmake stuff:
 INSTALL(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake
         DESTINATION "lib/cmake/Aspect/")
