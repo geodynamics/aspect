@@ -21,17 +21,18 @@ Let us just start by showing the input file (which you can find in
 [cookbooks/shell_simple_2d/shell_simple_2d.prm](https://github.com/geodynamics/aspect/blob/main/cookbooks/shell_simple_2d/shell_simple_2d.prm)):
 
 ```{literalinclude} ../shell_simple_2d.prm
+:linenos:
 ```
 
 In the following, let us pick apart this input file:
 
-1.  Lines 1&ndash;4 are just global parameters. Since we are interested in
+1.  Lines 5&ndash;8 are just global parameters. Since we are interested in
     geophysically realistic simulations, we will use material parameters that
     lead to flows so slow that we need to measure time in years, and we will
     set the end time to 1.5 billion years &ndash; enough to see a significant
     amount of motion.
 
-2.  The next block (lines 7&ndash;14) describes the material that is
+2.  The next block (lines 11&ndash;19) describes the material that is
     convecting (for historical reasons, the remainder of the parameters that
     describe the equations is in a different section, see the fourth point
     below). We choose the simplest material model has to offer where the
@@ -45,18 +46,19 @@ In the following, let us pick apart this input file:
     {ref}`parameters:Material_20model` and
     {ref}`parameters:Material_20model/Simple_20model`.
 
-3.  Lines 17&ndash;25 then describe the geometry. In this simple case, we will
+3.  Lines 22&ndash;30 then describe the geometry. In this simple case, we will
     take a quarter of a 2d shell (recall that the dimension had previously
     been set as a global parameter) with inner and outer radii matching those
     of a spherical approximation of Earth.
 
 4.  The second part of the model description and boundary values follows in
-    lines 28&ndash;42. The boundary conditions require us to look up how the
-    geometry model we chose (the `spherical shell` model) assigns boundary
-    indicators to the four sides of the domain. This is described in
-    {ref}`parameters:Geometry_20model` where the model
-    announces that boundary indicator zero is the inner boundary of the
-    domain, boundary indicator one is the outer boundary, and the left and
+    lines 32&ndash;46. We can specify boundaries by name as defined by the
+    geometry model we chose (the `spherical shell` model). It assigns
+    numerical boundary indicators to the four sides of the domain that
+    we do not need to know by value. This is described in more detail in
+    {ref}`parameters:Geometry_20model` where the model also
+    announces that boundary indicator zero is the bottom boundary of the
+    domain, boundary indicator one is the top boundary, and the left and
     right boundaries for a 2d model with opening angle of 90 degrees as chosen
     here get boundary indicators 2 and 3, respectively. In other words, the
     settings in the input file correspond to a zero velocity at the inner
@@ -70,7 +72,7 @@ In the following, let us pick apart this input file:
     Celsius &ndash; roughly realistic for the bottom of the crust and the
     core-mantle boundary.
 
-5.  Lines 45&ndash;47 describe that we want a model where equation
+5.  Lines 49&ndash;51 describe that we want a model where equation
     {math:numref}`eq:temperature` contains the shear heating term $2\eta
       \varepsilon(\mathbf u):\varepsilon(\mathbf u)$ (noting that the default
     is to use an incompressible model for which the term
@@ -78,7 +80,8 @@ In the following, let us pick apart this input file:
       \mathbf u)\mathbf 1$ in the shear heating contribution is zero).
     Considering a reasonable choice of heating terms is not the focus of this
     simple cookbook, therefore we will leave a discussion of possible and
-    reasonable heating terms to another cookbook.
+    reasonable heating terms to another cookbook (note that the current
+    choice is neither reasonable nor energetically consistent).
 
 6.  The description of what we want to model is complete by specifying that
     the initial temperature is a perturbation with hexagonal symmetry from a
@@ -87,11 +90,24 @@ In the following, let us pick apart this input file:
     kind of gravity model we want to choose (one reminiscent of the one inside
     the Earth mantle, see {ref}`parameters:Gravity_20model`).
 
-7.  The remainder of the input file consists of a description of how to choose
-    the initial mesh and how to adapt it (lines 60&ndash;65) and what to do at
+7.  The next part of the input file consists of a description of how to choose
+    the initial mesh and how to adapt it (lines 64&ndash;69) and what to do at
     the end of each time step with the solution that computes for us (lines
-    68&ndash;81). Here, we ask for a variety of statistical quantities and for
+    72&ndash;84). Here, we ask for a variety of statistical quantities and for
     graphical output in VTU format every million years.
+
+8.  Finally, this cookbook requires a lot of time to complete (several hours on
+    48 cores). In order to minimize this time, we here utilize the faster of
+    ASPECT's available Stokes solvers (lines 87&ndash;91), also see {ref}`sec:gmg`.
+    This solver also requires that the viscosity in the model is cell-wise
+    averaged, which we set in lines 94&ndash;96. Note here that this averaging
+    does not actually reduce the accuracy of our model, since the viscosity is
+    constant anyway. Also note that we re-entered the `Material model`
+    subsection in order to change a value. Subsections can be entered multiple
+    times in a single parameter file, however, this can get confusing quickly
+    and we discourage this use, unless it provides a benefit like grouping
+    related parameters.
+
 
 :::{note}
 Having described everything to ASPECT, you may want to view the video linked to above again and compare what you see with what you expect.
