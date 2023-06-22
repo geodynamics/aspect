@@ -277,10 +277,8 @@ namespace aspect
 
     // save Triangulation and Solution vectors:
     {
-      std::vector<const LinearAlgebra::BlockVector *> x_system (3);
-      x_system[0] = &solution;
-      x_system[1] = &old_solution;
-      x_system[2] = &old_old_solution;
+      std::vector<const LinearAlgebra::BlockVector *> x_system
+        = { &solution, &old_solution, &old_old_solution };
 
       // If we are using a deforming mesh, include the mesh velocity, which uses the system dof handler
       if (parameters.mesh_deformation_enabled)
@@ -294,20 +292,18 @@ namespace aspect
 
       // If we are deforming the mesh, also serialize the mesh vertices vector, which
       // uses its own dof handler
-      std::vector<const LinearAlgebra::Vector *> x_fs_system (2);
+      std::vector<const LinearAlgebra::Vector *> x_fs_system;
       std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>> mesh_deformation_trans;
       if (parameters.mesh_deformation_enabled)
         {
+          x_fs_system.push_back (&mesh_deformation->mesh_displacements);
+          x_fs_system.push_back (&mesh_deformation->initial_topography);
+
           mesh_deformation_trans
             = std::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
               (mesh_deformation->mesh_deformation_dof_handler);
 
-          x_fs_system[0] = &mesh_deformation->mesh_displacements;
-          x_fs_system[1] = &mesh_deformation->initial_topography;
-
-
           mesh_deformation_trans->prepare_for_serialization(x_fs_system);
-
         }
 
       signals.pre_checkpoint_store_user_data(triangulation);
@@ -541,19 +537,13 @@ namespace aspect
     setup_dofs();
     global_volume = GridTools::volume (triangulation, *mapping);
 
-    LinearAlgebra::BlockVector
-    distributed_system (system_rhs);
-    LinearAlgebra::BlockVector
-    old_distributed_system (system_rhs);
-    LinearAlgebra::BlockVector
-    old_old_distributed_system (system_rhs);
-    LinearAlgebra::BlockVector
-    distributed_mesh_velocity (system_rhs);
+    LinearAlgebra::BlockVector distributed_system (system_rhs);
+    LinearAlgebra::BlockVector old_distributed_system (system_rhs);
+    LinearAlgebra::BlockVector old_old_distributed_system (system_rhs);
+    LinearAlgebra::BlockVector distributed_mesh_velocity (system_rhs);
 
-    std::vector<LinearAlgebra::BlockVector *> x_system (3);
-    x_system[0] = & (distributed_system);
-    x_system[1] = & (old_distributed_system);
-    x_system[2] = & (old_old_distributed_system);
+    std::vector<LinearAlgebra::BlockVector *> x_system
+      = { &distributed_system, &old_distributed_system, &old_old_distributed_system };
 
     // If necessary, also include the mesh velocity for deserialization
     // with the system dof handler
@@ -580,9 +570,10 @@ namespace aspect
                                                               mpi_communicator );
         LinearAlgebra::Vector distributed_initial_topography( mesh_deformation->mesh_locally_owned,
                                                               mpi_communicator );
-        std::vector<LinearAlgebra::Vector *> fs_system(2);
-        fs_system[0] = &distributed_mesh_displacements;
-        fs_system[1] = &distributed_initial_topography;
+        std::vector<LinearAlgebra::Vector *> fs_system
+        = { &distributed_mesh_displacements,
+            &distributed_initial_topography
+          };
 
         mesh_deformation_trans.deserialize (fs_system);
         mesh_deformation->mesh_displacements = distributed_mesh_displacements;
