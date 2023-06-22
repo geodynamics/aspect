@@ -100,7 +100,7 @@ namespace aspect
         /**
          * Constructor.
          */
-        SphericalGaussianPerturbation<dim>();
+        SphericalGaussianPerturbation();
 
         /**
          * Return the initial temperature as a function of position.
