@@ -1650,20 +1650,21 @@ namespace aspect
             cell->clear_coarsen_flag ();
         }
 
-      std::vector<const LinearAlgebra::BlockVector *> x_system (2);
-      x_system[0] = &solution;
-      x_system[1] = &old_solution;
+
+      // Next set up whatever is necessary to transfer the solution from old
+      // to new mesh:
+      std::vector<const LinearAlgebra::BlockVector *> x_system
+        = { &solution, &old_solution };
 
       if (parameters.mesh_deformation_enabled)
-        x_system.push_back( &mesh_deformation->mesh_velocity );
+        x_system.push_back(&mesh_deformation->mesh_velocity);
 
-      std::vector<const LinearAlgebra::Vector *> x_fs_system (3);
-
+      std::vector<const LinearAlgebra::Vector *> x_fs_system;
       if (parameters.mesh_deformation_enabled)
         {
-          x_fs_system[0] = &mesh_deformation->mesh_displacements;
-          x_fs_system[1] = &mesh_deformation->old_mesh_displacements;
-          x_fs_system[2] = &mesh_deformation->initial_topography;
+          x_fs_system.push_back (&mesh_deformation->mesh_displacements);
+          x_fs_system.push_back (&mesh_deformation->old_mesh_displacements);
+          x_fs_system.push_back (&mesh_deformation->initial_topography);
           mesh_deformation_trans
             = std::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
               (mesh_deformation->mesh_deformation_dof_handler);
@@ -1720,9 +1721,8 @@ namespace aspect
       if (parameters.mesh_deformation_enabled)
         distributed_mesh_velocity.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
 
-      std::vector<LinearAlgebra::BlockVector *> system_tmp (2);
-      system_tmp[0] = &distributed_system;
-      system_tmp[1] = &old_distributed_system;
+      std::vector<LinearAlgebra::BlockVector *> system_tmp
+        = { &distributed_system, &old_distributed_system};
 
       if (parameters.mesh_deformation_enabled)
         system_tmp.push_back(&distributed_mesh_velocity);
@@ -1772,10 +1772,11 @@ namespace aspect
           distributed_initial_topography.reinit(mesh_deformation->mesh_locally_owned,
                                                 mpi_communicator);
 
-          std::vector<LinearAlgebra::Vector *> system_tmp (3);
-          system_tmp[0] = &distributed_mesh_displacements;
-          system_tmp[1] = &distributed_old_mesh_displacements;
-          system_tmp[2] = &distributed_initial_topography;
+          std::vector<LinearAlgebra::Vector *> system_tmp
+          = { &distributed_mesh_displacements,
+              &distributed_old_mesh_displacements,
+              &distributed_initial_topography
+            };
 
           mesh_deformation_trans->interpolate (system_tmp);
 
