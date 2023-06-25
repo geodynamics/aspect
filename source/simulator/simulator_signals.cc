@@ -27,14 +27,20 @@
 namespace aspect
 {
   // provide locations for the static variables of this class
-  template <int dim>
+
+  template <>
   boost::signals2::signal<void (const unsigned int,
-                                ParameterHandler &)>  SimulatorSignals<dim>::declare_additional_parameters;
+                                ParameterHandler &)>  SimulatorSignals<2>::declare_additional_parameters {};
+  template <>
+  boost::signals2::signal<void (const unsigned int,
+                                ParameterHandler &)>  SimulatorSignals<3>::declare_additional_parameters {};
+  template <>
+  boost::signals2::signal<void (const Parameters<2> &,
+                                ParameterHandler &)>  SimulatorSignals<2>::parse_additional_parameters {};
 
-  template <int dim>
-  boost::signals2::signal<void (const Parameters<dim> &,
-                                ParameterHandler &)>  SimulatorSignals<dim>::parse_additional_parameters;
-
+  template <>
+  boost::signals2::signal<void (const Parameters<3> &,
+                                ParameterHandler &)>  SimulatorSignals<3>::parse_additional_parameters {};
 
   namespace internals
   {

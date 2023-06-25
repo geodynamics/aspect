@@ -284,6 +284,19 @@ namespace aspect
     set_assemblers;
   };
 
+  template <>
+  boost::signals2::signal<void (const unsigned int aspect_dim,
+                                ParameterHandler &prm)>  SimulatorSignals<2>::declare_additional_parameters;
+  template <>
+  boost::signals2::signal<void (const unsigned int aspect_dim,
+                                ParameterHandler &prm)>  SimulatorSignals<3>::declare_additional_parameters;
+  template <>
+  boost::signals2::signal<void (const Parameters<2> &,
+                                ParameterHandler &)>  SimulatorSignals<2>::parse_additional_parameters;
+  template <>
+  boost::signals2::signal<void (const Parameters<3> &,
+                                ParameterHandler &)>  SimulatorSignals<3>::parse_additional_parameters;
+
 
   namespace internals
   {
