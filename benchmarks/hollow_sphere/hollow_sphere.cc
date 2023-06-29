@@ -281,46 +281,7 @@ namespace aspect
          * @{
          */
         void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                      MaterialModel::MaterialModelOutputs<dim> &out) const override
-        {
-          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
-            {
-              const Point<dim> &pos = in.position[i];
-              const std::array<double,dim> spos = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(pos);
-              const double r = spos[0];
-              const double mu = pow(r,mmm+1);
-              out.viscosities[i] = mu;
-
-              const double theta=spos[2];
-
-              const double gammma = 1.0;
-              const double R1 = 0.5;
-              const double R2 = 1.0;
-
-              double alpha,beta,rho;
-              const double rho_0 = 1000.;
-
-              if (mmm == -1)
-                {
-                  alpha = -gammma*(pow(R2,3)-pow(R1,3))/(pow(R2,3)*log(R1)-pow(R1,3)*log(R2));
-                  beta  = -3*gammma*(log(R2)-log(R1))/(pow(R1,3)*log(R2)-pow(R2,3)*log(R1)) ;
-                  rho = -(alpha/pow(r,4)*(8*log(r)-6) + 8./3.*beta/r+8*gammma/pow(r,4))*cos(theta) + rho_0;
-                }
-              else
-                {
-                  alpha=gammma*(mmm+1)*(pow(R1,-3)-pow(R2,-3))/(pow(R1,-mmm-4)-pow(R2,-mmm-4));
-                  beta=-3*gammma*(pow(R1,mmm+1)-pow(R2,mmm+1))/(pow(R1,mmm+4)-pow(R2,mmm+4));
-                  rho= -(2*alpha*pow(r,-4)*(mmm+3)/(mmm+1)*(mmm-1)-2*beta/3*(mmm-1)*(mmm+3)*pow(r,mmm)-mmm*(mmm+5)*2*gammma*pow(r,mmm-3) )*cos(theta) + rho_0;
-                }
-
-              out.densities[i] = rho;
-
-              out.specific_heat[i] = 0;
-              out.thermal_conductivities[i] = 0.0;
-              out.compressibilities[i] = 0;
-              out.thermal_expansion_coefficients[i] = 0;
-            }
-        }
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * @}
@@ -370,6 +331,8 @@ namespace aspect
         double mmm;
     };
 
+
+
     template <int dim>
     bool
     HollowSphereMaterial<dim>::
@@ -377,6 +340,67 @@ namespace aspect
     {
       return false;
     }
+
+
+    template <>
+    void
+    HollowSphereMaterial<2>::
+    evaluate (const MaterialModel::MaterialModelInputs<2> &/*in*/,
+              MaterialModel::MaterialModelOutputs<2> &/*out*/) const
+    {
+      Assert (false, ExcNotImplemented());
+    }
+
+
+
+    template <>
+    void
+    HollowSphereMaterial<3>::
+    evaluate (const MaterialModel::MaterialModelInputs<3> &in,
+              MaterialModel::MaterialModelOutputs<3> &out) const
+    {
+      const unsigned int dim = 3;
+
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+        {
+          const Point<dim> &pos = in.position[i];
+          const std::array<double,dim> spos = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(pos);
+          const double r = spos[0];
+          const double mu = pow(r,mmm+1);
+          out.viscosities[i] = mu;
+
+          const double theta=spos[2];
+
+          const double gammma = 1.0;
+          const double R1 = 0.5;
+          const double R2 = 1.0;
+
+          double alpha,beta,rho;
+          const double rho_0 = 1000.;
+
+          if (mmm == -1)
+            {
+              alpha = -gammma*(pow(R2,3)-pow(R1,3))/(pow(R2,3)*log(R1)-pow(R1,3)*log(R2));
+              beta  = -3*gammma*(log(R2)-log(R1))/(pow(R1,3)*log(R2)-pow(R2,3)*log(R1)) ;
+              rho = -(alpha/pow(r,4)*(8*log(r)-6) + 8./3.*beta/r+8*gammma/pow(r,4))*cos(theta) + rho_0;
+            }
+          else
+            {
+              alpha=gammma*(mmm+1)*(pow(R1,-3)-pow(R2,-3))/(pow(R1,-mmm-4)-pow(R2,-mmm-4));
+              beta=-3*gammma*(pow(R1,mmm+1)-pow(R2,mmm+1))/(pow(R1,mmm+4)-pow(R2,mmm+4));
+              rho= -(2*alpha*pow(r,-4)*(mmm+3)/(mmm+1)*(mmm-1)-2*beta/3*(mmm-1)*(mmm+3)*pow(r,mmm)-mmm*(mmm+5)*2*gammma*pow(r,mmm-3) )*cos(theta) + rho_0;
+            }
+
+          out.densities[i] = rho;
+
+          out.specific_heat[i] = 0;
+          out.thermal_conductivities[i] = 0.0;
+          out.compressibilities[i] = 0;
+          out.thermal_expansion_coefficients[i] = 0;
+        }
+    }
+
+
 
     template <int dim>
     void
@@ -555,14 +579,26 @@ namespace aspect
       return std::list<std::string> (1, "dynamic topography");
     }
 
+
+    template <>
+    double
+    HollowSpherePostprocessor<2>::compute_dynamic_topography_error () const
+    {
+      Assert (false, ExcNotImplemented());
+      return 0.0;
+    }
+
+
+
     /**
      * Integrate the difference between the analytical and numerical
      * solutions for dynamic topography.
      */
-    template <int dim>
+    template <>
     double
-    HollowSpherePostprocessor<dim>::compute_dynamic_topography_error() const
+    HollowSpherePostprocessor<3>::compute_dynamic_topography_error() const
     {
+      const unsigned int dim = 3;
       const Postprocess::DynamicTopography<dim> &dynamic_topography =
         this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim>>();
 
