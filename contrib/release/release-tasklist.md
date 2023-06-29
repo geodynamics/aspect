@@ -1,134 +1,196 @@
-- Tasklist:
-  . leading up to a release:
-    . send out an email about problems or outstanding patches
-    . go through the list of TODOs in the source code and see what can be done
-    . make sure the description of the interfaces that need to be updated
-      are up to date in the manual
-    . update the used deal.II version for the Docker container in contrib/docker/docker/Dockerfile
-      and in the manual
-    . check that README.md and http://aspect.dealii.org/ReadMe.html are okay
-      and the links to the mailinglists are working (also in manual.pdf)
-    . run (and be patient):
-      cd benchmarks && make -f check.mk BUILD=$BUILDDIR -j4
-      cd cookbooks && make -f check.mk BUILD=$BUILDDIR -j4
-  . determine new version roughly following semantic versioning: http://semver.org/
-    - format is X.Y.Z for a release, X.Y.Z-pre for the dev version or X.Y.Z-rcW for release candidates
-    - backwards incompatible changes require incrementing X, adding features incrementing Y
-  . setup:
-      export OLDVER=2.0.0;export VER=2.1.0;export VERSHORT=2.1;export NEXTVER=2.2.0-pre
-      export DEALSRCDIR=/ssd/deal-git/
-  . fix doxygen errors:
-      find include -name "*h" -print | xargs -n 1 $DEALSRCDIR/contrib/utilities/checkdoxygen.py
-    and commit.
-  . manual, check for missing labels:
-    . cd doc
-    . make manual.pdf
-    . grep undefined manual/manual.log    # try to remove some
-    . make aspect.tag
-    . and check for warnings
-  . fix formatting, copyright years:
-      find . -name "*.h" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
-      . note: we started ignoring the rewrapping of comments, but we should still fix wrong indentation or other problems
-      ./contrib/utilities/indent
-      ./contrib/release/update_copyright.sh
-      git commit -a -m "doxygen formatting, comment wrapping"
-      # create a pull-request
-  . create branch for main PR to update changes.h in doc/modules:
-      git checkout -b post-release-$VER
-      cd doc/modules; rm -f changes/*~; ./increment_version.sh $OLDVER $VER;cd ../..
-      cd contrib/release;./bump_version.sh $NEXTVER; cd ..
-      git commit -m "release task: update version and changes.h"
-      # create a PR
-  . create a branch, bump version (note, make sure the PR above is included)
-      git checkout post-release-$VER && \
-      git checkout -b aspect-$VERSHORT && \
-      cd contrib/release && ./bump_version.sh $VER && cd ../.. && \
-      git commit -m "release task: update version info"
-  . compile aspect, make sure you have a symlink in the main directory for the next step
-    - make sure the WorldBuilder is found! (git submodule init)
-  . update doc/manual/parameters.tex and documentation:
-      cd doc && ./update_parameters.sh && make manual.pdf && cp manual.pdf manual-$VER.pdf && cd .. && \
-      git add doc/manual/parameters.tex && \
-      git commit -m "release task: update manual"
-  . Tag an RC:
-      export TAG=$VER-rc1
-      cd contrib/release && ./bump_version.sh $TAG && cd ../.. && \
-      git commit -m "version $TAG" && \
-      git tag -s v$TAG -m "version $TAG"
-  . Tag the release:
-      export TAG=$VER
-      cd contrib/release && ./bump_version.sh $TAG && cd ../.. && \
-      git commit -m "version $TAG" && \
-      git tag -s v$TAG -m "version $TAG"
-  . create a tar file:
-      cd doc && make manual.pdf && cp manual.pdf ../aspect-manual-$TAG.pdf && cd ..
-      export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
-      git archive --format=tar.gz --prefix=$PREFIX/ HEAD >temp.tar.gz && \
-      rm -fr $PREFIX/ && \
-      tar xf temp.tar.gz && \
-      cd contrib/WorldBuilder/ && \
-      git archive --format=tar.gz --prefix=$PREFIX/contrib/WorldBuilder/ HEAD >temp.tar.gz && \
-      cd ../.. && \
-      tar xf contrib/WorldBuilder/temp.tar.gz && \
-      tar czf $PREFIX.tar.gz $PREFIX/ && \
-      rm -rf contrib/WorldBuilder/temp.tar.gz
+# Release Tasklist
 
-  . final testing by extracting tarball, compiling, and running:
-      tar xf $PREFIX.tar.gz
-      cd $PREFIX
-      docker run --rm -it -v `pwd`:/home/dealii/aspect \
-            tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5 /bin/bash
+## Leading up to a release
+- send out an email about problems or outstanding patches
+- go through the list of TODOs in the source code and see what can be done
+- make sure the description of the interfaces that need to be updated
+    are up to date in the manual
+- update the used deal.II version for the Docker container in `contrib/docker/docker/Dockerfile`
+    and in the manual
+- check that `README.md` and https://aspect.geodynamics.org/ is up-to-date
+and the links are working
+- run (and be patient):
 
-      mkdir build; cd build
-      cmake -G "Ninja" -D ASPECT_RUN_ALL_TESTS=ON -D \
-            ASPECT_PRECOMPILE_HEADERS=ON ~/aspect
-      ninja; ctest -j 8 -V
+  ```
+  cd benchmarks && make -f check.mk BUILD=$BUILDDIR -j4
+  cd cookbooks && make -f check.mk BUILD=$BUILDDIR -j4
+  ```
 
-  . make public (branch and tag):
-      git push cig aspect-$VERSHORT
-      git push cig v$TAG
-  . sign:
-      gpg --detach-sign --armor aspect-$TAG.tar.gz
-      gpg --detach-sign --armor aspect-manual-$TAG.pdf
-      sha1sum aspect-$TAG.tar.gz aspect-manual-$TAG.pdf >sha1sum-$TAG.txt
-  . create a release on github, upload .tar.gz and manual-$VER.pdf
-  . update website (www repo):
-    - header.include: add link to changes
-    - index.html: add news entry
-    - cite.html: change to current version (2x)
-  . create zenodo release for source code:
-    - https://zenodo.org/deposit?page=1&size=20
-    - title: ASPECT v2.0.0
-    - license: GPL 2
-    - check CIG comments: https://github.com/geodynamics/best_practices/blob/master/ZenodoBestPractices.md
-    - cig community!
-    - update zenodo badge in README.md to newest version (see badge button on the right of zenodo page)
-    - add zenodo badge also to the release on github (on top, see 2.0.1 for an example)
-    - readme / release notes: add zenodo DOI button
-    - manual/manual.bib: add new zenodo entry
-  . create figshare DOI for manual (just upload a new version as the same entry)
-    - update manual/manual.bib entry
-  . update doc/manual/manual.bib with src and manual doi
-  . update aspect.geodynamics.org/cite.html and citing.html in www repo:
-    - add new version in citing.html, search for "<option"
-    - doc/make_cite_html.py:
-      - add new version, update doc/zenodo dois
-    - run aspect/doc/ python3 make_cite_html.py add to www
-  . update http://geodynamics.org/cig/software/aspect/:
-       update current release number
-       create entry for the new release
-       update the list of contributors
-       ...
-  . update docker image geodynamics/aspect:
-    - modify contrib/docker/docker/Dockerfile and contrib/docker/docker/build.sh to checkout the release
-      cd contrib/docker/docker && ./build.sh
-      docker push geodynamics/aspect:v$TAG
-  . update the spack installation package with the latest tarball, 
-    see https://github.com/spack/spack/pull/13830 for an example
-  . announce on
-       cig-all@geodynamics.org
-       https://community.geodynamics.org/c/aspect
-       dealii@googlegroups.com
+- determine new version roughly following semantic versioning: http://semver.org/
+  - format is X.Y.Z for a release, X.Y.Z-pre for the dev version or X.Y.Z-rcW for release candidates
+  - backwards incompatible changes require incrementing X, adding features incrementing Y
+
+- setup:
+
+  ```
+  export OLDVER=2.0.0
+  export VER=2.1.0
+  export VERSHORT=2.1
+  export NEXTVER=2.2.0-pre
+  # Make sure DEALSRCDIR is set to correct path
+  export DEALSRCDIR=$DEAL_II_DIR
+  ```
+
+- fix doxygen errors:
+
+  ```
+  find include -name "*h" -print | xargs -n 1 $DEALSRCDIR/contrib/utilities/checkdoxygen.py
+  ```
+
+  and commit.
+- manual, check for missing labels:
+
+  ```
+  cd doc
+  make manual.pdf
+  grep undefined manual/manual.log    # try to fix some
+  make aspect.tag
+  ```
+
+  and check for warnings
+- fix formatting, copyright years:
+
+  ```
+  find . -name "*.h" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
+  ```
+- note: we started ignoring the rewrapping of comments, but we should still fix wrong indentation or other problems
+
+  ```
+  ./contrib/utilities/indent
+  ./contrib/release/update_copyright.sh
+  git commit -a -m "doxygen formatting, comment wrapping"
+  ```
+
+## Create a pull-request
+- create branch for main PR to update changes.h in doc/modules:
+
+  ```
+  git checkout -b post-release-$VER
+  cd doc/modules; rm -f changes/*~; ./increment_version.sh $OLDVER $VER;cd ../..
+  cd contrib/release;./bump_version.sh $NEXTVER; cd ..
+  git commit -m "release task: update version and changes.h"
+  ```
+
+- create a branch, bump version (note, make sure the PR above is included):
+
+  ```
+  git checkout post-release-$VER && \
+  git checkout -b aspect-$VERSHORT && \
+  cd contrib/release && ./bump_version.sh $VER && cd ../.. && \
+  git commit -m "release task: update version info"
+  ```
+
+- compile aspect, make sure you have a symlink in the main directory for the next step
+  - make sure the WorldBuilder is using the included version
+
+- update doc/manual/parameters.tex and documentation:
+
+  ```
+  cd doc && ./update_parameters.sh && make manual.pdf && cp manual.pdf manual-$VER.pdf && cd .. && \
+  git add doc/manual/parameters.tex && \
+  git commit -m "release task: update manual"
+  ```
+
+- Tag a release candidate (RC):
+
+  ```
+  export TAG=$VER-rc1
+  cd contrib/release && ./bump_version.sh $TAG && cd ../.. && \
+  git commit -m "version $TAG" && \
+  git tag -s v$TAG -m "version $TAG"
+  ```
+
+- Tag the release:
+
+  ```
+  export TAG=$VER
+  cd contrib/release && ./bump_version.sh $TAG && cd ../.. && \
+  git commit -m "version $TAG" && \
+  git tag -s v$TAG -m "version $TAG"
+  ```
+
+- create a tar file:
+  ```
+  cd doc && make manual.pdf && cp manual.pdf ../aspect-manual-$TAG.pdf && cd ..
+  export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
+  git archive --format=tar.gz --prefix=$PREFIX/ HEAD >temp.tar.gz && \
+  rm -fr $PREFIX/ && \
+  tar xf temp.tar.gz && \
+  cd contrib/WorldBuilder/ && \
+  git archive --format=tar.gz --prefix=$PREFIX/contrib/WorldBuilder/ HEAD >temp.tar.gz && \
+  cd ../.. && \
+  tar xf contrib/WorldBuilder/temp.tar.gz && \
+  tar czf $PREFIX.tar.gz $PREFIX/ && \
+  rm -rf contrib/WorldBuilder/temp.tar.gz
+  ```
+
+- final testing by extracting tarball, compiling, and running:
+
+  ```
+  tar xf $PREFIX.tar.gz
+  cd $PREFIX
+  docker run --rm -it -v `pwd`:/home/dealii/aspect \
+        tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5 /bin/bash
+
+  mkdir build; cd build
+  cmake -G "Ninja" -D ASPECT_RUN_ALL_TESTS=ON ~/aspect
+  ninja
+  ctest -j 8 -V
+  ```
+
+- make public (branch and tag):
+
+  ```
+  git push upstream aspect-$VERSHORT
+  git push upstream v$TAG
+  ```
+
+- sign:
+
+  ```
+  gpg --detach-sign --armor aspect-$TAG.tar.gz
+  gpg --detach-sign --armor aspect-manual-$TAG.pdf
+  sha1sum aspect-$TAG.tar.gz aspect-manual-$TAG.pdf >sha1sum-$TAG.txt
+  ```
+
+- create a release on github, upload .tar.gz and manual-$VER.pdf
+- update website (www branch):
+  - header.include: add link to changes
+  - index.html: add news entry
+  - cite.html: change to current version (2x)
+- create zenodo release for source code:
+  - https://zenodo.org/deposit?page=1&size=20
+  - title: ASPECT v2.0.0
+  - license: GPL 2
+  - check CIG comments: https://github.com/geodynamics/best_practices/blob/master/ZenodoBestPractices.md
+  - cig community!
+  - update zenodo badge in README.md to newest version (see badge button on the right of zenodo page)
+  - add zenodo badge also to the release on github (on top, see 2.0.1 for an example)
+  - readme / release notes: add zenodo DOI button
+  - manual/manual.bib: add new zenodo entry
+. create figshare DOI for manual (just upload a new version as the same entry)
+  - update manual/manual.bib entry
+. update doc/manual/manual.bib with src and manual doi
+. update aspect.geodynamics.org/cite.html and citing.html in www repo:
+  - add new version in citing.html, search for "<option"
+  - doc/make_cite_html.py:
+    - add new version, update doc/zenodo dois
+  - run aspect/doc/ python3 make_cite_html.py add to www
+. update http://geodynamics.org/cig/software/aspect/:
+      update current release number
+      create entry for the new release
+      update the list of contributors
+      ...
+. update docker image geodynamics/aspect:
+  - modify contrib/docker/docker/Dockerfile and contrib/docker/docker/build.sh to checkout the release
+    cd contrib/docker/docker && ./build.sh
+    docker push geodynamics/aspect:v$TAG
+. update the spack installation package with the latest tarball, 
+  see https://github.com/spack/spack/pull/13830 for an example
+. announce on
+      cig-all@geodynamics.org
+      https://community.geodynamics.org/c/aspect
+      dealii@googlegroups.com
 
 Announcement for 2.4.0 (July 25, 2022)
 -----------------------------------------
