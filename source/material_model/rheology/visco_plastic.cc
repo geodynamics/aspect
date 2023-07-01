@@ -519,6 +519,10 @@ namespace aspect
             composition_mask.set(depo_depth_position_tmp,false);
           }
 #endif
+        if (use_iterative_viscosity_dampening)
+          {
+            composition_mask.set(this->introspection().compositional_index_for_name("viscosity_field"),false);
+          }
 
         return composition_mask;
       }
@@ -606,6 +610,9 @@ namespace aspect
         // Drucker Prager plasticity parameters
         Rheology::DruckerPrager<dim>::declare_parameters(prm);
 
+        // Iterative viscosity dampening parameters
+        Rheology::IterativeDampening<dim>::declare_parameters(prm);
+
         // Stress limiter parameters
         prm.declare_entry ("Stress limiter exponents", "1.0",
                            Patterns::List(Patterns::Double (0.)),
@@ -624,6 +631,10 @@ namespace aspect
                            "Using a pressure gradient of 32436 Pa/m, then a value of "
                            "0.3 K/km = 0.0003 K/m = 9.24e-09 K/Pa gives an earth-like adiabat."
                            "Units: \\si{\\kelvin\\per\\pascal}.");
+
+        prm.declare_entry ("Use iterative viscosity dampening", "false",
+                           Patterns::Bool (),
+                           "Whether to damper the viscosity between nonlinear iterations.");
       }
 
 
@@ -762,6 +773,32 @@ namespace aspect
                        ExcMessage("If adiabatic heating is enabled you should not add another adiabatic gradient"
                                   "to the temperature for computing the viscosity, because the ambient"
                                   "temperature profile already includes the adiabatic gradient."));
+
+        // Iterative viscosity dampening parameters
+        use_iterative_viscosity_dampening = prm.get_bool ("Use iterative viscosity dampening");
+        if (use_iterative_viscosity_dampening)
+          {
+            iterative_dampening = std::make_unique<Rheology::IterativeDampening<dim>>();
+            iterative_dampening->initialize_simulator (this->get_simulator());
+            iterative_dampening->parse_parameters(prm);
+
+            AssertThrow (this->introspection().compositional_name_exists("viscosity_field"),
+                         ExcMessage("Using an iterative viscosity dampening only works if there is a "
+                                    "compositional field called viscosity_field."));
+
+            AssertThrow (this->get_parameters().nonlinear_solver ==
+                         Parameters<dim>::NonlinearSolver::iterated_Advection_and_Stokes
+                         ||
+                         this->get_parameters().nonlinear_solver ==
+                         Parameters<dim>::NonlinearSolver::iterated_Advection_and_Newton_Stokes
+                         ||
+                         this->get_parameters().nonlinear_solver ==
+                         Parameters<dim>::NonlinearSolver::iterated_Advection_and_defect_correction_Stokes,
+                         ExcMessage("Using iterative viscosity dampening will only work with the "
+                                    "nonlinear solver schemes 'iterated Advection and Stokes', "
+                                    "'iterated Advection and Newton Stokes', and "
+                                    "'iterated Advection and defect correction Stokes."));
+          }
 
       }
 
