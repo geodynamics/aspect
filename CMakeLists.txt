@@ -93,12 +93,6 @@ ENDIF()
 
 MESSAGE(STATUS "Found deal.II version ${DEAL_II_PACKAGE_VERSION} at '${deal.II_DIR}'")
 
-IF(NOT DEAL_II_WITH_CXX11)
-  MESSAGE(FATAL_ERROR "\n*** ASPECT requires C++11 but your version of deal.II is not "
-    "configured with it. This likely means that your compiler is too old. Check "
-    "DEAL_II_WITH_CXX11 in deal.II.")
-ENDIF()
-
 SET(_DEALII_GOOD ON)
 
 IF(NOT DEAL_II_WITH_P4EST)
