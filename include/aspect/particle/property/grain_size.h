@@ -50,7 +50,7 @@ namespace aspect
           /**
            * Initialize variables that stay constant
            * during a model.
-          */
+           */
           void initialize () override;
 
           /**
@@ -113,7 +113,7 @@ namespace aspect
 
           /**
            * The index of the compositional field that stores the grain size.
-          */
+           */
           unsigned int grain_size_index;
       };
     }

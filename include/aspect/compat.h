@@ -427,9 +427,9 @@ namespace dealii
 
 
       /**
-           * Compute the mappings from vector degrees of freedom to normal vectors @p dof_to_normals_map
-           * and vector degrees of freedom to prescribed normal fluxes @p dof_vector_to_b_values.
-           */
+       * Compute the mappings from vector degrees of freedom to normal vectors @p dof_to_normals_map
+       * and vector degrees of freedom to prescribed normal fluxes @p dof_vector_to_b_values.
+       */
       template <int dim, int spacedim>
       void
       map_dofs_to_normal_vectors_and_normal_fluxes(

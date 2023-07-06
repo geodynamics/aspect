@@ -143,7 +143,7 @@ namespace aspect
 
         /**
          * Age model to use for the top boundary layer.
-        */
+         */
         BoundaryLayerAgeModel::Kind top_boundary_layer_age_model;
 
         /*
@@ -177,7 +177,7 @@ namespace aspect
 
         /**
          * Compute the top boundary layer age at the given position.
-        */
+         */
         double top_boundary_layer_age(const Point<dim> &position) const;
     };
   }

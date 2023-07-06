@@ -150,8 +150,8 @@ namespace aspect
           compute_bingham_average(std::vector<Tensor<2,3>> matrices) const;
 
           /**
-          * Declare the parameters this class takes through input files.
-          */
+           * Declare the parameters this class takes through input files.
+           */
           static
           void
           declare_parameters (ParameterHandler &prm);
@@ -172,7 +172,7 @@ namespace aspect
           /**
            * A pointer to the crystal preferred orientation particle property.
            * Avoids repeated searches for that property.
-          */
+           */
           std::unique_ptr<const Particle::Property::CrystalPreferredOrientation<dim>> cpo_particle_property;
 
           /**
