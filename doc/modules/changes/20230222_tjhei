@@ -1,4 +1,0 @@
-New: The signal start_timestep can be used to get a
-callback at the beginning of each timestep.
-<br>
-(Timo Heister, 2023/02/22)

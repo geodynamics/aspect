@@ -1,6 +1,0 @@
-New: Phase transitions can now be deactivated outside a given temperature range specified by
-upper and lower temperature limits for each phase transition. This allows to implement
-complex phase diagrams with transitions that intersect in pressure-temperature space.
-
-<br>
-(Haoyuan Li, 2022/05/11)
