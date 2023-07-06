@@ -102,7 +102,7 @@ $ASPECT --output-plugin-graph doc/manual/empty.prm >plugin_graph.dot 2>/dev/null
 
 neato plugin_graph.dot -Tsvg -o plugin_graph.svg \
     || { echo "Can't run neato"; cat plugin_graph.dot; exit 1; }
-mv plugin_graph.svg plugin_graph.dot doc/manual/ || echo "ERROR: could not copy plugin_graph.*"
+mv plugin_graph.svg plugin_graph.dot doc/sphinx/user/extending/images/ || echo "ERROR: could not move plugin_graph.*"
 
 popd
 echo done
