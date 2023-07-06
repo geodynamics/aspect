@@ -15,23 +15,12 @@ if test ! -f $ASPECT ; then
 fi
 
 
-# first thing: run ASPECT so that it produces the parameters.tex file that
-# documents all parameters and that we can use for the manual
-echo Creating parameters.tex
-rm -f output/parameters.tex
+# first thing: run ASPECT so that it produces the parameters.json file that
+# documents all parameters and that we can use for the documentation
+echo Creating parameters.json
 rm -f output/parameters.json
 $ASPECT doc/manual/empty.prm >/dev/null 2>/dev/null \
-    || { echo "Running ASPECT for parameters.tex failed"; exit 1; }
-
-# Process index entries to contain at most three levels (by replacing the
-# fourth separator marker ! by /). This is repeated 10 times because only one
-# nesting level is removed in each call to sed. The replacement is necessary
-# as makeindex only allows for three levels of nesting.
-for i in `seq 1 10`; do
-  sed -i 's/{\([^!]*\)!\([^!]*\)!\([^!]*\)!\([^}]*\)}/{\1!\2!\3\/\4}/' parameters.tex
-done
-
-grep '[^\\]%' parameters.tex && echo "Error, please remove '%'!" && exit 1
+    || { echo "Running ASPECT for parameters.json failed"; exit 1; }
 
 cd ../..
 
@@ -41,8 +30,6 @@ echo Convert parameters to markdown files
 
 # The jsontomarkdown script currently can leave spaces at the ends of lines.  
 ./contrib/utilities/indent
-
-
 
 # next, run ASPECT so that it produces the parameters.xml file that
 # documents all parameters and that we use for the web view of parameters
