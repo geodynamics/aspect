@@ -528,12 +528,6 @@ namespace aspect
                      ExcMessage (std::string("Could not open file <") +
                                  parameters.output_directory + "parameters.json>."));
         prm.print_parameters(json_out, ParameterHandler::JSON);
-
-        std::ofstream xml_out ((parameters.output_directory + "parameters.xml").c_str());
-        AssertThrow (xml_out,
-                     ExcMessage (std::string("Could not open file <") +
-                                 parameters.output_directory + "parameters.xml>."));
-        prm.print_parameters(xml_out, ParameterHandler::XML);
       }
 
     // check that the boundary condition selection is consistent

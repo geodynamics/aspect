@@ -18,4 +18,4 @@ echo "$VER" >../../VERSION
 echo "global.h ..."
 sed -i "s|version \(.*\)\\\\n\" //VERSION-INFO|version $VER\\\\n\" //VERSION-INFO|g" ../../include/aspect/global.h
 
-git add ../../VERSION ../../doc/manual/manual.tex ../../include/aspect/global.h
+git add ../../VERSION ../../include/aspect/global.h
