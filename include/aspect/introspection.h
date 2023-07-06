@@ -519,8 +519,8 @@ namespace aspect
       get_indices_for_fields_of_type (const CompositionalFieldDescription::Type &type) const;
 
       /**
-      * Get the names of the compositional fields which are of a
-      * particular type (chemical composition, porosity, etc.).
+       * Get the names of the compositional fields which are of a
+       * particular type (chemical composition, porosity, etc.).
        */
       const std::vector<std::string>
       get_names_for_fields_of_type (const CompositionalFieldDescription::Type &type) const;

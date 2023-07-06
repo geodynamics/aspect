@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -427,9 +427,9 @@ namespace dealii
 
 
       /**
-           * Compute the mappings from vector degrees of freedom to normal vectors @p dof_to_normals_map
-           * and vector degrees of freedom to prescribed normal fluxes @p dof_vector_to_b_values.
-           */
+       * Compute the mappings from vector degrees of freedom to normal vectors @p dof_to_normals_map
+       * and vector degrees of freedom to prescribed normal fluxes @p dof_vector_to_b_values.
+       */
       template <int dim, int spacedim>
       void
       map_dofs_to_normal_vectors_and_normal_fluxes(

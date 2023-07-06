@@ -50,7 +50,7 @@ namespace aspect
       public:
         /**
          * Initialize the plugin.
-        */
+         */
         void initialize () override;
 
         /**
@@ -62,19 +62,19 @@ namespace aspect
 
       private:
         /**
-        * A shared pointer to the initial temperature object
-        * that ensures that the current object can continue
-        * to access the initial temperature object beyond the
-        * first time step.
-        */
+         * A shared pointer to the initial temperature object
+         * that ensures that the current object can continue
+         * to access the initial temperature object beyond the
+         * first time step.
+         */
         std::shared_ptr<const aspect::InitialTemperature::Manager<dim>> initial_temperature_manager;
 
         /**
-        * A shared pointer to the initial composition object
-        * that ensures that the current object can continue
-        * to access the initial composition object beyond the
-        * first time step.
-        */
+         * A shared pointer to the initial composition object
+         * that ensures that the current object can continue
+         * to access the initial composition object beyond the
+         * first time step.
+         */
         std::shared_ptr<const aspect::InitialComposition::Manager<dim>> initial_composition_manager;
     };
   }

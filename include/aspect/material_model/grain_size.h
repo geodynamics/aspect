@@ -176,7 +176,7 @@ namespace aspect
 
         /**
          * The index of the compositional field that represents the grain size.
-        */
+         */
         unsigned int grain_size_index;
 
         /**

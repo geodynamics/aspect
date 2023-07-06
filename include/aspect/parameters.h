@@ -379,8 +379,8 @@ namespace aspect
     };
 
     /**
-    Use the struct aspect::CompositionalFieldDescription
-    */
+     * Use the struct aspect::CompositionalFieldDescription
+     */
     using CompositionalFieldDescription DEAL_II_DEPRECATED = aspect::CompositionalFieldDescription;
 
     /**

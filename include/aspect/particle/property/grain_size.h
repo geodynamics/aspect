@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2022 by the authors of the ASPECT code.
+ Copyright (C) 2022 - 2023 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -50,7 +50,7 @@ namespace aspect
           /**
            * Initialize variables that stay constant
            * during a model.
-          */
+           */
           void initialize () override;
 
           /**
@@ -113,7 +113,7 @@ namespace aspect
 
           /**
            * The index of the compositional field that stores the grain size.
-          */
+           */
           unsigned int grain_size_index;
       };
     }
