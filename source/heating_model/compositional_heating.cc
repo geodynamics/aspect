@@ -39,7 +39,7 @@ namespace aspect
         {
           // Compute compositional volume fractions
           const std::vector<double> volume_fractions = MaterialModel::MaterialUtilities::compute_composition_fractions(material_model_inputs.composition[q],
-                                                       fields_used_in_heat_production_averaging);
+                                                       ComponentMask(fields_used_in_heat_production_averaging));
 
           // Calculate average compositional heat production
           double compositional_heat_production = 0.;

@@ -1359,7 +1359,7 @@ namespace aspect
                                                       p.first,
                                                       vel,
                                                       constraints,
-                                                      mask);
+                                                      ComponentMask(mask));
           }
         else
           {
@@ -1368,7 +1368,7 @@ namespace aspect
                                                       p.first,
                                                       Functions::ZeroFunction<dim>(introspection.n_components),
                                                       constraints,
-                                                      mask);
+                                                      ComponentMask(mask));
           }
       }
   }
