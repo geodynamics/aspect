@@ -1,7 +1,0 @@
-New: ASPECT now has a cmake option ASPECT_INSTALL_EXAMPLES that allows
-to build and install all cookbooks and benchmarks. This will include
-building all shared libraries during 'make' and installing all files
-to the installation location on 'make install'. This is helpful for
-installations that are used for teaching and tutorials.
-<br>
-(Rene Gassmoeller, 2023/03/13)
