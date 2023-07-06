@@ -14,7 +14,7 @@
  * <li> Changed: ASPECT's manual has been converted from LaTeX to Markdown to be
  * hosted as a website on https://aspect-documentation.readthedocs.io.
  * This change was made to make the manual more accessible to users and
- * developers, and to make it easier to update the manual. 
+ * developers, and to make it easier to update the manual.
  * <br>
  * (Chris Mills, Mack Gregory, Timo Heister, Wolfgang Bangerth, Rene Gassmoeller, and many others, 2023/05/23)
  *
@@ -33,7 +33,7 @@
  * pressure solution to a similar magnitude as the velocity solution in
  * every Stokes solve instead of once per timestep. This reduces
  * the necessary linear solver iterations in nonlinear iterations
- * after the first if the viscosity changes significantly. 
+ * after the first if the viscosity changes significantly.
  * The cost of every nonlinear iteration increases
  * slightly because of this change.
  * <br>
@@ -104,7 +104,7 @@
  * <br>
  * (Bob Myhill, 2023/01/22)
  *
- * <li> New: ASPECT has new introspection functions 
+ * <li> New: ASPECT has new introspection functions
  * get_indices_for_fields_of_type and get_names_for_fields_of_type.
  * There is also a new utilities function called
  * compute_only_composition_fractions that takes a vector of
@@ -115,7 +115,7 @@
  * <br>
  * (Bob Myhill, 2023/01/19)
  *
- * <li> New: The "Compositional fields / Types of fields" parameter in ASPECT 
+ * <li> New: The "Compositional fields / Types of fields" parameter in ASPECT
  * has a new type called "strain".
  * <br>
  * (Bob Myhill, 2023/01/19)
@@ -146,7 +146,7 @@
  * (Daniel Douglas, John Naliboff, Juliane Dannberg, Rene Gassmoeller, 2022/12/06)
  *
  * <li> New: Added a particle property 'grain size' that tracks grain size
- * evolution on particles using the 'grain size' material model. 
+ * evolution on particles using the 'grain size' material model.
  * <br>
  * (Juliane Dannberg, Rene Gassmoeller, 2022/12/06)
  *
@@ -163,10 +163,10 @@
  * <br>
  * (Timo Heister, Haoyuan Li, Jiaqi Zhang, 2022/09/13)
  *
- * <li> Changed: Moved composition velocity statistics postprocessor from cookbook to main code. 
+ * <li> Changed: Moved composition velocity statistics postprocessor from cookbook to main code.
  * Compatibility of the postprocessor's input parameter "Names of slab compositional fields" is broken by renaming it to the more general "Names of selected compositional fields".
  * <br>
- * (Elodie Kendall and Anne Glerum, 2022/07/29) 
+ * (Elodie Kendall and Anne Glerum, 2022/07/29)
  *
  * <li> Changed: Models that use a strain-dependent rheology
  * can now use an interative Advection scheme, which was
@@ -197,7 +197,7 @@
  * <li> New: Phase transitions can now be deactivated outside a given temperature range specified by
  * upper and lower temperature limits for each phase transition. This allows to implement
  * complex phase diagrams with transitions that intersect in pressure-temperature space.
- * 
+ *
  * <br>
  * (Haoyuan Li, 2022/05/11)
  *
