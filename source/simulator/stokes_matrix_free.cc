@@ -2388,7 +2388,7 @@ namespace aspect
                         Assert (false, ExcInternalError());
                     }
                 }
-              mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, {bdryid}, mask);
+              mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, {bdryid}, ComponentMask(mask));
             }
           else
             {
