@@ -22,8 +22,6 @@ rm -f output/parameters.json
 $ASPECT doc/manual/empty.prm >/dev/null 2>/dev/null \
     || { echo "Running ASPECT for parameters.json failed"; exit 1; }
 
-cd ../..
-
 echo Convert parameters to markdown files
 ./contrib/utilities/jsontomarkdown.py output/parameters.json \
     || { echo "Conversion of parameters to markdown failed"; exit 1; }
