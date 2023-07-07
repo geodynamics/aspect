@@ -507,21 +507,8 @@ namespace aspect
               ||
               (reference_cell == ReferenceCells::Hexahedron),
               ExcNotImplemented());
-#if DEAL_II_VERSION_GTE(10,0,0)
       return (reference_cell.n_faces() *
               reference_cell.face_reference_cell(0).n_isotropic_children());
-#else
-      // The ReferenceCell::n_isotropic_children() function did not
-      // exist before pre-10.0. Work around this by assuming that
-      // we are using quadrilateral/hexahedral meshes. That's
-      // a pretty safe bet since deal.II did not have all of the
-      // capabilities to really run ASPECT in a meaningful way
-      // before then anyway.
-      if (reference_cell.get_dimension() == 2)
-        return 4 * 2;
-      else
-        return 6 * 4;
-#endif
     }
 
 
@@ -531,21 +518,8 @@ namespace aspect
                           const unsigned int face)
     {
       AssertIndexRange (face, reference_cell.n_faces());
-#if DEAL_II_VERSION_GTE(10,0,0)
       return (face *
               reference_cell.face_reference_cell(0).n_isotropic_children());
-#else
-      // The ReferenceCell::n_isotropic_children() function did not
-      // exist before pre-10.0. Work around this by assuming that
-      // we are using quadrilateral/hexahedral meshes. That's
-      // a pretty safe bet since deal.II did not have all of the
-      // capabilities to really run ASPECT in a meaningful way
-      // before then anyway.
-      if (reference_cell.get_dimension() == 2)
-        return face * 2;
-      else
-        return face * 4;
-#endif
     }
 
 
@@ -556,24 +530,11 @@ namespace aspect
                           const unsigned int sub_face)
     {
       AssertIndexRange (face, reference_cell.n_faces());
-#if DEAL_II_VERSION_GTE(10,0,0)
       AssertIndexRange (sub_face,
                         reference_cell.face_reference_cell(0).n_isotropic_children());
       return (face *
               reference_cell.face_reference_cell(0).n_isotropic_children()
               + sub_face);
-#else
-      // The ReferenceCell::n_isotropic_children() function did not
-      // exist before pre-10.0. Work around this by assuming that
-      // we are using quadrilateral/hexahedral meshes. That's
-      // a pretty safe bet since deal.II did not have all of the
-      // capabilities to really run ASPECT in a meaningful way
-      // before then anyway.
-      if (reference_cell.get_dimension() == 2)
-        return face * 2 + sub_face;
-      else
-        return face * 4 + sub_face;
-#endif
     }
 
 
