@@ -59,7 +59,7 @@ namespace aspect
         /**
          * Initialize function.
          */
-        virtual void initialize ();
+        virtual void initialize () override;
 
         /**
          * A Postprocessor that writes out CPO specific particle data.
@@ -69,7 +69,7 @@ namespace aspect
          * the specific output fields and their order can be set.
          */
         virtual
-        std::pair<std::string,std::string> execute (TableHandler &statistics);
+        std::pair<std::string,std::string> execute (TableHandler &statistics) override;
 
         /**
          * This funcion ensures that the particle postprocessor is run before
@@ -77,7 +77,7 @@ namespace aspect
          */
         virtual
         std::list<std::string>
-        required_other_postprocessors () const;
+        required_other_postprocessors () const override;
 
         /**
         * Declare the parameters this class takes through input files.
@@ -91,7 +91,7 @@ namespace aspect
          */
         virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
 
