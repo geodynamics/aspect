@@ -54,10 +54,9 @@ namespace aspect
     {
       CitationInfo::add("particles");
       if (particle_load_balancing & ParticleLoadBalancing::repartition)
-
         this->get_triangulation().signals.weight.connect(
 
-#endif
+
           [&] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                const typename parallel::distributed::Triangulation<dim>::CellStatus status)
           -> unsigned int
@@ -197,7 +196,6 @@ namespace aspect
 
         particle_handler_.prepare_for_coarsening_and_refinement();
 
-#endif
       });
 
       signals.post_refinement_load_user_data.connect(
@@ -206,7 +204,7 @@ namespace aspect
 
         particle_handler_.unpack_after_coarsening_and_refinement();
 
-#endif
+
       });
 
       // Only connect to checkpoint signals if requested
@@ -218,7 +216,6 @@ namespace aspect
 
             particle_handler_.prepare_for_serialization();
 
-#endif
           });
 
           signals.post_resume_load_user_data.connect(
@@ -227,7 +224,6 @@ namespace aspect
 
             particle_handler_.deserialize();
 
-#endif
           });
         }
 
@@ -352,7 +348,6 @@ namespace aspect
                         particle_handler->remove_particle(particle_to_remove);
                       }
 
-#endif
                   }
               }
 
@@ -393,7 +388,6 @@ namespace aspect
       return base_weight + n_particles_in_cell * particle_weight;
 
 
-#endif
     }
 
 
@@ -435,7 +429,6 @@ namespace aspect
 
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
-#endif
 
       std::vector<Point<dim>> positions;
       positions.reserve(n_particles_in_cell);
@@ -490,7 +483,6 @@ namespace aspect
 
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
-#endif
       const unsigned int solution_components = this->introspection().n_components;
 
       Vector<double>              value (solution_components);
@@ -543,7 +535,6 @@ namespace aspect
 
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
-#endif
 
       boost::container::small_vector<Point<dim>, 100>   positions;
       positions.reserve(n_particles_in_cell);
@@ -569,7 +560,6 @@ namespace aspect
       auto &mapping_info = evaluators.get_mapping_info();
       mapping_info.reinit(cell, {positions.data(),positions.size()});
 
-#endif
 
       evaluator.evaluate({solution_values.data(),solution_values.size()},
                          EvaluationFlags::values);
@@ -605,7 +595,6 @@ namespace aspect
 
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
-#endif
 
       std::vector<Tensor<1,dim>>  velocity(n_particles_in_cell);
       std::vector<Tensor<1,dim>>  old_velocity(n_particles_in_cell);
@@ -729,7 +718,6 @@ namespace aspect
       // way to determine the number of properties they carry.
       for (ParticleIterator<dim> particle = particle_handler->begin(); particle!=particle_handler->end(); ++particle)
         particle->set_property_pool(particle_handler->get_property_pool());
-#endif
 
       // TODO: Change this loop over all cells to use the WorkStream interface
       if (property_manager->get_n_property_components() > 0)
@@ -804,7 +792,6 @@ namespace aspect
           virtual
           NonMatching::MappingInfo<dim> &
           get_mapping_info() = 0;
-#endif
       };
 
       // This class evaluates the solution vector at arbitrary positions inside a cell.
@@ -860,12 +847,11 @@ namespace aspect
           // Return the cached mapping information.
           NonMatching::MappingInfo<dim> &
           get_mapping_info() override;
-#endif
+
         private:
 
           // MappingInfo object for the FEPointEvaluation objects
           NonMatching::MappingInfo<dim> mapping_info;
-#endif
 
           // FEPointEvaluation objects for all common
           // components of ASPECT's finite element solution.
@@ -920,7 +906,7 @@ namespace aspect
                      simulator.get_fe(),
                      simulator.n_compositional_fields() > 0 ? simulator.introspection().component_indices.compositional_fields[0] : simulator.introspection().component_indices.temperature),
 
-#endif
+
 
         melt_component_indices(),
         simulator_access(simulator)
@@ -935,7 +921,6 @@ namespace aspect
                                                                          simulator_access.get_fe(),
                                                                          component_indices[composition]));
 
-#endif
 
         // The FE_DGP pressure element used in locally conservative discretization is not
         // supported by the fast path of FEPointEvaluation. Replace with slow path.
@@ -980,7 +965,6 @@ namespace aspect
                                                                                  melt_component_indices[2]);
 
 
-#endif
 
           }
       }
@@ -1031,7 +1015,6 @@ namespace aspect
             compaction_pressure->reinit (cell, positions);
           }
 
-#endif
 
         velocity.evaluate (solution_values, evaluation_flags);
         pressure->evaluate (solution_values, evaluation_flags);
@@ -1191,7 +1174,6 @@ namespace aspect
       {
         return mapping_info;
       }
-#endif
 
 
 
@@ -1275,7 +1257,7 @@ namespace aspect
               dynamic_cast<const MappingCartesian<dim> *>(&this->get_mapping()) != nullptr)
             use_fast_path = true;
 
-#endif
+
           std::unique_ptr<internal::SolutionEvaluators<dim>> evaluators;
 
           if (use_fast_path == true)
@@ -1340,7 +1322,7 @@ namespace aspect
                       dynamic_cast<const MappingCartesian<dim> *>(&this->get_mapping()) != nullptr)
                     use_fast_path = true;
 
-#endif
+
 
                   if (use_fast_path)
                     local_advect_particles(cell,
