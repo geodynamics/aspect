@@ -1223,7 +1223,7 @@ namespace aspect
 
     /**
      * Compute Z-X-Z Euler angles from rotation matrix.
-     * The Z-X-Z indicates the order of axis axis rotations to generate the Euler angles.
+     * The Z-X-Z indicates the order of axis rotations to generate the Euler angles.
      */
     std::vector<double> zxz_euler_angles_from_rotation_matrix(const Tensor<2,3> &rotation_matrix);
 
@@ -1231,7 +1231,9 @@ namespace aspect
      * Compute rotation matrix from Z-X-Z Euler angles
      * The Z-X-Z indicates the order of axis axis rotations to generate the Euler angles.
      */
-    Tensor<2,3> zxz_euler_angles_to_rotation_matrix(double phi1, double theta, double phi2);
+    Tensor<2,3> zxz_euler_angles_to_rotation_matrix(const double phi1, 
+    const double theta, 
+    const double phi2);
 
   }
 }

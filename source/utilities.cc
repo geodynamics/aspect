@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -2150,16 +2150,6 @@ namespace aspect
     std::string
     expand_ASPECT_SOURCE_DIR (const std::string &location)
     {
-      // Check for environment variable override to ASPECT_SOURCE_DIR
-      char const *ASPECT_SOURCE_DIR_env = getenv("ASPECT_SOURCE_DIR");
-      if (ASPECT_SOURCE_DIR_env != NULL)
-        {
-          return Utilities::replace_in_string(location,
-                                              "$ASPECT_SOURCE_DIR",
-                                              ASPECT_SOURCE_DIR_env);
-        }
-
-      // Otherwise, use the default define from config.h
       return Utilities::replace_in_string(location,
                                           "$ASPECT_SOURCE_DIR",
                                           ASPECT_SOURCE_DIR);
@@ -3004,8 +2994,8 @@ namespace aspect
     {
       // ZXZ Euler angles
       std::vector<double> euler_angles(3);
-      for (size_t i = 0; i < 3; i++)
-        for (size_t j = 0; j < 3; j++)
+      for (size_t i = 0; i < 3; ++i)
+        for (size_t j = 0; j < 3; ++j)
           Assert(abs(rotation_matrix[i][j]) <= 1.0,
                  ExcMessage("rotation_matrix[" + std::to_string(i) + "][" + std::to_string(j) +
                             "] is larger than one: " + std::to_string(rotation_matrix[i][j]) + " (" + std::to_string(rotation_matrix[i][j]-1.0) + "). rotation_matrix = \n"
@@ -3043,7 +3033,7 @@ namespace aspect
 
         }
 
-      AssertThrow(!std::isnan(phi1), ExcMessage(" phi1 is nan. theta = " + std::to_string(theta) + ", rotation_matrix[2][2]= " + std::to_string(rotation_matrix[2][2])
+      AssertThrow(!std::isnan(phi1), ExcMessage("phi1 is not a number. theta = " + std::to_string(theta) + ", rotation_matrix[2][2]= " + std::to_string(rotation_matrix[2][2])
                                                 + ", acos(rotation_matrix[2][2]) = " + std::to_string(std::acos(rotation_matrix[2][2])) + ", acos(1.0) = " + std::to_string(std::acos(1.0))));
       AssertThrow(!std::isnan(theta), ExcMessage(" theta is nan."));
       AssertThrow(!std::isnan(phi2), ExcMessage(" phi2 is nan."));
@@ -3061,7 +3051,7 @@ namespace aspect
     }
 
     Tensor<2,3>
-    zxz_euler_angles_to_rotation_matrix(double phi1_d, double theta_d, double phi2_d)
+    zxz_euler_angles_to_rotation_matrix(const double phi1_d, const double theta_d, const double phi2_d)
     {
       // ZXZ Euler angles
       const double phi1 = phi1_d * numbers::PI/180.0;

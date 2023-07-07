@@ -406,7 +406,7 @@ namespace aspect
            */
           inline
           double get_volume_fractions_grains(const unsigned int cpo_data_position,
-                                             const ArrayView<double> &data,
+                                             const ArrayView<const double> &data,
                                              const unsigned int mineral_i,
                                              const unsigned int grain_i) const
           {
@@ -443,7 +443,7 @@ namespace aspect
            */
           inline
           Tensor<2,3> get_rotation_matrix_grains(const unsigned int cpo_data_position,
-                                                 const ArrayView<double> &data,
+                                                 const ArrayView<const double> &data,
                                                  const unsigned int mineral_i,
                                                  const unsigned int grain_i) const
           {

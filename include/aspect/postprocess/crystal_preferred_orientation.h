@@ -96,7 +96,7 @@ namespace aspect
       private:
 
         /**
-         * Stores the simulation end time, so that it alwas procudes output
+         * Stores the simulation end time, so that it always produces output
          * at the last timestep.
          */
         double end_time;

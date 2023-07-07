@@ -163,6 +163,8 @@ namespace aspect
       delete file_contents;
     }
 
+
+
     template <int dim>
     std::pair<std::string,std::string>
     CrystalPreferredOrientation<dim>::execute (TableHandler &statistics)
@@ -209,16 +211,13 @@ namespace aspect
       // get particle data
       bool wrote_weighted_header = false;
       bool wrote_unweighted_header = false;
-      for (typename dealii::Particles::ParticleHandler<dim>::particle_iterator it = particle_handler.begin(); it != particle_handler.end(); ++it)
+      for (const auto &particle: particle_handler)
         {
-
-          AssertThrow(it->has_properties(),
+          AssertThrow(particle.has_properties(),
                       ExcMessage("No particle properties found. Make sure that the CPO particle property plugin is selected."));
 
-
-
-          unsigned int id = it->get_id();
-          const ArrayView<double> &properties = it->get_properties();
+          const unsigned int id = particle.get_id();
+          const ArrayView<const double> properties = particle.get_properties();
 
           const Particle::Property::ParticlePropertyInformation &property_information = this->get_particle_world().get_property_manager().get_data_info();
 
@@ -233,15 +232,14 @@ namespace aspect
                                                  :
                                                  property_information.get_position_by_field_name("cpo mineral 0 type");
 
-          Point<dim> position = it->get_location();
+          const Point<dim> position = particle.get_location();
 
           // always make a vector of rotation matrices
-          std::vector<std::vector<Tensor<2,3>>> rotation_matrices;
-          rotation_matrices.resize(n_minerals);
+          std::vector<std::vector<Tensor<2,3>>> rotation_matrices (n_minerals, {n_grains,Tensor<2,3>()});
           for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
             {
               rotation_matrices[mineral_i].resize(n_grains);
-              for (unsigned int i_grain = 0; i_grain < n_grains; i_grain++)
+              for (unsigned int i_grain = 0; i_grain < n_grains; ++i_grain)
                 {
                   rotation_matrices[mineral_i][i_grain] = cpo_particle_property.get_rotation_matrix_grains(
                                                             cpo_data_position,
@@ -251,10 +249,10 @@ namespace aspect
                 }
             }
           // write master file
-          string_stream_master << id << " " << position << " " << properties[cpo_data_position] <<  std::endl;
+          string_stream_master << id << " " << position << " " << properties[cpo_data_position] << std::endl;
 
           // write content file
-          std::vector<std::vector<std::vector<double>>> euler_angles;
+          std::vector<std::vector<std::vector<double>>> euler_angles(n_minerals,{n_grains,{0}});
           if (compute_raw_euler_angles == true)
             {
               euler_angles.resize(n_minerals);
@@ -544,7 +542,7 @@ namespace aspect
     typename CrystalPreferredOrientation<dim>::Output
     CrystalPreferredOrientation<dim>::string_to_output_enum(const std::string &string)
     {
-      //olivine volume fraction, olivine A matrix, olivine Euler angles, enstatite volume fraction, enstatite A matrix, enstatite Euler angles
+      // olivine volume fraction, olivine A matrix, olivine Euler angles, enstatite volume fraction, enstatite A matrix, enstatite Euler angles
       if (string == "volume fraction")
         return Output::VolumeFraction;
       if (string == "rotation matrix")
@@ -577,13 +575,13 @@ namespace aspect
                              "The seed used to generate random numbers. This will make sure that "
                              "results are reproducable as long as the problem is run with the "
                              "same amount of MPI processes. It is implemented as final seed = "
-                             "user seed + MPI Rank. ");
+                             "random number seed + MPI Rank. ");
 
           prm.declare_entry ("Write in background thread", "false",
                              Patterns::Bool(),
                              "File operations can potentially take a long time, blocking the "
                              "progress of the rest of the model run. Setting this variable to "
-                             "`true' moves this process into a background threads, while the "
+                             "`true' moves this process into background threads, while the "
                              "rest of the model continues.");
 
           prm.declare_entry ("Temporary output location", "",
