@@ -23,7 +23,7 @@ Installation instructions
 
 The steps to install the necessary dependencies and ASPECT itself are described
 in the Installation instructions section of the ASPECT
-[manual](http://www.math.clemson.edu/~heister/manual.pdf). If you encounter
+[manual](https://aspect-documentation.readthedocs.io/en/latest/user/install/index.html). If you encounter
 problems during the installation, please consult our
 [wiki](https://github.com/geodynamics/aspect/wiki) for typical installation
 problems or specific instructions for MacOS users, before asking your question
@@ -43,7 +43,7 @@ Running and extending ASPECT
 
 Instructions on how to run and extend, as well as on how to interpret the
 output of ASPECT can also be found in the ASPECT
-[manual](http://www.math.clemson.edu/~heister/manual.pdf). This manual also
+[manual](https://aspect-documentation.readthedocs.io/en/latest/index.html). This manual also
 discusses the structure of the source code.
 
 For getting started, you can also watch recordings from our
@@ -69,7 +69,6 @@ More information
 For more information see:
  - The official website at https://aspect.geodynamics.org
  - The current [Online Documentation](https://aspect-documentation.readthedocs.io/en/latest/)
- - The current [PDF Manual](http://www.math.clemson.edu/~heister/manual.pdf)
  - [How to cite ASPECT](https://aspect.geodynamics.org/cite.html)
  - For questions on the source code of ASPECT, portability, installation, new or existing features, etc., use the [ASPECT forum](https://community.geodynamics.org/c/aspect). This forum is where the ASPECT users and developers all hang out.
  - See the [Future Plan Board](https://github.com/geodynamics/aspect/projects/2) for a high level overview of items in development.

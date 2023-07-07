@@ -86,7 +86,7 @@ need to do this if you've installed a binary version of the library).
 
 To build ASPECT you will also need the deal.II library and it's
 dependencies. as described in the ASPECT manual 
-http://www.math.clemson.edu/~heister/manual.pdf) and the wiki (https://github.com/geodynamics/aspect/wiki/).
+https://aspect-documentation.readthedocs.io/en/latest/index.html) and the wiki (https://github.com/geodynamics/aspect/wiki/).
 
 ### Compiling ASPECT
 

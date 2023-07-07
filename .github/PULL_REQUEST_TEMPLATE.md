@@ -13,5 +13,5 @@ Pull Request Checklist. Please read and check each box with an X. Delete any par
 ### For new features/models or changes of existing features:
 
 * [ ] I have tested my new feature locally to ensure it is correct.
-* [ ] I have [created a testcase](http://www.math.clemson.edu/~heister/manual.pdf#sec%3Awriting_tests) for the new feature/benchmark in the [tests/](../blob/main/tests/) directory.
+* [ ] I have [created a testcase](https://aspect-documentation.readthedocs.io/en/latest/user/extending/testing/writing-tests.html) for the new feature/benchmark in the [tests/](../blob/main/tests/) directory.
 * [ ] I have added a changelog entry in the [doc/modules/changes](../blob/main/doc/modules/changes) directory that will inform other users of my change.

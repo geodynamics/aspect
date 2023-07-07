@@ -105,9 +105,6 @@ pipeline {
     stage('Build Documentation') {
       steps {
         sh 'cd doc && ./update_parameters.sh ./build/aspect'
-        sh 'cd doc && echo make manual.pdf || touch ~/FAILED-DOC'
-        archiveArtifacts artifacts: 'doc/manual/manual.log', allowEmptyArchive: true
-        sh 'if [ -f ~/FAILED-DOC ]; then exit 1; fi'
       }
     }
 
