@@ -1,7 +1,0 @@
-Added: The 'adiabatic' initial temperature plugin can now use a spatially
-variable top boundary layer thickness read from a data file or specified as a
-function in the input file. Additionally, the boundary layer temperature can
-now also be computed following the plate cooling model instead of the
-half-space cooling model.
-<br>
-(Daniel Douglas, John Naliboff, Juliane Dannberg, Rene Gassmoeller, 2022/12/06)

@@ -1,4 +1,0 @@
-New: We now support tangential velocity boundary conditions with GMG for more geometries,
-such as 2D and 3D chunks.
-<br>
-(Timo Heister, Haoyuan Li, Jiaqi Zhang, 2022/09/13)
