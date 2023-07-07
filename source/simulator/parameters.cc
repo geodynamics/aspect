@@ -182,7 +182,7 @@ namespace aspect
                        "the length of a time step can at most increase by 50\\% from one time step to the next, or by a "
                        "factor of 1.5. "
                        "\n\n"
-                       "Here, the default value is set to be 91% because the best available step-size ratio bound "
+                       "Here, the default value is set to be 91\\% because the best available step-size ratio bound "
                        "guaranteeing stability in the PDE context seems to be 1.91, see \\cite{Denner:2014}. "
                        "In that thesis, the bound was proved in the context of semilinear parabolic problem, "
                        "but it appears reasonable to also use this value as an upper bound in the current "
