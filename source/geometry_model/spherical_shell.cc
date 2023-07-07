@@ -507,8 +507,8 @@ namespace aspect
     SphericalShell<dim>::point_is_in_domain(const Point<dim> &point) const
     {
       AssertThrow(!this->get_parameters().mesh_deformation_enabled ||
-                  this->get_timestep_number() == 0,
-                  ExcMessage("After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
+                  this->simulator_is_past_initialization() == false,
+                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
