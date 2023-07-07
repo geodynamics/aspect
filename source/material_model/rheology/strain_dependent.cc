@@ -29,6 +29,7 @@
 #include <aspect/simulator.h>
 
 #include <deal.II/fe/fe_values.h>
+#include <deal.II/numerics/fe_field_function.h>
 #include <deal.II/base/quadrature_lib.h>
 
 namespace aspect
@@ -542,40 +543,89 @@ namespace aspect
             if (plastic_yielding == false)
               delta_e_ii_viscous = delta_e_ii;
 
-            // Total strain
-            double delta_e_ii_total = delta_e_ii;
-
             // Now account for strain healing
-            if (healing_mechanism == temperature_dependent)
+            if (healing_mechanism != no_healing)
               {
                 // Temperature-dependent healing occurs independent of deformation state
                 const double healed_strain = calculate_strain_healing(in,i);
 
                 delta_e_ii_plastic -= healed_strain;
                 delta_e_ii_viscous -= healed_strain;
-                delta_e_ii_total -= healed_strain;
+                delta_e_ii -= healed_strain;
               }
+
+            // We need to obtain the strain values from compositional fields at the previous time step,
+            // as the values from the current linearization point are an extrapolation of the solution
+            // from the old timesteps. First, create arrays to store these values
+            std::vector<double> old_plastic_strain(in.n_evaluation_points());
+            std::vector<double> old_viscous_strain(in.n_evaluation_points());
+            std::vector<double> old_total_strain(in.n_evaluation_points());
+            std::vector<double> old_noninitial_plastic_strain(in.n_evaluation_points());
+
+            // Prepare the field function and extract the old solution values at the current cell.
+            Functions::FEFieldFunction<dim, LinearAlgebra::BlockVector>
+            fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
+            fe_value.set_active_cell(in.current_cell);
 
             // Assign incremental strain values to reaction terms
             if (weakening_mechanism == plastic_weakening_with_plastic_strain_only)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] =
-                std::max(delta_e_ii_plastic, -in.composition[i][this->introspection().compositional_index_for_name("plastic_strain")]);
+              {
+                const int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
+
+                fe_value.value_list(in.position,
+                                    old_plastic_strain,
+                                    this->introspection().component_indices.compositional_fields[plastic_strain_index]);
+
+                out.reaction_terms[i][plastic_strain_index] = std::max(delta_e_ii_plastic, -old_plastic_strain[i]);
+              }
             if (weakening_mechanism == viscous_weakening_with_viscous_strain_only)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] =
-                std::max(delta_e_ii_viscous, -in.composition[i][this->introspection().compositional_index_for_name("viscous_strain")]);
+              {
+                const int viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
+
+                fe_value.value_list(in.position,
+                                    old_viscous_strain,
+                                    this->introspection().component_indices.compositional_fields[viscous_strain_index]);
+
+                out.reaction_terms[i][viscous_strain_index] = std::max(delta_e_ii_viscous, -old_viscous_strain[i]);
+              }
             if (weakening_mechanism == total_strain || weakening_mechanism == plastic_weakening_with_total_strain_only)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] =
-                std::max(delta_e_ii_total, -in.composition[i][this->introspection().compositional_index_for_name("total_strain")]);
+              {
+                const int total_strain_index = this->introspection().compositional_index_for_name("total_strain");
+
+                fe_value.value_list(in.position,
+                                    old_total_strain,
+                                    this->introspection().component_indices.compositional_fields[total_strain_index]);
+
+                out.reaction_terms[i][total_strain_index] = std::max(delta_e_ii,  -old_total_strain[i]);
+              }
             if (weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
               {
-                out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] =
-                  std::max(delta_e_ii_plastic, -in.composition[i][this->introspection().compositional_index_for_name("plastic_strain")]);
-                out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] =
-                  std::max(delta_e_ii_viscous, -in.composition[i][this->introspection().compositional_index_for_name("viscous_strain")]);
+                const int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
+
+                fe_value.value_list(in.position,
+                                    old_plastic_strain,
+                                    this->introspection().component_indices.compositional_fields[plastic_strain_index]);
+
+                out.reaction_terms[i][plastic_strain_index] = std::max(delta_e_ii_plastic, -old_plastic_strain[i]);
+
+                const int viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
+
+                fe_value.value_list(in.position,
+                                    old_viscous_strain,
+                                    this->introspection().component_indices.compositional_fields[viscous_strain_index]);
+
+                out.reaction_terms[i][viscous_strain_index] = std::max(delta_e_ii_viscous, -old_viscous_strain[i]);
               }
             if (this->introspection().compositional_name_exists("noninitial_plastic_strain"))
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("noninitial_plastic_strain")] =
-                std::max(delta_e_ii_plastic, -in.composition[i][this->introspection().compositional_index_for_name("noninitial_plastic_strain")]);
+              {
+                const int noninitial_plastic_strain_index = this->introspection().compositional_index_for_name("noninitial_plastic_strain");
+
+                fe_value.value_list(in.position,
+                                    old_noninitial_plastic_strain,
+                                    this->introspection().component_indices.compositional_fields[noninitial_plastic_strain_index]);
+
+                out.reaction_terms[i][noninitial_plastic_strain_index] = std::max(delta_e_ii_plastic, -old_noninitial_plastic_strain[i]);
+              }
           }
       }
 

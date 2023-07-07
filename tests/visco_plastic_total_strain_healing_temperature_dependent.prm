@@ -23,22 +23,26 @@
 # set to 273 K. The variable time simply refers to how long the model
 # has run.
 #
-# The model runs for 8 millions years with 2 million year time steps.
-# The analytical prediction for the value of the compositional field
-# total_strain at this time is:
-#   0.2 - (1e-15 * exp(-15. * 0.5 * (1.0 - 273/293))*8.e6*31556952.0) ~= 0.04869
-#
-# However, the predicted (~ 0.01087) and calculated (0.02884) values diverge
-# after an additional time step (model run time = 10 Myr). This is likely due
-# to artificts (numerical diffusion) in the advection equation arising when
-# handling small numbers, as changing the time step to 10 Myr produces
-# matching predicted and calculated values at 10 Myr (e.g., after one time step).
-#
+# The model runs for 10 millions years with 2 million year time steps.
+# For example, the analytical prediction for the value of the compositional
+# field total_strain at 10 Myr is:
+#   0.2 - (1e-15 * exp(-15. * 0.5 * (1.0 - 273/293))*10.e6*31556952.0) ~= 0.01087
 # Note that 31556952.0 represents the conversion from years to seconds.
+#
+# Comparing the analytical and numerical solution (values from log.txt)
+# at each time step demonstrates the strain healing implementation
+# is working as expected.
+# Time      Analytical Solution   Calculated Solution
+# 0  Myr    0.200000              0.2000
+# 2  Myr    0.162174              0.1622
+# 4  Myr    0.124348              0.1243
+# 6  Myr    0.086522              0.08652
+# 8  Myr    0.048691              0.0487
+# 10 Myr    0.010870              0.01087
 #
 # The calculated value can be observed directly in the file screen-output, as the
 # composition statistics postprocessor is used. For future debugging purposes,
-# the time step is limited to 1e6 years and both statistics and solution files
+# the time step is limited to 2e6 years and both statistics and solution files
 # are output as well.
 
 # Global parameters
