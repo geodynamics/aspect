@@ -54,7 +54,7 @@ namespace aspect
     {
       CitationInfo::add("particles");
       if (particle_load_balancing & ParticleLoadBalancing::repartition)
-#if DEAL_II_VERSION_GTE(9,4,0)
+
         this->get_triangulation().signals.weight.connect(
 
 #endif
@@ -194,7 +194,7 @@ namespace aspect
       signals.pre_refinement_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
-#if DEAL_II_VERSION_GTE(9,4,0)
+
         particle_handler_.prepare_for_coarsening_and_refinement();
 
 #endif
@@ -203,7 +203,7 @@ namespace aspect
       signals.post_refinement_load_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
-#if DEAL_II_VERSION_GTE(9,4,0)
+
         particle_handler_.unpack_after_coarsening_and_refinement();
 
 #endif
@@ -215,20 +215,18 @@ namespace aspect
           signals.pre_checkpoint_store_user_data.connect(
             [&] (typename parallel::distributed::Triangulation<dim> &)
           {
-#if DEAL_II_VERSION_GTE(9,4,0)
+
             particle_handler_.prepare_for_serialization();
 
-            particle_handler_.register_store_callback_function();
 #endif
           });
 
           signals.post_resume_load_user_data.connect(
             [&] (typename parallel::distributed::Triangulation<dim> &)
           {
-#if DEAL_II_VERSION_GTE(9,4,0)
+
             particle_handler_.deserialize();
 
-           
 #endif
           });
         }
@@ -342,7 +340,7 @@ namespace aspect
                   {
                     const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
 
-#if DEAL_II_VERSION_GTE(9,4,0)
+
                     for (unsigned int i=0; i < n_particles_to_remove; ++i)
                       {
                         const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
@@ -370,7 +368,7 @@ namespace aspect
       if (cell->is_active() && !cell->is_locally_owned())
         return 0;
 
-#if DEAL_II_VERSION_GTE(9,4,0)
+
       const unsigned int base_weight = 1000;
       unsigned int n_particles_in_cell = 0;
       switch (status)
@@ -434,7 +432,7 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                        internal::SolutionEvaluators<dim> &evaluators)
     {
-#if DEAL_II_VERSION_GTE(9,4,0)
+
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
 #endif
@@ -489,7 +487,7 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
-#if DEAL_II_VERSION_GTE(9,4,0)
+
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
 #endif
@@ -542,7 +540,7 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                        internal::SolutionEvaluators<dim> &evaluators)
     {
-#if DEAL_II_VERSION_GTE(9,4,0)
+
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
 #endif
@@ -567,7 +565,7 @@ namespace aspect
                                       property_manager->get_data_info().fieldname_exists("melt_presence");
       auto &evaluator = evaluators.get_velocity_or_fluid_velocity_evaluator(use_fluid_velocity);
 
-#if DEAL_II_VERSION_GTE(9,4,0)
+
       auto &mapping_info = evaluators.get_mapping_info();
       mapping_info.reinit(cell, {positions.data(),positions.size()});
 
@@ -604,7 +602,7 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
-#if DEAL_II_VERSION_GTE(9,4,0)
+
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
 #endif
@@ -725,7 +723,7 @@ namespace aspect
     void
     World<dim>::initialize_particles()
     {
-#if !DEAL_II_VERSION_GTE(9,4,0)
+!DEAL_II_VERSION_GTE(9,4,0)
       // Initialize the particle's access to the property_pool. This is necessary
       // even if the Particle do not carry properties, because they need a
       // way to determine the number of properties they carry.
@@ -801,7 +799,7 @@ namespace aspect
           FEPointEvaluation<dim, dim> &
           get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity) = 0;
 
-#if DEAL_II_VERSION_GTE(9,4,0)
+
           // Return the cached mapping information.
           virtual
           NonMatching::MappingInfo<dim> &
@@ -858,13 +856,13 @@ namespace aspect
           FEPointEvaluation<dim, dim> &
           get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity) override;
 
-#if DEAL_II_VERSION_GTE(9,4,0)
+
           // Return the cached mapping information.
           NonMatching::MappingInfo<dim> &
           get_mapping_info() override;
 #endif
         private:
-#if DEAL_II_VERSION_GTE(9,4,0)
+
           // MappingInfo object for the FEPointEvaluation objects
           NonMatching::MappingInfo<dim> mapping_info;
 #endif
@@ -906,7 +904,7 @@ namespace aspect
       SolutionEvaluatorsImplementation<dim, n_compositional_fields>::SolutionEvaluatorsImplementation(const SimulatorAccess<dim> &simulator,
           const UpdateFlags update_flags)
         :
-#if DEAL_II_VERSION_GTE(9,4,0)
+
         mapping_info(simulator.get_mapping(),
                      update_flags),
         velocity(mapping_info,
@@ -922,6 +920,7 @@ namespace aspect
                      simulator.get_fe(),
                      simulator.n_compositional_fields() > 0 ? simulator.introspection().component_indices.compositional_fields[0] : simulator.introspection().component_indices.temperature),
 
+#endif
 
         melt_component_indices(),
         simulator_access(simulator)
@@ -931,7 +930,7 @@ namespace aspect
         const unsigned int n_total_compositional_fields = simulator_access.n_compositional_fields();
         const auto &component_indices = simulator_access.introspection().component_indices.compositional_fields;
         for (unsigned int composition = n_compositional_fields; composition < n_total_compositional_fields; ++composition)
-#if DEAL_II_VERSION_GTE(9,4,0)
+
           additional_compositions.emplace_back(FEPointEvaluation<1, dim>(mapping_info,
                                                                          simulator_access.get_fe(),
                                                                          component_indices[composition]));
@@ -954,7 +953,7 @@ namespace aspect
             melt_component_indices[1] = simulator_access.introspection().variable("fluid pressure").first_component_index;
             melt_component_indices[2] = simulator_access.introspection().variable("compaction pressure").first_component_index;
 
-#if DEAL_II_VERSION_GTE(9,4,0)
+
             fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(mapping_info,
                                                                             simulator_access.get_fe(),
                                                                             melt_component_indices[0]);
@@ -974,7 +973,12 @@ namespace aspect
               compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(mapping_info,
                                                                                  simulator_access.get_fe(),
                                                                                  melt_component_indices[2]);
-          
+            else
+              compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                                 simulator_access.get_fe(),
+                                                                                 update_flags,
+                                                                                 melt_component_indices[2]);
+
 
 #endif
 
@@ -1008,7 +1012,7 @@ namespace aspect
         // TODO: It would be nice to be able to hand over a ComponentMask
         // to specify which evaluators to use. Currently, this is only
         // possible by manually accessing the public members of this class.
-#if DEAL_II_VERSION_GTE(9,4,0)
+
         mapping_info.reinit(cell,positions);
 
         if (simulator_access.get_parameters().use_locally_conservative_discretization == true)
@@ -1180,7 +1184,7 @@ namespace aspect
       }
 
 
-#if DEAL_II_VERSION_GTE(9,4,0)
+
       template <int dim, int n_compositional_fields>
       NonMatching::MappingInfo<dim> &
       SolutionEvaluatorsImplementation<dim, n_compositional_fields>::get_mapping_info()
@@ -1266,7 +1270,7 @@ namespace aspect
           // a bug for dynamically allocating scalar evaluators for individual components of a
           // base element with multiplicity (see https://github.com/dealii/dealii/pull/12786).
           bool use_fast_path = false;
-#if DEAL_II_VERSION_GTE(9,4,0)
+
           if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr ||
               dynamic_cast<const MappingCartesian<dim> *>(&this->get_mapping()) != nullptr)
             use_fast_path = true;
@@ -1331,7 +1335,7 @@ namespace aspect
                 {
                   // Only use deal.II FEPointEvaluation if it's fast path is used
                   bool use_fast_path = false;
-#if DEAL_II_VERSION_GTE(9,4,0)
+
                   if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr ||
                       dynamic_cast<const MappingCartesian<dim> *>(&this->get_mapping()) != nullptr)
                     use_fast_path = true;
