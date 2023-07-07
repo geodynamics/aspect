@@ -78,13 +78,13 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
-      protected:
         /**
          * An object of ascii data boundary to input subducted slab depths
          * and thicknesses.
          */
         Utilities::AsciiDataBoundary<dim> slab_boundary;
 
+      protected:
         /**
          * Cache the surface boundary id to avoid unnecessary lookups.
          */
