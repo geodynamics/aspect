@@ -1,0 +1,3 @@
+Improved: The iteration scheme in the Peierls creep rheology now uses the derivative of the logarithm of the strain rate to the logarithm of the stress.
+<br>
+(Haoyuan Li and Bob Myhill, 2023/07/08)
