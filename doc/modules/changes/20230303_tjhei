@@ -1,6 +1,0 @@
-New: ASPECT now supports a DebugRelease build type that creates
-a debug build and a release build of ASPECT at the same time. It
-can be enabled by setting the CMake option CMAKE_BUILD_TYPE to
-DebugRelease or by typing "make debugrelease".
-<br>
-(Timo Heister, 2023/03/03)

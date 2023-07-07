@@ -1,4 +1,0 @@
-New: Added a particle property 'grain size' that tracks grain size
-evolution on particles using the 'grain size' material model. 
-<br>
-(Juliane Dannberg, Rene Gassmoeller, 2022/12/06)

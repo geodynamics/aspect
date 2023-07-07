@@ -1,9 +1,0 @@
-Changed: ASPECT now computes the pressure scaling factor that scales the
-pressure solution to a similar magnitude as the velocity solution in
-every Stokes solve instead of once per timestep. This reduces
-the necessary linear solver iterations in nonlinear iterations
-after the first if the viscosity changes significantly. 
-The cost of every nonlinear iteration increases
-slightly because of this change.
-<br>
-(Rene Gassmoeller, 2023/03/22)

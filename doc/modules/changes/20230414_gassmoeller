@@ -1,6 +1,0 @@
-Improved: Significantly reduced the number of duplicated file system
-accesses across ASPECT. This should increase the stability and
-potentially the speed for models with large number of MPI ranks
-and systems with slow parallel file systems.
-<br>
-(Rene Gassmoeller, 2023/04/14)
