@@ -809,6 +809,10 @@ namespace aspect
                                   "It can write out the CPO data as it is stored (raw) and/or as a"
                                   "random draw volume weighted representation. The latter one"
                                   "is recommended for plotting against real data. For both representations"
-                                  "the specific output fields and their order can be set.")
+                                  "the specific output fields and their order can be set."
+                                  "The work of this postprocessor should better be done by the main particles "
+                                  "postprocessor, however we need to be able to process the data before outputing it, "
+                                  "which does not work with that postprocessor. If this is added to the other "
+                                  "postprocessor in the future this one becomes obsolete.")
   }
 }
