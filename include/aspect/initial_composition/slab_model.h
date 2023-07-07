@@ -79,12 +79,18 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
         /**
+        * A function that returns the slab_boundary object to allow access
+        * in other places.
+        */
+        const Utilities::AsciiDataBoundary<dim> &get_slab_boundary() const;
+
+      private:
+        /**
          * An object of ascii data boundary to input subducted slab depths
          * and thicknesses.
          */
         Utilities::AsciiDataBoundary<dim> slab_boundary;
 
-      protected:
         /**
          * Cache the surface boundary id to avoid unnecessary lookups.
          */

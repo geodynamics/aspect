@@ -82,6 +82,14 @@ namespace aspect
 
 
     template <int dim>
+    const Utilities::AsciiDataBoundary<dim> &
+    SlabModel<dim>::get_slab_boundary () const
+    {
+      return slab_boundary;
+    }
+
+
+    template <int dim>
     void
     SlabModel<dim>::declare_parameters (ParameterHandler &prm)
     {
