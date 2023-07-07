@@ -545,6 +545,8 @@ namespace aspect
           vtk_flags.cycle = this->get_timestep_number();
           vtk_flags.time = time_in_years_or_seconds;
 
+          // Also describe the physical units if we have them. Postprocessors do
+          // describe them, but it's a slight hassle to get at the information:
           vtk_flags.physical_units = visualization_field_names_and_units;
 
           // Finally, set or do not set whether we want to describe cells
