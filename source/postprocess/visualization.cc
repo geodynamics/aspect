@@ -545,6 +545,8 @@ namespace aspect
           vtk_flags.cycle = this->get_timestep_number();
           vtk_flags.time = time_in_years_or_seconds;
 
+          vtk_flags.physical_units = visualization_field_names_and_units;
+
           // Finally, set or do not set whether we want to describe cells
           // with curved edges and faces:
           vtk_flags.write_higher_order_cells = write_higher_order_output;
