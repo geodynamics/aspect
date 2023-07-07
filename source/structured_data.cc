@@ -1036,7 +1036,12 @@ namespace aspect
        * pages of the <code>printf()</code> family of functions),
        * return the expanded string where the <code>%s</code> code is
        * replaced by @p boundary_name, and <code>%d</code> is replaced
-       * by @p filenumber.
+       * by @p filenumber. Options: (1) specify both boundary_name and
+       * filenumber placeholders (%s and %d), (2) do not specify any
+       * boundary_name and filenumber placeholders, (3) only specify
+       * boundary_name placeholder (%s). Do not only specify filenumber
+       * placeholder (%d). Placeholders order is first boundary_name
+       * (%s), then filenumber (%d).
        */
       std::string replace_placeholders(const std::string &filename_and_path,
                                        const std::string &boundary_name,
