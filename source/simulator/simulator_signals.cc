@@ -96,7 +96,6 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template struct SimulatorSignals<dim>;
 
-
   ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE
