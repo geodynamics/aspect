@@ -157,11 +157,7 @@ namespace aspect
               {
                 const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, particle_position);
                 if (
-#if DEAL_II_VERSION_GTE(9,4,0)
                   cell->reference_cell().contains_point(p_unit)
-#else
-                  GeometryInfo<dim>::is_inside_unit_cell(p_unit)
-#endif
                 )
                   {
                     // Add the generated particle to the set
