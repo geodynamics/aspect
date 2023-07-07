@@ -30,7 +30,7 @@
 namespace big_mpi
 {
 
-using dealii::Utilities::MPI::broadcast;
+  using dealii::Utilities::MPI::broadcast;
 
 }
 
