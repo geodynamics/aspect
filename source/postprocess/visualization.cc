@@ -545,13 +545,9 @@ namespace aspect
           vtk_flags.cycle = this->get_timestep_number();
           vtk_flags.time = time_in_years_or_seconds;
 
-#if DEAL_II_VERSION_GTE(9,4,0)
           // Also describe the physical units if we have them. Postprocessors do
           // describe them, but it's a slight hassle to get at the information:
           vtk_flags.physical_units = visualization_field_names_and_units;
-#else
-          (void)visualization_field_names_and_units;
-#endif
 
           // Finally, set or do not set whether we want to describe cells
           // with curved edges and faces:
