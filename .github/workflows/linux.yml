@@ -1,6 +1,11 @@
 name: linux
 
-on: pull_request
+on:
+  push:
+    branches:
+      - 'main'
+      - 'aspect-*'
+  pull_request
 
 concurrency:
   group: ${{ github.actor }}-${{ github.ref }}
