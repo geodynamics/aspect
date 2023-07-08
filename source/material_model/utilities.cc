@@ -1077,6 +1077,9 @@ namespace aspect
       double
       PhaseFunction<dim>::compute_value (const PhaseFunctionInputs<dim> &in) const
       {
+        AssertIndexRange (in.phase_index, transition_temperature_lower_limits.size());
+        AssertIndexRange (in.phase_index, transition_temperature_upper_limits.size());
+
         // the percentage of material that has undergone the transition
         double function_value;
         if (in.temperature < transition_temperature_lower_limits[in.phase_index] ||
@@ -1089,14 +1092,22 @@ namespace aspect
           {
             if (use_depth_instead_of_pressure)
               {
+                AssertIndexRange (in.phase_index, transition_depths.size());
+
                 // calculate the deviation from the transition point (convert temperature to depth)
                 double depth_deviation = in.depth - transition_depths[in.phase_index];
 
                 if (in.pressure_depth_derivative != 0.0)
-                  depth_deviation -= transition_slopes[in.phase_index] / in.pressure_depth_derivative
-                                     * (in.temperature - transition_temperatures[in.phase_index]);
+                  {
+                    AssertIndexRange (in.phase_index, transition_slopes.size());
+                    AssertIndexRange (in.phase_index, transition_temperatures.size());
+
+                    depth_deviation -= transition_slopes[in.phase_index] / in.pressure_depth_derivative
+                                       * (in.temperature - transition_temperatures[in.phase_index]);
+                  }
 
                 // use delta function for width = 0
+                AssertIndexRange (in.phase_index, transition_widths.size());
                 if (transition_widths[in.phase_index] == 0)
                   function_value = (depth_deviation > 0) ? 1. : 0.;
                 else
@@ -1105,10 +1116,12 @@ namespace aspect
             else
               {
                 // calculate the deviation from the transition point (convert temperature to pressure)
+                AssertIndexRange (in.phase_index, transition_pressures.size());
                 const double pressure_deviation = in.pressure - transition_pressures[in.phase_index]
                                                   - transition_slopes[in.phase_index] * (in.temperature - transition_temperatures[in.phase_index]);
 
                 // use delta function for width = 0
+                AssertIndexRange (in.phase_index, transition_pressure_widths.size());
                 if (transition_pressure_widths[in.phase_index] == 0)
                   function_value = (pressure_deviation > 0) ? 1. : 0.;
                 else
