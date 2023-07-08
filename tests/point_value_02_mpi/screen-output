@@ -125,9 +125,9 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00011
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 12:  t=8.79901e-07 years, dt=2.07268e-07 years
+*** Timestep 12:  t=8.49891e-07 years, dt=1.77258e-07 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 17 iterations.
+   Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 32+0 iterations.
 
@@ -135,17 +135,17 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00012
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 13:  t=1.14192e-06 years, dt=2.62018e-07 years
+*** Timestep 13:  t=1.10247e-06 years, dt=2.52579e-07 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system... 32+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00013
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 14:  t=1.56883e-06 years, dt=4.26911e-07 years
+*** Timestep 14:  t=1.50866e-06 years, dt=4.06186e-07 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -155,57 +155,57 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00014
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 15:  t=2.5243e-06 years, dt=9.5547e-07 years
+*** Timestep 15:  t=2.28447e-06 years, dt=7.75816e-07 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 18 iterations.
+   Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system... 40+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00015
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 16:  t=4.17464e-06 years, dt=1.65034e-06 years
+*** Timestep 16:  t=3.76628e-06 years, dt=1.48181e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 31+0 iterations.
+   Solving Stokes system... 34+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00016
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 17:  t=5.71642e-06 years, dt=1.54178e-06 years
+*** Timestep 17:  t=5.45805e-06 years, dt=1.69177e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 31+0 iterations.
+   Solving Stokes system... 39+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00017
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 18:  t=7.33901e-06 years, dt=1.6226e-06 years
+*** Timestep 18:  t=7.1625e-06 years, dt=1.70445e-06 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 15 iterations.
+   Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system... 36+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00018
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 19:  t=9.1614e-06 years, dt=1.82239e-06 years
+*** Timestep 19:  t=9.03763e-06 years, dt=1.87514e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system... 34+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00019
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 20:  t=1.11758e-05 years, dt=2.01443e-06 years
+*** Timestep 20:  t=1.10944e-05 years, dt=2.0568e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -218,17 +218,17 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
 Number of active cells: 22 (on 4 levels)
 Number of degrees of freedom: 519 (242+35+121+121)
 
-*** Timestep 21:  t=1.33694e-05 years, dt=2.19355e-06 years
+*** Timestep 21:  t=1.3319e-05 years, dt=2.2246e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system... 40+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00021
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 22:  t=1.51094e-05 years, dt=1.73998e-06 years
+*** Timestep 22:  t=1.50208e-05 years, dt=1.70174e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
@@ -238,7 +238,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00022
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 23:  t=1.74779e-05 years, dt=2.36852e-06 years
+*** Timestep 23:  t=1.73093e-05 years, dt=2.28857e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -248,7 +248,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00023
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 24:  t=2.13739e-05 years, dt=3.89603e-06 years
+*** Timestep 24:  t=2.10056e-05 years, dt=3.69621e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -258,7 +258,7 @@ Number of degrees of freedom: 519 (242+35+121+121)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00024
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 25:  t=2.66705e-05 years, dt=5.29658e-06 years
+*** Timestep 25:  t=2.61238e-05 years, dt=5.11829e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -268,17 +268,17 @@ Number of degrees of freedom: 519 (242+35+121+121)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00025
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 26:  t=3.4859e-05 years, dt=8.18857e-06 years
+*** Timestep 26:  t=3.38308e-05 years, dt=7.70694e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00026
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 27:  t=4.47802e-05 years, dt=9.92111e-06 years
+*** Timestep 27:  t=4.39125e-05 years, dt=1.00817e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -288,17 +288,17 @@ Number of degrees of freedom: 519 (242+35+121+121)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00027
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 28:  t=5.6505e-05 years, dt=1.17248e-05 years
+*** Timestep 28:  t=5.52587e-05 years, dt=1.13462e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 17 iterations.
+   Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00028
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 29:  t=6.69116e-05 years, dt=1.04067e-05 years
+*** Timestep 29:  t=6.77184e-05 years, dt=1.24597e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
@@ -308,11 +308,11 @@ Number of degrees of freedom: 519 (242+35+121+121)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00029
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 30:  t=7.39882e-05 years, dt=7.07655e-06 years
+*** Timestep 30:  t=7.5267e-05 years, dt=7.54866e-06 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 18 iterations.
+   Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00030
@@ -321,17 +321,17 @@ Number of degrees of freedom: 519 (242+35+121+121)
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 349 (162+25+81+81)
 
-*** Timestep 31:  t=8.85446e-05 years, dt=1.45565e-05 years
+*** Timestep 31:  t=8.91834e-05 years, dt=1.39163e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 17 iterations.
+   Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27+0 iterations.
+   Solving Stokes system... 26+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00031
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 32:  t=9.77143e-05 years, dt=9.16962e-06 years
+*** Timestep 32:  t=9.92517e-05 years, dt=1.00683e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
@@ -341,19 +341,19 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00032
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 33:  t=0.000110402 years, dt=1.26874e-05 years
+*** Timestep 33:  t=0.000110066 years, dt=1.08139e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 25 iterations.
+   Solving C_1 system ... 24 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00033
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 34:  t=0.000118671 years, dt=8.26901e-06 years
+*** Timestep 34:  t=0.000121393 years, dt=1.13278e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 19 iterations.
+   Solving C_1 system ... 22 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
 
@@ -361,27 +361,27 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00034
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 35:  t=0.000141466 years, dt=2.2795e-05 years
+*** Timestep 35:  t=0.000130348 years, dt=8.95436e-06 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 34 iterations.
+   Solving C_1 system ... 21 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00035
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 36:  t=0.000147866 years, dt=6.39998e-06 years
+*** Timestep 36:  t=0.000147451 years, dt=1.71028e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 20 iterations.
+   Solving C_1 system ... 26 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27+0 iterations.
+   Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00036
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 37:  t=0.000161452 years, dt=1.3586e-05 years
+*** Timestep 37:  t=0.000155413 years, dt=7.96242e-06 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
@@ -391,31 +391,31 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00037
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 38:  t=0.000173526 years, dt=1.20746e-05 years
+*** Timestep 38:  t=0.000170621 years, dt=1.52082e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 17 iterations.
+   Solving C_1 system ... 22 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27+0 iterations.
+   Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00038
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 39:  t=0.000220844 years, dt=4.73177e-05 years
+*** Timestep 39:  t=0.000183507 years, dt=1.28862e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 45 iterations.
+   Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
+   Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00039
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 40:  t=0.000226681 years, dt=5.83686e-06 years
+*** Timestep 40:  t=0.00020812 years, dt=2.46127e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 19 iterations.
+   Solving C_1 system ... 32 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
+   Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00040
@@ -423,49 +423,49 @@ Number of degrees of freedom: 349 (162+25+81+81)
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 41:  t=0.000235535 years, dt=8.85454e-06 years
+*** Timestep 41:  t=0.000218985 years, dt=1.08647e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 12 iterations.
+   Solving C_1 system ... 20 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system... 26+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00041
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 42:  t=0.000249312 years, dt=1.37766e-05 years
+*** Timestep 42:  t=0.000239736 years, dt=2.07516e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 12 iterations.
+   Solving C_1 system ... 23 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
+   Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00042
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 43:  t=0.000272197 years, dt=2.28847e-05 years
+*** Timestep 43:  t=0.000255892 years, dt=1.6156e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 12 iterations.
+   Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00043
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 44:  t=0.00030593 years, dt=3.37331e-05 years
+*** Timestep 44:  t=0.00028675 years, dt=3.0858e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 11 iterations.
+   Solving C_1 system ... 29 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00044
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 45:  t=0.000395157 years, dt=8.9227e-05 years
+*** Timestep 45:  t=0.000299354 years, dt=1.26035e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 24 iterations.
+   Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 26+0 iterations.
 
@@ -473,51 +473,51 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output: output-point_value_02_mpi/solution/solution-00045
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 46:  t=0.000404134 years, dt=8.97754e-06 years
+*** Timestep 46:  t=0.000323427 years, dt=2.40727e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 19 iterations.
+   Solving C_1 system ... 21 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
+   Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00046
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 47:  t=0.000424939 years, dt=2.08043e-05 years
+*** Timestep 47:  t=0.000341401 years, dt=1.79747e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 20 iterations.
+   Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
+   Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00047
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 48:  t=0.000442404 years, dt=1.74652e-05 years
+*** Timestep 48:  t=0.000375733 years, dt=3.43317e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 17 iterations.
+   Solving C_1 system ... 27 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
+   Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00048
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 49:  t=0.000532865 years, dt=9.04612e-05 years
+*** Timestep 49:  t=0.000388437 years, dt=1.27038e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 96 iterations.
+   Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00049
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 50:  t=0.000541622 years, dt=8.75662e-06 years
+*** Timestep 50:  t=0.000412701 years, dt=2.42642e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 19 iterations.
+   Solving C_1 system ... 20 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00050
@@ -525,64 +525,228 @@ Skipping mesh refinement, because the mesh did not change.
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 51:  t=0.000554775 years, dt=1.31536e-05 years
+*** Timestep 51:  t=0.000432161 years, dt=1.94602e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 12 iterations.
+   Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
+   Solving Stokes system... 26+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00051
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 52:  t=0.000573702 years, dt=1.89269e-05 years
+*** Timestep 52:  t=0.00046933 years, dt=3.7169e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 12 iterations.
+   Solving C_1 system ... 26 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00052
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 53:  t=0.000604133 years, dt=3.04313e-05 years
+*** Timestep 53:  t=0.000481653 years, dt=1.23224e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 11 iterations.
+   Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
+   Solving Stokes system... 26+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00053
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 54:  t=0.000654961 years, dt=5.08275e-05 years
+*** Timestep 54:  t=0.000505188 years, dt=2.35358e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 11 iterations.
+   Solving C_1 system ... 20 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system... 27+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00054
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 55:  t=0.000732038 years, dt=7.70772e-05 years
+*** Timestep 55:  t=0.000526678 years, dt=2.14892e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 11 iterations.
+   Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system... 26+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00055
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 56:  t=0.001 years, dt=0.000267962 years
+*** Timestep 56:  t=0.000567722 years, dt=4.10445e-05 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 33 iterations.
+   Solving C_1 system ... 26 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
+   Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_02_mpi/solution/solution-00056
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 57:  t=0.000580894 years, dt=1.31722e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 19 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00057
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 58:  t=0.000606053 years, dt=2.5159e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 21 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00058
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 59:  t=0.000629267 years, dt=2.32136e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 18 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00059
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 60:  t=0.000673605 years, dt=4.4338e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 27 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00060
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+Skipping mesh refinement, because the mesh did not change.
+
+*** Timestep 61:  t=0.00068832 years, dt=1.47148e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 20 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00061
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 62:  t=0.000716425 years, dt=2.81053e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 22 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00062
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 63:  t=0.000741205 years, dt=2.47799e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 19 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00063
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 64:  t=0.000788535 years, dt=4.73296e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 28 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00064
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 65:  t=0.00080472 years, dt=1.61854e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 20 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00065
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 66:  t=0.000835634 years, dt=3.09141e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 23 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00066
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 67:  t=0.000861826 years, dt=2.61916e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 19 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00067
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 68:  t=0.000911852 years, dt=5.00259e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 29 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00068
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 69:  t=0.000929804 years, dt=1.79518e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 20 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00069
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 70:  t=0.000964091 years, dt=3.42879e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 24 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00070
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+Skipping mesh refinement, because the mesh did not change.
+
+*** Timestep 71:  t=0.000990936 years, dt=2.68442e-05 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 19 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00071
+     Writing point values:     output-point_value_02_mpi/point_values.txt
+
+*** Timestep 72:  t=0.001 years, dt=9.06435e-06 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-point_value_02_mpi/solution/solution-00072
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
 Termination requested by criterion: end time

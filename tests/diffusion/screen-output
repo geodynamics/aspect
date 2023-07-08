@@ -21,32 +21,44 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Heat fluxes through boundary parts: 0 W, 0 W, 5.336e-15 W, -2.02e-05 W
      Writing depth average:              output-diffusion/depth_average
 
-*** Timestep 2:  t=9.99195e+06 seconds, dt=7.60344e+06 seconds
-   Solving temperature system... 58 iterations.
+*** Timestep 2:  t=6.95057e+06 seconds, dt=4.56206e+06 seconds
+   Solving temperature system... 48 iterations.
    Solving Stokes system... 30+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.103 K, 1 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 5.459e-12 W, -1.762e-06 W
+     Temperature min/avg/max:            0 K, 0.08393 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 2.37e-13 W, -4.943e-06 W
      Writing depth average:              output-diffusion/depth_average
 
-*** Timestep 3:  t=2.75704e+07 seconds, dt=1.75785e+07 seconds
-   Solving temperature system... 83 iterations.
+*** Timestep 3:  t=1.56641e+07 seconds, dt=8.71353e+06 seconds
+   Solving temperature system... 61 iterations.
    Solving Stokes system... 33+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.1734 K, 1 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 1.661e-09 W, -1.712e-06 W
+     Temperature min/avg/max:            0 K, 0.1287 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 4.743e-11 W, -3.421e-06 W
      Writing depth average:              output-diffusion/depth_average
 
-*** Timestep 4:  t=4e+07 seconds, dt=1.24296e+07 seconds
-   Solving temperature system... 71 iterations.
+*** Timestep 4:  t=3.23069e+07 seconds, dt=1.66428e+07 seconds
+   Solving temperature system... 78 iterations.
    Solving Stokes system... 34+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max:            0 K, 0.2056 K, 1 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 6.879e-09 W, -2.506e-06 W
+     Temperature min/avg/max:            0 K, 0.185 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 2.636e-09 W, -2.794e-06 W
      Writing depth average:              output-diffusion/depth_average
+
+*** Timestep 5:  t=4e+07 seconds, dt=7.69307e+06 seconds
+   Solving temperature system... 59 iterations.
+   Solving Stokes system... 35+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            0 K, 0.2043 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 6.045e-09 W, -2.8e-06 W
+     Writing depth average:              output-diffusion/depth_average
+
+Number of active cells: 640 (on 6 levels)
+Number of degrees of freedom: 8,764 (5,378+697+2,689)
 
 Termination requested by criterion: end time
 
