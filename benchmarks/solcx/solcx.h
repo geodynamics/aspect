@@ -2907,8 +2907,9 @@ namespace aspect
             background_density(background_density),
             n_compositional_fields(n_compositional_fields) {}
 
-          virtual void vector_value(const Point<dim> &p,
-                                    Vector<double> &values) const
+
+          void vector_value(const Point<dim> &p,
+                            Vector<double> &values) const override
           {
             AssertDimension(values.size(), 4 + n_compositional_fields);
 

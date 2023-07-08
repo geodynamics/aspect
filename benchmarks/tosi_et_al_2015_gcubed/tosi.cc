@@ -513,9 +513,8 @@ namespace aspect
          * Evaluate the solution for statistics on the rate of viscous dissipation,
          * rate of work and the error between the two.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
     };
 
     template <int dim>

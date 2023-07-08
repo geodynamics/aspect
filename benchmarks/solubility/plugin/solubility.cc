@@ -75,10 +75,10 @@ namespace aspect
          * @param melt_fractions Vector of doubles that is filled with the
          * allowable free fluid fraction for each given input conditions.
          */
-        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &melt_fractions) const;
+        void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                             std::vector<double> &melt_fractions) const override;
 
-        virtual double reference_darcy_coefficient () const;
+        double reference_darcy_coefficient () const override;
 
         /**
          * Method to declare parameters related to volatile model
@@ -92,9 +92,8 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
-        virtual
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
       private:
         /**

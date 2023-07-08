@@ -304,11 +304,10 @@ namespace aspect
       /**
        * Return the boundary composition as a function of position.
        */
-      virtual
       double
       boundary_composition (const types::boundary_id boundary_indicator,
                             const Point<dim> &position,
-                            const unsigned int compositional_field) const;
+                            const unsigned int compositional_field) const override;
   };
 
 
@@ -337,16 +336,13 @@ namespace aspect
       /**
        * Return the boundary composition as a function of position.
        */
-      virtual
       double
       boundary_temperature (const types::boundary_id boundary_indicator,
-                            const Point<dim> &position) const;
+                            const Point<dim> &position) const override;
 
-      virtual
-      double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+      double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
-      virtual
-      double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+      double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
   };
 
 
@@ -398,9 +394,8 @@ namespace aspect
       /**
        * Generate graphical output from the current solution.
        */
-      virtual
       std::pair<std::string,std::string>
-      execute (TableHandler &statistics);
+      execute (TableHandler &statistics) override;
 
       double max_error;
       double max_error_T;
