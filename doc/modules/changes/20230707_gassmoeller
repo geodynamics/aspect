@@ -1,0 +1,8 @@
+ Improved: ASPECT is now by default compiled in DebugRelease
+ mode which compiles both a debug and a release (optimized)
+ version of the executable. Individual build types can still
+ be selected using 'make debug' or 'make release' or by
+ setting the cmake variable CMAKE_BUILD_TYPE to Debug or
+ Release.
+ <br>
+ (Rene Gassmoeller, Timo Heister, 2023/07/07)

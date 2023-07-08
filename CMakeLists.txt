@@ -38,6 +38,27 @@ IF ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   "begin a build in a different directory.")
 ENDIF()
 
+#
+# Setup CMAKE_BUILD_TYPE:
+#
+
+SET(CMAKE_BUILD_TYPE
+  "DebugRelease"
+  CACHE STRING
+  "Choose the type of build, options are: Debug, Release and DebugRelease."
+  )
+
+# This is a strict check. But it is better to only have a known number of
+# options for CMAKE_BUILD_TYPE...
+IF( NOT "${CMAKE_BUILD_TYPE}" STREQUAL "Release" AND
+    NOT "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND
+    NOT "${CMAKE_BUILD_TYPE}" STREQUAL "DebugRelease" )
+  MESSAGE(FATAL_ERROR
+    "CMAKE_BUILD_TYPE must either be 'Release', 'Debug', or 'DebugRelease', but is set to '${CMAKE_BUILD_TYPE}'.")
+ELSE()
+  MESSAGE(STATUS "Setting up ASPECT for ${CMAKE_BUILD_TYPE} mode.")
+ENDIF()
+
 # Set the name of the project and main target. If we are generating
 # ASPECT debug and release mode, we have the debug build as 'aspect'
 # and we populate a list of all targets (by default they are the same):
