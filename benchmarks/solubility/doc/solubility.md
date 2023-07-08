@@ -29,7 +29,9 @@ of what flows in from the bottom, or 0.5\%. This is illustrated in the visualiza
 below (Figure {numref}`fig:solubility`).
 
 ```{figure-md} fig:solubility
-<img src="solubility.*" alt="Evolution of the bound water content (top) and the free water (bottom). Initially, all water is bound. Since the middle layer has a zero solubility, water is relased and starts migrating upward with respect to the solid, initally leading to a higher bound water content when it reaches the top layer. As the model reaches steady state, the (bound) water content in the top and bottom layer are equal (1\%) and the water content in the middle layer is 0.5\%." />
+<img src="solubility.*" alt="Evolution" />
+
+Evolution of the bound water content (top) and the free water (bottom). Initially, all water is bound. Since the middle layer has a zero solubility, water is released and starts migrating upward with respect to the solid, initially leading to a higher bound water content when it reaches the top layer. As the model reaches steady state, the (bound) water content in the top and bottom layer are equal (1\%) and the water content in the middle layer is 0.5\%.
 ```
 
 The benchmark can be run using the parameter files in

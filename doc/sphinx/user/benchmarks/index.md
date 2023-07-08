@@ -56,6 +56,7 @@ benchmarks/viscosity_grooves/doc/viscosity_grooves.md
 benchmarks/davies_et_al/doc/davies_et_al.md
 benchmarks/crameri_et_al/doc/crameri_et_al.md
 benchmarks/solitary_wave/doc/solitary_wave.md
+benchmarks/solubility/doc/solubility.md
 benchmarks/operator_splitting/doc/operator_splitting.md
 benchmarks/tosi_et_al_2015_gcubed/doc/tosi_et_al_2015_gcubed.md
 benchmarks/layeredflow/doc/layeredflow.md
