@@ -25,16 +25,16 @@ subsection Solver parameters
   end
 end
 
-#subsection Adiabatic conditions model
-#  set Model name = compute profile
-#
-#  subsection Compute profile
-#    subsection Ascii data model
-#      set Data directory = ../../input_data/1D_reference_profiles/
-#      set Data file name = prem.txt
-#    end
-#  end
-#end
+subsection Adiabatic conditions model
+  set Model name = compute profile
+
+  subsection Compute profile
+    subsection Ascii data model
+      set Data directory = ../../input_data/1D_reference_profiles/
+      set Data file name = prem.txt
+    end
+  end
+end
 
 subsection Geometry model
   set Model name = spherical shell

@@ -388,9 +388,8 @@ namespace aspect
 
                   if (disl_viscosities_out != nullptr)
                     {
+                      disl_viscosities_out->diffusion_viscosities[i] = diff_viscosity;
                       disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e30);
-                      disl_viscosities_out->boundary_area_change_work_fractions[i] =
-                        boundary_area_change_work_fraction[phase_index];
                     }
 
                   out.viscosities[i] = diff_viscosity * disl_viscosity / (disl_viscosity + diff_viscosity);
@@ -415,11 +414,10 @@ namespace aspect
             {
               out.viscosities[i] = diffusion_viscosity(in.temperature[i], pressure, composition, in.strain_rate[i], in.position[i]);
 
-              if (disl_viscosities_out != NULL)
+              if (disl_viscosities_out != nullptr)
                 {
+                  disl_viscosities_out->diffusion_viscosities[i] = out.viscosities[i];
                   disl_viscosities_out->dislocation_viscosities[i] = 1e30;
-                  disl_viscosities_out->boundary_area_change_work_fractions[i] =
-                    boundary_area_change_work_fraction[phase_index];
                 }
             }
 
@@ -485,7 +483,7 @@ namespace aspect
                  ExcMessage("Viscosity has to be positive. Instead it is: " + std::to_string(out.viscosities[i])));
 
           // Fill the prescribed outputs for grain size and assign faults to a prescribed field for diffusion.
-          if (prescribed_field_out != NULL)
+          if (prescribed_field_out != nullptr)
             for (unsigned int c=0; c<composition.size(); ++c)
               {
                 if (c == grain_size_index)
