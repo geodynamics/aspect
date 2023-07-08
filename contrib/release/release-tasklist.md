@@ -42,9 +42,9 @@ and the links are working
 
   ```
   cd doc
-  make manual.pdf
-  grep undefined manual/manual.log    # try to fix some
   make aspect.tag
+  cd sphinx
+  make html
   ```
 
   and check for warnings
@@ -83,11 +83,11 @@ and the links are working
 - compile aspect, make sure you have a symlink in the main directory for the next step
   - make sure the WorldBuilder is using the included version
 
-- update doc/manual/parameters.tex and documentation:
+- update parameters and documentation:
 
   ```
-  cd doc && ./update_parameters.sh && make manual.pdf && cp manual.pdf manual-$VER.pdf && cd .. && \
-  git add doc/manual/parameters.tex && \
+  cd doc && ./update_parameters.sh && cd sphinx && make html && cd ../.. && \
+  git add doc/sphinx/parameters && \
   git commit -m "release task: update manual"
   ```
 
@@ -111,7 +111,7 @@ and the links are working
 
 - create a tar file:
   ```
-  cd doc && make manual.pdf && cp manual.pdf ../aspect-manual-$TAG.pdf && cd ..
+  cd doc/sphinx && make html && cd ..
   export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
   git archive --format=tar.gz --prefix=$PREFIX/ HEAD >temp.tar.gz && \
   rm -fr $PREFIX/ && \

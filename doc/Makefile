@@ -25,10 +25,9 @@ aspect-doc-prms-out = $(aspect-doc-prms:=.out)
 default:
 	@echo "make targets:"
 	@echo "  aspect.tag  - generates doxygen documentation into doxygen/"
-	@echo "  manual.pdf  - generates manual.pdf"
-	@echo "  all         - generates both"
+	@echo "  all         - generates all targets"
 
-all: aspect.tag manual.pdf
+all: aspect.tag
 
 # Generate .prm.out from .prm using the annotate.pl script and then process
 # index entries to contain at most three levels (by replacing the fourth
@@ -84,49 +83,6 @@ aspect.tag: $(aspect-files) $(change-files) modules/changes.h options.dox Makefi
 	@echo 'GENERATE_TAGFILE = $@'                                >> aspect.dox
 	@doxygen aspect.dox || echo "Running doxygen to generate documentation failed."
 
-# make target for generating the pdf manual. The goal is to have the return
-# value of the sequence of bash commands reflect if building the manual was
-# successful. For this matter we need to catch errors from pdflatex, but we
-# need to ignore them the first time we run pdflatex, because of missing label
-# definitions, etc..
-manual.pdf: manual/manual.tex manual/manual.bib manual/parameters.tex \
-            $(aspect-manual-pix) $(aspect-doc-prms-out) 
-	@if test -x "`which pdflatex`" \
-                 -a -x "`which bibtex`" \
-                 -a -x "`which makeindex`" ; then \
-	   (cd manual ; \
-		rm -f manual.{aux,bbl,blg,log,out,pdf,toc} prm*.{idx,ilg,ind} ; \
-		pdflatex --shell-escape --interaction=batchmode manual.tex;      \
-		bibtex manual                                  && \
-		makeindex prmindex                             && \
-		pdflatex --shell-escape --interaction=batchmode manual.tex    && \
-		pdflatex --shell-escape --interaction=batchmode manual.tex    && \
-		pdflatex --shell-escape --interaction=batchmode manual.tex)   && \
-	   mv manual/manual.pdf . || \
-	   (echo                                                      && \
-	    echo "    Error: There were errors compiling manual.tex." && \
-	    echo "           Check manual/manual.log for details"     && \
-	    echo                                                      && \
-	    false); \
-         else \
-	  echo "------------------------------------------------------" ; \
-	  echo "Can't find either 'pdflatex', 'bibtex' or 'makeindex'." ; \
-	  echo "------------------------------------------------------" ; \
-	  false ; \
-	 fi
-
-# This rule will only trigger if the file is missing, which happens if the
-# user has a release tarball.
-manual/manual.tex:
-	@echo "------------------------------------------------------"
-	@echo "Error: Can not generate manual.pdf without the source"
-	@echo "files in manual/. If you are currently using a release"
-	@echo "of ASPECT, download the latest development version of"
-	@echo "ASPECT instead."
-	@echo "------------------------------------------------------"
-	@false
-
 clean:
 	-rm -f aspect.dox aspect.tag
 	-rm -rf doxygen
-	-rm -rf manual/manual.blg manual/manual.toc manual/manual.log manual/manual.out manual/manual.bbl manual/manual.aux
