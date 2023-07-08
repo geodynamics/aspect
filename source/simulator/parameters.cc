@@ -376,7 +376,7 @@ namespace aspect
 
       prm.enter_subsection ("Stokes solver parameters");
       {
-        prm.declare_entry ("Stokes solver type", "block AMG",
+        prm.declare_entry ("Stokes solver type", "block GMG",
                            Patterns::Selection(StokesSolverType::pattern()),
                            "This is the type of solver used on the Stokes system. The block geometric "
                            "multigrid solver currently has a limited implementation and therefore "
@@ -1314,7 +1314,7 @@ namespace aspect
     // preconditioner
     prm.enter_subsection ("Material model");
     {
-      prm.declare_entry ("Material averaging", "none",
+      prm.declare_entry ("Material averaging", "project to Q1 only viscosity",
                          Patterns::Selection(MaterialModel::MaterialAveraging::
                                              get_averaging_operation_names()),
                          "Whether or not (and in the first case, how) to do any averaging of "
