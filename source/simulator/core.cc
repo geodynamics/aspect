@@ -371,6 +371,10 @@ namespace aspect
     adiabatic_conditions->parse_parameters (prm);
     adiabatic_conditions->initialize ();
 
+    // Create a boundary traction manager
+    boundary_traction_manager.initialize_simulator (*this);
+    boundary_traction_manager.parse_parameters (prm);
+
     // Initialize the mesh deformation handler
     if (parameters.mesh_deformation_enabled)
       {
@@ -466,18 +470,6 @@ namespace aspect
                   ExcMessage("The limiter for the discontinuous temperature and composition solutions "
                              "has not been tested in non-Cartesian geometries and currently requires "
                              "the use of a Cartesian geometry model."));
-
-    for (const auto &p : parameters.prescribed_traction_boundary_indicators)
-      boundary_traction[p.first]
-        = BoundaryTraction::create_boundary_traction<dim> (p.second.second);
-
-    for (auto &bv : boundary_traction)
-      {
-        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(bv.second.get()))
-          sim->initialize_simulator(*this);
-        bv.second->parse_parameters (prm);
-        bv.second->initialize ();
-      }
 
     std::set<types::boundary_id> open_velocity_boundary_indicators
       = geometry_model->get_used_boundary_indicators();
@@ -632,8 +624,7 @@ namespace aspect
     // that end up in the bilinear form. we update those that end up in
     // the constraints object when calling compute_current_constraints()
     // above
-    for (auto &p : boundary_traction)
-      p.second->update ();
+    boundary_traction_manager.update();
   }
 
 

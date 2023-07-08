@@ -227,7 +227,7 @@ namespace aspect
     BoundaryComposition::Manager<dim>::write_plugin_graph(out);
     BoundaryFluidPressure::write_plugin_graph<dim>(out);
     BoundaryTemperature::Manager<dim>::write_plugin_graph(out);
-    BoundaryTraction::write_plugin_graph<dim>(out);
+    BoundaryTraction::Manager<dim>::write_plugin_graph(out);
     BoundaryVelocity::Manager<dim>::write_plugin_graph(out);
     InitialTopographyModel::write_plugin_graph<dim>(out);
     GeometryModel::write_plugin_graph<dim>(out);

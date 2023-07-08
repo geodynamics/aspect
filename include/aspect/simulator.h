@@ -1931,7 +1931,7 @@ namespace aspect
       std::shared_ptr<WorldBuilder::World>                                   world_builder;
 #endif
       BoundaryVelocity::Manager<dim>                                         boundary_velocity_manager;
-      std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim>>> boundary_traction;
+      BoundaryTraction::Manager<dim>                                         boundary_traction_manager;
       const std::unique_ptr<BoundaryHeatFlux::Interface<dim>>                boundary_heat_flux;
 
       /**
