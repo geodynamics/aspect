@@ -48,8 +48,7 @@ namespace aspect
         void initialize() override;
 
         /**
-         * Update the base model and viscosity function at the beginning of
-         * each timestep.
+         * Update the base model at the beginning of each timestep.
          */
         void update() override;
 
@@ -78,11 +77,6 @@ namespace aspect
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                                      std::vector<double> &melt_fractions) const;
 
-        /**
-         * Method to calculate reference viscosity for the volatile model.
-         */
-        double reference_viscosity () const override;
-
         virtual double reference_darcy_coefficient () const;
 
         /**
@@ -105,7 +99,7 @@ namespace aspect
         /**
          * Pointer to the material model used as the base model
          */
-        std::unique_ptr<MaterialModel::Interface<dim> > base_model;
+        std::unique_ptr<MaterialModel::Interface<dim>> base_model;
 
         double reference_rho_f;
         double shear_to_bulk_viscosity_ratio;
@@ -113,7 +107,6 @@ namespace aspect
         double reference_permeability;
         double alpha_phi;
         double melt_compressibility;
-        bool include_melting_and_freezing;
         double melting_time_scale;
     };
 
@@ -143,11 +136,13 @@ namespace aspect
                              typename Interface<dim>::MaterialModelOutputs &out) const
     {
       base_model->evaluate(in,out);
+
+      // Modify the viscosity from the base model based on the presence of melt.
       const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
       if (in.requests_property(MaterialProperties::viscosity))
         {
-          // Scale the base model viscosity value based on the porosity
+          // Scale the base model viscosity value based on the porosity.
           for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
             {
               const double porosity = std::max(in.composition[q][porosity_idx],0.0);
@@ -155,8 +150,8 @@ namespace aspect
             }
         }
 
-      // fill melt outputs if they exist
-      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
+      // Fill the melt outputs if they exist.
+      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
 
       if (melt_out != nullptr)
         {
@@ -171,17 +166,19 @@ namespace aspect
 
               if (in.requests_property(MaterialProperties::viscosity))
                 {
-                  const double phi_0 = 0.05; //TODO
+                  const double phi_0 = 0.05;
                   porosity = std::max(porosity,1e-8);
                   melt_out->compaction_viscosities[q] = out.viscosities[q] * shear_to_bulk_viscosity_ratio * phi_0/porosity;
                 }
             }
         }
 
-      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
+      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
       const unsigned int water_idx = this->introspection().compositional_index_for_name("water_content");
 
-      // fill reaction rate outputs if the model uses operator splitting
+      // Fill reaction rate outputs if the model uses operator splitting.
+      // Specifically, change the porosity (representing the amount of free water)
+      // based on the equilibrium melt fraction.
       if (this->get_parameters().use_operator_splitting && reaction_rate_out != nullptr)
         {
           std::vector<double> eq_melt_fractions(out.n_evaluation_points());
@@ -218,37 +215,34 @@ namespace aspect
         {
           prm.declare_entry("Base model","visco plastic",
                             Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
-                            "The name of a material model that will be modified by a depth "
-                            "dependent viscosity. Valid values for this parameter "
+                            "The name of a material model that will be modified by the "
+                            "addition of volatiles. Valid values for this parameter "
                             "are the names of models that are also valid for the "
                             "``Material models/Model name'' parameter. See the documentation for "
                             "that for more information.");
-
           prm.declare_entry ("Reference fluid density", "2500",
                              Patterns::Double (0),
-                             "Reference density of the melt/fluid$\\rho_{f,0}$. Units: $kg/m^3$.");
+                             "Reference density of the melt/fluid$\\rho_{f,0}$. Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Shear to bulk viscosity ratio", "0.1",
                              Patterns::Double (0),
-                             ". Units: dimensionless.");
+                             "Ratio between shear and bulk viscosity at the reference "
+                             "permeability $\\phi_0=0.05$. The bulk viscosity additionally "
+                             "scales with $\\phi_0/\\phi$. The shear viscosity is read in "
+                             "from the base model. Units: dimensionless.");
           prm.declare_entry ("Reference melt viscosity", "10",
                              Patterns::Double (0),
-                             "The value of the constant melt/fluid viscosity $\\eta_f$. Units: $Pa \\, s$.");
+                             "The value of the constant melt/fluid viscosity $\\eta_f$. Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Exponential melt weakening factor", "27",
                              Patterns::Double (0),
                              "The porosity dependence of the viscosity. Units: dimensionless.");
           prm.declare_entry ("Reference permeability", "1e-8",
                              Patterns::Double(),
                              "Reference permeability of the solid host rock."
-                             "Units: $m^2$.");
+                             "Units: \\si{\\meter\\squared}.");
           prm.declare_entry ("Melt compressibility", "0.0",
                              Patterns::Double (0),
                              "The value of the compressibility of the melt. "
-                             "Units: $1/Pa$.");
-          prm.declare_entry ("Include melting and freezing", "true",
-                             Patterns::Bool (),
-                             "Whether to include melting and freezing (according to a simplified "
-                             "linear melting approximation in the model (if true), or not (if "
-                             "false).");
+                             "Units: \\si{\\per\\pascal}.");
           prm.declare_entry ("Melting time scale for operator splitting", "1e3",
                              Patterns::Double (0),
                              "In case the operator splitting scheme is used, the porosity field can not "
@@ -273,6 +267,8 @@ namespace aspect
       prm.leave_subsection();
     }
 
+
+
     template <int dim>
     void
     Volatiles<dim>::parse_parameters (ParameterHandler &prm)
@@ -291,13 +287,12 @@ namespace aspect
           reference_permeability            = prm.get_double ("Reference permeability");
           alpha_phi                         = prm.get_double ("Exponential melt weakening factor");
           melt_compressibility              = prm.get_double ("Melt compressibility");
-          include_melting_and_freezing      = prm.get_bool ("Include melting and freezing");
           melting_time_scale                = prm.get_double ("Melting time scale for operator splitting");
 
-          // create the base model and initialize its SimulatorAccess base
+          // Create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
-          // leave the current section
-          base_model.reset(create_material_model<dim>(prm.get("Base model")));
+          // leave the current section.
+          base_model = create_material_model<dim>(prm.get("Base model"));
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
             sim->initialize_simulator (this->get_simulator());
 
@@ -328,11 +323,12 @@ namespace aspect
       }
       prm.leave_subsection();
 
-      /* After parsing the parameters for this model, it is essential to parse
-      parameters related to the base model. */
+      // After parsing the parameters for this model, parse parameters related to the base model.
       base_model->parse_parameters(prm);
       this->model_dependence = base_model->get_model_dependence();
     }
+
+
 
     template <int dim>
     bool
@@ -341,6 +337,7 @@ namespace aspect
     {
       return base_model->is_compressible();
     }
+
 
 
     template <int dim>
@@ -352,25 +349,23 @@ namespace aspect
       for (unsigned int q=0; q<in.temperature.size(); ++q)
         {
           const unsigned int water_idx = this->introspection().compositional_index_for_name("water_content");
+          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-          // This is the simplest thing I could come up with
+          // A very simple model for water solubility:
+          // There are three layers, the top layer (<30 km depth) and the bottom layer (>60 km depth)
+          // can accommodate an unlimited amount of bound water (equivalent to a zero porosity).
+          // The middle layer between the two can not accommodate any water, therefore, any water
+          // present will be in the form of free water (and the porosity equals the total water available,
+          // which is the sum free and bound water, i.e. porosity + water_content.
           if (this->get_geometry_model().depth(in.position[q]) < 3e4
               || this->get_geometry_model().depth(in.position[q]) > 6e4)
 
             melt_fractions[q] = 0.0;
           else
-            melt_fractions[q] = in.composition[q][water_idx];
+            melt_fractions[q] = in.composition[q][water_idx] + in.composition[q][porosity_idx];
         }
     }
 
-
-    template <int dim>
-    double
-    Volatiles<dim>::
-    reference_viscosity() const
-    {
-      return base_model->reference_viscosity();
-    }
 
 
     template <int dim>
@@ -383,16 +378,17 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     Volatiles<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (this->get_parameters().use_operator_splitting
-          && out.template get_additional_output<ReactionRateOutputs<dim> >() == nullptr)
+          && out.template get_additional_output<ReactionRateOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points, this->n_compositional_fields()));
+            std::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points, this->n_compositional_fields()));
         }
     }
   }
@@ -405,7 +401,9 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(Volatiles,
                                    "volatiles",
-                                   "Material model that can advect volatiles.")
+                                   "Material model that can advect volatiles and contains "
+                                   "a very simple model for water solubility consisting "
+                                   "of three layers with water being present as a free phase "
+                                   "in the middle layer.")
   }
 }
-

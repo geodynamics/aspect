@@ -1,9 +1,19 @@
-# Solubility test
+# This is a 1D test case for the solubility of fluids in interaction
+# with porous flow. Material with a given water content flows into the
+# model from the bottom. The model has three layers with different
+# water solubility, specifically, and infinite solubility above 30 km
+# depth and below 60 km depth, and a zero solubility in between. When
+# the upwelling material reaches the boundary at 60 km depth, water is
+# being released and can move realtive to the solid as a free fluid
+# phase. Due to its lower density, it moves upwards fater than the
+# solid, until it reaches 30 km depth where it is reabsorbed into the
+# solid. In steady state, the water content should be the same in the
+# top and bottom layer, and in the middle layer it should be lower,
+# proportional to the ratio between solid and melt velocity.
 
-set Additional shared libraries            = ./libsolubility.so
+set Additional shared libraries            = ./plugin/libsolubility.so
 
-set Adiabatic surface temperature          = 1600               # default: 0
-set CFL number                             = 1.0
+set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Output directory                       = output
 set Max nonlinear iterations               = 10
@@ -12,79 +22,69 @@ set Nonlinear solver tolerance             = 1e-5
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
 
-# The end time of the simulation. Units: years if the 'Use years in output
-# instead of seconds' parameter is set; seconds otherwise.
-# This end time is chosen in such a way that the solitary wave travels
-# approximately 5 times its wavelength during the model time.
 set End time                               = 6e6
 
-set Pressure normalization                 = surface
-set Surface pressure                       = 0
-set Resume computation                     = false
-set Start time                             = 0
-
-set Use years in output instead of seconds = true
-
-# Because the model includes reactions that might be on a faster time scale 
+# Because the model includes reactions that might be on a faster time scale
 # than the time step of the model (melting and the freezing of melt), we use
-# the operator splitting scheme. 
+# the operator splitting scheme.
 set Use operator splitting                     = true
 
 subsection Solver parameters
   subsection Operator splitting parameters
-    # We choose the size of the reaction time step as 200 years, small enough 
-    # so that it can accurately model melting and freezing. 
+    # We choose the size of the reaction time step as 200 years, small enough
+    # so that it can accurately model melting and freezing.
     set Reaction time step                     = 1e4
 
-    # Additionally, we always want to do at least 10 operator splitting time 
-    # steps in each model time step, to accurately compute the reactions. 
+    # Additionally, we always want to do at least 10 operator splitting time
+    # steps in each model time step, to accurately compute the reactions.
     set Reaction time steps per advection step = 10
-  end
-
-  # Because this model includes strong localized viscosity contrasts we
-  # increase the robustness of the solver at the cost of memory consumption.
-  subsection Stokes solver parameters
-    set GMRES solver restart length = 200
   end
 end
 
+# There are two compositional fields, one that tracks the amount of free water
+# (the porosity) and one that tracks the amount of bound water (the water_content).
 subsection Compositional fields
   set Number of fields = 2
   set Names of fields = porosity, water_content
 end
 
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = top, bottom
-  set List of model names = initial temperature
-
-  subsection Initial temperature
-    set Maximal temperature = 1600  # default: 6000
-    set Minimal temperature = 1600  # default: 0
+# Initially, there is no free water (the porosity is zero) and the water content
+# of the material is 1%.
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = 0.0; 0.01
   end
-
 end
 
+# The material flowing in from the bottom has the same water content as prescribed
+# in the initial condition.
 subsection Boundary composition model
   set Fixed composition boundary indicators   = bottom
   set List of model names = initial composition
 end
 
+# We prescribe an upwelling velocity of 1 cm/yr at the bottom,
+# the left and right boundaries are closed and the top is open.
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right
   set Prescribed velocity boundary indicators = bottom:function
   subsection Function
-    set Function expression = 0;1e-2
+    set Function expression = 0; 1e-2
   end
 end
 
+# The model is 1 km wide and extends 100 km in vertical direction.
+# This is because for this specific test material model, the transitions
+# between the three layers with different water solubilities are at
+# 30 km and 60 km depth.
 subsection Geometry model
-  set Model name = box # default: 
+  set Model name = box
 
   subsection Box
-    set X extent  = 1e4
+    set X extent  = 2e2
     set Y extent  = 1e5
-    set Y repetitions = 10
+    set Y repetitions = 500
   end
 
 end
@@ -99,57 +99,52 @@ subsection Gravity model
 
 end
 
-
+# The temperature is not important for this model, so we simply
+# set it to 1600 K everywhere (including the boundary).
 subsection Initial temperature model
-  set Model name = function 
+  set Model name = function
   subsection Function
     set Function expression = 1600
   end
 end
 
-subsection Initial composition model
-  set Model name = function 
-  subsection Function
-    set Function expression = 0.0; 0.01
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Maximal temperature = 1600
+    set Minimal temperature = 1600
   end
 end
 
 
+# We use a custom material model that implements the layers with
+# different solubility.
 subsection Material model
   set Model name = volatiles
   subsection Volatile model
     set Base model = visco plastic
-    set Reference fluid density = 2500
+    set Reference fluid density = 2995
     set Shear to bulk viscosity ratio = 0.1
     set Reference melt viscosity = 10
-    set Reference permeability = 1e-8
+    set Reference permeability = 2.5e-6
     set Exponential melt weakening factor = 27
     set Melt compressibility = 0
-    set Include melting and freezing = true
     set Melting time scale for operator splitting = 5e4
   end
 
   subsection Visco Plastic
     set Reference temperature                   = 1600
     set Prefactors for diffusion creep          = 5e-21
-    set Activation energies for diffusion creep = 0.
-    set Activation volumes for diffusion creep  = 0.
-    set Grain size                              = 1
-    set Grain size exponents for diffusion creep = 1
 
     set Viscous flow law = diffusion
 
     set Densities                   = 3000
     set Viscosity averaging scheme  = harmonic
 
-    set Cohesions                   = 1e20
-    set Angles of internal friction = 0.
-
-    set Minimum viscosity           = 1e18
-    set Maximum viscosity           = 1e22
-
-    set Reference viscosity         = 10
-
+    set Minimum viscosity           = 1e19
+    set Maximum viscosity           = 1e19
   end
 end
 
@@ -158,8 +153,8 @@ subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.0
 
-  set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 3                    # default: 2
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 0
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
@@ -172,26 +167,19 @@ end
 
 subsection Postprocess
 
-  set List of postprocessors = visualization,composition statistics,velocity statistics
+  set List of postprocessors = visualization, composition statistics, velocity statistics
 
   subsection Visualization
 
-    set List of output variables      = density, viscosity, thermal expansivity, melt material properties, melt fraction 
+    set List of output variables      = density, viscosity, thermal expansivity, melt material properties, melt fraction
 
     subsection Melt material properties
-      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
+      set List of properties          = fluid density, permeability, fluid viscosity, compaction viscosity
     end
 
-    # The file format to be used for graphical output.
     set Output format                 = vtu
-
-    # The time interval between each generation of graphical output files. A
-    # value of zero indicates that output should be generated in each time
-    # step. Units: years if the 'Use years in output instead of seconds'
-    # parameter is set; seconds otherwise.
-    set Time between graphical output = 0                                                                                # default: 1e8
+    set Time between graphical output = 0
+    set Interpolate output            = false
   end
 
 end
-
-
