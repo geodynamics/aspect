@@ -49,7 +49,7 @@ namespace aspect
       {
         public:
           /**
-           * constructor
+           * Constructor
            */
           CpoElasticTensor();
 
@@ -193,7 +193,7 @@ namespace aspect
 
 
           /**
-           * From a 21D vector from a 6xt matrix
+           * Form a 21D vector from a 6x6 matrix
            */
           static
           Tensor<1,21> transform_6x6_matrix_to_21D_vector(const SymmetricTensor<2,6> &input_tensor);

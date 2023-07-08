@@ -18,7 +18,6 @@
  <http://www.gnu.org/licenses/>.
  */
 
-//#include <cstdlib>
 #include <aspect/particle/property/cpo_elastic_tensor.h>
 #include <aspect/particle/world.h>
 
@@ -42,7 +41,7 @@ namespace aspect
         permutation_operator_3d[1][0][2]  = -1;
         permutation_operator_3d[2][1][0]  = -1;
 
-        // The following values are directly form D-Rex.
+        // The following values are directly from D-Rex.
         // Todo: make them a input parameter
         // Stiffness matrix for Olivine (GigaPascals)
         stiffness_matrix_olivine[0][0] = 320.71;
@@ -96,7 +95,7 @@ namespace aspect
       {
         SymmetricTensor<2,6,double> Sav;
         const SymmetricTensor<2,6> *stiffness_matrix = &stiffness_matrix_olivine;
-        for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
+        for (size_t mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             if (cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == (unsigned int)DeformationTypeSelector::olivine_a_fabric
                 || cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == (unsigned int)DeformationTypeSelector::olivine_b_fabric
@@ -119,7 +118,7 @@ namespace aspect
 
             for (size_t grain_i = 0; grain_i < n_grains; grain_i++)
               {
-                auto rotated_matrix = rotate_6x6_matrix(*stiffness_matrix, transpose(cpo_particle_property.get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i)));
+                const auto rotated_matrix = rotate_6x6_matrix(stiffness_matrix, transpose(cpo_particle_property.get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i)));
                 Sav += cpo_particle_property.get_volume_fractions_grains(cpo_data_position,data,mineral_i,grain_i) * cpo_particle_property.get_volume_fraction_mineral(cpo_data_position,data,mineral_i) * rotated_matrix;
               }
           }
@@ -139,7 +138,7 @@ namespace aspect
         const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
           this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>();
 
-        SymmetricTensor<2,6> S_average = voigt_average_elastic_tensor(cpo_particle_property,
+        const SymmetricTensor<2,6> S_average = voigt_average_elastic_tensor(cpo_particle_property,
                                                                       cpo_data_position,
                                                                       data);
 
@@ -238,8 +237,8 @@ namespace aspect
       SymmetricTensor<2,6>
       CpoElasticTensor<dim>::rotate_6x6_matrix(const Tensor<2,6> &input_tensor, const Tensor<2,3> &rotation_tensor)
       {
-        // we can represent the roation of the 4th order tensor as a rotation in the voigt
-        // notation by computing $C'=MCM^{-1}$. Because M is orhtogonal we can replace $M^{-1}$
+        // we can represent the rotation of the 4th order tensor as a rotation in the Voigt
+        // notation by computing $C'=MCM^{-1}$. Because M is orthogonal we can replace $M^{-1}$
         // with $M^T$ resutling in $C'=MCM^{T}$ (Carcione, J. M. (2007). Wave Fields in Real Media:
         // Wave Propagation in Anisotropic, Anelastic, Porous and Electromagnetic Media. Netherlands:
         // Elsevier Science. Pages 8-9).
@@ -288,7 +287,7 @@ namespace aspect
         rotation_matrix[4][5] = rotation_tensor[0][0] * rotation_tensor[2][1] + rotation_tensor[0][1] * rotation_tensor[2][0];
         rotation_matrix[5][5] = rotation_tensor[0][0] * rotation_tensor[1][1] + rotation_tensor[0][1] * rotation_tensor[1][0];
 
-        Tensor<2,6> rotation_matrix_tranposed = transpose(rotation_matrix);
+        const Tensor<2,6> rotation_matrix_transposed = transpose(rotation_matrix);
 
         return symmetrize((rotation_matrix*input_tensor)*rotation_matrix_tranposed);
       }
@@ -357,8 +356,8 @@ namespace aspect
             for (unsigned short int k = 0; k < 3; k++)
               for (unsigned short int l = 0; l < 3; l++)
                 {
-                  // The first part of the inline if statment gets the diagonal.
-                  // The second part is never higher then 5 (which is the limit of the tensor index)
+                  // The first part of the inline if statement gets the diagonal.
+                  // The second part is never higher than 5 (which is the limit of the tensor index)
                   // because to reach this part the variables need to be different, which results in
                   // at least a minus 1.
                   const unsigned short int p = (i == j ? i : 6 - i - j);
@@ -574,7 +573,7 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_PROPERTY(CpoElasticTensor,
                                         "cpo elastic tensor",
                                         "A plugin in which the particle property tensor is "
-                                        "defined as the deformation the Voigt average of the "
+                                        "defined as the Voigt average of the "
                                         "elastic tensors of the cpo grains of the minerals."
                                         "Currently only Olivine and Enstatite are supported.")
     }

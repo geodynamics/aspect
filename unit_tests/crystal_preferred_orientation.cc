@@ -1391,7 +1391,7 @@ TEST_CASE("CPO elastic tensor")
 
 
   // All these numbers are directly from the Fortran D-Rex
-  // Had to fix the random seed to get consistent awnsers.
+  // Had to fix the random seed to get consistent results.
   // Fixed the random set to an array filled with zeros.
   using namespace dealii;
   Tensor<2,3> rotation_matrix;
