@@ -191,7 +191,6 @@ namespace aspect
       signals.pre_refinement_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
-
         particle_handler_.prepare_for_coarsening_and_refinement();
       });
 
@@ -754,7 +753,6 @@ namespace aspect
           FEPointEvaluation<dim, dim> &
           get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity) = 0;
 
-
           // Return the cached mapping information.
           virtual
           NonMatching::MappingInfo<dim> &
@@ -869,8 +867,6 @@ namespace aspect
                      simulator.get_fe(),
                      simulator.n_compositional_fields() > 0 ? simulator.introspection().component_indices.compositional_fields[0] : simulator.introspection().component_indices.temperature),
 
-
-
         melt_component_indices(),
         simulator_access(simulator)
       {
@@ -923,7 +919,6 @@ namespace aspect
                                                                                  simulator_access.get_fe(),
                                                                                  update_flags,
                                                                                  melt_component_indices[2]);
-
 
 
           }
@@ -1211,8 +1206,6 @@ namespace aspect
           if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr ||
               dynamic_cast<const MappingCartesian<dim> *>(&this->get_mapping()) != nullptr)
             use_fast_path = true;
-
-
           std::unique_ptr<internal::SolutionEvaluators<dim>> evaluators;
 
           if (use_fast_path == true)
