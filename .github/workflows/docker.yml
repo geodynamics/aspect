@@ -7,6 +7,10 @@ on:
   release:
     types: [created]
 
+# If a merged PR triggers a rebuild of this docker image, and another
+# PR is merged during the build, cancel the first of these since (i) this
+# is a waste of time, and (ii) it creates a race condition with the
+# upload.
 concurrency:
   group: docker-build
   cancel-in-progress: true
