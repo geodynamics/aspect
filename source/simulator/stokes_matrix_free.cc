@@ -1027,11 +1027,6 @@ namespace aspect
     parse_parameters(prm);
     CitationInfo::add("mf");
 
-#if !DEAL_II_VERSION_GTE(9,3,2)
-    AssertThrow(!sim.parameters.mesh_deformation_enabled,
-                ExcMessage("Mesh deformation with the GMG solver requires deal.II 9.3.2 or newer."));
-#endif
-
     // Sorry, not any time soon:
     AssertThrow(!sim.parameters.include_melt_transport, ExcNotImplemented());
     // Not very difficult to do, but will require a different mass matrix
