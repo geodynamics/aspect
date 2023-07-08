@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2022 by the authors of the ASPECT code.
+ Copyright (C) 2023 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -59,7 +59,7 @@ namespace aspect
         /**
          * Initialize function.
          */
-        virtual void initialize () override;
+        void initialize () override;
 
         /**
          * A Postprocessor that writes out CPO specific particle data.
@@ -68,14 +68,12 @@ namespace aspect
          * is recommended for plotting against real data. For both representations
          * the specific output fields and their order can be set.
          */
-        virtual
         std::pair<std::string,std::string> execute (TableHandler &statistics) override;
 
         /**
          * This funcion ensures that the particle postprocessor is run before
          * this postprocessor.
          */
-        virtual
         std::list<std::string>
         required_other_postprocessors () const override;
 
@@ -89,7 +87,6 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
         parse_parameters (ParameterHandler &prm) override;
 
@@ -105,7 +102,7 @@ namespace aspect
          * Enums specifying what information to write:
          *
          * VolumeFraction: Write the volume fraction
-         * RotationMatrix: Write the whole rotation matrix of a grain (in Deal.ii order)
+         * RotationMatrix: Write the whole rotation matrix of a grain (in deal.ii order)
          * EulerAngles: Write out the Z-X-Z Euler angle of a grain
          * not_found: Error enum, the requested output was not found
          */
@@ -250,7 +247,7 @@ namespace aspect
         /**
          * Whether computing weighted A matrix is needed.
          */
-        bool compute_weighted_A_matrix;
+        bool compute_weighted_rotation_matrix;
 
         /**
          * Handle to a thread that is used to write content file data in the
@@ -271,9 +268,9 @@ namespace aspect
          * of these arguments and deletes them at the end of its work.
          */
         static
-        void writer (const std::string filename,
-                     const std::string temporary_filename,
-                     const std::string *file_contents,
+        void writer (const std::string &filename,
+                     const std::string &temporary_filename,
+                     const std::string &file_contents,
                      const bool compress_contents);
     };
   }

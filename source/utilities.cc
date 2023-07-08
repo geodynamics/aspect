@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -2150,6 +2150,16 @@ namespace aspect
     std::string
     expand_ASPECT_SOURCE_DIR (const std::string &location)
     {
+      // Check for environment variable override to ASPECT_SOURCE_DIR
+      char const *ASPECT_SOURCE_DIR_env = getenv("ASPECT_SOURCE_DIR");
+      if (ASPECT_SOURCE_DIR_env != NULL)
+        {
+          return Utilities::replace_in_string(location,
+                                              "$ASPECT_SOURCE_DIR",
+                                              ASPECT_SOURCE_DIR_env);
+        }
+
+      // Otherwise, use the default define from config.h
       return Utilities::replace_in_string(location,
                                           "$ASPECT_SOURCE_DIR",
                                           ASPECT_SOURCE_DIR);
@@ -2936,6 +2946,8 @@ namespace aspect
         throw QuietException();
     }
 
+
+
     std::vector<Tensor<2,3>>
     rotation_matrices_random_draw_volume_weighting(const std::vector<double> volume_fraction,
                                                    const std::vector<Tensor<2,3>> rotation_matrices,
@@ -2983,17 +2995,21 @@ namespace aspect
       return matrices_out;
     }
 
+
+
     double
     wrap_angle(const double angle)
     {
       return angle - 360.0*std::floor(angle/360.0);
     }
 
-    std::vector<double>
+
+
+    std::array<double,3>
     zxz_euler_angles_from_rotation_matrix(const Tensor<2,3> &rotation_matrix)
     {
       // ZXZ Euler angles
-      std::vector<double> euler_angles(3);
+      std::array<double,3> euler_angles;
       for (size_t i = 0; i < 3; ++i)
         for (size_t j = 0; j < 3; ++j)
           Assert(abs(rotation_matrix[i][j]) <= 1.0,
@@ -3013,65 +3029,65 @@ namespace aspect
       if (theta != 0.0 && theta != dealii::numbers::PI)
         {
           //
-          phi1  = std::atan2(rotation_matrix[2][0]/-sin(theta),rotation_matrix[2][1]/-sin(theta));
-          phi2  = std::atan2(rotation_matrix[0][2]/-sin(theta),rotation_matrix[1][2]/sin(theta));
+          phi1  = std::atan2(rotation_matrix[2][0]/-std::sin(theta),rotation_matrix[2][1]/-std::sin(theta));
+          phi2  = std::atan2(rotation_matrix[0][2]/-std::sin(theta),rotation_matrix[1][2]/std::sin(theta));
+        }
+
+      // note that in the case theta is 0 or phi a dimension is lost
+      // see: https://en.wikipedia.org/wiki/Gimbal_lock. We set phi1
+      // to 0 and compute the corresponding phi2. The resulting direction
+      // (cosine matrix) should be the same.
+      else if (theta == 0.0)
+        {
+          phi2 = - phi1 - std::atan2(rotation_matrix[0][1],rotation_matrix[0][0]);
         }
       else
         {
-          // note that in the case theta is 0 or phi a dimension is lost
-          // see: https://en.wikipedia.org/wiki/Gimbal_lock. We set phi1
-          // to 0 and compute the corresponding phi2. The resulting direction
-          // (cosine matrix) should be the same.
-          if (theta == 0.0)
-            {
-              phi2 = - phi1 - std::atan2(rotation_matrix[0][1],rotation_matrix[0][0]);
-            }
-          else
-            {
-              phi2 = phi1 + std::atan2(rotation_matrix[0][1],rotation_matrix[0][0]);
-            }
-
+          phi2 = phi1 + std::atan2(rotation_matrix[0][1],rotation_matrix[0][0]);
         }
+
 
       AssertThrow(!std::isnan(phi1), ExcMessage("phi1 is not a number. theta = " + std::to_string(theta) + ", rotation_matrix[2][2]= " + std::to_string(rotation_matrix[2][2])
                                                 + ", acos(rotation_matrix[2][2]) = " + std::to_string(std::acos(rotation_matrix[2][2])) + ", acos(1.0) = " + std::to_string(std::acos(1.0))));
-      AssertThrow(!std::isnan(theta), ExcMessage(" theta is nan."));
-      AssertThrow(!std::isnan(phi2), ExcMessage(" phi2 is nan."));
+      AssertThrow(!std::isnan(theta), ExcMessage("theta is not a number."));
+      AssertThrow(!std::isnan(phi2), ExcMessage("phi2 is not a number."));
 
-      euler_angles[0] = wrap_angle(phi1 * 180.0/numbers::PI);
-      euler_angles[1] = wrap_angle(theta * 180.0/numbers::PI);
-      euler_angles[2] = wrap_angle(phi2 * 180.0/numbers::PI);
+      euler_angles[0] = wrap_angle(phi1 * constants::radians_to_degree);
+      euler_angles[1] = wrap_angle(theta * constants::radians_to_degree);
+      euler_angles[2] = wrap_angle(phi2 * constants::radians_to_degree);
 
 
-      AssertThrow(!std::isnan(euler_angles[0]), ExcMessage(" euler_angles[0] is nan."));
-      AssertThrow(!std::isnan(euler_angles[1]), ExcMessage(" euler_angles[1] is nan."));
-      AssertThrow(!std::isnan(euler_angles[2]), ExcMessage(" euler_angles[2] is nan."));
+      AssertThrow(!std::isnan(euler_angles[0]), ExcMessage(" euler_angles[0] is not a number."));
+      AssertThrow(!std::isnan(euler_angles[1]), ExcMessage(" euler_angles[1] is not a number."));
+      AssertThrow(!std::isnan(euler_angles[2]), ExcMessage(" euler_angles[2] is not a number."));
 
       return euler_angles;
     }
 
+
+
     Tensor<2,3>
-    zxz_euler_angles_to_rotation_matrix(const double phi1_d, const double theta_d, const double phi2_d)
+    zxz_euler_angles_to_rotation_matrix(const double phi1_degrees, const double theta_degrees, const double phi2_degrees)
     {
       // ZXZ Euler angles
-      const double phi1 = phi1_d * numbers::PI/180.0;
-      const double theta = theta_d * numbers::PI/180.0;
-      const double phi2 = phi2_d * numbers::PI/180.0;
+      const double phi1 = phi1_degrees * constants::degree_to_radians;
+      const double theta = theta_degrees * constants::degree_to_radians;
+      const double phi2 = phi2_degrees * constants::degree_to_radians;
       Tensor<2,3> rot_matrix;
 
+      rot_matrix[0][0] = std::cos(phi2)*std::cos(phi1) - std::cos(theta)*std::sin(phi1)*std::sin(phi2);
+      rot_matrix[0][1] = -std::cos(phi2)*std::sin(phi1) - std::cos(theta)*std::cos(phi1)*std::sin(phi2);
+      rot_matrix[0][2] = -std::sin(phi2)*std::sin(theta);
 
-      rot_matrix[0][0] = cos(phi2)*cos(phi1) - cos(theta)*sin(phi1)*sin(phi2);
-      rot_matrix[0][1] = -cos(phi2)*sin(phi1) - cos(theta)*cos(phi1)*sin(phi2);
-      rot_matrix[0][2] = -sin(phi2)*sin(theta);
+      rot_matrix[1][0] = std::sin(phi2)*std::cos(phi1) + std::cos(theta)*std::sin(phi1)*std::cos(phi2);
+      rot_matrix[1][1] = -std::sin(phi2)*std::sin(phi1) + std::cos(theta)*std::cos(phi1)*std::cos(phi2);
+      rot_matrix[1][2] = std::cos(phi2)*std::sin(theta);
 
-      rot_matrix[1][0] = sin(phi2)*cos(phi1) + cos(theta)*sin(phi1)*cos(phi2);
-      rot_matrix[1][1] = -sin(phi2)*sin(phi1) + cos(theta)*cos(phi1)*cos(phi2);
-      rot_matrix[1][2] = cos(phi2)*sin(theta);
-
-      rot_matrix[2][0] = -sin(theta)*sin(phi1);
-      rot_matrix[2][1] = -sin(theta)*cos(phi1);
-      rot_matrix[2][2] = cos(theta);
+      rot_matrix[2][0] = -std::sin(theta)*std::sin(phi1);
+      rot_matrix[2][1] = -std::sin(theta)*std::cos(phi1);
+      rot_matrix[2][2] = std::cos(theta);
       AssertThrow(rot_matrix[2][2] <= 1.0, ExcMessage("rot_matrix[2][2] > 1.0"));
+
       return rot_matrix;
     }
 

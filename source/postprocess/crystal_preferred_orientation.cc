@@ -46,6 +46,8 @@ namespace aspect
       write_in_background_thread(false)
     {}
 
+
+
     template <int dim>
     CrystalPreferredOrientation<dim>::~CrystalPreferredOrientation ()
     {
@@ -61,6 +63,8 @@ namespace aspect
         background_thread_content_draw_volume_weighting.join ();
     }
 
+
+
     template <int dim>
     void
     CrystalPreferredOrientation<dim>::initialize ()
@@ -68,6 +72,8 @@ namespace aspect
       const unsigned int my_rank = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
       this->random_number_generator.seed(random_number_seed+my_rank);
     }
+
+
 
     template <int dim>
     std::list<std::string>
@@ -77,11 +83,12 @@ namespace aspect
     }
 
 
+
     template <int dim>
     // We need to pass the arguments by value, as this function can be called on a separate thread:
-    void CrystalPreferredOrientation<dim>::writer (const std::string filename, //NOLINT(performance-unnecessary-value-param)
-                                                   const std::string temporary_output_location, //NOLINT(performance-unnecessary-value-param)
-                                                   const std::string *file_contents,
+    void CrystalPreferredOrientation<dim>::writer (const std::string &filename,
+                                                   const std::string &temporary_output_location,
+                                                   const std::string &file_contents,
                                                    const bool compress_contents)
     {
       std::string tmp_filename = filename;
@@ -133,8 +140,7 @@ namespace aspect
         {
           namespace bio = boost::iostreams;
 
-          std::stringstream compressed;
-          std::stringstream origin(*file_contents);
+          std::stringstream origin(file_contents);
 
           bio::filtering_streambuf<bio::input> compress_out;
           compress_out.push(bio::zlib_compressor());
@@ -143,7 +149,7 @@ namespace aspect
         }
       else
         {
-          out << *file_contents;
+          out << file_contents;
         }
 
       out.close ();
@@ -158,9 +164,6 @@ namespace aspect
                                  + filename + ". On processor "
                                  + Utilities::int_to_string(Utilities::MPI::this_mpi_process (MPI_COMM_WORLD)) + "."));
         }
-
-      // destroy the pointer to the data we needed to write
-      delete file_contents;
     }
 
 
@@ -171,6 +174,7 @@ namespace aspect
     {
 
       const Particle::Property::Manager<dim> &manager = this->get_particle_world().get_property_manager();
+      const Particle::Property::ParticleHandler<dim> &particle_handler = this->get_particle_world().get_particle_handler();
 
       // Get a reference to the CPO particle property.
       const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
@@ -195,22 +199,110 @@ namespace aspect
       else
         ++output_file_number;
 
-      // Now prepare everything for writing the output and choose output format
-      std::string particle_file_prefix_master = this->get_output_directory() +  "particle_CPO/particles-" + Utilities::int_to_string (output_file_number, 5);
-      std::string particle_file_prefix_content_raw = this->get_output_directory() +  "particle_CPO/CPO-" + Utilities::int_to_string (output_file_number, 5);
-      std::string particle_file_prefix_content_draw_volume_weighting = this->get_output_directory() +  "particle_CPO/weighted_CPO-" + Utilities::int_to_string (output_file_number, 5);
-
-      const auto &particle_handler = this->get_particle_world().get_particle_handler();
+      // Now prepare everything for writing the output
+      std::string particle_file_prefix_master = this->get_output_directory() +  "particles_cpo/particles-" + Utilities::int_to_string (output_file_number, 5);
+      std::string particle_file_prefix_content_raw = this->get_output_directory() +  "particles_cpo/CPO-" + Utilities::int_to_string (output_file_number, 5);
+      std::string particle_file_prefix_content_draw_volume_weighting = this->get_output_directory() +  "particles_cpo/weighted_CPO-" + Utilities::int_to_string (output_file_number, 5);
 
       std::stringstream string_stream_master;
       std::stringstream string_stream_content_raw;
       std::stringstream string_stream_content_draw_volume_weighting;
 
-      string_stream_master << "id x y" << (dim == 3 ? " z" : " ") << " olivine_deformation_type" << std::endl;
+      string_stream_master << "id x y" << (dim == 3 ? " z" : "") << " olivine_deformation_type" << std::endl;
 
       // get particle data
-      bool wrote_weighted_header = false;
-      bool wrote_unweighted_header = false;
+      const Particle::Property::ParticlePropertyInformation &property_information = this->get_particle_world().get_property_manager().get_data_info();
+
+      AssertThrow(property_information.fieldname_exists("cpo mineral 0 type") ,
+                  ExcMessage("No CPO particle properties found. Make sure that the CPO particle property plugin is selected."));
+
+
+
+      const unsigned int cpo_data_position = property_information.n_fields() == 0
+                                             ?
+                                             0
+                                             :
+                                             property_information.get_position_by_field_name("cpo mineral 0 type");
+
+      std::vector<std::vector<Tensor<2,3>>> rotation_matrices (n_minerals, {n_grains,Tensor<2,3>()});
+      std::vector<std::vector<std::array<double,3>>> euler_angles(n_minerals, {n_grains,{{0}}});
+
+      // write unweighted header
+      if (write_raw_cpo.size() != 0)
+        {
+          string_stream_content_raw << "id" << " " << std::setprecision(12);
+          for (unsigned int property_i = 0; property_i < write_raw_cpo.size(); ++property_i)
+            {
+              switch (write_raw_cpo[property_i].second)
+                {
+                  case Output::VolumeFraction:
+                    string_stream_content_raw << "mineral_" << write_raw_cpo[property_i].first << "_volume_fraction" << " ";
+                    break;
+
+                  case Output::RotationMatrix:
+                    string_stream_content_raw << "mineral_" << write_raw_cpo[property_i].first << "_RM_0" << " "
+                                              << "mineral_" << write_raw_cpo[property_i].first << "_RM_1" << " "
+                                              << "mineral_" << write_raw_cpo[property_i].first << "_RM_2" << " "
+                                              << "mineral_" << write_raw_cpo[property_i].first << "_RM_3" << " "
+                                              << "mineral_" << write_raw_cpo[property_i].first << "_RM_4" << " "
+                                              << "mineral_" << write_raw_cpo[property_i].first << "_RM_5" << " "
+                                              << "mineral_" << write_raw_cpo[property_i].first << "_RM_6" << " "
+                                              << "mineral_" << write_raw_cpo[property_i].first << "_RM_7" << " "
+                                              << "mineral_" << write_raw_cpo[property_i].first << "_RM_8" << " ";
+                    break;
+
+                  case Output::EulerAngles:
+                    string_stream_content_raw << "mineral_" << write_raw_cpo[property_i].first << "_EA_phi" << " "
+                                              << "mineral_" << write_raw_cpo[property_i].first << "_EA_theta" << " "
+                                              << "mineral_" << write_raw_cpo[property_i].first << "_EA_z" << " ";
+                    break;
+                  default:
+                    Assert(false, ExcMessage("Internal error: raw CPO postprocess case not found."));
+                    break;
+                }
+            }
+          string_stream_content_raw << std::endl;
+        }
+
+
+      // write weighted header
+      if (write_draw_volume_weighted_cpo.size() != 0)
+        {
+          string_stream_content_draw_volume_weighting << "id" << " ";
+          for (unsigned int property_i = 0; property_i < write_draw_volume_weighted_cpo.size(); ++property_i)
+            {
+              switch (write_draw_volume_weighted_cpo[property_i].second)
+                {
+                  case Output::VolumeFraction:
+                    string_stream_content_draw_volume_weighting << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_volume_fraction" << " ";
+                    break;
+
+                  case Output::RotationMatrix:
+                    string_stream_content_draw_volume_weighting << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_0" << " "
+                                                                << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_1" << " "
+                                                                << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_2" << " "
+                                                                << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_3" << " "
+                                                                << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_4" << " "
+                                                                << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_5" << " "
+                                                                << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_6" << " "
+                                                                << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_7" << " "
+                                                                << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_8" << " ";
+                    break;
+
+                  case Output::EulerAngles:
+                    string_stream_content_draw_volume_weighting << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_EA_phi" << " "
+                                                                << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_EA_theta" << " "
+                                                                << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_EA_z" << " ";
+                    break;
+                  default:
+                    Assert(false, ExcMessage("Internal error: raw CPO postprocess case not found."));
+                    break;
+                }
+            }
+          string_stream_content_draw_volume_weighting << std::endl;
+
+        }
+
       for (const auto &particle: particle_handler)
         {
           AssertThrow(particle.has_properties(),
@@ -219,96 +311,43 @@ namespace aspect
           const unsigned int id = particle.get_id();
           const ArrayView<const double> properties = particle.get_properties();
 
-          const Particle::Property::ParticlePropertyInformation &property_information = this->get_particle_world().get_property_manager().get_data_info();
-
-          AssertThrow(property_information.fieldname_exists("cpo mineral 0 type") ,
-                      ExcMessage("No CPO particle properties found. Make sure that the CPO particle property plugin is selected."));
-
-
-
-          const unsigned int cpo_data_position = property_information.n_fields() == 0
-                                                 ?
-                                                 0
-                                                 :
-                                                 property_information.get_position_by_field_name("cpo mineral 0 type");
-
           const Point<dim> position = particle.get_location();
 
           // always make a vector of rotation matrices
-          std::vector<std::vector<Tensor<2,3>>> rotation_matrices (n_minerals, {n_grains,Tensor<2,3>()});
-          for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+          for (unsigned int mineral = 0; mineral < n_minerals; ++mineral)
             {
-              rotation_matrices[mineral_i].resize(n_grains);
+              rotation_matrices[mineral].resize(n_grains);
               for (unsigned int i_grain = 0; i_grain < n_grains; ++i_grain)
                 {
-                  rotation_matrices[mineral_i][i_grain] = cpo_particle_property.get_rotation_matrix_grains(
-                                                            cpo_data_position,
-                                                            properties,
-                                                            mineral_i,
-                                                            i_grain);
+                  rotation_matrices[mineral][i_grain] = cpo_particle_property.get_rotation_matrix_grains(
+                                                          cpo_data_position,
+                                                          properties,
+                                                          mineral,
+                                                          i_grain);
                 }
             }
           // write master file
           string_stream_master << id << " " << position << " " << properties[cpo_data_position] << std::endl;
 
           // write content file
-          std::vector<std::vector<std::vector<double>>> euler_angles(n_minerals,{n_grains,{0}});
           if (compute_raw_euler_angles == true)
             {
               euler_angles.resize(n_minerals);
-              for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+              for (unsigned int mineral = 0; mineral < n_minerals; ++mineral)
                 {
-                  euler_angles[mineral_i].resize(n_grains);
+                  euler_angles[mineral].resize(n_grains);
                   for (unsigned int i_grain = 0; i_grain < n_grains; i_grain++)
                     {
-                      euler_angles[mineral_i][i_grain] = Utilities::zxz_euler_angles_from_rotation_matrix(
-                                                           rotation_matrices[mineral_i][i_grain]);
+                      euler_angles[mineral][i_grain] = Utilities::zxz_euler_angles_from_rotation_matrix(
+                                                         rotation_matrices[mineral][i_grain]);
                     }
                 }
             }
 
           if (write_raw_cpo.size() != 0)
             {
-              // write unweighted header
-              if (wrote_unweighted_header == false)
-                {
-                  string_stream_content_raw << "id" << " " << std::setprecision(12);
-                  for (unsigned int property_i = 0; property_i < write_raw_cpo.size(); ++property_i)
-                    {
-                      switch (write_raw_cpo[property_i].second)
-                        {
-                          case Output::VolumeFraction:
-                            string_stream_content_raw << "mineral_" << write_raw_cpo[property_i].first << "_volume_fraction" << " ";
-                            break;
-
-                          case Output::RotationMatrix:
-                            string_stream_content_raw << "mineral_" << write_raw_cpo[property_i].first << "_RM_0" << " "
-                                                      << "mineral_" << write_raw_cpo[property_i].first << "_RM_1" << " "
-                                                      << "mineral_" << write_raw_cpo[property_i].first << "_RM_2" << " "
-                                                      << "mineral_" << write_raw_cpo[property_i].first << "_RM_3" << " "
-                                                      << "mineral_" << write_raw_cpo[property_i].first << "_RM_4" << " "
-                                                      << "mineral_" << write_raw_cpo[property_i].first << "_RM_5" << " "
-                                                      << "mineral_" << write_raw_cpo[property_i].first << "_RM_6" << " "
-                                                      << "mineral_" << write_raw_cpo[property_i].first << "_RM_7" << " "
-                                                      << "mineral_" << write_raw_cpo[property_i].first << "_RM_8" << " ";
-                            break;
-
-                          case Output::EulerAngles:
-                            string_stream_content_raw << "mineral_" << write_raw_cpo[property_i].first << "_EA_phi" << " "
-                                                      << "mineral_" << write_raw_cpo[property_i].first << "_EA_theta" << " "
-                                                      << "mineral_" << write_raw_cpo[property_i].first << "_EA_z" << " ";
-                            break;
-                          default:
-                            Assert(false, ExcMessage("Internal error: raw CPO postprocess case not found."));
-                            break;
-                        }
-                    }
-                  string_stream_content_raw << std::endl;
-                  wrote_unweighted_header = true;
-                }
-
               // write unweighted data
-              for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
+              for (unsigned int grain = 0; grain < n_grains; ++grain)
                 {
                   string_stream_content_raw << id << " ";
                   for (unsigned int property_i = 0; property_i < write_raw_cpo.size(); ++property_i)
@@ -320,19 +359,19 @@ namespace aspect
                                                         cpo_data_position,
                                                         properties,
                                                         write_raw_cpo[property_i].first,
-                                                        grain_i) << " ";
+                                                        grain) << " ";
                             break;
 
                           case Output::RotationMatrix:
-                            string_stream_content_raw << rotation_matrices[write_raw_cpo[property_i].first][grain_i]<< " ";
+                            string_stream_content_raw << rotation_matrices[write_raw_cpo[property_i].first][grain]<< " ";
                             break;
 
                           case Output::EulerAngles:
                             Assert(compute_raw_euler_angles == true,
                                    ExcMessage("Internal error: writing out raw Euler angles, without them being computed."));
-                            string_stream_content_raw << euler_angles[write_raw_cpo[property_i].first][grain_i][0] << " "
-                                                      <<  euler_angles[write_raw_cpo[property_i].first][grain_i][1] << " "
-                                                      <<  euler_angles[write_raw_cpo[property_i].first][grain_i][2] << " ";
+                            string_stream_content_raw << euler_angles[write_raw_cpo[property_i].first][grain][0] << " "
+                                                      <<  euler_angles[write_raw_cpo[property_i].first][grain][1] << " "
+                                                      <<  euler_angles[write_raw_cpo[property_i].first][grain][2] << " ";
                             break;
                           default:
                             Assert(false, ExcMessage("Internal error: raw CPO postprocess case not found."));
@@ -343,76 +382,40 @@ namespace aspect
                 }
 
             }
+
           if (write_draw_volume_weighted_cpo.size() != 0)
             {
               std::vector<std::vector<dealii::Tensor<2,3>>> weighted_rotation_matrices;
-              std::vector<std::vector<std::vector<double>>> weighted_euler_angles;
+              std::vector<std::vector<std::array<double,3>>> weighted_euler_angles;
 
               weighted_euler_angles.resize(n_minerals);
               std::vector<std::vector<double>> volume_fractions_grains(n_minerals,std::vector<double>(n_grains,-1.));
-              for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+              for (unsigned int mineral = 0; mineral < n_minerals; ++mineral)
                 {
                   for (unsigned int i_grain = 0; i_grain < n_grains; i_grain++)
                     {
-                      volume_fractions_grains[mineral_i][i_grain] = cpo_particle_property.get_volume_fractions_grains(
-                                                                      cpo_data_position,
-                                                                      properties,
-                                                                      mineral_i,
-                                                                      i_grain);
+                      volume_fractions_grains[mineral][i_grain] = cpo_particle_property.get_volume_fractions_grains(
+                                                                    cpo_data_position,
+                                                                    properties,
+                                                                    mineral,
+                                                                    i_grain);
                     }
-                  weighted_rotation_matrices[mineral_i] = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains[mineral_i], rotation_matrices[mineral_i], n_grains, this->random_number_generator);
+                  weighted_rotation_matrices[mineral] = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains[mineral], rotation_matrices[mineral], n_grains, this->random_number_generator);
 
-                  Assert(weighted_rotation_matrices[mineral_i].size() == euler_angles[mineral_i].size(),
-                         ExcMessage("Weighted rotation matrices vector (size = " + std::to_string(weighted_rotation_matrices[mineral_i].size()) +
-                                    ") has different size from input angles (size = " + std::to_string(euler_angles[mineral_i].size()) + ")."));
+                  Assert(weighted_rotation_matrices[mineral].size() == euler_angles[mineral].size(),
+                         ExcMessage("Weighted rotation matrices vector (size = " + std::to_string(weighted_rotation_matrices[mineral].size()) +
+                                    ") has different size from input angles (size = " + std::to_string(euler_angles[mineral].size()) + ")."));
 
                   for (unsigned int i_grain = 0; i_grain < n_grains; i_grain++)
                     {
-                      weighted_euler_angles[mineral_i][i_grain] = Utilities::zxz_euler_angles_from_rotation_matrix(
-                                                                    weighted_rotation_matrices[mineral_i][i_grain]);
+                      weighted_euler_angles[mineral][i_grain] = Utilities::zxz_euler_angles_from_rotation_matrix(
+                                                                  weighted_rotation_matrices[mineral][i_grain]);
                     }
                 }
-
-              // write weighted header
-              if (wrote_weighted_header == false)
-                {
-                  string_stream_content_draw_volume_weighting << "id" << " ";
-                  for (unsigned int property_i = 0; property_i < write_draw_volume_weighted_cpo.size(); ++property_i)
-                    {
-                      switch (write_draw_volume_weighted_cpo[property_i].second)
-                        {
-                          case Output::VolumeFraction:
-                            string_stream_content_draw_volume_weighting << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_volume_fraction" << " ";
-                            break;
-
-                          case Output::RotationMatrix:
-                            string_stream_content_draw_volume_weighting << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_0" << " "
-                                                                        << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_1" << " "
-                                                                        << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_2" << " "
-                                                                        << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_3" << " "
-                                                                        << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_4" << " "
-                                                                        << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_5" << " "
-                                                                        << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_6" << " "
-                                                                        << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_7" << " "
-                                                                        << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_RM_8" << " ";
-                            break;
-
-                          case Output::EulerAngles:
-                            string_stream_content_draw_volume_weighting << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_EA_phi" << " "
-                                                                        << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_EA_theta" << " "
-                                                                        << "mineral_" << write_draw_volume_weighted_cpo[property_i].first << "_EA_z" << " ";
-                            break;
-                          default:
-                            Assert(false, ExcMessage("Internal error: raw CPO postprocess case not found."));
-                            break;
-                        }
-                    }
-                  string_stream_content_draw_volume_weighting << std::endl;
-                  wrote_weighted_header = true;
-                }
+              string_stream_content_draw_volume_weighting << std::endl;
 
               // write data
-              for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
+              for (unsigned int grain = 0; grain < n_grains; ++grain)
                 {
                   string_stream_content_draw_volume_weighting << id << " ";
                   for (unsigned int property_i = 0; property_i < write_draw_volume_weighted_cpo.size(); ++property_i)
@@ -420,19 +423,19 @@ namespace aspect
                       switch (write_draw_volume_weighted_cpo[property_i].second)
                         {
                           case Output::VolumeFraction:
-                            string_stream_content_draw_volume_weighting << volume_fractions_grains[write_draw_volume_weighted_cpo[property_i].first][grain_i] << " ";
+                            string_stream_content_draw_volume_weighting << volume_fractions_grains[write_draw_volume_weighted_cpo[property_i].first][grain] << " ";
                             break;
 
                           case Output::RotationMatrix:
-                            string_stream_content_draw_volume_weighting << weighted_rotation_matrices[write_draw_volume_weighted_cpo[property_i].first][grain_i] << " ";
+                            string_stream_content_draw_volume_weighting << weighted_rotation_matrices[write_draw_volume_weighted_cpo[property_i].first][grain] << " ";
                             break;
 
                           case Output::EulerAngles:
                             Assert(compute_raw_euler_angles == true,
                                    ExcMessage("Internal error: writing out raw Euler angles, without them being computed."));
-                            string_stream_content_draw_volume_weighting << weighted_euler_angles[write_draw_volume_weighted_cpo[property_i].first][grain_i][0] << " "
-                                                                        <<  weighted_euler_angles[write_draw_volume_weighted_cpo[property_i].first][grain_i][1] << " "
-                                                                        <<  weighted_euler_angles[write_draw_volume_weighted_cpo[property_i].first][grain_i][2] << " ";
+                            string_stream_content_draw_volume_weighting << weighted_euler_angles[write_draw_volume_weighted_cpo[property_i].first][grain][0] << " "
+                                                                        <<  weighted_euler_angles[write_draw_volume_weighted_cpo[property_i].first][grain][1] << " "
+                                                                        <<  weighted_euler_angles[write_draw_volume_weighted_cpo[property_i].first][grain][2] << " ";
                             break;
 
                           default:
@@ -445,13 +448,13 @@ namespace aspect
             }
         }
 
-      std::string filename_master = particle_file_prefix_master + "." + Utilities::int_to_string(dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD),4) + ".dat";
-      std::string filename_raw = particle_file_prefix_content_raw + "." + Utilities::int_to_string(dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD),4) + ".dat";
-      std::string filename_draw_volume_weighting = particle_file_prefix_content_draw_volume_weighting + "." + Utilities::int_to_string(dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD),4) + ".dat";
+      std::string filename_master = particle_file_prefix_master + "." + Utilities::int_to_string(dealii::Utilities::MPI::this_mpi_process (this->get_mpi_communicator()),4) + ".dat";
+      std::string filename_raw = particle_file_prefix_content_raw + "." + Utilities::int_to_string(dealii::Utilities::MPI::this_mpi_process (this->get_mpi_communicator()),4) + ".dat";
+      std::string filename_draw_volume_weighting = particle_file_prefix_content_draw_volume_weighting + "." + Utilities::int_to_string(dealii::Utilities::MPI::this_mpi_process (this->get_mpi_communicator()),4) + ".dat";
 
-      std::string *file_contents_master = new std::string (string_stream_master.str());
-      std::string *file_contents_raw = new std::string (string_stream_content_raw.str());
-      std::string *file_contents_draw_volume_weighting = new std::string (string_stream_content_draw_volume_weighting.str());
+      std::unique_ptr<std::string> file_contents_master = std::make_unique<std::string>(string_stream_master.str());
+      std::unique_ptr<std::string> file_contents_raw = std::make_unique<std::string>(string_stream_content_raw.str());
+      std::unique_ptr<std::string> file_contents_draw_volume_weighting = std::make_unique<std::string>(string_stream_content_draw_volume_weighting.str());
 
       if (write_in_background_thread)
         {
@@ -464,7 +467,7 @@ namespace aspect
           background_thread_master = std::thread (&writer,
                                                   filename_master,
                                                   temporary_output_location,
-                                                  file_contents_master,
+                                                  *file_contents_master,
                                                   false);
 
           if (write_raw_cpo.size() != 0)
@@ -478,7 +481,7 @@ namespace aspect
               background_thread_content_raw = std::thread (&writer,
                                                            filename_raw,
                                                            temporary_output_location,
-                                                           file_contents_raw,
+                                                           *file_contents_raw,
                                                            compress_cpo_data_files);
             }
 
@@ -493,30 +496,31 @@ namespace aspect
               background_thread_content_draw_volume_weighting = std::thread (&writer,
                                                                              filename_draw_volume_weighting,
                                                                              temporary_output_location,
-                                                                             file_contents_draw_volume_weighting,
+                                                                             *file_contents_draw_volume_weighting,
                                                                              compress_cpo_data_files);
             }
         }
       else
         {
-          writer(filename_master,temporary_output_location,file_contents_master, false);
+          writer(filename_master,temporary_output_location,*file_contents_master, false);
           if (write_raw_cpo.size() != 0)
-            writer(filename_raw,temporary_output_location,file_contents_raw, compress_cpo_data_files);
+            writer(filename_raw,temporary_output_location,*file_contents_raw, compress_cpo_data_files);
           if (write_draw_volume_weighted_cpo.size() != 0)
-            writer(filename_draw_volume_weighting,temporary_output_location,file_contents_draw_volume_weighting, compress_cpo_data_files);
+            writer(filename_draw_volume_weighting,temporary_output_location,*file_contents_draw_volume_weighting, compress_cpo_data_files);
         }
 
 
       // up the next time we need output
       set_last_output_time (this->get_time());
 
-      const std::string particle_cpo_output = particle_file_prefix_content_raw;
+      const std::string particles_cpo_output = particle_file_prefix_content_raw;
 
       // record the file base file name in the output file
       statistics.add_value ("Particle CPO file name",
-                            particle_cpo_output);
-      return std::make_pair("Writing particle cpo output:", particle_cpo_output);
+                            particles_cpo_output);
+      return std::make_pair("Writing particle cpo output:", particles_cpo_output);
     }
+
 
 
     template <int dim>
@@ -538,11 +542,13 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     typename CrystalPreferredOrientation<dim>::Output
     CrystalPreferredOrientation<dim>::string_to_output_enum(const std::string &string)
     {
-      // olivine volume fraction, olivine A matrix, olivine Euler angles, enstatite volume fraction, enstatite A matrix, enstatite Euler angles
+      // olivine volume fraction, olivine rotation matrix, olivine Euler angles, enstatite volume fraction, enstatite rotation matrix, enstatite Euler angles
       if (string == "volume fraction")
         return Output::VolumeFraction;
       if (string == "rotation matrix")
@@ -551,6 +557,7 @@ namespace aspect
         return Output::EulerAngles;
       return Output::not_found;
     }
+
 
 
     template <int dim>
@@ -595,14 +602,14 @@ namespace aspect
           prm.declare_entry ("Write out raw cpo data",
                              "olivine volume fraction,olivine Euler angles,enstatite volume fraction,enstatite Euler angles",
                              Patterns::List(Patterns::Anything()),
-                             "A list containing the what part of the particle cpo data needs "
+                             "A list containing what particle cpo data needs "
                              "to be written out after the particle id. This writes out the raw "
                              "cpo data files for each MPI process. It can write out the following data: "
-                             "olivine volume fraction, olivine A matrix, olivine Euler angles, "
-                             "enstatite volume fraction, enstatite A matrix, enstatite Euler angles. \n"
-                             "Note that the A matrix and Euler angles both contain the same "
+                             "olivine volume fraction, olivine rotation matrix, olivine Euler angles, "
+                             "enstatite volume fraction, enstatite rotation matrix, enstatite Euler angles. \n"
+                             "Note that the rotation matrix and Euler angles both contain the same "
                              "information, but in a different format. Euler angles are recommended "
-                             "over the A matrix since they only require to write 3 values instead "
+                             "over the rotation matrix since they only require to write 3 values instead "
                              "of 9. If the list is empty, this file will not be written."
                              "Furthermore, the entries will be written out in the order given, "
                              "and if entries are entered muliple times, they will be written "
@@ -617,11 +624,11 @@ namespace aspect
                              "The random draw volume weigthing uses a uniform random distribution "
                              "This writes out the raw cpo data files for "
                              "each MPI process. It can write out the following data: "
-                             "olivine volume fraction, olivine A matrix, olivine Euler angles, "
-                             "enstatite volume fraction, enstatite A matrix, enstatite Euler angles. \n"
-                             "Note that the A matrix and Euler angles both contain the same "
+                             "olivine volume fraction, olivine rotation matrix, olivine Euler angles, "
+                             "enstatite volume fraction, enstatite rotation matrix, enstatite Euler angles. \n"
+                             "Note that the rotation matrix and Euler angles both contain the same "
                              "information, but in a different format. Euler angles are recommended "
-                             "over the A matrix since they only require to write 3 values instead "
+                             "over the rotation matrix since they only require to write 3 values instead "
                              "of 9. If the list is empty, this file will not be written. "
                              "Furthermore, the entries will be written out in the order given, "
                              "and if entries are entered muliple times, they will be written "
@@ -635,6 +642,7 @@ namespace aspect
       prm.leave_subsection ();
 
     }
+
 
 
     template <int dim>
@@ -655,8 +663,7 @@ namespace aspect
             prm.enter_subsection("Initial grains");
             {
               // Static variable of CPO has not been initialize yet, so we need to get it directly.
-              const std::vector<std::string> temp_deformation_type_selector = dealii::Utilities::split_string_list(prm.get("Minerals"));
-              n_minerals = temp_deformation_type_selector.size();
+              n_minerals = dealii::Utilities::split_string_list(prm.get("Minerals")).size();
             }
             prm.leave_subsection();
           }
@@ -671,11 +678,11 @@ namespace aspect
 
           random_number_seed = prm.get_integer ("Random number seed");
 
-          //AssertThrow(this->get_parameters().run_postprocessors_on_nonlinear_iterations == false,
-          //            ExcMessage("Postprocessing nonlinear iterations in models with "
-          //                       "particles is currently not supported."));
+          AssertThrow(this->get_parameters().run_postprocessors_on_nonlinear_iterations == false,
+                      ExcMessage("Postprocessing nonlinear iterations in models with "
+                                 "particles is currently not supported."));
 
-          aspect::Utilities::create_directory (this->get_output_directory() + "particle_CPO/",
+          aspect::Utilities::create_directory (this->get_output_directory() + "particles_cpo/",
                                                this->get_mpi_communicator(),
                                                true);
 
@@ -718,6 +725,7 @@ namespace aspect
                                      + mineral_instructions[0] + "\"."));
 
               int mineral_number = Utilities::string_to_int(mineral_instructions[1]);
+              Assert(mineral_number >= 0, ExcMessage("Internal error: mineral_number is negative: " + std::to_string(mineral_number) + "."));
 
               AssertThrow((unsigned int) mineral_number < n_minerals,
                           ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option "
@@ -738,7 +746,7 @@ namespace aspect
 
           std::vector<std::string> write_draw_volume_weighted_cpo_list = Utilities::split_string_list(prm.get("Write out draw volume weighted cpo data"));
           write_draw_volume_weighted_cpo.resize(write_draw_volume_weighted_cpo_list.size());
-          bool found_A_matrix = false;
+          bool found_rotation_matrix = false;
           for (unsigned int i = 0; i < write_draw_volume_weighted_cpo_list.size(); ++i)
             {
               std::vector<std::string> split_draw_volume_weighted_cpo_instructions = Utilities::split_string_list(write_draw_volume_weighted_cpo_list[i],':');
@@ -760,6 +768,8 @@ namespace aspect
                                      + mineral_instructions[0] + "\"."));
 
               int mineral_number = Utilities::string_to_int(mineral_instructions[1]);
+              Assert(mineral_number >= 0, ExcMessage("Internal error: mineral_number is negative: " + std::to_string(mineral_number) + "."));
+
               AssertThrow((unsigned int) mineral_number < n_minerals,
                           ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option "
                                      + "because the mineral number (" + std::to_string(mineral_number) + ") is larger than the number of minerals "
@@ -772,7 +782,7 @@ namespace aspect
                           ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option."))
 
               if (cpo_fabric_instruction == Output::RotationMatrix)
-                found_A_matrix = true;
+                found_rotation_matrix = true;
 
               write_draw_volume_weighted_cpo[i] = std::make_pair(mineral_number,cpo_fabric_instruction);
             }
@@ -782,10 +792,10 @@ namespace aspect
           else
             compute_raw_euler_angles = false;
 
-          if (write_draw_volume_weighted_cpo_list.size() != 0 && found_A_matrix == true)
-            compute_weighted_A_matrix = true;
+          if (write_draw_volume_weighted_cpo_list.size() != 0 && found_rotation_matrix == true)
+            compute_weighted_rotation_matrix = true;
           else
-            compute_weighted_A_matrix = false;
+            compute_weighted_rotation_matrix = false;
 
           compress_cpo_data_files = prm.get_bool("Compress cpo data files");
         }
