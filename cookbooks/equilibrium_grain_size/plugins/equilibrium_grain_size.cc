@@ -302,7 +302,7 @@ namespace aspect
         out.template get_additional_output<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
 
       const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
-        this->get_initial_temperature_manager().template get_matching_initial_temperature_model<InitialTemperature::AdiabaticBoundary<dim>>();
+        initial_temperature_manager->template get_matching_initial_temperature_model<InitialTemperature::AdiabaticBoundary<dim>>();
 
       const unsigned int surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("outer");
 
@@ -886,8 +886,11 @@ namespace aspect
                                         :
                                         numbers::invalid_unsigned_int;
 
+      if (initial_temperature_manager == nullptr)
+        const_cast<std::shared_ptr<const aspect::InitialTemperature::Manager<dim>>&>(initial_temperature_manager)
+          = this->get_initial_temperature_manager_pointer();
       const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
-        this->get_initial_temperature_manager().template get_matching_initial_temperature_model<InitialTemperature::AdiabaticBoundary<dim>>();
+        initial_temperature_manager->template get_matching_initial_temperature_model<InitialTemperature::AdiabaticBoundary<dim>>();
 
       // This function will fill the outputs for grain size, viscosity, and dislocation viscosity
       if (in.requests_property(MaterialProperties::viscosity))
@@ -934,7 +937,7 @@ namespace aspect
 
               // This does not work when it is called before the adiabatic conditions are initialized, because
               // the AsciiDataBoundary plugin needs the time, which is not yet initialized at that point.
-              const double initial_temperature = this->get_initial_temperature_manager().initial_temperature(in.position[i]);
+              const double initial_temperature = initial_temperature_manager->initial_temperature(in.position[i]);
               const double reference_temperature = this->get_adiabatic_conditions().temperature(in.position[i]);
 
               if (use_depth_dependent_dT_vs)
