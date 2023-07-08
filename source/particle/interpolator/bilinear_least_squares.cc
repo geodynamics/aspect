@@ -115,7 +115,7 @@ namespace aspect
         for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
              particle != particle_range.end(); ++particle, ++particle_index)
           {
-            const auto &particle_property_value = particle->get_properties();
+            const ArrayView<double> particle_property_value = particle->get_properties();
             for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
               {
                 if (selected_properties[property_index] == true)
