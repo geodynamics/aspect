@@ -36,6 +36,7 @@
 
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+#include <aspect/material_model/rheology/elasticity.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -302,7 +303,25 @@ namespace aspect
     material_model->parse_parameters (prm);
     material_model->initialize ();
 
-    heating_model_manager.initialize_simulator (*this);
+    // Make sure that the material model supports elasticity when it is requested,
+    // by checking that the material model creates the necessary material model
+    // outputs.
+    if (parameters.enable_elasticity)
+      {
+        // Set up outputs for one point
+        MaterialModel::MaterialModelOutputs<dim> out(1,
+                                                     introspection.n_compositional_fields);
+
+        material_model->create_additional_named_outputs(out);
+
+        MaterialModel::ElasticAdditionalOutputs<dim> *elastic_outputs = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
+
+        // Throw if the elastic_outputs do not exist
+        AssertThrow(elastic_outputs != nullptr,
+                    ExcMessage("Elasticity is enabled, but not supported by the material model."));
+      }
+
+    heating_model_manager.initialize_simulator(*this);
     heating_model_manager.parse_parameters (prm);
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(gravity_model.get()))
