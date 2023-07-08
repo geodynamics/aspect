@@ -281,8 +281,8 @@ namespace aspect
             delta_ = delta;
           }
 
-          virtual void vector_value (const Point<dim> &p,
-                                     Vector<double>   &values) const
+          void vector_value (const Point<dim> &p,
+                             Vector<double>   &values) const override
           {
             unsigned int index = static_cast<int>((p[dim-1]-delta_)/max_z_ * (initial_pressure_.size()-1));
             if (p[dim-1]-delta_ < 0)
@@ -666,9 +666,8 @@ namespace aspect
         /**
          * Generate graphical output from the current solution.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
 
         /**
          * Initialization function. Take references to the material model and
@@ -676,7 +675,7 @@ namespace aspect
          * the analytical solution for the shape of the solitary wave and store them.
          */
         void
-        initialize ();
+        initialize () override;
 
         void
         store_initial_pressure ();

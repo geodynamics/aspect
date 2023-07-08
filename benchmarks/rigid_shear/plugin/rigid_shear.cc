@@ -92,8 +92,8 @@ namespace aspect
             : Function<dim>(n_components),
               transient(transient) {}
 
-          virtual void vector_value(const Point<dim> &p,
-                                    Vector<double> &values) const
+          void vector_value(const Point<dim> &p,
+                            Vector<double> &values) const override
           {
             const double pi = numbers::PI;
             const double t = this->get_time();
