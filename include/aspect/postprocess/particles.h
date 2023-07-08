@@ -289,9 +289,9 @@ namespace aspect
          * of these arguments and deletes them at the end of its work.
          */
         static
-        void writer (const std::string filename,
-                     const std::string temporary_filename,
-                     const std::string *file_contents);
+        void writer (const std::string &filename,
+                     const std::string &temporary_filename,
+                     const std::string &file_contents);
 
         /**
          * Write the various master record files. The master files are used by
