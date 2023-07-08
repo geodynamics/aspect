@@ -81,8 +81,11 @@ html_theme_options = {
     "use_repository_button": True,
     "use_edit_page_button": True,
     "use_issues_button": True,
-    "extra_navbar": "<p><img src=\"/en/latest/_static/images/cig_logo_dots.png\" alt=\"CIG Logo\" height=\"80px\"  style=\"padding: 5px;\"/></p>",
     "home_page_in_toc": True,
+}
+
+html_sidebars = {
+    "**": ["navbar-logo.html","search-field.html","sbt-sidebar-nav.html","navbar_end.html"]
 }
 
 bibtex_bibfiles = ["references.bib"]
