@@ -43,7 +43,43 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -393.7 m, 876.7 m
      RMS, max velocity:  0.000764 m/year, 0.00216 m/year
 
-*** Timestep 2:  t=2.1071e+06 years, dt=1.43168e+06 years
+*** Timestep 2:  t=1.96549e+06 years, dt=1.29007e+06 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 20 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+   Solving fluid velocity system... 11 iterations.
+
+   Postprocessing:
+     Topography min/max: -1949 m, 954 m
+     RMS, max velocity:  0.00118 m/year, 0.0029 m/year
+
+*** Timestep 3:  t=2.54715e+06 years, dt=581653 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 15 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+   Solving fluid velocity system... 12 iterations.
+
+   Postprocessing:
+     Topography min/max: -246.2 m, 113 m
+     RMS, max velocity:  0.000581 m/year, 0.00181 m/year
+
+*** Timestep 4:  t=3.40974e+06 years, dt=862598 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 15 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+   Solving fluid velocity system... 12 iterations.
+
+   Postprocessing:
+     Topography min/max: -236 m, 530.9 m
+     RMS, max velocity:  0.000449 m/year, 0.000994 m/year
+
+*** Timestep 5:  t=5.03971e+06 years, dt=1.62997e+06 years
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 21 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -52,97 +88,13 @@ Number of mesh deformation degrees of freedom: 1466
    Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
-     Topography min/max: -2260 m, 1102 m
-     RMS, max velocity:  0.00121 m/year, 0.00303 m/year
-
-*** Timestep 3:  t=2.68989e+06 years, dt=582790 years
-   Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 15 iterations.
-   Skipping porosity composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-   Solving fluid velocity system... 12 iterations.
-
-   Postprocessing:
-     Topography min/max: -474.1 m, 223.3 m
-     RMS, max velocity:  0.000773 m/year, 0.00209 m/year
-
-*** Timestep 4:  t=3.43672e+06 years, dt=746822 years
-   Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 15 iterations.
-   Skipping porosity composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-   Solving fluid velocity system... 12 iterations.
-
-   Postprocessing:
-     Topography min/max: -338.3 m, 713.2 m
-     RMS, max velocity:  0.000595 m/year, 0.00158 m/year
-
-*** Timestep 5:  t=5.38293e+06 years, dt=1.94621e+06 years
-   Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 24 iterations.
-   Skipping porosity composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-   Solving fluid velocity system... 11 iterations.
-
-   Postprocessing:
-     Topography min/max: -2422 m, 1241 m
-     RMS, max velocity:  0.000992 m/year, 0.00241 m/year
+     Topography min/max: -1134 m, 554.5 m
+     RMS, max velocity:  0.000687 m/year, 0.00176 m/year
 
 
 
 
-*** Timestep 6:  t=6.13597e+06 years, dt=753043 years
-   Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 16 iterations.
-   Skipping porosity composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-   Solving fluid velocity system... 11 iterations.
-
-   Postprocessing:
-     Topography min/max: -582.3 m, 293.6 m
-     RMS, max velocity:  0.000733 m/year, 0.00179 m/year
-
-*** Timestep 7:  t=7.00977e+06 years, dt=873796 years
-   Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 15 iterations.
-   Skipping porosity composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-   Solving fluid velocity system... 12 iterations.
-
-   Postprocessing:
-     Topography min/max: -376.4 m, 744.4 m
-     RMS, max velocity:  0.000547 m/year, 0.00145 m/year
-
-*** Timestep 8:  t=9.13853e+06 years, dt=2.12876e+06 years
-   Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 24 iterations.
-   Skipping porosity composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-   Solving fluid velocity system... 11 iterations.
-
-   Postprocessing:
-     Topography min/max: -2390 m, 1289 m
-     RMS, max velocity:  0.000913 m/year, 0.00217 m/year
-
-*** Timestep 9:  t=1.00209e+07 years, dt=882398 years
-   Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 16 iterations.
-   Skipping porosity composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-   Solving fluid velocity system... 11 iterations.
-
-   Postprocessing:
-     Topography min/max: -440.8 m, 233.4 m
-     RMS, max velocity:  0.000556 m/year, 0.00134 m/year
-
-*** Timestep 10:  t=1.11875e+07 years, dt=1.16652e+06 years
+*** Timestep 6:  t=5.92506e+06 years, dt=885346 years
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 16 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -151,8 +103,56 @@ Number of mesh deformation degrees of freedom: 1466
    Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
-     Topography min/max: -385.6 m, 737.1 m
-     RMS, max velocity:  0.000433 m/year, 0.0011 m/year
+     Topography min/max: -45.53 m, 94.46 m
+     RMS, max velocity:  0.000362 m/year, 0.0011 m/year
+
+*** Timestep 7:  t=7.35972e+06 years, dt=1.43466e+06 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 19 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+   Solving fluid velocity system... 12 iterations.
+
+   Postprocessing:
+     Topography min/max: -45.35 m, 48.31 m
+     RMS, max velocity:  0.000374 m/year, 0.0011 m/year
+
+*** Timestep 8:  t=8.77731e+06 years, dt=1.41758e+06 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 18 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+   Solving fluid velocity system... 12 iterations.
+
+   Postprocessing:
+     Topography min/max: -72.05 m, 128.6 m
+     RMS, max velocity:  0.000333 m/year, 0.000929 m/year
+
+*** Timestep 9:  t=1.04709e+07 years, dt=1.69358e+06 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 19 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+   Solving fluid velocity system... 12 iterations.
+
+   Postprocessing:
+     Topography min/max: -56.13 m, 59.12 m
+     RMS, max velocity:  0.000348 m/year, 0.000957 m/year
+
+*** Timestep 10:  t=1.21032e+07 years, dt=1.63232e+06 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 19 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+   Solving fluid velocity system... 12 iterations.
+
+   Postprocessing:
+     Topography min/max: -79.63 m, 135.7 m
+     RMS, max velocity:  0.000307 m/year, 0.000794 m/year
 
 
 
