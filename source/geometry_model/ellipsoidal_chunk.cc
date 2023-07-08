@@ -258,9 +258,9 @@ namespace aspect
                                                       0,
                                                       bottom_depth)
                                           };
-      const unsigned int  subdivisions[dim] = {EW_subdiv,NS_subdiv,depth_subdiv};
+      const unsigned int  subdivisions[dim] = {EW_subdiv, NS_subdiv, depth_subdiv};
 
-      GridGenerator::subdivided_parallelepiped (coarse_grid, subdivisions,corner_points, true);
+      GridGenerator::subdivided_parallelepiped (coarse_grid, subdivisions, corner_points, true);
 
       // Shift the grid point at (0,0,0) (and the rest of the
       // points with it) to the correct location at corner[0] at a

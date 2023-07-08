@@ -154,13 +154,12 @@ namespace aspect
 
                     // are we done searching?
                     if (n_left_to_find == 0)
-                      break; // exit inner loop
+                      goto after_cell_loop; // exit both nested loops at the same time
                   }
-
-                if (n_left_to_find == 0)
-                  break; // exit outer loop
               }
 
+        after_cell_loop:
+          ;
         }
 
 
