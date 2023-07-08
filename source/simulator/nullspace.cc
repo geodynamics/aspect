@@ -117,10 +117,10 @@ namespace aspect
         // all processors need to agree on the index.
 
         // First find candidates for DoF indices to constrain for each velocity component.
-        types::global_dof_index vel_idx[dim];
+        std::array<types::global_dof_index,dim> vel_idx;
         {
-          for (unsigned int d=0; d<dim; ++d)
-            vel_idx[d] = numbers::invalid_dof_index;
+          for (types::global_dof_index &idx : vel_idx)
+            idx = numbers::invalid_dof_index;
 
           unsigned int n_left_to_find = dim;
 
