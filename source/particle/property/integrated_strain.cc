@@ -43,7 +43,7 @@ namespace aspect
                                                       const std::vector<Tensor<1,dim>> &gradients,
                                                       typename ParticleHandler<dim>::particle_iterator &particle) const
       {
-        auto &data = particle->get_properties();
+        const auto data = particle->get_properties();
 
         Tensor<2,dim> old_strain;
         for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)

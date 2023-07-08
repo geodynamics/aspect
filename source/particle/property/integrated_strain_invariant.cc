@@ -44,7 +44,7 @@ namespace aspect
                                                                typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         // Integrated strain invariant from prior time step
-        auto &data = particle->get_properties();
+        const auto data = particle->get_properties();
         double old_strain = data[data_position];
 
         // Current timestep
