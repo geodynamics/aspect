@@ -285,6 +285,26 @@ namespace aspect
   };
 
 
+  // Explain to the compiler that we instantiate this class elsewhere, along
+  // with its static members. This is necessary to avoid warnings by some
+  // compilers.
+  extern template struct SimulatorSignals<2>;
+  extern template
+  boost::signals2::signal<void (const unsigned int aspect_dim, ParameterHandler &prm)>
+  SimulatorSignals<2>::declare_additional_parameters;
+  extern template
+  boost::signals2::signal<void (const Parameters<2> &, ParameterHandler &)>
+  SimulatorSignals<2>::parse_additional_parameters;
+
+  extern template struct SimulatorSignals<3>;
+  extern template
+  boost::signals2::signal<void (const unsigned int aspect_dim, ParameterHandler &prm)>
+  SimulatorSignals<3>::declare_additional_parameters;
+  extern template
+  boost::signals2::signal<void (const Parameters<3> &, ParameterHandler &)>
+  SimulatorSignals<3>::parse_additional_parameters;
+
+
   namespace internals
   {
     /**
