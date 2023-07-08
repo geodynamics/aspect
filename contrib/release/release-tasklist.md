@@ -192,6 +192,96 @@ and the links are working
       https://community.geodynamics.org/c/aspect
       dealii@googlegroups.com
 
+## List of prior release notes
+
+Announcement for 2.5.0 (July 8, 2023)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 2.5.0. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid solvers, and a modular software design to
+provide a fast, flexible, and extensible mantle convection solver. ASPECT is
+available from
+
+                   https://aspect.geodynamics.org/
+
+and the release is available from
+
+        https://geodynamics.org/resources/aspect
+
+and
+
+        https://github.com/geodynamics/aspect/releases/tag/v2.5.0
+
+Among others this release includes the following significant changes:
+
+- ASPECT now includes version 0.5.0 of the Geodynamic World Builder.
+  (Menno Fraters and other contributors)
+
+- ASPECT's manual has been converted from LaTeX to Markdown to be hosted as a
+  website at https://aspect-documentation.readthedocs.io.
+  (Chris Mills, Mack Gregory, Timo Heister, Wolfgang Bangerth, Rene
+  Gassmoeller, and many others)
+
+- New: ASPECT now requires deal.II 9.4 or newer.
+  (Rene Gassmoeller, Timo Heister)
+
+- ASPECT now supports a DebugRelease build type that creates a debug build and
+  a release build of ASPECT at the same time.  It can be enabled by setting the
+  CMake option CMAKE_BUILD_TYPE to DebugRelease or by typing "make debugrelease".
+  (Timo Heister)
+
+- ASPECT now has a CMake option ASPECT_INSTALL_EXAMPLES that allows building
+  and install all cookbooks and benchmarks. ASPECT now additionally installs
+  the data/ directory. Both changes are helpful for installations that are used
+  for teaching and tutorials.
+  (Rene Gassmoeller)
+
+- Changed: ASPECT now releases the memory used for storing initial conditions
+  and the Geodynamic World Builder after model initialization unless an
+  owning pointer to these objects is kept. This reduces the memory footprint
+  for models initialized from large data files.
+  (Wolfgang Bangerth)
+
+- Added: Various helper functions to distinguish phase transitions for
+  different compositions and compositional fields of different types.
+  (Bob Myhill)
+
+- Added: The 'adiabatic' initial temperature plugin can now use a spatially
+  variable top boundary layer thickness read from a data file or specified as a
+  function in the input file. Additionally, the boundary layer temperature can
+  now also be computed following the plate cooling model instead of the
+  half-space cooling model.
+  (Daniel Douglas, John Naliboff, Juliane Dannberg, Rene Gassmoeller)
+
+- New: ASPECT now supports tangential velocity boundary conditions with GMG for
+  more geometries, such as 2D and 3D chunks.
+  (Timo Heister, Haoyuan Li, Jiaqi Zhang)
+
+- New: Phase transitions can now be deactivated outside a given temperature
+  range specified by upper and lower temperature limits for each phase
+  transition. This allows implementing complex phase diagrams with transitions
+  that intersect in pressure-temperature space.
+  (Haoyuan Li)
+
+- New: There is now a postprocessor that outputs the total volume of the
+  computational domain. This can be helpful for models using mesh deformation.
+  (Anne Glerum)
+
+- New: Added a particle property 'grain size' that tracks grain size evolution
+  on particles using the 'grain size' material model.
+  (Juliane Dannberg, Rene Gassmoeller)
+
+- Fixed: Many bugs, see link below for a complete list.
+  (Many authors. Thank you!).
+
+A complete list of all changes and their authors can be found at
+  https://aspect.geodynamics.org/doc/doxygen/changes_between_2_84_80_and_2_85_80.html
+
+Wolfgang Bangerth, Juliane Dannberg, Menno Fraters, Rene Gassmoeller,
+Anne Glerum, Timo Heister, Bob Myhill, John Naliboff,
+and many other contributors.
+
+
 Announcement for 2.4.0 (July 25, 2022)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 2.4.0. ASPECT is the Advanced
