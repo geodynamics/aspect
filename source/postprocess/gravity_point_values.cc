@@ -398,7 +398,7 @@ namespace aspect
                 // We are inside the inner radius
                 g_theory[p] = 0;
                 g_potential_theory[p] = 2.0 * G * numbers::PI * reference_density *
-                                        (std::pow(model_inner_radius,2) - std::pow(model_outer_radius,2));
+                                        ((model_inner_radius * model_inner_radius) - (model_outer_radius * model_outer_radius));
               }
             else if ((satellite_positions_spherical[p][0] > model_inner_radius)
                      && (satellite_positions_spherical[p][0] < model_outer_radius))
@@ -406,29 +406,29 @@ namespace aspect
                 // We are in the spherical shell
                 g_theory[p] = G * numbers::PI * 4./3. * reference_density *
                               (satellite_positions_spherical[p][0] -
-                               (std::pow(model_inner_radius,3)
-                                /  std::pow(satellite_positions_spherical[p][0],2)));
+                               ((model_inner_radius * model_inner_radius * model_inner_radius)
+                                /  (satellite_positions_spherical[p][0] * satellite_positions_spherical[p][0])));
                 g_potential_theory[p] = G * numbers::PI * 4./3. * reference_density *
-                                        ((std::pow(satellite_positions_spherical[p][0],2)/2.0) +
-                                         (std::pow(model_inner_radius,3) / satellite_positions_spherical[p][0]))
+                                        (((satellite_positions_spherical[p][0] * satellite_positions_spherical[p][0])/2.0) +
+                                         ((model_inner_radius * model_inner_radius * model_inner_radius) / satellite_positions_spherical[p][0]))
                                         -
                                         G * numbers::PI * 2.0 * reference_density *
-                                        std::pow(model_outer_radius,2);
+                                        (model_outer_radius * model_outer_radius);
               }
             else
               {
                 const double common_factor = G * numbers::PI * 4./3. * reference_density
-                                             * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3));
+                                             * ((model_outer_radius * model_outer_radius * model_outer_radius) - (model_inner_radius * model_inner_radius * model_inner_radius));
                 const double r = satellite_positions_spherical[p][0];
 
-                g_theory[p] = common_factor / std::pow(r,2);
+                g_theory[p] = common_factor / (r * r);
                 g_potential_theory[p] = - common_factor / r;
 
                 // For the gradient of g, start with the common part of
                 // the diagonal elements:
                 g_gradient_theory[p][0][0] =
                   g_gradient_theory[p][1][1] =
-                    g_gradient_theory[p][2][2] = -1./std::pow(r,3);
+                    g_gradient_theory[p][2][2] = -1./(r * r * r);
 
                 // Then do the off-diagonal elements:
                 for (unsigned int e=0; e<dim; ++e)
