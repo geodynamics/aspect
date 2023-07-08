@@ -130,7 +130,7 @@ namespace aspect
         const bool plastic_yielding = viscoplastic.is_yielding(material_inputs);
 
         // Next take the integrated strain invariant from the prior time step.
-        auto &data = particle->get_properties();
+        const auto data = particle->get_properties();
 
         // Calculate strain rate second invariant
         const double edot_ii = std::sqrt(std::max(-second_invariant(deviator(material_inputs.strain_rate[0])), 0.));
