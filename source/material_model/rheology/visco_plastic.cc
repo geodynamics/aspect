@@ -118,10 +118,13 @@ namespace aspect
               stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
           }
 
-        // The first time this function is called (first iteration of first time step)
-        // a specified "reference" strain rate is used as the returned value would
-        // otherwise be zero.
-        const bool use_reference_strainrate = (this->get_timestep_number() == 0) &&
+        // Use a specified "reference" strain rate if the strain rate is not yet available,
+        // or close to zero. This is to avoid division by zero.
+        const bool use_reference_strainrate = this->simulator_is_past_initialization() == false
+                                              ||
+                                              (this->get_timestep_number() == 0 &&
+                                               this->get_nonlinear_iteration() == 0)
+                                              ||
                                               (in.strain_rate[i].norm() <= std::numeric_limits<double>::min());
 
         double edot_ii;
@@ -142,7 +145,12 @@ namespace aspect
               // Choice of activation volume depends on whether there is an adiabatic temperature
               // gradient used when calculating the viscosity. This allows the same activation volume
               // to be used in incompressible and compressible models.
-              const double temperature_for_viscosity = in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*in.pressure[i];
+              const double temperature_for_viscosity = (this->simulator_is_past_initialization())
+                                                       ?
+                                                       in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*in.pressure[i]
+                                                       :
+                                                       this->get_adiabatic_conditions().temperature(in.position[i]);
+
               AssertThrow(temperature_for_viscosity != 0, ExcMessage(
                             "The temperature used in the calculation of the visco-plastic rheology is zero. "
                             "This is not allowed, because this value is used to divide through. It is probably "

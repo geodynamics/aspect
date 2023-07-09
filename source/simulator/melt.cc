@@ -1506,6 +1506,7 @@ namespace aspect
                                          cell,
                                          this->introspection(),
                                          this->get_current_linearization_point());
+
             // We only need access to the MeltOutputs in p_c_scale().
             material_model_inputs.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
