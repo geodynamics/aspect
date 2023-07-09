@@ -716,28 +716,29 @@ namespace aspect
         std::vector<std::unique_ptr<Assemblers::Interface<dim>>> stokes_system_on_boundary_face;
 
         /**
-         * A vector of pointers containing all assemblers for the advection systems.
+         * A vector of vectors of pointers containing a list of all assemblers
+         * for each individual advection system.
          * These assemblers are called once per cell.
          */
-        std::vector<std::unique_ptr<Assemblers::Interface<dim>>> advection_system;
+        std::vector<std::vector<std::unique_ptr<Assemblers::Interface<dim>>>> advection_system;
 
         /**
-         * A vector of pointers containing all assemblers for the Advection
-         * systems that compute face contributions at boundaries. These assemblers
-         * are called once per boundary face with the properly initialized inputs,
-         * therefore they allow terms that only exist on boundary faces (e.g.
-         * flux boundary conditions).
+         * A vector of vectors of pointers containing a list of all assemblers
+         * for the individual advection systems that compute face contributions
+         * at boundaries. These assemblers are called once per boundary face with
+         * the properly initialized inputs, therefore they allow terms that only
+         * exist on boundary faces (e.g. flux boundary conditions).
          */
-        std::vector<std::unique_ptr<Assemblers::Interface<dim>>> advection_system_on_boundary_face;
+        std::vector<std::vector<std::unique_ptr<Assemblers::Interface<dim>>>> advection_system_on_boundary_face;
 
         /**
-         * A vector of pointers containing all assemblers for the Advection
-         * systems that compute face contributions on faces between cells.
-         * These assemblers are called once per interior face with the properly
-         * initialized inputs, therefore they allow terms that only exist on
-         * interior faces (e.g. DG penalty terms).
+         * A vector of vectors of pointers containing a list of all assemblers
+         * for the individual advection systems that compute face contributions
+         * on faces between cells. These assemblers are called once per interior
+         * face with the properly initialized inputs, therefore they allow terms
+         * that only exist on interior faces (e.g. DG penalty terms).
          */
-        std::vector<std::unique_ptr<Assemblers::Interface<dim>>> advection_system_on_interior_face;
+        std::vector<std::vector<std::unique_ptr<Assemblers::Interface<dim>>>> advection_system_on_interior_face;
 
         /**
          * A structure that describes what information an assembler function

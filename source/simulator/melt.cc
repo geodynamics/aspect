@@ -1691,15 +1691,18 @@ namespace aspect
           std::make_unique<Assemblers::MeltPressureRHSCompatibilityModification<dim>> ());
       }
 
-    assemblers.advection_system.push_back(
-      std::make_unique<Assemblers::MeltAdvectionSystem<dim>> ());
-
-    if (this->get_parameters().fixed_heat_flux_boundary_indicators.size() != 0)
+    for (unsigned int i=0; i<1+this->introspection().n_compositional_fields; ++i)
       {
-        assemblers.advection_system_on_boundary_face.push_back(
-          std::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim>>());
-        assemblers.advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
-        assemblers.advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
+        assemblers.advection_system[i].push_back(
+          std::make_unique<Assemblers::MeltAdvectionSystem<dim>> ());
+
+        if (this->get_parameters().fixed_heat_flux_boundary_indicators.size() != 0)
+          {
+            assemblers.advection_system_on_boundary_face[i].push_back(
+              std::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim>>());
+            assemblers.advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
+            assemblers.advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
+          }
       }
   }
 

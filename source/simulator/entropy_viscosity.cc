@@ -134,14 +134,14 @@ namespace aspect
 
     std::vector<double> residual (scratch.finite_element_values.n_quadrature_points,0.0);
 
-    for (unsigned int i=0; i<assemblers->advection_system.size(); ++i)
+    for (unsigned int i=0; i<assemblers->advection_system[advection_field.field_index()].size(); ++i)
       {
-        const std::vector<double> new_residual = assemblers->advection_system[i]->compute_residual(scratch);
+        const std::vector<double> new_residual = assemblers->advection_system[advection_field.field_index()][i]->compute_residual(scratch);
         for (unsigned int j=0; j<residual.size(); ++j)
           residual[j] += new_residual[j];
 
         if (auto *stabilization_assembler =
-              dynamic_cast<Assemblers::AdvectionStabilizationInterface<dim>*> ((assemblers->advection_system[i]).get()))
+              dynamic_cast<Assemblers::AdvectionStabilizationInterface<dim>*> ((assemblers->advection_system[advection_field.field_index()][i]).get()))
           {
             // Ensure no other assembler has set max_advection_prefactor or max_conductivity before,
             // otherwise we dont know which one to use.
@@ -549,8 +549,8 @@ namespace aspect
           }
         scratch.material_model_inputs.current_cell = cell;
 
-        for (unsigned int i=0; i<assemblers->advection_system.size(); ++i)
-          assemblers->advection_system[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
+        for (unsigned int i=0; i<assemblers->advection_system[advection_field.field_index()].size(); ++i)
+          assemblers->advection_system[advection_field.field_index()][i]->create_additional_material_model_outputs(scratch.material_model_outputs);
         heating_model_manager.create_additional_material_model_inputs_and_outputs(scratch.material_model_inputs,
                                                                                   scratch.material_model_outputs);
 
