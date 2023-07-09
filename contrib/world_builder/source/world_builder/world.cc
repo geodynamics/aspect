@@ -304,6 +304,7 @@ namespace WorldBuilder
     // We receive the cartesian points from the user.
     const Point<3> point(point_,cartesian);
 
+    (void) this->limit_debug_consistency_checks;
     WBAssert(!this->limit_debug_consistency_checks || this->parameters.coordinate_system->natural_coordinate_system() == cartesian
              || approx(depth, this->parameters.coordinate_system->max_model_depth()-sqrt(point_[0]*point_[0]+point_[1]*point_[1]+point_[2]*point_[2])),
              "Inconsistent input. Please check whether the radius in the sperhical coordinates is consistent with the radius of the planet as defined "
