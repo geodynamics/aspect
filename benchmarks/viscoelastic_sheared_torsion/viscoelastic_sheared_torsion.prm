@@ -136,8 +136,6 @@ subsection Material model
 
     set Viscous flow law = dislocation
 
-    set Include viscoelasticity = true
-
     set Densities                   =  1
 
     set Elastic shear moduli        = 1.e2

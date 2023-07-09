@@ -56,7 +56,6 @@ subsection Material model
     set Cohesion strain weakening factors = 0.5
     set Friction strain weakening factors = 0.5
 
-    set Include viscoelasticity     = true
     set Elastic shear moduli        = 1.e10
     set Use fixed elastic time step = false
     set Fixed elastic time step     = 1e3
