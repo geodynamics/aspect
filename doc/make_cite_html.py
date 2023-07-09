@@ -1,7 +1,7 @@
-# A python3 script to generate the database.js file from manual/manual.bib for citing.html online
+# A python3 script to generate the database.js file from sphinx/references.bib for citing.html online
 
 # What this does:
-# - read bibtex entries from "manual/manual.bib" that are specified below
+# - read bibtex entries from "sphinx/references.bib" that are specified below
 # - use the DOI and the online API to request a clean text form for citation for each entry
 # - write database.js (in the current directory) that contains a javascript object with all the information above
 #
@@ -11,7 +11,7 @@ import requests
 import re
 from html import escape
 
-bibfile = "manual/manual.bib"
+bibfile = "sphinx/references.bib"
 
 bibitems = {}
 biburls = {}
