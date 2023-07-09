@@ -1,69 +1,49 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 256 (on 4 levels)
 Number of degrees of freedom: 3,909 (2,210+297+297+1,105)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+13 iterations.
+   Solving Stokes system... 0+12 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+21 iterations.
+   Solving Stokes system... 0+25 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.111561
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+10 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 5.82874e-06
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 7.09777e-06
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 5.35286e-06
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 5.39397e-06
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 5.38037e-06
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 5.32461e-06
-
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+8 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 5.26031e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 6.85791e-06
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+8 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 5.10681e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 7.38784e-06
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+8 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 4.97871e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 8.51485e-06
+
+   Solving Stokes system... 0+9 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 1.00382e-05
+
+   Solving Stokes system... 0+14 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 1.08655e-05
+
+   Solving Stokes system... 0+29 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 1.29556e-05
+
+   Solving Stokes system... 0+42 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 1.96723e-05
 
 
    Postprocessing:
-     RMS, max velocity:                                 1.88e-11 m/s, 2.06e-11 m/s
+     RMS, max velocity:                                 1.88e-11 m/s, 2.05e-11 m/s
      Mass fluxes through boundary parts:                0.00054 kg/s, 0.00054 kg/s, 0 kg/s, -0.00108 kg/s
      Writing graphical output:                          output-gs_drucker_prager_extension_adiabatic/solution/solution-00000
      Writing particle output:                           output-gs_drucker_prager_extension_adiabatic/particles/particles-00000
-     Average density / Average viscosity / Total mass:  2700 kg/m^3, 1.816e+25 Pa s, 1.08e+12 kg
+     Average density / Average viscosity / Total mass:  2700 kg/m^3, 1.96e+25 Pa s, 1.08e+12 kg
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

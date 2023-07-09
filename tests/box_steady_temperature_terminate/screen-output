@@ -4,8 +4,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0.3 K, 1.2 K
@@ -13,7 +12,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 1:  t=0.0153125 seconds, dt=0.0153125 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.01775 K, 0.2992 K, 0.9476 K
@@ -21,7 +20,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 2:  t=0.0310195 seconds, dt=0.015707 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.03597 K, 0.2985 K, 0.8166 K
@@ -29,7 +28,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 3:  t=0.046931 seconds, dt=0.0159116 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.05435 K, 0.2981 K, 0.732 K
@@ -37,7 +36,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 4:  t=0.0629748 seconds, dt=0.0160437 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.07272 K, 0.2977 K, 0.6679 K
@@ -45,7 +44,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 5:  t=0.0791187 seconds, dt=0.0161439 seconds
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.09085 K, 0.2975 K, 0.6157 K
@@ -53,7 +52,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 6:  t=0.0953442 seconds, dt=0.0162255 seconds
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.1085 K, 0.2973 K, 0.5719 K
@@ -61,7 +60,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 7:  t=0.111638 seconds, dt=0.0162939 seconds
    Solving temperature system... 20 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.1255 K, 0.2971 K, 0.5347 K
@@ -69,7 +68,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 8:  t=0.12799 seconds, dt=0.0163521 seconds
    Solving temperature system... 20 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.1416 K, 0.297 K, 0.5029 K
@@ -77,7 +76,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 9:  t=0.144392 seconds, dt=0.0164017 seconds
    Solving temperature system... 20 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.1566 K, 0.2969 K, 0.4757 K
@@ -85,7 +84,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 10:  t=0.160836 seconds, dt=0.0164442 seconds
    Solving temperature system... 20 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.1706 K, 0.2969 K, 0.4524 K
@@ -95,7 +94,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 11:  t=0.177317 seconds, dt=0.0164806 seconds
    Solving temperature system... 20 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.1835 K, 0.2968 K, 0.4324 K
@@ -103,7 +102,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 12:  t=0.193829 seconds, dt=0.0165118 seconds
    Solving temperature system... 20 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.1952 K, 0.2968 K, 0.4152 K
@@ -111,7 +110,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 13:  t=0.210367 seconds, dt=0.0165387 seconds
    Solving temperature system... 20 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2059 K, 0.2967 K, 0.4004 K
@@ -119,7 +118,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 14:  t=0.226929 seconds, dt=0.0165618 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2155 K, 0.2967 K, 0.3876 K
@@ -127,7 +126,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 15:  t=0.243511 seconds, dt=0.0165818 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2242 K, 0.2967 K, 0.3766 K
@@ -135,7 +134,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 16:  t=0.26011 seconds, dt=0.0165991 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.232 K, 0.2967 K, 0.3669 K
@@ -143,7 +142,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 17:  t=0.276724 seconds, dt=0.0166142 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.239 K, 0.2967 K, 0.3586 K
@@ -151,7 +150,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 18:  t=0.293351 seconds, dt=0.0166272 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2452 K, 0.2966 K, 0.3513 K
@@ -159,7 +158,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 19:  t=0.30999 seconds, dt=0.0166386 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2508 K, 0.2966 K, 0.3449 K
@@ -167,7 +166,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 20:  t=0.326639 seconds, dt=0.0166486 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2558 K, 0.2966 K, 0.3393 K
@@ -177,7 +176,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 21:  t=0.343296 seconds, dt=0.0166573 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2602 K, 0.2966 K, 0.3344 K
@@ -185,7 +184,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 22:  t=0.359961 seconds, dt=0.016665 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2642 K, 0.2966 K, 0.3301 K
@@ -193,7 +192,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 23:  t=0.376633 seconds, dt=0.0166717 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2677 K, 0.2966 K, 0.3263 K
@@ -201,7 +200,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 24:  t=0.39331 seconds, dt=0.0166776 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2708 K, 0.2966 K, 0.323 K
@@ -209,7 +208,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 25:  t=0.409993 seconds, dt=0.0166828 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2736 K, 0.2966 K, 0.32 K
@@ -217,7 +216,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 26:  t=0.426681 seconds, dt=0.0166874 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2761 K, 0.2966 K, 0.3174 K
@@ -225,7 +224,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 27:  t=0.443372 seconds, dt=0.0166915 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2783 K, 0.2966 K, 0.3151 K
@@ -233,7 +232,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 28:  t=0.460067 seconds, dt=0.0166951 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2803 K, 0.2966 K, 0.3131 K
@@ -241,7 +240,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 29:  t=0.476765 seconds, dt=0.0166983 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2821 K, 0.2966 K, 0.3113 K
@@ -249,7 +248,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 30:  t=0.493467 seconds, dt=0.0167011 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2836 K, 0.2966 K, 0.3097 K
@@ -259,7 +258,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 31:  t=0.51017 seconds, dt=0.0167036 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.285 K, 0.2966 K, 0.3083 K
@@ -267,7 +266,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 32:  t=0.526876 seconds, dt=0.0167058 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2863 K, 0.2966 K, 0.307 K
@@ -275,7 +274,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 33:  t=0.543584 seconds, dt=0.0167078 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2874 K, 0.2966 K, 0.3059 K
@@ -283,7 +282,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 34:  t=0.560293 seconds, dt=0.0167095 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2884 K, 0.2966 K, 0.3049 K
@@ -291,7 +290,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 35:  t=0.577004 seconds, dt=0.0167111 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2892 K, 0.2966 K, 0.304 K
@@ -299,7 +298,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 36:  t=0.593717 seconds, dt=0.0167125 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.29 K, 0.2966 K, 0.3032 K
@@ -307,7 +306,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 37:  t=0.610431 seconds, dt=0.0167137 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2907 K, 0.2966 K, 0.3025 K
@@ -315,7 +314,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 38:  t=0.627145 seconds, dt=0.0167148 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2913 K, 0.2966 K, 0.3019 K
@@ -323,7 +322,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 39:  t=0.643861 seconds, dt=0.0167158 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2919 K, 0.2966 K, 0.3013 K
@@ -331,7 +330,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 40:  t=0.660578 seconds, dt=0.0167167 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2924 K, 0.2966 K, 0.3008 K
@@ -341,7 +340,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 41:  t=0.677295 seconds, dt=0.0167175 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2928 K, 0.2966 K, 0.3004 K
@@ -349,7 +348,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 42:  t=0.694014 seconds, dt=0.0167182 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2932 K, 0.2966 K, 0.3 K
@@ -357,7 +356,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 43:  t=0.710732 seconds, dt=0.0167188 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2936 K, 0.2966 K, 0.2996 K
@@ -365,7 +364,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 44:  t=0.727452 seconds, dt=0.0167193 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2939 K, 0.2966 K, 0.2993 K
@@ -373,7 +372,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 45:  t=0.744172 seconds, dt=0.0167198 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2942 K, 0.2966 K, 0.299 K
@@ -381,7 +380,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 46:  t=0.760892 seconds, dt=0.0167203 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2944 K, 0.2966 K, 0.2988 K
@@ -389,7 +388,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 47:  t=0.777613 seconds, dt=0.0167207 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2947 K, 0.2966 K, 0.2985 K
@@ -397,7 +396,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 48:  t=0.794334 seconds, dt=0.016721 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2949 K, 0.2966 K, 0.2983 K
@@ -405,7 +404,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 49:  t=0.811055 seconds, dt=0.0167213 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.295 K, 0.2966 K, 0.2982 K
@@ -413,7 +412,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 50:  t=0.827777 seconds, dt=0.0167216 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2952 K, 0.2966 K, 0.298 K
@@ -423,7 +422,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 51:  t=0.844498 seconds, dt=0.0167219 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2954 K, 0.2966 K, 0.2979 K
@@ -431,7 +430,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 52:  t=0.861221 seconds, dt=0.0167221 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2955 K, 0.2966 K, 0.2977 K
@@ -439,7 +438,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 53:  t=0.877943 seconds, dt=0.0167223 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2956 K, 0.2966 K, 0.2976 K
@@ -447,7 +446,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 54:  t=0.894665 seconds, dt=0.0167225 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2957 K, 0.2966 K, 0.2975 K
@@ -455,7 +454,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 55:  t=0.911388 seconds, dt=0.0167227 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2958 K, 0.2966 K, 0.2974 K
@@ -463,7 +462,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 56:  t=0.928111 seconds, dt=0.0167228 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2959 K, 0.2966 K, 0.2973 K
@@ -471,7 +470,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 57:  t=0.944834 seconds, dt=0.0167229 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.296 K, 0.2966 K, 0.2972 K
@@ -479,7 +478,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 58:  t=0.961557 seconds, dt=0.016723 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.296 K, 0.2966 K, 0.2972 K
@@ -487,7 +486,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 59:  t=0.97828 seconds, dt=0.0167232 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2961 K, 0.2966 K, 0.2971 K
@@ -495,7 +494,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 60:  t=0.995003 seconds, dt=0.0167232 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2961 K, 0.2966 K, 0.2971 K
@@ -505,7 +504,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 61:  t=1.01173 seconds, dt=0.0167233 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2962 K, 0.2966 K, 0.297 K
@@ -513,7 +512,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 62:  t=1.02845 seconds, dt=0.0167234 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2962 K, 0.2966 K, 0.297 K
@@ -521,7 +520,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 63:  t=1.04517 seconds, dt=0.0167235 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2963 K, 0.2966 K, 0.2969 K
@@ -529,7 +528,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 64:  t=1.0619 seconds, dt=0.0167235 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2963 K, 0.2966 K, 0.2969 K
@@ -537,7 +536,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 65:  t=1.07862 seconds, dt=0.0167236 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2963 K, 0.2966 K, 0.2969 K
@@ -545,7 +544,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 66:  t=1.09534 seconds, dt=0.0167236 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2964 K, 0.2966 K, 0.2968 K
@@ -553,7 +552,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 67:  t=1.11207 seconds, dt=0.0167237 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2964 K, 0.2966 K, 0.2968 K
@@ -561,7 +560,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 68:  t=1.12879 seconds, dt=0.0167237 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2964 K, 0.2966 K, 0.2968 K
@@ -569,7 +568,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 69:  t=1.14552 seconds, dt=0.0167238 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2964 K, 0.2966 K, 0.2968 K
@@ -577,7 +576,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 70:  t=1.16224 seconds, dt=0.0167238 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2964 K, 0.2966 K, 0.2968 K
@@ -587,7 +586,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 71:  t=1.17896 seconds, dt=0.0167238 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
@@ -595,7 +594,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 72:  t=1.19569 seconds, dt=0.0167238 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
@@ -603,7 +602,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 73:  t=1.21241 seconds, dt=0.0167239 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
@@ -611,7 +610,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 74:  t=1.22913 seconds, dt=0.0167239 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
@@ -619,7 +618,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 75:  t=1.24586 seconds, dt=0.0167239 seconds
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
@@ -627,7 +626,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 76:  t=1.26258 seconds, dt=0.0167239 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
@@ -635,7 +634,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 77:  t=1.27931 seconds, dt=0.0167239 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
@@ -643,7 +642,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 78:  t=1.29603 seconds, dt=0.0167239 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
@@ -651,7 +650,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 79:  t=1.31275 seconds, dt=0.016724 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
@@ -659,7 +658,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 80:  t=1.32948 seconds, dt=0.016724 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
@@ -669,7 +668,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 81:  t=1.3462 seconds, dt=0.016724 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2967 K
@@ -677,7 +676,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 82:  t=1.36293 seconds, dt=0.016724 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -685,7 +684,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 83:  t=1.37965 seconds, dt=0.016724 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -693,7 +692,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 84:  t=1.39637 seconds, dt=0.016724 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -701,7 +700,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 85:  t=1.4131 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -709,7 +708,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 86:  t=1.42982 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -717,7 +716,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 87:  t=1.44655 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -725,7 +724,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 88:  t=1.46327 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -733,7 +732,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 89:  t=1.47999 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -741,7 +740,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 90:  t=1.49672 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -751,7 +750,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 91:  t=1.51344 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -759,7 +758,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 92:  t=1.53017 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -767,7 +766,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 93:  t=1.54689 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -775,7 +774,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 94:  t=1.56361 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -783,7 +782,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 95:  t=1.58034 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -791,7 +790,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 96:  t=1.59706 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -799,7 +798,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 97:  t=1.61379 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -807,7 +806,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 98:  t=1.63051 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -815,7 +814,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 99:  t=1.64723 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -823,7 +822,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 100:  t=1.66396 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -836,7 +835,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 101:  t=1.68068 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -844,7 +843,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 102:  t=1.69741 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -852,7 +851,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 103:  t=1.71413 seconds, dt=0.0167241 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -860,7 +859,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 104:  t=1.73085 seconds, dt=0.0167241 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -868,7 +867,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 105:  t=1.74758 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -876,7 +875,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 106:  t=1.7643 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -884,7 +883,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 107:  t=1.78103 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -892,7 +891,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 108:  t=1.79775 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -900,7 +899,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 109:  t=1.81447 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -908,7 +907,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 110:  t=1.8312 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -918,7 +917,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 111:  t=1.84792 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -926,7 +925,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 112:  t=1.86465 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -934,7 +933,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 113:  t=1.88137 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -942,7 +941,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 114:  t=1.8981 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -950,7 +949,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 115:  t=1.91482 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -958,7 +957,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 116:  t=1.93154 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -966,7 +965,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 117:  t=1.94827 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -974,7 +973,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 118:  t=1.96499 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -982,7 +981,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 119:  t=1.98172 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -990,7 +989,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 120:  t=1.99844 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
@@ -1000,7 +999,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 121:  t=2.01516 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K

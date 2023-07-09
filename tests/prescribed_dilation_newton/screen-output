@@ -8,17 +8,16 @@ Number of degrees of freedom: 948 (578+81+289)
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 997.366, v = 432.304, p = 898.806
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+24 iterations.
+   Solving Stokes system... 0+22 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 997.366
 
    Skipping temperature solve because RHS is zero.
-   Nonlinear residual reduction has been very large (9.97055e-13); skipping Stokes solve
+   Nonlinear residual reduction has been very large (3.48956e-13); skipping Stokes solve
 
 
    Postprocessing:
      RMS, max velocity:        2.13 m/s, 4.82 m/s
-     Errors u_L2, p_L2:        1.794314e-04, 8.890801e-05
+     Errors u_L2, p_L2:        1.794314e-04, 8.890806e-05
      Writing graphical output: output-prescribed_dilation_newton/solution/solution-00000
 
 Number of active cells: 256 (on 5 levels)
@@ -28,17 +27,16 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 898.181, v = 601.449, p = 667.075
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+25 iterations.
+   Solving Stokes system... 0+22 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 898.181
 
    Skipping temperature solve because RHS is zero.
-   Nonlinear residual reduction has been very large (8.59177e-13); skipping Stokes solve
+   Nonlinear residual reduction has been very large (8.38532e-13); skipping Stokes solve
 
 
    Postprocessing:
      RMS, max velocity:        2.13 m/s, 4.88 m/s
-     Errors u_L2, p_L2:        2.245433e-05, 5.961199e-06
+     Errors u_L2, p_L2:        2.245433e-05, 5.961308e-06
      Writing graphical output: output-prescribed_dilation_newton/solution/solution-00001
 
 Termination requested by criterion: end time

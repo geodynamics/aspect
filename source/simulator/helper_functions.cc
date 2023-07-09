@@ -26,6 +26,7 @@
 #include <aspect/global.h>
 
 #include <aspect/geometry_model/interface.h>
+#include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/heating_model/interface.h>
 #include <aspect/heating_model/adiabatic_heating.h>
 #include <aspect/material_model/interface.h>
@@ -2134,6 +2135,7 @@ namespace aspect
   }
 
 
+
   template <int dim>
   void
   Simulator<dim>::replace_outflow_boundary_ids(const unsigned int offset)
@@ -2536,7 +2538,63 @@ namespace aspect
       }
     return new_linear_stokes_solver_tolerance;
   }
+
+
+
+  template <int dim>
+  void
+  Simulator<dim>::select_default_solver_and_averaging()
+  {
+    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::default_solver)
+      {
+        // Catch all situations that are not supported by the GMG solver:
+        //   - Melt transport
+        //   - Ellipsoidal geometry
+        //   - Locally conservative discretization
+        //   - Implicit reference density profile
+        //   - Periodic boundaries
+        //   - Stokes velocity degree not 2 or 3
+        //   - Material averaging explicitly disabled
+        if (parameters.include_melt_transport == true ||
+            dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model.get()) != nullptr ||
+            parameters.use_locally_conservative_discretization == true ||
+            (material_model->is_compressible() == true && parameters.formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile) ||
+            (geometry_model->get_periodic_boundary_pairs().size()) > 0 ||
+            (parameters.stokes_velocity_degree < 2 || parameters.stokes_velocity_degree > 3) ||
+            parameters.material_averaging == MaterialModel::MaterialAveraging::none)
+          {
+            // GMG is not supported (yet), by default fall back to AMG.
+            parameters.stokes_solver_type = Parameters<dim>::StokesSolverType::block_amg;
+          }
+        else
+          {
+            // GMG is supported for all other cases
+            parameters.stokes_solver_type = Parameters<dim>::StokesSolverType::block_gmg;
+          }
+      }
+
+    // Now pick an appropriate material averaging for the chosen solver
+    if (parameters.material_averaging == MaterialModel::MaterialAveraging::default_averaging)
+      {
+        if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
+          {
+            // project to Q1 is more accurate, but not supported if:
+            //   - elasticity is enabled
+            //   - the Newton solver is enabled
+            if (parameters.enable_elasticity == true ||
+                parameters.nonlinear_solver == NonlinearSolver::iterated_Advection_and_Newton_Stokes ||
+                parameters.nonlinear_solver == NonlinearSolver::single_Advection_iterated_Newton_Stokes)
+              parameters.material_averaging = MaterialModel::MaterialAveraging::harmonic_average_only_viscosity;
+            else
+              parameters.material_averaging = MaterialModel::MaterialAveraging::project_to_Q1_only_viscosity;
+          }
+        else
+          parameters.material_averaging = MaterialModel::MaterialAveraging::none;
+      }
+  }
 }
+
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
@@ -2576,7 +2634,9 @@ namespace aspect
                                                                             const double linear_stokes_solver_tolerance, \
                                                                             const double stokes_residual, \
                                                                             const double newton_residual, \
-                                                                            const double newton_residual_old);
+                                                                            const double newton_residual_old); \
+  template void Simulator<dim>::select_default_solver_and_averaging();
+
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

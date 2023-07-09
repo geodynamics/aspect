@@ -4,8 +4,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_cartesian/solution/solution-00000
@@ -19,8 +18,7 @@ Number of degrees of freedom: 1,388 (850+113+425)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_cartesian/solution/solution-00001
@@ -34,8 +32,7 @@ Number of degrees of freedom: 2,858 (1,754+227+877)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_cartesian/solution/solution-00002
@@ -49,8 +46,7 @@ Number of degrees of freedom: 5,784 (3,554+453+1,777)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_cartesian/solution/solution-00003
@@ -63,7 +59,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_cartesian/solution/solution-00004
@@ -76,7 +72,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
 

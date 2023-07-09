@@ -13,9 +13,8 @@ Number of degrees of freedom: 17,441 (3,969+242+1,323+1,323+1,323+1,323+1,323+1,
    Skipping s31 composition solve because RHS is zero.
    Skipping s32 composition solve because RHS is zero.
    Solving s33 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.247945
 
 
    Postprocessing:
@@ -37,9 +36,8 @@ Number of degrees of freedom: 17,441 (3,969+242+1,323+1,323+1,323+1,323+1,323+1,
    Solving s31 system ... 12 iterations.
    Solving s32 system ... 12 iterations.
    Solving s33 system ... 6 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+2 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.06667e-07
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.82289e-10
 
 
    Postprocessing:

@@ -14,20 +14,20 @@
 # 14: Minimal value for composition C_1
 # 15: Maximal value for composition C_1
 # 16: Global mass for composition C_1
- 0 0.000000000000e+00 0.000000000000e+00 64 659 289 64  0 0 16 18 18 output-composition_passive_discontinuous_constant/solution/solution-00000 0.00000000e+00 1.00000000e+00 5.00000000e-01 
- 1 6.250000000000e-02 6.250000000000e-02 64 659 289 64 10 3  8 10 10                                                                        "" 1.01863320e-12 9.99998962e-01 5.00014180e-01 
- 2 1.250000000000e-01 6.250000000000e-02 64 659 289 64 11 3 16 18 18 output-composition_passive_discontinuous_constant/solution/solution-00001 4.03032993e-12 9.99996439e-01 5.00037767e-01 
- 3 1.875000000000e-01 6.250000000000e-02 64 659 289 64 12 3 16 18 18                                                                        "" 4.14190514e-11 9.99992676e-01 5.00068723e-01 
- 4 2.500000000000e-01 6.250000000000e-02 64 659 289 64 12 3 16 18 18 output-composition_passive_discontinuous_constant/solution/solution-00002 8.32103016e-11 9.99982611e-01 5.00103696e-01 
- 5 3.125000000000e-01 6.250000000000e-02 64 659 289 64 12 3 16 18 18 output-composition_passive_discontinuous_constant/solution/solution-00003 6.83162502e-10 9.99943850e-01 5.00126937e-01 
- 6 3.750000000000e-01 6.250000000000e-02 64 659 289 64 11 3 15 17 17                                                                        "" 1.92953506e-09 9.99875648e-01 5.00163869e-01 
- 7 4.375000000000e-01 6.250000000000e-02 64 659 289 64 12 3 16 18 18 output-composition_passive_discontinuous_constant/solution/solution-00004 4.91372645e-09 9.99867010e-01 5.00187748e-01 
- 8 5.000000000000e-01 6.250000000000e-02 64 659 289 64 12 3 16 18 18 output-composition_passive_discontinuous_constant/solution/solution-00005 1.14048284e-08 9.99832297e-01 5.00184622e-01 
- 9 5.625000000000e-01 6.250000000000e-02 64 659 289 64 11 3 15 17 17                                                                        "" 2.42462201e-08 9.99769971e-01 5.00193040e-01 
-10 6.250000000000e-01 6.250000000000e-02 64 659 289 64 12 3 15 17 17 output-composition_passive_discontinuous_constant/solution/solution-00006 4.81003565e-08 9.99646575e-01 5.00189576e-01 
-11 6.875000000000e-01 6.250000000000e-02 64 659 289 64 11 3 16 18 18                                                                        "" 8.97909977e-08 9.99455126e-01 5.00191721e-01 
-12 7.500000000000e-01 6.250000000000e-02 64 659 289 64 13 3 16 18 18 output-composition_passive_discontinuous_constant/solution/solution-00007 1.59281275e-07 9.99131994e-01 5.00177234e-01 
-13 8.125000000000e-01 6.250000000000e-02 64 659 289 64 11 3  6  8  8 output-composition_passive_discontinuous_constant/solution/solution-00008 2.69869571e-07 9.98678517e-01 5.00167662e-01 
-14 8.750000000000e-01 6.250000000000e-02 64 659 289 64 11 3  6  8  8                                                                        "" 4.39295478e-07 9.98390296e-01 5.00160374e-01 
-15 9.375000000000e-01 6.250000000000e-02 64 659 289 64 11 3  6  8  8 output-composition_passive_discontinuous_constant/solution/solution-00009 6.90187170e-07 9.98321276e-01 5.00154353e-01 
-16 1.000000000000e+00 6.250000000000e-02 64 659 289 64 12 3  6  8  8 output-composition_passive_discontinuous_constant/solution/solution-00010 1.05058502e-06 9.98173531e-01 5.00149094e-01 
+ 0 0.000000000000e+00 0.000000000000e+00 64 659 289 64  0 0 10 12 12 output-composition_passive_discontinuous_constant/solution/solution-00000 0.00000000e+00 1.00000000e+00 5.00000000e-01 
+ 1 6.250000000000e-02 6.250000000000e-02 64 659 289 64 10 3  6  8  8                                                                        "" 1.01863214e-12 9.99998962e-01 5.00014180e-01 
+ 2 1.250000000000e-01 6.250000000000e-02 64 659 289 64 11 3 11 13 13 output-composition_passive_discontinuous_constant/solution/solution-00001 4.03032507e-12 9.99996439e-01 5.00037768e-01 
+ 3 1.875000000000e-01 6.250000000000e-02 64 659 289 64 12 3 11 13 13                                                                        "" 4.14190235e-11 9.99992676e-01 5.00068723e-01 
+ 4 2.500000000000e-01 6.250000000000e-02 64 659 289 64 12 3 11 13 13 output-composition_passive_discontinuous_constant/solution/solution-00002 8.32102510e-11 9.99982611e-01 5.00103696e-01 
+ 5 3.125000000000e-01 6.250000000000e-02 64 659 289 64 12 3 11 13 13 output-composition_passive_discontinuous_constant/solution/solution-00003 6.83162219e-10 9.99943850e-01 5.00126937e-01 
+ 6 3.750000000000e-01 6.250000000000e-02 64 659 289 64 11 3 10 12 12                                                                        "" 1.92953392e-09 9.99875649e-01 5.00163869e-01 
+ 7 4.375000000000e-01 6.250000000000e-02 64 659 289 64 12 3 11 13 13 output-composition_passive_discontinuous_constant/solution/solution-00004 4.91372416e-09 9.99867010e-01 5.00187749e-01 
+ 8 5.000000000000e-01 6.250000000000e-02 64 659 289 64 12 3 11 13 13 output-composition_passive_discontinuous_constant/solution/solution-00005 1.14048230e-08 9.99832297e-01 5.00184622e-01 
+ 9 5.625000000000e-01 6.250000000000e-02 64 659 289 64 11 3 10 12 12                                                                        "" 2.42462076e-08 9.99769971e-01 5.00193040e-01 
+10 6.250000000000e-01 6.250000000000e-02 64 659 289 64 12 3 10 12 12 output-composition_passive_discontinuous_constant/solution/solution-00006 4.81003346e-08 9.99646575e-01 5.00189576e-01 
+11 6.875000000000e-01 6.250000000000e-02 64 659 289 64 11 3 11 13 13                                                                        "" 8.97909545e-08 9.99455126e-01 5.00191721e-01 
+12 7.500000000000e-01 6.250000000000e-02 64 659 289 64 13 3 11 13 13 output-composition_passive_discontinuous_constant/solution/solution-00007 1.59281208e-07 9.99131994e-01 5.00177235e-01 
+13 8.125000000000e-01 6.250000000000e-02 64 659 289 64 11 3  5  7  7 output-composition_passive_discontinuous_constant/solution/solution-00008 2.69869450e-07 9.98678517e-01 5.00167662e-01 
+14 8.750000000000e-01 6.250000000000e-02 64 659 289 64 11 3  4  6  6                                                                        "" 4.39295298e-07 9.98390296e-01 5.00160373e-01 
+15 9.375000000000e-01 6.250000000000e-02 64 659 289 64 11 3  4  6  6 output-composition_passive_discontinuous_constant/solution/solution-00009 6.90186871e-07 9.98321277e-01 5.00154353e-01 
+16 1.000000000000e+00 6.250000000000e-02 64 659 289 64 12 3  4  6  6 output-composition_passive_discontinuous_constant/solution/solution-00010 1.05058453e-06 9.98173531e-01 5.00149094e-01 

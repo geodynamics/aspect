@@ -3,17 +3,16 @@ Number of active cells: 96 (on 2 levels)
 Number of degrees of freedom: 4,030 (2,910+150+970)
 
 *** Timestep 0:  t=0 years, dt=0 years
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 121+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 28+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.26666
 
-   Solving Stokes system... 32+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.2254e-06
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.79311e-08
 
 
    Postprocessing:
      Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
-     Pressure at top/bottom of domain: -1.994e-10 Pa, 1.96e+06 Pa
+     Pressure at top/bottom of domain: -1.025e-10 Pa, 1.96e+06 Pa
      Computing dynamic topography      
      Writing geoid anomaly:            output-geoid_visualization/geoid_anomaly.00000
      Writing graphical output:         output-geoid_visualization/solution/solution-00000

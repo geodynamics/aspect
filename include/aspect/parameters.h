@@ -323,12 +323,13 @@ namespace aspect
       {
         block_amg,
         direct_solver,
-        block_gmg
+        block_gmg,
+        default_solver
       };
 
       static const std::string pattern()
       {
-        return "block AMG|direct solver|block GMG";
+        return "default solver|block AMG|direct solver|block GMG";
       }
 
       static Kind
@@ -340,6 +341,8 @@ namespace aspect
           return direct_solver;
         else if (input == "block GMG")
           return block_gmg;
+        else if (input == "default solver")
+          return default_solver;
         else
           AssertThrow(false, ExcNotImplemented());
 

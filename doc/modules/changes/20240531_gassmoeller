@@ -1,0 +1,10 @@
+Changed: ASPECT's default Stokes preconditioner has been changed from
+a block AMG preconditioner to the geometric multigrid (GMG) preconditioner
+described in Clevenger and Heister, 2021 (https://doi.org/10.1002/nla.2375).
+The GMG preconditioner generally performs better, but requires that
+the viscosity is averaged using one of the material model averaging functions.
+If models use features that are not supported by the GMG preconditioner
+and the GMG preconditioner has not been explicitly set ASPECT will
+fall back to the AMG preconditioner.
+<br>
+(Rene Gassmoeller, 2024/06/09)

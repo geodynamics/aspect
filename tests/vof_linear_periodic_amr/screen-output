@@ -19,7 +19,7 @@ Number of degrees of freedom: 6,693 (2,178+289+1,089+1,089+256+768+1,024)
 
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.462
-     VoF Calculation(IEstL1/FEstL1):       5.90327873e-16 / 0.00000000e+00
+     VoF Calculation(IEstL1/FEstL1):       5.90388240e-16 / 0.00000000e+00
 
 Number of active cells: 205 (on 5 levels)
 Number of degrees of freedom: 5,595 (1,854+247+927+927+205+615+820)

@@ -5,53 +5,43 @@ Number of degrees of freedom: 3,909 (2,210+297+297+1,105)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+13 iterations.
+   Solving Stokes system... 0+12 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+51 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.110562
+   Solving Stokes system... 0+197 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.109954
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+17 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 7.46225e-05
+   Solving Stokes system... 0+93 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000100658
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+16 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 1.53301e-05
+   Solving Stokes system... 0+87 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 1.99856e-05
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 7.78588e-06
+   Solving Stokes system... 0+141 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.75957e-05
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 6.64146e-06
+   Solving Stokes system... 0+168 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 1.79182e-05
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 5.45314e-06
+   Solving Stokes system... 0+178 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 1.80235e-05
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+13 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 6.17969e-06
+   Solving Stokes system... 0+190 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 2.13231e-05
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+13 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 4.19022e-06
+   Solving Stokes system... 0+191 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 2.88113e-05
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+12 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 3.48177e-06
+   Solving Stokes system... 0+231 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 2.45622e-05
 
 
    Postprocessing:
-     RMS, max velocity:                                 2.03e-11 m/s, 2.45e-11 m/s
+     RMS, max velocity:                                 2.05e-11 m/s, 2.51e-11 m/s
      Mass fluxes through boundary parts:                0.00054 kg/s, 0.00054 kg/s, 0 kg/s, -0.00108 kg/s
      Writing graphical output:                          output-gs_drucker_prager_extension/solution/solution-00000
      Writing particle output:                           output-gs_drucker_prager_extension/particles/particles-00000
-     Average density / Average viscosity / Total mass:  2700 kg/m^3, 4.647e+25 Pa s, 1.08e+12 kg
+     Average density / Average viscosity / Total mass:  2700 kg/m^3, 4.646e+25 Pa s, 1.08e+12 kg
 
 Termination requested by criterion: end time
 

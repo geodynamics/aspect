@@ -8,9 +8,8 @@ Number of mesh deformation degrees of freedom: 594
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+17 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.999994
 
 
    Postprocessing:
@@ -25,9 +24,8 @@ Number of mesh deformation degrees of freedom: 2,090
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.999999
 
 
    Postprocessing:

@@ -14,20 +14,20 @@
 # 14: Visualization file name
 # 15: Number of advected particles
 # 16: Particle file name
- 0 0.000000000000e+00 0.000000000000e+00 64 659 289 578  0  0  0 16 18 18 output-composition_passive_particles/solution/solution-00000 10 output-composition_passive_particles/particles/particles-00000 
- 1 6.250000000000e-02 6.250000000000e-02 64 659 289 578 10  9 10  8 10 10                                                           "" 10                                                             "" 
- 2 1.250000000000e-01 6.250000000000e-02 64 659 289 578 11 12 12 16 18 18 output-composition_passive_particles/solution/solution-00001 10 output-composition_passive_particles/particles/particles-00001 
- 3 1.875000000000e-01 6.250000000000e-02 64 659 289 578 12 12 12 16 18 18                                                           "" 10                                                             "" 
- 4 2.500000000000e-01 6.250000000000e-02 64 659 289 578 12 12 11 16 18 18 output-composition_passive_particles/solution/solution-00002 10 output-composition_passive_particles/particles/particles-00002 
- 5 3.125000000000e-01 6.250000000000e-02 64 659 289 578 12 12 12 16 18 18 output-composition_passive_particles/solution/solution-00003 10 output-composition_passive_particles/particles/particles-00003 
- 6 3.750000000000e-01 6.250000000000e-02 64 659 289 578 11 12 11 15 17 17                                                           "" 10                                                             "" 
- 7 4.375000000000e-01 6.250000000000e-02 64 659 289 578 12 12 11 16 18 18 output-composition_passive_particles/solution/solution-00004 10 output-composition_passive_particles/particles/particles-00004 
- 8 5.000000000000e-01 6.250000000000e-02 64 659 289 578 12 12 12 16 18 18 output-composition_passive_particles/solution/solution-00005 10 output-composition_passive_particles/particles/particles-00005 
- 9 5.625000000000e-01 6.250000000000e-02 64 659 289 578 11 12 11 15 17 17                                                           "" 10                                                             "" 
-10 6.250000000000e-01 6.250000000000e-02 64 659 289 578 12 11 11 15 17 17 output-composition_passive_particles/solution/solution-00006 10 output-composition_passive_particles/particles/particles-00006 
-11 6.875000000000e-01 6.250000000000e-02 64 659 289 578 11 11 11 16 18 18                                                           "" 10                                                             "" 
-12 7.500000000000e-01 6.250000000000e-02 64 659 289 578 13 12 12 16 18 18 output-composition_passive_particles/solution/solution-00007 10 output-composition_passive_particles/particles/particles-00007 
-13 8.125000000000e-01 6.250000000000e-02 64 659 289 578 11 11 11  6  8  8 output-composition_passive_particles/solution/solution-00008 10 output-composition_passive_particles/particles/particles-00008 
-14 8.750000000000e-01 6.250000000000e-02 64 659 289 578 11 11 11  6  8  8                                                           "" 10                                                             "" 
-15 9.375000000000e-01 6.250000000000e-02 64 659 289 578 11 11 11  6  8  8 output-composition_passive_particles/solution/solution-00009 10 output-composition_passive_particles/particles/particles-00009 
-16 1.000000000000e+00 6.250000000000e-02 64 659 289 578 12 11 11  6  8  8 output-composition_passive_particles/solution/solution-00010 10 output-composition_passive_particles/particles/particles-00010 
+ 0 0.000000000000e+00 0.000000000000e+00 64 659 289 578  0  0  0 10 12 12 output-composition_passive_particles/solution/solution-00000 10 output-composition_passive_particles/particles/particles-00000 
+ 1 6.250000000000e-02 6.250000000000e-02 64 659 289 578 10  9 10  6  8  8                                                           "" 10                                                             "" 
+ 2 1.250000000000e-01 6.250000000000e-02 64 659 289 578 11 12 12 11 13 13 output-composition_passive_particles/solution/solution-00001 10 output-composition_passive_particles/particles/particles-00001 
+ 3 1.875000000000e-01 6.250000000000e-02 64 659 289 578 12 12 12 11 13 13                                                           "" 10                                                             "" 
+ 4 2.500000000000e-01 6.250000000000e-02 64 659 289 578 12 12 11 11 13 13 output-composition_passive_particles/solution/solution-00002 10 output-composition_passive_particles/particles/particles-00002 
+ 5 3.125000000000e-01 6.250000000000e-02 64 659 289 578 12 12 12 11 13 13 output-composition_passive_particles/solution/solution-00003 10 output-composition_passive_particles/particles/particles-00003 
+ 6 3.750000000000e-01 6.250000000000e-02 64 659 289 578 11 12 11 10 12 12                                                           "" 10                                                             "" 
+ 7 4.375000000000e-01 6.250000000000e-02 64 659 289 578 12 12 11 11 13 13 output-composition_passive_particles/solution/solution-00004 10 output-composition_passive_particles/particles/particles-00004 
+ 8 5.000000000000e-01 6.250000000000e-02 64 659 289 578 12 12 12 11 13 13 output-composition_passive_particles/solution/solution-00005 10 output-composition_passive_particles/particles/particles-00005 
+ 9 5.625000000000e-01 6.250000000000e-02 64 659 289 578 11 12 11 10 12 12                                                           "" 10                                                             "" 
+10 6.250000000000e-01 6.250000000000e-02 64 659 289 578 12 11 11 10 12 12 output-composition_passive_particles/solution/solution-00006 10 output-composition_passive_particles/particles/particles-00006 
+11 6.875000000000e-01 6.250000000000e-02 64 659 289 578 11 11 11 11 13 13                                                           "" 10                                                             "" 
+12 7.500000000000e-01 6.250000000000e-02 64 659 289 578 13 12 12 11 13 13 output-composition_passive_particles/solution/solution-00007 10 output-composition_passive_particles/particles/particles-00007 
+13 8.125000000000e-01 6.250000000000e-02 64 659 289 578 11 11 11  5  7  7 output-composition_passive_particles/solution/solution-00008 10 output-composition_passive_particles/particles/particles-00008 
+14 8.750000000000e-01 6.250000000000e-02 64 659 289 578 11 11 11  4  6  6                                                           "" 10                                                             "" 
+15 9.375000000000e-01 6.250000000000e-02 64 659 289 578 11 11 11  4  6  6 output-composition_passive_particles/solution/solution-00009 10 output-composition_passive_particles/particles/particles-00009 
+16 1.000000000000e+00 6.250000000000e-02 64 659 289 578 12 11 11  4  6  6 output-composition_passive_particles/solution/solution-00010 10 output-composition_passive_particles/particles/particles-00010 

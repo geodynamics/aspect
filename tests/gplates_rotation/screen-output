@@ -4,7 +4,7 @@
 
    Input point 1 spherical coordinates: 1.000 1.870
    Input point 1 normalized cartesian coordinates: -0.248 0.804 0.540
-   Input point 1 rotated model coordinates: 0.000 1.000 0.000
+   Input point 1 rotated model coordinates: 0.000 1.000 -0.000
    Input point 2 spherical coordinates: 2.000 5.240
    Input point 2 normalized cartesian coordinates: 0.458 -0.786 -0.416
    Input point 2 rotated model coordinates: -0.243 -0.970 0.000
@@ -24,13 +24,12 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 63+0 iterations.
+   Solving Stokes system... 32+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0204 m/year, 0.0706 m/year
+     RMS, max velocity:                  0.0218 m/year, 0.0705 m/year
      Temperature min/avg/max:            273 K, 1579 K, 2600 K
-     Heat fluxes through boundary parts: -4.961e+05 W, 1.243e+06 W
+     Heat fluxes through boundary parts: -5.046e+05 W, 1.203e+06 W
 
 Termination requested by criterion: end time
 

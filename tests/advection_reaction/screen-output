@@ -7,8 +7,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -1/1/-1.297e-18
@@ -19,11 +18,10 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
    Solving composition reactions... in 500 substep(s).
    Solving temperature system... 22 iterations.
    Solving C_1 system ... 22 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -0.9974/0.9974/-3.476e-08
+     Compositions min/max/mass: -0.9974/0.9974/-3.408e-08
      Writing graphical output:  output-advection_reaction/solution/solution-00001
      Errors                     time=1.000000e+00 ndofs= 17989 C_L2_current= 1.349430e-03 C_L2_max= 1.349430e-03 T_L2_current= 1.349430e-03 T_L2_max= 1.349430e-03
 

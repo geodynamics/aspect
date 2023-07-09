@@ -11,7 +11,7 @@ Number of degrees of freedom: 1,749 (578+81+289+289+64+192+256)
 
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.462
-     VoF Calculation(IEstL1/FEstL1):       1.51111325e-15 / 0.00000000e+00
+     VoF Calculation(IEstL1/FEstL1):       1.51732822e-15 / 0.00000000e+00
 
 *** Timestep 1:  t=0.125 seconds, dt=0.125 seconds
    Skipping temperature solve because RHS is zero.
@@ -268,7 +268,7 @@ Number of degrees of freedom: 1,749 (578+81+289+289+64+192+256)
 
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.462
-     VoF Calculation(IEstL1/FEstL1):       1.31279607e-14 / 9.20417171e-15
+     VoF Calculation(IEstL1/FEstL1):       1.31464468e-14 / 9.22020605e-15
 
 Termination requested by criterion: end time
 

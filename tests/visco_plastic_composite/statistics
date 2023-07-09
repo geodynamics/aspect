@@ -16,4 +16,4 @@
 # 16: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
 # 17: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
 # 18: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 100 1003 441 1 0 1 5 3 4.08248290e-04 6.91168359e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05 output-visco_plastic_composite/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 1 0 6 41 8 4.08248295e-04 6.91168363e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05 output-visco_plastic_composite/solution/solution-00000 

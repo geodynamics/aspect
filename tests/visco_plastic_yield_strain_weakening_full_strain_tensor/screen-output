@@ -8,9 +8,8 @@ Number of degrees of freedom: 3,208 (882+121+441+441+441+441+441)
    Skipping s12 composition solve because RHS is zero.
    Skipping s21 composition solve because RHS is zero.
    Solving s22 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+2 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 0+7 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.230577
 
 
    Postprocessing:
@@ -27,9 +26,8 @@ Number of degrees of freedom: 3,208 (882+121+441+441+441+441+441)
    Solving s12 system ... 12 iterations.
    Solving s21 system ... 12 iterations.
    Solving s22 system ... 6 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.6263e-15
+   Solving Stokes system... 0+2 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.84205e-09
 
 
    Postprocessing:

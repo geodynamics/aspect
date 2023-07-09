@@ -7,8 +7,7 @@ Number of degrees of freedom: 104,487 (33,410+4,257+16,705+16,705+16,705+16,705)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+13 iterations.
+   Solving Stokes system... 30+8 iterations.
 
 Number of active cells: 1,198 (on 7 levels)
 Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
@@ -18,29 +17,26 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+13 iterations.
+   Solving Stokes system... 30+19 iterations.
 
    Postprocessing:
      Writing graphical output: output-multicomponent_arithmetic/solution/solution-00000
 
-*** Timestep 1:  t=59830.4 years, dt=59830.4 years
+*** Timestep 1:  t=63970.5 years, dt=63970.5 years
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 12 iterations.
    Solving C_3 system ... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+8 iterations.
+   Solving Stokes system... 30+7 iterations.
 
    Postprocessing:
 
-*** Timestep 2:  t=125408 years, dt=65577.5 years
+*** Timestep 2:  t=130221 years, dt=66250.4 years
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 12 iterations.
    Solving C_3 system ... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+7 iterations.
+   Solving Stokes system... 30+6 iterations.
 
    Postprocessing:
 

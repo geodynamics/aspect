@@ -5,8 +5,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 54+0 iterations.
+   Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
 
@@ -33,8 +32,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 *** Timestep 1:  t=2.81625e+12 seconds, dt=2.81625e+12 seconds
    Solving temperature system... 27 iterations.
    Solving C_1 system ... 19 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00001
@@ -46,8 +44,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 *** Timestep 2:  t=5.6325e+12 seconds, dt=2.81625e+12 seconds
    Solving temperature system... 17 iterations.
    Solving C_1 system ... 21 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00002
@@ -59,8 +56,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 *** Timestep 3:  t=8e+12 seconds, dt=2.3675e+12 seconds
    Solving temperature system... 15 iterations.
    Solving C_1 system ... 19 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00003

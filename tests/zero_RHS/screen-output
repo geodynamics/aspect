@@ -6,21 +6,17 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 479+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.820077
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00375062
+   Solving Stokes system... 240+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0030758
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 7.22761e-05
+   Solving Stokes system... 169+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 5.92742e-05
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 9.38333e-07
+   Solving Stokes system... 36+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 7.6951e-07
 
 
    Postprocessing:
@@ -31,9 +27,8 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 18 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.70752e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.99793e-08
 
 
    Postprocessing:
@@ -44,9 +39,8 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 19 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.70752e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.99793e-08
 
 
    Postprocessing:
@@ -57,9 +51,8 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 19 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.70752e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.99793e-08
 
 
    Postprocessing:
@@ -70,22 +63,20 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 19 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.70752e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.99793e-08
 
 
    Postprocessing:
      Writing graphical output: output-zero_RHS/solution/solution-00004
      RMS, max velocity:        0.0102 m/year, 0.0103 m/year
 
-*** Timestep 5:  t=200000 years, dt=6600.03 years
+*** Timestep 5:  t=200000 years, dt=6600.06 years
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 10 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.70752e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.99793e-08
 
 
    Postprocessing:

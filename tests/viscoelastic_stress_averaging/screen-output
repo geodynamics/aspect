@@ -7,8 +7,7 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27+0 iterations.
+   Solving Stokes system... 53+0 iterations.
 
    Postprocessing:
      RMS, max velocity:     0.0258 m/year, 0.0444 m/year
@@ -22,7 +21,6 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving ve_stress_xx system ... 11 iterations.
    Solving ve_stress_yy system ... 11 iterations.
    Solving ve_stress_xy system ... 12 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
