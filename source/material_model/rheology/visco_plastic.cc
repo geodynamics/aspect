@@ -592,10 +592,6 @@ namespace aspect
                            "Using a pressure gradient of 32436 Pa/m, then a value of "
                            "0.3 K/km = 0.0003 K/m = 9.24e-09 K/Pa gives an earth-like adiabat."
                            "Units: \\si{\\kelvin\\per\\pascal}.");
-
-        prm.declare_entry ("Include viscoelasticity", "false",
-                           Patterns::Bool (),
-                           "Whether to include elastic effects in the rheological formulation.");
       }
 
 
@@ -617,7 +613,7 @@ namespace aspect
         friction_models.initialize_simulator (this->get_simulator());
         friction_models.parse_parameters(prm);
 
-        use_elasticity = prm.get_bool ("Include viscoelasticity");
+        use_elasticity = this->get_parameters().enable_elasticity;
 
         if (use_elasticity)
           {
