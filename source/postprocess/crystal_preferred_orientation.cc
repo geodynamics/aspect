@@ -464,11 +464,13 @@ namespace aspect
             background_thread_master.join ();
 
           // then continue with writing the master file
-          background_thread_master = std::thread (&writer,
-                                                  filename_master,
-                                                  temporary_output_location,
-                                                  *file_contents_master,
-                                                  false);
+          background_thread_master
+            = std::thread([ my_filename = std::move(filename_master),
+                            my_temporary_output_location = temporary_output_location,
+                            my_file_contents = std::move(file_contents_master)]()
+          {
+            writer (my_filename, my_temporary_output_location, *my_file_contents, false);
+          });
 
           if (write_raw_cpo.size() != 0)
             {
@@ -478,11 +480,14 @@ namespace aspect
                 background_thread_content_raw.join ();
 
               // then continue with writing our own data.
-              background_thread_content_raw = std::thread (&writer,
-                                                           filename_raw,
-                                                           temporary_output_location,
-                                                           *file_contents_raw,
-                                                           compress_cpo_data_files);
+              background_thread_content_raw
+                = std::thread([ my_filename = std::move(filename_raw),
+                                my_temporary_output_location = temporary_output_location,
+                                my_file_contents = std::move(file_contents_raw),
+                                my_compress_cpo_data_files = compress_cpo_data_files]()
+              {
+                writer (my_filename, my_temporary_output_location, *my_file_contents, my_compress_cpo_data_files);
+              });
             }
 
           if (write_draw_volume_weighted_cpo.size() != 0)
@@ -493,11 +498,14 @@ namespace aspect
                 background_thread_content_draw_volume_weighting.join ();
 
               // then continue with writing our own data.
-              background_thread_content_draw_volume_weighting = std::thread (&writer,
-                                                                             filename_draw_volume_weighting,
-                                                                             temporary_output_location,
-                                                                             *file_contents_draw_volume_weighting,
-                                                                             compress_cpo_data_files);
+              background_thread_content_draw_volume_weighting
+                = std::thread([ my_filename = std::move(filename_draw_volume_weighting),
+                                my_temporary_output_location = temporary_output_location,
+                                my_file_contents = std::move(file_contents_draw_volume_weighting),
+                                my_compress_cpo_data_files = compress_cpo_data_files]()
+              {
+                writer (my_filename, my_temporary_output_location, *my_file_contents, my_compress_cpo_data_files);
+              });
             }
         }
       else
