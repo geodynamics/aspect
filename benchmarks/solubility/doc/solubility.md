@@ -7,8 +7,8 @@ flow of other fluids, such as water. Water in the Earth's mantle can either be b
 in minerals, or it can be present as a fluid phase that can migrate relative to the
 solid rock. The fraction of this free water then represents the porosity of the
 material. Therefore, the terms describing melting and freezing of a silicate melt
-in the equations would instead describe the release and reabsorption of water into
-the rock, which are governed by the water solubility.
+in the equations would instead describe the release and reabsorption of water
+(or other volatiles) into the rock, which are governed by the water (volatile) solubility.
 
 This test shows how a model for water solubility can be implemented in a material
 model in ASPECT, and demonstrates the mass of water is conserved as water is released,
@@ -33,6 +33,8 @@ below (Figure {numref}`fig:solubility`).
 
 Evolution of the bound water content (top) and the free water (bottom). Initially, all water is bound. Since the middle layer has a zero solubility, water is released and starts migrating upward with respect to the solid, initially leading to a higher bound water content when it reaches the top layer. As the model reaches steady state, the (bound) water content in the top and bottom layer are equal (1\%) and the water content in the middle layer is 0.5\%.
 ```
+Note that this example is specifically for water, but the general concept can be applied
+to a fluid of an arbitrary composition.
 
 The benchmark can be run using the parameter files in
 [benchmarks/solubility/](https://github.com/geodynamics/aspect/blob/main/benchmarks/solubility).

@@ -156,6 +156,10 @@ solkz/: dummy
 	+@$(def); make_lib $@/compositional_fields
 	@$(def); run_all_prms $@/compositional_fields
 
+solubility/: dummy
+	+@$(def); make_lib $@/plugin
+	@$(def); run_prm $@ solubility.prm
+
 tangurnis/: dummy
 	+@$(def); make_lib $@/code
 	@$(def); run_prm $@ ba/tan.prm

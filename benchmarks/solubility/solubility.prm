@@ -1,11 +1,11 @@
 # This is a 1D test case for the solubility of fluids in interaction
 # with porous flow. Material with a given water content flows into the
 # model from the bottom. The model has three layers with different
-# water solubility, specifically, and infinite solubility above 30 km
+# water solubility, specifically, an infinite solubility above 30 km
 # depth and below 60 km depth, and a zero solubility in between. When
 # the upwelling material reaches the boundary at 60 km depth, water is
-# being released and can move realtive to the solid as a free fluid
-# phase. Due to its lower density, it moves upwards fater than the
+# being released and can move relative to the solid as a free fluid
+# phase. Due to its lower density, it moves upwards faster than the
 # solid, until it reaches 30 km depth where it is reabsorbed into the
 # solid. In steady state, the water content should be the same in the
 # top and bottom layer, and in the middle layer it should be lower,
@@ -127,11 +127,10 @@ subsection Material model
     set Base model = visco plastic
     set Reference fluid density = 2995
     set Shear to bulk viscosity ratio = 0.1
-    set Reference melt viscosity = 10
+    set Reference fluid viscosity = 10
     set Reference permeability = 2.5e-6
-    set Exponential melt weakening factor = 27
-    set Melt compressibility = 0
-    set Melting time scale for operator splitting = 5e4
+    set Exponential fluid weakening factor = 27
+    set Fluid reaction time scale for operator splitting = 5e4
   end
 
   subsection Visco Plastic
