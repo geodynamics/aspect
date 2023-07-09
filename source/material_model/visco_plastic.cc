@@ -263,7 +263,7 @@ namespace aspect
           // the ElasticAdditionalOutputs.
           rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
 
-          if (rheology->use_elasticity)
+          if (this->get_parameters().enable_elasticity)
             {
               // Compute average elastic shear modulus
               average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions,
@@ -281,7 +281,7 @@ namespace aspect
       // If we use the full strain tensor, compute the change in the individual tensor components.
       rheology->strain_rheology.compute_finite_strain_reaction_terms(in, out);
 
-      if (rheology->use_elasticity)
+      if (this->get_parameters().enable_elasticity)
         {
           rheology->elastic_rheology.fill_elastic_force_outputs(in, average_elastic_shear_moduli, out);
           rheology->elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
@@ -409,7 +409,7 @@ namespace aspect
     {
       rheology->create_plastic_outputs(out);
 
-      if (rheology->use_elasticity)
+      if (this->get_parameters().enable_elasticity)
         rheology->elastic_rheology.create_elastic_outputs(out);
     }
 
@@ -426,7 +426,8 @@ namespace aspect
                                    "An implementation of an incompressible visco(elastic)-plastic rheology "
                                    "with options for selecting dislocation creep, diffusion creep or "
                                    "composite viscous flow laws. Prior to yielding, one may select to "
-                                   "modify the viscosity to account for viscoelastic effects. Plasticity "
+                                   "modify the viscosity to account for viscoelastic effects by setting the "
+                                   "parameter 'Enable elasticity' in subsection Formulation to true. Plasticity "
                                    "limits viscous stresses through a Drucker Prager yield criterion. "
                                    "The implementation of this material model is based heavily on the "
                                    "`DiffusionDislocation' (Bob Myhill), `DruckerPrager' "

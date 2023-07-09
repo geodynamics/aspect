@@ -1,0 +1,7 @@
+ Changed: The input parameter 'Include viscoelasticity' has been 
+ removed from the visco_plastic material model. When
+ 'Enable elasticity' in the Formulation subsection is
+ switched on, elasticity will automatically be included
+ in the visco_plastic material model. 
+ <br>
+ (Anne Glerum, 2023/07/09)
