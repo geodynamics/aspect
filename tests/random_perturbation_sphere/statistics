@@ -1,0 +1,12 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Visualization file name
+# 9: Minimal temperature (K)
+# 10: Average temperature (K)
+# 11: Maximal temperature (K)
+0 0.000000000000e+00 0.000000000000e+00 3584 92380 29521 0 output-random_perturbation_sphere/solution/solution-00000 4.78879670e+02 5.00008702e+02 5.22133317e+02 
