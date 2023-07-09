@@ -70,7 +70,7 @@ subsection Material model
     set Thermal conductivity             = 1.5
   end
 end
-
+# steinberger_projected_density.prm
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
