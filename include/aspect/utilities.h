@@ -1198,6 +1198,27 @@ namespace aspect
       return sorted_vec;
     }
 
+
+    /**
+    * Wraps angle between 0 and 360 degrees.
+    */
+    double wrap_angle(const double angle);
+
+    /**
+     * Compute Z-X-Z Euler angles (https://en.wikipedia.org/wiki/Euler_angles) from rotation matrix.
+     * The Z-X-Z indicates the order of axis rotations to generate the Euler angles.
+     */
+    std::array<double,3> zxz_euler_angles_from_rotation_matrix(const Tensor<2,3> &rotation_matrix);
+
+    /**
+     * Compute rotation matrix from Z-X-Z Euler angles (https://en.wikipedia.org/wiki/Euler_angles)
+     * The Z-X-Z indicates the order of axis axis rotations to generate the Euler angles.
+     */
+    Tensor<2,3> zxz_euler_angles_to_rotation_matrix(const double phi1,
+                                                    const double theta,
+                                                    const double phi2);
+
+
   }
 }
 #endif
