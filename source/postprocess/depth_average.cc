@@ -269,7 +269,7 @@ namespace aspect
             "velocity magnitude|sinking velocity|rising velocity|Vs|Vp|log viscosity|"
             "viscosity|vertical heat flux|vertical mass flux|composition mass";
           prm.declare_entry("List of output variables", "all",
-                            Patterns::MultipleSelection(variables.c_str()),
+                            Patterns::MultipleSelection(variables),
                             "A comma separated list which specifies which quantities to "
                             "average in each depth slice. It defaults to averaging all "
                             "available quantities, but this can be an expensive operation, "

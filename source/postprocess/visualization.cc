@@ -593,7 +593,7 @@ namespace aspect
             // Just write one data file in parallel
             if (group_files == 1)
               {
-                data_out.write_vtu_in_parallel(filename.c_str(),
+                data_out.write_vtu_in_parallel(filename,
                                                this->get_mpi_communicator());
               }
             else               // Write as many output files as 'group_files' groups
@@ -602,7 +602,7 @@ namespace aspect
                 MPI_Comm comm;
                 int ierr = MPI_Comm_split(this->get_mpi_communicator(), color, my_id, &comm);
                 AssertThrowMPI(ierr);
-                data_out.write_vtu_in_parallel(filename.c_str(), comm);
+                data_out.write_vtu_in_parallel(filename, comm);
                 ierr = MPI_Comm_free(&comm);
                 AssertThrowMPI(ierr);
               }
