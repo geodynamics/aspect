@@ -607,7 +607,6 @@ namespace WorldBuilder
                 }
 
               // check whether the check point and the reference point are on the same side, if not, change the side.
-              const Point<2> reference_normal = closest_point_on_curve.normal*10e3+closest_point_on_line_2d;
               const Point<2> AB_normal = closest_point_on_curve.normal*closest_point_on_line_2d.distance(reference_point);//*AB.norm();
               const Point<2> local_reference_point = AB_normal*1.+closest_point_on_line_2d;
               const bool reference_normal_on_side_of_line =  (closest_point_on_line_2d-local_reference_point).norm_square() < (check_point_surface_2d_temp-local_reference_point).norm_square();
