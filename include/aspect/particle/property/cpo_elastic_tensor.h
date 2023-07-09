@@ -57,14 +57,13 @@ namespace aspect
            * Initialization function. This function is called once at the
            * beginning of the program after parse_parameters is run.
            */
-          virtual
           void
-          initialize ();
+          initialize () override;
 
 
           /**
            * This implements the Voigt averaging as described in the equation at the
-           * bottom of page 385 in Mainprice (1990):
+           * bottom of page 385 in Mainprice (1990, doi: 10.1016/0098-3004(90)90072-2):
            * $C^V_{ijkl} = \sum^S_l F_s \sum^{N_s}_l C_{ijkl}/N_s$, where $F_s$ is the
            * grain size, $N_s$ is the number of grains and $C_{ijkl}$ is the elastic
            * tensor. This elastic tensor is computed by the equation above in
@@ -88,10 +87,9 @@ namespace aspect
            * of this function should be to extend this vector by a number of
            * properties.
            */
-          virtual
           void
           initialize_one_particle_property (const Point<dim> &position,
-                                            std::vector<double> &particle_properties) const;
+                                            std::vector<double> &particle_properties) const override;
 
           /**
            * Update function. This function is called every time an update is
@@ -114,28 +112,26 @@ namespace aspect
            * @param [in,out] particle_properties The properties of the particle
            * that is updated within the call of this function.
            */
-          virtual
           void
           update_one_particle_property (const unsigned int data_position,
                                         const Point<dim> &position,
                                         const Vector<double> &solution,
                                         const std::vector<Tensor<1,dim>> &gradients,
-                                        const ArrayView<double> &particle_properties) const;
+                                        const ArrayView<double> &particle_properties) const override;
 
           /**
            * This implementation tells the particle manager that
            * we need to update particle properties every time step.
            */
           UpdateTimeFlags
-          need_update () const;
+          need_update () const override;
 
           /**
            * Return which data has to be provided to update the property.
            * The integrated strains needs the gradients of the velocity.
            */
-          virtual
           UpdateFlags
-          get_needed_update_flags () const;
+          get_needed_update_flags () const override;
 
           /**
            * Set up the information about the names and number of components
@@ -144,12 +140,11 @@ namespace aspect
            * @return A vector that contains pairs of the property names and the
            * number of components this property plugin defines.
            */
-          virtual
           std::vector<std::pair<std::string, unsigned int>>
-          get_property_information() const;
+          get_property_information() const override;
 
           /**
-           * Loads particle data into variables
+           * returns the elastic tensor from the particle data
            */
           static
           SymmetricTensor<2,6>
@@ -157,58 +152,13 @@ namespace aspect
                              const ArrayView<double> &data);
 
           /**
-           * Stores information in variables into the data array
+           * Stores the elastic tensor into the particle data array
            */
           static
           void
           set_elastic_tensor(unsigned int cpo_data_position,
                              const ArrayView<double> &data,
                              SymmetricTensor<2,6> &elastic_tensor);
-
-          /**
-           * Rotate a 3D 4th order tensor with an other 3D 4th
-           */
-          static
-          Tensor<4,3> rotate_4th_order_tensor(const Tensor<4,3> &input_tensor, const Tensor<2,3> &rotation_tensor);
-
-
-          /**
-           * Rotate a 6x6 voigt matrix with an other 3D 4th
-           */
-          static
-          SymmetricTensor<2,6> rotate_6x6_matrix(const Tensor<2,6> &input_tensor, const Tensor<2,3> &rotation_tensor);
-
-          /**
-           * Transform a 4th order tensor into a 6x6 matrix
-           */
-          static
-          SymmetricTensor<2,6> transform_4th_order_tensor_to_6x6_matrix(const Tensor<4,3> &input_tensor);
-
-
-          /**
-           * Transform a 6x6 matrix into a 4th order tensor
-           */
-          static
-          Tensor<4,3> transform_6x6_matrix_to_4th_order_tensor(const SymmetricTensor<2,6> &input_tensor);
-
-
-          /**
-           * Form a 21D vector from a 6x6 matrix
-           */
-          static
-          Tensor<1,21> transform_6x6_matrix_to_21D_vector(const SymmetricTensor<2,6> &input_tensor);
-
-          /**
-           * From a 21D vector from a 6xt matrix
-           */
-          static
-          SymmetricTensor<2,6> transform_21D_vector_to_6x6_matrix(const Tensor<1,21> &input_tensor);
-
-          /**
-           * Tranform a 4th order tensor directly into a 21D vector.
-           */
-          static
-          Tensor<1,21> transform_4th_order_tensor_to_21D_vector(const Tensor<4,3> &input);
 
           /**
            * Declare the parameters this class takes through input files.
@@ -220,23 +170,31 @@ namespace aspect
           /**
            * Read the parameters this class declares from the parameter file.
            */
-          virtual
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm) override;
 
         private:
+          /**
+           * The position of the cpo in the particle data array.
+           */
           unsigned int cpo_data_position;
 
+          /**
+           * The stiffness tensors for olivine and enstatite.
+           * Todo: generatize this into a vector.
+           */
           SymmetricTensor<2,6> stiffness_matrix_olivine;
           SymmetricTensor<2,6> stiffness_matrix_enstatite;
 
+          /**
+           * The number of grain per particle
+           */
           unsigned int n_grains;
-          unsigned int n_minerals;
 
           /**
-           * The tensor representation of the permutation symbol.
+           * The number of minerals per particle
            */
-          Tensor<3,3> permutation_operator_3d;
+          unsigned int n_minerals;
 
       };
     }
