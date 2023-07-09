@@ -167,10 +167,10 @@ and the links are working
   - update zenodo badge in README.md to newest version (see badge button on the right of zenodo page)
   - add zenodo badge also to the release on github (on top, see 2.0.1 for an example)
   - readme / release notes: add zenodo DOI button
-  - manual/manual.bib: add new zenodo entry
+  - doc/sphinx/references.bib: add new zenodo entry
 . create figshare DOI for manual (just upload a new version as the same entry)
-  - update manual/manual.bib entry
-. update doc/manual/manual.bib with src and manual doi
+  - update doc/sphinx/references.bib entry
+. update doc/sphinx/references.bib with src and manual doi
 . update aspect.geodynamics.org/cite.html and citing.html in www repo:
   - add new version in citing.html, search for "<option"
   - doc/make_cite_html.py:
