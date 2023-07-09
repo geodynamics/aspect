@@ -308,7 +308,7 @@ namespace aspect
 
       signals.pre_checkpoint_store_user_data(triangulation);
 
-      triangulation.save ((parameters.output_directory + "restart.mesh.new").c_str());
+      triangulation.save (parameters.output_directory + "restart.mesh.new");
     }
 
     // save general information This calls the serialization functions on all
@@ -523,7 +523,7 @@ namespace aspect
     // now that we have resumed from the snapshot load the mesh and solution vectors
     try
       {
-        triangulation.load ((parameters.output_directory + "restart.mesh").c_str());
+        triangulation.load (parameters.output_directory + "restart.mesh");
       }
     catch (...)
       {

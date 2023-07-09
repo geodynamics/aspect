@@ -450,7 +450,7 @@ parse_parameters (const std::string &input_as_string,
   if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
     try
       {
-        prm.parse_input_from_string(input_as_string.c_str());
+        prm.parse_input_from_string(input_as_string);
       }
     catch (const dealii::ExceptionBase &e)
       {
@@ -486,7 +486,7 @@ parse_parameters (const std::string &input_as_string,
   // other processors will be ok as well
   if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) != 0)
     {
-      prm.parse_input_from_string(input_as_string.c_str());
+      prm.parse_input_from_string(input_as_string);
     }
 }
 
