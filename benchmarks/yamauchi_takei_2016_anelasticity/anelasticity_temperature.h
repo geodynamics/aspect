@@ -55,7 +55,7 @@ namespace aspect
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize ();
+        initialize () override;
 
         // Avoid -Woverloaded-virtual:
         using Utilities::AsciiDataInitial<dim>::initialize;

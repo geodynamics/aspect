@@ -453,23 +453,21 @@ namespace aspect
         /**
          * Return the initial porosity as a function of position.
          */
-        virtual
         double
-        initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
+        initial_composition (const Point<dim> &position, const unsigned int n_comp) const override;
 
         static
         void
         declare_parameters (ParameterHandler &prm);
 
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * Initialization function.
          */
         void
-        initialize ();
+        initialize () override;
 
         double
         get_wave_amplitude () const;
@@ -599,9 +597,8 @@ namespace aspect
         /**
          * Generate graphical output from the current solution.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
     };
 
 
@@ -679,9 +676,8 @@ namespace aspect
         /**
          * Generate graphical output from the current solution.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
 
         /**
          * Initialization function. Take references to the material model and
@@ -689,7 +685,7 @@ namespace aspect
          * the analytical solution for the growth rate and store them.
          */
         void
-        initialize ();
+        initialize () override;
 
       private:
         double amplitude;

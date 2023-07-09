@@ -289,19 +289,16 @@ namespace aspect
   class TanGurnisBoundary : public BoundaryTemperature::Interface<dim>
   {
     public:
-      virtual
       double boundary_temperature (const types::boundary_id /*boundary_indicator*/,
-                                   const Point<dim> &position) const
+                                   const Point<dim> &position) const override
       {
         double wavenumber=1;
         return sin(numbers::PI*position(dim-1))*cos(numbers::PI*wavenumber*position(0));
       }
 
-      virtual
-      double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+      double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
-      virtual
-      double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+      double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
   };
 
   template <int dim>
@@ -335,9 +332,8 @@ namespace aspect
   class TanGurnisPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
-      virtual
       std::pair<std::string,std::string>
-      execute (TableHandler &statistics);
+      execute (TableHandler &statistics) override;
   };
 
   template <int dim>
