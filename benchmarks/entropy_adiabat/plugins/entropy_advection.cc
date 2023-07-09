@@ -269,11 +269,16 @@ namespace aspect
                  ExcMessage("The entropy advection assembler requires "
                             "that adiabatic heating is disabled."));
 
-    // Replace all existing assemblers by the one for the entropy equation.
-    assemblers.advection_system.resize(1);
-    assemblers.advection_system[0] = std::make_unique<Assemblers::EntropyAdvectionSystem<dim>>();
+    // Replace all existing assemblers for the temperature and entropy fields by the one for the entropy equation.
+    const unsigned int temperature_index = 0;
+    assemblers.advection_system[temperature_index].resize(1);
+    assemblers.advection_system[temperature_index][0] = std::make_unique<Assemblers::EntropyAdvectionSystem<dim>>();
+    assemblers.advection_system_assembler_properties[temperature_index].needed_update_flags = update_hessians;
 
-    assemblers.advection_system_assembler_properties[0].needed_update_flags = update_hessians;
+    const unsigned int entropy_index = 1 + simulator_access.introspection().compositional_index_for_name("entropy");
+    assemblers.advection_system[entropy_index].resize(1);
+    assemblers.advection_system[entropy_index][0] = std::make_unique<Assemblers::EntropyAdvectionSystem<dim>>();
+    assemblers.advection_system_assembler_properties[entropy_index].needed_update_flags = update_hessians;
   }
 } // namespace aspect
 
