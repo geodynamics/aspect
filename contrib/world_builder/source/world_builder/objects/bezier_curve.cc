@@ -81,7 +81,6 @@ namespace WorldBuilder
       if (std::isnan(angle_constrains[n_points-1]))
         {
           Point<2> P1P2 = points[n_points-2]-points[n_points-1];
-          const Point<2> P2P1 = points[n_points-1]-points[n_points-2];
           angles[n_points-1] =  atan2(P1P2[1],P1P2[0]);
         }
       else
@@ -324,9 +323,6 @@ namespace WorldBuilder
                       // https://www.wolframalpha.com/input?i=d%2Fdt+%281-t%29*%281-t%29*%281-t%29*a+%2B+3*%281-t%29*%281-t%29*t*b+%2B+3.*%281-t%29*t*t*c%2Bt*t*t*d
                       const Point<2> derivative_point = points[cp_i]*((6.-3.*est)*est-3.) + control_points[cp_i][0]*(est*(9*est-12)+3)
                                                         + control_points[cp_i][1]*(6.-9.*est)*est + points[cp_i+1]*3.*est*est;
-                      //https://www.wolframalpha.com/input?i=d%2Fdt+d%2Fdt+%281-t%29*%281-t%29*%281-t%29*a+%2B+3*%281-t%29*%281-t%29*t*b+%2B+3.*%281-t%29*t*t*c%2Bt*t*t*d
-                      const Point<2> second_derivative_point = points[cp_i]*(6-6*est) + control_points[cp_i][0]*(18*est-12)
-                                                               + control_points[cp_i][1]*-18*est+ points[cp_i+1]*6*est;
 
                       Point<2> tangent_point = derivative_point - point_on_curve;
                       // if angle between check point and tangent point is larger than 90 degrees, return a negative distance
@@ -504,9 +500,6 @@ namespace WorldBuilder
                       // https://www.wolframalpha.com/input?i=d%2Fdt+%281-t%29*%281-t%29*%281-t%29*a+%2B+3*%281-t%29*%281-t%29*t*b+%2B+3.*%281-t%29*t*t*c%2Bt*t*t*d
                       const Point<2> derivative_point = points[cp_i]*((6.-3.*est)*est-3.) + control_points[cp_i][0]*(est*(9*est-12)+3)
                                                         + control_points[cp_i][1]*(6.-9.*est)*est + points[cp_i+1]*3.*est*est;
-                      //https://www.wolframalpha.com/input?i=d%2Fdt+d%2Fdt+%281-t%29*%281-t%29*%281-t%29*a+%2B+3*%281-t%29*%281-t%29*t*b+%2B+3.*%281-t%29*t*t*c%2Bt*t*t*d
-                      const Point<2> second_derivative_point = points[cp_i]*(6-6*est) + control_points[cp_i][0]*(18*est-12)
-                                                               + control_points[cp_i][1]*-18*est+ points[cp_i+1]*6*est;
 
                       Point<2> tangent_point = derivative_point - point_on_curve;
                       // if angle between check point and tangent point is larger than 90 degrees, return a negative distance
