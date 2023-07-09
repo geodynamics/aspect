@@ -282,9 +282,9 @@ namespace aspect
       rheology->strain_rheology.compute_finite_strain_reaction_terms(in, out);
 
       if (this->get_parameters().enable_elasticity)
-      {
-        rheology->elastic_rheology.fill_elastic_force_outputs(in, average_elastic_shear_moduli, out);
-        rheology->elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
+        {
+          rheology->elastic_rheology.fill_elastic_force_outputs(in, average_elastic_shear_moduli, out);
+          rheology->elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
         }
     }
 
