@@ -1,0 +1,4 @@
+Changed: The entropy plugin now includes a plasticity rheology, which can be set by cohesion and frictional angle. It can also use a viscosity prefactor profile, set the lateral viscosity variation limit, and choose p-T dependent conductivity
+
+<br>
+(Ranpeng Li & Juliane Dannberg, 2023/07/13)

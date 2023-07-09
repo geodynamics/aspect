@@ -136,10 +136,12 @@ subsection Material model
   set Model name = entropy model
 
   subsection Entropy model
-    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/
-    set Material file name               = entropy-table/opxtable/material_table.txt
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/opxtable/
+    set Material file name               = material_table.txt
     set Maximum viscosity                = 1e30
     set Minimum viscosity                = 1e30
+    set Lateral viscosity file name      = constant_lateral_vis_prefactor.txt
+    set Thermal conductivity formulation = constant
     set Thermal conductivity             = 4.7
   end
 end

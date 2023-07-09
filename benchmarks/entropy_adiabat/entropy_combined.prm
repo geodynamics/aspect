@@ -43,6 +43,7 @@ subsection Material model
   set Model name = entropy model
 
   subsection Entropy model
+    set Thermal conductivity formulation = constant
     set Thermal conductivity             = 50
   end
 end

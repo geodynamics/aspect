@@ -26,13 +26,14 @@
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/rheology/ascii_depth_profile.h>
+#include <aspect/material_model/rheology/drucker_prager.h>
+#include <aspect/material_model/steinberger.h>
 
 namespace aspect
 {
   namespace MaterialModel
   {
     using namespace dealii;
-
     /**
      * A material model that is designed to use pressure and entropy (rather
      * than pressure and temperature) as independent variables. It will look up
@@ -44,6 +45,7 @@ namespace aspect
      * the Stokes equation).
      * @ingroup MaterialModels
      */
+
     template <int dim>
     class EntropyModel: public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
@@ -110,29 +112,66 @@ namespace aspect
 
 
       private:
+
+        double angle_of_internal_friction;
+        double cohesion;
+
         /**
          * Minimum/Maximum viscosity and lateral viscosity variations.
          */
-        double lateral_viscosity_prefactor;
         double min_eta;
         double max_eta;
+        double max_lateral_eta_variation;
 
         /**
-         * The value for thermal conductivity. This model only
-         * implements a constant thermal conductivity for the whole domain.
+         * The value for thermal conductivity. It can be a constant
+         * for the whole domain, or P-T dependent.
          */
         double thermal_conductivity_value;
+        double thermal_conductivity (const double temperature,
+                                     const double pressure,
+                                     const Point<dim> &position) const;
+
+        enum ConductivityFormulation
+        {
+          constant,
+          p_T_dependent
+        } conductivity_formulation;
+
+        /**
+         * Parameters for the temperature- and pressure dependence of the
+         * thermal conductivity.
+         */
+        std::vector<double> conductivity_transition_depths;
+        std::vector<double> reference_thermal_conductivities;
+        std::vector<double> conductivity_pressure_dependencies;
+        std::vector<double> conductivity_reference_temperatures;
+        std::vector<double> conductivity_exponents;
+        std::vector<double> saturation_scaling;
+        double maximum_conductivity;
 
         /**
          * Information about the location of data files.
          */
         std::string data_directory;
         std::string material_file_name;
+        std::string lateral_viscosity_file_name;
 
         /**
          * Pointer to the StructuredDataLookup object that holds the material data.
          */
         std::unique_ptr<Utilities::StructuredDataLookup<2>> material_lookup;
+
+        /**
+         * Pointer to an object that reads and processes data for the lateral
+         * temperature dependency of viscosity.
+         */
+        std::unique_ptr<internal::LateralViscosityLookup> lateral_viscosity_prefactor_lookup;
+
+        /**
+         * Objects for computing plastic stresses, viscosities, and additional outputs
+         */
+        Rheology::DruckerPrager<dim> drucker_prager_plasticity;
 
         /**
          * Pointer to the rheology model used for depth-dependence from an

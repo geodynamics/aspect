@@ -24,7 +24,10 @@
 #include <aspect/utilities.h>
 
 #include <deal.II/base/table.h>
-
+#include <fstream>
+#include <iostream>
+#include <aspect/material_model/rheology/visco_plastic.h>
+#include <aspect/material_model/steinberger.h>
 
 namespace aspect
 {
@@ -47,6 +50,8 @@ namespace aspect
       material_lookup = std::make_unique<Utilities::StructuredDataLookup<2>>(7,1.0);
       material_lookup->load_file(data_directory+material_file_name,
                                  this->get_mpi_communicator());
+      lateral_viscosity_prefactor_lookup = std::make_unique<internal::LateralViscosityLookup>(data_directory+lateral_viscosity_file_name,
+                                           this->get_mpi_communicator());
     }
 
 
@@ -57,6 +62,50 @@ namespace aspect
     is_compressible () const
     {
       return true;
+    }
+
+
+
+    template <int dim>
+    double
+    EntropyModel<dim>::
+    thermal_conductivity (const double temperature,
+                          const double pressure,
+                          const Point<dim> &position) const
+    {
+      if (conductivity_formulation == constant)
+        return thermal_conductivity_value;
+
+      else if (conductivity_formulation == p_T_dependent)
+        {
+          // Find the conductivity layer that corresponds to the depth of the evaluation point.
+          const double depth = this->get_geometry_model().depth(position);
+          unsigned int layer_index = std::distance(conductivity_transition_depths.begin(),
+                                                   std::lower_bound(conductivity_transition_depths.begin(),conductivity_transition_depths.end(), depth));
+
+          const double p_dependence = reference_thermal_conductivities[layer_index] + conductivity_pressure_dependencies[layer_index] * pressure;
+
+          // Make reasonably sure we will not compute any invalid values due to the temperature-dependence.
+          // Since both the temperature-dependence and the saturation time scale with (Tref/T), we have to
+          // make sure we can compute the square of this number. If the temperature is small enough to
+          // be close to yielding NaN values, the conductivity will be set to the maximum value anyway.
+          const double T = std::max(temperature, std::sqrt(std::numeric_limits<double>::min()) * conductivity_reference_temperatures[layer_index]);
+          const double T_dependence = std::pow(conductivity_reference_temperatures[layer_index] / T, conductivity_exponents[layer_index]);
+
+          // Function based on the theory of Roufosse and Klemens (1974) that accounts for saturation.
+          // For the Tosi formulation, the scaling should be zero so that this term is 1.
+          double saturation_function = 1.0;
+          if (1./T_dependence > 1.)
+            saturation_function = (1. - saturation_scaling[layer_index])
+                                  + saturation_scaling[layer_index] * (2./3. * std::sqrt(T_dependence) + 1./3. * 1./T_dependence);
+
+          return std::min(p_dependence * saturation_function * T_dependence, maximum_conductivity);
+        }
+      else
+        {
+          AssertThrow(false, ExcNotImplemented());
+          return numbers::signaling_nan<double>();
+        }
     }
 
 
@@ -87,8 +136,10 @@ namespace aspect
           const Tensor<1,2> pressure_unit_vector ({0.0,1.0});
           out.compressibilities[i]              = (density_gradient * pressure_unit_vector) / out.densities[i];
 
-          // Constant thermal conductivity
-          out.thermal_conductivities[i]         = thermal_conductivity_value;
+
+          // Thermal conductivity can be pressure temperature dependent
+          const double temperature_lookup =  material_lookup->get_data(entropy_pressure,0);
+          out.thermal_conductivities[i] = thermal_conductivity(temperature_lookup, in.pressure[i], in.position[i]);
 
           out.entropy_derivative_pressure[i]    = 0.;
           out.entropy_derivative_temperature[i] = 0.;
@@ -104,36 +155,63 @@ namespace aspect
           // set up variable to interpolate prescribed field outputs onto temperature field
           if (PrescribedTemperatureOutputs<dim> *prescribed_temperature_out = out.template get_additional_output<PrescribedTemperatureOutputs<dim>>())
             {
-              prescribed_temperature_out->prescribed_temperature_outputs[i] = material_lookup->get_data(entropy_pressure,0);
+              prescribed_temperature_out->prescribed_temperature_outputs[i] = temperature_lookup;
             }
 
           // Calculate Viscosity
-          {
-            // read in the viscosity profile
-            const double depth = this->get_geometry_model().depth(in.position[i]);
-            const double viscosity_profile = depth_dependent_rheology->compute_viscosity(depth);
+          if (in.requests_property(MaterialProperties::viscosity))
+            {
+              // read in the viscosity profile
+              const double depth = this->get_geometry_model().depth(in.position[i]);
+              const double viscosity_profile = depth_dependent_rheology->compute_viscosity(depth);
 
-            // lateral viscosity variations
-            const double reference_temperature = this->get_adiabatic_conditions().is_initialized()
-                                                 ?
-                                                 this->get_adiabatic_conditions().temperature(in.position[i])
-                                                 :
-                                                 this->get_parameters().adiabatic_surface_temperature;
-            const double temperature = material_lookup->get_data(entropy_pressure,0);
-            const double delta_temperature = temperature-reference_temperature;
+              // lateral viscosity variations
+              const double reference_temperature = this->get_adiabatic_conditions().is_initialized()
+                                                   ?
+                                                   this->get_adiabatic_conditions().temperature(in.position[i])
+                                                   :
+                                                   this->get_parameters().adiabatic_surface_temperature;
 
-            // Steinberger & Calderwood viscosity
-            if (temperature*reference_temperature == 0)
-              out.viscosities[i] = min_eta;
-            else
-              {
-                double vis_lateral = std::exp(-lateral_viscosity_prefactor*delta_temperature/(temperature*reference_temperature));
-                if (std::isnan(vis_lateral))
-                  vis_lateral = 1.0;
+              const double delta_temperature = temperature_lookup-reference_temperature;
 
-                out.viscosities[i] = std::max(std::min(vis_lateral * viscosity_profile,max_eta),min_eta);
-              }
-          }
+              // Steinberger & Calderwood viscosity
+              if (temperature_lookup*reference_temperature == 0)
+                out.viscosities[i] = max_eta;
+              else
+                {
+                  double vis_lateral = std::exp(-lateral_viscosity_prefactor_lookup->lateral_viscosity(depth)*delta_temperature/(temperature_lookup*reference_temperature));
+                  // lateral vis variation
+                  vis_lateral = std::max(std::min((vis_lateral),max_lateral_eta_variation),1/max_lateral_eta_variation);
+
+                  if (std::isnan(vis_lateral))
+                    vis_lateral = 1.0;
+
+                  double effective_viscosity = vis_lateral * viscosity_profile;
+
+                  const double strain_rate_effective = std::fabs(second_invariant(deviator(in.strain_rate[i])));
+
+                  if (std::sqrt(strain_rate_effective) >= std::numeric_limits<double>::min())
+                    {
+                      const double pressure =  this->get_adiabatic_conditions().pressure(in.position[i]);
+                      const double eta_plastic = drucker_prager_plasticity.compute_viscosity(cohesion,
+                                                                                             angle_of_internal_friction,
+                                                                                             pressure,
+                                                                                             std::sqrt(strain_rate_effective),
+                                                                                             std::numeric_limits<double>::infinity());
+
+                      effective_viscosity = 1.0 / ( ( 1.0 /  eta_plastic  ) + ( 1.0 / (vis_lateral * viscosity_profile) ) );
+
+                      PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
+                      if (plastic_out != nullptr)
+                        {
+                          plastic_out->cohesions[i] = cohesion;
+                          plastic_out->friction_angles[i] = angle_of_internal_friction;
+                          plastic_out->yielding[i] = eta_plastic < (vis_lateral * viscosity_profile) ? 1 : 0;
+                        }
+                    }
+                  out.viscosities[i] = std::max(std::min(effective_viscosity,max_eta),min_eta);
+                }
+            }
 
           // fill seismic velocities outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
@@ -160,20 +238,18 @@ namespace aspect
                              "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                              "in which the ASPECT source files were located when ASPECT was "
                              "compiled. This interpretation allows, for example, to reference "
-                             "files located in the `data/' subdirectory of ASPECT. ");
+                             "files located in the `data/' subdirectory of ASPECT.");
           prm.declare_entry ("Material file name", "material_table.txt",
                              Patterns::List (Patterns::Anything()),
                              "The file name of the material data.");
-          prm.declare_entry ("Lateral viscosity prefactor", "0.0",
+          prm.declare_entry ("Reference viscosity", "1e22",
                              Patterns::Double(0),
-                             "The lateral viscosity prefactor used for computing the temperature"
-                             "dependence of viscosity. This corresponds to H/nR (where H is the "
-                             "activation enthalpy, n is the stress exponent and R is the gas "
-                             "constant) in an Arrhenius-type viscosity law, and is modeled after "
-                             "the law for lateral viscosity variations given in Steinberger and "
-                             "Calderwood, 2006. "
+                             "The viscosity that is used in this model. "
                              "\n\n"
-                             "Units: $1/K$");
+                             "Units: \\si{\\pascal\\second}");
+          prm.declare_entry ("Lateral viscosity file name", "temp-viscosity-prefactor.txt",
+                             Patterns::Anything (),
+                             "The file name of the lateral viscosity prefactor.");
           prm.declare_entry ("Minimum viscosity", "1e19",
                              Patterns::Double (0.),
                              "The minimum viscosity that is allowed in the viscosity "
@@ -182,10 +258,93 @@ namespace aspect
                              Patterns::Double (0.),
                              "The maximum viscosity that is allowed in the viscosity "
                              "calculation. Larger values will be cut off.");
+          prm.declare_entry ("Maximum lateral viscosity variation", "1e2",
+                             Patterns::Double (0.),
+                             "The relative cutoff value for lateral viscosity variations "
+                             "caused by temperature deviations. The viscosity may vary "
+                             "laterally by this factor squared.");
+          prm.declare_entry ("Angle of internal friction", "0.",
+                             Patterns::Anything(),
+                             "List of angles of internal friction, $\\phi$, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "For a value of zero, in 2D the von Mises criterion is retrieved. "
+                             "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
+          prm.declare_entry ("Cohesion", "1e20",
+                             Patterns::Anything(),
+                             "List of cohesions, $C$, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
+                             "exceeding the yield stress. Units: \\si{\\pascal}.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
                              "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+          prm.declare_entry ("Thermal conductivity formulation", "constant",
+                             Patterns::Selection("constant|p-T-dependent"),
+                             "Which law should be used to compute the thermal conductivity. "
+                             "The 'constant' law uses a constant value for the thermal "
+                             "conductivity. The 'p-T-dependent' formulation uses equations "
+                             "from Stackhouse et al. (2015): First-principles calculations "
+                             "of the lattice thermal conductivity of the lower mantle "
+                             "(https://doi.org/10.1016/j.epsl.2015.06.050), and Tosi et al. "
+                             "(2013): Mantle dynamics with pressure- and temperature-dependent "
+                             "thermal expansivity and conductivity "
+                             "(https://doi.org/10.1016/j.pepi.2013.02.004) to compute the "
+                             "thermal conductivity in dependence of temperature and pressure. "
+                             "The thermal conductivity parameter sets can be chosen in such a "
+                             "way that either the Stackhouse or the Tosi relations are used. "
+                             "The conductivity description can consist of several layers with "
+                             "different sets of parameters. Note that the Stackhouse "
+                             "parametrization is only valid for the lower mantle (bridgmanite).");
+          prm.declare_entry ("Thermal conductivity transition depths", "410000, 520000, 660000",
+                             Patterns::List(Patterns::Double (0.)),
+                             "A list of depth values that indicate where the transitions between "
+                             "the different conductivity parameter sets should occur in the "
+                             "'p-T-dependent' Thermal conductivity formulation (in most cases, "
+                             "this will be the depths of major mantle phase transitions). "
+                             "Units: \\si{\\meter}.");
+          prm.declare_entry ("Reference thermal conductivities", "2.47, 3.81, 3.52, 4.9",
+                             Patterns::List(Patterns::Double (0.)),
+                             "A list of base values of the thermal conductivity for each of the "
+                             "horizontal layers in the 'p-T-dependent' thermal conductivity "
+                             "formulation. Pressure- and temperature-dependence will be applied"
+                             "on top of this base value, according to the parameters 'Pressure "
+                             "dependencies of thermal conductivity' and 'Reference temperatures "
+                             "for thermal conductivity'. "
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}");
+          prm.declare_entry ("Pressure dependencies of thermal conductivity", "3.3e-10, 3.4e-10, 3.6e-10, 1.05e-10",
+                             Patterns::List(Patterns::Double ()),
+                             "A list of values that determine the linear scaling of the "
+                             "thermal conductivity with the pressure in the 'p-T-dependent' "
+                             "thermal conductivity formulation. "
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin\\per\\pascal}.");
+          prm.declare_entry ("Reference temperatures for thermal conductivity", "300, 300, 300, 1200",
+                             Patterns::List(Patterns::Double (0.)),
+                             "A list of values of reference temperatures used to determine "
+                             "the temperature-dependence of the thermal conductivity in the "
+                             "'p-T-dependent' thermal conductivity formulation. "
+                             "Units: \\si{\\kelvin}.");
+          prm.declare_entry ("Thermal conductivity exponents", "0.48, 0.56, 0.61, 1.0",
+                             Patterns::List(Patterns::Double (0.)),
+                             "A list of exponents in the temperature-dependent term of the "
+                             "'p-T-dependent' thermal conductivity formulation. Note that this "
+                             "exponent is not used (and should have a value of 1) in the "
+                             "formulation of Stackhouse et al. (2015). "
+                             "Units: none.");
+          prm.declare_entry ("Saturation prefactors", "0, 0, 0, 1",
+                             Patterns::List(Patterns::Double (0., 1.)),
+                             "A list of values that indicate how a given layer in the "
+                             "conductivity formulation should take into account the effects "
+                             "of saturation on the temperature-dependence of the thermal "
+                             "conducitivity. This factor is multiplied with a saturation function "
+                             "based on the theory of Roufosse and Klemens, 1974. A value of 1 "
+                             "reproduces the formulation of Stackhouse et al. (2015), a value of "
+                             "0 reproduces the formulation of Tosi et al., (2013). "
+                             "Units: none.");
+          prm.declare_entry ("Maximum thermal conductivity", "1000",
+                             Patterns::Double (0.),
+                             "The maximum thermal conductivity that is allowed in the "
+                             "model. Larger values will be cut off.");
           prm.leave_subsection();
         }
 
@@ -209,10 +368,45 @@ namespace aspect
         {
           data_directory              = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
           material_file_name          = prm.get ("Material file name");
-          lateral_viscosity_prefactor = prm.get_double ("Lateral viscosity prefactor");
+          lateral_viscosity_file_name  = prm.get ("Lateral viscosity file name");
           min_eta                     = prm.get_double ("Minimum viscosity");
           max_eta                     = prm.get_double ("Maximum viscosity");
+          max_lateral_eta_variation    = prm.get_double ("Maximum lateral viscosity variation");
           thermal_conductivity_value  = prm.get_double ("Thermal conductivity");
+
+          if (prm.get ("Thermal conductivity formulation") == "constant")
+            conductivity_formulation = constant;
+          else if (prm.get ("Thermal conductivity formulation") == "p-T-dependent")
+            conductivity_formulation = p_T_dependent;
+          else
+            AssertThrow(false, ExcMessage("Not a valid thermal conductivity formulation"));
+
+          conductivity_transition_depths = Utilities::string_to_double
+                                           (Utilities::split_string_list(prm.get ("Thermal conductivity transition depths")));
+          const unsigned int n_conductivity_layers = conductivity_transition_depths.size() + 1;
+          AssertThrow (std::is_sorted(conductivity_transition_depths.begin(), conductivity_transition_depths.end()),
+                       ExcMessage("The list of 'Thermal conductivity transition depths' must "
+                                  "be sorted such that the values increase monotonically."));
+
+          reference_thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference thermal conductivities"))),
+                                                                                     n_conductivity_layers,
+                                                                                     "Reference thermal conductivities");
+          conductivity_pressure_dependencies = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Pressure dependencies of thermal conductivity"))),
+                                                                                       n_conductivity_layers,
+                                                                                       "Pressure dependencies of thermal conductivity");
+          conductivity_reference_temperatures = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference temperatures for thermal conductivity"))),
+                                                                                        n_conductivity_layers,
+                                                                                        "Reference temperatures for thermal conductivity");
+          conductivity_exponents = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivity exponents"))),
+                                                                           n_conductivity_layers,
+                                                                           "Thermal conductivity exponents");
+          saturation_scaling = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Saturation prefactors"))),
+                                                                       n_conductivity_layers,
+                                                                       "Saturation prefactors");
+          maximum_conductivity = prm.get_double ("Maximum thermal conductivity");
+
+          angle_of_internal_friction = prm.get_double("Angle of internal friction");
+          cohesion = prm.get_double("Cohesion");
 
           prm.leave_subsection();
         }
@@ -232,6 +426,8 @@ namespace aspect
         this->model_dependence.thermal_conductivity = NonlinearDependence::none;
       }
     }
+
+
 
     template <int dim>
     void
@@ -258,6 +454,13 @@ namespace aspect
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedTemperatureOutputs<dim>>
             (n_points));
+        }
+
+      if (out.template get_additional_output<PlasticAdditionalOutputs<dim>>() == nullptr)
+        {
+          const unsigned int n_points = out.n_evaluation_points();
+          out.additional_outputs.push_back(
+            std::make_unique<PlasticAdditionalOutputs<dim>> (n_points));
         }
     }
 
