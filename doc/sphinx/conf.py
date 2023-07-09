@@ -82,10 +82,10 @@ html_theme_options = {
     "use_edit_page_button": True,
     "use_issues_button": True,
     "home_page_in_toc": True,
-}
-
-html_sidebars = {
-    "**": ["navbar-logo.html","search-field.html","sbt-sidebar-nav.html","navbar_end.html"]
+    "logo": {
+        "text": "ASPECT " + release,
+    },
+    "primary_sidebar_end": "navbar_end.html"
 }
 
 bibtex_bibfiles = ["references.bib"]
