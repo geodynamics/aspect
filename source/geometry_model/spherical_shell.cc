@@ -207,6 +207,7 @@ namespace aspect
                 }
 
               // Then create the actual mesh:
+              GridTools::consistently_order_cells (cells);
               coarse_grid.create_triangulation(points, cells, subcell_data);
             }
         }
