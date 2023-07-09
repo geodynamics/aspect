@@ -263,7 +263,7 @@ namespace aspect
           // the ElasticAdditionalOutputs.
           rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
 
-          if (rheology->use_elasticity)
+          if (this->get_parameters().enable_elasticity)
             {
               // Compute average elastic shear modulus
               average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions,
@@ -281,10 +281,10 @@ namespace aspect
       // If we use the full strain tensor, compute the change in the individual tensor components.
       rheology->strain_rheology.compute_finite_strain_reaction_terms(in, out);
 
-      if (rheology->use_elasticity)
-        {
-          rheology->elastic_rheology.fill_elastic_force_outputs(in, average_elastic_shear_moduli, out);
-          rheology->elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
+      if (this->get_parameters().enable_elasticity)
+      {
+        rheology->elastic_rheology.fill_elastic_force_outputs(in, average_elastic_shear_moduli, out);
+        rheology->elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
         }
     }
 
@@ -409,7 +409,7 @@ namespace aspect
     {
       rheology->create_plastic_outputs(out);
 
-      if (rheology->use_elasticity)
+      if (this->get_parameters().enable_elasticity)
         rheology->elastic_rheology.create_elastic_outputs(out);
     }
 

@@ -225,11 +225,6 @@ namespace aspect
            */
           Rheology::Elasticity<dim> elastic_rheology;
 
-          /**
-           * Whether to include viscoelasticity in the constitutive formulation.
-           */
-          bool use_elasticity;
-
 
         private:
 

@@ -112,7 +112,7 @@ namespace aspect
 
         // Assemble stress tensor if elastic behavior is enabled
         SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2,dim>>();
-        if (use_elasticity == true)
+        if (this->get_parameters().enable_elasticity)
           {
             for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
               stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
@@ -236,7 +236,7 @@ namespace aspect
             // and strain rate. If requested compute visco-elastic contributions.
             double current_edot_ii = edot_ii;
 
-            if (use_elasticity)
+            if (this->get_parameters().enable_elasticity)
               {
                 const std::vector<double> &elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
 
@@ -482,7 +482,7 @@ namespace aspect
         // Store which components to exclude during the volume fraction computation.
         ComponentMask composition_mask = strain_rheology.get_strain_composition_mask();
 
-        if (use_elasticity)
+        if (this->get_parameters().enable_elasticity)
           {
             for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
               composition_mask.set(i,false);
@@ -613,9 +613,7 @@ namespace aspect
         friction_models.initialize_simulator (this->get_simulator());
         friction_models.parse_parameters(prm);
 
-        use_elasticity = this->get_parameters().enable_elasticity;
-
-        if (use_elasticity)
+        if (this->get_parameters().enable_elasticity)
           {
             elastic_rheology.initialize_simulator (this->get_simulator());
             elastic_rheology.parse_parameters(prm);
@@ -666,7 +664,7 @@ namespace aspect
         else
           AssertThrow(false, ExcMessage("Not a valid yield mechanism."));
 
-        AssertThrow(use_elasticity == false || yield_mechanism == drucker_prager,
+        AssertThrow(this->get_parameters().enable_elasticity == false || yield_mechanism == drucker_prager,
                     ExcMessage("Elastic behavior is only tested with the "
                                "'drucker prager' plasticity option."));
 
