@@ -344,7 +344,7 @@ namespace aspect
                 static_cast<uint32_t>(compressed_data_length)
               }; /* list of compressed sizes of blocks */
 
-          std::ofstream f ((parameters.output_directory + "restart.resume.z.new").c_str());
+          std::ofstream f ((parameters.output_directory + "restart.resume.z.new"));
           f.write(reinterpret_cast<const char *>(compression_header), 4 * sizeof(compression_header[0]));
           f.write(reinterpret_cast<char *>(&compressed_data[0]), compressed_data_length);
           f.close();

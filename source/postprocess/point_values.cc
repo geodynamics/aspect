@@ -122,7 +122,7 @@ namespace aspect
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
 
-          std::ofstream f (filename.c_str());
+          std::ofstream f (filename);
           f << ("# <time> "
                 "<evaluation_point_x> "
                 "<evaluation_point_y> ")

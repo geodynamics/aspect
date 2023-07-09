@@ -377,8 +377,8 @@ namespace aspect
                                                this->get_time());
       const std::string pvtu_master_filename = (solution_file_prefix +
                                                 ".pvtu");
-      std::ofstream pvtu_master ((this->get_output_directory() + "solution/" +
-                                  pvtu_master_filename).c_str());
+      std::ofstream pvtu_master (this->get_output_directory() + "solution/" +
+                                 pvtu_master_filename);
       data_out.write_pvtu_record (pvtu_master, filenames);
 
       // now also generate a .pvd file that matches simulation
@@ -398,7 +398,7 @@ namespace aspect
 
       const std::string pvd_master_filename = (this->get_output_directory() +
                                                (is_cell_data_output ? "solution.pvd" : "solution_surface.pvd"));
-      std::ofstream pvd_master (pvd_master_filename.c_str());
+      std::ofstream pvd_master (pvd_master_filename);
 
       DataOutBase::write_pvd_record (pvd_master, output_history.times_and_pvtu_names);
 
@@ -408,7 +408,7 @@ namespace aspect
                                                  + "solution/"
                                                  + solution_file_prefix
                                                  + ".visit");
-      std::ofstream visit_master (visit_master_filename.c_str());
+      std::ofstream visit_master (visit_master_filename);
 
       DataOutBase::write_visit_record (visit_master, filenames);
 
@@ -435,8 +435,8 @@ namespace aspect
           output_history.output_file_names_by_timestep.push_back (filenames_with_path);
       }
 
-      std::ofstream global_visit_master ((this->get_output_directory() +
-                                          (is_cell_data_output ? "solution.visit" : "solution_surface.visit")).c_str());
+      std::ofstream global_visit_master (this->get_output_directory() +
+                                         (is_cell_data_output ? "solution.visit" : "solution_surface.visit"));
 
       std::vector<std::pair<double, std::vector<std::string>>> times_and_output_file_names;
       for (unsigned int timestep=0; timestep<output_history.times_and_pvtu_names.size(); ++timestep)
@@ -631,7 +631,7 @@ namespace aspect
                                        + solution_file_prefix + "." + Utilities::int_to_string(myid, 4)
                                        + DataOutBase::default_suffix(
                                          DataOutBase::parse_output_format(output_format));
-          std::ofstream out(filename.c_str());
+          std::ofstream out(filename);
           AssertThrow(out,
                       ExcMessage(
                         "Unable to open file for writing: " + filename + "."));
@@ -1064,7 +1064,7 @@ namespace aspect
             close(tmp_file_desc);
         }
 
-      std::ofstream out(tmp_filename.c_str());
+      std::ofstream out(tmp_filename);
 
       AssertThrow (out, ExcMessage(std::string("Trying to write to file <") +
                                    filename +

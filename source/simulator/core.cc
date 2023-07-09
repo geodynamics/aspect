@@ -250,7 +250,7 @@ namespace aspect
       {
         // only open the log file on processor 0, the other processors won't be
         // writing into the stream anyway
-        log_file_stream.open((parameters.output_directory + "log.txt").c_str(),
+        log_file_stream.open(parameters.output_directory + "log.txt",
                              parameters.resume_computation ? std::ios_base::app : std::ios_base::out);
 
         // we already printed the header to the screen, so here we just dump it
@@ -536,13 +536,13 @@ namespace aspect
     // Only write the parameter files on the root node to avoid file system conflicts
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
-        std::ofstream prm_out ((parameters.output_directory + "parameters.prm").c_str());
+        std::ofstream prm_out ((parameters.output_directory + "parameters.prm"));
         AssertThrow (prm_out,
                      ExcMessage (std::string("Could not open file <") +
                                  parameters.output_directory + "parameters.prm>."));
         prm.print_parameters(prm_out, ParameterHandler::Text);
 
-        std::ofstream json_out ((parameters.output_directory + "parameters.json").c_str());
+        std::ofstream json_out ((parameters.output_directory + "parameters.json"));
         AssertThrow (json_out,
                      ExcMessage (std::string("Could not open file <") +
                                  parameters.output_directory + "parameters.json>."));

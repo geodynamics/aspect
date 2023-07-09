@@ -592,7 +592,7 @@ namespace aspect
           // On processor 0, collect all the data and put them into the output density anomaly contribution SH coefficients file.
           if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
-              std::ofstream density_anomaly_contribution_SH_coes_file (density_anomaly_contribution_SH_coes_filename.c_str());
+              std::ofstream density_anomaly_contribution_SH_coes_file (density_anomaly_contribution_SH_coes_filename);
               density_anomaly_contribution_SH_coes_file << "# "
                                                         << "degree order cosine_coefficient sine_coefficient"
                                                         << std::endl;
@@ -636,7 +636,7 @@ namespace aspect
           // and put them into the output surface topography contribution SH coefficients file.
           if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
-              std::ofstream surface_topo_contribution_SH_coes_file (surface_topo_contribution_SH_coes_filename.c_str());
+              std::ofstream surface_topo_contribution_SH_coes_file (surface_topo_contribution_SH_coes_filename);
               surface_topo_contribution_SH_coes_file << "# "
                                                      << "degree order cosine_coefficient sine_coefficient"
                                                      << std::endl;
@@ -683,7 +683,7 @@ namespace aspect
           // to get the data. On processor 0, collect all the data and put them into the output CMB topography contribution SH coefficients file.
           if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
-              std::ofstream CMB_topo_contribution_SH_coes_file (CMB_topo_contribution_SH_coes_filename.c_str());
+              std::ofstream CMB_topo_contribution_SH_coes_file (CMB_topo_contribution_SH_coes_filename);
               CMB_topo_contribution_SH_coes_file << "# "
                                                  << "degree order cosine_coefficient sine_coefficient"
                                                  << std::endl;
@@ -730,7 +730,7 @@ namespace aspect
           // On processor 0, collect all the data and put them into the output geoid anomaly SH coefficients file.
           if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
-              std::ofstream geoid_anomaly_SH_coes_file (geoid_anomaly_SH_coes_filename.c_str());
+              std::ofstream geoid_anomaly_SH_coes_file (geoid_anomaly_SH_coes_filename);
               geoid_anomaly_SH_coes_file << "# "
                                          << "degree order cosine_coefficient sine_coefficient"
                                          << std::endl;
