@@ -507,7 +507,7 @@ namespace aspect
             {
               lower_extents[1]     = extents[1] - thickness_lith;
               upper_extents[1]     = thickness_lith;
-              upper_box_origin[1]  = lower_extents[1];
+              upper_box_origin[1]  = lower_box_origin[1] + lower_extents[1];
               upper_repetitions[1] = prm.get_integer ("Y repetitions lithosphere");
             }
 
@@ -524,13 +524,13 @@ namespace aspect
               lower_extents[2]     = extents[2] - thickness_lith;
               upper_extents[2]     = thickness_lith;
               lower_box_origin[2]  = prm.get_double ("Box origin Z coordinate");
-              upper_box_origin[2]  = lower_extents[2];
+              upper_box_origin[2]  = lower_box_origin[2] + lower_extents[2];
               periodic[2]          = prm.get_bool ("Z periodic");
               lower_repetitions[2] = prm.get_integer ("Z repetitions");
               upper_repetitions[2] = prm.get_integer ("Z repetitions lithosphere");
             }
 
-          height_lith = extents[dim-1] - thickness_lith;
+          height_lith = upper_box_origin[dim-1];
           use_merged_grids = prm.get_bool ("Use merged grids");
         }
         prm.leave_subsection();
