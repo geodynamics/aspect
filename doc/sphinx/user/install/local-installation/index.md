@@ -27,4 +27,5 @@ system-prereqs.md
 using-candi.md
 obtaining.md
 compiling.md
+documentation.md
 :::
