@@ -154,7 +154,7 @@ namespace aspect
 
                   const std::string filename = (filename_prefix +
                                                 DataOutBase::default_suffix(output_format));
-                  std::ofstream f (filename.c_str());
+                  std::ofstream f (filename);
 
 
                   if (output_format == DataOutBase::gnuplot)
@@ -174,7 +174,7 @@ namespace aspect
               else
                 {
                   const std::string filename (this->get_output_directory() + "depth_average.txt");
-                  std::ofstream f(filename.c_str(), std::ofstream::out);
+                  std::ofstream f(filename, std::ofstream::out);
 
                   // Write the header
                   f << "#       time" << "        depth";

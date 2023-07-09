@@ -1321,7 +1321,7 @@ namespace aspect
     bool
     fexists(const std::string &filename)
     {
-      std::ifstream ifile(filename.c_str());
+      std::ifstream ifile(filename);
 
       // return whether construction of the input file has succeeded;
       // success requires the file to exist and to be readable
@@ -1337,7 +1337,7 @@ namespace aspect
       bool file_exists = false;
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
-          std::ifstream ifile(filename.c_str());
+          std::ifstream ifile(filename);
 
           // return whether construction of the input file has succeeded;
           // success requires the file to exist and to be readable
@@ -1487,9 +1487,9 @@ namespace aspect
               std::ifstream filestream;
               const bool filename_ends_in_gz = std::regex_search(filename, std::regex("\\.gz$"));
               if (filename_ends_in_gz == true)
-                filestream.open(filename.c_str(), std::ios_base::in | std::ios_base::binary);
+                filestream.open(filename, std::ios_base::in | std::ios_base::binary);
               else
-                filestream.open(filename.c_str());
+                filestream.open(filename);
 
               if (!filestream)
                 {
@@ -1562,8 +1562,7 @@ namespace aspect
 
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
-          std::ofstream filestream;
-          filestream.open(filename.c_str());
+          std::ofstream filestream(filename);
 
           AssertThrow (filestream.good(),
                        ExcMessage (std::string("Could not open file <") + filename + ">."));
@@ -2911,7 +2910,7 @@ namespace aspect
           if (output_filename != "")
             {
               // output solver history
-              std::ofstream f((output_filename).c_str());
+              std::ofstream f((output_filename));
 
               for (const auto &solver_control: solver_controls)
                 {

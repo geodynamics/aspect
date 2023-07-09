@@ -314,7 +314,7 @@ namespace aspect
       data_OES.clear();
       if (name_OES.size()==0)
         return;
-      std::istringstream in(Utilities::read_and_distribute_file_content(name_OES.c_str(),
+      std::istringstream in(Utilities::read_and_distribute_file_content(name_OES,
                                                                         this->get_mpi_communicator()));
       if (in.good())
         {
