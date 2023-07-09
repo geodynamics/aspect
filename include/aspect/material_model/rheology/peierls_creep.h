@@ -251,6 +251,12 @@ namespace aspect
           std::vector<double> stress_cutoffs;
 
           /**
+           * A parameter determines whether a strict cutoff
+           * on the stress is applied to the Peierls creep
+          */
+          bool apply_strict_cutoff;
+
+          /**
            * Parameters governing the iteration for the exact
            * Peierls viscosity.
            */

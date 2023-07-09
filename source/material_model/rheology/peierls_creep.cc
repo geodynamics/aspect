@@ -184,6 +184,20 @@ namespace aspect
         // in the strain rate expression.
         // We use Newton's method to find the second invariant of the stress tensor.
 
+        // Apply a strict cutoff if this option is chosen by user. A strain rate cutoff
+        // will be first computed and then compared to the input strain rate. A cutoff
+        // on stress will be triggered if the input strain rate is smaller.
+        if (apply_strict_cutoff)
+          {
+            const std::pair<double, double> edot_and_deriv = compute_exact_log_strain_rate_and_derivative(p.stress_cutoff, pressure, temperature, p);
+            double edot_ii_cutoff = std::exp(edot_and_deriv.first);
+            if (strain_rate < edot_ii_cutoff)
+              {
+                double viscosity = 0.5 * p.stress_cutoff / strain_rate;
+                return viscosity;
+              }
+          }
+
         // Create a starting guess for the stress using
         // the approximate form of the viscosity expression
         double viscosity = compute_approximate_viscosity(strain_rate, pressure, temperature, composition);
@@ -537,6 +551,9 @@ namespace aspect
                            Patterns::Anything(),
                            "List of the Stress thresholds below which the strain rate is solved for as a quadratic "
                            "function of stress to aid with convergence when stress exponent n=0. Units: \\si{\\pascal}");
+        prm.declare_entry ("Apply strict stress cutoff for Peierls creep", "false", Patterns::Bool(),
+                           "Whether the cutoff stresses for Peierls creep are used as the minimum "
+                           "stresses in the Peierls rheology");
 
       }
 
@@ -626,6 +643,8 @@ namespace aspect
                                                               "Cutoff stresses for Peierls creep",
                                                               true,
                                                               expected_n_phases_per_composition);
+
+        apply_strict_cutoff = prm.get_bool("Apply strict stress cutoff for Peierls creep");
       }
     }
   }
