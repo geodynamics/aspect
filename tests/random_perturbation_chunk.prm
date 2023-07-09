@@ -37,7 +37,7 @@ subsection Initial temperature model
   end
 
   subsection Random Gaussian perturbation
-    set Number of pertubations = 10
+    set Number of perturbations = 10
     set Width = 200000
   end
 end

@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_initial_temperature_harmonic_perturbation_h
-#define _aspect_initial_temperature_harmonic_perturbation_h
+#ifndef _aspect_initial_temperature_random_gaussian_perturbation_h
+#define _aspect_initial_temperature_random_gaussian_perturbation_h
 
 #include <aspect/initial_temperature/interface.h>
 

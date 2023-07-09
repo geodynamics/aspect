@@ -13,7 +13,7 @@ Number of degrees of freedom: 41,280 (25,344+3,264+12,672)
 
    Postprocessing:
      Writing graphical output: output-random_perturbation_spherical_shell/solution/solution-00000
-     Temperature min/avg/max:  477.1 K, 501 K, 537.5 K
+     Temperature min/avg/max:  476.7 K, 499.4 K, 520.1 K
 
 Termination requested by criterion: end time
 

@@ -27,6 +27,7 @@
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/simulator_access.h>
 
+#include <random>
 
 namespace aspect
 {
@@ -95,24 +96,25 @@ namespace aspect
       else
         AssertThrow (false,
                      ExcMessage ("Not a valid geometry model for the initial conditions model "
-                                 "random Gaussian perturbation."));
+                                 "'random Gaussian perturbation'."));
 
       // Initialize random locations of perturbations and check they are in the model domain.
       // Use a fixed number as seed for random generator.
       // This is important if we run the code on more than 1 processor.
-      std::srand(1);
+      std::mt19937 generator(1);
+      std::uniform_real_distribution<double> random_location(0.0,1.0);
+      std::uniform_real_distribution<double> random_magnitude(-max_magnitude, max_magnitude);
 
       for (unsigned int n=0; n<n_perturbations; ++n)
         {
           do
             {
               for (unsigned int d=0; d<dim; ++d)
-                perturbation_centers[n][d] = min_coordinates[d] + (double)(std::rand() % int(max_coordinates[d] - min_coordinates[d]));
+                perturbation_centers[n][d] = min_coordinates[d] + random_location(generator) * (max_coordinates[d] - min_coordinates[d]);
             }
           while (!this->get_geometry_model().point_is_in_domain(perturbation_centers[n]));
 
-          const int sign = 2 * (std::rand() % 2) - 1;
-          perturbation_magnitudes[n] = sign * (double)(std::rand() % int(max_magnitude));
+          perturbation_magnitudes[n] = random_magnitude(generator);
         }
     }
 
@@ -126,16 +128,16 @@ namespace aspect
       double temperature_perturbation = 0;
       for (unsigned int n=0; n<n_perturbations; ++n)
         {
-          double exponent = 0;
-          for (unsigned int d=0; d<dim; ++d)
-            exponent += (position[d] - perturbation_centers[n](d)) * (position[d] - perturbation_centers[n](d))
-                        / (2.*width*width);
+          const double distance_square = position.distance_square(perturbation_centers[n]);
+          const double exponent = distance_square / (2.*width*width);
 
           temperature_perturbation += perturbation_magnitudes[n] * std::exp(-exponent);
         }
 
       return temperature_perturbation;
     }
+
+
 
     template <int dim>
     void
@@ -145,9 +147,9 @@ namespace aspect
       {
         prm.enter_subsection("Random Gaussian perturbation");
         {
-          prm.declare_entry ("Number of pertubations", "100",
+          prm.declare_entry ("Number of perturbations", "100",
                              Patterns::Integer (),
-                             "Total number of perturbations to be introducted into the model. "
+                             "Total number of perturbations to be introduced into the model. "
                              "Perturbations will be placed at random locations within the "
                              "model domain.");
           prm.declare_entry ("Maximum magnitude", "25.0",
@@ -167,6 +169,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     RandomGaussianPerturbation<dim>::parse_parameters (ParameterHandler &prm)
@@ -175,7 +178,7 @@ namespace aspect
       {
         prm.enter_subsection("Random Gaussian perturbation");
         {
-          n_perturbations = prm.get_integer ("Number of pertubations");
+          n_perturbations = prm.get_integer ("Number of perturbations");
           max_magnitude = prm.get_double ("Maximum magnitude");
           width = prm.get_double ("Width");
         }

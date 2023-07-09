@@ -1,5 +1,5 @@
-New: There is now a new initial temperature plugin that allows it
-to add a fixed number of Gaussian perturbations placed at random
+New: There is now a new initial temperature plugin that adds
+a fixed number of Gaussian perturbations placed at random
 locations to the initial temperature.
 <br>
 (Juliane Dannberg, 2023/02/10)

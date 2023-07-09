@@ -13,7 +13,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
    Postprocessing:
      Writing graphical output: output-random_perturbation_box/solution/solution-00000
-     Temperature min/avg/max:  476.7 K, 500 K, 516.9 K
+     Temperature min/avg/max:  481.9 K, 500.9 K, 521.7 K
 
 Termination requested by criterion: end time
 

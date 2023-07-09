@@ -13,7 +13,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
    Postprocessing:
      Writing graphical output: output-random_perturbation_chunk/solution/solution-00000
-     Temperature min/avg/max:  479.1 K, 500.4 K, 518.7 K
+     Temperature min/avg/max:  475.4 K, 498.9 K, 516.8 K
 
 Termination requested by criterion: end time
 
