@@ -41,5 +41,5 @@ The benchmark can be run using the parameter files in
 The material model is implemented in [benchmarks/solubility/plugin/solubility.cc](https://github.com/geodynamics/aspect/blob/main/benchmarks/solubility/plugin/solubility.cc). Consequently, this code needs to be compiled into a shared library before you can run the test.
 
 
-``` {literalinclude} ./solubility.prm
+``` {literalinclude} ../solubility.prm
 ```
