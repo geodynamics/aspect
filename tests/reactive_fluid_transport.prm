@@ -1,0 +1,155 @@
+# This is a 1D test case for an insoluble fluid moving upwards in a
+# narrow channel through porous coupled two-phase flow.
+set Adiabatic surface temperature          = 1600
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Output directory                       = output
+set Max nonlinear iterations               = 10
+set Nonlinear solver tolerance             = 1e-5
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+
+set End time                               = 1e2
+
+
+set Use operator splitting                     = false
+
+
+# There are two compositional fields, one that tracks the amount of free fluid
+# (the porosity) and one that tracks the amount of bound fluid (bound_fluid).
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, bound_fluid
+end
+
+# Initially, there is no free water (the porosity is zero) and the water content
+# of the material is 1%.
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = if (y<=2e2,0.1,0); 0;
+  end
+end
+
+# The material flowing in from the bottom has the same porosity as prescribed
+# in the initial condition.
+subsection Boundary composition model
+  set Fixed composition boundary indicators   = bottom
+  set List of model names = initial composition
+end
+
+# We prescribe an upwelling velocity of 1 cm/yr at the bottom,
+# the left and right boundaries are closed and the top is open.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right
+  set Prescribed velocity boundary indicators = bottom:function
+  subsection Function
+    set Function expression = 0; 1e-2
+  end
+end
+
+# The model is 0.2 km wide and extends 2 km in the vertical direction.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 2e2
+    set Y extent  = 2e3
+    set Y repetitions = 10
+  end
+
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+
+end
+
+# The temperature is not important for this model, so we simply
+# set it to 1600 K everywhere (including the boundary).
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1600
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Maximal temperature = 1600
+    set Minimal temperature = 1600
+  end
+end
+
+
+# We use a custom material model that implements the layers with
+# different solubility.
+subsection Material model
+  set Model name = reactive fluid transport
+  subsection Reactive Fluid Transport Model
+    set Base model = visco plastic
+    set Reference fluid density = 2995
+    set Shear to bulk viscosity ratio = 0.1
+    set Reference fluid viscosity = 10
+    set Reference permeability = 2.5e-6
+    set Exponential fluid weakening factor = 0
+    set Fluid reaction time scale for operator splitting = 5e4
+  end
+
+  subsection Visco Plastic
+    set Reference temperature                   = 1600
+    set Prefactors for diffusion creep          = 5e-21
+
+    set Viscous flow law = diffusion
+
+    set Densities                   = 3000
+    set Viscosity averaging scheme  = harmonic
+
+    set Minimum viscosity           = 1e19
+    set Maximum viscosity           = 1e19
+  end
+end
+
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 0.0
+
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 0
+  set Strategy                                 = composition
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Melt settings
+  set Include melt transport                  = true
+end
+
+
+subsection Postprocess
+
+  set List of postprocessors = visualization, composition statistics, velocity statistics
+
+  subsection Visualization
+
+    set List of output variables      = density, viscosity, thermal expansivity, melt material properties, melt fraction
+
+    subsection Melt material properties
+      set List of properties          = fluid density, permeability, fluid viscosity, compaction viscosity
+    end
+
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    set Interpolate output            = false
+  end
+
+end
