@@ -63,6 +63,7 @@ namespace aspect
       grain_size,
       porosity,
       density,
+      entropy,
       generic,
       unspecified
     } type;
@@ -87,6 +88,8 @@ namespace aspect
         return CompositionalFieldDescription::porosity;
       else if (input == "density")
         return CompositionalFieldDescription::density;
+      else if (input == "entropy")
+        return CompositionalFieldDescription::entropy;
       else if (input == "generic")
         return CompositionalFieldDescription::generic;
       else if (input == "unspecified")
