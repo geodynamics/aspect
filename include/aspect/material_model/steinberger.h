@@ -274,7 +274,7 @@ namespace aspect
         std::vector<double> conductivity_reference_temperatures;
         std::vector<double> conductivity_exponents;
         std::vector<double> saturation_scaling;
-        std::vector<double> viscosities;
+        std::vector<double> prefactors;
         double maximum_conductivity;
 
         /**
