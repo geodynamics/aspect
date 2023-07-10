@@ -2,14 +2,14 @@
 # narrow channel through porous coupled two-phase flow.
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Output directory                       = output
-set Max nonlinear iterations               = 10
+set Output directory                       = reactive_fluid_transport_no_reaction
+set Max nonlinear iterations               = 1
 set Nonlinear solver tolerance             = 1e-5
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
 
-set End time                               = 1e2
+set End time                               = 1e1
 
 
 set Use operator splitting                     = false
@@ -101,6 +101,7 @@ subsection Material model
     set Reference fluid viscosity = 10
     set Reference permeability = 2.5e-6
     set Exponential fluid weakening factor = 0
+    set Fluid solid reaction scheme = no reaction
   end
 
   subsection Visco Plastic
@@ -136,19 +137,6 @@ end
 
 subsection Postprocess
 
-  set List of postprocessors = visualization, composition statistics, velocity statistics
-
-  subsection Visualization
-
-    set List of output variables      = density, viscosity, thermal expansivity, melt material properties, melt fraction
-
-    subsection Melt material properties
-      set List of properties          = fluid density, permeability, fluid viscosity, compaction viscosity
-    end
-
-    set Output format                 = vtu
-    set Time between graphical output = 0
-    set Interpolate output            = false
-  end
+  set List of postprocessors = composition statistics, melt statistics, velocity statistics
 
 end

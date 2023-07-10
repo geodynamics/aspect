@@ -1,0 +1,79 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.6.0-pre (create_reactive_fluid_transport_material_model, 1fdafa859)
+--     . using deal.II 9.4.0
+--     .       with 32 bit indices and vectorization level 1 (128 bits)
+--     . using Trilinos 13.2.0
+--     . using p4est 2.3.2
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&melt=1&sha=1fdafa859&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 10 (on 1 levels)
+Number of degrees of freedom: 515 (126+52+126+22+63+63+63)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.46979e-16, 3.67484e-17, 0, 0.00262978
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00262978
+
+
+   Postprocessing:
+     Compositions min/max/mass:   0/0.1/4667 // 0/0/0
+     Melt fraction min/total/max: -0.00873, 4667, 0.1
+     RMS, max velocity:           0.309 m/year, 0.348 m/year
+
+*** Timestep 1:  t=10 years, dt=10 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 8 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.07157e-16, 0.0944486, 0, 0.00792955
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0944486
+
+
+   Postprocessing:
+     Compositions min/max/mass:   -5.788e-07/0.11/5159 // 0/0/0
+     Melt fraction min/total/max: -0.006311, 5159, 0.11
+     RMS, max velocity:           0.307 m/year, 0.346 m/year
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      1.06s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         2 |    0.0695s |       6.6% |
+| Assemble composition system      |         4 |     0.147s |        14% |
+| Assemble temperature system      |         2 |    0.0762s |       7.2% |
+| Build Stokes preconditioner      |         2 |    0.0423s |         4% |
+| Build composition preconditioner |         2 |  0.000213s |         0% |
+| Build temperature preconditioner |         2 |  0.000568s |         0% |
+| Initialization                   |         1 |     0.403s |        38% |
+| Postprocessing                   |         2 |    0.0252s |       2.4% |
+| Setup dof systems                |         1 |    0.0115s |       1.1% |
+| Setup initial conditions         |         1 |    0.0658s |       6.2% |
+| Setup matrices                   |         1 |    0.0203s |       1.9% |
+| Solve Stokes system              |         2 |    0.0436s |       4.1% |
+| Solve composition system         |         2 |  0.000936s |         0% |
+| Solve temperature system         |         2 |   0.00108s |       0.1% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 1s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&melt=1&sha=1fdafa859&src=code
+-----------------------------------------------------------------------------
