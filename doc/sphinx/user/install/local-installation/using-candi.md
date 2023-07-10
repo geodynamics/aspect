@@ -4,14 +4,7 @@
 In its default configuration `candi` downloads and compiles a <span
 class="smallcaps">deal.II</span> configuration that is able to run
 ASPECT, but it also contains a number of packages
-that are not required (and that can be safely disabled if problems occur
-during the installation). We require at least the packages <span
-class="smallcaps">p4est</span>, Trilinos, and
-finally deal.II.
-
-At the time of this writing (2022), `candi` will install
-p4est 2.3.2, Trilinos 12.18.1, and deal.II 9.3.3.
-We strive to keep
+that are not required. We strive to keep
 the development version of ASPECT compatible
 with the latest release of deal.II and the
 current deal.II development version at any
@@ -23,6 +16,22 @@ class="smallcaps">p4est</span> and Trilinos.
             git clone https://github.com/dealii/candi
 
     in a directory of your choice.
+
+2.  *Obtaining a suitable candi configuration file:* As
+    mentioned above the default configuration of candi includes
+    a number of packages that are not necessary for ASPECT.
+    We require at least the packages <span-class="smallcaps">p4est</span>,
+    Trilinos, and finally deal.II. We may require SUNDIALS
+    in future ASPECT versions. In addition there are some
+    configuration options that make ASPECT faster.
+    We provide a candi configuration file that is optimized for
+    ASPECT at
+
+            https://github.com/geodynamics/aspect/tree/main/contrib/install/local.cfg
+
+    While not mandatory, we recommend to download this file and
+    place it inside the `candi` directory (you should then have two
+    configuration files in that directory, named `candi.cfg` and `local.cfg`).
 
 2.  *Installing deal.II and its dependencies:*
     Execute `candi` by running
