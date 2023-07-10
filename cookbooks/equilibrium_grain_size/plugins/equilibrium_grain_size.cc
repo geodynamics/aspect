@@ -147,12 +147,6 @@ namespace aspect
           temperature_scaling_index = dT_vs_depth_profile.get_column_index_from_name("temperature_scaling");
         }
 
-      if (!this->get_adiabatic_conditions().is_initialized())
-        {
-          reference_profile.initialize(this->get_mpi_communicator());
-          density_index = reference_profile.get_column_index_from_name("density");
-        }
-
       // Get column for crustal depths
       std::set<types::boundary_id> surface_boundary_set;
       surface_boundary_set.insert(this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"));
@@ -270,6 +264,14 @@ namespace aspect
       return std::make_pair (reference_viscosity, depth_index);
     }
 
+
+
+    template <int dim>
+    double
+    EquilibriumGrainSize<dim>::get_uppermost_mantle_thickness () const
+    {
+      return depth_to_base_of_uppermost_mantle;
+    }
 
 
 
@@ -1027,10 +1029,6 @@ namespace aspect
                 }
               else
                 {
-                  const double outer_radius = this->get_geometry_model().representative_point(0.).norm();
-                  // The input prem data is has radius instead of depths
-                  double prem_density = reference_profile.get_data_component(Point<1>(outer_radius-depth), density_index);
-
                   // Densities below 300 km are computed using the scaling relationship from the velocity anomalies
                   double density_vs_scaling;
                   if (use_depth_dependent_rho_vs)
@@ -1044,11 +1042,14 @@ namespace aspect
                   if (!this->get_adiabatic_conditions().is_initialized())
                     density_anomaly = 0;
 
+                  // We only want to use the PREM densities in the part of the model that also
+                  // uses seismic velocities to determine the densities. Otherwise, use the density
+                  // computed by the material model.
                   const double reference_density = this->get_adiabatic_conditions().is_initialized()
                                                    ?
                                                    this->get_adiabatic_conditions().density(in.position[i])
                                                    :
-                                                   prem_density;
+                                                   reference_rho;
 
                   out.densities[i] = reference_density * (1. + density_anomaly);
 
@@ -1342,7 +1343,7 @@ namespace aspect
                              "'Use table properties', this value is irrelevant and will be ignored.");
           prm.declare_entry ("Uppermost mantle thickness", "300000",
                              Patterns::Double (0),
-                             "The depth of the base of the uppoermost mantle, which marks the transition between "
+                             "The depth of the base of the uppermost mantle, which marks the transition between "
                              "using the temperature model of Tutu et al. (above) and derived from seismic "
                              "tomography (below). "
                              "Units: \\si{\\meter}.");
@@ -1394,9 +1395,6 @@ namespace aspect
           // Crustal boundary depths parameters
           Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "../../input_data/",
                                                                 "crustal_structure.txt", "Crustal depths");
-
-          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "../../input_data/1D_reference_profiles/",
-                                                            "prem.txt", "Reference profile");
         }
         prm.leave_subsection();
       }
@@ -1595,8 +1593,6 @@ namespace aspect
 
           crustal_boundary_depth.initialize_simulator (this->get_simulator());
           crustal_boundary_depth.parse_parameters(prm, "Crustal depths");
-
-          reference_profile.parse_parameters(prm, "Reference profile");
 
           // Make sure the grain size field comes after all potential material
           // data fields. Otherwise our material model calculation uses the

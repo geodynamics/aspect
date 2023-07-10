@@ -1,9 +1,14 @@
-# 2D version of the model with the same viscosity we use
-# in the 3D case. The model also includes faults.
+﻿# This cookbook demonstrates how we can setup instantaneous mantle flow models
+# using available geophysical constraints. To avoid large computational cost,
+# this model is a 2D spherical shell with imposed plate boundaries and driven
+# by mantle forces arising from observed mantle heterogeneity.
+# The generated mantle flow field at the surface can be compared with the observed
+# surface deformation and the fit can be used to constrain the physical state
+# of the mantle.
+# We define plate boundaries and cratons using WorldBuilder.
 
 set Additional shared libraries            = ../../plugins/libequilibrium_grain_size.so
-
-set Dimension = 2
+set Dimension                              = 2
 set Use years in output instead of seconds = true
 set Output directory                       = 2D-slice-with-faults-cratons-1
 set World builder file                     = ../../input_data/world_builder_smac_cratons_faults_2D.json
@@ -13,6 +18,8 @@ set End time                               = 0
 set Adiabatic surface temperature          = 1573.0
 
 
+# We use matrix-free solver and geometric multigrid preconditioner
+# to reduce memory consumption.
 subsection Solver parameters
   subsection Stokes solver parameters
    set Linear solver tolerance                         = 1e-4
@@ -25,10 +32,13 @@ subsection Solver parameters
   end
 end
 
+# The reference profile uses hydrostatic equations to define adiabatic pressure
+# and temperatures. The difference with existing compute profile plugin is that this
+# plugin uses reference densities from PREM below a certain depth defined by the
+# uppermost mantle thickness parameter to compute the adiabatic conditions.
 subsection Adiabatic conditions model
-  set Model name = compute profile
-
-  subsection Compute profile
+  set Model name = reference profile
+  subsection Reference profile
     subsection Ascii data model
       set Data directory = ../../input_data/1D_reference_profiles/
       set Data file name = prem.txt
@@ -36,9 +46,10 @@ subsection Adiabatic conditions model
   end
 end
 
+
+# We use the spherical shell geometry using the real Earth radius values.
 subsection Geometry model
   set Model name = spherical shell
-
   subsection Spherical shell
     set Inner radius  = 3481000
     set Outer radius  = 6371000
@@ -46,15 +57,16 @@ subsection Geometry model
 end
 
 
+# We use adaptive refinement to better resolve the plate boundaries and
+# the near-surface heterogeneity
 subsection Mesh refinement
   set Initial adaptive refinement = 1
   set Initial global refinement = 4
   set Strategy = minimum refinement function
   set Skip solvers on initial refinement = true
-
   subsection Minimum refinement function
     set Variable names = depth, y
-    set Function expression = if (depth < 350000, 10, 5)
+    set Function expression = if (depth < 350000, 5, 4)
   end
 end
 
@@ -66,6 +78,8 @@ subsection Compositional fields
 end
 
 
+# We use world builder to define the complex geometery of plate boundaries ("faults")
+# and cratons ("continents") in our model.
 subsection Initial composition model
   set List of model names = ascii data, world builder
 
@@ -86,6 +100,9 @@ subsection Boundary velocity model
 end
 
 
+# We set the net rotation of the velocities at the surface to zero.
+# This is useful for comparison with the observed GPS velocities in the no
+# net rotation frame.
 subsection Nullspace removal
   set Remove nullspace = net surface rotation
 end
@@ -101,6 +118,13 @@ subsection Boundary temperature model
 end
 
 
+# We use initial temperatures from an ASCII file but we also use adiabatic
+# boundary plugin such it returns very small temperatures, and on taking
+# the maximum between the two temperatures we have the temperature distribution
+# from the ASCII file.
+# We do this because we need the lithospheric depths for density computation
+# because the reference density, thermal expansivity, and compressibility varies
+# between the crust, lithosphere, and asthenosphere in our model.
 subsection Initial temperature model
   set List of model names = ascii data, adiabatic boundary
   set List of model operators = maximum
@@ -119,9 +143,14 @@ subsection Initial temperature model
   end
 end
 
+
+# We do not solve for the temperature field and instead prescribe temperatures
+# in our material model using the initial temperature distribution and
+# temperatures computed from the input tomography data.
 subsection Temperature field
   set Temperature method = prescribed field
 end
+
 
 subsection Heating model
   set List of model names = adiabatic heating, shear heating
@@ -133,6 +162,10 @@ subsection Gravity model
 end
 
 
+# The material model uses diffusion/dislocation creep with prefactors, activation
+# energies and volumes for each major mantle phase chosen to facilitate combined
+# diffusion/dislocation creep in the upper mantle and transition zone, and diffusion
+# creep as the dominant deformation mechanism in the lower mantle.
 subsection Material model
   set Model name         = equilibrium grain size
   set Material averaging = harmonic average only viscosity
@@ -153,7 +186,7 @@ subsection Material model
    set Dislocation activation energy               = 530000,530000,530000,530000
    set Dislocation activation volume               = 1.40E-005,1.70E-005,1.70E-005,0.0
    set Dislocation creep exponent                  = 3.5,3.5,3.5,3.5
-   set Dislocation creep prefactor                 = 8.33E-015,2.05e-12,2.05e-19,1.e-40 #1e-100, 1e-100, 1e-100, 1e-100
+   set Dislocation creep prefactor                 = 8.33E-015,2.05e-12,2.05e-19,1.e-40
 
    set Geometric constant                          = 3,3,3,3
    set Grain growth activation energy              = 400000,662000,414000,299000
@@ -177,39 +210,49 @@ subsection Material model
    set Reciprocal required strain                  = 10
    set Recrystallized grain size                   = 0.0,0.0,1e-4
 
+# This parameter determines the depth at which the temperatures transition between
+# the initial ascii temperature model and the derived temperatures from seismic
+# tomography below.
+   set Uppermost mantle thickness                  = 300000
+
+# The following parameters governs if we want to scale the laterally
+# averaged viscosity to a reference profile, and the location of that
+# profile.
    set Use depth dependent viscosity               = true
-   set Use depth dependent density scaling         = true
-   set Use depth dependent temperature scaling     = true
-   set Use faults                                  = true
-   set Use cratons                                 = true
-
-   set Asthenosphere viscosity                     = 1e20
-   set Fault viscosity                             = 1e20
-
    subsection Ascii data model
      set Data directory                            = ../../input_data/viscosity_profiles/
      set Data file name                            = steinberger_source-1.txt
    end
 
+# This tells us how we want to scale the input Vs anomalies to compute density/temperature
+# anomalies. By default, the model uses a constant scaling factor, but in this cookbook we use
+# depth-dependent scaling factors taken from input ascii files.
+   set Use depth dependent density scaling         = true
+   set Use depth dependent temperature scaling     = true
    subsection Density velocity scaling
-     set Data directory                            = ../../input_data/
      set Data file name                            = rho_vs_scaling.txt
    end
-
-   subsection Thermal expansivity profile
-     set Data directory                            = ../../input_data/
-     set Data file name                            = thermal_expansivity_steinberger_calderwood.txt
+   subsection Temperature velocity scaling
+     set Data file name                            = dT_vs_scaling.txt
    end
 
+# The following parameters governs if we want to use plate boundaries
+# or cratons in this model and their corresponding viscosity values.
+   set Use faults                                  = true
+   set Fault viscosity                             = 1e19
+   set Use cratons                                 = true
+   set Craton viscosity                            = 1e25
+
+# In this material model, we define asthenosphere as the second layer of the input
+# viscosity profile.
+   set Asthenosphere viscosity                     = 1e20
+
+# We use crustal depths to compute densities within the crust using a reference density,
+# thermal expansivity, and compressibility within the crust.
    subsection Crustal depths
      set Data directory                            = ../../input_data/
      set Data file name                            = crustal_structure_2D.txt
    end
-
-    subsection Reference profile
-      set Data directory = ../../input_data/1D_reference_profiles/
-      set Data file name = prem.txt
-    end
   end
 end
 
@@ -220,17 +263,10 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors         = velocity statistics, visualization
+  set List of postprocessors         = boundary velocity residual statistics, velocity boundary statistics, visualization, heat flux statistics, depth average
 
   subsection Visualization
-    set List of output variables      = adiabat, material properties, gravity, nonadiabatic temperature, nonadiabatic pressure, named additional outputs
+    set List of output variables     = adiabat, material properties, gravity, nonadiabatic temperature, heat flux map, strain rate,  boundary velocity residual, named additional outputs
     set Output format  = vtu
-  end
-
-  subsection Depth average
-    set List of output variables = viscosity
-    set Time between graphical output = 0
-    set Number of zones = 22
-    set Depth boundaries of zones = 0.00000e+00,1.00025e+05,3e+05,3.40211e+05,4.10292e+05,5.19874e+05,6.60036e+05,8.00198e+05,9.39722e+05,1.07988e+06,1.22005e+06,1.36021e+06,1.49973e+06,1.63990e+06,1.78006e+06,1.92022e+06,2.05974e+06,2.19991e+06,2.34007e+06,2.48023e+06,2.61976e+06,2.75992e+06,2.90008e+06
   end
 end

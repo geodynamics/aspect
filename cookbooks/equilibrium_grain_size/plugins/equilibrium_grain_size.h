@@ -85,6 +85,14 @@ namespace aspect
         get_reference_viscosity (const double depth) const;
 
         /**
+         * Return the depth of the base of the uppermost mantle. Below that depth,
+         * material properties are based on seismic tomography. Above that depth, material
+         * properties are computed based on the model of Tutu et al., 2018.
+         */
+        double
+        get_uppermost_mantle_thickness () const;
+
+        /**
          * Compute the scaling factors for each depth layer such that the laterally
          * averaged viscosiy in that layer is the same as the reference vicosity.
          */
@@ -305,11 +313,6 @@ namespace aspect
                         const double pressure,
                         const std::vector<double> &compositional_fields,
                         const Point<dim> &position) const;
-
-        /**
-        * A reference profile for density and seismic velocities.
-        */
-        Utilities::AsciiDataProfile<dim> reference_profile;
 
         /**
          * The column indices of the density column in the reference profile file.
