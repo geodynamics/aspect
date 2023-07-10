@@ -128,7 +128,6 @@ namespace aspect
            * Initialization function. This function is called once at the
            * beginning of the program after parse_parameters is run.
            */
-          virtual
           void
           initialize () override;
 
@@ -143,7 +142,6 @@ namespace aspect
            * of this function should be to extend this vector by a number of
            * properties.
            */
-          virtual
           void
           initialize_one_particle_property (const Point<dim> &position,
                                             std::vector<double> &particle_properties) const override;
@@ -169,7 +167,6 @@ namespace aspect
            * @param [in,out] particle_properties The properties of the particle
            * that is updated within the call of this function.
            */
-          virtual
           void
           update_one_particle_property (const unsigned int data_position,
                                         const Point<dim> &position,
@@ -194,7 +191,6 @@ namespace aspect
            * Return which data has to be provided to update the property.
            * The integrated strains needs the gradients of the velocity.
            */
-          virtual
           UpdateFlags
           get_needed_update_flags () const override;
 
@@ -205,7 +201,6 @@ namespace aspect
            * @return A vector that contains pairs of the property names and the
            * number of components this property plugin defines.
            */
-          virtual
           std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const override;
 
