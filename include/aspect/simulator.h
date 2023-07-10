@@ -1714,6 +1714,18 @@ namespace aspect
       check_consistency_of_formulation ();
 
       /**
+       * This function checks that the user-selected solver is
+       * supported for the chosen model parameters. If the model parameters
+       * are not supported we fall back to the AMG preconditioner, which offers
+       * the broadest support for all model settings.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       */
+      void
+      fallback_to_amg_preconditioner_if_necessary ();
+
+      /**
        * This function checks that the user-selected boundary conditions do not
        * contain contradictions. If an incorrect selection is detected it
        * throws an exception. This for example assures that not both velocity
