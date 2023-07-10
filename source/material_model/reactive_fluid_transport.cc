@@ -30,6 +30,64 @@ namespace aspect
   namespace MaterialModel
   {
     template <int dim>
+    bool
+    ReactiveFluidTransport<dim>::
+    is_compressible () const
+    {
+      return base_model->is_compressible();
+    }
+
+
+
+    template <int dim>
+    double
+    ReactiveFluidTransport<dim>::
+    reference_darcy_coefficient () const
+    {
+      // 0.01 = 1% melt
+      return reference_permeability * std::pow(0.01,3.0) / eta_f;
+    }
+
+
+
+    template <int dim>
+    void
+    ReactiveFluidTransport<dim>::
+    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                    std::vector<double> &melt_fractions) const
+    {
+      for (unsigned int q=0; q<in.temperature.size(); ++q)
+        {
+          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+
+          switch (fluid_solid_reaction_scheme)
+            {
+              case no_reaction:
+              {
+                // A fluid-rock reaction model where no reactions occur.
+                // The melt (fluid) fraction at any point is equal
+                // to the sume of the bound fluid content and porosity,
+                // with the latter determined by the assigned initial
+                // porosity, fluid boundary conditions, and fluid
+                // transport through the model.
+                const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
+                melt_fractions[q] = in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx];
+                break;
+              }
+              default:
+              {
+                AssertThrow(false, ExcNotImplemented());
+                break;
+              }
+            }
+
+
+        }
+    }
+
+
+
+    template <int dim>
     void
     ReactiveFluidTransport<dim>::initialize()
     {
@@ -180,6 +238,10 @@ namespace aspect
                              "computed. If the model does not use operator splitting, this parameter is not used. "
                              "Units: yr or s, depending on the ``Use years "
                              "in output instead of seconds'' parameter.");
+          prm.declare_entry ("Fluid solid reaction scheme", "no reaction",
+                             Patterns::Selection("no reaction"),
+                             "Select what type of scheme to use for reactions between fluid and solid phases. "
+                             "The only present option is to have no reactions between the two phases.");
         }
         prm.leave_subsection();
       }
@@ -219,6 +281,12 @@ namespace aspect
           if (this->convert_output_to_years() == true)
             fluid_reaction_time_scale *= year_in_seconds;
 
+          // Reaction scheme parameter
+          if (prm.get ("Fluid solid reaction scheme") == "no reaction")
+            fluid_solid_reaction_scheme = no_reaction;
+          else
+            AssertThrow(false, ExcMessage("Not a valid viscous flow law"));
+
           if (this->get_parameters().use_operator_splitting)
             {
               AssertThrow(fluid_reaction_time_scale >= this->get_parameters().reaction_time_step,
@@ -246,49 +314,6 @@ namespace aspect
       // After parsing the parameters for this model, parse parameters related to the base model.
       base_model->parse_parameters(prm);
       this->model_dependence = base_model->get_model_dependence();
-    }
-
-
-
-    template <int dim>
-    bool
-    ReactiveFluidTransport<dim>::
-    is_compressible () const
-    {
-      return base_model->is_compressible();
-    }
-
-
-
-    template <int dim>
-    void
-    ReactiveFluidTransport<dim>::
-    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                    std::vector<double> &melt_fractions) const
-    {
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
-        {
-          // A fluid-rock reaction model where no reactions occur.
-          // The melt (fluid) fraction at any point is equal
-          // to the sume of the bound fluid content and porosity,
-          // with the latter determined by the assigned initial
-          // porosity, fluid boundary conditions, and fluid
-          // transport through the model.
-          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-          const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
-          melt_fractions[q] = in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx];
-        }
-    }
-
-
-
-    template <int dim>
-    double
-    ReactiveFluidTransport<dim>::
-    reference_darcy_coefficient () const
-    {
-      // 0.01 = 1% melt
-      return reference_permeability * std::pow(0.01,3.0) / eta_f;
     }
 
 

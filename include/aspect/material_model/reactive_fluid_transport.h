@@ -50,6 +50,31 @@ namespace aspect
     {
       public:
         /**
+         * @copydoc MaterialModel::Interface::is_compressible()
+         *
+         * Returns value from material model providing compressibility.
+         */
+        bool is_compressible () const override;
+
+        /**
+         * @name Reference quantities
+         * @{
+         */
+        virtual double reference_darcy_coefficient () const;
+
+        /**
+         * Compute the free fluid fraction that can be present in the material based on the
+         * fluid content of the material and the fluid solubility for the given input conditions.
+         * @p in and @p melt_fractions need to have the same size.
+         *
+         * @param in Object that contains the current conditions.
+         * @param melt_fractions Vector of doubles that is filled with the
+         * allowable free fluid fraction for each given input conditions.
+         */
+        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                     std::vector<double> &melt_fractions) const;
+
+        /**
          * Initialize the base model at the beginning of the model run
          * @copydoc MaterialModel::Interface::initialize()
          */
@@ -68,26 +93,6 @@ namespace aspect
         evaluate (const typename Interface<dim>::MaterialModelInputs &in,
                   typename Interface<dim>::MaterialModelOutputs &out) const override;
 
-        /**
-         * @copydoc MaterialModel::Interface::is_compressible()
-         *
-         * Returns value from material model providing compressibility.
-         */
-        bool is_compressible () const override;
-
-        /**
-         * Compute the free fluid fraction that can be present in the material based on the
-         * fluid content of the material and the fluid solubility for the given input conditions.
-         * @p in and @p melt_fractions need to have the same size.
-         *
-         * @param in Object that contains the current conditions.
-         * @param melt_fractions Vector of doubles that is filled with the
-         * allowable free fluid fraction for each given input conditions.
-         */
-        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &melt_fractions) const;
-
-        virtual double reference_darcy_coefficient () const;
 
         /**
          * @copydoc MaterialModel::Interface::declare_parameters()
@@ -133,6 +138,15 @@ namespace aspect
 
         // Time scale for fluid release and absorption.
         double fluid_reaction_time_scale;
+
+        /**
+         * Enumeration for selecting which type of viscous flow law to use.
+         * Select between diffusion, dislocation, frank_kamenetskii or composite.
+         */
+        enum ReactionScheme
+        {
+          no_reaction
+        } fluid_solid_reaction_scheme;
     };
   }
 }
