@@ -489,7 +489,7 @@ namespace aspect
          * List the other postprocessors required by this plugin.
          */
         std::list<std::string>
-        required_other_postprocessors() const;
+        required_other_postprocessors() const override;
 
       private:
         /**

@@ -46,9 +46,8 @@ namespace aspect
     class TemperatureAsciiOut : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
     };
 
     template <int dim>
