@@ -47,7 +47,8 @@ namespace aspect
     };
 
     template <int dim>
-    class DarcySystem : public Assemblers::Interface<dim>, public SimulatorAccess<dim>
+    class DarcySystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
+      public SimulatorAccess<dim>
     {
       public:
         void
@@ -66,7 +67,7 @@ namespace aspect
      * current cell in case we only want to solve the diffusion equation.
      */
     template <int dim>
-    class DiffusionSystem : public Assemblers::Interface<dim>,
+    class DiffusionSystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
       public SimulatorAccess<dim>
     {
       public:
@@ -76,6 +77,14 @@ namespace aspect
 
         std::vector<double>
         compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base) const override;
+
+        virtual
+        std::vector<double>
+        advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const override;
+
+        virtual
+        std::vector<double>
+        diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const override;
     };
 
     /**

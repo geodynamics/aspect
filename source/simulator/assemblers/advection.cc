@@ -395,6 +395,35 @@ namespace aspect
 
 
     template <int dim>
+    std::vector<double>
+    DiffusionSystem<dim>::advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
+      return std::vector<double> (scratch.material_model_inputs.n_evaluation_points(), 0.0);
+    }
+
+
+
+    template <int dim>
+    std::vector<double>
+    DiffusionSystem<dim>::diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
+
+      const double prefactor = this->get_timestep() > 0
+                               ?
+                               this->get_parameters().diffusion_length_scale
+                               * this->get_parameters().diffusion_length_scale
+                               / this->get_timestep()
+                               :
+                               0.0;
+
+      return std::vector<double> (scratch.material_model_inputs.n_evaluation_points(), prefactor);
+    }
+
+
+
+    template <int dim>
     void
     AdvectionSystemBoundaryHeatFlux<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                                   internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
