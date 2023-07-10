@@ -187,10 +187,10 @@ namespace aspect
             else
               {
                 // set volume fraction
-               
+
                 /*
                 To use D-Rex uncomment the first statement, setting the initial volume fraction = 1/n_grains
-                To use D-Rex ++ uncomment the other lines 
+                To use D-Rex ++ uncomment the other lines
                 */
 
                 //const double initial_volume_fraction = 1.0/n_grains;
@@ -645,12 +645,12 @@ namespace aspect
               set_deformation_type(cpo_index,data,mineral_i,static_cast<unsigned int>(deformation_type));
 
               /*
-                The following part of the algorithm describes the rate of recrystalization of new strain-free grains. This is done by using the 
-                Johnson- Avrami-Mehl_Kolmogodorov theory of transformation. The equations and the values for the variables are taken from Cross and Skemer 
-                (2019). 
+                The following part of the algorithm describes the rate of recrystalization of new strain-free grains. This is done by using the
+                Johnson- Avrami-Mehl_Kolmogodorov theory of transformation. The equations and the values for the variables are taken from Cross and Skemer
+                (2019).
 
                 Incremental recrystalization fraction = n * beta * (strain - critical strain)^(n - 1) * exp( -beta * (strain - critical strain)^ n )
-                 where 
+                 where
                  n -> avrami exponent
                  beta -> rate of transformation
                   where beta -> C * exp(g * (T/T_melt))
@@ -741,7 +741,7 @@ namespace aspect
               // now compute the normal viscosity to be able to computes the stress
               // Create the material model inputs and outputs to
               // retrieve the current viscosity.
-              
+
               MaterialModel::MaterialModelInputs<dim> in = MaterialModel::MaterialModelInputs<dim>(1,compositions.size());
               in.pressure[0] = pressure;
               in.temperature[0] = temperature;
@@ -775,7 +775,7 @@ namespace aspect
               // strain rate is computed in the viscoplastic material model.
               // TODO check that this is valid for the compressible case.
               //const double stress_invariant = (std::sqrt(std::max(-second_invariant(deviatoric_stress), 0.)));
-            
+
               const std::array< double, dim > eigenvalues = dealii::eigenvalues(deviatoric_stress);
               double differential_stress = eigenvalues[0]-eigenvalues[dim-1];
               const double dislocation_creep_strain_rate = differential_stress/(2.0*dislocation_viscosities[0]);
@@ -810,7 +810,7 @@ namespace aspect
 
               // The terms related to the paleowattmeter are declared here
               // Note : These values prescribe to the piezometer for olivine alone
-            
+
               const double C      = 3;
               const double gamma  = 1.0;
               const double k_g    = 1.92 * std::pow(10,-10);
@@ -819,7 +819,7 @@ namespace aspect
               const double E_g    = 400 * std::pow(10,3);
               const double V_g    = 0;
               const double R      = 8.314;
-            
+
               if (t!=0)
                 {
                   const long double pre_exponent_term_num = C * gamma * k_g;
@@ -1108,7 +1108,7 @@ namespace aspect
               }
 
             size_t n_recrystalized_grains = std::floor((recrystalization_fractions[grain_i]*grain_volume)/recrystalized_grain_volume);
-            
+
             if (n_recrystalized_grains > 0)
               {
                 const double grain_volume_left = grain_volume-n_recrystalized_grains*recrystalized_grain_volume;
