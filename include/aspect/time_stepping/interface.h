@@ -179,7 +179,7 @@ namespace aspect
          * Override initialize_simulator() so that we can also initialize the contained
          * termination_manager.
          */
-        virtual void initialize_simulator (const Simulator<dim> &simulator_object) override;
+        void initialize_simulator (const Simulator<dim> &simulator_object) override;
 
 
         /**

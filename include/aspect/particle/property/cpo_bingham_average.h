@@ -159,7 +159,6 @@ namespace aspect
           /**
            * Read the parameters this class declares from the parameter file.
            */
-          virtual
           void
           parse_parameters (ParameterHandler &prm) override;
 

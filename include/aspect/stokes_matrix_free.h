@@ -545,7 +545,7 @@ namespace aspect
        * model and storing the information necessary for a later call
        * to solve().
        */
-      virtual void assemble() override;
+      void assemble() override;
 
       /**
        * Computes and sets the diagonal for both the mass matrix operator and the A-block

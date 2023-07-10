@@ -46,7 +46,6 @@ namespace aspect
            * Look up where the RK4 data is stored. Done once and cached to
            * avoid repeated lookups.
            */
-          virtual
           void
           initialize () override;
 
