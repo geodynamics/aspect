@@ -152,8 +152,11 @@ namespace aspect
       surface_boundary_set.insert(this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"));
       crustal_boundary_depth.initialize(surface_boundary_set, 1);
 
-      // We need to update our lateral averages after the Stokes solver because in the first iteration,
-      // our temperature filed is not prescribed leading to incorrect lateral averages and scaling of viscosities.
+      // The update() function updates the profile that stores the laterally averaged viscosity.
+      // This is needed to compute the viscosity in the material model (since the viscosities are rescaled
+      // so that the lateral average matches the reference profile). Since the viscosity depends on both
+      // temperature and velocity, we want to update the lateral average profile after each temperature
+      // and Stokes solve.
       this->get_signals().post_stokes_solver.connect([&](const SimulatorAccess<dim> &,
                                                          const unsigned int ,
                                                          const unsigned int ,
@@ -175,16 +178,16 @@ namespace aspect
       for (unsigned i = 0; i < n_material_data; i++)
         {
           if (material_file_format == perplex)
-            material_lookup.push_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
-                                      (new MaterialUtilities::Lookup::PerplexReader(data_directory+material_file_names[i],
-                                                                                    /*use_bilinear_interpolation*/ true,
-                                                                                    this->get_mpi_communicator())));
+            material_lookup.emplace_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
+                                         (new MaterialUtilities::Lookup::PerplexReader(data_directory+material_file_names[i],
+                                                                                       /*use_bilinear_interpolation*/ true,
+                                                                                       this->get_mpi_communicator())));
           else if (material_file_format == hefesto)
-            material_lookup.push_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
-                                      (new MaterialUtilities::Lookup::HeFESToReader(data_directory+material_file_names[i],
-                                                                                    data_directory+derivatives_file_names[i],
-                                                                                    /*use_bilinear_interpolation*/ true,
-                                                                                    this->get_mpi_communicator())));
+            material_lookup.emplace_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
+                                         (new MaterialUtilities::Lookup::HeFESToReader(data_directory+material_file_names[i],
+                                                                                       data_directory+derivatives_file_names[i],
+                                                                                       /*use_bilinear_interpolation*/ true,
+                                                                                       this->get_mpi_communicator())));
           else
             AssertThrow (false, ExcNotImplemented());
         }
@@ -215,8 +218,6 @@ namespace aspect
                                    " Consider reducing number of depth layers"
                                    " for averaging."));
         }
-
-      initialized = true;
     }
 
 
@@ -231,6 +232,7 @@ namespace aspect
       (void) maximal_depth;
 
       Assert(depth < maximal_depth, ExcInternalError());
+      Assert(depth > -maximal_depth*std::numeric_limits<double>::epsilon(), ExcInternalError());
 
       unsigned int depth_index;
       if (depth < reference_viscosity_coordinates.front())
@@ -891,6 +893,7 @@ namespace aspect
       if (initial_temperature_manager == nullptr)
         const_cast<std::shared_ptr<const aspect::InitialTemperature::Manager<dim>>&>(initial_temperature_manager)
           = this->get_initial_temperature_manager_pointer();
+
       const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
         initial_temperature_manager->template get_matching_initial_temperature_model<InitialTemperature::AdiabaticBoundary<dim>>();
 
@@ -1042,9 +1045,6 @@ namespace aspect
                   if (!this->get_adiabatic_conditions().is_initialized())
                     density_anomaly = 0;
 
-                  // We only want to use the PREM densities in the part of the model that also
-                  // uses seismic velocities to determine the densities. Otherwise, use the density
-                  // computed by the material model.
                   const double reference_density = this->get_adiabatic_conditions().is_initialized()
                                                    ?
                                                    this->get_adiabatic_conditions().density(in.position[i])
