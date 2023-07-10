@@ -198,7 +198,7 @@ namespace aspect
       const double vis_lateral = std::max(std::min(std::exp(vis_lateral_exp),max_lateral_eta_variation),1/max_lateral_eta_variation);
 
       const double vis_radial = radial_viscosity_lookup->radial_viscosity(depth);
-      const double vis_compositional = MaterialUtilities::average_value (volume_fractions, viscosities, viscosity_averaging);
+      const double vis_compositional = MaterialUtilities::average_value (volume_fractions, prefactors, viscosity_averaging);
 
 
       return std::max(std::min(vis_lateral * vis_radial * vis_compositional,max_eta),min_eta);
@@ -478,7 +478,7 @@ if (in.requests_property(MaterialProperties::viscosity))
                              "with different viscosities, we need to come up with an average "
                              "viscosity at that point.  Select a weighted harmonic, arithmetic, "
                              "geometric, or maximum composition.");
-          prm.declare_entry ("Viscosities", "1.e21",
+          prm.declare_entry ("Prefactors", "1.e21",
                              Patterns::Anything(),
                              "List of viscosities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
@@ -587,10 +587,10 @@ if (in.requests_property(MaterialProperties::viscosity))
           has_background_field = (equation_of_state.number_of_lookups() == n_chemical_fields + 1);
 const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-viscosities = Utilities::parse_map_to_double_array (prm.get("Viscosities"),
+prefactors = Utilities::parse_map_to_double_array (prm.get("Prefactors"),
                                                               list_of_composition_names,
                                                               has_background_field,
-                                                              "Viscosities");
+                                                              "Prefactors");
           prm.leave_subsection();
         }
         prm.leave_subsection();
