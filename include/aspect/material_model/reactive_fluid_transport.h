@@ -93,7 +93,6 @@ namespace aspect
         evaluate (const typename Interface<dim>::MaterialModelInputs &in,
                   typename Interface<dim>::MaterialModelOutputs &out) const override;
 
-
         /**
          * @copydoc MaterialModel::Interface::declare_parameters()
          */
@@ -140,8 +139,8 @@ namespace aspect
         double fluid_reaction_time_scale;
 
         /**
-         * Enumeration for selecting which type of viscous flow law to use.
-         * Select between diffusion, dislocation, frank_kamenetskii or composite.
+         * Enumeration for selecting which type of scheme to use for reactions between.
+         * fluids and solids. The only current option is a scheme where no reactions occur.
          */
         enum ReactionScheme
         {
