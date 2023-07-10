@@ -254,7 +254,7 @@ namespace aspect
           string_stream_master << id << " " << position << " " << properties[cpo_data_position] <<  std::endl;
 
           // write content file
-          std::vector<std::vector<std::vector<double>>> euler_angles;
+          std::vector<std::vector<std::array<double,3>>> euler_angles;
           if (compute_raw_euler_angles == true)
             {
               euler_angles.resize(n_minerals);
@@ -357,7 +357,7 @@ namespace aspect
           if (write_draw_volume_weighted_cpo.size() != 0)
             {
               std::vector<std::vector<dealii::Tensor<2,3>>> weighted_rotation_matrices;
-              std::vector<std::vector<std::vector<double>>> weighted_euler_angles;
+              std::vector<std::vector<std::array<double,3>>> weighted_euler_angles;
 
               weighted_euler_angles.resize(n_minerals);
               std::vector<std::vector<double>> volume_fractions_grains(n_minerals,std::vector<double>(n_grains,-1.));

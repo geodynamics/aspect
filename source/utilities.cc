@@ -2998,11 +2998,11 @@ namespace aspect
       return angle - 360.0*std::floor(angle/360.0);
     }
 
-    std::vector<double>
+    std::array<double,3>
     zxz_euler_angles_from_rotation_matrix(const Tensor<2,3> &rotation_matrix)
     {
       // ZXZ Euler angles
-      std::vector<double> euler_angles(3);
+      std::array<double,3> euler_angles;
       for (size_t i = 0; i < 3; i++)
         for (size_t j = 0; j < 3; j++)
           Assert(abs(rotation_matrix[i][j]) <= 1.0,
