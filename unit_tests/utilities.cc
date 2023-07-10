@@ -229,3 +229,24 @@ TEST_CASE("Random draw volume weighted average rotation matrix")
       REQUIRE(result[i][0][0] == Approx(result_ref[i][0][0]));
     }
 }
+
+TEST_CASE("wrap angle")
+{
+  REQUIRE(aspect::Utilities::wrap_angle(-720.) == 0.);
+  REQUIRE(aspect::Utilities::wrap_angle(-540.) == 180.);
+  REQUIRE(aspect::Utilities::wrap_angle(-361.) == 359.);
+  REQUIRE(aspect::Utilities::wrap_angle(-360.) == 0.);
+  REQUIRE(aspect::Utilities::wrap_angle(-359.) == 1.);
+  REQUIRE(aspect::Utilities::wrap_angle(-270.) == 90.);
+  REQUIRE(aspect::Utilities::wrap_angle(-180.) == 180.);
+  REQUIRE(aspect::Utilities::wrap_angle(-90.) == 270.);
+  REQUIRE(aspect::Utilities::wrap_angle(0.) == 0.);
+  REQUIRE(aspect::Utilities::wrap_angle(90.) == 90.);
+  REQUIRE(aspect::Utilities::wrap_angle(180.) == 180.);
+  REQUIRE(aspect::Utilities::wrap_angle(270.) == 270.);
+  REQUIRE(aspect::Utilities::wrap_angle(359.) == 359.);
+  REQUIRE(aspect::Utilities::wrap_angle(360.) == 0.);
+  REQUIRE(aspect::Utilities::wrap_angle(361.) == 1.);
+  REQUIRE(aspect::Utilities::wrap_angle(540.) == 180.);
+  REQUIRE(aspect::Utilities::wrap_angle(720.) == 0.);
+}
