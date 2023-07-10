@@ -102,16 +102,16 @@ namespace aspect
          * in the model is accounted for by changes in melt fraction."
          * Thus, this function will always return false.
          */
-        virtual bool is_compressible () const override;
+        bool is_compressible () const override;
 
         /**
          * @name Reference quantities
          * @{
          */
-        virtual double reference_darcy_coefficient () const override;
+        double reference_darcy_coefficient () const override;
 
-        virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                              typename Interface<dim>::MaterialModelOutputs &out) const override;
+        void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+                      typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                                      std::vector<double> &melt_fractions) const;

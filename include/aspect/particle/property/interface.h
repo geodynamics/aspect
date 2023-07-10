@@ -536,7 +536,6 @@ namespace aspect
            * Read the parameters this class needs to determine which integrator is used,
            * and therefore how many properties to reserve.
            */
-          virtual
           void
           parse_parameters (ParameterHandler &prm) override;
 
