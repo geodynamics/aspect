@@ -27,7 +27,7 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = if (y<=2e2,0.1,0); 0;
+    set Function expression = if (y<=2e2,0.1,0); 0
   end
 end
 
@@ -90,8 +90,8 @@ subsection Boundary temperature model
 end
 
 
-# We use a custom material model that implements the layers with
-# different solubility.
+# The reactive fluid transport model is composited
+# on top of the visco plastic material model.
 subsection Material model
   set Model name = reactive fluid transport
   subsection Reactive Fluid Transport Model
@@ -101,7 +101,6 @@ subsection Material model
     set Reference fluid viscosity = 10
     set Reference permeability = 2.5e-6
     set Exponential fluid weakening factor = 0
-    set Fluid reaction time scale for operator splitting = 5e4
   end
 
   subsection Visco Plastic

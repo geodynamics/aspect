@@ -112,8 +112,7 @@ namespace aspect
                   porosity_change = -in.composition[q][porosity_idx];
 
                 if (c == bound_fluid_idx && this->get_timestep_number() > 0)
-                  reaction_rate_out->reaction_rates[q][c] = - porosity_change / fluid_reaction_time_scale
-                                                            + in.composition[q][bound_fluid_idx] * trace(in.strain_rate[q]);
+                  reaction_rate_out->reaction_rates[q][c] = - porosity_change / fluid_reaction_time_scale;
                 else if (c == porosity_idx && this->get_timestep_number() > 0)
                   reaction_rate_out->reaction_rates[q][c] = porosity_change / fluid_reaction_time_scale;
                 else
@@ -269,12 +268,15 @@ namespace aspect
     {
       for (unsigned int q=0; q<in.temperature.size(); ++q)
         {
-          // A fluid-rock reaction model where no reactions occur. The
-          // the melt (fluid) fraction at any point is thus equal to the
-          // porosity, which is determined by the assigned initial porosity,
-          // fluid boundary conditions, and fluid transport through the model.
+          // A fluid-rock reaction model where no reactions occur.
+          // The melt (fluid) fraction at any point is equal
+          // to the sume of the bound fluid content and porosity,
+          // with the latter determined by the assigned initial
+          // porosity, fluid boundary conditions, and fluid
+          // transport through the model.
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-          melt_fractions[q] = in.composition[q][porosity_idx];
+          const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
+          melt_fractions[q] = in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx];
         }
     }
 
@@ -316,7 +318,7 @@ namespace aspect
                                    "Material model that is designed to advect fluids and compute "
                                    "fluid release and absorption based on different models for "
                                    "fluid-rock interaction. At present, a model where no fluid-rock "
-                                   "interactions occurs is the only available model. The properties "
+                                   "interactions occur is the only available model. The properties "
                                    "of the solid can be taken from another material model that is "
                                    "used as a base model.")
   }
