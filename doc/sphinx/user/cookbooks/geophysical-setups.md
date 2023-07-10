@@ -105,5 +105,6 @@ cookbooks/inner_core_convection/doc/inner_core_convection.md
 cookbooks/global_melt/doc/global_melt.md
 cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.md
 cookbooks/kinematically_driven_subduction_2d/doc/kinematically_driven_subduction_2d.md
+cookbooks/inclusions/doc/inclusions.md
 cookbooks/future/README.md
 :::
