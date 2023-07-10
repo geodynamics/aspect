@@ -1,10 +1,8 @@
-# Test the multicomponent material model using harmonic
-# averaging for viscosity. Three blobs with different
-# densities and different viscosities move around...
+## Test the multicomponent steinberger material model. Three blobs with different viscosities move around. The reference viscosity of background is from the viscosity profile of Steinberger & Calderwood 2006. 
 
 set Dimension = 2
 set CFL number                             = 1.0
-set End time                               = 2e7
+set End time                               = 60000
 set Resume computation                     = false
 set Start time                             = 0
 set Adiabatic surface temperature          = 1600
@@ -12,27 +10,13 @@ set Surface pressure                       = 0
 set Pressure normalization = surface
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
-set Output directory = 04_steinberger_multicomponent
+set Output directory = /home/poulami/software/Aspect_globalscale/aspect/tests/multicomponent_steinberger
 
-#subsection Boundary temperature model
- # set List of model names = box
- # subsection Box
- #   set Top temperature = 285
- #   set Bottom temperature = 3800
- # end
-#end
+
 
 subsection Boundary temperature model
   set List of model names = initial temperature
   set Fixed temperature boundary indicators = top, bottom, left, right
-  #subsection Box
-  #  set Bottom temperature = 4000
-  #  set Left temperature = 1613
-  #  set Right temperature = 1613
-   # set Front temperature = 1613
-   #    # set Back temperature = 1613
-   #        set Top temperature = 285
-   #          end
 end
 
 
@@ -52,7 +36,7 @@ subsection Geometry model
   set Model name = box
   subsection Box
     set X extent = 28.e5
-    set Y extent = 7.e5
+    set Y extent = 29.e5
     set X repetitions = 4
   end
 end
@@ -75,20 +59,6 @@ subsection Initial temperature model
 end
 
 
-#subsection Material model
-#  set Model name = multicomponent
-#  subsection Multicomponent
-#    set Reference temperature = 0.0
-#    set Densities = 3300, 3200, 3600,3400
-#    set Specific heats = 1250
-#    set Thermal conductivities = 4.7
-#    set Thermal expansivities = 4e-5
-#    set Viscosities = 1.e21, 1.e20, 1.e23, 1.e22
-#    set Viscosity averaging scheme = harmonic
-#  end
-#end
-
-
 subsection Material model
 set Model name = Steinberger
 subsection Steinberger model
@@ -99,20 +69,10 @@ subsection Steinberger model
  set Lateral viscosity file name = temp-viscosity-prefactor.txt  ##, temp-viscosity-prefactor.txt, temp-viscosity-prefactor.txt
         set Prefactors = 1, 1, 10, 0.1
    set Material file names                           =  pyr-ringwood88.txt, pyr-ringwood88.txt , pyr-ringwood88.txt, pyr-ringwood88.txt
- #         set Radial viscosity file name = radial-visc.txt
- #             set Lateral viscosity file name = temp-viscosity-prefactor.txt
- #                 set Material file names                           = pyr-ringwood88.txt, pyr-ringwood88.txt #, pyr-ringwood88.txt
- #                     
- #                         set Maximum lateral viscosity variation = 1e3
- #                         #    set Maximum viscosity = 5e23
- #                           end
- #                             set Material averaging = 
+   set Minimum viscosity = 1e19
+   set Maximum viscosity = 1e24
  end
 end
-
-
-
-
 
 
 subsection Mesh refinement
@@ -121,7 +81,7 @@ subsection Mesh refinement
   set Initial global refinement          = 5
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.05
-  set Strategy                           = composition
+  set Strategy                           = composition, viscosity
   set Time steps between mesh refinement = 5
 end
 
@@ -130,9 +90,6 @@ end
 # as replacement for the old 'Model settings' subsection. They can be
 # safely merged with any existing subsections with the same name.
 
-#subsection Boundary temperature model
-#  set Fixed temperature boundary indicators   = 2,3
-#end
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, bottom, left, right
@@ -146,7 +103,7 @@ subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
-    set Function expression = if( sqrt( (x-5.e5 )^2 + (y-3.e5)^2) < 5.e4 , 1,0); if( sqrt((x-12.e5)^2 + (y-3.e5)^2 ) < 5.e4, 1,0); if( sqrt((x-17.e5)^2 + (y-3.e5)^2) < 5.e4, 1, 0)
+    set Function expression = if( sqrt( (x-5.e5 )^2 + (y-10.e5)^2) < 5.e4 , 1,0); if( sqrt((x-12.e5)^2 + (y-12.e5)^2 ) < 5.e4, 1,0); if( sqrt((x-17.e5)^2 + (y-20.e5)^2) < 5.e4, 1, 0)
   end
 end
 
@@ -162,7 +119,7 @@ subsection Postprocess
     set List of output variables = viscosity,density
     set Number of grouped files       = 1
     set Output format                 = vtu
-    set Time between graphical output = 1e6
+    set Time between graphical output = 60000
   end
 end
 
