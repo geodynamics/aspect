@@ -95,3 +95,7 @@ future/: dummy
 	@$(def); run_prm $@ radiogenic_heating.prm
 	@$(def); run_prm $@ radiogenic_heating_function.prm
 	@$(def); run_prm $@ sphere.prm
+
+vankeken_subduction/: dummy
+	+@$(def); make_lib $@/plugin
+	@$(def); run_all_prms $@
