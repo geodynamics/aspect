@@ -1215,18 +1215,19 @@ namespace aspect
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Types of fields", "unspecified",
-                         Patterns::List (Patterns::Selection("chemical composition|stress|strain|grain size|porosity|density|generic|unspecified")),
+                         Patterns::List (Patterns::Selection("chemical composition|stress|strain|grain size|porosity|density|entropy|generic|unspecified")),
                          "A type for each of the compositional fields requested. "
                          "Each entry of the list must be "
                          "one of several recognized types: chemical composition, "
-                         "stress, strain, grain size, porosity, general and unspecified. "
+                         "stress, strain, grain size, porosity, density, entropy, "
+                         "general and unspecified. "
                          "The generic type is intended to be a placeholder type "
                          "that has no effect on the running of any material model, "
                          "while the unspecified type is intended to tell ASPECT "
                          "that the user has not explicitly indicated the type of "
                          "field (facilitating parameter file checking). "
-                         "If a plugin such as a material model uses these types, "
-                         "the choice of type will affect how that module functions.");
+                         "Plugins such as material models can use these types "
+                         "to affect how that plugin functions.");
       prm.declare_entry ("Compositional field methods", "",
                          Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|darcy field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
