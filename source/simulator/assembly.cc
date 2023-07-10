@@ -186,7 +186,8 @@ namespace aspect
             const bool no_field_method = std::find(parameters.compositional_field_methods.begin(),
                                                    parameters.compositional_field_methods.end(),
                                                    Parameters<dim>::AdvectionFieldMethod::fem_field)
-                                         == parameters.compositional_field_methods.end();
+                                         == parameters.compositional_field_methods.end()
+                                         && parameters.temperature_method != Parameters<dim>::AdvectionFieldMethod::fem_field;
 
             // TODO: This currently does not work in parallel, because the sparsity
             // pattern of the matrix does not seem to know about flux terms
