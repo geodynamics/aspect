@@ -260,7 +260,6 @@ namespace aspect
               isostrain_viscosities.current_cohesions.clear();
 
               out.viscosities[i] = numbers::signaling_nan<double>();
-              plastic_yielding = numbers::signaling_nan<double>();
 
               if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
                     out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
