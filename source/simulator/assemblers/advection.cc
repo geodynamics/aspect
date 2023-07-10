@@ -79,9 +79,10 @@ namespace aspect
 
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
-      if (advection_field.advection_method (introspection)
-          == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
-        return;
+      Assert(advection_field.advection_method(introspection)
+             == Parameters<dim>::AdvectionFieldMethod::fem_field,
+             ExcMessage("The 'AdvectionSystem' assembler can only be executed for fields "
+                        "that use the advection method 'field'."));
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -327,9 +328,10 @@ namespace aspect
 
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
 
-      if (advection_field.advection_method(introspection)
-          != Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
-        return;
+      Assert(advection_field.advection_method(introspection)
+             == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion,
+             ExcMessage("The 'DiffusionSystem' assembler can only be executed for fields "
+                        "that use the advection method 'prescribed field with diffusion'."));
 
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
@@ -486,9 +488,11 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
 
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
-      if (advection_field.advection_method(introspection)
-          != Parameters<dim>::AdvectionFieldMethod::fem_darcy_field)
-        return;
+
+      Assert(advection_field.advection_method(introspection)
+             == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field,
+             ExcMessage("The 'DarcySystem' assembler can only be executed for fields "
+                        "that use the advection method 'darcy field'."));
 
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
@@ -661,8 +665,11 @@ namespace aspect
 
       const double time_step = this->get_timestep();
 
-      if (!advection_field.is_discontinuous(introspection))
-        return;
+      Assert(advection_field.is_discontinuous(introspection)
+             && advection_field.advection_method(introspection)
+             == Parameters<dim>::AdvectionFieldMethod::fem_field,
+             ExcMessage("The 'AdvectionSystemBoundaryFace' assembler can only be executed for fields "
+                        "that use the advection method 'field' and a discontinuous discretization."));
 
       // also have the number of dofs that correspond just to the element for
       // the system we are currently trying to assemble

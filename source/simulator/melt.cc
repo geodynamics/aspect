@@ -1693,8 +1693,13 @@ namespace aspect
 
     for (unsigned int i=0; i<1+this->introspection().n_compositional_fields; ++i)
       {
-        assemblers.advection_system[i].push_back(
-          std::make_unique<Assemblers::MeltAdvectionSystem<dim>> ());
+        if ((i==0 && this->get_parameters().temperature_method == Parameters<dim>::AdvectionFieldMethod::fem_field)
+            ||
+            (i>0 && this->get_parameters().compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_field)
+            ||
+            (i>0 && this->get_parameters().compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_melt_field))
+          assemblers.advection_system[i].push_back(
+            std::make_unique<Assemblers::MeltAdvectionSystem<dim>> ());
 
         if (this->get_parameters().fixed_heat_flux_boundary_indicators.size() != 0)
           {

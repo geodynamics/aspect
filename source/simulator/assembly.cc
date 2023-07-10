@@ -146,24 +146,39 @@ namespace aspect
   Simulator<dim>::
   set_advection_assemblers()
   {
-    // Loop over all advection fields.
+    // Loop over all advection fields and add the assemblers that each field uses. i=0 is the temperature.
     for (unsigned int i=0; i<1+introspection.n_compositional_fields; ++i)
       {
-        assemblers->advection_system[i].push_back(
-          std::make_unique<aspect::Assemblers::AdvectionSystem<dim>>());
+        if ((i==0 && parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::fem_field)
+            ||
+            (i>0 && parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_field))
+          assemblers->advection_system[i].push_back(
+            std::make_unique<aspect::Assemblers::AdvectionSystem<dim>>());
 
-        // add the diffusion assemblers if advection field i uses this method
-        if (std::find(parameters.compositional_field_methods.begin(), parameters.compositional_field_methods.end(),
-                      Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion) != parameters.compositional_field_methods.end()
-            || parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
+        // Only add the diffusion assembler if advection field i uses the prescribed_field_with_diffusion method.
+        if ((i==0 && parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
+            ||
+            (i>0 && parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion))
           assemblers->advection_system[i].push_back(
             std::make_unique<aspect::Assemblers::DiffusionSystem<dim>>());
 
-        // add the darcy assemblers if we have fields that use this method
-        if (std::find(parameters.compositional_field_methods.begin(), parameters.compositional_field_methods.end(),
-                      Parameters<dim>::AdvectionFieldMethod::fem_darcy_field) != parameters.compositional_field_methods.end())
+        // Add the darcy assemblers if we have fields that use this method
+        if (i>0 && parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field)
           assemblers->advection_system[i].push_back(
             std::make_unique<aspect::Assemblers::DarcySystem<dim>>());
+
+        if ((i==0 && parameters.use_discontinuous_temperature_discretization
+             && parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::fem_field)
+            ||
+            (i>0 && parameters.use_discontinuous_composition_discretization
+             && parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_field))
+          {
+            assemblers->advection_system_on_boundary_face[i].push_back(
+              std::make_unique<aspect::Assemblers::AdvectionSystemBoundaryFace<dim>>());
+
+            assemblers->advection_system_on_interior_face[i].push_back(
+              std::make_unique<aspect::Assemblers::AdvectionSystemInteriorFace<dim>>());
+          }
 
         if (parameters.use_discontinuous_temperature_discretization ||
             parameters.use_discontinuous_composition_discretization)
@@ -185,14 +200,9 @@ namespace aspect
                                    "adaptive mesh refinement in parallel models is currently not supported. "
                                    "Please switch off any of those options or run on a single process."));
 
-            assemblers->advection_system_on_boundary_face[i].push_back(
-              std::make_unique<aspect::Assemblers::AdvectionSystemBoundaryFace<dim>>());
-
-            assemblers->advection_system_on_interior_face[i].push_back(
-              std::make_unique<aspect::Assemblers::AdvectionSystemInteriorFace<dim>>());
           }
 
-        if (parameters.fixed_heat_flux_boundary_indicators.size() != 0)
+        if (i==0 && parameters.fixed_heat_flux_boundary_indicators.size() != 0)
           {
             assemblers->advection_system_on_boundary_face[i].push_back(
               std::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim>>());
