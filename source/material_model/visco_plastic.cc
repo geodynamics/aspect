@@ -245,7 +245,29 @@ namespace aspect
               // Compute viscosity derivatives if they are requested
               if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
                     out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
-                rheology->compute_viscosity_derivatives(i, volume_fractions, isostrain_viscosities.composition_viscosities, in, out, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
+                rheology->compute_viscosity_derivatives(i, volume_fractions,
+                                                        isostrain_viscosities.composition_viscosities,
+                                                        in, out, phase_function_values,
+                                                        phase_function.n_phase_transitions_for_each_composition());
+            }
+          else
+            {
+              // The viscosity was not requested. Poison its value, along with the other
+              // quantities we set above and that would otherwise remain uninitialized
+              isostrain_viscosities.composition_yielding.clear();
+              isostrain_viscosities.composition_viscosities.clear();
+              isostrain_viscosities.current_friction_angles.clear();
+              isostrain_viscosities.current_cohesions.clear();
+
+              out.viscosities[i] = numbers::signaling_nan<double>();
+              plastic_yielding = numbers::signaling_nan<double>();
+
+              if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
+                    out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
+                {
+                  derivatives->viscosity_derivative_wrt_strain_rate[i] = numbers::signaling_nan<SymmetricTensor<2,dim>>();
+                  derivatives->viscosity_derivative_wrt_pressure[i] = numbers::signaling_nan<double>();
+                }
             }
 
           // Now compute changes in the compositional fields (i.e. the accumulated strain).
