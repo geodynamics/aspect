@@ -54,14 +54,16 @@ namespace aspect
     {
       CitationInfo::add("particles");
       if (particle_load_balancing & ParticleLoadBalancing::repartition)
-#if DEAL_II_VERSION_GTE(9,4,0)
         this->get_triangulation().signals.weight.connect(
+#if DEAL_II_VERSION_GTE(9,6,0)
+          [&] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+               const CellStatus status)
+          -> unsigned int
 #else
-        this->get_triangulation().signals.cell_weight.connect(
-#endif
           [&] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                const typename parallel::distributed::Triangulation<dim>::CellStatus status)
           -> unsigned int
+#endif
         {
           return this->cell_weight(cell, status);
         });
@@ -390,7 +392,12 @@ namespace aspect
     template <int dim>
     unsigned int
     World<dim>::cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                            const typename parallel::distributed::Triangulation<dim>::CellStatus status)
+#if DEAL_II_VERSION_GTE(9,6,0)
+                            const CellStatus status
+#else
+                            const typename parallel::distributed::Triangulation<dim>::CellStatus status
+#endif
+                           )
     {
       if (cell->is_active() && !cell->is_locally_owned())
         return 0;
@@ -400,6 +407,20 @@ namespace aspect
       unsigned int n_particles_in_cell = 0;
       switch (status)
         {
+#if DEAL_II_VERSION_GTE(9,6,0)
+          case CellStatus::cell_will_persist:
+          case CellStatus::cell_will_be_refined:
+            n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+            break;
+
+          case CellStatus::cell_invalid:
+            break;
+
+          case CellStatus::children_will_be_coarsened:
+            for (const auto &child : cell->child_iterators())
+              n_particles_in_cell += particle_handler->n_particles_in_cell(child);
+            break;
+#else
           case parallel::distributed::Triangulation<dim>::CELL_PERSIST:
           case parallel::distributed::Triangulation<dim>::CELL_REFINE:
             n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
@@ -412,7 +433,7 @@ namespace aspect
             for (const auto &child : cell->child_iterators())
               n_particles_in_cell += particle_handler->n_particles_in_cell(child);
             break;
-
+#endif
           default:
             Assert(false, ExcInternalError());
             break;
