@@ -187,22 +187,31 @@ namespace aspect
         // Create a starting guess for the stress using
         // the approximate form of the viscosity expression
         double viscosity = compute_approximate_viscosity(strain_rate, pressure, temperature, composition);
+        double log_strain_rate = std::log(strain_rate);
         double stress_ii = 2.*viscosity*strain_rate;
-        double strain_rate_residual = 2.*strain_rate_residual_threshold;
+        double log_stress_ii = std::log(stress_ii);
 
-        double strain_rate_deriv = 0;
+        // Before the first iteration, compute the residuel
+        // of the initial guess and the derivative
         unsigned int stress_iteration = 0;
+        const std::pair<double, double> log_edot_and_deriv = compute_exact_log_strain_rate_and_derivative(stress_ii, pressure, temperature, p);
+        double strain_rate_residual = log_edot_and_deriv.first - log_strain_rate;
+        double log_strain_rate_deriv = log_edot_and_deriv.second;
+
         while (std::abs(strain_rate_residual) > strain_rate_residual_threshold
                && stress_iteration < stress_max_iteration_number)
           {
-            const std::pair<double, double> edot_and_deriv = compute_exact_strain_rate_and_derivative(stress_ii, pressure, temperature, p);
-
-            strain_rate_residual = edot_and_deriv.first - strain_rate;
-            strain_rate_deriv = edot_and_deriv.second;
-
             // If the strain rate derivative is zero, we catch it below.
-            if (strain_rate_deriv>std::numeric_limits<double>::min())
-              stress_ii -= strain_rate_residual/strain_rate_deriv;
+            if (log_strain_rate_deriv>std::numeric_limits<double>::min())
+              {
+                log_stress_ii -= strain_rate_residual/log_strain_rate_deriv;
+                stress_ii = std::exp(log_stress_ii);
+              }
+
+            const std::pair<double, double> log_edot_and_deriv = compute_exact_log_strain_rate_and_derivative(stress_ii, pressure, temperature, p);
+
+            strain_rate_residual = log_edot_and_deriv.first - log_strain_rate;
+            log_strain_rate_deriv = log_edot_and_deriv.second;
 
             stress_iteration += 1;
 
@@ -214,8 +223,8 @@ namespace aspect
             // (similar to that seen in the diffusion-dislocation material model).
             const bool abort_newton_iteration = !numbers::is_finite(stress_ii)
                                                 || !numbers::is_finite(strain_rate_residual)
-                                                || !numbers::is_finite(strain_rate_deriv)
-                                                || strain_rate_deriv < std::numeric_limits<double>::min()
+                                                || !numbers::is_finite(log_strain_rate_deriv)
+                                                || log_strain_rate_deriv < std::numeric_limits<double>::min()
                                                 || !numbers::is_finite(std::pow(stress_ii, p.stress_exponent))
                                                 || stress_iteration == stress_max_iteration_number;
             AssertThrow(!abort_newton_iteration,
@@ -362,6 +371,67 @@ namespace aspect
             const double deriv = edot_ii / stress * (s + p.stress_exponent);
 
             return std::make_pair(edot_ii, deriv);
+          }
+      }
+
+
+
+      template <int dim>
+      std::pair<double, double>
+      PeierlsCreep<dim>::compute_exact_log_strain_rate_and_derivative (const double stress,
+                                                                       const double pressure,
+                                                                       const double temperature,
+                                                                       const PeierlsCreepParameters creep_parameters) const
+      {
+        /**
+        * b = (E+P*V)/(R*T)
+        * c = std::pow(stress/peierls_stress, p)
+        * d = std::pow(1 - c, q)
+        *
+        * log_edot_ii = std::log(A) + n * std::log(stress) - b*d
+        * deriv_log = n + p * q * b * std::(1-c, p.q - 1)
+        * The deriv_log is the derivative of log(edot_ii) to log(stress).
+        */
+        const PeierlsCreepParameters p = creep_parameters;
+        if (stress < p.stress_cutoff)
+          {
+
+            /**
+            * For Peierls creep flow laws that have a stress exponent equal to zero the strain rate does not approach zero as
+            * stress approaches zero. To ensure convergence in the solver, the strain rate is modelled as a quadratic function
+            * of stress;
+            * edot_ii = quadratic_term*stress^2 + linear_term*stress
+            * Where the quadratic and linear terms are defined at a constant cutoff temperature and pressure.
+            * T_cutoff = (E/R), P_cutoff = 0
+            * s_cutoff = p*q*c_cutoff*d_cutoff / (1 - c_cutoff)
+            * arrhenius_cutoff = std::exp(-d_cutoff)
+            */
+            const double c_cutoff = std::pow(p.stress_cutoff/p.peierls_stress, p.glide_parameter_p);
+            const double d_cutoff = std::pow(1. - c_cutoff, p.glide_parameter_q);
+            const double s_cutoff = p.glide_parameter_p*p.glide_parameter_q*c_cutoff*d_cutoff/(1. - c_cutoff);
+            const double arrhenius_cutoff = std::exp(-d_cutoff);
+            const double edot_ii_cutoff = p.prefactor * std::pow(p.stress_cutoff, p.stress_exponent) * arrhenius_cutoff;
+            const double deriv_cutoff = edot_ii_cutoff / p.stress_cutoff * (s_cutoff + p.stress_exponent);
+            const double quadratic_term = (deriv_cutoff - edot_ii_cutoff / p.stress_cutoff) / p.stress_cutoff / arrhenius_cutoff;
+            const double linear_term = (2*(edot_ii_cutoff / p.stress_cutoff) - deriv_cutoff) / arrhenius_cutoff;
+
+            const double b = (p.activation_energy + pressure*p.activation_volume)/(constants::gas_constant * temperature);
+            const double arrhenius = std::exp(-b*d_cutoff);
+            const double edot_ii = (quadratic_term*std::pow(stress, 2.) + linear_term*stress) * arrhenius;
+            const double deriv_log = 2 - linear_term / (quadratic_term * stress + linear_term);
+
+            return std::make_pair(std::log(edot_ii), deriv_log);
+          }
+        else
+          {
+            const double b = (p.activation_energy + pressure*p.activation_volume)/(constants::gas_constant * temperature);
+            const double c = std::pow(stress/p.peierls_stress, p.glide_parameter_p);
+            const double d = std::pow(1. - c, p.glide_parameter_q);
+
+            const double log_edot_ii = std::log(p.prefactor) + p.stress_exponent * std::log(stress) - b*d ;
+            const double deriv_log = p.stress_exponent + p.glide_parameter_p * p.glide_parameter_q * b * c * std::pow(1-c, p.glide_parameter_q - 1);
+
+            return std::make_pair(log_edot_ii, deriv_log);
           }
       }
 
