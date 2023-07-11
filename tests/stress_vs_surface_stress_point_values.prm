@@ -1,7 +1,7 @@
 # This is a variation of the pure_shear.prm file, and is used to test
 # the 'stress' visualization postprocessor as well as the 'surface
 # stress' visualization postprocessor that only outputs stuff on the
-# boundary. 
+# boundary. The two ought to agree on their results at the boundary. 
 
 set Dimension                              = 2
 set End time                               = 0.025
@@ -92,5 +92,6 @@ subsection Postprocess
     set Interpolate output = false
     set List of output variables = stress, surface stress
     set Time between graphical output = 0.05
+    set Point-wise stress and strain = true
   end
 end

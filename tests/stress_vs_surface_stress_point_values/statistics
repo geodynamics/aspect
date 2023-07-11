@@ -1,0 +1,19 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for composition solver 4
+# 13: Iterations for Stokes solver
+# 14: Velocity iterations in Stokes preconditioner
+# 15: Schur complement iterations in Stokes preconditioner
+# 16: Visualization file name
+# 17: Surface visualization file name
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 4356 0  0  0  0  0         28 30 30 output-stress_vs_surface_stress/solution/solution-00000 output-stress_vs_surface_stress/solution_surface/solution_surface-00000 
+1 2.500000000000e-02 2.500000000000e-02 256 2467 1089 4356 0 11 13 13 11 4294967295  0  0                                                      ""                                                                      "" 
