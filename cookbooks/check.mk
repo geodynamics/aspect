@@ -70,7 +70,10 @@ mainprms:= $(wildcard *.prm)
 
 main: dummy $(mainprms)
 
-# custom rules. Make them dependent on dummy like this:
+
+#
+#
+# Custom rules. Make them dependent on dummy like this:
 #
 # example/: dummy
 #	@$(def); run_prm $@ test.prm
@@ -79,6 +82,16 @@ free_surface_with_crust/: dummy
 	+@$(def); make_lib $@/plugin
 	@$(def); run_all_prms $@
 
-# does not run without generating an input file using a python script
+# This does not run without generating an input file using a python script
 prescribed_velocity_ascii_data/: dummy
 	+@$(def); make_lib $@
+
+# Manually list files (and ignore mantle_setup_restart.prm as _start does not generate
+# a checkpoint file after 1 step
+future/: dummy
+	@$(def); run_prm $@ mantle_setup_start.prm
+	@$(def); run_prm $@ net_rotation.prm
+	@$(def); run_prm $@ periodic_box.prm
+	@$(def); run_prm $@ radiogenic_heating.prm
+	@$(def); run_prm $@ radiogenic_heating_function.prm
+	@$(def); run_prm $@ sphere.prm
