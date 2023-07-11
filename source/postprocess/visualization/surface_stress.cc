@@ -132,6 +132,10 @@ namespace aspect
                                                   "in the compressible case. If elasticity is included, "
                                                   "its contribution is accounted for. Note that the convention of positive "
                                                   "compressive stress is followed."
+                                                  "The stress outputted on the surface of the domain will equal "
+                                                  "the stress on the surface of the volume output if the parameter " 
+                                                  "'Point-wise stress and strain' in the Visualization subsection "
+                                                  "is set to true. "
                                                   "\n\n"
                                                   "Physical units: \\si{\\pascal}.")
     }
