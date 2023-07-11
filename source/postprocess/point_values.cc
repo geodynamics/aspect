@@ -57,7 +57,7 @@ namespace aspect
 
       // see if output is requested at this time
       if (this->get_time() < last_output_time + output_interval)
-        return std::pair<std::string,std::string>();
+        return {"", ""};
 
       // evaluate the solution at all of our evaluation points
       std::vector<Vector<double>>

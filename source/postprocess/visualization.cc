@@ -754,7 +754,7 @@ namespace aspect
       if ((this->get_time() < last_output_time + output_interval)
           && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
           && (this->get_timestep_number() != 0))
-        return std::pair<std::string,std::string>();
+        return {"", ""};
 
       // up the counter of the number of the file by one, but not in
       // the very first output step. if we run postprocessors on all

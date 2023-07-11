@@ -73,7 +73,7 @@ namespace aspect
 
       // see if output is requested at this time
       if (this->get_time() < last_output_time + output_interval)
-        return std::pair<std::string,std::string>();
+        return {"", ""};
 
       DataPoint data_point;
       data_point.time       = this->get_time();
