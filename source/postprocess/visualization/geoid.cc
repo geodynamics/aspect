@@ -87,7 +87,7 @@ namespace aspect
       std::list<std::string>
       Geoid<dim>::required_other_postprocessors() const
       {
-        return std::list<std::string> (1, "geoid");
+        return {"geoid"};
       }
 
     }

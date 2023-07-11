@@ -115,7 +115,7 @@ namespace aspect
       std::list<std::string>
       BoundaryStrainRateResidual<dim>::required_other_postprocessors() const
       {
-        return std::list<std::string> (1, "boundary strain rate residual statistics");
+        return {"boundary strain rate residual statistics"};
       }
 
     }
