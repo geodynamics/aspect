@@ -34,7 +34,7 @@ namespace aspect
     CompositionStatistics<dim>::execute (TableHandler &statistics)
     {
       if (this->n_compositional_fields() == 0)
-        return std::pair<std::string,std::string>();
+        return {"", ""};
 
       // create a quadrature formula based on the compositional element alone.
       // be defensive about determining that a compositional field actually exists

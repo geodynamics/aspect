@@ -178,7 +178,7 @@ namespace aspect
     GravityPointValues<dim>::execute (TableHandler &)
     {
       AssertThrow(false, ExcNotImplemented());
-      return std::pair<std::string,std::string>();
+      return {"", ""};
     }
 
 
