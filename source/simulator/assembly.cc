@@ -298,8 +298,7 @@ namespace aspect
     scratch.material_model_inputs.reinit  (scratch.finite_element_values,
                                            cell,
                                            this->introspection,
-                                           current_linearization_point,
-                                           true);
+                                           current_linearization_point);
 
     for (unsigned int i=0; i<assemblers->stokes_preconditioner.size(); ++i)
       assemblers->stokes_preconditioner[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
@@ -541,8 +540,7 @@ namespace aspect
     scratch.material_model_inputs.reinit  (scratch.finite_element_values,
                                            cell,
                                            this->introspection,
-                                           current_linearization_point,
-                                           need_viscosity);
+                                           current_linearization_point);
     scratch.material_model_inputs.requested_properties
       =
         MaterialModel::MaterialProperties::equation_of_state_properties |
@@ -603,11 +601,16 @@ namespace aspect
                   scratch.face_material_model_inputs.reinit  (scratch.face_finite_element_values,
                                                               cell,
                                                               this->introspection,
-                                                              current_linearization_point,
-                                                              need_viscosity);
+                                                              current_linearization_point);
 
                   for (unsigned int i=0; i<assemblers->stokes_system_on_boundary_face.size(); ++i)
                     assemblers->stokes_system_on_boundary_face[i]->create_additional_material_model_outputs(scratch.face_material_model_outputs);
+
+                  scratch.face_material_model_inputs.requested_properties
+                    = (MaterialModel::MaterialProperties::equation_of_state_properties |
+                       MaterialModel::MaterialProperties::additional_outputs |
+                       (need_viscosity ? MaterialModel::MaterialProperties::viscosity : MaterialModel::MaterialProperties::uninitialized));
+
 
                   material_model->evaluate(scratch.face_material_model_inputs,
                                            scratch.face_material_model_outputs);
@@ -889,8 +892,7 @@ namespace aspect
     scratch.material_model_inputs.reinit  (scratch.finite_element_values,
                                            cell,
                                            this->introspection,
-                                           current_linearization_point,
-                                           true);
+                                           current_linearization_point);
 
     for (unsigned int i=0; i<1+introspection.n_compositional_fields; ++i)
       for (unsigned int j=0; j<assemblers->advection_system[i].size(); ++j)
@@ -1004,8 +1006,7 @@ namespace aspect
                 scratch.face_material_model_inputs.reinit  (*scratch.face_finite_element_values,
                                                             cell,
                                                             this->introspection,
-                                                            current_linearization_point,
-                                                            true);
+                                                            current_linearization_point);
 
                 for (unsigned int i=0; i<assemblers->advection_system_on_boundary_face[advection_field.field_index()].size(); ++i)
                   assemblers->advection_system_on_boundary_face[advection_field.field_index()][i]->create_additional_material_model_outputs(scratch.face_material_model_outputs);

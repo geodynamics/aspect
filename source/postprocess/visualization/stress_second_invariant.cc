@@ -56,8 +56,7 @@ namespace aspect
         // Create the material model inputs and outputs to
         // retrieve the current viscosity.
         MaterialModel::MaterialModelInputs<dim> in(input_data,
-                                                   this->introspection(),
-                                                   /*compute_strain_rate = */ true);
+                                                   this->introspection());
 
         in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 

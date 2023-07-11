@@ -75,7 +75,7 @@ namespace aspect
               {
                 fe_face_values.reinit (cell, f);
                 // Set use_strain_rates to false since we don't need viscosity
-                in.reinit(fe_face_values, cell, this->introspection(), this->get_solution(), false);
+                in.reinit(fe_face_values, cell, this->introspection(), this->get_solution());
 
                 this->get_material_model().evaluate(in, out);
 

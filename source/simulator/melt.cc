@@ -1297,8 +1297,7 @@ namespace aspect
             in.reinit(fe_values,
                       cell,
                       this->introspection(),
-                      solution,
-                      false);
+                      solution);
 
             this->get_material_model().evaluate(in, out);
 
@@ -1508,8 +1507,7 @@ namespace aspect
             material_model_inputs.reinit(finite_element_values,
                                          cell,
                                          this->introspection(),
-                                         this->get_current_linearization_point(),
-                                         false);
+                                         this->get_current_linearization_point());
             // We only need access to the MeltOutputs in p_c_scale().
             material_model_inputs.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
@@ -1865,8 +1863,7 @@ namespace aspect
             scratch.face_material_model_inputs.reinit  (scratch.face_finite_element_values,
                                                         cell,
                                                         this->introspection(),
-                                                        this->get_solution(),
-                                                        true);
+                                                        this->get_solution());
 
             this->get_material_model().evaluate(scratch.face_material_model_inputs, scratch.face_material_model_outputs);
 

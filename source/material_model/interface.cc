@@ -280,10 +280,8 @@ namespace aspect
       current_cell(input_data.template get_cell<dim>()),
       requested_properties(MaterialProperties::all_properties)
     {
-      if (compute_strain_rate == false)
-        {
-          requested_properties = MaterialProperties::Property(requested_properties & ~MaterialProperties::viscosity);
-        }
+      AssertThrow (compute_strain_rate == true,
+                   ExcMessage ("The option to not compute the strain rate is no longer supported."));
 
       for (unsigned int q=0; q<input_data.solution_values.size(); ++q)
         {
@@ -295,9 +293,7 @@ namespace aspect
               this->pressure_gradient[q][d] = input_data.solution_gradients[q][introspection.component_indices.pressure][d];
             }
 
-          if (compute_strain_rate)
-            this->strain_rate[q] = symmetrize (grad_u);
-
+          this->strain_rate[q] = symmetrize (grad_u);
           this->pressure[q] = input_data.solution_values[q][introspection.component_indices.pressure];
           this->temperature[q] = input_data.solution_values[q][introspection.component_indices.temperature];
 
@@ -359,23 +355,15 @@ namespace aspect
                                      const LinearAlgebra::BlockVector &solution_vector,
                                      const bool compute_strain_rate)
     {
+      AssertThrow (compute_strain_rate == true,
+                   ExcMessage ("The option to not compute the strain rate is no longer supported."));
+
       // Populate the arrays that hold solution values and gradients
       fe_values[introspection.extractors.temperature].get_function_values (solution_vector, this->temperature);
       fe_values[introspection.extractors.velocities].get_function_values (solution_vector, this->velocity);
       fe_values[introspection.extractors.pressure].get_function_values (solution_vector, this->pressure);
       fe_values[introspection.extractors.pressure].get_function_gradients (solution_vector, this->pressure_gradient);
-
-      // Only the viscosity in the material can depend on the strain_rate
-      // if this is not needed, we can save some time here.
-      if (compute_strain_rate)
-        {
-          fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (solution_vector,this->strain_rate);
-          requested_properties = requested_properties | MaterialProperties::viscosity;
-        }
-      else
-        {
-          requested_properties = MaterialProperties::Property(requested_properties & ~MaterialProperties::viscosity);
-        }
+      fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (solution_vector, this->strain_rate);
 
       // Vectors for evaluating the compositional field parts of the finite element solution
       std::vector<std::vector<double>> composition_values (introspection.n_compositional_fields,

@@ -60,8 +60,7 @@ namespace aspect
 
 
         MaterialModel::MaterialModelInputs<dim> in(input_data,
-                                                   this->introspection(),
-                                                   false);
+                                                   this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
         in.requested_properties = MaterialModel::MaterialProperties::density |

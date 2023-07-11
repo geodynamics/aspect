@@ -181,7 +181,7 @@ namespace aspect
               bool clear_coarsen = false;
 
               fe_values.reinit(cell);
-              in.reinit(fe_values, cell, this->introspection(), this->get_solution(), true);
+              in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
               for (unsigned int i_quad=0; i_quad<quadrature.size(); ++i_quad)
                 {

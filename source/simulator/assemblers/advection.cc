@@ -927,8 +927,7 @@ namespace aspect
               scratch.neighbor_face_material_model_inputs.reinit  (*scratch.neighbor_face_finite_element_values,
                                                                    neighbor,
                                                                    this->introspection(),
-                                                                   this->get_current_linearization_point(),
-                                                                   true);
+                                                                   this->get_current_linearization_point());
               this->get_material_model().evaluate(scratch.neighbor_face_material_model_inputs,
                                                   scratch.neighbor_face_material_model_outputs);
 
@@ -1259,8 +1258,7 @@ namespace aspect
               scratch.face_material_model_inputs.reinit  (*scratch.subface_finite_element_values,
                                                           cell,
                                                           this->introspection(),
-                                                          this->get_current_linearization_point(),
-                                                          true);
+                                                          this->get_current_linearization_point());
               this->get_material_model().evaluate(scratch.face_material_model_inputs,
                                                   scratch.face_material_model_outputs);
 
@@ -1283,8 +1281,7 @@ namespace aspect
               scratch.neighbor_face_material_model_inputs.reinit  (*scratch.neighbor_face_finite_element_values,
                                                                    neighbor_child,
                                                                    this->introspection(),
-                                                                   this->get_current_linearization_point(),
-                                                                   true);
+                                                                   this->get_current_linearization_point());
               this->get_material_model().evaluate(scratch.neighbor_face_material_model_inputs,
                                                   scratch.neighbor_face_material_model_outputs);
 

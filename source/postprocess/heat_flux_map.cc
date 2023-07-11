@@ -130,7 +130,7 @@ namespace aspect
           if (cell->is_locally_owned() && cell->at_boundary())
             {
               fe_volume_values.reinit (cell);
-              in.reinit(fe_volume_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
+              in.reinit(fe_volume_values, cell, simulator_access.introspection(), simulator_access.get_solution());
               simulator_access.get_material_model().evaluate(in, out);
 
               if (simulator_access.get_parameters().formulation_temperature_equation ==
@@ -251,7 +251,7 @@ namespace aspect
                   // Compute heat flux through Neumann boundary by integrating the heat flux
                   else if (fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end())
                     {
-                      face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
+                      face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution());
                       simulator_access.get_material_model().evaluate(face_in, face_out);
 
                       if (simulator_access.get_parameters().formulation_temperature_equation ==
@@ -402,7 +402,7 @@ namespace aspect
                     // if necessary, compute material properties for this face
                     if (prescribed_heat_flux || non_tangential_velocity)
                       {
-                        face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
+                        face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution());
                         simulator_access.get_material_model().evaluate(face_in, face_out);
 
                         if (simulator_access.get_parameters().formulation_temperature_equation ==

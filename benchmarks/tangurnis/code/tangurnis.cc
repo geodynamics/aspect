@@ -387,7 +387,7 @@ namespace aspect
     for (; cell != endc; ++cell)
       {
         fe_values.reinit (cell);
-        in.reinit(fe_values,cell,this->introspection(),this->get_solution(),true);
+        in.reinit(fe_values,cell,this->introspection(),this->get_solution());
 
         this->get_material_model().evaluate(in, out);
 
