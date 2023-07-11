@@ -5,7 +5,7 @@ subsection Boundary velocity model
   subsection Function
     set Variable names      = x,y
     set Function constants  = v=0.5
-    set Function expression = if (y<0.5,-v,+v) ; 0 
+    set Function expression = if (y<0.5,-v,+v) ; 0
   end
 end
 

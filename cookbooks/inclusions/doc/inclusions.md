@@ -8,8 +8,8 @@ pressure, velocity and strain rate fields for two-dimensional (2D) viscous inclu
 shear and simple shear.
 
 We here focus on two of their experiments: a strong rectangular inclusion and a weak elliptical inclusion.
-In both cases the domain is a Cartesian box of size $(L_x,L_y) = (1,1)$ and the magnitude of the applied 
-velocity on the boundaries is 0.5 (this model is formulated in terms of dimensionless quantities). 
+In both cases the domain is a Cartesian box of size $(L_x,L_y) = (1,1)$ and the magnitude of the applied
+velocity on the boundaries is 0.5 (this model is formulated in terms of dimensionless quantities).
 The viscosity of the matrix is set to $\eta_m=1$, while the viscosity of the inclusion is set to $\eta_i=1000$
 for the rectangular inclusion and $\eta_i=0.001$ for the elliptical inclusion, see {numref}`fig:inclusion-visc`.
 The setup for the elliptical inclusion is shown in {numref}`fig:inclusion-setup`.
@@ -31,43 +31,36 @@ pure (PS) shear boundary conditions can be applied.
 Taken from {cite:t}`halter:macherel:schmalholz:2022`.
 ```
 
-The velocity, pressure and strain rate fields for all four experiments 
+The velocity, pressure and strain rate fields for all four experiments
 are shown in {numref}`fig:inclusion-results`.
 
 
 ```{figure-md} fig:inclusion-results
 <img src="results1.*" width="100%" />
 
-Results for both inclusion types and both boundary condition types. 'SS' stands 
+Results for both inclusion types and both boundary condition types. 'SS' stands
 for simple shear and 'PS' stands for pure shear.
 ```
 
 In the paper the authors also look at the case of a power-law rheology for the matrix.
 Instead of trying to reproduce their results exectly, let us simply create a test case for such an experiment.
-We then replace the simple material model by the Visco Plastic material model, 
-select the dislocation creep flow law, set the 
+We then replace the simple material model by the Visco Plastic material model,
+select the dislocation creep flow law, set the
 activation volume and activation energy to zero, and set the cohesion to a very large value
-so that plastic behavior is never triggered.  
+so that plastic behavior is never triggered.
 In the end the effective viscosity is then given by:
 
 ```{math}
 \eta = \frac12 A^{-1/n} \dot\varepsilon_e
 ```
 
-If $n=1$ then the viscosity is Newtonian, i.e. $\eta=\frac12 A^{-1}$, and by taking $A=500$ then 
+If $n=1$ then the viscosity is Newtonian, i.e. $\eta=\frac12 A^{-1}$, and by taking $A=500$ then
 we ensure that the inclusion has a constant viscosity $\eta_i=0.001$ as before.
-Concerning the matrix, we set $A=0.5$ so that when $n=1$ we recover $\eta_m=1$. 
-In {numref}`fig:inclusion-nonlinear` results obtained with $n=1,2,3$ are shown. 
+Concerning the matrix, we set $A=0.5$ so that when $n=1$ we recover $\eta_m=1$.
+In {numref}`fig:inclusion-nonlinear` results obtained with $n=1,2,3$ are shown.
 
 ```{figure-md} fig:inclusion-nonlinear
 <img src="results2.*" width="100%" />
 
 Results for an elliptical inclusion under pure shear with a power-law rheology for the matrix with $n=1,2,3$.
 ```
-
-
-
-
-
-
-
