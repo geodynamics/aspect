@@ -216,7 +216,7 @@ namespace aspect
         double thermal_conductivity (const double temperature,
                                      const double pressure,
                                      const Point<dim> &position) const;
-         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
+        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
         /**
          * Whether the compositional fields representing mass fractions
          * should be normalized to one when computing their fractions

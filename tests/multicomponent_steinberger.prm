@@ -1,4 +1,4 @@
-## Test the multicomponent steinberger material model. Three blobs with different viscosities move around. The reference viscosity of background is from the viscosity profile of Steinberger & Calderwood 2006. 
+## Test the multicomponent steinberger material model. Three blobs with different viscosities move around. The reference viscosity of background is from the viscosity profile of Steinberger & Calderwood 2006.
 
 set Dimension = 2
 set CFL number                             = 1.0

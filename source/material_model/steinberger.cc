@@ -170,7 +170,7 @@ namespace aspect
     Steinberger<dim>::
     viscosity (const double temperature,
                const double /*pressure*/,
-               const std::vector<double> & volume_fractions,
+               const std::vector<double> &volume_fractions,
                const SymmetricTensor<2,dim> &,
                const Point<dim> &position) const
     {
@@ -179,8 +179,8 @@ namespace aspect
       // Calculate volume fractions from mass fractions
       // const std::vector<double> mass_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i]);
       // const std::vector<double> volume_fractions = MaterialUtilities::compute_volumes_from_masses(mass_fractions,
-                                                      //  eos_outputs.densities,
-                                                      //  true);
+      //  eos_outputs.densities,
+      //  true);
 
       double delta_temperature;
       if (use_lateral_average_temperature)
@@ -277,15 +277,15 @@ namespace aspect
       // Evaluate the equation of state properties over all evaluation points
       equation_of_state.evaluate(eos_in, eos_outputs);
       // std::vector<Vector<double>> viscosities(in.n_evaluation_points(), this->n_compositional_fields());
-        
+
       // std::vector<double> viscosities;
       // viscosities.assign(1e21);
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           // viscosities[i]=1e21;
-          
+
           // if (in.requests_property(MaterialProperties::viscosity))
-            // out.viscosities[i] = viscosity(in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
+          // out.viscosities[i] = viscosity(in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 
           out.thermal_conductivities[i] = thermal_conductivity(in.temperature[i], in.pressure[i], in.position[i]);
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
@@ -321,8 +321,8 @@ namespace aspect
                                                                                eos_outputs[i].densities,
                                                                                true);
 //  out.viscosities[i] = MaterialUtilities::average_value (volume_fractions[i], viscosities, viscosity_averaging);
-// out.viscosities[i] = viscosities[i]; 
-if (in.requests_property(MaterialProperties::viscosity))
+// out.viscosities[i] = viscosities[i];
+          if (in.requests_property(MaterialProperties::viscosity))
             out.viscosities[i] = viscosity(in.temperature[i], in.pressure[i], volume_fractions[i], in.strain_rate[i], in.position[i]);
 
 
@@ -472,17 +472,17 @@ if (in.requests_property(MaterialProperties::viscosity))
                              Patterns::Double (0.),
                              "The maximum thermal conductivity that is allowed in the "
                              "model. Larger values will be cut off."),
-          prm.declare_entry ("Viscosity averaging scheme", "harmonic",
-                             Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
-                             "When more than one compositional field is present at a point "
-                             "with different viscosities, we need to come up with an average "
-                             "viscosity at that point.  Select a weighted harmonic, arithmetic, "
-                             "geometric, or maximum composition.");
+                             prm.declare_entry ("Viscosity averaging scheme", "harmonic",
+                                                Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
+                                                "When more than one compositional field is present at a point "
+                                                "with different viscosities, we need to come up with an average "
+                                                "viscosity at that point.  Select a weighted harmonic, arithmetic, "
+                                                "geometric, or maximum composition.");
           prm.declare_entry ("Prefactors", "1.e21",
                              Patterns::Anything(),
                              "List of viscosities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: \\si{\\pascal\\second}.");                   
+                             "If only one value is given, then all use the same value. Units: \\si{\\pascal\\second}.");
 
           // Table lookup parameters
           EquationOfState::ThermodynamicTableLookup<dim>::declare_parameters(prm);
@@ -513,11 +513,11 @@ if (in.requests_property(MaterialProperties::viscosity))
           max_lateral_eta_variation    = prm.get_double ("Maximum lateral viscosity variation");
           thermal_conductivity_value = prm.get_double ("Thermal conductivity");
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
-                                 prm);
+                                prm);
           // viscosities = Utilities::parse_map_to_double_array (prm.get("Viscosities"),
-                                                              // list_of_composition_names,
-                                                              // has_background_field,
-                                                              // "Viscosities");
+          // list_of_composition_names,
+          // has_background_field,
+          // "Viscosities");
           // Rheological parameters
           if (prm.get ("Thermal conductivity formulation") == "constant")
             conductivity_formulation = constant;
@@ -585,12 +585,12 @@ if (in.requests_property(MaterialProperties::viscosity))
                                   + " fields of type chemical composition."));
 
           has_background_field = (equation_of_state.number_of_lookups() == n_chemical_fields + 1);
-const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+          const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-prefactors = Utilities::parse_map_to_double_array (prm.get("Prefactors"),
-                                                              list_of_composition_names,
-                                                              has_background_field,
-                                                              "Prefactors");
+          prefactors = Utilities::parse_map_to_double_array (prm.get("Prefactors"),
+                                                             list_of_composition_names,
+                                                             has_background_field,
+                                                             "Prefactors");
           prm.leave_subsection();
         }
         prm.leave_subsection();
