@@ -65,7 +65,7 @@ namespace aspect
          * and instead reading them from the input file allows for more
          * flexible files.
          */
-        StructuredDataLookup(const unsigned int components,
+        StructuredDataLookup(const unsigned int n_components,
                              const double scale_factor);
 
         /**
@@ -220,7 +220,7 @@ namespace aspect
         /**
          * The number of data components read in (=columns in the data file).
          */
-        unsigned int components;
+        unsigned int n_components;
 
         /**
          * The names of the data components in the columns of the read file.
