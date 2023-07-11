@@ -279,8 +279,7 @@ namespace aspect
 
           // Fill plastic outputs if they exist.
           // The values in isostrain_viscosities only make sense when the calculate_isostrain_viscosities function
-          // has been called. TODO check here for in.requests_property(MaterialProperties::viscosity) or
-          // in fill_plastic_outputs as is done now?
+          // has been called.
           // TODO do we even need a separate function? We could compute the PlasticAdditionalOutputs here like
           // the ElasticAdditionalOutputs.
           rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
