@@ -110,12 +110,14 @@ namespace aspect
 
           // also make sure that the other columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
-          const std::string columns[] = {"RMS velocity (" + unit + ") for composition " + this->introspection().name_for_compositional_index(c)};
+          const std::string columns[] = {"RMS velocity (" + unit + ") for composition " +
+                                         this->introspection().name_for_compositional_index(c)
+                                        };
 
-          for (unsigned int i = 0; i < sizeof(columns) / sizeof(columns[0]); ++i)
+          for (const auto &column : columns)
             {
-              statistics.set_precision(columns[i], 8);
-              statistics.set_scientific(columns[i], true);
+              statistics.set_precision(column, 8);
+              statistics.set_scientific(column, true);
             }
         }
 
