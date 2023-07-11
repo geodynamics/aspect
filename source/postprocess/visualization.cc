@@ -262,7 +262,7 @@ namespace aspect
       std::list<std::string>
       Interface<dim>::required_other_postprocessors () const
       {
-        return std::list<std::string>();
+        return {};
       }
 
 

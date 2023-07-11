@@ -401,7 +401,7 @@ namespace aspect
     std::list<std::string>
     DynamicTopography<dim>::required_other_postprocessors() const
     {
-      return std::list<std::string> (1, "boundary pressures");
+      return {"boundary pressures"};
     }
 
 

@@ -101,7 +101,7 @@ namespace aspect
       std::list<std::string>
       SurfaceDynamicTopography<dim>::required_other_postprocessors() const
       {
-        return std::list<std::string> (1, "dynamic topography");
+        return {"dynamic topography"};
       }
     }
   }

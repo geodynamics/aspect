@@ -71,7 +71,7 @@ namespace aspect
       std::list<std::string>
       ParticleCount<dim>::required_other_postprocessors() const
       {
-        return std::list<std::string> (1, "particles");
+        return {"particles"};
       }
     }
   }
