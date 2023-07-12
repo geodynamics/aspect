@@ -79,9 +79,10 @@ namespace aspect
 
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
-      if (advection_field.advection_method (introspection)
-          == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
-        return;
+      Assert(advection_field.advection_method(introspection)
+             == Parameters<dim>::AdvectionFieldMethod::fem_field,
+             ExcMessage("The 'AdvectionSystem' assembler can only be executed for fields "
+                        "that use the advection method 'field'."));
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -327,9 +328,10 @@ namespace aspect
 
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
 
-      if (advection_field.advection_method(introspection)
-          != Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
-        return;
+      Assert(advection_field.advection_method(introspection)
+             == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion,
+             ExcMessage("The 'DiffusionSystem' assembler can only be executed for fields "
+                        "that use the advection method 'prescribed field with diffusion'."));
 
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
@@ -388,6 +390,35 @@ namespace aspect
       std::vector<double> residuals(scratch.finite_element_values.n_quadrature_points, 0.0);
 
       return residuals;
+    }
+
+
+
+    template <int dim>
+    std::vector<double>
+    DiffusionSystem<dim>::advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
+      return std::vector<double> (scratch.material_model_inputs.n_evaluation_points(), 0.0);
+    }
+
+
+
+    template <int dim>
+    std::vector<double>
+    DiffusionSystem<dim>::diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
+
+      const double prefactor = this->get_timestep() > 0
+                               ?
+                               this->get_parameters().diffusion_length_scale
+                               * this->get_parameters().diffusion_length_scale
+                               / this->get_timestep()
+                               :
+                               0.0;
+
+      return std::vector<double> (scratch.material_model_inputs.n_evaluation_points(), prefactor);
     }
 
 
@@ -486,9 +517,11 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
 
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
-      if (advection_field.advection_method(introspection)
-          != Parameters<dim>::AdvectionFieldMethod::fem_darcy_field)
-        return;
+
+      Assert(advection_field.advection_method(introspection)
+             == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field,
+             ExcMessage("The 'DarcySystem' assembler can only be executed for fields "
+                        "that use the advection method 'darcy field'."));
 
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
@@ -661,8 +694,11 @@ namespace aspect
 
       const double time_step = this->get_timestep();
 
-      if (!advection_field.is_discontinuous(introspection))
-        return;
+      Assert(advection_field.is_discontinuous(introspection)
+             && advection_field.advection_method(introspection)
+             == Parameters<dim>::AdvectionFieldMethod::fem_field,
+             ExcMessage("The 'AdvectionSystemBoundaryFace' assembler can only be executed for fields "
+                        "that use the advection method 'field' and a discontinuous discretization."));
 
       // also have the number of dofs that correspond just to the element for
       // the system we are currently trying to assemble
