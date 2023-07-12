@@ -12,6 +12,10 @@ set End time                               = 0.1
 
 subsection Postprocess
   subsection Visualization
-    set List of output variables = density, artificial viscosity
+    set List of output variables = density, artificial viscosity, artificial viscosity composition
+
+    subsection Artificial viscosity composition
+      set Name of compositional field = C_1
+    end
   end
 end
