@@ -1,0 +1,104 @@
+#parameter file for replicating Matsumoto & Tomoda 1983
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 50e6
+set Use years in output instead of seconds = true
+set CFL number                             = 0.25
+set Output directory                       = output-subduction-initiation-pic
+set Pressure normalization                 = surface
+
+#subsection Solver parameters
+#  subsection Stokes solver parameters
+#    set Number of cheap Stokes solver steps = 0
+#  end
+#end
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 400e3
+    set Y extent  = 180e3
+    set X repetitions = 2
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Material model
+  set Model name = multicomponent
+  subsection Multicomponent
+    set Densities = 0, 3200, 3200, 3300, 3300, 1030
+    set Viscosities = 1e30, 1e21, 1e21, 1e22, 1e22, 1e19
+    set Viscosity averaging scheme = harmonic
+    set Thermal expansivities = 0
+  end
+  set Material averaging = harmonic average
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 5
+  set Names of fields = asth_left, asth_right, left_lith, right_lith, water
+  set Compositional field methods = particles, particles, particles, particles, particles
+  set Mapped particle properties = asth_left:initial asth_left, asth_right:initial asth_right, left_lith:initial left_lith, right_lith:initial right_lith, water: initial water
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = L0=300e3
+    set Function expression = if((x<=L0 && y<=120e3),1,0) ;\
+                              if((x>=L0 && y<162e3),1,0) ;\
+                              if((x<=L0 && y>120e3 && y<=170e3),1,0) ;\
+                              if((x>=L0 && y>=162e3 && y<=172e3),1,0) ;\
+                              if((x<=L0 && y>170e3) || (x>=L0 && y>172e3),1,0)
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement   = 0
+  set Initial global refinement     = 6
+  set Refinement fraction           = 0.9
+  set Strategy                      = composition
+  set Coarsening fraction           = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, composition statistics, pressure statistics, material statistics, global statistics, particles
+  subsection Particles
+    set Number of particles      = 350000
+    set Time between data output = 0
+    set Data output format       = vtu
+    set List of particle properties = initial composition, velocity
+    set Particle generator name = random uniform
+    set Interpolation scheme = cell average #default
+    set Update ghost particles = true
+  end
+  subsection Visualization
+    set List of output variables = density, viscosity, strain rate
+    set Time between graphical output = 0
+    set Interpolate output = false
+  end
+end
