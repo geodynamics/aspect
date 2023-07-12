@@ -194,8 +194,8 @@ namespace aspect
                 */
 
                 //const double initial_volume_fraction = 1.0/n_grains;
-                const double large_grains_size = 1e-4;
-                const double small_grain_size = large_grains_size/1000.;
+                const double large_grains_size = 1e-6;
+                const double small_grain_size = large_grains_size/100000.;
                 const double initial_volume_fraction_large = (4./3.)*numbers::PI*pow(0.5*large_grains_size,3);
                 const double initial_volume_fraction_small = (4./3.)*numbers::PI*pow(0.5*small_grain_size,3);
 
@@ -835,7 +835,6 @@ namespace aspect
 
               const long double half_recrystalized_grain_size = 0.5 * recrystalized_grain_size;
               long double recrystalized_grain_volume = (4./3.)*numbers::PI*half_recrystalized_grain_size*half_recrystalized_grain_size*half_recrystalized_grain_size;
-
               return compute_derivatives_drexpp(cpo_index,
                                                 data,
                                                 mineral_i,
