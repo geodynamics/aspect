@@ -96,6 +96,43 @@ browse a preview of what the manual will look like once your additions are
 merged. Navigate to your newly-added page and use this opportunity to ensure
 all equations, citations, figures, etc. are formatted correctly and appear as you would like.
 
-You will get bonus points if you also create a test (see
+We also run automated checks of every cookbook and benchmark as part
+of the pull request review. The script that does this might require
+modifications for your new cookbook if your plugin is in a different
+directory, changes are necessary to run your `.prm` files, or some
+files can not be run directly. The rules are `GNU Make` rules
+specified at the bottom of
+[cookbooks/check.mk](https://github.com/geodynamics/aspect/blob/main/cookbooks/check.mk)
+and
+[benchmarks/check.mk](https://github.com/geodynamics/aspect/blob/main/benchmarks/check.mk),
+respectively. The default rule is
+```
+%/: dummy
+    +@$(def); make_lib $@
+    @$(def); run_all_prms $@
+```
+which compiles the library in the directory and runs all prm
+files. Assuming your cookbook is in a folder
+`free_surface_with_crust/`, you can replace this rule by adding
+```
+free_surface_with_crust/: dummy
+    +@$(def); make_lib $@/plugin
+    @$(def); run_prm $@ test.prm
+```
+at the end of the document, which will compile a plugin found in
+`free_surface_with_crust/plugin/` and then run `test.prm` in the
+folder `free_surface_with_crust/`. Feel free to ask for help in your
+pull request.
+
+:::{note}
+
+The `make` program has a peculiar format where the indented rows in
+the snippets above consist of exactly one tab character, rather than
+four spaces. This does not translate to what is shown above, but
+`make` will generate difficult-to-read error messages if you use
+spaces instead of the required tab.
+:::
+
+Finally, you will get bonus points if you also create a test (see
 {ref}`sec:extending:writing-tests`) that only runs the first time step (or a
 lower resolution version) of your cookbook.
