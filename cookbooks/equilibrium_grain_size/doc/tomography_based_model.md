@@ -1,21 +1,20 @@
 ﻿# Mantle convection using tomography data
 
 Mantle flow models based on present-day observational constraints can help us to investigate several global and regional tectonic processes.
-This cookbook describes how to setup such a model based on input tomography data and plate boundary locations. These models are typically computationally very expensive in 3D to make meaningful comparisons with the observations, therefore, in this cookbook we explain the workflow for a 2D spherical shell.
+This cookbook describes how to setup such a model based on input tomography data and plate boundary locations. These models are typically computationally very expensive in 3D to make meaningful comparisons with the observations, therefore, we explain the workflow for a 2D spherical shell.
 
-## Description of input data
+## Description of input files
 
-### Tomography file
-In this cookbook, the input tomography data is LLNL-G3D-JPS{cite}`simmons:etal:2019`, available at the [IRIS DMC webpage](http://ds.iris.edu/ds/products/emc-earthmodels/), read in as an ASCII compositional data. The input file is located in `cookbooks/equilibirum_grain_size/input_data/` and has the following format
+In this cookbook, the input tomography data uses LLNL-G3D-JPS model {cite}`simmons:etal:2019`, available at the [IRIS DMC webpage](http://ds.iris.edu/ds/products/emc-earthmodels/), read in as an ASCII compositional data. The input file is located in `cookbooks/equilibirum_grain_size/input_data/` and has the following format
 
 ```{literalinclude} input_tomography.part.txt
 ```
 
-where grain_size is set to a constant value of 5mm, Vp and Vs are the P- and S-wave seismic velocities, respectively, Vs_anomaly is the S-wave velocity anomaly relative a reference velocity profile, faults represent the composition value at plate boundaries, and cratons represent the composition value within the continental cratons. Both faults and cratons have composition values set to 0 in this ASCII file because they are defined separately using Worldbuilder{cite}`fraters_menno_2020_3900603` and the input file `cookbooks/equilibrium_grain_size/input_file/world_builder_smac_cratons_faults_2D.json`.
+where grain_size is set to a constant value of 5mm, Vp and Vs are the P- and S-wave seismic velocities, respectively, Vs_anomaly is the S-wave velocity anomaly relative a reference velocity profile, faults represent the composition value at plate boundaries, and cratons represent the composition value within the continental cratons. Both faults and cratons have composition values set to 0 in this ASCII file because they are defined separately using the Geodynamics WorldBuilder (GWB) {cite}`Fraters2019c` and the input file `cookbooks/equilibrium_grain_size/input_file/world_builder_smac_cratons_faults_2D.json`. 
 
-### World Builder file
-We use the plate boundary geometry defined in the Nuvel model{cite}`demets:etal:1990` input as `fault` features and the locations of cratons are taken from{cite}`nataf:etal:1996`, input as `continental plate` features regions in WorldBuilder (see: reference for more details). The compositional value of faults transitions smoothly from 1 at the fault trace to 0 over a width of 50 km on either side of the fault. We do this to ensure that the prescribed plate boundary viscosity which is based on the fault composition is also smooth.
-Note that while the input file includes plate boundary geometry and cratons for the whole Earth, we only compute the compositions along a cross-section in this cookbook. Specifically, we the coordinates in `cross-section` represents the compositions along the equator. The input faults and cratons in a 3D spherical model would look like {numref}`fig:composition`.
+For plate boundary geometry, we use the Nuvel model{cite}`demets:etal:1990` input as `fault` features and the locations of cratons taken from{cite}`nataf:etal:1996` input as `continental plate` features regions in GWB {cite}`Fraters2019c`. The compositional value of faults transitions smoothly from 1 at the fault trace to 0 over a width of 50 km on either side of the fault. We do this to ensure that the prescribed plate boundary viscosity which is based on the fault composition is also smooth.
+Note that while the input file includes plate boundary geometry and cratons for the whole Earth, we only compute the compositions along a cross-section in this cookbook. 
+The input faults and cratons in a 3D spherical model would look like {numref}`fig:composition`.
 
 ```{figure-md} fig:composition
 <img src="Fig_composition.*" />
