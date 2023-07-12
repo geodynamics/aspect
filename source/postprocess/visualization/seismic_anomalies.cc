@@ -85,7 +85,7 @@ namespace aspect
                     // Get the pressure, temperature and composition in the cell
                     fe_values.reinit (cell);
 
-                    in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
+                    in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
                     out.additional_outputs.push_back(
                       std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
@@ -144,7 +144,7 @@ namespace aspect
                     // Get the pressure, temperature and composition in the cell
                     fe_values.reinit (cell);
 
-                    in.reinit (fe_values, cell, this->introspection(), this->get_solution(), /* compute_strain_rate = */ false);
+                    in.reinit (fe_values, cell, this->introspection(), this->get_solution());
 
                     out.additional_outputs.push_back(
                       std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
@@ -229,7 +229,7 @@ namespace aspect
                     // Get the pressure, temperature and composition in the cell
                     fe_values.reinit (cell);
 
-                    in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
+                    in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
                     out.additional_outputs.push_back(
                       std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>>(n_q_points));

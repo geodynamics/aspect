@@ -69,7 +69,7 @@ namespace aspect
               // Fill the material model objects for the cell (for strain rate)
               fe_values.reinit(cell);
               in.reinit(fe_values, cell, this->introspection(),
-                        this->get_solution(), true);
+                        this->get_solution());
               // Also get velocity gradients
               std::vector<Tensor<2, dim>> velocity_gradient(n_q_points,
                                                              Tensor<2, dim>());

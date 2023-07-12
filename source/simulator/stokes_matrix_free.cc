@@ -1390,8 +1390,7 @@ namespace aspect
                                                                                 &(sim.dof_handler));
 
                   fe_values.reinit(simulator_cell);
-                  in.reinit(fe_values, simulator_cell, sim.introspection, sim.current_linearization_point,
-                            true /* = compute_strain_rate */);
+                  in.reinit(fe_values, simulator_cell, sim.introspection, sim.current_linearization_point);
 
                   sim.material_model->fill_additional_material_model_inputs(in, sim.current_linearization_point, fe_values, sim.introspection);
                   sim.material_model->evaluate(in, out);
@@ -1526,8 +1525,7 @@ namespace aspect
                   face_material_inputs.reinit  (fe_face_values,
                                                 simulator_cell,
                                                 sim.introspection,
-                                                sim.solution,
-                                                false);
+                                                sim.solution);
                   face_material_inputs.requested_properties = MaterialModel::MaterialProperties::density;
                   sim.material_model->evaluate(face_material_inputs, face_material_outputs);
 

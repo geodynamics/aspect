@@ -261,7 +261,7 @@ namespace aspect
             // Evaluate the solution at the quadrature points of this cell
             fe_values.reinit (cell);
 
-            in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution());
             this->get_material_model().evaluate(in, out);
 
             // Pull some computations that are independent of the

@@ -697,7 +697,7 @@ namespace aspect
                   {
                     fe_face_values.reinit (cell, f);
 
-                    in.reinit(fe_face_values, cell, this->introspection(), this->get_solution(), /*compute_strain_rates = */ false);
+                    in.reinit(fe_face_values, cell, this->introspection(), this->get_solution());
 
                     fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
                         temperature_gradients);
