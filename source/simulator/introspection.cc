@@ -255,7 +255,10 @@ namespace aspect
     temperature_method(parameters.temperature_method),
     compositional_field_methods(parameters.compositional_field_methods),
     composition_names(parameters.names_of_compositional_fields),
-    composition_descriptions(parameters.composition_descriptions)
+    composition_descriptions(parameters.composition_descriptions),
+    chemical_composition_names (get_names_for_fields_of_type(CompositionalFieldDescription::chemical_composition)),
+    chemical_composition_indices (get_indices_for_fields_of_type(CompositionalFieldDescription::chemical_composition)),
+    n_chemical_compositions (get_number_of_fields_of_type(CompositionalFieldDescription::chemical_composition))
   {}
 
 
@@ -366,6 +369,33 @@ namespace aspect
 
 
   template <int dim>
+  const std::vector<std::string> &
+  Introspection<dim>::chemical_composition_field_names () const
+  {
+    return chemical_composition_names;
+  }
+
+
+
+  template <int dim>
+  const std::vector<unsigned int> &
+  Introspection<dim>::chemical_composition_field_indices () const
+  {
+    return chemical_composition_indices;
+  }
+
+
+
+  template <int dim>
+  unsigned int
+  Introspection<dim>::n_chemical_composition_fields () const
+  {
+    return n_chemical_compositions;
+  }
+
+
+
+  template <int dim>
   bool
   Introspection<dim>::composition_type_exists (const CompositionalFieldDescription::Type &type) const
   {
@@ -428,6 +458,21 @@ namespace aspect
         names.push_back(composition_names[i]);
 
     return names;
+  }
+
+
+
+  template <int dim>
+  unsigned int
+  Introspection<dim>::get_number_of_fields_of_type (const CompositionalFieldDescription::Type &type) const
+  {
+    unsigned int n = 0;
+
+    for (unsigned int i=0; i<n_compositional_fields; ++i)
+      if (composition_descriptions[i].type == type)
+        n += 1;
+
+    return n;
   }
 
 

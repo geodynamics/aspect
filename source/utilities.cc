@@ -272,7 +272,6 @@ namespace aspect
             {
               // Split the list by comma delimited components.
               const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(input_string, ',');
-
               for (const auto &field_entry : field_entries)
                 {
                   // Split each entry into string and value ( <id> : <value>)
@@ -329,9 +328,9 @@ namespace aspect
           // 'value1, value2, value3' with as many entries as allowed keys.
           else if (Patterns::List(Patterns::Double(),options.list_of_allowed_keys.size(),options.list_of_allowed_keys.size()).match(input_string))
             {
-              const std::vector<double> values = possibly_extend_from_1_to_N (dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(input_string)),
-                                                                              options.list_of_allowed_keys.size(),
-                                                                              options.property_name);
+              const std::vector<double> values = possibly_extend_from_1_to_N(dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(input_string)),
+                                                                             options.list_of_allowed_keys.size(),
+                                                                             options.property_name);
 
               for (unsigned int i=0; i<values.size(); ++i)
                 {
@@ -510,18 +509,24 @@ namespace aspect
                                 Options &options)
       {
         // Check options for consistency
-        AssertThrow (options.list_of_required_keys.size() != 0,
-                     ExcMessage("parse_map_to_double_array needs at least one required key name."));
         AssertThrow (options.property_name != "",
                      ExcMessage("parse_map_to_double_array needs a property name to be able to properly report parsing errors."));
+        AssertThrow (options.list_of_required_keys.size() != 0,
+                     ExcMessage("parse_map_to_double_array needs at least one required key name for property "
+                                + options.property_name
+                                + "."));
         AssertThrow (options.check_values_per_key == false ||
                      options.store_values_per_key == false,
                      ExcMessage("parse_map_to_double_array can not simultaneously store the structure "
-                                "of the parsed map and check that structure against a given structure."));
+                                "of the parsed map for "
+                                + options.property_name
+                                + " and check that structure against a given structure."));
         AssertThrow (options.check_values_per_key == false ||
                      options.n_values_per_key.size() == options.list_of_required_keys.size(),
                      ExcMessage("parse_map_to_double_array can only check the structure "
-                                "of the parsed map if an expected number of values for each key is given."));
+                                "of the parsed map for "
+                                + options.property_name
+                                + " if an expected number of values for each key is given."));
 
         // First: parse the string into a map depending on what Pattern we are dealing with
         std::multimap<std::string, double> parsed_map = parse_string_to_map(input_string,

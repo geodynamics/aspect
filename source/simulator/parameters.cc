@@ -32,6 +32,7 @@
 
 #include <boost/lexical_cast.hpp>
 #include <cstdlib>
+#include <regex>
 #include <sys/stat.h>
 
 namespace aspect
@@ -1890,6 +1891,35 @@ namespace aspect
                                          - names_of_compositional_fields.begin();
       if (density_index != n_compositional_fields && x_compositional_field_types[density_index] == "unspecified")
         x_compositional_field_types[density_index] = "density";
+
+      // TODO ASPECT_4: Require all field types to be specified by the user
+      // Remove the following code block
+      for (unsigned int i=0; i<n_compositional_fields; ++i)
+        if (x_compositional_field_types[i] == "unspecified")
+          {
+            // Loop over various possibilities before
+            // choosing "chemical composition" as the standard field name
+            // stress, strain, grain_size, porosity, density
+            if (names_of_compositional_fields[i].find("stress") != std::string::npos)
+              x_compositional_field_types[i] = "stress";
+            else if ((names_of_compositional_fields[i].find("strain") != std::string::npos)
+                     || (std::regex_match(names_of_compositional_fields[i],std::regex("s[1-3][1-3]"))))
+              x_compositional_field_types[i] = "strain";
+            else if (names_of_compositional_fields[i].find("grain_size") != std::string::npos)
+              x_compositional_field_types[i] = "grain size";
+            else if (names_of_compositional_fields[i].find("entropy") != std::string::npos)
+              x_compositional_field_types[i] = "entropy";
+            else if (names_of_compositional_fields[i] == "porosity")
+              x_compositional_field_types[i] = "porosity";
+            else if (names_of_compositional_fields[i] == "density_field")
+              x_compositional_field_types[i] = "density";
+            else
+              x_compositional_field_types[i] = "chemical composition";
+          }
+
+      // If only one method is specified apply this to all fields
+      if (x_compositional_field_types.size() == 1)
+        x_compositional_field_types = std::vector<std::string> (n_compositional_fields, x_compositional_field_types[0]);
 
       AssertThrow (std::count(x_compositional_field_types.begin(), x_compositional_field_types.end(), "density") < 2,
                    ExcMessage("There can only be one field of type 'density' in a simulation!"));
