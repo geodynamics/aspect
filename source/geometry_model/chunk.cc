@@ -549,35 +549,31 @@ namespace aspect
         {
           case 2:
           {
-            static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("bottom", 0),
-                  std::pair<std::string,types::boundary_id>("top",    1),
-                  std::pair<std::string,types::boundary_id>("west",   2),
-                  std::pair<std::string,types::boundary_id>("east",   3)
-                };
-
-            return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                             std::end(mapping));
+            return
+            {
+              {"bottom", 0},
+              {"top",    1},
+              {"west",   2},
+              {"east",   3}
+            };
           }
 
           case 3:
           {
-            static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("bottom", 0),
-                  std::pair<std::string,types::boundary_id>("top",    1),
-                  std::pair<std::string,types::boundary_id>("west",   2),
-                  std::pair<std::string,types::boundary_id>("east",   3),
-                  std::pair<std::string,types::boundary_id>("south",  4),
-                  std::pair<std::string,types::boundary_id>("north",  5)
-                };
-
-            return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                             std::end(mapping));
+            return
+            {
+              {"bottom", 0},
+              {"top",    1},
+              {"west",   2},
+              {"east",   3},
+              {"south",  4},
+              {"north",  5}
+            };
           }
         }
 
       Assert (false, ExcNotImplemented());
-      return std::map<std::string,types::boundary_id>();
+      return {};
     }
 
 

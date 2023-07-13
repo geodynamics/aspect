@@ -42,7 +42,7 @@ namespace aspect
     Interface<dim>::get_symbolic_boundary_names_map() const
     {
       // return an empty map in the base class
-      return std::map<std::string,types::boundary_id>();
+      return {};
     }
 
 
