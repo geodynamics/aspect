@@ -1886,12 +1886,6 @@ namespace aspect
       if (x_compositional_field_types.size() == 1)
         x_compositional_field_types = std::vector<std::string> (n_compositional_fields, x_compositional_field_types[0]);
 
-      // For backwards compatibility, convert a field named "density_field" without type to a density field
-      const unsigned int density_index = std::find(names_of_compositional_fields.begin(), names_of_compositional_fields.end(), "density_field")
-                                         - names_of_compositional_fields.begin();
-      if (density_index != n_compositional_fields && x_compositional_field_types[density_index] == "unspecified")
-        x_compositional_field_types[density_index] = "density";
-
       // TODO ASPECT_4: Require all field types to be specified by the user
       // Remove the following code block
       for (unsigned int i=0; i<n_compositional_fields; ++i)
