@@ -1,0 +1,33 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Visualization file name
+# 16: RMS velocity (m/year)
+# 17: Max. velocity (m/year)
+# 18: Minimal temperature (K)
+# 19: Average temperature (K)
+# 20: Maximal temperature (K)
+# 21: Average nondimensional temperature (K)
+# 22: Outward mass flux through boundary with indicator 0 ("bottom") (kg/yr)
+# 23: Outward mass flux through boundary with indicator 1 ("top") (kg/yr)
+# 24: Minimal value for composition entropy
+# 25: Maximal value for composition entropy
+# 26: Global mass for composition entropy
+# 27: Minimal value for composition density_field
+# 28: Maximal value for composition density_field
+# 29: Global mass for composition density_field
+0 0.000000000000e+00 0.000000000000e+00 768 7392 3264 6528 6  0  0 4294967290 392 409 1380 output-entropy_plasticity/solution/solution-00000 3.89726990e-02 4.67401915e-01 3.21018877e+02 2.00758056e+03 3.44750753e+03 4.47008133e-01 5.75744731e-06 -1.11456768e-06 6.00000000e+02 2.97625563e+03 2.23741621e+17 3.51431122e+03 5.13045059e+03 3.85216922e+17 
+1 1.996568362929e+05 1.996568362929e+05 768 7392 3264 6528 8 57 76 4294967288 526 548 2128                                                "" 4.41766742e-02 5.69743350e-01 3.21018877e+02 2.00685213e+03 3.44750753e+03 4.46815067e-01 6.06250059e-06 -1.09991951e-06 6.00000000e+02 2.98562866e+03 2.23690621e+17 3.51367978e+03 5.13045059e+03 3.85226125e+17 
+2 3.843608678588e+05 1.847040315660e+05 768 7392 3264 6528 6 42 49 4294967290 334 349 1374                                                "" 5.01564167e-02 8.18099894e-01 3.21018877e+02 2.00618450e+03 3.44750753e+03 4.46638120e-01 6.49552197e-06 -1.14025940e-06 6.00000000e+02 2.98551770e+03 2.23643654e+17 3.51305711e+03 5.13045059e+03 3.85234536e+17 
+3 4.000000000000e+05 1.563913214115e+04 768 7392 3264 6528 5 33 29 4294967291 213 225  880                                                "" 5.06903668e-02 8.40861433e-01 3.21018877e+02 2.00613025e+03 3.44750753e+03 4.46623741e-01 6.48758791e-06 -1.14963116e-06 6.00000000e+02 2.98889415e+03 2.23639685e+17 3.51300255e+03 5.13045059e+03 3.85235244e+17 
