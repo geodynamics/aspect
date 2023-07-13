@@ -2886,12 +2886,12 @@ namespace aspect
 
 
 
-    void linear_solver_failed(const std::string &solver_name,
-                              const std::string &function_name,
-                              const std::vector<SolverControl> &solver_controls,
-                              const std::exception &exc,
-                              const MPI_Comm &mpi_communicator,
-                              const std::string &output_filename)
+    void throw_linear_solver_failure_exception(const std::string &solver_name,
+                                               const std::string &function_name,
+                                               const std::vector<SolverControl> &solver_controls,
+                                               const std::exception &exc,
+                                               const MPI_Comm &mpi_communicator,
+                                               const std::string &output_filename)
     {
       if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
         {
