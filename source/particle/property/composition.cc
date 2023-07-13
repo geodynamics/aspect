@@ -33,7 +33,7 @@ namespace aspect
       Composition<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                          std::vector<double> &data) const
       {
-        for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
+        for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
           data.push_back(this->get_initial_composition_manager().initial_composition(position,i));
       }
 
@@ -44,7 +44,7 @@ namespace aspect
                                                  const std::vector<Tensor<1,dim>> &/*gradients*/,
                                                  typename ParticleHandler<dim>::particle_iterator &particle) const
       {
-        for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
+        for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
           {
             const unsigned int solution_component = this->introspection().component_indices.compositional_fields[i];
             particle->get_properties()[data_position+i] = solution[solution_component];
@@ -80,7 +80,7 @@ namespace aspect
 
 
 
-        for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
+        for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
           {
             const std::string field_name = this->introspection().name_for_compositional_index(i);
             property_information.emplace_back(field_name,1);

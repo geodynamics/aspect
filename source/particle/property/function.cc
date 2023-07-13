@@ -37,7 +37,7 @@ namespace aspect
       Function<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                       std::vector<double> &data) const
       {
-        for (unsigned int i = 0; i < n_components; i++)
+        for (unsigned int i = 0; i < n_components; ++i)
           data.push_back(function->value(position, i));
       }
 

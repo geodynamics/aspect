@@ -117,7 +117,7 @@ namespace aspect
 
             topography_values.resize(temp_topographies_size,0);
             point_lists.resize(temp_topographies_size);
-            for (unsigned int i_topo = 0; i_topo < temp_topographies_size; i_topo++)
+            for (unsigned int i_topo = 0; i_topo < temp_topographies_size; ++i_topo)
               {
                 const std::vector<std::string> temp_topography = Utilities::split_string_list(temp_topographies[i_topo],'>');
                 Assert(temp_topography.size() == 2,ExcMessage ("The given line '" + temp_topographies[i_topo]
@@ -133,7 +133,7 @@ namespace aspect
                 const std::vector<std::string> temp_coordinates = Utilities::split_string_list(temp_topography[1],';');
                 const unsigned int temp_coordinate_size = temp_coordinates.size();
                 point_lists[i_topo].resize(temp_coordinate_size);
-                for (unsigned int i_coord = 0; i_coord < temp_coordinate_size; i_coord++)
+                for (unsigned int i_coord = 0; i_coord < temp_coordinate_size; ++i_coord)
                   {
                     const std::vector<double> temp_point = Utilities::string_to_double(Utilities::split_string_list(temp_coordinates[i_coord],','));
                     Assert(temp_point.size() == 2,ExcMessage ("The given coordinate '" + temp_coordinates[i_coord] + "' is not correct. "

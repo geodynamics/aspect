@@ -724,7 +724,7 @@ namespace aspect
                 // Now compute the crystal rate of deformation tensor.
                 for (unsigned int i = 0; i < 3; ++i)
                   {
-                    for (unsigned int j = 0; j < 3; j++)
+                    for (unsigned int j = 0; j < 3; ++j)
                       {
                         G[i][j] = 2.0 * (beta[0] * rotation_matrix[0][i] * rotation_matrix[1][j]
                                          + beta[1] * rotation_matrix[0][i] * rotation_matrix[2][j]

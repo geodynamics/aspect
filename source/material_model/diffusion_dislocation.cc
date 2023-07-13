@@ -142,7 +142,7 @@ namespace aspect
                       diffusion_strain_rate = dislocation_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
                       dislocation_strain_rate = diffusion_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
 
-                      stress_iteration++;
+                      ++stress_iteration;
                       AssertThrow(stress_iteration < stress_max_iteration_number,
                                   ExcMessage("No convergence has been reached in the loop that determines "
                                              "the ratio of diffusion/dislocation viscosity. Aborting! "

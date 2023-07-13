@@ -87,7 +87,7 @@ namespace aspect
     GrainSize<dim>::initialize()
     {
       n_material_data = material_file_names.size();
-      for (unsigned i = 0; i < n_material_data; i++)
+      for (unsigned i = 0; i < n_material_data; ++i)
         {
           if (material_file_format == perplex)
             material_lookup
@@ -462,7 +462,7 @@ namespace aspect
         enthalpy = material_lookup[0]->enthalpy(temperature,pressure);
       else
         {
-          for (unsigned i = 0; i < n_material_data; i++)
+          for (unsigned i = 0; i < n_material_data; ++i)
             enthalpy += compositional_fields[i] * material_lookup[i]->enthalpy(temperature,pressure);
         }
       return enthalpy;
@@ -486,7 +486,7 @@ namespace aspect
         vp = material_lookup[0]->seismic_Vp(temperature,pressure);
       else
         {
-          for (unsigned i = 0; i < n_material_data; i++)
+          for (unsigned i = 0; i < n_material_data; ++i)
             vp += compositional_fields[i] * material_lookup[i]->seismic_Vp(temperature,pressure);
         }
       return vp;
@@ -510,7 +510,7 @@ namespace aspect
         vs = material_lookup[0]->seismic_Vs(temperature,pressure);
       else
         {
-          for (unsigned i = 0; i < n_material_data; i++)
+          for (unsigned i = 0; i < n_material_data; ++i)
             vs += compositional_fields[i] * material_lookup[i]->seismic_Vs(temperature,pressure);
         }
       return vs;
@@ -540,7 +540,7 @@ namespace aspect
             }
           else
             {
-              for (unsigned i = 0; i < n_material_data; i++)
+              for (unsigned i = 0; i < n_material_data; ++i)
                 rho += compositional_fields[i] * material_lookup[i]->density(temperature,pressure);
             }
 
@@ -577,7 +577,7 @@ namespace aspect
         dRhodp = material_lookup[0]->dRhodp(temperature,pressure);
       else
         {
-          for (unsigned i = 0; i < n_material_data; i++)
+          for (unsigned i = 0; i < n_material_data; ++i)
             dRhodp += compositional_fields[i] * material_lookup[i]->dRhodp(temperature,pressure);
         }
       const double rho = density(temperature,pressure,compositional_fields,position);
@@ -603,7 +603,7 @@ namespace aspect
             alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
           else
             {
-              for (unsigned i = 0; i < n_material_data; i++)
+              for (unsigned i = 0; i < n_material_data; ++i)
                 alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
             }
         }
@@ -630,7 +630,7 @@ namespace aspect
             cp = material_lookup[0]->specific_heat(temperature,pressure);
           else
             {
-              for (unsigned i = 0; i < n_material_data; i++)
+              for (unsigned i = 0; i < n_material_data; ++i)
                 cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature,pressure);
             }
         }

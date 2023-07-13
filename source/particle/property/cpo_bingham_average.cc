@@ -68,10 +68,10 @@ namespace aspect
       {
         std::vector<double> volume_fractions_grains(n_grains);
         std::vector<Tensor<2,3>> rotation_matrices_grains(n_grains);
-        for (unsigned int mineral_i = 0; mineral_i < n_minerals; mineral_i++)
+        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             // create volume fractions and rotation matrix vectors in the order that it is stored in the data array
-            for (unsigned int grain_i = 0; grain_i < n_grains; grain_i++)
+            for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
               {
                 volume_fractions_grains[grain_i] = cpo_particle_property->get_volume_fractions_grains(cpo_data_position,data,mineral_i,grain_i);
                 rotation_matrices_grains[grain_i] = cpo_particle_property->get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i);
@@ -102,10 +102,10 @@ namespace aspect
       {
         std::vector<double> volume_fractions_grains(n_grains);
         std::vector<Tensor<2,3>> rotation_matrices_grains(n_grains);
-        for (unsigned int mineral_i = 0; mineral_i < n_minerals; mineral_i++)
+        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             // create volume fractions and rotation matrix vectors in the order that it is stored in the data array
-            for (unsigned int grain_i = 0; grain_i < n_grains; grain_i++)
+            for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
               {
                 volume_fractions_grains[grain_i] = cpo_particle_property->get_volume_fractions_grains(cpo_data_position,data,mineral_i,grain_i);
                 rotation_matrices_grains[grain_i] = cpo_particle_property->get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i);
@@ -135,7 +135,7 @@ namespace aspect
         // extracting the a, b and c orientations from the olivine a matrix
         // see https://courses.eas.ualberta.ca/eas421/lecturepages/orientation.html
         const unsigned int n_matrices = matrices.size();
-        for (unsigned int i_grain = 0; i_grain < n_matrices; i_grain++)
+        for (unsigned int i_grain = 0; i_grain < n_matrices; ++i_grain)
           {
             sum_matrix_a[0][0] += matrices[i_grain][0][0] * matrices[i_grain][0][0]; // SUM(l^2)
             sum_matrix_a[1][1] += matrices[i_grain][0][1] * matrices[i_grain][0][1]; // SUM(m^2)
@@ -205,7 +205,7 @@ namespace aspect
       CpoBinghamAverage<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
-        for (unsigned int mineral_i = 0; mineral_i < n_minerals; mineral_i++)
+        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average a axis",3));
             property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average b axis",3));

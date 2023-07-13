@@ -529,7 +529,7 @@ namespace aspect
             point2[2] = numbers::PI;
         }
 
-      for (unsigned int d = 0; d < dim; d++)
+      for (unsigned int d = 0; d < dim; ++d)
         if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
             spherical_point[d] < point1[d]-std::numeric_limits<double>::epsilon()*std::abs(point2[d]))
           return false;
@@ -723,7 +723,7 @@ namespace aspect
           if (custom_mesh == list)
             {
               // Check that list is in ascending order
-              for (unsigned int i = 1; i < R_values_list.size(); i++)
+              for (unsigned int i = 1; i < R_values_list.size(); ++i)
                 AssertThrow(R_values_list[i] > R_values_list[i-1],
                             ExcMessage("Radial values must be strictly ascending"));
               // Check that first value is not smaller than the inner radius

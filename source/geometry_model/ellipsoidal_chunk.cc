@@ -447,22 +447,22 @@ namespace aspect
           unsigned int missing = 0;
           if (NEcorner == "")
             {
-              missing++;
+              ++missing;
               present[0] = false;
             }
           if (NWcorner == "")
             {
-              missing++;
+              ++missing;
               present[1] = false;
             }
           if (SWcorner == "")
             {
-              missing++;
+              ++missing;
               present[2] = false;
             }
           if (SEcorner == "")
             {
-              missing++;
+              ++missing;
               present[3] = false;
             }
 
@@ -557,7 +557,7 @@ namespace aspect
           // If one or two of the corners is not provided, calculate it.
           if (missing == 1)
             {
-              for (unsigned int i = 0; i <= 3; i++)
+              for (unsigned int i = 0; i <= 3; ++i)
                 {
                   // find the corner which is missing, if there is one
                   if (present[i] == false)

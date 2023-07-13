@@ -349,7 +349,7 @@ namespace aspect
                 std::getline(in, temp);
                 if (in.eof())
                   break;
-                i++;
+                ++i;
               }
 
             in.clear();
@@ -435,7 +435,7 @@ namespace aspect
                 vs_values[i/n_pressure][i%n_pressure]=vs;
                 enthalpy_values[i/n_pressure][i%n_pressure]=h;
 
-                i++;
+                ++i;
               }
 
             delta_temp = (max_temp - min_temp) / (n_temperature - 1);
@@ -502,7 +502,7 @@ namespace aspect
                   specific_heat_values[i/n_pressure][i%n_pressure]=cp;
                   thermal_expansivity_values[i/n_pressure][i%n_pressure]=alpha_eff;
 
-                  i++;
+                  ++i;
                 }
             }
         }
@@ -553,7 +553,7 @@ namespace aspect
 
           std::getline(in, temp); // get next line, either T(K) or P(bar)
 
-          for (unsigned int i=0; i<2; i++)
+          for (unsigned int i=0; i<2; ++i)
             {
               std::string natural_variable;
               in >> natural_variable;
@@ -619,7 +619,7 @@ namespace aspect
               AssertThrow(false, ExcMessage("The first column name in the PerpleX lookup file " + filename + " should be P(bar) or T(K)."))
             }
 
-          for (unsigned int n=2; n<n_columns; n++)
+          for (unsigned int n=2; n<n_columns; ++n)
             {
               in >> column_name;
               if (column_name == "rho,kg/m3")
@@ -702,7 +702,7 @@ namespace aspect
               std::vector<double> row_values(n_columns);
               std::string phase;
 
-              for (unsigned int n=0; n<n_columns; n++)
+              for (unsigned int n=0; n<n_columns; ++n)
                 {
                   if (n == dominant_phase_column_index)
                     in >> phase;
@@ -756,7 +756,7 @@ namespace aspect
                       dominant_phase_indices[i%n_temperature][i/n_temperature] = std::distance(dominant_phase_names.begin(), it);
                     }
 
-                  for (unsigned int n=0; n<phase_volume_fractions.size(); n++)
+                  for (unsigned int n=0; n<phase_volume_fractions.size(); ++n)
                     {
                       phase_volume_fractions[n][i%n_temperature][i/n_temperature]=row_values[phase_column_indices[n]];
                     }
@@ -776,12 +776,12 @@ namespace aspect
                       dominant_phase_indices[i/n_pressure][i%n_pressure] = std::distance(dominant_phase_names.begin(), it);
                     }
 
-                  for (unsigned int n=0; n<phase_volume_fractions.size(); n++)
+                  for (unsigned int n=0; n<phase_volume_fractions.size(); ++n)
                     {
                       phase_volume_fractions[n][i/n_pressure][i%n_pressure]=row_values[phase_column_indices[n]];
                     }
                 }
-              i++;
+              ++i;
             }
           AssertThrow(i == n_temperature*n_pressure, ExcMessage("Material table size not consistent with header."));
 

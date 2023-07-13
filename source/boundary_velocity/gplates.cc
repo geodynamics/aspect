@@ -155,7 +155,7 @@ namespace aspect
             velocity_values[0][idx_theta][idx_phi]= spherical_velocities[0] * cmyr_si;
             velocity_values[1][idx_theta][idx_phi]= spherical_velocities[1] * cmyr_si;
 
-            i++;
+            ++i;
           }
 
         // Pad the longitude data with values for phi == 2*pi (== 0),
@@ -182,7 +182,7 @@ namespace aspect
         grid_extent[1].first = 0;
         grid_extent[1].second = 2 * numbers::PI;
 
-        for (unsigned int i = 0; i < 2; i++)
+        for (unsigned int i = 0; i < 2; ++i)
           {
             velocities[i]
               = std::make_unique<Functions::InterpolatedUniformGridData<2>> (grid_extent,
@@ -266,7 +266,7 @@ namespace aspect
         // Main work, interpolate velocity at this point
         Tensor<1,2> interpolated_velocity;
 
-        for (unsigned int i = 0; i < 2; i++)
+        for (unsigned int i = 0; i < 2; ++i)
           interpolated_velocity[i] = velocities[i]->value(lookup_coordinates);
 
         // Transform interpolated_velocity in cartesian coordinates
@@ -449,7 +449,7 @@ namespace aspect
       GPlatesLookup<dim>::convert_tensor (const Tensor<1,in> &old_tensor) const
       {
         Tensor<1,out> new_tensor;
-        for (unsigned int i = 0; i < out; i++)
+        for (unsigned int i = 0; i < out; ++i)
           if (i < in) new_tensor[i] = old_tensor[i];
           else new_tensor[i] = 0.0;
 
@@ -468,7 +468,7 @@ namespace aspect
 
         const int gplates_1_3_version[3] = {1,6,322};
 
-        for (unsigned int i = 0; i < int_versions.size(); i++)
+        for (unsigned int i = 0; i < int_versions.size(); ++i)
           {
             if (int_versions[i] > gplates_1_3_version[i])
               return true;

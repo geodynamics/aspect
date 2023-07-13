@@ -32,7 +32,7 @@ namespace aspect
       InitialPosition<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                              std::vector<double> &data) const
       {
-        for (unsigned int i = 0; i < dim; i++)
+        for (unsigned int i = 0; i < dim; ++i)
           data.push_back(position[i]);
       }
 

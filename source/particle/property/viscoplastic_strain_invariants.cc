@@ -118,7 +118,7 @@ namespace aspect
         material_inputs.strain_rate[0] = symmetrize (grad_u);
 
         // Put compositional fields into single variable
-        for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
+        for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
           {
             material_inputs.composition[0][i] = solution[this->introspection().component_indices.compositional_fields[i]];
           }

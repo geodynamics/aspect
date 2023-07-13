@@ -152,7 +152,7 @@ namespace aspect
         {
           temperature = model_operators[i](temperature,
                                            initial_temperature_object->initial_temperature(position));
-          i++;
+          ++i;
         }
       return temperature;
     }

@@ -71,7 +71,7 @@ namespace aspect
       // For spherical(-like) domains, modify the representative point:
       // go from degrees to radians...
       std::array<double, dim> spherical_representative_point;
-      for (unsigned int d=0; d<dim; d++)
+      for (unsigned int d=0; d<dim; ++d)
         spherical_representative_point[d] = representative_point[d];
       spherical_representative_point[1] *= constants::degree_to_radians;
       // and go from latitude to colatitude.
@@ -308,7 +308,7 @@ namespace aspect
           const std::vector<double> rep_point =
             dealii::Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Representative point")));
           AssertThrow(rep_point.size() == dim, ExcMessage("Representative point does not have the right dimensions."));
-          for (unsigned int d = 0; d<dim; d++)
+          for (unsigned int d = 0; d<dim; ++d)
             representative_point[d] = rep_point[d];
           n_points = prm.get_integer("Number of integration points");
         }

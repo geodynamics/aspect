@@ -365,7 +365,7 @@ namespace aspect
               std::string word;
               while (linestream >> word)
                 if (word == "POINTS:")
-                  for (unsigned int i = 0; i < dim; i++)
+                  for (unsigned int i = 0; i < dim; ++i)
                     {
                       unsigned int temp_index;
                       linestream >> temp_index;
@@ -381,7 +381,7 @@ namespace aspect
                     }
             }
 
-          for (unsigned int i = 0; i < dim; i++)
+          for (unsigned int i = 0; i < dim; ++i)
             {
               AssertThrow(new_table_points[i] != 0,
                           ExcMessage("Could not successfully read in the file header of the "
@@ -1344,7 +1344,7 @@ namespace aspect
           get_boundary_dimensions<dim>(boundary_indicator);
 
         Point<dim-1> boundary_coordinates;
-        for (unsigned int i = 0; i < dim-1; i++)
+        for (unsigned int i = 0; i < dim-1; ++i)
           boundary_coordinates[i] = data_coordinates[boundary_dimensions[i]];
 
         return boundary_coordinates;
@@ -1564,14 +1564,14 @@ namespace aspect
         {
           // in cartesian coordinates, the vertical component comes last
           vertical_position = data_coordinates[dim-1];
-          for (unsigned int i = 0; i < dim-1; i++)
+          for (unsigned int i = 0; i < dim-1; ++i)
             horizontal_position[i] = data_coordinates[i];
         }
       else
         {
           // in spherical coordinates, the vertical component comes first
           vertical_position = data_coordinates[0];
-          for (unsigned int i = 0; i < dim-1; i++)
+          for (unsigned int i = 0; i < dim-1; ++i)
             horizontal_position[i] = data_coordinates[i+1];
         }
 
@@ -1814,10 +1814,10 @@ namespace aspect
             Point<3> first_point_on_slice;
             Point<3> second_point_on_slice;
 
-            for (unsigned int d=0; d<3; d++)
+            for (unsigned int d=0; d<3; ++d)
               first_point_on_slice[d] = point_one[d];
 
-            for (unsigned int d=0; d<3; d++)
+            for (unsigned int d=0; d<3; ++d)
               second_point_on_slice[d] = point_two[d];
 
             rotation_matrix = Utilities::compute_rotation_matrix_for_slice(first_point_on_slice, second_point_on_slice);

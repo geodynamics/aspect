@@ -341,7 +341,7 @@ namespace aspect
       // The core evolution is quite slow, so the time units used here is billion years.
       t/=1.e9*year_in_seconds;
       double w=0.;
-      for (unsigned i=1; i<data_OES.size(); i++)
+      for (unsigned i=1; i<data_OES.size(); ++i)
         {
           if (t>=data_OES[i-1].t && t<data_OES[i].t )
             {
@@ -373,7 +373,7 @@ namespace aspect
         return Rc;
       if (dT0>=0. && dT1>=0.)
         return 0.;
-      for (int i=0; i<max_steps; i++)
+      for (int i=0; i<max_steps; ++i)
         {
           double rm=(r0+r1)/2.,
                  dTm=get_T(T,rm)-get_solidus(get_X(rm),get_Pressure(rm));
@@ -466,7 +466,7 @@ namespace aspect
               }
             R_1 = (R_0 + R_2) / 2.;
             dT1 = get_dT(R_1);
-            steps++;
+            ++steps;
           }
 
       // Calculate new R,T,X
@@ -797,7 +797,7 @@ namespace aspect
     fun_Sn(double B,double R,double n) const
     {
       double S=R/(2.*sqrt(M_PI));
-      for (unsigned i=1; i<=n; i++)
+      for (unsigned i=1; i<=n; ++i)
         S+=B/sqrt(M_PI)*exp(-pow(i,2)/4.)/i*sinh(i*R/B);
       return S;
     }
@@ -944,7 +944,7 @@ namespace aspect
     {
       double time=this->get_time()+0.5*this->get_timestep();
       double Ht=0;
-      for (unsigned i=0; i<n_radioheating_elements; i++)
+      for (unsigned i=0; i<n_radioheating_elements; ++i)
         Ht+=heating_rate[i]*initial_concentration[i]*1e-6*pow(0.5,time/half_life[i]/year_in_seconds/1e9);
       return Ht;
     }
