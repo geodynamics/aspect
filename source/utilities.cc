@@ -3199,7 +3199,7 @@ namespace aspect
 
 
       SymmetricTensor<2,6>
-      transform_full_stiffness_tensor_to_voigt_stiffness_matrix(const SymmetricTensor<4,3> &input_tensor)
+      to_voigt_stiffness_matrix(const SymmetricTensor<4,3> &input_tensor)
       {
         SymmetricTensor<2,6> output;
 
@@ -3251,7 +3251,7 @@ namespace aspect
 
 
       SymmetricTensor<4,3>
-      transform_voigt_stiffness_matrix_to_full_stiffness_tensor(const SymmetricTensor<2,6> &input_tensor)
+      to_full_stiffness_tensor(const SymmetricTensor<2,6> &input_tensor)
       {
         SymmetricTensor<4,3> output;
 
@@ -3274,7 +3274,7 @@ namespace aspect
 
 
       Tensor<1,21>
-      transform_voigt_stiffness_matrix_to_voigt_stiffness_vector(const SymmetricTensor<2,6> &input)
+      to_voigt_stiffness_vector(const SymmetricTensor<2,6> &input)
       {
         return Tensor<1,21,double> (
         {
@@ -3306,7 +3306,7 @@ namespace aspect
 
 
       SymmetricTensor<2,6>
-      transform_voigt_stiffness_vector_to_voigt_stiffness_matrix(const Tensor<1,21> &input)
+      to_voigt_stiffness_matrix(const Tensor<1,21> &input)
       {
         SymmetricTensor<2,6> result;
 
@@ -3341,7 +3341,7 @@ namespace aspect
 
 
       Tensor<1,21>
-      transform_full_stiffness_tensor_to_voigt_stiffness_vector(const SymmetricTensor<4,3> &input_tensor)
+      to_voigt_stiffness_vector(const SymmetricTensor<4,3> &input_tensor)
       {
         return Tensor<1,21,double> (
         {
