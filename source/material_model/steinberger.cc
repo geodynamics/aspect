@@ -362,7 +362,7 @@ namespace aspect
                              "The file name of the lateral viscosity data. ");
           prm.declare_entry ("Use lateral average temperature for viscosity", "true",
                              Patterns::Bool (),
-                             "Whether to use to use the laterally averaged temperature "
+                             "Whether to use the laterally averaged temperature "
                              "instead of the adiabatic temperature as reference for the "
                              "viscosity calculation. This ensures that the laterally averaged "
                              "viscosities remain more or less constant over the model "
