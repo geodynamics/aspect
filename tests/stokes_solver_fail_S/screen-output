@@ -34,9 +34,9 @@ Additional information:
     --------------------------------------------------------
 (line in output replaced by default.sh script)
 (line in output replaced by default.sh script)
-    void aspect::Utilities::linear_solver_failed(const string&, const
-    string&, const std::vector<dealii::SolverControl>&, const
-    std::exception&, ompi_communicator_t* const&, const string&)
+    void aspect::Utilities::throw_linear_solver_failure_exception(const
+    string&, const string&, const std::vector<dealii::SolverControl>&,
+    const std::exception&, ompi_communicator_t* const&, const string&)
     The violated condition was:
     false
     Additional information:
