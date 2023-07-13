@@ -295,6 +295,69 @@ TEST_CASE("CPO elastic tensor transform functions")
   dealii::Tensor<2,3> rotation_tensor;
 
   {
+
+    // fill the rotation matrix with a rotations in all directions
+    {
+      double radians = 0;
+      double alpha = radians;
+      double beta = radians;
+      double gamma = radians;
+      rotation_tensor[0][0] = std::cos(alpha) * std::cos(beta);
+      rotation_tensor[0][1] = std::sin(alpha) * std::cos(beta);
+      rotation_tensor[0][2] = -std::sin(beta);
+      rotation_tensor[1][0] = std::cos(alpha) * std::sin(beta) * std::sin(gamma) - std::sin(alpha)*cos(gamma);
+      rotation_tensor[1][1] = std::sin(alpha) * std::sin(beta) * std::sin(gamma) + std::cos(alpha)*cos(gamma);
+      rotation_tensor[1][2] = std::cos(beta) * std::sin(gamma);
+      rotation_tensor[2][0] = std::cos(alpha) * std::sin(beta) * std::cos(gamma) + std::sin(alpha)*sin(gamma);
+      rotation_tensor[2][1] = std::sin(alpha) * std::sin(beta) * std::cos(gamma) - std::cos(alpha)*sin(gamma);
+      rotation_tensor[2][2] = std::cos(beta) * std::cos(gamma);
+    }
+
+    {
+      dealii::SymmetricTensor<4,3> result_4th_order_tensor = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(reference_elastic_tensor);
+      dealii::SymmetricTensor<4,3> result_4th_order_tensor_rotate_zero = aspect::Utilities::Tensors::rotate_4th_order_tensor(result_4th_order_tensor,rotation_tensor);
+
+      // first check that one the tensors didn't change with zero rotation
+      for (size_t i = 0; i < 3; i++)
+        {
+          for (size_t j = 0; j < 3; j++)
+            {
+              for (size_t k = 0; k < 3; k++)
+                {
+                  for (size_t l = 0; l < 3; l++)
+                    {
+                      REQUIRE(result_4th_order_tensor[i][j][k][l] == Approx(result_4th_order_tensor_rotate_zero[i][j][k][l]));
+                    }
+                }
+            }
+        }
+    }
+
+    {
+      dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::transform_4th_order_tensor_to_6x6_matrix(
+                                                               aspect::Utilities::Tensors::rotate_4th_order_tensor(
+                                                                 aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(reference_elastic_tensor),rotation_tensor));
+      dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_6x6_matrix(reference_elastic_tensor,rotation_tensor);
+
+      // first check that one the tensors didn't change with zero rotation
+      for (size_t i = 0; i < 6; i++)
+        {
+          for (size_t j = 0; j < 6; j++)
+            {
+              REQUIRE(result_up_1_rotate_down[i][j] == Approx(reference_elastic_tensor[i][j]));
+              REQUIRE(result_1_rotate[i][j] == Approx(reference_elastic_tensor[i][j]));
+            }
+        }
+
+      for (size_t i = 0; i < 6; i++)
+        {
+          for (size_t j = 0; j < 6; j++)
+            {
+              REQUIRE(result_1_rotate[i][j] == Approx(result_up_1_rotate_down[i][j]));
+            }
+        }
+    }
+
     // fill the rotation matrix with a rotations in all directions
     {
       double radians = (dealii::numbers::PI/180.0)*(360/5); //0.35*dealii::numbers::PI; //(dealii::numbers::PI/180.0)*36;
@@ -326,7 +389,7 @@ TEST_CASE("CPO elastic tensor transform functions")
             }
         }
 
-      dealii::Tensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(result_up_1_rotate_down);
+      dealii::SymmetricTensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(result_up_1_rotate_down);
 
       dealii::SymmetricTensor<2,6> result_5_rotate = result_1_rotate;
 
@@ -381,7 +444,7 @@ TEST_CASE("CPO elastic tensor transform functions")
             }
         }
 
-      dealii::Tensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(result_up_1_rotate_down);
+      dealii::SymmetricTensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(result_up_1_rotate_down);
 
       dealii::SymmetricTensor<2,6> result_5_rotate = result_1_rotate;
 
@@ -435,7 +498,7 @@ TEST_CASE("CPO elastic tensor transform functions")
             }
         }
 
-      dealii::Tensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(result_up_1_rotate_down);
+      dealii::SymmetricTensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(result_up_1_rotate_down);
 
       dealii::SymmetricTensor<2,6> result_5_rotate = result_1_rotate;
 
@@ -490,7 +553,7 @@ TEST_CASE("CPO elastic tensor transform functions")
             }
         }
 
-      dealii::Tensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(result_up_1_rotate_down);
+      dealii::SymmetricTensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(result_up_1_rotate_down);
 
       dealii::SymmetricTensor<2,6> result_5_rotate = result_1_rotate;
 

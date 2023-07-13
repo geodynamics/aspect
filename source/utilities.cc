@@ -3099,18 +3099,21 @@ namespace aspect
 
     namespace Tensors
     {
-      Tensor<4,3>
-      rotate_4th_order_tensor(const Tensor<4,3> &input_tensor, const Tensor<2,3> &rotation_tensor)
+      SymmetricTensor<4,3>
+      rotate_4th_order_tensor(const SymmetricTensor<4,3> &input_tensor, const Tensor<2,3> &rotation_tensor)
       {
-        Tensor<4,3> output;
+        SymmetricTensor<4,3> output;
 
+        // Dealii symmetric tensor is C_{ijkl} == C_{jikl} == C_{ijlk}, but not C_{klij}.
+        // So we make sure that those entries are not added twice in this loop by having
+        // the second and 4th loop starting with the first and thrid index respectively.
         for (unsigned short int i1 = 0; i1 < 3; i1++)
           {
-            for (unsigned short int i2 = 0; i2 < 3; i2++)
+            for (unsigned short int i2 = i1; i2 < 3; i2++)
               {
                 for (unsigned short int i3 = 0; i3 < 3; i3++)
                   {
-                    for (unsigned short int i4 = 0; i4 < 3; i4++)
+                    for (unsigned short int i4 = i3; i4 < 3; i4++)
                       {
                         for (unsigned short int j1 = 0; j1 < 3; j1++)
                           {
@@ -3136,7 +3139,7 @@ namespace aspect
 
 
       SymmetricTensor<2,6>
-      rotate_6x6_matrix(const Tensor<2,6> &input_tensor, const Tensor<2,3> &rotation_tensor)
+      rotate_6x6_matrix(const SymmetricTensor<2,6> &input_tensor, const Tensor<2,3> &rotation_tensor)
       {
         // we can represent the rotation of the 4th order tensor as a rotation in the Voigt
         // notation by computing $C'=MCM^{-1}$. Because M is orthogonal we can replace $M^{-1}$
@@ -3196,7 +3199,7 @@ namespace aspect
 
 
       SymmetricTensor<2,6>
-      transform_4th_order_tensor_to_6x6_matrix(const Tensor<4,3> &input_tensor)
+      transform_4th_order_tensor_to_6x6_matrix(const SymmetricTensor<4,3> &input_tensor)
       {
         SymmetricTensor<2,6> output;
 
@@ -3247,10 +3250,10 @@ namespace aspect
 
 
 
-      Tensor<4,3>
+      SymmetricTensor<4,3>
       transform_6x6_matrix_to_4th_order_tensor(const SymmetricTensor<2,6> &input_tensor)
       {
-        Tensor<4,3> output;
+        SymmetricTensor<4,3> output;
 
         for (unsigned short int i = 0; i < 3; i++)
           for (unsigned short int j = 0; j < 3; j++)
@@ -3338,7 +3341,7 @@ namespace aspect
 
 
       Tensor<1,21>
-      transform_4th_order_tensor_to_21D_vector(const Tensor<4,3> &input_tensor)
+      transform_4th_order_tensor_to_21D_vector(const SymmetricTensor<4,3> &input_tensor)
       {
         return Tensor<1,21,double> (
         {
