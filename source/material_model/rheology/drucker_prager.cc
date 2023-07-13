@@ -109,8 +109,10 @@ namespace aspect
         // Substituting one equation into the other and rearranging yields the expression
         // eta_app = ((1 + tau_yield / (2 * eta_d * edot_eff)) / (1 / eta_d + 1 / eta_ve)).
         if (use_plastic_damper)
-          apparent_viscosity = ((1. + apparent_viscosity / damper_viscosity) /
-                                (1. / damper_viscosity + 1. / non_yielding_viscosity));
+          {
+            apparent_viscosity = ((damper_viscosity + apparent_viscosity) /
+                                  (1. + damper_viscosity / non_yielding_viscosity));
+          }
 
         return apparent_viscosity;
       }
