@@ -176,8 +176,8 @@ namespace aspect
     {
       const double depth = this->get_geometry_model().depth(position);
       const double adiabatic_temperature = this->get_adiabatic_conditions().temperature(position);
-      
-    
+
+
 
       double delta_temperature;
       if (use_lateral_average_temperature)
@@ -189,20 +189,20 @@ namespace aspect
         delta_temperature = temperature-adiabatic_temperature;
 
       // For an explanation on this formula see the Steinberger & Calderwood 2006 paper
-      //The lateral variation of viscosity due to lateral temperature (Visc_lT)  
+      //The lateral variation of viscosity due to lateral temperature (Visc_lT)
       //Visc_lT = exp [(-1)*(H/nR)*dT/(T_adiabatic*(T_adiabatic + dT)], Eq. 6 of the paper
       const double vis_lateral_exp = -1.0*lateral_viscosity_lookup->lateral_viscosity(depth)*delta_temperature/(temperature*adiabatic_temperature);
-      
+
       // Limit the lateral viscosity variation to a reasonable interval
       const double vis_lateral = std::max(std::min(std::exp(vis_lateral_exp),max_lateral_eta_variation),1/max_lateral_eta_variation);
-      
+
       //Visc_rT = exp[(H/nR)/T_adiabatic], Eq. 7 of the paper
       const double vis_radial = radial_viscosity_lookup->radial_viscosity(depth);
-      
-      
+
+
       const double vis_compositional = MaterialUtilities::average_value (volume_fractions, viscosity_prefactors, viscosity_averaging);
 
-     // Radial viscosity profile is multiplied with lateral and compositional viscosity variation 
+      // Radial viscosity profile is multiplied with lateral and compositional viscosity variation
       return std::max(std::min(vis_lateral * vis_radial * vis_compositional,max_eta),min_eta);
     }
 
@@ -278,7 +278,7 @@ namespace aspect
 
       // Evaluate the equation of state properties over all evaluation points
       equation_of_state.evaluate(eos_in, eos_outputs);
-      
+
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           // if (in.requests_property(MaterialProperties::viscosity))
@@ -585,9 +585,9 @@ namespace aspect
           const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
           viscosity_prefactors = Utilities::parse_map_to_double_array (prm.get("Viscosity prefactors"),
-                                                             list_of_composition_names,
-                                                             has_background_field,
-                                                             "Viscosity prefactors");
+                                                                       list_of_composition_names,
+                                                                       has_background_field,
+                                                                       "Viscosity prefactors");
           prm.leave_subsection();
         }
         prm.leave_subsection();
