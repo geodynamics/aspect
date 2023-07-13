@@ -1,5 +1,5 @@
 # This test is like particle_integrator_euler.prm, but
-# tests the behaviour of the particles when integrated using the RK2
+# tests the behavior of the particles when integrated using the RK2
 # integrator, and only using one velocity field.
 
 set Dimension                              = 2

@@ -285,7 +285,7 @@
  *
  * <li> New: Added parameter “Adapt by fraction of cells” to switch between
  * refining a certain number of cells based on the fraction of total error
- * (default behaviour) and the fraction of total number of cells
+ * (default behavior) and the fraction of total number of cells
  * <br>
  * (Lev Karatun, 2016/07/20)
  *

@@ -63,7 +63,7 @@
  * for a field, this field will now be solved in the order it is listed
  * in in the input file (as is done for all compositional fields) instead
  * of being updated after all of the other fields are solved (the
- * previous behaviour).
+ * previous behavior).
  * <br>
  * (Juliane Dannberg, 2018/10/31)
  *

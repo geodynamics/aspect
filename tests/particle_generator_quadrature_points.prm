@@ -2,7 +2,7 @@
 # conditions instead of the discontinuous ones in
 # van-keken-discontinuous.prm. See the manual for more information.
 # This test adds particles to the cookbook parameter file, and therefore
-# tests the behaviour of the particles.
+# tests the behavior of the particles.
 
 # MPI: 2
 

@@ -1,5 +1,5 @@
 # This is a compressible test case that tests
-# the behaviour of the pressure compatibility
+# the behavior of the pressure compatibility
 # mechanism in case of prescribed normal velocities
 # whose integral over the boundaries is zero when
 # using the exact values, but non-zero when using the

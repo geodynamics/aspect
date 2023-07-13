@@ -282,7 +282,7 @@ namespace aspect
           bool use_adiabatic_pressure_in_creep;
 
           /**
-           * List of exponents controlling the behaviour of the stress limiter
+           * List of exponents controlling the behavior of the stress limiter
            * yielding mechanism.
            */
           std::vector<double> exponents_stress_limiter;
