@@ -189,8 +189,9 @@ namespace aspect
         delta_temperature = temperature-adiabatic_temperature;
 
       // For an explanation on this formula see the Steinberger & Calderwood 2006 paper
-      //The lateral variation of viscosity due to lateral temperature (Visc_lT)
-      //Visc_lT = exp [(-1)*(H/nR)*dT/(T_adiabatic*(T_adiabatic + dT)], Eq. 6 of the paper
+      // We here compute the lateral variation of viscosity due to temperature (vis_lateral) as
+      // V_lT = exp [-(H/nR)*dT/(T_adiabatic*(T_adiabatic + dT))] as in Eq. 6 of the paper.
+      // We get H/nR from the lateral_viscosity_lookup->lateral_viscosity function.
       const double vis_lateral_exp = -1.0*lateral_viscosity_lookup->lateral_viscosity(depth)*delta_temperature/(temperature*adiabatic_temperature);
 
       // Limit the lateral viscosity variation to a reasonable interval
@@ -281,9 +282,6 @@ namespace aspect
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
-          // if (in.requests_property(MaterialProperties::viscosity))
-          // out.viscosities[i] = viscosity(in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
-
           out.thermal_conductivities[i] = thermal_conductivity(in.temperature[i], in.pressure[i], in.position[i]);
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0;
@@ -317,8 +315,8 @@ namespace aspect
           volume_fractions[i] = MaterialUtilities::compute_volumes_from_masses(mass_fractions,
                                                                                eos_outputs[i].densities,
                                                                                true);
-//  out.viscosities[i] = MaterialUtilities::average_value (volume_fractions[i], viscosities, viscosity_averaging);
-// out.viscosities[i] = viscosities[i];
+
+
           if (in.requests_property(MaterialProperties::viscosity))
             out.viscosities[i] = viscosity(in.temperature[i], in.pressure[i], volume_fractions[i], in.strain_rate[i], in.position[i]);
 
@@ -468,13 +466,13 @@ namespace aspect
           prm.declare_entry ("Maximum thermal conductivity", "1000",
                              Patterns::Double (0.),
                              "The maximum thermal conductivity that is allowed in the "
-                             "model. Larger values will be cut off."),
-                             prm.declare_entry ("Viscosity averaging scheme", "harmonic",
-                                                Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
-                                                "When more than one compositional field is present at a point "
-                                                "with different viscosities, we need to come up with an average "
-                                                "viscosity at that point.  Select a weighted harmonic, arithmetic, "
-                                                "geometric, or maximum composition.");
+                             "model. Larger values will be cut off.");
+          prm.declare_entry ("Viscosity averaging scheme", "harmonic",
+                             Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
+                             "When more than one compositional field is present at a point "
+                             "with different viscosities, we need to come up with an average "
+                             "viscosity at that point. Select a weighted harmonic, arithmetic, "
+                             "geometric, or maximum composition.");
           prm.declare_entry ("Viscosity prefactors", "1",
                              Patterns::Anything(),
                              "List of dimensionless quantities for background mantle and compositional fields,"
@@ -511,10 +509,8 @@ namespace aspect
           thermal_conductivity_value = prm.get_double ("Thermal conductivity");
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                                 prm);
-          // viscosities = Utilities::parse_map_to_double_array (prm.get("Viscosities"),
-          // list_of_composition_names,
-          // has_background_field,
-          // "Viscosities");
+
+
           // Rheological parameters
           if (prm.get ("Thermal conductivity formulation") == "constant")
             conductivity_formulation = constant;
