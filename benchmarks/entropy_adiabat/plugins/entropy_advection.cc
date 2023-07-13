@@ -41,8 +41,9 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
 
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const std::vector<CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
       if (!advection_field.is_temperature()
-          && introspection.name_for_compositional_index(advection_field.compositional_variable) != "entropy")
+          && composition_descriptions[advection_field.compositional_variable].type != CompositionalFieldDescription::entropy)
         return;
 
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
@@ -183,8 +184,9 @@ namespace aspect
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       std::vector<double> residuals(n_q_points,0.0);
 
-      if (advection_field.is_temperature() ||
-          this->introspection().name_for_compositional_index(advection_field.compositional_variable) != "entropy")
+      const std::vector<CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
+      if (!advection_field.is_temperature()
+          && composition_descriptions[advection_field.compositional_variable].type != CompositionalFieldDescription::entropy)
         return residuals;
 
       this->get_heating_model_manager().evaluate(scratch.material_model_inputs,
@@ -271,14 +273,19 @@ namespace aspect
 
     // Replace all existing assemblers for the temperature and entropy fields by the one for the entropy equation.
     const unsigned int temperature_index = 0;
-    assemblers.advection_system[temperature_index].resize(1);
-    assemblers.advection_system[temperature_index][0] = std::make_unique<Assemblers::EntropyAdvectionSystem<dim>>();
+    assemblers.advection_system[temperature_index].clear();
+    assemblers.advection_system[temperature_index].emplace_back (std::make_unique<Assemblers::EntropyAdvectionSystem<dim>>());
     assemblers.advection_system_assembler_properties[temperature_index].needed_update_flags = update_hessians;
 
-    const unsigned int entropy_index = 1 + simulator_access.introspection().compositional_index_for_name("entropy");
-    assemblers.advection_system[entropy_index].resize(1);
-    assemblers.advection_system[entropy_index][0] = std::make_unique<Assemblers::EntropyAdvectionSystem<dim>>();
-    assemblers.advection_system_assembler_properties[entropy_index].needed_update_flags = update_hessians;
+    const std::vector<CompositionalFieldDescription> composition_descriptions = simulator_access.introspection().get_composition_descriptions();
+    for (unsigned int c=0; c<composition_descriptions.size(); ++c)
+      if (composition_descriptions[c].type == CompositionalFieldDescription::entropy)
+        {
+          const unsigned int entropy_index = c + 1;
+          assemblers.advection_system[entropy_index].clear();
+          assemblers.advection_system[entropy_index].emplace_back (std::make_unique<Assemblers::EntropyAdvectionSystem<dim>>());
+          assemblers.advection_system_assembler_properties[entropy_index].needed_update_flags = update_hessians;
+        }
   }
 } // namespace aspect
 
