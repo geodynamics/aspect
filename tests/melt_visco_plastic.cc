@@ -75,7 +75,7 @@ namespace aspect
 
     /**
      * A material model that implements a simple formulation of the
-     * material parameters required for the modelling of melt transport,
+     * material parameters required for the modeling of melt transport,
      * including a source term for the porosity according to the melting
      * model for dry peridotite of Katz, 2003. This also includes a
      * computation of the latent heat of melting (if the latent heat
@@ -1030,7 +1030,7 @@ namespace aspect
                                    "and it is not advised that it be used for any serious models "
                                    "at this point.\n\n"
                                    "This material model implements a simple formulation of the "
-                                   "material parameters required for the modelling of melt transport, "
+                                   "material parameters required for the modeling of melt transport, "
                                    "including a source term for the porosity according to the melting "
                                    "model for dry peridotite of \\cite{KSL2003}. All other material "
                                    "properties are taken from the visco-plastic model.")

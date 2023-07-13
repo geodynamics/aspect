@@ -544,7 +544,7 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(MeltGlobal,
                                    "melt global",
                                    "A material model that implements a simple formulation of the "
-                                   "material parameters required for the modelling of melt transport, "
+                                   "material parameters required for the modeling of melt transport, "
                                    "including a source term for the porosity according to a simplified "
                                    "linear melting model similar to \\cite{schmeling2006}:\n"
                                    "$\\phi_{\\text{equilibrium}} = \\frac{T-T_{\\text{sol}}}{T_{\\text{liq}}-T_{\\text{sol}}}$\n"
