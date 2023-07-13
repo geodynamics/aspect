@@ -3106,8 +3106,8 @@ namespace aspect
 
         // Dealii symmetric tensor is C_{ijkl} == C_{jikl} == C_{ijlk}, but not C_{klij}.
         // So we make sure that those entries are not added twice in this loop by having
-        // the second and 4th loop starting with the first and thrid index respectively.
-        for (unsigned short int i1 = 0; i1 < 3; i1++)
+        // the second and 4th loop starting with the first and third index respectively.
+        for (unsigned short int i1 = 0; i1 < 3; ++i1)
           {
             for (unsigned short int i2 = i1; i2 < 3; i2++)
               {
@@ -3123,7 +3123,7 @@ namespace aspect
                                   {
                                     for (unsigned short int j4 = 0; j4 < 3; j4++)
                                       {
-                                        output[i1][i2][i3][i4] = output[i1][i2][i3][i4] + rotation_tensor[i1][j1]*rotation_tensor[i2][j2]*rotation_tensor[i3][j3]*rotation_tensor[i4][j4]*input_tensor[j1][j2][j3][j4];
+                                        output[i1][i2][i3][i4] += rotation_tensor[i1][j1]*rotation_tensor[i2][j2]*rotation_tensor[i3][j3]*rotation_tensor[i4][j4]*input_tensor[j1][j2][j3][j4];
                                       }
                                   }
                               }
@@ -3143,7 +3143,7 @@ namespace aspect
       {
         // we can represent the rotation of the 4th order tensor as a rotation in the Voigt
         // notation by computing $C'=MCM^{-1}$. Because M is orthogonal we can replace $M^{-1}$
-        // with $M^T$ resutling in $C'=MCM^{T}$ (Carcione, J. M. (2007). Wave Fields in Real Media:
+        // with $M^T$ resulting in $C'=MCM^{T}$ (Carcione, J. M. (2007). Wave Fields in Real Media:
         // Wave Propagation in Anisotropic, Anelastic, Porous and Electromagnetic Media. Netherlands:
         // Elsevier Science. Pages 8-9).
         Tensor<2,6> rotation_matrix;
