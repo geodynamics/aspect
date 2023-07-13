@@ -297,7 +297,7 @@ namespace aspect
     template <int dim>
     void
     TomographyBasedPlateMotions<dim>::compute_equilibrium_grain_size(const typename Interface<dim>::MaterialModelInputs &in,
-                                                              typename Interface<dim>::MaterialModelOutputs &out) const
+                                                                     typename Interface<dim>::MaterialModelOutputs &out) const
     {
       PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
       DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>();
