@@ -54,7 +54,7 @@ namespace aspect
      * The parameters that describe this geometry and that are read from the
      * input file are the inner, outer and middle boundary radius of the shell,
      * the minimum and maximum longitude, minimum and maximum longitude, and the
-     * number of cells initialised in each dimension. In the radial direction,
+     * number of cells initialized in each dimension. In the radial direction,
      * this number should be specified for both the lower and the upper part of
      * the chunk (with their boundary lying at the middle boundary radius).
      *
