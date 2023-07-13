@@ -139,8 +139,7 @@ namespace aspect
 
 
   template <int dim>
-  double Simulator<dim>::assemble_and_solve_temperature (const bool compute_initial_residual,
-                                                         double *initial_residual)
+  double Simulator<dim>::assemble_and_solve_temperature (double *initial_residual)
   {
     double current_residual = 0.0;
 
@@ -167,7 +166,7 @@ namespace aspect
 
           assemble_advection_system (adv_field);
 
-          if (compute_initial_residual)
+          if (initial_residual)
             {
               Assert(initial_residual != nullptr, ExcInternalError());
               *initial_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
@@ -223,8 +222,8 @@ namespace aspect
 
 
   template <int dim>
-  std::vector<double> Simulator<dim>::assemble_and_solve_composition (const bool compute_initial_residual,
-                                                                      std::vector<double> *initial_residual)
+  std::vector<double>
+  Simulator<dim>::assemble_and_solve_composition (std::vector<double> *initial_residual)
   {
     // Advect the particles before they are potentially used to
     // set up the compositional fields.
@@ -243,11 +242,8 @@ namespace aspect
 
     std::vector<double> current_residual(introspection.n_compositional_fields,0.0);
 
-    if (compute_initial_residual)
-      {
-        Assert(initial_residual != nullptr, ExcInternalError());
-        Assert(initial_residual->size() == introspection.n_compositional_fields, ExcInternalError());
-      }
+    if (initial_residual)
+      Assert(initial_residual->size() == introspection.n_compositional_fields, ExcInternalError());
 
     std::vector<AdvectionField> fields_advected_by_particles;
 
@@ -278,7 +274,7 @@ namespace aspect
 
               assemble_advection_system (adv_field);
 
-              if (compute_initial_residual)
+              if (initial_residual)
                 (*initial_residual)[c] = system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm();
 
               current_residual[c] = solve_advection(adv_field);
@@ -362,8 +358,8 @@ namespace aspect
 
 
   template <int dim>
-  double Simulator<dim>::assemble_and_solve_stokes (const bool compute_initial_residual,
-                                                    double *initial_nonlinear_residual)
+  double
+  Simulator<dim>::assemble_and_solve_stokes (double *initial_nonlinear_residual)
   {
     // If the Stokes matrix depends on the solution, or we have active
     // velocity boundary conditions, we need to re-assemble the system matrix
@@ -400,7 +396,7 @@ namespace aspect
     else
       build_stokes_preconditioner();
 
-    if (compute_initial_residual)
+    if (initial_nonlinear_residual)
       {
         Assert(initial_nonlinear_residual != nullptr, ExcInternalError());
         *initial_nonlinear_residual = compute_initial_stokes_residual();
@@ -796,7 +792,7 @@ namespace aspect
     do
       {
         relative_residual =
-          assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
+          assemble_and_solve_stokes(nonlinear_iteration == 0 ? &initial_stokes_residual : nullptr);
 
         pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
               << ": " << relative_residual
@@ -993,10 +989,10 @@ namespace aspect
           particle_world->restore_particles();
 
         const double relative_temperature_residual =
-          assemble_and_solve_temperature(nonlinear_iteration == 0, &initial_temperature_residual);
+          assemble_and_solve_temperature(nonlinear_iteration == 0 ? &initial_temperature_residual : 0);
 
         const std::vector<double>  relative_composition_residual =
-          assemble_and_solve_composition(nonlinear_iteration == 0, &initial_composition_residual);
+          assemble_and_solve_composition(nonlinear_iteration == 0 ? &initial_composition_residual : 0);
 
         // write the residual output in the same order as the solutions
         pcout << "      Relative nonlinear residuals (temperature, compositional fields): " << relative_temperature_residual;
@@ -1113,13 +1109,13 @@ namespace aspect
           particle_world->restore_particles();
 
         const double relative_temperature_residual =
-          assemble_and_solve_temperature(nonlinear_iteration == 0, &initial_temperature_residual);
+          assemble_and_solve_temperature(nonlinear_iteration == 0 ? &initial_temperature_residual : nullptr);
 
         const std::vector<double>  relative_composition_residual =
-          assemble_and_solve_composition(nonlinear_iteration == 0, &initial_composition_residual);
+          assemble_and_solve_composition(nonlinear_iteration == 0 ? &initial_composition_residual : nullptr);
 
         const double relative_nonlinear_stokes_residual =
-          assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
+          assemble_and_solve_stokes(nonlinear_iteration == 0 ? &initial_stokes_residual : nullptr);
 
         // write the residual output in the same order as the solutions
         pcout << "      Relative nonlinear residuals (temperature, compositional fields, Stokes system): " << relative_temperature_residual;
@@ -1190,7 +1186,7 @@ namespace aspect
     do
       {
         relative_residual =
-          assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
+          assemble_and_solve_stokes(nonlinear_iteration == 0 ? &initial_stokes_residual : nullptr);
 
         pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
               << ": " << relative_residual
@@ -1495,9 +1491,9 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template double Simulator<dim>::assemble_and_solve_temperature(const bool, double*); \
-  template std::vector<double> Simulator<dim>::assemble_and_solve_composition(const bool, std::vector<double> *); \
-  template double Simulator<dim>::assemble_and_solve_stokes(const bool, double*); \
+  template double Simulator<dim>::assemble_and_solve_temperature(double*); \
+  template std::vector<double> Simulator<dim>::assemble_and_solve_composition(std::vector<double> *); \
+  template double Simulator<dim>::assemble_and_solve_stokes(double*); \
   template void Simulator<dim>::solve_single_advection_single_stokes(); \
   template void Simulator<dim>::solve_no_advection_iterated_stokes(); \
   template void Simulator<dim>::solve_no_advection_single_stokes(); \

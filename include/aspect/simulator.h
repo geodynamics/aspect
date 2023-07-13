@@ -752,35 +752,35 @@ namespace aspect
        * Assemble and solve the temperature equation.
        * This function returns the residual after solving
        * and can optionally compute and store an initial
-       * residual before solving the equation.
+       * residual before solving the equation in the argument,
+       * if the latter is not a `nullptr`.
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      double assemble_and_solve_temperature (const bool compute_initial_residual = false,
-                                             double *initial_residual = nullptr);
+      double assemble_and_solve_temperature (double *initial_residual = nullptr);
 
       /**
        * Solve the composition equations with whatever method is selected
        * (fields or particles). This function returns the residuals for
        * all fields after solving
        * and can optionally compute and store the initial
-       * residuals before solving the equation. For lack of a definition
+       * residuals before solving the equation in the argument,
+       * if the latter is not a `nullptr`. For lack of a definition
        * the residuals of all compositional fields that are advected
        * using particles are considered zero.
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      std::vector<double> assemble_and_solve_composition (const bool compute_initial_residual = false,
-                                                          std::vector<double> *initial_residual = nullptr);
+      std::vector<double> assemble_and_solve_composition (std::vector<double> *initial_residual = nullptr);
 
       /**
        * Assemble and solve the Stokes equation.
        * This function returns the nonlinear residual after solving
        * and can optionally compute and store an initial
-       * residual before solving the equation in the second argument
-       * if the first argument is set to @p true.
+       * residual before solving the equation in the argument,
+       * if the latter is not a `nullptr`.
        *
        * The returned nonlinear residual is normalized by the initial
        * residual, i.e., it is the nonlinear residual computed by
@@ -792,8 +792,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      double assemble_and_solve_stokes (const bool compute_initial_residual = false,
-                                        double *initial_nonlinear_residual = nullptr);
+      double assemble_and_solve_stokes (double *initial_nonlinear_residual = nullptr);
 
       /**
        * Assemble and solve the defect correction form of the Stokes equation.
