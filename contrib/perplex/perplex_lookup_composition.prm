@@ -4,9 +4,6 @@
 # WARNING: Please understand that the PerpleX Lookup material model is only a
 # proof-of-concept; the number of P-T-X evaluations is extremely large, which
 # means that ASPECT will be interminably slow for any real problems.
-# The development team are currently working on initialisation routines which
-# will store PerpleX data before any calls to the material model evaluate
-# function. Stay tuned!
 
 set Dimension                              = 2
 set End time                               = 0
@@ -18,7 +15,7 @@ set Adiabatic surface temperature          = 1300
 # which correspond to the components in the PerpleX input
 # file (in this case, SiO2, Al2O3, FeO and MgO).
 # As defined in the PerpleX input file, the composition is
-# given in weight amount. The total amount is normalised
+# given in weight amount. The total amount is normalized
 # by the PerpleX routines, so it doesn't need to equal 1 or 100.
 
 subsection Compositional fields

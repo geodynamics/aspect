@@ -3,7 +3,7 @@
 # laws are correct when the logarithm of the grain size
 # is advected (rather than the grain size itself).
 # All parameters, including temperature and pressure,
-# are set to constant values and no dynamic recrystallisation
+# are set to constant values and no dynamic recrystallization
 # is included (the reciprocal required strain is
 # set to zero). Material flows in from the left
 # and flows out at the right boundary with a constant

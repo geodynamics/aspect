@@ -169,7 +169,7 @@ namespace aspect
                                                   const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         /**
-         * A generalised Peierls creep formulation. The Peierls creep expression
+         * A generalized Peierls creep formulation. The Peierls creep expression
          * for the strain rate has multiple stress-dependent terms, and cannot be
          * directly inverted to find an expression for viscosity in terms of
          * strain rate. For this reason, a Newton-Raphson iteration is required,

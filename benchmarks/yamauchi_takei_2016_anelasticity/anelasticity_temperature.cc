@@ -228,7 +228,7 @@ namespace aspect
           unrelaxed_compliance=1./(1e9*(mu0+(dmudP*pressure*1e-9)));
           // attenuation=1e-9;
         }
-      // evaluate Maxwell normalised shear wave period
+      // evaluate Maxwell normalized shear wave period
       double maxwell_relaxation_time=viscosity*unrelaxed_compliance;
       if (use_original_model == true)
         {
@@ -240,7 +240,7 @@ namespace aspect
           // calculate shear wave period incorporating depth dependence of Forsyth 1992
           period=(3*depth)/4200;
         }
-      double normalised_period=period/(2*M_PI*maxwell_relaxation_time);
+      double normalized_period=period/(2*M_PI*maxwell_relaxation_time);
       // determine peak amplitudes
       if (homologous_temperature < 0.91)
         {
@@ -294,13 +294,13 @@ namespace aspect
           density=pressure_dependent_density*(1-(compressibility*integrated_thermal_expansivity));
         }
       // determine J1 term (real part of complex compliance)
-      storage_compliance=unrelaxed_compliance*(1+((background_amplitude*std::pow(normalised_period,background_slope))
+      storage_compliance=unrelaxed_compliance*(1+((background_amplitude*std::pow(normalized_period,background_slope))
                                                   /background_slope)+((std::sqrt(2*M_PI)/2)*peak_amplitude*peak_width*(1-
-                                                                      std::erf((std::log(peak_period/normalised_period))/(std::sqrt(2)*peak_width)))));
+                                                                      std::erf((std::log(peak_period/normalized_period))/(std::sqrt(2)*peak_width)))));
       // determine J2 term (imaginary part of complex compliance)
-      //double loss_compliance=unrelaxed_compliance*(M_PI/2)*(background_amplitude*(std::pow(normalised_period,background_slope))+
-      // (peak_amplitude*std::exp(-1*(std::pow(std::log(peak_period/normalised_period),2)/
-      // (2*std::pow(peak_width,2))))))+(unrelaxed_compliance*normalised_period);
+      //double loss_compliance=unrelaxed_compliance*(M_PI/2)*(background_amplitude*(std::pow(normalized_period,background_slope))+
+      // (peak_amplitude*std::exp(-1*(std::pow(std::log(peak_period/normalized_period),2)/
+      // (2*std::pow(peak_width,2))))))+(unrelaxed_compliance*normalized_period);
       // calculate anharmonic Vs
       // anharmonic_Vs=1/(std::sqrt(density*unrelaxed_compliance)*1e3);
       // calculate Vs
