@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# run this script from the doc directory to update parameters.tex. Note that
-# you need an in-source build or a symbolic link to the ASPECT binary in the
+# run this script from the doc directory to update the parameters for the documentation.
+# Note that you need an in-source build or a symbolic link to the ASPECT binary in the
 # main directory.
 
 ASPECT=${1:-"./aspect"}
@@ -10,7 +10,7 @@ pushd .
 cd ..
 
 if test ! -f $ASPECT ; then
-  echo "Please provide the path of the ASPECT executable as the first argument to this script or create a link in the main source directory. "
+  echo "Please provide the absolute path of the ASPECT executable as the first argument to this script or create a link in the main source directory. "
   exit 1
 fi
 
