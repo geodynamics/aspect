@@ -240,6 +240,7 @@ namespace aspect
                                                "for the velocity and pressure field in terms of an "
                                                "explicit formula. The format of these "
                                                "functions follows the syntax understood by the "
-                                               "muparser library, see Section~\\ref{sec:muparser-format}.")
+                                               "muparser library, see "
+                                               "{ref}`sec:run-aspect:parameters-overview:muparser-format`.")
   }
 }

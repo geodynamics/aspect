@@ -407,7 +407,7 @@ namespace aspect
                              "profile for calculating the thermal diffusivity. "
                              "This function is one-dimensional and depends only on depth. The format of this "
                              "functions follows the syntax understood by the "
-                             "muparser library, see Section~\\ref{sec:muparser-format}.");
+                             "muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.");
           prm.declare_entry ("Top boundary layer age model", "constant",
                              Patterns::Selection ("constant|function|ascii data"),
                              "How to define the age of the top thermal boundary layer. "

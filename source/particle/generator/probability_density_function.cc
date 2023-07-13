@@ -156,7 +156,7 @@ namespace aspect
                                          "form of a user-prescribed function. The "
                                          "format of this function follows the syntax "
                                          "understood by the muparser library, see "
-                                         "Section~\\ref{sec:muparser-format}. The "
+                                         "{ref}`sec:run-aspect:parameters-overview:muparser-format`. The "
                                          "return value of the function is always "
                                          "checked to be a non-negative probability "
                                          "density but it can be zero in "
