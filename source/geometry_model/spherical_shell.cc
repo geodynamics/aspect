@@ -308,11 +308,11 @@ namespace aspect
           case 2:
           {
             static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id> ("bottom", 0),
-                  std::pair<std::string,types::boundary_id> ("top", 1),
-                  std::pair<std::string,types::boundary_id> ("left",  2),
-                  std::pair<std::string,types::boundary_id> ("right", 3)
-                };
+            = { {"bottom", 0},
+              {"top", 1},
+              {"left",  2},
+              {"right", 3}
+            };
 
             if (phi == 360)
               return std::map<std::string,types::boundary_id> (std::begin(mapping),
@@ -326,26 +326,22 @@ namespace aspect
           {
             if (phi == 360)
               {
-                static const std::pair<std::string,types::boundary_id> mapping[]
-                  = { std::pair<std::string,types::boundary_id>("bottom", 0),
-                      std::pair<std::string,types::boundary_id>("top",    1)
-                    };
-
-                return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                                 std::end(mapping));
+                return
+                {
+                  {"bottom", 0},
+                  {"top",    1}
+                };
               }
             else if (phi == 90)
               {
-                static const std::pair<std::string,types::boundary_id> mapping[]
-                  = { std::pair<std::string,types::boundary_id>("bottom", 0),
-                      std::pair<std::string,types::boundary_id>("top",    1),
-                      std::pair<std::string,types::boundary_id>("east",   2),
-                      std::pair<std::string,types::boundary_id>("west",   3),
-                      std::pair<std::string,types::boundary_id>("south",  4)
-                    };
-
-                return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                                 std::end(mapping));
+                return
+                {
+                  {"bottom", 0},
+                  {"top",    1},
+                  {"east",   2},
+                  {"west",   3},
+                  {"south",  4}
+                };
               }
             else
               Assert (false, ExcNotImplemented());
@@ -353,7 +349,7 @@ namespace aspect
         }
 
       Assert (false, ExcNotImplemented());
-      return std::map<std::string,types::boundary_id>();
+      return {};
     }
 
 

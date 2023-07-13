@@ -150,35 +150,32 @@ namespace aspect
         {
           case 2:
           {
-            static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("left",   0),
-                  std::pair<std::string,types::boundary_id>("right",  1),
-                  std::pair<std::string,types::boundary_id>("bottom", 2),
-                  std::pair<std::string,types::boundary_id>("top",    3)
-                };
-
-            return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                             std::end(mapping));
+            return
+            {
+              {"left",   0},
+              {"right",  1},
+              {"bottom", 2},
+              {"top",    3}
+            };
           }
 
           case 3:
           {
-            static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("left",   0),
-                  std::pair<std::string,types::boundary_id>("right",  1),
-                  std::pair<std::string,types::boundary_id>("front",  2),
-                  std::pair<std::string,types::boundary_id>("back",   3),
-                  std::pair<std::string,types::boundary_id>("bottom", 4),
-                  std::pair<std::string,types::boundary_id>("top",    5)
-                };
+            return
+            {
+              {"left",   0},
+              {"right",  1},
+              {"front",  2},
+              {"back",   3},
+              {"bottom", 4},
+              {"top",    5}
 
-            return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                             std::end(mapping));
+            };
           }
         }
 
       Assert (false, ExcNotImplemented());
-      return std::map<std::string,types::boundary_id>();
+      return {};
     }
 
 
