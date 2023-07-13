@@ -274,8 +274,15 @@ namespace aspect
         std::vector<double> conductivity_reference_temperatures;
         std::vector<double> conductivity_exponents;
         std::vector<double> saturation_scaling;
-        std::vector<double> prefactors;
         double maximum_conductivity;
+
+
+      /**
+       * viscosity_prefactors are dimensionless quantities which 
+       * are multiplied by the reference viscosity profile based on
+       * volume fraction
+       */
+        std::vector<double> viscosity_prefactors;
 
         /**
          * Information about lateral temperature averages.
