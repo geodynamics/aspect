@@ -326,7 +326,7 @@ namespace aspect
       AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      for (unsigned int d = 0; d < dim; d++)
+      for (unsigned int d = 0; d < dim; ++d)
         if (point[d] > extents[d]+lower_box_origin[d]+std::numeric_limits<double>::epsilon()*extents[d] ||
             point[d] < lower_box_origin[d]-std::numeric_limits<double>::epsilon()*extents[d])
           return false;
@@ -348,7 +348,7 @@ namespace aspect
     TwoMergedBoxes<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
       std::array<double,dim> position_array;
-      for (unsigned int i = 0; i < dim; i++)
+      for (unsigned int i = 0; i < dim; ++i)
         position_array[i] = position_point(i);
 
       return position_array;
@@ -361,7 +361,7 @@ namespace aspect
     TwoMergedBoxes<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
     {
       Point<dim> position_point;
-      for (unsigned int i = 0; i < dim; i++)
+      for (unsigned int i = 0; i < dim; ++i)
         position_point[i] = position_tensor[i];
 
       return position_point;

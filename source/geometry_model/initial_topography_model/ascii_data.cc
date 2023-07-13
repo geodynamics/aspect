@@ -68,7 +68,7 @@ namespace aspect
         {
           // No need to set the vertical coordinate correctly,
           // because it will be thrown away in get_data_component anyway
-          for (unsigned int d=0; d<dim-1; d++)
+          for (unsigned int d=0; d<dim-1; ++d)
             global_point[d] = surface_point[d];
         }
       else if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()) ||
@@ -79,7 +79,7 @@ namespace aspect
           // because it will be thrown away in get_data_component anyway
           std::array<double, dim> point;
           point[0] = 6371000.0;
-          for (unsigned int d=0; d<dim-1; d++)
+          for (unsigned int d=0; d<dim-1; ++d)
             point[d+1] = surface_point[d];
 
           global_point = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(point);

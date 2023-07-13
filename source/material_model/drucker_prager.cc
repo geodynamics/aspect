@@ -141,8 +141,8 @@ namespace aspect
 
                       Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_pressure[i]),
                              ExcMessage ("Error: Averaged viscosity_derivative_wrt_pressure is not finite."));
-                      for (int x = 0; x < dim; x++)
-                        for (int y = 0; y < dim; y++)
+                      for (int x = 0; x < dim; ++x)
+                        for (int y = 0; y < dim; ++y)
                           Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
                                  ExcMessage ("Error: Averaged viscosity_derivative_wrt_strain_rate is not finite."));
 

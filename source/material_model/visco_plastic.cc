@@ -107,7 +107,7 @@ namespace aspect
                                                                    gravity_norm*reference_density,
                                                                    numbers::invalid_unsigned_int);
 
-          for (unsigned int j=0; j < phase_function.n_phase_transitions(); j++)
+          for (unsigned int j=0; j < phase_function.n_phase_transitions(); ++j)
             {
               phase_inputs.phase_index = j;
               phase_function_values[j] = phase_function.compute_value(phase_inputs);
@@ -167,7 +167,7 @@ namespace aspect
                                                                    numbers::invalid_unsigned_int);
 
           // Compute value of phase functions
-          for (unsigned int j=0; j < phase_function.n_phase_transitions(); j++)
+          for (unsigned int j=0; j < phase_function.n_phase_transitions(); ++j)
             {
               phase_inputs.phase_index = j;
               phase_function_values[j] = phase_function.compute_value(phase_inputs);

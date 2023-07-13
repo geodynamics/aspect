@@ -264,7 +264,7 @@ namespace aspect
               if (use_natural_coordinates)
                 evaluation_points_cartesian[p] = this->get_geometry_model().natural_to_cartesian_coordinates(evaluation_points[p]);
               else
-                for (unsigned int i = 0; i < dim; i++)
+                for (unsigned int i = 0; i < dim; ++i)
                   evaluation_points_cartesian[p][i] = evaluation_points[p][i];
             }
         }

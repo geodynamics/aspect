@@ -163,7 +163,7 @@ namespace aspect
         {
           composition = model_operators[i](composition,
                                            initial_composition_object->initial_composition(position,n_comp));
-          i++;
+          ++i;
         }
 
       return composition;

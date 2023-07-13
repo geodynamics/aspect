@@ -70,7 +70,7 @@ namespace aspect
                        const Point<dim> &position) const
     {
       Tensor<1,dim> velocity;
-      for (unsigned int i = 0; i < dim; i++)
+      for (unsigned int i = 0; i < dim; ++i)
         velocity[i] = Utilities::AsciiDataBoundary<dim>::get_data_component(*(boundary_ids.begin()),
                                                                             position,
                                                                             i);

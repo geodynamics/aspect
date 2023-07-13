@@ -779,7 +779,7 @@ namespace aspect
       // AsciiDataBoundary for topography which uses this function....
       const Point<dim> transformed_point = manifold.pull_back_sphere(position_point);
       std::array<double,dim> position_array;
-      for (unsigned int i = 0; i < dim; i++)
+      for (unsigned int i = 0; i < dim; ++i)
         position_array[i] = transformed_point(i);
 
       return position_array;
@@ -807,7 +807,7 @@ namespace aspect
       // Ignore the topography to avoid a loop when calling the
       // AsciiDataBoundary for topography which uses this function....
       Point<dim> position_point;
-      for (unsigned int i = 0; i < dim; i++)
+      for (unsigned int i = 0; i < dim; ++i)
         position_point[i] = position_tensor[i];
       const Point<dim> transformed_point = manifold.push_forward_sphere(position_point);
 

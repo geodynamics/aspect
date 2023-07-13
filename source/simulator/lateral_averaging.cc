@@ -148,7 +148,7 @@ namespace aspect
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output) override
         {
-          for (unsigned i = 0; i < out.viscosities.size(); i++)
+          for (unsigned i = 0; i < out.viscosities.size(); ++i)
             output[i] = std::log10 (out.viscosities[i]);
         }
     };

@@ -977,7 +977,7 @@ namespace aspect
       int   j=pointNo-1;
 
       // loop through all edges of the polygon
-      for (int i=0; i<pointNo; i++)
+      for (int i=0; i<pointNo; ++i)
         {
           // edge from V[i] to  V[i+1]
           if (point_list[j][1] <= point[1])
@@ -1434,7 +1434,7 @@ namespace aspect
               // The POINTS values are set as attributes inside a table.
               // Loop through the Attribute table to locate the points values within
               std::vector<std::string> points;
-              for (libdap::AttrTable::Attr_iter i = das.var_begin(); i != das.var_end(); i++)
+              for (libdap::AttrTable::Attr_iter i = das.var_begin(); i != das.var_end(); ++i)
                 {
                   libdap::AttrTable *table = das.get_table(i);
                   if (table->get_attr("POINTS") != "")
@@ -1448,7 +1448,7 @@ namespace aspect
               // Append the gathered POINTS in the proper format:
               // "# POINTS: <val1> <val2> <val3>"
               urlString << "# POINTS:";
-              for (unsigned int i = 0; i < points.size(); i++)
+              for (unsigned int i = 0; i < points.size(); ++i)
                 {
                   urlString << ' ' << points[i];
                 }
@@ -1458,9 +1458,9 @@ namespace aspect
               // per row with a character return added at the end of each row.
               // TODO: Add a check to make sure that each column is the same size before writing
               //     to the stringstream
-              for (unsigned int i = 0; i < tmp.size(); i++)
+              for (unsigned int i = 0; i < tmp.size(); ++i)
                 {
-                  for (unsigned int j = 0; j < columns.size(); j++)
+                  for (unsigned int j = 0; j < columns.size(); ++j)
                     {
                       urlString << columns[j][i];
                       urlString << ' ';
@@ -1620,7 +1620,7 @@ namespace aspect
 
       while ((pos = pathname.find_first_of('/',pre)) != std::string::npos)
         {
-          const std::string subdir = pathname.substr(0,pos++);
+          const std::string subdir = pathname.substr(0,++pos);
           pre = pos;
 
           // if leading '/', first string is 0 length
@@ -1902,13 +1902,13 @@ namespace aspect
 
         // preconditioning
         // normalize column i so that a_ii=1
-        for (int i = 0; i < this->dim(); i++)
+        for (int i = 0; i < this->dim(); ++i)
           {
             assert(this->operator()(i,i) != 0.0);
             this->saved_diag(i) = 1.0/this->operator()(i,i);
             j_min = std::max(0,i-this->num_lower());
             j_max = std::min(this->dim()-1,i+this->num_upper());
-            for (int j = j_min; j <= j_max; j++)
+            for (int j = j_min; j <= j_max; ++j)
               {
                 this->operator()(i,j) *= this->saved_diag(i);
               }
@@ -1916,16 +1916,16 @@ namespace aspect
           }
 
         // Gauss LR-Decomposition
-        for (int k = 0; k < this->dim(); k++)
+        for (int k = 0; k < this->dim(); ++k)
           {
             i_max = std::min(this->dim()-1,k+this->num_lower());  // num_lower not a mistake!
-            for (int i = k+1; i <= i_max; i++)
+            for (int i = k+1; i <= i_max; ++i)
               {
                 assert(this->operator()(k,k) != 0.0);
                 x = -this->operator()(i,k)/this->operator()(k,k);
                 this->operator()(i,k) = -x;                         // assembly part of L
                 j_max = std::min(this->dim()-1, k + this->num_upper());
-                for (int j = k+1; j <= j_max; j++)
+                for (int j = k+1; j <= j_max; ++j)
                   {
                     // assembly part of R
                     this->operator()(i,j) = this->operator()(i,j)+x*this->operator()(k,j);
@@ -1942,11 +1942,11 @@ namespace aspect
         std::vector<double> x(this->dim());
         int j_start;
         double sum;
-        for (int i = 0; i < this->dim(); i++)
+        for (int i = 0; i < this->dim(); ++i)
           {
             sum = 0;
             j_start = std::max(0,i-this->num_lower());
-            for (int j = j_start; j < i; j++) sum += this->operator()(i,j)*x[j];
+            for (int j = j_start; j < i; ++j) sum += this->operator()(i,j)*x[j];
             x[i] = (b[i]*this->saved_diag(i)) - sum;
           }
         return x;
@@ -1964,7 +1964,7 @@ namespace aspect
           {
             sum = 0;
             j_stop = std::min(this->dim()-1, i + this->num_upper());
-            for (int j = i+1; j <= j_stop; j++) sum += this->operator()(i,j)*x[j];
+            for (int j = i+1; j <= j_stop; ++j) sum += this->operator()(i,j)*x[j];
             x[i] = (b[i] - sum) / this->operator()(i,i);
           }
         return x;
@@ -1999,7 +1999,7 @@ namespace aspect
         m_x = x;
         m_y = y;
         const unsigned int n = x.size();
-        for (unsigned int i = 0; i < n-1; i++)
+        for (unsigned int i = 0; i < n-1; ++i)
           {
             assert(m_x[i] < m_x[i+1]);
           }
@@ -2015,7 +2015,7 @@ namespace aspect
                  * interpolation spline.
                  */
                 std::vector<double> dys(n-1), dxs(n-1), ms(n-1);
-                for (unsigned int i=0; i < n-1; i++)
+                for (unsigned int i=0; i < n-1; ++i)
                   {
                     dxs[i] = x[i+1]-x[i];
                     dys[i] = y[i+1]-y[i];
@@ -2026,7 +2026,7 @@ namespace aspect
                 m_c.resize(n);
                 m_c[0] = 0;
 
-                for (unsigned int i = 0; i < n-2; i++)
+                for (unsigned int i = 0; i < n-2; ++i)
                   {
                     const double m0 = ms[i];
                     const double m1 = ms[i+1];
@@ -2048,7 +2048,7 @@ namespace aspect
                 // Get b and c coefficients
                 m_a.resize(n);
                 m_b.resize(n);
-                for (unsigned int i = 0; i < m_c.size()-1; i++)
+                for (unsigned int i = 0; i < m_c.size()-1; ++i)
                   {
                     const double c1 = m_c[i];
                     const double m0 = ms[i];
@@ -2065,7 +2065,7 @@ namespace aspect
                 // for the parameters b[]
                 band_matrix A(n,1,1);
                 std::vector<double>  rhs(n);
-                for (unsigned int i = 1; i<n-1; i++)
+                for (unsigned int i = 1; i<n-1; ++i)
                   {
                     A(i,i-1) = 1.0/3.0*(x[i]-x[i-1]);
                     A(i,i) = 2.0/3.0*(x[i+1]-x[i-1]);
@@ -2086,7 +2086,7 @@ namespace aspect
                 // calculate parameters a[] and c[] based on b[]
                 m_a.resize(n);
                 m_c.resize(n);
-                for (unsigned int i = 0; i<n-1; i++)
+                for (unsigned int i = 0; i<n-1; ++i)
                   {
                     m_a[i] = 1.0/3.0*(m_b[i+1]-m_b[i])/(x[i+1]-x[i]);
                     m_c[i] = (y[i+1]-y[i])/(x[i+1]-x[i])
@@ -2099,7 +2099,7 @@ namespace aspect
             m_a.resize(n);
             m_b.resize(n);
             m_c.resize(n);
-            for (unsigned int i = 0; i<n-1; i++)
+            for (unsigned int i = 0; i<n-1; ++i)
               {
                 m_a[i] = 0.0;
                 m_b[i] = 0.0;
@@ -2512,7 +2512,7 @@ namespace aspect
     Point<dim> convert_array_to_point(const std::array<double,dim> &array)
     {
       Point<dim> point;
-      for (unsigned int i = 0; i < dim; i++)
+      for (unsigned int i = 0; i < dim; ++i)
         point[i] = array[i];
 
       return point;
@@ -2524,7 +2524,7 @@ namespace aspect
     std::array<double,dim> convert_point_to_array(const Point<dim> &point)
     {
       std::array<double,dim> array;
-      for (unsigned int i = 0; i < dim; i++)
+      for (unsigned int i = 0; i < dim; ++i)
         array[i] = point[i];
 
       return array;
@@ -2929,7 +2929,7 @@ namespace aspect
 
                   unsigned int j=0;
                   for (const auto &residual: solver_control.get_history_data())
-                    f << j++ << ' ' << residual << std::endl;
+                    f << ++j << ' ' << residual << std::endl;
                 }
 
               f.close();

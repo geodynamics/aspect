@@ -68,7 +68,7 @@ namespace aspect
       const double max_depth = this->get_geometry_model().maximal_depth();
       AssertThrow(num_slices > 1, ExcInternalError());
 
-      for (unsigned int n = 0 ; n < num_slices; n++)
+      for (unsigned int n = 0 ; n < num_slices; ++n)
         {
           const double depth = n * max_depth / (num_slices-1);
           const Point<dim> p = this->get_geometry_model().representative_point(depth);
@@ -84,7 +84,7 @@ namespace aspect
       const double max_depth = this->get_geometry_model().maximal_depth();
       AssertThrow(num_slices > 1, ExcInternalError());
 
-      for (unsigned int n = 0 ; n < num_slices; n++)
+      for (unsigned int n = 0 ; n < num_slices; ++n)
         {
           const double depth = n * max_depth / (num_slices-1);
           const Point<dim> p = this->get_geometry_model().representative_point(depth);
@@ -99,7 +99,7 @@ namespace aspect
       const double max_depth = this->get_geometry_model().maximal_depth();
       AssertThrow(num_slices > 1, ExcInternalError());
 
-      for (unsigned int n = 0 ; n < num_slices; n++)
+      for (unsigned int n = 0 ; n < num_slices; ++n)
         {
           const double depth = n * max_depth / (num_slices-1);
           const Point<dim> p = this->get_geometry_model().representative_point(depth);
@@ -114,7 +114,7 @@ namespace aspect
       const double max_depth = this->get_geometry_model().maximal_depth();
       AssertThrow(num_slices > 1, ExcInternalError());
 
-      for (unsigned int n = 0 ; n < num_slices; n++)
+      for (unsigned int n = 0 ; n < num_slices; ++n)
         {
           const double depth = n * max_depth / (num_slices-1);
           const Point<dim> p = this->get_geometry_model().representative_point(depth);

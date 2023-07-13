@@ -107,7 +107,7 @@ namespace aspect
           values = 0;
           Vector<double> temp(n_object_components);
           function_object (p, temp);
-          for (unsigned int i = 0; i < n_object_components; i++)
+          for (unsigned int i = 0; i < n_object_components; ++i)
             {
               values(first_component + i) = temp(i);
             }
