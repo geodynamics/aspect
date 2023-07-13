@@ -1,0 +1,32 @@
+# Test data for ascii data reference state
+# The input reference viscosity profile is changed from steinberger_source.txt to 
+# include asthenospheric depths until 300 km instead of ~ 214 km in the original profile.
+# We vary asthenospheric viscosity in the material model, i.e., the viscosity in 
+# second row which is 1e19 Pas here.
+# Only next line is parsed in format: [nx] because of keyword "POINTS:"
+# POINTS: 23
+# Columns: depth (m), viscosity (Pa.s)
+depth viscosity
+0.00000e+00 2.64000e+22
+1.00025e+05 1.00000e+19
+3.00000e+05 2.90000e+20
+3.40211e+05 4.32000e+20
+4.10292e+05 4.31000e+20
+5.19874e+05 6.51000e+20
+6.60036e+05 6.24000e+21
+8.00198e+05 1.03000e+22
+9.39722e+05 1.59000e+22
+1.07988e+06 2.35000e+22
+1.22005e+06 3.32000e+22
+1.36021e+06 4.51000e+22
+1.49973e+06 5.86000e+22
+1.63990e+06 7.31000e+22
+1.78006e+06 8.75000e+22
+1.92022e+06 1.01000e+23
+2.05974e+06 1.11000e+23
+2.19991e+06 1.12000e+23
+2.34007e+06 8.85000e+22
+2.48023e+06 3.32000e+22
+2.61976e+06 3.54000e+21
+2.75992e+06 1.86000e+20
+2.90008e+06 1.86000e+20

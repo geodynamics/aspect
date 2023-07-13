@@ -108,8 +108,9 @@ cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.md
 cookbooks/grain_size_ridge/doc/grain_size_ridge.md
 cookbooks/kinematically_driven_subduction_2d/doc/kinematically_driven_subduction_2d.md
 cookbooks/inclusions/doc/inclusions.md
+<<<<<<< HEAD
 cookbooks/subduction_initiation/doc/subduction_initiation.md
 cookbooks/vankeken_subduction/doc/vankeken_subduction.md
-cookbooks/equilibrium_grain_size/doc/tomography_based_model.md
+cookbooks/tomography_based_plate_motions/doc/tomography_based_plate_motions.md
 cookbooks/future/README.md
 :::

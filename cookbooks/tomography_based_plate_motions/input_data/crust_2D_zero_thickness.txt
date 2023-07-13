@@ -1,0 +1,10 @@
+# 2D version of the crustal structure dataset with zero thickness.
+# The values are set to a negative depth to make sure that no point falls
+# below this depth, and because the adiabatic boundary initial temperature,
+# which is required for the equilibrium grain size material model, does not
+# work with a depth of zero.
+# Only next line is parsed in format: [nx] [ny] [nz] because of keyword "POINTS:"
+# POINTS: 2 1
+# Columns: x (m) crustal_depth (m)
+0 -1
+100000 -1
