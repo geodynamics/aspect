@@ -75,6 +75,7 @@ end
 subsection Compositional fields
   set Number of fields = 3
   set Names of fields = entropy, density_field, half_space
+  set Types of fields = entropy, density, generic
   set Compositional field methods = field, prescribed field, static
 end
 
