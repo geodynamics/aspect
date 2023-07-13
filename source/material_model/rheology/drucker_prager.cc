@@ -93,30 +93,26 @@ namespace aspect
                                              const double pressure,
                                              const double effective_strain_rate,
                                              const double max_yield_stress,
-                                             const double pre_yield_viscosity) const
+                                             const double non_yielding_viscosity) const
       {
         const double yield_stress = compute_yield_stress(cohesion, angle_internal_friction, pressure, max_yield_stress);
 
-        const double strain_rate_effective_inv = 1./(2.*effective_strain_rate);
+        // If there is no damper, the yielding plastic element accommodates all the strain
+        double apparent_viscosity = yield_stress / (2. * effective_strain_rate);
 
-        double plastic_viscosity = yield_stress * strain_rate_effective_inv;
-
+        // If the plastic damper is used, the effective strain rate is partitioned between the
+        // viscoelastic and damped plastic (Bingham) elements. Assuming that the viscoelastic
+        // elements have viscosities that are not strain rate dependent, we have:
+        // edot_eff = tau_T / (2 * eta_ve) + (tau_T - tau_yield) / (2 * eta_d)
+        // The apparent viscosity is defined such that:
+        // tau_T = 2 * eta_app * edot_eff.
+        // Substituting one equation into the other and rearranging yields the expression
+        // eta_app = ((1 + tau_yield / (2 * eta_d * edot_eff)) / (1 / eta_d + 1 / eta_ve)).
         if (use_plastic_damper)
-          {
-            const double total_stress = ( yield_stress + ( 2. * damper_viscosity * effective_strain_rate ) ) /
-                                        ( 1 + ( damper_viscosity / pre_yield_viscosity ) );
+          apparent_viscosity = ((1. + apparent_viscosity / damper_viscosity) /
+                                (1. / damper_viscosity + 1. / non_yielding_viscosity));
 
-            const double pre_yield_strain_rate = total_stress / ( 2. * pre_yield_viscosity);
-
-            const double plastic_strain_rate = effective_strain_rate - pre_yield_strain_rate;
-
-            plastic_viscosity = yield_stress / (2.*plastic_strain_rate) + damper_viscosity;
-
-            // Effective viscosity
-            plastic_viscosity = 1. / (1./plastic_viscosity + 1./pre_yield_viscosity);
-          }
-
-        return plastic_viscosity;
+        return apparent_viscosity;
       }
 
 
