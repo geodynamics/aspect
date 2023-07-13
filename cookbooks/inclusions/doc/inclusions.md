@@ -25,8 +25,8 @@ Viscosity fields for the elliptical and rectangular inclusions.
 
 Model configuration and boundary conditions. An elliptical inclusion of
 different viscosity than its surrounding matrix is located in the center of a
-square box of size $L_x$ by $L_y$. The ellipse has a semi-major axis a and semi-minor
-axis b and is rotated by angle $\phi$ from the horizontal axis. Both simple (SS) and
+square box of size $L_x$ by $L_y$. The ellipse has a semi-major axis $a$ and semi-minor
+axis $b$ and is rotated by angle $\phi$ from the horizontal axis. Both simple (SS) and
 pure (PS) shear boundary conditions can be applied.
 Taken from {cite:t}`halter:macherel:schmalholz:2022`.
 ```
