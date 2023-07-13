@@ -433,8 +433,8 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::assemble_and_solve_defect_correction_Stokes(DefectCorrectionResiduals &dcr,
-                                                                   const bool use_picard)
+  void Simulator<dim>::do_one_defect_correction_Stokes_step(DefectCorrectionResiduals &dcr,
+                                                            const bool use_picard)
   {
     /**
      * copied from solver.cc
@@ -858,7 +858,7 @@ namespace aspect
     nonlinear_iteration = 0;
     do
       {
-        assemble_and_solve_defect_correction_Stokes(dcr, /* use_picard= */true);
+        do_one_defect_correction_Stokes_step(dcr, /* use_picard= */true);
 
         pcout << std::endl;
 
@@ -928,7 +928,7 @@ namespace aspect
     nonlinear_iteration = 0;
     do
       {
-        assemble_and_solve_defect_correction_Stokes(dcr, /* use_picard = */ true);
+        do_one_defect_correction_Stokes_step(dcr, /* use_picard = */ true);
 
         pcout << std::endl;
 
@@ -1014,7 +1014,7 @@ namespace aspect
           pcout << ", " << relative_composition_residual[c];
         pcout << std::endl;
 
-        assemble_and_solve_defect_correction_Stokes(dcr, /* use_picard = */ true);
+        do_one_defect_correction_Stokes_step(dcr, /* use_picard = */ true);
 
         double max = 0.0;
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
@@ -1296,7 +1296,7 @@ namespace aspect
           = (std::max(0.0,
                       (1.0-(dcr.newton_residual_for_derivative_scaling_factor/dcr.switch_initial_residual))));
 
-        assemble_and_solve_defect_correction_Stokes(dcr, use_picard);
+        do_one_defect_correction_Stokes_step(dcr, use_picard);
         relative_residual = dcr.residual/dcr.initial_residual;
 
         pcout << std::endl;
@@ -1400,7 +1400,7 @@ namespace aspect
           = (std::max(0.0,
                       (1.0-(dcr.newton_residual_for_derivative_scaling_factor/dcr.switch_initial_residual))));
 
-        assemble_and_solve_defect_correction_Stokes(dcr, use_picard);
+        do_one_defect_correction_Stokes_step(dcr, use_picard);
 
         pcout << std::endl;
 

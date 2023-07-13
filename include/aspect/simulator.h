@@ -796,7 +796,8 @@ namespace aspect
                                         double *initial_nonlinear_residual = nullptr);
 
       /**
-       * Assemble and solve the defect correction form of the Stokes equation.
+       * Do one step of the defect correction form of the Stokes equation;
+       * i.e., assemble and solve the defect correction equations.
        * This function takes a structure of DefectCorrectionResiduals which
        * contains information about different residuals. The information in
        * this structure is updated by this function. The parameter use_picard
@@ -806,8 +807,8 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void assemble_and_solve_defect_correction_Stokes(DefectCorrectionResiduals &dcr,
-                                                       const bool use_picard);
+      void do_one_defect_correction_Stokes_step(DefectCorrectionResiduals &dcr,
+                                                const bool use_picard);
 
       /**
        * Initiate the assembly of one advection matrix and right hand side and
