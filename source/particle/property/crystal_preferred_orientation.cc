@@ -805,43 +805,37 @@ namespace aspect
                T -> temperature
               */
 
-              long double recrystalized_grain_size;
+              std::array<double,2> recrystalized_grain_size;
+              std::array<double,2> half_recrystalized_grain_size;
+              std::array<double,2> recrystalized_grain_volume;
+              std::array<double,2> a_o = {{0.015 ,std::pow(10,3.8) }};
+              std::array<double,2> n_o = {{-1.33,-1.28}};
               const double t = this -> get_time();
 
               // The terms related to the paleowattmeter are declared here
               // Note : These values prescribe to the piezometer for olivine alone
 
-              const double C      = 3;
-              const double gamma  = 1.0;
-              const double k_g    = 1.92 * std::pow(10,-10);
-              const double lambda = 0.1;
-              const double p_g    = 3;
-              const double E_g    = 400 * std::pow(10,3);
-              const double V_g    = 0;
-              const double R      = 8.314;
-
               if (t!=0)
                 {
-                  const long double pre_exponent_term_num = C * gamma * k_g;
-                  const long double pre_exponent_term_den = lambda * differential_stress * dislocation_creep_strain_rate * p_g;
-                  const long double pre_exponent_term = pre_exponent_term_num/pre_exponent_term_den;
-                  const long double exponent_term = (E_g + pressure * V_g) / (R * temperature);
-                  recrystalized_grain_size =  std::pow(pre_exponent_term*std::exp(-1 * exponent_term),1/(1+p_g));
-                }
+
+                recrystalized_grain_size[mineral_i] = a_o[mineral_i] * std::pow( differential_stress/1e6 , n_o[mineral_i]);
+                } 
               else
                 {
-                  recrystalized_grain_size = 0.5;
+                  recrystalized_grain_size[mineral_i] = 0.5;
                 }
-
-              const long double half_recrystalized_grain_size = 0.5 * recrystalized_grain_size;
-              long double recrystalized_grain_volume = (4./3.)*numbers::PI*half_recrystalized_grain_size*half_recrystalized_grain_size*half_recrystalized_grain_size;
+             
+              half_recrystalized_grain_size[mineral_i] = 0.5 * recrystalized_grain_size[mineral_i];
+              recrystalized_grain_volume[mineral_i] = (4./3.)*numbers::PI*half_recrystalized_grain_size[mineral_i]*half_recrystalized_grain_size[mineral_i]*half_recrystalized_grain_size[mineral_i];
+              
+              std::cout<<"Recrystalized grain volume for mineral "<<mineral_i<<" = "<<recrystalized_grain_volume[mineral_i]<<std::endl;
               return compute_derivatives_drexpp(cpo_index,
                                                 data,
                                                 mineral_i,
                                                 strain_rate_3d,
                                                 velocity_gradient_tensor,
                                                 ref_resolved_shear_stress,
-                                                recrystalized_grain_volume,
+                                                recrystalized_grain_volume[mineral_i],
                                                 aggregate_recrystalization_increment,
                                                 volume_fractions,
                                                 diffusion_pre_viscosities,
@@ -1107,7 +1101,11 @@ namespace aspect
               }
 
             size_t n_recrystalized_grains = std::floor((recrystalization_fractions[grain_i]*grain_volume)/recrystalized_grain_volume);
-
+            
+            if(n_recrystalized_grains !=0)
+            {
+             std::cout<<"No. of recrystalized grains from grain "<<grain_i<<" = "<<n_recrystalized_grains<<std::endl;
+            }
             if (n_recrystalized_grains > 0)
               {
                 const double grain_volume_left = grain_volume-n_recrystalized_grains*recrystalized_grain_volume;
@@ -1274,7 +1272,7 @@ namespace aspect
                 const double ratio = tau[indices[0]]/bigI[indices[0]];
                 for (unsigned int slip_system_i = 1; slip_system_i < 4-1; ++slip_system_i)
                   {
-                    beta[indices[slip_system_i]] = std::pow(std::abs(ratio * (bigI[indices[slip_system_i]]/tau[indices[slip_system_i]])), stress_exponent);
+                    beta[indices[slip_system_i]] = std::pow(std::abs(ratio * (bigI[indices[slip_system_i]]/tau[indices[slip_system_i]])), drexpp_stress_exponent[mineral_i]);
                   }
                 beta[indices.back()] = 0.0;
 
@@ -1339,10 +1337,10 @@ namespace aspect
             subgrain_rotation_fractions[grain_i] = 4.0;
             for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
               {
-                const double rhos = std::pow(tau[indices[slip_system_i]],exponent_p-stress_exponent) *
-                                    std::pow(std::abs(gamma*beta[indices[slip_system_i]]),exponent_p/stress_exponent);
+                const double rhos = std::pow(tau[indices[slip_system_i]],drexpp_exponent_p[mineral_i]-drexpp_stress_exponent[mineral_i]) *
+                                    std::pow(std::abs(gamma*beta[indices[slip_system_i]]),drexpp_exponent_p[mineral_i]/drexpp_stress_exponent[mineral_i]);
                 strain_energy[grain_i] += rhos;
-                alpha += std::exp(-nucleation_efficiency * rhos * rhos);
+                alpha += std::exp(-drexpp_nucleation_efficiency[mineral_i] * rhos * rhos);
                 Assert(isfinite(strain_energy[grain_i]), ExcMessage("strain_energy[" + std::to_string(grain_i) + "] is not finite: " + std::to_string(strain_energy[grain_i])
                                                                     + ", rhos (" + std::to_string(slip_system_i) + ") = " + std::to_string(rhos)
                                                                     + ", nucleation_efficiency = " + std::to_string(nucleation_efficiency) + "."));
@@ -1373,7 +1371,7 @@ namespace aspect
             const double diffusion_viscosity = MaterialModel::MaterialUtilities::average_value(volume_fractions, diffusion_viscosities, MaterialModel::MaterialUtilities::harmonic);
             const double composite_viscosity = MaterialModel::MaterialUtilities::average_value(volume_fractions, composite_viscosities, MaterialModel::MaterialUtilities::harmonic);
 
-            grain_boundary_sliding_fractions[grain_i] = 1 - (std::log(diffusion_viscosity)/std::log(composite_viscosity));
+            grain_boundary_sliding_fractions[grain_i] = diffusion_viscosity/composite_viscosity;
             AssertThrow(grain_boundary_sliding_fractions[grain_i]>0.0, ExcMessage("diffusion strain-rate larger than total strain-rate. "
                                                                                   "composite_viscosity = " + std::to_string(composite_viscosity)
                                                                                   + ", diffusion_viscosity = " + std::to_string(diffusion_viscosity)
@@ -1407,23 +1405,17 @@ namespace aspect
             // (Eq. 9, Kaminski & Ribe 2001)
             deriv_a_cosine_matrices[grain_i] = 0;
             const double volume_fraction_grain = get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
-            if (volume_fraction_grain >= (threshold_GBS*1e-12) && strain_energy[grain_i] > 0.0) // TODO: Change to actual grain size based on the rheology
-              {
-                deriv_a_cosine_matrices[grain_i] = permutation_operator_3d * spin_vectors[grain_i];
+                deriv_a_cosine_matrices[grain_i] = (1- grain_boundary_sliding_fractions[grain_i]) * permutation_operator_3d * spin_vectors[grain_i];
 
                 // volume averaged strain energy
                 mean_strain_energy += volume_fraction_grain * strain_energy[grain_i];
 
                 Assert(isfinite(mean_strain_energy), ExcMessage("mean_strain_energy when adding grain " + std::to_string(grain_i) + " is not finite: " + std::to_string(mean_strain_energy)
                                                                 + ", volume_fraction_grain = " + std::to_string(volume_fraction_grain) + "."));
-              }
-            else
-              {
-                strain_energy[grain_i] = 0;
-              }
+            
 
             // Different than D-Rex. Here we actually only compute the derivative and do not multiply it with the volume_fractions. We do that when we advect.
-            deriv_volume_fractions[grain_i] = get_volume_fraction_mineral(cpo_index,data,mineral_i) * mobility * (mean_strain_energy - strain_energy[grain_i]);
+            deriv_volume_fractions[grain_i] = get_volume_fraction_mineral(cpo_index,data,mineral_i) * ( 1- grain_boundary_sliding_fractions[grain_i] ) * drexpp_mobility[mineral_i] * (mean_strain_energy - strain_energy[grain_i]);
 
             Assert(isfinite(deriv_volume_fractions[grain_i]),
                    ExcMessage("deriv_volume_fractions[" + std::to_string(grain_i) + "] is not finite: "
@@ -1722,7 +1714,7 @@ namespace aspect
               prm.enter_subsection("D-Rex++");
               {
                 prm.declare_entry ("Mobility", "125",
-                                   Patterns::Double(0),
+                                   Patterns::List(Patterns::Double(0)),
                                    "The dimensionless intrinsic grain boundary mobility for both olivine and enstatite.");
 
                 prm.declare_entry ("Volume fractions minerals", "0.5, 0.5",
@@ -1731,16 +1723,16 @@ namespace aspect
                                    "There need to be the same amount of values as there are minerals");
 
                 prm.declare_entry ("Stress exponents", "3.5",
-                                   Patterns::Double(0),
+                                   Patterns::List(Patterns::Double(0)),
                                    "This is the power law exponent that characterizes the rheology of the "
                                    "slip systems. It is used in equation 11 of Kaminski et al., 2004.");
 
                 prm.declare_entry ("Exponents p", "1.5",
-                                   Patterns::Double(0),
+                                   Patterns::List(Patterns::Double(0)),
                                    "This is exponent p as defined in equation 11 of Kaminski et al., 2004. ");
 
                 prm.declare_entry ("Nucleation efficiency", "5",
-                                   Patterns::Double(0),
+                                   Patterns::List(Patterns::Double(0)),
                                    "This is the dimensionless nucleation rate as defined in equation 8 of "
                                    "Kaminski et al., 2004. ");
 
@@ -1898,11 +1890,11 @@ namespace aspect
 
               prm.enter_subsection("D-Rex++");
               {
-                mobility = prm.get_double("Mobility");
+                drexpp_mobility = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Mobility")));
                 volume_fractions_minerals = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Volume fractions minerals")));
-                stress_exponent = prm.get_double("Stress exponents");
-                exponent_p = prm.get_double("Exponents p");
-                nucleation_efficiency = prm.get_double("Nucleation efficiency");
+                drexpp_stress_exponent = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Stress exponents")));
+                drexpp_exponent_p =  Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Exponents p")));
+                drexpp_nucleation_efficiency =  Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Nucleation efficiency")));
                 threshold_GBS = prm.get_double("Threshold GBS");
               }
               prm.leave_subsection();

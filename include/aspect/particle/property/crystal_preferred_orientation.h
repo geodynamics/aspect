@@ -643,17 +643,20 @@ namespace aspect
            * Stress exponent
            */
           double stress_exponent;
+          std::vector<double> drexpp_stress_exponent;
 
           /**
            * efficiency of nucleation parameter.
            * lambda_m in equation 8 of Kaminski et al. (2004, Geophys. J. Int)
            */
           double nucleation_efficiency;
+          std::vector<double> drexpp_nucleation_efficiency;
 
           /**
            * An exponent described in equation 10 of Kaminski and Ribe (2001, EPSL)
            */
           double exponent_p;
+          std::vector<double> drexpp_exponent_p;
 
           /**
            * The Dimensionless Grain Boundary Sliding (GBS) threshold.
@@ -667,6 +670,7 @@ namespace aspect
            * in Kaminski and Ribe (2001, EPSL).
            */
           double mobility;
+          std::vector<double> drexpp_mobility;
 
           std::unique_ptr<MaterialModel::Rheology::DiffusionCreep<dim>> rheology_diff;
           std::unique_ptr<MaterialModel::Rheology::DislocationCreep<dim>> rheology_disl;
