@@ -176,11 +176,8 @@ namespace aspect
     {
       const double depth = this->get_geometry_model().depth(position);
       const double adiabatic_temperature = this->get_adiabatic_conditions().temperature(position);
-      // Calculate volume fractions from mass fractions
-      // const std::vector<double> mass_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i]);
-      // const std::vector<double> volume_fractions = MaterialUtilities::compute_volumes_from_masses(mass_fractions,
-      //  eos_outputs.densities,
-      //  true);
+      
+    
 
       double delta_temperature;
       if (use_lateral_average_temperature)
@@ -192,15 +189,20 @@ namespace aspect
         delta_temperature = temperature-adiabatic_temperature;
 
       // For an explanation on this formula see the Steinberger & Calderwood 2006 paper
+      //The lateral variation of viscosity due to lateral temperature (Visc_lT)  
+      //Visc_lT = exp [(-1)*(H/nR)*dT/(T_adiabatic*(T_adiabatic + dT)], Eq. 6 of the paper
       const double vis_lateral_exp = -1.0*lateral_viscosity_lookup->lateral_viscosity(depth)*delta_temperature/(temperature*adiabatic_temperature);
+      
       // Limit the lateral viscosity variation to a reasonable interval
-
       const double vis_lateral = std::max(std::min(std::exp(vis_lateral_exp),max_lateral_eta_variation),1/max_lateral_eta_variation);
-
+      
+      //Visc_rT = exp[(H/nR)/T_adiabatic], Eq. 7 of the paper
       const double vis_radial = radial_viscosity_lookup->radial_viscosity(depth);
-      const double vis_compositional = MaterialUtilities::average_value (volume_fractions, prefactors, viscosity_averaging);
+      
+      
+      const double vis_compositional = MaterialUtilities::average_value (volume_fractions, viscosity_prefactors, viscosity_averaging);
 
-
+     // Radial viscosity profile is multiplied with lateral and compositional viscosity variation 
       return std::max(std::min(vis_lateral * vis_radial * vis_compositional,max_eta),min_eta);
     }
 
@@ -276,14 +278,9 @@ namespace aspect
 
       // Evaluate the equation of state properties over all evaluation points
       equation_of_state.evaluate(eos_in, eos_outputs);
-      // std::vector<Vector<double>> viscosities(in.n_evaluation_points(), this->n_compositional_fields());
-
-      // std::vector<double> viscosities;
-      // viscosities.assign(1e21);
+      
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
-          // viscosities[i]=1e21;
-
           // if (in.requests_property(MaterialProperties::viscosity))
           // out.viscosities[i] = viscosity(in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 
@@ -478,9 +475,9 @@ namespace aspect
                                                 "with different viscosities, we need to come up with an average "
                                                 "viscosity at that point.  Select a weighted harmonic, arithmetic, "
                                                 "geometric, or maximum composition.");
-          prm.declare_entry ("Prefactors", "1.e21",
+          prm.declare_entry ("Viscosity prefactors", "1",
                              Patterns::Anything(),
-                             "List of viscosities for background mantle and compositional fields,"
+                             "List of dimensionless quantities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value. Units: \\si{\\pascal\\second}.");
 
@@ -587,10 +584,10 @@ namespace aspect
           has_background_field = (equation_of_state.number_of_lookups() == n_chemical_fields + 1);
           const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-          prefactors = Utilities::parse_map_to_double_array (prm.get("Prefactors"),
+          viscosity_prefactors = Utilities::parse_map_to_double_array (prm.get("Viscosity prefactors"),
                                                              list_of_composition_names,
                                                              has_background_field,
-                                                             "Prefactors");
+                                                             "Viscosity prefactors");
           prm.leave_subsection();
         }
         prm.leave_subsection();
