@@ -105,7 +105,7 @@ you would like to contribute some code.
 ### Installing astyle
 To correctly indent the code in ASPECT you can use `make indent` or `ninja indent`
 depending on the build system you are using. The indenting script needs version 2.04 astyle.
-If you installed deal.ii through candi, the correct astyle if most likely already on your system and in your path.
+If you installed deal.II through candi, the correct astyle may already on your system and in your path.
 If the indenting script complains that it could not find (the correct version of) astyle,
 you can find it [here](https://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/).
 
