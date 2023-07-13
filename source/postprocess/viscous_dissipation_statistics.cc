@@ -159,8 +159,8 @@ namespace aspect
                                   "field, the sum of the individual field's dissipation should equal "
                                   "that over the whole domain. "
                                   "The viscous dissipation is computed as: "
-                                  "$\\int_{V}\\left(\\sigma' \\dot{\\epsilon}' \\right)$, "
-                                  "where $\\sigma'$  is the deviatoric stress and $\\dot{\\epsilon}'$ "
+                                  "$\\int_{V}\\left(\\sigma^\\prime \\dot{\\epsilon}^\\prime \\right)$, "
+                                  "where $\\sigma^\\prime$  is the deviatoric stress and $\\dot{\\epsilon}^\\prime$ "
                                   "the deviatoric strain rate."
                                   "Note then when shear heating is included in the temperature equation, "
                                   "it is better to use the 'heating statistics' postprocessor.")
