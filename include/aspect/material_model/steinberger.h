@@ -277,11 +277,11 @@ namespace aspect
         double maximum_conductivity;
 
 
-      /**
-       * viscosity_prefactors are dimensionless quantities which 
-       * are multiplied by the reference viscosity profile based on
-       * volume fraction
-       */
+        /**
+         * viscosity_prefactors are dimensionless quantities which
+         * are multiplied by the reference viscosity profile based on
+         * volume fraction
+         */
         std::vector<double> viscosity_prefactors;
 
         /**
