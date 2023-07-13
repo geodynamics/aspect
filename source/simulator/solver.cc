@@ -636,7 +636,7 @@ namespace aspect
 
         pcout << "done." << std::endl;
       }
-    else
+    else // use iterative solver
       {
         // Many parts of the solver depend on the block layout (velocity = 0,
         // pressure = 1). For example the linearized_stokes_initial_guess vector or the StokesBlock matrix
@@ -779,8 +779,11 @@ namespace aspect
         // succeeds in n_cheap_stokes_solver_steps steps or less.
         try
           {
-            // if this cheaper solver is not desired, then simply short-cut
-            // the attempt at solving with the cheaper preconditioner
+            // if this cheaper solver is not desired, then simply
+            // short-cut the attempt at solving with the cheaper
+            // preconditioner by throwing an exception right away,
+            // which is equivalent to a 'goto' statement to the top of
+            // the 'catch' block below
             if (parameters.n_cheap_stokes_solver_steps == 0)
               throw SolverControl::NoConvergence(0,0);
 
@@ -823,11 +826,6 @@ namespace aspect
                                                               parameters.stokes_gmres_restart_length :
                                                               std::max(parameters.stokes_gmres_restart_length, 100U));
 
-            SolverFGMRES<LinearAlgebra::BlockVector>
-            solver(solver_control_expensive, mem,
-                   SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(number_of_temporary_vectors));
-
             try
               {
                 // if no expensive steps allowed, we have failed, rethrow exception
@@ -836,6 +834,11 @@ namespace aspect
                     pcout << "0 iterations." << std::endl;
                     throw exc;
                   }
+
+                SolverFGMRES<LinearAlgebra::BlockVector>
+                solver(solver_control_expensive, mem,
+                       SolverFGMRES<LinearAlgebra::BlockVector>::
+                       AdditionalData(number_of_temporary_vectors));
 
                 solver.solve(stokes_block,
                              distributed_stokes_solution,
