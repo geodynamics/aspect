@@ -555,7 +555,7 @@ namespace aspect
                              "then this function should be implemented. "
                              "If this is an assembler that does not have to compute a residual, it should not be called."));
 
-      return std::vector<double>();
+      return {};
     }
 
 

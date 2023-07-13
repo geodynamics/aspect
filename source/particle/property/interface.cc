@@ -403,7 +403,7 @@ namespace aspect
                                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         if (property_information.n_components() == 0)
-          return std::vector<double>();
+          return {};
 
         std::vector<double> particle_properties;
         particle_properties.reserve(property_information.n_components());

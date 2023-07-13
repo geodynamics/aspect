@@ -105,7 +105,7 @@ namespace aspect
         return std::make_pair(cell,particle);
 
         // Avoid warnings about missing return
-        return std::pair<Particles::internal::LevelInd,Particle<dim>>();
+        return {};
       }
 
 
