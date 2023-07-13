@@ -1,4 +1,4 @@
-# This tests the behaviour of the particles postprocessor, when the
+# This tests the behavior of the particles postprocessor, when the
 # 'Run postprocessors on initial refinement option is set. We do not
 # want to advect the particles in this case, because we are solving the
 # first timestep multiple times.

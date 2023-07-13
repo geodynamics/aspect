@@ -1,11 +1,11 @@
 # This is a compressible test case that shall
-# test the behaviour of the pressure compatibility
+# test the behavior of the pressure compatibility
 # mechanism in case of prescribed normal velocities
 # integrated over the boundaries. It is converging
 # in this setup, but if the solver tolerance is
 # decreased or the prescribed normal velocity is
 # increased it fails to converge, which is exactly
-# the behaviour we intend.
+# the behavior we intend.
 
 set CFL number                             = 1
 set End time                               = 400

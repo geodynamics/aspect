@@ -48,7 +48,7 @@
  * <br>
  * (Ryan Grove, 2014/12/09)
  *
- * <li> Changed: The behaviour when one changed the visualization
+ * <li> Changed: The behavior when one changed the visualization
  * output_interval during a checkpoint restart was previously undefined, and
  * working in slightly unexpected ways like never writing output for the first
  * timestep after the restart. This now works as one would expect, e.g. every

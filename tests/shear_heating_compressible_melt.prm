@@ -1,7 +1,7 @@
 # This is a copy of the shear_heating_compressible
 # test, except that it uses melt transport.
 
-# The test is for the correct behaviour of
+# The test is for the correct behavior of
 # the shear heating in the compressible case.
 # The velocity is prescribed using the prescribed
 # Stokes solution plugin so that the strain rate is

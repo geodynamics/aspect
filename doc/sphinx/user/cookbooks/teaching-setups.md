@@ -9,7 +9,7 @@ number of cookbooks that can be used for this purpose. Many of them are
 modifications of existing cookbooks, but have been changed to run faster to be
 more suitable for running them in the classroom, or they include additional
 ideas for what parameters can be changed to learn more about the physical
-behaviour that controls the model results.
+behavior that controls the model results.
 
 ## Introduction to Geophysics
 

@@ -366,7 +366,7 @@ namespace aspect
                              "instead of the adiabatic temperature as reference for the "
                              "viscosity calculation. This ensures that the laterally averaged "
                              "viscosities remain more or less constant over the model "
-                             "runtime. This behaviour might or might not be desired.");
+                             "runtime. This behavior might or might not be desired.");
           prm.declare_entry ("Number lateral average bands", "10",
                              Patterns::Integer (1),
                              "Number of bands to compute laterally averaged temperature within.");
