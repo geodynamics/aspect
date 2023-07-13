@@ -234,7 +234,7 @@
  * (Juliane Dannberg, 2022/01/28)
  *
  * <li> Fixed: The compressible terms for the DC Stokes and Newton solvers
- * where not correctly assembled. This is fixed now, and tests comparing
+ * were not correctly assembled. This is fixed now, and tests comparing
  * the Stokes and DC Stokes solver have been added.
  * <br>
  * (Menno Fraters, 2022/01/26)

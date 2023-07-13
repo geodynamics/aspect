@@ -61,7 +61,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed 
 - Using slabs and faults beyond the -180 to 180 range gave issues. These are now fixed and it now works and is tested for the -380 to 380 range. \[Menno Fraters; 2021-10-22; [#338](https://github.com/GeodynamicWorldBuilder/WorldBuilder/issues/338), [#340](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/340) and [#342](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/342)\]
-- The ridge coordinates for the mass conservative slab temperature model where not converted to radians internally. \[Menno Fraters; 2021-10-27; [#352](https://github.com/GeodynamicWorldBuilder/WorldBuilder/issues/352)\]
+- The ridge coordinates for the mass conservative slab temperature model were not converted to radians internally. \[Menno Fraters; 2021-10-27; [#352](https://github.com/GeodynamicWorldBuilder/WorldBuilder/issues/352)\]
 - Fixed the taper of temperature at the slab tip for the bottom part of the slab, and fixed issue with negative temperatures above slab when there is an existing overririding plate temperature. \[Magali Billen; 2021-11-02; [#353](https:https://github.com/GeodynamicWorldBuilder/WorldBuilder/issues/353)
 - The input dip point defined for subduction plate and fault models is now in degrees (as opposed radians) consistent with the system for coordinates. \[Arushi Saxena; 2022-10-07; [#448](github.com/GeodynamicWorldBuilder/WorldBuilder/pull/448)\]
 
