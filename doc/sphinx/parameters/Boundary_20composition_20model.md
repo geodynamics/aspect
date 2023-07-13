@@ -49,7 +49,7 @@ The following boundary composition models are available:
 
 Since the symbol $t$ indicating time may appear in the formulas for the prescribed composition, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years in output instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
 
-The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
 &lsquo;initial composition&rsquo;: A model in which the composition at the boundary is chosen to be the same as given in the initial conditions.
 
@@ -83,7 +83,7 @@ Because this class simply takes what the initial composition had described, this
 
 Since the symbol $t$ indicating time may appear in the formulas for the prescribed composition, it is interpreted as having units seconds unless the global input parameter &ldquo;Use years in output instead of seconds&rdquo; is set, in which case we interpret the formula expressions as having units year.
 
-The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
 &lsquo;initial composition&rsquo;: A model in which the composition at the boundary is chosen to be the same as given in the initial conditions.
 

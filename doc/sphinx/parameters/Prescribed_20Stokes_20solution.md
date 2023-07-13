@@ -17,7 +17,7 @@
 
 &lsquo;circle&rsquo;: This value describes a vector field that rotates around the z-axis with constant angular velocity (i.e., with a velocity that increases with distance from the axis). The pressure is set to zero.
 
-&lsquo;function&rsquo;: This plugin allows to prescribe the Stokes solution for the velocity and pressure field in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+&lsquo;function&rsquo;: This plugin allows to prescribe the Stokes solution for the velocity and pressure field in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
 (parameters:Prescribed_20Stokes_20solution/Ascii_20data_20model)=
 ## **Subsection:** Prescribed Stokes solution / Ascii data model

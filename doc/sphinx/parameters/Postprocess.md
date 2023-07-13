@@ -718,7 +718,7 @@ The following properties are available:
 
 &lsquo;elastic stress&rsquo;: A plugin in which the particle property tensor is defined as the total elastic stress a particle has accumulated. See the viscoelastic material model documentation for more detailed information.
 
-&lsquo;function&rsquo;: Implementation of a model in which the particle property is set by evaluating an explicit function at the initial position of each particle. The function is defined in the parameters in section &ldquo;Particles|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+&lsquo;function&rsquo;: Implementation of a model in which the particle property is set by evaluating an explicit function at the initial position of each particle. The function is defined in the parameters in section &ldquo;Particles|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
 &lsquo;grain size&rsquo;: A plugin in which the particle property is defined as the evolving grain size of a particle. See the grain_size material model documentation for more detailed information.
 
@@ -794,7 +794,7 @@ The following properties are available:
 
 &lsquo;ascii file&rsquo;: Generates a distribution of particles from coordinates specified in an Ascii data file. The file format is a simple text file, with as many columns as spatial dimensions and as many lines as particles to be generated. Initial comment lines starting with &lsquo;#&rsquo; will be discarded. Note that this plugin always generates as many particles as there are coordinates in the data file, the &ldquo;Postprocess/Particles/Number of particles&rdquo; parameter has no effect on this plugin. All of the values that define this generator are read from a section &ldquo;Postprocess/Particles/Generator/Ascii file&rdquo; in the input file, see Section~\ref{parameters:Postprocess/Particles/Generator/Ascii_20file}.
 
-&lsquo;probability density function&rsquo;: Generate a random distribution of particles over the entire simulation domain. The probability density is prescribed in the form of a user-prescribed function. The format of this function follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}. The return value of the function is always checked to be a non-negative probability density but it can be zero in parts of the domain.
+&lsquo;probability density function&rsquo;: Generate a random distribution of particles over the entire simulation domain. The probability density is prescribed in the form of a user-prescribed function. The format of this function follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`. The return value of the function is always checked to be a non-negative probability density but it can be zero in parts of the domain.
 
 &lsquo;quadrature points&rsquo;: Generates particles at the quadrature points of each active cell of the triangulation. Here, Gauss quadrature of degree (velocity\_degree + 1), is used similarly to the assembly of Stokes matrix.
 
