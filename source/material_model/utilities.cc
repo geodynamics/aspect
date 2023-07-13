@@ -712,7 +712,7 @@ namespace aspect
                   // P-T grids created with PerpleX-werami sometimes contain rows
                   // filled with NaNs at extreme P-T conditions where the thermodynamic
                   // models break down. These P-T regions are typically not relevant to
-                  // geodynamic modelling (they most commonly appear above
+                  // geodynamic modeling (they most commonly appear above
                   // mantle liquidus temperatures at low pressures).
                   // More frustratingly, PerpleX-vertex occasionally fails to find a
                   // valid mineral assemblage in small, isolated regions within the domain,

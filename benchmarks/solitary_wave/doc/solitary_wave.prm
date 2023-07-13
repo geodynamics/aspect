@@ -22,7 +22,7 @@ subsection Compositional fields
   set Names of fields = porosity
 end
 
-# Enable modelling of melt migration in addition to the advection of
+# Enable modeling of melt migration in addition to the advection of
 # solid material.
 subsection Melt settings
   set Include melt transport                  = true

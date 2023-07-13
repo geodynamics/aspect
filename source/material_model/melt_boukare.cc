@@ -1297,7 +1297,7 @@ namespace aspect
                                    "A material model that implements a simplified version of the melting "
                                    "model of Boukare et al. (https://doi.org/10.1002/2015JB011929) for the "
                                    "lowermost mantle and uses it to compute the material parameters "
-                                   "required for the modelling of melt transport, including melting and "
+                                   "required for the modeling of melt transport, including melting and "
                                    "solidification and the corresponding changes in composition."
                                    "The model parameterizes the composition (which includes the components "
                                    "MgO, FeO and SiO2) as a mixture between two endmembers (one iron-bearing "
