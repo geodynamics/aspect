@@ -2929,7 +2929,7 @@ namespace aspect
 
                   unsigned int j=0;
                   for (const auto &residual: solver_control.get_history_data())
-                    f << ++j << ' ' << residual << std::endl;
+                    f << j++ << ' ' << residual << std::endl;
                 }
 
               f.close();
