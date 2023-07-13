@@ -8,7 +8,7 @@
 #
 # The analytical solution for viscoelastic stress build-up in
 # an incompressible medium with a constant strain-rate is:
-#   simga_ij = 2 * edot_ii * eta * (1 - e^(-mu*t/eta)),
+#   sigma_ij = 2 * edot_ii * eta * (1 - e^(-mu*t/eta)),
 # where sigma_ij is the elastic deviatoric stress tensor, edot_ij is
 # the deviatoric strain-rate, eta is the background viscosity, mu is the
 # shear modulus and t is time.
