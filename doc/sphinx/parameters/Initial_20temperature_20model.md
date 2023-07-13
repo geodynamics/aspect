@@ -38,7 +38,7 @@ For any depths below the depth of the LAB, a unrealistically high temperature is
 Note that the current implementation only works for a 3-layer lithosphere, even though in principle the heat conduction equation can be solved for any number of layers. The naming of the compositional fields that represent the layers is also very specific, namely &lsquo;upper\_crust&rsquo;, &lsquo;lower\_crust&rsquo;, and &lsquo;lithospheric\_mantle&rsquo;.
 Make sure the top and bottom temperatures of the lithosphere agree with temperatures set in for example the temperature boundary conditions.
 
-&lsquo;function&rsquo;: Specify the initial temperature in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+&lsquo;function&rsquo;: Specify the initial temperature in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
 &lsquo;harmonic perturbation&rsquo;: An initial temperature field in which the temperature is perturbed following a harmonic function (spherical harmonic or sine depending on geometry and dimension) in lateral and radial direction from an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model).
 
@@ -99,7 +99,7 @@ For any depths below the depth of the LAB, a unrealistically high temperature is
 Note that the current implementation only works for a 3-layer lithosphere, even though in principle the heat conduction equation can be solved for any number of layers. The naming of the compositional fields that represent the layers is also very specific, namely &lsquo;upper\_crust&rsquo;, &lsquo;lower\_crust&rsquo;, and &lsquo;lithospheric\_mantle&rsquo;.
 Make sure the top and bottom temperatures of the lithosphere agree with temperatures set in for example the temperature boundary conditions.
 
-&lsquo;function&rsquo;: Specify the initial temperature in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+&lsquo;function&rsquo;: Specify the initial temperature in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
 &lsquo;harmonic perturbation&rsquo;: An initial temperature field in which the temperature is perturbed following a harmonic function (spherical harmonic or sine depending on geometry and dimension) in lateral and radial direction from an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model).
 
@@ -213,7 +213,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 **Documentation:** If this value is larger than 0, the initial temperature profile will not be adiabatic, but subadiabatic. This value gives the maximal deviation from adiabaticity. Set to 0 for an adiabatic temperature profile. Units: \si{\kelvin}.
 
-The function object in the Function subsection represents the compositional fields that will be used as a reference profile for calculating the thermal diffusivity. This function is one-dimensional and depends only on depth. The format of this functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+The function object in the Function subsection represents the compositional fields that will be used as a reference profile for calculating the thermal diffusivity. This function is one-dimensional and depends only on depth. The format of this functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
 (parameters:Initial_20temperature_20model/Adiabatic/Top_20boundary_20layer_20age_20model)=
 ### __Parameter name:__ Top boundary layer age model

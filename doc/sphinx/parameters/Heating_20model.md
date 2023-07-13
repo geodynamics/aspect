@@ -25,7 +25,7 @@ For full adiabatic heating, this has to be used in combination with the heating 
 
 &lsquo;constant heating&rsquo;: Implementation of a model in which the heating rate is constant.
 
-&lsquo;function&rsquo;: Implementation of a model in which the heating rate is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Heating model|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+&lsquo;function&rsquo;: Implementation of a model in which the heating rate is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Heating model|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
 The formula is interpreted as having units W/kg.
 

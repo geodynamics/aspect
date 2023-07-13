@@ -144,6 +144,6 @@ namespace aspect
                                            "the boundary deformation velocity should still be given "
                                            "in m/s. The format of the "
                                            "functions follows the syntax understood by the "
-                                           "muparser library, see Section~\\ref{sec:muparser-format}.")
+                                           "muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.")
   }
 }

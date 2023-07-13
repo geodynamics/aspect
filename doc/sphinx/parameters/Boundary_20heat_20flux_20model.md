@@ -25,7 +25,7 @@ This parameter only describes which boundaries have a fixed heat flux, but not w
 
 **Documentation:** Select one of the following plugins:
 
-&lsquo;function&rsquo;: Implementation of a model in which the boundary heat flux is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary heat flux model|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+&lsquo;function&rsquo;: Implementation of a model in which the boundary heat flux is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary heat flux model|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
 The formula you describe in the mentioned section is a scalar value for the heat flux that is assumed to be the flux normal to the boundary, and that has the unit W/(m$^2$) (in 3d) or W/m (in 2d). Negative fluxes are interpreted as the flow of heat into the domain, and positive fluxes are interpreted as heat flowing out of the domain.
 
