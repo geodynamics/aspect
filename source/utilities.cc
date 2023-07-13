@@ -3100,7 +3100,7 @@ namespace aspect
     namespace Tensors
     {
       SymmetricTensor<4,3>
-      rotate_4th_order_tensor(const SymmetricTensor<4,3> &input_tensor, const Tensor<2,3> &rotation_tensor)
+      rotate_full_stiffness_tensor(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<4,3> &input_tensor)
       {
         SymmetricTensor<4,3> output;
 
@@ -3109,19 +3109,19 @@ namespace aspect
         // the second and 4th loop starting with the first and third index respectively.
         for (unsigned short int i1 = 0; i1 < 3; ++i1)
           {
-            for (unsigned short int i2 = i1; i2 < 3; i2++)
+            for (unsigned short int i2 = i1; i2 < 3; ++i2)
               {
-                for (unsigned short int i3 = 0; i3 < 3; i3++)
+                for (unsigned short int i3 = 0; i3 < 3; ++i3)
                   {
-                    for (unsigned short int i4 = i3; i4 < 3; i4++)
+                    for (unsigned short int i4 = i3; i4 < 3; ++i4)
                       {
-                        for (unsigned short int j1 = 0; j1 < 3; j1++)
+                        for (unsigned short int j1 = 0; j1 < 3; ++j1)
                           {
-                            for (unsigned short int j2 = 0; j2 < 3; j2++)
+                            for (unsigned short int j2 = 0; j2 < 3; ++j2)
                               {
-                                for (unsigned short int j3 = 0; j3 < 3; j3++)
+                                for (unsigned short int j3 = 0; j3 < 3; ++j3)
                                   {
-                                    for (unsigned short int j4 = 0; j4 < 3; j4++)
+                                    for (unsigned short int j4 = 0; j4 < 3; ++j4)
                                       {
                                         output[i1][i2][i3][i4] += rotation_tensor[i1][j1]*rotation_tensor[i2][j2]*rotation_tensor[i3][j3]*rotation_tensor[i4][j4]*input_tensor[j1][j2][j3][j4];
                                       }
@@ -3139,7 +3139,7 @@ namespace aspect
 
 
       SymmetricTensor<2,6>
-      rotate_6x6_matrix(const SymmetricTensor<2,6> &input_tensor, const Tensor<2,3> &rotation_tensor)
+      rotate_voigt_stiffness_matrix(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor)
       {
         // we can represent the rotation of the 4th order tensor as a rotation in the Voigt
         // notation by computing $C'=MCM^{-1}$. Because M is orthogonal we can replace $M^{-1}$
@@ -3199,7 +3199,7 @@ namespace aspect
 
 
       SymmetricTensor<2,6>
-      transform_4th_order_tensor_to_6x6_matrix(const SymmetricTensor<4,3> &input_tensor)
+      transform_full_stiffness_tensor_to_voigt_stiffness_matrix(const SymmetricTensor<4,3> &input_tensor)
       {
         SymmetricTensor<2,6> output;
 
@@ -3251,7 +3251,7 @@ namespace aspect
 
 
       SymmetricTensor<4,3>
-      transform_6x6_matrix_to_4th_order_tensor(const SymmetricTensor<2,6> &input_tensor)
+      transform_voigt_stiffness_matrix_to_full_stiffness_tensor(const SymmetricTensor<2,6> &input_tensor)
       {
         SymmetricTensor<4,3> output;
 
@@ -3274,7 +3274,7 @@ namespace aspect
 
 
       Tensor<1,21>
-      transform_6x6_matrix_to_21D_vector(const SymmetricTensor<2,6> &input)
+      transform_voigt_stiffness_matrix_to_voigt_stiffness_vector(const SymmetricTensor<2,6> &input)
       {
         return Tensor<1,21,double> (
         {
@@ -3306,7 +3306,7 @@ namespace aspect
 
 
       SymmetricTensor<2,6>
-      transform_21D_vector_to_6x6_matrix(const Tensor<1,21> &input)
+      transform_voigt_stiffness_vector_to_voigt_stiffness_matrix(const Tensor<1,21> &input)
       {
         SymmetricTensor<2,6> result;
 
@@ -3341,7 +3341,7 @@ namespace aspect
 
 
       Tensor<1,21>
-      transform_4th_order_tensor_to_21D_vector(const SymmetricTensor<4,3> &input_tensor)
+      transform_full_stiffness_tensor_to_voigt_stiffness_vector(const SymmetricTensor<4,3> &input_tensor)
       {
         return Tensor<1,21,double> (
         {

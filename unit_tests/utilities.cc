@@ -257,7 +257,7 @@ TEST_CASE("CPO elastic tensor transform functions")
 
 // first test whether the functions are invertable
   {
-    dealii::SymmetricTensor<2,6> result_up_down = aspect::Utilities::Tensors::transform_4th_order_tensor_to_6x6_matrix(aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(reference_elastic_tensor));
+    dealii::SymmetricTensor<2,6> result_up_down = aspect::Utilities::Tensors::transform_full_stiffness_tensor_to_voigt_stiffness_matrix(aspect::Utilities::Tensors::transform_voigt_stiffness_matrix_to_full_stiffness_tensor(reference_elastic_tensor));
 
     for (size_t i = 0; i < 6; i++)
       {
@@ -268,7 +268,7 @@ TEST_CASE("CPO elastic tensor transform functions")
       }
   }
   {
-    dealii::SymmetricTensor<2,6> result_down_up = aspect::Utilities::Tensors::transform_21D_vector_to_6x6_matrix(aspect::Utilities::Tensors::transform_6x6_matrix_to_21D_vector(reference_elastic_tensor));
+    dealii::SymmetricTensor<2,6> result_down_up = aspect::Utilities::Tensors::transform_voigt_stiffness_vector_to_voigt_stiffness_matrix(aspect::Utilities::Tensors::transform_voigt_stiffness_matrix_to_voigt_stiffness_vector(reference_elastic_tensor));
 
     for (size_t i = 0; i < 6; i++)
       {
@@ -279,7 +279,7 @@ TEST_CASE("CPO elastic tensor transform functions")
       }
   }
   {
-    dealii::SymmetricTensor<2,6> result_up_2down_up = aspect::Utilities::Tensors::transform_21D_vector_to_6x6_matrix(aspect::Utilities::Tensors::transform_4th_order_tensor_to_21D_vector(aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(reference_elastic_tensor)));
+    dealii::SymmetricTensor<2,6> result_up_2down_up = aspect::Utilities::Tensors::transform_voigt_stiffness_vector_to_voigt_stiffness_matrix(aspect::Utilities::Tensors::transform_full_stiffness_tensor_to_voigt_stiffness_vector(aspect::Utilities::Tensors::transform_voigt_stiffness_matrix_to_full_stiffness_tensor(reference_elastic_tensor)));
 
     for (size_t i = 0; i < 6; i++)
       {
@@ -314,8 +314,8 @@ TEST_CASE("CPO elastic tensor transform functions")
     }
 
     {
-      dealii::SymmetricTensor<4,3> result_4th_order_tensor = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(reference_elastic_tensor);
-      dealii::SymmetricTensor<4,3> result_4th_order_tensor_rotate_zero = aspect::Utilities::Tensors::rotate_4th_order_tensor(result_4th_order_tensor,rotation_tensor);
+      dealii::SymmetricTensor<4,3> result_full_stiffness_tensor = aspect::Utilities::Tensors::transform_voigt_stiffness_matrix_to_full_stiffness_tensor(reference_elastic_tensor);
+      dealii::SymmetricTensor<4,3> result_full_stiffness_tensor_rotate_zero = aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor,result_full_stiffness_tensor);
 
       // first check that one the tensors didn't change with zero rotation
       for (size_t i = 0; i < 3; i++)
@@ -326,7 +326,7 @@ TEST_CASE("CPO elastic tensor transform functions")
                 {
                   for (size_t l = 0; l < 3; l++)
                     {
-                      REQUIRE(result_4th_order_tensor[i][j][k][l] == Approx(result_4th_order_tensor_rotate_zero[i][j][k][l]));
+                      REQUIRE(result_full_stiffness_tensor[i][j][k][l] == Approx(result_full_stiffness_tensor_rotate_zero[i][j][k][l]));
                     }
                 }
             }
@@ -334,10 +334,10 @@ TEST_CASE("CPO elastic tensor transform functions")
     }
 
     {
-      dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::transform_4th_order_tensor_to_6x6_matrix(
-                                                               aspect::Utilities::Tensors::rotate_4th_order_tensor(
-                                                                 aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(reference_elastic_tensor),rotation_tensor));
-      dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_6x6_matrix(reference_elastic_tensor,rotation_tensor);
+      dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::transform_full_stiffness_tensor_to_voigt_stiffness_matrix(
+                                                               aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor,
+                                                                   aspect::Utilities::Tensors::transform_voigt_stiffness_matrix_to_full_stiffness_tensor(reference_elastic_tensor)));
+      dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor,reference_elastic_tensor);
 
       // first check that one the tensors didn't change with zero rotation
       for (size_t i = 0; i < 6; i++)
@@ -376,10 +376,10 @@ TEST_CASE("CPO elastic tensor transform functions")
     }
 
     {
-      dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::transform_4th_order_tensor_to_6x6_matrix(
-                                                               aspect::Utilities::Tensors::rotate_4th_order_tensor(
-                                                                 aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(reference_elastic_tensor),rotation_tensor));
-      dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_6x6_matrix(reference_elastic_tensor,rotation_tensor);
+      dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::transform_full_stiffness_tensor_to_voigt_stiffness_matrix(
+                                                               aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor,
+                                                                   aspect::Utilities::Tensors::transform_voigt_stiffness_matrix_to_full_stiffness_tensor(reference_elastic_tensor)));
+      dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor,reference_elastic_tensor);
 
       for (size_t i = 0; i < 6; i++)
         {
@@ -389,17 +389,17 @@ TEST_CASE("CPO elastic tensor transform functions")
             }
         }
 
-      dealii::SymmetricTensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(result_up_1_rotate_down);
+      dealii::SymmetricTensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_voigt_stiffness_matrix_to_full_stiffness_tensor(result_up_1_rotate_down);
 
       dealii::SymmetricTensor<2,6> result_5_rotate = result_1_rotate;
 
       for (size_t i = 0; i < 4; i++)
         {
-          result_up_10_rotate = aspect::Utilities::Tensors::rotate_4th_order_tensor(result_up_10_rotate, rotation_tensor);
-          result_5_rotate = aspect::Utilities::Tensors::rotate_6x6_matrix(result_5_rotate, rotation_tensor);
+          result_up_10_rotate = aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor,result_up_10_rotate);
+          result_5_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor, result_5_rotate);
         }
 
-      dealii::SymmetricTensor<2,6> result_up_10_rotate_down = aspect::Utilities::Tensors::transform_4th_order_tensor_to_6x6_matrix(result_up_10_rotate);
+      dealii::SymmetricTensor<2,6> result_up_10_rotate_down = aspect::Utilities::Tensors::transform_full_stiffness_tensor_to_voigt_stiffness_matrix(result_up_10_rotate);
 
       for (size_t i = 0; i < 6; i++)
         {
@@ -431,10 +431,10 @@ TEST_CASE("CPO elastic tensor transform functions")
     }
 
     {
-      dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::transform_4th_order_tensor_to_6x6_matrix(
-                                                               aspect::Utilities::Tensors::rotate_4th_order_tensor(
-                                                                 aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(reference_elastic_tensor),rotation_tensor));
-      dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_6x6_matrix(reference_elastic_tensor,rotation_tensor);
+      dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::transform_full_stiffness_tensor_to_voigt_stiffness_matrix(
+                                                               aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor,
+                                                                   aspect::Utilities::Tensors::transform_voigt_stiffness_matrix_to_full_stiffness_tensor(reference_elastic_tensor)));
+      dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor,reference_elastic_tensor);
 
       for (size_t i = 0; i < 6; i++)
         {
@@ -444,17 +444,17 @@ TEST_CASE("CPO elastic tensor transform functions")
             }
         }
 
-      dealii::SymmetricTensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(result_up_1_rotate_down);
+      dealii::SymmetricTensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_voigt_stiffness_matrix_to_full_stiffness_tensor(result_up_1_rotate_down);
 
       dealii::SymmetricTensor<2,6> result_5_rotate = result_1_rotate;
 
       for (size_t i = 0; i < 4; i++)
         {
-          result_up_10_rotate = aspect::Utilities::Tensors::rotate_4th_order_tensor(result_up_10_rotate, rotation_tensor);
-          result_5_rotate = aspect::Utilities::Tensors::rotate_6x6_matrix(result_5_rotate, rotation_tensor);
+          result_up_10_rotate = aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor, result_up_10_rotate);
+          result_5_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor, result_5_rotate);
         }
 
-      dealii::SymmetricTensor<2,6> result_up_10_rotate_down = aspect::Utilities::Tensors::transform_4th_order_tensor_to_6x6_matrix(result_up_10_rotate);
+      dealii::SymmetricTensor<2,6> result_up_10_rotate_down = aspect::Utilities::Tensors::transform_full_stiffness_tensor_to_voigt_stiffness_matrix(result_up_10_rotate);
 
       for (size_t i = 0; i < 6; i++)
         {
@@ -485,10 +485,10 @@ TEST_CASE("CPO elastic tensor transform functions")
     }
 
     {
-      dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::transform_4th_order_tensor_to_6x6_matrix(
-                                                               aspect::Utilities::Tensors::rotate_4th_order_tensor(
-                                                                 aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(reference_elastic_tensor),rotation_tensor));
-      dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_6x6_matrix(reference_elastic_tensor,rotation_tensor);
+      dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::transform_full_stiffness_tensor_to_voigt_stiffness_matrix(
+                                                               aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor,
+                                                                   aspect::Utilities::Tensors::transform_voigt_stiffness_matrix_to_full_stiffness_tensor(reference_elastic_tensor)));
+      dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor, reference_elastic_tensor);
 
       for (size_t i = 0; i < 6; i++)
         {
@@ -498,17 +498,17 @@ TEST_CASE("CPO elastic tensor transform functions")
             }
         }
 
-      dealii::SymmetricTensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(result_up_1_rotate_down);
+      dealii::SymmetricTensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_voigt_stiffness_matrix_to_full_stiffness_tensor(result_up_1_rotate_down);
 
       dealii::SymmetricTensor<2,6> result_5_rotate = result_1_rotate;
 
       for (size_t i = 0; i < 4; i++)
         {
-          result_up_10_rotate = aspect::Utilities::Tensors::rotate_4th_order_tensor(result_up_10_rotate, rotation_tensor);
-          result_5_rotate = aspect::Utilities::Tensors::rotate_6x6_matrix(result_5_rotate, rotation_tensor);
+          result_up_10_rotate = aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor, result_up_10_rotate);
+          result_5_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor, result_5_rotate);
         }
 
-      dealii::SymmetricTensor<2,6> result_up_10_rotate_down = aspect::Utilities::Tensors::transform_4th_order_tensor_to_6x6_matrix(result_up_10_rotate);
+      dealii::SymmetricTensor<2,6> result_up_10_rotate_down = aspect::Utilities::Tensors::transform_full_stiffness_tensor_to_voigt_stiffness_matrix(result_up_10_rotate);
 
       for (size_t i = 0; i < 6; i++)
         {
@@ -540,10 +540,10 @@ TEST_CASE("CPO elastic tensor transform functions")
     }
 
     {
-      dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::transform_4th_order_tensor_to_6x6_matrix(
-                                                               aspect::Utilities::Tensors::rotate_4th_order_tensor(
-                                                                 aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(reference_elastic_tensor),rotation_tensor));
-      dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_6x6_matrix(reference_elastic_tensor,rotation_tensor);
+      dealii::SymmetricTensor<2,6> result_up_1_rotate_down = aspect::Utilities::Tensors::transform_full_stiffness_tensor_to_voigt_stiffness_matrix(
+                                                               aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor,
+                                                                   aspect::Utilities::Tensors::transform_voigt_stiffness_matrix_to_full_stiffness_tensor(reference_elastic_tensor)));
+      dealii::SymmetricTensor<2,6> result_1_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor, reference_elastic_tensor);
 
       for (size_t i = 0; i < 6; i++)
         {
@@ -553,17 +553,17 @@ TEST_CASE("CPO elastic tensor transform functions")
             }
         }
 
-      dealii::SymmetricTensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_6x6_matrix_to_4th_order_tensor(result_up_1_rotate_down);
+      dealii::SymmetricTensor<4,3> result_up_10_rotate = aspect::Utilities::Tensors::transform_voigt_stiffness_matrix_to_full_stiffness_tensor(result_up_1_rotate_down);
 
       dealii::SymmetricTensor<2,6> result_5_rotate = result_1_rotate;
 
       for (size_t i = 0; i < 4; i++)
         {
-          result_up_10_rotate = aspect::Utilities::Tensors::rotate_4th_order_tensor(result_up_10_rotate, rotation_tensor);
-          result_5_rotate = aspect::Utilities::Tensors::rotate_6x6_matrix(result_5_rotate, rotation_tensor);
+          result_up_10_rotate = aspect::Utilities::Tensors::rotate_full_stiffness_tensor(rotation_tensor, result_up_10_rotate);
+          result_5_rotate = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(rotation_tensor, result_5_rotate);
         }
 
-      dealii::SymmetricTensor<2,6> result_up_10_rotate_down = aspect::Utilities::Tensors::transform_4th_order_tensor_to_6x6_matrix(result_up_10_rotate);
+      dealii::SymmetricTensor<2,6> result_up_10_rotate_down = aspect::Utilities::Tensors::transform_full_stiffness_tensor_to_voigt_stiffness_matrix(result_up_10_rotate);
 
       for (size_t i = 0; i < 6; i++)
         {
