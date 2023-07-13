@@ -102,6 +102,18 @@ are new to the project then we will work with you to ensure your contributions
 are formatted with this style, so please do not think of it as a road block if
 you would like to contribute some code.
 
+### Installing astyle
+To correctly indent the code in ASPECT you can use `make indent` or `ninja indent`
+depending on the build system you are using. The indenting script needs version 2.04 astyle.
+If you installed deal.ii through candi, the correct astyle if most likely already on your system and in your path.
+If the indenting script complains that it could not find (the correct version of) astyle,
+you can find it [here](https://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/).
+
+An easy way to install it is through using the following command in Linux (do not do this in the aspect directory):
+`mkdir astyle && cd astyle && wget 'https://sourceforge.net/projects/astyle/files/astyle/astyle 2.04/astyle_2.04_linux.tar.gz' && tar -zxvf astyle_2.04_linux.tar.gz && cd astyle/build/gcc && make && sudo make install`.
+This will create a new directory called astyle, download, unpack, compile and install it.
+When you add the bin direcoty to to your path, the indent command should find astyle.
+
 ### Changelog entries
 
 If your new pull request creates a change that is noticeable to ASPECT users,
