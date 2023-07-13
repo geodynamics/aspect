@@ -561,8 +561,15 @@ namespace aspect
           {
             dcr.stokes_residuals = solve_stokes();
           }
-        catch (...)
+        catch (const std::exception &exc)
           {
+            // Test that the exception we got is one of the two documented by
+            // throw_linear_solver_failure_exception(). If not, we have a genuine
+            // problem here, and will need to get outta here right away:
+            if ((dynamic_cast<const ExcMessage *>(&exc)==nullptr) &&
+                (dynamic_cast<const QuietException *>(&exc)==nullptr))
+              throw;
+
             // start the solve over again and try with a stabilized version
             pcout << "failed, trying again with stabilization" << std::endl;
             newton_handler->parameters.preconditioner_stabilization = Newton::Parameters::Stabilization::SPD;
@@ -615,6 +622,7 @@ namespace aspect
             else
               build_stokes_preconditioner();
 
+            // Give this another try:
             dcr.stokes_residuals = solve_stokes();
           }
       }
@@ -722,8 +730,7 @@ namespace aspect
                                "actually never be false, because the break statement "
                                "above should have caught it."));
           }
-        while (line_search_iteration <= newton_handler->parameters.max_newton_line_search_iterations);
-        // The while condition should actually never be false, because the break statement above should have caught it.
+        while (true);
       }
 
 
@@ -754,6 +761,7 @@ namespace aspect
     if (nonlinear_iteration != 0)
       last_pressure_normalization_adjustment = normalize_pressure(current_linearization_point);
   }
+
 
 
   template <int dim>
@@ -850,7 +858,7 @@ namespace aspect
     nonlinear_iteration = 0;
     do
       {
-        assemble_and_solve_defect_correction_Stokes(dcr, true);
+        assemble_and_solve_defect_correction_Stokes(dcr, /* use_picard= */true);
 
         pcout << std::endl;
 
@@ -877,6 +885,8 @@ namespace aspect
 
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
+
+
 
   template <int dim>
   void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes ()
@@ -918,7 +928,7 @@ namespace aspect
     nonlinear_iteration = 0;
     do
       {
-        assemble_and_solve_defect_correction_Stokes(dcr, true);
+        assemble_and_solve_defect_correction_Stokes(dcr, /* use_picard = */ true);
 
         pcout << std::endl;
 
@@ -1004,7 +1014,7 @@ namespace aspect
           pcout << ", " << relative_composition_residual[c];
         pcout << std::endl;
 
-        assemble_and_solve_defect_correction_Stokes(dcr, true);
+        assemble_and_solve_defect_correction_Stokes(dcr, /* use_picard = */ true);
 
         double max = 0.0;
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
