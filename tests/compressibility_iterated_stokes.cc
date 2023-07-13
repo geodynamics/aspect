@@ -33,15 +33,15 @@ namespace aspect
     {
       public:
 
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
           * Return true if the compressibility() function returns something that
           * is not zero.
           */
-        virtual bool
-        is_compressible () const;
+        bool
+        is_compressible () const override;
     };
 
   }

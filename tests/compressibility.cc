@@ -32,15 +32,15 @@ namespace aspect
     {
       public:
 
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
           * Return true if the compressibility() function returns something that
           * is not zero.
           */
-        virtual bool
-        is_compressible () const;
+        bool
+        is_compressible () const override;
     };
 
   }
@@ -102,9 +102,8 @@ namespace aspect
     class Compressibility : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
     };
   }
 }
@@ -120,7 +119,7 @@ namespace aspect
   {
     template <int dim>
     std::pair<std::string,std::string>
-    Compressibility<dim>::execute (TableHandler &statistics)
+    Compressibility<dim>::execute (TableHandler &)
     {
       // create a quadrature formula based on the temperature element alone.
       // be defensive about determining that what we think is the temperature
