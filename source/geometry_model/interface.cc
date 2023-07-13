@@ -52,7 +52,7 @@ namespace aspect
     Interface<dim>::get_periodic_boundary_pairs() const
     {
       // return an empty set in the base class
-      return std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>();
+      return {};
     }
 
 
@@ -85,7 +85,7 @@ namespace aspect
       Assert (false,
               ExcMessage ("The cartesian_to_natural_coordinates function has "
                           "not been implemented in this geometry model."));
-      return std::array<double,dim>();
+      return {};
     }
 
 
