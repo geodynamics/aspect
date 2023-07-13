@@ -408,16 +408,19 @@ namespace aspect
       double
       Elasticity<dim>::
       calculate_viscoelastic_strain_rate(const SymmetricTensor<2,dim> &strain_rate,
-                                         const SymmetricTensor<2,dim> &stress,
+                                         const SymmetricTensor<2,dim> &stored_stress,
                                          const double shear_modulus) const
       {
-        // The second term in the following expression corresponds to the
-        // elastic part of the strain rate deviator. Note the parallels with the
-        // viscous part of the strain rate deviator,
+        // The first term in the following expression is the deviator of the true strain rate
+        // of one or more isostress rheological elements (in series).
+        // One of these elements must be an elastic component (potentially damped).
+        // The second term corresponds to a fictional strain rate arising from
+        // elastic stresses stored from the last time step.
+        // Note the parallels with the viscous part of the strain rate deviator,
         // which is equal to 0.5 * stress / viscosity.
-        const SymmetricTensor<2,dim> edot_deviator = deviator(strain_rate) + 0.5*stress /
+        const SymmetricTensor<2,dim> edot_deviator = deviator(strain_rate) + 0.5*stored_stress /
                                                      calculate_elastic_viscosity(shear_modulus);
-
+        // Return the norm of the strain rate, or 0, whichever is larger.
         return std::sqrt(std::max(-second_invariant(edot_deviator), 0.));
       }
     }

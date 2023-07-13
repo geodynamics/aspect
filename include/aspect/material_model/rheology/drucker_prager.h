@@ -104,7 +104,10 @@ namespace aspect
                                 const double max_yield_stress) const;
 
           /**
-           * Compute the plastic viscosity with the yield stress and effective strain rate.
+           * Compute the apparent viscosity using the yield stress and effective strain rate.
+           * If the non_yielding_viscosity is not infinite
+           * (i.e., if there are other rheological elements accommodating strain), the returned
+           * value is the effective composite viscosity, not the pure "plastic" viscosity.
            */
           double
           compute_viscosity (const double cohesion,
@@ -112,7 +115,7 @@ namespace aspect
                              const double pressure,
                              const double effective_strain_rate,
                              const double max_yield_stress,
-                             const double pre_yield_viscosity = std::numeric_limits<double>::infinity()) const;
+                             const double non_yielding_viscosity = std::numeric_limits<double>::infinity()) const;
 
           /**
            * Compute the strain rate and first stress derivative
