@@ -3097,6 +3097,281 @@ namespace aspect
 
 
 
+    namespace Tensors
+    {
+      SymmetricTensor<4,3>
+      rotate_full_stiffness_tensor(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<4,3> &input_tensor)
+      {
+        SymmetricTensor<4,3> output;
+
+        // Dealii symmetric tensor is C_{ijkl} == C_{jikl} == C_{ijlk}, but not C_{klij}.
+        // So we make sure that those entries are not added twice in this loop by having
+        // the second and 4th loop starting with the first and third index respectively.
+        for (unsigned short int i1 = 0; i1 < 3; ++i1)
+          {
+            for (unsigned short int i2 = i1; i2 < 3; ++i2)
+              {
+                for (unsigned short int i3 = 0; i3 < 3; ++i3)
+                  {
+                    for (unsigned short int i4 = i3; i4 < 3; ++i4)
+                      {
+                        for (unsigned short int j1 = 0; j1 < 3; ++j1)
+                          {
+                            for (unsigned short int j2 = 0; j2 < 3; ++j2)
+                              {
+                                for (unsigned short int j3 = 0; j3 < 3; ++j3)
+                                  {
+                                    for (unsigned short int j4 = 0; j4 < 3; ++j4)
+                                      {
+                                        output[i1][i2][i3][i4] += rotation_tensor[i1][j1]*rotation_tensor[i2][j2]*rotation_tensor[i3][j3]*rotation_tensor[i4][j4]*input_tensor[j1][j2][j3][j4];
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+
+        return output;
+      }
+
+
+
+      SymmetricTensor<2,6>
+      rotate_voigt_stiffness_matrix(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor)
+      {
+        // we can represent the rotation of the 4th order tensor as a rotation in the Voigt
+        // notation by computing $C'=MCM^{-1}$. Because M is orthogonal we can replace $M^{-1}$
+        // with $M^T$ resulting in $C'=MCM^{T}$ (Carcione, J. M. (2007). Wave Fields in Real Media:
+        // Wave Propagation in Anisotropic, Anelastic, Porous and Electromagnetic Media. Netherlands:
+        // Elsevier Science. Pages 8-9).
+        Tensor<2,6> rotation_matrix;
+        // top left block
+        rotation_matrix[0][0] = rotation_tensor[0][0] * rotation_tensor[0][0];
+        rotation_matrix[1][0] = rotation_tensor[1][0] * rotation_tensor[1][0];
+        rotation_matrix[2][0] = rotation_tensor[2][0] * rotation_tensor[2][0];
+        rotation_matrix[0][1] = rotation_tensor[0][1] * rotation_tensor[0][1];
+        rotation_matrix[1][1] = rotation_tensor[1][1] * rotation_tensor[1][1];
+        rotation_matrix[2][1] = rotation_tensor[2][1] * rotation_tensor[2][1];
+        rotation_matrix[0][2] = rotation_tensor[0][2] * rotation_tensor[0][2];
+        rotation_matrix[1][2] = rotation_tensor[1][2] * rotation_tensor[1][2];
+        rotation_matrix[2][2] = rotation_tensor[2][2] * rotation_tensor[2][2];
+
+        // top right block
+        rotation_matrix[0][3] = 2.0 * rotation_tensor[0][1] * rotation_tensor[0][2];
+        rotation_matrix[1][3] = 2.0 * rotation_tensor[1][1] * rotation_tensor[1][2];
+        rotation_matrix[2][3] = 2.0 * rotation_tensor[2][1] * rotation_tensor[2][2];
+        rotation_matrix[0][4] = 2.0 * rotation_tensor[0][2] * rotation_tensor[0][0];
+        rotation_matrix[1][4] = 2.0 * rotation_tensor[1][2] * rotation_tensor[1][0];
+        rotation_matrix[2][4] = 2.0 * rotation_tensor[2][2] * rotation_tensor[2][0];
+        rotation_matrix[0][5] = 2.0 * rotation_tensor[0][0] * rotation_tensor[0][1];
+        rotation_matrix[1][5] = 2.0 * rotation_tensor[1][0] * rotation_tensor[1][1];
+        rotation_matrix[2][5] = 2.0 * rotation_tensor[2][0] * rotation_tensor[2][1];
+
+        // bottom left block
+        rotation_matrix[3][0] = rotation_tensor[1][0] * rotation_tensor[2][0];
+        rotation_matrix[4][0] = rotation_tensor[2][0] * rotation_tensor[0][0];
+        rotation_matrix[5][0] = rotation_tensor[0][0] * rotation_tensor[1][0];
+        rotation_matrix[3][1] = rotation_tensor[1][1] * rotation_tensor[2][1];
+        rotation_matrix[4][1] = rotation_tensor[2][1] * rotation_tensor[0][1];
+        rotation_matrix[5][1] = rotation_tensor[0][1] * rotation_tensor[1][1];
+        rotation_matrix[3][2] = rotation_tensor[1][2] * rotation_tensor[2][2];
+        rotation_matrix[4][2] = rotation_tensor[2][2] * rotation_tensor[0][2];
+        rotation_matrix[5][2] = rotation_tensor[0][2] * rotation_tensor[1][2];
+
+        // bottom right block
+        rotation_matrix[3][3] = rotation_tensor[1][1] * rotation_tensor[2][2] + rotation_tensor[1][2] * rotation_tensor[2][1];
+        rotation_matrix[4][3] = rotation_tensor[0][1] * rotation_tensor[2][2] + rotation_tensor[0][2] * rotation_tensor[2][1];
+        rotation_matrix[5][3] = rotation_tensor[0][1] * rotation_tensor[1][2] + rotation_tensor[0][2] * rotation_tensor[1][1];
+        rotation_matrix[3][4] = rotation_tensor[1][0] * rotation_tensor[2][2] + rotation_tensor[1][2] * rotation_tensor[2][0];
+        rotation_matrix[4][4] = rotation_tensor[0][2] * rotation_tensor[2][0] + rotation_tensor[0][0] * rotation_tensor[2][2];
+        rotation_matrix[5][4] = rotation_tensor[0][2] * rotation_tensor[1][0] + rotation_tensor[0][0] * rotation_tensor[1][2];
+        rotation_matrix[3][5] = rotation_tensor[1][1] * rotation_tensor[2][0] + rotation_tensor[1][0] * rotation_tensor[2][1];
+        rotation_matrix[4][5] = rotation_tensor[0][0] * rotation_tensor[2][1] + rotation_tensor[0][1] * rotation_tensor[2][0];
+        rotation_matrix[5][5] = rotation_tensor[0][0] * rotation_tensor[1][1] + rotation_tensor[0][1] * rotation_tensor[1][0];
+
+        const Tensor<2,6> rotation_matrix_transposed = transpose(rotation_matrix);
+
+        return symmetrize((rotation_matrix*input_tensor)*rotation_matrix_transposed);
+      }
+
+
+
+      SymmetricTensor<2,6>
+      to_voigt_stiffness_matrix(const SymmetricTensor<4,3> &input_tensor)
+      {
+        SymmetricTensor<2,6> output;
+
+        for (unsigned short int i = 0; i < 3; i++)
+          {
+            output[i][i] = input_tensor[i][i][i][i];
+          }
+
+        for (unsigned short int i = 1; i < 3; i++)
+          {
+            output[0][i] = 0.5*(input_tensor[0][0][i][i] + input_tensor[i][i][0][0]);
+            //symmetry: output[0][i] = output[i][0];
+          }
+        output[1][2]=0.5*(input_tensor[1][1][2][2]+input_tensor[2][2][1][1]);
+        //symmetry: output[2][1]=output[1][2];
+
+        for (unsigned short int i = 0; i < 3; i++)
+          {
+            output[i][3]=0.25*(input_tensor[i][i][1][2]+input_tensor[i][i][2][1]+ input_tensor[1][2][i][i]+input_tensor[2][1][i][i]);
+            //symmetry: output[3][i]=output[i][3];
+          }
+
+        for (unsigned short int i = 0; i < 3; i++)
+          {
+            output[i][4]=0.25*(input_tensor[i][i][0][2]+input_tensor[i][i][2][0]+ input_tensor[0][2][i][i]+input_tensor[2][0][i][i]);
+            //symmetry: output[4][i]=output[i][4];
+          }
+
+        for (unsigned short int i = 0; i < 3; i++)
+          {
+            output[i][5]=0.25*(input_tensor[i][i][0][1]+input_tensor[i][i][1][0]+input_tensor[0][1][i][i]+input_tensor[1][0][i][i]);
+            //symmetry: output[5][i]=output[i][5];
+          }
+
+        output[3][3]=0.25*(input_tensor[1][2][1][2]+input_tensor[1][2][2][1]+input_tensor[2][1][1][2]+input_tensor[2][1][2][1]);
+        output[4][4]=0.25*(input_tensor[0][2][0][2]+input_tensor[0][2][2][0]+input_tensor[2][0][0][2]+input_tensor[2][0][2][0]);
+        output[5][5]=0.25*(input_tensor[1][0][1][0]+input_tensor[1][0][0][1]+input_tensor[0][1][1][0]+input_tensor[0][1][0][1]);
+
+        output[3][4]=0.125*(input_tensor[1][2][0][2]+input_tensor[1][2][2][0]+input_tensor[2][1][0][2]+input_tensor[2][1][2][0]+input_tensor[0][2][1][2]+input_tensor[0][2][2][1]+input_tensor[2][0][1][2]+input_tensor[2][0][2][1]);
+        //symmetry: output[4][3]=output[3][4];
+        output[3][5]=0.125*(input_tensor[1][2][0][1]+input_tensor[1][2][1][0]+input_tensor[2][1][0][1]+input_tensor[2][1][1][0]+input_tensor[0][1][1][2]+input_tensor[0][1][2][1]+input_tensor[1][0][1][2]+input_tensor[1][0][2][1]);
+        //symmetry: output[5][3]=output[3][5];
+        output[4][5]=0.125*(input_tensor[0][2][0][1]+input_tensor[0][2][1][0]+input_tensor[2][0][0][1]+input_tensor[2][0][1][0]+input_tensor[0][1][0][2]+input_tensor[0][1][2][0]+input_tensor[1][0][0][2]+input_tensor[1][0][2][0]);
+        //symmetry: output[5][4]=output[4][5];
+
+        return output;
+      }
+
+
+
+      SymmetricTensor<4,3>
+      to_full_stiffness_tensor(const SymmetricTensor<2,6> &input_tensor)
+      {
+        SymmetricTensor<4,3> output;
+
+        for (unsigned short int i = 0; i < 3; i++)
+          for (unsigned short int j = 0; j < 3; j++)
+            for (unsigned short int k = 0; k < 3; k++)
+              for (unsigned short int l = 0; l < 3; l++)
+                {
+                  // The first part of the inline if statement gets the diagonal.
+                  // The second part is never higher than 5 (which is the limit of the tensor index)
+                  // because to reach this part the variables need to be different, which results in
+                  // at least a minus 1.
+                  const unsigned short int p = (i == j ? i : 6 - i - j);
+                  const unsigned short int q = (k == l ? k : 6 - k - l);
+                  output[i][j][k][l] = input_tensor[p][q];
+                }
+        return output;
+      }
+
+
+
+      Tensor<1,21>
+      to_voigt_stiffness_vector(const SymmetricTensor<2,6> &input)
+      {
+        return Tensor<1,21,double> (
+        {
+          input[0][0],           // 0  // 1
+          input[1][1],           // 1  // 2
+          input[2][2],           // 2  // 3
+          sqrt(2)*input[1][2],   // 3  // 4
+          sqrt(2)*input[0][2],   // 4  // 5
+          sqrt(2)*input[0][1],   // 5  // 6
+          2*input[3][3],         // 6  // 7
+          2*input[4][4],         // 7  // 8
+          2*input[5][5],         // 8  // 9
+          2*input[0][3],         // 9  // 10
+          2*input[1][4],         // 10 // 11
+          2*input[2][5],         // 11 // 12
+          2*input[2][3],         // 12 // 13
+          2*input[0][4],         // 13 // 14
+          2*input[1][5],         // 14 // 15
+          2*input[1][3],         // 15 // 16
+          2*input[2][4],         // 16 // 17
+          2*input[0][5],         // 17 // 18
+          2*sqrt(2)*input[4][5], // 18 // 19
+          2*sqrt(2)*input[3][5], // 19 // 20
+          2*sqrt(2)*input[3][4]  // 20 // 21
+        });
+
+      }
+
+
+
+      SymmetricTensor<2,6>
+      to_voigt_stiffness_matrix(const Tensor<1,21> &input)
+      {
+        SymmetricTensor<2,6> result;
+
+        constexpr double sqrt_2_inv = 1/sqrt(2);
+
+        result[0][0] = input[0];
+        result[1][1] = input[1];
+        result[2][2] = input[2];
+        result[1][2] = sqrt_2_inv * input[3];
+        result[0][2] = sqrt_2_inv * input[4];
+        result[0][1] = sqrt_2_inv * input[5];
+        result[3][3] = 0.5 * input[6];
+        result[4][4] = 0.5 * input[7];
+        result[5][5] = 0.5 * input[8];
+        result[0][3] = 0.5 * input[9];
+        result[1][4] = 0.5 * input[10];
+        result[2][5] = 0.5 * input[11];
+        result[2][3] = 0.5 * input[12];
+        result[0][4] = 0.5 * input[13];
+        result[1][5] = 0.5 * input[14];
+        result[1][3] = 0.5 * input[15];
+        result[2][4] = 0.5 * input[16];
+        result[0][5] = 0.5 * input[17];
+        result[4][5] = 0.5 * sqrt_2_inv * input[18];
+        result[3][5] = 0.5 * sqrt_2_inv * input[19];
+        result[3][4] = 0.5 * sqrt_2_inv * input[20];
+
+        return result;
+
+      }
+
+
+
+      Tensor<1,21>
+      to_voigt_stiffness_vector(const SymmetricTensor<4,3> &input_tensor)
+      {
+        return Tensor<1,21,double> (
+        {
+          input_tensor[0][0][0][0],           // 0  // 1
+          input_tensor[1][1][1][1],           // 1  // 2
+          input_tensor[2][2][2][2],           // 2  // 3
+          sqrt(2)*0.5*(input_tensor[1][1][2][2] + input_tensor[2][2][1][1]),   // 3  // 4
+          sqrt(2)*0.5*(input_tensor[0][0][2][2] + input_tensor[2][2][0][0]),   // 4  // 5
+          sqrt(2)*0.5*(input_tensor[0][0][1][1] + input_tensor[1][1][0][0]),   // 5  // 6
+          0.5*(input_tensor[1][2][1][2]+input_tensor[1][2][2][1]+input_tensor[2][1][1][2]+input_tensor[2][1][2][1]),         // 6  // 7
+          0.5*(input_tensor[0][2][0][2]+input_tensor[0][2][2][0]+input_tensor[2][0][0][2]+input_tensor[2][0][2][0]),         // 7  // 8
+          0.5*(input_tensor[1][0][1][0]+input_tensor[1][0][0][1]+input_tensor[0][1][1][0]+input_tensor[0][1][0][1]),         // 8  // 9
+          0.5*(input_tensor[0][0][1][2]+input_tensor[0][0][2][1]+input_tensor[1][2][0][0]+input_tensor[2][1][0][0]),         // 9  // 10
+          0.5*(input_tensor[1][1][0][2]+input_tensor[1][1][2][0]+input_tensor[0][2][1][1]+input_tensor[2][0][1][1]),         // 10 // 11
+          0.5*(input_tensor[2][2][0][1]+input_tensor[2][2][1][0]+input_tensor[0][1][2][2]+input_tensor[1][0][2][2]),         // 11 // 12
+          0.5*(input_tensor[2][2][1][2]+input_tensor[2][2][2][1]+input_tensor[1][2][2][2]+input_tensor[2][1][2][2]),         // 12 // 13
+          0.5*(input_tensor[0][0][0][2]+input_tensor[0][0][2][0]+input_tensor[0][2][0][0]+input_tensor[2][0][0][0]),         // 13 // 14
+          0.5*(input_tensor[1][1][0][1]+input_tensor[1][1][1][0]+input_tensor[0][1][1][1]+input_tensor[1][0][1][1]),         // 14 // 15
+          0.5*(input_tensor[1][1][1][2]+input_tensor[1][1][2][1]+input_tensor[1][2][1][1]+input_tensor[2][1][1][1]),         // 15 // 16
+          0.5*(input_tensor[2][2][0][2]+input_tensor[2][2][2][0]+input_tensor[0][2][2][2]+input_tensor[2][0][2][2]),         // 16 // 17
+          0.5*(input_tensor[0][0][0][1]+input_tensor[0][0][1][0]+input_tensor[0][1][0][0]+input_tensor[1][0][0][0]),         // 17 // 18
+          sqrt(2)*0.25*(input_tensor[0][2][0][1]+input_tensor[0][2][1][0]+input_tensor[2][0][0][1]+input_tensor[2][0][1][0]+input_tensor[0][1][0][2]+input_tensor[0][1][2][0]+input_tensor[1][0][0][2]+input_tensor[1][0][2][0]), // 18 // 19
+          sqrt(2)*0.25*(input_tensor[1][2][0][1]+input_tensor[1][2][1][0]+input_tensor[2][1][0][1]+input_tensor[2][1][1][0]+input_tensor[0][1][1][2]+input_tensor[0][1][2][1]+input_tensor[1][0][1][2]+input_tensor[1][0][2][1]), // 19 // 20
+          sqrt(2)*0.25*(input_tensor[1][2][0][2]+input_tensor[1][2][2][0]+input_tensor[2][1][0][2]+input_tensor[2][1][2][0]+input_tensor[0][2][1][2]+input_tensor[0][2][2][1]+input_tensor[2][0][1][2]+input_tensor[2][0][2][1])  // 20 // 21
+        });
+
+      }
+    }
+
+
 // Explicit instantiations
 
 #define INSTANTIATE(dim) \

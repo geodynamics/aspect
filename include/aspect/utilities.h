@@ -1217,6 +1217,63 @@ namespace aspect
       });
       return sorted_vec;
     }
+
+    /**
+     * Contains utility functions related to tensors.
+     */
+    namespace Tensors
+    {
+
+      /**
+       * Rotate a 3D 4th order tensor representing the full stiffnexx matrix using a 3D 2nd order rotation tensor
+       */
+      SymmetricTensor<4,3>
+      rotate_full_stiffness_tensor(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<4,3> &input_tensor);
+
+      /**
+       * Rotate a 6x6 voigt stiffness matrix using a 2nd order Voigt stiffness tensor.
+       * See https://en.wikipedia.org/wiki/Voigt_notation for more info on the Voigt notation.
+       */
+      SymmetricTensor<2,6>
+      rotate_voigt_stiffness_matrix(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor);
+
+      /**
+       * Transform a 4th order full stiffness tensor into a 6x6 Voigt stiffness matrix.
+       * See https://en.wikipedia.org/wiki/Voigt_notation for more info on the Voigt notation.
+       */
+      SymmetricTensor<2,6>
+      to_voigt_stiffness_matrix(const SymmetricTensor<4,3> &input_tensor);
+
+      /**
+       * Transform a 6x6 Voigt stiffness matrix into a 4th order full stiffness tensor.
+       * See https://en.wikipedia.org/wiki/Voigt_notation for more info on the Voigt notation.
+       */
+      SymmetricTensor<4,3>
+      to_full_stiffness_tensor(const SymmetricTensor<2,6> &input_tensor);
+
+      /**
+       * Form a 21D voigt stiffness vector from a 6x6 Voigt stiffness matrix.
+       * See https://en.wikipedia.org/wiki/Voigt_notation for more info on the Voigt notation.
+       */
+      Tensor<1,21>
+      to_voigt_stiffness_vector(const SymmetricTensor<2,6> &input_tensor);
+
+      /**
+       * Form a 21D voigt stiffness vector from a 6x6 Voigt stiffness matrix.
+       * See https://en.wikipedia.org/wiki/Voigt_notation for more info on the Voigt notation.
+       */
+      SymmetricTensor<2,6>
+      to_voigt_stiffness_matrix(const Tensor<1,21> &input_tensor);
+
+      /**
+       * Transform a 4th order full stiffness tensor into a 21D Voigt stiffness vector.
+       * See https://en.wikipedia.org/wiki/Voigt_notation for more info on the Voigt notation.
+       */
+      Tensor<1,21>
+      to_voigt_stiffness_vector(const SymmetricTensor<4,3> &input);
+
+    }
+
   }
 }
 #endif
