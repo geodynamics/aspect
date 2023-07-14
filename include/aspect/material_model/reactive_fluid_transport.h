@@ -60,7 +60,7 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
-        virtual double reference_darcy_coefficient () const;
+        virtual double reference_darcy_coefficient () const override;
 
         /**
          * Compute the free fluid fraction that can be present in the material based on the
@@ -72,7 +72,7 @@ namespace aspect
          * allowable free fluid fraction for each given input conditions.
          */
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &melt_fractions) const;
+                                     std::vector<double> &melt_fractions) const override;
 
         /**
          * Initialize the base model at the beginning of the model run
