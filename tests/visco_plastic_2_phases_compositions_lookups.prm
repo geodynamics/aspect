@@ -77,7 +77,7 @@ subsection Material model
   subsection Visco Plastic
     set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/test-steinberger-compressible/
     set Material file names              = constant_material_small.txt, constant_material_2_small.txt, constant_material_small.txt
-    set Material lookup setting = on
+    set Material lookup setting = true
     set Phase transition lookup phases = upper_crust: pv|ol, lower_crust: cpx, background: ol|wa|ri
 
     set Phase transition depths = upper_crust: 10e3, background: 70e3|90e3
