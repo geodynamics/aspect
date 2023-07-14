@@ -65,8 +65,8 @@ namespace aspect
               case no_reaction:
               {
                 // A fluid-rock reaction model where no reactions occur.
-                // The melt (fluid) fraction at any point is equal
-                // to the sume of the bound fluid content and porosity,
+                // The melt (fluid) fraction (volume percent) at any point is
+                // equal to the sume of the bound fluid content and porosity,
                 // with the latter determined by the assigned initial
                 // porosity, fluid boundary conditions, and fluid
                 // transport through the model.
@@ -112,9 +112,9 @@ namespace aspect
     {
       base_model->evaluate(in,out);
 
-      // Modify the viscosity from the base model based on the presence of fluid.
       const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
+      // Modify the viscosity from the base model based on the presence of fluid.
       if (in.requests_property(MaterialProperties::viscosity))
         {
           // Scale the base model viscosity value based on the porosity.
@@ -144,6 +144,9 @@ namespace aspect
               if (in.requests_property(MaterialProperties::viscosity))
                 {
                   const double phi_0 = 0.05;
+
+                  // Limit the porosity to be no smaller than 1e-8 when
+                  // calculating fluid effects on viscosities.
                   porosity = std::max(porosity,1e-8);
                   fluid_out->compaction_viscosities[q] = out.viscosities[q] * shear_to_bulk_viscosity_ratio * phi_0/porosity;
                 }
@@ -191,7 +194,7 @@ namespace aspect
         {
           prm.declare_entry("Base model","visco plastic",
                             Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
-                            "The name of a material model that will be modified by the "
+                            "The name of a material model incorporating the "
                             "addition of fluids. Valid values for this parameter "
                             "are the names of models that are also valid for the "
                             "``Material models/Model name'' parameter. See the documentation for "
