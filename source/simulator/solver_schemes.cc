@@ -505,7 +505,9 @@ namespace aspect
     // Test whether the rhs has dropped so much that we can assume that the iteration is done.
     if (dcr.residual < dcr.residual_old * 1e-8)
       {
-        pcout << "   Nonlinear residual reduction has been very large (" << dcr.residual/dcr.residual_old << "); skipping Stokes solve" << std::endl;
+        pcout << "   Nonlinear residual reduction has been very large ("
+              << dcr.residual/dcr.residual_old << "); skipping Stokes solve"
+              << std::endl;
         return;
       }
 
