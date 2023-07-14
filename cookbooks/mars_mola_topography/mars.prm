@@ -51,7 +51,7 @@ subsection Geometry model
   subsection Initial topography model
     set Model name = ascii data
     subsection Ascii data model
-      set Data directory       = /home/cedrict/ASPECT/pr6/aspect/build/
+      set Data directory       = ./
       set Data file name       = MOLA_aspect.ascii
       set Scale factor = 10
     end
