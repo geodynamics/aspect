@@ -7,6 +7,7 @@ set Dimension                              = 2
 set End time                               = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = no Advection, no Stokes
+set Adiabatic surface temperature          = 273
 
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model
