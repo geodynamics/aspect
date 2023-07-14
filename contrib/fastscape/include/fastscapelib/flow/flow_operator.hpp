@@ -458,9 +458,10 @@ namespace fastscapelib
     template <class OP>
     void flow_operator_sequence<FG>::add_operator(std::shared_ptr<OP> ptr)
     {
-        static_assert(std::is_base_of_v<flow_operator, OP>, "not a flow_operator type");
-
-        if constexpr (std::is_same_v<OP, flow_snapshot>)
+        // static_assert(std::is_base_of_v<flow_operator, OP>, "not a flow_operator type");
+         static_assert(std::is_base_of<flow_operator, OP>::value, "not a flow_operator type");
+        // if constexpr (std::is_same_v<OP, flow_snapshot>)
+        if constexpr (std::is_same<OP, flow_snapshot>::value)
         {
             update_snapshots(*ptr);
         }
