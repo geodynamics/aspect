@@ -1276,6 +1276,32 @@ namespace aspect
       Tensor<1,21>
       to_voigt_stiffness_vector(const SymmetricTensor<4,3> &input);
 
+
+      namespace internal
+      {
+        constexpr Tensor<3,3> create_levi_civita_tensor_3d()
+        {
+          Tensor<3,3> permutation_operator_3d;
+          permutation_operator_3d[0][1][2]  = 1;
+          permutation_operator_3d[1][2][0]  = 1;
+          permutation_operator_3d[2][0][1]  = 1;
+          permutation_operator_3d[0][2][1]  = -1;
+          permutation_operator_3d[1][0][2]  = -1;
+          permutation_operator_3d[2][1][0]  = -1;
+          return permutation_operator_3d;
+        }
+      }
+
+      /**
+       * The Levi-Civita tensor, also called a permutation or "totally antisymmetric" tensor.
+       * See https://en.wikipedia.org/wiki/Levi-Civita_symbol for a definition.
+       * See https://en.wikipedia.org/wiki/Levi-Civita_symbol for more info.
+       */
+      template<int dim>
+      constexpr Tensor<dim,dim> levi_civita;
+
+      template <> constexpr Tensor<3,3> levi_civita<3> = internal::create_levi_civita_tensor_3d();
+
     }
 
   }
