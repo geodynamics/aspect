@@ -1,31 +1,8 @@
-#parameter file for replicating Matsumoto & Tomoda 1983
+# Parameter file for replicating Matsumoto & Tomoda 1983
 
-set Dimension                              = 2
-set Start time                             = 0
-set End time                               = 50e6
-set Use years in output instead of seconds = true
-set CFL number                             = 0.25
+include subduction_initiation_basis.prm
+
 set Output directory                       = output-subduction-initiation-comp
-set Pressure normalization                 = surface
-
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Number of cheap Stokes solver steps = 0
-  end
-end
-
-subsection Geometry model
-  set Model name = box
-  subsection Box
-    set X extent  = 400e3
-    set Y extent  = 180e3
-    set X repetitions = 2
-  end
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = left, right, bottom, top
-end
 
 
 #materials are:
@@ -39,28 +16,9 @@ subsection Material model
   set Model name = multicomponent
   subsection Multicomponent
     set Densities = 3200, 3200, 3300, 3300, 1030
-    set Viscosities = 1e21, 1e21, 1e22, 1e22, 1e19
+    set Viscosities = 1e21, 1e21, 1e22, 1e22, 1e18
     set Viscosity averaging scheme = harmonic
     set Thermal expansivities = 0
-  end
-end
-
-subsection Gravity model
-  set Model name = vertical
-  subsection Vertical
-    set Magnitude = 9.81
-  end
-end
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators = bottom, top
-  set List of model names = box
-end
-
-subsection Initial temperature model
-  set Model name = function
-  subsection Function
-    set Function expression = 0
   end
 end
 
@@ -72,20 +30,12 @@ subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
-    set Function constants  = L0=300e3
-    set Function expression = if((x>=L0 && y<162e3),1,0) ;\
-                              if((x<=L0 && y>120e3 && y<=170e3),1,0) ;\
-                              if((x>=L0 && y>=162e3 && y<=172e3),1,0) ;\
-                              if((x<=L0 && y>170e3) || (x>=L0 && y>172e3),1,0)
+    set Function constants  = L0=300e3, H=180e3
+    set Function expression = if((x>=L0 && y<H-18e3),1,0) ;\
+                              if((x<=L0 && y>H-60e3 && y<=H-10e3),1,0) ;\
+                              if((x>=L0 && y>=H-18e3 && y<=H-8e3),1,0) ;\
+                              if((x<=L0 && y>H-10e3) || (x>=L0 && y>H-8e3),1,0)
   end
-end
-
-subsection Mesh refinement
-  set Initial adaptive refinement   = 2
-  set Initial global refinement     = 5
-  set Refinement fraction           = 0.9
-  set Strategy                      = composition
-  set Coarsening fraction           = 0
 end
 
 subsection Postprocess

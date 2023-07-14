@@ -5,12 +5,12 @@
 
 The setup for this experiment originates in {cite:t}`matsumoto:tomoda:1983`.
 
-In this very early computational geodynamics paper the authors
+In this very early computational geodynamics paper, the authors
 are interested in predicting the future process of crustal and lithospheric movement
 at the gigantic fracture zone in the Northeastern
 Pacific by means of numerical simulation
 of contact between two kinds of viscous fluid of different density.
-They then solve the incompressible isothermal linear Stokes equations
+They then formulate the incompressible isothermal linear Stokes equations
 with a stream function approach and the resulting equation is solved by means of the
 Finite Difference method and the Marker and Cell (MAC) method.
 
@@ -19,8 +19,11 @@ There are three fluids in the domain: water ($\rho_w=1030~\text{ kg m}^{-3}$, $\
 lithosphere ($\rho_l=3300~\text{ kg m}^{-3}$, $\eta_l$) and
 asthenosphere ($\rho_a=3200~\text{ kg m}^{-3}$, $\eta_a$).
 Note that although the water viscosity is correct, this is probably not
-the value that was used in the authors since it would most likely lead to
-numerical errors. We then set $\eta_w=10^{19}~\text{ Pa s}$ (we can then speak of 'sticky water').
+the value that was used by the authors since it would most likely lead to
+numerical errors. We thus set $\eta_w=10^{19}~\text{ Pa s}$
+(we can then speak of 'sticky water').
+Note that the choice of adequate viscosity for sticky air/water layers
+is discussed in depth in \cite{crameri:etal:2012}.
 Also, all viscosities in the paper
 are expressed in Poise with $1~\text{ Poise}=0.1~\text{ Pa s}$.
 
@@ -69,10 +72,13 @@ younger lithosphere, : is older asthenosphere and $\cdot$ is younger asthenosphe
 Taken from {cite:t}`matsumoto:tomoda:1983`.
 ```
 
-Two parameter files are provided for Case 1: one using
-compositional fields, and one using the particle-in-cell approach.
+Two parameter files are provided for Case 1: one
+[using compositional fields](https://github.com/geodynamics/aspect/blob/main/cookbooks/subduction_initiation/subduction_initiation_compositional_fields.prm), and one
+[using the particle-in-cell approach](https://github.com/geodynamics/aspect/blob/main/cookbooks/subduction_initiation/subduction_initiation_particle_in_cell.prm).
 Other cases can be run by changing the viscosities and/or the domain size accordingly in the
-parameter files.
+parameter files. Note that changing the domain size does not just require changing
+the geometry model, but also the initial composition model.
+
 Results for Case 1 in the original publication are shown in {numref}`fig:subduction-initiation-results2`
 and results obtained in ASPECT are shown in {numref}`fig:subduction-initiation-results3`.
 
@@ -88,4 +94,5 @@ Taken from {cite:t}`matsumoto:tomoda:1983`.
 
 Case 1 (obtained with the compositional fields approach) at
 (a) 0 Ma; (b) 12 Ma; (c) 21 Ma; (d) 31 Ma; (e) 41 Ma.
+Left column is density [kg/m$^3$], right column is velocity magnitude [m/year].
 ```
