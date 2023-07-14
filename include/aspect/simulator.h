@@ -691,7 +691,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_single_advection_iterated_newton_stokes ();
+      void solve_single_advection_and_iterated_newton_stokes ();
 
       /**
        * This function implements one scheme for the various
