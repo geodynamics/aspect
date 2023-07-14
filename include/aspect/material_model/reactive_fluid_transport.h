@@ -62,6 +62,10 @@ namespace aspect
          */
         virtual double reference_darcy_coefficient () const override;
 
+
+        virtual std::vector<double> tian_equilibrium_bound_water_content(const MaterialModel::MaterialModelInputs<dim> &in,
+                                                                         unsigned int q) const;
+
         /**
          * Compute the free fluid fraction that can be present in the material based on the
          * fluid content of the material and the fluid solubility for the given input conditions.
@@ -169,7 +173,9 @@ namespace aspect
         {
           no_reaction,
           zero_solubility
-        } fluid_solid_reaction_scheme;
+          tian_approximation
+        } 
+        fluid_solid_reaction_scheme;
     };
   }
 }

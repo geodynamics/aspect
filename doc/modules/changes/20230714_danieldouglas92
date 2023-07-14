@@ -1,0 +1,4 @@
+Implemented a new fluid-rock interaction scheme for the reactive fluid
+transport material model based on a parametrization by Tian et al., 2018. 
+<br>
+ (Daniel Douglas, 2023/07/14)
