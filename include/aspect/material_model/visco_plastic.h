@@ -241,17 +241,6 @@ namespace aspect
 
       private:
         /**
-         * A function that fills the prescribed additional outputs in the
-         * MaterialModelOutputs object that is handed over, if it exists,
-         * in this case, densities for the projected density approximation.
-         * Does nothing otherwise.
-         */
-        void fill_prescribed_outputs (const unsigned int i,
-                                      const std::vector<double> &volume_fractions,
-                                      const MaterialModel::MaterialModelInputs<dim> &in,
-                                      MaterialModel::MaterialModelOutputs<dim> &out) const;
-
-        /**
          * Pointer to a composition mask, which is meant to be filled with
          * one entry per compositional field that determines if this
          * field is considered to represent a mass fractions (if the entry
