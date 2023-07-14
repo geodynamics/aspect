@@ -71,7 +71,7 @@ namespace aspect
                     ExcMessage("No crystal preferred orientation property plugin found."));
 
         AssertThrow(manager.check_plugin_order("crystal preferred orientation","cpo elastic tensor"),
-                    ExcMessage("To use the cpo elastic tensor plugin, the cpo plugin need to be defined before this plugin."));
+                    ExcMessage("To use the cpo elastic tensor plugin, the cpo plugin needs to be defined before this plugin."));
 
         cpo_data_position = manager.get_data_info().get_position_by_plugin_index(manager.get_plugin_index_by_name("cpo"));
       }
@@ -156,7 +156,7 @@ namespace aspect
           this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>();
 
 
-        SymmetricTensor<2,6> C_average = voigt_average_elastic_tensor(cpo_particle_property,
+        const SymmetricTensor<2,6> C_average = voigt_average_elastic_tensor(cpo_particle_property,
                                                                       cpo_data_position,
                                                                       data);
 

@@ -181,18 +181,18 @@ namespace aspect
 
           /**
            * The stiffness tensors for olivine and enstatite.
-           * Todo: generatize this into a vector.
+           * Todo: generalize this into a vector.
            */
           SymmetricTensor<2,6> stiffness_matrix_olivine;
           SymmetricTensor<2,6> stiffness_matrix_enstatite;
 
           /**
-           * The number of grain per particle
+           * The number of grains per particle.
            */
           unsigned int n_grains;
 
           /**
-           * The number of minerals per particle
+           * The number of minerals per particle.
            */
           unsigned int n_minerals;
 
