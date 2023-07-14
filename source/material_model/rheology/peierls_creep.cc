@@ -187,11 +187,12 @@ namespace aspect
         // Apply a strict cutoff if this option is chosen by user. A strain rate cutoff
         // will be first computed and then compared to the input strain rate. A cutoff
         // on stress will be triggered if the input strain rate is smaller.
+        const double log_strain_rate = std::log(strain_rate);
+
         if (apply_strict_cutoff)
           {
-            const std::pair<double, double> edot_and_deriv = compute_exact_log_strain_rate_and_derivative(p.stress_cutoff, pressure, temperature, p);
-            double edot_ii_cutoff = std::exp(edot_and_deriv.first);
-            if (strain_rate < edot_ii_cutoff)
+            const std::pair<double, double> log_edot_and_deriv = compute_exact_log_strain_rate_and_derivative(std::log(p.stress_cutoff), pressure, temperature, p);
+            if (log_strain_rate < log_edot_and_deriv.first)
               {
                 double viscosity = 0.5 * p.stress_cutoff / strain_rate;
                 return viscosity;
@@ -201,14 +202,12 @@ namespace aspect
         // Create a starting guess for the stress using
         // the approximate form of the viscosity expression
         double viscosity = compute_approximate_viscosity(strain_rate, pressure, temperature, composition);
-        double log_strain_rate = std::log(strain_rate);
-        double stress_ii = 2.*viscosity*strain_rate;
-        double log_stress_ii = std::log(stress_ii);
+        double log_stress_ii = std::log(2.*viscosity*strain_rate);
 
         // Before the first iteration, compute the residuel
         // of the initial guess and the derivative
         unsigned int stress_iteration = 0;
-        const std::pair<double, double> log_edot_and_deriv = compute_exact_log_strain_rate_and_derivative(stress_ii, pressure, temperature, p);
+        const std::pair<double, double> log_edot_and_deriv = compute_exact_log_strain_rate_and_derivative(log_stress_ii, pressure, temperature, p);
         double strain_rate_residual = log_edot_and_deriv.first - log_strain_rate;
         double log_strain_rate_deriv = log_edot_and_deriv.second;
 
@@ -217,12 +216,9 @@ namespace aspect
           {
             // If the strain rate derivative is zero, we catch it below.
             if (log_strain_rate_deriv>std::numeric_limits<double>::min())
-              {
-                log_stress_ii -= strain_rate_residual/log_strain_rate_deriv;
-                stress_ii = std::exp(log_stress_ii);
-              }
+              log_stress_ii -= strain_rate_residual/log_strain_rate_deriv;
 
-            const std::pair<double, double> log_edot_and_deriv = compute_exact_log_strain_rate_and_derivative(stress_ii, pressure, temperature, p);
+            const std::pair<double, double> log_edot_and_deriv = compute_exact_log_strain_rate_and_derivative(log_stress_ii, pressure, temperature, p);
 
             strain_rate_residual = log_edot_and_deriv.first - log_strain_rate;
             log_strain_rate_deriv = log_edot_and_deriv.second;
@@ -235,11 +231,10 @@ namespace aspect
             // Currently, we still throw an exception, but if this exception is thrown,
             // another more robust iterative scheme should be implemented
             // (similar to that seen in the diffusion-dislocation material model).
-            const bool abort_newton_iteration = !numbers::is_finite(stress_ii)
+            const bool abort_newton_iteration = !numbers::is_finite(log_stress_ii)
                                                 || !numbers::is_finite(strain_rate_residual)
                                                 || !numbers::is_finite(log_strain_rate_deriv)
                                                 || log_strain_rate_deriv < std::numeric_limits<double>::min()
-                                                || !numbers::is_finite(std::pow(stress_ii, p.stress_exponent))
                                                 || stress_iteration == stress_max_iteration_number;
             AssertThrow(!abort_newton_iteration,
                         ExcMessage("No convergence has been reached in the loop that determines "
@@ -250,7 +245,7 @@ namespace aspect
                                    "parameter 'Maximum Peierls strain rate iterations'."));
           }
 
-        viscosity = 0.5*stress_ii/strain_rate;
+        viscosity = 0.5*std::exp(log_stress_ii)/strain_rate;
 
         return viscosity;
       }
@@ -392,7 +387,7 @@ namespace aspect
 
       template <int dim>
       std::pair<double, double>
-      PeierlsCreep<dim>::compute_exact_log_strain_rate_and_derivative (const double stress,
+      PeierlsCreep<dim>::compute_exact_log_strain_rate_and_derivative (const double log_stress,
                                                                        const double pressure,
                                                                        const double temperature,
                                                                        const PeierlsCreepParameters creep_parameters) const
@@ -407,6 +402,7 @@ namespace aspect
         * The deriv_log is the derivative of log(edot_ii) to log(stress).
         */
         const PeierlsCreepParameters p = creep_parameters;
+        const double stress = std::exp(log_stress);
         if (stress < p.stress_cutoff)
           {
 
@@ -442,7 +438,7 @@ namespace aspect
             const double c = std::pow(stress/p.peierls_stress, p.glide_parameter_p);
             const double d = std::pow(1. - c, p.glide_parameter_q);
 
-            const double log_edot_ii = std::log(p.prefactor) + p.stress_exponent * std::log(stress) - b*d ;
+            const double log_edot_ii = std::log(p.prefactor) + p.stress_exponent * log_stress - b*d ;
             const double deriv_log = p.stress_exponent + p.glide_parameter_p * p.glide_parameter_q * b * c * std::pow(1-c, p.glide_parameter_q - 1);
 
             return std::make_pair(log_edot_ii, deriv_log);
