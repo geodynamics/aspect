@@ -299,11 +299,11 @@ namespace aspect
             // processors
             catch (const std::exception &exc)
               {
-                Utilities::linear_solver_failed("iterative (bottom right) solver",
-                                                "BlockSchurPreconditioner::vmult",
-                                                std::vector<SolverControl> {solver_control},
-                                                exc,
-                                                src.block(0).get_mpi_communicator());
+                Utilities::throw_linear_solver_failure_exception("iterative (bottom right) solver",
+                                                                 "BlockSchurPreconditioner::vmult",
+                                                                 std::vector<SolverControl> {solver_control},
+                                                                 exc,
+                                                                 src.block(0).get_mpi_communicator());
               }
           }
 
@@ -336,11 +336,11 @@ namespace aspect
           // processors
           catch (const std::exception &exc)
             {
-              Utilities::linear_solver_failed("iterative (top left) solver",
-                                              "BlockSchurPreconditioner::vmult",
-                                              std::vector<SolverControl> {solver_control},
-                                              exc,
-                                              src.block(0).get_mpi_communicator());
+              Utilities::throw_linear_solver_failure_exception("iterative (top left) solver",
+                                                               "BlockSchurPreconditioner::vmult",
+                                                               std::vector<SolverControl> {solver_control},
+                                                               exc,
+                                                               src.block(0).get_mpi_communicator());
             }
         }
       else
@@ -480,12 +480,12 @@ namespace aspect
                                       solver_control);
 
 
-        Utilities::linear_solver_failed("iterative advection solver",
-                                        "Simulator::solve_advection",
-                                        std::vector<SolverControl> {solver_control},
-                                        exc,
-                                        mpi_communicator,
-                                        parameters.output_directory+"solver_history.txt");
+        Utilities::throw_linear_solver_failure_exception("iterative advection solver",
+                                                         "Simulator::solve_advection",
+                                                         std::vector<SolverControl> {solver_control},
+                                                         exc,
+                                                         mpi_communicator,
+                                                         parameters.output_directory+"solver_history.txt");
       }
 
     // signal successful solver
@@ -868,12 +868,13 @@ namespace aspect
                 if (parameters.n_expensive_stokes_solver_steps > 0)
                   solver_controls.push_back(solver_control_expensive);
 
-                Utilities::linear_solver_failed("iterative Stokes solver",
-                                                "Simulator::solve_stokes",
-                                                solver_controls,
-                                                exc,
-                                                mpi_communicator,
-                                                parameters.output_directory+"solver_history.txt");
+                // Exit with an exception that describes the underlying cause:
+                Utilities::throw_linear_solver_failure_exception("iterative Stokes solver",
+                                                                 "Simulator::solve_stokes",
+                                                                 solver_controls,
+                                                                 exc,
+                                                                 mpi_communicator,
+                                                                 parameters.output_directory+"solver_history.txt");
               }
           }
 

@@ -1006,13 +1006,17 @@ namespace aspect
      * @p mpi_communicator The MPI Communicator of the problem.
      * @p output_filename An optional file name into which (if present) the solver history will
      *   be written.
+     *
+     * @return This function never returns normally. It always exits via an exception, either
+     *   of type ExcMessage (on rank 0 of the parallel computation) or QuietException (on all
+     *   other ranks).
      */
-    void linear_solver_failed(const std::string &solver_name,
-                              const std::string &function_name,
-                              const std::vector<SolverControl> &solver_controls,
-                              const std::exception &exc,
-                              const MPI_Comm &mpi_communicator,
-                              const std::string &output_filename = "");
+    void throw_linear_solver_failure_exception(const std::string &solver_name,
+                                               const std::string &function_name,
+                                               const std::vector<SolverControl> &solver_controls,
+                                               const std::exception &exc,
+                                               const MPI_Comm &mpi_communicator,
+                                               const std::string &output_filename = "");
 
     /**
      * Conversion object where one can provide a function that returns
