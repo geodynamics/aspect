@@ -101,6 +101,7 @@ cookbooks/steinberger/doc/steinberger.md
 cookbooks/morency_doin_2004/doc/morency_doin_2004.md
 cookbooks/crustal_deformation/doc/crustal_deformation.md
 cookbooks/continental_extension/doc/continental_extension.md
+cookbooks/mars_mola_topography/doc/mars_topo.md
 cookbooks/inner_core_convection/doc/inner_core_convection.md
 cookbooks/global_melt/doc/global_melt.md
 cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.md
