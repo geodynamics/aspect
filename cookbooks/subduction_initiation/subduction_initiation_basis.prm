@@ -46,4 +46,3 @@ subsection Mesh refinement
   set Strategy                      = composition
   set Coarsening fraction           = 0
 end
-
