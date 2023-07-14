@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -314,7 +314,7 @@ namespace aspect
       data_OES.clear();
       if (name_OES.size()==0)
         return;
-      std::istringstream in(Utilities::read_and_distribute_file_content(name_OES.c_str(),
+      std::istringstream in(Utilities::read_and_distribute_file_content(name_OES,
                                                                         this->get_mpi_communicator()));
       if (in.good())
         {
@@ -341,7 +341,7 @@ namespace aspect
       // The core evolution is quite slow, so the time units used here is billion years.
       t/=1.e9*year_in_seconds;
       double w=0.;
-      for (unsigned i=1; i<data_OES.size(); i++)
+      for (unsigned i=1; i<data_OES.size(); ++i)
         {
           if (t>=data_OES[i-1].t && t<data_OES[i].t )
             {
@@ -373,7 +373,7 @@ namespace aspect
         return Rc;
       if (dT0>=0. && dT1>=0.)
         return 0.;
-      for (int i=0; i<max_steps; i++)
+      for (int i=0; i<max_steps; ++i)
         {
           double rm=(r0+r1)/2.,
                  dTm=get_T(T,rm)-get_solidus(get_X(rm),get_Pressure(rm));
@@ -466,7 +466,7 @@ namespace aspect
               }
             R_1 = (R_0 + R_2) / 2.;
             dT1 = get_dT(R_1);
-            steps++;
+            ++steps;
           }
 
       // Calculate new R,T,X
@@ -675,6 +675,9 @@ namespace aspect
 
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+        // Do not request viscosity or reaction rates
+        in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties |
+                                  MaterialModel::MaterialProperties::thermal_conductivity;
 
         // for every surface face on which it makes sense to compute a
         // heat flux and that is owned by this processor,
@@ -694,7 +697,7 @@ namespace aspect
                   {
                     fe_face_values.reinit (cell, f);
 
-                    in.reinit(fe_face_values, cell, this->introspection(), this->get_solution(), /*compute_strain_rates = */ false);
+                    in.reinit(fe_face_values, cell, this->introspection(), this->get_solution());
 
                     fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
                         temperature_gradients);
@@ -735,8 +738,8 @@ namespace aspect
         global_CMB_flux = Utilities::MPI::sum (local_CMB_flux, this->get_mpi_communicator());
         global_CMB_area = Utilities::MPI::sum (local_CMB_area, this->get_mpi_communicator());
 
-        // Using area averaged heat-flux density times core mantle boundary area to calculate total heat-flux on the 3D sphere.
-        // By doing this, using dynamic core evolution with geometry other than 3D spherical shell becomes possible.
+        // Using area averaged heat-flux density times core mantle boundary area to calculate total heat-flux on the 3d sphere.
+        // By doing this, using dynamic core evolution with geometry other than 3d spherical shell becomes possible.
         double average_CMB_heatflux_density = global_CMB_flux / global_CMB_area;
         core_data.Q = average_CMB_heatflux_density * 4. * M_PI * Rc * Rc;
       }
@@ -794,7 +797,7 @@ namespace aspect
     fun_Sn(double B,double R,double n) const
     {
       double S=R/(2.*sqrt(M_PI));
-      for (unsigned i=1; i<=n; i++)
+      for (unsigned i=1; i<=n; ++i)
         S+=B/sqrt(M_PI)*exp(-pow(i,2)/4.)/i*sinh(i*R/B);
       return S;
     }
@@ -941,7 +944,7 @@ namespace aspect
     {
       double time=this->get_time()+0.5*this->get_timestep();
       double Ht=0;
-      for (unsigned i=0; i<n_radioheating_elements; i++)
+      for (unsigned i=0; i<n_radioheating_elements; ++i)
         Ht+=heating_rate[i]*initial_concentration[i]*1e-6*pow(0.5,time/half_life[i]/year_in_seconds/1e9);
       return Ht;
     }

@@ -46,12 +46,9 @@ subsection Material model
     set Activation energies for dislocation creep = 0.
     set Activation volumes for dislocation creep  = 0.
 
-    set Include viscoelasticity = true
-
     set Elastic shear moduli        = 1e11
     set Use fixed elastic time step = false
     set Fixed elastic time step     = 20
-    set Use stress averaging        = false
     set Viscosity averaging scheme  = harmonic
 
     # Nonsensical cohesion values (1e50) are assigned to the compositional fields tracking elastic stresses

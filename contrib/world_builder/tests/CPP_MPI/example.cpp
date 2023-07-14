@@ -1,5 +1,5 @@
 
-#include <world_builder/world.h>
+#include "world_builder/world.h"
 
 #include <stdio.h>
 #include <mpi.h>
@@ -45,11 +45,21 @@ int main(int argc, char *argv[]) {
 
   printf("2d temperature: \n");
   std::array<double,2> coords_2d = {{x, z}};
+  temperature = world->temperature(coords_2d,depth);
+  printf("temperature in C = %f \n", temperature);
+
+  printf("2d temperature (deprecated): \n");
+  coords_2d = {{x, z}};
   temperature = world->temperature(coords_2d,depth,gravity);
   printf("temperature in C = %f \n", temperature);
 
   printf("3d temperature: \n");
   std::array<double,3> coords_3d = {{x, y, y}};
+  temperature = world->temperature(coords_3d,depth);
+  printf("temperature in C = %f \n", temperature);
+
+  printf("3d temperature (deprecated): \n");
+  coords_3d = {{x, y, y}};
   temperature = world->temperature(coords_3d,depth,gravity);
   printf("temperature in C = %f \n", temperature);
 

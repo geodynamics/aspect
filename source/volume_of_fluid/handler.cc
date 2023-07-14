@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,6 +23,8 @@
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/mesh_refinement/volume_of_fluid_interface.h>
 #include <aspect/simulator/assemblers/interface.h>
+#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/two_merged_boxes.h>
 
 #include <deal.II/base/work_stream.h>
 #include <deal.II/grid/filtered_iterator.h>
@@ -262,7 +264,7 @@ namespace aspect
       prm.declare_entry ("Number initialization samples", "3",
                          Patterns::Integer (1),
                          "Number of divisions per dimension when computing the initial volume fractions."
-                         "If set to the default of 3 for a 2D model, then initialization will be based on "
+                         "If set to the default of 3 for a 2d model, then initialization will be based on "
                          "the initialization criterion at $3^2=9$ points within each cell. If the initialization "
                          "based on a composition style initial condition, a larger value may be desired for better "
                          "approximation of the initial fluid fractions. Smaller values will suffice in the case of "
@@ -291,7 +293,7 @@ namespace aspect
                         "are then based on an iterated midpoint quadrature. "
                         "Resultant volume fractions outside of the bounds will be "
                         "coerced to the nearest valid value (ie 0 or 1). "
-                        "If ``level set`` is specified, the intial data will be assumed to "
+                        "If ``level set`` is specified, the initial data will be assumed to "
                         "be in the form of a signed distance level set function "
                         "(i.e. a function which is positive when in the "
                         "fluid, negative outside, and zero on the interface "
@@ -318,7 +320,7 @@ namespace aspect
           {
             // Add this field as the next volume of fluid field
             volume_of_fluid_field_names.push_back(names_of_compositional_fields[i]);
-            // Note that compositional field indicies include temperature as field 0, so increase index by 1
+            // Note that compositional field indices include temperature as field 0, so increase index by 1
             volume_of_fluid_composition_map_index[i+1] = n_volume_of_fluid_fields;
             ++n_volume_of_fluid_fields;
           }
@@ -418,8 +420,9 @@ namespace aspect
     AssertThrow(!this->get_material_model().is_compressible(),
                 ExcMessage("Volume of Fluid Interface Tracking currently assumes incompressibility."));
 
-    AssertThrow(dynamic_cast<const MappingCartesian<dim> *>(&(this->get_mapping())),
-                ExcMessage("Volume of Fluid Interface Tracking currently requires Cartesian Mappings"));
+    AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()) ||
+                Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()),
+                ExcMessage("Volume of Fluid Interface Tracking currently requires a box geometry."));
 
     AssertThrow(!this->get_parameters().mesh_deformation_enabled,
                 ExcMessage("Volume of Fluid Interface Tracking is currently incompatible with the Free Surface implementation."));

@@ -1,6 +1,0 @@
-Changed: The minimum and maximum refinement functions
-now evaluate the center of each mesh cell to determine
-whether to coarsen or refine a cell instead of evaluating
-all vertices.
-<br>
-(Anne Glerum, 2022/03/17)

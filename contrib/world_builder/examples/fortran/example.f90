@@ -4,7 +4,7 @@ use WorldBuilder
 IMPLICIT NONE
 
   ! Declare the types which will be needed.
-  REAL*8 :: temperature,x=120e3,y=500e3,z=0,depth=0,gravity = 10
+  REAL*8 :: temperature,x=120e3,y=500e3,z=0,depth=0
   INTEGER :: composition_number = 3
   INTEGER*8 :: random_number_seed = 1.0 !! use a random number seed larger than zero
   REAL*8 :: composition
@@ -16,11 +16,11 @@ IMPLICIT NONE
   CALL create_world(cworld, file_name, has_output_dir, output_dir, random_number_seed)
 
   write(*, *) '2d temperature:'
-  CALL temperature_2d(cworld,x,z,depth,gravity,temperature)
+  CALL temperature_2d(cworld,x,z,depth,temperature)
   write(*, *) 'temperature in fortran = ', temperature
 
   write(*, *) '3d temperature:'
-  CALL temperature_3d(cworld,x,y,z,depth,gravity,temperature)
+  CALL temperature_3d(cworld,x,y,z,depth,temperature)
   write(*, *) 'temperature in fortran = ', temperature
 
     write(*, *) '2d composition:'

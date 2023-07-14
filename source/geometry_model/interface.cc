@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -42,7 +42,7 @@ namespace aspect
     Interface<dim>::get_symbolic_boundary_names_map() const
     {
       // return an empty map in the base class
-      return std::map<std::string,types::boundary_id>();
+      return {};
     }
 
 
@@ -52,7 +52,7 @@ namespace aspect
     Interface<dim>::get_periodic_boundary_pairs() const
     {
       // return an empty set in the base class
-      return std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>();
+      return {};
     }
 
 
@@ -85,7 +85,7 @@ namespace aspect
       Assert (false,
               ExcMessage ("The cartesian_to_natural_coordinates function has "
                           "not been implemented in this geometry model."));
-      return std::array<double,dim>();
+      return {};
     }
 
 
@@ -268,7 +268,7 @@ namespace aspect
     register_geometry_model (const std::string &name,
                              const std::string &description,
                              void (*declare_parameters_function) (ParameterHandler &),
-                             Interface<dim> *(*factory_function) ())
+                             std::unique_ptr<Interface<dim>> (*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,
@@ -278,7 +278,7 @@ namespace aspect
 
 
     template <int dim>
-    Interface<dim> *
+    std::unique_ptr<Interface<dim>>
     create_geometry_model (ParameterHandler &prm)
     {
       std::string model_name;
@@ -385,7 +385,7 @@ namespace aspect
   register_geometry_model<dim> (const std::string &, \
                                 const std::string &, \
                                 void ( *) (ParameterHandler &), \
-                                Interface<dim> *( *) ()); \
+                                std::unique_ptr<Interface<dim>>( *) ()); \
   \
   template  \
   void \
@@ -396,7 +396,7 @@ namespace aspect
   write_plugin_graph<dim> (std::ostream &); \
   \
   template \
-  Interface<dim> * \
+  std::unique_ptr<Interface<dim>> \
   create_geometry_model<dim> (ParameterHandler &prm);
 
     ASPECT_INSTANTIATE(INSTANTIATE)

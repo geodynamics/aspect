@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -267,8 +267,8 @@ namespace aspect
         // measured by the minimum distance from any of the other vertices
         // to the first vertex), then we call this a horizontal face.
         constexpr unsigned int max_n_vertices_per_face = (dim==2 ? 2 : 4);
-        std::array<double, max_n_vertices_per_face>     distances_to_center;
-        std::array<double, max_n_vertices_per_face - 1> distances_to_first_vertex;
+        std::array<double, max_n_vertices_per_face>     distances_to_center {};
+        std::array<double, max_n_vertices_per_face - 1> distances_to_first_vertex {};
         distances_to_center[0] = face->vertex(0).norm_square();
         for (unsigned int i = 1; i < face->n_vertices(); ++i)
           {
@@ -337,7 +337,7 @@ namespace aspect
               const double radius=v.norm();
               output_vertex[0] = radius;
               output_vertex[1] = std::atan2(v[1], v[0]);
-              // See 2D case
+              // See 2d case
               if (output_vertex[1] < 0.0)
                 if (output_vertex[1] < point1_lon - 100 * std::abs(point1_lon)*std::numeric_limits<double>::epsilon())
                   output_vertex[1] += 2.0 * numbers::PI;
@@ -502,8 +502,9 @@ namespace aspect
     Chunk<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
+      const std::vector<unsigned int> rep_vec(repetitions.begin(), repetitions.end());
       GridGenerator::subdivided_hyper_rectangle (coarse_grid,
-                                                 repetitions,
+                                                 rep_vec,
                                                  point1,
                                                  point2,
                                                  true);
@@ -548,35 +549,31 @@ namespace aspect
         {
           case 2:
           {
-            static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("bottom", 0),
-                  std::pair<std::string,types::boundary_id>("top",    1),
-                  std::pair<std::string,types::boundary_id>("west",   2),
-                  std::pair<std::string,types::boundary_id>("east",   3)
-                };
-
-            return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                             std::end(mapping));
+            return
+            {
+              {"bottom", 0},
+              {"top",    1},
+              {"west",   2},
+              {"east",   3}
+            };
           }
 
           case 3:
           {
-            static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("bottom", 0),
-                  std::pair<std::string,types::boundary_id>("top",    1),
-                  std::pair<std::string,types::boundary_id>("west",   2),
-                  std::pair<std::string,types::boundary_id>("east",   3),
-                  std::pair<std::string,types::boundary_id>("south",  4),
-                  std::pair<std::string,types::boundary_id>("north",  5)
-                };
-
-            return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                             std::end(mapping));
+            return
+            {
+              {"bottom", 0},
+              {"top",    1},
+              {"west",   2},
+              {"east",   3},
+              {"south",  4},
+              {"north",  5}
+            };
           }
         }
 
       Assert (false, ExcNotImplemented());
-      return std::map<std::string,types::boundary_id>();
+      return {};
     }
 
 
@@ -754,10 +751,8 @@ namespace aspect
     Chunk<dim>::point_is_in_domain(const Point<dim> &point) const
     {
       AssertThrow(!this->get_parameters().mesh_deformation_enabled ||
-                  // we are still before the first time step has started
-                  this->get_timestep_number() == 0 ||
-                  this->get_timestep_number() == numbers::invalid_unsigned_int,
-                  ExcMessage("After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
+                  this->simulator_is_past_initialization() == false,
+                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
@@ -784,7 +779,7 @@ namespace aspect
       // AsciiDataBoundary for topography which uses this function....
       const Point<dim> transformed_point = manifold.pull_back_sphere(position_point);
       std::array<double,dim> position_array;
-      for (unsigned int i = 0; i < dim; i++)
+      for (unsigned int i = 0; i < dim; ++i)
         position_array[i] = transformed_point(i);
 
       return position_array;
@@ -812,7 +807,7 @@ namespace aspect
       // Ignore the topography to avoid a loop when calling the
       // AsciiDataBoundary for topography which uses this function....
       Point<dim> position_point;
-      for (unsigned int i = 0; i < dim; i++)
+      for (unsigned int i = 0; i < dim; ++i)
         position_point[i] = position_tensor[i];
       const Point<dim> transformed_point = manifold.push_forward_sphere(position_point);
 
@@ -880,16 +875,11 @@ namespace aspect
       {
         prm.enter_subsection("Chunk");
         {
-
-          const double degtorad = dealii::numbers::PI/180;
-
-          repetitions.resize(dim);
-
           point1[0] = prm.get_double ("Chunk inner radius");
           point2[0] = prm.get_double ("Chunk outer radius");
           repetitions[0] = prm.get_integer ("Radius repetitions");
-          point1[1] = prm.get_double ("Chunk minimum longitude") * degtorad;
-          point2[1] = prm.get_double ("Chunk maximum longitude") * degtorad;
+          point1[1] = prm.get_double ("Chunk minimum longitude") * constants::degree_to_radians;
+          point2[1] = prm.get_double ("Chunk maximum longitude") * constants::degree_to_radians;
           repetitions[1] = prm.get_integer ("Longitude repetitions");
 
           AssertThrow (point1[0] < point2[0],
@@ -908,8 +898,8 @@ namespace aspect
 
           if (dim == 3)
             {
-              point1[2] = prm.get_double ("Chunk minimum latitude") * degtorad;
-              point2[2] = prm.get_double ("Chunk maximum latitude") * degtorad;
+              point1[2] = prm.get_double ("Chunk minimum latitude") * constants::degree_to_radians;
+              point2[2] = prm.get_double ("Chunk maximum latitude") * constants::degree_to_radians;
               repetitions[2] = prm.get_integer ("Latitude repetitions");
 
               AssertThrow (point1[2] < point2[2],

@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 - 2023 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/simulator.h>
 #include <aspect/material_model/rheology/composite_visco_plastic.h>
 
@@ -19,7 +39,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   const unsigned int composition = 0;
   const std::vector<double> volume_fractions = {1.};
   const std::vector<double> phase_function_values = std::vector<double>();
-  const std::vector<unsigned int> n_phases_per_composition = std::vector<unsigned int>(1);
+  const std::vector<unsigned int> n_phase_transitions_per_composition = std::vector<unsigned int>(1);
 
   // Next, we initialise instances of the composite rheology and
   // individual creep mechanisms.
@@ -58,7 +78,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   prm.set("Plastic damper viscosity", "1.e17");
   prm.set("Maximum yield stress", "5e8");
   drucker_prager->parse_parameters(prm, n_phases);
-  Rheology::DruckerPragerParameters p = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phases_per_composition);
+  Rheology::DruckerPragerParameters p = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
 
   // The creep components are arranged in series with each other.
   // This package of components is then arranged in parallel with

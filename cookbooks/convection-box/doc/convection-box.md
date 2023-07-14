@@ -7,7 +7,9 @@ left and right, and cooled from the top. We will also consider the simplest
 model, the incompressible Boussinesq approximation with constant coefficients
 $\eta,\rho_0,\mathbf g,C_p, k$, for this testcase. Furthermore, we assume that
 the medium expands linearly with temperature. This leads to the following set
-of equations: $$\begin{aligned}
+of equations:
+```{math}
+\begin{aligned}
   -\nabla \cdot \left[2\eta \varepsilon(\mathbf u)
                 \right] + \nabla p &=
   \rho_0 (1-\alpha (T-T_0)) \mathbf g
@@ -23,14 +25,19 @@ of equations: $$\begin{aligned}
   &=
   0
   & \qquad
-  & \textrm{in $\Omega$}.\end{aligned}$$ It is well known that we can
+  & \textrm{in $\Omega$}.
+\end{aligned}
+```
+It is well known that we can
 non-dimensionalize this set of equations by introducing the Rayleigh number
 $Ra=\frac{\rho_0 g \alpha \Delta T h^3}{\eta \kappa}$, where $h$ is the height
 of the box, $\kappa = \frac{k}{\rho C_p}$ is the thermal diffusivity and
 $\Delta T$ is the temperature difference between top and bottom of the box.
 Formally, we can obtain the non-dimensionalized equations by using the above
-form and setting coefficients in the following way: $$\begin{aligned}
-  \rho_0=C_p=\kappa=\alpha=\eta=h=\Delta T=1, \qquad T_0=0, \qquad g=Ra,\end{aligned}$$
+form and setting coefficients in the following way:
+```{math}
+  \rho_0=C_p=\kappa=\alpha=\eta=h=\Delta T=1, \qquad T_0=0, \qquad g=Ra,
+```
 where $\mathbf g=-g \mathbf e_z$ is the gravity vector in negative
 $z$-direction. We will see all of these values again in the input file
 discussed below. One point to note is that for the Boussinesq approximation,
@@ -38,7 +45,7 @@ as described above, the density in the temperature equation is chosen as the
 reference density $\rho_0$ rather than the full density
 $\rho(1-\alpha(T-T_0))$ as we see it in the buoyancy term on the right hand
 side of the momentum equation. As is able to handle different approximations
-of the equations (see Section [\[sec:approximate-equations\]][1]), we also
+of the equations (see Section {ref}`sec:methods:approximate-equations`), we also
 have to specify in the input file that we want to use the Boussinesq
 approximation. The problem is completed by stating the velocity boundary
 conditions: tangential flow along all four of the boundaries of the box.
@@ -63,27 +70,27 @@ is well understood:
 -   For certain values of the Rayleigh number, very accurate values for the
     heat flux through the bottom and top boundaries are available in the
     literature. For example, Blankenbach *et al.* report a non-dimensional
-    heat flux of $4.884409 \pm 0.00001$, see (Blankenbach et al. 1989). We
+    heat flux of $4.884409 \pm 0.00001$, see {cite:t}`BBC89`. We
     will compare our results against this value below.
 
 With this said, let us consider how to represent this situation in practice.
 
-##### The input file.
+## The input file.
 
 The verbal description of this problem can be translated into an input file in
-the following way (see Section&nbsp;[\[sec:parameters\]][2] for a description
+the following way (see {ref}`parameters` for a description
 of all of the parameters that appear in the following input file, and the
 indices at the end of this manual if you want to find a particular parameter;
 you can find the input file to run this cookbook example in
-[cookbooks/convection-box.prm][]):
+[cookbooks/convection-box.prm](https://github.com/geodynamics/aspect/blob/main/cookbooks/convection-box/convection-box.prm):
 
-``` prmfile
+```{literalinclude} convection-box.prm
 ```
 
-##### Running the program.
+## Running the program.
 
 When you run this program for the first time, you are probably still running
-in debug mode (see Section&nbsp;[\[sec:debug-mode\]][3]) and you will get
+in debug mode (see Section&nbsp;{ref}`sec:run-aspect:debug-mode`) and you will get
 output like the following:
 
 ``` ksh
@@ -154,7 +161,7 @@ hundred time steps and at the end of the program:
 
 In other words, the program ran more than 2 times faster than before. Not all
 operations became faster to the same degree: assembly, for example, is an area
-that traverses a lot of code both in and in and so encounters a lot of
+that traverses a lot of code both in and out and so encounters a lot of
 verification code in debug mode. On the other hand, solving linear systems
 primarily requires lots of matrix vector operations. Overall, the fact that in
 this example, assembling linear systems and preconditioners takes so much time
@@ -166,36 +173,37 @@ such as the viscosity, as well as in 3d, we have to spend much more work
 solving linear systems whereas the effort to assemble linear systems remains
 the same.
 
-##### Visualizing results.
+## Visualizing results.
 
 Having run the program, we now want to visualize the numerical results we got.
-can generate graphical output in formats understood by pretty much any
+ASPECT can generate graphical output in formats understood by pretty much any
 visualization program (see the parameters described in
-Section&nbsp;[\[parameters:Postprocess/Visualization\]][4]) but we will here
-follow the discussion in Section&nbsp;[\[sec:viz\]][5] and use the default VTU
+Section&nbsp;{ref}`parameters:Postprocess/Visualization`) but we will here
+follow the discussion in {ref}`sec:run-aspect:visualizing-results` and use the default VTU
 output format to visualize using the Visit program.
 
 In the parameter file we have specified that graphical output should be
 generated every 0.01 time units. Looking through these output files (which can
 be found in the folder `output-convection-box`, as specified in the input
 file), we find that the flow and temperature fields quickly converge to a
-stationary state. Fig.&nbsp;[2][] shows the initial and final states of this
-simulation.
+stationary state. {numref}`fig:convection-box-fields` shows the initial
+and final states of this simulation.
 
-.
-<img src="cookbooks/convection-box/doc/visit0000.png" title="fig:" id="fig:convection-box-fields" style="width:40.0%" alt="Convection in a box: Initial temperature and velocity field (left) and final state (right)." />
-<img src="cookbooks/convection-box/doc/visit0001.png" title="fig:" id="fig:convection-box-fields" style="width:40.0%" alt="Convection in a box: Initial temperature and velocity field (left) and final state (right)." />
-.
+```{figure-md} fig:convection-box-fields
+<img src="convection_box_fields.*" style="width:80.0%" />
+
+Convection in a box: Initial temperature and velocity field (left) and final state (right).
+```
 
 There are many other things we can learn from the output files generated by ,
 specifically from the statistics file that contains information collected at
 every time step and that has been discussed in
-Section&nbsp;[\[sec:viz-stat\]][6]. In particular, in our input file, we have
+{ref}`sec:run-aspect:visualize:stat-data`. In particular, in our input file, we have
 selected that we would like to compute velocity, temperature, and heat flux
 statistics. These statistics, among others, are listed in the statistics file
 whose head looks like this for the current input file:
 
-``` prmfile
+```
 # 1: Time step number
 # 2: Time (seconds)
 # 3: Time step size (seconds)
@@ -220,23 +228,23 @@ whose head looks like this for the current input file:
 ... lots of numbers arranged in columns ...
 ```
 
-Fig.&nbsp;[4][] shows the results of visualizing the data that can be found in
+{numref}`fig:convection-box-stats` shows the results of visualizing the data that can be found in
 columns 2 (the time) plotted against columns 11 and 12 (root mean square and
 maximal velocities). Plots of this kind can be generated with `Gnuplot` by
-typing (see Section&nbsp;[\[sec:viz-stat\]][6] for a more thorough
+typing (see {ref}`sec:run-aspect:visualize:stat-data` for a more thorough
 discussion):
 
       plot "output-convection-box/statistics" using 2:11 with lines
 
 Fig.&nbsp;[4][] shows clearly that the simulation enters a steady state after
 about $t\approx 0.1$ and then changes very little. This can also be observed
-using the graphical output files from which we have generated Fig.&nbsp;[2][].
+using the graphical output files from which we have generated Fig.{ref}`fig:convection-box-fields`.
 One can look further into this data to find that the flux through the top and
 bottom boundaries is not exactly the same (up to the obvious difference in
 sign, given that at the bottom boundary heat flows into the domain and at the
 top boundary out of it) at the beginning of the simulation until the fluid has
 attained its equilibrium. However, after $t\approx 0.2$, the fluxes differ by
-only $\num{5e-5}$, i.e., by less than 0.001% of their magnitude.[1] The flux
+only $5\times 10^{-5}$, i.e., by less than 0.001% of their magnitude.[^footnote1] The flux
 we get at the last time step, 4.787, is less than 2% away from the value
 reported in (Blankenbach et al. 1989) ($\approx$<!-- -->4.88) although we
 compute on a $16\times 16$ mesh and the values reported by Blankenbach are
@@ -248,13 +256,16 @@ $\frac{\partial T}{\partial \mathbf n}=0$ along these boundaries, but this is
 subject to discretization errors. It is easy to verify that the heat flux
 through these two boundaries disappears as we refine the mesh further.
 
-.
-<img src="cookbooks/convection-box/doc/velocity.png" title="fig:" id="fig:convection-box-stats" style="width:40.0%" alt="Convection in a box: Root mean square and maximal velocity as a function of simulation time (left). Heat flux through the four boundaries of the box (right)." />
-<img src="cookbooks/convection-box/doc/heatflux.png" title="fig:" id="fig:convection-box-stats" style="width:40.0%" alt="Convection in a box: Root mean square and maximal velocity as a function of simulation time (left). Heat flux through the four boundaries of the box (right)." />
-.
+```{figure-md} fig:convection-box-stats
+<img src="convection_box_stats.*" style="width:100.0%" />
 
-Furthermore, automatically also collects statistics about many of its internal
-workings. Fig.&nbsp;[5][] shows the number of iterations required to solve the
+Convection in a box: Root mean square and maximal velocity as a
+function of simulation time (left). Heat flux through the four boundaries of
+the box (right).
+```
+
+Furthermore, ASPECT automatically also collects statistics about many of its internal
+workings. {numref}`fig:convection-box-iterations` shows the number of iterations required to solve the
 Stokes and temperature linear systems in each time step. It is easy to see
 that these are more difficult to solve in the beginning when the solution
 still changes significant from time step to time step. However, after some
@@ -266,13 +277,19 @@ look at any of the more complex cookbooks, you will find that one needs many
 more iterations to solve these equations.
 
 .
-<img src="cookbooks/convection-box/doc/iterations.png" title="fig:" id="fig:convection-box-iterations" style="width:40.0%" alt="Convection in a box: Number of linear iterations required to solve the Stokes and temperature equations in each time step." />
-.
+```{figure-md} fig:convection-box-iterations
+<img src="iterations.*" style="width:40.0%" />
 
-##### Play time 1: Different Rayleigh numbers.
+Convection in a box: Number of linear iterations required to solve
+the Stokes and temperature equations in each time step.}
+```
+
+## Play time 1: Different Rayleigh numbers.
 
 After showing you results for the input file as it can be found in
-[cookbooks/convection-box.prm][], let us end this section with a few ideas on
+[cookbooks/convection-box.prm]
+(https://github.com/geodynamics/aspect/blob/main/cookbooks/convection-box/convection-box.prm),
+let us end this section with a few ideas on
 how to play with it and what to explore. The first direction one could take
 this example is certainly to consider different Rayleigh numbers. As mentioned
 above, for the value $Ra=10^4$ for which the results above have been produced,
@@ -292,17 +309,20 @@ period. As we consider fluids with larger and larger $Ra$, this pattern goes
 through a sequence of period-doubling events until flow finally becomes
 chaotic. The structures of the flow pattern also become smaller and smaller.
 
-.
-<img src="cookbooks/convection-box/doc/ra_1e2_visit0000.png" title="fig:" id="fig:convection-box-fields-different-Ra" style="width:40.0%" alt="Convection in a box: Temperature fields at the end of a simulation for Ra=10^2 where thermal diffusion dominates (left) and Ra=10^6 where convective heat transport dominates (right). The mesh on the right is clearly too coarse to resolve the structure of the solution." />
-<img src="cookbooks/convection-box/doc/ra_1e6_visit0001.png" title="fig:" id="fig:convection-box-fields-different-Ra" style="width:40.0%" alt="Convection in a box: Temperature fields at the end of a simulation for Ra=10^2 where thermal diffusion dominates (left) and Ra=10^6 where convective heat transport dominates (right). The mesh on the right is clearly too coarse to resolve the structure of the solution." />
-.
+```{figure-md} fig:convection-box-fields-different-Ra
+<img src="convection_box_fields_different_Ra.*" style="width:80.0%" />
 
-.
-<img src="cookbooks/convection-box/doc/ra_1e6_velocity.png" title="fig:" id="fig:convection-box-stats-different-Ra" style="width:40.0%" alt="Convection in a box: Velocities (left) and heat flux across the top and bottom boundaries (right) as a function of time at Ra=10^6." />
-<img src="cookbooks/convection-box/doc/ra_1e6_heatflux.png" title="fig:" id="fig:convection-box-stats-different-Ra" style="width:40.0%" alt="Convection in a box: Velocities (left) and heat flux across the top and bottom boundaries (right) as a function of time at Ra=10^6." />
-.
+Convection in a box: Temperature fields at the end of a simulation for $Ra=10^2$ where thermal diffusion dominates (left) and Ra=10^6 where convective heat transport dominates (right). The mesh on the right is clearly too coarse to resolve the structure of the solution.
+```
 
-We illustrate these situations in Figs.&nbsp;[7][] and [9][]. The first shows
+```{figure-md} fig:convection-box-stats-different-Ra
+<img src="convection_box_stats_different_Ra.*" style="width:80.0%" />
+
+Convection in a box: Velocities (left) and heat flux across the top and bottom boundaries (right) as a function of time at $Ra=10^6$.
+```
+
+We illustrate these situations in {numref}`fig:convection-box-fields-different-Ra`
+and {numref}`fig:convection-box-stats-different-Ra`. The first shows
 the temperature field at the end of a simulation for $Ra=10^2$ (below $Ra_c$)
 and at $Ra=10^6$. Obviously, for the right picture, the mesh is not fine
 enough to accurately resolve the features of the flow field and we would have
@@ -314,12 +334,12 @@ can also be seen by looking at movies of the solution.
 To generate these results, remember that we have chosen $g=Ra$ in our input
 file. In other words, changing the input file to contain the parameter setting
 
-``` prmfile
+```{literalinclude} gravity.part.prm
 ```
 
 will achieve the desired effect of computing with $Ra=10^6$.
 
-##### Play time 2: Thinking about finer meshes.
+## Play time 2: Thinking about finer meshes.
 
 In our computations for $Ra=10^4$ we used a $16\times 16$ mesh and obtained a
 value for the heat flux that differed from the generally accepted value from
@@ -328,7 +348,7 @@ may be interesting to think about computing even more accurately. This is
 easily done by using a finer mesh, for example. In the parameter file above,
 we have chosen the mesh setting as follows:
 
-``` prmfile
+```{literalinclude} refine.part.prm
 ```
 
 We start out with a box geometry consisting of a single cell that is refined
@@ -345,7 +365,7 @@ a significantly increased computational time.
 
 A better strategy is to realize that for $Ra=10^4$, the flow enters a steady
 state after settling in during the first part of the simulation (see, for
-example, the graphs in Fig.&nbsp;[4][]). Since we are not particularly
+example, the graphs in {numref}`fig:convection-box-stats`). Since we are not particularly
 interested in this initial transient process, there is really no reason to
 spend CPU time using a fine mesh and correspondingly small time steps during
 this part of the simulation (remember that each refinement results in four
@@ -355,7 +375,7 @@ scale perfectly with the number of cells). Rather, we can use a parameter in
 the input file that let&rsquo;s us increase the mesh resolution at later
 times. To this end, let us use the following snippet for the input file:
 
-``` prmfile
+```{literalinclude} refine2.part.prm
 ```
 
 What this does is the following: We start with an $8\times 8$ mesh (3 times
@@ -367,12 +387,13 @@ i.e. no cells at all. In effect, at these additional refinement times, we do
 another global refinement, bringing us to refinement levels 4, 5 and finally
 6.
 
-.
-<img src="cookbooks/convection-box/doc/steps_unknowns.png" title="fig:" id="fig:convection-box-stats-steps" style="width:40.0%" alt="Convection in a box: Refinement in stages. Total number of unknowns in each time step, including all velocity, pressure and temperature unknowns (left) and heat flux across the top boundary (right)." />
-<img src="cookbooks/convection-box/doc/steps_heatflux.png" title="fig:" id="fig:convection-box-stats-steps" style="width:40.0%" alt="Convection in a box: Refinement in stages. Total number of unknowns in each time step, including all velocity, pressure and temperature unknowns (left) and heat flux across the top boundary (right)." />
-.
+```{figure-md} fig:convection-box-stats-steps
+<img src="convection_box_stats_steps.*" style="width:80.0%" />
 
-Fig.&nbsp;[11][] shows the results. In the left panel, we see how the number
+Convection in a box: Refinement in stages. Total number of unknowns in each time step, including all velocity, pressure and temperature unknowns (left) and heat flux across the top boundary (right).
+```
+
+{numref}`fig:convection-box-stats-steps` shows the results. In the left panel, we see how the number
 of unknowns grows over time (note the logscale for the $y$-axis). The right
 panel displays the heat flux. The jumps in the number of cells is clearly
 visible in this picture as well. This may be surprising at first but remember
@@ -389,13 +410,13 @@ computations: With a globally four times refined mesh, we get a value of 4.787
 $4.884409\pm 0.00001$). With a globally five times refined mesh we get 4.879,
 and with a globally six times refined mesh we get 4.89 (an error of almost
 0.1%). With the mesh generated using the procedure above we also get 4.89 with
-the digits printed on the screen[2] (also corresponding to an error of almost
+the digits printed on the screen[^footnote2] (also corresponding to an error of almost
 0.1%). In other words, our simple procedure of refining the mesh during the
 simulation run yields the same accuracy as using the mesh that is globally
 refined in the beginning of the simulation, while needing a much lower compute
 time.
 
-##### Play time 3: Changing the finite element in use.
+## Play time 3: Changing the finite element in use.
 
 Another way to increase the accuracy of a finite element computation is to use
 a higher polynomial degree for the finite element shape functions. By default,
@@ -404,7 +425,7 @@ ones for the pressure. However, this can be changed with a single number in
 the input file.
 
 Before doing so, let us consider some aspects of such a change. First, looking
-at the pictures of the solution in Fig.&nbsp;[2][], one could surmise that the
+at the pictures of the solution in {numref}`fig:convection-box-fields`, one could surmise that the
 quadratic elements should be able to resolve the velocity field reasonably
 well given that it is rather smooth. On the other hand, the temperature field
 has a boundary layer at the top and bottom. One could conjecture that the
@@ -427,7 +448,7 @@ out to be the cheaper of the two options.
 Following these considerations, let us add the following section to the
 parameter file:
 
-``` prmfile
+```{literalinclude} disc.part.prm
 ```
 
 This leaves the velocity and pressure shape functions at quadratic and linear
@@ -492,34 +513,8 @@ almost the same value as we got initially with the lower order Stokes element.
 In other words, at least for this testcase, it really was the temperature
 variable that limits the accuracy.
 
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-BBC89" class="csl-entry">
-
-Blankenbach, B., F. Busse, U. Christensen, L. Cserepes, D. Gunkel, U. Hansen,
-H. Harder, et al. 1989. &ldquo;A Benchmark Comparison for Mantle Convection
-Codes.&rdquo; *Geophys. J. Int.* 98: 23&ndash;38.
-
-</div>
-
-</div>
-
-[1] This difference is far smaller than the numerical error in the heat flux
+[^footnote1]: This difference is far smaller than the numerical error in the heat flux
 on the mesh this data is computed on.
 
-[2] The statistics file gives this value to more digits: 4.89008498. However,
+[^footnote2]: The statistics file gives this value to more digits: 4.89008498. However,
 these are clearly more digits than the result is accurate.
-
-  [1]: #sec:approximate-equations
-  [2]: #sec:parameters
-  [cookbooks/convection-box.prm]: cookbooks/convection-box.prm
-  [3]: #sec:debug-mode
-  [4]: #parameters:Postprocess/Visualization
-  [5]: #sec:viz
-  [2]: #fig:convection-box-fields
-  [6]: #sec:viz-stat
-  [4]: #fig:convection-box-stats
-  [5]: #fig:convection-box-iterations
-  [7]: #fig:convection-box-fields-different-Ra
-  [9]: #fig:convection-box-stats-different-Ra
-  [11]: #fig:convection-box-stats-steps

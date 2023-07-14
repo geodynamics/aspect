@@ -91,6 +91,9 @@ subsection Mesh refinement
   set Strategy                           = strain rate, topography
 end
 
+# After 1 My, the model domain volume should have shrunk from 2e10 m2
+# to 1.8 m2 because of the prescribed outflow in combination
+# with a free surface.
 subsection Postprocess
-  set List of postprocessors = topography
+  set List of postprocessors = topography, domain volume statistics
 end

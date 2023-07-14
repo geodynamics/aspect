@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2023 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -180,7 +180,7 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_GENERATOR(UniformBox,
                                          "uniform box",
                                          "Generate a uniform distribution of particles "
-                                         "over a rectangular domain in 2D or 3D. Uniform here means "
+                                         "over a rectangular domain in 2d or 3d. Uniform here means "
                                          "the particles will be generated with an equal spacing in "
                                          "each spatial dimension. Note that in order "
                                          "to produce a regular distribution the number of generated "

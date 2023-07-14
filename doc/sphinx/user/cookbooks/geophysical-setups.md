@@ -106,4 +106,6 @@ cookbooks/global_melt/doc/global_melt.md
 cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.md
 cookbooks/kinematically_driven_subduction_2d/doc/kinematically_driven_subduction_2d.md
 cookbooks/allken_et_al_2012_rift_interaction/doc/allken.md
+cookbooks/inclusions/doc/inclusions.md
+cookbooks/future/README.md
 :::

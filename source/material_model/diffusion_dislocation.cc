@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -142,7 +142,7 @@ namespace aspect
                       diffusion_strain_rate = dislocation_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
                       dislocation_strain_rate = diffusion_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
 
-                      stress_iteration++;
+                      ++stress_iteration;
                       AssertThrow(stress_iteration < stress_max_iteration_number,
                                   ExcMessage("No convergence has been reached in the loop that determines "
                                              "the ratio of diffusion/dislocation viscosity. Aborting! "
@@ -200,6 +200,9 @@ namespace aspect
           // calculate effective viscosity
           if (in.requests_property(MaterialProperties::viscosity))
             {
+              Assert(std::isfinite(in.strain_rate[i].norm()),
+                     ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                                "not filled by the caller."));
               // Currently, the viscosities for each of the compositional fields are calculated assuming
               // isostrain amongst all compositions, allowing calculation of the viscosity ratio.
               // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
@@ -379,9 +382,6 @@ namespace aspect
     void
     DiffusionDislocation<dim>::parse_parameters (ParameterHandler &prm)
     {
-      // increment by one for background:
-      const unsigned int n_fields = this->n_compositional_fields() + 1;
-
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection ("Diffusion dislocation");
@@ -406,17 +406,30 @@ namespace aspect
 
           // ---- Compositional parameters
           grain_size = prm.get_double("Grain size");
-          densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
-                                                              n_fields,
-                                                              "Densities");
-          thermal_expansivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal expansivities"))),
-                                                                          n_fields,
-                                                                          "Thermal expansivities");
+
+          // Retrieve the list of composition names
+          const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+
+          // Establish that a background field is required here
+          const bool has_background_field = true;
+
+          densities = Utilities::parse_map_to_double_array (prm.get("Densities"),
+                                                            list_of_composition_names,
+                                                            has_background_field,
+                                                            "Densities");
+
+          thermal_expansivities = Utilities::parse_map_to_double_array (prm.get("Thermal expansivities"),
+                                                                        list_of_composition_names,
+                                                                        has_background_field,
+                                                                        "Thermal expansivities");
 
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                                 prm);
 
           // Rheological parameters
+          // increment by one for background:
+          const unsigned int n_fields = this->n_compositional_fields() + 1;
+
           // Diffusion creep parameters
           diffusion_creep.initialize_simulator (this->get_simulator());
           diffusion_creep.parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_fields));

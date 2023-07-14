@@ -32,7 +32,7 @@ file.
 
 The python scripts 'plot_hist_and_porosity.py' and 'plot_band_angle_dofs.py'
 can be used to plot the porosity field of the last timestep of a shear
-bands model together with the histograms showing the distribtion of 
+bands model together with the histograms showing the distribution of 
 band angles. In addition, 'plot_hist_and_porosity.py' will generate files
 that can be used as input for plotting the dominant band angle with
 'plot_band_angle_dofs.py', which plots the mode of a lognormal distribution

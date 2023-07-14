@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,6 +21,8 @@
 
 
 #include <aspect/postprocess/spherical_velocity_statistics.h>
+#include <aspect/geometry_model/two_merged_chunks.h>
+#include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/global.h>
@@ -39,9 +41,11 @@ namespace aspect
     SphericalVelocityStatistics<dim>::execute (TableHandler &statistics)
     {
       Assert (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()) ||
-              Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()),
+              Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()) ||
+              Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (this->get_geometry_model()) ||
+              Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()),
               ExcMessage ("This postprocessor can only be used if the geometry "
-                          "is a sphere or spherical shell."));
+                          "is a sphere, spherical shell or chunk."));
 
       const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.velocities;
       const unsigned int n_q_points = quadrature_formula.size();

@@ -30,4 +30,4 @@ As a consequence, our code is freed of the mundane tasks of defining finite elem
 The code will also automatically benefit from improvements to the underlying libraries with their much larger development communities.
 ASPECT is extensively documented to enable other researchers to understand, test, use, and extend it.
 
-Rather than detailing the various techniques upon which ASPECT is built, we refer to {cite:t}`kronbichler:etal:2012` and {cite:t}`heister_aspect_methods2` that give a detailed description and rationale for the various building blocks.
+Rather than detailing the various techniques upon which ASPECT is built, we refer to {cite:t}`kronbichler:etal:2012` and {cite:t}`heister:etal:2017` that give a detailed description and rationale for the various building blocks.

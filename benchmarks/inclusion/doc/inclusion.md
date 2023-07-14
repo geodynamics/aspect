@@ -1,64 +1,33 @@
-#### The &ldquo;inclusion&rdquo; Stokes benchmark
+(sec:benchmarks:inclusion)=
+# The &ldquo;inclusion&rdquo; Stokes benchmark
 
 The &ldquo;inclusion&rdquo; benchmark again solves a problem with a
 discontinuous viscosity, but this time the viscosity is chosen in such a way
 that the discontinuity is along a circle. This ensures that, unlike in the
-SolCx benchmark discussed above, the discontinuity in the viscosity never
+[SolCx benchmark](sec:benchmarks:solcx), the discontinuity in the viscosity never
 aligns to cell boundaries, leading to much larger difficulties in obtaining an
 accurate representation of the pressure. Specifically, the almost
 discontinuous pressure along this interface leads to oscillations in the
 numerical solution. This can be seen in the visualizations shown in
-Fig.&nbsp;[2][]. As before, for details we refer to (Duretz et al. 2011). The
-analytic solution against which we compare is given in (Schmid and
-Podladchikov 2003). An extensive discussion of convergence properties is given
-in (Kronbichler, Heister, and Bangerth 2012).
+{numref}`fig:inclusion1` and {numref}`fig:inclusion2`. As before, for details we refer to {cite:t}`duretz:etal:2011`. The
+analytic solution against which we compare is given in {cite:t}`schmid:podladchikov:2003`. An extensive discussion of convergence properties is given in {cite:t}`kronbichler:etal:2012`.
 
-<div class="center">
+```{figure-md} fig:inclusion1
+<img src="inclusion-solution.*" alt="The viscosity field when interpolated onto the mesh (internally, the &#x201C;exact&#x201D; viscosity field &#x2013; large inside a circle, small outside &#x2013; is used), and overlaid to it some velocity vectors." />
 
-<img src="cookbooks/benchmarks/inclusion/doc/inclusion-solution.png" title="fig:" id="fig:inclusion" style="width:45.0%" alt="Inclusion Stokes benchmark. Left: The viscosity field when interpolated onto the mesh (internally, the &#x201C;exact&#x201D; viscosity field &#x2013; large inside a circle, small outside &#x2013; is used), and overlaid to it some velocity vectors. Right: The pressure with its oscillations along the interface. The oscillations become more localized as the mesh is refined." />
-<img src="cookbooks/benchmarks/inclusion/doc/inclusion-solution-pressure.png" title="fig:" id="fig:inclusion" style="width:45.0%" alt="Inclusion Stokes benchmark. Left: The viscosity field when interpolated onto the mesh (internally, the &#x201C;exact&#x201D; viscosity field &#x2013; large inside a circle, small outside &#x2013; is used), and overlaid to it some velocity vectors. Right: The pressure with its oscillations along the interface. The oscillations become more localized as the mesh is refined." />
+The viscosity field when interpolated onto the mesh (internally, the &#x201C;exact&#x201D; viscosity field &#x2013; large inside a circle, small outside &#x2013; is used), and overlaid to it some velocity vectors.
+```
+```{figure-md} fig:inclusion2
+<img src="inclusion-solution-pressure.*"  alt="The pressure with its oscillations along the interface. The oscillations become more localized as the mesh is refined." />
 
-</div>
-
+The pressure with its oscillations along the interface. The oscillations become more localized as the mesh is refined.
+```
 The benchmark can be run using the parameter files in
-[benchmarks/inclusion/][]. The material model, boundary condition, and
-postprocessor are defined in [benchmarks/inclusion/inclusion.cc][].
+[benchmarks/inclusion/](https://github.com/geodynamics/aspect/blob/main/benchmarks/inclusion). The material model, boundary condition, and
+postprocessor are defined in [benchmarks/inclusion/inclusion.cc](https://github.com/geodynamics/aspect/blob/main/benchmarks/inclusion/inclusion.cc).
 Consequently, this code needs to be compiled into a shared lib before you can
 run the tests.
 
-``` prmfile
+
+``` {literalinclude} ./inclusion.prm
 ```
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-DMGT11" class="csl-entry">
-
-Duretz, T., D. A. May, T. V. Garya, and P. J. Tackley. 2011.
-&ldquo;Discretization Errors and Free Surface Stabilization in the Finite
-Difference and Marker-in-Cell Method for Applied Geodynamics: A Numerical
-Study.&rdquo; *Geoch. Geoph. Geosystems* 12: Q07004/1&ndash;26.
-
-</div>
-
-<div id="ref-KHB12" class="csl-entry">
-
-Kronbichler, M., T. Heister, and W. Bangerth. 2012. &ldquo;High Accuracy
-Mantle Convection Simulation Through Modern Numerical Methods.&rdquo;
-*Geophysical Journal International* 191: 12&ndash;29.
-<https://doi.org/10.1111/j.1365-246X.2012.05609.x>.
-
-</div>
-
-<div id="ref-SP03" class="csl-entry">
-
-Schmid, D. W., and Y. Y. Podladchikov. 2003. &ldquo;Analytical Solutions for
-Deformable Elliptical Inclusions in General Shear.&rdquo; *Geophysical Journal
-International* 155 (1): 269&ndash;88.
-
-</div>
-
-</div>
-
-  [2]: #fig:inclusion
-  [benchmarks/inclusion/]: benchmarks/inclusion/
-  [benchmarks/inclusion/inclusion.cc]: benchmarks/inclusion/inclusion.cc

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -112,7 +112,7 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(VelocityStatistics,
                                   "velocity statistics",
-                                  "A postprocessor that computes some statistics about the "
-                                  "velocity field.")
+                                  "A postprocessor that computes the root mean square and "
+                                  "maximum velocity in the computational domain.")
   }
 }

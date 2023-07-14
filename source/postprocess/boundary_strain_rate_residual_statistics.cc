@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -106,7 +106,7 @@ namespace aspect
       // magnitude, and the face area.
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             for (const auto current_boundary_id : boundary_indicators)
               if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == current_boundary_id)
                 {
@@ -327,6 +327,6 @@ namespace aspect
                                   "is the difference between the second invariant of the model strain rate and "
                                   "the second strain rate invariant read from the input data file. "
                                   "Currently, the strain residual statistics, i.e., min, max and the rms magnitude, "
-                                  "are computed at the top suface.")
+                                  "are computed at the top surface.")
   }
 }

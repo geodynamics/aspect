@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -59,12 +59,11 @@ namespace aspect
                             std::vector<Vector<double>> &computed_quantities) const
       {
         Assert ((computed_quantities[0].size() == dim), ExcInternalError());
-        auto cell = input_data.template get_cell<dim>();
-
-        for (unsigned int q=0; q<computed_quantities.size(); ++q)
+        for (auto &quantity : computed_quantities)
           for (unsigned int d = 0; d < dim; ++d)
-            computed_quantities[q](d)= 0.;
+            quantity(d)= 0.;
 
+        auto cell = input_data.template get_cell<dim>();
         const double velocity_scaling_factor =
           this->convert_output_to_years() ? year_in_seconds : 1.0;
 
@@ -95,7 +94,7 @@ namespace aspect
       std::list<std::string>
       BoundaryVelocityResidual<dim>::required_other_postprocessors() const
       {
-        return std::list<std::string> (1, "boundary velocity residual statistics");
+        return {"boundary velocity residual statistics"};
       }
 
     }

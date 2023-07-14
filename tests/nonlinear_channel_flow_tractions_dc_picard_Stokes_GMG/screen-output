@@ -1,0 +1,52 @@
+
+Loading shared library <./libnonlinear_channel_flow_tractions_dc_picard_Stokes_GMG.debug.so>
+
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
+Number of active cells: 4,096 (on 7 levels)
+Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Initial Newton Stokes residual = 9.30238e+11, v = 9.30238e+11, p = 0
+
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 9.30238e+11
+
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.0898569, norm of the rhs: 8.35883e+10, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.0116342, norm of the rhs: 1.08226e+10, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 1.42172e-05, norm of the rhs: 1.32253e+07, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 3.44449e-10, norm of the rhs: 320.42, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 6.08856e-09, norm of the rhs: 5663.81, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 5.15958e-09, norm of the rhs: 4799.64, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 4.59457e-09, norm of the rhs: 4274.05, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 4.30372e-09, norm of the rhs: 4003.48, newton_derivative_scaling_factor: 0
+
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 4.62106e-09, norm of the rhs: 4298.68, newton_derivative_scaling_factor: 0
+
+
+   Postprocessing:
+     RMS, max velocity:                  1.14e-07 m/s, 1.56e-07 m/s
+     Pressure min/avg/max:               -2.085e-06 Pa, 5e+08 Pa, 1e+09 Pa
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -3.473 kg/s, 3.473 kg/s
+     Writing graphical output:           output-nonlinear_channel_flow_tractions_dc_picard_Stokes_GMG/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

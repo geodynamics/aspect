@@ -1,5 +1,5 @@
 
-Loading shared library <./libking_ala.so>
+Loading shared library <./libking_ala.debug.so>
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,467+1,089)

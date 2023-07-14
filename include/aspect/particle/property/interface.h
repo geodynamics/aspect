@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -242,7 +242,7 @@ namespace aspect
       {
         /**
          * Never update the initially set properties. This is the default
-         * behaviour, which is sufficient for particle properties that are
+         * behavior, which is sufficient for particle properties that are
          * set at the beginning of the model and constant for the whole
          * simulation time.
          */
@@ -254,7 +254,7 @@ namespace aspect
          */
         update_output_step,
         /**
-         * Update the particle properties every timestep. This is only necessary
+         * Update the particle properties every nonlinear iteration. This is only necessary
          * if the properties at the output time depend on some sort of time
          * integration of solution properties or time varying particle
          * properties are used while solving the model problem.
@@ -536,7 +536,6 @@ namespace aspect
            * Read the parameters this class needs to determine which integrator is used,
            * and therefore how many properties to reserve.
            */
-          virtual
           void
           parse_parameters (ParameterHandler &prm) override;
 
@@ -653,6 +652,30 @@ namespace aspect
           unsigned int get_plugin_index_by_name(const std::string &name) const;
 
           /**
+           * Go through the list of all particle properties that have been selected
+           * in the input file (and are consequently currently active) and return
+           * true if one of them has the desired type specified by the template
+           * argument.
+           */
+          template <typename ParticlePropertyType>
+          inline
+          bool
+          has_matching_property () const;
+
+          /**
+           * Go through the list of all particle properties that have been selected
+           * in the input file (and are consequently currently active) and see
+           * if one of them has the type specified by the template
+           * argument or can be casted to that type. If so, return a reference
+           * to it. If no property is active that matches the given type,
+           * throw an exception.
+           */
+          template <typename ParticlePropertyType>
+          inline
+          const ParticlePropertyType &
+          get_matching_property () const;
+
+          /**
            * Get the number of components required to represent this particle's
            * properties.
            *
@@ -716,7 +739,7 @@ namespace aspect
           register_particle_property (const std::string &name,
                                       const std::string &description,
                                       void (*declare_parameters_function) (ParameterHandler &),
-                                      Property::Interface<dim> *(*factory_function) ());
+                                      std::unique_ptr<Property::Interface<dim>> (*factory_function) ());
 
 
           /**
@@ -765,6 +788,44 @@ namespace aspect
            */
           ParticlePropertyInformation property_information;
       };
+
+      /* -------------------------- inline and template functions ---------------------- */
+
+
+      template <int dim>
+      template <typename ParticlePropertyType>
+      inline
+      bool
+      Manager<dim>::has_matching_property () const
+      {
+        for (const auto &p : property_list)
+          if (Plugins::plugin_type_matches<ParticlePropertyType>(*p))
+            return true;
+
+        return false;
+      }
+
+
+      template <int dim>
+      template <typename ParticlePropertyType>
+      inline
+      const ParticlePropertyType &
+      Manager<dim>::get_matching_property () const
+      {
+        AssertThrow(has_matching_property<ParticlePropertyType> (),
+                    ExcMessage("You asked Particle::Property::Manager::has_matching_property() for a "
+                               "particle property of type <" + boost::core::demangle(typeid(ParticlePropertyType).name()) + "> "
+                               "that could not be found in the current model. Activate this "
+                               "particle property in the input file."));
+
+        typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator property;
+        for (const auto &p : property_list)
+          if (Plugins::plugin_type_matches<ParticlePropertyType>(*p))
+            return Plugins::get_plugin_as_type<ParticlePropertyType>(*p);
+
+        // We will never get here, because we had the Assert above. Just to avoid warnings.
+        return Plugins::get_plugin_as_type<ParticlePropertyType>(*(*property));
+      }
 
 
       /**

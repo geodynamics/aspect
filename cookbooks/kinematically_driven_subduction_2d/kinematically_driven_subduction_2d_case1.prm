@@ -7,7 +7,7 @@
 # High resolution is required to a.o. resolve the weak zone
 # between the subducting and overriding plate, so about
 # 100 MPI processes are required.
-set Additional shared libraries            = librms_velocity_composition.so
+
 # 2D
 set Dimension                              = 2
 # Run for 15 My
@@ -172,7 +172,7 @@ subsection Postprocess
   end
 
   subsection Composition velocity statistics
-    set Names of slab compositional fields = ML_SP, crust_SP
+    set Names of selected compositional fields = ML_SP, crust_SP
   end
 end
 

@@ -4,7 +4,7 @@ In this section, let us present a number of &ldquo;cookbooks&rdquo; &ndash;
 examples of how to use <span class="smallcaps">ASPECT</span> in typical or
 less typical ways. As discussed in {ref}`cha:run-aspect`, ASPECT is driven by
 run-time parameter files, and so setting up a particular situation primarily
-comes down to creating a parameter file that has the right entries. Thus, the
+comes down to creating a parameter file that has the entries that correctly describe your model. Thus, the
 subsections below will discuss in detail what parameters to set and to what
 values. Note that parameter files need not specify *all* parameters &ndash; of
 which there is a bewildering number &ndash; but only those that are relevant
@@ -29,7 +29,7 @@ Before we get there, however, we will review how one usually approaches
 setting up computations in {ref}`sec:cookbooks:overview`.
 
 :::{note}
-The input files discussed in the following sections can generally be found in the `cookbooks/` directory of your ASPECT installation.
+The input files discussed in the following sections can generally be found in the [cookbooks/](https://github.com/geodynamics/aspect/tree/main/cookbooks) directory of your ASPECT installation.
 :::
 
 :::{toctree}

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -63,13 +63,18 @@ namespace aspect
                              "PrescribedTemperatureOutputs, which is required "
                              "for this adiabatic conditions plugin."));
 
-      const unsigned int entropy_index = this->introspection().compositional_index_for_name("entropy");
+      const std::vector<unsigned int> entropy_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
+
+      AssertThrow(entropy_indices.size() == 1,
+                  ExcMessage("The 'compute entropy' adiabatic conditions plugin "
+                             "requires exactly one field of type 'entropy'."));
 
       // Constant properties on the reference profile
-      in.strain_rate.resize(0); // we do not need the viscosity
+      // We only need the material model to compute the density
+      in.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::additional_outputs;
       in.velocity[0] = Tensor <1,dim> ();
       // The entropy along an adiabat is constant (equals the surface entropy)
-      in.composition[0][entropy_index] = surface_entropy;
+      in.composition[0][entropy_indices[0]] = surface_entropy;
 
       // Check whether gravity is pointing up / out or down / in. In the normal case it should
       // point down / in and therefore gravity should be positive, leading to increasing
@@ -299,7 +304,7 @@ namespace aspect
                                                "Of course the entropy along an adiabat is constant. "
                                                "This plugin requires the material model to provide an "
                                                "additional output object of type PrescribedTemperatureOutputs. "
-                                               "It also requires that there is a compositional field named "
+                                               "It also requires that there is a compositional field of type "
                                                "'entropy' that represents the entropy of the material.")
   }
 }

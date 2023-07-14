@@ -17,10 +17,10 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_nan_h
-#define _world_nan_h
+#ifndef WORLD_BUILDER_NAN_H
+#define WORLD_BUILDER_NAN_H
 
-#include <cmath>
+#include <limits>
 
 namespace WorldBuilder
 {
@@ -44,7 +44,7 @@ namespace WorldBuilder
      * A unsigned int signaling NaN
      */
     const unsigned int ISNAN = std::numeric_limits<unsigned int>::signaling_NaN();
-  }
-}
+  } // namespace NaN
+} // namespace WorldBuilder
 
 #endif

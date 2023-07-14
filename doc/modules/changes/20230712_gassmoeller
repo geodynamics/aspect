@@ -1,0 +1,5 @@
+Changed: Material models are now always provided with the current
+strain rate. Checks if the strain rate is provided are not longer necessary.
+MaterialModelInputs can no longer be initialized without a strain rate.
+<br>
+(Rene Gassmoeller, 2023/07/12)

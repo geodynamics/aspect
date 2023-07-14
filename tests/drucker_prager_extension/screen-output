@@ -21,28 +21,28 @@ Number of degrees of freedom: 2,804 (2,210+297+297)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0129128
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+6 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.0129998
+   Solving Stokes system... 0+9 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.0130007
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.0166361
+   Solving Stokes system... 0+10 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.0166528
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.0127089
+   Solving Stokes system... 0+9 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.0127347
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.0110367
+   Solving Stokes system... 0+10 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.0110529
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+6 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.010183
+   Solving Stokes system... 0+10 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.0101752
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+5 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.00936094
+   Solving Stokes system... 0+10 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.00937045
 
 
    Postprocessing:

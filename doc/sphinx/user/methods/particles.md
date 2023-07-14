@@ -9,7 +9,7 @@ solving equations {math:numref}`eq:stokes-1`-{math:numref}`eq:stokes-2`, then th
 $k$th particle's position satisfies the equations
 ```{math}
 \begin{aligned}
-  \frac{\partial}{\partial t} \mathbf x_k(t)
+  \frac{d}{dt} \mathbf x_k(t)
   = \mathbf u(\mathbf x_k(t),t).
 \end{aligned}
 ```
@@ -48,9 +48,3 @@ To this end, see in particular {ref}`sec:cookbooks:using-particles`. All particl
 input parameters are listed in
 {ref}`parameters:Postprocess/Particles`. The implementation of
 particles is discussed in great detail in {cite:t}`gassmoller:etal:2018`.
-
-:::{admonition} TODO
-:class: error
-
-{ref}`parameters:Postprocess/Particles` not setup yet, so reference doesn't go anywhere
-:::

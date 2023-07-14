@@ -1,5 +1,5 @@
 (sec:extending-signals)=
-# Extending ASPECT through the signals mechanism
+# Extending ASPECT through signals
 
 Not all things you may want to do fit neatly into the list of plugins of the
 previous sections. Rather, there are cases where you may want to change things
@@ -7,7 +7,7 @@ that are more of the one-off kind and that require code that is at a lower
 level and requires more knowledge about
 ASPECT's internal workings. For such changes,
 we still want to stick with the general principle outlined at the beginning of
-{ref}`sec:1][22]: You should be able to make all of your changes and
+{ref}`cha:extending`: You should be able to make all of your changes and
 extensions in your own files, without having to modify
 ASPECT's own sources.
 
@@ -133,7 +133,7 @@ same slot, or the connector function above may just connect multiple slots
 
 So what could one do in a place like this? One option would be to just monitor
 what is going on, e.g., in code like this that simply outputs into the
-statistics file (see {ref}`sec:viz-stat`10]):
+statistics file (see {ref}`sec:run-aspect:visualize:stat-data`):
 
 ```{code-block} c++
 template <int dim>
@@ -151,14 +151,14 @@ is called) an entry in a new column in the statistics file that records the
 number of constraints. On the other hand, it is equally possible to also
 modify the constraints object at this point. An application would be if you
 wanted to run a simulation where you prescribe the velocity in a part of the
-domain, e.g., for a subducting slab (see Section
-[\[sec:prescribed-velocities`5]).
+domain, e.g., for a subducting slab (see {ref}`sec:cookbooks:prescribed_velocity`).
 
 Signals exist for various waypoints in a simulation and you can consequently
 monitor and change what is happening inside a simulation by connecting your
 own functions to these signals. It would be pointless to list here what
 signals actually exist &ndash; simply refer to the documentation of the
-[SimulatorSignals class][] for a complete list of signals you can connect to.
+[SimulatorSignals](https://aspect.geodynamics.org/doc/doxygen/classes.html)
+class for a complete list of signals you can connect to.
 
 As a final note, it is generally true that writing functions that can connect
 to signals require significantly more internal knowledge of the workings of
@@ -174,6 +174,18 @@ implement through plugins. An example would be to couple different codes by
 exchanging details of the internal data structures, or even update the
 solution vectors using information received from another code.
 
-<div class="center">
-
-</div>
+:::{note}
+Chances are that if you think about using the signal mechanism, there is not yet a signal
+that is triggered at exactly the point where you need it. Consequently, you will be tempted to
+just put your code into the place where it fits inside ASPECT where it fits best. This is poor
+practice: it prevents you from upgrading to a newer version of ASPECT at a later time because
+this would overwrite the code you inserted.
+Rather, a more productive approach would be to either define a new signal that is triggered
+where you need it, and connect a function (slot) in your own plugin file to this signal using
+the mechanisms outlined above. Then send the code that defines and triggers the signal to the
+developers of ASPECT to make sure that it is also included in the next release. Alternatively,
+you can also simply ask on the forum for someone to add such a signal in the place where you
+want it. Either way, adding signals is something that is easy to do, and we would much rather
+add signals than have people who modify the ASPECT source files for their own needs and are
+then stuck on a particular version.
+:::

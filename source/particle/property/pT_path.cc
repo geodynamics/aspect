@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -19,6 +19,7 @@
  */
 
 #include <aspect/particle/property/pT_path.h>
+#include <aspect/simulator_signals.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/initial_temperature/interface.h>
 
@@ -30,12 +31,37 @@ namespace aspect
     {
       template <int dim>
       void
+      PTPath<dim>::initialize()
+      {
+        // Make sure we keep track of the initial temperature manager and
+        // that it continues to live beyond the time when the simulator
+        // class releases its pointer to it.
+        initial_temperature = this->get_initial_temperature_manager_pointer();
+      }
+
+
+
+
+      template <int dim>
+      void
       PTPath<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                     std::vector<double> &data) const
       {
+        // The following is strictly only correct whenever a particle is
+        // created in the first time step. After that, taking pressure and
+        // temperature from adiabatic and initial temperature objects is
+        // not quite correct -- instead, we should be initializing from
+        // the current pressure and temperature, but that is substantially
+        // more complicated since we are not passed this information.
+        //
+        // The issue is probably not terribly important because at least for
+        // all following time steps, we set temperature and pressure to
+        // their correct then-current values.
         data.push_back(this->get_adiabatic_conditions().pressure(position));
-        data.push_back(this->get_initial_temperature_manager().initial_temperature(position));
+        data.push_back(initial_temperature->initial_temperature(position));
       }
+
+
 
       template <int dim>
       void
@@ -48,12 +74,16 @@ namespace aspect
         particle->get_properties()[data_position+1] = solution[this->introspection().component_indices.temperature];
       }
 
+
+
       template <int dim>
       UpdateTimeFlags
       PTPath<dim>::need_update() const
       {
         return update_output_step;
       }
+
+
 
       template <int dim>
       UpdateFlags
@@ -62,13 +92,13 @@ namespace aspect
         return update_values;
       }
 
+
+
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
       PTPath<dim>::get_property_information() const
       {
-        std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("p",1));
-        property_information.emplace_back("T",1);
-        return property_information;
+        return {{"p", 1}, {"T", 1}};
       }
     }
   }

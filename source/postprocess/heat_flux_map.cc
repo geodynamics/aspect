@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -130,7 +130,7 @@ namespace aspect
           if (cell->is_locally_owned() && cell->at_boundary())
             {
               fe_volume_values.reinit (cell);
-              in.reinit(fe_volume_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
+              in.reinit(fe_volume_values, cell, simulator_access.introspection(), simulator_access.get_solution());
               simulator_access.get_material_model().evaluate(in, out);
 
               if (simulator_access.get_parameters().formulation_temperature_equation ==
@@ -251,7 +251,7 @@ namespace aspect
                   // Compute heat flux through Neumann boundary by integrating the heat flux
                   else if (fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end())
                     {
-                      face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
+                      face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution());
                       simulator_access.get_material_model().evaluate(face_in, face_out);
 
                       if (simulator_access.get_parameters().formulation_temperature_equation ==
@@ -402,7 +402,7 @@ namespace aspect
                     // if necessary, compute material properties for this face
                     if (prescribed_heat_flux || non_tangential_velocity)
                       {
-                        face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution(), true);
+                        face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution());
                         simulator_access.get_material_model().evaluate(face_in, face_out);
 
                         if (simulator_access.get_parameters().formulation_temperature_equation ==
@@ -463,6 +463,15 @@ namespace aspect
       // have a stream into which we write the data. the text stream is then
       // later sent to processor 0
       std::ostringstream output;
+
+      // write the file header. note that we only do so on processor 0
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          output << "# "
+                 << ((dim==2)? "x y" : "x y z")
+                 << " heat flux" << std::endl;
+        }
+
       std::vector<std::pair<Point<dim>,double>> stored_values;
 
       // loop over all of the surface cells and evaluate the heat flux
@@ -506,21 +515,7 @@ namespace aspect
         filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
 
 
-      const std::vector<std::string> data = Utilities::MPI::gather(this->get_mpi_communicator(), output.str());
-
-      // On processor 0, collect all of the data the individual processors sent
-      // and concatenate them into one file:
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        {
-          std::ofstream file (filename.c_str());
-
-          file << "# "
-               << ((dim==2)? "x y" : "x y z")
-               << " heat flux" << std::endl;
-
-          for (const auto &str : data)
-            file << str;
-        }
+      Utilities::collect_and_write_file_content(filename, output.str(), this->get_mpi_communicator());
 
       return std::pair<std::string,std::string>("Writing heat flux map:",
                                                 filename);

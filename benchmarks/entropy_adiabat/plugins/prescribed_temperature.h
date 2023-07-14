@@ -42,9 +42,29 @@ namespace aspect
     {
       public:
         /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run.
+         *
+         * This specific function makes sure that the objects that describe
+         * initial conditions remain available throughout the run of the
+         * program.
+         */
+        void
+        initialize () override;
+
+        /**
          * Return the initial temperature as a function of position.
          */
         double initial_temperature (const Point<dim> &position) const override;
+
+      private:
+        /**
+         * A shared pointer to the initial composition object
+         * that ensures that the current object can continue
+         * to access the initial composition object beyond the
+         * first time step.
+         */
+        std::shared_ptr<const aspect::InitialComposition::Manager<dim>> initial_composition;
     };
   }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -96,13 +96,10 @@ namespace aspect
       {
         material_inputs.position[0] = particle->get_location();
 
-#if DEAL_II_VERSION_GTE(9,4,0)
+
         material_inputs.current_cell = typename DoFHandler<dim>::active_cell_iterator(*particle->get_surrounding_cell(),
                                                                                       &(this->get_dof_handler()));
-#else
-        material_inputs.current_cell = typename DoFHandler<dim>::active_cell_iterator(*particle->get_surrounding_cell(this->get_triangulation()),
-                                                                                      &(this->get_dof_handler()));
-#endif
+
         material_inputs.temperature[0] = solution[this->introspection().component_indices.temperature];
 
         material_inputs.pressure[0] = solution[this->introspection().component_indices.pressure];

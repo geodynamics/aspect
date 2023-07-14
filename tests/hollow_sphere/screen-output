@@ -1,5 +1,5 @@
 
-Loading shared library <./libhollow_sphere.so>
+Loading shared library <./libhollow_sphere.debug.so>
 
 Number of active cells: 768 (on 3 levels)
 Number of degrees of freedom: 28,690 (20,790+970+6,930)

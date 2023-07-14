@@ -1,4 +1,4 @@
-# WORLD BUILDER
+# Enable if: ASPECT_WITH_WORLD_BUILDER
 # This test uses the Geodynamic World Builder to create
 # initial temperatures and compositions
 

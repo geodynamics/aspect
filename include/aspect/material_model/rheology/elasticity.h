@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -128,12 +128,18 @@ namespace aspect
                                             const double shear_modulus) const;
 
           /**
-           * Calculate the square root of the second moment invariant for the deviatoric
-           * strain rate tensor, including viscoelastic stresses.
+           * Calculate the norm of the effective deviatoric strain rate tensor,
+           * which equals the norm of the true deviatoric strain rate plus
+           * a fictional strain rate which would arise from stored elastic stresses.
+           * In ASPECT, this additional strain rate is
+           * supported by a fictional body force.
+           * This formulation allows the use of an isotropic effective viscosity
+           * by ensuring that the resulting strain rate tensor is equal to the
+           * total current stress tensor multiplied by a scalar.
            */
           double
           calculate_viscoelastic_strain_rate (const SymmetricTensor<2,dim> &strain_rate,
-                                              const SymmetricTensor<2,dim> &stress,
+                                              const SymmetricTensor<2,dim> &stored_stress,
                                               const double shear_modulus) const;
 
           /**
@@ -161,15 +167,6 @@ namespace aspect
            * from parameter file.
            */
           bool use_fixed_elastic_time_step;
-
-          /**
-           * Bool indicating whether to use a stress averaging scheme to account
-           * for differences between the numerical and fixed elastic time step
-           * (if true). When set to false, the viscoelastic stresses are not
-           * modified to account for differences between the viscoelastic time
-           * step and the numerical time step. Read from parameter file.
-           */
-          bool use_stress_averaging;
 
           /**
            * Double for fixed elastic time step value, read from parameter file

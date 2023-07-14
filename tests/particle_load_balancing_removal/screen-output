@@ -23,8 +23,7 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Postprocessing:
      Writing particle output: output-particle_load_balancing_removal/particles/particles-00001
 
-Number of active cells: 10 (on 3 levels)
-Number of degrees of freedom: 246 (114+18+57+57)
+Skipping mesh refinement, because the mesh did not change.
 
 Termination requested by criterion: end time
 

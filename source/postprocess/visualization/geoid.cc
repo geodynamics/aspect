@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -64,8 +64,8 @@ namespace aspect
                      ExcMessage("The geoid postprocessor is currently only implemented for "
                                 "the spherical shell geometry model."));
 
-        for (unsigned int q=0; q<computed_quantities.size(); ++q)
-          computed_quantities[q](0) = 0;
+        for (auto &quantity : computed_quantities)
+          quantity(0) = 0;
 
         const Postprocess::Geoid<dim> &geoid =
           this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Geoid<dim>>();
@@ -87,7 +87,7 @@ namespace aspect
       std::list<std::string>
       Geoid<dim>::required_other_postprocessors() const
       {
-        return std::list<std::string> (1, "geoid");
+        return {"geoid"};
       }
 
     }

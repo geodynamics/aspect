@@ -31,56 +31,59 @@ execute_process(
 if( TEST_RESULT_VAR )
 	message( FATAL_ERROR "Failed: Test program ${TEST_PROGRAM} exited != 0.\n Test args where: ${TEST_ARGS}\n${TEST_ERROR_VAR} \n The test outpup was: \n ${TEST_OUTPUT_VAR}" )
 endif( TEST_RESULT_VAR )
-file(TO_NATIVE_PATH "${TEST_OUTPUT}" TEST_NATIVE_OUTPUT)
-file(TO_NATIVE_PATH "${TEST_REFERENCE}" TEST_NATIVE_REFERENCE)
 
-FIND_PROGRAM(DIFF_EXECUTABLE
-	     NAMES numdiff diff FC
-	     HINTS ${DIFF_DIR}
-	     PATH_SUFFIXES bin
-	     )
+if( !TEST_NO_DIFF )
+    file(TO_NATIVE_PATH "${TEST_OUTPUT}" TEST_NATIVE_OUTPUT)
+    file(TO_NATIVE_PATH "${TEST_REFERENCE}" TEST_NATIVE_REFERENCE)
 
- IF(NOT DIFF_EXECUTABLE MATCHES "-NOTFOUND")
-	 SET(TEST_DIFF ${DIFF_EXECUTABLE})
-         message("found diff program: ${DIFF_EXECUTABLE}")
- ELSE()
-	     MESSAGE(FATAL_ERROR
-		     "Could not find diff or fc. This is required for running the testsuite.\n"
-		     "Please specify TEST_DIFF by hand."
-		     )
-ENDIF()
-
-IF("${TEST_DIFF}" MATCHES ".*exe")
-  # windows
-  FIND_PROGRAM(DOS2UNIX_EXECUTABLE
-	     NAMES dos2unix
-	     HINTS ${DIFF_DIR}
-	     PATH_SUFFIXES bin
-	     )
-     IF(NOT DOS2UNIX_EXECUTABLE MATCHES "-NOTFOUND")
-	     SET(TEST_D2U ${DOS2UNIX_EXECUTABLE})
+    FIND_PROGRAM(DIFF_EXECUTABLE
+    	     NAMES numdiff diff FC
+    	     HINTS ${DIFF_DIR}
+    	     PATH_SUFFIXES bin
+    	     )
+    
+     IF(NOT DIFF_EXECUTABLE MATCHES "-NOTFOUND")
+    	 SET(TEST_DIFF ${DIFF_EXECUTABLE})
+             message("found diff program: ${DIFF_EXECUTABLE}")
      ELSE()
-	     MESSAGE(FATAL_ERROR
-		     "Could not find dos2unix. This is required for running the testsuite in windows.\n"
-		     "Please specify TEST_D2U by hand."
-		     )
-     ENDIF()
-     execute_process(COMMAND ${TEST_D2U} ${TEST_NATIVE_OUTPUT})
-     execute_process(COMMAND ${TEST_D2U} ${TEST_NATIVE_REFERENCE})
+    	     MESSAGE(FATAL_ERROR
+    		     "Could not find diff or fc. This is required for running the testsuite.\n"
+    		     "Please specify TEST_DIFF by hand."
+    		     )
+    ENDIF()
+    
+    IF("${TEST_DIFF}" MATCHES ".*exe")
+      # windows
+      FIND_PROGRAM(DOS2UNIX_EXECUTABLE
+    	     NAMES dos2unix
+    	     HINTS ${DIFF_DIR}
+    	     PATH_SUFFIXES bin
+    	     )
+         IF(NOT DOS2UNIX_EXECUTABLE MATCHES "-NOTFOUND")
+    	     SET(TEST_D2U ${DOS2UNIX_EXECUTABLE})
+         ELSE()
+    	     MESSAGE(FATAL_ERROR
+    		     "Could not find dos2unix. This is required for running the testsuite in windows.\n"
+    		     "Please specify TEST_D2U by hand."
+    		     )
+         ENDIF()
+         execute_process(COMMAND ${TEST_D2U} ${TEST_NATIVE_OUTPUT})
+         execute_process(COMMAND ${TEST_D2U} ${TEST_NATIVE_REFERENCE})
+    ENDIF()
+    
+    # now compare the output with the reference
+    execute_process(
+            COMMAND ${TEST_DIFF} ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE}
+      RESULT_VARIABLE TEST_RESULT
+      )
+    #execute_process(
+    #	COMMAND ${CMAKE_COMMAND} -E compare_files ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE}
+    #  RESULT_VARIABLE TEST_RESULT
+    #  )
+    
+    # again, if return value is !=0 scream and shout
+    if( TEST_RESULT )
+    	execute_process(COMMAND ${TEST_DIFF} ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE})
+    	message( FATAL_ERROR "Failed: The output of ${TEST_NAME} stored in ${TEST_NATIVE_OUTPUT} did not match the reference output stored in ${TEST_NATIVE_REFERENCE}")
+    endif( TEST_RESULT )
 ENDIF()
-
-# now compare the output with the reference
-execute_process(
-        COMMAND ${TEST_DIFF} ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE}
-  RESULT_VARIABLE TEST_RESULT
-  )
-#execute_process(
-#	COMMAND ${CMAKE_COMMAND} -E compare_files ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE}
-#  RESULT_VARIABLE TEST_RESULT
-#  )
-
-# again, if return value is !=0 scream and shout
-if( TEST_RESULT )
-	execute_process(COMMAND ${TEST_DIFF} ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE})
-	message( FATAL_ERROR "Failed: The output of ${TEST_NAME} stored in ${TEST_NATIVE_OUTPUT} did not match the reference output stored in ${TEST_NATIVE_REFERENCE}")
-endif( TEST_RESULT )

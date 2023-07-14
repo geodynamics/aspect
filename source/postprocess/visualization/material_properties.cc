@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -51,15 +51,15 @@ namespace aspect
       {
         std::vector<std::string> solution_names;
 
-        for (unsigned int i=0; i<property_names.size(); ++i)
-          if (property_names[i] == "reaction terms")
+        for (const auto &property_name : property_names)
+          if (property_name == "reaction terms")
             {
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                 solution_names.push_back (this->introspection().name_for_compositional_index(c) + "_change");
             }
           else
             {
-              solution_names.push_back(property_names[i]);
+              solution_names.push_back(property_name);
               std::replace(solution_names.back().begin(),solution_names.back().end(),' ', '_');
             }
 
@@ -74,9 +74,9 @@ namespace aspect
       get_data_component_interpretation () const
       {
         std::vector<DataComponentInterpretation::DataComponentInterpretation> interpretation;
-        for (unsigned int i=0; i<property_names.size(); ++i)
+        for (const auto &property_name : property_names)
           {
-            if (property_names[i] == "reaction terms")
+            if (property_name == "reaction terms")
               {
                 for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                   interpretation.push_back (DataComponentInterpretation::component_is_scalar);

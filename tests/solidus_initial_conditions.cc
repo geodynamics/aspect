@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -275,7 +275,7 @@ namespace aspect
         {
           // Use a sine as lateral perturbation that is scaled to the opening angle of the geometry.
           // This way the perturbation is always 0 at the model boundaries.
-          const double opening_angle = spherical_geometry_model->opening_angle()*numbers::PI/180.0;
+          const double opening_angle = spherical_geometry_model->opening_angle() * constants::degree_to_radians;
           lateral_perturbation = std::sin(lateral_wave_number_1*scoord[1]*numbers::PI/opening_angle);
         }
       else if (dim==3)

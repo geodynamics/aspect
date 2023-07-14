@@ -1,0 +1,324 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+
+Number of active cells: 232 (on 5 levels)
+Number of degrees of freedom: 3,302 (2,022+269+1,011)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 33+0 iterations.
+
+Number of active cells: 436 (on 6 levels)
+Number of degrees of freedom: 6,194 (3,798+497+1,899)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 35+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  1.79 m/s, 2.57 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1 W, 1 W
+     Writing graphical output:           output-refinement_nonadiabatic_temperature/solution/solution-00000
+
+Number of active cells: 448 (on 6 levels)
+Number of degrees of freedom: 6,308 (3,868+506+1,934)
+
+*** Timestep 1:  t=0.0061685 seconds, dt=0.0061685 seconds
+   Solving temperature system... 53 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 36+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  3.69 m/s, 5.25 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.002 W, 1.002 W
+
+Number of active cells: 436 (on 6 levels)
+Number of degrees of freedom: 6,194 (3,798+497+1,899)
+
+*** Timestep 2:  t=0.0091642 seconds, dt=0.0029957 seconds
+   Solving temperature system... 40 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 36+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  6.01 m/s, 8.53 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.006 W, 1.006 W
+
+Number of active cells: 448 (on 6 levels)
+Number of degrees of freedom: 6,308 (3,868+506+1,934)
+
+*** Timestep 3:  t=0.011003 seconds, dt=0.00183883 seconds
+   Solving temperature system... 33 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 34+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  8.45 m/s, 12 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.012 W, 1.012 W
+     Writing graphical output:           output-refinement_nonadiabatic_temperature/solution/solution-00001
+
+Number of active cells: 436 (on 6 levels)
+Number of degrees of freedom: 6,194 (3,798+497+1,899)
+
+*** Timestep 4:  t=0.0123105 seconds, dt=0.00130752 seconds
+   Solving temperature system... 27 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 34+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  10.9 m/s, 15.5 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.02 W, 1.02 W
+
+Number of active cells: 448 (on 6 levels)
+Number of degrees of freedom: 6,308 (3,868+506+1,934)
+
+*** Timestep 5:  t=0.0133221 seconds, dt=0.00101151 seconds
+   Solving temperature system... 24 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 33+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  13.4 m/s, 18.9 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.03 W, 1.03 W
+
+Number of active cells: 436 (on 6 levels)
+Number of degrees of freedom: 6,194 (3,798+497+1,899)
+
+*** Timestep 6:  t=0.0141472 seconds, dt=0.000825165 seconds
+   Solving temperature system... 22 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 32+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  15.8 m/s, 22.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.041 W, 1.041 W
+
+Number of active cells: 454 (on 6 levels)
+Number of degrees of freedom: 6,396 (3,922+513+1,961)
+
+*** Timestep 7:  t=0.0148449 seconds, dt=0.000697666 seconds
+   Solving temperature system... 20 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  18.2 m/s, 25.8 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.055 W, 1.055 W
+
+Number of active cells: 445 (on 6 levels)
+Number of degrees of freedom: 6,324 (3,878+507+1,939)
+
+*** Timestep 8:  t=0.0154501 seconds, dt=0.000605184 seconds
+   Solving temperature system... 19 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 32+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  20.6 m/s, 29.2 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.07 W, 1.07 W
+
+Number of active cells: 451 (on 6 levels)
+Number of degrees of freedom: 6,360 (3,900+510+1,950)
+
+*** Timestep 9:  t=0.0159852 seconds, dt=0.000535093 seconds
+   Solving temperature system... 18 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 31+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  23 m/s, 32.5 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.087 W, 1.087 W
+
+Number of active cells: 439 (on 6 levels)
+Number of degrees of freedom: 6,246 (3,830+501+1,915)
+
+*** Timestep 10:  t=0.0164654 seconds, dt=0.000480201 seconds
+   Solving temperature system... 17 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  25.3 m/s, 35.8 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.106 W, 1.106 W
+
+Number of active cells: 451 (on 6 levels)
+Number of degrees of freedom: 6,360 (3,900+510+1,950)
+
+*** Timestep 11:  t=0.0169014 seconds, dt=0.000436063 seconds
+   Solving temperature system... 16 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  27.6 m/s, 39.1 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.127 W, 1.127 W
+
+Number of active cells: 454 (on 6 levels)
+Number of degrees of freedom: 6,409 (3,930+514+1,965)
+
+*** Timestep 12:  t=0.0173013 seconds, dt=0.000399837 seconds
+   Solving temperature system... 15 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 29+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  29.8 m/s, 42.3 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.149 W, 1.149 W
+
+Number of active cells: 457 (on 6 levels)
+Number of degrees of freedom: 6,448 (3,954+517+1,977)
+
+*** Timestep 13:  t=0.0176709 seconds, dt=0.000369585 seconds
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  32 m/s, 45.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.173 W, 1.173 W
+
+Number of active cells: 451 (on 6 levels)
+Number of degrees of freedom: 6,370 (3,906+511+1,953)
+
+*** Timestep 14:  t=0.0180148 seconds, dt=0.000343964 seconds
+   Solving temperature system... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  34.2 m/s, 48.5 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.2 W, 1.2 W
+
+Skipping mesh refinement, because the mesh did not change.
+
+*** Timestep 15:  t=0.0183368 seconds, dt=0.000322007 seconds
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 27+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  36.3 m/s, 51.6 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.228 W, 1.228 W
+
+Number of active cells: 457 (on 6 levels)
+Number of degrees of freedom: 6,448 (3,954+517+1,977)
+
+*** Timestep 16:  t=0.0186398 seconds, dt=0.000302997 seconds
+   Solving temperature system... 13 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  38.4 m/s, 54.6 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.258 W, 1.258 W
+
+Number of active cells: 466 (on 6 levels)
+Number of degrees of freedom: 6,582 (4,036+528+2,018)
+
+*** Timestep 17:  t=0.0189262 seconds, dt=0.000286395 seconds
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  40.5 m/s, 57.5 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.289 W, 1.289 W
+
+Number of active cells: 466 (on 6 levels)
+Number of degrees of freedom: 6,585 (4,038+528+2,019)
+
+*** Timestep 18:  t=0.019198 seconds, dt=0.000271785 seconds
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  42.5 m/s, 60.4 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.323 W, 1.323 W
+
+Number of active cells: 460 (on 6 levels)
+Number of degrees of freedom: 6,513 (3,994+522+1,997)
+
+*** Timestep 19:  t=0.0194568 seconds, dt=0.000258845 seconds
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  44.4 m/s, 63.2 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.358 W, 1.358 W
+
+Number of active cells: 466 (on 6 levels)
+Number of degrees of freedom: 6,572 (4,030+527+2,015)
+
+*** Timestep 20:  t=0.0197042 seconds, dt=0.000247318 seconds
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  46.3 m/s, 65.9 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.395 W, 1.395 W
+
+Number of active cells: 460 (on 6 levels)
+Number of degrees of freedom: 6,513 (3,994+522+1,997)
+
+*** Timestep 21:  t=0.0199412 seconds, dt=0.000236996 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 28+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  48.2 m/s, 68.6 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.434 W, 1.434 W
+
+Number of active cells: 475 (on 6 levels)
+Number of degrees of freedom: 6,705 (4,112+537+2,056)
+
+*** Timestep 22:  t=0.02 seconds, dt=5.88431e-05 seconds
+   Solving temperature system... 5 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  48.7 m/s, 69.3 m/s
+     Temperature min/avg/max:            0 K, 0.5 K, 1 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.444 W, 1.444 W
+     Writing graphical output:           output-refinement_nonadiabatic_temperature/solution/solution-00002
+
+Number of active cells: 472 (on 6 levels)
+Number of degrees of freedom: 6,666 (4,088+534+2,044)
+
+Termination requested by criterion: end time
+
+
+

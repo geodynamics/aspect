@@ -22,4 +22,5 @@ Additional information:
     file. Please check for malformed data values (e.g. NaN) or superfluous
     lines at the end of the data file.
 
-Aborting!
+Stacktrace:
+(rest of the output replaced by default.sh script)

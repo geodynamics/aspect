@@ -57,7 +57,7 @@ subsection Material model
     set Peierls glide parameters p                = 0.5
     set Peierls glide parameters q                = 1.0
 
-    set Peierls strain rate residual tolerance = 1e-22
+    set Peierls strain rate residual tolerance = 1e-12
     set Maximum Peierls strain rate iterations = 40
   end
 end

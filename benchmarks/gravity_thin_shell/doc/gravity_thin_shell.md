@@ -1,4 +1,5 @@
-#### Thin shell gravity benchmark
+(sec:benchmarks:thin-shell-gravity)=
+# Thin shell gravity benchmark
 
 *This section was contributed by Cedric Thieulot, Bart Root and Paul Bremner.*
 
@@ -8,33 +9,33 @@ Earth mantle and we wish to compute the resulting gravity field and potential
 at satellite height.
 
 The domain is a spherical shell of 10&nbsp;km radius centered at a depth $D$,
-i.e. the inner radius is $R\textsubscript{inner}=6371-D-5~\si{\km}$ and the
-outer radius $R\textsubscript{outer}=6371-D+5~ \si{\km}$. It is filled with a
-fluid of constant density $\rho_0=3300~\si{\kg\per\cubic\meter}$ with total
+i.e. the inner radius is $R_{inner}=6371-D-5~\text{ km}$ and the
+outer radius $R_\text{outer}=6371-D+5~ \text{ km}$. It is filled with a
+fluid of constant density $\rho_0=3300~\text{ kg}/\text{m}^3$ with total
 mass
-$M=\frac43 \pi (R\textsubscript{outer}^3-R\textsubscript{inner}^3)\rho_0$.
+$M=\frac43 \pi (R_\text{outer}^3-R_\text{inner}^3)\rho_0$.
 
 Both the Stokes and energy equations solve are bypassed:
 
-``` prmfile
+```{literalinclude} thinshell_b.prm
 ```
 
 We make use of the Custom mesh subdivision option to generate a mesh where a
 single cell is used in the radial direction (parameterized with the number of
-&lsquo;slices&rsquo;) while 6 blocks (default value) of $2^5\times 2^5$ cells
+'slices') while 6 blocks (default value) of $2^5\times 2^5$ cells
 are used in the lateral direction. This gives a total of 6,144 mesh cells. For
-$D=100~\si{\km}$ the parameterization of the mesh is then as follows:
+$D=100~\text{ km}$ the parameterization of the mesh is then as follows:
 
-``` prmfile
+```{literalinclude} thinshell_a.prm
 ```
 
 We wish to compute the gravity potential $U$ and the gravity vector
-${\mathbf g}$ at a radius of $R\textsubscript{s}=6371+250=6621~\si{\km}$ (i.e.
-the gravity experienced by a satellite flying at a height of $250~\si{\km}$
+${\mathbf g}$ at a radius of $R_{s}=6371+250=6621~\text{ km}$ (i.e.
+the gravity experienced by a satellite flying at a height of $250~\text{ km}$
 above the surface of the Earth) on a regular longitude-latitude grid spanning
-the whole Earth, with a $2\si{\degree}\times 2\si{\degree}$ resolution:
+the whole Earth, with a $2^\circ\times 2^\circ$ resolution:
 
-``` prmfile
+```{literalinclude} thinshell_c.prm
 ```
 
 The Gauss-Legendre Quadrature (GLQ) algorithm is central to the code as it is
@@ -42,18 +43,23 @@ used to compute the elemental integrals stemming from the discretization of
 the weak form of the PDEs. Logically, the gravity postprocessor is also based
 on the GLQ since the potential $U$ at any location in space is given by the
 integral
-$$U({\mathbf r}) = \iiint_\Omega \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|} d{\mathbf r}'
-= \sum_K \iiint_{\Omega_K} \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|} d{\mathbf r}',$$
+```{math}
+U({\mathbf r}) = \iiint_\Omega \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|} d{\mathbf r}'
+= \sum_K \iiint_{\Omega_K} \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|} d{\mathbf r}',
+```
 where the sum runs over all cells of the mesh and
-${G}=6.67430\times 10^{-11}~\si{\cubic\meter\per\kg\per\square\second}$ is the
+${G}=6.67430\times 10^{-11}~\text{ m}^3/\text{kg}/\text{s}^2$ is the
 gravitational constant. The gravity acceleration vector is obtained via
-${\mathbf g}=-{\mathbf \nabla} U$, or $${\mathbf g}({\mathbf r}) =
+${\mathbf g}=-{\mathbf \nabla} U$, or
+```{math}
+{\mathbf g}({\mathbf r}) =
 \iiint_\Omega  \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|^2} d{\mathbf r}'
 =
-\sum_K \iiint_{\Omega_K} \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|^2} d{\mathbf r}'.$$
+\sum_K \iiint_{\Omega_K} \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|^2} d{\mathbf r}'.
+```
 
 The default number of quadrature points for each cell in the postprocessor is
-$2\textsuperscript{ndim}$, where ndim is the number of dimensions. The
+$2^\text{ndim}$, where ndim is the number of dimensions. The
 $n$-point GLQ allows exact integration of $(2n-1)$-order polynomials. However,
 the integrand of the Newton integral is not a polynomial (it contains a term
 $\sim r^{-m}$), so there is not an optimal number of quadrature points to use.
@@ -66,16 +72,16 @@ approximates the cell as a point mass since there is a single quadrature point
 in the middle of the cell.
 
 Given the symmetry of the problem, the values of the potential and
-acceleration depend solely on the distance $r$ from the origin, see Turcotte
-and Schubert (Turcotte and Schubert 2014). Their analytical values are given
+acceleration depend solely on the distance $r$ from the origin, see {cite:t}`turcotte:schubert:2014`. Their analytical values are given
 by $U(r) = - GM/r$ and $|{\mathbf g}(r)|= g_r(r)=GM/r^2$. Minimum, maximum,
 and average values of both the potential and the acceleration are printed in
 the statistics file while measurements at all the desired points are written
 in the `output_gravity` folder inside the output folder. We ran the input file
-for $I\in \{-1,0,1,2\}$ for $D=0,100,500,1500,3000~\si{\km}$ and the results
-are presented in Table&nbsp;[1][] alongside the analytical values.
+for $I\in \{-1,0,1,2\}$ for $D=0,100,500,1500,3000~\text{ km}$ and the results
+are presented in Table&nbsp;[1] alongside the analytical values.
 
-<div id="tab:thin_shell_gravity_benchmark">
+```{table} Thin shell gravity benchmark: $1\text{ mGal}=10^{-5}\text{ m}/\text{s}^2$. $n_q$ is the number of GLQ points per cell. 'a.v.' stands for analytical value.
+:name: tab:thin_shell_gravity_benchmark
 
 |      |      |       |           |              |           |              |                                    |              |
 |:----:|:----:|:-----:|:---------:|:------------:|:---------:|:------------:|:----------------------------------:|:------------:|
@@ -107,11 +113,7 @@ are presented in Table&nbsp;[1][] alongside the analytical values.
 |      |  2   | $4^3$ | 717.4641  |   717.4641   | 717.4641  | -47503.2981  |            -47503.2981             | -47503.2981  |
 |      | a.v. |       | 717.4641  |              |           | -47503.2981  |                                    |              |
 
-*Thin shell gravity benchmark:
-$1\si{mGal}=10^{-5}\si{\meter\per\square\second}$. $n_q$ is the number of GLQ
-points per cell. &lsquo;a.v.&rsquo; stands for analytical value.*
-
-</div>
+```
 
 
 
@@ -130,15 +132,3 @@ which might occur in the presence of density discontinuities (e.g. air-water,
 water-crust, moho, etc.) inside a cell. $I=1$ seems to be the best compromise
 between accuracy (gravity acceleration errors are less than 0.01&nbsp;mGal for
 all shells) and compute time for this experiment.
-
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-TS14" class="csl-entry">
-
-Turcotte, D. L., and G. Schubert. 2014. *Geodynamics*. 3rd ed. Cambridge.
-
-</div>
-
-</div>
-
-  [1]: #tab:thin_shell_gravity_benchmark

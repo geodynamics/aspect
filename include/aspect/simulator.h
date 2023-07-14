@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -503,11 +503,12 @@ namespace aspect
       /**
        * Compute the factor by which we scale the second of
        * the Stokes equations (the "pressure scaling factor").
-       * We do this for the current time step by taking the logarithmic
-       * average of the viscosities we find on the cells in this domain.
+       * We compute the factor by taking the logarithmic
+       * average of the viscosities we find on the cells in
+       * this domain and dividing this average by a reference
+       * length scale provided by the used geometry model.
        *
-       * This function then returns the pressure_scaling variable using
-       * this computed reference viscosity.
+       * This function returns the pressure scaling variable.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
@@ -690,7 +691,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_single_advection_iterated_newton_stokes ();
+      void solve_single_advection_and_iterated_newton_stokes ();
 
       /**
        * This function implements one scheme for the various
@@ -720,7 +721,7 @@ namespace aspect
 
       /**
        * Initiate the assembly of the Stokes preconditioner matrix via
-       * assemble_stokes_preconditoner(), then set up the data structures to
+       * assemble_stokes_preconditioner(), then set up the data structures to
        * actually build a preconditioner from this matrix.
        *
        * This function is implemented in
@@ -831,8 +832,17 @@ namespace aspect
 
       /**
        * Interpolate a particular particle property to the solution field.
+       *
+       * @deprecated: Use interpolate_particle_property_vector() instead.
        */
+      DEAL_II_DEPRECATED
       void interpolate_particle_properties (const AdvectionField &advection_field);
+
+      /**
+       * Interpolate the corresponding particle properties into the given
+       * @p advection_fields solution fields.
+       */
+      void interpolate_particle_properties (const std::vector<AdvectionField> &advection_fields);
 
       /**
        * Solve the Stokes linear system.
@@ -1569,6 +1579,17 @@ namespace aspect
       get_extrapolated_advection_field_range (const AdvectionField &advection_field) const;
 
       /**
+       * Exchange coarsen/refinement flags set between processors so that
+       * we have the correct settings on all ghost cells.
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+       *
+       */
+      void exchange_refinement_flags();
+
+
+      /**
        * Check if timing output should be written in this timestep, and if so
        * write it.
        *
@@ -1659,41 +1680,6 @@ namespace aspect
                                         double                             &max_density,
                                         double                             &max_specific_heat,
                                         double                             &conductivity) const;
-
-      /**
-       * Extract the values of temperature, pressure, composition and optional
-       * strain rate for the current linearization point. These values are
-       * stored as input arguments for the material model. The compositional
-       * fields are extracted with the individual compositional fields as
-       * outer vectors and the values at each quadrature point as inner
-       * vectors, but the material model needs it the other way round. Hence,
-       * this vector of vectors is transposed.
-       *
-       * @param[in] input_solution A solution vector (or linear combination of
-       * such vectors) with as many entries as there are degrees of freedom in
-       * the mesh. It will be evaluated on the cell with which the FEValues
-       * object was last re-initialized.
-       * @param[in] input_finite_element_values The FEValues object that
-       * describes the finite element space in use and that is used to
-       * evaluate the solution values at the quadrature points of the current
-       * cell.
-       * @param[in] cell The cell on which we are currently evaluating
-       * the material model.
-       * @param[in] compute_strainrate A flag determining whether the strain
-       * rate should be computed or not in the output structure.
-       * @param[out] material_model_inputs The output structure that contains
-       * the solution values evaluated at the quadrature points.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void
-      compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                           const FEValuesBase<dim,dim>                                 &input_finite_element_values,
-                                           const typename DoFHandler<dim>::active_cell_iterator        &cell,
-                                           const bool                                                   compute_strainrate,
-                                           MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
-
 
       /**
        * Return whether the Stokes matrix depends on the values of the
@@ -1909,20 +1895,43 @@ namespace aspect
        */
       const std::unique_ptr<InitialTopographyModel::Interface<dim>>          initial_topography_model;
       const std::unique_ptr<GeometryModel::Interface<dim>>                   geometry_model;
-      const IntermediaryConstructorAction                                     post_geometry_model_creation_action;
+      const IntermediaryConstructorAction                                    post_geometry_model_creation_action;
       const std::unique_ptr<MaterialModel::Interface<dim>>                   material_model;
       const std::unique_ptr<GravityModel::Interface<dim>>                    gravity_model;
-      BoundaryTemperature::Manager<dim>                                       boundary_temperature_manager;
-      BoundaryComposition::Manager<dim>                                       boundary_composition_manager;
+      BoundaryTemperature::Manager<dim>                                      boundary_temperature_manager;
+      BoundaryComposition::Manager<dim>                                      boundary_composition_manager;
       const std::unique_ptr<PrescribedStokesSolution::Interface<dim>>        prescribed_stokes_solution;
-      InitialComposition::Manager<dim>                                        initial_composition_manager;
-      InitialTemperature::Manager<dim>                                        initial_temperature_manager;
+
+      /**
+       * The following two variables are pointers to objects that describe
+       * the initial temperature and composition values. The Simulator
+       * class itself releases these pointers once they are no longer
+       * needed, somewhere during the first time step once it is known
+       * that they are no longer needed. However, plugins can have their
+       * own shared pointers to these objects, and the lifetime of the
+       * objects pointed to is then until the last of these plugins
+       * gets deleted.
+       */
+      std::shared_ptr<InitialTemperature::Manager<dim>>                      initial_temperature_manager;
+      std::shared_ptr<InitialComposition::Manager<dim>>                      initial_composition_manager;
+
       const std::unique_ptr<AdiabaticConditions::Interface<dim>>             adiabatic_conditions;
 #ifdef ASPECT_WITH_WORLD_BUILDER
-      const std::unique_ptr<WorldBuilder::World>                              world_builder;
+      /**
+       * A pointer to the WorldBuilder object. Like the
+       * `initial_temperature_manager` and
+       * `initial_composition_manager` objects above, the Simulator
+       * object itself releases this pointer at the end of the
+       * initialization process (right after releasing the
+       * two mentioned initial condition objects). If a part of
+       * the plugin system still needs the world builder object
+       * after this point, it needs to keep its own shared pointer
+       * to it.
+       */
+      std::shared_ptr<WorldBuilder::World>                                   world_builder;
 #endif
-      BoundaryVelocity::Manager<dim>                                          boundary_velocity_manager;
-      std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim>>> boundary_traction;
+      BoundaryVelocity::Manager<dim>                                         boundary_velocity_manager;
+      BoundaryTraction::Manager<dim>                                         boundary_traction_manager;
       const std::unique_ptr<BoundaryHeatFlux::Interface<dim>>                boundary_heat_flux;
 
       /**

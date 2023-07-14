@@ -1,5 +1,5 @@
 
-Loading shared library <./libmelt_track.so>
+Loading shared library <./libmelt_track.debug.so>
 
 Initialize solitary wave solution
 Number of active cells: 640 (on 3 levels)

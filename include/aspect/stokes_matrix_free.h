@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -54,31 +54,6 @@ namespace aspect
 
   namespace internal
   {
-    namespace TangentialBoundaryFunctions
-    {
-
-      template <int dim>
-      void compute_no_normal_flux_constraints_box (const DoFHandler<dim>    &dof,
-                                                   const types::boundary_id  bid,
-                                                   const unsigned int first_vector_component,
-                                                   MGConstrainedDoFs         &mg_constrained_dofs);
-      template <int dim>
-      void
-      add_constraint(const std::array<types::global_dof_index,dim> &dof_indices,
-                     const Tensor<1, dim> &constraining_vector,
-                     AffineConstraints<double> &constraints,
-                     const double inhomogeneity = 0);
-
-      template <int dim, int spacedim>
-      void compute_no_normal_flux_constraints_shell(const DoFHandler<dim,spacedim> &dof_handler,
-                                                    const MGConstrainedDoFs        &mg_constrained_dofs,
-                                                    const Mapping<dim> &mapping,
-                                                    const unsigned int level,
-                                                    const unsigned int first_vector_component,
-                                                    const std::set<types::boundary_id> &boundary_ids,
-                                                    AffineConstraints<double> &constraints);
-    }
-
     /**
      * Matrix-free operators must use deal.II defined vectors, while the rest of the ASPECT
      * software is based on Trilinos vectors. Here we define functions which copy between the
@@ -111,7 +86,7 @@ namespace aspect
   {
 
     /**
-     * This struct stores the data for the current linear operator that is requried to perform
+     * This struct stores the data for the current linear operator that is required to perform
      * matrix-vector products.
      *
      * The members of type Table<2, VectorizedArray<X>> contain values
@@ -378,10 +353,30 @@ namespace aspect
         void set_diagonal (const dealii::LinearAlgebra::distributed::Vector<number> &diag);
 
       private:
+        /**
+         * Defines the inner-most operator on a single cell batch with
+         * the loop over quadrature points.
+         */
+        void inner_cell_operation(FEEvaluation<dim,
+                                  degree_v,
+                                  degree_v+1,
+                                  dim,
+                                  number> &velocity) const;
 
         /**
-         * Performs the application of the matrix-free operator. This function is called by
-         * vmult() functions MatrixFreeOperators::Base.
+         * Defines the operation on a single cell batch including
+         * load/store and calls inner_cell_operation().
+         */
+        void cell_operation(FEEvaluation<dim,
+                            degree_v,
+                            degree_v+1,
+                            dim,
+                            number> &velocity) const;
+
+        /**
+         * Performs the application of the matrix-free operator. This
+         * function is called by vmult() functions
+         * MatrixFreeOperators::Base.
          */
         void apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
                         const dealii::LinearAlgebra::distributed::Vector<number> &src) const override;
@@ -395,14 +390,6 @@ namespace aspect
                           const std::pair<unsigned int, unsigned int> &cell_range) const;
 
         /**
-         * Computes the diagonal contribution from a cell matrix.
-         */
-        void local_compute_diagonal (const MatrixFree<dim,number>                     &data,
-                                     dealii::LinearAlgebra::distributed::Vector<number>  &dst,
-                                     const unsigned int                               &dummy,
-                                     const std::pair<unsigned int,unsigned int>       &cell_range) const;
-
-        /**
          * A pointer to the current cell data that contains viscosity and other required parameters per cell.
          */
         const OperatorCellData<dim,number> *cell_data;
@@ -410,9 +397,9 @@ namespace aspect
   }
 
   /**
-    * Base class for the matrix free GMG solver for the Stokes system. The
-    * actual implementation is found inside StokesMatrixFreeHandlerImplementation below.
-    */
+   * Base class for the matrix free GMG solver for the Stokes system. The
+   * actual implementation is found inside StokesMatrixFreeHandlerImplementation below.
+   */
   template<int dim>
   class StokesMatrixFreeHandler
   {
@@ -558,7 +545,7 @@ namespace aspect
        * model and storing the information necessary for a later call
        * to solve().
        */
-      virtual void assemble() override;
+      void assemble() override;
 
       /**
        * Computes and sets the diagonal for both the mass matrix operator and the A-block
@@ -681,10 +668,6 @@ namespace aspect
        * Store the data for the Stokes operator (viscosity, etc.) for each multigrid level.
        */
       MGLevelObject<MatrixFreeStokesOperators::OperatorCellData<dim, GMGNumberType>> level_cell_data;
-
-      // This variable is needed only in the setup in both evaluate_material_model()
-      // and build_preconditioner(). It will be deleted after the last use.
-      MGLevelObject<dealii::LinearAlgebra::distributed::Vector<GMGNumberType>> level_viscosity_vector;
 
       using StokesMatrixType = MatrixFreeStokesOperators::StokesOperator<dim,velocity_degree,double>;
       using SchurComplementMatrixType = MatrixFreeStokesOperators::MassMatrixOperator<dim,velocity_degree-1,double>;

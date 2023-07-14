@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -210,7 +210,7 @@ namespace aspect
      * The parameters that describe this geometry and that are read from the
      * input file are the inner and outer radii of the shell, the minimum
      * and maximum longitude, minimum and maximum longitude, and the
-     * number of cells initialised in each dimension.
+     * number of cells initialized in each dimension.
      *
      * Initial topography can be added through a radial displacement of the
      * mesh nodes.
@@ -448,7 +448,7 @@ namespace aspect
         /**
          * The number of cells in each coordinate direction
          */
-        std::vector<unsigned int> repetitions;
+        std::array<unsigned int, dim> repetitions;
 
         /**
          * An object that describes the geometry.

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -54,22 +54,21 @@ namespace aspect
     class SimpleNonlinear : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * This material model is incompressible.
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
 
 
         static
         void
         declare_parameters (ParameterHandler &prm);
 
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**
@@ -317,7 +316,7 @@ namespace aspect
           // strain-rate deviator parameter
           prm.declare_entry ("Use deviator of strain-rate", "true",
                              Patterns::Bool(),
-                             "This value determines wheter to use the deviator of the strain-rate in computing the viscosity, "
+                             "This value determines whether to use the deviator of the strain-rate in computing the viscosity, "
                              "or simply the strain rate $\\varepsilon(\\mathbf u)$.");
         }
         prm.leave_subsection();

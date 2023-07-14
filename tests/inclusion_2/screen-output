@@ -1,5 +1,5 @@
 
-Loading shared library <./libinclusion_2.so>
+Loading shared library <./libinclusion_2.debug.so>
 
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)

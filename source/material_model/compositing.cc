@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -199,7 +199,7 @@ namespace aspect
       models.resize(model_names.size());
       for (unsigned int i=0; i<model_names.size(); ++i)
         {
-          models[i].reset(create_material_model<dim>(model_names[i]));
+          models[i] = create_material_model<dim>(model_names[i]);
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(models[i].get()))
             sim->initialize_simulator (this->get_simulator());
           models[i]->parse_parameters(prm);

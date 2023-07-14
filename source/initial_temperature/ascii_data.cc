@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -28,7 +28,7 @@ namespace aspect
   {
     template <int dim>
     AsciiData<dim>::AsciiData ()
-    {}
+      = default;
 
 
     template <int dim>
@@ -54,9 +54,9 @@ namespace aspect
     {
       prm.enter_subsection ("Initial temperature model");
       {
-        Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/",
-                                                          "box_2d.txt");
+        Utilities::AsciiDataInitial<dim>::declare_parameters(prm,
+                                                             "$ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/",
+                                                             "box_2d.txt");
       }
       prm.leave_subsection();
     }
@@ -68,7 +68,7 @@ namespace aspect
     {
       prm.enter_subsection ("Initial temperature model");
       {
-        Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+        Utilities::AsciiDataInitial<dim>::parse_parameters(prm);
       }
       prm.leave_subsection();
     }

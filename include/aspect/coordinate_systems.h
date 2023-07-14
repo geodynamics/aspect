@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _aspect_coordinate_sytems_h
-#define _aspect_coordinate_sytems_h
+#ifndef _aspect_coordinate_systems_h
+#define _aspect_coordinate_systems_h
 
 namespace aspect
 {

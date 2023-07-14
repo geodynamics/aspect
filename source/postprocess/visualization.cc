@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,6 +25,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/mesh_deformation/interface.h>
+#include <deal.II/fe/mapping_q1_eulerian.h>
 
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/numerics/data_out.h>
@@ -154,23 +155,25 @@ namespace aspect
 
             solution_units.emplace_back("K");
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              solution_units.push_back (""); // we don't know here
+              solution_units.emplace_back(""); // we don't know here
 
             return solution_units;
           }
       };
 
       /**
-       * This Postprocessor will generate the output variables of mesh velocity
-       * for when a deforming mesh is used.
+       * This Postprocessor will generate the output variables of mesh velocity and
+       * mesh displacement for when a deforming mesh is used.
        */
       template <int dim>
       class MeshDeformationPostprocessor: public DataPostprocessorVector<dim>, public SimulatorAccess<dim>
       {
         public:
-          MeshDeformationPostprocessor ()
-            : DataPostprocessorVector<dim>("mesh_velocity",
-                                           update_values)
+          MeshDeformationPostprocessor (const std::string &name,
+                                        bool is_velocity)
+            : DataPostprocessorVector<dim>(name,
+                                           update_values),
+            is_velocity(is_velocity)
           {}
 
 
@@ -182,7 +185,7 @@ namespace aspect
             Assert( computed_quantities[0].size() == dim,
                     ExcMessage("Unexpected dimension in mesh velocity postprocessor"));
             const double velocity_scaling_factor =
-              this->convert_output_to_years() ? year_in_seconds : 1.0;
+              (is_velocity && this->convert_output_to_years()) ? year_in_seconds : 1.0;
             const unsigned int n_q_points = input_data.solution_values.size();
             for (unsigned int q=0; q<n_q_points; ++q)
               for (unsigned int i=0; i<dim; ++i)
@@ -193,11 +196,17 @@ namespace aspect
           std::string
           get_physical_units () const
           {
-            if (this->convert_output_to_years())
-              return "m/year";
+            if (is_velocity)
+              {
+                if (this->convert_output_to_years())
+                  return "m/year";
+                else
+                  return "m/s";
+              }
             else
-              return "m/s";
+              return "m";
           }
+          bool is_velocity;
       };
     }
 
@@ -253,7 +262,7 @@ namespace aspect
       std::list<std::string>
       Interface<dim>::required_other_postprocessors () const
       {
-        return std::list<std::string>();
+        return {};
       }
 
 
@@ -368,8 +377,8 @@ namespace aspect
                                                this->get_time());
       const std::string pvtu_master_filename = (solution_file_prefix +
                                                 ".pvtu");
-      std::ofstream pvtu_master ((this->get_output_directory() + "solution/" +
-                                  pvtu_master_filename).c_str());
+      std::ofstream pvtu_master (this->get_output_directory() + "solution/" +
+                                 pvtu_master_filename);
       data_out.write_pvtu_record (pvtu_master, filenames);
 
       // now also generate a .pvd file that matches simulation
@@ -389,17 +398,17 @@ namespace aspect
 
       const std::string pvd_master_filename = (this->get_output_directory() +
                                                (is_cell_data_output ? "solution.pvd" : "solution_surface.pvd"));
-      std::ofstream pvd_master (pvd_master_filename.c_str());
+      std::ofstream pvd_master (pvd_master_filename);
 
       DataOutBase::write_pvd_record (pvd_master, output_history.times_and_pvtu_names);
 
-      // finally, do the same for Visit via the .visit file for this
+      // finally, do the same for VisIt via the .visit file for this
       // time step, as well as for all time steps together
       const std::string visit_master_filename = (this->get_output_directory()
                                                  + "solution/"
                                                  + solution_file_prefix
                                                  + ".visit");
-      std::ofstream visit_master (visit_master_filename.c_str());
+      std::ofstream visit_master (visit_master_filename);
 
       DataOutBase::write_visit_record (visit_master, filenames);
 
@@ -426,8 +435,8 @@ namespace aspect
           output_history.output_file_names_by_timestep.push_back (filenames_with_path);
       }
 
-      std::ofstream global_visit_master ((this->get_output_directory() +
-                                          (is_cell_data_output ? "solution.visit" : "solution_surface.visit")).c_str());
+      std::ofstream global_visit_master (this->get_output_directory() +
+                                         (is_cell_data_output ? "solution.visit" : "solution_surface.visit"));
 
       std::vector<std::pair<double, std::vector<std::string>>> times_and_output_file_names;
       for (unsigned int timestep=0; timestep<output_history.times_and_pvtu_names.size(); ++timestep)
@@ -536,13 +545,9 @@ namespace aspect
           vtk_flags.cycle = this->get_timestep_number();
           vtk_flags.time = time_in_years_or_seconds;
 
-#if DEAL_II_VERSION_GTE(9,4,0)
           // Also describe the physical units if we have them. Postprocessors do
           // describe them, but it's a slight hassle to get at the information:
           vtk_flags.physical_units = visualization_field_names_and_units;
-#else
-          (void)visualization_field_names_and_units;
-#endif
 
           // Finally, set or do not set whether we want to describe cells
           // with curved edges and faces:
@@ -574,10 +579,9 @@ namespace aspect
                     output_history.background_thread.join();
                   // ...then continue with writing our own data.
                   output_history.background_thread
-                    = std::thread([this,
-                                   my_filename = std::move(filename),
-                                   my_temporary_output_location = temporary_output_location,
-                                   my_file_contents = std::move(file_contents)]()
+                    = std::thread([ my_filename = std::move(filename),
+                                    my_temporary_output_location = temporary_output_location,
+                                    my_file_contents = std::move(file_contents)]()
                   {
                     writer (my_filename, my_temporary_output_location, *my_file_contents);
                   });
@@ -589,7 +593,7 @@ namespace aspect
             // Just write one data file in parallel
             if (group_files == 1)
               {
-                data_out.write_vtu_in_parallel(filename.c_str(),
+                data_out.write_vtu_in_parallel(filename,
                                                this->get_mpi_communicator());
               }
             else               // Write as many output files as 'group_files' groups
@@ -598,10 +602,23 @@ namespace aspect
                 MPI_Comm comm;
                 int ierr = MPI_Comm_split(this->get_mpi_communicator(), color, my_id, &comm);
                 AssertThrowMPI(ierr);
-                data_out.write_vtu_in_parallel(filename.c_str(), comm);
+                data_out.write_vtu_in_parallel(filename, comm);
                 ierr = MPI_Comm_free(&comm);
                 AssertThrowMPI(ierr);
               }
+        }
+      else if (output_format == "parallel deal.II intermediate")
+        {
+#if DEAL_II_VERSION_GTE(9,5,0)
+          const std::string filename = this->get_output_directory() + "solution/"
+                                       + solution_file_prefix + ".pd2";
+
+          data_out.write_deal_II_intermediate_in_parallel(filename,
+                                                          this->get_mpi_communicator(),
+                                                          DataOutBase::CompressionLevel::default_compression);
+#else
+          AssertThrow(false, ExcMessage("Parallel deal.II intermediate output requires deal.II 9.5 or newer!"));
+#endif
         }
       else   // Write in a different format than hdf5 or vtu. This case is supported, but is not
         // optimized for parallel output in that every process will write one file directly
@@ -614,7 +631,7 @@ namespace aspect
                                        + solution_file_prefix + "." + Utilities::int_to_string(myid, 4)
                                        + DataOutBase::default_suffix(
                                          DataOutBase::parse_output_format(output_format));
-          std::ofstream out(filename.c_str());
+          std::ofstream out(filename);
           AssertThrow(out,
                       ExcMessage(
                         "Unable to open file for writing: " + filename + "."));
@@ -737,7 +754,7 @@ namespace aspect
       if ((this->get_time() < last_output_time + output_interval)
           && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
           && (this->get_timestep_number() != 0))
-        return std::pair<std::string,std::string>();
+        return {"", ""};
 
       // up the counter of the number of the file by one, but not in
       // the very first output step. if we run postprocessors on all
@@ -761,7 +778,8 @@ namespace aspect
                                          base_variables.get_physical_units(),
                                          visualization_field_names_and_units);
 
-      std::unique_ptr<internal::MeshDeformationPostprocessor<dim>> mesh_deformation_variables;
+      std::unique_ptr<internal::MeshDeformationPostprocessor<dim>> mesh_deformation_velocity;
+      std::unique_ptr<internal::MeshDeformationPostprocessor<dim>> mesh_deformation_displacement;
 
       DataOut<dim> data_out;
       data_out.attach_dof_handler (this->get_dof_handler());
@@ -787,16 +805,31 @@ namespace aspect
       // If there is a deforming mesh, also attach the mesh velocity object
       if ( this->get_parameters().mesh_deformation_enabled && output_mesh_velocity)
         {
-          mesh_deformation_variables = std::make_unique<internal::MeshDeformationPostprocessor<dim>>();
-          mesh_deformation_variables->initialize_simulator(this->get_simulator());
+          mesh_deformation_velocity = std::make_unique<internal::MeshDeformationPostprocessor<dim>>("mesh_velocity", true);
+          mesh_deformation_velocity->initialize_simulator(this->get_simulator());
 
           // Insert mesh deformation variable names into set of all output field names
-          track_output_field_names_and_units(mesh_deformation_variables->get_names(),
-                                             mesh_deformation_variables->get_physical_units(),
+          track_output_field_names_and_units(mesh_deformation_velocity->get_names(),
+                                             mesh_deformation_velocity->get_physical_units(),
                                              visualization_field_names_and_units);
 
           data_out.add_data_vector (this->get_mesh_velocity(),
-                                    *mesh_deformation_variables);
+                                    *mesh_deformation_velocity);
+        }
+
+      if ( this->get_parameters().mesh_deformation_enabled && output_mesh_displacement)
+        {
+          mesh_deformation_displacement = std::make_unique<internal::MeshDeformationPostprocessor<dim>>("mesh_displacement", false);
+          mesh_deformation_displacement->initialize_simulator(this->get_simulator());
+
+          // Insert mesh deformation variable names into set of all output field names
+          track_output_field_names_and_units(mesh_deformation_displacement->get_names(),
+                                             mesh_deformation_displacement->get_physical_units(),
+                                             visualization_field_names_and_units);
+
+          data_out.add_data_vector (this->get_mesh_deformation_handler().get_mesh_deformation_dof_handler(),
+                                    this->get_mesh_deformation_handler().get_mesh_displacements(),
+                                    *mesh_deformation_displacement);
         }
 
       // then for each additional selected output variable
@@ -928,11 +961,19 @@ namespace aspect
                                         :
                                         0;
 
+      // Use the normal mapping unless we use mesh deformation and
+      // the user requests an undeformed mesh. In that case, we use
+      // a Q1 mapping here.
+      const Mapping<dim> &linear_mapping = ReferenceCells::get_hypercube<dim>().template get_default_linear_mapping<dim>();
+      const Mapping<dim> &mapping =
+        (output_undeformed_mesh && dynamic_cast<const MappingQ1Eulerian<dim, LinearAlgebra::Vector>*>(&this->get_mapping())) ?
+        (linear_mapping) : (this->get_mapping());
+
       // Now get everything written for the DataOut case, and record this
       // in the statistics file
       std::string solution_file_prefix;
       {
-        data_out.build_patches (this->get_mapping(),
+        data_out.build_patches (mapping,
                                 subdivisions,
                                 this->get_geometry_model().has_curved_elements()
                                 ?
@@ -954,7 +995,7 @@ namespace aspect
       // but still put it into the statistics file
       if (have_face_viz_postprocessors)
         {
-          data_out_faces.build_patches (this->get_mapping(),
+          data_out_faces.build_patches (mapping,
                                         subdivisions);
 
           const std::string face_solution_file_prefix
@@ -1023,7 +1064,7 @@ namespace aspect
             close(tmp_file_desc);
         }
 
-      std::ofstream out(tmp_filename.c_str());
+      std::ofstream out(tmp_filename);
 
       AssertThrow (out, ExcMessage(std::string("Trying to write to file <") +
                                    filename +
@@ -1081,7 +1122,8 @@ namespace aspect
 
           // now also see about the file format we're supposed to write in
           prm.declare_entry ("Output format", "vtu",
-                             Patterns::Selection (DataOutBase::get_output_format_names ()),
+                             Patterns::Selection (DataOutBase::get_output_format_names ()
+                                                  + "|parallel deal.II intermediate"),
                              "The file format to be used for graphical output. The list "
                              "of possible output formats that can be given here is documented "
                              "in the appendix of the manual where the current parameter "
@@ -1161,11 +1203,11 @@ namespace aspect
                              "deal.II offers the possibility to write vtu files with higher order "
                              "representations of the output data. This means each cell will correctly "
                              "show the higher order representation of the output data instead of the "
-                             "linear interpolation between vertices that ParaView and Visit usually show. "
+                             "linear interpolation between vertices that ParaView and VisIt usually show. "
                              "Note that activating this option is safe and recommended, but requires that "
                              "(i) ``Output format'' is set to ``vtu'', (ii) ``Interpolate output'' is "
                              "set to true, (iii) you use a sufficiently new version of Paraview "
-                             "or Visit to read the files (Paraview version 5.5 or newer, and Visit version "
+                             "or VisIt to read the files (Paraview version 5.5 or newer, and VisIt version "
                              "to be determined), and (iv) you use deal.II version 9.1.0 or newer. "
                              "\n"
                              "The effect of using this option can be seen in the following "
@@ -1204,6 +1246,22 @@ namespace aspect
                              "Eulerian formulation to handle deforming the domain, so the mesh "
                              "has its own velocity field.  This may be written as an output field "
                              "by setting this parameter to true.");
+
+          prm.declare_entry ("Output mesh displacement", "false",
+                             Patterns::Bool(),
+                             "For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-"
+                             "Eulerian formulation to handle deforming the domain. The displacement vector from "
+                             "the reference configuration may be written as an output field by setting this "
+                             "parameter to true.");
+
+          prm.declare_entry ("Output undeformed mesh", "false",
+                             Patterns::Bool(),
+                             "For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-"
+                             "Eulerian formulation to handle deforming the domain. By default, we output "
+                             "the deformed mesh. If this setting is set to true, the mesh will be written "
+                             "in the reference state without deformation instead. If you output the mesh "
+                             "displacement, you can obtain the deformed mesh by using the 'warp by vector' "
+                             "ParaView filter.");
 
           // Finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors.
@@ -1308,6 +1366,8 @@ namespace aspect
             }
 
           output_mesh_velocity = prm.get_bool("Output mesh velocity");
+          output_mesh_displacement = prm.get_bool("Output mesh displacement");
+          output_undeformed_mesh = prm.get_bool("Output undeformed mesh");
 
           // now also see which derived quantities we are to compute
           viz_names = Utilities::split_string_list(prm.get("List of output variables"));
@@ -1383,30 +1443,29 @@ namespace aspect
 
       // then go through the list, create objects and let them parse
       // their own parameters
-      for (unsigned int name=0; name<viz_names.size(); ++name)
+      for (const auto &viz_name : viz_names)
         {
-          VisualizationPostprocessors::Interface<dim> *
+          std::unique_ptr<VisualizationPostprocessors::Interface<dim>>
           viz_postprocessor = std::get<dim>(registered_visualization_plugins)
-                              .create_plugin (viz_names[name],
+                              .create_plugin (viz_name,
                                               "Visualization plugins");
 
           // make sure that the postprocessor is indeed of type
           // dealii::DataPostprocessor or of type
           // VisualizationPostprocessors::CellDataVectorCreator
-          Assert ((dynamic_cast<DataPostprocessor<dim>*>(viz_postprocessor)
+          Assert ((dynamic_cast<DataPostprocessor<dim>*>(viz_postprocessor.get())
                    != nullptr)
                   ||
-                  (dynamic_cast<VisualizationPostprocessors::CellDataVectorCreator<dim>*>(viz_postprocessor)
+                  (dynamic_cast<VisualizationPostprocessors::CellDataVectorCreator<dim>*>(viz_postprocessor.get())
                    != nullptr)
                   ,
                   ExcMessage ("Can't convert visualization postprocessor to type "
                               "dealii::DataPostprocessor or "
                               "VisualizationPostprocessors::CellDataVectorCreator!?"));
 
-          postprocessors.push_back (std::unique_ptr<VisualizationPostprocessors::Interface<dim>>
-                                    (viz_postprocessor));
+          postprocessors.emplace_back (std::move(viz_postprocessor));
 
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(postprocessors.back().get()))
             sim->initialize_simulator (this->get_simulator());
 
           postprocessors.back()->parse_parameters (prm);
@@ -1495,7 +1554,7 @@ namespace aspect
     register_visualization_postprocessor (const std::string &name,
                                           const std::string &description,
                                           void (*declare_parameters_function) (ParameterHandler &),
-                                          VisualizationPostprocessors::Interface<dim> *(*factory_function) ())
+                                          std::unique_ptr<VisualizationPostprocessors::Interface<dim>> (*factory_function) ())
     {
       std::get<dim>(registered_visualization_plugins).register_plugin (name,
                                                                        description,

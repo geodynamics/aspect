@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -198,17 +198,17 @@ namespace aspect
                                    "to be used with the Boussinesq, ALA, or TALA "
                                    "formulation."
                                    "\n\n"
-                                   "The viscosity is defined as \\[\\eta = \\text{Di} / \\text{Ra} \\cdot \\exp(-b T' + c z)\\] "
-                                   "where $T'$ is the temperature variation from the "
+                                   "The viscosity is defined as $\\eta = \\text{Di} / \\text{Ra} \\cdot \\exp(-b T^\\prime + c z)$ "
+                                   "where $T^\\prime$ is the temperature variation from the "
                                    "adiabatic temperature, $z$ is the depth, "
                                    "$b$ is given by ``Viscosity temperature prefactor'', "
                                    "and $c$ by ``Viscosity depth prefactor''. If "
                                    "$\\text{Di}$ is zero, it will be replaced by 1.0 in $\\eta$."
                                    "\n\n"
-                                   "The density is defined as \\[\\rho = \\exp(\\text{Di}/\\gamma \\cdot z) "
-                                   " (1.0 - \\alpha T' + \\text{Di} \\gamma p'),\\] where "
+                                   "The density is defined as $\\rho = \\exp(\\text{Di}/\\gamma \\cdot z) "
+                                   " (1.0 - \\alpha T^\\prime + \\text{Di} \\gamma p^\\prime),$ where "
                                    "$\\alpha=\\text{Di}$ is the thermal expansion coefficient, "
-                                   "$\\gamma$ is the Grueneisen parameter, and $p'$ is "
+                                   "$\\gamma$ is the Grueneisen parameter, and $p^\\prime$ is "
                                    "the pressure variation from the adiabatic "
                                    "pressure. The pressure dependent term is not present "
                                    "if ``TALA'' is enabled.")

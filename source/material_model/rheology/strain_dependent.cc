@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -178,9 +178,6 @@ namespace aspect
       void
       StrainDependent<dim>::parse_parameters (ParameterHandler &prm)
       {
-        // Get the number of fields for composition-dependent material properties
-        const unsigned int n_fields = this->n_compositional_fields() + 1;
-
         // number of required compositional fields for full finite strain tensor
         const unsigned int s = Tensor<2,dim>::n_independent_components;
 
@@ -223,7 +220,7 @@ namespace aspect
         if (weakening_mechanism == finite_strain_tensor)
           {
             AssertThrow(this->n_compositional_fields() >= s,
-                        ExcMessage("There must be enough compositional fields to track all components of the finite strain tensor (4 in 2D, 9 in 3D). "));
+                        ExcMessage("There must be enough compositional fields to track all components of the finite strain tensor (4 in 2d, 9 in 3d). "));
             // Assert that fields exist and that they are in the right order
             const unsigned int n_s11 = this->introspection().compositional_index_for_name("s11");
             const unsigned int n_s12 = this->introspection().compositional_index_for_name("s12");
@@ -271,52 +268,75 @@ namespace aspect
                          Parameters<dim>::NonlinearSolver::single_Advection_iterated_Stokes
                          ||
                          this->get_parameters().nonlinear_solver ==
+                         Parameters<dim>::NonlinearSolver::iterated_Advection_and_Stokes
+                         ||
+                         this->get_parameters().nonlinear_solver ==
                          Parameters<dim>::NonlinearSolver::single_Advection_iterated_Newton_Stokes
                          ||
                          this->get_parameters().nonlinear_solver ==
+                         Parameters<dim>::NonlinearSolver::iterated_Advection_and_Newton_Stokes
+                         ||
+                         this->get_parameters().nonlinear_solver ==
                          Parameters<dim>::NonlinearSolver::single_Advection_iterated_defect_correction_Stokes
+                         ||
+                         this->get_parameters().nonlinear_solver ==
+                         Parameters<dim>::NonlinearSolver::iterated_Advection_and_defect_correction_Stokes
                          ||
                          this->get_parameters().nonlinear_solver ==
                          Parameters<dim>::NonlinearSolver::no_Advection_no_Stokes),
                         ExcMessage("The material model will only work with the nonlinear "
                                    "solver schemes 'single Advection, single Stokes', "
                                    "'single Advection, iterated Stokes', "
+                                   "'iterated Advection and Stokes', "
                                    "'single Advection, iterated Newton Stokes', "
-                                   "'single Advection, iterated defect correction Stokes', and "
+                                   "'iterated Advection and Newton Stokes', "
+                                   "'single Advection, iterated defect correction Stokes', "
+                                   "'iterated Advection and defect correction Stokes, and' "
                                    "'no Advection, no Stokes' "
-                                   "when strain weakening is enabled, because more than one nonlinear "
-                                   "advection iteration will result in the incorrect value of strain."));
+                                   "when strain weakening is enabled."));
           }
 
 
+        // Retrieve the list of composition names
+        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-        start_plastic_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Start plasticity strain weakening intervals"))),
-                                                   n_fields,
+        // Establish that a background field is required here
+        const bool has_background_field = true;
+
+        start_plastic_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("Start plasticity strain weakening intervals"),
+                                                   list_of_composition_names,
+                                                   has_background_field,
                                                    "Start plasticity strain weakening intervals");
 
-        end_plastic_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("End plasticity strain weakening intervals"))),
-                                                 n_fields,
-                                                 "End plasticity strain weakening intervals");
+        end_plastic_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("End plasticity strain weakening intervals"),
+                                                                                       list_of_composition_names,
+                                                                                       has_background_field,
+                                                                                       "End plasticity strain weakening intervals");
 
-        start_viscous_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Start prefactor strain weakening intervals"))),
-                                                   n_fields,
+        start_viscous_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("Start prefactor strain weakening intervals"),
+                                                   list_of_composition_names,
+                                                   has_background_field,
                                                    "Start prefactor strain weakening intervals");
 
-        end_viscous_strain_weakening_intervals = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("End prefactor strain weakening intervals"))),
-                                                 n_fields,
-                                                 "End prefactor strain weakening intervals");
+        end_viscous_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("End prefactor strain weakening intervals"),
+                                                                                       list_of_composition_names,
+                                                                                       has_background_field,
+                                                                                       "End prefactor strain weakening intervals");
 
-        viscous_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactor strain weakening factors"))),
-                                                                                   n_fields,
-                                                                                   "Prefactor strain weakening factors");
+        viscous_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Prefactor strain weakening factors"),
+                                                                                 list_of_composition_names,
+                                                                                 has_background_field,
+                                                                                 "Prefactor strain weakening factors");
 
-        cohesion_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Cohesion strain weakening factors"))),
-                                                                                    n_fields,
-                                                                                    "Cohesion strain weakening factors");
+        cohesion_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Cohesion strain weakening factors"),
+                                                                                  list_of_composition_names,
+                                                                                  has_background_field,
+                                                                                  "Cohesion strain weakening factors");
 
-        friction_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Friction strain weakening factors"))),
-                                                                                    n_fields,
-                                                                                    "Friction strain weakening factors");
+        friction_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Friction strain weakening factors"),
+                                                                                  list_of_composition_names,
+                                                                                  has_background_field,
+                                                                                  "Friction strain weakening factors");
 
         if (prm.get ("Strain healing mechanism") == "no healing")
           healing_mechanism = no_healing;
@@ -502,6 +522,10 @@ namespace aspect
         // Calculate changes in strain and update the reaction terms
         if  (this->simulator_is_past_initialization() && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
           {
+            Assert(std::isfinite(in.strain_rate[i].norm()),
+                   ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                              "not filled by the caller."));
+
             const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(in.strain_rate[i])), 0.)),
                                             min_strain_rate);
             double delta_e_ii = edot_ii*this->get_timestep();

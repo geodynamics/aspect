@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -99,7 +99,7 @@ namespace aspect
    * length of the output vector. Each function averages a specific quantity
    * (as specified by their name), and that quantity is averaged laterally
    * for each depth slice.
-
+   *
    * Plugins may access the LateralAveraging plugin through the SimulatorAccess
    * function get_lateral_averaging(), and then query that for the desired
    * averaged quantity.
@@ -111,7 +111,7 @@ namespace aspect
   {
     public:
       /**
-       * @deprecated: This function is deprecated and only maintained for backward compatibilty.
+       * @deprecated: This function is deprecated and only maintained for backward compatibility.
        * Use the function compute_lateral_averages() with the same arguments instead.
        */
       DEAL_II_DEPRECATED
@@ -236,6 +236,16 @@ namespace aspect
        */
       void
       get_viscosity_averages(std::vector<double> &values) const;
+
+      /**
+       * Compute a lateral average of the log10 of the current viscosity.
+       *
+       * @param values The output vector of laterally averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
+       */
+      void
+      get_log_viscosity_averages(std::vector<double> &values) const;
 
       /**
        * Compute a lateral average of the current velocity magnitude.

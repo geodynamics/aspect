@@ -1,5 +1,5 @@
 
-Loading shared library <./libno_adiabatic_heating_02.so>
+Loading shared library <./libno_adiabatic_heating_02.debug.so>
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
@@ -158,90 +158,90 @@ Number of degrees of freedom: 948 (578+81+289)
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 12:  t=0.369318 seconds, dt=0.0568181 seconds
+*** Timestep 12:  t=0.366761 seconds, dt=0.0542613 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.26368e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.20687e-06
 
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 13:  t=0.426136 seconds, dt=0.0568181 seconds
+*** Timestep 13:  t=0.423579 seconds, dt=0.0568181 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.50858e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.49593e-07
 
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 14:  t=0.482954 seconds, dt=0.0568181 seconds
+*** Timestep 14:  t=0.480397 seconds, dt=0.0568181 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.17819e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.04524e-08
 
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 15:  t=0.539772 seconds, dt=0.0568181 seconds
+*** Timestep 15:  t=0.537216 seconds, dt=0.0568181 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.53702e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.50575e-07
 
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 16:  t=0.59659 seconds, dt=0.0568181 seconds
+*** Timestep 16:  t=0.594034 seconds, dt=0.0568181 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.00269e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 8.88638e-08
 
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 17:  t=0.653409 seconds, dt=0.0568181 seconds
+*** Timestep 17:  t=0.650852 seconds, dt=0.0568181 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.7734e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.74767e-07
 
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 18:  t=0.710227 seconds, dt=0.0568181 seconds
+*** Timestep 18:  t=0.70767 seconds, dt=0.0568181 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.36361e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.26209e-08
 
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 19:  t=0.767045 seconds, dt=0.0568181 seconds
+*** Timestep 19:  t=0.764488 seconds, dt=0.0568181 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.83033e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.80848e-07
 
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 20:  t=0.823863 seconds, dt=0.0568181 seconds
+*** Timestep 20:  t=0.821306 seconds, dt=0.0568181 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.0864e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.08156e-07
 
 
    Postprocessing:
@@ -251,34 +251,34 @@ Number of degrees of freedom: 948 (578+81+289)
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
-*** Timestep 21:  t=0.880681 seconds, dt=0.0568181 seconds
+*** Timestep 21:  t=0.878124 seconds, dt=0.0568181 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.9854e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.98544e-05
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.24753e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.24542e-07
 
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 22:  t=0.994317 seconds, dt=0.113636 seconds
+*** Timestep 22:  t=0.986647 seconds, dt=0.108523 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.10509e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.78756e-06
 
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 23:  t=1 seconds, dt=0.00568311 seconds
+*** Timestep 23:  t=1 seconds, dt=0.0133531 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.16829e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.22114e-07
 
 
    Postprocessing:

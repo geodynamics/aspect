@@ -1,5 +1,5 @@
 
-Loading shared library <./libsol_kz_4_conservative.so>
+Loading shared library <./libsol_kz_4_conservative.debug.so>
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)

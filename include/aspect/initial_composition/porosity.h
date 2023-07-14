@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,6 +23,7 @@
 #define _aspect_initial_composition_porosity_h
 
 #include <aspect/initial_composition/interface.h>
+#include <aspect/initial_temperature/interface.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
@@ -48,11 +49,33 @@ namespace aspect
     {
       public:
         /**
+         * Initialize the plugin.
+         */
+        void initialize () override;
+
+        /**
          * Return the initial composition as a function of position and number
          * of compositional field.
          */
         double initial_composition (const Point<dim> &position,
                                     const unsigned int compositional_index) const override;
+
+      private:
+        /**
+         * A shared pointer to the initial temperature object
+         * that ensures that the current object can continue
+         * to access the initial temperature object beyond the
+         * first time step.
+         */
+        std::shared_ptr<const aspect::InitialTemperature::Manager<dim>> initial_temperature_manager;
+
+        /**
+         * A shared pointer to the initial composition object
+         * that ensures that the current object can continue
+         * to access the initial composition object beyond the
+         * first time step.
+         */
+        std::shared_ptr<const aspect::InitialComposition::Manager<dim>> initial_composition_manager;
     };
   }
 }

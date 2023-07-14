@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2013 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2013 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,6 +22,7 @@
 #ifndef _aspect_boundary_composition_initial_composition_h
 #define _aspect_boundary_composition_initial_composition_h
 
+#include <aspect/initial_composition/interface.h>
 #include <aspect/boundary_composition/interface.h>
 #include <aspect/simulator_access.h>
 
@@ -42,6 +43,17 @@ namespace aspect
     class InitialComposition : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run.
+         *
+         * This specific function makes sure that the objects that describe
+         * initial conditions remain available throughout the run of the
+         * program.
+         */
+        void
+        initialize () override;
+
         /**
          * This function returns the boundary compositions that are defined
          * by the initial conditions.
@@ -86,6 +98,14 @@ namespace aspect
          */
         double min_composition;
         double max_composition;
+
+        /**
+         * A shared pointer to the initial composition object
+         * that ensures that the current object can continue
+         * to access the initial composition object beyond the
+         * first time step.
+         */
+        std::shared_ptr<const aspect::InitialComposition::Manager<dim>> initial_composition;
     };
   }
 }

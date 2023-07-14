@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -38,8 +38,8 @@ namespace aspect
          */
         InnerCore ();
 
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * A function that is called at the beginning of each time step to
@@ -47,9 +47,8 @@ namespace aspect
          * next be evaluated. For the current class, the function passes to
          * the parsed function what the current time is.
          */
-        virtual
         void
-        update ();
+        update () override;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -67,9 +66,8 @@ namespace aspect
          * parameters. Consequently, derived classes do not have to overload
          * this function if they do not take any runtime parameters.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * A function object representing resistance to phase change at the
@@ -103,7 +101,6 @@ namespace aspect
          * Percentage of material that has already undergone the phase
          * transition to the higher-pressure material.
          */
-        virtual
         double
         phase_function (const Point<dim> &position,
                         const double temperature) const;
@@ -111,7 +108,6 @@ namespace aspect
         /**
          * Hydrostatic pressure profile.
          */
-        virtual
         double
         hydrostatic_pressure (const double radius) const;
     };
@@ -376,11 +372,10 @@ namespace aspect
          * Return the heating terms. For the current class, this
          * function obviously simply returns a constant value.
          */
-        virtual
         void
         evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -396,9 +391,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
         /**
          * @}
          */

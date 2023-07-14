@@ -1,3 +1,0 @@
-New: Added a visualization postprocessor called 'boundary strain rate residual' that computes the residual of the strain rate invariant at the top boundary of the model domain. The residual is computed as the difference between the modeled strain rate and a reference strain rate that is read from an ascii data file, e.g. obtained by field measurements.
-<br>
-(Arushi Saxena, 2022/05/16)

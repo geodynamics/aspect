@@ -1,5 +1,5 @@
 # This is a test for the artificial viscosity.
-# In particaluar, it checks that the entropy viscosity
+# In particular, it checks that the entropy viscosity
 # for the composition at dirichlet boundaries can be set
 # to 0 if requested.
 

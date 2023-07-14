@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -62,6 +62,7 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::density;
 
       // for every surface face on which it makes sense to compute a
       // mass flux and that is owned by this processor,
@@ -74,7 +75,7 @@ namespace aspect
               {
                 fe_face_values.reinit (cell, f);
                 // Set use_strain_rates to false since we don't need viscosity
-                in.reinit(fe_face_values, cell, this->introspection(), this->get_solution(), false);
+                in.reinit(fe_face_values, cell, this->introspection(), this->get_solution());
 
                 this->get_material_model().evaluate(in, out);
 

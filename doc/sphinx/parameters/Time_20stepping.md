@@ -1,8 +1,8 @@
 (parameters:Time_20stepping)=
-# **Time stepping**
+# Time stepping
 
 
-## **Parameters in section** Time stepping
+## **Subsection:** Time stepping
 
 
 (parameters:Time_20stepping/List_20of_20model_20names)=
@@ -15,13 +15,13 @@
 
 The following plugins are available:
 
-`conduction time step': This model computes the conduction time step as the minimum over all cells of $ CFL h^2 \cdot \rho C_p / k$, where k is the thermal conductivity. This plugin will always request advancing to the next time step.
+&lsquo;conduction time step&rsquo;: This model computes the conduction time step as the minimum over all cells of $ CFL h^2 \cdot \rho C_p / k$, where k is the thermal conductivity. This plugin will always request advancing to the next time step.
 
-`convection time step': This model computes the convection time step as $ CFL / \max \| u \| / h$ over all cells, where $u$ is the velocity and $h$ is the product of mesh size and temperature polynomial degree.
+&lsquo;convection time step&rsquo;: This model computes the convection time step as $ CFL / \max \| u \| / h$ over all cells, where $u$ is the velocity and $h$ is the product of mesh size and temperature polynomial degree.
 
-`function': This model uses a time step specified in the parameter file specified as a function of time. This plugin will always request advancing to the next time step.
+&lsquo;function&rsquo;: This model uses a time step specified in the parameter file specified as a function of time. This plugin will always request advancing to the next time step.
 
-`repeat on cutback': This time stepping plugin will detect a situation where the computed time step shrinks by more than a user-controlled factor. In that situation, the previous time step will be repeated with a smaller step size.
+&lsquo;repeat on cutback&rsquo;: This time stepping plugin will detect a situation where the computed time step shrinks by more than a user-controlled factor. In that situation, the previous time step will be repeated with a smaller step size.
 A large reduction in time step size typically happens when velocities change abruptly. Repeating the time step ensure properly resolving this event. It is useful to consider setting the "Maximum relative increase in time step" option to avoid repeatedly repeating every other time step.
 
 (parameters:Time_20stepping/Minimum_20time_20step_20size)=
@@ -30,19 +30,19 @@ A large reduction in time step size typically happens when velocities change abr
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Specifiy a minimum time step size (or 0 to disable).
+**Documentation:** Specify a minimum time step size (or 0 to disable).
 
 (parameters:Time_20stepping/Function)=
-## **Parameters in section** Time stepping/Function
+## **Subsection:** Time stepping / Function
 (parameters:Time_20stepping/Function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
 
 **Pattern:** [Anything]
 
-**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
-A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
 
 (parameters:Time_20stepping/Function/Function_20expression)=
 ### __Parameter name:__ Function expression
@@ -50,7 +50,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 **Pattern:** [Anything]
 
-**Documentation:** Expression for the time step size as a function of 'time'.
+**Documentation:** Expression for the time step size as a function of &rsquo;time&rsquo;.
 
 (parameters:Time_20stepping/Function/Variable_20names)=
 ### __Parameter name:__ Variable names
@@ -61,7 +61,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 **Documentation:** Name for the variable representing the current time.
 
 (parameters:Time_20stepping/Repeat_20on_20cutback)=
-## **Parameters in section** Time stepping/Repeat on cutback
+## **Subsection:** Time stepping / Repeat on cutback
 (parameters:Time_20stepping/Repeat_20on_20cutback/Cut_20back_20amount)=
 ### __Parameter name:__ Cut back amount
 **Default value:** 0.5

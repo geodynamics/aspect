@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -45,10 +45,10 @@ namespace aspect
      * and filled in the MaterialModel::Interface::evaluate() function.
      */
     template <int dim>
-    class PlasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    class PlasticAdditionalOutputs2 : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
-        PlasticAdditionalOutputs(const unsigned int n_points);
+        PlasticAdditionalOutputs2(const unsigned int n_points);
 
         virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 
@@ -75,7 +75,7 @@ namespace aspect
 
     /**
      * A material model that implements a simple formulation of the
-     * material parameters required for the modelling of melt transport,
+     * material parameters required for the modeling of melt transport,
      * including a source term for the porosity according to the melting
      * model for dry peridotite of Katz, 2003. This also includes a
      * computation of the latent heat of melting (if the latent heat
@@ -102,16 +102,16 @@ namespace aspect
          * in the model is accounted for by changes in melt fraction."
          * Thus, this function will always return false.
          */
-        virtual bool is_compressible () const override;
+        bool is_compressible () const override;
 
         /**
          * @name Reference quantities
          * @{
          */
-        virtual double reference_darcy_coefficient () const override;
+        double reference_darcy_coefficient () const override;
 
-        virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
-                              typename Interface<dim>::MaterialModelOutputs &out) const override;
+        void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+                      typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                                      std::vector<double> &melt_fractions) const;
@@ -268,7 +268,7 @@ namespace aspect
     }
 
     template <int dim>
-    PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
+    PlasticAdditionalOutputs2<dim>::PlasticAdditionalOutputs2 (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
       cohesions(n_points, numbers::signaling_nan<double>()),
@@ -278,7 +278,7 @@ namespace aspect
 
     template <int dim>
     std::vector<double>
-    PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
+    PlasticAdditionalOutputs2<dim>::get_nth_output(const unsigned int idx) const
     {
       AssertIndexRange (idx, 3);
       switch (idx)
@@ -490,7 +490,7 @@ namespace aspect
             }
         }
 
-      if (in.strain_rate.size() )
+      if (in.requests_property(MaterialProperties::viscosity) )
         {
           // 5) Compute plastic weakening of the viscosity
           for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
@@ -533,7 +533,7 @@ namespace aspect
                   const double tensile_strength_c = cohesions[c]/strength_reductions[c];
 
                   // Convert friction angle from degrees to radians
-                  double phi = angles_internal_friction[c] * numbers::PI/180.0;
+                  double phi = angles_internal_friction[c] * constants::degree_to_radians;
                   const double transition_pressure = (cohesions[c] * std::cos(phi) - tensile_strength_c) / (1.0 -  sin(phi));
 
                   double yield_strength_c = 0.0;
@@ -570,7 +570,7 @@ namespace aspect
               const double cohesion = MaterialUtilities::average_value(volume_fractions, cohesions, viscosity_averaging);
               const double angle_internal_friction = MaterialUtilities::average_value(volume_fractions, angles_internal_friction, viscosity_averaging);
 
-              PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
+              PlasticAdditionalOutputs2<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs2<dim>>();
               if (plastic_out != nullptr)
                 {
                   plastic_out->cohesions[i] = cohesion;
@@ -1008,11 +1008,11 @@ namespace aspect
     void
     MeltViscoPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PlasticAdditionalOutputs<dim>>() == nullptr)
+      if (out.template get_additional_output<PlasticAdditionalOutputs2<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::PlasticAdditionalOutputs<dim>> (n_points));
+            std::make_unique<MaterialModel::PlasticAdditionalOutputs2<dim>> (n_points));
         }
     }
 
@@ -1030,7 +1030,7 @@ namespace aspect
                                    "and it is not advised that it be used for any serious models "
                                    "at this point.\n\n"
                                    "This material model implements a simple formulation of the "
-                                   "material parameters required for the modelling of melt transport, "
+                                   "material parameters required for the modeling of melt transport, "
                                    "including a source term for the porosity according to the melting "
                                    "model for dry peridotite of \\cite{KSL2003}. All other material "
                                    "properties are taken from the visco-plastic model.")

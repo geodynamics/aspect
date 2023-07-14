@@ -1,7 +1,27 @@
+/*
+  Copyright (C) 2022 - 2023 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/simulator_access.h>
 
 #include <aspect/material_model/simple.h>
-#include <aspect/material_model/grain_size.h>
+#include <aspect/heating_model/shear_heating.h>
 #include <aspect/heating_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/simulator/assemblers/stokes.h>
@@ -522,8 +542,8 @@ namespace aspect
 
       // Some material models provide dislocation viscosities and boundary area work fractions
       // as additional material outputs. If they are attached, use them.
-      const MaterialModel::DislocationViscosityOutputs<dim> *disl_viscosities_out =
-        material_model_outputs.template get_additional_output<MaterialModel::DislocationViscosityOutputs<dim>>();
+      const ShearHeatingOutputs<dim> *shear_heating_out =
+        material_model_outputs.template get_additional_output<ShearHeatingOutputs<dim>>();
 
       const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
         material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>();
@@ -556,13 +576,10 @@ namespace aspect
 
           heating_model_outputs.heating_source_terms[q] = stress * deviatoric_strain_rate;
 
-          // If dislocation viscosities and boundary area work fractions are provided, reduce the
-          // overall heating by this amount (which is assumed to increase surface energy)
-          if (disl_viscosities_out != 0)
-            {
-              heating_model_outputs.heating_source_terms[q] *= 1 - disl_viscosities_out->boundary_area_change_work_fractions[q] *
-                                                               material_model_outputs.viscosities[q] / disl_viscosities_out->dislocation_viscosities[q];
-            }
+          // If shear heating work fractions are provided, reduce the
+          // overall heating by this amount (which is assumed to be converted into other forms of energy)
+          if (shear_heating_out != nullptr)
+            heating_model_outputs.heating_source_terms[q] *= shear_heating_out->shear_heating_work_fractions[q];
 
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }

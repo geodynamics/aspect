@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -83,7 +83,7 @@ namespace aspect
     std::list<std::string>
     ParticleCountStatistics<dim>::required_other_postprocessors() const
     {
-      return std::list<std::string> (1, "particles");
+      return {"particles"};
     }
   }
 }

@@ -1,5 +1,5 @@
 
-Loading shared library <./libnonlinear_convergence_for_small_composition.so>
+Loading shared library <./libnonlinear_convergence_for_small_composition.debug.so>
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 15,942 (8,450+1,089+4,225+1,089+1,089)

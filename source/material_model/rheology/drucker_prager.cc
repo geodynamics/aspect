@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,13 +34,13 @@ namespace aspect
     {
       template <int dim>
       DruckerPrager<dim>::DruckerPrager ()
-      {}
+        = default;
 
       template <int dim>
       const DruckerPragerParameters
       DruckerPrager<dim>::compute_drucker_prager_parameters (const unsigned int composition,
                                                              const std::vector<double> &phase_function_values,
-                                                             const std::vector<unsigned int> &n_phases_per_composition) const
+                                                             const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         DruckerPragerParameters drucker_prager_parameters;
 
@@ -55,9 +55,9 @@ namespace aspect
         else
           {
             // Average among phases
-            drucker_prager_parameters.angle_internal_friction = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            drucker_prager_parameters.angle_internal_friction = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                                 angles_internal_friction, composition);
-            drucker_prager_parameters.cohesion = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            drucker_prager_parameters.cohesion = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  cohesions, composition);
           }
         return drucker_prager_parameters;
@@ -93,30 +93,28 @@ namespace aspect
                                              const double pressure,
                                              const double effective_strain_rate,
                                              const double max_yield_stress,
-                                             const double pre_yield_viscosity) const
+                                             const double non_yielding_viscosity) const
       {
         const double yield_stress = compute_yield_stress(cohesion, angle_internal_friction, pressure, max_yield_stress);
 
-        const double strain_rate_effective_inv = 1./(2.*effective_strain_rate);
+        // If there is no damper, the yielding plastic element accommodates all the strain
+        double apparent_viscosity = yield_stress / (2. * effective_strain_rate);
 
-        double plastic_viscosity = yield_stress * strain_rate_effective_inv;
-
+        // If the plastic damper is used, the effective strain rate is partitioned between the
+        // viscoelastic and damped plastic (Bingham) elements. Assuming that the viscoelastic
+        // elements have viscosities that are not strain rate dependent, we have:
+        // edot_eff = tau_T / (2 * eta_ve) + (tau_T - tau_yield) / (2 * eta_d)
+        // The apparent viscosity is defined such that:
+        // tau_T = 2 * eta_app * edot_eff.
+        // Substituting one equation into the other and rearranging yields the expression
+        // eta_app = ((1 + tau_yield / (2 * eta_d * edot_eff)) / (1 / eta_d + 1 / eta_ve)).
         if (use_plastic_damper)
           {
-            const double total_stress = ( yield_stress + ( 2. * damper_viscosity * effective_strain_rate ) ) /
-                                        ( 1 + ( damper_viscosity / pre_yield_viscosity ) );
-
-            const double pre_yield_strain_rate = total_stress / ( 2. * pre_yield_viscosity);
-
-            const double plastic_strain_rate = effective_strain_rate - pre_yield_strain_rate;
-
-            plastic_viscosity = yield_stress / (2.*plastic_strain_rate) + damper_viscosity;
-
-            // Effective viscosity
-            plastic_viscosity = 1. / (1./plastic_viscosity + 1./pre_yield_viscosity);
+            apparent_viscosity = ((damper_viscosity + apparent_viscosity) /
+                                  (1. + damper_viscosity / non_yielding_viscosity));
           }
 
-        return plastic_viscosity;
+        return apparent_viscosity;
       }
 
 
@@ -173,7 +171,7 @@ namespace aspect
                            Patterns::Anything(),
                            "List of angles of internal friction, $\\phi$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
-                           "For a value of zero, in 2D the von Mises criterion is retrieved. "
+                           "For a value of zero, in 2d the von Mises criterion is retrieved. "
                            "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
         prm.declare_entry ("Cohesions", "1e20",
                            Patterns::Anything(),
@@ -218,7 +216,7 @@ namespace aspect
 
         // Convert angles from degrees to radians
         for (double &angle : angles_internal_friction)
-          angle *= numbers::PI/180.0;
+          angle *= constants::degree_to_radians;
 
         cohesions = Utilities::parse_map_to_double_array(prm.get("Cohesions"),
                                                          list_of_composition_names,

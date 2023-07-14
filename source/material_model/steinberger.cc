@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -28,8 +28,6 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/table.h>
-#include <fstream>
-#include <iostream>
 #include <memory>
 
 
@@ -54,7 +52,7 @@ namespace aspect
         while (!in.eof())
           {
             double visc, depth;
-            in >> visc;;
+            in >> visc;
             if (in.eof())
               break;
             in >> depth;
@@ -99,7 +97,7 @@ namespace aspect
         while (!in.eof())
           {
             double visc, depth;
-            in >> visc;;
+            in >> visc;
             if (in.eof())
               break;
             in >> depth;
@@ -289,11 +287,11 @@ namespace aspect
             {
               // We only want to compute mass/volume fractions for fields that are chemical compositions.
               std::vector<double> chemical_compositions;
-              const std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
+              const std::vector<CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
 
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
-                if (composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::chemical_composition
-                    || composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::unspecified)
+                if (composition_descriptions[c].type == CompositionalFieldDescription::chemical_composition
+                    || composition_descriptions[c].type == CompositionalFieldDescription::unspecified)
                   chemical_compositions.push_back(in.composition[i][c]);
 
               mass_fractions = MaterialUtilities::compute_composition_fractions(chemical_compositions, *composition_mask);
@@ -331,10 +329,10 @@ namespace aspect
       // set up variable to interpolate prescribed field outputs onto compositional field
       PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
 
-      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density)
+      if (this->introspection().composition_type_exists(CompositionalFieldDescription::density)
           && prescribed_field_out != nullptr)
         {
-          const unsigned int projected_density_index = this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density);
+          const unsigned int projected_density_index = this->introspection().find_composition_type(CompositionalFieldDescription::density);
           prescribed_field_out->prescribed_field_outputs[q][projected_density_index] = out.densities[q];
         }
     }
@@ -364,11 +362,11 @@ namespace aspect
                              "The file name of the lateral viscosity data. ");
           prm.declare_entry ("Use lateral average temperature for viscosity", "true",
                              Patterns::Bool (),
-                             "Whether to use to use the laterally averaged temperature "
+                             "Whether to use the laterally averaged temperature "
                              "instead of the adiabatic temperature as reference for the "
                              "viscosity calculation. This ensures that the laterally averaged "
                              "viscosities remain more or less constant over the model "
-                             "runtime. This behaviour might or might not be desired.");
+                             "runtime. This behavior might or might not be desired.");
           prm.declare_entry ("Number lateral average bands", "10",
                              Patterns::Integer (1),
                              "Number of bands to compute laterally averaged temperature within.");
@@ -523,7 +521,7 @@ namespace aspect
           equation_of_state.parse_parameters(prm);
 
           // Check if compositional fields represent a composition
-          const std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
+          const std::vector<CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
 
           // All chemical compositional fields are assumed to represent mass fractions.
           // If the field type is unspecified (has not been set in the input file),
@@ -531,8 +529,8 @@ namespace aspect
           // backwards compatibility.
           composition_mask = std::make_unique<ComponentMask> (this->n_compositional_fields(), false);
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            if (composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::chemical_composition
-                || composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::unspecified)
+            if (composition_descriptions[c].type == CompositionalFieldDescription::chemical_composition
+                || composition_descriptions[c].type == CompositionalFieldDescription::unspecified)
               composition_mask->set(c, true);
 
           const unsigned int n_chemical_fields = composition_mask->n_selected_components();
@@ -575,7 +573,7 @@ namespace aspect
     {
       equation_of_state.create_additional_named_outputs(out);
 
-      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density)
+      if (this->introspection().composition_type_exists(CompositionalFieldDescription::density)
           && out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();

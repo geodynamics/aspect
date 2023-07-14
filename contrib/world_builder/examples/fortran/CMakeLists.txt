@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.6)
-project(WorldBuidlerFortranExample Fortran)
+project(WorldBuilderFortranExample Fortran)
 include_directories(${CMAKE_BINARY_DIR}/../../build/mod/ ${CMAKE_BINARY_DIR}/../../build/lib/)
 add_executable(WorldBuilderFortranExample "${CMAKE_CURRENT_SOURCE_DIR}/example.f90")
 

@@ -1,5 +1,5 @@
 
-Loading shared library <./libtime_dependent_annulus.so>
+Loading shared library <./libtime_dependent_annulus.debug.so>
 
 Number of active cells: 48 (on 2 levels)
 Number of degrees of freedom: 1,224 (480+72+240+432)

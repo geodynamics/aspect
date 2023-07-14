@@ -8,6 +8,7 @@
 /.settings
 /compile_commands.json
 /.vscode/
+/.cache/
 /AspectConfig.cmake
 /CMakeLists.txt.user*
 /CTestTestfile.cmake
@@ -34,13 +35,7 @@
 /doc/aspect.tag
 /doc/deal.tag
 /doc/doxygen/
-/doc/manual.pdf
-/doc/manual/manual.aux
-/doc/manual/manual.bbl
-/doc/manual/manual.blg
-/doc/manual/manual.log
-/doc/manual/manual.out
-/doc/manual/manual.toc
+/doc/manual/svg-inkscape/
 /doc/manual/prmindex.idx
 /doc/manual/prmindex.ilg
 /doc/manual/prmindex.ind
@@ -63,3 +58,8 @@
 
 .idea/
 cmake-build-debug/
+
+# ninja temporary files (for plugins):
+build.ninja
+rules.ninja
+.ninja_*

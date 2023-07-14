@@ -1,5 +1,5 @@
 
-Loading shared library <./libsolitary_wave.so>
+Loading shared library <./libsolitary_wave.debug.so>
 
 Initialize solitary wave solution
 Number of active cells: 640 (on 3 levels)

@@ -100,6 +100,7 @@ end
 subsection Compositional fields
   set Number of fields = 2
   set Names of fields = entropy, density_field
+  set Types of fields = entropy, density
   set Compositional field methods = field, prescribed field
 end
 
@@ -163,8 +164,10 @@ subsection Material model
   set Model name = entropy model
 
   subsection Entropy model
-    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/
-    set Material file name               = entropy-table/opxtable/material_table.txt
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/opxtable/
+    set Material file name               = material_table.txt
+    set Lateral viscosity file name      = constant_lateral_vis_prefactor.txt
+    set Thermal conductivity formulation = constant
     set Thermal conductivity             = 0.1
   end
 

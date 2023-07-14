@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -271,7 +271,7 @@ namespace aspect
     {
       LinearAlgebra::Vector utmp(src.block(0));
 
-      // first solve with the bottom left block, which we have built
+      // first solve with the bottom right block, which we have built
       // as a mass matrix with the inverse of the viscosity
       {
         SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance);
@@ -299,11 +299,11 @@ namespace aspect
             // processors
             catch (const std::exception &exc)
               {
-                Utilities::linear_solver_failed("iterative (bottom right) solver",
-                                                "BlockSchurPreconditioner::vmult",
-                                                std::vector<SolverControl> {solver_control},
-                                                exc,
-                                                src.block(0).get_mpi_communicator());
+                Utilities::throw_linear_solver_failure_exception("iterative (bottom right) solver",
+                                                                 "BlockSchurPreconditioner::vmult",
+                                                                 std::vector<SolverControl> {solver_control},
+                                                                 exc,
+                                                                 src.block(0).get_mpi_communicator());
               }
           }
 
@@ -336,11 +336,11 @@ namespace aspect
           // processors
           catch (const std::exception &exc)
             {
-              Utilities::linear_solver_failed("iterative (top left) solver",
-                                              "BlockSchurPreconditioner::vmult",
-                                              std::vector<SolverControl> {solver_control},
-                                              exc,
-                                              src.block(0).get_mpi_communicator());
+              Utilities::throw_linear_solver_failure_exception("iterative (top left) solver",
+                                                               "BlockSchurPreconditioner::vmult",
+                                                               std::vector<SolverControl> {solver_control},
+                                                               exc,
+                                                               src.block(0).get_mpi_communicator());
             }
         }
       else
@@ -480,12 +480,12 @@ namespace aspect
                                       solver_control);
 
 
-        Utilities::linear_solver_failed("iterative advection solver",
-                                        "Simulator::solve_advection",
-                                        std::vector<SolverControl> {solver_control},
-                                        exc,
-                                        mpi_communicator,
-                                        parameters.output_directory+"solver_history.txt");
+        Utilities::throw_linear_solver_failure_exception("iterative advection solver",
+                                                         "Simulator::solve_advection",
+                                                         std::vector<SolverControl> {solver_control},
+                                                         exc,
+                                                         mpi_communicator,
+                                                         parameters.output_directory+"solver_history.txt");
       }
 
     // signal successful solver
@@ -636,7 +636,7 @@ namespace aspect
 
         pcout << "done." << std::endl;
       }
-    else
+    else // use iterative solver
       {
         // Many parts of the solver depend on the block layout (velocity = 0,
         // pressure = 1). For example the linearized_stokes_initial_guess vector or the StokesBlock matrix
@@ -779,8 +779,11 @@ namespace aspect
         // succeeds in n_cheap_stokes_solver_steps steps or less.
         try
           {
-            // if this cheaper solver is not desired, then simply short-cut
-            // the attempt at solving with the cheaper preconditioner
+            // if this cheaper solver is not desired, then simply
+            // short-cut the attempt at solving with the cheaper
+            // preconditioner by throwing an exception right away,
+            // which is equivalent to a 'goto' statement to the top of
+            // the 'catch' block below
             if (parameters.n_cheap_stokes_solver_steps == 0)
               throw SolverControl::NoConvergence(0,0);
 
@@ -823,11 +826,6 @@ namespace aspect
                                                               parameters.stokes_gmres_restart_length :
                                                               std::max(parameters.stokes_gmres_restart_length, 100U));
 
-            SolverFGMRES<LinearAlgebra::BlockVector>
-            solver(solver_control_expensive, mem,
-                   SolverFGMRES<LinearAlgebra::BlockVector>::
-                   AdditionalData(number_of_temporary_vectors));
-
             try
               {
                 // if no expensive steps allowed, we have failed, rethrow exception
@@ -836,6 +834,11 @@ namespace aspect
                     pcout << "0 iterations." << std::endl;
                     throw exc;
                   }
+
+                SolverFGMRES<LinearAlgebra::BlockVector>
+                solver(solver_control_expensive, mem,
+                       SolverFGMRES<LinearAlgebra::BlockVector>::
+                       AdditionalData(number_of_temporary_vectors));
 
                 solver.solve(stokes_block,
                              distributed_stokes_solution,
@@ -865,12 +868,13 @@ namespace aspect
                 if (parameters.n_expensive_stokes_solver_steps > 0)
                   solver_controls.push_back(solver_control_expensive);
 
-                Utilities::linear_solver_failed("iterative Stokes solver",
-                                                "Simulator::solve_stokes",
-                                                solver_controls,
-                                                exc,
-                                                mpi_communicator,
-                                                parameters.output_directory+"solver_history.txt");
+                // Exit with an exception that describes the underlying cause:
+                Utilities::throw_linear_solver_failure_exception("iterative Stokes solver",
+                                                                 "Simulator::solve_stokes",
+                                                                 solver_controls,
+                                                                 exc,
+                                                                 mpi_communicator,
+                                                                 parameters.output_directory+"solver_history.txt");
               }
           }
 

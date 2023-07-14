@@ -1,8 +1,8 @@
 (parameters:Nullspace_20removal)=
-# **Nullspace removal**
+# Nullspace removal
 
 
-## **Parameters in section** Nullspace removal
+## **Subsection:** Nullspace removal
 
 
 (parameters:Nullspace_20removal/Remove_20nullspace)=
@@ -18,6 +18,6 @@
 These are a selection of operations to remove certain parts of the nullspace from the velocity after solving. For some geometries and certain boundary conditions the velocity field is not uniquely determined but contains free translations and/or rotations. Depending on what you specify here, these non-determined modes will be removed from the velocity field at the end of the Stokes solve step.
 
 
-The ``angular momentum'' option removes a rotation such that the net angular momentum is zero. The ``linear * momentum'' options remove translations such that the net momentum in the relevant direction is zero.  The ``net rotation'' option removes the net rotation of the whole domain, the ``net surface rotation'' option removes the net rotation of the top surface, and the ``net * translation'' options remove the net translations in the relevant directions.  For most problems there should not be a significant difference between the momentum and rotation/translation versions of nullspace removal, although the momentum versions are more physically motivated. They are equivalent for constant density simulations, and approximately equivalent when the density variations are small.
+The &ldquo;angular momentum&rdquo; option removes a rotation such that the net angular momentum is zero. The &ldquo;linear * momentum&rdquo; options remove translations such that the net momentum in the relevant direction is zero.  The &ldquo;net rotation&rdquo; option removes the net rotation of the whole domain, the &ldquo;net surface rotation&rdquo; option removes the net rotation of the top surface, and the &ldquo;net * translation&rdquo; options remove the net translations in the relevant directions.  For most problems there should not be a significant difference between the momentum and rotation/translation versions of nullspace removal, although the momentum versions are more physically motivated. They are equivalent for constant density simulations, and approximately equivalent when the density variations are small.
 
 Note that while more than one operation can be selected it only makes sense to pick one rotational and one translational operation.

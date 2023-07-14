@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -107,7 +107,7 @@ namespace aspect
           values = 0;
           Vector<double> temp(n_object_components);
           function_object (p, temp);
-          for (unsigned int i = 0; i < n_object_components; i++)
+          for (unsigned int i = 0; i < n_object_components; ++i)
             {
               values(first_component + i) = temp(i);
             }
@@ -142,6 +142,8 @@ namespace aspect
   double Simulator<dim>::assemble_and_solve_temperature (const bool compute_initial_residual,
                                                          double *initial_residual)
   {
+    double current_residual = 0.0;
+
     switch (parameters.temperature_method)
       {
         case Parameters<dim>::AdvectionFieldMethod::fem_field:
@@ -171,13 +173,7 @@ namespace aspect
               *initial_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
             }
 
-          const double current_residual = solve_advection(adv_field);
-
-          current_linearization_point.block(introspection.block_indices.temperature)
-            = solution.block(introspection.block_indices.temperature);
-
-          if ((initial_residual != nullptr) && (*initial_residual > 0))
-            return current_residual / *initial_residual;
+          current_residual = solve_advection(adv_field);
           break;
         }
 
@@ -215,6 +211,12 @@ namespace aspect
           AssertThrow(false,ExcNotImplemented());
       }
 
+    current_linearization_point.block(introspection.block_indices.temperature)
+      = solution.block(introspection.block_indices.temperature);
+
+    if ((initial_residual != nullptr) && (*initial_residual > 0))
+      return current_residual / *initial_residual;
+
     return 0.0;
   }
 
@@ -246,6 +248,8 @@ namespace aspect
         Assert(initial_residual != nullptr, ExcInternalError());
         Assert(initial_residual->size() == introspection.n_compositional_fields, ExcInternalError());
       }
+
+    std::vector<AdvectionField> fields_advected_by_particles;
 
     for (unsigned int c=0; c < introspection.n_compositional_fields; ++c)
       {
@@ -292,7 +296,8 @@ namespace aspect
 
             case Parameters<dim>::AdvectionFieldMethod::particles:
             {
-              interpolate_particle_properties(adv_field);
+              // handle all particle fields together to increase efficiency
+              fields_advected_by_particles.push_back(adv_field);
               break;
             }
 
@@ -334,6 +339,10 @@ namespace aspect
           }
       }
 
+    if (fields_advected_by_particles.size() > 0)
+      interpolate_particle_properties(fields_advected_by_particles);
+
+
     // for consistency we update the current linearization point only after we have solved
     // all fields, so that we use the same point in time for every field when solving
     for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
@@ -365,7 +374,9 @@ namespace aspect
     // don't need to force assembly of the matrix.
     if (stokes_matrix_depends_on_solution()
         ||
-        (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
+        (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0)
+        || parameters.mesh_deformation_enabled
+       )
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
     // set constraints for p_c if porosity is below a threshold
@@ -550,8 +561,15 @@ namespace aspect
           {
             dcr.stokes_residuals = solve_stokes();
           }
-        catch (...)
+        catch (const std::exception &exc)
           {
+            // Test that the exception we got is one of the two documented by
+            // throw_linear_solver_failure_exception(). If not, we have a genuine
+            // problem here, and will need to get outta here right away:
+            if ((dynamic_cast<const ExcMessage *>(&exc)==nullptr) &&
+                (dynamic_cast<const QuietException *>(&exc)==nullptr))
+              throw;
+
             // start the solve over again and try with a stabilized version
             pcout << "failed, trying again with stabilization" << std::endl;
             newton_handler->parameters.preconditioner_stabilization = Newton::Parameters::Stabilization::SPD;
@@ -604,6 +622,7 @@ namespace aspect
             else
               build_stokes_preconditioner();
 
+            // Give this another try:
             dcr.stokes_residuals = solve_stokes();
           }
       }
@@ -711,8 +730,7 @@ namespace aspect
                                "actually never be false, because the break statement "
                                "above should have caught it."));
           }
-        while (line_search_iteration <= newton_handler->parameters.max_newton_line_search_iterations);
-        // The while condition should actually never be false, because the break statement above should have caught it.
+        while (true);
       }
 
 
@@ -743,6 +761,7 @@ namespace aspect
     if (nonlinear_iteration != 0)
       last_pressure_normalization_adjustment = normalize_pressure(current_linearization_point);
   }
+
 
 
   template <int dim>
@@ -839,7 +858,7 @@ namespace aspect
     nonlinear_iteration = 0;
     do
       {
-        assemble_and_solve_defect_correction_Stokes(dcr, true);
+        assemble_and_solve_defect_correction_Stokes(dcr, /* use_picard= */true);
 
         pcout << std::endl;
 
@@ -866,6 +885,8 @@ namespace aspect
 
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
+
+
 
   template <int dim>
   void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes ()
@@ -907,7 +928,7 @@ namespace aspect
     nonlinear_iteration = 0;
     do
       {
-        assemble_and_solve_defect_correction_Stokes(dcr, true);
+        assemble_and_solve_defect_correction_Stokes(dcr, /* use_picard = */ true);
 
         pcout << std::endl;
 
@@ -993,7 +1014,7 @@ namespace aspect
           pcout << ", " << relative_composition_residual[c];
         pcout << std::endl;
 
-        assemble_and_solve_defect_correction_Stokes(dcr, true);
+        assemble_and_solve_defect_correction_Stokes(dcr, /* use_picard = */ true);
 
         double max = 0.0;
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
@@ -1308,7 +1329,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_iterated_newton_stokes ()
+  void Simulator<dim>::solve_single_advection_and_iterated_newton_stokes ()
   {
     // First assemble and solve the temperature and compositional fields
     assemble_and_solve_temperature();
@@ -1351,8 +1372,7 @@ namespace aspect
                                                   newton_handler->parameters.nonlinear_switch_tolerance);
 
     // Now iterate out the nonlinearities.
-    dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
-                                                      numbers::signaling_nan<double>());
+    dcr.stokes_residuals = {numbers::signaling_nan<double>(), numbers::signaling_nan<double>()};
 
     double relative_residual = std::numeric_limits<double>::max();
     nonlinear_iteration = 0;
@@ -1496,7 +1516,7 @@ namespace aspect
   template void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(); \
-  template void Simulator<dim>::solve_single_advection_iterated_newton_stokes(); \
+  template void Simulator<dim>::solve_single_advection_and_iterated_newton_stokes(); \
   template void Simulator<dim>::solve_single_advection_no_stokes(); \
   template void Simulator<dim>::solve_first_timestep_only_single_stokes(); \
   template void Simulator<dim>::solve_no_advection_no_stokes();

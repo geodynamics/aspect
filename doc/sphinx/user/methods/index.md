@@ -1,7 +1,10 @@
 (cha:methods)=
-# Geodynamic modeling assumptions and numerical methods in ASPECT
+# Modeling assumptions and numerical methods
 
 :::{toctree}
+---
+maxdepth: 1
+---
 basic-equations/index.md
 coefficients/index.md
 dimensionalize/index.md

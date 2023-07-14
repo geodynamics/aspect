@@ -1,7 +1,5 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
-Loading shared library <./libellipsoidal_chunk_geometry.so>
+Loading shared library <./libellipsoidal_chunk_geometry.debug.so>
 Simple sphere test
 Point: 6.371e+06 0 0 becomes: 0 0 0. Back transformed: 6.371e+06 0 0. Error: 0
 Point: 6.171e+06 0 0 becomes: 0 0 -200000. Back transformed: 6.171e+06 0 0. Error: 0

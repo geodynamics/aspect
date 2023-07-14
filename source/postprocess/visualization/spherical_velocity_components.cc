@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -134,9 +134,9 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(SphericalVelocityComponents,
                                                   "spherical velocity components",
                                                   "A visualization output object that outputs the polar coordinates "
-                                                  "components $v_r$ and $v_\\phi$ of the velocity field in 2D and the "
+                                                  "components $v_r$ and $v_\\phi$ of the velocity field in 2d and the "
                                                   "spherical coordinates components $v_r$, $v_{\\phi}$ and $v_{\\theta}$ "
-                                                  "of the velocity field in 3D."
+                                                  "of the velocity field in 3d."
                                                   "\n\n"
                                                   "Physical units: $\\frac{\\text{m}}{\\text{s}}$ or "
                                                   "$\\frac{\\text{m}}{\\text{year}}$, depending on settings in the input file.")

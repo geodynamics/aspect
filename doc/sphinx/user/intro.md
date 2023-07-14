@@ -54,18 +54,18 @@ In addition, many have contributed to the development of ASPECT and deserve cred
 To this end, we ask that you cite the appropriate references if you publish results that were obtained to some part using ASPECT.
 For what exactly to cite and suggestions for acknowledgments, please see **<https://aspect.geodynamics.org/cite.html>**.
 
-Also see {cite:t}`aspectmanual,aspect-doi-v1.5.0,aspect-doi-v2.0.0,aspect-doi-v2.0.1,kronbichler:etal:2012,heister_aspect_methods2`.
+Also see {cite:t}`aspectmanual,aspect-doi-v1.5.0,aspect-doi-v2.0.0,aspect-doi-v2.0.1,kronbichler:etal:2012,heister:etal:2017`.
 
 ## Acknowledgments
 
 The development of ASPECT has been funded through a variety of grants to the authors.
-Most immediately, it has been supported through the Computational Infrastructure in Geodynamics (CIG), initially by the CIG-I grant (National Science Foundation Award No. EAR-0426271, via The California Institute of Technology) and later by the CIG-II and CIG-III grants (National Science Foundation Awards No. EAR-0949446 and EAR-1550901, via the University of California Davis).
+Most immediately, it has been supported through the Computational Infrastructure in Geodynamics (CIG), initially by the CIG-I grant (National Science Foundation Award No. EAR-0426271, via The California Institute of Technology) and later by the CIG-II and CIG-III grants (National Science Foundation Awards No. EAR-0949446, EAR-1550901, and EAR-2149126 via the University of California Davis).
 In addition, the libraries upon which ASPECT builds heavily have been supported through many other grants that are equally gratefully acknowledged.
 
 Please acknowledge CIG as follows:
 
 :::{important}
-ASPECT is hosted by the Computational Infrastructure for Geodynamics (CIG) which is supported by the National Science Foundation award EAR-1550901.
+ASPECT is hosted by the Computational Infrastructure for Geodynamics (CIG) which is supported by the National Science Foundation award EAR-2149126.
 :::
 
 The ASPECT community as a whole, and a number of the primary developers in particular, owe great thanks to Louise Kellogg who, when she was the head of CIG, was a strong supporter of the ASPECT project.

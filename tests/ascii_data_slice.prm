@@ -1,5 +1,5 @@
 # This is a test that makes sure that the ascii data slice model
-# reads in 3d files for the inital composition correctly, and
+# reads in 3d files for the initial composition correctly, and
 # and then rotates them to the correct 2d plane.
 # The output was verified with a 3d version of the model, using
 # the same data file.

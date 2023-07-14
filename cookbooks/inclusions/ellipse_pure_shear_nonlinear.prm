@@ -1,0 +1,132 @@
+
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
+set Pressure normalization                 = volume
+set Nonlinear solver scheme                = iterated Advection and Stokes
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps =0
+  end
+end
+
+subsection Discretization
+  set Use locally conservative discretization = true
+end
+
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 1
+    set Y extent  = 1
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+############### Parameters describing the temperature field
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1
+  end
+end
+
+############### Parameters describing the compositional field
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y,z
+    set Function constants  = a=0.2, b=0.1, phi=0.52359877559
+    set Function expression = if( ( (x-.5)*cos(phi)+(y-.5)*sin(phi))^2/a^2 + \
+                                  ( (x-.5)*sin(phi)-(y-.5)*cos(phi))^2/b^2 < 1, 1, 0)
+  end
+end
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 3
+  set Initial global refinement          = 7
+  set Refinement fraction                = 0.75
+  set Strategy                           = velocity, composition
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics
+  subsection Visualization
+    set List of output variables = density, viscosity, strain rate
+  end
+end
+
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function, top y: function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = v=0.5
+    set Function expression = if (x<0.5,v,-v) ; if (y<0.5,-v,v)
+  end
+end
+
+set Output directory                       = output-ellipse-pure-shear-NL
+
+
+################################################3
+
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+
+    # Reference temperature and viscosity
+    set Reference temperature = 273
+
+    # The minimum strain-rate helps limit large viscosities values that arise
+    # as the strain-rate approaches zero.
+    # The reference strain-rate is used on the first non-linear iteration
+    # of the first time step when the velocity has not been determined yet.
+    set Minimum strain rate   = 1.e-2
+    set Reference strain rate = 1.
+
+    # Limit the viscosity with minimum and maximum values
+    set Minimum viscosity = 1e-3
+    set Maximum viscosity = 1e3
+
+    set Densities              = 1
+    set Thermal expansivities  = 0
+
+    set Viscosity averaging scheme = harmonic
+
+    set Viscous flow law = dislocation
+
+    #matrix inclusion
+    set Prefactors for dislocation creep          = 0.5, 500
+    set Stress exponents for dislocation creep    =   1,      1
+    set Activation energies for dislocation creep =   0,      0
+    set Activation volumes for dislocation creep  =   0,      0
+
+    # Plasticity parameters
+    set Cohesions = 1e50
+
+  end
+end

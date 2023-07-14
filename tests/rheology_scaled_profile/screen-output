@@ -1,5 +1,5 @@
 
-Loading shared library <./librheology_scaled_profile.so>
+Loading shared library <./librheology_scaled_profile.debug.so>
 
 Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 192 (on 4 levels)

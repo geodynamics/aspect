@@ -1,7 +1,5 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
-Loading shared library <./libprm_polygon_in_out.so>
+Loading shared library <./libprm_polygon_in_out.debug.so>
 Testing prm polygon plugin with the following parameters: (clockwise) 100 > 0,0;0,5;5,5;5,0 & -100 > 10,10;10,15;15,15, (anticlockwise) 100 > 0,0;5,0;5,5;0,5 & -100 > 10,10;15,15;10,15
 Clockwise topo at     (-1 -1) = 0
 Anticlockwise Topo at (-1 -1) = 0

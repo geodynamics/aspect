@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,7 @@ namespace aspect
     {
       template <int dim>
       DislocationCreep<dim>::DislocationCreep ()
-      {}
+        = default;
 
 
 
@@ -42,7 +42,7 @@ namespace aspect
       const DislocationCreepParameters
       DislocationCreep<dim>::compute_creep_parameters (const unsigned int composition,
                                                        const std::vector<double> &phase_function_values,
-                                                       const std::vector<unsigned int> &n_phases_per_composition) const
+                                                       const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         DislocationCreepParameters creep_parameters;
         if (phase_function_values == std::vector<double>())
@@ -56,14 +56,14 @@ namespace aspect
         else
           {
             // Average among phases
-            creep_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                          prefactors_dislocation, composition,
                                          MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
-            creep_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  activation_energies_dislocation, composition);
-            creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  activation_volumes_dislocation , composition);
-            creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                stress_exponents_dislocation, composition);
           }
 
@@ -79,11 +79,11 @@ namespace aspect
                                                 const double temperature,
                                                 const unsigned int composition,
                                                 const std::vector<double> &phase_function_values,
-                                                const std::vector<unsigned int> &n_phases_per_composition) const
+                                                const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         const DislocationCreepParameters p = compute_creep_parameters(composition,
                                                                       phase_function_values,
-                                                                      n_phases_per_composition);
+                                                                      n_phase_transitions_per_composition);
 
         // Power law creep equation:
         //    viscosity = 0.5 * A^(-1/n) * edot_ii^((1-n)/n) * exp((E + P*V)/(nRT))
@@ -216,8 +216,8 @@ namespace aspect
         // that is masked anyway, like strain. Despite
         // these compositions being masked, their viscosities
         // are computed anyway and this will lead to division by zero.
-        for (unsigned int n = 0; n < prefactors_dislocation.size(); ++n)
-          AssertThrow(prefactors_dislocation[n] > 0., ExcMessage("The dislocation prefactor should be larger than zero."));
+        for (const double prefactor : prefactors_dislocation)
+          AssertThrow(prefactor > 0., ExcMessage("The dislocation prefactor should be larger than zero."));
       }
     }
   }

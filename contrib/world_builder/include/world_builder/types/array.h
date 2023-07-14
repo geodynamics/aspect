@@ -17,14 +17,17 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_feature_types_array_h
-#define _world_feature_types_array_h
+#ifndef WORLD_BUILDER_TYPES_ARRAY_H
+#define WORLD_BUILDER_TYPES_ARRAY_H
 
-#include <world_builder/types/interface.h>
+
+#include "world_builder/types/interface.h"
 
 
 namespace WorldBuilder
 {
+  class Parameters;
+
   namespace Types
   {
     /**
@@ -37,7 +40,7 @@ namespace WorldBuilder
     * by index, and a list holds the values strictly ordered, only accessible
     * an iterator. An other difference it that lists have a name.
      */
-    class Array : public Interface
+    class Array final: public Interface
     {
       public:
         /**
@@ -57,7 +60,7 @@ namespace WorldBuilder
         /**
          * Destructor
          */
-        ~Array();
+        ~Array() override final;
 
         /**
          * Todo
@@ -110,7 +113,7 @@ namespace WorldBuilder
           return new Array(*this);
         };
     };
-  }
-}
+  } // namespace Types
+} // namespace WorldBuilder
 
 #endif

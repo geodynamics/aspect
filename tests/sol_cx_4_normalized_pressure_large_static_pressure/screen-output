@@ -1,5 +1,5 @@
 
-Loading shared library <./libsol_cx_4_normalized_pressure_large_static_pressure.so>
+Loading shared library <./libsol_cx_4_normalized_pressure_large_static_pressure.debug.so>
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)

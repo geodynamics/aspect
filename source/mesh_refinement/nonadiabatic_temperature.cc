@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -66,7 +66,6 @@ namespace aspect
             fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
                                                                                          in.temperature);
             in.position = fe_values.get_quadrature_points();
-            in.strain_rate.resize(0);// we are not reading the viscosity
 
             cell->get_dof_indices (local_dof_indices);
 

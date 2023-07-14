@@ -1,5 +1,5 @@
 
-Loading shared library <./libcell_reference.so>
+Loading shared library <./libcell_reference.debug.so>
 
 Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 84 (50+9+25)
@@ -9,11 +9,11 @@ Level: 1 Index: 0
 Level: 1 Index: 1
 Level: 1 Index: 2
 Level: 1 Index: 3
+   Solving temperature system... 0 iterations.
 Level: 1 Index: 0
 Level: 1 Index: 1
 Level: 1 Index: 2
 Level: 1 Index: 3
-   Solving temperature system... 0 iterations.
 Level: 1 Index: 0
 Level: 1 Index: 1
 Level: 1 Index: 2

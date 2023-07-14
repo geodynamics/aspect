@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 #include <aspect/global.h>
+#include <aspect/utilities.h>
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
@@ -45,9 +46,8 @@ namespace aspect
     class TemperatureAsciiOut : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
     };
 
     template <int dim>
@@ -63,7 +63,6 @@ namespace aspect
       };
       std::vector<entry> entries;
 
-      //      const QTrapez<dim> quadrature_formula;
       const QMidpoint<dim> quadrature_formula;
 
       const unsigned int n_q_points =  quadrature_formula.size();
@@ -135,18 +134,23 @@ namespace aspect
       }
 
 
-      std::ofstream f(filename.c_str());
+      std::stringstream f;
 
       f << std::scientific << std::setprecision(15);
 
-      // Note: POINTS is only useful if our mesh is a structured grid
-      f << "# POINTS: " << n_x << ' ' << n_y << "\n";
-      f << "# x y T\n";
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          // Note: POINTS is only useful if our mesh is a structured grid
+          f << "# POINTS: " << n_x << ' ' << n_y << "\n";
+          f << "# x y T\n";
+        }
 
       for (unsigned int idx = 0; idx< entries.size(); ++idx)
         f << entries[idx].p << ' ' << entries[idx].t << '\n';
 
-      f.close();
+      aspect::Utilities::collect_and_write_file_content(filename,
+                                                        f.str(),
+                                                        this->get_mpi_communicator());
 
       return std::make_pair (std::string ("Writing TemperatureAsciiOut:"),
                              filename);

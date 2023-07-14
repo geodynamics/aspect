@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011-2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023-2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -58,6 +58,7 @@ namespace aspect
                                                                      n_compositional_fields);
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
                                                                        n_compositional_fields);
+      in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
@@ -68,7 +69,6 @@ namespace aspect
                       cell,
                       this->introspection(),
                       this->get_solution());
-            in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
             this->get_material_model().fill_additional_material_model_inputs(in,
                                                                              this->get_solution(),
@@ -79,7 +79,7 @@ namespace aspect
 
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                // Viscous dissipation D in 3D:
+                // Viscous dissipation D in 3d:
                 // D = 1/2 * volume_integral(deviatoric_stress*deviatoric_strain_rate)
                 //   = 1/2 * volume_integral(2*eta*deviatoric_strain_rate*deviatoric_strain_rate)
                 //   = volume_integral(eta*deviatoric_strain_rate*deviatoric_strain_rate)
@@ -159,8 +159,8 @@ namespace aspect
                                   "field, the sum of the individual field's dissipation should equal "
                                   "that over the whole domain. "
                                   "The viscous dissipation is computed as: "
-                                  "$\\int_{V}\\left(\\sigma' \\dot{\\epsilon}' \\right)$, "
-                                  "where $\\sigma'$  is the deviatoric stress and $\\dot{\\epsilon}'$ "
+                                  "$\\int_{V}\\left(\\sigma^\\prime \\dot{\\epsilon}^\\prime \\right)$, "
+                                  "where $\\sigma^\\prime$  is the deviatoric stress and $\\dot{\\epsilon}^\\prime$ "
                                   "the deviatoric strain rate."
                                   "Note then when shear heating is included in the temperature equation, "
                                   "it is better to use the 'heating statistics' postprocessor.")

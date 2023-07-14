@@ -54,4 +54,5 @@ Additional information:
     The time step length for the each time step needs to be positive, but
     the computed step length of the "function" plugin was: -1.000000.
 
-Aborting!
+Stacktrace:
+(rest of the output replaced by default.sh script)

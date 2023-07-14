@@ -1,5 +1,5 @@
 
-Loading shared library <./libcomposition_reaction_iterated_IMPES.so>
+Loading shared library <./libcomposition_reaction_iterated_IMPES.debug.so>
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -51,10 +51,10 @@ namespace aspect
       {
         Assert (computed_quantities[0].size() == 1, ExcInternalError());
 
-        for (unsigned int q=0; q<computed_quantities.size(); ++q)
+        for (auto &quantity : computed_quantities)
           {
             // simply get the partition number from the triangulation
-            computed_quantities[q](0) = this->get_triangulation().locally_owned_subdomain();
+            quantity(0) = this->get_triangulation().locally_owned_subdomain();
           }
       }
     }

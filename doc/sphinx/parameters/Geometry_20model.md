@@ -1,8 +1,8 @@
 (parameters:Geometry_20model)=
-# **Geometry model**
+# Geometry model
 
 
-## **Parameters in section** Geometry model
+## **Subsection:** Geometry model
 
 
 (parameters:Geometry_20model/Model_20name)=
@@ -13,46 +13,46 @@
 
 **Documentation:** Select one of the following models:
 
-`box': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. The box geometry labels its 2*dim sides as follows: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries; in 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class ``ReferenceCell''). You can also use symbolic names ``left'', ``right'', etc., to refer to these boundaries in input files. It is also possible to add initial topography to the box model. Note however that this is done after the last initial adaptive refinement cycle. Also, initial topography is supposed to be small, as it is not taken into account when depth or a representative point is computed.
+&lsquo;box&rsquo;: A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. The box geometry labels its 2*dim sides as follows: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries; in 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class &ldquo;ReferenceCell&rdquo;). You can also use symbolic names &ldquo;left&rdquo;, &ldquo;right&rdquo;, etc., to refer to these boundaries in input files. It is also possible to add initial topography to the box model. Note however that this is done after the last initial adaptive refinement cycle. Also, initial topography is supposed to be small, as it is not taken into account when depth or a representative point is computed.
 
-`box with lithosphere boundary indicators': A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. This geometry model labels its sides with 2*dim+2*(dim-1) boundary indicators: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries, while indicators4 and 5 denote the upper part of the left and right vertical boundary, respectively. In 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class ``ReferenceCell''), while indicators 6, 7, 8 and 9 denote the left, right, front and back upper parts of the vertical boundaries, respectively. You can also use symbolic names ``left'', ``right'', ``left lithosphere'', etc., to refer to these boundaries in input files.
+&lsquo;box with lithosphere boundary indicators&rsquo;: A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. This geometry model labels its sides with 2*dim+2*(dim-1) boundary indicators: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries, while indicators4 and 5 denote the upper part of the left and right vertical boundary, respectively. In 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class &ldquo;ReferenceCell&rdquo;), while indicators 6, 7, 8 and 9 denote the left, right, front and back upper parts of the vertical boundaries, respectively. You can also use symbolic names &ldquo;left&rdquo;, &ldquo;right&rdquo;, &ldquo;left lithosphere&rdquo;, etc., to refer to these boundaries in input files.
 
-Note that for a given ``Global refinement level'' and no user-specified ``Repetitions'', the lithosphere part of the mesh will be more refined.
+Note that for a given &ldquo;Global refinement level&rdquo; and no user-specified &ldquo;Repetitions&rdquo;, the lithosphere part of the mesh will be more refined.
 
 The additional boundary indicators for the lithosphere allow for selecting boundary conditions for the lithosphere different from those for the underlying mantle. An example application of this geometry is to prescribe a velocity on the lithospheric plates, but use open boundary conditions underneath.
 
-`chunk': A geometry which can be described as a chunk of a spherical shell, bounded by lines of longitude, latitude and radius. The minimum and maximum longitude, latitude (if in 3d) and depth of the chunk is set in the parameter file. The chunk geometry labels its 2*dim sides as follows: ``west'' and ``east'': minimum and maximum longitude, ``south'' and ``north'': minimum and maximum latitude, ``inner'' and ``outer'': minimum and maximum radii.
+&lsquo;chunk&rsquo;: A geometry which can be described as a chunk of a spherical shell, bounded by lines of longitude, latitude and radius. The minimum and maximum longitude, latitude (if in 3d) and depth of the chunk is set in the parameter file. The chunk geometry labels its 2*dim sides as follows: &ldquo;west&rdquo; and &ldquo;east&rdquo;: minimum and maximum longitude, &ldquo;south&rdquo; and &ldquo;north&rdquo;: minimum and maximum latitude, &ldquo;inner&rdquo; and &ldquo;outer&rdquo;: minimum and maximum radii.
 
 The dimensions of the model are specified by parameters of the following form: Chunk (minimum || maximum) (longitude || latitude): edges of geographical quadrangle (in degrees)Chunk (inner || outer) radius: Radii at bottom and top of chunk(Longitude || Latitude || Radius) repetitions: number of cells in each coordinate direction.
 
 When used in 2d, this geometry does not imply the use of a spherical coordinate system. Indeed, in 2d the geometry is simply a sector of an annulus in a Cartesian coordinate system and consequently would correspond to a sector of a cross section of the fluid filled space between two infinite cylinders where one has made the assumption that the velocity in direction of the cylinder axes is zero. This is consistent with the definition of what we consider the two-dimension case given in Section~\ref{sec:meaning-of-2d}. It is also possible to add initial topography to the chunk geometry, based on an ascii data file.
 
-`chunk with lithosphere boundary indicators': A geometry which can be described as a chunk of a spherical shell, bounded by lines of longitude, latitude and radius. The side boundaries have two boundary indicators, so the user can prescribe different boundary conditions on these boundaries. The minimum and maximum longitude, (latitude) and depth of the chunk are set in the parameter file. The chunk geometry labels its 2*dim+2*(dim-1) sides as follows: ``lower west'' and ``lower east'': minimum and maximum longitude of the lower part of the east and west side boundaries, ``upper west and upper east'': minimum and maximum longitude of the upper part of the east and west side boundaries, ``lower south'' and ``lower north'': minimum and maximum latitude of the lower part of the south and north side boundaries, ``upper south'' and ``upper north'': minimum and maximum latitude of the upper part of the south and north side boundaries,
+&lsquo;chunk with lithosphere boundary indicators&rsquo;: A geometry which can be described as a chunk of a spherical shell, bounded by lines of longitude, latitude and radius. The side boundaries have two boundary indicators, so the user can prescribe different boundary conditions on these boundaries. The minimum and maximum longitude, (latitude) and depth of the chunk are set in the parameter file. The chunk geometry labels its 2*dim+2*(dim-1) sides as follows: &ldquo;lowerwest&rdquo; and &ldquo;lowereast&rdquo;: minimum and maximum longitude of the lower part of the east and west side boundaries, &ldquo;upperwest&rdquo; and &ldquo;uppereast&rdquo;: minimum and maximum longitude of the upper part of the east and west side boundaries, &ldquo;lowersouth&rdquo; and &ldquo;lowernorth&rdquo;: minimum and maximum latitude of the lower part of the south and north side boundaries, &ldquo;uppersouth&rdquo; and &ldquo;uppernorth&rdquo;: minimum and maximum latitude of the upper part of the south and north side boundaries,
 
-The dimensions of the model are specified by parameters of the following form: Chunk (minimum || maximum) (longitude || latitude): edges of geographical quadrangle (in degrees). Chunk (inner || outer || middle boundary) radius: Radii at bottom and top of chunk and the radius at which the lower boundary indicator along a side boundary transitions into the upper boundary indicator. (Longitude || Latitude) repetitions: number of cells in each coordinate direction.(Inner || Outer) chunk radius repetitions: number of cells in the radial coordinate direction for the lower part of the domain (up to the Middle boundary radius) and for the upper part of the domain.
+The dimensions of the model are specified by parameters of the following form: Chunk (minimum | maximum) (longitude | latitude): edges of geographical quadrangle (in degrees). Chunk (inner | outer | middle boundary) radius: Radii at bottom and top of chunk and the radius at which the lower boundary indicator along a side boundary transitions into the upper boundary indicator. (Longitude | Latitude) repetitions: number of cells in each coordinate direction.(Inner | Outer) chunk radius repetitions: number of cells in the radial coordinate direction for the lower part of the domain (up to the Middle boundary radius) and for the upper part of the domain.
 
 When used in 2d, this geometry does not imply the use of a spherical coordinate system. Indeed, in 2d the geometry is simply a sector of an annulus in a Cartesian coordinate system and consequently would correspond to a sector of a cross section of the fluid filled space between two infinite cylinders where one has made the assumption that the velocity in direction of the cylinder axes is zero. This is consistent with the definition of what we consider the two-dimension case given in Section~\ref{sec:meaning-of-2d}. It is also possible to add initial topography to the chunk geometry, based on an ascii data file.
 
-`ellipsoidal chunk': A 3D chunk geometry that accounts for Earth's ellipticity (default assuming the WGS84 ellipsoid definition) which can be defined in non-coordinate directions. In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the same length so that there is only a semi-major axis and a semi-minor axis. The user has two options for creating an ellipsoidal chunk geometry: 1) by defining two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal chunk geometry will be created. 2) by defining three points a non-coordinate parallel ellipsoidal chunk will be created. The points are defined in the input file by longitude:latitude. It is also possible to define additional subdivisions of the mesh in each direction. The boundary of the domain is formed by linear interpolation in longitude-latitude space between adjacent points (i.e. [lon, lat](f) = [lon1*f + lon2*(1-f), lat1*f + lat2*(1-f)], where f is a value between 0 and 1). Faces of the model are defined as 0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.
+&lsquo;ellipsoidal chunk&rsquo;: A 3d chunk geometry that accounts for Earth&rsquo;s ellipticity (default assuming the WGS84 ellipsoid definition) which can be defined in non-coordinate directions. In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the same length so that there is only a semi-major axis and a semi-minor axis. The user has two options for creating an ellipsoidal chunk geometry: 1) by defining two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal chunk geometry will be created. 2) by defining three points a non-coordinate parallel ellipsoidal chunk will be created. The points are defined in the input file by longitude:latitude. It is also possible to define additional subdivisions of the mesh in each direction. The boundary of the domain is formed by linear interpolation in longitude-latitude space between adjacent points (i.e. $\[lon, lat\](f) = [lon1 \cdot f + lon2 \cdot(1-f), lat1 \cdot f + lat2 \cdot (1-f)]$, where f is a value between 0 and 1). Faces of the model are defined as 0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.
 
 This geometry model supports initial topography for deforming the initial mesh.
 
-`sphere': A geometry model for a sphere with a user specified radius. This geometry has only a single boundary, so the only valid boundary indicator to specify in input files is ``0''. It can also be referenced by the symbolic name ``surface'' in input files.
+&lsquo;sphere&rsquo;: A geometry model for a sphere with a user specified radius. This geometry has only a single boundary, so the only valid boundary indicator to specify in input files is &ldquo;0&rdquo;. It can also be referenced by the symbolic name &ldquo;surface&rdquo; in input files.
 
 Despite the name, this geometry does not imply the use of a spherical coordinate system when used in 2d. Indeed, in 2d the geometry is simply a circle in a Cartesian coordinate system and consequently would correspond to a cross section of the fluid filled interior of an infinite cylinder where one has made the assumption that the velocity in direction of the cylinder axes is zero. This is consistent with the definition of what we consider the two-dimension case given in Section~\ref{sec:meaning-of-2d}.
 
-`spherical shell': A geometry representing a spherical shell or a piece of it. Inner and outer radii are read from the parameter file in subsection 'Spherical shell'.
+&lsquo;spherical shell&rsquo;: A geometry representing a spherical shell or a piece of it. Inner and outer radii are read from the parameter file in subsection &rsquo;Spherical shell&rsquo;.
 
 The spherical shell may be generated as per the original code (with respect to the inner and outer radius, and an initial number of cells along circumference) or following a custom mesh scheme: list of radial values or number of slices. A surface mesh is first generated and refined as desired, before it is extruded radially. A list of radial values subdivides the spherical shell at specified radii. The number of slices subdivides the spherical shell into N slices of equal thickness. The custom spherical shell only works with an opening angle of 360 degrees.
 
 Despite the name, this geometry does not imply the use of a spherical coordinate system when used in 2d. Indeed, in 2d the geometry is simply an annulus in a Cartesian coordinate system and consequently would correspond to a cross section of the fluid filled space between two infinite cylinders where one has made the assumption that the velocity in direction of the cylinder axes is zero. This is consistent with the definition of what we consider the two-dimension case given in Section~\ref{sec:meaning-of-2d}.
 
-The model assigns boundary indicators as follows: In 2d, inner and outer boundaries get boundary indicators zero and one, and if the opening angle set in the input file is less than 360, then left and right boundaries are assigned indicators two and three. These boundaries can also be referenced using the symbolic names `inner', `outer' and (if applicable) `left', `right'.
+The model assigns boundary indicators as follows: In 2d, inner and outer boundaries get boundary indicators zero and one, and if the opening angle set in the input file is less than 360, then left and right boundaries are assigned indicators two and three. These boundaries can also be referenced using the symbolic names &lsquo;inner&rsquo;, &lsquo;outer&rsquo; and (if applicable) &lsquo;left&rsquo;, &lsquo;right&rsquo;.
 
-In 3d, inner and outer indicators are treated as in 2d. If the opening angle is chosen as 90 degrees, i.e., the domain is the intersection of a spherical shell and the first octant, then indicator 2 is at the face $x=0$, 3 at $y=0$, and 4 at $z=0$. These last three boundaries can then also be referred to as `east', `west' and `south' symbolically in input files.
+In 3d, inner and outer indicators are treated as in 2d. If the opening angle is chosen as 90 degrees, i.e., the domain is the intersection of a spherical shell and the first octant, then indicator 2 is at the face $x=0$, 3 at $y=0$, and 4 at $z=0$. These last three boundaries can then also be referred to as &lsquo;east&rsquo;, &lsquo;west&rsquo; and &lsquo;south&rsquo; symbolically in input files.
 
 (parameters:Geometry_20model/Box)=
-## **Parameters in section** Geometry model/Box
+## **Subsection:** Geometry model / Box
 (parameters:Geometry_20model/Box/Box_20origin_20X_20coordinate)=
 ### __Parameter name:__ Box origin X coordinate
 **Default value:** 0.
@@ -150,7 +150,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Number of cells in Z direction.
 
 (parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators)=
-## **Parameters in section** Geometry model/Box with lithosphere boundary indicators
+## **Subsection:** Geometry model / Box with lithosphere boundary indicators
 (parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Box_20origin_20X_20coordinate)=
 ### __Parameter name:__ Box origin X coordinate
 **Default value:** 0.
@@ -182,6 +182,14 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The thickness of the lithosphere used to create additional boundary indicators to set specific boundary conditions for the lithosphere.
+
+(parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Use_20merged_20grids)=
+### __Parameter name:__ Use merged grids
+**Default value:** true
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to make the grid by gluing together two boxes, or just use one chunk to make the grid. Using two grids glued together is a safer option, since it forces the boundary conditions to be always applied to the same depth, but using one grid allows for a more flexible usage of the adaptive refinement. Note that if there is no cell boundary exactly on the boundary between the lithosphere and the mantle, the velocity boundary will not be exactly at that depth. Therefore, using a merged grid is generally recommended over using one grid.When using one grid, the parameter for lower repetitions is used and the upper repetitions are ignored.
 
 (parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/X_20extent)=
 ### __Parameter name:__ X extent
@@ -288,7 +296,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Number of cells in Z direction in the lithosphere. This value is ignored if the simulation is in 2d.
 
 (parameters:Geometry_20model/Chunk)=
-## **Parameters in section** Geometry model/Chunk
+## **Subsection:** Geometry model / Chunk
 (parameters:Geometry_20model/Chunk/Chunk_20inner_20radius)=
 ### __Parameter name:__ Chunk inner radius
 **Default value:** 0.
@@ -362,7 +370,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Number of cells in radius.
 
 (parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators)=
-## **Parameters in section** Geometry model/Chunk with lithosphere boundary indicators
+## **Subsection:** Geometry model / Chunk with lithosphere boundary indicators
 (parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20inner_20radius)=
 ### __Parameter name:__ Chunk inner radius
 **Default value:** 0.
@@ -451,8 +459,16 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Documentation:** Number of cells in radial direction for the upper chunk.
 
+(parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Use_20merged_20grids)=
+### __Parameter name:__ Use merged grids
+**Default value:** true
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to make the grid by gluing together two boxes, or just use one chunk to make the grid. Using two grids glued together is a safer option, since it forces the boundary conditions to be always applied to the same depth, but using one grid allows for a more flexible usage of the adaptive refinement. Note that if there is no cell boundary exactly on the boundary between the lithosphere and the mantle, the velocity boundary will not be exactly at that depth. Therefore, using a merged grid is generally recommended over using one grid. When using one grid, the parameter for lower repetitions is used and the upper repetitions are ignored.
+
 (parameters:Geometry_20model/Ellipsoidal_20chunk)=
-## **Parameters in section** Geometry model/Ellipsoidal chunk
+## **Subsection:** Geometry model / Ellipsoidal chunk
 (parameters:Geometry_20model/Ellipsoidal_20chunk/Depth)=
 ### __Parameter name:__ Depth
 **Default value:** 500000.0
@@ -470,7 +486,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** The number of subdivisions of the coarse (initial) mesh in depth.
 
 (parameters:Geometry_20model/Ellipsoidal_20chunk/East_2dWest_20subdivisions)=
-### __Parameter name:__ East_2dWest subdivisions
+### __Parameter name:__ East-West subdivisions
 **Default value:** 1
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
@@ -502,7 +518,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Longitude:latitude in degrees of the North-West corner point of model region. The North-East direction is positive. If one of the three corners is not provided the missing corner value will be calculated so all faces are parallel.
 
 (parameters:Geometry_20model/Ellipsoidal_20chunk/North_2dSouth_20subdivisions)=
-### __Parameter name:__ North_2dSouth subdivisions
+### __Parameter name:__ North-South subdivisions
 **Default value:** 1
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
@@ -526,7 +542,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Longitude:latitude in degrees of the South-West corner point of model region. The North-East direction is positive. If one of the three corners is not provided the missing corner value will be calculated so all faces are parallel.
 
 (parameters:Geometry_20model/Ellipsoidal_20chunk/Semi_2dmajor_20axis)=
-### __Parameter name:__ Semi_2dmajor axis
+### __Parameter name:__ Semi-major axis
 **Default value:** 6378137.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
@@ -534,7 +550,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** The semi-major axis (a) of an ellipsoid. This is the radius for a sphere (eccentricity=0). Default WGS84 semi-major axis.
 
 (parameters:Geometry_20model/Initial_20topography_20model)=
-## **Parameters in section** Geometry model/Initial topography model
+## **Subsection:** Geometry model / Initial topography model
 (parameters:Geometry_20model/Initial_20topography_20model/Model_20name)=
 ### __Parameter name:__ Model name
 **Default value:** zero topography
@@ -543,23 +559,23 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Documentation:** Select one of the following models:
 
-`ascii data': Implementation of a model in which the surface topography is derived from a file containing data in ascii format. The following geometry models are currently supported: box, chunk. Note the required format of the input data: The first lines may contain any number of comments if they begin with `#', but one of these lines needs to contain the number of grid points in each dimension as for example `# POINTS: 3 3'. The order of the data columns has to be `x', `Topography [m]' in a 2d model and  `x', `y', `Topography [m]' in a 3d model, which means that there has to be a single column containing the topography. Note that the data in the input file needs to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle in radians  and `y' by the polar angle in radians measured positive from the north pole. The grid will be assumed to be a longitude-colatitude grid. Note that the order of spherical coordinates is `phi', `theta' and not `theta', `phi', since this allows for dimension independent expressions.
+&lsquo;ascii data&rsquo;: Implementation of a model in which the surface topography is derived from a file containing data in ascii format. The following geometry models are currently supported: box, chunk. Note the required format of the input data: The first lines may contain any number of comments if they begin with &lsquo;#&rsquo;, but one of these lines needs to contain the number of grid points in each dimension as for example &lsquo;# POINTS: 3 3&rsquo;. The order of the data columns has to be &lsquo;x&rsquo;, &lsquo;Topography [m]&rsquo; in a 2d model and  &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;Topography [m]&rsquo; in a 3d model, which means that there has to be a single column containing the topography. Note that the data in the input file needs to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. &lsquo;x&rsquo; will be replaced by the azimuth angle in radians  and &lsquo;y&rsquo; by the polar angle in radians measured positive from the north pole. The grid will be assumed to be a longitude-colatitude grid. Note that the order of spherical coordinates is &lsquo;phi&rsquo;, &lsquo;theta&rsquo; and not &lsquo;theta&rsquo;, &lsquo;phi&rsquo;, since this allows for dimension independent expressions.
 
-`function': Implementation of a model in which the initial topography is described by a function in cartesian or spherical coordinates.
+&lsquo;function&rsquo;: Implementation of a model in which the initial topography is described by a function in cartesian or spherical coordinates.
 
-`prm polygon': An initial topography model that defines the initial topography as constant inside each of a set of polygonal parts of the surface. The polygons, and their associated surface elevation, are defined in the `Geometry model/Initial topography/Prm polygon' section.
+&lsquo;prm polygon&rsquo;: An initial topography model that defines the initial topography as constant inside each of a set of polygonal parts of the surface. The polygons, and their associated surface elevation, are defined in the &lsquo;Geometry model/Initial topography/Prm polygon&rsquo; section.
 
-`zero topography': Implementation of a model in which the initial topography is zero.
+&lsquo;zero topography&rsquo;: Implementation of a model in which the initial topography is zero.
 
 (parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model)=
-## **Parameters in section** Geometry model/Initial topography model/Ascii data model
+## **Subsection:** Geometry model / Initial topography model / Ascii data model
 (parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
 
 **Pattern:** [DirectoryName]
 
-**Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
+**Documentation:** The name of a directory that contains the model data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
 
 (parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model/Data_20file_20name)=
 ### __Parameter name:__ Data file name
@@ -578,14 +594,14 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Geometry_20model/Initial_20topography_20model/Function)=
-## **Parameters in section** Geometry model/Initial topography model/Function
+## **Subsection:** Geometry model / Initial topography model / Function
 (parameters:Geometry_20model/Initial_20topography_20model/Function/Coordinate_20system)=
 ### __Parameter name:__ Coordinate system
 **Default value:** cartesian
 
 **Pattern:** [Selection cartesian|spherical ]
 
-**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian' and `spherical'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle.
+**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;cartesian&rsquo; and &lsquo;spherical&rsquo;. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle.
 
 (parameters:Geometry_20model/Initial_20topography_20model/Function/Function_20constants)=
 ### __Parameter name:__ Function constants
@@ -593,9 +609,9 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 **Pattern:** [Anything]
 
-**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
-A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
 
 (parameters:Geometry_20model/Initial_20topography_20model/Function/Function_20expression)=
 ### __Parameter name:__ Function expression
@@ -603,7 +619,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 **Pattern:** [Anything]
 
-**Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+**Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 
@@ -621,20 +637,20 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+**Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
 
 (parameters:Geometry_20model/Initial_20topography_20model/Prm_20polygon)=
-## **Parameters in section** Geometry model/Initial topography model/Prm polygon
+## **Subsection:** Geometry model / Initial topography model / Prm polygon
 (parameters:Geometry_20model/Initial_20topography_20model/Prm_20polygon/Topography_20parameters)=
 ### __Parameter name:__ Topography parameters
 **Default value:**
 
 **Pattern:** [Anything]
 
-**Documentation:** Set the topography height and the polygon which should be set to that height. The format is : "The topography height   extgreater The point list describing a polygon \& The next topography height   extgreater the next point list describing a polygon." The format for the point list describing the polygon is "x1,y1;x2,y2". For example for two triangular areas of 100 and -100 meters high set: '100   extgreater 0,0;5,5;0,10 \& -100   extgreater 10,10;10,15;20,15'. Units of the height are always in meters. The units of the coordinates are dependent on the geometry model. In the box model they are in meters, in the chunks they are in degrees, etc. Please refer to the manual of the individual geometry model to so see how the topography is implemented.
+**Documentation:** Set the topography height and the polygon which should be set to that height. The format is : "The topography height   extgreater The point list describing a polygon \& The next topography height   extgreater the next point list describing a polygon." The format for the point list describing the polygon is "x1,y1;x2,y2". For example for two triangular areas of 100 and -100 meters high set: &rsquo;100   extgreater 0,0;5,5;0,10 \& -100   extgreater 10,10;10,15;20,15&rsquo;. Units of the height are always in meters. The units of the coordinates are dependent on the geometry model. In the box model they are in meters, in the chunks they are in degrees, etc. Please refer to the manual of the individual geometry model to so see how the topography is implemented.
 
 (parameters:Geometry_20model/Sphere)=
-## **Parameters in section** Geometry model/Sphere
+## **Subsection:** Geometry model / Sphere
 (parameters:Geometry_20model/Sphere/Radius)=
 ### __Parameter name:__ Radius
 **Default value:** 6371000.
@@ -644,7 +660,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Radius of the sphere. Units: \si{\meter}.
 
 (parameters:Geometry_20model/Spherical_20shell)=
-## **Parameters in section** Geometry model/Spherical shell
+## **Subsection:** Geometry model / Spherical shell
 (parameters:Geometry_20model/Spherical_20shell/Cells_20along_20circumference)=
 ### __Parameter name:__ Cells along circumference
 **Default value:** 0

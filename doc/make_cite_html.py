@@ -1,7 +1,7 @@
-# A python3 script to generate the database.js file from manual/manual.bib for citing.html online
+# A python3 script to generate the database.js file from sphinx/references.bib for citing.html online
 
 # What this does:
-# - read bibtex entries from "manual/manual.bib" that are specified below
+# - read bibtex entries from "sphinx/references.bib" that are specified below
 # - use the DOI and the online API to request a clean text form for citation for each entry
 # - write database.js (in the current directory) that contains a javascript object with all the information above
 #
@@ -11,7 +11,7 @@ import requests
 import re
 from html import escape
 
-bibfile = "manual/manual.bib"
+bibfile = "sphinx/references.bib"
 
 bibitems = {}
 biburls = {}
@@ -60,7 +60,8 @@ want_groups = {"KHB12": "main",
                "aspect-doi-v2.1.0" : "2.1.0",
                "aspect-doi-v2.2.0" : "2.2.0",
                "aspect-doi-v2.3.0" : "2.3.0",
-               "aspectmanual" : "2.3.0",
+               "aspect-doi-v2.4.0" : "2.4.0",
+               "aspectmanual" : "2.4.0",
                "rose_freesurface" : "fs",
                "dannberg_melt" : "melt",
                "gassmoeller_particles" : "particles",
@@ -71,6 +72,7 @@ want_groups = {"KHB12": "main",
                "fraters_menno_2020_3900603" : "GWB",
                "Fraters2019c" : "GWB",
                "FBTGS19" : "NewtonSolver",
+               "fraters_billen_2021_cpo" : "CPO"
 }
 
 want = []
@@ -93,14 +95,16 @@ bibformated = {
         "aspect-doi-v2.1.0" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2019, April 29. ASPECT v2.1.0. Zenodo. https://doi.org/10.5281/zenodo.2653531",
         "aspect-doi-v2.2.0" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2020. ASPECT v2.2.0. (version v2.2.0). Zenodo. https://doi.org/10.5281/ZENODO.3924604.",
         "aspect-doi-v2.3.0" : "Bangerth, Wolfgang, Juliane Dannberg, Menno Fraters, Rene Gassmoeller, Anne Glerum, Timo Heister, and John Naliboff. 2021. <i>ASPECT v2.3.0</i> (version v2.3.0). Zenodo. https://doi.org/10.5281/ZENODO.5131909.",
-        "aspectmanual" : "Bangerth, Wolfgang, Juliane Dannberg, Menno Fraters, Rene Gassmoeller, Anne Glerum, Timo Heister, and John Naliboff. 2021. “ASPECT: Advanced Solver for Problems in Earth's ConvecTion, User Manual.” <i>Figshare</i>. https://doi.org/10.6084/M9.FIGSHARE.4865333.",
+        "aspect-doi-v2.4.0" : "Bangerth, Wolfgang, Juliane Dannberg, Menno Fraters, Rene Gassmoeller, Anne Glerum, Timo Heister, Robert Myhill, and John Naliboff. 2022. <i>ASPECT v2.4.0</i> (version v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.6903424.",
+        "aspectmanual" : "Bangerth, Wolfgang, Juliane Dannberg, Menno Fraters, Rene Gassmoeller, Anne Glerum, Timo Heister, Robert Myhill, and John Naliboff. 2022. “ASPECT: Advanced Solver for Problems in Earth's ConvecTion, User Manual.” <i>Figshare</i>. https://doi.org/10.6084/M9.FIGSHARE.4865333.",
         "clevenger_stokes19" : "Thomas C. Clevenger, and Timo Heister. 2021. “Comparison Between Algebraic and Matrix-free Geometric Multigrid for a Stokes Problem on an Adaptive Mesh with Variable Viscosity.“ Numerical Linear Algebra with Applications, Wiley.",
         "dannberg_melt" : "Juliane Dannberg, and Timo Heister. 2016. “Compressible Magma/mantle Dynamics: 3-D, Adaptive Simulations in ASPECT.” Geophysical Journal International 207 (3) (September 4): 1343–1366. doi:10.1093/gji/ggw329. http://dx.doi.org/10.1093/gji/ggw329.",
         "fraters_menno_2020_3900603" : "Menno Fraters. 2020. ”The Geodynamic World Builder” (version v0.3.0). Zenodo. https://doi.org/10.5281/ZENODO.3900603",
         "gassmoeller_particles" : "Rene Gassmoeller, Eric Heien, Elbridge Gerry Puckett, and Wolfgang Bangerth. 2017. “Flexible and scalable particle-in-cell methods for massively parallel computations.” arXiv:1612.03369",
         "gassmoller2020formulations" : "Rene Gassmöller, Juliane Dannberg, Wolfgang Bangerth, Timo Heister, and Robert Myhill. 2020. “On Formulations of Compressible Mantle Convection.” Geophysical Journal International 221 (2) (February 13): 1264–1280. doi:10.1093/gji/ggaa078. http://dx.doi.org/10.1093/gji/ggaa078.",
         "heister_aspect_methods2" : "Timo Heister, Juliane Dannberg, Rene Gassmöller, and Wolfgang Bangerth. 2017. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods – II: Realistic Models and Problems.” Geophysical Journal International 210 (2) (May 9): 833–851. doi:10.1093/gji/ggx195. http://dx.doi.org/10.1093/gji/ggx195.",
-        "rose_freesurface" : "Ian Rose, Bruce Buffett, and Timo Heister. 2017. “Stability and Accuracy of Free Surface Time Integration in Viscous Flows.” Physics of the Earth and Planetary Interiors 262 (January): 90–100. doi:10.1016/j.pepi.2016.11.007. http://dx.doi.org/10.1016/j.pepi.2016.11.007."
+        "rose_freesurface" : "Ian Rose, Bruce Buffett, and Timo Heister. 2017. “Stability and Accuracy of Free Surface Time Integration in Viscous Flows.” Physics of the Earth and Planetary Interiors 262 (January): 90–100. doi:10.1016/j.pepi.2016.11.007. http://dx.doi.org/10.1016/j.pepi.2016.11.007.",
+        "fraters_billen_2021_cpo" : "Fraters, M. R. T. and Billen, M. I. 2021. “On the Implementation and Usability of Crystal Preferred Orientation Evolution in Geodynamic Modeling” Geochemistry, Geophysics, Geosystems 22 (10): e2021GC009846. doi:10.1029/2021GC009846. https://doi.org/10.1029/2021GC009846."
 }
 
 

@@ -24,7 +24,7 @@ Additional information:
     converge.
     
     The initial residual was: 1.169088e+14
-    The final residual is: 1.596368e+01
+    The final residual is: 1.846521e+01
     The required residual for convergence is: 1.169088e-21
     See output-stokes_solver_fail_cheap/solver_history.txt for the full
     convergence history.
@@ -44,7 +44,7 @@ Additional information:
     false
     Additional information:
     Iterative method reported convergence failure in step 200. The
-    residual in the last step was 15.9637.
+    residual in the last step was 18.4652.
     
     This error message can indicate that you have simply not allowed a
     sufficiently large number of iterations for your iterative solver to
@@ -59,7 +59,6 @@ Additional information:
     apply the wrong solver to a matrix (e.g., using CG for a matrix that
     is not symmetric or not positive definite). In these cases, the
     residual in the last iteration is likely going to be large.
-    --------------------------------------------------------
     
-
-Aborting!
+    Stacktrace:
+(rest of the output replaced by default.sh script)

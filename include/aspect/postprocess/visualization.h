@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -400,7 +400,7 @@ namespace aspect
         register_visualization_postprocessor (const std::string &name,
                                               const std::string &description,
                                               void (*declare_parameters_function) (ParameterHandler &),
-                                              VisualizationPostprocessors::Interface<dim> *(*factory_function) ());
+                                              std::unique_ptr<VisualizationPostprocessors::Interface<dim>>(*factory_function) ());
 
         /**
          * A function that is used to indicate to the postprocessor manager which
@@ -558,11 +558,11 @@ namespace aspect
          * deal.II offers the possibility to write vtu files with higher order
          * representations of the output data. This means each cell will correctly
          * show the higher order representation of the output data instead of the
-         * linear interpolation between vertices that ParaView and Visit usually show.
+         * linear interpolation between vertices that ParaView and VisIt usually show.
          * Note that activating this option is safe and recommended, but requires that
          * (i) ``Output format'' is set to ``vtu'', (ii) ``Interpolate output'' is
          * set to true, (iii) you use a sufficiently new version of Paraview
-         * or Visit to read the files (Paraview version 5.5 or newer, and Visit version
+         * or VisIt to read the files (Paraview version 5.5 or newer, and VisIt version
          * to be determined), and (iv) you use deal.II version 9.1.0 or newer.
          */
         bool write_higher_order_output;
@@ -574,6 +574,23 @@ namespace aspect
          * by setting output_mesh_velocity to true.
          */
         bool output_mesh_velocity;
+
+        /**
+         * For mesh deformation computations ASPECT uses an Arbitrary-Lagrangian-
+         * Eulerian formulation to handle deforming the domain, so the mesh
+         * has a field that determines the displacement from the reference
+         * configuration. This may be written as an output field by setting
+         * this flag to true.
+         */
+        bool output_mesh_displacement;
+
+        /**
+         * For mesh deformation computations ASPECT uses an Arbitrary-Lagrangian-
+         * Eulerian formulation to handle deforming the domain, but we output the
+         * mesh in its deformed state if this flag is set to true. If set to false,
+         * the mesh is written undeformed.
+         */
+        bool output_undeformed_mesh;
 
         /**
          * File operations can potentially take a long time, blocking the
@@ -656,13 +673,13 @@ namespace aspect
           std::string last_mesh_file_name;
 
           /**
-          * A list of pairs (time, pvtu_filename) that have so far been written
-          * and that we will pass to DataOutInterface::write_pvd_record to
-          * create a master file that can make the association between
-          * simulation time and corresponding file name (this is done because
-          * there is no way to store the simulation time inside the .pvtu or
-          * .vtu files).
-          */
+           * A list of pairs (time, pvtu_filename) that have so far been written
+           * and that we will pass to DataOutInterface::write_pvd_record to
+           * create a master file that can make the association between
+           * simulation time and corresponding file name (this is done because
+           * there is no way to store the simulation time inside the .pvtu or
+           * .vtu files).
+           */
           std::vector<std::pair<double,std::string>> times_and_pvtu_names;
 
           /**
@@ -706,7 +723,7 @@ namespace aspect
          * directory, possibly one file written by each processor, belong to a
          * single time step and/or form the different time steps of a
          * simulation. For Paraview, this is a <code>.pvtu</code> file per
-         * time step and a <code>.pvd</code> for all time steps. For Visit it
+         * time step and a <code>.pvd</code> for all time steps. For VisIt it
          * is a <code>.visit</code> file per time step and one for all time
          * steps.
          *

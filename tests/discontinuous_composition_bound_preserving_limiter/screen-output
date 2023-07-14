@@ -79,36 +79,31 @@ Number of degrees of freedom: 7,037 (1,988+257+994+1,899+1,899)
      RMS, max velocity:         0.00907 m/year, 0.0205 m/year
      Compositions min/max/mass: -0.02757/1.005/9.858e+09 // -0.02003/2.005/4.241e+10
 
-Number of active cells: 211 (on 6 levels)
-Number of degrees of freedom: 7,037 (1,988+257+994+1,899+1,899)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 5:  t=971454 years, dt=191051 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 4 iterations.
    Solving C_2 system ... 4 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.00912 m/year, 0.0206 m/year
      Compositions min/max/mass: -0.02749/1.003/9.859e+09 // -0.02346/2.022/4.241e+10
 
-Number of active cells: 211 (on 6 levels)
-Number of degrees of freedom: 7,037 (1,988+257+994+1,899+1,899)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 6:  t=1e+06 years, dt=28545.8 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 3 iterations.
    Solving C_2 system ... 3 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.00913 m/year, 0.0207 m/year
      Compositions min/max/mass: -0.0277/1.003/9.859e+09 // -0.02878/2.017/4.241e+10
 
-Number of active cells: 211 (on 6 levels)
-Number of degrees of freedom: 7,037 (1,988+257+994+1,899+1,899)
+Skipping mesh refinement, because the mesh did not change.
 
 Termination requested by criterion: end time
 

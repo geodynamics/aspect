@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -94,6 +94,8 @@ namespace aspect
                                                                              const double para_bottom_depth,
                                                                              const std::vector<Point<2>> &para_corners)
     {
+      AssertThrow (dim == 3, ExcMessage("This manifold can currently only be used in 3d."));
+
       semi_major_axis_a = para_semi_major_axis_a;
       eccentricity = para_eccentricity;
       semi_minor_axis_b = para_semi_minor_axis_b;
@@ -105,8 +107,6 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_ellipsoid(const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
-
       // The following converts phi, theta and negative depth to x, y, z
       // Depth is measured perpendicular to the ellipsoid surface
       // (i.e. along a vector which does not generally pass through the origin)
@@ -137,7 +137,6 @@ namespace aspect
       // Subirana, Zornoza and Hernandez-Pajares, 2011:
       // https://gssc.esa.int/navipedia/index.php/Ellipsoidal_and_Cartesian_Coordinates_Conversion
 
-      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
       const double R      = semi_major_axis_a; // semi-major axis
       const double b      = R * std::sqrt(1 - eccentricity * eccentricity); // semi-minor axis
       const double p      = std::sqrt(x(0) * x(0) + x(1) * x(1)); // distance from origin projected onto x-y plane
@@ -159,12 +158,10 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_topography(const Point<3> &phi_theta_d_hat) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
       const double d_hat = phi_theta_d_hat[2]; // long, lat, depth
       Point<dim-1> phi_theta;
-      const double rad_to_degree = 180/numbers::PI;
       if (dim == 3)
-        phi_theta = Point<dim-1>(phi_theta_d_hat[0] * rad_to_degree,phi_theta_d_hat[1] * rad_to_degree);
+        phi_theta = Point<dim-1>(phi_theta_d_hat[0] * constants::radians_to_degree,phi_theta_d_hat[1] * constants::radians_to_degree);
       const double h = topography != nullptr ? topography->value(phi_theta) : 0;
       const double d = d_hat + (d_hat + bottom_depth)/bottom_depth*h;
       const Point<3> phi_theta_d (phi_theta_d_hat[0],
@@ -177,12 +174,11 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_topography(const Point<3> &phi_theta_d) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can currently only be used in 3d."));
       const double d = phi_theta_d[2];
-      const double rad_to_degree = 180/numbers::PI;
       Point<dim-1> phi_theta;
       if (dim == 3)
-        phi_theta = Point<dim-1>(phi_theta_d[0] * rad_to_degree,phi_theta_d[1] * rad_to_degree);
+        phi_theta = Point<dim-1>(phi_theta_d[0] * constants::radians_to_degree,
+                                 phi_theta_d[1] * constants::radians_to_degree);
       const double h = topography != nullptr ? topography->value(phi_theta) : 0;
       const double d_hat = bottom_depth * (d-h)/(bottom_depth+h);
       const Point<3> phi_theta_d_hat (phi_theta_d[0],
@@ -193,8 +189,8 @@ namespace aspect
 
     /**
      * TODO: These functions (pull back and push forward) should be changed that they always
-     * take and return 3D points, because 2D points make no sense for an ellipsoid, even with
-     * a 2D triangulation. To do this correctly we need to add the spacedim to the triangulation
+     * take and return 3d points, because 2d points make no sense for an ellipsoid, even with
+     * a 2d triangulation. To do this correctly we need to add the spacedim to the triangulation
      * in ASPECT. What is now presented is just a temporary fix to get access to the pull back
      * function from outside. The push forward function can't be fixed in this way, because
      * it is used by a bind statement.
@@ -203,7 +199,6 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back(const Point<3> &space_point) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
       return pull_back_topography(pull_back_ellipsoid (space_point, semi_major_axis_a, eccentricity));
 
     }
@@ -212,7 +207,6 @@ namespace aspect
     Point<2>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back(const Point<2> &space_point) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
       return space_point;
 
     }
@@ -221,7 +215,6 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward(const Point<3> &chart_point) const
     {
-      AssertThrow (dim == 3,ExcMessage ("This can not be done with 2D points."));
       return push_forward_ellipsoid (push_forward_topography(chart_point), semi_major_axis_a, eccentricity);
     }
 
@@ -243,6 +236,7 @@ namespace aspect
     void
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::initialize(const InitialTopographyModel::Interface<dim> *topography_)
     {
+      AssertThrow (dim == 3, ExcMessage("This manifold can currently only be used in 3d."));
       topography = topography_;
     }
 
@@ -254,24 +248,26 @@ namespace aspect
 
       // Generate parallelepiped grid with one point (point 0) at (0,0,0) and the
       // other corners (respectively corner 1,2 and 4) placed relative to that point.
-      const Point<3> corner_points[dim] = {Point<dim>((corners[1][0]-corners[0][0])*numbers::PI/180,
-                                                      (corners[1][1]-corners[0][1])*numbers::PI/180,
+      const Point<3> corner_points[dim] = {Point<dim>((corners[1][0]-corners[0][0])*constants::degree_to_radians,
+                                                      (corners[1][1]-corners[0][1])*constants::degree_to_radians,
                                                       0),
-                                           Point<dim>((corners[3][0]-corners[0][0])*numbers::PI/180,
-                                                      (corners[3][1]-corners[0][1])*numbers::PI/180,
+                                           Point<dim>((corners[3][0]-corners[0][0])*constants::degree_to_radians,
+                                                      (corners[3][1]-corners[0][1])*constants::degree_to_radians,
                                                       0),
                                            Point<dim>(0,
                                                       0,
                                                       bottom_depth)
                                           };
-      const unsigned int  subdivisions[dim] = {EW_subdiv,NS_subdiv,depth_subdiv};
+      const unsigned int  subdivisions[dim] = {EW_subdiv, NS_subdiv, depth_subdiv};
 
-      GridGenerator::subdivided_parallelepiped (coarse_grid, subdivisions,corner_points, true);
+      GridGenerator::subdivided_parallelepiped (coarse_grid, subdivisions, corner_points, true);
 
       // Shift the grid point at (0,0,0) (and the rest of the
       // points with it) to the correct location at corner[0] at a
       // negative depth.
-      const Point<3> base_point(corners[0][0] *numbers::PI/180,corners[0][1] *numbers::PI/180,-bottom_depth);
+      const Point<3> base_point(corners[0][0] * constants::degree_to_radians,
+                                corners[0][1] * constants::degree_to_radians,
+                                -bottom_depth);
       GridTools::shift(base_point,coarse_grid);
 
       // Transform to the ellipsoid surface
@@ -338,35 +334,31 @@ namespace aspect
         {
           case 2:
           {
-            static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("east",   0),
-                  std::pair<std::string,types::boundary_id>("west",   1),
-                  std::pair<std::string,types::boundary_id>("bottom", 2),
-                  std::pair<std::string,types::boundary_id>("top",    3)
-                };
-
-            return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                             std::end(mapping));
+            return
+            {
+              {"east",   0},
+              {"west",   1},
+              {"bottom", 2},
+              {"top",    3}
+            };
           }
 
           case 3:
           {
-            static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("east",   0),
-                  std::pair<std::string,types::boundary_id>("west",   1),
-                  std::pair<std::string,types::boundary_id>("north",  2),
-                  std::pair<std::string,types::boundary_id>("south",  3),
-                  std::pair<std::string,types::boundary_id>("bottom", 4),
-                  std::pair<std::string,types::boundary_id>("top",    5)
-                };
-
-            return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                             std::end(mapping));
+            return
+            {
+              {"east",   0},
+              {"west",   1},
+              {"north",  2},
+              {"south",  3},
+              {"bottom", 4},
+              {"top",    5}
+            };
           }
         }
 
       Assert (false, ExcNotImplemented());
-      return std::map<std::string,types::boundary_id>();
+      return {};
     }
 
     template <int dim>
@@ -435,8 +427,8 @@ namespace aspect
     void
     EllipsoidalChunk<dim>::parse_parameters(ParameterHandler &prm)
     {
-      // only implemented for the 3d case
-      AssertThrow (dim == 3, ExcMessage ("2D has not been implemented."));
+      AssertThrow (dim == 3, ExcMessage("This geometry can currently only be used in 3d."));
+
       prm.enter_subsection("Geometry model");
       {
         prm.enter_subsection("Ellipsoidal chunk");
@@ -455,22 +447,22 @@ namespace aspect
           unsigned int missing = 0;
           if (NEcorner == "")
             {
-              missing++;
+              ++missing;
               present[0] = false;
             }
           if (NWcorner == "")
             {
-              missing++;
+              ++missing;
               present[1] = false;
             }
           if (SWcorner == "")
             {
-              missing++;
+              ++missing;
               present[2] = false;
             }
           if (SEcorner == "")
             {
-              missing++;
+              ++missing;
               present[3] = false;
             }
 
@@ -565,7 +557,7 @@ namespace aspect
           // If one or two of the corners is not provided, calculate it.
           if (missing == 1)
             {
-              for (unsigned int i = 0; i <= 3; i++)
+              for (unsigned int i = 0; i <= 3; ++i)
                 {
                   // find the corner which is missing, if there is one
                   if (present[i] == false)
@@ -653,7 +645,7 @@ namespace aspect
       AssertThrow(false, ExcMessage("Function height_above_reference_surface is not yet implemented "
                                     "for the ellipsoidal chunk geometry model. "
                                     "Consider using a box, spherical shell, or chunk.") );
-      return -999;
+      return numbers::signaling_nan<double>();
     }
 
 
@@ -730,8 +722,8 @@ namespace aspect
              ExcMessage("Given depth must be less than or equal to the maximal depth of this geometry."));
 
       // Choose a point on the center axis of the domain
-      Point<dim> p = Point<3>((eastLongitude + westLongitude) * 0.5 * numbers::PI/180,
-                              (southLatitude + northLatitude) * 0.5 * numbers::PI/180,
+      Point<dim> p = Point<3>((eastLongitude + westLongitude) * 0.5 * constants::degree_to_radians,
+                              (southLatitude + northLatitude) * 0.5 * constants::degree_to_radians,
                               -depth);
 
       return manifold.push_forward(p);
@@ -748,7 +740,6 @@ namespace aspect
 
       // dim = 3
       const Point<dim> ellipsoidal_point = manifold.pull_back(point);
-      const double rad_to_degree = 180.0/numbers::PI;
 
       // compare deflection from the ellipsoid surface
       if (ellipsoidal_point[dim-1] > 0.0+std::numeric_limits<double>::epsilon()*bottom_depth ||
@@ -756,7 +747,7 @@ namespace aspect
         return false;
 
       // compare lon/lat
-      if (!Utilities::polygon_contains_point<dim>(corners, Point<2>(ellipsoidal_point[0]*rad_to_degree,ellipsoidal_point[1]*rad_to_degree)))
+      if (!Utilities::polygon_contains_point<dim>(corners, Point<2>(ellipsoidal_point[0]*constants::radians_to_degree,ellipsoidal_point[1]*constants::radians_to_degree)))
         return false;
 
       return true;
@@ -766,7 +757,6 @@ namespace aspect
     std::array<double,dim>
     EllipsoidalChunk<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
-      Assert(dim == 3,ExcMessage("This geometry model doesn't support 2d."));
       // the chunk manifold works internally with a vector with longitude, latitude, depth.
       // We need to output radius, longitude, latitude to be consistent.
       // Ignore the topography by calling pull_back_ellipsoid to avoid a loop when calling the
@@ -841,7 +831,7 @@ namespace aspect
   {
     ASPECT_REGISTER_GEOMETRY_MODEL(EllipsoidalChunk,
                                    "ellipsoidal chunk",
-                                   "A 3D chunk geometry that accounts for Earth's ellipticity (default assuming the "
+                                   "A 3d chunk geometry that accounts for Earth's ellipticity (default assuming the "
                                    "WGS84 ellipsoid definition) which can be defined in non-coordinate directions. "
                                    "In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the "
                                    "same length so that there is only a semi-major axis and a semi-minor axis. "
@@ -852,7 +842,7 @@ namespace aspect
                                    "file by longitude:latitude. It is also possible to define additional subdivisions "
                                    "of the mesh in each direction. The boundary of the domain is formed by linear "
                                    "interpolation in longitude-latitude space between adjacent points "
-                                   "(i.e. [lon, lat](f) = [lon1*f + lon2*(1-f), lat1*f + lat2*(1-f)], "
+                                   "(i.e. $[lon, lat](f) = [lon1 \\cdot f + lon2 \\cdot(1-f), lat1 \\cdot f + lat2 \\cdot (1-f)]$, "
                                    "where f is a value between 0 and 1). Faces of the model are defined as "
                                    "0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.\n\n"
                                    "This geometry model supports initial topography for deforming the initial mesh.")

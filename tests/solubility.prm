@@ -1,0 +1,11 @@
+# 1D solubility test
+
+include $ASPECT_SOURCE_DIR/benchmarks/solubility/solubility.prm
+
+set End time = 15000
+
+subsection Geometry model
+  subsection Box
+    set Y repetitions = 100
+  end
+end

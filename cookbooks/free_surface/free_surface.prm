@@ -25,7 +25,7 @@ set CFL number                             = 1.0
 # surface.
 set Pressure normalization                 = no
 
-# We can use any of the normal geometry models for free surface modelling, we
+# We can use any of the normal geometry models for free surface modeling, we
 # just need to specify further down which surface is to be the free one. We
 # here use a box model with vertical downwards gravity.
 subsection Geometry model
@@ -82,7 +82,7 @@ subsection Boundary velocity model
 end
 
 
-# We prescribe a zero boundary temperature, as we are just modelling a single
+# We prescribe a zero boundary temperature, as we are just modeling a single
 # rising blob
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = left, right, bottom, top
@@ -133,7 +133,7 @@ end
 
 
 # We also include the topography postprocessor, which just calculates
-# the maximum and minimun topography on your free surface at
+# the maximum and minimum topography on your free surface at
 # every time step.
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, topography

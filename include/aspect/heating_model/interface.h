@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -163,26 +163,12 @@ namespace aspect
          * the temperature equation) at each quadrature point as defined in
          * @p material_model_inputs, setting them to zero if they are not to
          * be used in the computation.
-         *
-         * The default implementation calls specific_heating_rate to make
-         * this implementation backwards compatible.
          */
         virtual
         void
         evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
-
-        /**
-         * Return the specific heating rate as a function of position.
-         */
-        DEAL_II_DEPRECATED
-        virtual
-        double
-        specific_heating_rate (const double temperature,
-                               const double pressure,
-                               const std::vector<double> &compositional_fields,
-                               const Point<dim> &position) const;
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const = 0;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -327,7 +313,7 @@ namespace aspect
         register_heating_model (const std::string &name,
                                 const std::string &description,
                                 void (*declare_parameters_function) (ParameterHandler &),
-                                Interface<dim> *(*factory_function) ());
+                                std::unique_ptr<Interface<dim>> (*factory_function) ());
 
 
         /**
@@ -343,18 +329,6 @@ namespace aspect
          */
         const std::list<std::unique_ptr<Interface<dim>>> &
         get_active_heating_models () const;
-
-        /**
-         * Go through the list of all heating models that have been selected in
-         * the input file (and are consequently currently active) and see if one
-         * of them has the desired type specified by the template argument. If so,
-         * return a pointer to it. If no heating model is active that matches the
-         * given type, return a nullptr.
-         */
-        template <typename HeatingModelType>
-        DEAL_II_DEPRECATED
-        HeatingModelType *
-        find_heating_model () const;
 
         /**
          * Go through the list of all heating models that have been selected
@@ -414,19 +388,6 @@ namespace aspect
         std::vector<std::string> model_names;
     };
 
-
-
-    template <int dim>
-    template <typename HeatingModelType>
-    inline
-    HeatingModelType *
-    Manager<dim>::find_heating_model () const
-    {
-      for (auto &p : heating_model_objects)
-        if (HeatingModelType *x = dynamic_cast<HeatingModelType *> (p.get()))
-          return x;
-      return nullptr;
-    }
 
 
     template <int dim>

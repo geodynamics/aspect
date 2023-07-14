@@ -33,7 +33,7 @@ namespace aspect
   // Declare and parse additional parameters
   bool prescribe_internal_temperature;
   std::vector <std::string> fixed_compositional_fields;
-
+  double max_isotherm;
 
 
   void declare_parameters(const unsigned int /*dim*/,
@@ -49,7 +49,11 @@ namespace aspect
                          "the parameter ``Names of compositional fields with fixed temperature'' "
                          "and the temperature is fixed to its initial state. Indicators are evaluated "
                          "separately at each support point."
-
+                        );
+      prm.declare_entry ("Maximum fixed temperature isosurface", "0",
+                         Patterns::Double (),
+                         "The maximum temperature that will remain fixed. Temperatures above this "
+                         "value will be treated normally."
                         );
       prm.declare_entry ("Names of compositional fields with fixed temperature", "",
                          Patterns::List(Patterns::Anything ()),
@@ -71,6 +75,7 @@ namespace aspect
     {
       prescribe_internal_temperature = prm.get_bool ("Prescribe internal temperature");
       fixed_compositional_fields = Utilities::split_string_list (prm.get("Names of compositional fields with fixed temperature"));
+      max_isotherm = prm.get_double ("Maximum fixed temperature isosurface");
     }
     prm.leave_subsection ();
   }
@@ -84,6 +89,13 @@ namespace aspect
   void constrain_internal_temperature (const SimulatorAccess<dim> &simulator_access,
                                        AffineConstraints<double> &current_constraints)
   {
+    // Save access to the initial temperature manager the first time
+    // we get here so that we can access it past the first time step
+    // as well.
+    static std::shared_ptr<const aspect::InitialTemperature::Manager<dim>> initial_temperature_manager;
+    if (initial_temperature_manager == nullptr)
+      initial_temperature_manager = simulator_access.get_initial_temperature_manager_pointer();
+
     if (prescribe_internal_temperature)
       {
         const std::vector<Point<dim>> points = aspect::Utilities::get_unit_support_points(simulator_access);
@@ -100,7 +112,7 @@ namespace aspect
           if (! cell->is_artificial())
             {
               fe_values.reinit (cell);
-              in.reinit(fe_values, cell, simulator_access.introspection(), simulator_access.get_solution(), false);
+              in.reinit(fe_values, cell, simulator_access.introspection(), simulator_access.get_solution());
 
               std::vector<types::global_dof_index> local_dof_indices(simulator_access.get_fe().dofs_per_cell);
               cell->get_dof_indices (local_dof_indices);
@@ -117,7 +129,7 @@ namespace aspect
                         {
 
                           const unsigned int composition_idx = simulator_access.introspection().compositional_index_for_name(fixed_compositional_fields[c]);
-                          if (in.composition[q][composition_idx] >= 0.5)
+                          if (in.composition[q][composition_idx] >= 0.5 || in.temperature[q] <= max_isotherm)
                             {
                               constrain_temperature = true;
                             }
@@ -133,7 +145,7 @@ namespace aspect
                             {
 
                               // Set the temperature to be equal to the initial temperature
-                              in.temperature[q] = simulator_access.get_initial_temperature_manager().initial_temperature(in.position[q]);
+                              in.temperature[q] = initial_temperature_manager->initial_temperature(in.position[q]);
                               // Update the constraints
                               current_constraints.add_line (local_dof_indices[q]);
                               current_constraints.set_inhomogeneity (local_dof_indices[q], in.temperature[q]);

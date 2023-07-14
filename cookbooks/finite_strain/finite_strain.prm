@@ -2,7 +2,7 @@
 # ---------------------
 # Model for global mantle convection with tracking of the finite strain tensor.
 
-set Additional shared libraries            = ./libfinite_strain.so
+set Additional shared libraries            = ./libfinite_strain_cookbook.so
 
 set Adiabatic surface temperature          = 1600
 set Maximum time step                      = 1e6

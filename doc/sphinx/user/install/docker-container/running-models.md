@@ -6,21 +6,21 @@ ASPECT docker image in a number of different ways, we
 recommend the following workflow:
 
 1.  Create your ASPECT input file in a folder
-    of your choice (possibly also containing any input data that is required
+    of your choice (also containing any input data that is required
     by your model) and navigate in a terminal into that directory.
 
 2.  Run the docker image and mount the current directory as a read-only volume
-    into the docker container[^footnote1]. This is accomplished by specifying the -v
+    into the docker container.[^footnote1] This is accomplished by specifying the -v
     flag followed by the absolute path on the host machine, colon, absolute
     path within the docker container, colon, and specifying read-only
     permissions as in the example below.
 
     Make sure your parameter file specifies a model output directory *other*
-    than the input directory, e.g. `/home/dealii/aspect/model_output`. When
+    than the input directory, e.g., `/home/dealii/aspect/model_output`. When
     you have started the container run the aspect model inside the container.
-    Note that there are two ASPECT executables
-    in the work directory of the container: `aspect` and `aspect-release`. For
-    a discussion of the different versions see {ref}`sec:run-aspect:debug-mode`, in
+    Note that there are two ASPECT versions in the container:
+    `aspect` and `aspect-release`. For a discussion of the different
+    versions see {ref}`sec:run-aspect:debug-mode`, in
     essence: You should run `aspect` first to check your model for errors,
     then run `aspect-release` for a faster model run.
 
@@ -34,11 +34,11 @@ recommend the following workflow:
     Within the container, simply run your model by executing:
 
     ``` ksh
-    ./aspect model_input/your_input_file.prm
+    aspect model_input/your_input_file.prm
     ```
 
 3.  After the model has finished (or during the model run if you want to check
-    intermediate results) copy the model output out of the container into your
+    intermediate results), copy the model output out of the container into your
     current directory. For this you need to find the name or ID of the docker
     container by running `docker ps -a` in a separate terminal first. Look for
     the most recently started container to identify your current
@@ -53,7 +53,7 @@ recommend the following workflow:
 
 4.  The output data is saved inside your container even after the computation
     finishes and even when you stop the container. After you have copied the
-    data out of the container you should therefore delete the container to
+    data out of the container, you should therefore delete the container to
     avoid duplication of output data. Even after deleting you will always be
     able to start a new container from the downloaded image following step 2.
     Deleting the finished container can be achieved by the
@@ -80,6 +80,7 @@ recommend the following workflow:
 You are all set. Repeat steps 1-4 of this process as necessary when updating
 your model parameters.
 
-[^footnote1]: Note that it is possible to mount a directory as writeable into the container. However, this is often associated with file
-permission conflicts between the host system and the container. Therefore, we recommend this slightly more cumbersome, but
-also more reliable workflow.
+[^footnote1]: Note that it is possible to mount a directory as writeable
+into the container. However, this often causes file permission conflicts
+between your host operating system and the container. Therefore, we
+recommend this slightly more cumbersome, but also more reliable workflow.

@@ -2,7 +2,7 @@
 # Years or seconds?
 
 All internal calculations in ASPECT are performed using time units of seconds.
-Input quantities with units of time or velocity are assumed to be in seconds or meters per second, and output quantities with units of time or velocity will also be in seconds or meters per second, unless the input parameter `Use years in output instead of seconds` is `true` (see {ref}`sec:parameters:global`).
+Input quantities with units of time or velocity are assumed to be in seconds or meters per second, and output quantities with units of time or velocity will also be in seconds or meters per second, unless the input parameter `Use years in output instead of seconds` is `true` (see {ref}`parameters:global`).
 
 This parameter is somewhat deceptively named, as it influences how ASPECT treats inputs as well as outputs.
 For example, if `Use years in output instead of seconds` is `true`, input values for `Start time`, `End time`, and `Maximum time step` are assumed to be in years instead of seconds.

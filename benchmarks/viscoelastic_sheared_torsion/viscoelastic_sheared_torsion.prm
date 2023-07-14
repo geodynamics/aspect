@@ -136,8 +136,6 @@ subsection Material model
 
     set Viscous flow law = dislocation
 
-    set Include viscoelasticity = true
-
     set Densities                   =  1
 
     set Elastic shear moduli        = 1.e2
@@ -147,7 +145,6 @@ subsection Material model
     # as it is used to compute the elastic time step during time step 0.
     set Fixed elastic time step     = 0.01
     set Use fixed elastic time step = false
-    set Use stress averaging        = false
     set Viscosity averaging scheme  = maximum composition
 
     # Cohesion is set higher than the maximum stress expected in this benchmark,

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -66,10 +66,9 @@ namespace aspect
 
     public:
 
-      virtual
       void
       execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override
       {
         internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
         internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);

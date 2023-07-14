@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,8 +22,10 @@
 #include <aspect/material_model/melt_global.h>
 #include <aspect/adiabatic_conditions/interface.h>
 
+#include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/numerics/fe_field_function.h>
+
 
 
 namespace aspect
@@ -109,11 +111,9 @@ namespace aspect
           && this->get_timestep_number() > 0 && !this->get_parameters().use_operator_splitting)
         {
           // Prepare the field function
-#if DEAL_II_VERSION_GTE(9,4,0)
+
           Functions::FEFieldFunction<dim, LinearAlgebra::BlockVector>
-#else
-          Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
-#endif
+
           fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
 
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
@@ -168,8 +168,19 @@ namespace aspect
               // calculate viscosity based on local melt
               out.viscosities[i] *= exp(- alpha_phi * porosity);
 
-              if (include_melting_and_freezing && in.requests_property(MaterialProperties::reaction_terms))
+              if (include_melting_and_freezing && (in.requests_property(MaterialProperties::reaction_terms) ||
+                                                   in.requests_property(MaterialProperties::reaction_rates) ||
+                                                   in.requests_property(MaterialProperties::viscosity)))
                 {
+                  Assert(this->get_timestep_number()<=1 || std::isfinite(in.strain_rate[i].norm()),
+                         ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                                    "not filled by the caller."));
+                  const double trace_strain_rate =
+                    (this->get_timestep_number() > 1) ?
+                    (trace(in.strain_rate[i]))
+                    :
+                    numbers::signaling_nan<double>();
+
                   const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 
                   // Calculate the melting rate as difference between the equilibrium melt fraction
@@ -184,14 +195,12 @@ namespace aspect
                   if (old_porosity[i] + porosity_change < 0)
                     porosity_change = -old_porosity[i];
 
-                  for (unsigned int c=0; c<in.composition[i].size(); ++c)
+                  for (unsigned int c = 0; c < in.composition[i].size(); ++c)
                     {
                       if (c == peridotite_idx && this->get_timestep_number() > 1)
-                        out.reaction_terms[i][c] = porosity_change
-                                                   - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
+                        out.reaction_terms[i][c] = porosity_change - in.composition[i][peridotite_idx] * trace_strain_rate * this->get_timestep();
                       else if (c == porosity_idx && this->get_timestep_number() > 1)
-                        out.reaction_terms[i][c] = porosity_change
-                                                   * out.densities[i] / this->get_timestep();
+                        out.reaction_terms[i][c] = porosity_change * out.densities[i] / this->get_timestep();
                       else
                         out.reaction_terms[i][c] = 0.0;
 
@@ -201,8 +210,7 @@ namespace aspect
                           if (reaction_rate_out != nullptr)
                             {
                               if (c == peridotite_idx && this->get_timestep_number() > 0)
-                                reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale
-                                                                          - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]);
+                                reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]);
                               else if (c == porosity_idx && this->get_timestep_number() > 0)
                                 reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale;
                               else
@@ -213,10 +221,10 @@ namespace aspect
                     }
 
                   // find depletion = peridotite, which might affect shear viscosity:
-                  const double depletion_visc = std::min(1.0, std::max(in.composition[i][peridotite_idx],0.0));
+                  const double depletion_visc = std::min(1.0, std::max(in.composition[i][peridotite_idx], 0.0));
 
                   // calculate strengthening due to depletion:
-                  const double depletion_strengthening = std::min(exp(alpha_depletion*depletion_visc),delta_eta_depletion_max);
+                  const double depletion_strengthening = std::min(exp(alpha_depletion * depletion_visc), delta_eta_depletion_max);
 
                   // calculate viscosity change due to local melt and depletion:
                   out.viscosities[i] *= depletion_strengthening;
@@ -536,7 +544,7 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(MeltGlobal,
                                    "melt global",
                                    "A material model that implements a simple formulation of the "
-                                   "material parameters required for the modelling of melt transport, "
+                                   "material parameters required for the modeling of melt transport, "
                                    "including a source term for the porosity according to a simplified "
                                    "linear melting model similar to \\cite{schmeling2006}:\n"
                                    "$\\phi_{\\text{equilibrium}} = \\frac{T-T_{\\text{sol}}}{T_{\\text{liq}}-T_{\\text{sol}}}$\n"

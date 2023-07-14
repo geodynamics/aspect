@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -277,10 +277,8 @@ namespace aspect
 
     // save Triangulation and Solution vectors:
     {
-      std::vector<const LinearAlgebra::BlockVector *> x_system (3);
-      x_system[0] = &solution;
-      x_system[1] = &old_solution;
-      x_system[2] = &old_old_solution;
+      std::vector<const LinearAlgebra::BlockVector *> x_system
+        = { &solution, &old_solution, &old_old_solution };
 
       // If we are using a deforming mesh, include the mesh velocity, which uses the system dof handler
       if (parameters.mesh_deformation_enabled)
@@ -294,25 +292,23 @@ namespace aspect
 
       // If we are deforming the mesh, also serialize the mesh vertices vector, which
       // uses its own dof handler
-      std::vector<const LinearAlgebra::Vector *> x_fs_system (2);
+      std::vector<const LinearAlgebra::Vector *> x_fs_system;
       std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>> mesh_deformation_trans;
       if (parameters.mesh_deformation_enabled)
         {
+          x_fs_system.push_back (&mesh_deformation->mesh_displacements);
+          x_fs_system.push_back (&mesh_deformation->initial_topography);
+
           mesh_deformation_trans
             = std::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
               (mesh_deformation->mesh_deformation_dof_handler);
 
-          x_fs_system[0] = &mesh_deformation->mesh_displacements;
-          x_fs_system[1] = &mesh_deformation->initial_topography;
-
-
           mesh_deformation_trans->prepare_for_serialization(x_fs_system);
-
         }
 
       signals.pre_checkpoint_store_user_data(triangulation);
 
-      triangulation.save ((parameters.output_directory + "restart.mesh.new").c_str());
+      triangulation.save (parameters.output_directory + "restart.mesh.new");
     }
 
     // save general information This calls the serialization functions on all
@@ -332,9 +328,9 @@ namespace aspect
         {
           uLongf compressed_data_length = compressBound (oss.str().length());
           std::vector<char *> compressed_data (compressed_data_length);
-          int err = compress2 ((Bytef *) &compressed_data[0],
+          int err = compress2 (reinterpret_cast<Bytef *>(&compressed_data[0]),
                                &compressed_data_length,
-                               (const Bytef *) oss.str().data(),
+                               reinterpret_cast<const Bytef *>(oss.str().data()),
                                oss.str().length(),
                                Z_BEST_COMPRESSION);
           (void)err;
@@ -348,9 +344,9 @@ namespace aspect
                 static_cast<uint32_t>(compressed_data_length)
               }; /* list of compressed sizes of blocks */
 
-          std::ofstream f ((parameters.output_directory + "restart.resume.z.new").c_str());
-          f.write((const char *)compression_header, 4 * sizeof(compression_header[0]));
-          f.write((char *)&compressed_data[0], compressed_data_length);
+          std::ofstream f ((parameters.output_directory + "restart.resume.z.new"));
+          f.write(reinterpret_cast<const char *>(compression_header), 4 * sizeof(compression_header[0]));
+          f.write(reinterpret_cast<char *>(&compressed_data[0]), compressed_data_length);
           f.close();
 
           // We check the fail state of the stream _after_ closing the file to
@@ -440,8 +436,22 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::resume_from_snapshot()
   {
-    // first check existence of the two restart files
-    AssertThrow (Utilities::fexists(parameters.output_directory + "restart.mesh"),
+    // By definition, a checkpoint is past the first time step. As a consequence,
+    // the Simulator object will not need the initial conditions objects, and
+    // we can release the pointers to these objects that we have created in
+    // the constructor of this class. If some of the other plugins created there
+    // still need access to these initial conditions, they will have created
+    // their own shared pointers.
+    initial_temperature_manager.reset();
+    initial_composition_manager.reset();
+#ifdef ASPECT_WITH_WORLD_BUILDER
+    // The same applies to the world builder object:
+    world_builder.reset();
+#endif
+
+    // Then start with the actual deserialization.
+    // First check existence of the two restart files
+    AssertThrow (Utilities::fexists(parameters.output_directory + "restart.mesh", mpi_communicator),
                  ExcMessage ("You are trying to restart a previous computation, "
                              "but the restart file <"
                              +
@@ -449,7 +459,7 @@ namespace aspect
                              +
                              "> does not appear to exist!"));
 
-    AssertThrow (Utilities::fexists(parameters.output_directory + "restart.resume.z"),
+    AssertThrow (Utilities::fexists(parameters.output_directory + "restart.resume.z", mpi_communicator),
                  ExcMessage ("You are trying to restart a previous computation, "
                              "but the restart file <"
                              +
@@ -459,7 +469,7 @@ namespace aspect
 
     pcout << "*** Resuming from snapshot!" << std::endl << std::endl;
 
-    // read resume.z to set up the state of the model
+    // Read resume.z to set up the state of the model
     try
       {
 #ifdef DEAL_II_WITH_ZLIB
@@ -470,7 +480,7 @@ namespace aspect
         std::istringstream ifs (restart_data);
 
         uint32_t compression_header[4];
-        ifs.read((char *)compression_header, 4 * sizeof(compression_header[0]));
+        ifs.read(reinterpret_cast<char *>(compression_header), 4 * sizeof(compression_header[0]));
         Assert(compression_header[0]==1, ExcInternalError());
 
         std::vector<char> compressed(compression_header[3]);
@@ -478,8 +488,8 @@ namespace aspect
         ifs.read(&compressed[0],compression_header[3]);
         uLongf uncompressed_size = compression_header[1];
 
-        const int err = uncompress((Bytef *)&uncompressed[0], &uncompressed_size,
-                                   (Bytef *)&compressed[0], compression_header[3]);
+        const int err = uncompress(reinterpret_cast<Bytef *>(&uncompressed[0]), &uncompressed_size,
+                                   reinterpret_cast<Bytef *>(&compressed[0]), compression_header[3]);
         AssertThrow (err == Z_OK,
                      ExcMessage (std::string("Uncompressing the data buffer resulted in an error with code <")
                                  +
@@ -513,7 +523,7 @@ namespace aspect
     // now that we have resumed from the snapshot load the mesh and solution vectors
     try
       {
-        triangulation.load ((parameters.output_directory + "restart.mesh").c_str());
+        triangulation.load (parameters.output_directory + "restart.mesh");
       }
     catch (...)
       {
@@ -527,19 +537,13 @@ namespace aspect
     setup_dofs();
     global_volume = GridTools::volume (triangulation, *mapping);
 
-    LinearAlgebra::BlockVector
-    distributed_system (system_rhs);
-    LinearAlgebra::BlockVector
-    old_distributed_system (system_rhs);
-    LinearAlgebra::BlockVector
-    old_old_distributed_system (system_rhs);
-    LinearAlgebra::BlockVector
-    distributed_mesh_velocity (system_rhs);
+    LinearAlgebra::BlockVector distributed_system (system_rhs);
+    LinearAlgebra::BlockVector old_distributed_system (system_rhs);
+    LinearAlgebra::BlockVector old_old_distributed_system (system_rhs);
+    LinearAlgebra::BlockVector distributed_mesh_velocity (system_rhs);
 
-    std::vector<LinearAlgebra::BlockVector *> x_system (3);
-    x_system[0] = & (distributed_system);
-    x_system[1] = & (old_distributed_system);
-    x_system[2] = & (old_old_distributed_system);
+    std::vector<LinearAlgebra::BlockVector *> x_system
+      = { &distributed_system, &old_distributed_system, &old_old_distributed_system };
 
     // If necessary, also include the mesh velocity for deserialization
     // with the system dof handler
@@ -566,9 +570,10 @@ namespace aspect
                                                               mpi_communicator );
         LinearAlgebra::Vector distributed_initial_topography( mesh_deformation->mesh_locally_owned,
                                                               mpi_communicator );
-        std::vector<LinearAlgebra::Vector *> fs_system(2);
-        fs_system[0] = &distributed_mesh_displacements;
-        fs_system[1] = &distributed_initial_topography;
+        std::vector<LinearAlgebra::Vector *> fs_system
+        = { &distributed_mesh_displacements,
+            &distributed_initial_topography
+          };
 
         mesh_deformation_trans.deserialize (fs_system);
         mesh_deformation->mesh_displacements = distributed_mesh_displacements;

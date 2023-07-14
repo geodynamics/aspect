@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -90,6 +90,14 @@ namespace aspect
      * argument: A SimulatorAccess object that describes the simulator.
      */
     boost::signals2::signal<void (const SimulatorAccess<dim> &)>  post_set_initial_state;
+
+    /**
+     * A signal that is called at the beginning of each time step.
+     *
+     * The functions (slots) that can attach to this signal need to take one
+     * argument: A SimulatorAccess object that describes the simulator.
+     */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &)>  start_timestep;
 
     /**
      * A signal that is called at the end of setting up the
@@ -224,7 +232,7 @@ namespace aspect
                                          ParameterHandler &)>  parse_additional_parameters;
 
     /**
-     * A signal that is fired when the iterative Stokes solver is done.
+     * A signal that is triggered when the iterative Stokes solver is done.
      * Parameters are a reference to the SimulatorAccess, the number of
      * preconditioner inner solver iterations for the S and A block of the
      * system, and two information objects that contain information
@@ -238,7 +246,7 @@ namespace aspect
                                   const SolverControl &solver_control_expensive)> post_stokes_solver;
 
     /**
-     * A signal that is fired when the iterative advection solver is done.
+     * A signal that is triggered when the iterative advection solver is done.
      * Parameters are a reference to the SimulatorAccess, a bool indicating
      * whether the temperature field or a compositional field was solved,
      * a composition index that describes which compositional field
@@ -251,7 +259,7 @@ namespace aspect
                                   const SolverControl &solver_control)> post_advection_solver;
 
     /**
-     * A signal that is fired when the nonlinear solver scheme is done.
+     * A signal that is triggered when the nonlinear solver scheme is done.
      * The signal parameter is an object that contains information
      * about the final state (failure/success), number of
      * iterations and history of residuals of the nonlinear solver.
@@ -262,19 +270,39 @@ namespace aspect
     boost::signals2::signal<void (const SolverControl &)> post_nonlinear_solver;
 
     /**
-     * A signal that is fired when mesh deformation has occurred.
+     * A signal that is triggered when mesh deformation has occurred.
      * Parameters are a reference to the SimulatorAccess.
      */
     boost::signals2::signal<void (const SimulatorAccess<dim> &)> post_mesh_deformation;
 
     /**
-     * A signal that is fired at the end of the set_assemblers() function that
+     * A signal that is triggered at the end of the set_assemblers() function that
      * allows modification of the assembly objects active in this simulation.
      */
     boost::signals2::signal<void (const SimulatorAccess<dim> &,
                                   aspect::Assemblers::Manager<dim> &)>
     set_assemblers;
   };
+
+
+  // Explain to the compiler that we instantiate this class elsewhere, along
+  // with its static members. This is necessary to avoid warnings by some
+  // compilers.
+  extern template struct SimulatorSignals<2>;
+  extern template
+  boost::signals2::signal<void (const unsigned int aspect_dim, ParameterHandler &prm)>
+  SimulatorSignals<2>::declare_additional_parameters;
+  extern template
+  boost::signals2::signal<void (const Parameters<2> &, ParameterHandler &)>
+  SimulatorSignals<2>::parse_additional_parameters;
+
+  extern template struct SimulatorSignals<3>;
+  extern template
+  boost::signals2::signal<void (const unsigned int aspect_dim, ParameterHandler &prm)>
+  SimulatorSignals<3>::declare_additional_parameters;
+  extern template
+  boost::signals2::signal<void (const Parameters<3> &, ParameterHandler &)>
+  SimulatorSignals<3>::parse_additional_parameters;
 
 
   namespace internals

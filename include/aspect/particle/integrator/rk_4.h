@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -43,10 +43,9 @@ namespace aspect
           RK4();
 
           /**
-          * Look up where the RK4 data is stored. Done once and cached to
-          * avoid repeated lookups.
-          */
-          virtual
+           * Look up where the RK4 data is stored. Done once and cached to
+           * avoid repeated lookups.
+           */
           void
           initialize () override;
 
@@ -88,16 +87,16 @@ namespace aspect
           bool new_integration_step() override;
 
           /**
-            * We need to tell the property manager how many intermediate properties this integrator requires,
-            * so that it can allocate sufficient space for each particle. However, the integrator is not
-            * created at the time the property manager is set up and we can not reverse the order of creation,
-            * because the integrator needs to know where to store its properties, which requires the property manager
-            * to be finished setting up properties. Luckily the number of properties is constant, so we can make it
-            * a static property of this class. Therefore, the property manager can access this variable even
-            * before any object is constructed.
-            *
-            * The Runge-Kutta 4 integrator requires 4 tensors with dim components each.
-            */
+           * We need to tell the property manager how many intermediate properties this integrator requires,
+           * so that it can allocate sufficient space for each particle. However, the integrator is not
+           * created at the time the property manager is set up and we can not reverse the order of creation,
+           * because the integrator needs to know where to store its properties, which requires the property manager
+           * to be finished setting up properties. Luckily the number of properties is constant, so we can make it
+           * a static property of this class. Therefore, the property manager can access this variable even
+           * before any object is constructed.
+           *
+           * The Runge-Kutta 4 integrator requires 4 tensors with dim components each.
+           */
           static const unsigned int n_integrator_properties = 4*dim;
 
         private:

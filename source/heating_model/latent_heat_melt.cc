@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,6 +20,7 @@
 
 
 #include <aspect/heating_model/latent_heat_melt.h>
+#include <aspect/material_model/interface.h>
 
 
 namespace aspect
@@ -41,11 +42,22 @@ namespace aspect
       const MaterialModel::ReactionRateOutputs<dim> *reaction_rate_out
         = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
+      const MaterialModel::EnthalpyOutputs<dim> *enthalpy_out
+        = material_model_outputs.template get_additional_output<MaterialModel::EnthalpyOutputs<dim>>();
+
+      double enthalpy_change;
+
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
           heating_model_outputs.heating_source_terms[q] = 0.0;
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
           heating_model_outputs.rates_of_temperature_change[q] = 0.0;
+
+          // Determine if the change of energy should come from the material model
+          if (retrieve_entropy_change_from_material_model && enthalpy_out)
+            enthalpy_change = - enthalpy_out->enthalpies_of_fusion[q];
+          else
+            enthalpy_change = melting_entropy_change * material_model_inputs.temperature[q];
 
           if (this->introspection().compositional_name_exists("porosity") &&  this->get_timestep_number() > 0)
             {
@@ -63,9 +75,7 @@ namespace aspect
                     melting_rate = material_model_outputs.reaction_terms[q][porosity_idx]
                                    * material_model_outputs.densities[q] / this->get_timestep();
 
-                  heating_model_outputs.heating_source_terms[q] = melting_entropy_change
-                                                                  * melting_rate
-                                                                  * material_model_inputs.temperature[q];
+                  heating_model_outputs.heating_source_terms[q] = enthalpy_change * melting_rate;
                 }
               else if (use_operator_split && reaction_rate_out != nullptr)
                 {
@@ -84,9 +94,8 @@ namespace aspect
                   // if operator splitting is used in the model, we want the heating rates due to latent heat of melt
                   // to be part of the reactions (not the advection) in the operator split, and they are changes
                   // in temperature rather than changes in energy
-                  heating_model_outputs.rates_of_temperature_change[q] = melting_entropy_change
+                  heating_model_outputs.rates_of_temperature_change[q] = enthalpy_change
                                                                          * melting_rate
-                                                                         * material_model_inputs.temperature[q]
                                                                          / material_model_outputs.specific_heat[q];
                 }
               else if (use_operator_split && reaction_rate_out == nullptr)
@@ -113,6 +122,13 @@ namespace aspect
                              "The entropy change for the phase transition "
                              "from solid to melt. "
                              "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+          prm.declare_entry ("Retrieve entropy change from material model", "false",
+                             Patterns::Bool (),
+                             "Instead of using the entropy change given in the "
+                             "'Melting entropy change' query the EnthalpyAdditionalOutputs "
+                             "in the material model to compute the entropy change for the "
+                             "phase transition from solid to melt."
+                             "Units: $J/(kg K)$.");
         }
         prm.leave_subsection();
       }
@@ -130,10 +146,26 @@ namespace aspect
         prm.enter_subsection("Latent heat melt");
         {
           melting_entropy_change = prm.get_double ("Melting entropy change");
+          retrieve_entropy_change_from_material_model = prm.get_bool ("Retrieve entropy change from material model");
         }
         prm.leave_subsection();
       }
       prm.leave_subsection();
+    }
+
+
+
+    template <int dim>
+    void
+    LatentHeatMelt<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
+    {
+      if (this->include_melt_transport() && retrieve_entropy_change_from_material_model
+          && outputs.template get_additional_output<MaterialModel::EnthalpyOutputs<dim>>() == nullptr)
+        {
+          const unsigned int n_points = outputs.densities.size();
+          outputs.additional_outputs.push_back(
+            std::make_unique<MaterialModel::EnthalpyOutputs<dim>> (n_points));
+        }
     }
   }
 }

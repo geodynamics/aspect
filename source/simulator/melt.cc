@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -1025,22 +1025,20 @@ namespace aspect
 
       const typename DoFHandler<dim>::face_iterator face = cell->face(face_no);
 
-      if (this->get_boundary_traction()
+      if (this->get_boundary_traction_manager().get_active_boundary_traction_names()
           .find (face->boundary_id())
           !=
-          this->get_boundary_traction().end())
+          this->get_boundary_traction_manager().get_active_boundary_traction_names().end())
         {
           scratch.face_finite_element_values.reinit (cell, face_no);
 
           for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
             {
               const Tensor<1,dim> traction
-                = this->get_boundary_traction().find(
-                    face->boundary_id()
-                  )->second
-                  ->boundary_traction (face->boundary_id(),
-                                       scratch.face_finite_element_values.quadrature_point(q),
-                                       scratch.face_finite_element_values.normal_vector(q));
+                = this->get_boundary_traction_manager().
+                  boundary_traction (face->boundary_id(),
+                                     scratch.face_finite_element_values.quadrature_point(q),
+                                     scratch.face_finite_element_values.normal_vector(q));
 
               for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
                 {
@@ -1115,6 +1113,7 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
       create_material_model_outputs(out);
 
@@ -1275,9 +1274,11 @@ namespace aspect
                                update_quadrature_points | update_gradients | update_values);
 
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
+      // We only need access to the MeltOutputs in p_c_scale().
+      in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
+
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
       create_material_model_outputs(out);
-
 
       std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -1294,8 +1295,7 @@ namespace aspect
             in.reinit(fe_values,
                       cell,
                       this->introspection(),
-                      solution,
-                      false);
+                      solution);
 
             this->get_material_model().evaluate(in, out);
 
@@ -1505,8 +1505,9 @@ namespace aspect
             material_model_inputs.reinit(finite_element_values,
                                          cell,
                                          this->introspection(),
-                                         this->get_current_linearization_point(),
-                                         false);
+                                         this->get_current_linearization_point());
+            // We only need access to the MeltOutputs in p_c_scale().
+            material_model_inputs.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
             this->get_material_model().evaluate(material_model_inputs,
                                                 material_model_outputs);
@@ -1673,7 +1674,7 @@ namespace aspect
       std::make_unique<aspect::Assemblers::MeltStokesSystemBoundary<dim>>());
 
     // add the terms for traction boundary conditions
-    if (!this->get_boundary_traction().empty())
+    if (!this->get_boundary_traction_manager().get_active_boundary_traction_names().empty())
       {
         assemblers.stokes_system_on_boundary_face.push_back(
           std::make_unique<Assemblers::MeltBoundaryTraction<dim>> ());
@@ -1686,15 +1687,23 @@ namespace aspect
           std::make_unique<Assemblers::MeltPressureRHSCompatibilityModification<dim>> ());
       }
 
-    assemblers.advection_system.push_back(
-      std::make_unique<Assemblers::MeltAdvectionSystem<dim>> ());
-
-    if (this->get_parameters().fixed_heat_flux_boundary_indicators.size() != 0)
+    for (unsigned int i=0; i<1+this->introspection().n_compositional_fields; ++i)
       {
-        assemblers.advection_system_on_boundary_face.push_back(
-          std::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim>>());
-        assemblers.advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
-        assemblers.advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
+        if ((i==0 && this->get_parameters().temperature_method == Parameters<dim>::AdvectionFieldMethod::fem_field)
+            ||
+            (i>0 && this->get_parameters().compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_field)
+            ||
+            (i>0 && this->get_parameters().compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_melt_field))
+          assemblers.advection_system[i].push_back(
+            std::make_unique<Assemblers::MeltAdvectionSystem<dim>> ());
+
+        if (this->get_parameters().fixed_heat_flux_boundary_indicators.size() != 0)
+          {
+            assemblers.advection_system_on_boundary_face[i].push_back(
+              std::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim>>());
+            assemblers.advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
+            assemblers.advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
+          }
       }
   }
 
@@ -1834,14 +1843,14 @@ namespace aspect
                                               internal::Assembly::Scratch::StokesSystem<dim>       &scratch,
                                               internal::Assembly::CopyData::StokesSystem<dim>      &data) const
   {
-    const std::set<types::boundary_id> free_surface_boundary_indicators = this->get_mesh_deformation_handler().get_free_surface_boundary_indicators();
-    if (free_surface_boundary_indicators.empty())
+    const std::set<types::boundary_id> tmp_boundary_indicators_requiring_stabilization = this->get_mesh_deformation_handler().get_boundary_indicators_requiring_stabilization();
+    if (tmp_boundary_indicators_requiring_stabilization.empty())
       return;
 
     const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
     const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
 
-    // only apply on free surface faces
+    // only apply on mesh deformation surfaces that require stabilization
     if (cell->at_boundary() && cell->is_locally_owned())
       for (const unsigned int face_no : cell->face_indices())
         if (cell->face(face_no)->at_boundary())
@@ -1849,16 +1858,15 @@ namespace aspect
             const types::boundary_id boundary_indicator
               = cell->face(face_no)->boundary_id();
 
-            if (free_surface_boundary_indicators.find(boundary_indicator) == free_surface_boundary_indicators.end())
+            if (tmp_boundary_indicators_requiring_stabilization.find(boundary_indicator) == tmp_boundary_indicators_requiring_stabilization.end())
               continue;
 
             scratch.face_finite_element_values.reinit(cell, face_no);
 
-            this->compute_material_model_input_values (this->get_solution(),
-                                                       scratch.face_finite_element_values,
-                                                       cell,
-                                                       true,
-                                                       scratch.face_material_model_inputs);
+            scratch.face_material_model_inputs.reinit  (scratch.face_finite_element_values,
+                                                        cell,
+                                                        this->introspection(),
+                                                        this->get_solution());
 
             this->get_material_model().evaluate(scratch.face_material_model_inputs, scratch.face_material_model_outputs);
 

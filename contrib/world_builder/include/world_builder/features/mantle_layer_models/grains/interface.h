@@ -17,21 +17,20 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_features_mantle_layer_grains_interface_h
-#define _world_builder_features_mantle_layer_grains_interface_h
-
-#include <vector>
-#include <map>
+#ifndef WORLD_BUILDER_FEATURES_MANTLE_LAYER_MODELS_GRAINS_INTERFACE_H
+#define WORLD_BUILDER_FEATURES_MANTLE_LAYER_MODELS_GRAINS_INTERFACE_H
 
 
-#include <world_builder/world.h>
-#include <world_builder/parameters.h>
-#include <world_builder/point.h>
+#include "world_builder/grains.h"
+#include "world_builder/parameters.h"
+#include "world_builder/objects/natural_coordinate.h"
 
 
 namespace WorldBuilder
 {
   class World;
+  class Parameters;
+  template <int dim> class Point;
 
   /**
    * This class is an interface for the specific plate tectonic feature classes,
@@ -72,7 +71,7 @@ namespace WorldBuilder
              * declare and read in the world builder file into the parameters class
              */
             virtual
-            void parse_entries(Parameters &prm) = 0;
+            void parse_entries(Parameters &prm, const std::vector<Point<2>> &coordinates) = 0;
 
 
             /**
@@ -81,6 +80,7 @@ namespace WorldBuilder
             virtual
             WorldBuilder::grains
             get_grains(const Point<3> &position,
+                       const Objects::NaturalCoordinate &position_in_natural_coordinates,
                        const double depth,
                        const unsigned int composition_number,
                        WorldBuilder::grains grains,
@@ -91,7 +91,7 @@ namespace WorldBuilder
              * registration of the object factory.
              */
             static void registerType(const std::string &name,
-                                     void ( *)(Parameters &, const std::string &),
+                                     void ( * /*declare_entries*/)(Parameters &, const std::string &),
                                      ObjectFactory *factory);
 
 
@@ -162,9 +162,9 @@ namespace WorldBuilder
   }; \
   static klass##Factory global_##klass##Factory;
 
-      }
-    }
-  }
-}
+      } // namespace Grains
+    } // namespace MantleLayerModels
+  } // namespace Features
+} // namespace WorldBuilder
 
 #endif

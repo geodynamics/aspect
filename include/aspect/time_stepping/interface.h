@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -179,7 +179,7 @@ namespace aspect
          * Override initialize_simulator() so that we can also initialize the contained
          * termination_manager.
          */
-        virtual void initialize_simulator (const Simulator<dim> &simulator_object) override;
+        void initialize_simulator (const Simulator<dim> &simulator_object) override;
 
 
         /**
@@ -203,9 +203,9 @@ namespace aspect
         bool should_repeat_time_step() const;
 
         /**
-          * If true, execute a mesh refinement step now (potentially before repeating
-          * the current time step).
-          */
+         * If true, execute a mesh refinement step now (potentially before repeating
+         * the current time step).
+         */
         bool should_refine_mesh() const;
 
         /**
@@ -271,7 +271,7 @@ namespace aspect
         register_time_stepping_model (const std::string &name,
                                       const std::string &description,
                                       void (*declare_parameters_function) (ParameterHandler &),
-                                      Interface<dim> *(*factory_function) ());
+                                      std::unique_ptr<Interface<dim>> (*factory_function) ());
 
       private:
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -165,7 +165,7 @@ namespace aspect
         register_initial_composition (const std::string &name,
                                       const std::string &description,
                                       void (*declare_parameters_function) (ParameterHandler &),
-                                      Interface<dim> *(*factory_function) ());
+                                      std::unique_ptr<Interface<dim>> (*factory_function) ());
 
 
         /**
@@ -181,18 +181,6 @@ namespace aspect
          */
         const std::list<std::unique_ptr<Interface<dim>>> &
         get_active_initial_composition_conditions () const;
-
-        /**
-         * Go through the list of all initial composition models that have been selected in
-         * the input file (and are consequently currently active) and see if one
-         * of them has the desired type specified by the template argument. If so,
-         * return a pointer to it. If no initial composition model is active that matches the
-         * given type, return a nullptr.
-         */
-        template <typename InitialCompositionType>
-        DEAL_II_DEPRECATED
-        InitialCompositionType *
-        find_initial_composition_model () const;
 
         /**
          * Go through the list of all initial composition models that have been selected
@@ -259,29 +247,6 @@ namespace aspect
         std::vector<aspect::Utilities::Operator> model_operators;
     };
 
-
-
-    /**
-     * A function that given the name of a model returns a pointer to an
-     * object that describes it. Ownership of the pointer is transferred to
-     * the caller.
-     *
-     * The model object returned is not yet initialized and has not read its
-     * runtime parameters yet.
-     *
-     * @ingroup InitialCompositions
-     */
-    template <int dim>
-    template <typename InitialCompositionType>
-    inline
-    InitialCompositionType *
-    Manager<dim>::find_initial_composition_model () const
-    {
-      for (const auto &p : initial_composition_objects)
-        if (InitialCompositionType *x = dynamic_cast<InitialCompositionType *> ( p.get()) )
-          return x;
-      return nullptr;
-    }
 
 
     template <int dim>

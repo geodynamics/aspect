@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -235,6 +235,18 @@ TEST_CASE("Utilities::parse_map_to_double_array")
     true,
     n_values_per_key),
     {200.0,200.0,200.0,200.0});
+  }
+
+  {
+    // Check that we can provide additional allowed keys that are ignored when parsing
+    INFO("check 20: ");
+    aspect::Utilities::MapParsing::Options options({"C1","C2","C3","C5"},"TestField");
+    options.list_of_allowed_keys = {"C1","C2","C3","C4","C5","C6","C7"};
+
+    std::string input_string = "C1:100, C2:200, C3:300, C5:500";
+
+    compare_vectors_approx(aspect::Utilities::MapParsing::parse_map_to_double_array (input_string, options),
+    {100.0,200.0,300.0,500.0});
   }
   INFO("check complete");
 

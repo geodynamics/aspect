@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -144,7 +144,7 @@ namespace aspect
           }
         else
           {
-            return std::min(std::max((unsigned int)Utilities::string_to_int(string),minimum_refinement_level),maximum_refinement_level);
+            return std::min(std::max(static_cast<unsigned int>(Utilities::string_to_int(string)),minimum_refinement_level),maximum_refinement_level);
           }
 
       }
@@ -181,7 +181,7 @@ namespace aspect
               bool clear_coarsen = false;
 
               fe_values.reinit(cell);
-              in.reinit(fe_values, cell, this->introspection(), this->get_solution(), true);
+              in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
               for (unsigned int i_quad=0; i_quad<quadrature.size(); ++i_quad)
                 {
@@ -281,8 +281,8 @@ namespace aspect
                              "The first two entries for each isosurface, describing the minimum and maximum grid levels, can be "
                              "two numbers or contain one of the key values 'min' and 'max'. This indicates the key will be replaced with "
                              "the global minimum and maximum refinement levels. The 'min' and 'max' keys also accept adding "
-                             "values to be added or substracted from them respectively. This is done by adding a '+' or '-' and a "
-                             "number behind them (e.g. min+2 or max-1). Note that you can't substract a value from a minimum value or "
+                             "values to be added or subtracted from them respectively. This is done by adding a '+' or '-' and a "
+                             "number behind them (e.g. min+2 or max-1). Note that you can't subtract a value from a minimum value or "
                              "add a value to the maximum value. If, for example, `max-4` drops below the minimum or `min+4` goes above the "
                              "maximum, it will simply use the global minimum and maximum values respectively. The same holds for any "
                              "mesh refinement level below the global minimum or above the global maximum.");
@@ -337,7 +337,7 @@ namespace aspect
                   std::vector<std::string> key_and_value = Utilities::split_string_list (*field_entry, ':');
                   AssertThrow(key_and_value.size() == 2,
                               ExcMessage("The isosurface property must have a key (e.g. Temperature) and two values separated by a | (e.g. (300 | 600)."));
-                  properties.push_back(internal::Property(key_and_value[0], compositions)); // convert key to property name
+                  properties.emplace_back(key_and_value[0], compositions); // convert key to property name
                   const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
                   AssertThrow(values.size() == 2,
                               ExcMessage("Both a maximum and a minimum value are required for each isosurface."));

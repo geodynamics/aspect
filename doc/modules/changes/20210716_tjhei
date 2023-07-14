@@ -1,3 +1,0 @@
-New: The GMG solver now supports masked velocity boundary conditions specified as [xyz]:.
-<br>
-(Timo Heister, 2021/07/16)

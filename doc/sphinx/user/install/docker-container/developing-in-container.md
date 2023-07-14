@@ -1,7 +1,7 @@
 
 # Developing ASPECT within a container
 
-The above given workflow does not include advice on how to modify
+The workflow described previously does not include advice on how to modify
 ASPECT inside the container. We recommend a slightly
 different workflow for advanced users that want to modify parts of
 ASPECT. The ASPECT
@@ -10,14 +10,13 @@ class="smallcaps">deal.II</span> container that contains all dependencies for
 compiling ASPECT. Therefore it is possible to
 run the deal.II container, mount an ASPECT
 source directory from your host system and compile it inside of the container.
-An example workflow could look as following (assuming you navigated in a
+An example workflow could look as follows (assuming you navigated in a
 terminal into the modified ASPECT source
 folder):
 
 ``` ksh
-docker pull tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5
-docker run -it -v "$(pwd):/home/dealii/aspect:ro" \
-  tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5 bash
+docker pull geodynamics/aspect:latest
+docker run -it -v "$(pwd):/home/dealii/aspect:ro" geodynamics/aspect:latest
 ```
 
 Inside of the container you now find a read-only
@@ -28,7 +27,8 @@ following way:
 ``` ksh
 mkdir aspect-build
 cd aspect-build
-cmake -DCMAKE_BUILD_TYPE=Debug -DDEAL_II_DIR=$HOME/deal.II-install $HOME/aspect
+cmake -DCMAKE_BUILD_TYPE=Debug $HOME/aspect
+make -j4
 ./aspect $HOME/aspect/cookbooks/shell_simple_2d/shell_simple_2d.prm
 ```
 

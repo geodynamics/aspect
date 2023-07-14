@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -33,7 +33,7 @@ namespace aspect
     {
       template <int dim>
       Interface<dim>::Interface()
-      {}
+        = default;
 
 
 
@@ -105,7 +105,7 @@ namespace aspect
         return std::make_pair(cell,particle);
 
         // Avoid warnings about missing return
-        return std::pair<Particles::internal::LevelInd,Particle<dim>>();
+        return {};
       }
 
 
@@ -157,11 +157,7 @@ namespace aspect
               {
                 const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, particle_position);
                 if (
-#if DEAL_II_VERSION_GTE(9,4,0)
                   cell->reference_cell().contains_point(p_unit)
-#else
-                  GeometryInfo<dim>::is_inside_unit_cell(p_unit)
-#endif
                 )
                   {
                     // Add the generated particle to the set
@@ -227,7 +223,7 @@ namespace aspect
       register_particle_generator (const std::string &name,
                                    const std::string &description,
                                    void (*declare_parameters_function) (ParameterHandler &),
-                                   Interface<dim> *(*factory_function) ())
+                                   std::unique_ptr<Interface<dim>> (*factory_function) ())
       {
         std::get<dim>(registered_plugins).register_plugin (name,
                                                            description,
@@ -238,7 +234,7 @@ namespace aspect
 
 
       template <int dim>
-      Interface<dim> *
+      std::unique_ptr<Interface<dim>>
       create_particle_generator (ParameterHandler &prm)
       {
         std::string name;
@@ -324,7 +320,7 @@ namespace aspect
   register_particle_generator<dim> (const std::string &, \
                                     const std::string &, \
                                     void ( *) (ParameterHandler &), \
-                                    Interface<dim> *( *) ()); \
+                                    std::unique_ptr<Interface<dim>>( *) ()); \
   \
   template  \
   void \
@@ -335,7 +331,7 @@ namespace aspect
   write_plugin_graph<dim> (std::ostream &); \
   \
   template \
-  Interface<dim> * \
+  std::unique_ptr<Interface<dim>> \
   create_particle_generator<dim> (ParameterHandler &prm);
 
       ASPECT_INSTANTIATE(INSTANTIATE)

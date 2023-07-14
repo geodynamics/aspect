@@ -14,17 +14,19 @@ or, if you want to run the program in parallel, using something like
 to run with 4 processors. In either case, the argument denotes the (path and)
 name of a file that contains input parameters.[^footnote1] When you download
 ASPECT, there are a number of sample input files in
-the `cookbooks` directory, corresponding to the examples discussed in
+the [cookbooks](https://github.com/geodynamics/aspect/tree/main/cookbooks) directory,
+corresponding to the examples discussed in
 {ref}`cha:cookbooks`, and input files for some of the benchmarks discussed in
 {ref}`cha:benchmarks` are located in the
-`benchmarks` directory. A full description of all parameters one can specify
-in these files is given in <https://aspect.geodynamics.org/doc/parameter_view/parameters.xml>.
+[benchmarks](https://github.com/geodynamics/aspect/tree/main/benchmarks) directory.
+A full description of all parameters one can specify
+in these files is given in {ref}`parameters`.
 
 Running ASPECT with an input file[^footnote2] will
 produce output that will look something like this (numbers will all be
 different, of course):
 
-``` ksh
+```
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
 --     . version 2.0.0-pre (include_dealii_version, c20eba0)
@@ -90,7 +92,7 @@ ASPECT, deal.II, <span
 class="smallcaps">Trilinos</span> and <span class="smallcaps">p4est</span>
 versions as well as the mode you compiled
 ASPECT in (see {ref}`sec:run-aspect:debug-mode`), and the number of parallel
-processes used[^footnote3]. With this information we strive to make
+processes used.[^footnote3] With this information we strive to make
 ASPECT models as reproducible as possible.
 
 The following output depends on the model, and in this case was produced by a
@@ -194,13 +196,13 @@ The purpose of these files is as follows:
     `YYYY`th processor.
 
     VTK files can be visualized by many of the large visualization packages.
-    In particular, the [Visit](https://visit-dav.github.io/visit-website/) and [ParaView](https://www.paraview.org/) programs, both widely used,
+    In particular, the [VisIt](https://visit-dav.github.io/visit-website/) and [ParaView](https://www.paraview.org/) programs, both widely used,
     can read the files so created. However, while VTK has become a de-facto
     standard for data visualization in scientific computing, there
     doesn't appear to be an agreed upon way to describe which files
     jointly make up for the simulation data of a single time step (i.e., all
     files with the same `XXXXX` but different `YYYY` in the example above).
-    Visit and ParaView both have their method of doing things, through `.pvtu`
+    VisIt and ParaView both have their method of doing things, through `.pvtu`
     and `.visit` files. To make it easy for you to view data,
     ASPECT simply creates both kinds of files in each
     time step in which graphical data is produced, and these are then also
@@ -208,7 +210,7 @@ The purpose of these files is as follows:
     and `output/solution/solution-XXXXX.visit`.
 
     The final two files of this kind, `output/solution.pvd` and
-    `output/solution.visit`, are files that describes to ParaView and Visit,
+    `output/solution.visit`, are files that describes to ParaView and VisIt,
     respectively, which `output/solution/solution-XXXXX.pvtu` and
     `output/solution/solution-XXXXX.YYYY.vtu` jointly form a complete
     simulation. In the former case, the file lists the `.pvtu` files of all
@@ -217,7 +219,7 @@ The purpose of these files is as follows:
     simulation, grouped by the timestep they correspond to. To visualize an
     entire simulation, not just a single time step, it is therefore simplest
     to just load one of these files, depending on whether you use ParaView or
-    Visit.[^footnote6] Because loading an *entire* simulation is the most common use
+    VisIt.[^footnote6] Because loading an *entire* simulation is the most common use
     case, these are the two files you will most often load, and so they are
     placed in the `output` directory, not the subdirectory where the actual
     `.vtu` data files are located.
@@ -281,12 +283,12 @@ The purpose of these files is as follows:
     desired).
 
     By default, the data is written in text format that can be easily
-    visualized, see for example {ref}`fig:depthaverage`. The plot shows how an
+    visualized, see for example {numref}`fig:depthaverage`. The plot shows how an
     initially linear temperature profile forms upper and lower boundary
     layers.
 
     ```{figure-md} fig:depthaverage
-    <img src="../../../manual/depthaverage2.*" alt="Example output for depth average statistics. On the left axis are 13 time steps, on the right is the depth (from the top at 0 to the bottom of the mantle on the far right), and the upwards pointing axis is the average temperature. This plot is generated by gnuplot, but the depth averages can be written in many other output formats as well, if preferred (see {ref}`parameters:Postprocess/Depth_20average`)."  width="60%"/>
+    <img src="images/depthaverage2.*" alt="Example output for depth average statistics. On the left axis are 13 time steps, on the right is the depth (from the top at 0 to the bottom of the mantle on the far right), and the upwards pointing axis is the average temperature. This plot is generated by gnuplot, but the depth averages can be written in many other output formats as well, if preferred (see {ref}`parameters:Postprocess/Depth_20average`)."  width="60%"/>
 
     Example output for depth average statistics. On the left axis are 13 time steps, on the right is the depth (from the top at 0 to the bottom of the mantle on the far right), and the upwards pointing axis is the average temperature. This plot is generated by gnuplot, but the depth averages can be written in many other output formats as well, if preferred (see {ref}`parameters:Postprocess/Depth_20average`).
     ```
@@ -296,10 +298,6 @@ create files in the output directory. For example, if your simulation includes
 advecting along particles (see {ref}`sec:methods:particles`), then visualization
 information for these particles will also appear in this file. See
 {ref}`sec:cookbooks:using-particles` for an example of how this looks like.
-
-:::{admonition} TODO
-`parameters:Postprocess`, `parameters:Geometry_20model`, and `parameters:Geometry_20model/Spherical_20shell`, as well as the reference to A.165 in footnote [^footnote5] and {ref}`parameters:Postprocess/Depth_20average` from the figure caption are dead references as these files are not set up.
-:::
 
 [^footnote1]: As a special case, if you call ASPECT with an argument that consists of two dashes, “`--`”, then the arguments will be read
 from the standard input stream of the program. In other words, you could type the input parameters into your shell window
@@ -325,9 +323,9 @@ amount of disk space.
 
 [^footnote5]: The underlying deal.II package actually supports output in around a dozen different formats, but most of them are not
 very useful for large-scale, 3d, parallel simulations. If you need a different format than VTK, you can select this using the
-run-time parameters discussed in Section A.165.
+run-time parameters discussed in {ref}`parameters:Postprocess/Visualization`.
 
-[^footnote6]: At the time of writing this, current versions of Visit (starting with version 2.5.1) actually have a bug that prevents them
-from successfully reading the `output/solution.visit` or `output/solution/solution-XXXXX.visit` files – Visit believes that
+[^footnote6]: At the time of writing this, current versions of VisIt (starting with version 2.5.1) actually have a bug that prevents them
+from successfully reading the `output/solution.visit` or `output/solution/solution-XXXXX.visit` files – VisIt believes that
 each of these files corresponds to an individual time step, rather than that a whole group of files together form one time step.
-This bug is not fixed in Visit 2.6.3, but may be fixed in later versions.
+This bug is not fixed in VisIt 2.6.3, but may be fixed in later versions.

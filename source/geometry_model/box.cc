@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -66,7 +66,7 @@ namespace aspect
     Box<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-      std::vector<unsigned int> rep_vec(repetitions, repetitions+dim);
+      const std::vector<unsigned int> rep_vec(repetitions.begin(), repetitions.end());
       GridGenerator::subdivided_hyper_rectangle (coarse_grid,
                                                  rep_vec,
                                                  box_origin,
@@ -111,7 +111,7 @@ namespace aspect
     {
       // Get the surface x (,y) point
       Point<dim-1> surface_point;
-      for (unsigned int d=0; d<dim-1; d++)
+      for (unsigned int d=0; d<dim-1; ++d)
         surface_point[d] = x_y_z[d];
 
       // Get the surface topography at this point
@@ -150,35 +150,32 @@ namespace aspect
         {
           case 2:
           {
-            static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("left",   0),
-                  std::pair<std::string,types::boundary_id>("right",  1),
-                  std::pair<std::string,types::boundary_id>("bottom", 2),
-                  std::pair<std::string,types::boundary_id>("top",    3)
-                };
-
-            return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                             std::end(mapping));
+            return
+            {
+              {"left",   0},
+              {"right",  1},
+              {"bottom", 2},
+              {"top",    3}
+            };
           }
 
           case 3:
           {
-            static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("left",   0),
-                  std::pair<std::string,types::boundary_id>("right",  1),
-                  std::pair<std::string,types::boundary_id>("front",  2),
-                  std::pair<std::string,types::boundary_id>("back",   3),
-                  std::pair<std::string,types::boundary_id>("bottom", 4),
-                  std::pair<std::string,types::boundary_id>("top",    5)
-                };
+            return
+            {
+              {"left",   0},
+              {"right",  1},
+              {"front",  2},
+              {"back",   3},
+              {"bottom", 4},
+              {"top",    5}
 
-            return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                             std::end(mapping));
+            };
           }
         }
 
       Assert (false, ExcNotImplemented());
-      return std::map<std::string,types::boundary_id>();
+      return {};
     }
 
 
@@ -319,7 +316,7 @@ namespace aspect
                   ExcMessage("After adding topography, this function can no longer be used "
                              "to determine whether a point lies in the domain or not."));
 
-      for (unsigned int d = 0; d < dim; d++)
+      for (unsigned int d = 0; d < dim; ++d)
         if (point[d] > extents[d]+box_origin[d]+std::numeric_limits<double>::epsilon()*extents[d] ||
             point[d] < box_origin[d]-std::numeric_limits<double>::epsilon()*extents[d])
           return false;
@@ -332,7 +329,7 @@ namespace aspect
     Box<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
       std::array<double,dim> position_array;
-      for (unsigned int i = 0; i < dim; i++)
+      for (unsigned int i = 0; i < dim; ++i)
         position_array[i] = position_point(i);
 
       return position_array;
@@ -352,7 +349,7 @@ namespace aspect
     Box<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
     {
       Point<dim> position_point;
-      for (unsigned int i = 0; i < dim; i++)
+      for (unsigned int i = 0; i < dim; ++i)
         position_point[i] = position_tensor[i];
 
       return position_point;

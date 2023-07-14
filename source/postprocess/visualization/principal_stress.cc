@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -106,6 +106,9 @@ namespace aspect
                                                    this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
+
+        // We do not need to compute anything but the viscosity
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
         // Compute the viscosity...
         this->get_material_model().evaluate(in, out);

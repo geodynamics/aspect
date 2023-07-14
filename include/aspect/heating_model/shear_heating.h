@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -60,6 +60,29 @@ namespace aspect
          */
         void
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const override;
+    };
+
+
+    /**
+     * Additional output fields for the shear heating computation
+     * to be added to the MaterialModel::MaterialModelOutputs structure
+     * and filled in the MaterialModel::evaluate() function.
+     */
+    template <int dim>
+    class ShearHeatingOutputs : public MaterialModel::NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        ShearHeatingOutputs(const unsigned int n_points);
+
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
+
+        /**
+         * The fraction of the deformation work that is released as shear heating
+         * rather than being converted into other forms of energy (such as, for
+         * example, surface energy of grains). If it is set to 1, all deformation
+         * work will go into shear heating.
+         */
+        std::vector<double> shear_heating_work_fractions;
     };
   }
 }

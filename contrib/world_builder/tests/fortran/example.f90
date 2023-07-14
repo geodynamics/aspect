@@ -20,11 +20,11 @@ IMPLICIT NONE
   CALL create_world(cworld, trim(file_name)//C_NULL_CHAR, has_output_dir, output_dir,random_number_seed)
 
   write(*, *) '2d temperature:'
-  CALL temperature_2d(cworld,x,z,depth,gravity,temperature)
+  CALL temperature_2d(cworld,x,z,depth,temperature)
   write(*, *) 'temperature in fortran = ', temperature
 
   write(*, *) '3d temperature:'
-  CALL temperature_3d(cworld,x,y,z,depth,gravity,temperature)
+  CALL temperature_3d(cworld,x,y,z,depth,temperature)
   write(*, *) 'temperature in fortran = ', temperature
 
     write(*, *) '2d composition:'

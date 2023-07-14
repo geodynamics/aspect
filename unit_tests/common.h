@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,13 +30,25 @@ namespace aspect
 // ------------------------------ InitialComposition -------------------
 
     template <int dim>
+    void
+    InitialComposition<dim>::initialize()
+    {
+      // Make sure we keep track of the initial composition manager and
+      // that it continues to live beyond the time when the simulator
+      // class releases its pointer to it.
+      initial_composition = this->get_initial_composition_manager_pointer();
+    }
+
+
+
+    template <int dim>
     double
     InitialComposition<dim>::
     boundary_composition (const types::boundary_id /*boundary_indicator*/,
                           const Point<dim> &position,
                           const unsigned int compositional_field) const
     {
-      return this->get_initial_composition_manager().initial_composition(position, compositional_field);
+      return initial_composition->initial_composition(position, compositional_field);
     }
 
 

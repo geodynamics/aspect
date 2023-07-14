@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -59,11 +59,10 @@ namespace aspect
 
             position_per_plugin.push_back(global_component_index);
 
-            for (unsigned int field_index = 0;
-                 field_index < property.size(); ++field_index)
+            for (const auto &entry : property)
               {
-                const std::string  name         = property[field_index].first;
-                const unsigned int n_components = property[field_index].second;
+                const std::string  name         = entry.first;
+                const unsigned int n_components = entry.second;
 
                 field_names.push_back(name);
                 components_per_field.push_back(n_components);
@@ -336,14 +335,14 @@ namespace aspect
       template <int dim>
       inline
       Manager<dim>::Manager ()
-      {}
+        = default;
 
 
 
       template <int dim>
       inline
       Manager<dim>::~Manager ()
-      {}
+        = default;
 
 
 
@@ -404,7 +403,7 @@ namespace aspect
                                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         if (property_information.n_components() == 0)
-          return std::vector<double>();
+          return {};
 
         std::vector<double> particle_properties;
         particle_properties.reserve(property_information.n_components());
@@ -763,15 +762,11 @@ namespace aspect
         // their own parameters
         for (auto &plugin_name : plugin_names)
           {
-            aspect::Particle::Property::Interface<dim> *
-            particle_property = std::get<dim>(registered_plugins)
-                                .create_plugin (plugin_name,
-                                                "Particle property plugins");
+            property_list.emplace_back (std::get<dim>(registered_plugins)
+                                        .create_plugin (plugin_name,
+                                                        "Particle property plugins"));
 
-            property_list.push_back (std::unique_ptr<Property::Interface<dim>>
-                                     (particle_property));
-
-            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*property_list.back()))
+            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_list.back().get()))
               sim->initialize_simulator (this->get_simulator());
 
             property_list.back()->parse_parameters (prm);
@@ -790,7 +785,7 @@ namespace aspect
       register_particle_property (const std::string &name,
                                   const std::string &description,
                                   void (*declare_parameters_function) (ParameterHandler &),
-                                  Property::Interface<dim> *(*factory_function) ())
+                                  std::unique_ptr<Property::Interface<dim>> (*factory_function) ())
       {
         std::get<dim>(registered_plugins).register_plugin (name,
                                                            description,

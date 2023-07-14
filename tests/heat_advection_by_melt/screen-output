@@ -1,5 +1,5 @@
 
-Loading shared library <./libheat_advection_by_melt.so>
+Loading shared library <./libheat_advection_by_melt.debug.so>
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)

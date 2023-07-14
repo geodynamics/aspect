@@ -1,5 +1,0 @@
-Fixed: The scaling factor in the gplates boundary velocity model is now
-applied correctly. Before, it was always taken to be 1, so it did not
-scale the velocities at all.
-<br>
-(Juliane Dannberg, 2022/02/22)

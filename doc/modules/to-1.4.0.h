@@ -88,9 +88,9 @@
  * moved to its final location. If any of the steps failed it tried again by
  * writing directly to the output location. This approach needed complicated
  * logic and did not succeed on all systems. In order to increase stability
- * the new default behaviour is to write straight to the output folder. This
+ * the new default behavior is to write straight to the output folder. This
  * might decrease performance on clusters with slow network file systems.
- * The old behaviour can be recovered by setting 'Write in background thread'
+ * The old behavior can be recovered by setting 'Write in background thread'
  * to true and set a temporary storage location by 'set Temporary output
  * location'. Note that this functionality was and is only available if
  * 'Number of grouped files' is set to its default value of 0, and therefore
@@ -133,7 +133,7 @@
  * the 'two merged boxes' geometry model previously threw an exception
  * when asked for the depth of a point outside of the initial model domain.
  * This is not longer appropriate for models with free surfaces and therefore
- * the behaviour was changed to the behaviour of the 'spherical shell' geometry
+ * the behavior was changed to the behaviour of the 'spherical shell' geometry
  * model, which is a cutoff of the depth to the range (0,maximal_depth).
  * <br>
  * (Rene Gassmoeller, Sascha Brune, 2016/01/11)
@@ -373,7 +373,7 @@
  *
  * <li> New: Three new material averaging schemes are added. These are combined
  * with the existing averaging schemes, except for the Q1 averaging schemes into
- * a compositing material model. The new averaging schemes are normalised weighted
+ * a compositing material model. The new averaging schemes are normalized weighted
  * distance versions of the arithmetic, harmonic and geometric averages.
  * <br>
  * (Menno Fraters, 2015/05/28)

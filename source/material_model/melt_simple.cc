@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -227,7 +227,7 @@ namespace aspect
           out.densities[i] = (reference_rho_s + delta_rho)
                              * temperature_dependence * std::exp(compressibility * (in.pressure[i] - this->get_surface_pressure()));
 
-          if (this->include_melt_transport() && in.requests_property(MaterialProperties::reaction_terms))
+          if (this->include_melt_transport())
             {
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
@@ -301,11 +301,10 @@ namespace aspect
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 {
                   // fill reaction rate outputs
-                  if (reaction_rate_out != nullptr)
+                  if (reaction_rate_out != nullptr && in.requests_property(MaterialProperties::reaction_rates))
                     {
                       if (c == peridotite_idx && this->get_timestep_number() > 0)
-                        reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale
-                                                                  * (1 - maximum_melt_fraction) / (1 - old_porosity);
+                        reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale * (1 - maximum_melt_fraction) / (1 - old_porosity);
                       else if (c == porosity_idx && this->get_timestep_number() > 0)
                         reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale;
                       else
@@ -777,7 +776,7 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(MeltSimple,
                                    "melt simple",
                                    "A material model that implements a simple formulation of the "
-                                   "material parameters required for the modelling of melt transport, "
+                                   "material parameters required for the modeling of melt transport, "
                                    "including a source term for the porosity according to the melting "
                                    "model for dry peridotite of \\cite{KSL2003}. This also includes a "
                                    "computation of the latent heat of melting (if the `latent heat' "

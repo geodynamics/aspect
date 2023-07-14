@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -47,7 +47,7 @@ namespace aspect
    * submitted.
    *
    * It features a spherical annulus with a circular flow and a
-   * time-indepedent analytical, but a time-dependent numerical solution,
+   * time-independent analytical, but a time-dependent numerical solution,
    * which allows to quantify how errors in the advection equation
    * influence the accuracy of the Stokes equation. In this example
    * the benchmark uses particles to carry density, but it can be
@@ -94,8 +94,8 @@ namespace aspect
           density_function (density)
         {}
 
-        virtual void vector_value (const Point<dim> &p,
-                                   Vector<double>   &values) const
+        void vector_value (const Point<dim> &p,
+                           Vector<double>   &values) const override
         {
           double pos[2]= {p(0),p(1)};
 
@@ -121,8 +121,8 @@ namespace aspect
         std::shared_ptr<Functions::ParsedFunction<dim>> density_function, pressure_function, velocity_function;
 
       public:
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -139,7 +139,7 @@ namespace aspect
             }
         }
 
-        virtual bool is_compressible () const
+        bool is_compressible () const override
         {
           return false;
         }
@@ -196,9 +196,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm)
+        parse_parameters (ParameterHandler &prm) override
         {
           prm.enter_subsection("Material model");
           {
@@ -305,9 +304,8 @@ namespace aspect
         std::shared_ptr<Function<dim>> ref_func;
 
       public:
-        virtual
         void
-        initialize ()
+        initialize () override
         {
           const MaterialModel::TimeDependentAnnulus<dim> &material_model =
             Plugins::get_plugin_as_type<const MaterialModel::TimeDependentAnnulus<dim>>(this->get_material_model());
@@ -318,9 +316,8 @@ namespace aspect
                                                                          1 + dim + 1 + this->n_compositional_fields()));
         }
 
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics)
+        execute (TableHandler &statistics) override
         {
           const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.velocities).degree+2);
 

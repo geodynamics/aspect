@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,7 +30,7 @@ namespace aspect
     double
     ConvectionTimeStep<dim>::execute()
     {
-      const QIterated<dim> quadrature_formula (QTrapez<1>(),
+      const QIterated<dim> quadrature_formula (QTrapezoid<1>(),
                                                this->get_parameters().stokes_velocity_degree);
 
       FEValues<dim> fe_values (this->get_mapping(),

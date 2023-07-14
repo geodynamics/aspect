@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -73,6 +73,16 @@ namespace aspect
 
 
     template <int dim>
+    bool
+    BoundaryFunction<dim>::
+    needs_surface_stabilization () const
+    {
+      return false;
+    }
+
+
+
+    template <int dim>
     void BoundaryFunction<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
@@ -134,6 +144,6 @@ namespace aspect
                                            "the boundary deformation velocity should still be given "
                                            "in m/s. The format of the "
                                            "functions follows the syntax understood by the "
-                                           "muparser library, see Section~\\ref{sec:muparser-format}.")
+                                           "muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.")
   }
 }

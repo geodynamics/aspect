@@ -1,9 +1,0 @@
-# This is a comment in the data
-# file. 
-# Now define parameters:
-# dim = 1
-# compositions = 5
-# x d g  T c1 c2 c3 c4 c5
-100e3  0 10
-500e3  0 10
-1500e3 0 10

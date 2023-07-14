@@ -83,11 +83,13 @@ pipeline {
         cmake \
         -G 'Ninja' \
         -D CMAKE_CXX_FLAGS='-Werror' \
+        -D CMAKE_BUILD_TYPE='DebugRelease' \
         -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3' \
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=ON \
         -D ASPECT_UNITY_BUILD=ON \
         -D ASPECT_RUN_ALL_TESTS='ON' \
+        -D ASPECT_INSTALL_EXAMPLES='ON' \
         ..
         '''
 
@@ -96,15 +98,13 @@ pipeline {
         cd build
         ninja
         '''
+        archiveArtifacts artifacts: 'build/detailed.log'
       }
     }
 
     stage('Build Documentation') {
       steps {
         sh 'cd doc && ./update_parameters.sh ./build/aspect'
-        sh 'cd doc && echo make manual.pdf || touch ~/FAILED-DOC'
-        archiveArtifacts artifacts: 'doc/manual/manual.log', allowEmptyArchive: true
-        sh 'if [ -f ~/FAILED-DOC ]; then exit 1; fi'
       }
     }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,6 +22,8 @@
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/citation_info.h>
+#include <aspect/simulator.h>
+#include <aspect/melt.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -40,11 +42,11 @@ namespace aspect
   {
     template <int dim>
     World<dim>::World()
-    {}
+      = default;
 
     template <int dim>
     World<dim>::~World()
-    {}
+      = default;
 
     template <int dim>
     void
@@ -52,14 +54,16 @@ namespace aspect
     {
       CitationInfo::add("particles");
       if (particle_load_balancing & ParticleLoadBalancing::repartition)
-#if DEAL_II_VERSION_GTE(9,4,0)
         this->get_triangulation().signals.weight.connect(
+#if DEAL_II_VERSION_GTE(9,6,0)
+          [&] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+               const CellStatus status)
+          -> unsigned int
 #else
-        this->get_triangulation().signals.cell_weight.connect(
-#endif
           [&] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                const typename parallel::distributed::Triangulation<dim>::CellStatus status)
           -> unsigned int
+#endif
         {
           return this->cell_weight(cell, status);
         });
@@ -193,21 +197,13 @@ namespace aspect
       signals.pre_refinement_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
-#if DEAL_II_VERSION_GTE(9,4,0)
         particle_handler_.prepare_for_coarsening_and_refinement();
-#else
-        particle_handler_.register_store_callback_function();
-#endif
       });
 
       signals.post_refinement_load_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
-#if DEAL_II_VERSION_GTE(9,4,0)
         particle_handler_.unpack_after_coarsening_and_refinement();
-#else
-        particle_handler_.register_load_callback_function(false);
-#endif
       });
 
       // Only connect to checkpoint signals if requested
@@ -216,21 +212,13 @@ namespace aspect
           signals.pre_checkpoint_store_user_data.connect(
             [&] (typename parallel::distributed::Triangulation<dim> &)
           {
-#if DEAL_II_VERSION_GTE(9,4,0)
             particle_handler_.prepare_for_serialization();
-#else
-            particle_handler_.register_store_callback_function();
-#endif
           });
 
           signals.post_resume_load_user_data.connect(
             [&] (typename parallel::distributed::Triangulation<dim> &)
           {
-#if DEAL_II_VERSION_GTE(9,4,0)
             particle_handler_.deserialize();
-#else
-            particle_handler_.register_load_callback_function(true);
-#endif
           });
         }
 
@@ -342,8 +330,6 @@ namespace aspect
                          (n_particles_in_cell > max_particles_per_cell))
                   {
                     const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
-
-#if DEAL_II_VERSION_GTE(9,4,0)
                     for (unsigned int i=0; i < n_particles_to_remove; ++i)
                       {
                         const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
@@ -354,30 +340,7 @@ namespace aspect
                         std::advance(particle_to_remove, index_to_remove);
                         particle_handler->remove_particle(particle_to_remove);
                       }
-#else
-                    const boost::iterator_range<typename ParticleHandler<dim>::particle_iterator> particles_in_cell
-                      = particle_handler->particles_in_cell(cell);
 
-                    std::set<unsigned int> particle_ids_to_remove;
-                    while (particle_ids_to_remove.size() < n_particles_to_remove)
-                      particle_ids_to_remove.insert(random_number_generator() % n_particles_in_cell);
-
-                    std::vector<typename ParticleHandler<dim>::particle_iterator> particles_to_remove;
-                    particles_to_remove.reserve(n_particles_to_remove);
-
-                    for (const auto id : particle_ids_to_remove)
-                      {
-                        typename ParticleHandler<dim>::particle_iterator particle_to_remove = particles_in_cell.begin();
-                        std::advance(particle_to_remove, id);
-
-                        particles_to_remove.push_back(particle_to_remove);
-                      }
-
-                    for (const auto &particle : particles_to_remove)
-                      {
-                        particle_handler->remove_particle(particle);
-                      }
-#endif
                   }
               }
 
@@ -388,16 +351,34 @@ namespace aspect
     template <int dim>
     unsigned int
     World<dim>::cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                            const typename parallel::distributed::Triangulation<dim>::CellStatus status)
+#if DEAL_II_VERSION_GTE(9,6,0)
+                            const CellStatus status
+#else
+                            const typename parallel::distributed::Triangulation<dim>::CellStatus status
+#endif
+                           )
     {
       if (cell->is_active() && !cell->is_locally_owned())
         return 0;
 
-#if DEAL_II_VERSION_GTE(9,4,0)
       const unsigned int base_weight = 1000;
       unsigned int n_particles_in_cell = 0;
       switch (status)
         {
+#if DEAL_II_VERSION_GTE(9,6,0)
+          case CellStatus::cell_will_persist:
+          case CellStatus::cell_will_be_refined:
+            n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+            break;
+
+          case CellStatus::cell_invalid:
+            break;
+
+          case CellStatus::children_will_be_coarsened:
+            for (const auto &child : cell->child_iterators())
+              n_particles_in_cell += particle_handler->n_particles_in_cell(child);
+            break;
+#else
           case parallel::distributed::Triangulation<dim>::CELL_PERSIST:
           case parallel::distributed::Triangulation<dim>::CELL_REFINE:
             n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
@@ -410,33 +391,12 @@ namespace aspect
             for (const auto &child : cell->child_iterators())
               n_particles_in_cell += particle_handler->n_particles_in_cell(child);
             break;
-
+#endif
           default:
             Assert(false, ExcInternalError());
             break;
         }
       return base_weight + n_particles_in_cell * particle_weight;
-
-#else
-      if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST
-          || status == parallel::distributed::Triangulation<dim>::CELL_REFINE)
-        {
-          const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-          return n_particles_in_cell * particle_weight;
-        }
-      else if (status == parallel::distributed::Triangulation<dim>::CELL_COARSEN)
-        {
-          unsigned int n_particles_in_cell = 0;
-
-          for (unsigned int child_index = 0; child_index < cell->n_children(); ++child_index)
-            n_particles_in_cell += particle_handler->n_particles_in_cell(cell->child(child_index));
-
-          return n_particles_in_cell * particle_weight;
-        }
-
-      Assert (false, ExcInternalError());
-      return 0;
-#endif
     }
 
 
@@ -475,11 +435,7 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                        internal::SolutionEvaluators<dim> &evaluators)
     {
-#if DEAL_II_VERSION_GTE(9,4,0)
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-#else
-      const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
-#endif
 
       std::vector<Point<dim>> positions;
       positions.reserve(n_particles_in_cell);
@@ -531,11 +487,7 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
-#if DEAL_II_VERSION_GTE(9,4,0)
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-#else
-      const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
-#endif
       const unsigned int solution_components = this->introspection().n_components;
 
       Vector<double>              value (solution_components);
@@ -585,11 +537,7 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                        internal::SolutionEvaluators<dim> &evaluators)
     {
-#if DEAL_II_VERSION_GTE(9,4,0)
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-#else
-      const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
-#endif
 
       boost::container::small_vector<Point<dim>, 100>   positions;
       positions.reserve(n_particles_in_cell);
@@ -611,8 +559,8 @@ namespace aspect
                                       property_manager->get_data_info().fieldname_exists("melt_presence");
       auto &evaluator = evaluators.get_velocity_or_fluid_velocity_evaluator(use_fluid_velocity);
 
-      evaluator.reinit (cell, {positions.data(),positions.size()});
-
+      auto &mapping_info = evaluators.get_mapping_info();
+      mapping_info.reinit(cell, {positions.data(),positions.size()});
       evaluator.evaluate({solution_values.data(),solution_values.size()},
                          EvaluationFlags::values);
 
@@ -644,11 +592,7 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
-#if DEAL_II_VERSION_GTE(9,4,0)
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-#else
-      const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
-#endif
 
       std::vector<Tensor<1,dim>>  velocity(n_particles_in_cell);
       std::vector<Tensor<1,dim>>  old_velocity(n_particles_in_cell);
@@ -766,14 +710,6 @@ namespace aspect
     void
     World<dim>::initialize_particles()
     {
-#if !DEAL_II_VERSION_GTE(9,4,0)
-      // Initialize the particle's access to the property_pool. This is necessary
-      // even if the Particle do not carry properties, because they need a
-      // way to determine the number of properties they carry.
-      for (ParticleIterator<dim> particle = particle_handler->begin(); particle!=particle_handler->end(); ++particle)
-        particle->set_property_pool(particle_handler->get_property_pool());
-#endif
-
       // TODO: Change this loop over all cells to use the WorkStream interface
       if (property_manager->get_n_property_components() > 0)
         {
@@ -841,6 +777,11 @@ namespace aspect
           virtual
           FEPointEvaluation<dim, dim> &
           get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity) = 0;
+
+          // Return the cached mapping information.
+          virtual
+          NonMatching::MappingInfo<dim> &
+          get_mapping_info() = 0;
       };
 
       // This class evaluates the solution vector at arbitrary positions inside a cell.
@@ -892,12 +833,18 @@ namespace aspect
           FEPointEvaluation<dim, dim> &
           get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity) override;
 
+          // Return the cached mapping information.
+          NonMatching::MappingInfo<dim> &
+          get_mapping_info() override;
         private:
+          // MappingInfo object for the FEPointEvaluation objects
+          NonMatching::MappingInfo<dim> mapping_info;
+
           // FEPointEvaluation objects for all common
           // components of ASPECT's finite element solution.
           // These objects are used inside of the member functions of this class.
           FEPointEvaluation<dim, dim> velocity;
-          FEPointEvaluation<1, dim> pressure;
+          std::unique_ptr<FEPointEvaluation<1, dim>> pressure;
           FEPointEvaluation<1, dim> temperature;
 
           // If instantiated evaluate multiple compositions at once, if
@@ -930,22 +877,21 @@ namespace aspect
       SolutionEvaluatorsImplementation<dim, n_compositional_fields>::SolutionEvaluatorsImplementation(const SimulatorAccess<dim> &simulator,
           const UpdateFlags update_flags)
         :
-        velocity(simulator.get_mapping(),
+        mapping_info(simulator.get_mapping(),
+                     update_flags),
+        velocity(mapping_info,
                  simulator.get_fe(),
-                 update_flags,
                  simulator.introspection().component_indices.velocities[0]),
-        pressure(simulator.get_mapping(),
-                 simulator.get_fe(),
-                 update_flags,
-                 simulator.introspection().component_indices.pressure),
-        temperature(simulator.get_mapping(),
+        pressure(std::make_unique<FEPointEvaluation<1, dim>>(mapping_info,
+                                                              simulator.get_fe(),
+                                                              simulator.introspection().component_indices.pressure)),
+        temperature(mapping_info,
                     simulator.get_fe(),
-                    update_flags,
                     simulator.introspection().component_indices.temperature),
-        compositions(simulator.get_mapping(),
+        compositions(mapping_info,
                      simulator.get_fe(),
-                     update_flags,
                      simulator.n_compositional_fields() > 0 ? simulator.introspection().component_indices.compositional_fields[0] : simulator.introspection().component_indices.temperature),
+
         melt_component_indices(),
         simulator_access(simulator)
       {
@@ -954,10 +900,17 @@ namespace aspect
         const unsigned int n_total_compositional_fields = simulator_access.n_compositional_fields();
         const auto &component_indices = simulator_access.introspection().component_indices.compositional_fields;
         for (unsigned int composition = n_compositional_fields; composition < n_total_compositional_fields; ++composition)
-          additional_compositions.emplace_back(FEPointEvaluation<1, dim>(simulator_access.get_mapping(),
+          additional_compositions.emplace_back(FEPointEvaluation<1, dim>(mapping_info,
                                                                          simulator_access.get_fe(),
-                                                                         update_flags,
                                                                          component_indices[composition]));
+
+        // The FE_DGP pressure element used in locally conservative discretization is not
+        // supported by the fast path of FEPointEvaluation. Replace with slow path.
+        if (simulator_access.get_parameters().use_locally_conservative_discretization == true)
+          pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                  simulator_access.get_fe(),
+                                                                  update_flags,
+                                                                  simulator.introspection().component_indices.pressure);
 
         // Create the melt evaluators, but only if we use melt transport in the model
         if (simulator_access.include_melt_transport())
@@ -967,18 +920,31 @@ namespace aspect
             melt_component_indices[1] = simulator_access.introspection().variable("fluid pressure").first_component_index;
             melt_component_indices[2] = simulator_access.introspection().variable("compaction pressure").first_component_index;
 
-            fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(simulator_access.get_mapping(),
+            fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(mapping_info,
                                                                             simulator_access.get_fe(),
-                                                                            update_flags,
                                                                             melt_component_indices[0]);
-            fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                          simulator_access.get_fe(),
-                                                                          update_flags,
-                                                                          melt_component_indices[1]);
-            compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                               simulator_access.get_fe(),
-                                                                               update_flags,
-                                                                               melt_component_indices[2]);
+            if (simulator_access.get_parameters().use_locally_conservative_discretization == false)
+              fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(mapping_info,
+                                                                            simulator_access.get_fe(),
+                                                                            melt_component_indices[1]);
+            else
+              {
+                fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                              simulator_access.get_fe(),
+                                                                              update_flags,
+                                                                              melt_component_indices[1]);
+              }
+
+            if (simulator_access.get_melt_handler().melt_parameters.use_discontinuous_p_c == false)
+              compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(mapping_info,
+                                                                                 simulator_access.get_fe(),
+                                                                                 melt_component_indices[2]);
+            else
+              compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                                 simulator_access.get_fe(),
+                                                                                 update_flags,
+                                                                                 melt_component_indices[2]);
+
 
           }
       }
@@ -1010,44 +976,27 @@ namespace aspect
         // TODO: It would be nice to be able to hand over a ComponentMask
         // to specify which evaluators to use. Currently, this is only
         // possible by manually accessing the public members of this class.
-        velocity.reinit (cell, positions);
+        mapping_info.reinit(cell,positions);
 
-#if DEAL_II_VERSION_GTE(9,4,0)
-        // Only compute the mapping data once for velocity,
-        // and reuse it for the other components.
-        const auto &mapping_data = velocity.get_mapping_data();
-
-        pressure.reinit (cell, positions, mapping_data);
-        temperature.reinit (cell, positions, mapping_data);
-        compositions.reinit (cell, positions, mapping_data);
-
-        for (auto &evaluator_composition: additional_compositions)
-          evaluator_composition.reinit (cell, positions, mapping_data);
-
-        if (simulator_access.include_melt_transport())
+        if (simulator_access.get_parameters().use_locally_conservative_discretization == true)
           {
-            fluid_velocity->reinit (cell, positions, mapping_data);
-            fluid_pressure->reinit (cell, positions, mapping_data);
-            compaction_pressure->reinit (cell, positions, mapping_data);
+            pressure->reinit(cell, positions);
+
+            if (simulator_access.include_melt_transport())
+              {
+                fluid_pressure->reinit (cell, positions);
+              }
           }
-#else
-        pressure.reinit (cell, positions);
-        temperature.reinit (cell, positions);
-        compositions.reinit (cell, positions);
 
-        for (auto &evaluator_composition: additional_compositions)
-          evaluator_composition.reinit (cell, positions);
-
-        if (simulator_access.include_melt_transport())
+        if (simulator_access.include_melt_transport()
+            && simulator_access.get_melt_handler().melt_parameters.use_discontinuous_p_c == true)
           {
-            fluid_velocity->reinit (cell, positions);
-            fluid_pressure->reinit (cell, positions);
             compaction_pressure->reinit (cell, positions);
           }
-#endif
+
 
         velocity.evaluate (solution_values, evaluation_flags);
-        pressure.evaluate (solution_values, evaluation_flags);
+        pressure->evaluate (solution_values, evaluation_flags);
         temperature.evaluate (solution_values, evaluation_flags);
         compositions.evaluate (solution_values, evaluation_flags);
 
@@ -1062,6 +1011,47 @@ namespace aspect
           }
       }
 
+      namespace
+      {
+        template <int n_compositional_fields>
+        double
+        get_value(const Tensor<1,n_compositional_fields> &solution,
+                  const unsigned int component_index)
+        {
+          AssertIndexRange(component_index, n_compositional_fields);
+          return solution[component_index];
+        }
+
+        template <int n_compositional_fields>
+        double
+        get_value(const double &solution,
+                  const unsigned int component_index)
+        {
+          (void) component_index;
+          AssertIndexRange(component_index, 1);
+          return solution;
+        }
+
+        template <int dim, int n_compositional_fields>
+        Tensor<1,dim>
+        get_gradient(const Tensor<1,n_compositional_fields,Tensor<1,dim>> &gradient,
+                     const unsigned int component_index)
+        {
+          AssertIndexRange(component_index, n_compositional_fields);
+          return gradient[component_index];
+        }
+
+
+        template <int dim, int n_compositional_fields>
+        Tensor<1,dim>
+        get_gradient(const Tensor<1,dim> &gradient,
+                     const unsigned int component_index)
+        {
+          (void) component_index;
+          AssertIndexRange(component_index, 1);
+          return gradient;
+        }
+      }
 
 
       template <int dim, int n_compositional_fields>
@@ -1078,12 +1068,14 @@ namespace aspect
         for (unsigned int j=0; j<dim; ++j)
           solution[component_indices.velocities[j]] = velocity_value[j];
 
-        solution[component_indices.pressure] = pressure.get_value(evaluation_point);
+        solution[component_indices.pressure] = pressure->get_value(evaluation_point);
         solution[component_indices.temperature] = temperature.get_value(evaluation_point);
 
-        const typename FEPointEvaluation<n_compositional_fields, dim>::value_type composition_values = compositions.get_value(evaluation_point);
-        for (unsigned int j=0; j<n_compositional_fields; ++j)
-          solution[component_indices.compositional_fields[j]] = dealii::internal::FEPointEvaluation::EvaluatorTypeTraits<dim, n_compositional_fields, double>::access(composition_values,j);
+        if (n_compositional_fields > 0)
+          for (unsigned int j=0; j<n_compositional_fields; ++j)
+            solution[component_indices.compositional_fields[j]] = get_value<n_compositional_fields>(
+                                                                    compositions.get_value(evaluation_point),
+                                                                    j);
 
         const unsigned int n_additional_compositions = additional_compositions.size();
         for (unsigned int j=0; j<n_additional_compositions; ++j)
@@ -1116,12 +1108,14 @@ namespace aspect
         for (unsigned int j=0; j<dim; ++j)
           gradients[component_indices.velocities[j]] = velocity_gradient[j];
 
-        gradients[component_indices.pressure] = pressure.get_gradient(evaluation_point);
+        gradients[component_indices.pressure] = pressure->get_gradient(evaluation_point);
         gradients[component_indices.temperature] = temperature.get_gradient(evaluation_point);
 
-        const typename FEPointEvaluation<n_compositional_fields, dim>::gradient_type composition_gradients = compositions.get_gradient(evaluation_point);
-        for (unsigned int j=0; j<n_compositional_fields; ++j)
-          gradients[component_indices.compositional_fields[j]] = dealii::internal::FEPointEvaluation::EvaluatorTypeTraits<dim, n_compositional_fields, double>::access(composition_gradients,j);
+        if (n_compositional_fields > 0)
+          for (unsigned int j=0; j<n_compositional_fields; ++j)
+            gradients[component_indices.compositional_fields[j]] = get_gradient<dim,n_compositional_fields>(
+                                                                     compositions.get_gradient(evaluation_point),
+                                                                     j);
 
         const unsigned int n_additional_compositions = additional_compositions.size();
         for (unsigned int j=0; j<n_additional_compositions; ++j)
@@ -1150,6 +1144,14 @@ namespace aspect
 
         return velocity;
       }
+      template <int dim, int n_compositional_fields>
+      NonMatching::MappingInfo<dim> &
+      SolutionEvaluatorsImplementation<dim, n_compositional_fields>::get_mapping_info()
+      {
+        return mapping_info;
+      }
+
+
 
       // A function to create a pointer to a SolutionEvaluators object.
       template <int dim>
@@ -1226,15 +1228,9 @@ namespace aspect
           // a bug for dynamically allocating scalar evaluators for individual components of a
           // base element with multiplicity (see https://github.com/dealii/dealii/pull/12786).
           bool use_fast_path = false;
-#if DEAL_II_VERSION_GTE(9,4,0)
           if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr ||
               dynamic_cast<const MappingCartesian<dim> *>(&this->get_mapping()) != nullptr)
             use_fast_path = true;
-#else
-          if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr &&
-              this->n_compositional_fields() <= 20)
-            use_fast_path = true;
-#endif
           std::unique_ptr<internal::SolutionEvaluators<dim>> evaluators;
 
           if (use_fast_path == true)
@@ -1294,14 +1290,12 @@ namespace aspect
                 {
                   // Only use deal.II FEPointEvaluation if it's fast path is used
                   bool use_fast_path = false;
-#if DEAL_II_VERSION_GTE(9,4,0)
+
                   if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr ||
                       dynamic_cast<const MappingCartesian<dim> *>(&this->get_mapping()) != nullptr)
                     use_fast_path = true;
-#else
-                  if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr)
-                    use_fast_path = true;
-#endif
+
+
 
                   if (use_fast_path)
                     local_advect_particles(cell,
@@ -1521,7 +1515,7 @@ namespace aspect
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialization");
 
       // Create a generator object depending on what the parameters specify
-      generator.reset(Generator::create_particle_generator<dim> (prm));
+      generator = Generator::create_particle_generator<dim> (prm);
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
         sim->initialize_simulator (this->get_simulator());
       generator->parse_parameters(prm);
@@ -1535,14 +1529,14 @@ namespace aspect
       property_manager->initialize();
 
       // Create an integrator object depending on the specified parameter
-      integrator.reset(Integrator::create_particle_integrator<dim> (prm));
+      integrator = Integrator::create_particle_integrator<dim> (prm);
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
         sim->initialize_simulator (this->get_simulator());
       integrator->parse_parameters(prm);
       integrator->initialize();
 
       // Create an interpolator object depending on the specified parameter
-      interpolator.reset(Interpolator::create_particle_interpolator<dim> (prm));
+      interpolator = Interpolator::create_particle_interpolator<dim> (prm);
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
         sim->initialize_simulator (this->get_simulator());
       interpolator->parse_parameters(prm);

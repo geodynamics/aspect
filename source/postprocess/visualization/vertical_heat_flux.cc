@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -60,10 +60,13 @@ namespace aspect
 
 
         MaterialModel::MaterialModelInputs<dim> in(input_data,
-                                                   this->introspection(),
-                                                   false);
+                                                   this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
+        in.requested_properties = MaterialModel::MaterialProperties::density |
+                                  MaterialModel::MaterialProperties::specific_heat |
+                                  MaterialModel::MaterialProperties::thermal_conductivity;
+
         this->get_material_model().evaluate(in, out);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)

@@ -1,7 +1,8 @@
 {
-"version":"0.4",
+"version":"0.5",
 "cross section": [[100e3,100e3],[400e3,500e3]],
 "coordinate system":{"model":"spherical", "depth method":"starting point"},
+"gravity model":{"model":"uniform", "magnitude":10},
 "features":
 [
      {"model":"oceanic plate", "name":"First oceanic plate", "max depth":250e3, "coordinates":[[-10,-10],[-1,-10],[-1,-1],[-10,-1]],
@@ -39,7 +40,7 @@
      ]},
      
      {"model":"oceanic plate", "name":"First oceanic plate", "max depth":250e3, "coordinates":[[20,-20],[-10,-20],[-10,-11],[20,-11]],
-         "temperature models":[{"model":"plate model", "max depth":250e3, "spreading velocity":0.01, "ridge coordinates":[[15,-20],[15,-15],[10,-10]]}],
+         "temperature models":[{"model":"plate model", "max depth":250e3, "spreading velocity":0.01, "ridge coordinates":[[[15,-20],[15,-15],[10,-10]]]}],
          "composition models":[{"model":"uniform", "compositions":[6]}]}
      
 ]

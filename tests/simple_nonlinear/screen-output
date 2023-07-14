@@ -1,5 +1,5 @@
 
-Loading shared library <./libsimple_nonlinear.so>
+Loading shared library <./libsimple_nonlinear.debug.so>
 
 Test for p = -1000 with dimension 2
 strain-rate: component = 0, point = 0, Finite difference = 3.4588e+30, Analytical derivative = 3.4588e+30
@@ -19,7 +19,7 @@ strain-rate: component = 2, point = 1, Finite difference = 5.16403e+29, Analytic
 strain-rate: component = 2, point = 2, Finite difference = -2.09143e+29, Analytical derivative = -2.09143e+29
 strain-rate: component = 2, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 2, point = 4, Finite difference = -4.52403e+29, Analytical derivative = -4.52403e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.
 
 Test for p = -2 with dimension 2
 strain-rate: component = 0, point = 0, Finite difference = 3.4588e+30, Analytical derivative = 3.4588e+30
@@ -39,7 +39,7 @@ strain-rate: component = 2, point = 1, Finite difference = 8.43757e+29, Analytic
 strain-rate: component = 2, point = 2, Finite difference = -3.04888e+29, Analytical derivative = -3.04888e+29
 strain-rate: component = 2, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 2, point = 4, Finite difference = -4.52403e+29, Analytical derivative = -4.52403e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.
 
 Test for p = -1.5 with dimension 2
 strain-rate: component = 0, point = 0, Finite difference = 3.4588e+30, Analytical derivative = 3.4588e+30
@@ -59,7 +59,7 @@ strain-rate: component = 2, point = 1, Finite difference = 8.69267e+29, Analytic
 strain-rate: component = 2, point = 2, Finite difference = -3.22252e+29, Analytical derivative = -3.22252e+29
 strain-rate: component = 2, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 2, point = 4, Finite difference = -4.52403e+29, Analytical derivative = -4.52403e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.
 
 Test for p = -1 with dimension 2
 strain-rate: component = 0, point = 0, Finite difference = 3.4588e+30, Analytical derivative = 3.4588e+30
@@ -79,7 +79,7 @@ strain-rate: component = 2, point = 1, Finite difference = 8.94221e+29, Analytic
 strain-rate: component = 2, point = 2, Finite difference = -3.46459e+29, Analytical derivative = -3.46459e+29
 strain-rate: component = 2, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 2, point = 4, Finite difference = -4.52403e+29, Analytical derivative = -4.52403e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.
 
 Test for p = 0 with dimension 2
 strain-rate: component = 0, point = 0, Finite difference = 3.4588e+30, Analytical derivative = 3.4588e+30
@@ -117,7 +117,7 @@ strain-rate: component = 2, point = 1, Finite difference = 9.7694e+29, Analytica
 strain-rate: component = 2, point = 2, Finite difference = -5.35532e+29, Analytical derivative = -5.35532e+29
 strain-rate: component = 2, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 2, point = 4, Finite difference = -4.52403e+29, Analytical derivative = -4.52403e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.
 
 Test for p = 2 with dimension 2
 strain-rate: component = 0, point = 0, Finite difference = 3.4588e+30, Analytical derivative = 3.4588e+30
@@ -137,7 +137,7 @@ strain-rate: component = 2, point = 1, Finite difference = 1.00532e+30, Analytic
 strain-rate: component = 2, point = 2, Finite difference = -6.43015e+29, Analytical derivative = -6.43015e+29
 strain-rate: component = 2, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 2, point = 4, Finite difference = -4.52403e+29, Analytical derivative = -4.52403e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.
 
 Test for p = 1000 with dimension 2
 strain-rate: component = 0, point = 0, Finite difference = 3.4588e+30, Analytical derivative = 3.4588e+30
@@ -157,7 +157,7 @@ strain-rate: component = 2, point = 1, Finite difference = 1.11256e+30, Analytic
 strain-rate: component = 2, point = 2, Finite difference = -9.70755e+29, Analytical derivative = -9.70755e+29
 strain-rate: component = 2, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 2, point = 4, Finite difference = -4.52403e+29, Analytical derivative = -4.52403e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.
 
 Test for p = -1000 with dimension 3
 strain-rate: component = 0, point = 0, Finite difference = 2.91193e+30, Analytical derivative = 2.91193e+30
@@ -193,7 +193,7 @@ strain-rate: component = 5, point = 1, Finite difference = 1.24957e+29, Analytic
 strain-rate: component = 5, point = 2, Finite difference = -4.84454e+28, Analytical derivative = -4.84454e+28
 strain-rate: component = 5, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 5, point = 4, Finite difference = -1.0456e+29, Analytical derivative = -1.0456e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.
 
 Test for p = -2 with dimension 3
 strain-rate: component = 0, point = 0, Finite difference = 2.91193e+30, Analytical derivative = 2.91193e+30
@@ -229,7 +229,7 @@ strain-rate: component = 5, point = 1, Finite difference = 2.04169e+29, Analytic
 strain-rate: component = 5, point = 2, Finite difference = -7.06235e+28, Analytical derivative = -7.06235e+28
 strain-rate: component = 5, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 5, point = 4, Finite difference = -1.0456e+29, Analytical derivative = -1.0456e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.
 
 Test for p = -1.5 with dimension 3
 strain-rate: component = 0, point = 0, Finite difference = 2.91193e+30, Analytical derivative = 2.91193e+30
@@ -265,7 +265,7 @@ strain-rate: component = 5, point = 1, Finite difference = 2.10342e+29, Analytic
 strain-rate: component = 5, point = 2, Finite difference = -7.46457e+28, Analytical derivative = -7.46457e+28
 strain-rate: component = 5, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 5, point = 4, Finite difference = -1.0456e+29, Analytical derivative = -1.0456e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.
 
 Test for p = -1 with dimension 3
 strain-rate: component = 0, point = 0, Finite difference = 2.91193e+30, Analytical derivative = 2.91193e+30
@@ -301,7 +301,7 @@ strain-rate: component = 5, point = 1, Finite difference = 2.1638e+29, Analytica
 strain-rate: component = 5, point = 2, Finite difference = -8.02531e+28, Analytical derivative = -8.02531e+28
 strain-rate: component = 5, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 5, point = 4, Finite difference = -1.0456e+29, Analytical derivative = -1.0456e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.
 
 Test for p = 0 with dimension 3
 strain-rate: component = 0, point = 0, Finite difference = 2.91193e+30, Analytical derivative = 2.91193e+30
@@ -370,7 +370,7 @@ strain-rate: component = 5, point = 1, Finite difference = 2.36396e+29, Analytic
 strain-rate: component = 5, point = 2, Finite difference = -1.24049e+29, Analytical derivative = -1.24049e+29
 strain-rate: component = 5, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 5, point = 4, Finite difference = -1.0456e+29, Analytical derivative = -1.0456e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.
 
 Test for p = 2 with dimension 3
 strain-rate: component = 0, point = 0, Finite difference = 2.91193e+30, Analytical derivative = 2.91193e+30
@@ -406,7 +406,7 @@ strain-rate: component = 5, point = 1, Finite difference = 2.43264e+29, Analytic
 strain-rate: component = 5, point = 2, Finite difference = -1.48947e+29, Analytical derivative = -1.48947e+29
 strain-rate: component = 5, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 5, point = 4, Finite difference = -1.0456e+29, Analytical derivative = -1.0456e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.
 
 Test for p = 1000 with dimension 3
 strain-rate: component = 0, point = 0, Finite difference = 2.91193e+30, Analytical derivative = 2.91193e+30
@@ -442,4 +442,4 @@ strain-rate: component = 5, point = 1, Finite difference = 2.69212e+29, Analytic
 strain-rate: component = 5, point = 2, Finite difference = -2.24864e+29, Analytical derivative = -2.24864e+29
 strain-rate: component = 5, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 5, point = 4, Finite difference = -1.0456e+29, Analytical derivative = -1.0456e+29
-Some parts of the test where not succesfull.
+Some parts of the test were not successful.

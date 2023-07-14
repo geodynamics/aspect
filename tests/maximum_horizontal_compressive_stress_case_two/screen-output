@@ -18,8 +18,7 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
      Topography min/max:       0 m, 0 m
      Pressure min/avg/max:     -3.635e+18 Pa, -6.338e+17 Pa, 2.367e+18 Pa
 
-Number of active cells: 64 (on 3 levels)
-Number of degrees of freedom: 3,041 (2,187+125+729)
+Skipping mesh refinement, because the mesh did not change.
 
 
 

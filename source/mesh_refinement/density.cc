@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -63,13 +63,14 @@ namespace aspect
                                                  this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(),
                                                    this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::density;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit(cell);
             // Set use_strain_rates to false since we don't need viscosity
-            in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
             this->get_material_model().evaluate(in, out);
 

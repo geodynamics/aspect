@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -69,7 +69,7 @@ namespace aspect
                              "system for the function variables. Allowed values "
                              "are 'cartesian', 'spherical', and 'depth'. "
                              "'spherical' coordinates are interpreted as r,phi "
-                             "or r,phi,theta in 2D/3D respectively with theta "
+                             "or r,phi,theta in 2d/3d respectively with theta "
                              "being the polar angle. 'depth' will create a "
                              "function, in which only the first parameter is "
                              "non-zero, which is interpreted to be the depth of "
@@ -140,6 +140,7 @@ namespace aspect
                                                "\n\n"
                                                "The format of these "
                                                "functions follows the syntax understood by the "
-                                               "muparser library, see Section~\\ref{sec:muparser-format}.")
+                                               "muparser library, see "
+                                               "{ref}`sec:run-aspect:parameters-overview:muparser-format`.")
   }
 }

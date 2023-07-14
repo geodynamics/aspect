@@ -1,5 +1,5 @@
 
-Loading shared library <./libsignals.so>
+Loading shared library <./libsignals.debug.so>
 
 declaring parameters
 parsing parameters: abc=21

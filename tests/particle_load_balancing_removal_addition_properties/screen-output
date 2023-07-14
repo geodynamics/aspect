@@ -23,32 +23,27 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Postprocessing:
      Number of advected particles: 70
 
-Number of active cells: 10 (on 3 levels)
-Number of degrees of freedom: 246 (114+18+57+57)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 2:  t=456.236 seconds, dt=207.75 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Number of advected particles: 74
 
-Number of active cells: 10 (on 3 levels)
-Number of degrees of freedom: 246 (114+18+57+57)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 3:  t=500 seconds, dt=43.764 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_removal_addition_properties/particles/particles-00001
 
-Number of active cells: 10 (on 3 levels)
-Number of degrees of freedom: 246 (114+18+57+57)
+Skipping mesh refinement, because the mesh did not change.
 
 Termination requested by criterion: end time
 

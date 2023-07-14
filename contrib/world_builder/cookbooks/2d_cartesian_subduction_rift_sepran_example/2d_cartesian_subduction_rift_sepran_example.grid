@@ -1,4 +1,4 @@
-# ouput variables
+# output variables
 grid_type = cartesian
 dim = 2
 compositions = 6

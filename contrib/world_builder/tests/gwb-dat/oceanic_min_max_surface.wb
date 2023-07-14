@@ -1,0 +1,61 @@
+{
+"version":"0.5",
+"coordinate system":{"model":"cartesian"},
+"gravity model":{"model":"uniform", "magnitude":10},
+"features":[
+  {
+    "model":"oceanic plate", "name":"Var thickness continent", "coordinates":[[0,1000e3],[1000e3,1000e3],[1000e3,0],[0,0]],
+    "min depth":[[50e3,[[0,500e3]]],[200e3,[[1000e3,500e3]]]], "max depth":[[300e3],[200e3,[[0,500e3],[1000e3,500e3]]]],
+    "temperature models":[
+      {"model":"uniform", "min depth":[[50e3,[[0,500e3]]],[200e3,[[1000e3,500e3]]]], "max depth":[[200e3],[100e3,[[0,500e3],[1000e3,500e3],[0,0]]]], "temperature":150},
+      {"model":"uniform", "min depth":[[200e3],[100e3,[[0,500e3],[1000e3,500e3],[0,0]]]], "max depth":[[300e3],[200e3,[[0,500e3],[1000e3,500e3]]]], "temperature":200}
+    ],
+    "composition models":[
+      {"model":"uniform", "min depth":[[50e3,[[0,500e3]]],[200e3,[[1000e3,500e3]]]], "max depth":[[200e3],[100e3,[[0,500e3],[1000e3,500e3],[0,0]]]], "compositions":[0]},
+      {"model":"uniform", "min depth":[[200e3],[100e3,[[0,500e3],[1000e3,500e3],[0,0]]]], "max depth":[[300e3],[200e3,[[0,500e3],[1000e3,500e3]]]], "compositions":[1]}
+    ],
+    "grains models":[
+      {"model":"uniform", "compositions":[0,1],"rotation matrices":[[[1,2,3],[4,5,6],[7,8,9]],[[10,11,12],[13,14,15],[16,17,18]]],"grain sizes":[-1,0.2],
+       "min depth":[[50e3,[[0,500e3]]],[200e3,[[1000e3,500e3]]]], "max depth":[[200e3],[100e3,[[0,500e3],[1000e3,500e3],[0,0]]]]},
+      {"model":"uniform", "compositions":[0,1],"rotation matrices":[[[19,20,21],[22,23,24],[25,26,27]],[[28,29,30],[31,32,33],[34,35,36]]],"grain sizes":[-1,0.3],
+      "min depth":[[200e3],[100e3,[[0,500e3],[1000e3,500e3],[0,0]]]], "max depth":[[300e3],[200e3,[[0,500e3],[1000e3,500e3]]]]}
+    ]
+  },
+  {
+    "model":"oceanic plate", "name":"Var thickness continent 2", "coordinates":[[-1,1000e3],[-1000e3,1000e3],[-1000e3,0],[-1,0]],
+    "min depth":[[50e3,[[-1,500e3]]],[200e3,[[-1000e3,500e3]]]], "max depth":[[300e3],[200e3,[[-1,500e3],[-1000e3,500e3]]]],
+    "temperature models":[
+      {"model":"linear", "min depth":[[50e3,[[-1,500e3]]],[200e3,[[-1000e3,500e3]]]], "max depth":[[200e3],[100e3,[[-1,500e3],[-1000e3,500e3],[-1,0]]]], "top temperature":2, "bottom temperature":5},
+      {"model":"linear", "min depth":[[200e3],[100e3,[[-1,500e3],[-1000e3,500e3],[-1,0]]]], "max depth":[[300e3],[200e3,[[-1,500e3],[-1000e3,500e3]]]], "top temperature":10, "bottom temperature":15}
+    ],
+    "composition models":[
+      {"model":"uniform", "min depth":[[50e3,[[-1,500e3]]],[200e3,[[-1000e3,500e3]]]], "max depth":[[200e3],[100e3,[[-1,500e3],[-1000e3,500e3],[-1,0]]]], "compositions":[0]},
+      {"model":"uniform", "min depth":[[200e3],[100e3,[[-1,500e3],[-1000e3,500e3],[-1,0]]]], "max depth":[[300e3],[200e3,[[-1,500e3],[-1000e3,500e3]]]], "compositions":[1]}
+    ],
+    "grains models":[
+      {"model":"uniform", "compositions":[0,1],"Euler angles z-x-z":[[10,15,20],[25,30,35]],"grain sizes":[-1,0.2],
+       "min depth":[[50e3,[[-1,500e3]]],[200e3,[[-1000e3,500e3]]]], "max depth":[[200e3],[100e3,[[-1,500e3],[-1000e3,500e3],[-1,0]]]]},
+      {"model":"uniform", "compositions":[0,1],"Euler angles z-x-z":[[40,45,50],[55,60,65]],"grain sizes":[-1,0.3],
+      "min depth":[[200e3],[100e3,[[-1,500e3],[-1000e3,500e3],[-1,0]]]], "max depth":[[300e3],[200e3,[[-1,500e3],[-1000e3,500e3]]]]}
+    ]
+  },
+  {
+    "model":"oceanic plate", "name":"Var thickness continent 3", "coordinates":[[-1,-1000e3],[-1000e3,-1000e3],[-1000e3,-1],[-1,-1]],
+    "min depth":[[50e3,[[-1,-500e3]]],[200e3,[[-1000e3,-500e3]]]], "max depth":[[300e3],[200e3,[[-1,-500e3],[-1000e3,-500e3]]]],
+    "temperature models":[
+      {"model":"adiabatic", "min depth":[[50e3,[[-1,-500e3]]],[200e3,[[-1000e3,-500e3]]]], "max depth":[[200e3],[100e3,[[-1,-500e3],[-1000e3,-500e3],[-1,-1]]]], "potential mantle temperature":-1},
+      {"model":"adiabatic", "min depth":[[200e3],[100e3,[[-1,-500e3],[-1000e3,-500e3],[-1,0]]]], "max depth":[[300e3],[200e3,[[-1,-500e3],[-1000e3,-500e3]]]], "potential mantle temperature":10}
+    ],
+    "composition models":[
+      {"model":"uniform", "min depth":[[50e3,[[-1,-500e3]]],[200e3,[[-1000e3,-500e3]]]], "max depth":[[200e3],[100e3,[[-1,500e3],[-1000e3,-500e3],[-1,-1]]]], "compositions":[0,1], "fractions":[0.75,0.25]},
+      {"model":"uniform", "min depth":[[200e3],[100e3,[[-1,-500e3],[-1000e3,-500e3],[-1,-1]]]], "max depth":[[300e3],[200e3,[[-1,-500e3],[-1000e3,-500e3]]]], "compositions":[0,1], "fractions":[0.75,0.25]}
+    ],
+    "grains models":[
+      {"model":"random uniform distribution", "compositions":[0,1],"grain sizes":[-1,0.2], "normalize grain sizes":[true,true],
+       "min depth":[[50e3,[[-1,-500e3]]],[200e3,[[-1000e3,-500e3]]]], "max depth":[[200e3],[100e3,[[-1,-500e3],[-1000e3,-500e3],[-1,-1]]]]},
+      {"model":"random uniform distribution", "compositions":[0,1],"grain sizes":[-1,0.3], "normalize grain sizes":[true,true],
+      "min depth":[[200e3],[100e3,[[-1,-500e3],[-1000e3,-500e3],[-1,-1]]]], "max depth":[[300e3],[200e3,[[-1,-500e3],[-1000e3,-500e3]]]]}
+    ]
+  }
+]
+}

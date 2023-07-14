@@ -1,4 +1,4 @@
-# Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+# Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -32,7 +32,7 @@ ENDIF ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
-SET(TARGET "nsinker")
+SET(TARGET "nsinker_spherical_shell")
 PROJECT(${TARGET})
 
 ADD_LIBRARY(${TARGET} SHARED nsinker.cc)

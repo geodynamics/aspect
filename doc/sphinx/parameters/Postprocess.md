@@ -1,123 +1,127 @@
 (parameters:Postprocess)=
-# **Postprocess**
+# Postprocess
 
 
-## **Parameters in section** Postprocess
+## **Subsection:** Postprocess
 
 
 (parameters:Postprocess/List_20of_20postprocessors)=
 ### __Parameter name:__ List of postprocessors
 **Default value:**
 
-**Pattern:** [MultipleSelection Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|core statistics|depth average|dynamic topography|entropy viscosity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particles|point values|pressure statistics|rotation statistics|spherical velocity statistics|temperature statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
+**Pattern:** [MultipleSelection Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|depth average|domain volume statistics|dynamic topography|entropy viscosity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particles|point values|pressure statistics|rotation statistics|spherical velocity statistics|temperature statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
 
-**Documentation:** A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text `all' indicates that all available postprocessors should be run after each time step.
+**Documentation:** A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text &lsquo;all&rsquo; indicates that all available postprocessors should be run after each time step.
 
 The following postprocessors are available:
 
-`Stokes residual': A postprocessor that outputs the Stokes residuals during the iterative solver algorithm into a file stokes_residuals.txt in the output directory.
+&lsquo;Stokes residual&rsquo;: A postprocessor that outputs the Stokes residuals during the iterative solver algorithm into a file stokes_residuals.txt in the output directory.
 
-`basic statistics': A postprocessor that outputs some simplified statistics like the Rayleigh number and other quantities that only make sense in certain model setups. The output is written after completing initial adaptive refinement steps. The postprocessor assumes a point at the surface at the adiabatic surface temperature and pressure is a reasonable reference condition for computing these properties. Furthermore, the Rayleigh number is computed using the model depth (i.e. not the radius of the Earth), as we need a definition that is geometry independent. Take care when comparing these values to published studies and make sure they use the same definitions.
+&lsquo;basic statistics&rsquo;: A postprocessor that outputs some simplified statistics like the Rayleigh number and other quantities that only make sense in certain model setups. The output is written after completing initial adaptive refinement steps. The postprocessor assumes a point at the surface at the adiabatic surface temperature and pressure is a reasonable reference condition for computing these properties. Furthermore, the Rayleigh number is computed using the model depth (i.e. not the radius of the Earth), as we need a definition that is geometry independent. Take care when comparing these values to published studies and make sure they use the same definitions.
 
-`boundary densities': A postprocessor that computes the laterally averaged density at the top and bottom of the domain.
+&lsquo;boundary densities&rsquo;: A postprocessor that computes the laterally averaged density at the top and bottom of the domain.
 
-`boundary pressures': A postprocessor that computes the laterally averaged pressure at the top and bottom of the domain.
+&lsquo;boundary pressures&rsquo;: A postprocessor that computes the laterally averaged pressure at the top and bottom of the domain.
 
-`boundary strain rate residual statistics': A postprocessor that computes some statistics about the surface strain rate residual along the top boundary. The residual is the difference between the second invariant of the model strain rate and the second strain rate invariant read from the input data file. Currently, the strain residual statistics, i.e., min, max and the rms magnitude, are computed at the top suface.
+&lsquo;boundary strain rate residual statistics&rsquo;: A postprocessor that computes some statistics about the surface strain rate residual along the top boundary. The residual is the difference between the second invariant of the model strain rate and the second strain rate invariant read from the input data file. Currently, the strain residual statistics, i.e., min, max and the rms magnitude, are computed at the top surface.
 
-`boundary velocity residual statistics': A postprocessor that computes some statistics about the velocity residual along the top boundary. The velocity residual is the difference between the model solution velocities and the input velocities (GPlates model or ascii data). Currently, the velocity residual statistics, i.e., min, max and the rms magnitude, is computed at the top suface.
+&lsquo;boundary velocity residual statistics&rsquo;: A postprocessor that computes some statistics about the velocity residual along the top boundary. The velocity residual is the difference between the model solution velocities and the input velocities (GPlates model or ascii data). Currently, the velocity residual statistics, i.e., min, max and the rms magnitude, is computed at the top surface.
 
-`command': A postprocessor that executes a command line process.
+&lsquo;command&rsquo;: A postprocessor that executes a command line process.
 
-`composition statistics': A postprocessor that computes some statistics about the compositional fields, if present in this simulation. In particular, it computes maximal and minimal values of each field, as well as the total mass contained in this field as defined by the integral $m_i(t) = \int_\Omega c_i(\mathbf x,t) \; \text{d}x$.
+&lsquo;composition statistics&rsquo;: A postprocessor that computes some statistics about the compositional fields, if present in this simulation. In particular, it computes maximal and minimal values of each field, as well as the total mass contained in this field as defined by the integral $m_i(t) = \int_\Omega c_i(\mathbf x,t) \; \text{d}x$.
 
-`core statistics': A postprocessor that computes some statistics about the core evolution. (Working only with dynamic core boundary temperature plugin)
+&lsquo;composition velocity statistics&rsquo;: A postprocessor that computes the root mean square velocity over the area spanned by each compositional field (i.e. where the field values are larger or equal to 0.5.
 
-`depth average': A postprocessor that computes depth averaged quantities and writes them into a file <depth_average.ext> in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section \texttt{Postprocess/Depth average} in the input file.
+&lsquo;core statistics&rsquo;: A postprocessor that computes some statistics about the core evolution. (Working only with dynamic core boundary temperature plugin)
 
-In the output files, the $x$-value of each data point corresponds to the depth, whereas the $y$-value corresponds to the simulation time. The time is provided in seconds or, if the global ``Use years in output instead of seconds'' parameter is set, in years.
+&lsquo;depth average&rsquo;: A postprocessor that computes depth averaged quantities and writes them into a file <depth_average.ext> in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section `Postprocess/Depth average` in the input file.
 
-`dynamic topography': A postprocessor that computes a measure of dynamic topography based on the stress at the surface and bottom. The data is written into text files named `dynamic\_topography.NNNNN' in the output directory, where NNNNN is the number of the time step.
+In the output files, the $x$-value of each data point corresponds to the depth, whereas the $y$-value corresponds to the simulation time. The time is provided in seconds or, if the global &ldquo;Use years in output instead of seconds&rdquo; parameter is set, in years.
+
+&lsquo;domain volume statistics&rsquo;: A postprocessor that computes the total area (in 2d) or volume (in 3d) of the computational domain.
+
+&lsquo;dynamic topography&rsquo;: A postprocessor that computes a measure of dynamic topography based on the stress at the surface and bottom. The data is written into text files named &lsquo;dynamic\_topography.NNNNN&rsquo; in the output directory, where NNNNN is the number of the time step.
 
 The exact approach works as follows: At the centers of all cells that sit along the top surface, we evaluate the stress and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)- \frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. For the bottom surface we chose the convection that positive values are up (out) and negative values are in (down), analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.
 The file format then consists of lines with Euclidean coordinates followed by the corresponding topography value.
 
 (As a side note, the postprocessor chooses the cell center instead of the center of the cell face at the surface, where we really are interested in the quantity, since this often gives better accuracy. The results should in essence be the same, though.)
 
-`entropy viscosity statistics': A postprocessor that computes the maximum and volume averagedentropy viscosity stabilization for the temperature field.
+&lsquo;entropy viscosity statistics&rsquo;: A postprocessor that computes the maximum and volume averagedentropy viscosity stabilization for the temperature field.
 
-`geoid': A postprocessor that computes a representation of the geoid based on the density structure in the mantle, as well as the topography at the surface and core mantle boundary (CMB) if desired. The topography is based on the dynamic topography postprocessor in case of no free surface, and based on the real surface from the geometry model in case of a free surface. The geoid is computed from a spherical harmonic expansion, so the geometry of the domain must be a 3D spherical shell.
+&lsquo;geoid&rsquo;: A postprocessor that computes a representation of the geoid based on the density structure in the mantle, as well as the topography at the surface and core mantle boundary (CMB) if desired. The topography is based on the dynamic topography postprocessor in case of no free surface, and based on the real surface from the geometry model in case of a free surface. The geoid is computed from a spherical harmonic expansion, so the geometry of the domain must be a 3d spherical shell.
 
-`global statistics': A postprocessor that outputs all the global statistics information, e.g. the time of the simulation, the timestep number, number of degrees of freedom and solver iterations for each timestep. The postprocessor can output different formats, the first printing one line in the statistics file per nonlinear solver iteration (if a nonlinear solver scheme is selected). The second prints one line per timestep, summing the information about all nonlinear iterations in this line. Note that this postprocessor is always active independent on whether or not it is selected in the parameter file.
+&lsquo;global statistics&rsquo;: A postprocessor that outputs all the global statistics information, e.g. the time of the simulation, the timestep number, number of degrees of freedom and solver iterations for each timestep. The postprocessor can output different formats, the first printing one line in the statistics file per nonlinear solver iteration (if a nonlinear solver scheme is selected). The second prints one line per timestep, summing the information about all nonlinear iterations in this line. Note that this postprocessor is always active independent on whether or not it is selected in the parameter file.
 
-`gravity calculation': A postprocessor that computes gravity, gravity anomalies, gravity potential and gravity gradients for a set of points (e.g. satellites) in or above the model surface for either a user-defined range of latitudes, longitudes and radius or a list of point coordinates.Spherical coordinates in the output file are radius, colatitude and colongitude. Gravity is here based on the density distribution from the material model (and non adiabatic). This means that the density may come directly from an ascii file. This postprocessor also computes theoretical gravity and its derivatives, which corresponds to the analytical solution of gravity in the same geometry but filled with a reference density. The reference density is also used to determine density anomalies for computing gravity anomalies. Thus one must carefully evaluate the meaning of the gravity anomaly output, because the solution may not reflect the actual gravity anomaly (due to differences in the assumed reference density). On way to guarantee correct gravity anomalies is to subtract gravity of a certain point from the average gravity on the map. Another way is to directly use density anomalies for this postprocessor.The average- minimum- and maximum gravity acceleration and potential are written into the statistics file.
+&lsquo;gravity calculation&rsquo;: A postprocessor that computes gravity, gravity anomalies, gravity potential and gravity gradients for a set of points (e.g. satellites) in or above the model surface for either a user-defined range of latitudes, longitudes and radius or a list of point coordinates.Spherical coordinates in the output file are radius, colatitude and colongitude. Gravity is here based on the density distribution from the material model (and non adiabatic). This means that the density may come directly from an ascii file. This postprocessor also computes theoretical gravity and its derivatives, which corresponds to the analytical solution of gravity in the same geometry but filled with a reference density. The reference density is also used to determine density anomalies for computing gravity anomalies. Thus one must carefully evaluate the meaning of the gravity anomaly output, because the solution may not reflect the actual gravity anomaly (due to differences in the assumed reference density). On way to guarantee correct gravity anomalies is to subtract gravity of a certain point from the average gravity on the map. Another way is to directly use density anomalies for this postprocessor.The average- minimum- and maximum gravity acceleration and potential are written into the statistics file.
 
-`heat flux densities': A postprocessor that computes some statistics about the heat flux density for each boundary id. The heat flux density across each boundary is computed in outward direction, i.e., from the domain to the outside. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.''
+&lsquo;heat flux densities&rsquo;: A postprocessor that computes some statistics about the heat flux density for each boundary id. The heat flux density across each boundary is computed in outward direction, i.e., from the domain to the outside. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in &ldquo;Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.&rdquo;
 
-Note that the ``heat flux statistics'' postprocessor computes the same quantity as the one here, but not divided by the area of the surface. In other words, it computes the \textit{total} heat flux through each boundary.
+Note that the &ldquo;heat flux statistics&rdquo; postprocessor computes the same quantity as the one here, but not divided by the area of the surface. In other words, it computes the *total* heat flux through each boundary.
 
-`heat flux map': A postprocessor that computes the heat flux density across each boundary in outward direction, i.e., from the domain to the outside. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.''
+&lsquo;heat flux map&rsquo;: A postprocessor that computes the heat flux density across each boundary in outward direction, i.e., from the domain to the outside. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in &ldquo;Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.&rdquo;
 
-`heat flux statistics': A postprocessor that computes some statistics about the heat flux density across each boundary in outward direction, i.e., from the domain to the outside. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.''The point-wise heat flux can be obtained from the heat flux map postprocessor, which outputs the heat flux to a file, or the heat flux map visualization postprocessor, which outputs the heat flux for visualization.
+&lsquo;heat flux statistics&rsquo;: A postprocessor that computes some statistics about the heat flux density across each boundary in outward direction, i.e., from the domain to the outside. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in &ldquo;Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.&rdquo;The point-wise heat flux can be obtained from the heat flux map postprocessor, which outputs the heat flux to a file, or the heat flux map visualization postprocessor, which outputs the heat flux for visualization.
 
-As stated, this postprocessor computes the \textit{outbound} heat flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
+As stated, this postprocessor computes the *outbound* heat flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
 
-\note{In geodynamics, the term ``heat flux'' is often understood to be the quantity $- k \nabla T$, which is really a heat flux \textit{density}, i.e., a vector-valued field. In contrast to this, the current postprocessor only computes the integrated flux over each part of the boundary. Consequently, the units of the quantity computed here are $W=\frac{J}{s}$.}
+\note{In geodynamics, the term &ldquo;heat flux&rdquo; is often understood to be the quantity $- k \nabla T$, which is really a heat flux *density*, i.e., a vector-valued field. In contrast to this, the current postprocessor only computes the integrated flux over each part of the boundary. Consequently, the units of the quantity computed here are $W=\frac{J}{s}$.}
 
-The ``heat flux densities'' postprocessor computes the same quantity as the one here, but divided by the area of the surface.
+The &ldquo;heat flux densities&rdquo; postprocessor computes the same quantity as the one here, but divided by the area of the surface.
 
-`heating statistics': A postprocessor that computes some statistics about heating, averaged by volume.
+&lsquo;heating statistics&rsquo;: A postprocessor that computes some statistics about heating, averaged by volume.
 
-`load balance statistics': A postprocessor that computes statistics about the distribution of cells, and if present particles across subdomains. In particular, it computes maximal, average and minimal number of cells across all ranks. If there are particles it also computes the maximal, average, and minimum number of particles across all ranks, and maximal, average, and minimal ratio between local number of particles and local number of cells across all processes. All of these numbers can be useful to assess the load balance between different MPI ranks, as the difference between the mimimal and maximal load should be as small as possible.
+&lsquo;load balance statistics&rsquo;: A postprocessor that computes statistics about the distribution of cells, and if present particles across subdomains. In particular, it computes maximal, average and minimal number of cells across all ranks. If there are particles it also computes the maximal, average, and minimum number of particles across all ranks, and maximal, average, and minimal ratio between local number of particles and local number of cells across all processes. All of these numbers can be useful to assess the load balance between different MPI ranks, as the difference between the minimal and maximal load should be as small as possible.
 
-`mass flux statistics': A postprocessor that computes some statistics about the mass flux across boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the mass flux is computed in outward direction, i.e., from the domain to the outside, using the formula $\int_{\Gamma_i} \rho \mathbf v \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $\rho$ is the density as reported by the material model, $\mathbf v$ is the velocity, and $\mathbf n$ is the outward normal.
+&lsquo;mass flux statistics&rsquo;: A postprocessor that computes some statistics about the mass flux across boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the mass flux is computed in outward direction, i.e., from the domain to the outside, using the formula $\int_{\Gamma_i} \rho \mathbf v \cdot \mathbf n$ where $\Gamma_i$ is the part of the boundary with indicator $i$, $\rho$ is the density as reported by the material model, $\mathbf v$ is the velocity, and $\mathbf n$ is the outward normal.
 
-As stated, this postprocessor computes the \textit{outbound} mass flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
+As stated, this postprocessor computes the *outbound* mass flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
 
-\note{In geodynamics, the term ``mass flux'' is often understood to be the quantity $\rho \mathbf v$, which is really a mass flux \textit{density}, i.e., a vector-valued field. In contrast to this, the current postprocessor only computes the integrated flux over each part of the boundary. Consequently, the units of the quantity computed here are $\frac{kg}{s}$.}
+\note{In geodynamics, the term &ldquo;mass flux&rdquo; is often understood to be the quantity $\rho \mathbf v$, which is really a mass flux *density*, i.e., a vector-valued field. In contrast to this, the current postprocessor only computes the integrated flux over each part of the boundary. Consequently, the units of the quantity computed here are $\frac{kg}{s}$.}
 
-`material statistics': A postprocessor that computes some statistics about the material properties. In particular, it computes the volume-averages of the density and viscosity, and the total mass in the model. Specifically, it implements the following formulas in each time step: $\left<\rho\right> = \frac{1}{|\Omega|} \int_\Omega \rho(\mathbf x) \, \text{d}x$, $\left<\eta\right> = \frac{1}{|\Omega|} \int_\Omega \eta(\mathbf x) \, \text{d}x$, $M = \int_\Omega \rho(\mathbf x) \, \text{d}x$, where $|\Omega|$ is the volume of the domain.
+&lsquo;material statistics&rsquo;: A postprocessor that computes some statistics about the material properties. In particular, it computes the volume-averages of the density and viscosity, and the total mass in the model. Specifically, it implements the following formulas in each time step: $\left<\rho\right> = \frac{1}{|\Omega|} \int_\Omega \rho(\mathbf x) \, \text{d}x$, $\left<\eta\right> = \frac{1}{|\Omega|} \int_\Omega \eta(\mathbf x) \, \text{d}x$, $M = \int_\Omega \rho(\mathbf x) \, \text{d}x$, where $|\Omega|$ is the volume of the domain.
 
-`matrix statistics': A postprocessor that computes some statistics about the matrices. In particular, it outputs total memory consumption, total non-zero elements, and non-zero elements per block, for system matrix and system preconditioner matrix.
+&lsquo;matrix statistics&rsquo;: A postprocessor that computes some statistics about the matrices. In particular, it outputs total memory consumption, total non-zero elements, and non-zero elements per block, for system matrix and system preconditioner matrix.
 
-`maximum depth of field': A postprocessor that for each compositional field outputs the largest depth at which a quadrature point is found where the field has a value of 0.5 or larger. For fields that do not represent materials, but for example track a certain quantity like strain, this value of 0.5 does not necessarily make sense.
+&lsquo;maximum depth of field&rsquo;: A postprocessor that for each compositional field outputs the largest depth at which a quadrature point is found where the field has a value of 0.5 or larger. For fields that do not represent materials, but for example track a certain quantity like strain, this value of 0.5 does not necessarily make sense.
 
-`melt statistics': A postprocessor that computes some statistics about the melt (volume) fraction. If the material model does not implement a melt fraction function, the output is set to zero.
+&lsquo;melt statistics&rsquo;: A postprocessor that computes some statistics about the melt (volume) fraction. If the material model does not implement a melt fraction function, the output is set to zero.
 
-`memory statistics': A postprocessor that computes some statistics about the memory consumption. In particular, it computes the memory usage of the system matrix, triangulation, p4est, DoFHandler, current constraints, solution vector, and peak virtual memory usage, all in MB. It also outputs the memory usage of the system matrix to the screen.
+&lsquo;memory statistics&rsquo;: A postprocessor that computes some statistics about the memory consumption. In particular, it computes the memory usage of the system matrix, triangulation, p4est, DoFHandler, current constraints, solution vector, and peak virtual memory usage, all in MB. It also outputs the memory usage of the system matrix to the screen.
 
-`mobility statistics': A postprocessor that computes some statistics about mobility following Tackley (2000) and Lourenco et al. (2020).
+&lsquo;mobility statistics&rsquo;: A postprocessor that computes some statistics about mobility following Tackley (2000) and Lourenco et al. (2020).
 
-`particle count statistics': A postprocessor that computes some statistics about the particle distribution, if present in this simulation. In particular, it computes minimal, average and maximal values of particles per cell in the global domain.
+&lsquo;particle count statistics&rsquo;: A postprocessor that computes some statistics about the particle distribution, if present in this simulation. In particular, it computes minimal, average and maximal values of particles per cell in the global domain.
 
-`particles': A Postprocessor that creates particles that follow the velocity field of the simulation. The particles can be generated and propagated in various ways and they can carry a number of constant or time-varying properties. The postprocessor can write output positions and properties of all particles at chosen intervals, although this is not mandatory. It also allows other parts of the code to query the particles for information.
+&lsquo;particles&rsquo;: A Postprocessor that creates particles that follow the velocity field of the simulation. The particles can be generated and propagated in various ways and they can carry a number of constant or time-varying properties. The postprocessor can write output positions and properties of all particles at chosen intervals, although this is not mandatory. It also allows other parts of the code to query the particles for information.
 
-`point values': A postprocessor that evaluates the solution (i.e., velocity, pressure, temperature, and compositional fields along with other fields that are treated as primary variables) at the end of every time step or after a user-specified time interval at a given set of points and then writes this data into the file <point\_values.txt> in the output directory. The points at which the solution should be evaluated are specified in the section \texttt{Postprocess/Point values} in the input file.
+&lsquo;point values&rsquo;: A postprocessor that evaluates the solution (i.e., velocity, pressure, temperature, and compositional fields along with other fields that are treated as primary variables) at the end of every time step or after a user-specified time interval at a given set of points and then writes this data into the file <point\_values.txt> in the output directory. The points at which the solution should be evaluated are specified in the section `Postprocess/Point values` in the input file.
 
-In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates of the evaluation points, and (iii) followed by the values of the solution vector at this point. The time is provided in seconds or, if the global ``Use years in output instead of seconds'' parameter is set, in years. In the latter case, the velocity is also converted to meters/year, instead of meters/second.
+In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates of the evaluation points, and (iii) followed by the values of the solution vector at this point. The time is provided in seconds or, if the global &ldquo;Use years in output instead of seconds&rdquo; parameter is set, in years. In the latter case, the velocity is also converted to meters/year, instead of meters/second.
 
-\note{Evaluating the solution of a finite element field at arbitrarily chosen points is an expensive process. Using this postprocessor will only be efficient if the number of evaluation points or output times is relatively small. If you need a very large number of evaluation points, you should consider extracting this information from the visualization program you use to display the output of the `visualization' postprocessor.}
+\note{Evaluating the solution of a finite element field at arbitrarily chosen points is an expensive process. Using this postprocessor will only be efficient if the number of evaluation points or output times is relatively small. If you need a very large number of evaluation points, you should consider extracting this information from the visualization program you use to display the output of the &lsquo;visualization&rsquo; postprocessor.}
 
-`pressure statistics': A postprocessor that computes some statistics about the pressure field.
+&lsquo;pressure statistics&rsquo;: A postprocessor that computes some statistics about the pressure field.
 
-`rotation statistics': A postprocessor that computes some statistics about the rotational velocity of the model (i.e. integrated net rotation and angular momentum). In 2D we assume the model to be a cross-section through an infinite domain in z direction, with a zero z-velocity. Thus, the z-axis is the only possible rotation axis and both moment of inertia and angular momentum are scalar instead of tensor quantities.
+&lsquo;rotation statistics&rsquo;: A postprocessor that computes some statistics about the rotational velocity of the model (i.e. integrated net rotation and angular momentum). In 2d we assume the model to be a cross-section through an infinite domain in z direction, with a zero z-velocity. Thus, the z-axis is the only possible rotation axis and both moment of inertia and angular momentum are scalar instead of tensor quantities.
 
-`spherical velocity statistics': A postprocessor that computes radial, tangential and total RMS velocity.
+&lsquo;spherical velocity statistics&rsquo;: A postprocessor that computes radial, tangential and total RMS velocity.
 
-`temperature statistics': A postprocessor that computes some statistics about the temperature field.
+&lsquo;temperature statistics&rsquo;: A postprocessor that computes some statistics about the temperature field.
 
-`topography': A postprocessor intended for use with a deforming top surface.  After every step it loops over all the vertices on the top surface and determines the maximum and minimum topography relative to a reference datum (initial box height for a box geometry model or initial radius for a sphere/spherical shell geometry model). If 'Topography.Output to file' is set to true, also outputs topography into text files named `topography.NNNNN' in the output directory, where NNNNN is the number of the time step.
+&lsquo;topography&rsquo;: A postprocessor intended for use with a deforming top surface.  After every step it loops over all the vertices on the top surface and determines the maximum and minimum topography relative to a reference datum (initial box height for a box geometry model or initial radius for a sphere/spherical shell geometry model). If &rsquo;Topography.Output to file&rsquo; is set to true, also outputs topography into text files named &lsquo;topography.NNNNN&rsquo; in the output directory, where NNNNN is the number of the time step.
 The file format then consists of lines with Euclidean coordinates followed by the corresponding topography value.Topography is printed/written in meters.
 
-`velocity boundary statistics': A postprocessor that computes some statistics about the velocity along the boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the min and max velocity magnitude is computed.
+&lsquo;velocity boundary statistics&rsquo;: A postprocessor that computes some statistics about the velocity along the boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the min and max velocity magnitude is computed.
 
-`velocity statistics': A postprocessor that computes some statistics about the velocity field.
+&lsquo;velocity statistics&rsquo;: A postprocessor that computes the root mean square and maximum velocity in the computational domain.
 
-`viscous dissipation statistics': A postprocessor that outputs the viscous rate of dissipation of energy for each compositional field (where the field has a value of 0.5 or more) as well as over the whole domain. When all the fields represent lithologies and there is no background field, the sum of the individual field's dissipation should equal that over the whole domain. The viscous dissipation is computed as: $\int_{V}\left(\sigma' \dot{\epsilon}' \right)$, where $\sigma'$  is the deviatoric stress and $\dot{\epsilon}'$ the deviatoric strain rate.Note then when shear heating is included in the temperature equation, it is better to use the 'heating statistics' postprocessor.
+&lsquo;viscous dissipation statistics&rsquo;: A postprocessor that outputs the viscous rate of dissipation of energy for each compositional field (where the field has a value of 0.5 or more) as well as over the whole domain. When all the fields represent lithologies and there is no background field, the sum of the individual field&rsquo;s dissipation should equal that over the whole domain. The viscous dissipation is computed as: $\int_{V}\left(\sigma&rsquo; \dot{\epsilon}&rsquo; \right)$, where $\sigma&rsquo;$  is the deviatoric stress and $\dot{\epsilon}&rsquo;$ the deviatoric strain rate.Note then when shear heating is included in the temperature equation, it is better to use the &rsquo;heating statistics&rsquo; postprocessor.
 
-`visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
+&lsquo;visualization&rsquo;: A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection &rsquo;Visualization&rsquo;.
 
-`volume of fluid statistics': A postprocessor that computes some statistics about the volume-of-fluid fields.
+&lsquo;volume of fluid statistics&rsquo;: A postprocessor that computes some statistics about the volume-of-fluid fields.
 
 (parameters:Postprocess/Run_20postprocessors_20on_20nonlinear_20iterations)=
 ### __Parameter name:__ Run postprocessors on nonlinear iterations
@@ -125,17 +129,17 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether or not the postprocessors should be executed after each of the nonlinear iterations done within one time step. As this is mainly an option for the purposes of debugging, it is not supported when the 'Time between graphical output' is larger than zero, or when the postprocessor is not intended to be run more than once per timestep.
+**Documentation:** Whether or not the postprocessors should be executed after each of the nonlinear iterations done within one time step. As this is mainly an option for the purposes of debugging, it is not supported when the &rsquo;Time between graphical output&rsquo; is larger than zero, or when the postprocessor is not intended to be run more than once per timestep.
 
 (parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics)=
-## **Parameters in section** Postprocess/Boundary strain rate residual statistics
+## **Subsection:** Postprocess / Boundary strain rate residual statistics
 (parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/postprocess/boundary-strain-rate-residual/
 
 **Pattern:** [DirectoryName]
 
-**Documentation:** The name of a directory that contains the ascii data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
+**Documentation:** The name of a directory that contains the ascii data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
 
 (parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Data_20file_20name)=
 ### __Parameter name:__ Data file name
@@ -154,14 +158,14 @@ The file format then consists of lines with Euclidean coordinates followed by th
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model.
 
 (parameters:Postprocess/Boundary_20velocity_20residual_20statistics)=
-## **Parameters in section** Postprocess/Boundary velocity residual statistics
+## **Subsection:** Postprocess / Boundary velocity residual statistics
 (parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/
 
 **Pattern:** [DirectoryName]
 
-**Documentation:** The name of a directory that contains the GPlates model or the ascii data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
+**Documentation:** The name of a directory that contains the GPlates model or the ascii data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
 
 (parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Data_20file_20name)=
 ### __Parameter name:__ Data file name
@@ -169,7 +173,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 **Pattern:** [Anything]
 
-**Documentation:** The file name of the input velocity as a GPlates model or an ascii data. For the GPlates model, provide file in the same format as described in the 'gplates' boundary velocity plugin. For the ascii data, provide file in the same format as described in  'ascii data' initial composition plugin.
+**Documentation:** The file name of the input velocity as a GPlates model or an ascii data. For the GPlates model, provide file in the same format as described in the &rsquo;gplates&rsquo; boundary velocity plugin. For the ascii data, provide file in the same format as described in  &rsquo;ascii data&rsquo; initial composition plugin.
 
 (parameters:Postprocess/Boundary_20velocity_20residual_20statistics/Scale_20factor)=
 ### __Parameter name:__ Scale factor
@@ -193,10 +197,10 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 **Pattern:** [Bool]
 
-**Documentation:** Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.GPlates data is always interpreted to be in east and north directions and is not affected by this parameter.
+**Documentation:** Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.GPlates data is always interpreted to be in east and north directions and is not affected by this parameter.
 
 (parameters:Postprocess/Command)=
-## **Parameters in section** Postprocess/Command
+## **Subsection:** Postprocess / Command
 (parameters:Postprocess/Command/Command)=
 ### __Parameter name:__ Command
 **Default value:**
@@ -219,30 +223,40 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 **Pattern:** [Bool]
 
-**Documentation:** Select whether \aspect{} should terminate if the command returns a non-zero exit status.
+**Documentation:** Select whether ASPECT should terminate if the command returns a non-zero exit status.
+
+(parameters:Postprocess/Composition_20velocity_20statistics)=
+## **Subsection:** Postprocess / Composition velocity statistics
+(parameters:Postprocess/Composition_20velocity_20statistics/Names_20of_20selected_20compositional_20fields)=
+### __Parameter name:__ Names of selected compositional fields
+**Default value:**
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** A list of names for each of the compositional fields that you want to compute the combined RMS velocity for.
 
 (parameters:Postprocess/Depth_20average)=
-## **Parameters in section** Postprocess/Depth average
+## **Subsection:** Postprocess / Depth average
 (parameters:Postprocess/Depth_20average/Depth_20boundaries_20of_20zones)=
 ### __Parameter name:__ Depth boundaries of zones
 **Default value:**
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The depth boundaries of zones within which we are to compute averages. By default this list is empty and we subdivide the entire domain into equidistant depth zones and compute averages within each of these zones. If this list is not empty it has to contain one more entry than the 'Number of zones' parameter, representing the upper and lower depth boundary of each zone. It is not necessary to cover the whole depth-range (i.e. you can select to only average in a single layer by choosing 2 arbitrary depths as the boundaries of that layer).
+**Documentation:** The depth boundaries of zones within which we are to compute averages. By default this list is empty and we subdivide the entire domain into equidistant depth zones and compute averages within each of these zones. If this list is not empty it has to contain one more entry than the &rsquo;Number of zones&rsquo; parameter, representing the upper and lower depth boundary of each zone. It is not necessary to cover the whole depth-range (i.e. you can select to only average in a single layer by choosing 2 arbitrary depths as the boundaries of that layer).
 
 (parameters:Postprocess/Depth_20average/List_20of_20output_20variables)=
 ### __Parameter name:__ List of output variables
 **Default value:** all
 
-**Pattern:** [MultipleSelection all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|rising velocity|Vs|Vp|viscosity|vertical heat flux|vertical mass flux|composition mass ]
+**Pattern:** [MultipleSelection all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|rising velocity|Vs|Vp|log viscosity|viscosity|vertical heat flux|vertical mass flux|composition mass ]
 
 **Documentation:** A comma separated list which specifies which quantities to average in each depth slice. It defaults to averaging all available quantities, but this can be an expensive operation, so you may want to select only a few.
 
 Specifically, the sinking velocity is defined as the scalar product of the velocity and a unit vector in the direction of gravity, if positive (being zero if this product is negative, which would correspond to an upward velocity). The rising velocity is the opposite: the scalar product of the velocity and a unit vector in the direction opposite of gravity, if positive (being zero for downward velocities).
 
 List of options:
-all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|rising velocity|Vs|Vp|viscosity|vertical heat flux|vertical mass flux|composition mass
+all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|rising velocity|Vs|Vp|log viscosity|viscosity|vertical heat flux|vertical mass flux|composition mass
 
 (parameters:Postprocess/Depth_20average/Number_20of_20zones)=
 ### __Parameter name:__ Number of zones
@@ -266,10 +280,10 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Dynamic_20core_20statistics)=
-## **Parameters in section** Postprocess/Dynamic core statistics
+## **Subsection:** Postprocess / Dynamic core statistics
 (parameters:Postprocess/Dynamic_20core_20statistics/Excess_20entropy_20only)=
 ### __Parameter name:__ Excess entropy only
 **Default value:** false
@@ -279,14 +293,14 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** Output the excess entropy only instead the each entropy terms.
 
 (parameters:Postprocess/Dynamic_20topography)=
-## **Parameters in section** Postprocess/Dynamic topography
+## **Subsection:** Postprocess / Dynamic topography
 (parameters:Postprocess/Dynamic_20topography/Density_20above)=
 ### __Parameter name:__ Density above
 **Default value:** 0.
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. crustal rock, and the density of the material that is displaced (generally water or air). While the density of crustal rock is part of the material model, this parameter `Density above' allows the user to specify the density value of material that is displaced above the solid surface. By default this material is assumed to be air, with a density of 0. Units: \si{\kilogram\per\meter\cubed}.
+**Documentation:** Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. crustal rock, and the density of the material that is displaced (generally water or air). While the density of crustal rock is part of the material model, this parameter &lsquo;Density above&rsquo; allows the user to specify the density value of material that is displaced above the solid surface. By default this material is assumed to be air, with a density of 0. Units: \si{\kilogram\per\meter\cubed}.
 
 (parameters:Postprocess/Dynamic_20topography/Density_20below)=
 ### __Parameter name:__ Density below
@@ -294,7 +308,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. mantle above CMB, and the density of the material that is displaced (generally outer core material). While the density of mantle rock is part of the material model, this parameter `Density below' allows the user to specify the density value of material that is displaced below the solid surface. By default this material is assumed to be outer core material with a density of 9900. Units: \si{\kilogram\per\meter\cubed}.
+**Documentation:** Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. mantle above CMB, and the density of the material that is displaced (generally outer core material). While the density of mantle rock is part of the material model, this parameter &lsquo;Density below&rsquo; allows the user to specify the density value of material that is displaced below the solid surface. By default this material is assumed to be outer core material with a density of 9900. Units: \si{\kilogram\per\meter\cubed}.
 
 (parameters:Postprocess/Dynamic_20topography/Output_20bottom)=
 ### __Parameter name:__ Output bottom
@@ -313,7 +327,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** Whether to output a file containing the surface dynamic topography.
 
 (parameters:Postprocess/Geoid)=
-## **Parameters in section** Postprocess/Geoid
+## **Subsection:** Postprocess / Geoid
 (parameters:Postprocess/Geoid/Also_20output_20the_20gravity_20anomaly)=
 ### __Parameter name__: Also output the gravity anomaly
 **Alias:** [Output gravity anomaly](parameters:Postprocess/Geoid/Output_20gravity_20anomaly)
@@ -449,7 +463,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** Option to output the spherical harmonic coefficients of the surface topography contribution to the maximum degree. The default is false.
 
 (parameters:Postprocess/Global_20statistics)=
-## **Parameters in section** Postprocess/Global statistics
+## **Subsection:** Postprocess / Global statistics
 (parameters:Postprocess/Global_20statistics/Write_20statistics_20for_20each_20nonlinear_20iteration)=
 ### __Parameter name:__ Write statistics for each nonlinear iteration
 **Default value:** false
@@ -459,7 +473,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** Whether to put every nonlinear iteration into a separate line in the statistics file (if true), or to output only one line per time step that contains the total number of iterations of the Stokes and advection linear system solver.
 
 (parameters:Postprocess/Gravity_20calculation)=
-## **Parameters in section** Postprocess/Gravity calculation
+## **Subsection:** Postprocess / Gravity calculation
 (parameters:Postprocess/Gravity_20calculation/List_20of_20latitude)=
 ### __Parameter name:__ List of latitude
 **Default value:**
@@ -602,7 +616,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of gravity output files. A value of 0 indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of gravity output files. A value of 0 indicates that output should be generated in each time step. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Gravity_20calculation/Time_20steps_20between_20gravity_20output)=
 ### __Parameter name:__ Time steps between gravity output
@@ -613,24 +627,24 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 **Documentation:** The maximum number of time steps between each generation of gravity output files.
 
 (parameters:Postprocess/Memory_20statistics)=
-## **Parameters in section** Postprocess/Memory statistics
+## **Subsection:** Postprocess / Memory statistics
 (parameters:Postprocess/Memory_20statistics/Output_20peak_20virtual_20memory_20_28VmPeak_29)=
-### __Parameter name:__ Output peak virtual memory _28VmPeak_29
+### __Parameter name:__ Output peak virtual memory (VmPeak)
 **Default value:** true
 
 **Pattern:** [Bool]
 
-**Documentation:** If set to 'true', also output the peak virtual memory usage (computed as the maximum over all processors).
+**Documentation:** If set to &rsquo;true&rsquo;, also output the peak virtual memory usage (computed as the maximum over all processors).
 
 (parameters:Postprocess/Particles)=
-## **Parameters in section** Postprocess/Particles
+## **Subsection:** Postprocess / Particles
 (parameters:Postprocess/Particles/Allow_20cells_20without_20particles)=
 ### __Parameter name:__ Allow cells without particles
 **Default value:** false
 
 **Pattern:** [Bool]
 
-**Documentation:** By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles, In case both the current cell and its neighbors are empty, the interpolator will return 0 for the current cell's properties.
+**Documentation:** By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles. In case both the current cell and its neighbors are empty, the interpolator will return 0 for the current cell&rsquo;s properties.
 
 (parameters:Postprocess/Particles/Data_20output_20format)=
 ### __Parameter name:__ Data output format
@@ -646,7 +660,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Anything]
 
-**Documentation:** A comma separated list of particle properties that should \textit{not} be output. If this list contains the entry `all', only the id of particles will be provided in graphical output files.
+**Documentation:** A comma separated list of particle properties that should *not* be output. If this list contains the entry &lsquo;all&rsquo;, only the id of particles will be provided in graphical output files.
 
 (parameters:Postprocess/Particles/Integration_20scheme)=
 ### __Parameter name:__ Integration scheme
@@ -658,15 +672,15 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 In practice, the exact velocity $\mathbf u(\mathbf x,t)$ is of course not available, but only a numerical approximation $\mathbf u_h(\mathbf x,t)$. Furthermore, this approximation is only available at discrete time steps, $\mathbf u^n(\mathbf x)=\mathbf u(\mathbf x,t^n)$, and these need to be interpolated between time steps if the integrator for the equation above requires an evaluation at time points between the discrete time steps. If we denote this interpolation in time by $\tilde{\mathbf u}_h(\mathbf x,t)$ where $\tilde{\mathbf u}_h(\mathbf x,t^n)=\mathbf u^n(\mathbf x)$, then the equation the differential equation solver really tries to solve is $\frac{d}{dt}\tilde{\mathbf x}_k(t) =  \tilde{\mathbf u}_h(\mathbf x_k(t),t)$.
 
-As a consequence of these considerations, if you try to assess convergence properties of an ODE integrator -- for example to verify that the RK4 integrator converges with fourth order --, it is important to recall that the integrator may not solve the equation you think it solves. If, for example, we call the numerical solution of the ODE $\tilde{\mathbf x}_{k,h}(t)$, then the error will typically satisfy a relationship like \[  \| \tilde{\mathbf x}_k(T) - \tilde{\mathbf x}_{k,h}(T) \|  \le  C(T) \Delta t^p\] where $\Delta t$ is the time step and $p$ the convergence order of the method, and $C(T)$ is a (generally unknown) constant that depends on the end time $T$ at which one compares the solutions. On the other hand, an analytically computed trajectory would likely use the \textit{exact} velocity, and one may be tempted to compute $\| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \|$, but this quantity will, in the best case, only satisfy an estimate of the form \[  \| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \|  \le  C_1(T) \Delta t^p  + C_2(T) \| \mathbf u-\mathbf u_h \|  + C_3(T) \| \mathbf u_h-\tilde{\mathbf u}_h \|\] with appropriately chosen norms for the second and third term. These second and third terms typically converge to zero at relatively low rates (compared to the order $p$ of the integrator, which can often be chosen relatively high) in the mesh size $h$ and the time step size $\\Delta t$, limiting the overall accuracy of the ODE integrator.
+As a consequence of these considerations, if you try to assess convergence properties of an ODE integrator -- for example to verify that the RK4 integrator converges with fourth order --, it is important to recall that the integrator may not solve the equation you think it solves. If, for example, we call the numerical solution of the ODE $\tilde{\mathbf x}_{k,h}(t)$, then the error will typically satisfy a relationship like \[  \| \tilde{\mathbf x}_k(T) - \tilde{\mathbf x}_{k,h}(T) \|  \le  C(T) \Delta t^p\] where $\Delta t$ is the time step and $p$ the convergence order of the method, and $C(T)$ is a (generally unknown) constant that depends on the end time $T$ at which one compares the solutions. On the other hand, an analytically computed trajectory would likely use the *exact* velocity, and one may be tempted to compute $\| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \|$, but this quantity will, in the best case, only satisfy an estimate of the form \[  \| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \|  \le  C_1(T) \Delta t^p  + C_2(T) \| \mathbf u-\mathbf u_h \|  + C_3(T) \| \mathbf u_h-\tilde{\mathbf u}_h \|\] with appropriately chosen norms for the second and third term. These second and third terms typically converge to zero at relatively low rates (compared to the order $p$ of the integrator, which can often be chosen relatively high) in the mesh size $h$ and the time step size $\\Delta t$, limiting the overall accuracy of the ODE integrator.
 
 Select one of the following models:
 
-`euler': Explicit Euler scheme integrator, where $y_{n+1} = y_n + \Delta t \, v(y_n)$. This requires only one integration substep per timestep.
+&lsquo;euler&rsquo;: Explicit Euler scheme integrator, where $y_{n+1} = y_n + \Delta t \, v(y_n)$. This requires only one integration substep per timestep.
 
-`rk2': Second Order Runge Kutta integrator $y_{n+1} = y_n + \Delta t\, v(t_{n+1/2}, y_{n} + \frac{1}{2} k_1)$ where $k_1 = \Delta t\, v(t_{n}, y_{n})$
+&lsquo;rk2&rsquo;: Second Order Runge Kutta integrator $y_{n+1} = y_n + \Delta t\, v(t_{n+1/2}, y_{n} + \frac{1}{2} k_1)$ where $k_1 = \Delta t\, v(t_{n}, y_{n})$
 
-`rk4': Runge Kutta fourth order integrator, where $y_{n+1} = y_n + \frac{1}{6} k_1 + \frac{1}{3} k_2 + \frac{1}{3} k_3 + \frac{1}{6} k_4$ and $k_1$, $k_2$, $k_3$, $k_4$ are defined as usual.
+&lsquo;rk4&rsquo;: Runge Kutta fourth order integrator, where $y_{n+1} = y_n + \frac{1}{6} k_1 + \frac{1}{3} k_2 + \frac{1}{3} k_3 + \frac{1}{6} k_4$ and $k_1$, $k_2$, $k_3$, $k_4$ are defined as usual.
 
 (parameters:Postprocess/Particles/Interpolation_20scheme)=
 ### __Parameter name:__ Interpolation scheme
@@ -676,51 +690,59 @@ Select one of the following models:
 
 **Documentation:** Select one of the following models:
 
-`bilinear least squares': Uses linear least squares to obtain the slopes and center of a 2D or 3D plane from the particle positions and a particular property value on those particles. Interpolate this property onto a vector of points. If the limiter is enabled then it will ensure the interpolated properties do not exceed the range of the minimum and maximum of the values of the property on the particles. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
+&lsquo;bilinear least squares&rsquo;: Uses linear least squares to obtain the slopes and center of a 2d or 3d plane from the particle positions and a particular property value on those particles. Interpolate this property onto a vector of points. If the limiter is enabled then it will ensure the interpolated properties do not exceed the range of the minimum and maximum of the values of the property on the particles. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
 
-`cell average': Return the arithmetic average of all particle properties in the given cell, or in the neighboring cells if the given cell is empty. In case the neighboring cells are also empty, and 'Allow cells without particles' is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
+&lsquo;cell average&rsquo;: Return the arithmetic average of all particle properties in the given cell, or in the neighboring cells if the given cell is empty. In case the neighboring cells are also empty, and &rsquo;Allow cells without particles&rsquo; is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
 
-`harmonic average': Return the harmonic average of all particle properties in the given cell. If the cell contains no particles, return the harmonic average of the properties in the neighboring cells. In case the neighboring cells are also empty, and 'Allow cells without particles' is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
+&lsquo;harmonic average&rsquo;: Return the harmonic average of all particle properties in the given cell. If the cell contains no particles, return the harmonic average of the properties in the neighboring cells. In case the neighboring cells are also empty, and &rsquo;Allow cells without particles&rsquo; is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
 
-`nearest neighbor': Return the properties of the nearest neighboring particle in the current cell, or nearest particle in nearest neighboring cell if current cell is empty. In case the neighboring cells are also empty, and 'Allow cells without particles' is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
+&lsquo;nearest neighbor&rsquo;: Return the properties of the nearest neighboring particle in the current cell, or nearest particle in nearest neighboring cell if current cell is empty. In case the neighboring cells are also empty, and &rsquo;Allow cells without particles&rsquo; is set to true, the interpolator returns 0. Otherwise, an exception is thrown.
 
-`quadratic least squares': Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
+&lsquo;quadratic least squares&rsquo;: Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
 
 (parameters:Postprocess/Particles/List_20of_20particle_20properties)=
 ### __Parameter name:__ List of particle properties
 **Default value:**
 
-**Pattern:** [MultipleSelection composition|elastic stress|function|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|velocity|viscoplastic strain invariants ]
+**Pattern:** [MultipleSelection composition|cpo bingham average|crystal preferred orientation|elastic stress|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
 
 **Documentation:** A comma separated list of particle properties that should be tracked. By default none is selected, which means only position, velocity and id of the particles are output.
 
 The following properties are available:
 
-`composition': Implementation of a plugin in which the particle property is defined by the compositional fields in the model. This can be used to track solid compositionevolution over time.
+&lsquo;composition&rsquo;: Implementation of a plugin in which the particle property is defined by the compositional fields in the model. This can be used to track solid compositionevolution over time.
 
-`elastic stress': A plugin in which the particle property tensor is defined as the total elastic stress a particle has accumulated. See the viscoelastic material model documentation for more detailed information.
+&lsquo;cpo bingham average&rsquo;: This is a particle property plugin which computes the Bingham average for the Crystal Preferred Orientation particle property plugin so that it can be visualized.
 
-`function': Implementation of a model in which the particle property is set by evaluating an explicit function at the initial position of each particle. The function is defined in the parameters in section ``Particles|Function''. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
+&lsquo;crystal preferred orientation&rsquo;: The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO) on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation matrix. This allows for CPO evolution tracking with polycrystalline kinematic CrystalPreferredOrientation evolution models such as D-Rex (Kaminski and Ribe, 2001; Kaminski et al., 2004).
 
-`initial composition': Implementation of a plugin in which the particle property is given as the initial composition at the particle's initial position. The particle gets as many properties as there are compositional fields.
+&lsquo;elastic stress&rsquo;: A plugin in which the particle property tensor is defined as the total elastic stress a particle has accumulated. See the viscoelastic material model documentation for more detailed information.
 
-`initial position': Implementation of a plugin in which the particle property is given as the initial position of the particle. This property is vector-valued with as many components as there are space dimensions. In practice, it is often most useful to only visualize one of the components of this vector, or the magnitude of the vector. For example, in a spherical mantle simulation, the magnitude of this property equals the starting radius of a particle, and is thereby indicative of which part of the mantle a particle comes from.
+&lsquo;function&rsquo;: Implementation of a model in which the particle property is set by evaluating an explicit function at the initial position of each particle. The function is defined in the parameters in section &ldquo;Particles|Function&rdquo;. The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
-`integrated strain': A plugin in which the particle property tensor is defined as the deformation gradient tensor $\mathbf F$ this particle has experienced. $\mathbf F$ can be polar-decomposed into the left stretching tensor $\mathbf L$ (the finite strain we are interested in), and the rotation tensor $\mathbf Q$. See the corresponding cookbook in the manual for more detailed information.
+&lsquo;grain size&rsquo;: A plugin in which the particle property is defined as the evolving grain size of a particle. See the grain_size material model documentation for more detailed information.
 
-`integrated strain invariant': A plugin in which the particle property is defined as the finite strain invariant ($\varepsilon_{ii}$). This property is calculated with the timestep ($dt$) and the second invariant of the deviatoric strain rate tensor ($\dot{\varepsilon}_{ii}$), where the value at time step $n$ is $\varepsilon_{ii}^{n} = \varepsilon_{ii}^{n-1} + dt\dot{\varepsilon}_{ii}$.
+&lsquo;initial composition&rsquo;: Implementation of a plugin in which the particle property is given as the initial composition at the particle&rsquo;s initial position. The particle gets as many properties as there are compositional fields.
 
-`melt particle': Implementation of a plugin in which the particle property is defined as presence of melt above a threshold, which can be set as an input parameter. This property is set to 0 if melt is not present and set to 1 if melt is present.
+&lsquo;initial position&rsquo;: Implementation of a plugin in which the particle property is given as the initial position of the particle. This property is vector-valued with as many components as there are space dimensions. In practice, it is often most useful to only visualize one of the components of this vector, or the magnitude of the vector. For example, in a spherical mantle simulation, the magnitude of this property equals the starting radius of a particle, and is thereby indicative of which part of the mantle a particle comes from.
 
-`pT path': Implementation of a plugin in which the particle property is defined as the current pressure and temperature at this position. This can be used to generate pressure-temperature paths of material points over time.
+&lsquo;integrated strain&rsquo;: A plugin in which the particle property tensor is defined as the deformation gradient tensor $\mathbf F$ this particle has experienced. $\mathbf F$ can be polar-decomposed into the left stretching tensor $\mathbf L$ (the finite strain we are interested in), and the rotation tensor $\mathbf Q$. See the corresponding cookbook in the manual for more detailed information.
 
-`position': Implementation of a plugin in which the particle property is defined as the current position.
+&lsquo;integrated strain invariant&rsquo;: A plugin in which the particle property is defined as the finite strain invariant ($\varepsilon_{ii}$). This property is calculated with the timestep ($dt$) and the second invariant of the deviatoric strain rate tensor ($\dot{\varepsilon}_{ii}$), where the value at time step $n$ is $\varepsilon_{ii}^{n} = \varepsilon_{ii}^{n-1} + dt\dot{\varepsilon}_{ii}$.
 
-`reference position': Implementation of a plugin in which the particle property is defined as the current reference position.
+&lsquo;melt particle&rsquo;: Implementation of a plugin in which the particle property is defined as presence of melt above a threshold, which can be set as an input parameter. This property is set to 0 if melt is not present and set to 1 if melt is present.
 
-`velocity': Implementation of a plugin in which the particle property is defined as the recent velocity at this position.
+&lsquo;pT path&rsquo;: Implementation of a plugin in which the particle property is defined as the current pressure and temperature at this position. This can be used to generate pressure-temperature paths of material points over time.
 
-`viscoplastic strain invariants': A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in \texttt{benchmarks/buiter\_et\_al\_2008\_jgr/plugin/},and is effectively the same as what the visco plastic material model uses for compositional fields.
+&lsquo;position&rsquo;: Implementation of a plugin in which the particle property is defined as the current position.
+
+&lsquo;reference position&rsquo;: Implementation of a plugin in which the particle property is defined as the current reference position.
+
+&lsquo;strain rate&rsquo;: Implementation of a plugin in which the time evolution of strain rate is saved and stored on the particles.
+
+&lsquo;velocity&rsquo;: Implementation of a plugin in which the particle property is defined as the recent velocity at this position.
+
+&lsquo;viscoplastic strain invariants&rsquo;: A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in `benchmarks/buiter\_et\_al\_2008\_jgr/plugin/`,and is effectively the same as what the visco plastic material model uses for compositional fields.
 
 (parameters:Postprocess/Particles/Load_20balancing_20strategy)=
 ### __Parameter name:__ Load balancing strategy
@@ -736,7 +758,7 @@ The following properties are available:
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** Upper limit for particle number per cell. This limit is useful for adaptive meshes to prevent coarse cells from slowing down the whole model. It will be checked and enforced after mesh refinement, after MPI transfer of particles and after particle movement. If there are \texttt{n\_number\_of\_particles} $>$ \texttt{max\_particles\_per\_cell} particles in one cell then \texttt{n\_number\_of\_particles} - \texttt{max\_particles\_per\_cell} particles in this cell are randomly chosen and destroyed.
+**Documentation:** Upper limit for particle number per cell. This limit is useful for adaptive meshes to prevent coarse cells from slowing down the whole model. It will be checked and enforced after mesh refinement, after MPI transfer of particles and after particle movement. If there are `n\_number\_of\_particles` $>$ `max\_particles\_per\_cell` particles in one cell then `n\_number\_of\_particles` - `max\_particles\_per\_cell` particles in this cell are randomly chosen and destroyed.
 
 (parameters:Postprocess/Particles/Minimum_20particles_20per_20cell)=
 ### __Parameter name:__ Minimum particles per cell
@@ -744,7 +766,7 @@ The following properties are available:
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** Lower limit for particle number per cell. This limit is useful for adaptive meshes to prevent fine cells from being empty of particles. It will be checked and enforced after mesh refinement and after particle movement. If there are \texttt{n\_number\_of\_particles} $<$ \texttt{min\_particles\_per\_cell} particles in one cell then \texttt{min\_particles\_per\_cell} - \texttt{n\_number\_of\_particles} particles are generated and randomly placed in this cell. If the particles carry properties the individual property plugins control how the properties of the new particles are initialized.
+**Documentation:** Lower limit for particle number per cell. This limit is useful for adaptive meshes to prevent fine cells from being empty of particles. It will be checked and enforced after mesh refinement and after particle movement. If there are `n\_number\_of\_particles` $<$ `min\_particles\_per\_cell` particles in one cell then `min\_particles\_per\_cell` - `n\_number\_of\_particles` particles are generated and randomly placed in this cell. If the particles carry properties the individual property plugins control how the properties of the new particles are initialized.
 
 (parameters:Postprocess/Particles/Number_20of_20grouped_20files)=
 ### __Parameter name:__ Number of grouped files
@@ -760,7 +782,7 @@ The following properties are available:
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, '1e4' particles) but it is interpreted as an integer, of course.
+**Documentation:** Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, &rsquo;1e4&rsquo; particles) but it is interpreted as an integer, of course.
 
 (parameters:Postprocess/Particles/Particle_20generator_20name)=
 ### __Parameter name:__ Particle generator name
@@ -770,19 +792,19 @@ The following properties are available:
 
 **Documentation:** Select one of the following models:
 
-`ascii file': Generates a distribution of particles from coordinates specified in an Ascii data file. The file format is a simple text file, with as many columns as spatial dimensions and as many lines as particles to be generated. Initial comment lines starting with `#' will be discarded. Note that this plugin always generates as many particles as there are coordinates in the data file, the ``Postprocess/Particles/Number of particles'' parameter has no effect on this plugin. All of the values that define this generator are read from a section ``Postprocess/Particles/Generator/Ascii file'' in the input file, see Section~\ref{parameters:Postprocess/Particles/Generator/Ascii_20file}.
+&lsquo;ascii file&rsquo;: Generates a distribution of particles from coordinates specified in an Ascii data file. The file format is a simple text file, with as many columns as spatial dimensions and as many lines as particles to be generated. Initial comment lines starting with &lsquo;#&rsquo; will be discarded. Note that this plugin always generates as many particles as there are coordinates in the data file, the &ldquo;Postprocess/Particles/Number of particles&rdquo; parameter has no effect on this plugin. All of the values that define this generator are read from a section &ldquo;Postprocess/Particles/Generator/Ascii file&rdquo; in the input file, see Section~\ref{parameters:Postprocess/Particles/Generator/Ascii_20file}.
 
-`probability density function': Generate a random distribution of particles over the entire simulation domain. The probability density is prescribed in the form of a user-prescribed function. The format of this function follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}. The return value of the function is always checked to be a non-negative probability density but it can be zero in parts of the domain.
+&lsquo;probability density function&rsquo;: Generate a random distribution of particles over the entire simulation domain. The probability density is prescribed in the form of a user-prescribed function. The format of this function follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`. The return value of the function is always checked to be a non-negative probability density but it can be zero in parts of the domain.
 
-`quadrature points': Generates particles at the quadrature points of each active cell of the triangulation. Here, Gauss quadrature of degree (velocity\_degree + 1), is used similarly to the assembly of Stokes matrix.
+&lsquo;quadrature points&rsquo;: Generates particles at the quadrature points of each active cell of the triangulation. Here, Gauss quadrature of degree (velocity\_degree + 1), is used similarly to the assembly of Stokes matrix.
 
-`random uniform': Generates a random uniform distribution of particles over the entire simulation domain.
+&lsquo;random uniform&rsquo;: Generates a random uniform distribution of particles over the entire simulation domain.
 
-`reference cell': Generates a uniform distribution of particles per cell and spatial direction in the unit cell and transforms each of the particles back to real region in the model domain. Uniform here means the particles will be generated with an equal spacing in each spatial dimension.
+&lsquo;reference cell&rsquo;: Generates a uniform distribution of particles per cell and spatial direction in the unit cell and transforms each of the particles back to real region in the model domain. Uniform here means the particles will be generated with an equal spacing in each spatial dimension.
 
-`uniform box': Generate a uniform distribution of particles over a rectangular domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spatial dimension. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
+&lsquo;uniform box&rsquo;: Generate a uniform distribution of particles over a rectangular domain in 2d or 3d. Uniform here means the particles will be generated with an equal spacing in each spatial dimension. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 
-`uniform radial': Generate a uniform distribution of particles over a spherical domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
+&lsquo;uniform radial&rsquo;: Generate a uniform distribution of particles over a spherical domain in 2d or 3d. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 
 (parameters:Postprocess/Particles/Particle_20weight)=
 ### __Parameter name:__ Particle weight
@@ -790,7 +812,7 @@ The following properties are available:
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** Weight that is associated with the computational load of a single particle. The sum of particle weights will be added to the sum of cell weights to determine the partitioning of the mesh if the `repartition' particle load balancing strategy is selected. The optimal weight depends on the used integrator and particle properties. In general for a more expensive integrator and more expensive properties a larger particle weight is recommended. Before adding the weights of particles, each cell already carries a weight of 1000 to account for the cost of field-based computations.
+**Documentation:** Weight that is associated with the computational load of a single particle. The sum of particle weights will be added to the sum of cell weights to determine the partitioning of the mesh if the &lsquo;repartition&rsquo; particle load balancing strategy is selected. The optimal weight depends on the used integrator and particle properties. In general for a more expensive integrator and more expensive properties a larger particle weight is recommended. Before adding the weights of particles, each cell already carries a weight of 1000 to account for the cost of field-based computations.
 
 (parameters:Postprocess/Particles/Temporary_20output_20location)=
 ### __Parameter name:__ Temporary output location
@@ -808,7 +830,7 @@ The following properties are available:
 
 **Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
 
-Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Particles/Update_20ghost_20particles)=
 ### __Parameter name:__ Update ghost particles
@@ -824,19 +846,163 @@ Units: years if the 'Use years in output instead of seconds' parameter is set; s
 
 **Pattern:** [Bool]
 
-**Documentation:** File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to `true' moves this process into a background thread, while the rest of the model continues.
+**Documentation:** File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to &lsquo;true&rsquo; moves this process into a background thread, while the rest of the model continues.
+
+(parameters:Postprocess/Particles/CPO_20Bingham_20Average)=
+## **Subsection:** Postprocess / Particles / CPO Bingham Average
+(parameters:Postprocess/Particles/CPO_20Bingham_20Average/Number_20of_20samples)=
+### __Parameter name:__ Number of samples
+**Default value:** 0
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** This determines how many samples are taken when using the random draw volume averaging. Setting it to zero means that the number of samples is set to be equal to the number of grains.
+
+(parameters:Postprocess/Particles/CPO_20Bingham_20Average/Random_20number_20seed)=
+### __Parameter name:__ Random number seed
+**Default value:** 1
+
+**Pattern:** [Integer range 0...2147483647 (inclusive)]
+
+**Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation)=
+## **Subsection:** Postprocess / Particles / Crystal Preferred Orientation
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/CPO_20derivatives_20algorithm)=
+### __Parameter name:__ CPO derivatives algorithm
+**Default value:** Spin tensor
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Options: Spin tensor
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Number_20of_20grains_20per_20particle)=
+### __Parameter name:__ Number of grains per particle
+**Default value:** 50
+
+**Pattern:** [Integer range 1...2147483647 (inclusive)]
+
+**Documentation:** The number of grains of each different mineral each particle contains.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Property_20advection_20max_20iterations)=
+### __Parameter name:__ Property advection max iterations
+**Default value:** 100
+
+**Pattern:** [Integer range 0...2147483647 (inclusive)]
+
+**Documentation:** The Backward Euler property advection method involve internal iterations. This option allows for setting the maximum number of iterations. Note that when the iteration is ended by the max iteration amount an assert is thrown.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Property_20advection_20method)=
+### __Parameter name:__ Property advection method
+**Default value:** Backward Euler
+
+**Pattern:** [Anything]
+
+**Documentation:** Options: Forward Euler, Backward Euler
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Property_20advection_20tolerance)=
+### __Parameter name:__ Property advection tolerance
+**Default value:** 1e-10
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The Backward Euler property advection method involve internal iterations. This option allows for setting a tolerance. When the norm of tensor new - tensor old is smaller than this tolerance, the iteration is stopped.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Random_20number_20seed)=
+### __Parameter name:__ Random number seed
+**Default value:** 1
+
+**Pattern:** [Integer range 0...2147483647 (inclusive)]
+
+**Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same number of MPI processes. It is implemented as final seed = user seed + MPI Rank.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004)=
+## **Subsection:** Postprocess / Particles / Crystal Preferred Orientation / D-Rex 2004
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Exponents_20p)=
+### __Parameter name:__ Exponents p
+**Default value:** 1.5
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** This is exponent p as defined in equation 11 of Kaminski et al., 2004.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Mobility)=
+### __Parameter name:__ Mobility
+**Default value:** 50
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The dimensionless intrinsic grain boundary mobility for both olivine and enstatite.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Nucleation_20efficiency)=
+### __Parameter name:__ Nucleation efficiency
+**Default value:** 5
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** This is the dimensionless nucleation rate as defined in equation 8 of Kaminski et al., 2004.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Stress_20exponents)=
+### __Parameter name:__ Stress exponents
+**Default value:** 3.5
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** This is the power law exponent that characterizes the rheology of the slip systems. It is used in equation 11 of Kaminski et al., 2004.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Threshold_20GBS)=
+### __Parameter name:__ Threshold GBS
+**Default value:** 0.3
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The Dimensionless Grain Boundary Sliding (GBS) threshold. This is a grain size threshold below which grain deform by GBS and become strain-free grains.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Volume_20fractions_20minerals)=
+### __Parameter name:__ Volume fractions minerals
+**Default value:** 0.5, 0.5
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The volume fraction for the different minerals. There need to be the same amount of values as there are minerals
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains)=
+## **Subsection:** Postprocess / Particles / Crystal Preferred Orientation / Initial grains
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Minerals)=
+### __Parameter name:__ Minerals
+**Default value:** Olivine: Karato 2008, Enstatite
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Model_20name)=
+### __Parameter name:__ Model name
+**Default value:** Uniform grains and random uniform rotations
+
+**Pattern:** [Anything]
+
+**Documentation:** The model used to initialize the CPO for all particles. Currently &rsquo;Uniform grains and random uniform rotations&rsquo; is the only valid option.
+
+(parameters:Postprocess/Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Volume_20fractions_20minerals)=
+### __Parameter name:__ Volume fractions minerals
+**Default value:** 0.7, 0.3
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The volume fractions for the different minerals. There need to be the same number of values as there are minerals.Note that the currently implemented scheme is incompressible and does not allow chemical interaction or the formation of new phases
 
 (parameters:Postprocess/Particles/Function)=
-## **Parameters in section** Postprocess/Particles/Function
+## **Subsection:** Postprocess / Particles / Function
 (parameters:Postprocess/Particles/Function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
 
 **Pattern:** [Anything]
 
-**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
-A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
 
 (parameters:Postprocess/Particles/Function/Function_20expression)=
 ### __Parameter name:__ Function expression
@@ -844,7 +1010,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 **Pattern:** [Anything]
 
-**Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+**Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 
@@ -854,7 +1020,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** The number of function components where each component is described by a function expression delimited by a ';'.
+**Documentation:** The number of function components where each component is described by a function expression delimited by a &rsquo;;&rsquo;.
 
 (parameters:Postprocess/Particles/Function/Variable_20names)=
 ### __Parameter name:__ Variable names
@@ -862,19 +1028,19 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+**Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
 
 (parameters:Postprocess/Particles/Generator)=
-## **Parameters in section** Postprocess/Particles/Generator
+## **Subsection:** Postprocess / Particles / Generator
 (parameters:Postprocess/Particles/Generator/Ascii_20file)=
-## **Parameters in section** Postprocess/Particles/Generator/Ascii file
+## **Subsection:** Postprocess / Particles / Generator / Ascii file
 (parameters:Postprocess/Particles/Generator/Ascii_20file/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/particle/generator/ascii/
 
 **Pattern:** [DirectoryName]
 
-**Documentation:** The name of a directory that contains the particle data. This path may either be absolute (if starting with a '/') or relative to the current directory. The path may also include the special text '$ASPECT_SOURCE_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
+**Documentation:** The name of a directory that contains the particle data. This path may either be absolute (if starting with a &rsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &rsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
 
 (parameters:Postprocess/Particles/Generator/Ascii_20file/Data_20file_20name)=
 ### __Parameter name:__ Data file name
@@ -885,16 +1051,16 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The name of the particle file.
 
 (parameters:Postprocess/Particles/Generator/Probability_20density_20function)=
-## **Parameters in section** Postprocess/Particles/Generator/Probability density function
+## **Subsection:** Postprocess / Particles / Generator / Probability density function
 (parameters:Postprocess/Particles/Generator/Probability_20density_20function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
 
 **Pattern:** [Anything]
 
-**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
 
-A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
 
 (parameters:Postprocess/Particles/Generator/Probability_20density_20function/Function_20expression)=
 ### __Parameter name:__ Function expression
@@ -902,7 +1068,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 **Pattern:** [Anything]
 
-**Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+**Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 
@@ -928,20 +1094,20 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Anything]
 
-**Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+**Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
 
 (parameters:Postprocess/Particles/Generator/Reference_20cell)=
-## **Parameters in section** Postprocess/Particles/Generator/Reference cell
+## **Subsection:** Postprocess / Particles / Generator / Reference cell
 (parameters:Postprocess/Particles/Generator/Reference_20cell/Number_20of_20particles_20per_20cell_20per_20direction)=
 ### __Parameter name:__ Number of particles per cell per direction
 **Default value:** 2
 
 **Pattern:** [List of <[Integer range 1...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** List of number of particles to create per cell and spatial dimension. The size of the list is the number of spatial dimensions. If only one value is given, then each spatial dimension is set to the same value. The list of numbers are parsed as a floating point number (so that one can specify, for example, '1e4' particles) but it is interpreted as an integer, of course.
+**Documentation:** List of number of particles to create per cell and spatial dimension. The size of the list is the number of spatial dimensions. If only one value is given, then each spatial dimension is set to the same value. The list of numbers are parsed as a floating point number (so that one can specify, for example, &rsquo;1e4&rsquo; particles) but it is interpreted as an integer, of course.
 
 (parameters:Postprocess/Particles/Generator/Uniform_20box)=
-## **Parameters in section** Postprocess/Particles/Generator/Uniform box
+## **Subsection:** Postprocess / Particles / Generator / Uniform box
 (parameters:Postprocess/Particles/Generator/Uniform_20box/Maximum_20x)=
 ### __Parameter name:__ Maximum x
 **Default value:** 1.
@@ -991,7 +1157,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Minimum z coordinate for the region of particles.
 
 (parameters:Postprocess/Particles/Generator/Uniform_20radial)=
-## **Parameters in section** Postprocess/Particles/Generator/Uniform radial
+## **Subsection:** Postprocess / Particles / Generator / Uniform radial
 (parameters:Postprocess/Particles/Generator/Uniform_20radial/Center_20x)=
 ### __Parameter name:__ Center x
 **Default value:** 0.
@@ -1072,46 +1238,58 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** The number of radial shells of particles that will be generated around the central point.
 
+(parameters:Postprocess/Particles/Integrator)=
+## **Subsection:** Postprocess / Particles / Integrator
+(parameters:Postprocess/Particles/Integrator/RK2)=
+## **Subsection:** Postprocess / Particles / Integrator / RK2
+(parameters:Postprocess/Particles/Integrator/RK2/Higher_20order_20accurate_20in_20time)=
+### __Parameter name:__ Higher order accurate in time
+**Default value:** true
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to correctly evaluate old and current velocity solution to reach higher-order accuracy in time. If set to &rsquo;false&rsquo; only the old velocity solution is evaluated to simulate a first order method in time. This is only recommended for benchmark purposes.
+
 (parameters:Postprocess/Particles/Interpolator)=
-## **Parameters in section** Postprocess/Particles/Interpolator
+## **Subsection:** Postprocess / Particles / Interpolator
 (parameters:Postprocess/Particles/Interpolator/Bilinear_20least_20squares)=
-## **Parameters in section** Postprocess/Particles/Interpolator/Bilinear least squares
+## **Subsection:** Postprocess / Particles / Interpolator / Bilinear least squares
+(parameters:Postprocess/Particles/Interpolator/Bilinear_20least_20squares/Use_20boundary_20extrapolation)=
+### __Parameter name:__ Use boundary extrapolation
+**Default value:** false
+
+**Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Extends the range used by &rsquo;Use linear least squares limiter&rsquo; by linearly interpolating values at cell boundaries from neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property. Enabling &rsquo;Use boundary extrapolation&rsquo; requires enabling &rsquo;Use linear least squares limiter&rsquo;.
+
 (parameters:Postprocess/Particles/Interpolator/Bilinear_20least_20squares/Use_20linear_20least_20squares_20limiter)=
 ### __Parameter name:__ Use linear least squares limiter
 **Default value:** false
 
 **Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Limit the interpolation of particle properties onto the cell so the value of each property is no smaller than its minimum and no larger than its maximum on the particles in each cell. If more than one value is specified, they will be treated as a list.
+**Documentation:** Limit the interpolation of particle properties onto the cell, so that the value of each property is no smaller than its minimum and no larger than its maximum on the particles of each cell, and the average of neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property.
 
 (parameters:Postprocess/Particles/Interpolator/Quadratic_20least_20squares)=
-## **Parameters in section** Postprocess/Particles/Interpolator/Quadratic least squares
-(parameters:Postprocess/Particles/Interpolator/Quadratic_20least_20squares/Global_20particle_20property_20maximum)=
-### __Parameter name:__ Global particle property maximum
-**Default value:** 1.7976931348623157e+308
-
-**Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
-
-**Documentation:** The maximum global particle property values that will be used as a limiter for the quadratic least squares interpolation. The number of the input 'Global particle property maximum' values separated by ',' has to be the same as the number of particle properties.
-
-(parameters:Postprocess/Particles/Interpolator/Quadratic_20least_20squares/Global_20particle_20property_20minimum)=
-### __Parameter name:__ Global particle property minimum
-**Default value:** -1.7976931348623157e+308
-
-**Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
-
-**Documentation:** The minimum global particle property that will be used as a limiter for the quadratic least squares interpolation. The number of the input 'Global particle property minimum' values separated by ',' has to be the same as the number of particle properties.
-
-(parameters:Postprocess/Particles/Interpolator/Quadratic_20least_20squares/Use_20limiter)=
-### __Parameter name:__ Use limiter
+## **Subsection:** Postprocess / Particles / Interpolator / Quadratic least squares
+(parameters:Postprocess/Particles/Interpolator/Quadratic_20least_20squares/Use_20boundary_20extrapolation)=
+### __Parameter name:__ Use boundary extrapolation
 **Default value:** false
 
-**Pattern:** [Bool]
+**Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Whether to apply a global particle property limiting scheme to the interpolated particle properties.
+**Documentation:** Extends the range used by &rsquo;Use quadratic least squares limiter&rsquo; by linearly interpolating values at cell boundaries from neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property. Enabling &rsquo;Use boundary extrapolation&rsquo; requires enabling &rsquo;Use quadratic least squares limiter&rsquo;.
+
+(parameters:Postprocess/Particles/Interpolator/Quadratic_20least_20squares/Use_20quadratic_20least_20squares_20limiter)=
+### __Parameter name:__ Use quadratic least squares limiter
+**Default value:** true
+
+**Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Limit the interpolation of particle properties onto the cell, so that the value of each property is no smaller than its minimum and no larger than its maximum on the particles of each cell, and the average of neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property.
 
 (parameters:Postprocess/Particles/Melt_20particle)=
-## **Parameters in section** Postprocess/Particles/Melt particle
+## **Subsection:** Postprocess / Particles / Melt particle
 (parameters:Postprocess/Particles/Melt_20particle/Threshold_20for_20melt_20presence)=
 ### __Parameter name:__ Threshold for melt presence
 **Default value:** 1e-3
@@ -1121,7 +1299,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The minimum porosity that has to be present at the position of a particle for it to be considered a melt particle (in the sense that the melt presence property is set to 1).
 
 (parameters:Postprocess/Point_20values)=
-## **Parameters in section** Postprocess/Point values
+## **Subsection:** Postprocess / Point values
 (parameters:Postprocess/Point_20values/Evaluation_20points)=
 ### __Parameter name:__ Evaluation points
 **Default value:**
@@ -1136,7 +1314,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of point values output. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of point values output. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Point_20values/Use_20natural_20coordinates)=
 ### __Parameter name:__ Use natural coordinates
@@ -1147,14 +1325,14 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Whether or not the Evaluation points are specified in the natural coordinates of the geometry model, e.g. radius, lon, lat for the chunk model. Currently, natural coordinates for the spherical shell and sphere geometries are not supported.
 
 (parameters:Postprocess/Rotation_20statistics)=
-## **Parameters in section** Postprocess/Rotation statistics
+## **Subsection:** Postprocess / Rotation statistics
 (parameters:Postprocess/Rotation_20statistics/Output_20full_20moment_20of_20inertia_20tensor)=
 ### __Parameter name:__ Output full moment of inertia tensor
 **Default value:** false
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to write the full moment of inertia tensor into the statistics output instead of its norm for the current rotation axis. This is a second-order symmetric tensor with 6 components in 3D. In 2D this option has no effect, because the rotation axis is fixed and thus the moment of inertia is always a scalar.
+**Documentation:** Whether to write the full moment of inertia tensor into the statistics output instead of its norm for the current rotation axis. This is a second-order symmetric tensor with 6 components in 3d. In 2d this option has no effect, because the rotation axis is fixed and thus the moment of inertia is always a scalar.
 
 (parameters:Postprocess/Rotation_20statistics/Use_20constant_20density_20of_20one)=
 ### __Parameter name:__ Use constant density of one
@@ -1162,17 +1340,17 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to use a constant density of one for the computation of the angular momentum and moment of inertia. This is an approximation that assumes that the 'volumetric' rotation is equal to the 'mass' rotation. If this parameter is true this postprocessor computes 'net rotation' instead of 'angular momentum'.
+**Documentation:** Whether to use a constant density of one for the computation of the angular momentum and moment of inertia. This is an approximation that assumes that the &rsquo;volumetric&rsquo; rotation is equal to the &rsquo;mass&rsquo; rotation. If this parameter is true this postprocessor computes &rsquo;net rotation&rsquo; instead of &rsquo;angular momentum&rsquo;.
 
 (parameters:Postprocess/Topography)=
-## **Parameters in section** Postprocess/Topography
+## **Subsection:** Postprocess / Topography
 (parameters:Postprocess/Topography/Output_20to_20file)=
 ### __Parameter name:__ Output to file
 **Default value:** false
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether or not to write topography to a text file named named 'topography.NNNNN' in the output directory
+**Documentation:** Whether or not to write topography to a text file named named &rsquo;topography.NNNNN&rsquo; in the output directory
 
 (parameters:Postprocess/Topography/Time_20between_20text_20output)=
 ### __Parameter name:__ Time between text output
@@ -1180,17 +1358,17 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Visualization)=
-## **Parameters in section** Postprocess/Visualization
+## **Subsection:** Postprocess / Visualization
 (parameters:Postprocess/Visualization/Filter_20output)=
 ### __Parameter name:__ Filter output
 **Default value:** false
 
 **Pattern:** [Bool]
 
-**Documentation:** deal.II offers the possibility to filter duplicate vertices for HDF5 output files. This merges the vertices of adjacent cells and therefore saves disk space, but misrepresents discontinuous output properties. Activating this function reduces the disk space by about a factor of $2^{dim}$ for HDF5 output, and currently has no effect on other output formats. \note{\textbf{Warning:} Setting this flag to true will result in visualization output that does not accurately represent discontinuous fields. This may be because you are using a discontinuous finite element for the pressure, temperature, or compositional variables, or because you use a visualization postprocessor that outputs quantities as discontinuous fields (e.g., the strain rate, viscosity, etc.). These will then all be visualized as \textit{continuous} quantities even though, internally, \aspect{} considers them as discontinuous fields.}
+**Documentation:** deal.II offers the possibility to filter duplicate vertices for HDF5 output files. This merges the vertices of adjacent cells and therefore saves disk space, but misrepresents discontinuous output properties. Activating this function reduces the disk space by about a factor of $2^{dim}$ for HDF5 output, and currently has no effect on other output formats. \note{**Warning:** Setting this flag to true will result in visualization output that does not accurately represent discontinuous fields. This may be because you are using a discontinuous finite element for the pressure, temperature, or compositional variables, or because you use a visualization postprocessor that outputs quantities as discontinuous fields (e.g., the strain rate, viscosity, etc.). These will then all be visualized as *continuous* quantities even though, internally, ASPECT considers them as discontinuous fields.}
 
 (parameters:Postprocess/Visualization/Interpolate_20output)=
 ### __Parameter name:__ Interpolate output
@@ -1198,13 +1376,13 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Bool]
 
-**Documentation:** deal.II offers the possibility to linearly interpolate output fields of higher order elements to a finer resolution. This somewhat compensates the fact that most visualization software only offers linear interpolation between grid points and therefore the output file is a very coarse representation of the actual solution field. Activating this option increases the spatial resolution in each dimension by a factor equal to the polynomial degree used for the velocity finite element (usually 2). In other words, instead of showing one quadrilateral or hexahedron in the visualization per cell on which \aspect{} computes, it shows multiple (for quadratic elements, it will describe each cell of the mesh on which we compute as $2\times 2$ or $2\times 2\times 2$ cells in 2d and 3d, respectively; correspondingly more subdivisions are used if you use cubic, quartic, or even higher order elements for the velocity).
+**Documentation:** deal.II offers the possibility to linearly interpolate output fields of higher order elements to a finer resolution. This somewhat compensates the fact that most visualization software only offers linear interpolation between grid points and therefore the output file is a very coarse representation of the actual solution field. Activating this option increases the spatial resolution in each dimension by a factor equal to the polynomial degree used for the velocity finite element (usually 2). In other words, instead of showing one quadrilateral or hexahedron in the visualization per cell on which ASPECT computes, it shows multiple (for quadratic elements, it will describe each cell of the mesh on which we compute as $2\times 2$ or $2\times 2\times 2$ cells in 2d and 3d, respectively; correspondingly more subdivisions are used if you use cubic, quartic, or even higher order elements for the velocity).
 
 The effect of using this option can be seen in the following picture showing a variation of the output produced with the input files from Section~\ref{sec:shell-simple-2d}:
 
 \begin{center}  \includegraphics[width=0.5\textwidth]{viz/parameters/build-patches}\end{center}Here, the left picture shows one visualization cell per computational cell (i.e., the option is switched off), and the right picture shows the same simulation with the option switched on (which is the default). The images show the same data, demonstrating that interpolating the solution onto bilinear shape functions as is commonly done in visualizing data loses information.
 
-Of course, activating this option also greatly increases the amount of data \aspect{} will write to disk: approximately by a factor of 4 in 2d, and a factor of 8 in 3d, when using quadratic elements for the velocity, and correspondingly more for even higher order elements.
+Of course, activating this option also greatly increases the amount of data ASPECT will write to disk: approximately by a factor of 4 in 2d, and a factor of 8 in 3d, when using quadratic elements for the velocity, and correspondingly more for even higher order elements.
 
 (parameters:Postprocess/Visualization/List_20of_20output_20variables)=
 ### __Parameter name:__ List of output variables
@@ -1216,115 +1394,197 @@ Of course, activating this option also greatly increases the amount of data \asp
 
 The following postprocessors are available:
 
-`ISA rotation timescale': A visualization output object that generates output showing the timescale for the rotation of grains toward the infinite strain axis. Kaminski and Ribe (see \cite{Kaminski2002}) call this quantity $\tau_\text{ISA}$ and define it as $\tau_\text{ISA} \approx \frac{1}{\dot{\epsilon}}$ where $\dot{\epsilon}$ is the largest eigenvalue of the strain rate tensor. It can be used, along with the grain lag angle $\Theta$, to calculate the grain orientation lag parameter.
+&lsquo;ISA rotation timescale&rsquo;: A visualization output object that generates output showing the timescale for the rotation of grains toward the infinite strain axis. Kaminski and Ribe (see \cite{Kaminski2002}) call this quantity $\tau_\text{ISA}$ and define it as $\tau_\text{ISA} \approx \frac{1}{\dot{\epsilon}}$ where $\dot{\epsilon}$ is the largest eigenvalue of the strain rate tensor. It can be used, along with the grain lag angle $\Theta$, to calculate the grain orientation lag parameter.
 
-`Vp anomaly': A visualization output object that generates output showing the percentage anomaly in the seismic compressional wave speed $V_p$ as a spatially variable function with one value per cell. This anomaly is either shown as a percentage anomaly relative to the reference profile given by adiabatic conditions (with the compositions given by the current composition, such that the reference could potentially change through time), or as a percentage change relative to the laterally averaged velocity at the depth of the cell. This velocity is calculated by linear interpolation between average values calculated within equally thick depth slices. The number of depth slices in the domain is user-defined. Typically, the best results will be obtained if the number of depth slices is balanced between being large enough to capture step changes in velocities, but small enough to maintain a reasonable number of evaluation points per slice. Bear in mind that lateral averaging subsamples the finite element mesh. Note that this plugin requires a material model that provides seismic velocities.
+Physical units: \si{\second}.
 
-`Vs anomaly': A visualization output object that generates output showing the percentage anomaly in the seismic shear wave speed $V_s$ as a spatially variable function with one value per cell. This anomaly is either shown as a percentage anomaly relative to the reference profile given by adiabatic conditions (with the compositions given by the current composition, such that the reference could potentially change through time), or as a percentage change relative to the laterally averaged velocity at the depth of the cell. This velocity is calculated by linear interpolation between average values calculated within equally thick depth slices. The number of depth slices in the domain is user-defined. Typically, the best results will be obtained if the number of depth slices is balanced between being large enough to capture step changes in velocities, but small enough to maintain a reasonable number of evaluation points per slice. Bear in mind that lateral averaging subsamples the finite element mesh. Note that this plugin requires a material model that provides seismic velocities.
+&lsquo;Vp anomaly&rsquo;: A visualization output object that generates output showing the percentage anomaly in the seismic compressional wave speed $V_p$ as a spatially variable function with one value per cell. This anomaly is either shown as a percentage anomaly relative to the reference profile given by adiabatic conditions (with the compositions given by the current composition, such that the reference could potentially change through time), or as a percentage change relative to the laterally averaged velocity at the depth of the cell. This velocity is calculated by linear interpolation between average values calculated within equally thick depth slices. The number of depth slices in the domain is user-defined. Typically, the best results will be obtained if the number of depth slices is balanced between being large enough to capture step changes in velocities, but small enough to maintain a reasonable number of evaluation points per slice. Bear in mind that lateral averaging subsamples the finite element mesh. Note that this plugin requires a material model that provides seismic velocities.
 
-`adiabat': A visualization output object that generates adiabatic temperature, pressure, density, and density derivative as produced by AdiabaticConditions.
+Physical units: None, the quantity being output is a fractional change provided as a percentage.
 
-`artificial viscosity': A visualization output object that generates output showing the value of the artificial viscosity on each cell.
+&lsquo;Vs anomaly&rsquo;: A visualization output object that generates output showing the percentage anomaly in the seismic shear wave speed $V_s$ as a spatially variable function with one value per cell. This anomaly is either shown as a percentage anomaly relative to the reference profile given by adiabatic conditions (with the compositions given by the current composition, such that the reference could potentially change through time), or as a percentage change relative to the laterally averaged velocity at the depth of the cell. This velocity is calculated by linear interpolation between average values calculated within equally thick depth slices. The number of depth slices in the domain is user-defined. Typically, the best results will be obtained if the number of depth slices is balanced between being large enough to capture step changes in velocities, but small enough to maintain a reasonable number of evaluation points per slice. Bear in mind that lateral averaging subsamples the finite element mesh. Note that this plugin requires a material model that provides seismic velocities.
 
-`artificial viscosity composition': A visualization output object that generates output showing the value of the artificial viscosity for a compositional field on each cell.
+Physical units: None, the quantity being output is a fractional change provided as a percentage.
 
-`boundary indicators': A visualization output object that generates output about the used boundary indicators. In a loop over the active cells, if a cell lies at a domain boundary, the boundary indicator of the face along the boundary is requested. In case the cell does not lie along any domain boundary, the cell is assigned the value of the largest used boundary indicator plus one. When a cell is situated in one of the corners of the domain, multiple faces will have a boundary indicator. This postprocessor returns the value of the first face along a boundary that is encountered in a loop over all the faces.
+&lsquo;adiabat&rsquo;: A visualization output object that generates adiabatic temperature, pressure, density, and density derivative (with regard to depth)as produced by the `AdiabaticConditions` class.
 
-`boundary strain rate residual': A visualization output object that generates output for the strain rate residual at the top surface. The residual is computed at each point at the surface as the difference between the strain rate invariant in the model and the input data, where the invariant is computed like in the 'strain rate' postprocessor. The user chooses the input data as ascii data files with coordinate columns and column corresponding to the surface strain rate norm.
+Physical units: \si{\kelvin}, \si{\pascal}, \si{\kilo\gram\per\meter\cubed\per\meter}, respectively, for the four components.
 
-`boundary velocity residual': A visualization output object that generates output for the velocity residual at the top surface. The residual is computed at each point at the surface as the difference between the modeled velocities and the input data velocities for each vector component. The user has an option to choose the input data as ascii data files (e.g. GPS velocities) with columns in the same format as described for the 'ascii data' initial temperature plugin or a velocity field computed from the GPlates program as described in the gplates boundary velocity plugin.
+&lsquo;artificial viscosity&rsquo;: A visualization output object that generates output showing the value of the artificial viscosity on each cell.
 
-`compositional vector': A visualization output object that outputs vectors whose components are derived from compositional fields. Input parameters for this postprocessor are defined in section Postprocess/Visualization/Compositional fields as vectors
+Physical units: \si{\watt\per\meter\per\kelvin}.
 
-`depth': A visualization output postprocessor that outputs the depth for all points inside the domain, as determined by the geometry model.
+&lsquo;artificial viscosity composition&rsquo;: A visualization output object that generates output showing the value of the artificial viscosity for a compositional field on each cell.
 
-`dynamic topography': A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The approach to determine the dynamic topography requires us to compute the stress tensor and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)-\frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. For the bottom surface we chose the convection that positive values are up (out) and negative values are in (down), analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.
+Physical units: \si{\meter\squared\per\second}.
+
+&lsquo;boundary indicators&rsquo;: A visualization output object that generates output about the used boundary indicators. In a loop over the active cells, if a cell lies at a domain boundary, the boundary indicator of the face along the boundary is requested. In case the cell does not lie along any domain boundary, the cell is assigned the value of the largest used boundary indicator plus one. When a cell is situated in one of the corners of the domain, multiple faces will have a boundary indicator. This postprocessor returns the value of the first face along a boundary that is encountered in a loop over all the faces.
+
+Physical units: None.
+
+&lsquo;boundary strain rate residual&rsquo;: A visualization output object that generates output for the strain rate residual at the top surface. The residual is computed at each point at the surface as the difference between the strain rate invariant in the model and the input data, where the invariant is computed like in the &rsquo;strain rate&rsquo; postprocessor. The user chooses the input data as ascii data files with coordinate columns and column corresponding to the surface strain rate norm.
+
+Physical units: $\frac{1}{\text{s}}$ or $\frac{1}{\text{year}}$, depending on settings in the input file.
+
+&lsquo;boundary velocity residual&rsquo;: A visualization output object that generates output for the velocity residual at the top surface. The residual is computed at each point at the surface as the difference between the modeled velocities and the input data velocities for each vector component. The user has an option to choose the input data as ascii data files (e.g. GPS velocities) with columns in the same format as described for the &rsquo;ascii data&rsquo; initial temperature plugin or a velocity field computed from the GPlates program as described in the gplates boundary velocity plugin.
+
+Physical units: $\frac{\text{m}}{\text{s}}$ or $\frac{\text{m}}{\text{year}}$, depending on settings in the input file.
+
+&lsquo;compositional vector&rsquo;: A visualization output object that outputs vectors whose components are derived from compositional fields. Input parameters for this postprocessor are defined in section Postprocess/Visualization/Compositional fields as vectors.
+
+Physical units: None.
+
+&lsquo;depth&rsquo;: A visualization output postprocessor that outputs the depth for all points inside the domain, as determined by the geometry model.
+
+Physical units: \si{\meter}.
+
+&lsquo;dynamic topography&rsquo;: A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The approach to determine the dynamic topography requires us to compute the stress tensor and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)-\frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. For the bottom surface we chose the convection that positive values are up (out) and negative values are in (down), analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.
 
 Strictly speaking, the dynamic topography is of course a quantity that is only of interest at the surface. However, we compute it everywhere to make things fit into the framework within which we produce data for visualization. You probably only want to visualize whatever data this postprocessor generates at the surface of your domain and simply ignore the rest of the data generated.
 
 Alternatively, consider using the "surface dynamic topography" visualization postprocessor to only output the dynamic topography at the boundary of the domain.
 
-`error indicator': A visualization output object that generates output showing the estimated error or other mesh refinement indicator as a spatially variable function with one value per cell.
+Physical units: \si{\meter}.
 
-`geoid': Visualization for the geoid solution. The geoid is given by the equivalent water column height due to a gravity perturbation. Units: \si{\meter}.
+&lsquo;error indicator&rsquo;: A visualization output object that generates output showing the estimated error or other mesh refinement indicator as a spatially variable function with one value per cell.
 
-`grain lag angle': A visualization output object that generates output showing the angle between the ~infinite strain axis and the flow velocity. Kaminski and Ribe (see \cite{Kaminski2002}) call this quantity $\Theta$ and define it as $\Theta = \cos^{-1}(\hat{u}\cdot\hat{e})$  where $\hat{u}=\vec{u}/|{u}|$, $\vec{u}$ is the local flow velocity, and $\hat{e}$ is the local infinite strain axis, which we calculate as the first eigenvector of the 'left stretch' tensor. $\Theta$ can be used to calculate the grain orientation lag parameter.
+Physical units: None. (Strictly speaking, errors have physical units of course, but because error *indicators* can be computed from different solution components and other input, we consider error indicators unitless.)
 
-`gravity': A visualization output object that outputs the gravity vector.
+&lsquo;geoid&rsquo;: Visualization for the geoid solution. The geoid is given by the equivalent water column height due to a gravity perturbation.
 
-`heat flux map': A visualization output object that generates output for the heat flux density across the top and bottom boundary in outward direction. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in ``Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.'' If only conductive heat flux through Dirichlet boundaries is of interest, the postprocessor can produce output of higher resolution by evaluating the CBF solution vector point-wise instead of computing cell-wise averaged values.
+Physical units: \si{\meter}.
 
-`heating': A visualization output object that generates output for all the heating terms used in the energy equation.
+&lsquo;grain lag angle&rsquo;: A visualization output object that generates output showing the angle between the ~infinite strain axis and the flow velocity. Kaminski and Ribe (see \cite{Kaminski2002}) call this quantity $\Theta$ and define it as $\Theta = \cos^{-1}(\hat{u}\cdot\hat{e})$  where $\hat{u}=\vec{u}/|{u}|$, $\vec{u}$ is the local flow velocity, and $\hat{e}$ is the local infinite strain axis, which we calculate as the first eigenvector of the &rsquo;left stretch&rsquo; tensor. $\Theta$ can be used to calculate the grain orientation lag parameter.
 
-`material properties': A visualization output object that generates output for the material properties given by the material model. The current postprocessor allows to output a (potentially large) subset of all of the information provided by material models at once, with just a single material model evaluation per output point. Although individual properties can still be listed in the ``List of output variables'', this visualization plugin is called internally to avoid duplicated evaluations of the material model.
+Physical units: \si{\radian}.
 
-In almost all places inside \aspect{}, the program can use ``averaged'' material properties, for example for the assembly of matrices and right hand side vectors. To accurately reflect the material parameters used internally, this visualization postprocessor averages in the same way as is used to do the assembly, and consequently the graphical output will reflect not pointwise properties, but averaged properties.
+&lsquo;gravity&rsquo;: A visualization output object that outputs the gravity vector.
 
-`maximum horizontal compressive stress': A plugin that computes the direction and magnitude of the maximum horizontal component of the compressive stress as a vector field. The direction of this vector can often be used to visualize the principal mode of deformation (e.g., at normal faults or extensional margins) and can be correlated with seismic anisotropy. Recall that the \textit{compressive} stress is simply the negative stress, $\sigma_c=-\sigma=-\left[     2\eta (\varepsilon(\mathbf u)             - \frac 13 (\nabla \cdot \mathbf u) I)     + pI\right]$.
+Physical units: \si {\meter\per\second\squared} .
 
-Following \cite{LundTownend07}, we define the maximum horizontal stress direction as that \textit{horizontal} direction $\mathbf n$ that maximizes $\mathbf n^T \sigma_c \mathbf n$. We call a vector \textit{horizontal} if it is perpendicular to the gravity vector $\mathbf g$.
+&lsquo;heat flux map&rsquo;: A visualization output object that generates output for the heat flux density across the top and bottom boundary in outward direction. The heat flux is computed as sum of advective heat flux and conductive heat flux through Neumann boundaries, both computed as integral over the boundary area, and conductive heat flux through Dirichlet boundaries, which is computed using the consistent boundary flux method as described in &ldquo;Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.&rdquo; If only conductive heat flux through Dirichlet boundaries is of interest, the postprocessor can produce output of higher resolution by evaluating the CBF solution vector point-wise instead of computing cell-wise averaged values.
+
+Physical units: \si{\watt\per\meter\squared}.
+
+&lsquo;heating&rsquo;: A visualization output object that generates output for all the heating terms used in the energy equation.
+
+Physical units: \si{\watt\per\cubic\meter}.
+
+&lsquo;material properties&rsquo;: A visualization output object that generates output for the material properties given by the material model. The current postprocessor allows to output a (potentially large) subset of all of the information provided by material models at once, with just a single material model evaluation per output point. Although individual properties can still be listed in the &ldquo;List of output variables&rdquo;, this visualization plugin is called internally to avoid duplicated evaluations of the material model.
+
+In almost all places inside ASPECT, the program can use &ldquo;averaged&rdquo; material properties, for example for the assembly of matrices and right hand side vectors. To accurately reflect the material parameters used internally, this visualization postprocessor averages in the same way as is used to do the assembly, and consequently the graphical output will reflect not pointwise properties, but averaged properties.
+
+Physical units: Various.
+
+&lsquo;maximum horizontal compressive stress&rsquo;: A plugin that computes the direction and magnitude of the maximum horizontal component of the compressive stress as a vector field. The direction of this vector can often be used to visualize the principal mode of deformation (e.g., at normal faults or extensional margins) and can be correlated with seismic anisotropy. Recall that the *compressive* stress is simply the negative stress, $\sigma_c=-\sigma=-\left[     2\eta (\varepsilon(\mathbf u)             - \frac 13 (\nabla \cdot \mathbf u) I)     + pI\right]$.
+
+Following \cite{LundTownend07}, we define the maximum horizontal stress direction as that *horizontal* direction $\mathbf n$ that maximizes $\mathbf n^T \sigma_c \mathbf n$. We call a vector *horizontal* if it is perpendicular to the gravity vector $\mathbf g$.
 
 In two space dimensions, $\mathbf n$ is simply a vector that is horizontal (we choose one of the two possible choices). This direction is then scaled by the size of the horizontal stress in this direction, i.e., the plugin outputs the vector $\mathbf w = (\mathbf n^T \sigma_c \mathbf n) \; \mathbf n$.
 
 In three space dimensions, given two horizontal, perpendicular, unit length, but otherwise arbitrarily chosen vectors $\mathbf u,\mathbf v$, we can express $\mathbf n = (\cos \alpha)\mathbf u + (\sin\alpha)\mathbf v$ where $\alpha$ maximizes the expression \begin{align*}  f(\alpha) = \mathbf n^T \sigma_c \mathbf n  = (\mathbf u^T \sigma_c \mathbf u)(\cos\alpha)^2    +2(\mathbf u^T \sigma_c \mathbf v)(\cos\alpha)(\sin\alpha)    +(\mathbf v^T \sigma_c \mathbf v)(\sin\alpha)^2.\end{align*}
 
-The maximum of $f(\alpha)$ is attained where $f'(\alpha)=0$. Evaluating the derivative and using trigonometric identities, one finds that $\alpha$ has to satisfy the equation \begin{align*}  \tan(2\alpha) = \frac{2.0\mathbf u^T \sigma_c \mathbf v}                          {\mathbf u^T \sigma_c \mathbf u                            - \mathbf v^T \sigma_c \mathbf v}.\end{align*}Since the transform $\alpha\mapsto\alpha+\pi$ flips the direction of $\mathbf n$, we only need to seek a solution to this equation in the interval $\alpha\in[0,\pi)$. These are given by $\alpha_1=\frac 12 \arctan \frac{\mathbf u^T \sigma_c \mathbf v}{\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v}$ and $\alpha_2=\alpha_1+\frac{\pi}{2}$, one of which will correspond to a minimum and the other to a maximum of $f(\alpha)$. One checks the sign of $f''(\alpha)=-2(\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v)\cos(2\alpha) - 2 (\mathbf u^T \sigma_c \mathbf v) \sin(2\alpha)$ for each of these to determine the $\alpha$ that maximizes $f(\alpha)$, and from this immediately arrives at the correct form for the maximum horizontal stress $\mathbf n$.
+The maximum of $f(\alpha)$ is attained where $f&rsquo;(\alpha)=0$. Evaluating the derivative and using trigonometric identities, one finds that $\alpha$ has to satisfy the equation \begin{align*}  \tan(2\alpha) = \frac{2.0\mathbf u^T \sigma_c \mathbf v}                          {\mathbf u^T \sigma_c \mathbf u                            - \mathbf v^T \sigma_c \mathbf v}.\end{align*}Since the transform $\alpha\mapsto\alpha+\pi$ flips the direction of $\mathbf n$, we only need to seek a solution to this equation in the interval $\alpha\in[0,\pi)$. These are given by $\alpha_1=\frac 12 \arctan \frac{\mathbf u^T \sigma_c \mathbf v}{\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v}$ and $\alpha_2=\alpha_1+\frac{\pi}{2}$, one of which will correspond to a minimum and the other to a maximum of $f(\alpha)$. One checks the sign of $f&rdquo;(\alpha)=-2(\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v)\cos(2\alpha) - 2 (\mathbf u^T \sigma_c \mathbf v) \sin(2\alpha)$ for each of these to determine the $\alpha$ that maximizes $f(\alpha)$, and from this immediately arrives at the correct form for the maximum horizontal stress $\mathbf n$.
 
-The description above computes a 3d \textit{direction} vector $\mathbf n$. If one were to scale this vector the same way as done in 2d, i.e., with the magnitude of the stress in this direction, one will typically get vectors whose length is principally determined by the hydrostatic pressure at a given location simply because the hydrostatic pressure is the largest component of the overall stress. On the other hand, the hydrostatic pressure does not determine any principal direction because it is an isotropic, anti-compressive force. As a consequence, there are often points in simulations (e.g., at the center of convection rolls) where the stress has no dominant horizontal direction, and the algorithm above will then in essence choose a random direction because the stress is approximately equal in all horizontal directions. If one scaled the output by the magnitude of the stress in this direction (i.e., approximately equal to the hydrostatic pressure at this point), one would get randomly oriented vectors at these locations with significant lengths.
+The description above computes a 3d *direction* vector $\mathbf n$. If one were to scale this vector the same way as done in 2d, i.e., with the magnitude of the stress in this direction, one will typically get vectors whose length is principally determined by the hydrostatic pressure at a given location simply because the hydrostatic pressure is the largest component of the overall stress. On the other hand, the hydrostatic pressure does not determine any principal direction because it is an isotropic, anti-compressive force. As a consequence, there are often points in simulations (e.g., at the center of convection rolls) where the stress has no dominant horizontal direction, and the algorithm above will then in essence choose a random direction because the stress is approximately equal in all horizontal directions. If one scaled the output by the magnitude of the stress in this direction (i.e., approximately equal to the hydrostatic pressure at this point), one would get randomly oriented vectors at these locations with significant lengths.
 
-To avoid this problem, we scale the maximal horizontal compressive stress direction $\mathbf n$ by the \textit{difference} between the stress in the maximal and minimal horizontal stress directions. In other words, let $\mathbf n_\perp=(\sin \alpha)\mathbf u - (\cos\alpha)\mathbf v$ be the horizontal direction perpendicular to $\mathbf n$, then this plugin outputs the vector quantity $\mathbf w = (\mathbf n^T \sigma_c \mathbf n                -\mathbf n^T_\perp \sigma_c \mathbf n_\perp)               \; \mathbf n$. In other words, the length of the vector produced indicates \textit{how dominant} the direction of maximal horizontal compressive strength is.
+To avoid this problem, we scale the maximal horizontal compressive stress direction $\mathbf n$ by the *difference* between the stress in the maximal and minimal horizontal stress directions. In other words, let $\mathbf n_\perp=(\sin \alpha)\mathbf u - (\cos\alpha)\mathbf v$ be the horizontal direction perpendicular to $\mathbf n$, then this plugin outputs the vector quantity $\mathbf w = (\mathbf n^T \sigma_c \mathbf n                -\mathbf n^T_\perp \sigma_c \mathbf n_\perp)               \; \mathbf n$. In other words, the length of the vector produced indicates *how dominant* the direction of maximal horizontal compressive strength is.
 
 Fig.~\ref{fig:max-horizontal-compressive-stress} shows a simple example for this kind of visualization in 3d.
 
-\begin{figure}  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/temperature.png}  \hfill  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/velocity.png}  \hfill  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/horizontal-stress.png}  \caption{\it Illustration of the `maximum horizontal     compressive stress' visualization plugin. The left     figure shows a ridge-like temperature anomaly. Together     with no-slip boundary along all six boundaries, this     results in two convection rolls (center). The maximal     horizontal compressive strength at the bottom center     of the domain is perpendicular to the ridge because     the flow comes together there from the left and right,     yielding a compressive force in left-right direction.     At the top of the model, the flow separates outward,     leading to a \textit{negative} compressive stress     in left-right direction; because there is no flow     in front-back direction, the compressive strength     in front-back direction is zero, making the along-ridge     direction the dominant one. At the center of the     convection rolls, both horizontal directions yield     the same stress; the plugin therefore chooses an     essentially arbitrary horizontal vector, but then     uses a zero magnitude given that the difference     between the maximal and minimal horizontal stress     is zero at these points.}  \label{fig:max-horizontal-compressive-stress}\end{figure}
+\begin{figure}  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/temperature.png}  \hfill  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/velocity.png}  \hfill  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/horizontal-stress.png}  \caption{\it Illustration of the &lsquo;maximum horizontal     compressive stress&rsquo; visualization plugin. The left     figure shows a ridge-like temperature anomaly. Together     with no-slip boundary along all six boundaries, this     results in two convection rolls (center). The maximal     horizontal compressive strength at the bottom center     of the domain is perpendicular to the ridge because     the flow comes together there from the left and right,     yielding a compressive force in left-right direction.     At the top of the model, the flow separates outward,     leading to a *negative* compressive stress     in left-right direction; because there is no flow     in front-back direction, the compressive strength     in front-back direction is zero, making the along-ridge     direction the dominant one. At the center of the     convection rolls, both horizontal directions yield     the same stress; the plugin therefore chooses an     essentially arbitrary horizontal vector, but then     uses a zero magnitude given that the difference     between the maximal and minimal horizontal stress     is zero at these points.}  \label{fig:max-horizontal-compressive-stress}\end{figure}
 
-`melt fraction': A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point. If the material model computes a melt fraction, this is the quantity that will be visualized. Otherwise, a specific parametrization for batch melting (as described in the following) will be used. It does not take into account latent heat. If there are no compositional fields, or no fields called 'pyroxenite',  this postprocessor will visualize the melt fraction of peridotite (calculated using the anhydrous model of Katz, 2003). If there is a compositional field called 'pyroxenite', the postprocessor assumes that this compositional field is the content of pyroxenite, and will visualize the melt fraction for a mixture of peridotite and pyroxenite (using the melting model of Sobolev, 2011 for pyroxenite). All the parameters that were used in these calculations can be changed in the input file, the most relevant maybe being the mass fraction of Cpx in peridotite in the Katz melting model (Mass fraction cpx), which right now has a default of 15\%. The corresponding p-T-diagrams can be generated by running the tests melt\_postprocessor\_peridotite and melt\_postprocessor\_pyroxenite.
+Physical units: \si{\pascal}.
 
-`melt material properties': A visualization output object that generates output for melt related properties of the material model. Note that this postprocessor always outputs the compaction pressure, but can output a large range of additional properties, as selected in the ``List of properties'' parameter.
+&lsquo;melt fraction&rsquo;: A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point. If the material model computes a melt fraction, this is the quantity that will be visualized. Otherwise, a specific parametrization for batch melting (as described in the following) will be used. It does not take into account latent heat. If there are no compositional fields, or no fields called &rsquo;pyroxenite&rsquo;,  this postprocessor will visualize the melt fraction of peridotite (calculated using the anhydrous model of Katz, 2003). If there is a compositional field called &rsquo;pyroxenite&rsquo;, the postprocessor assumes that this compositional field is the content of pyroxenite, and will visualize the melt fraction for a mixture of peridotite and pyroxenite (using the melting model of Sobolev, 2011 for pyroxenite). All the parameters that were used in these calculations can be changed in the input file, the most relevant maybe being the mass fraction of Cpx in peridotite in the Katz melting model (Mass fraction cpx), which right now has a default of 15\%. The corresponding $p$-$T$-diagrams can be generated by running the tests melt\_postprocessor\_peridotite and melt\_postprocessor\_pyroxenite.
 
-`named additional outputs': Some material models can compute quantities other than those that typically appear in the equations that \aspect{} solves (such as the viscosity, density, etc). Examples of quantities material models may be able to compute are seismic velocities, or other quantities that can be derived from the state variables and the material coefficients such as the stress or stress anisotropies. These quantities are generically referred to as `named outputs' because they are given an explicit name different from the usual outputs of material models.
+Physical units: None.
+
+&lsquo;melt material properties&rsquo;: A visualization output object that generates output for melt related properties of the material model. Note that this postprocessor always outputs the compaction pressure, but can output a large range of additional properties, as selected in the &ldquo;List of properties&rdquo; parameter.
+
+Physical units: Various, depending on what is being output.
+
+&lsquo;named additional outputs&rsquo;: Some material models can compute quantities other than those that typically appear in the equations that ASPECT solves (such as the viscosity, density, etc). Examples of quantities material models may be able to compute are seismic velocities, or other quantities that can be derived from the state variables and the material coefficients such as the stress or stress anisotropies. These quantities are generically referred to as &lsquo;named outputs&rsquo; because they are given an explicit name different from the usual outputs of material models.
 
 This visualization postprocessor outputs whatever quantities the material model can compute. What quantities these are is specific to the material model in use for a simulation, and for many models in fact does not contain any named outputs at all.
 
-`nonadiabatic pressure': A visualization output object that generates output for the non-adiabatic component of the pressure.
+Physical units: Various, depending on what is being output.
 
-The variable that is outputted this way is computed by taking the pressure at each point and subtracting from it the adiabatic pressure computed at the beginning of the simulation. Because the adiabatic pressure is one way of defining a static pressure background field, what this visualization postprocessor therefore produces is \textit{one} way to compute a \textit{dynamic pressure}. There are, however, other ways as well, depending on the choice of the ``background pressure''.
+&lsquo;nonadiabatic pressure&rsquo;: A visualization output object that generates output for the non-adiabatic component of the pressure.
 
-`nonadiabatic temperature': A visualization output object that generates output for the non-adiabatic component of the temperature.
+The variable that is outputted this way is computed by taking the pressure at each point and subtracting from it the adiabatic pressure computed at the beginning of the simulation. Because the adiabatic pressure is one way of defining a static pressure background field, what this visualization postprocessor therefore produces is *one* way to compute a *dynamic pressure*. There are, however, other ways as well, depending on the choice of the &ldquo;background pressure&rdquo;.
 
-`particle count': A visualization output object that generates output about the number of particles per cell.
+Physical units: \si{\pascal}.
 
-`partition': A visualization output object that generates output for the parallel partition that every cell of the mesh is associated with.
+&lsquo;nonadiabatic temperature&rsquo;: A visualization output object that generates output for the non-adiabatic component of the temperature.
 
-`principal stress': A visualization output object that outputs the principal stress values and directions, i.e., the eigenvalues and eigenvectors of the stress tensor. The postprocessor can either operate on the full stress tensor or only on the deviatoric stress tensor.
+Physical units: \si{\kelvin}.
 
-`shear stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the shear stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]$ in the compressible case. If elasticity is used, the elastic contribution is being accounted for. The shear stress differs from the full stress tensor by the absence of the pressure. Note that the convention of positive compressive stress is followed.
+&lsquo;particle count&rsquo;: A visualization output object that generates output about the number of particles per cell.
 
-`spd factor': A visualization output object that generates output for the spd factor. The spd factor is a factor which scales a part of the Jacobian used for the Newton solver to make sure that the Jacobian remains positive definite.
+Physical units: None.
 
-`spherical velocity components': A visualization output object that outputs the polar coordinates components $v_r$ and $v_\phi$ of the velocity field in 2D and the spherical coordinates components $v_r$, $v_{\phi}$ and $v_{\theta}$ of the velocity field in 3D.
+&lsquo;partition&rsquo;: A visualization output object that generates output for the parallel partition that every cell of the mesh is associated with.
 
-`strain rate': A visualization output object that generates output for the norm of the strain rate, i.e., for the quantity $\sqrt{\varepsilon(\mathbf u):\varepsilon(\mathbf u)}$ in the incompressible case and $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]}$ in the compressible case.
+Physical units: None.
 
-`strain rate tensor': A visualization output object that generates output for the 4 (in 2d) or 9 (in 3d) components of the strain rate tensor, i.e., for the components of the tensor $\varepsilon(\mathbf u)$ in the incompressible case and $\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I$ in the compressible case.
+&lsquo;principal stress&rsquo;: A visualization output object that outputs the principal stress values and directions, i.e., the eigenvalues and eigenvectors of the stress tensor. The postprocessor can either operate on the full stress tensor or only on the deviatoric stress tensor, depending on what run-time parameters are set.
 
-`stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is used, the elastic contribution is being accounted for. Note that the convention of positive compressive stress is followed.
+Physical units: \si{\pascal}.
 
-`stress second invariant': A visualization output object that outputs the second moment invariant of the deviatoric stress tensor.
+&lsquo;shear stress&rsquo;: A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the shear stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]$ in the compressible case. If elasticity is used, the elastic contribution is being accounted for. The shear stress differs from the full stress tensor by the absence of the pressure. Note that the convention of positive compressive stress is followed.
 
-`surface dynamic topography': A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The approach to determine the dynamic topography requires us to compute the stress tensor and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)-\frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. For the bottom surface we chose the convection that positive values are up (out) and negative values are in (down), analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.
+Physical units: \si{\pascal}.
 
-In contrast to the `dynamic topography' visualization postprocessor, this plugin really only evaluates the dynamic topography at faces of cells that are adjacent to `bottom' and `top' boundaries, and only outputs information on the surface of the domain, rather than padding the information with zeros in the interior of the domain.
+&lsquo;spd factor&rsquo;: A visualization output object that generates output for the spd factor. The spd factor is a factor which scales a part of the Jacobian used for the Newton solver to make sure that the Jacobian remains positive definite.
 
-`surface stress': A visualization output object that generates output on the surface of the domain for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is included, its contribution is accounted for. Note that the convention of positive compressive stress is followed.
+Physical units: None.
 
-`temperature anomaly': A visualization output postprocessor that outputs the temperature minus the depth-average of the temperature.The average temperature is calculated using the lateral averaging function from the ``depth average'' postprocessor and interpolated linearly between the layers specified through ``Number of depth slices''
+&lsquo;spherical velocity components&rsquo;: A visualization output object that outputs the polar coordinates components $v_r$ and $v_\phi$ of the velocity field in 2d and the spherical coordinates components $v_r$, $v_{\phi}$ and $v_{\theta}$ of the velocity field in 3d.
 
-`vertical heat flux': A visualization output object that generates output for the heat flux in the vertical direction, which is the sum of the advective and the conductive heat flux, with the sign convention of positive flux upwards.
+Physical units: $\frac{\text{m}}{\text{s}}$ or $\frac{\text{m}}{\text{year}}$, depending on settings in the input file.
 
-`volume of fluid values': A visualization output object that outputs the volume fraction and optionally a level set field and the interface normal vectors of volume of fluid fields.
+&lsquo;strain rate&rsquo;: A visualization output object that generates output for the norm of the strain rate, i.e., for the quantity $\sqrt{\varepsilon(\mathbf u):\varepsilon(\mathbf u)}$ in the incompressible case and $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]}$ in the compressible case.
 
-`volumetric strain rate': A visualization output object that generates output for the volumetric strain rate, i.e., for the quantity $\nabla\cdot\mathbf u = \textrm{div}\; \mathbf u = \textrm{trace}\; \varepsilon(\mathbf u)$. This should be zero (in some average sense) in incompressible convection models, but can be non-zero in compressible models and models with melt transport.
+Physical units: \si{\per\second}.
+
+&lsquo;strain rate tensor&rsquo;: A visualization output object that generates output for the 4 (in 2d) or 9 (in 3d) components of the strain rate tensor, i.e., for the components of the tensor $\varepsilon(\mathbf u)$ in the incompressible case and $\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I$ in the compressible case.
+
+Physical units: \si{\per\second}.
+
+&lsquo;stress&rsquo;: A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is used, the elastic contribution is being accounted for. Note that the convention of positive compressive stress is followed.
+
+Physical units: \si{\pascal}.
+
+&lsquo;stress second invariant&rsquo;: A visualization output object that outputs the second moment invariant of the deviatoric stress tensor.
+
+Physical units: \si{\pascal}.
+
+&lsquo;surface dynamic topography&rsquo;: A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The approach to determine the dynamic topography requires us to compute the stress tensor and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)-\frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. For the bottom surface we chose the convection that positive values are up (out) and negative values are in (down), analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.
+
+In contrast to the &lsquo;dynamic topography&rsquo; visualization postprocessor, this plugin really only evaluates the dynamic topography at faces of cells that are adjacent to &lsquo;bottom&rsquo; and &lsquo;top&rsquo; boundaries, and only outputs information on the surface of the domain, rather than padding the information with zeros in the interior of the domain.
+
+Physical units: \si{\meter}.
+
+&lsquo;surface stress&rsquo;: A visualization output object that generates output on the surface of the domain for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is included, its contribution is accounted for. Note that the convention of positive compressive stress is followed.
+
+Physical units: \si{\pascal}.
+
+&lsquo;temperature anomaly&rsquo;: A visualization output postprocessor that outputs the temperature minus the depth-average of the temperature.The average temperature is calculated using the lateral averaging function from the &ldquo;depth average&rdquo; postprocessor and interpolated linearly between the layers specified through &ldquo;Number of depth slices&rdquo;.
+
+Physical units: \si{\kelvin}.
+
+&lsquo;vertical heat flux&rsquo;: A visualization output object that generates output for the heat flux in the vertical direction, which is the sum of the advective and the conductive heat flux, with the sign convention of positive flux upwards.
+
+Physical units: \si{\watt\per\square\meter}.
+
+&lsquo;volume of fluid values&rsquo;: A visualization output object that outputs the volume fraction and optionally a level set field and the interface normal vectors of volume of fluid fields.
+
+Physical units: None.
+
+&lsquo;volumetric strain rate&rsquo;: A visualization output object that generates output for the volumetric strain rate, i.e., for the quantity $\nabla\cdot\mathbf u = \textrm{div}\; \mathbf u = \textrm{trace}\; \varepsilon(\mathbf u)$. This should be zero (in some average sense) in incompressible convection models, but can be non-zero in compressible models and models with melt transport.
+
+Physical units: \si{\per\second}.
 
 (parameters:Postprocess/Visualization/Number_20of_20grouped_20files)=
 ### __Parameter name:__ Number of grouped files
@@ -1338,9 +1598,17 @@ In contrast to the `dynamic topography' visualization postprocessor, this plugin
 ### __Parameter name:__ Output format
 **Default value:** vtu
 
-**Pattern:** [Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot_binary|vtk|vtu|hdf5|svg|deal.II intermediate ]
+**Pattern:** [Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot_binary|vtk|vtu|hdf5|svg|deal.II intermediate|parallel deal.II intermediate ]
 
 **Documentation:** The file format to be used for graphical output. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described.
+
+(parameters:Postprocess/Visualization/Output_20mesh_20displacement)=
+### __Parameter name:__ Output mesh displacement
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain. The displacement vector from the reference configuration may be written as an output field by setting this parameter to true.
 
 (parameters:Postprocess/Visualization/Output_20mesh_20velocity)=
 ### __Parameter name:__ Output mesh velocity
@@ -1350,8 +1618,16 @@ In contrast to the `dynamic topography' visualization postprocessor, this plugin
 
 **Documentation:** For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain, so the mesh has its own velocity field.  This may be written as an output field by setting this parameter to true.
 
+(parameters:Postprocess/Visualization/Output_20undeformed_20mesh)=
+### __Parameter name:__ Output undeformed mesh
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** For computations with deforming meshes, ASPECT uses an Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain. By default, we output the deformed mesh. If this setting is set to true, the mesh will be written in the reference state without deformation instead. If you output the mesh displacement, you can obtain the deformed mesh by using the &rsquo;warp by vector&rsquo; ParaView filter.
+
 (parameters:Postprocess/Visualization/Point_2dwise_20stress_20and_20strain)=
-### __Parameter name:__ Point_2dwise stress and strain
+### __Parameter name:__ Point-wise stress and strain
 **Default value:** false
 
 **Pattern:** [Bool]
@@ -1372,7 +1648,7 @@ In contrast to the `dynamic topography' visualization postprocessor, this plugin
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+**Documentation:** The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
 
 (parameters:Postprocess/Visualization/Time_20steps_20between_20graphical_20output)=
 ### __Parameter name:__ Time steps between graphical output
@@ -1388,10 +1664,10 @@ In contrast to the `dynamic topography' visualization postprocessor, this plugin
 
 **Pattern:** [Bool]
 
-**Documentation:** deal.II offers the possibility to write vtu files with higher order representations of the output data. This means each cell will correctly show the higher order representation of the output data instead of the linear interpolation between vertices that ParaView and Visit usually show. Note that activating this option is safe and recommended, but requires that (i) ``Output format'' is set to ``vtu'', (ii) ``Interpolate output'' is set to true, (iii) you use a sufficiently new version of Paraview or Visit to read the files (Paraview version 5.5 or newer, and Visit version to be determined), and (iv) you use deal.II version 9.1.0 or newer.
+**Documentation:** deal.II offers the possibility to write vtu files with higher order representations of the output data. This means each cell will correctly show the higher order representation of the output data instead of the linear interpolation between vertices that ParaView and VisIt usually show. Note that activating this option is safe and recommended, but requires that (i) &ldquo;Output format&rdquo; is set to &ldquo;vtu&rdquo;, (ii) &ldquo;Interpolate output&rdquo; is set to true, (iii) you use a sufficiently new version of Paraview or VisIt to read the files (Paraview version 5.5 or newer, and VisIt version to be determined), and (iv) you use deal.II version 9.1.0 or newer.
 The effect of using this option can be seen in the following picture:
 
-\begin{center}  \includegraphics[width=0.5\textwidth]{viz/parameters/higher-order-output}\end{center}The top figure shows the plain output without interpolation or higher order output. The middle figure shows output that was interpolated as discussed for the ``Interpolate output'' option. The bottom panel shows higher order output that achieves better accuracy than the interpolated output at a lower memory cost.
+\begin{center}  \includegraphics[width=0.5\textwidth]{viz/parameters/higher-order-output}\end{center}The top figure shows the plain output without interpolation or higher order output. The middle figure shows output that was interpolated as discussed for the &ldquo;Interpolate output&rdquo; option. The bottom panel shows higher order output that achieves better accuracy than the interpolated output at a lower memory cost.
 
 (parameters:Postprocess/Visualization/Write_20in_20background_20thread)=
 ### __Parameter name:__ Write in background thread
@@ -1399,10 +1675,10 @@ The effect of using this option can be seen in the following picture:
 
 **Pattern:** [Bool]
 
-**Documentation:** File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to `true' moves this process into a background thread, while the rest of the model continues.
+**Documentation:** File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to &lsquo;true&rsquo; moves this process into a background thread, while the rest of the model continues.
 
 (parameters:Postprocess/Visualization/Artificial_20viscosity_20composition)=
-## **Parameters in section** Postprocess/Visualization/Artificial viscosity composition
+## **Subsection:** Postprocess / Visualization / Artificial viscosity composition
 (parameters:Postprocess/Visualization/Artificial_20viscosity_20composition/Name_20of_20compositional_20field)=
 ### __Parameter name:__ Name of compositional field
 **Default value:**
@@ -1412,7 +1688,7 @@ The effect of using this option can be seen in the following picture:
 **Documentation:** The name of the compositional field whose output should be visualized.
 
 (parameters:Postprocess/Visualization/Compositional_20fields_20as_20vectors)=
-## **Parameters in section** Postprocess/Visualization/Compositional fields as vectors
+## **Subsection:** Postprocess / Visualization / Compositional fields as vectors
 (parameters:Postprocess/Visualization/Compositional_20fields_20as_20vectors/Names_20of_20fields)=
 ### __Parameter name:__ Names of fields
 **Default value:**
@@ -1430,7 +1706,7 @@ The effect of using this option can be seen in the following picture:
 **Documentation:** Names of vectors as they will appear in the output.
 
 (parameters:Postprocess/Visualization/Heat_20flux_20map)=
-## **Parameters in section** Postprocess/Visualization/Heat flux map
+## **Subsection:** Postprocess / Visualization / Heat flux map
 (parameters:Postprocess/Visualization/Heat_20flux_20map/Output_20point_20wise_20heat_20flux)=
 ### __Parameter name:__ Output point wise heat flux
 **Default value:** false
@@ -1440,7 +1716,7 @@ The effect of using this option can be seen in the following picture:
 **Documentation:** A boolean flag that controls whether to output the heat flux map as a point wise value, or as a cell-wise averaged value. The point wise output is more accurate, but it currently omits prescribed heat flux values at boundaries and advective heat flux that is caused by velocities non-tangential to boundaries. If you do not use these two features it is recommended to switch this setting on to benefit from the increased output resolution.
 
 (parameters:Postprocess/Visualization/Material_20properties)=
-## **Parameters in section** Postprocess/Visualization/Material properties
+## **Subsection:** Postprocess / Visualization / Material properties
 (parameters:Postprocess/Visualization/Material_20properties/List_20of_20material_20properties)=
 ### __Parameter name:__ List of material properties
 **Default value:** density,thermal expansivity,specific heat,viscosity
@@ -1452,7 +1728,7 @@ The effect of using this option can be seen in the following picture:
 viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal diffusivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms|melt fraction
 
 (parameters:Postprocess/Visualization/Melt_20fraction)=
-## **Parameters in section** Postprocess/Visualization/Melt fraction
+## **Subsection:** Postprocess / Visualization / Melt fraction
 (parameters:Postprocess/Visualization/Melt_20fraction/A1)=
 ### __Parameter name:__ A1
 **Default value:** 1085.7
@@ -1598,7 +1874,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 **Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: \si{\per\pascal}.
 
 (parameters:Postprocess/Visualization/Melt_20material_20properties)=
-## **Parameters in section** Postprocess/Visualization/Melt material properties
+## **Subsection:** Postprocess / Visualization / Melt material properties
 (parameters:Postprocess/Visualization/Melt_20material_20properties/List_20of_20properties)=
 ### __Parameter name:__ List of properties
 **Default value:** compaction viscosity,permeability
@@ -1610,7 +1886,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gradient|is melt cell|darcy coefficient|darcy coefficient no cutoff|compaction length
 
 (parameters:Postprocess/Visualization/Principal_20stress)=
-## **Parameters in section** Postprocess/Visualization/Principal stress
+## **Subsection:** Postprocess / Visualization / Principal stress
 (parameters:Postprocess/Visualization/Principal_20stress/Use_20deviatoric_20stress)=
 ### __Parameter name:__ Use deviatoric stress
 **Default value:** false
@@ -1620,7 +1896,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 **Documentation:** Whether to use the deviatoric stress tensor instead of the full stress tensor to compute principal stress directions and values.
 
 (parameters:Postprocess/Visualization/Temperature_20anomaly)=
-## **Parameters in section** Postprocess/Visualization/Temperature anomaly
+## **Subsection:** Postprocess / Visualization / Temperature anomaly
 (parameters:Postprocess/Visualization/Temperature_20anomaly/Number_20of_20depth_20slices)=
 ### __Parameter name:__ Number of depth slices
 **Default value:** 20
@@ -1646,7 +1922,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 **Documentation:** Whether to use the minimal specified boundary temperature as the bottom boundary temperature. This option will only work for models with a fixed bottom boundary temperature.
 
 (parameters:Postprocess/Visualization/Volume_20of_20Fluid)=
-## **Parameters in section** Postprocess/Visualization/Volume of Fluid
+## **Subsection:** Postprocess / Visualization / Volume of Fluid
 (parameters:Postprocess/Visualization/Volume_20of_20Fluid/Output_20interface_20normals)=
 ### __Parameter name:__ Output interface normals
 **Default value:** false
@@ -1664,7 +1940,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 **Documentation:** Include fields defined such that the 0 contour is the fluid interface.
 
 (parameters:Postprocess/Visualization/Vp_20anomaly)=
-## **Parameters in section** Postprocess/Visualization/Vp anomaly
+## **Subsection:** Postprocess / Visualization / Vp anomaly
 (parameters:Postprocess/Visualization/Vp_20anomaly/Average_20velocity_20scheme)=
 ### __Parameter name:__ Average velocity scheme
 **Default value:** reference profile
@@ -1682,7 +1958,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 **Documentation:** Number of depth slices used to define average seismic compressional wave velocities from which anomalies are calculated. Units: non-dimensional.
 
 (parameters:Postprocess/Visualization/Vs_20anomaly)=
-## **Parameters in section** Postprocess/Visualization/Vs anomaly
+## **Subsection:** Postprocess / Visualization / Vs anomaly
 (parameters:Postprocess/Visualization/Vs_20anomaly/Average_20velocity_20scheme)=
 ### __Parameter name:__ Average velocity scheme
 **Default value:** reference profile

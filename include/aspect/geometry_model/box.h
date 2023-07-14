@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -228,12 +228,12 @@ namespace aspect
         /**
          * Flag whether the box is periodic in the x-, y-, and z-direction.
          */
-        bool periodic[dim];
+        std::array<bool, dim> periodic;
 
         /**
          * The number of cells in each coordinate direction.
          */
-        unsigned int repetitions[dim];
+        std::array<unsigned int, dim> repetitions;
 
         /**
          * A pointer to the initial topography model.

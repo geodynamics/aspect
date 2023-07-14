@@ -1,0 +1,122 @@
+
+Number of active cells: 600 (on 1 levels)
+Number of degrees of freedom: 14,047 (5,082+671+671+2,541+2,541+2,541)
+
+Number of mesh deformation degrees of freedom: 1342
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 45+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.40777e-07
+
+
+Number of active cells: 1,320 (on 2 levels)
+Number of degrees of freedom: 30,955 (11,218+1,455+1,455+5,609+5,609+5,609)
+
+Number of mesh deformation degrees of freedom: 2910
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 48+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 21+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.33834e-08
+
+
+Number of active cells: 4,380 (on 3 levels)
+Number of degrees of freedom: 100,423 (36,454+4,644+4,644+18,227+18,227+18,227)
+
+Number of mesh deformation degrees of freedom: 9288
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 52+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.44569e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     Topography min/max:        -9.313e-10 m, 9.313e-10 m
+     RMS, max velocity:         3.44e-05 m/year, 0.000282 m/year
+
+
+
+
+*** Timestep 1:  t=2.5 years, dt=2.5 years
+   Solving mesh displacement system... 15 iterations.
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 12 iterations.
+   Solving ve_stress_yy system ... 12 iterations.
+   Solving ve_stress_xy system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 54+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.832657
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.82747e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: -3.726e+04/3.726e+04/-5.107e+07 // -3.726e+04/3.726e+04/5.107e+07 // -7474/1.575e+04/3.431e+12
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     Topography min/max:        -3.725e-09 m, -9.313e-10 m
+     RMS, max velocity:         0.0109 m/year, 0.0377 m/year
+
+
+
+
+*** Timestep 2:  t=5 years, dt=2.5 years
+   Solving mesh displacement system... 15 iterations.
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 12 iterations.
+   Solving ve_stress_yy system ... 12 iterations.
+   Solving ve_stress_xy system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 55+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.637047
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.88329e-07
+
+
+   Postprocessing:
+     Compositions min/max/mass: -1.235e+05/1.235e+05/3.226e+07 // -1.235e+05/1.235e+05/-3.226e+07 // -1.182e+05/4.016e+04/-5.46e+14
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     Topography min/max:        -0.09426 m, 0.02027 m
+     RMS, max velocity:         0.00755 m/year, 0.0262 m/year
+
+
+
+
+Termination requested by criterion: end time
+
+
+

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -47,6 +47,8 @@ namespace aspect
         this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
       for (unsigned int d=0; d<dim; ++d)
         traction[d] = boundary_traction_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),d);
+      if (use_spherical_unit_vectors)
+        traction = Utilities::Coordinates::spherical_to_cartesian_vector(traction, position);
 
       return traction;
     }
@@ -78,11 +80,17 @@ namespace aspect
                              "A selection that determines the assumed coordinate "
                              "system for the function variables. Allowed values "
                              "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
-                             "are interpreted as r,phi or r,phi,theta in 2D/3D "
+                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
                              "respectively with theta being the polar angle. `depth' "
                              "will create a function, in which only the first "
                              "parameter is non-zero, which is interpreted to "
                              "be the depth of the point.");
+          prm.declare_entry ("Use spherical unit vectors", "false",
+                             Patterns::Bool (),
+                             "Specify traction as $r$, $\\phi$, and $\\theta$ components "
+                             "instead of $x$, $y$, and $z$. Positive tractions point up, east, "
+                             "and north (in 3d) or out and clockwise (in 2d). "
+                             "This setting only makes sense for spherical geometries.");
 
           Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
         }
@@ -101,6 +109,11 @@ namespace aspect
         prm.enter_subsection("Function");
         {
           coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+          use_spherical_unit_vectors = prm.get_bool("Use spherical unit vectors");
+          if (use_spherical_unit_vectors)
+            AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
+                         ExcMessage ("Spherical unit vectors should not be used "
+                                     "when geometry model is not spherical."));
         }
         try
           {

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -42,29 +42,24 @@ namespace aspect
     class CompressibilityFormulations : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual
-        void initialize();
+        void initialize() override;
 
-        virtual
-        void update();
+        void update() override;
 
-        virtual
-        bool is_compressible () const;
+        bool is_compressible () const override;
 
-        virtual
         void
         evaluate (const MaterialModelInputs<dim> &in,
-                  MaterialModelOutputs<dim> &out) const;
+                  MaterialModelOutputs<dim> &out) const override;
 
-        virtual
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         static void
         declare_parameters (ParameterHandler &prm);
 
-        virtual void
-        parse_parameters (ParameterHandler &prm);
+        void
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**
@@ -245,7 +240,7 @@ namespace aspect
       // create the base model and initialize its SimulatorAccess base
       // class; it will get a chance to read its parameters below after we
       // leave the current section
-      base_model.reset(create_material_model<dim>("simple compressible"));
+      base_model = create_material_model<dim>("simple compressible");
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
         sim->initialize_simulator (this->get_simulator());
       base_model->parse_parameters(prm);

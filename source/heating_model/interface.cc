@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -50,46 +50,12 @@ namespace aspect
 
 
 
-    DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-    template <int dim>
-    void
-    Interface<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                              const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                              HeatingModel::HeatingModelOutputs &heating_model_outputs) const
-    {
-      Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.position.size(),
-             ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
-      for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
-        {
-          heating_model_outputs.heating_source_terms[q] = specific_heating_rate(material_model_inputs.temperature[q],
-                                                                                material_model_inputs.pressure[q],
-                                                                                material_model_inputs.composition[q],
-                                                                                material_model_inputs.position[q])
-                                                          * material_model_outputs.densities[q];
-          heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
-        }
-    }
-    DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
-
-
-    template <int dim>
-    double
-    Interface<dim>::specific_heating_rate (const double,
-                                           const double,
-                                           const std::vector<double> &,
-                                           const Point<dim> &) const
-    {
-      Assert(false,
-             ExcMessage ("There is no `evaluate()' or `specific_heating_rate()' function implemented in the heating model!"));
-      return 0.0;
-    }
-
-
     template <int dim>
     void
     Interface<dim>::
     declare_parameters (dealii::ParameterHandler &)
     {}
+
 
 
     template <int dim>
@@ -98,11 +64,13 @@ namespace aspect
     {}
 
 
+
     template <int dim>
     void
     Interface<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> & /*outputs*/) const
     {}
+
 
 
     template <int dim>
@@ -116,7 +84,7 @@ namespace aspect
 
     template <int dim>
     Manager<dim>::~Manager()
-    {}
+      = default;
 
 
 
@@ -153,7 +121,7 @@ namespace aspect
     Manager<dim>::register_heating_model (const std::string &name,
                                           const std::string &description,
                                           void (*declare_parameters_function) (ParameterHandler &),
-                                          Interface<dim> *(*factory_function) ())
+                                          std::unique_ptr<Interface<dim>> (*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,

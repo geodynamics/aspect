@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -73,7 +73,7 @@ namespace aspect
       /* find the layer containing the specified depth and return the corresponding viscosity */
       int i=0;
       const int nlayers = depth_values.size()-1;
-      while ( depth > depth_values[i] && i<nlayers ) i++; /* increment i until depth is above base of layer i */
+      while ( depth > depth_values[i] && i<nlayers ) ++i; /* increment i until depth is above base of layer i */
       return viscosity_values[i];
     }
 
@@ -169,7 +169,7 @@ namespace aspect
                              boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                              Patterns::Double (0.),
                              "The value of the constant reference viscosity $\\eta_r$ that is used to scale "
-                             "the non-dimenional depth-dependent viscosity prefactor. "
+                             "the non-dimensional depth-dependent viscosity prefactor. "
                              "Units: \\si{\\pascal\\second}.");
 
 
@@ -202,7 +202,7 @@ namespace aspect
           // create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
           // leave the current section
-          base_model.reset(create_material_model<dim>(prm.get("Base model")));
+          base_model = create_material_model<dim>(prm.get("Base model"));
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
             sim->initialize_simulator (this->get_simulator());
 
@@ -230,7 +230,7 @@ namespace aspect
               AssertThrow( depth_values.size() == viscosity_values.size() ,
                            ExcMessage("Depth list must be same size as Viscosity list"));
               /* check that list is in ascending order */
-              for (unsigned int i=1; i<depth_values.size(); i++)
+              for (unsigned int i=1; i<depth_values.size(); ++i)
                 AssertThrow(depth_values[i] > depth_values[i-1],
                             ExcMessage("Viscosity depth values must be strictly ascending"));
               /* check that last layer includes base of model */

@@ -1,5 +1,5 @@
 
-Loading shared library <./libfind_postprocess_fail_1.so>
+Loading shared library <./libfind_postprocess_fail_1.debug.so>
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
@@ -23,4 +23,5 @@ Additional information:
     that could not be found in the current model. Activate this
     postprocessor in the input file.
 
-Aborting!
+Stacktrace:
+(rest of the output replaced by default.sh script)

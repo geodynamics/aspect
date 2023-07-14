@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -134,28 +134,31 @@ namespace aspect
 
     std::vector<double> residual (scratch.finite_element_values.n_quadrature_points,0.0);
 
-    for (unsigned int i=0; i<assemblers->advection_system.size(); ++i)
+    for (unsigned int i=0; i<assemblers->advection_system[advection_field.field_index()].size(); ++i)
       {
-        const std::vector<double> new_residual = assemblers->advection_system[i]->compute_residual(scratch);
+        const std::vector<double> new_residual = assemblers->advection_system[advection_field.field_index()][i]->compute_residual(scratch);
         for (unsigned int j=0; j<residual.size(); ++j)
           residual[j] += new_residual[j];
 
-        if (auto *stabilization_assembler =
-              dynamic_cast<Assemblers::AdvectionStabilizationInterface<dim>*> ((assemblers->advection_system[i]).get()))
-          {
-            // Ensure no other assembler has set max_advection_prefactor or max_conductivity before,
-            // otherwise we dont know which one to use.
-            Assert (max_advection_prefactor == 0.0 && max_conductivity == 0.0,
-                    ExcMessage("More than one assembler has provided scaling factors for the entropy "
-                               "viscosity stabilization, which is not supported. Make sure only one active advection "
-                               "assembler is derived from the class AdvectionStabilizationInterface."));
+        auto *stabilization_assembler =
+          dynamic_cast<Assemblers::AdvectionStabilizationInterface<dim>*> ((assemblers->advection_system[advection_field.field_index()][i]).get());
 
-            const std::vector<double> advection_prefactors = stabilization_assembler->advection_prefactors(scratch);
-            const std::vector<double> conductivities = stabilization_assembler->diffusion_prefactors(scratch);
+        Assert (stabilization_assembler != nullptr,
+                ExcMessage("Entropy viscosity can only be computed for assemblers that "
+                           "are derived from the advection stabilization assembler interface."));
 
-            max_advection_prefactor = *std::max_element(advection_prefactors.begin(),advection_prefactors.end());
-            max_conductivity = *std::max_element(conductivities.begin(),conductivities.end());
-          }
+        // Ensure no other assembler has set max_advection_prefactor or max_conductivity before,
+        // otherwise we dont know which one to use.
+        Assert (max_advection_prefactor == 0.0 && max_conductivity == 0.0,
+                ExcMessage("More than one assembler has provided scaling factors for the entropy "
+                           "viscosity stabilization, which is not supported. Make sure only one active advection "
+                           "assembler is derived from the class AdvectionStabilizationInterface."));
+
+        const std::vector<double> advection_prefactors = stabilization_assembler->advection_prefactors(scratch);
+        const std::vector<double> conductivities = stabilization_assembler->diffusion_prefactors(scratch);
+
+        max_advection_prefactor = *std::max_element(advection_prefactors.begin(),advection_prefactors.end());
+        max_conductivity = *std::max_element(conductivities.begin(),conductivities.end());
       }
 
     std::vector<Tensor<1,dim>> old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
@@ -308,7 +311,7 @@ namespace aspect
                                   QGauss<dim>(advection_field.polynomial_degree(introspection)
                                               +
                                               (parameters.stokes_velocity_degree+1)/2),
-                                  QTrapez<dim-1> (),
+                                  QTrapezoid<dim-1> (),
                                   update_flags,
                                   face_update_flags,
                                   introspection.n_compositional_fields,
@@ -549,8 +552,8 @@ namespace aspect
           }
         scratch.material_model_inputs.current_cell = cell;
 
-        for (unsigned int i=0; i<assemblers->advection_system.size(); ++i)
-          assemblers->advection_system[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
+        for (unsigned int i=0; i<assemblers->advection_system[advection_field.field_index()].size(); ++i)
+          assemblers->advection_system[advection_field.field_index()][i]->create_additional_material_model_outputs(scratch.material_model_outputs);
         heating_model_manager.create_additional_material_model_inputs_and_outputs(scratch.material_model_inputs,
                                                                                   scratch.material_model_outputs);
 

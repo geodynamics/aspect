@@ -3,7 +3,7 @@
 
 After you have familiarized yourself with
 ASPECT using the examples of
-{ref}`sec:cookbooks`1] you will invariably want to set up your
+{ref}`cha:cookbooks` you will invariably want to set up your
 own models. During this process you might experience that not all of your
 ideas are already possible with existing functionality, and you will need to
 make changes to the source code.
@@ -16,8 +16,8 @@ model geometry, the gravity field, the initial conditions, the boundary
 conditions, the functions that postprocess the solution, and the behavior of
 the adaptive mesh refinement. This list may also have grown since this section
 was written. Changing the core functionality, i.e., the basic equations
-{math:numref}`eq:stokes-1`2]&ndash;{math:numref}`eq:temperature`3], and how they are solved is
-arguably more involved. We will discuss this in Section [1.7][].
+{math:numref}`eq:stokes-1`&ndash;{math:numref}`eq:temperature`, and how they are solved is
+arguably more involved. We will discuss this in {ref}`sec:extending:solver`.
 
 There are several ways to add new functionality in plugins, and we want to
 highlight advantages and disadvantages of each of them:
@@ -25,7 +25,7 @@ highlight advantages and disadvantages of each of them:
 1.  Modify existing files: The simplest way to start modifying
     ASPECT is to modify one of the existing source
     files and then recompile the program as described in
-    {ref}`sec:compiling`4]. This process does not require any
+    {ref}`sec:install:local-installation:compiling`. This process does not require any
     additional setup, and is therefore ideal for learning how to make simple
     modifications. However, it comes with several severe disadvantages. If you
     modify files the history of your local copy of
@@ -51,17 +51,17 @@ highlight advantages and disadvantages of each of them:
     you can upload your branch to make your changes reproducible. This
     approach is also the ideal starting point if you intend to contribute your
     changes back, as it already is the first step of our guide to contributing
-    back (see also {ref}`sec:1.9][]). However, for projects with
+    back (see also {ref}`sec:extending:contributing`). However, for projects with
     functionality that is not intended to be merged into the main version
-    (e.g. because it is too specific to be of general use) we have found that
+    (e.g. because it is too specific to be of general use), we have found that
     this approach is not ideal, as you will still run into conflicts when you
     want to update your ASPECT version, and you
     need to merge the main version into your branch, or rebase the branch
     every time you want to update. Thus, while ideal for contributing to
-    ASPECT we do not recommend this approach for
+    ASPECT, we do not recommend this approach for
     keeping model-specific functionality around.
 
-3.  Create a shared library than contains your changes: The main benefit of
+3.  Create a shared library that contains your changes: The main benefit of
     the plugin architecture described in the paragraph above is that if you
     want to extend ASPECT for your own
     purposes, you can do this in a separate set of files that describe your
@@ -79,19 +79,19 @@ highlight advantages and disadvantages of each of them:
     on your separate set of files to keep track of which version of files was
     used for a given set of models. Two examples for keeping a separate shared
     library for model specific changes are discussed in
-    {ref}`sec:prescribed-velocities`5], and in
-    {ref}`sec:cookbooks-inner-core-convection`6]. We will discuss
-    the concept of plugins in {ref}`sec:1.1][], and how to write a plugin
-    in {ref}`sec:1.2][].
+    {ref}`sec:cookbooks:prescribed_velocity`, and in
+    {ref}`sec:cookbooks:inner_core_convection`. We will discuss
+    the concept of plugins in {ref}`sec:extending:idea-of-plugins`, and how to write a plugin
+    in {ref}`sec:extending:write-a-plugin`.
 
-Since ASPECT is written in C++ using the <span
+Since ASPECT is written in C++ using the
 deal.II library, you will have to be proficient in
 C++. You will also likely have to familiarize yourself with this library for
 which there is an extensive amount of documentation:
 
 -   The manual at
     <https://www.dealii.org/developer/doxygen/deal.II/index.html> that
-    describes in detail what every class, function and variable in <span
+    describes in detail what every class, function and variable in
     deal.II does.
 
 -   A collection of modules at
@@ -100,7 +100,7 @@ which there is an extensive amount of documentation:
     together to achieve their goal.
 
 -   The deal.II tutorial at
-    <https://www.dealii.org/developer/doxygen/tutorial/index.html> that
+    <https://dealii.org/developer/doxygen/deal.II/Tutorial.html> that
     provides a step-by-step introduction to the library using a sequence of
     several dozen programs that introduce gradually more complex topics. In
     particular, you will learn deal.II's
@@ -123,7 +123,7 @@ which there is an extensive amount of documentation:
 
 -   The deal.II Frequently Asked Questions at
     <https://github.com/dealii/dealii/wiki/Frequently-Asked-Questions> that
-    also have extensive sections on developing code with <span
+    also have extensive sections on developing code with
     deal.II as well as on debugging. It also answers
     a number of questions we frequently get about the use of C++ in <span
     deal.II.
@@ -134,9 +134,9 @@ which there is an extensive amount of documentation:
     lists at <https://www.dealii.org/mail.html> are also of general help.
 
 -   A general overview of deal.II is also
-    provided in the paper (Bangerth, Hartmann, and Kanschat 2007).
+    provided in the paper {cite:t}`bangerth:etal:2007`.
 
-As described in {ref}`sec:debug-mode`7] you should always compile
+As described in {ref}`sec:run-aspect:debug-mode` you should always compile
 and run ASPECT in *debug mode* when you are
 making changes to the source code, as it will capture the vast majority of
 bugs everyone invariably introduces in the code.
@@ -152,6 +152,9 @@ section on how to debug deal.II programs.
 
 
 :::{toctree}
+---
+maxdepth: 1
+---
 idea-of-plugins.md
 write-a-plugin.md
 write-a-cookbook/index.md
@@ -162,4 +165,5 @@ extending-solver.md
 testing/index.md
 contributing.md
 future-plans.md
+release-tasklist-link.md
 :::

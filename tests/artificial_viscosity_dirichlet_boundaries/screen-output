@@ -16,7 +16,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
 
 *** Timestep 1:  t=0.00625 years, dt=0.00625 years
    Solving temperature system... 10 iterations.
-   Solving porosity system ... 10 iterations.
+   Solving porosity system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 

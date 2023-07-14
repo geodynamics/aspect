@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,11 +21,13 @@
 #include <aspect/global.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
+#include <world_builder/config.h>
 #include <aspect/initial_temperature/world_builder.h>
-#include <world_builder/world.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/citation_info.h>
+
+#include <world_builder/world.h>
 
 
 namespace aspect
@@ -34,7 +36,7 @@ namespace aspect
   {
     template <int dim>
     WorldBuilder<dim>::WorldBuilder ()
-    {}
+      = default;
 
     template <int dim>
     void
@@ -42,16 +44,24 @@ namespace aspect
     initialize()
     {
       CitationInfo::add("GWB");
+      world_builder = this->get_world_builder_pointer();
     }
+
 
     template <int dim>
     double
     WorldBuilder<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      return this->get_world_builder().temperature(Utilities::convert_point_to_array(position),
-                                                   -this->get_geometry_model().height_above_reference_surface(position),
-                                                   this->get_gravity_model().gravity_vector(position).norm());
+#if WORLD_BUILDER_VERSION_MAJOR > 0 || WORLD_BUILDER_VERSION_MINOR >= 5
+      return world_builder->temperature(Utilities::convert_point_to_array(position),
+                                        -this->get_geometry_model().height_above_reference_surface(position));
+#else
+
+      return world_builder->temperature(Utilities::convert_point_to_array(position),
+                                        -this->get_geometry_model().height_above_reference_surface(position),
+                                        this->get_gravity_model().gravity_vector(position).norm());
+#endif
     }
 
   }

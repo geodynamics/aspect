@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -96,8 +96,8 @@ namespace aspect
             beta_(beta)
           {}
 
-          virtual void vector_value (const Point<dim>   &pos,
-                                     Vector<double>   &values) const
+          void vector_value (const Point<dim>   &pos,
+                             Vector<double>   &values) const override
           {
             Assert (dim == 3, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -131,10 +131,9 @@ namespace aspect
         /**
          * Return the boundary velocity as a function of position.
          */
-        virtual
         Tensor<1,dim>
         boundary_velocity (const types::boundary_id boundary_indicator,
-                           const Point<dim> &position) const;
+                           const Point<dim> &position) const override;
 
       private:
         const double beta;
@@ -183,8 +182,8 @@ namespace aspect
     class BursteddeMaterial : public MaterialModel::Interface<dim>
     {
       public:
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -238,7 +237,7 @@ namespace aspect
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
         /**
          * @}
          */
@@ -252,9 +251,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * Returns the viscosity value in the inclusion
@@ -330,7 +328,7 @@ namespace aspect
     class BursteddeGravity : public aspect::GravityModel::Interface<dim>
     {
       public:
-        virtual Tensor<1,dim> gravity_vector (const Point<dim> &pos) const;
+        Tensor<1,dim> gravity_vector (const Point<dim> &pos) const override;
 
         static
         void
@@ -339,9 +337,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
         */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         double beta;
     };
@@ -414,9 +411,8 @@ namespace aspect
         /**
          * Generate graphical output from the current solution.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
     };
 
     template <int dim>

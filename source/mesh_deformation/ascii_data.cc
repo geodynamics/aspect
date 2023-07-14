@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -46,10 +46,7 @@ namespace aspect
     {
       surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
-      std::set<types::boundary_id> surface_boundary_set;
-      surface_boundary_set.insert(surface_boundary_id);
-
-      Utilities::AsciiDataBoundary<dim>::initialize(surface_boundary_set,
+      Utilities::AsciiDataBoundary<dim>::initialize({surface_boundary_id},
                                                     1);
     }
 
@@ -71,6 +68,16 @@ namespace aspect
         topography_direction = -gravity / gravity.norm();
 
       return topo * topography_direction;
+    }
+
+
+
+    template <int dim>
+    bool
+    AsciiData<dim>::
+    needs_surface_stabilization () const
+    {
+      return false;
     }
 
 

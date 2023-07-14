@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,6 +32,7 @@
 
 #include <boost/lexical_cast.hpp>
 #include <cstdlib>
+#include <regex>
 #include <sys/stat.h>
 
 namespace aspect
@@ -59,11 +60,15 @@ namespace aspect
                        "upon starting up the program. The names of these files can contain absolute "
                        "or relative paths (relative to the directory in which you call ASPECT). "
                        "In fact, file names that do not contain any directory "
-                       "information (i.e., only the name of a file such as <myplugin.so> "
+                       "information (i.e., only the name of a file such as <libmyplugin.so> "
                        "will not be found if they are not located in one of the directories "
                        "listed in the \\texttt{LD_LIBRARY_PATH} environment variable. In order "
-                       "to load a library in the current directory, use <./myplugin.so> "
+                       "to load a library in the current directory, use <./libmyplugin.so> "
                        "instead."
+                       "\n\n"
+                       "If you specify <./libmyplugin.so>, ASPECT will open either "
+                       "<./libmyplugin.debug.so> or <./libmyplugin.release.so> "
+                       "depending on the current ASPECT build type."
                        "\n\n"
                        "The typical use of this parameter is so that you can implement "
                        "additional plugins in your own directories, rather than in the ASPECT "
@@ -167,15 +172,23 @@ namespace aspect
                        "Units: Years or seconds, depending on the ``Use years "
                        "in output instead of seconds'' parameter.");
 
-    prm.declare_entry ("Maximum relative increase in time step", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
+    prm.declare_entry ("Maximum relative increase in time step",
+                       "91.0",
                        Patterns::Double (0.),
-                       "Set a percentage with which the time step is limited to increase. Generally the "
+                       "Set a percentage with which the length of the time step is limited to increase. Generally the "
                        "time step based on the CFL number should be sufficient, but for complicated models "
                        "which may suddenly drastically change behavior, it may be useful to limit the increase "
                        "in the time step, without limiting the time step size of the whole simulation to a "
                        "particular number. For example, if this parameter is set to $50$, then that means that "
-                       "the time step can at most increase by 50\\% from one time step to the next, or by a "
+                       "the length of a time step can at most increase by 50\\% from one time step to the next, or by a "
                        "factor of 1.5. "
+                       "\n\n"
+                       "Here, the default value is set to be 91\\% because the best available step-size ratio bound "
+                       "guaranteeing stability in the PDE context seems to be 1.91, see \\cite{Denner:2014}. "
+                       "In that thesis, the bound was proved in the context of semilinear parabolic problem, "
+                       "but it appears reasonable to also use this value as an upper bound in the current "
+                       "context."
+                       "\n\n"
                        "Units: \\%.");
 
     prm.declare_entry ("Use conduction timestep", "false",
@@ -673,32 +686,6 @@ namespace aspect
                          "may have provided for each part of the boundary. You may want "
                          "to compare this with the documentation of the geometry model you "
                          "use in your model.");
-    }
-    prm.leave_subsection();
-
-    prm.enter_subsection ("Boundary traction model");
-    {
-      prm.declare_entry ("Prescribed traction boundary indicators", "",
-                         Patterns::Map (Patterns::Anything(),
-                                        Patterns::Selection(BoundaryTraction::get_names<dim>())),
-                         "A comma separated list denoting those boundaries "
-                         "on which a traction force is prescribed, i.e., where "
-                         "known external forces act, resulting in an unknown velocity. This is "
-                         "often used to model ``open'' boundaries where we only know the pressure. "
-                         "This pressure then produces a force that is normal to the boundary and "
-                         "proportional to the pressure."
-                         "\n\n"
-                         "The format of valid entries for this parameter is that of a map "
-                         "given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where "
-                         "each key must be a valid boundary indicator (which is either an "
-                         "integer or the symbolic name the geometry model in use may have "
-                         "provided for this part of the boundary) "
-                         "and each value must be one of the currently implemented boundary "
-                         "traction models. ``selector'' is an optional string given as a subset "
-                         "of the letters `xyz' that allows you to apply the boundary conditions "
-                         "only to the components listed. As an example, '1 y: function' applies "
-                         "the type `function' to the y component on boundary 1. Without a selector "
-                         "it will affect all components of the traction.");
     }
     prm.leave_subsection();
 
@@ -1203,18 +1190,19 @@ namespace aspect
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Types of fields", "unspecified",
-                         Patterns::List (Patterns::Selection("chemical composition|stress|grain size|porosity|density|generic|unspecified")),
+                         Patterns::List (Patterns::Selection("chemical composition|stress|strain|grain size|porosity|density|entropy|generic|unspecified")),
                          "A type for each of the compositional fields requested. "
                          "Each entry of the list must be "
                          "one of several recognized types: chemical composition, "
-                         "stress, grain size, porosity, general and unspecified. "
+                         "stress, strain, grain size, porosity, density, entropy, "
+                         "general and unspecified. "
                          "The generic type is intended to be a placeholder type "
                          "that has no effect on the running of any material model, "
                          "while the unspecified type is intended to tell ASPECT "
                          "that the user has not explicitly indicated the type of "
                          "field (facilitating parameter file checking). "
-                         "If a plugin such as a material model uses these types, "
-                         "the choice of type will affect how that module functions.");
+                         "Plugins such as material models can use these types "
+                         "to affect how that plugin functions.");
       prm.declare_entry ("Compositional field methods", "",
                          Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|darcy field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
@@ -1498,7 +1486,7 @@ namespace aspect
       resume_computation = false;
     else if (prm.get ("Resume computation") == "auto")
       {
-        resume_computation = Utilities::fexists(output_directory+"restart.mesh");
+        resume_computation = Utilities::fexists(output_directory+"restart.mesh", mpi_communicator);
       }
     else
       AssertThrow (false, ExcMessage ("Resume computation parameter must be either `true', `false', or `auto'."));
@@ -1542,8 +1530,8 @@ namespace aspect
       std::sort (additional_refinement_times.begin(),
                  additional_refinement_times.end());
       if (convert_to_years == true)
-        for (unsigned int i=0; i<additional_refinement_times.size(); ++i)
-          additional_refinement_times[i] *= year_in_seconds;
+        for (double &additional_refinement_time : additional_refinement_times)
+          additional_refinement_time *= year_in_seconds;
 
       skip_solvers_on_initial_refinement = prm.get_bool("Skip solvers on initial refinement");
       skip_setup_initial_conditions_on_initial_refinement = prm.get_bool("Skip setup initial conditions on initial refinement");
@@ -1620,41 +1608,41 @@ namespace aspect
                              "'Nullspace removal/Remove nullspace' contains entries more than once. "
                              "This is not allowed. Please check your parameter file."));
 
-      for (unsigned int i=0; i<nullspace_names.size(); ++i)
+      for (const auto &nullspace_name : nullspace_names)
         {
-          if (nullspace_names[i]=="net rotation")
+          if (nullspace_name=="net rotation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_rotation);
-          else if (nullspace_names[i]=="net surface rotation")
+          else if (nullspace_name=="net surface rotation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_surface_rotation);
-          else if (nullspace_names[i]=="angular momentum")
+          else if (nullspace_name=="angular momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::angular_momentum);
-          else if (nullspace_names[i]=="net translation")
+          else if (nullspace_name=="net translation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_translation_x |
                                   NullspaceRemoval::net_translation_y | ( dim == 3 ?
                                                                           NullspaceRemoval::net_translation_z : 0) );
-          else if (nullspace_names[i]=="net x translation")
+          else if (nullspace_name=="net x translation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_translation_x);
-          else if (nullspace_names[i]=="net y translation")
+          else if (nullspace_name=="net y translation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_translation_y);
-          else if (nullspace_names[i]=="net z translation")
+          else if (nullspace_name=="net z translation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_translation_z);
-          else if (nullspace_names[i]=="linear x momentum")
+          else if (nullspace_name=="linear x momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_x);
-          else if (nullspace_names[i]=="linear y momentum")
+          else if (nullspace_name=="linear y momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_y);
-          else if (nullspace_names[i]=="linear z momentum")
+          else if (nullspace_name=="linear z momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_z);
-          else if (nullspace_names[i]=="linear momentum")
+          else if (nullspace_name=="linear momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_x |
                                   NullspaceRemoval::linear_momentum_y | ( dim == 3 ?
@@ -1872,11 +1860,34 @@ namespace aspect
       if (x_compositional_field_types.size() == 1)
         x_compositional_field_types = std::vector<std::string> (n_compositional_fields, x_compositional_field_types[0]);
 
-      // For backwards compatibility, convert a field named "density_field" without type to a density field
-      const unsigned int density_index = std::find(names_of_compositional_fields.begin(), names_of_compositional_fields.end(), "density_field")
-                                         - names_of_compositional_fields.begin();
-      if (density_index != n_compositional_fields && x_compositional_field_types[density_index] == "unspecified")
-        x_compositional_field_types[density_index] = "density";
+      // TODO ASPECT_4: Require all field types to be specified by the user
+      // Remove the following code block
+      for (unsigned int i=0; i<n_compositional_fields; ++i)
+        if (x_compositional_field_types[i] == "unspecified")
+          {
+            // Loop over various possibilities before
+            // choosing "chemical composition" as the standard field name
+            // stress, strain, grain_size, porosity, density
+            if (names_of_compositional_fields[i].find("stress") != std::string::npos)
+              x_compositional_field_types[i] = "stress";
+            else if ((names_of_compositional_fields[i].find("strain") != std::string::npos)
+                     || (std::regex_match(names_of_compositional_fields[i],std::regex("s[1-3][1-3]"))))
+              x_compositional_field_types[i] = "strain";
+            else if (names_of_compositional_fields[i].find("grain_size") != std::string::npos)
+              x_compositional_field_types[i] = "grain size";
+            else if (names_of_compositional_fields[i].find("entropy") != std::string::npos)
+              x_compositional_field_types[i] = "entropy";
+            else if (names_of_compositional_fields[i] == "porosity")
+              x_compositional_field_types[i] = "porosity";
+            else if (names_of_compositional_fields[i] == "density_field")
+              x_compositional_field_types[i] = "density";
+            else
+              x_compositional_field_types[i] = "chemical composition";
+          }
+
+      // If only one method is specified apply this to all fields
+      if (x_compositional_field_types.size() == 1)
+        x_compositional_field_types = std::vector<std::string> (n_compositional_fields, x_compositional_field_types[0]);
 
       AssertThrow (std::count(x_compositional_field_types.begin(), x_compositional_field_types.end(), "density") < 2,
                    ExcMessage("There can only be one field of type 'density' in a simulation!"));
@@ -1884,7 +1895,7 @@ namespace aspect
       composition_descriptions.resize(n_compositional_fields);
 
       for (unsigned int i=0; i<n_compositional_fields; ++i)
-        composition_descriptions[i].type = CompositionalFieldDescription::parse_type(x_compositional_field_types[i]);
+        composition_descriptions[i].type = aspect::CompositionalFieldDescription::parse_type(x_compositional_field_types[i]);
 
       std::vector<std::string> x_compositional_field_methods
         = Utilities::split_string_list
@@ -2175,31 +2186,6 @@ namespace aspect
               while ((key_and_comp.size()>0) && (key_and_comp[key_and_comp.size()-1] == ' '))
                 key_and_comp.erase (--key_and_comp.end());
             }
-
-          // finally, try to translate the key into a boundary_id. then
-          // make sure we haven't seen it yet
-          types::boundary_id boundary_id;
-          try
-            {
-              boundary_id = geometry_model.translate_symbolic_boundary_name_to_id(key_and_comp);
-            }
-          catch (const std::string &error)
-            {
-              AssertThrow (false, ExcMessage ("While parsing the entry <Boundary traction model/Prescribed "
-                                              "traction indicators>, there was an error. Specifically, "
-                                              "the conversion function complained as follows:\n\n"
-                                              + error));
-            }
-
-          AssertThrow (prescribed_traction_boundary_indicators.find(boundary_id)
-                       == prescribed_traction_boundary_indicators.end(),
-                       ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
-                                   "> appears more than once in the list of indicators "
-                                   "for nonzero traction boundaries."));
-
-          // finally, put it into the list
-          prescribed_traction_boundary_indicators[boundary_id] =
-            std::pair<std::string,std::string>(comp,value);
         }
     }
     prm.leave_subsection ();
@@ -2251,7 +2237,7 @@ namespace aspect
     BoundaryComposition::Manager<dim>::declare_parameters (prm);
     AdiabaticConditions::declare_parameters<dim> (prm);
     BoundaryVelocity::Manager<dim>::declare_parameters (prm);
-    BoundaryTraction::declare_parameters<dim> (prm);
+    BoundaryTraction::Manager<dim>::declare_parameters (prm);
     BoundaryHeatFlux::declare_parameters<dim> (prm);
   }
 }

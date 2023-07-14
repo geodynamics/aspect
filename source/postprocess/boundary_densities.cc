@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -50,7 +50,8 @@ namespace aspect
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-      std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (fe_face_values.n_quadrature_points));
+      in.requested_properties = MaterialModel::MaterialProperties::density;
+      std::vector<std::vector<double>> composition_values(this->n_compositional_fields(), std::vector<double>(fe_face_values.n_quadrature_points));
 
       const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
       const types::boundary_id bottom_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");

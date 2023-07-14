@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -50,6 +50,9 @@ namespace aspect
           // calculate effective viscosity
           if (in.requests_property(MaterialProperties::viscosity))
             {
+              Assert(std::isfinite(in.strain_rate[i].norm()),
+                     ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
+                                "not filled by the caller."));
               const SymmetricTensor<2,dim> strain_rate_deviator = deviator(in.strain_rate[i]);
 
               // For the very first time this function is called
@@ -138,8 +141,8 @@ namespace aspect
 
                       Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_pressure[i]),
                              ExcMessage ("Error: Averaged viscosity_derivative_wrt_pressure is not finite."));
-                      for (int x = 0; x < dim; x++)
-                        for (int y = 0; y < dim; y++)
+                      for (int x = 0; x < dim; ++x)
+                        for (int y = 0; y < dim; ++y)
                           Assert(dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]),
                                  ExcMessage ("Error: Averaged viscosity_derivative_wrt_strain_rate is not finite."));
 
@@ -208,7 +211,7 @@ namespace aspect
             prm.declare_entry ("Angle of internal friction", "0.",
                                Patterns::Double (0.),
                                "The value of the angle of internal friction $\\phi$. "
-                               "For a value of zero, in 2D the von Mises "
+                               "For a value of zero, in 2d the von Mises "
                                "criterion is retrieved. Angles higher than 30 degrees are "
                                "harder to solve numerically. Units: degrees.");
             prm.declare_entry ("Cohesion", "2e7",
@@ -242,7 +245,7 @@ namespace aspect
             maximum_viscosity          = prm.get_double ("Maximum viscosity");
             reference_strain_rate      = prm.get_double ("Reference strain rate");
             // Convert degrees to radians
-            angle_of_internal_friction = prm.get_double ("Angle of internal friction") * numbers::PI/180.0;
+            angle_of_internal_friction = prm.get_double ("Angle of internal friction") * constants::degree_to_radians;
             cohesion                   = prm.get_double ("Cohesion");
           }
           prm.leave_subsection();
@@ -283,7 +286,7 @@ namespace aspect
                                    "\n\n"
                                    "The viscosity is computed according to the Drucker Prager frictional "
                                    "plasticity criterion (non-associative) based on a user-defined "
-                                   "internal friction angle $\\phi$ and cohesion $C$. In 3D: "
+                                   "internal friction angle $\\phi$ and cohesion $C$. In 3d: "
                                    " $\\sigma_y = \\frac{6 C \\cos(\\phi)}{\\sqrt{3} (3+\\sin(\\phi))} + "
                                    "\\frac{6 P \\sin(\\phi)}{\\sqrt{3} (3+\\sin(\\phi))}$, "
                                    "where $P$ is the pressure. "
@@ -291,10 +294,10 @@ namespace aspect
                                    "G\\'{e}otechnique 25, No. 4, 671-689. "
                                    "With this formulation we circumscribe instead of inscribe the Mohr Coulomb "
                                    "yield surface. "
-                                   "In 2D the Drucker Prager yield surface is the same "
+                                   "In 2d the Drucker Prager yield surface is the same "
                                    "as the Mohr Coulomb surface: "
                                    " $\\sigma_y = P \\sin(\\phi) + C \\cos(\\phi)$. "
-                                   "Note that in 2D for $\\phi=0$, these criteria "
+                                   "Note that in 2d for $\\phi=0$, these criteria "
                                    "revert to the von Mises criterion (no pressure dependence). "
                                    "See for example Thieulot, C. (2011), PEPI 188, 47-68. "
                                    "\n\n"

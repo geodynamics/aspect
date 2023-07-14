@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -254,6 +254,16 @@ namespace aspect
         bool define_conductivities;
 
         std::vector<double> thermal_conductivities;
+
+        /**
+         * Number of phase transitions for each chemical composition (including the background field).
+         */
+        std::vector<unsigned int> n_phase_transitions_for_each_chemical_composition;
+
+        /**
+         * Total number of phases.
+         */
+        unsigned int n_phases;
 
         /**
          * Object for computing the equation of state.

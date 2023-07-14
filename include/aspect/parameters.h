@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -31,6 +31,8 @@
 namespace aspect
 {
   using namespace dealii;
+
+  struct CompositionalFieldDescription;
 
   // forward declaration:
   namespace GeometryModel
@@ -377,54 +379,9 @@ namespace aspect
     };
 
     /**
-     * A data structure containing a description of each compositional field.
-     * At present, this structure only includes the field type
-     * (i.e., whether it is of type chemical composition, porosity, etc.).
+     * Use the struct aspect::CompositionalFieldDescription
      */
-    struct CompositionalFieldDescription
-    {
-      /**
-       * This enum lists available compositional field types.
-       */
-      enum Type
-      {
-        chemical_composition,
-        stress,
-        grain_size,
-        porosity,
-        density,
-        generic,
-        unspecified
-      } type;
-
-      /**
-       * This function translates an input string into the
-       * available enum options for the type of compositional field.
-       */
-      static
-      Type
-      parse_type(const std::string &input)
-      {
-        if (input == "chemical composition")
-          return CompositionalFieldDescription::chemical_composition;
-        else if (input == "stress")
-          return CompositionalFieldDescription::stress;
-        else if (input == "grain size")
-          return CompositionalFieldDescription::grain_size;
-        else if (input == "porosity")
-          return CompositionalFieldDescription::porosity;
-        else if (input == "density")
-          return CompositionalFieldDescription::density;
-        else if (input == "generic")
-          return CompositionalFieldDescription::generic;
-        else if (input == "unspecified")
-          return CompositionalFieldDescription::unspecified;
-        else
-          AssertThrow(false, ExcNotImplemented());
-
-        return CompositionalFieldDescription::Type();
-      }
-    };
+    using CompositionalFieldDescription DEAL_II_DEPRECATED = aspect::CompositionalFieldDescription;
 
     /**
      * Constructor. Fills the values of member functions from the given
@@ -717,7 +674,9 @@ namespace aspect
      */
     unsigned int                   n_compositional_fields;
     std::vector<std::string>       names_of_compositional_fields;
-    std::vector<CompositionalFieldDescription>  composition_descriptions;
+    std::vector<aspect::CompositionalFieldDescription>  composition_descriptions;
+    unsigned int                   n_chemical_compositions;
+    std::vector<unsigned int>      chemical_composition_indices;
 
     /**
      * A vector that contains the advection field method for every compositional

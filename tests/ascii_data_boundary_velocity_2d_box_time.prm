@@ -1,5 +1,5 @@
 ##### simple test for ascii data
-# This test is particularly designed to test the time dependent behaviour with
+# This test is particularly designed to test the time dependent behavior with
 # a set of files labeled with increasing file order.
 
 set Dimension                              = 2

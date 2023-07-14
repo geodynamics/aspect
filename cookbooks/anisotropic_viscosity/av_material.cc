@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2023 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -39,9 +39,6 @@
 #include <string>
 #include <vector>
 
-#ifndef __aspect__av_material_h
-#define __aspect__av_material_h
-
 #include <aspect/simulator_access.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>
@@ -50,11 +47,10 @@
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/base/geometry_info.h>
-#include <aspect/simulator_access.h>
 
 #include <aspect/material_model/simple.h>
-#include <aspect/material_model/grain_size.h>
 #include <aspect/heating_model/interface.h>
+#include <aspect/heating_model/shear_heating.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/simulator_signals.h>
@@ -80,7 +76,7 @@ namespace aspect
       public:
         AnisotropicViscosity(const unsigned int n_points);
 
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
          * Stress-strain "director" tensors at the given positions. This
@@ -152,15 +148,14 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
 
         /**
          * Create AnisotropicViscosities.
          */
-        virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
     /**
@@ -172,15 +167,14 @@ namespace aspect
       public SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
 
         /**
          * Create AdditionalMaterialOutputsStokesRHS if we need to do so.
          */
-        virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const;
+        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
 
@@ -389,18 +383,16 @@ namespace aspect
         /**
          * Compute the heating model outputs for this class.
          */
-        virtual
         void
         evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
 
         /**
          * Allow the heating model to attach additional material model outputs.
          */
-        virtual
         void
-        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const;
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const override;
     };
 
 
@@ -420,8 +412,8 @@ namespace aspect
 
       // Some material models provide dislocation viscosities and boundary area work fractions
       // as additional material outputs. If they are attached, use them.
-      const MaterialModel::DislocationViscosityOutputs<dim> *disl_viscosities_out =
-        material_model_outputs.template get_additional_output<MaterialModel::DislocationViscosityOutputs<dim>>();
+      const ShearHeatingOutputs<dim> *shear_heating_out =
+        material_model_outputs.template get_additional_output<ShearHeatingOutputs<dim>>();
 
       const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
         material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>();
@@ -454,13 +446,10 @@ namespace aspect
 
           heating_model_outputs.heating_source_terms[q] = stress * deviatoric_strain_rate;
 
-          // If dislocation viscosities and boundary area work fractions are provided, reduce the
-          // overall heating by this amount (which is assumed to increase surface energy)
-          if (disl_viscosities_out != 0)
-            {
-              heating_model_outputs.heating_source_terms[q] *= 1 - disl_viscosities_out->boundary_area_change_work_fractions[q] *
-                                                               material_model_outputs.viscosities[q] / disl_viscosities_out->dislocation_viscosities[q];
-            }
+          // If shear heating work fractions are provided, reduce the
+          // overall heating by this amount (which is assumed to be converted into other forms of energy)
+          if (shear_heating_out != nullptr)
+            heating_model_outputs.heating_source_terms[q] *= shear_heating_out->shear_heating_work_fractions[q];
 
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
@@ -495,14 +484,21 @@ namespace aspect
     class AV : public MaterialModel::Simple<dim>
     {
       public:
-        virtual void initialize();
-        virtual void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
-                               MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void initialize() override;
+
+        void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+                       MaterialModel::MaterialModelOutputs<dim> &out) const override;
+
         static void declare_parameters (ParameterHandler &prm);
-        virtual void parse_parameters (ParameterHandler &prm);
-        virtual bool is_compressible () const;
-        virtual double reference_density () const;
-        virtual void create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+        void parse_parameters (ParameterHandler &prm) override;
+
+        bool is_compressible () const override;
+
+        double reference_density () const;
+
+        void create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
+
       private:
         double eta_N, viscosity_ratio; //normal viscosity and ratio between the shear and the normal viscosities
         static int delta (const unsigned int i, const unsigned int j); //kronecker delta function
@@ -833,4 +829,3 @@ namespace aspect
                                    "Transverse isotropic material model.")
   }
 }
-#endif

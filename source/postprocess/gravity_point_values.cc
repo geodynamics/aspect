@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -114,13 +114,15 @@ namespace aspect
                       else
                         satellite_positions_spherical[p][0] = minimum_radius;
                       if (n_points_longitude > 1)
-                        satellite_positions_spherical[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / (n_points_longitude - 1)) * i) * numbers::PI / 180.;
+                        satellite_positions_spherical[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) /
+                                                                                      (n_points_longitude - 1)) * i) * constants::degree_to_radians;
                       else
-                        satellite_positions_spherical[p][1] = minimum_colongitude * numbers::PI / 180.;
+                        satellite_positions_spherical[p][1] = minimum_colongitude * constants::degree_to_radians;
                       if (n_points_latitude > 1)
-                        satellite_positions_spherical[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) / (n_points_latitude - 1)) * j) * numbers::PI / 180.;
+                        satellite_positions_spherical[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) /
+                                                                                     (n_points_latitude - 1)) * j) * constants::degree_to_radians;
                       else
-                        satellite_positions_spherical[p][2] = minimum_colatitude * numbers::PI / 180.;
+                        satellite_positions_spherical[p][2] = minimum_colatitude * constants::degree_to_radians;
                       ++p;
                     }
                 }
@@ -154,10 +156,10 @@ namespace aspect
               else
                 satellite_positions_spherical[p][0] = radius_list[p];
               if (longitude_list[p] < 0)
-                satellite_positions_spherical[p][1] = (360 + longitude_list[p]) * numbers::PI / 180.;
+                satellite_positions_spherical[p][1] = (360 + longitude_list[p]) * constants::degree_to_radians;
               else
-                satellite_positions_spherical[p][1] = (longitude_list[p]) * numbers::PI / 180.;
-              satellite_positions_spherical[p][2] = (90 - latitude_list[p]) * numbers::PI / 180. ;
+                satellite_positions_spherical[p][1] = (longitude_list[p]) * constants::degree_to_radians;
+              satellite_positions_spherical[p][2] = (90 - latitude_list[p]) * constants::degree_to_radians;
             }
         }
 
@@ -176,7 +178,7 @@ namespace aspect
     GravityPointValues<dim>::execute (TableHandler &)
     {
       AssertThrow(false, ExcNotImplemented());
-      return std::pair<std::string,std::string>();
+      return {"", ""};
     }
 
 
@@ -251,6 +253,7 @@ namespace aspect
                                                  this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),
                                                    this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::density;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
@@ -258,7 +261,7 @@ namespace aspect
             // Evaluate the solution at the quadrature points of this cell
             fe_values.reinit (cell);
 
-            in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution());
             this->get_material_model().evaluate(in, out);
 
             // Pull some computations that are independent of the
@@ -395,7 +398,7 @@ namespace aspect
                 // We are inside the inner radius
                 g_theory[p] = 0;
                 g_potential_theory[p] = 2.0 * G * numbers::PI * reference_density *
-                                        (std::pow(model_inner_radius,2) - std::pow(model_outer_radius,2));
+                                        ((model_inner_radius * model_inner_radius) - (model_outer_radius * model_outer_radius));
               }
             else if ((satellite_positions_spherical[p][0] > model_inner_radius)
                      && (satellite_positions_spherical[p][0] < model_outer_radius))
@@ -403,29 +406,29 @@ namespace aspect
                 // We are in the spherical shell
                 g_theory[p] = G * numbers::PI * 4./3. * reference_density *
                               (satellite_positions_spherical[p][0] -
-                               (std::pow(model_inner_radius,3)
-                                /  std::pow(satellite_positions_spherical[p][0],2)));
+                               ((model_inner_radius * model_inner_radius * model_inner_radius)
+                                /  (satellite_positions_spherical[p][0] * satellite_positions_spherical[p][0])));
                 g_potential_theory[p] = G * numbers::PI * 4./3. * reference_density *
-                                        ((std::pow(satellite_positions_spherical[p][0],2)/2.0) +
-                                         (std::pow(model_inner_radius,3) / satellite_positions_spherical[p][0]))
+                                        (((satellite_positions_spherical[p][0] * satellite_positions_spherical[p][0])/2.0) +
+                                         ((model_inner_radius * model_inner_radius * model_inner_radius) / satellite_positions_spherical[p][0]))
                                         -
                                         G * numbers::PI * 2.0 * reference_density *
-                                        std::pow(model_outer_radius,2);
+                                        (model_outer_radius * model_outer_radius);
               }
             else
               {
                 const double common_factor = G * numbers::PI * 4./3. * reference_density
-                                             * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3));
+                                             * ((model_outer_radius * model_outer_radius * model_outer_radius) - (model_inner_radius * model_inner_radius * model_inner_radius));
                 const double r = satellite_positions_spherical[p][0];
 
-                g_theory[p] = common_factor / std::pow(r,2);
+                g_theory[p] = common_factor / (r * r);
                 g_potential_theory[p] = - common_factor / r;
 
                 // For the gradient of g, start with the common part of
                 // the diagonal elements:
                 g_gradient_theory[p][0][0] =
                   g_gradient_theory[p][1][1] =
-                    g_gradient_theory[p][2][2] = -1./std::pow(r,3);
+                    g_gradient_theory[p][2][2] = -1./(r * r * r);
 
                 // Then do the off-diagonal elements:
                 for (unsigned int e=0; e<dim; ++e)
@@ -494,8 +497,8 @@ namespace aspect
               // write output.
               // g_gradient is here given in eotvos E (1E = 1e-9 per square seconds):
               output << satellite_positions_spherical[p][0] << ' '
-                     << satellite_positions_spherical[p][1] *180. / numbers::PI << ' '
-                     << satellite_positions_spherical[p][2] *180. / numbers::PI << ' '
+                     << satellite_positions_spherical[p][1] * constants::radians_to_degree << ' '
+                     << satellite_positions_spherical[p][2] * constants::radians_to_degree << ' '
                      << satellite_position[0] << ' '
                      << satellite_position[1] << ' '
                      << satellite_position[2] << ' '
@@ -740,7 +743,7 @@ namespace aspect
           AssertThrow (! this->get_material_model().is_compressible(),
                        ExcMessage("This postprocessor was only tested for incompressible models so far."));
           AssertThrow (dim==3,
-                       ExcMessage("This postprocessor was only tested for 3D models."));
+                       ExcMessage("This postprocessor was only tested for 3d models."));
           output_interval = prm.get_double ("Time between gravity output");
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;

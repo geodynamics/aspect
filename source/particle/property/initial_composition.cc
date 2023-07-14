@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -32,7 +32,7 @@ namespace aspect
       InitialComposition<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                                 std::vector<double> &data) const
       {
-        for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
+        for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
           data.push_back(this->get_initial_composition_manager().initial_composition(position,i));
       }
 
@@ -59,7 +59,7 @@ namespace aspect
 
         std::vector<std::pair<std::string,unsigned int>> property_information;
 
-        for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
+        for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
           {
             std::ostringstream field_name;
             field_name << "initial " << this->introspection().name_for_compositional_index(i);

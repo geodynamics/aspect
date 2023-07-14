@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -71,15 +71,21 @@ namespace aspect
         std::vector<double> friction_angles;
 
         /**
+         * The plastic yield stress.
+         */
+        std::vector<double> yield_stresses;
+
+        /**
          * The area where the viscous stress exceeds the plastic yield stress,
          * and viscosity is rescaled back to the yield envelope.
          */
         std::vector<double> yielding;
+
     };
 
     /**
-       * A data structure with the output of calculate_isostrain_viscosities.
-       */
+     * A data structure with the output of calculate_isostrain_viscosities.
+     */
     struct IsostrainViscosities
     {
       /**
@@ -96,6 +102,11 @@ namespace aspect
        * The current friction angle.
        */
       std::vector<double> current_friction_angles;
+
+      /**
+       * The current cohesion.
+       */
+      std::vector<double> current_cohesions;
     };
 
     namespace Rheology
@@ -113,19 +124,27 @@ namespace aspect
           /**
            * This function calculates viscosities assuming that all the compositional fields
            * experience the same strain rate (isostrain).
+           * If @p n_phase_transitions_per_composition points to a vector of
+           * unsigned integers this is considered the number of phase transitions
+           * for each compositional field and viscosity will be first computed on
+           * each phase and then averaged for each compositional field.
            */
           IsostrainViscosities
           calculate_isostrain_viscosities ( const MaterialModel::MaterialModelInputs<dim> &in,
                                             const unsigned int i,
                                             const std::vector<double> &volume_fractions,
                                             const std::vector<double> &phase_function_values = std::vector<double>(),
-                                            const std::vector<unsigned int> &n_phases_per_composition =
+                                            const std::vector<unsigned int> &n_phase_transitions_per_composition =
                                               std::vector<unsigned int>()) const;
 
           /**
            * A function that fills the viscosity derivatives in the
            * MaterialModelOutputs object that is handed over, if they exist.
            * Does nothing otherwise.
+           * If @p n_phase_transitions_per_composition points to a vector of
+           * unsigned integers this is considered the number of phase transitions
+           * for each compositional field and viscosity will be first computed on
+           * each phase and then averaged for each compositional field.
            */
           void compute_viscosity_derivatives(const unsigned int point_index,
                                              const std::vector<double> &volume_fractions,
@@ -133,7 +152,7 @@ namespace aspect
                                              const MaterialModel::MaterialModelInputs<dim> &in,
                                              MaterialModel::MaterialModelOutputs<dim> &out,
                                              const std::vector<double> &phase_function_values = std::vector<double>(),
-                                             const std::vector<unsigned int> &n_phases_per_composition =
+                                             const std::vector<unsigned int> &n_phase_transitions_per_composition =
                                                std::vector<unsigned int>()) const;
 
           /**
@@ -154,7 +173,7 @@ namespace aspect
           /**
            * Read the parameters this class declares from the parameter file.
            * If @p expected_n_phases_per_composition points to a vector of
-           * unsigned integers this is considered the number of phase transitions
+           * unsigned integers this is considered the number of phases
            * for each compositional field and will be checked against the parsed
            * parameters.
            */
@@ -174,14 +193,12 @@ namespace aspect
            * MaterialModelOutputs object that is handed over, if it exists.
            * Does nothing otherwise.
            */
-          void fill_plastic_outputs (const unsigned int point_index,
-                                     const std::vector<double> &volume_fractions,
-                                     const bool plastic_yielding,
-                                     const MaterialModel::MaterialModelInputs<dim> &in,
-                                     MaterialModel::MaterialModelOutputs<dim> &out,
-                                     const std::vector<double> &phase_function_values = std::vector<double>(),
-                                     const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
-
+          void fill_plastic_outputs(const unsigned int point_index,
+                                    const std::vector<double> &volume_fractions,
+                                    const bool plastic_yielding,
+                                    const MaterialModel::MaterialModelInputs<dim> &in,
+                                    MaterialModel::MaterialModelOutputs<dim> &out,
+                                    const IsostrainViscosities &isostrain_viscosities) const;
 
           /**
            * Minimum strain rate used to stabilize the strain rate dependent rheology.
@@ -207,11 +224,6 @@ namespace aspect
            * Object for computing viscoelastic viscosities and stresses.
            */
           Rheology::Elasticity<dim> elastic_rheology;
-
-          /**
-           * Whether to include viscoelasticity in the constitutive formulation.
-           */
-          bool use_elasticity;
 
 
         private:
@@ -270,7 +282,7 @@ namespace aspect
           bool use_adiabatic_pressure_in_creep;
 
           /**
-           * List of exponents controlling the behaviour of the stress limiter
+           * List of exponents controlling the behavior of the stress limiter
            * yielding mechanism.
            */
           std::vector<double> exponents_stress_limiter;

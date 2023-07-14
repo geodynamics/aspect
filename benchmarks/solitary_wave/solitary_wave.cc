@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -158,12 +158,11 @@ namespace aspect
        *
        * @param filename Name of the input file.
        */
-      void read_solitary_wave_solution (const std::string &filename)
+      void read_solitary_wave_solution (const std::string &filename,
+                                        MPI_Comm comm)
       {
         std::string temp;
-        std::ifstream in(filename.c_str(), std::ios::in);
-        AssertThrow (in,
-                     ExcMessage (std::string("Couldn't open file <") + filename + std::string(">")));
+        std::stringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
         while (!in.eof())
           {
@@ -195,13 +194,14 @@ namespace aspect
                              const double /*offset*/,
                              const double compaction_length,
                              const bool read_solution,
-                             const std::string file_name)
+                             const std::string file_name,
+                             MPI_Comm comm)
       {
         // non-dimensionalize the amplitude
         const double non_dim_amplitude = amplitude / background_porosity;
 
         if (read_solution)
-          read_solitary_wave_solution(file_name);
+          read_solitary_wave_solution(file_name, comm);
         else
           {
             porosity.resize(max_points);
@@ -281,8 +281,8 @@ namespace aspect
             delta_ = delta;
           }
 
-          virtual void vector_value (const Point<dim> &p,
-                                     Vector<double>   &values) const
+          void vector_value (const Point<dim> &p,
+                             Vector<double>   &values) const override
           {
             unsigned int index = static_cast<int>((p[dim-1]-delta_)/max_z_ * (initial_pressure_.size()-1));
             if (p[dim-1]-delta_ < 0)
@@ -327,22 +327,20 @@ namespace aspect
          * compute the analytical solution for the shape of the solitary wave.
          */
         void
-        initialize ();
+        initialize () override;
 
         /**
          * Return the boundary velocity as a function of position.
          */
-        virtual
         double
-        initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
+        initial_composition (const Point<dim> &position, const unsigned int n_comp) const override;
 
         static
         void
         declare_parameters (ParameterHandler &prm);
 
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         double
         get_amplitude () const;
@@ -374,17 +372,24 @@ namespace aspect
     class SolitaryWaveMaterial : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual bool is_compressible () const
+        bool is_compressible () const override
         {
           return false;
         }
 
-        virtual double reference_darcy_coefficient () const
+        double reference_darcy_coefficient () const override
         {
+          // Make sure we keep track of the initial composition manager and
+          // that it continues to live beyond the time when the simulator
+          // class releases its pointer to it.
+          if (initial_composition_manager == nullptr)
+            const_cast<std::shared_ptr<const aspect::InitialComposition::Manager<dim>>&>(initial_composition_manager)
+              = this->get_initial_composition_manager_pointer();
+
           // Note that this number is based on the background porosity in the
           // solitary wave initial condition.
           const SolitaryWaveInitialCondition<dim> &initial_composition =
-            this->get_initial_composition_manager().template
+            initial_composition_manager->template
             get_matching_initial_composition_model<SolitaryWaveInitialCondition<dim>>();
 
           return reference_permeability * pow(initial_composition.get_background_porosity(), 3.0) / eta_f;
@@ -413,12 +418,11 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
-        virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                              typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+        void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
+                      typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
@@ -460,6 +464,14 @@ namespace aspect
         double xi_0;
         double eta_f;
         double reference_permeability;
+
+        /**
+         * A shared pointer to the initial composition object
+         * that ensures that the current object can continue
+         * to access the initial composition object beyond the
+         * first time step.
+         */
+        std::shared_ptr<const aspect::InitialComposition::Manager<dim>> initial_composition_manager;
     };
 
     template <int dim>
@@ -567,7 +579,8 @@ namespace aspect
                                           offset,
                                           compaction_length,
                                           read_solution,
-                                          file_name);
+                                          file_name,
+                                          this->get_mpi_communicator());
     }
 
 
@@ -653,9 +666,8 @@ namespace aspect
         /**
          * Generate graphical output from the current solution.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
 
         /**
          * Initialization function. Take references to the material model and
@@ -663,7 +675,7 @@ namespace aspect
          * the analytical solution for the shape of the solitary wave and store them.
          */
         void
-        initialize ();
+        initialize () override;
 
         void
         store_initial_pressure ();
@@ -799,8 +811,11 @@ namespace aspect
               // interpolate between the values we have
               unsigned int k = i-1;
               while (initial_pressure[k] == 0.0)
-                k--;
-              Assert(k >= 0, ExcInternalError());
+                {
+                  Assert(k > 0, ExcInternalError());
+                  k--;
+                }
+
               unsigned int j = i+1;
               while (initial_pressure[j] == 0.0)
                 j++;

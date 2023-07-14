@@ -6,7 +6,7 @@
 # resulting from large contrasts in grain size between
 # the lower mantle and transition zone. All parameters,
 # including temperature and pressure, are set to constant
-# values and no dynamic recrystallisation is
+# values and no dynamic recrystallization is
 # included (the reciprocal required strain is
 # set to zero). Material flows in from the left
 # and flows out at the right boundary with a constant

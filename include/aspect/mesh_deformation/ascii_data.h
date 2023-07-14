@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -67,6 +67,11 @@ namespace aspect
         Tensor<1,dim>
         compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator,
                                                 const Point<dim> &position) const override;
+
+        /**
+         * Returns whether or not the plugin requires surface stabilization
+         */
+        bool needs_surface_stabilization () const override;
 
         /**
          * Declare the parameters this class takes through input files.

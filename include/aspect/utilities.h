@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,6 +25,7 @@
 #include <aspect/global.h>
 
 #include <array>
+#include <random>
 #include <deal.II/base/point.h>
 #include <deal.II/base/conditional_ostream.h>
 #include <deal.II/base/table_indices.h>
@@ -73,6 +74,145 @@ namespace aspect
     possibly_extend_from_1_to_N (const std::vector<T> &values,
                                  const unsigned int N,
                                  const std::string &id_text);
+
+    namespace MapParsing
+    {
+      /**
+       * A struct that bundles all the available options for
+       * parse_map_to_double_array().
+       */
+      struct Options
+      {
+        /* A list of valid key names that are allowed
+         * to appear in the map. If this list is empty
+         * it is assumed to be equal to the list of
+         * required keys. If this list is longer than
+         * list_of_required_keys, every key that is
+         * allowed but not required will be ignored when
+         * parsing the map.
+         */
+        std::vector<std::string> list_of_allowed_keys;
+
+        /* A list of valid key names that are required
+         * to appear in the map. Only these keys will be
+         * parsed into the map structure and the order of
+         * these keys determines the order of entries
+         * in the output vector.
+         */
+        std::vector<std::string> list_of_required_keys;
+
+        /*
+         * A name that identifies the type of input property (e.g. 'density', 'viscosity')
+         * that is being parsed by this function. This name is used in generating
+         * error messages if the map does not conform to the expected format.
+         */
+        std::string property_name;
+
+        /*
+         * If true, allow multiple values
+         * for each key. If false only allow a single value per key. In either
+         * case each key is only allowed to appear once. Multiple values
+         * for a key are delimited by a "|" character, as in
+         * "key1: value1|value2|value3, key2: value1|value2".
+         */
+        bool allow_multiple_values_per_key;
+
+        /*
+         * Whether to allow for some keys in list_of_required_keys to be
+         * not set to any values, i.e. they do not appear at all.
+         * This also allows a completely empty map.
+         */
+        bool allow_missing_keys;
+
+        /*
+         * Whether to store the number of values
+         * per key in n_values_per_key while creating
+         * the map. This vector can be later accessed
+         * and used (for example) to check that subsequent calls to
+         * parse other input parameters have the same
+         * structure.
+         */
+        bool store_values_per_key;
+
+        /*
+         * Whether to check the number of values
+         * per key in the map against values stored
+         * in n_values_per_key. This allows to
+         * check that subsequent calls to
+         * parse other input parameters have the same
+         * structure.
+         */
+        bool check_values_per_key;
+
+        /*
+         * A vector of unsigned
+         * integers that is used by store_values_per_key and
+         * check_values_per_key to either store the current map
+         * structure or check the map structure against an existing
+         * map. This parameter is only used if either of these
+         * two parameters are set to true
+         */
+        std::vector<unsigned int> n_values_per_key;
+
+        /**
+         * Delete the default constructor, because we want to ensure that
+         * at least the required options are always set.
+         */
+        Options() = delete;
+
+        /**
+         * A constructor for options that only sets the required
+         * parameters and leaves all other parameters at their default values.
+         * By default the @p list_of_required_keys will be used as both
+         * the list of allowed and list of required keys. In other words
+         * exactly these keys and no other keys are allowed to appear
+         * in the input and all of the keys have to be specified and will
+         * be included in the output. For a documentation of the parameters
+         * see the documentation of the member variables of this class.
+         */
+        Options(const std::vector<std::string> &list_of_required_keys,
+                const std::string &property_name)
+          :
+          list_of_allowed_keys(list_of_required_keys),
+          list_of_required_keys(list_of_required_keys),
+          property_name(property_name),
+          allow_multiple_values_per_key(false),
+          allow_missing_keys(false),
+          store_values_per_key(false),
+          check_values_per_key(false),
+          n_values_per_key()
+        {}
+      };
+
+      /**
+       * This function takes a string argument that is interpreted as a map
+       * of the form "key1 : value1, key2 : value2, etc", and then parses
+       * it to return a vector of these values. The parsing and output
+       * is controlled by @p options, which provides control over which keys
+       * (and how many) are allowed and required, whether multiple values
+       * per keys are allowed, whether the structure of the map is recorded
+       * while parsing, or checked against an existing structure and some other
+       * options. See the documentation of MapParsing::Options for available
+       * settings.
+       *
+       * @param[in] input_string The string representation of the map
+       *   to be parsed.
+       * @param[in] options An object of type MapParsing::Options() that contains
+       *   the parsing options that are considered by this function. See the
+       *   documentation of Options() for the available settings.
+       *
+       * @return A vector of values that are parsed from the @p input_string according
+       *   to the provided @p options and is sorted according to the member variable
+       *   list_of_required_keys inside @p options.
+       *   If multiple values per key are allowed, the vector contains first all
+       *   values for key 1, then all values for key 2 and so forth. Using the
+       *   n_values_per_key vector inside @p options allows the caller to
+       *   associate entries in the returned vector with specific keys.
+       */
+      std::vector<double>
+      parse_map_to_double_array(const std::string &input_string,
+                                Options &options);
+    }
 
     /**
      * This function takes a string argument that is interpreted as a map
@@ -142,6 +282,10 @@ namespace aspect
      *   values for key 1, then all values for key 2 and so forth. Using the
      *   @p n_values_per_key vector allows the caller to associate entries in the
      *   returned vector with specific keys.
+     *
+     * @deprecated: This function is deprecated in favor of the more general
+     *   Utilities::MapParsing::parse_map_to_double_array() function. Please
+     *   use the other function instead.
      */
     std::vector<double>
     parse_map_to_double_array (const std::string &key_value_map,
@@ -328,19 +472,19 @@ namespace aspect
     orthogonal_vectors (const Tensor<1,dim> &v);
 
     /**
-      * A function that returns the corresponding euler angles for a
-      * rotation described by rotation axis and angle.
-      */
+     * A function that returns the corresponding euler angles for a
+     * rotation described by rotation axis and angle.
+     */
     Tensor<2,3>
     rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
                                const double rotation_angle);
 
     /**
-      * Compute the 3d rotation matrix that describes the rotation of a
-      * plane defined by the two points @p point_one and @p point_two
-      * onto the x-y-plane in a way that the vector from the origin to
-      * point_one points into the (0,1,0) direction after the rotation.
-      */
+     * Compute the 3d rotation matrix that describes the rotation of a
+     * plane defined by the two points @p point_one and @p point_two
+     * onto the x-y-plane in a way that the vector from the origin to
+     * point_one points into the (0,1,0) direction after the rotation.
+     */
     Tensor<2,3>
     compute_rotation_matrix_for_slice (const Tensor<1,3> &point_one,
                                        const Tensor<1,3> &point_two);
@@ -407,9 +551,32 @@ namespace aspect
     /**
      * Checks whether a file named @p filename exists and is readable.
      *
+     * Note: This function performs file access on all MPI ranks that
+     * call it. Only use this function if
+     * the file access is performed on all MPI ranks
+     * and on a reasonably fast file system.
+     *
+     * @return True if the file exists and is readable on all MPI ranks
+     * that call this function.
      * @param filename File to check existence
      */
     bool fexists(const std::string &filename);
+
+    /**
+     * Check whether a file named @p filename exists and is readable
+     * on MPI rank 0. Then, broadcast the result to all MPI ranks.
+     *
+     * Note that in contrast to the other fexists() function, this function
+     * only checks for the existence of the file on a single process.
+     * This is useful to avoid overloading the file system and is sufficient
+     * if the subsequent file access is also only performed on MPI rank 0.
+     *
+     * @return True if the file exists and is readable on MPI rank 0.
+     * @param filename File to check existence
+     * @param comm MPI communicator to use.
+     */
+    bool fexists(const std::string &filename,
+                 MPI_Comm comm);
 
     /**
      * Checks to see if the user is trying to use data from a url.
@@ -421,9 +588,18 @@ namespace aspect
     /**
      * Reads the content of the ascii file @p filename on process 0 and
      * distributes the content by MPI_Bcast to all processes. The function
-     * returns the content of the file on all processes.
+     * returns the content of the file on all processes. The purpose of this
+     * function is to reduce parallel file access to a single file access on
+     * process 0.
      *
-     * @param [in] filename The name of the ascii file to load.
+     * @param [in] filename The name of the ascii file to load. If the
+     *  file name ends in `.gz`, then the function assumes that the file
+     *  has been compressed using gzip; it then reads and uncompresses the file
+     *  before distributing it. If the file name is a URL (starting with either
+     *  `http://`, `https://`, or `file://`), and if ASPECT has been configured
+     *  with libDAP, then the file is read from that location via libDAP
+     *  and the returned string is an ASCII data representation of what was
+     *  obtained this way.
      * @param [in] comm The MPI communicator in which the content is
      * distributed.
      * @return A string which contains the data in @p filename.
@@ -431,6 +607,23 @@ namespace aspect
     std::string
     read_and_distribute_file_content(const std::string &filename,
                                      const MPI_Comm &comm);
+
+    /**
+     * Collect the content of @p file_content using MPI_Gather to process 0.
+     * Then write the content to the file @p filename on process 0.
+     * The purpose of this function is to reduce parallel file access to
+     * process 0. Note that this function assumes that the content from
+     * all processes fits into the memory of process 0.
+     *
+     * @param [in] filename The name of the file to write.
+     * @param [in] file_content The content that should be written to file.
+     * @param [in] comm The MPI communicator from which the content is
+     * collected.
+     */
+    void
+    collect_and_write_file_content(const std::string &filename,
+                                   const std::string &file_content,
+                                   const MPI_Comm &comm);
 
     /**
      * Creates a path as if created by the shell command "mkdir -p", therefore
@@ -519,48 +712,7 @@ namespace aspect
     void
     extract_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
                                            const unsigned int q,
-                                           std::vector<double> &composition_values_at_q_point)
-    {
-      Assert(q<composition_values.size(), ExcInternalError());
-      Assert(composition_values_at_q_point.size() > 0,
-             ExcInternalError());
-
-      for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
-        {
-          Assert(composition_values[k].size() == composition_values_at_q_point.size(),
-                 ExcInternalError());
-          composition_values_at_q_point[k] = composition_values[k][q];
-        }
-    }
-
-    template <typename T>
-    inline
-    std::vector<T>
-    possibly_extend_from_1_to_N (const std::vector<T> &values,
-                                 const unsigned int N,
-                                 const std::string &id_text)
-    {
-      if (values.size() == 1)
-        {
-          return std::vector<T> (N, values[0]);
-        }
-      else if (values.size() == N)
-        {
-          return values;
-        }
-      else
-        {
-          // Non-specified behavior
-          AssertThrow(false,
-                      ExcMessage("Length of " + id_text + " list must be " +
-                                 "either one or " + Utilities::to_string(N) +
-                                 ". Currently it is " + Utilities::to_string(values.size()) + "."));
-        }
-
-      // This should never happen, but return an empty vector so the compiler
-      // will be happy
-      return std::vector<T> ();
-    }
+                                           std::vector<double> &composition_values_at_q_point);
 
     /**
      * Replace the string <tt>\$ASPECT_SOURCE_DIR</tt> in @p location by the current
@@ -854,21 +1006,25 @@ namespace aspect
      * @p mpi_communicator The MPI Communicator of the problem.
      * @p output_filename An optional file name into which (if present) the solver history will
      *   be written.
+     *
+     * @return This function never returns normally. It always exits via an exception, either
+     *   of type ExcMessage (on rank 0 of the parallel computation) or QuietException (on all
+     *   other ranks).
      */
-    void linear_solver_failed(const std::string &solver_name,
-                              const std::string &function_name,
-                              const std::vector<SolverControl> &solver_controls,
-                              const std::exception &exc,
-                              const MPI_Comm &mpi_communicator,
-                              const std::string &output_filename = "");
+    void throw_linear_solver_failure_exception(const std::string &solver_name,
+                                               const std::string &function_name,
+                                               const std::vector<SolverControl> &solver_controls,
+                                               const std::exception &exc,
+                                               const MPI_Comm &mpi_communicator,
+                                               const std::string &output_filename = "");
 
     /**
-    * Conversion object where one can provide a function that returns
-    * a tensor for the velocity at a given point and it returns something
-    * that matches the dealii::Function interface with a number of output
-    * components equal to the number of components of the finite element
-    * in use.
-    */
+     * Conversion object where one can provide a function that returns
+     * a tensor for the velocity at a given point and it returns something
+     * that matches the dealii::Function interface with a number of output
+     * components equal to the number of components of the finite element
+     * in use.
+     */
     template <int dim>
     class VectorFunctionFromVelocityFunctionObject : public Function<dim>
     {
@@ -914,7 +1070,242 @@ namespace aspect
          */
         const std::function<Tensor<1,dim> (const Point<dim> &)> function_object;
     };
+
+    /**
+     * Create and return a permutation vector which can be used by the
+     * apply_permutation() function to put the vector in sorted order.
+     *
+     * @param vector vector to sort
+     */
+    template <typename T>
+    inline
+    std::vector<std::size_t>
+    compute_sorting_permutation(const std::vector<T> &vector);
+
+    /**
+     * Applies a permutation vector to another vector and return the resulting vector.
+     *
+     * @param vector vector to sort
+     * @param permutation_vector The permutation vector used to sort the input vector.
+     * @return The permuted input vector.
+     */
+    template <typename T>
+    inline
+    std::vector<T>
+    apply_permutation(
+      const std::vector<T> &vector,
+      const std::vector<std::size_t> &permutation_vector);
+
+    /**
+     * Get volume weighted rotation matrices, using random draws to convert
+     * to a discrete number of orientations, weighted by volume.
+     * The input is a vector of volume fractions and a vector of rotation matrices.
+     * The vectors need to have the same length.
+     *
+     * @param volume_fractions a vector of doubles representing the volume fraction of each grain
+     * @param rotation_matrices a vector of 2nd order 3D tensors representing the rotation matrix of each grain
+     * @param n_output_matrices The number of rotation matrices which are output by this function. This can be
+     * different from the number of entries in the volume fraction and rotation matrices vectors.
+     * @param random_number_generator a reference to a mt19937 random number generator.
+     */
+    std::vector<Tensor<2,3>>
+    rotation_matrices_random_draw_volume_weighting(const std::vector<double> volume_fractions,
+                                                   const std::vector<Tensor<2,3>> rotation_matrices,
+                                                   const unsigned int n_output_matrices,
+                                                   std::mt19937 &random_number_generator);
+
+    /**
+    * Wraps angle between 0 and 360 degrees.
+    */
+    double wrap_angle(const double angle);
+
+    /**
+     * Compute Z-X-Z Euler angles (https://en.wikipedia.org/wiki/Euler_angles) from rotation matrix.
+     * The Z-X-Z indicates the order of axis rotations to generate the Euler angles.
+     */
+    std::array<double,3> zxz_euler_angles_from_rotation_matrix(const Tensor<2,3> &rotation_matrix);
+
+    /**
+     * Compute rotation matrix from Z-X-Z Euler angles (https://en.wikipedia.org/wiki/Euler_angles)
+     * The Z-X-Z indicates the order of axis axis rotations to generate the Euler angles.
+     */
+    Tensor<2,3> zxz_euler_angles_to_rotation_matrix(const double phi1,
+                                                    const double theta,
+                                                    const double phi2);
+
   }
 }
+
+
+// inline implementations:
+#ifndef DOXYGEN
+namespace aspect
+{
+  namespace Utilities
+  {
+
+    template <typename T>
+    inline
+    std::vector<T>
+    possibly_extend_from_1_to_N (const std::vector<T> &values,
+                                 const unsigned int N,
+                                 const std::string &id_text)
+    {
+      if (values.size() == 1)
+        {
+          return std::vector<T> (N, values[0]);
+        }
+      else if (values.size() == N)
+        {
+          return values;
+        }
+      else
+        {
+          // Non-specified behavior
+          AssertThrow(false,
+                      ExcMessage("Length of " + id_text + " list must be " +
+                                 "either one or " + Utilities::to_string(N) +
+                                 ". Currently it is " + Utilities::to_string(values.size()) + "."));
+        }
+
+      // This should never happen, but return an empty vector so the compiler
+      // will be happy
+      return std::vector<T> ();
+    }
+
+    inline
+    void
+    extract_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
+                                           const unsigned int q,
+                                           std::vector<double> &composition_values_at_q_point)
+    {
+      Assert(q<composition_values.size(), ExcInternalError());
+      Assert(composition_values_at_q_point.size() > 0,
+             ExcInternalError());
+
+      for (unsigned int k=0; k < composition_values_at_q_point.size(); ++k)
+        {
+          Assert(composition_values[k].size() == composition_values_at_q_point.size(),
+                 ExcInternalError());
+          composition_values_at_q_point[k] = composition_values[k][q];
+        }
+    }
+
+    template <typename T>
+    inline
+    std::vector<std::size_t>
+    compute_sorting_permutation(const std::vector<T> &vector)
+    {
+      std::vector<std::size_t> p(vector.size());
+      std::iota(p.begin(), p.end(), 0);
+      std::sort(p.begin(), p.end(),
+                [&](std::size_t i, std::size_t j)
+      {
+        return vector[i] < vector[j];
+      });
+      return p;
+    }
+
+    template <typename T>
+    inline
+    std::vector<T>
+    apply_permutation(
+      const std::vector<T> &vector,
+      const std::vector<std::size_t> &permutation_vector)
+    {
+      std::vector<T> sorted_vec(vector.size());
+      std::transform(permutation_vector.begin(), permutation_vector.end(), sorted_vec.begin(),
+                     [&](std::size_t i)
+      {
+        return vector[i];
+      });
+      return sorted_vec;
+    }
+
+    /**
+     * Contains utility functions related to tensors.
+     */
+    namespace Tensors
+    {
+
+      /**
+       * Rotate a 3D 4th order tensor representing the full stiffnexx matrix using a 3D 2nd order rotation tensor
+       */
+      SymmetricTensor<4,3>
+      rotate_full_stiffness_tensor(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<4,3> &input_tensor);
+
+      /**
+       * Rotate a 6x6 voigt stiffness matrix using a 2nd order Voigt stiffness tensor.
+       * See https://en.wikipedia.org/wiki/Voigt_notation for more info on the Voigt notation.
+       */
+      SymmetricTensor<2,6>
+      rotate_voigt_stiffness_matrix(const Tensor<2,3> &rotation_tensor, const SymmetricTensor<2,6> &input_tensor);
+
+      /**
+       * Transform a 4th order full stiffness tensor into a 6x6 Voigt stiffness matrix.
+       * See https://en.wikipedia.org/wiki/Voigt_notation for more info on the Voigt notation.
+       */
+      SymmetricTensor<2,6>
+      to_voigt_stiffness_matrix(const SymmetricTensor<4,3> &input_tensor);
+
+      /**
+       * Transform a 6x6 Voigt stiffness matrix into a 4th order full stiffness tensor.
+       * See https://en.wikipedia.org/wiki/Voigt_notation for more info on the Voigt notation.
+       */
+      SymmetricTensor<4,3>
+      to_full_stiffness_tensor(const SymmetricTensor<2,6> &input_tensor);
+
+      /**
+       * Form a 21D voigt stiffness vector from a 6x6 Voigt stiffness matrix.
+       * See https://en.wikipedia.org/wiki/Voigt_notation for more info on the Voigt notation.
+       */
+      Tensor<1,21>
+      to_voigt_stiffness_vector(const SymmetricTensor<2,6> &input_tensor);
+
+      /**
+       * Form a 21D voigt stiffness vector from a 6x6 Voigt stiffness matrix.
+       * See https://en.wikipedia.org/wiki/Voigt_notation for more info on the Voigt notation.
+       */
+      SymmetricTensor<2,6>
+      to_voigt_stiffness_matrix(const Tensor<1,21> &input_tensor);
+
+      /**
+       * Transform a 4th order full stiffness tensor into a 21D Voigt stiffness vector.
+       * See https://en.wikipedia.org/wiki/Voigt_notation for more info on the Voigt notation.
+       */
+      Tensor<1,21>
+      to_voigt_stiffness_vector(const SymmetricTensor<4,3> &input);
+
+
+      namespace internal
+      {
+        constexpr Tensor<3,3> create_levi_civita_tensor_3d()
+        {
+          Tensor<3,3> permutation_operator_3d;
+          permutation_operator_3d[0][1][2]  = 1;
+          permutation_operator_3d[1][2][0]  = 1;
+          permutation_operator_3d[2][0][1]  = 1;
+          permutation_operator_3d[0][2][1]  = -1;
+          permutation_operator_3d[1][0][2]  = -1;
+          permutation_operator_3d[2][1][0]  = -1;
+          return permutation_operator_3d;
+        }
+      }
+
+      /**
+       * The Levi-Civita tensor, also called a permutation or "totally antisymmetric" tensor.
+       * See https://en.wikipedia.org/wiki/Levi-Civita_symbol for a definition.
+       * See https://en.wikipedia.org/wiki/Levi-Civita_symbol for more info.
+       */
+      template<int dim>
+      constexpr Tensor<dim,dim> levi_civita;
+
+      template <> constexpr Tensor<3,3> levi_civita<3> = internal::create_levi_civita_tensor_3d();
+
+    }
+
+  }
+}
+#endif
 
 #endif

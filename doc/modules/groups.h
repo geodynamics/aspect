@@ -43,7 +43,7 @@
  * A module for the definition of properties related to initial topography of
  * the geometry. The goal of this module is to return the elevation at a
  * certain point on the surface and store and manage all information related
- * to this porpose.
+ * to this purpose.
  */
 
 /**
@@ -188,7 +188,7 @@
  *
  * A module for the definition of functions and classes that have to do with
  * describing fluid pressure boundary values.
- * These classes are currenlty only used for computations involving two-phase
+ * These classes are currently only used for computations involving two-phase
  * flow (e.g. melt), since the fluid pressure is only computed for
  * coupled Stokes-darcy flow.
  *

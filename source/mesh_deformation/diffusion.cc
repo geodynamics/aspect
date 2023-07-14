@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -472,6 +472,16 @@ namespace aspect
                 mesh_velocity_constraints.set_inhomogeneity(index, boundary_velocity[index]);
               }
         }
+    }
+
+
+
+    template <int dim>
+    bool
+    Diffusion<dim>::
+    needs_surface_stabilization () const
+    {
+      return false;
     }
 
 

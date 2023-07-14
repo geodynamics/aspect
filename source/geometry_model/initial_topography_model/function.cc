@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -52,7 +52,7 @@ namespace aspect
         {
           // No need to set the vertical coordinate correctly,
           // because it will be thrown away in get_data_component anyway
-          for (unsigned int d=0; d<dim-1; d++)
+          for (unsigned int d=0; d<dim-1; ++d)
             global_point[d] = surface_point[d];
         }
       else if (Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
@@ -63,7 +63,7 @@ namespace aspect
           // because it will be thrown away in get_data_component anyway
           std::array<double, dim> point;
           point[0] = 6371000.0;
-          for (unsigned int d=0; d<dim-1; d++)
+          for (unsigned int d=0; d<dim-1; ++d)
             point[d+1] = surface_point[d];
 
           global_point = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(point);
@@ -105,7 +105,7 @@ namespace aspect
                                "A selection that determines the assumed coordinate "
                                "system for the function variables. Allowed values "
                                "are `cartesian' and `spherical'. `spherical' coordinates "
-                               "are interpreted as r,phi or r,phi,theta in 2D/3D "
+                               "are interpreted as r,phi or r,phi,theta in 2d/3d "
                                "respectively with theta being the polar angle. ");
 
             Functions::ParsedFunction<dim>::declare_parameters (prm, 1);

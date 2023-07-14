@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -177,8 +177,8 @@ namespace aspect
             mmm_(mmm)
           {}
 
-          virtual void vector_value (const Point<dim>   &pos,
-                                     Vector<double>   &values) const
+          void vector_value (const Point<dim>   &pos,
+                             Vector<double>   &values) const override
           {
             Assert (dim == 3, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());
@@ -214,7 +214,7 @@ namespace aspect
          */
         Tensor<1,dim>
         boundary_velocity (const types::boundary_id ,
-                           const Point<dim> &position) const;
+                           const Point<dim> &position) const override;
 
 
         static
@@ -224,9 +224,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
         */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
 
 
@@ -281,47 +280,8 @@ namespace aspect
          * @name Physical parameters used in the basic equations
          * @{
          */
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
-        {
-          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
-            {
-              const Point<dim> &pos = in.position[i];
-              const std::array<double,dim> spos = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(pos);
-              const double r = spos[0];
-              const double mu = pow(r,mmm+1);
-              out.viscosities[i] = mu;
-
-              const double theta=spos[2];
-
-              const double gammma = 1.0;
-              const double R1 = 0.5;
-              const double R2 = 1.0;
-
-              double alpha,beta,rho;
-              const double rho_0 = 1000.;
-
-              if (mmm == -1)
-                {
-                  alpha = -gammma*(pow(R2,3)-pow(R1,3))/(pow(R2,3)*log(R1)-pow(R1,3)*log(R2));
-                  beta  = -3*gammma*(log(R2)-log(R1))/(pow(R1,3)*log(R2)-pow(R2,3)*log(R1)) ;
-                  rho = -(alpha/pow(r,4)*(8*log(r)-6) + 8./3.*beta/r+8*gammma/pow(r,4))*cos(theta) + rho_0;
-                }
-              else
-                {
-                  alpha=gammma*(mmm+1)*(pow(R1,-3)-pow(R2,-3))/(pow(R1,-mmm-4)-pow(R2,-mmm-4));
-                  beta=-3*gammma*(pow(R1,mmm+1)-pow(R2,mmm+1))/(pow(R1,mmm+4)-pow(R2,mmm+4));
-                  rho= -(2*alpha*pow(r,-4)*(mmm+3)/(mmm+1)*(mmm-1)-2*beta/3*(mmm-1)*(mmm+3)*pow(r,mmm)-mmm*(mmm+5)*2*gammma*pow(r,mmm-3) )*cos(theta) + rho_0;
-                }
-
-              out.densities[i] = rho;
-
-              out.specific_heat[i] = 0;
-              out.thermal_conductivities[i] = 0.0;
-              out.compressibilities[i] = 0;
-              out.thermal_expansion_coefficients[i] = 0;
-            }
-        }
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         /**
          * @}
@@ -341,7 +301,7 @@ namespace aspect
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
         /**
          * @}
          */
@@ -355,9 +315,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
 
 
@@ -372,6 +331,8 @@ namespace aspect
         double mmm;
     };
 
+
+
     template <int dim>
     bool
     HollowSphereMaterial<dim>::
@@ -379,6 +340,67 @@ namespace aspect
     {
       return false;
     }
+
+
+    template <>
+    void
+    HollowSphereMaterial<2>::
+    evaluate (const MaterialModel::MaterialModelInputs<2> &/*in*/,
+              MaterialModel::MaterialModelOutputs<2> &/*out*/) const
+    {
+      Assert (false, ExcNotImplemented());
+    }
+
+
+
+    template <>
+    void
+    HollowSphereMaterial<3>::
+    evaluate (const MaterialModel::MaterialModelInputs<3> &in,
+              MaterialModel::MaterialModelOutputs<3> &out) const
+    {
+      const unsigned int dim = 3;
+
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+        {
+          const Point<dim> &pos = in.position[i];
+          const std::array<double,dim> spos = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(pos);
+          const double r = spos[0];
+          const double mu = pow(r,mmm+1);
+          out.viscosities[i] = mu;
+
+          const double theta=spos[2];
+
+          const double gammma = 1.0;
+          const double R1 = 0.5;
+          const double R2 = 1.0;
+
+          double alpha,beta,rho;
+          const double rho_0 = 1000.;
+
+          if (mmm == -1)
+            {
+              alpha = -gammma*(pow(R2,3)-pow(R1,3))/(pow(R2,3)*log(R1)-pow(R1,3)*log(R2));
+              beta  = -3*gammma*(log(R2)-log(R1))/(pow(R1,3)*log(R2)-pow(R2,3)*log(R1)) ;
+              rho = -(alpha/pow(r,4)*(8*log(r)-6) + 8./3.*beta/r+8*gammma/pow(r,4))*cos(theta) + rho_0;
+            }
+          else
+            {
+              alpha=gammma*(mmm+1)*(pow(R1,-3)-pow(R2,-3))/(pow(R1,-mmm-4)-pow(R2,-mmm-4));
+              beta=-3*gammma*(pow(R1,mmm+1)-pow(R2,mmm+1))/(pow(R1,mmm+4)-pow(R2,mmm+4));
+              rho= -(2*alpha*pow(r,-4)*(mmm+3)/(mmm+1)*(mmm-1)-2*beta/3*(mmm-1)*(mmm+3)*pow(r,mmm)-mmm*(mmm+5)*2*gammma*pow(r,mmm-3) )*cos(theta) + rho_0;
+            }
+
+          out.densities[i] = rho;
+
+          out.specific_heat[i] = 0;
+          out.thermal_conductivities[i] = 0.0;
+          out.compressibilities[i] = 0;
+          out.thermal_expansion_coefficients[i] = 0;
+        }
+    }
+
+
 
     template <int dim>
     void
@@ -460,15 +482,14 @@ namespace aspect
         /**
          * Generate graphical output from the current solution.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
 
         /**
          * List the other postprocessors required by this plugin.
          */
         std::list<std::string>
-        required_other_postprocessors() const;
+        required_other_postprocessors() const override;
 
       private:
         /**
@@ -558,14 +579,26 @@ namespace aspect
       return std::list<std::string> (1, "dynamic topography");
     }
 
+
+    template <>
+    double
+    HollowSpherePostprocessor<2>::compute_dynamic_topography_error () const
+    {
+      Assert (false, ExcNotImplemented());
+      return 0.0;
+    }
+
+
+
     /**
      * Integrate the difference between the analytical and numerical
      * solutions for dynamic topography.
      */
-    template <int dim>
+    template <>
     double
-    HollowSpherePostprocessor<dim>::compute_dynamic_topography_error() const
+    HollowSpherePostprocessor<3>::compute_dynamic_topography_error() const
     {
+      const unsigned int dim = 3;
       const Postprocess::DynamicTopography<dim> &dynamic_topography =
         this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim>>();
 
@@ -601,6 +634,7 @@ namespace aspect
                   fe_face_values.reinit(cell, f);
                   MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, this->introspection(), this->get_solution());
                   MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+                  in_face.requested_properties = MaterialModel::MaterialProperties::density;
                   fe_face_values[this->introspection().extractors.temperature].get_function_values(topo_vector, topo_values);
                   this->get_material_model().evaluate(in_face, out_face);
 

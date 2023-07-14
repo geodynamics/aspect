@@ -4,7 +4,7 @@
 The most common modification you will probably want to do to
 ASPECT are to switch to a different material model
 (i.e., have different values of functional dependencies for the coefficients
-$\eta,\rho,C_p, \ldots$ discussed in {ref}`sec:coefficients`8]);
+$\eta,\rho,C_p, \ldots$ discussed in {ref}`sec:methods:coefficients`);
 change the geometry; change the direction and magnitude of the gravity vector
 $\mathbf g$; or change the initial and boundary conditions.
 
@@ -12,28 +12,30 @@ To make this as simple as possible, all of these parts of the program (and
 some more) have been separated into what we call *plugins* that can be
 replaced quickly and where it is simple to add a new implementation and make
 it available to the rest of the program and the input parameter file. There
-are *a lot* of plugins already, see Fig.&nbsp;[1][], that will often be useful
+are *a lot* of plugins already, see {numref}`fig:plugins`, that will often be useful
 starting points and examples if you want to implement plugins yourself.
 
-<figure>
-<embed src="plugin_graph.pdf" id="fig:plugins" style="width:95.0%" /><figcaption aria-hidden="true"><em>The graph of all current plugins of ASPECT. The yellow octagon and square represent the <code>Simulator</code> and <code>SimulatorAccess</code> classes. The green boxes are interface classes for everything that can be changed by plugins. Blue circles correspond to plugins that implement particular behavior. The graph is of course too large to allow reading individual plugin names (unless you zoom far into the page), but is intended to illustrate the architecture of ASPECT.</em></figcaption>
-</figure>
+```{figure-md} fig:plugins
+<img src="images/plugin_graph.*" alt="The graph of all current plugins of ASPECT. The yellow octagon and square represent the [Simulator](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1Simulator.html) and [SimulatorAccess](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1SimulatorAccess.html) classes. The green boxes are interface classes for everything that can be changed by plugins. Blue circles correspond to plugins that implement particular behavior. The graph is of course too large to allow reading individual plugin names (unless you zoom far into the page), but is intended to illustrate the architecture of ASPECT."  width="95%"/>
+
+The graph of all current plugins of ASPECT. The yellow octagon and square represent the [Simulator](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1Simulator.html) and [SimulatorAccess](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1SimulatorAccess.html) classes. The green boxes are interface classes for everything that can be changed by plugins. Blue circles correspond to plugins that implement particular behavior. The graph is of course too large to allow reading individual plugin names (unless you zoom far into the page), but is intended to illustrate the architecture of ASPECT.
+```
 
 The way this is achieved is through the following two steps:
 
 -   The core of ASPECT really only communicates
     with material models, geometry descriptions, etc., through a simple and
     very basic interface. These interfaces are declared in the
-    [include/aspect/material_model/interface.h][],
-    [include/aspect/geometry_model/interface.h][], etc., header files. These
-    classes are always called `Interface`, are located in namespaces that
+    [include/aspect/material_model/interface.h](https://github.com/geodynamics/aspect/blob/main/include/aspect/material_model/interface.h),
+    [include/aspect/geometry_model/interface.h](https://github.com/geodynamics/aspect/blob/main/include/aspect/geometry_model/interface.h
+    etc., header files. These classes are always called `Interface`, are located in namespaces that
     identify their purpose, and their documentation can be found from the
     general class overview in
     <https://aspect.geodynamics.org/doc/doxygen/classes.html>.
 
     To show an example of a rather minimal case, here is the declaration of
-    the [aspect::GravityModel::Interface][] class (documentation comments have
-    been removed):
+    the [aspect::GravityModel::Interface](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1GravityModel_1_1Interface.html)
+    class (documentation comments have been removed):
 
     ```{code-block} c++
     class Interface
@@ -57,7 +59,7 @@ The way this is achieved is through the following two steps:
     input file, you also need to have functions called `declare_parameters`
     and `parse_parameters` in your class with the same signatures as the ones
     above. On the other hand, if the new model does not need any run-time
-    parameters, you do not need to overload these functions.[1]
+    parameters, you do not need to overload these functions.[^footnote1]
 
     Each of the categories above that allow plugins have several
     implementations of their respective interfaces that you can use to get an
@@ -83,7 +85,7 @@ The way this is achieved is through the following two steps:
     Here, the first argument to the macro is the name of the class. The second
     is the name by which this model can be selected in the parameter file. And
     the third one is a documentation string that describes the purpose of the
-    class (see, for example, {ref}`sec:3.55][] for an example of how
+    class (see, for example, {ref}`parameters:Gravity_20model` for an example of how
     existing models describe themselves).
 
     This little piece of code ensures several things: (i) That the parameters
@@ -94,7 +96,7 @@ The way this is achieved is through the following two steps:
     selected in the parameter file.
 
     Note that you need not announce the existence of this class in any other
-    part of the code: Everything should just work automatically.[2] This has
+    part of the code: Everything should just work automatically.[^footnote2] This has
     the advantage that things are neatly separated: You do not need to
     understand the core of ASPECT to be able to
     add a new gravity model that can then be selected in an input file. In
@@ -115,7 +117,8 @@ end, let us not consider those plugins that by and large just provide
 information without any context of the simulation, such as gravity models,
 prescribed boundary velocities, or initial temperatures. Rather, let us
 consider things like postprocessors that can compute things like boundary heat
-fluxes. Taking this as an example (see {ref}`sec:1.4.8][]), you are
+fluxes. Taking this as an example (see
+{ref}`sec:extending:plugin-types:postprocessors`), you are
 required to write a function with the following interface
 
 ```{code-block} c++
@@ -133,7 +136,7 @@ template <int dim>
 The idea is that in the implementation of the `execute` function you would
 compute whatever you are interested in (e.g., heat fluxes) and return this
 information in the statistics object that then gets written to a file (see
-Sections&nbsp;[\[sec:running-overview`9] and [\[sec:viz-stat`10]). A
+{ref}`sec:run-aspect:overview` and {ref}`sec:run-aspect:visualize:stat-data`). A
 postprocessor may also generate other files if it so likes &ndash; e.g.,
 graphical output, a file that stores the locations of particles, etc. To do
 so, obviously you need access to the current solution. This is stored in a
@@ -145,7 +148,7 @@ time is. A variety of other pieces of information enters computations in these
 kinds of plugins.
 
 All of this information is of course part of the core of
-ASPECT, as part of the [aspect::Simulator class][].
+ASPECT, as part of the [aspect::Simulator class](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1Simulator.html).
 However, this is a rather heavy class: it's got dozens of member
 variables and functions, and it is the one that does all of the numerical
 heavy lifting. Furthermore, to access data in this class would require that
@@ -153,7 +156,7 @@ you need to learn about the internals, the data structures, and the design of
 this class. It would be poor design if plugins had to access information from
 this core class directly. Rather, the way this works is that those plugin
 classes that wish to access information about the state of the simulation
-inherit from the [aspect::SimulatorAccess class][]. This class has an
+inherit from the [aspect::SimulatorAccess class](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1SimulatorAccess.html). This class has an
 interface that looks like this:
 
 ```{code-block} c++
@@ -174,24 +177,23 @@ template <int dim>
       // ... many more things ...
 ```
 
-This way, [SimulatorAccess][aspect::SimulatorAccess class] makes information
+This way, [SimulatorAccess](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1SimulatorAccess.html) makes information
 available to plugins without the need for them to understand details of the
 core of ASPECT. Rather, if the core changes,
-the [SimulatorAccess][aspect::SimulatorAccess class] class can still provide
+the [SimulatorAccess](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1SimulatorAccess.html) class can still provide
 exactly the same interface. Thus, it insulates plugins from having to know the
 core. Equally importantly, since
-[SimulatorAccess][aspect::SimulatorAccess class] only offers its information
+[SimulatorAccess](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1SimulatorAccess.html) only offers its information
 in a read-only way it insulates the core from plugins since they can not
 interfere in the workings of the core except through the interface they
 themselves provide to the core.
 
 Using this class, if a plugin class `MyPostprocess` is then not only derived
 from the corresponding `Interface` class but *also* from the
-[SimulatorAccess][aspect::SimulatorAccess class] class (as indeed most plugins
-are, see the dashed arrows in Fig.&nbsp;[1][]), then you can write a member
+[SimulatorAccess](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1SimulatorAccess.html) class (as indeed most plugins
+are, see the dashed arrows in {numref}`fig:plugins`), then you can write a member
 function of the following kind (a nonsensical but instructive example; see
-{ref}`sec:1.4.8][] for more details on what postprocessors do and how they
-are implemented):[3]
+{ref}`sec:extending:plugin-types:postprocessors` for more details on what postprocessors do and how they are implemented):[^footnote3]
 
 ```{code-block} c++
 template <int dim>
@@ -223,7 +225,8 @@ this kind of knowledge is scattered all across the code base.
 
 Introspection is a way out of this dilemma. Using the
 `SimulatorAccess::introspection()` function returns a reference to an object
-(of type [aspect::Introspection][]) that plugins can use to learn about these
+(of type [aspect::Introspection](https://aspect.geodynamics.org/doc/doxygen/structaspect_1_1Introspection.html))
+that plugins can use to learn about these
 sort of conventions. For example,
 `this->introspection().component_mask.pressure` returns a component mask (a
 deal.II concept that describes a list of booleans for each component in a
@@ -237,7 +240,22 @@ is most definitely less prone to errors and makes it simpler to extend the
 code in the future because we don't litter the sources with "magic
 constants" like the one above.
 
-This [aspect::Introspection][] class has a significant number of variables
+This [aspect::Introspection](https://aspect.geodynamics.org/doc/doxygen/structaspect_1_1Introspection.html) class has a significant number of variables
 that can be used in this way, i.e., they provide symbolic names for things one
 frequently has to do and that would otherwise require implicit knowledge of
 things such as the order of variables, etc.
+
+[^footnote1]: At first glance one may think that only the `parse_parameters` function can be overloaded since `declare_parameters` is not
+virtual. However, while the latter is called by the class that manages plugins through pointers to the interface class, the former
+function is called essentially at the time of registering a plugin, from code that knows the actual type and name of the class
+you are implementing. Thus, it can call the function – if it exists in your class, or the default implementation in the base class
+if it doesn’t – even without it being declared as virtual.
+
+[^footnote2]: The existing implementations of models of the gravity and other interfaces declare the class in a header file and define the
+member functions in a .cc file. This is done so that these classes show up in our doxygen-generated documentation, but it is
+not necessary: you can put your entire class declaration and implementation into a single file as long as you call the macro
+discussed above on it. This single file is all you need to touch to add a new model.
+
+[^footnote3]: For complicated, technical reasons, in the code below we need to access elements of the [SimulatorAccess](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1SimulatorAccess.html) class using the
+notation `this->get_solution()`, etc. This is due to the fact that both the current class and the base class are templates. A
+long description of why it is necessary to use `this->` can be found in the deal.II Frequently Asked Questions.

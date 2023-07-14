@@ -1,44 +1,40 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
-Loading shared library <./libprojected_density_vertical_pipe.so>
+Loading shared library <./libprojected_density_vertical_pipe.debug.so>
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 8 (on 1 levels)
 Number of degrees of freedom: 249 (102+24+72+51)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Copying properties into prescribed compositional field density_field.
+   Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59183e-16, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
-   Copying properties into prescribed compositional field density_field.
+   Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.34313e-16, 0, 0.0314082
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0314082
 
    Solving temperature system... 0 iterations.
-   Copying properties into prescribed compositional field density_field.
+   Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.94937e-16, 0, 0.00241804
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00241804
 
    Solving temperature system... 0 iterations.
-   Copying properties into prescribed compositional field density_field.
+   Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.16906e-16, 0, 0.000126297
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000126297
 
    Solving temperature system... 0 iterations.
-   Copying properties into prescribed compositional field density_field.
+   Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.11349e-16, 0, 4.813e-06
@@ -55,7 +51,7 @@ Number of degrees of freedom: 249 (102+24+72+51)
 
 *** Timestep 1:  t=436597 years, dt=436597 years
    Solving temperature system... 1 iterations.
-   Copying properties into prescribed compositional field density_field.
+   Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.10884e-06, 0, 3.63145e-06
@@ -71,7 +67,7 @@ Number of degrees of freedom: 249 (102+24+72+51)
 
 *** Timestep 2:  t=873189 years, dt=436592 years
    Solving temperature system... 1 iterations.
-   Copying properties into prescribed compositional field density_field.
+   Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.14347e-07, 0, 3.96403e-06
@@ -87,7 +83,7 @@ Number of degrees of freedom: 249 (102+24+72+51)
 
 *** Timestep 3:  t=1.30978e+06 years, dt=436593 years
    Solving temperature system... 1 iterations.
-   Copying properties into prescribed compositional field density_field.
+   Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.08704e-07, 0, 7.32151e-07
@@ -103,7 +99,7 @@ Number of degrees of freedom: 249 (102+24+72+51)
 
 *** Timestep 4:  t=1.74638e+06 years, dt=436595 years
    Solving temperature system... 1 iterations.
-   Copying properties into prescribed compositional field density_field.
+   Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.89086e-07, 0, 2.73578e-07
@@ -119,7 +115,7 @@ Number of degrees of freedom: 249 (102+24+72+51)
 
 *** Timestep 5:  t=2.18297e+06 years, dt=436596 years
    Solving temperature system... 1 iterations.
-   Copying properties into prescribed compositional field density_field.
+   Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.29907e-07, 0, 2.03395e-07
@@ -135,7 +131,7 @@ Number of degrees of freedom: 249 (102+24+72+51)
 
 *** Timestep 6:  t=2.2e+06 years, dt=17027.8 years
    Solving temperature system... 1 iterations.
-   Copying properties into prescribed compositional field density_field.
+   Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.61698e-09, 0, 8.98611e-07
@@ -152,9 +148,4 @@ Number of degrees of freedom: 249 (102+24+72+51)
 Termination requested by criterion: end time
 
 
-+------------------------------------------------+------------+------------+
-+------------------------------------+-----------+------------+------------+
-+------------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

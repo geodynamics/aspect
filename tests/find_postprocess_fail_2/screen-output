@@ -1,5 +1,5 @@
 
-Loading shared library <./libfind_postprocess_fail_2.so>
+Loading shared library <./libfind_postprocess_fail_2.debug.so>
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
@@ -24,4 +24,5 @@ Additional information:
     <aspect::Postprocess::PressureStatistics<2>>, but this cast cannot be
     performed.
 
-Aborting!
+Stacktrace:
+(rest of the output replaced by default.sh script)

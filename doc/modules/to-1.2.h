@@ -17,7 +17,7 @@
  * were placed at an averaged location of the vertices of the mother cell,
  * leading to a certain degree of distortion of cells. It also led to a
  * situation where not all cells are equally shaped due to this distortion.
- * The new mesh, in contrast, is completely symmetric. Addtionally, a higher
+ * The new mesh, in contrast, is completely symmetric. Additionally, a higher
  * order mapping to represent curved faces is now also used for the interior
  * cells using the manifold description of the shell/sphere.
  * <br>
@@ -48,7 +48,7 @@
  * <br>
  * (Ryan Grove, 2014/12/09)
  *
- * <li> Changed: The behaviour when one changed the visualization
+ * <li> Changed: The behavior when one changed the visualization
  * output_interval during a checkpoint restart was previously undefined, and
  * working in slightly unexpected ways like never writing output for the first
  * timestep after the restart. This now works as one would expect, e.g. every

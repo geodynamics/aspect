@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -39,14 +39,14 @@ namespace aspect
     class ExponentialDecay : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override;
         static void declare_parameters (ParameterHandler &prm);
-        virtual void parse_parameters(ParameterHandler &prm);
+        void parse_parameters(ParameterHandler &prm) override;
 
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
 
-        virtual void create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+        void create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
       private:
 
@@ -70,13 +70,14 @@ namespace aspect
     class ExponentialDecayHeating : public HeatingModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        virtual
         void
         evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const;
+                  HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
+
         static void declare_parameters (ParameterHandler &prm);
-        virtual void parse_parameters (ParameterHandler &prm);
+
+        void parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**
@@ -176,7 +177,7 @@ namespace aspect
           // create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
           // leave the current section
-          base_model.reset(create_material_model<dim>(prm.get("Base model")));
+          base_model = create_material_model<dim>(prm.get("Base model"));
           if (Plugins::plugin_type_matches<SimulatorAccess<dim>>(*base_model))
             Plugins::get_plugin_as_type<SimulatorAccess<dim>>(*base_model).initialize_simulator (this->get_simulator());
 
@@ -186,7 +187,7 @@ namespace aspect
       }
       prm.leave_subsection();
 
-      // After parsing the parameters for the exponetial decay material model,
+      // After parsing the parameters for the exponential decay material model,
       // also parse the parameters related to the base model.
       base_model->parse_parameters(prm);
       this->model_dependence = base_model->get_model_dependence();
@@ -278,8 +279,9 @@ namespace aspect
   {
     public:
       RefFunction () : Function<dim>(dim+3) {}
-      virtual void vector_value (const Point<dim>   &p,
-                                 Vector<double>   &values) const
+
+      void vector_value (const Point<dim>   &p,
+                         Vector<double>   &values) const override
       {
         double x = p(0);
         double z = p(1);
@@ -302,11 +304,10 @@ namespace aspect
       /**
        * Return the boundary composition as a function of position.
        */
-      virtual
       double
       boundary_composition (const types::boundary_id boundary_indicator,
                             const Point<dim> &position,
-                            const unsigned int compositional_field) const;
+                            const unsigned int compositional_field) const override;
   };
 
 
@@ -335,16 +336,13 @@ namespace aspect
       /**
        * Return the boundary composition as a function of position.
        */
-      virtual
       double
       boundary_temperature (const types::boundary_id boundary_indicator,
-                            const Point<dim> &position) const;
+                            const Point<dim> &position) const override;
 
-      virtual
-      double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+      double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
-      virtual
-      double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+      double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
   };
 
 
@@ -396,9 +394,8 @@ namespace aspect
       /**
        * Generate graphical output from the current solution.
        */
-      virtual
       std::pair<std::string,std::string>
-      execute (TableHandler &statistics);
+      execute (TableHandler &statistics) override;
 
       double max_error;
       double max_error_T;

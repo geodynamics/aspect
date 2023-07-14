@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -41,8 +41,9 @@ TEST_CASE("floating point std::vector checks")
 
 TEST_CASE("Utilities::read_and_distribute_file_content")
 {
+  const std::string file_name = aspect::Utilities::expand_ASPECT_SOURCE_DIR("$ASPECT_SOURCE_DIR/VERSION");
   const std::string content =
-    aspect::Utilities::read_and_distribute_file_content(ASPECT_SOURCE_DIR "/VERSION",
+    aspect::Utilities::read_and_distribute_file_content(file_name,
                                                         MPI_COMM_WORLD);
   REQUIRE(content.size()>0);
 

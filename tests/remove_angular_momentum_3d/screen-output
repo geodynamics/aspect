@@ -19,13 +19,21 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
      RMS, max velocity:                                                               0.0214 m/s, 0.0465 m/s
      Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.01e-07 kg*m^2/s, 2.73 kg*m^2, 3.7e-08 1/s, 2.81e-06 1/s
 
-*** Timestep 2:  t=1 seconds, dt=0.714075 seconds
-   Solving temperature system... 49 iterations.
+*** Timestep 2:  t=0.832041 seconds, dt=0.546116 seconds
+   Solving temperature system... 47 iterations.
    Solving Stokes system... 95+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                                               0.00734 m/s, 0.0181 m/s
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 2.56e-07 kg*m^2/s, 3.08 kg*m^2, 8.32e-08 1/s, 4.98e-07 1/s
+     RMS, max velocity:                                                               0.00531 m/s, 0.013 m/s
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 1.69e-07 kg*m^2/s, 2.92 kg*m^2, 5.79e-08 1/s, 2.25e-07 1/s
+
+*** Timestep 3:  t=1 seconds, dt=0.167959 seconds
+   Solving temperature system... 34 iterations.
+   Solving Stokes system... 88+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                                               0.00329 m/s, 0.00785 m/s
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 2.54e-08 kg*m^2/s, 2.95 kg*m^2, 8.63e-09 1/s, 3.62e-08 1/s
 
 Termination requested by criterion: end time
 

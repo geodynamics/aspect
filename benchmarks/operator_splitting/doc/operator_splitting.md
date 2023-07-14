@@ -1,4 +1,5 @@
-#### Benchmarks for operator splitting
+(sec:benchmark:operator-splitting)=
+# Benchmarks for operator splitting
 
 *This section was contributed by Juliane Dannberg.*
 
@@ -24,11 +25,10 @@ lithosphere, once material reaches a given depth. This process can also be
 considered as a reaction between different compositional fields.
 
 This can cause accuracy problems in geodynamic simulations: The way the
-equations are formulated (see
-Equations&nbsp;[\[eq:stokes-1\]][1]&ndash;[\[eq:compositional\]][2]), ideally
+equations are formulated (see equations {math:numref}`eq:stokes-1`--{math:numref}`eq:compositional`), ideally
 we would need to know reaction rates (the $q_i$) between the different
 components instead of the equilibrium value (which would then have to be
-compared with some sort of &ldquo;old solution&rdquo; of the compositional
+compared with some sort of "old solution" of the compositional
 fields). Sometimes we also may not know the equilibrium, and would only be
 able to find it iteratively, starting from the current composition. In
 addition, the reaction rate for a given compositional field usually depends on
@@ -38,33 +38,49 @@ fields or the temperature and pressure, and the dependence can be nonlinear.
 Hence, has the option to decouple the advection from reactions between
 compositional fields, using operator splitting.
 
-Instead of solving the coupled equation $$\begin{aligned}
+Instead of solving the coupled equation
+```{math}
+\begin{aligned}
   \frac{\partial \mathfrak{c}(t)}{\partial t} + \mathbf u\cdot\nabla \mathfrak{c}(t)
   &=
-  q(\mathfrak{c}(t)),\end{aligned}$$ and directly obtaining the composition
+  q(\mathfrak{c}(t)),
+  \end{aligned}
+```
+and directly obtaining the composition
 value $\mathfrak{c}(t^{n+1})$ for the time step $n+1$ from the value
 $\mathfrak{c}(t^{n})$ from the previous time step $n$, we do a first-order
-operator split, first solving the advection problem $$\begin{aligned}
+operator split, first solving the advection problem
+```{math}
+\begin{aligned}
   \frac{\partial \mathfrak{c}(t)}{\partial t} + \mathbf u\cdot\nabla \mathfrak{c}(t)
   &=
   0,
   &
-  \text{obtaining } \Delta \mathfrak{c}_A(t^{n+1}) \text{ from } \mathfrak{c}(t^{n}),\end{aligned}$$
+  \text{obtaining } \Delta \mathfrak{c}_A(t^{n+1}) \text{ from } \mathfrak{c}(t^{n}),
+  \end{aligned}
+```
 using the advection time step $\Delta t_A = t^{n+1} - t^{n}$. Then we solve
 the reactions as a series of coupled ordinary differential equations
-$$\begin{aligned}
+```{math}
+\begin{aligned}
   \frac{\partial \Delta \mathfrak{c}_R(t)}{\partial t}
   &=
   q(\mathfrak{c}(t^n))+\Delta \mathfrak{c}_A(t^{n+1})+\Delta \mathfrak{c}_R(t),
   &
-  \text{obtaining } \Delta \mathfrak{c}_R(t^{n+1}) \text{ from } \mathfrak{c}(t^n)+\Delta \mathfrak{c}_A(t^{n+1}).\end{aligned}$$
+  \text{obtaining } \Delta \mathfrak{c}_R(t^{n+1}) \text{ from } \mathfrak{c}(t^n)+\Delta \mathfrak{c}_A(t^{n+1}).
+\end{aligned}
+```
 This can be done in several iterations, choosing a different, smaller time
 step size $\Delta t_R \leq \Delta t_A$ for the time discretization. The
 updated value of the compositional field after the overall (advection +
-reaction) time step is then obtained as $$\begin{aligned}
+reaction) time step is then obtained as
+```{math}
+\begin{aligned}
   \mathfrak{c}(t^{n+1})
   &=
-  \mathfrak{c}(t^{n}) + \Delta \mathfrak{c}_A(t^{n+1})+\Delta \mathfrak{c}_R(t^{n+1}).\end{aligned}$$
+  \mathfrak{c}(t^{n}) + \Delta \mathfrak{c}_A(t^{n+1})+\Delta \mathfrak{c}_R(t^{n+1}).
+\end{aligned}
+```
 
 This is very useful if the time scales of reactions are different from the
 time scales of convection. The same scheme can also be used for the
@@ -75,20 +91,24 @@ on the same time scale as the reactions.
 We here illustrate the way this operator splitting works using the simple
 example of exponential decay in a stationary advection field. We will start
 with a model that has a constant initial temperature and composition and no
-advection. The reactions for exponential decay $$\begin{aligned}
+advection. The reactions for exponential decay
+```{math}
+\begin{aligned}
   \mathfrak{c}(t)
   &=
-  \mathfrak{c}_0 e^{\lambda t} \text{ with } \lambda = - \log(2)/t_{1/2},\end{aligned}$$
+  \mathfrak{c}_0 e^{\lambda t} \text{ with } \lambda = - \log(2)/t_{1/2},
+  \end{aligned}
+  ```
 where $\mathfrak{c}_0$ is the initial composition and $t_{1/2}$ is the half
 life, are implemented in a shared library
-([benchmarks/operator_splitting/exponential_decay/exponential_decay.cc][]). As
+([benchmarks/operator_splitting/exponential_decay/exponential_decay.cc](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/operator_splitting/exponential_decay/exponential_decay.cc)). As
 we split the time-stepping of advection and reactions, there are now two
 different time steps in the model: We control the advection time step using
-the &lsquo;Maximum time step&rsquo; parameter (as the velocity is essentially
+the 'Maximum time step' parameter (as the velocity is essentially
 0, we can not use the CFL number), and we set the reaction time step using the
-&lsquo;Reaction time step&rsquo; parameter.
+'Reaction time step' parameter.
 
-``` prmfile
+```{literalinclude} exponential_decay.part.1.prm
 ```
 
 To illustrate convergence, we will vary both parameters in different model
@@ -99,13 +119,13 @@ condition using the `function` plugin for both composition and temperature. We
 also set $t_{1/2}=10$, which is implemented as a parameter in the
 `exponential decay` material model and the `exponential decay heating` model.
 
-``` prmfile
+```{literalinclude} exponential_decay.part.2.prm
 ```
 
 The complete parameter file for this setup can be found in
-[benchmarks/operator_splitting/exponential_decay/exponential_decay.base.prm][].
+[benchmarks/operator_splitting/exponential_decay/exponential_decay.base.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/operator_splitting/exponential_decay/exponential_decay.base.prm).
 
-Figure&nbsp;[1][] shows the convergence behavior of these models: As there is
+{numref}`fig:exponential-decay` shows the convergence behavior of these models: As there is
 no advection, the advection time step does not influence the error (blue data
 points). As we use a first-order operator split, the error is expected to
 converge linearly with the reaction time step $\Delta t_R$, which is indeed
@@ -113,35 +133,38 @@ the case (red data points). Errors are the same for both composition and
 temperature, as both fields have identical initial conditions and reactions,
 and we use the same methods to solve for these variables.
 
-<div class="center">
+```{figure-md} fig:exponential-decay
+<img src="error_exponential_decay.*" style="width:65.0%" />
 
-<figure>
-<embed src="cookbooks/benchmarks/operator_splitting/doc/error_exponential_decay.pdf" id="fig:exponential-decay" style="width:65.0%" /><figcaption aria-hidden="true"><em>Error for both compositional field and temperature compared to the analytical solution, varying the time steps of advection (blue data points and and top/blue x axis) and reactions (red data points and and bottom/red x axis), while keeping the other one constant, respectively.</em></figcaption>
-</figure>
-
-</div>
+Error for both compositional field and temperature compared to the analytical solution, varying the time steps of advection (blue data points and and top/blue x axis) and reactions (red data points and and bottom/red x axis), while keeping the other one constant, respectively.
+```
 
 For the second benchmark case, we want to see the effect of advection on
 convergence. In order to do this, we choose an initial temperature and
 composition that depends on x (in this case a sine), a decay rate that
 linearly depends on z, and we apply a constant velocity in x-direction on all
 boundaries. Our new analytical solution for the evolution of composition is
-now $$\begin{aligned}
+now
+```{math}
+\begin{aligned}
   \mathfrak{c}(t)
   &=
-  \sin (2\pi(x-t v_0)) \, \mathfrak{c}_0 e^{\lambda z t}.\end{aligned}$$ $v_0$
-is the constant velocity, which we set to 0.01 m/s. The parameter file for
+  \sin (2\pi(x-t v_0)) \, \mathfrak{c}_0 e^{\lambda z t}.
+  \end{aligned}
+```
+$v_0$ is the constant velocity, which we set to 0.01 m/s. The parameter file for
 this setup can be found in
-[benchmarks/operator_splitting/advection_reaction/advection_reaction.base.prm][].
+[benchmarks/operator_splitting/advection_reaction/advection_reaction.base.prm](https://www.github.com/geodynamics/aspect/blob/main/benchmarks/operator_splitting/advection_reaction/advection_reaction.base.prm).
 
-<div class="center">
 
-<embed src="cookbooks/benchmarks/operator_splitting/doc/error_advection_reaction.pdf" title="fig:" id="fig:advection-reaction" style="width:48.0%" />
-<embed src="cookbooks/benchmarks/operator_splitting/doc/error_advection_reaction2.pdf" title="fig:" id="fig:advection-reaction" style="width:48.0%" />
+```{figure-md} fig:advection-reaction
+<img src="error_advection_reaction_combo.*" style="width:96.0%" />
 
-</div>
+Error for both compositional field and temperature compared to the analytical solution, varying the time steps of advection (blue data points and top/blue x axis) and reactions (red data points and bottom/red x axis), while keeping the other one constant, respectively.
+```
 
-Figure&nbsp;[3][] shows the convergence behavior in this second set of models:
+
+{numref}`fig:advection-reaction` shows the convergence behavior in this second set of models:
 If we choose the same resolution as in the previous example (left panel), for
 large advection time steps $\Delta t_A > 0.1$ the error is dominated by
 advection, and converges with decreasing advection time step size (blue data
@@ -155,13 +178,3 @@ decreasing advection and reaction time steps.
 
 The results shown here can be reproduced using the bash scripts `run.sh` in
 the corresponding benchmark folders.
-
-  [1]: #eq:stokes-1
-  [2]: #eq:compositional
-  [benchmarks/operator_splitting/exponential_decay/exponential_decay.cc]: benchmarks/operator_splitting/exponential_decay/exponential_decay.cc
-  [benchmarks/operator_splitting/exponential_decay/exponential_decay.base.prm]:
-    benchmarks/operator_splitting/exponential_decay/exponential_decay.base.prm
-  [1]: #fig:exponential-decay
-  [benchmarks/operator_splitting/advection_reaction/advection_reaction.base.prm]:
-    benchmarks/operator_splitting/advection_reaction/advection_reaction.base.prm
-  [3]: #fig:advection-reaction

@@ -1,7 +1,7 @@
 # Copy of visco_plastic_phases.prm, but tests different plasticity parameters for different phases.
 # Above the 50km depth phase transition we set 10MPa and 20 degrees for the cohesion and internal friction angle.
 # Below the 50km depth phase transition plastic yielding is switched off by setting a high cohesion of 1e20, and friction changes to 0.
-# This is visible in the visualisation output.
+# This is visible in the visualization output.
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0

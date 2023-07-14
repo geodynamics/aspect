@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -162,7 +162,7 @@ namespace aspect
         register_initial_temperature (const std::string &name,
                                       const std::string &description,
                                       void (*declare_parameters_function) (ParameterHandler &),
-                                      Interface<dim> *(*factory_function) ());
+                                      std::unique_ptr<Interface<dim>> (*factory_function) ());
 
 
         /**
@@ -178,18 +178,6 @@ namespace aspect
          */
         const std::list<std::unique_ptr<Interface<dim>>> &
         get_active_initial_temperature_conditions () const;
-
-        /**
-         * Go through the list of all initial temperature models that have been selected in
-         * the input file (and are consequently currently active) and see if one
-         * of them has the desired type specified by the template argument. If so,
-         * return a pointer to it. If no initial temperature model is active
-         * that matches the given type, return a nullptr.
-         */
-        template <typename InitialTemperatureType>
-        DEAL_II_DEPRECATED
-        InitialTemperatureType *
-        find_initial_temperature_model () const;
 
         /**
          * Go through the list of all initial temperature models that have been selected
@@ -257,19 +245,6 @@ namespace aspect
         std::vector<aspect::Utilities::Operator> model_operators;
     };
 
-
-
-    template <int dim>
-    template <typename InitialTemperatureType>
-    inline
-    InitialTemperatureType *
-    Manager<dim>::find_initial_temperature_model () const
-    {
-      for (const auto &p : initial_temperature_objects)
-        if (InitialTemperatureType *x = dynamic_cast<InitialTemperatureType *> ( (*p).get()) )
-          return x;
-      return nullptr;
-    }
 
 
     template <int dim>

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -50,7 +50,7 @@ namespace aspect
         unique_phase_indices.resize(n_material_lookups, std::vector<unsigned int>());
         global_index_of_lookup_phase.resize (n_material_lookups, std::vector<unsigned int>());
 
-        for (unsigned i = 0; i < n_material_lookups; i++)
+        for (unsigned i = 0; i < n_material_lookups; ++i)
           {
             if (material_file_format == perplex)
               material_lookup

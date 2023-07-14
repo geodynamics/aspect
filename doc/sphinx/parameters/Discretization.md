@@ -1,8 +1,8 @@
 (parameters:Discretization)=
-# **Discretization**
+# Discretization
 
 
-## **Parameters in section** Discretization
+## **Subsection:** Discretization
 
 
 (parameters:Discretization/Composition_20polynomial_20degree)=
@@ -21,7 +21,7 @@ For continuous elements, the value needs to be 1 or larger as $Q_1$ is the lowes
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
-**Documentation:** The polynomial degree to use for the velocity variables in the Stokes system. The polynomial degree for the pressure variable will then be one less in order to make the velocity/pressure pair conform with the usual LBB (Babu{\v s}ka-Brezzi) condition. In other words, we are using a Taylor-Hood element for the Stokes equations and this parameter indicates the polynomial degree of it. As an example, a value of 2 for this parameter will yield the element $Q_2^d \times Q_1$ for the $d$ velocity components and the pressure, respectively (unless the `Use locally conservative discretization' parameter is set, which modifies the pressure element).
+**Documentation:** The polynomial degree to use for the velocity variables in the Stokes system. The polynomial degree for the pressure variable will then be one less in order to make the velocity/pressure pair conform with the usual LBB (Babu{\v s}ka-Brezzi) condition. In other words, we are using a Taylor-Hood element for the Stokes equations and this parameter indicates the polynomial degree of it. As an example, a value of 2 for this parameter will yield the element $Q_2^d \times Q_1$ for the $d$ velocity components and the pressure, respectively (unless the &lsquo;Use locally conservative discretization&rsquo; parameter is set, which modifies the pressure element).
 
 Be careful if you choose 1 as the degree. The resulting element is not stable and it may lead to artifacts in the solution. Units: None.
 
@@ -55,13 +55,13 @@ Be careful if you choose 1 as the degree. The resulting element is not stable an
 
 **Pattern:** [Bool]
 
-**Documentation:** By default (i.e., when this parameter is set to its default value `false') \aspect{} uses finite element combinations in which the pressure shape functions are polynomials one degree lower than the shape functions for the velocity. An example is the Taylor-Hood element that uses $Q_k$ elements for the velocity and $Q_{k-1}$ for the pressure. This is because using the \textit{same} polynomial degree for both the velocity and the pressure turns out to violate some mathematical properties necessary to make the problem solvable. (In particular, thecondition in question goes by the name ``inf-sup'' or Babu{\v s}ka-Brezzi or LBB condition.) A consequence of violating this condition is that the pressure may show oscillations and not converge to the correct pressure.
+**Documentation:** By default (i.e., when this parameter is set to its default value &lsquo;false&rsquo;) ASPECT uses finite element combinations in which the pressure shape functions are polynomials one degree lower than the shape functions for the velocity. An example is the Taylor-Hood element that uses $Q_k$ elements for the velocity and $Q_{k-1}$ for the pressure. This is because using the *same* polynomial degree for both the velocity and the pressure turns out to violate some mathematical properties necessary to make the problem solvable. (In particular, thecondition in question goes by the name &ldquo;inf-sup&rdquo; or Babu{\v s}ka-Brezzi or LBB condition.) A consequence of violating this condition is that the pressure may show oscillations and not converge to the correct pressure.
 
 That said, people have often used $Q_1$ elements for both the velocity and pressure anyway. This is commonly referred to as using the $Q_1-Q_1$ method. It is, by default, not stable as mentioned above, but it can be made stable by adding a small amount of compressibility to the model. There are numerous ways to do that. Today, the way that is generally considered to be the best approach is the one by Dohrmann and Bochev \cite{DohrmannBochev2004}.
 
-When this parameter is set to ``true'', then \aspect{} will use this method by using $Q_k\times Q_k$ elements for velocity and pressure, respectively, where $k$ is the value provided for the parameter ``Stokes velocity polynomial degree''.
+When this parameter is set to &ldquo;true&rdquo;, then ASPECT will use this method by using $Q_k\times Q_k$ elements for velocity and pressure, respectively, where $k$ is the value provided for the parameter &ldquo;Stokes velocity polynomial degree&rdquo;.
 
-\note{While \aspect{} \textit{allows} you to use this   method, it is generally understood that this is not a   great idea as it leads to rather low accuracy in   general as documented in \cite{thba22}.   It also leads to substantial problems when   using free surfaces. As a consequence, the presence   of this parameter should not be seen as an   endorsement of the method, or a suggestion to   actually use it. It simply makes the method available.}
+\note{While ASPECT *allows* you to use this   method, it is generally understood that this is not a   great idea as it leads to rather low accuracy in   general as documented in \cite{thba22}.   It also leads to substantial problems when   using free surfaces. As a consequence, the presence   of this parameter should not be seen as an   endorsement of the method, or a suggestion to   actually use it. It simply makes the method available.}
 
 (parameters:Discretization/Use_20locally_20conservative_20discretization)=
 ### __Parameter name:__ Use locally conservative discretization
@@ -71,16 +71,16 @@ When this parameter is set to ``true'', then \aspect{} will use this method by u
 
 **Documentation:** Whether to use a Stokes discretization that is locally conservative at the expense of a larger number of degrees of freedom (true), or to go with a cheaper discretization that does not locally conserve mass, although it is globally conservative (false).
 
-When using a locally conservative discretization, the finite element space for the pressure is discontinuous between cells and is the polynomial space $P_{-(k-1)}$ of polynomials of degree $k-1$ in each variable separately. Here, $k$ is the value given in the parameter ``Stokes velocity polynomial degree'', and consequently the polynomial degree for the pressure, $k-1$, is one lower than that for the velocity.
+When using a locally conservative discretization, the finite element space for the pressure is discontinuous between cells and is the polynomial space $P_{-(k-1)}$ of polynomials of degree $k-1$ in each variable separately. Here, $k$ is the value given in the parameter &ldquo;Stokes velocity polynomial degree&rdquo;, and consequently the polynomial degree for the pressure, $k-1$, is one lower than that for the velocity.
 
-As a consequence of choosing this element for the pressure rather than the more commonly used $Q_{k-1}$ element that is continuous, it can be shown that if the medium is considered incompressible then the computed discrete velocity field $\mathbf u_h$ satisfies the property $\int_ {\partial K} \mathbf u_h \cdot \mathbf n = 0$ for every cell $K$, i.e., for each cell inflow and outflow exactly balance each other as one would expect for an incompressible medium. In other words, the velocity field is \textit{locally conservative}.
+As a consequence of choosing this element for the pressure rather than the more commonly used $Q_{k-1}$ element that is continuous, it can be shown that if the medium is considered incompressible then the computed discrete velocity field $\mathbf u_h$ satisfies the property $\int_ {\partial K} \mathbf u_h \cdot \mathbf n = 0$ for every cell $K$, i.e., for each cell inflow and outflow exactly balance each other as one would expect for an incompressible medium. In other words, the velocity field is *locally conservative*.
 
-On the other hand, if this parameter is set to ``false''(the default), then the finite element space is chosen as $Q_{k-1}$. This choice does not yield the local conservation property but has the advantage of requiring fewer degrees of freedom. Furthermore, the error is generally smaller with this choice.
+On the other hand, if this parameter is set to &ldquo;false&rdquo;(the default), then the finite element space is chosen as $Q_{k-1}$. This choice does not yield the local conservation property but has the advantage of requiring fewer degrees of freedom. Furthermore, the error is generally smaller with this choice.
 
 For an in-depth discussion of these issues and a quantitative evaluation of the different choices, see \cite{KHB12}.
 
 (parameters:Discretization/Stabilization_20parameters)=
-## **Parameters in section** Discretization/Stabilization parameters
+## **Subsection:** Discretization / Stabilization parameters
 (parameters:Discretization/Stabilization_20parameters/Discontinuous_20penalty)=
 ### __Parameter name:__ Discontinuous penalty
 **Default value:** 10.
@@ -95,7 +95,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The maximum global composition values that will be used in the bound preserving limiter for the discontinuous solutions from composition advection fields. The number of the input 'Global composition maximum' values separated by ',' has to be one or the same as the number of the compositional fields. When only one value is supplied, this same value is assumed for all compositional fields.
+**Documentation:** The maximum global composition values that will be used in the bound preserving limiter for the discontinuous solutions from composition advection fields. The number of the input &rsquo;Global composition maximum&rsquo; values separated by &rsquo;,&rsquo; has to be one or the same as the number of the compositional fields. When only one value is supplied, this same value is assumed for all compositional fields.
 
 (parameters:Discretization/Stabilization_20parameters/Global_20composition_20minimum)=
 ### __Parameter name:__ Global composition minimum
@@ -103,7 +103,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** The minimum global composition value that will be used in the bound preserving limiter for the discontinuous solutions from composition advection fields. The number of the input 'Global composition minimum' values separated by ',' has to be one or the same as the number of the compositional fields. When only one value is supplied, this same value is assumed for all compositional fields.
+**Documentation:** The minimum global composition value that will be used in the bound preserving limiter for the discontinuous solutions from composition advection fields. The number of the input &rsquo;Global composition minimum&rsquo; values separated by &rsquo;,&rsquo; has to be one or the same as the number of the compositional fields. When only one value is supplied, this same value is assumed for all compositional fields.
 
 (parameters:Discretization/Stabilization_20parameters/Global_20temperature_20maximum)=
 ### __Parameter name:__ Global temperature maximum
@@ -135,7 +135,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [Selection entropy viscosity|SUPG ]
 
-**Documentation:** Select the method for stabilizing the advection equation. The original method implemented is 'entropy viscosity' as described in \cite {KHB12}. SUPG is currently experimental.
+**Documentation:** Select the method for stabilizing the advection equation. The original method implemented is &rsquo;entropy viscosity&rsquo; as described in \cite {KHB12}. SUPG is currently experimental.
 
 (parameters:Discretization/Stabilization_20parameters/Use_20artificial_20viscosity_20smoothing)=
 ### __Parameter name:__ Use artificial viscosity smoothing
@@ -151,7 +151,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to apply the bound preserving limiter as a correction after having the discontinuous composition solution. Currently we apply this only to the compositional solution if the 'Global composition maximum' and 'Global composition minimum' are already defined in the .prm file. This limiter keeps the discontinuous solution in the range given by Global composition maximum' and 'Global composition minimum'.
+**Documentation:** Whether to apply the bound preserving limiter as a correction after having the discontinuous composition solution. Currently we apply this only to the compositional solution if the &rsquo;Global composition maximum&rsquo; and &rsquo;Global composition minimum&rsquo; are already defined in the .prm file. This limiter keeps the discontinuous solution in the range given by Global composition maximum&rsquo; and &rsquo;Global composition minimum&rsquo;.
 
 (parameters:Discretization/Stabilization_20parameters/Use_20limiter_20for_20discontinuous_20temperature_20solution)=
 ### __Parameter name:__ Use limiter for discontinuous temperature solution
@@ -159,7 +159,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to apply the bound preserving limiter as a correction after computing the discontinuous temperature solution. Currently we apply this only to the temperature solution if the 'Global temperature maximum' and 'Global temperature minimum' are already defined in the .prm file. This limiter keeps the discontinuous solution in the range given by 'Global temperature maximum' and 'Global temperature minimum'.
+**Documentation:** Whether to apply the bound preserving limiter as a correction after computing the discontinuous temperature solution. Currently we apply this only to the temperature solution if the &rsquo;Global temperature maximum&rsquo; and &rsquo;Global temperature minimum&rsquo; are already defined in the .prm file. This limiter keeps the discontinuous solution in the range given by &rsquo;Global temperature maximum&rsquo; and &rsquo;Global temperature minimum&rsquo;.
 
 (parameters:Discretization/Stabilization_20parameters/alpha)=
 ### __Parameter name:__ alpha

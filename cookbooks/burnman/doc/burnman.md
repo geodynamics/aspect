@@ -21,7 +21,7 @@ The reference profile is shown in {numref}`fig:burnman-reference-profile`, and t
 ## Setting up the ASPECT model
 
 In order to use this profile, we have to import and use the data in the adiabatic conditions model, in the gravity model and in the material model, which is done using the corresponding ASCII data plugins.
-The input file is provided in `cookbooks/burnman/burnman.prm`, and it uses the 2d shell geometry previously discussed in {ref}`sec:cookbooks:shell_simple_2d` and surface velocities imported from GPlates as explained in {ref}`sec:cookbooks:gplates`.
+The input file is provided in [cookbooks/burnman/burnman.prm](https://github.com/geodynamics/aspect/blob/main/cookbooks/burnman/burnman.prm), and it uses the 2d shell geometry previously discussed in {ref}`sec:cookbooks:shell_simple_2d` and surface velocities imported from GPlates as explained in {ref}`sec:cookbooks:gplates`.
 
 To use the BurnMan data in the material model, we have to specify that we want to use the `ascii reference profile` model.
 This material model makes use of the functionality provided by the `AsciiData` classes in ASPECT, which allow plugins such as material models, boundary or initial conditions models to read in ASCII data files (see for example {ref}`sec:cookbooks:geomio`).
@@ -57,7 +57,7 @@ To make use of the reference state we just imported from BurnMan, we choose a fo
 ```
 
 This means that the reference profiles are used for all material properties in the model, except for the density in the buoyancy term (on the right-hand side of the force balance equation {math:numref}`eq:stokes-1`, which in the limit of the anelastic liquid approximation becomes Equation {math:numref}`eq:stokes-ALA-1`).
-In addition, the density derivative in the mass conservation equation (see {ref}`sec:mass-conservation-approximation`) is taken from the adiabatic conditions, where it is computed as the depth derivative of the provided reference density profile (see also {ref}`sec:combined_formulations`).
+In addition, the density derivative in the mass conservation equation (see {ref}`sec:methods:choosing-a-formulation:mass-conservation-approx`) is taken from the adiabatic conditions, where it is computed as the depth derivative of the provided reference density profile (see also {ref}`sec:methods:combined-formulations`).
 
 ## Visualizing the model output
 

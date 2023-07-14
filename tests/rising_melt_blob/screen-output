@@ -1,5 +1,5 @@
 
-Loading shared library <./librising_melt_blob.so>
+Loading shared library <./librising_melt_blob.debug.so>
 
 Number of active cells: 512 (on 5 levels)
 Number of degrees of freedom: 17,673 (4,290+2,097+4,290+561+2,145+2,145+2,145)

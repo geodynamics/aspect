@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -44,23 +44,23 @@ namespace aspect
     void
     phase_average_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs_all_phases,
                                             const std::vector<double> &phase_function_values,
-                                            const std::vector<unsigned int> &n_phases_per_composition,
+                                            const std::vector<unsigned int> &n_phase_transitions_per_composition,
                                             EquationOfStateOutputs<dim> &eos_outputs)
     {
       for (unsigned int c=0; c<eos_outputs.densities.size(); ++c)
         {
           eos_outputs.densities[c] =
-            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition, eos_outputs_all_phases.densities, c);
+            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.densities, c);
           eos_outputs.thermal_expansion_coefficients[c] =
-            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition, eos_outputs_all_phases.thermal_expansion_coefficients, c);
+            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.thermal_expansion_coefficients, c);
           eos_outputs.specific_heat_capacities[c] =
-            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition, eos_outputs_all_phases.specific_heat_capacities, c);
+            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.specific_heat_capacities, c);
           eos_outputs.compressibilities[c] =
-            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition, eos_outputs_all_phases.compressibilities, c);
+            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.compressibilities, c);
           eos_outputs.entropy_derivative_pressure[c] =
-            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition, eos_outputs_all_phases.entropy_derivative_pressure, c);
+            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.entropy_derivative_pressure, c);
           eos_outputs.entropy_derivative_temperature[c] =
-            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition, eos_outputs_all_phases.entropy_derivative_temperature, c);
+            MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition, eos_outputs_all_phases.entropy_derivative_temperature, c);
         }
     }
   }
@@ -75,7 +75,7 @@ namespace aspect
   template struct EquationOfStateOutputs<dim>; \
   template void phase_average_equation_of_state_outputs<dim> (const EquationOfStateOutputs<dim> &, \
                                                               const std::vector<double> &phase_function_values, \
-                                                              const std::vector<unsigned int> &n_phases_per_composition, \
+                                                              const std::vector<unsigned int> &n_phase_transitions_per_composition, \
                                                               EquationOfStateOutputs<dim> &);
 
     ASPECT_INSTANTIATE(INSTANTIATE)

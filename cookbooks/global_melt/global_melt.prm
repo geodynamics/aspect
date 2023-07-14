@@ -241,7 +241,7 @@ subsection Material model
     # The bulk viscosity is computed as the reference value given here times
     # a term that scales with one over the porosity. This means that for zero
     # porosity, the rock can not dilate/compact any more, which is the same
-    # behaviour that we have for solid mantle convection.
+    # behavior that we have for solid mantle convection.
     set Reference bulk viscosity          = 1e19
 
     # In dependence of how much melt is present, we also weaken the shear

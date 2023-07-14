@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -726,7 +726,7 @@ namespace aspect
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
       const double pressure_scaling = this->get_pressure_scaling();
-      const unsigned int density_idx = this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density);
+      const unsigned int density_idx = this->introspection().find_composition_type(CompositionalFieldDescription::density);
 
       const double time_step = this->get_timestep();
       const double old_time_step = this->get_old_timestep();
@@ -910,20 +910,17 @@ namespace aspect
 
       const typename DoFHandler<dim>::face_iterator face = scratch.cell->face(scratch.face_number);
 
-      if (this->get_boundary_traction()
-          .find (face->boundary_id())
+      if (this->get_boundary_traction_manager().get_active_boundary_traction_names().find (face->boundary_id())
           !=
-          this->get_boundary_traction().end())
+          this->get_boundary_traction_manager().get_active_boundary_traction_names().end())
         {
           for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
             {
               const Tensor<1,dim> traction
-                = this->get_boundary_traction().find(
-                    face->boundary_id()
-                  )->second
-                  ->boundary_traction (face->boundary_id(),
-                                       scratch.face_finite_element_values.quadrature_point(q),
-                                       scratch.face_finite_element_values.normal_vector(q));
+                = this->get_boundary_traction_manager().
+                  boundary_traction (face->boundary_id(),
+                                     scratch.face_finite_element_values.quadrature_point(q),
+                                     scratch.face_finite_element_values.normal_vector(q));
 
               for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
                 {

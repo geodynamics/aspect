@@ -20,6 +20,8 @@
 #ifndef WORLD_BUILDER_APP_MAIN_H_
 #define WORLD_BUILDER_APP_MAIN_H_
 
+#include <string>
+
 bool find_command_line_option(char **begin, char **end, const std::string &option);
 
 #endif

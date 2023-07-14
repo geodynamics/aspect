@@ -1,5 +1,5 @@
 
-Loading shared library <./libvof_circle_mpi.so>
+Loading shared library <./libvof_circle_mpi.debug.so>
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 6,693 (2,178+289+1,089+1,089+256+768+1,024)

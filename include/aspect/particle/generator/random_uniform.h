@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -56,8 +56,8 @@ namespace aspect
           using Generator::Interface<dim>::generate_particles;
 
           /**
-          * Declare the parameters this class takes through input files.
-          */
+           * Declare the parameters this class takes through input files.
+           */
           static
           void
           declare_parameters (ParameterHandler &prm);

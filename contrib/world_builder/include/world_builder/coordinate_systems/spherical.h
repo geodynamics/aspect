@@ -17,15 +17,16 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_coordinate_systems_spherical_h
-#define _world_builder_coordinate_systems_spherical_h
+#ifndef WORLD_BUILDER_COORDINATE_SYSTEMS_SPHERICAL_H
+#define WORLD_BUILDER_COORDINATE_SYSTEMS_SPHERICAL_H
 
-#include <world_builder/utilities.h>
-#include <world_builder/coordinate_systems/interface.h>
+#include "world_builder/coordinate_systems/interface.h"
 
+#include <string>
 
 namespace WorldBuilder
 {
+
   namespace CoordinateSystems
   {
     /**
@@ -38,7 +39,7 @@ namespace WorldBuilder
      * doesn't do anything with the coordinates, but is needed to have a common
      * interface for all the geometry models.
      */
-    class Spherical : public Interface
+    class Spherical final : public Interface
     {
       public:
         /**
@@ -49,7 +50,7 @@ namespace WorldBuilder
         /**
          * Destructor
          */
-        ~Spherical();
+        ~Spherical() override final;
 
         /**
          * declare and read in the world builder file into the parameters class
@@ -105,14 +106,25 @@ namespace WorldBuilder
         double distance_between_points_at_same_depth(const Point<3> &point_1, const Point<3> &point_2) const override final;
 
         /**
+         * Returns the max model depth. This returns the radius in spherical
+         * models.
+         */
+        virtual
+        double max_model_depth() const override final;
+
+        /**
          * What depth method the spherical coordinates use.
          */
         DepthMethod used_depth_method;
 
       private:
-
+        /**
+         * The maximum depth of the model. In the spherical case that is equal to the
+         * radius of the sphere.
+         */
+        double radius_sphere;
     };
-  }
-}
+  } // namespace CoordinateSystems
+} // namespace WorldBuilder
 
 #endif

@@ -1,0 +1,58 @@
+%
+% This file can be rendered by calling 
+% latexmk -pdf publication_list.tex
+%
+% NOTE: This file purposely does not allow UTF-8
+% and other unicode characters. This is to catch
+% character combinations (e.g. ``fi'', ``fl'') that
+% do not render as (likely) intended if their unicode
+% counterparts are used.
+%
+% This is based on
+% https://github.com/dealii/publication-list/blob/master/offline/publication_list.tex
+
+\documentclass[]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[colorlinks,urlcolor=blue]{hyperref}
+\usepackage[
+  backend=biber,
+  sorting=ydnt,
+  defernumbers=true,
+  doi=true,
+  refsection=section,
+  style=numeric
+  ]{biblatex}
+\AtBeginBibliography{\small}
+
+%opening
+\title{ASPECT publication list}
+\author{The ASPECT authors and contributors}
+
+% If you get an error about invalid unicode characters, add them here and search
+% for the replacement string in the pdf output to fix it:
+%\DeclareUnicodeCharacter{0301}{*******************}
+
+% We don't ever use the output of this running pdflatex on this file
+% -- we only use it to find errors. As a consequence, the many
+% warnings on overfull hboxes are annoying and obscuring what really
+% constitutes a problem. Avoid this by just being totally relaxed
+% about overfull and underfull boxes:
+\hbadness=10000
+\vbadness=10000
+\hfuzz=10in
+\vfuzz=10in
+
+\begin{document}
+
+\maketitle
+
+\begin{refsection}[./manual/citing_aspect.bib]
+\nocite{*}
+\printbibliography[title={Publications citing ASPECT}]
+\end{refsection}
+\begin{refsection}[./sphinx/references.bib]
+  \nocite{*}
+  \printbibliography[title={Sphinx Manual References}]
+\end{refsection}
+\end{document}

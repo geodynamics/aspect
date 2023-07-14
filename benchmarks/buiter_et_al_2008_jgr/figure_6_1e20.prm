@@ -96,7 +96,7 @@ subsection Boundary composition model
 end
 
 
-# Use discontinous composition bound preserving limiter
+# Use discontinuous composition bound preserving limiter
 subsection Discretization
   set Composition polynomial degree     = 2
   set Stokes velocity polynomial degree = 2

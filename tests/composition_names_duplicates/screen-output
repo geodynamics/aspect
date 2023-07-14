@@ -24,10 +24,5 @@ Additional information:
     visualization output variables, otherwise output files may be
     corrupted.
 
-Aborting!
-MPI_ABORT was invoked on rank 0 in communicator MPI_COMM_WORLD
-with errorcode 1.
-
-NOTE: invoking MPI_ABORT causes Open MPI to kill all MPI processes.
-You may or may not see output from other processes, depending on
-exactly when Open MPI kills them.
+Stacktrace:
+(rest of the output replaced by default.sh script)

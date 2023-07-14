@@ -11,4 +11,5 @@ Additional information:
     ASPECT can only be run in 2d and 3d but a different space dimension is
     given in the parameter file.
 
-Aborting!
+Stacktrace:
+(rest of the output replaced by default.sh script)

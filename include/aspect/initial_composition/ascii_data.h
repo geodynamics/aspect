@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -80,37 +80,8 @@ namespace aspect
       private:
         /**
          * The dataset that contains the initial composition.
-         * This member variable is used in case the dataset has the same
-         * spatial dimensions as the model.
          */
         std::unique_ptr<Utilities::AsciiDataInitial<dim>> ascii_data_initial;
-
-        /**
-         * The dataset that contains the initial composition.
-         * This member variable is used in case the dataset has a higher
-         * spatial dimension than the model, and only a slice
-         * of the dataset is used.
-         */
-        std::unique_ptr<Utilities::AsciiDataInitial<dim,3>> ascii_data_slice;
-
-        /**
-         * Whether to use a dataset that has the same spatial dimensions as
-         * the model or not. If true only a slice of the dataset is used.
-         */
-        bool slice_data;
-
-        /**
-         * The two points that define the location of the slice.
-         */
-        Tensor<1,3> first_point_on_slice;
-        Tensor<1,3> second_point_on_slice;
-
-        /**
-          * The matrix that describes the rotation by which a 2D model
-          * needs to be transformed to a plane that contains the origin and
-          * the two prescribed points given in the input.
-          */
-        Tensor<2,3> rotation_matrix;
     };
   }
 }

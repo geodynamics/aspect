@@ -6,10 +6,10 @@ it solves a Stokes problem with a spatially variable
 viscosity, but this time the viscosity is not a discontinuous function.
 Instead, it grows exponentially with the vertical coordinate so that its
 overall variation is again $10^6$. The forcing is again chosen by imposing a
-spatially variable density variation. For details, refer again to {cite}`DMGT11`.
+spatially variable density variation. For details, refer again to {cite}`duretz:etal:2011`.
 
 The following input file, only a small variation of the one in the previous
-section, solves the benchmark (see `benchmarks/solkz/`):
+section, solves the benchmark (see [benchmarks/solkz/](https://github.com/geodynamics/aspect/tree/main/benchmarks/solkz)):
 
 ```{literalinclude} solkz.prm
 
@@ -24,7 +24,7 @@ and plotted over the viscosity field is shown in {numref}`fig:solkz3`.
 ```{figure-md} fig:solkz1
 <img src="solkz-solution.*" alt="SolKz Stokes benchmark. The density perturbation field overlaid with velocity vectors. The viscosity grows exponentially in the vertical direction, leading to small velocities at the top despite the large density variations." />
 
-SolKz Stokes benchmark. The density pertubation field overlaid with velocity vectors. The viscosity grows exponentially in the vertical direction, leading to small velocities at the top despite the large density variations.
+SolKz Stokes benchmark. The density perturbation field overlaid with velocity vectors. The viscosity grows exponentially in the vertical direction, leading to small velocities at the top despite the large density variations.
 ```
 ```{figure-md} fig:solkz2
 <img src="solkz-solution-pressure.*" title="fig:" id="fig:solkz2" alt="SolKz Stokes benchmark pressure." />

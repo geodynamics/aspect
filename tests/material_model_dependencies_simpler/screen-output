@@ -1,5 +1,5 @@
 
-Loading shared library <./libmaterial_model_dependencies_simpler.so>
+Loading shared library <./libmaterial_model_dependencies_simpler.debug.so>
 
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)

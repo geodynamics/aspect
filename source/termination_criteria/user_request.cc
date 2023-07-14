@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,14 +30,7 @@ namespace aspect
     bool
     UserRequest<dim>::execute()
     {
-      // Only check for the file on the root process to avoid overloading the filesystem.
-      // The plugin manager later does an OR operation over all
-      // processors
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        {
-          return Utilities::fexists(this->get_output_directory()+filename_to_test);
-        }
-      return false;
+      return Utilities::fexists(this->get_output_directory()+filename_to_test, this->get_mpi_communicator());
     }
 
     template <int dim>

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -78,8 +78,8 @@ namespace aspect
          * @{
          */
 
-        virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
+        void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                      MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -114,7 +114,7 @@ namespace aspect
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
          */
-        virtual bool is_compressible () const;
+        bool is_compressible () const override;
         /**
          * @}
          */
@@ -140,9 +140,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
         /**
          * @}
          */
@@ -290,19 +289,16 @@ namespace aspect
   class TanGurnisBoundary : public BoundaryTemperature::Interface<dim>
   {
     public:
-      virtual
       double boundary_temperature (const types::boundary_id /*boundary_indicator*/,
-                                   const Point<dim> &position) const
+                                   const Point<dim> &position) const override
       {
         double wavenumber=1;
         return sin(numbers::PI*position(dim-1))*cos(numbers::PI*wavenumber*position(0));
       }
 
-      virtual
-      double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+      double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
 
-      virtual
-      double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const;
+      double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
   };
 
   template <int dim>
@@ -336,9 +332,8 @@ namespace aspect
   class TanGurnisPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
-      virtual
       std::pair<std::string,std::string>
-      execute (TableHandler &statistics);
+      execute (TableHandler &statistics) override;
   };
 
   template <int dim>
@@ -355,21 +350,20 @@ namespace aspect
     material_model = Plugins::get_plugin_as_type<const MaterialModel::TanGurnis<dim>>(this->get_material_model());
 
     double ref=1.0/this->get_triangulation().begin_active()->minimum_vertex_distance();
-    std::ofstream f ((this->get_output_directory() + "vel_" +
-                      Utilities::int_to_string(static_cast<unsigned int>(ref)) +
-                      ".csv").c_str());
-    f.precision (16);
-    f << material_model.parameter_Di() << ' '
-      << material_model.parameter_gamma() << ' '
-      << material_model.parameter_wavenumber() << ' '
-      << material_model.parameter_a();
 
-    // pad the first line to the same number of columns as the data below to make MATLAB happy
+    std::stringstream output;
+    output.precision (16);
+    output << material_model.parameter_Di() << ' '
+           << material_model.parameter_gamma() << ' '
+           << material_model.parameter_wavenumber() << ' '
+           << material_model.parameter_a();
+
+    // pad the first line to the same number ooutputcolumns as the data below to make MATLAB happy
     for (unsigned int i=4; i<7+this->get_heating_model_manager().get_active_heating_models().size(); ++i)
-      f << " -1";
+      output<< " -1";
 
-    f << std::endl;
-    f << std::scientific;
+    output<< std::endl;
+    output<< std::scientific;
 
 
     const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
@@ -393,7 +387,7 @@ namespace aspect
     for (; cell != endc; ++cell)
       {
         fe_values.reinit (cell);
-        in.reinit(fe_values,cell,this->introspection(),this->get_solution(),true);
+        in.reinit(fe_values,cell,this->introspection(),this->get_solution());
 
         this->get_material_model().evaluate(in, out);
 
@@ -417,7 +411,7 @@ namespace aspect
 
         for (unsigned int q = 0; q < n_q_points; ++q)
           {
-            f
+            output
                 <<  fe_values.quadrature_point (q) (0)
                 << ' ' << fe_values.quadrature_point (q) (1)
                 << ' ' << in.velocity[q][0]
@@ -427,11 +421,16 @@ namespace aspect
                 << ' ' << in.temperature[q];
 
             for (unsigned int i = 0; i < heating_model_objects.size(); ++i)
-              f << ' ' << heating_model_outputs[i].heating_source_terms[q];
+              output << ' ' << heating_model_outputs[i].heating_source_terms[q];
 
-            f  << std::endl;
+            output << std::endl;
           }
       }
+
+    const std::string filename = this->get_output_directory() + "vel_" +
+                                 Utilities::int_to_string(static_cast<unsigned int>(ref)) +
+                                 ".csv";
+    Utilities::collect_and_write_file_content(filename, output.str(), this->get_mpi_communicator());
 
     return std::make_pair("writing:", "output.csv");
   }
@@ -447,7 +446,7 @@ namespace aspect
                                 "Tan Gurnis error",
                                 "A postprocessor that compares the solution of the benchmarks from "
                                 "the Tan/Gurnis (2007) paper with the one computed by ASPECT "
-                                "by outputing data that is compared using a matlab script.")
+                                "by outputting data that is compared using a matlab script.")
 
   namespace MaterialModel
   {

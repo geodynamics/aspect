@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2022 - 2023 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <aspect/simulator.h>
 #include <deal.II/grid/tria.h>
 #include <aspect/simulator_access.h>
@@ -51,7 +71,7 @@ namespace aspect
      *
      * To avoid numerically unfavourably large (or even negative) viscosity ranges,
      * we regularize the viscosity by $\eta_{\text{eff}} = \eta_{\text{ref}} * \eta
-     * / (\eta_{\text{ref}} + \eta)$. Futhermore,
+     * / (\eta_{\text{ref}} + \eta)$. Furthermore,
      * we cut off the viscosity with a user-defined minimum and maximum viscosity:
      * $\eta_eff = \frac{1}{\frac{1}{\eta_min + \eta}+
      * \frac{1}{\eta_max}}$.
@@ -317,7 +337,7 @@ namespace aspect
                           if (constant_viscosity[c] == 0  && composition_viscosities[c] <= max_visc[c] && composition_viscosities[c] >= min_visc[c])
                             {
                               // we only want the pure durcker prager here, so the regularization should be off and the min and max values should not be used.
-                              // Therefore we set the compute_full_viscosity flag to flase. The min and max viscosity values  won't be used with this flag,
+                              // Therefore we set the compute_full_viscosity flag to false. The min and max viscosity values  won't be used with this flag,
                               // so we enter dummy values.
                               const double drucker_prager_viscosity = compute_viscosity(edot_ii,pressure,c,constant_viscosity[c],false,std::numeric_limits<double>::min(),std::numeric_limits<double>::max());
                               const double regularization_adjustment = (ref_visc * ref_visc)
@@ -353,7 +373,7 @@ namespace aspect
                               // compute which of the independent index of the strain-rate tensor we are now looking at.
                               const TableIndices<2> strain_rate_indices = SymmetricTensor<2,dim>::unrolled_to_component_indices (component);
 
-                              // add a small difference to one independent component of hte strain-rate tensor
+                              // add a small difference to one independent component of the strain-rate tensor
                               const SymmetricTensor<2,dim> strain_rate_difference_plus = edot + std::max(edot_ii, min_strain_rate[c]) * finite_difference_accuracy
                                                                                          * Utilities::nth_basis_for_symmetric_tensors<dim>(component);
                               const double second_invariant_strain_rate_difference_plus = compute_second_invariant(strain_rate_difference_plus, min_strain_rate[c]);
@@ -592,8 +612,8 @@ namespace aspect
         cos_phi.resize(n_fields);
         for (unsigned int c = 0; c < n_fields; ++c)
           {
-            sin_phi[c] = std::sin(phi[c] * numbers::PI/180);
-            cos_phi[c] = std::cos(phi[c] * numbers::PI/180);
+            sin_phi[c] = std::sin(phi[c] * constants::degree_to_radians);
+            cos_phi[c] = std::cos(phi[c] * constants::degree_to_radians);
           }
 
         constant_viscosity = possibly_extend_from_1_to_N(string_to_double(split_string_list(prm.get("List of constant viscosities"))),
@@ -652,7 +672,7 @@ namespace aspect
                                    "(doi:10.1002/ 2015GC006228). It implements a regularized Drucker Prager "
                                    "material (when the parameter constant viscosity is 0) and a linear material "
                                    "(when the parameter constant viscosity is not 0), which are both needed to "
-                                   "implment the Spiegelman benchmark. The derivatives for the Newton solver "
+                                   "implement the Spiegelman benchmark. The derivatives for the Newton solver "
                                    "have been implemented for this material model.")
   }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -50,7 +50,7 @@ namespace aspect
      * postprocessor.
      * The average- minimum- and maximum gravity acceleration and potential are written
      * into the statistics file.
-
+     *
      * @ingroup Postprocessing
      */
     template <int dim>

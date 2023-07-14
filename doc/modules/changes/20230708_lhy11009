@@ -1,0 +1,5 @@
+ New: The cutoff stress for the Peierls stress
+ could now be applied strictly as the lower
+ limit of the stress in the Peierls rheology
+ <br>
+ (Haoyuan Li, Bob Myhill, 2023/07/08)

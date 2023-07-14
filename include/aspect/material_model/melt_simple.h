@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,7 @@ namespace aspect
 
     /**
      * A material model that implements a simple formulation of the
-     * material parameters required for the modelling of melt transport,
+     * material parameters required for the modeling of melt transport,
      * including a source term for the porosity according to the melting
      * model for dry peridotite of Katz, 2003. This also includes a
      * computation of the latent heat of melting (if the latent heat

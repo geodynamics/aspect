@@ -17,148 +17,219 @@ ENDIF()
 
 # Unit test testing
 #find all the unit test files
-SET(WB_INCLUDE_UNIT_TEST TRUE
-CACHE STRING "Whether to include unit tests or not in the build.")
+SET(WB_INCLUDE_UNIT_TEST ON
+CACHE BOOL "Whether to include unit tests or not in the build.")
+
+SET(WB_RUN_TESTS_WITH_GDB OFF
+CACHE BOOL "Whether to also run the test with GDB")
+
+SET(WB_RUN_TESTS_WITH_VALGRIND OFF
+CACHE BOOL "Whether to also run the test with Valgrind")
 
 if(WB_INCLUDE_UNIT_TEST)
   file(GLOB_RECURSE UNIT_TEST_SOURCES_CXX "unit_tests/*.cc")
 
   if(CMAKE_Fortran_COMPILER)
-    file(GLOB_RECURSE UNIT_TEST_SOURCES_FORTAN "unit_tests/*.f90")
+    file(GLOB_RECURSE UNIT_TEST_SOURCES_FORTRAN "unit_tests/*.f90")
   endif()
 
-  set(UNIT_TEST_SOURCES ${UNIT_TEST_SOURCES_CXX} ${UNIT_TEST_SOURCES_FORTAN})
+  set(UNIT_TEST_SOURCES ${UNIT_TEST_SOURCES_CXX} ${UNIT_TEST_SOURCES_FORTRAN})
 
+  set(test_name "unit_tests")
+  
+  # Add compile target
+  add_executable(${test_name} ${UNIT_TEST_SOURCES})
+  
+  if(NOT ${CMAKE_VERSION} VERSION_LESS "3.9.0") # Preventing issues with older cmake compilers which do not support VERSION_GREATER_EQUAL
+    target_compile_options(${test_name} INTERFACE ${WB_COMPILER_OPTIONS_INTERFACE} PRIVATE ${WB_COMPILER_OPTIONS_PRIVATE})
+  endif()
 
+  if(${CMAKE_VERSION} VERSION_LESS "3.13.0")
+    SET(CMAKE_EXE_LINKER_FLAGS "${WB_LINKER_OPTIONS}")
+  else()
+    target_link_options(${test_name} INTERFACE ${WB_LINKER_OPTIONS})
+  endif()
 
-  #set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/)
-  
-  # Run through each source
-  foreach(test_source ${UNIT_TEST_SOURCES})
-    # Extract the filename without an extension (NAME_WE)
-    get_filename_component(test_name ${test_source} NAME_WE)
-  
-    # Add compile target
-    add_executable(${test_name} ${test_source})
-  
-    if(NOT ${CMAKE_VERSION} VERSION_LESS "3.9.0") # Preventing issues with older cmake compilers which do not support VERSION_GREATER_EQUAL
-      target_compile_options(${test_name} INTERFACE ${WB_COMPILER_OPTIONS_INTERFACE} PRIVATE ${WB_COMPILER_OPTIONS_PRIVATE})
-    endif()
-  
-    if(${CMAKE_VERSION} VERSION_LESS "3.13.0") 
-      SET(CMAKE_EXE_LINKER_FLAGS "${WB_LINKER_OPTIONS}")
-    else()
-      target_link_options(${test_name} INTERFACE ${WB_LINKER_OPTIONS})
-    endif()
-  
-    # Make sure that the whole library is loaded, so the registration is done correctly.
-    if(NOT APPLE)
-      SET(GWB_LIBRARY_WHOLE -Wl,--whole-archive WorldBuilder -Wl,--no-whole-archive)  
-    elseif(MSVC)
-      SET(GWB_LIBRARY_WHOLE WorldBuilder)
-      SET(CMAKE_EXE_LINKER_FLAGS "/WHOLEARCHIVE:libworldbuilder")
-    else()
-      SET(GWB_LIBRARY_WHOLE -Wl,-force_load WorldBuilder)
-    endif()
-  
-    if(${USE_MPI})
-      target_link_libraries(${test_name} PUBLIC MPI::MPI_CXX ${GWB_LIBRARY_WHOLE})
-    else()
-      target_link_libraries(${test_name} ${GWB_LIBRARY_WHOLE})
-    endif()
-  
-    #Move testing binaries into a testBin directory
-    set_target_properties(${test_name} PROPERTIES
-                          RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin/)
-  
-    #Finally add it to test execution -
-    #Notice the WORKING_DIRECTORY and COMMAND
-    add_test(NAME ${test_name}
+  # Make sure that the whole library is loaded, so the registration is done correctly.
+  if(NOT APPLE)
+    SET(GWB_LIBRARY_WHOLE -Wl,--whole-archive WorldBuilder -Wl,--no-whole-archive)
+  elseif(MSVC)
+    SET(GWB_LIBRARY_WHOLE WorldBuilder)
+    SET(CMAKE_EXE_LINKER_FLAGS "/WHOLEARCHIVE:libworldbuilder")
+  else()
+    SET(GWB_LIBRARY_WHOLE -Wl,-force_load WorldBuilder)
+  endif()
+
+  if(${USE_MPI})
+    target_link_libraries(${test_name} PUBLIC MPI::MPI_CXX ${GWB_LIBRARY_WHOLE})
+  else()
+    target_link_libraries(${test_name} ${GWB_LIBRARY_WHOLE})
+  endif()
+
+  #Move testing binaries into a testBin directory
+  set_target_properties(${test_name} PROPERTIES
+                        RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin/)
+
+  #Finally add it to test execution -
+  #Notice the WORKING_DIRECTORY and COMMAND
+  add_test(NAME ${test_name}
+           WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+           COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${test_name})
+
+  if(WB_RUN_TESTS_WITH_GDB)
+    add_test(NAME ${test_name}_gdb
              WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
-             COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${test_name})
-  endforeach(test_source)
+             COMMAND gdb --ex r --ex bt -ex "set confirm off" --ex exit($_exitcode) --args ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${test_name})
+  endif()
+
+  if(WB_RUN_TESTS_WITH_VALGRIND)
+    add_test(NAME ${test_name}_valgrind
+             WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+             COMMAND valgrind -v --leak-check=full --error-exitcode=1  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${test_name})
+  endif()
 endif()
 # App testing
-IF(CMAKE_RUN_APP_TESTS)
+IF(WB_RUN_APP_TESTS)
   # Create directory for the test results
-  file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/tests/app)
+  file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/tests/gwb-dat)
 
   # Test help
   add_test(testing_help
            ${CMAKE_COMMAND} 
   	 -D TEST_NAME=testing_help 
-     -D TEST_PROGRAM=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/WorldBuilderApp${CMAKE_EXECUTABLE_SUFFIX} 
+     -D TEST_PROGRAM=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gwb-dat${CMAKE_EXECUTABLE_SUFFIX} 
   	 -D TEST_ARGS=--help 
-  	 -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/app/testing_help/screen-output.log 
-     -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/app/testing_help/screen-output.log
+  	 -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-dat/testing_help/screen-output.log 
+     -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/testing_help/screen-output.log
      -D TEST_DIFF=${TEST_DIFF}
-  	 -P ${CMAKE_SOURCE_DIR}/tests/app/run_app_tests.cmake
-           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/app/)
+  	 -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/)
   
   # Test no files provided
   add_test(testing_no_file
            ${CMAKE_COMMAND} 
   	 -D TEST_NAME=testing_no_file 
-  	 -D TEST_PROGRAM=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/WorldBuilderApp${CMAKE_EXECUTABLE_SUFFIX} 
+  	 -D TEST_PROGRAM=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gwb-dat${CMAKE_EXECUTABLE_SUFFIX} 
   	 -D TEST_ARGS= 
-  	 -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/app/testing_no_file/screen-output.log 
-  	 -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/app/testing_no_file/screen-output.log
+  	 -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-dat/testing_no_file/screen-output.log 
+  	 -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/testing_no_file/screen-output.log
      -D TEST_DIFF=${TEST_DIFF}
-  	 -P ${CMAKE_SOURCE_DIR}/tests/app/run_app_tests.cmake
-           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/app/)
+  	 -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/)
   
   
   # Test one file provided 
   add_test(testing_one_file
            ${CMAKE_COMMAND} 
   	 -D TEST_NAME=testing_one_file 
-  	 -D TEST_PROGRAM=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/WorldBuilderApp${CMAKE_EXECUTABLE_SUFFIX} 
-  	 -D TEST_ARGS=non_existend_file
-  	 -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/app/testing_one_file/screen-output.log 
-  	 -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/app/testing_one_file/screen-output.log
+  	 -D TEST_PROGRAM=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gwb-dat${CMAKE_EXECUTABLE_SUFFIX} 
+  	 -D TEST_ARGS=non_existent_file
+  	 -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-dat/testing_one_file/screen-output.log 
+  	 -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/testing_one_file/screen-output.log
      -D TEST_DIFF=${TEST_DIFF}
-  	 -P ${CMAKE_SOURCE_DIR}/tests/app/run_app_tests.cmake
-           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/app/)
+  	 -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/)
+
+
+  # Test two many arguments provided 
+  set(TEST_ARGUMENTS "${CMAKE_SOURCE_DIR}/tests/gwb-dat/${test_name}.wb\;${CMAKE_SOURCE_DIR}/tests/gwb-dat/${test_name}.dat\;lalala\;nonono")
+  add_test(testing_too_many_arguments
+  ${CMAKE_COMMAND} 
+    -D TEST_NAME=testing_too_many_arguments 
+    -D TEST_PROGRAM=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gwb-dat${CMAKE_EXECUTABLE_SUFFIX} 
+    -D TEST_ARGS=${TEST_ARGUMENTS}
+    -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-dat/testing_too_many_arguments/screen-output.log 
+    -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/testing_too_many_arguments/screen-output.log
+    -D TEST_DIFF=${TEST_DIFF}
+    -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/)
   
   #find all the integration test files
-  file(GLOB_RECURSE APP_TEST_SOURCES "app/*.wb")
+  file(GLOB_RECURSE APP_TEST_SOURCES "gwb-dat/*.wb")
   
   # Run through each sourceUforeach(test_source ${APP_TEST_SOURCES})
   foreach(test_source ${APP_TEST_SOURCES})
           get_filename_component(test_name ${test_source} NAME_WE)
-  	set(TEST_ARGUMENTS "${CMAKE_SOURCE_DIR}/tests/app/${test_name}.wb\;${CMAKE_SOURCE_DIR}/tests/app/${test_name}.dat")
+          set(TEST_ARGUMENTS "${CMAKE_SOURCE_DIR}/tests/gwb-dat/${test_name}.wb\;${CMAKE_SOURCE_DIR}/tests/gwb-dat/${test_name}.dat\;--limit-debug-consistency-checks")
           add_test(${test_name}
                    ${CMAKE_COMMAND} 
   	         -D TEST_NAME=${test_name}
-  	         -D TEST_PROGRAM=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/WorldBuilderApp${CMAKE_EXECUTABLE_SUFFIX} 
+  	         -D TEST_PROGRAM=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gwb-dat${CMAKE_EXECUTABLE_SUFFIX} 
   	         -D TEST_ARGS=${TEST_ARGUMENTS}
-  	         -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/app/${test_name}/screen-output.log 
-  	         -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/app/${test_name}/screen-output.log
+  	         -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-dat/${test_name}/screen-output.log 
+  	         -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/${test_name}/screen-output.log
              -D TEST_DIFF=${TEST_DIFF}
-  	         -P ${CMAKE_SOURCE_DIR}/tests/app/run_app_tests.cmake
-                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/app/)
+  	         -P ${CMAKE_SOURCE_DIR}/tests/gwb-dat/run_gwb-dat_tests.cmake
+                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-dat/)
+
+  if(WB_RUN_TESTS_WITH_GDB)
+    add_test(NAME ${test_name}_gdb
+             WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+             COMMAND gdb --return-child-result --ex "set confirm off" --ex r  --ex bt --ex exit  --args ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gwb-dat${CMAKE_EXECUTABLE_SUFFIX} ${CMAKE_SOURCE_DIR}/tests/gwb-dat/${test_name}.wb ${CMAKE_SOURCE_DIR}/tests/gwb-dat/${test_name}.dat --limit-debug-consistency-checks)
+  endif()
+
+  if(WB_RUN_TESTS_WITH_VALGRIND)
+    add_test(NAME ${test_name}_valgrind
+             WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+             COMMAND valgrind -v --leak-check=full --error-exitcode=1 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gwb-dat${CMAKE_EXECUTABLE_SUFFIX}  ${CMAKE_SOURCE_DIR}/tests/gwb-dat/${test_name}.wb ${CMAKE_SOURCE_DIR}/tests/gwb-dat/${test_name}.dat --limit-debug-consistency-checks)
+  endif()
   endforeach(test_source)
 ENDIF()
 
-# visualization tests
+# gwb-grid tests
  # Create directory for the test results
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/tests/visualization)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/tests/gwb-grid)
 #find all the integration visu files
-file(GLOB_RECURSE VISU_TEST_SOURCES "visualization/*.wb")
+file(GLOB_RECURSE VISU_TEST_SOURCES "gwb-grid/*.wb")
 # Run through each sourceUforeach(test_source ${VISU_TEST_SOURCES})
 foreach(test_source ${VISU_TEST_SOURCES})
         get_filename_component(test_name ${test_source} NAME_WE)
-	set(TEST_ARGUMENTS "${CMAKE_SOURCE_DIR}/tests/visualization/${test_name}.wb\;${CMAKE_SOURCE_DIR}/tests/visualization/${test_name}.grid")
+	set(TEST_ARGUMENTS "${CMAKE_SOURCE_DIR}/tests/gwb-grid/${test_name}.wb\;${CMAKE_SOURCE_DIR}/tests/gwb-grid/${test_name}.grid")
         add_test(${test_name}
                  ${CMAKE_COMMAND} 
 	         -D TEST_NAME=${test_name}
-	         -D TEST_PROGRAM=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/WorldBuilderVisualization${CMAKE_EXECUTABLE_SUFFIX} 
+	         -D TEST_PROGRAM=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gwb-grid${CMAKE_EXECUTABLE_SUFFIX} 
 	         -D TEST_ARGS=${TEST_ARGUMENTS}
-	         -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/visualization/${test_name}.vtu 
-	         -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/visualization/${test_name}.vtu
-	         -P ${CMAKE_SOURCE_DIR}/tests/visualization/run_visualization_tests.cmake
-                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/visualization/)
+	         -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/gwb-grid/${test_name}.vtu 
+	         -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/${test_name}.vtu
+	         -P ${CMAKE_SOURCE_DIR}/tests/gwb-grid/run_gwb-grid_tests.cmake
+                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gwb-grid/)
+
+  if(WB_RUN_TESTS_WITH_GDB)
+   add_test(NAME ${test_name}_gdb
+            WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+            COMMAND gdb --return-child-result --ex "set confirm off" --ex r  --ex bt --ex exit  --args ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gwb-grid${CMAKE_EXECUTABLE_SUFFIX} ${CMAKE_SOURCE_DIR}/tests/gwb-grid/${test_name}.wb ${CMAKE_SOURCE_DIR}/tests/gwb-grid/${test_name}.grid)
+  endif()
+
+  if(WB_RUN_TESTS_WITH_VALGRIND)
+    add_test(NAME ${test_name}_valgrind
+             WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+             COMMAND valgrind -v --leak-check=full --error-exitcode=1 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gwb-grid${CMAKE_EXECUTABLE_SUFFIX}  ${CMAKE_SOURCE_DIR}/tests/gwb-grid/${test_name}.wb ${CMAKE_SOURCE_DIR}/tests/gwb-grid/${test_name}.grid)
+  endif()
 endforeach(test_source)
+
+add_custom_target(update_test_references 
+                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                  COMMAND cp -r ${CMAKE_BINARY_DIR}/tests/ ${CMAKE_SOURCE_DIR}/
+                  COMMENT "Updating the World Builder test results...")
+
+# Documentation tests
+ # Create directory for the test results
+ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/tests/documentation)
+ #find all the integration visu files
+ file(GLOB_RECURSE DOCU_TEST_SOURCES "${CMAKE_SOURCE_DIR}/doc/sphinx/_static/gwb_input_files/*.wb")
+ # Run through each sourceUforeach(test_source ${DOCU_TEST_SOURCES})
+ foreach(test_source ${DOCU_TEST_SOURCES})
+         get_filename_component(test_name ${test_source} NAME_WE)
+   set(TEST_ARGUMENTS "${CMAKE_SOURCE_DIR}/doc/sphinx/_static/gwb_input_files/${test_name}.wb\;${CMAKE_SOURCE_DIR}/doc/sphinx/_static/gwb_input_files/${test_name}.grid")
+         add_test(${test_name}
+                  ${CMAKE_COMMAND} 
+            -D TEST_NAME=${test_name}
+            -D TEST_PROGRAM=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gwb-grid${CMAKE_EXECUTABLE_SUFFIX} 
+            -D TEST_ARGS=${TEST_ARGUMENTS}
+            -P ${CMAKE_SOURCE_DIR}/tests/documentation/run_documentation_tests.cmake
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/documentation/)
+ endforeach(test_source)
 
 
 #test C compilation and wrapper if compiler found
@@ -169,7 +240,7 @@ endforeach(test_source)
 	     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/C/)
   elseif(APPLE)
     add_test(NAME compile_simple_C_test
-	    COMMAND ${CMAKE_C_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/C/test.c -L${CMAKE_BINARY_DIR}/lib/ -Wl,-force_load,${CMAKE_BINARY_DIR}/lib/libWorldBuilder.a -I../../inlcude/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o test${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lc++ -lm -I/usr/include/ -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/ ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES}
+	    COMMAND ${CMAKE_C_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/C/test.c -L${CMAKE_BINARY_DIR}/lib/ -Wl,-force_load,${CMAKE_BINARY_DIR}/lib/libWorldBuilder.a -I../../inlcude/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o test${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lc++ -lm -I/usr/include/ -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/ -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES}
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/C/)  
   else()
     #MSVS
@@ -202,7 +273,7 @@ endforeach(test_source)
 	     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/C/)
   elseif(APPLE)
     add_test(NAME compile_simple_C_example 
-	     COMMAND ${CMAKE_C_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/C/example.c -L${CMAKE_BINARY_DIR}/lib/ -Wl,-force_load,${CMAKE_BINARY_DIR}/lib/libWorldBuilder.a -I${CMAKE_SOURCE_DIR}/include/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o example${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lc++ -lm -I/usr/include/ -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/ ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES}
+	     COMMAND ${CMAKE_C_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/C/example.c -L${CMAKE_BINARY_DIR}/lib/ -Wl,-force_load,${CMAKE_BINARY_DIR}/lib/libWorldBuilder.a -I${CMAKE_SOURCE_DIR}/include/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o example${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lc++ -lm -I/usr/include/ -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/ -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES}
        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/C/)
   else()
     #MSVS
@@ -229,17 +300,88 @@ endforeach(test_source)
   set_tests_properties(run_simple_C_example PROPERTIES TIMEOUT 60) 
 
 
+#test CPP compilation and wrapper
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP)
+list(GET 1 ${MPI_INCLUDE_PATH}, MPI_single_include_path)
+if(NOT MSVC AND NOT APPLE)
+  add_test(NAME compile_simple_CPP_test
+  COMMAND ${CMAKE_CXX_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/CPP/test.cpp -L../../lib/ -Wl,--whole-archive -lWorldBuilder -Wl,--no-whole-archive -I../../inlcude/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o test${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lstdc++ -std=c++14 -lm -L${MPI_CXX_LIBRARIES} -I${MPI_single_include_path}
+     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP/)
+elseif(APPLE)
+  add_test(NAME compile_simple_CPP_test
+    COMMAND clang ${CMAKE_CURRENT_SOURCE_DIR}/CPP/test.cpp -L${CMAKE_BINARY_DIR}/lib/ -Wl,-force_load,${CMAKE_BINARY_DIR}/lib/libWorldBuilder.a -I../../inlcude/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o test${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lc++ -std=c++14 -lm -I/usr/include/ -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/  ${LDFLAGS} -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib -L${MPI_CXX_LIBRARIES} -I${MPI_single_include_path}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP/)  
+else()
+  #MSVS
+  if(CMAKE_BUILD_TYPE STREQUAL Debug)
+    add_test(NAME compile_simple_CPP_test 
+      COMMAND ${CMAKE_CXX_COMPILER} /I${CMAKE_SOURCE_DIR}\\include ${CMAKE_CURRENT_SOURCE_DIR}/CPP/test.cpp /W3 /EHsc /RTC1 /MDd /link /INCREMENTAL /NOLOGO ${CMAKE_BINARY_DIR}\\lib\\WorldBuilder.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /IMPLIB:${CMAKE_BINARY_DIR}/lib/WorldBuilder.lib /WHOLEARCHIVE:${CMAKE_BINARY_DIR}/lib/WorldBuilder.lib ${WB_C_COMPILER_FLAGS_COVERAGE} /out:test${CMAKE_EXECUTABLE_SUFFIX} ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES}
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP/)
+  else()
+    add_test(NAME compile_simple_CPP_test 
+    COMMAND ${CMAKE_CXX_COMPILER} /I${CMAKE_SOURCE_DIR}\\include ${CMAKE_CURRENT_SOURCE_DIR}/CPP/test.cpp /W3 /EHsc /RTC1 /MD /link /INCREMENTAL /NOLOGO ${CMAKE_BINARY_DIR}\\lib\\WorldBuilder.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /IMPLIB:${CMAKE_BINARY_DIR}/lib/WorldBuilder.lib /WHOLEARCHIVE:${CMAKE_BINARY_DIR}/lib/WorldBuilder.lib ${WB_C_COMPILER_FLAGS_COVERAGE} /out:test${CMAKE_EXECUTABLE_SUFFIX} ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP/)
+  endif()
+endif()
+set_tests_properties(compile_simple_CPP_test PROPERTIES TIMEOUT 60) 
+add_test(run_simple_CPP_test
+         ${CMAKE_COMMAND}
+               -D TEST_NAME=run_simple_CPP_test
+               -D MPIEXEC_EXECUTABLE=${MPIEXEC_EXECUTABLE}
+               -D TEST_PROGRAM=${CMAKE_BINARY_DIR}/tests/CPP/test${CMAKE_EXECUTABLE_SUFFIX} 
+               -D TEST_ARGS=${CMAKE_CURRENT_SOURCE_DIR}/data/continental_plate.wb
+               -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/CPP/run_simple_CPP_test.log
+   -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/CPP/run_simple_CPP_test.log
+               -P ${CMAKE_SOURCE_DIR}/tests/CPP/run_CPP_tests.cmake
+               WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP/) 
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP)
+set_tests_properties(run_simple_CPP_test PROPERTIES TIMEOUT 60) 
+
+if(NOT MSVC AND NOT APPLE)
+  add_test(NAME compile_simple_CPP_example 
+     COMMAND ${CMAKE_CXX_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/CPP/example.cpp -L../../lib/ -Wl,--whole-archive -lWorldBuilder -Wl,--no-whole-archive -I${CMAKE_SOURCE_DIR}/include/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o example${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lstdc++ -std=c++14 -lm  -L${MPI_CXX_LIBRARIES} -I${MPI_single_include_path}
+     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP/)
+elseif(APPLE)
+  add_test(NAME compile_simple_CPP_example 
+     COMMAND clang ${CMAKE_CURRENT_SOURCE_DIR}/CPP/example.cpp -L${CMAKE_BINARY_DIR}/lib/ -Wl,-force_load,${CMAKE_BINARY_DIR}/lib/libWorldBuilder.a -I${CMAKE_SOURCE_DIR}/include/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o example${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lc++ -std=c++14 -lm -I/usr/include/ -I/Library/Developer/CPPommandLineTools/SDKs/MacOSX.sdk/usr/include/ -L${MPI_CXX_LIBRARIES} -I${MPI_single_include_path}
+     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP/)
+else()
+  #MSVS
+  if(CMAKE_BUILD_TYPE STREQUAL Debug)
+    add_test(NAME compile_simple_CPP_example 
+    COMMAND ${CMAKE_CXX_COMPILER} /I${CMAKE_SOURCE_DIR}\\include ${CMAKE_CURRENT_SOURCE_DIR}/CPP/example.cpp /W3 /EHsc /RTC1 /MDd /link /INCREMENTAL /NOLOGO ${CMAKE_BINARY_DIR}\\lib\\WorldBuilder.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /IMPLIB:${CMAKE_BINARY_DIR}/lib/WorldBuilder.lib /WHOLEARCHIVE:${CMAKE_BINARY_DIR}/lib/WorldBuilder.lib ${WB_C_COMPILER_FLAGS_COVERAGE} /out:example${CMAKE_EXECUTABLE_SUFFIX} ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP/)
+  else()
+    add_test(NAME compile_simple_CPP_example 
+    COMMAND ${CMAKE_CXX_COMPILER} /I${CMAKE_SOURCE_DIR}\\include ${CMAKE_CURRENT_SOURCE_DIR}/CPP/example.cpp /W3 /EHsc /RTC1 /MD /link /INCREMENTAL /NOLOGO ${CMAKE_BINARY_DIR}\\lib\\WorldBuilder.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /IMPLIB:${CMAKE_BINARY_DIR}/lib/WorldBuilder.lib /WHOLEARCHIVE:${CMAKE_BINARY_DIR}/lib/WorldBuilder.lib ${WB_C_COMPILER_FLAGS_COVERAGE} /out:example${CMAKE_EXECUTABLE_SUFFIX} ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP/)
+  endif()
+endif()
+set_tests_properties(compile_simple_CPP_example PROPERTIES TIMEOUT 60) 
+add_test(run_simple_CPP_example
+   ${CMAKE_COMMAND}
+               -D TEST_NAME=run_simple_CPP_example
+               -D MPIEXEC_EXECUTABLE=${MPIEXEC_EXECUTABLE}
+               -D TEST_PROGRAM=${CMAKE_BINARY_DIR}/tests/CPP/example${CMAKE_EXECUTABLE_SUFFIX}
+               -D TEST_ARGS=${CMAKE_CURRENT_SOURCE_DIR}/data/continental_plate.wb
+               -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/CPP/run_simple_CPP_example.log
+   -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/CPP/run_simple_CPP_example.log
+               -P ${CMAKE_SOURCE_DIR}/tests/CPP/run_CPP_tests.cmake
+               WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP/) 
+set_tests_properties(run_simple_CPP_example PROPERTIES TIMEOUT 60) 
+
+
 #test CPP MPI compilation and wrapper if MPI found
 if(USE_MPI)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP_MPI)
 list(GET 1 ${MPI_INCLUDE_PATH}, MPI_single_include_path)
 if(NOT MSVC AND NOT APPLE)
   add_test(NAME compile_simple_CPP_MPI_test
-  COMMAND ${MPI_CXX_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/CPP_MPI/test.cpp -L../../lib/ -Wl,--whole-archive -lWorldBuilder -Wl,--no-whole-archive -I../../inlcude/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o test${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lstdc++ -lm   -L${MPI_C_LIBRARIES} -L${MPI_CXX_LIBRARIES} -I${MPI_single_include_path}
+  COMMAND ${MPI_CXX_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/CPP_MPI/test.cpp -L../../lib/ -Wl,--whole-archive -lWorldBuilder -Wl,--no-whole-archive -I../../inlcude/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o test${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lstdc++ -std=c++14 -lm -L${MPI_C_LIBRARIES} -L${MPI_CXX_LIBRARIES} -I${MPI_single_include_path}
      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP_MPI/)
 elseif(APPLE)
   add_test(NAME compile_simple_CPP_MPI_test
-    COMMAND ${MPI_CXX_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/CPP_MPI/test.cpp -L${CMAKE_BINARY_DIR}/lib/ -Wl,-force_load,${CMAKE_BINARY_DIR}/lib/libWorldBuilder.a -I../../inlcude/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o test${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lc++ -lm -I/usr/include/ -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/   -L${MPI_C_LIBRARIES} -L${MPI_CXX_LIBRARIES} -I${MPI_single_include_path}
+    COMMAND ${MPI_CXX_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/CPP_MPI/test.cpp -L${CMAKE_BINARY_DIR}/lib/ -Wl,-force_load,${CMAKE_BINARY_DIR}/lib/libWorldBuilder.a -I../../inlcude/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o test${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lc++ -std=c++14 -lm -I/usr/include/ -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/  ${LDFLAGS} -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib  -L${MPI_C_LIBRARIES} -L${MPI_CXX_LIBRARIES} -I${MPI_single_include_path}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP_MPI/)  
 else()
   #MSVS
@@ -269,11 +411,11 @@ set_tests_properties(run_simple_CPP_MPI_test PROPERTIES TIMEOUT 60)
 
 if(NOT MSVC AND NOT APPLE)
   add_test(NAME compile_simple_CPP_MPI_example 
-     COMMAND ${MPI_CXX_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/CPP_MPI/example.cpp -L../../lib/ -Wl,--whole-archive -lWorldBuilder -Wl,--no-whole-archive -I${CMAKE_SOURCE_DIR}/include/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o example${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lstdc++ -lm  -L${MPI_CXX_LIBRARIES} -I${MPI_single_include_path}
+     COMMAND ${MPI_CXX_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/CPP_MPI/example.cpp -L../../lib/ -Wl,--whole-archive -lWorldBuilder -Wl,--no-whole-archive -I${CMAKE_SOURCE_DIR}/include/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o example${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lstdc++ -std=c++14 -lm  -L${MPI_CXX_LIBRARIES} -I${MPI_single_include_path}
      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP_MPI/)
 elseif(APPLE)
   add_test(NAME compile_simple_CPP_MPI_example 
-     COMMAND ${MPI_CXX_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/CPP_MPI/example.cpp -L${CMAKE_BINARY_DIR}/lib/ -Wl,-force_load,${CMAKE_BINARY_DIR}/lib/libWorldBuilder.a -I${CMAKE_SOURCE_DIR}/include/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o example${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lc++ -lm -I/usr/include/ -I/Library/Developer/CPP_MPIommandLineTools/SDKs/MacOSX.sdk/usr/include/  -L${MPI_CXX_LIBRARIES} -I${MPI_single_include_path}
+     COMMAND ${MPI_CXX_COMPILER} ${CMAKE_CURRENT_SOURCE_DIR}/CPP_MPI/example.cpp -L${CMAKE_BINARY_DIR}/lib/ -Wl,-force_load,${CMAKE_BINARY_DIR}/lib/libWorldBuilder.a -I${CMAKE_SOURCE_DIR}/include/ ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -o example${CMAKE_EXECUTABLE_SUFFIX} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW} -lc++ -std=c++14 -lm -I/usr/include/ -I/Library/Developer/CPP_MPIommandLineTools/SDKs/MacOSX.sdk/usr/include/  -L${MPI_CXX_LIBRARIES} -I${MPI_single_include_path}
      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP_MPI/)
 else()
   #MSVS
@@ -298,7 +440,7 @@ add_test(run_simple_CPP_MPI_example
    -D TEST_REFERENCE=${CMAKE_CURRENT_SOURCE_DIR}/CPP_MPI/run_simple_CPP_MPI_example.log
                -P ${CMAKE_SOURCE_DIR}/tests/CPP_MPI/run_CPP_MPI_tests.cmake
                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/CPP_MPI/) 
-set_tests_properties(run_simple_C_example PROPERTIES TIMEOUT 60) 
+set_tests_properties(run_simple_CPP_MPI_example PROPERTIES TIMEOUT 60) 
 endif()
 
 #test fortran compilation and wrapper if compiler found
@@ -357,6 +499,7 @@ if(MAKE_PYTHON_WRAPPER)
       -D TEST_INPUT=
       -D TEST_OUTPUT=${CMAKE_BINARY_DIR}/tests/python/run_python_version_test.log
       -D TEST_REFERENCE=${CMAKE_BINARY_DIR}/tests/python/run_python_version_test.log # the output is not important
+      -D TEST_NO_DIFF=TRUE
       -P ${CMAKE_SOURCE_DIR}/tests/python/run_python_tests.cmake
      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/python/)   
 

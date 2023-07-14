@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,8 +25,6 @@
 #include <aspect/geometry_model/sphere.h>
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
-#include <fstream>
-#include <iostream>
 #include <cstring>
 
 
@@ -61,7 +59,7 @@ namespace aspect
       const double phi   = std::atan2(position(0),position(1));
       const double s_mod = s
                            +
-                           0.2 * s * (1-s) * std::sin(angular_mode*phi +(90 + 2*rotation_offset)*numbers::PI/180 ) * scale;
+                           0.2 * s * (1-s) * std::sin(angular_mode*phi + (90 + 2*rotation_offset) * constants::degree_to_radians ) * scale;
 
       // Check that a boundary temperature is prescribed
       AssertThrow (this->has_boundary_temperature(),

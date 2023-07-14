@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2021 by the authors of the ASPECT code.
+  Copyright (C) 2021 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -90,13 +90,13 @@ namespace aspect
       double flux_min, flux_max, flux_prev, time_prev, flux_sum=0, flux_mean, deviation_max;
       flux_min = flux_max = flux_prev = time_heat_flux.front().second;
       time_prev = time_heat_flux.front().first;
-      for (auto it=time_heat_flux.begin(); it!=time_heat_flux.end(); ++it)
+      for (const auto &it : time_heat_flux)
         {
-          flux_min = std::min(flux_min, (*it).second);
-          flux_max = std::max(flux_max, (*it).second);
-          flux_sum += (((*it).second + flux_prev)/2.0)*((*it).first-time_prev);
-          time_prev = (*it).first;
-          flux_prev = (*it).second;
+          flux_min = std::min(flux_min, it.second);
+          flux_max = std::max(flux_max, it.second);
+          flux_sum += ((it.second + flux_prev)/2.0)*(it.first-time_prev);
+          time_prev = it.first;
+          flux_prev = it.second;
         }
 
       flux_mean = flux_sum/(time_heat_flux.back().first-time_heat_flux.front().first);

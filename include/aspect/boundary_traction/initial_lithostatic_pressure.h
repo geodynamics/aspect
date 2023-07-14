@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -58,8 +58,9 @@ namespace aspect
          * a second argument.
          */
         Tensor<1,dim>
-        traction (const Point<dim> &position,
-                  const Tensor<1,dim> &normal_vector) const override;
+        boundary_traction (const types::boundary_id boundary_indicator,
+                           const Point<dim> &position,
+                           const Tensor<1,dim> &normal_vector) const override;
 
 
         /**
@@ -104,8 +105,6 @@ namespace aspect
          * based on depth interpolation between computed pressure values.
          */
         double interpolate_pressure (const Point<dim> &p) const;
-
-
     };
   }
 }

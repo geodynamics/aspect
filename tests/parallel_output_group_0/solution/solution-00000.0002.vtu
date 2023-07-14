@@ -26,12 +26,15 @@ AQAAAAoAAAAKAAAACwAAAA==eNrj5IQBAAH5AFs=
     </DataArray>
   </Cells>
   <PointData Scalars="scalars">
-    <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="binary">
-AQAAAOABAADgAQAAlgAAAA==eNoLVv1pq3Wjfy8DENzLSLZdtqd4D4j9gGvm7o8RhrYgtn7IERtnBkY7dDXIAFkNCIS6i9qim5N4aoPNqYa7YPZa6f173W6rgdlbpnXu9W6oxlCDbCayGovQD3vKOH3xmoML4DIHF0B2w9omCZulO5dh6O117NstqVVgg64GORyQ1YDAFQ+XPfjMwQVwmYMLAAAhpGR3    </DataArray>
-    <DataArray type="Float32" Name="p" format="binary">
-AQAAAKAAAACgAAAAbAAAAA==eNo7zcB+5vnnvT4+AiqB2/8pB4LYrbJ6PiB270/lQJB4I7tK4IkvBYG1qwvAbJAciP2+sQAuflp9fqDp43lwcRC78+A8sFqlP8pgMb2aAjAbZC6Ibd1UABcHqS07Mw8uDmJvuTcvEACWIUso    </DataArray>
-    <DataArray type="Float32" Name="T" format="binary">
-AQAAAKAAAACgAAAAUAAAAA==eNpjcCh2YQDhD8quDA56rgwwPogNEgPiw1bargwN4a5CP2IgbKAciM1gEw8XZ+hoBWO4OJQPUgvWAxSD6weaCVYH1AsTR9EPEofyAeO+MZU=    </DataArray>
+    <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="binary" units="m/year">
+AQAAAOABAADgAQAAlgAAAA==eNoLVv1pq3Wjfy8DENzLSLZdtqd4D4j9gGvm7o8RhrYgtn7IERtnBkY7dDXIAFkNCIS6i9qim5N4aoPNqYa7YPZa6f173W6rgdlbpnXu9W6oxlCDbCayGovQD3vKOH3xmoML4DIHF0B2w9omCZulO5dh6O117NstqVVgg64GORyQ1YDAFQ+XPfjMwQVwmYMLAAAhpGR3
+    </DataArray>
+    <DataArray type="Float32" Name="p" format="binary" units="Pa">
+AQAAAKAAAACgAAAAbAAAAA==eNo7zcB+5vnnvT4+AiqB2/8pB4LYrbJ6PiB270/lQJB4I7tK4IkvBYG1qwvAbJAciP2+sQAuflp9fqDp43lwcRC78+A8sFqlP8pgMb2aAjAbZC6Ibd1UABcHqS07Mw8uDmJvuTcvEACWIUso
+    </DataArray>
+    <DataArray type="Float32" Name="T" format="binary" units="K">
+AQAAAKAAAACgAAAAUAAAAA==eNpjcCh2YQDhD8quDA56rgwwPogNEgPiw1bargwN4a5CP2IgbKAciM1gEw8XZ+hoBWO4OJQPUgvWAxSD6weaCVYH1AsTR9EPEofyAeO+MZU=
+    </DataArray>
   </PointData>
  </Piece>
  </UnstructuredGrid>

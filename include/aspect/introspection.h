@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -45,6 +45,61 @@ namespace aspect
   construct_default_variables (const Parameters<dim> &parameters);
 
 
+  /**
+   * A data structure containing a description of each compositional field.
+   * At present, this structure only includes the field type
+   * (i.e., whether it is of type chemical composition, porosity, etc.).
+   */
+  struct CompositionalFieldDescription
+  {
+    /**
+     * This enum lists available compositional field types.
+     */
+    enum Type
+    {
+      chemical_composition,
+      stress,
+      strain,
+      grain_size,
+      porosity,
+      density,
+      entropy,
+      generic,
+      unspecified
+    } type;
+
+    /**
+     * This function translates an input string into the
+     * available enum options for the type of compositional field.
+     */
+    static
+    Type
+    parse_type(const std::string &input)
+    {
+      if (input == "chemical composition")
+        return CompositionalFieldDescription::chemical_composition;
+      else if (input == "stress")
+        return CompositionalFieldDescription::stress;
+      else if (input == "strain")
+        return CompositionalFieldDescription::strain;
+      else if (input == "grain size")
+        return CompositionalFieldDescription::grain_size;
+      else if (input == "porosity")
+        return CompositionalFieldDescription::porosity;
+      else if (input == "density")
+        return CompositionalFieldDescription::density;
+      else if (input == "entropy")
+        return CompositionalFieldDescription::entropy;
+      else if (input == "generic")
+        return CompositionalFieldDescription::generic;
+      else if (input == "unspecified")
+        return CompositionalFieldDescription::unspecified;
+      else
+        AssertThrow(false, ExcNotImplemented());
+
+      return CompositionalFieldDescription::Type();
+    }
+  };
 
   /**
    * The introspection class provides information about the simulation as a
@@ -419,9 +474,29 @@ namespace aspect
        * A function that returns the full vector of compositional
        * field descriptions.
        */
-      const std::vector<typename Parameters<dim>::CompositionalFieldDescription> &
+      const std::vector<CompositionalFieldDescription> &
       get_composition_descriptions () const;
 
+      /**
+       * A function that returns the names of
+       * compositional fields that correspond to chemical compositions.
+       */
+      const std::vector<std::string> &
+      chemical_composition_field_names () const;
+
+      /**
+       * A function that returns the indices of
+       * compositional fields that correspond to chemical compositions.
+       */
+      const std::vector<unsigned int> &
+      chemical_composition_field_indices () const;
+
+      /**
+       * A function that returns the number of
+       * compositional fields that correspond to chemical compositions.
+       */
+      unsigned int
+      n_chemical_composition_fields () const;
 
       /**
        * A function that gets the type of a compositional field as an input
@@ -432,7 +507,7 @@ namespace aspect
        * input file)
        */
       bool
-      composition_type_exists (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const;
+      composition_type_exists (const CompositionalFieldDescription::Type &type) const;
 
 
       /**
@@ -445,7 +520,7 @@ namespace aspect
        * input file)
        */
       unsigned int
-      find_composition_type (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const;
+      find_composition_type (const CompositionalFieldDescription::Type &type) const;
 
 
       /**
@@ -458,6 +533,27 @@ namespace aspect
        */
       bool
       compositional_name_exists (const std::string &name) const;
+
+      /**
+       * Get the indices of the compositional fields which are of a
+       * particular type (chemical composition, porosity, etc.).
+       */
+      const std::vector<unsigned int>
+      get_indices_for_fields_of_type (const CompositionalFieldDescription::Type &type) const;
+
+      /**
+       * Get the names of the compositional fields which are of a
+       * particular type (chemical composition, porosity, etc.).
+       */
+      const std::vector<std::string>
+      get_names_for_fields_of_type (const CompositionalFieldDescription::Type &type) const;
+
+      /**
+       * Get the number of compositional fields which are of a
+       * particular type (chemical composition, porosity, etc.).
+       */
+      unsigned int
+      get_number_of_fields_of_type (const CompositionalFieldDescription::Type &type) const;
 
       /**
        * A function that gets a component index as an input
@@ -481,7 +577,28 @@ namespace aspect
        * including its type (i.e. whether the compositional field corresponds
        * to chemical composition, porosity etc.).
        */
-      std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions;
+      std::vector<CompositionalFieldDescription> composition_descriptions;
+
+      /**
+       * A vector that stores the names of the compositional fields
+       * corresponding to chemical compositions that will
+       * be used in the simulation.
+       */
+      std::vector<std::string> chemical_composition_names;
+
+      /**
+       * A vector that stores the indices of the compositional fields
+       * corresponding to chemical compositions that will
+       * be used in the simulation.
+       */
+      std::vector<unsigned int> chemical_composition_indices;
+
+      /**
+       * The number of compositional fields
+       * that correspond to chemical compositions that will
+       * be used in the simulation.
+       */
+      const unsigned int n_chemical_compositions;
 
   };
 }

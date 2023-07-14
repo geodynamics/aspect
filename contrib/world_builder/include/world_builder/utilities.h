@@ -17,15 +17,15 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_utilities_h
-#define _world_builder_utilities_h
+#ifndef WORLD_BUILDER_UTILITIES_H
+#define WORLD_BUILDER_UTILITIES_H
 
-#include <vector>
-#include <map>
 
-#include <world_builder/point.h>
-#include <world_builder/coordinate_system.h>
-#include <world_builder/coordinate_systems/interface.h>
+#include "world_builder/nan.h"
+#include "world_builder/coordinate_systems/interface.h"
+#include "world_builder/objects/natural_coordinate.h"
+#include "world_builder/objects/bezier_curve.h"
+#include <iostream>
 
 
 namespace WorldBuilder
@@ -34,13 +34,22 @@ namespace WorldBuilder
   namespace CoordinateSystems
   {
     class Interface;
-  }
+  } // namespace CoordinateSystems
   namespace Utilities
   {
 
-    // define pi. Directly defining it seems to be
-    // the safest option.
-    constexpr double const_pi = 3.141592653589793238462643383279502884;
+    /**
+     * provide a short way to test if two doubles are equal.
+     * Based on https://stackoverflow.com/a/4010279.
+     * Removed a==b test since it triggers warnings. If used in
+     * performance critical parts where this could matter, a fast
+     * version could be added.
+     */
+    inline bool approx(double a, double b, double error_factor=1e4)
+    {
+      return std::abs(a-b)<std::abs(std::min(a,b))*std::numeric_limits<double>::epsilon()*
+             error_factor;
+    }
 
     /**
      * Given a 2d point and a list of points which form a polygon, computes if
@@ -70,60 +79,6 @@ namespace WorldBuilder
     signed_distance_to_polygon(const std::vector<Point<2> > &point_list_,
                                const Point<2> &point_);
 
-
-    /*
-    * A class that represents a point in a chosen coordinate system.
-    */
-    class NaturalCoordinate
-    {
-      public:
-        /**
-         * Constructor based on providing the geometry model as a pointer
-         */
-        NaturalCoordinate(const std::array<double,3> &position,
-                          const ::WorldBuilder::CoordinateSystems::Interface &coordinate_system);
-
-        /**
-         * Constructor based on providing the geometry model as a pointer
-         */
-        NaturalCoordinate(const Point<3> &position,
-                          const ::WorldBuilder::CoordinateSystems::Interface &coordinate_system);
-
-        /**
-         * Returns the coordinates in the given coordinate system, which may
-         * not be Cartesian.
-         */
-        const std::array<double,3> &get_coordinates();
-
-        /**
-         * The coordinate that represents the 'surface' directions in the
-         * chosen coordinate system.
-         */
-        std::array<double,2> get_surface_coordinates() const;
-
-        /**
-         * The coordinate that represents the 'depth' direction in the chosen
-         * coordinate system.
-         */
-        double get_depth_coordinate() const;
-
-        /**
-         * get the coordinate system type of this coordinate.
-         */
-        CoordinateSystem get_coordinate_system() const;
-
-      private:
-        /**
-         * An enum which stores the the coordinate system of this natural
-         * point
-         */
-        CoordinateSystem coordinate_system;
-
-        /**
-         * An array which stores the coordinates in the coordinates system
-         */
-        std::array<double,3> coordinates;
-    };
 
     /**
      * Returns spherical coordinates of a Cartesian point. The returned array
@@ -167,7 +122,7 @@ namespace WorldBuilder
      * and returns the corresponding value.
      */
     CoordinateSystem
-    string_to_coordinate_system (const std::string &);
+    string_to_coordinate_system (const std::string & /*coordinate_system*/);
 
 
     /**
@@ -220,25 +175,72 @@ namespace WorldBuilder
     {
       public:
         /**
-         * Initialize the spline.
+         * Initialize the spline. This function assumes that all y points are spaced 1 in the x direction.
          *
-         * @param x X coordinates of interpolation points.
          * @param y Values in the interpolation points.
-         * @param monotone_spline Whether to construct a monotone cubic spline or just do linear interpolation.
          */
-        void set_points(const std::vector<double> &x,
-                        const std::vector<double> &y,
-                        const bool monotone_spline = false);
+        void set_points(const std::vector<double> &y);
+
+
         /**
          * Evaluate at point @p x.
          */
-        double operator() (const double x) const;
+        inline
+        double operator() (const double x) const
+        {
+          if (x >= 0 && x <= mx_size_min)
+            {
+              const size_t idx = (size_t)x;
+              const double h = x-idx;
+              return ((m[idx][0]*h + m[idx][1])*h + m[idx][2])*h + m[idx][3];
+            }
+          const size_t idx = std::min((size_t)std::max( (int)x, (int)0),mx_size_min);
+          const double h = x-idx;
+          return (m[idx][1]*h + m[idx][2])*h + m[idx][3];
+        }
 
-      private:
+
+        inline
+        double operator() (const double x, const size_t idx, const double h) const
+        {
+          return (x >= 0 && x <= mx_size_min)
+                 ?
+                 ((m[idx][0]*h + m[idx][1])*h + m[idx][2])*h + m[idx][3]
+                 :
+                 (m[idx][1]*h + m[idx][2])*h + m[idx][3];
+        }
+
+
         /**
-         * x coordinates of points
+         * Evaluate at point @p x. assumes x is between 0 and mx_size_min.
+         * assume size_t idx = (size_t)x and h = x-idx.
          */
-        std::vector<double> m_x;
+        inline
+        double value_inside (const size_t idx, const double h) const
+        {
+          WBAssert(idx <= mx_size_min, "Internal error: using value_inside outside the range of 0 to " << mx_size_min << ", but value was outside of this range: " << idx << ".");
+          WBAssert(h >= 0 && h <= 1., "Internal error: using value_inside outside the range of 0 to " << mx_size_min << ", but value was outside of this range: " << h << ".");
+          return ((m[idx][0]*h + m[idx][1])*h + m[idx][2])*h + m[idx][3];
+        }
+
+
+        /**
+         * Evaluate at point @p x. assumes x is between 0 and mx_size_min.
+         * assume size_t idx = (size_t)x and h = x-idx.
+         */
+        inline
+        double value_outside (const size_t idx, const double h) const
+        {
+          WBAssert(idx <= mx_size_min, "Internal error: using value_inside outside the range of 0 to " << mx_size_min << ", but value was outside of this range: " << idx << ".");
+          WBAssert(!(idx + h >= 0 && idx + h <= 1.), "Internal error: using value_inside outside the range of 0 to " << mx_size_min << ", but value was outside of this range: " << idx + h << " (h=" << h << ", idx = " << idx << ").");
+          return (m[idx][1]*h + m[idx][2])*h + m[idx][3];
+        }
+
+
+        /**
+         * number of x coordinates of points
+         */
+        size_t mx_size_min;
 
         /**
          * interpolation parameters
@@ -246,14 +248,103 @@ namespace WorldBuilder
          * f(x) = a*(x-x_i)^3 + b*(x-x_i)^2 + c*(x-x_i) + y_i
          * \]
          */
-        std::vector<double> m_a, m_b, m_c, m_y;
+        std::vector<std::array<double,4>> m; //m_a, m_b, m_c, m_y;
+
+      private:
+    };
+
+    /**
+     * A struct that is used to hold the return values of the function
+     * distance_point_from_curved_planes(). See there for a documentation
+     * of the meaning of the member variables. The variables are describing
+     * a where a point is with respect to a plane/surface. The surface is
+     * meshed by a grid. The axis parallel to the surface are formed by
+     * sections, and the axis perpendicuar to the surface are formed segments.
+     * Both sections and elements represent a whole cell in the grid, which is
+     * an inteter. This structure also provides the fraction in each direction
+     * the closest point on the plane is along these two axes (sections and
+     * segments). These variables are called fractions.
+     *
+     * This structure furthermore provides the distance the provided point is
+     * from the closest point on the surface and the average angle. The variable
+     * local_thickness will not be automatically filled by the distance_point_from_curved_planes
+     * function.
+     */
+    struct PointDistanceFromCurvedPlanes
+    {
+      /**
+       * Constructor
+       */
+      PointDistanceFromCurvedPlanes(CoordinateSystem coordinate_system)
+        :
+        distance_from_plane(NaN::DSNAN),
+        distance_along_plane(NaN::DSNAN),
+        fraction_of_section(NaN::DSNAN),
+        fraction_of_segment(NaN::DSNAN),
+        section(NaN::ISNAN),
+        segment(NaN::ISNAN),
+        average_angle(NaN::DSNAN),
+        depth_reference_surface(NaN::DSNAN),
+        closest_trench_point(Point<3>(coordinate_system))
+      {}
+
+      /**
+       * The shortest distance between point and plane.
+       */
+      double distance_from_plane;
+
+      /**
+       * The distance between the start of the first segment (usually at
+       * the surface) to the provided point following the (curved) plane.
+       */
+      double distance_along_plane;
+
+      /**
+       * The fraction of the section that lies before the projected point
+       * on the plane (when looking from the start point of the section).
+       */
+      double fraction_of_section;
+
+      /**
+       * The fraction of the segment that lies before the projected point
+       * on the plane (when looking from the start point of the segment).
+       */
+      double fraction_of_segment;
+
+      /**
+       * The number of the section that is closest to the point
+       */
+      size_t section;
+
+      /**
+       * The number of the segment that is closest to the point.
+       */
+      size_t segment;
+
+      /**
+       * The average dip angle of the plane at the location where the
+       * point is projected onto the plane.
+       */
+      double average_angle;
+
+      /**
+       * The depth of the closest point on reference surface.
+       */
+      double depth_reference_surface;
+
+      /**
+       * The closest point on the trench line in cartesian coordinates.
+       */
+      Point<3> closest_trench_point;
     };
 
     /**
      * Computes the distance of a point to a curved plane.
      * TODO: add more info on how this works/is implemented.
-     * \param point This is the cartesian point of which we want to know the
+     * \param check_point This is the cartesian point of which we want to know the
      * distance to the curved planes
+     * \param check_point_natural the check_point in the natural coordinates of the
+     * current coordinate system.
      * \param reference_point This is a 2d point in natural coordinates at the
      * surface which the curved planes dip towards. Natural coordinates are in
      * cartesian (x,y,z) in meters and in spherical radius in meters and longitude
@@ -273,34 +364,38 @@ namespace WorldBuilder
      * surface for this slab.
      * \param coordinate_system This is a reference to the coordinate system of the
      * World Builder. This is used to convert cartesian to natural coordinates and back.
-     * \param only_positive This value deterines whether only the the part below the
+     * \param only_positive This value determines whether only the part below the
      * plane should count as distance or both sides of the plane. It is called only_positive
-     * because the area below the plane, the distance is positve, and above the plane the
+     * because the area below the plane, the distance is positive, and above the plane the
      * distance is negative.
      * \param interpolation_type This value determines what interpolation type should be used
      * when determining the location with respect to the curved plane.
      * \param spline_x the spline representing the x coordinate.
      * \param spline_y the spline representing the y coordinate.
      * \param global_x_list This is a list of one dimensional coorindates, with zero or the
-     * amount of coordinates entries, used for interpolation. An empty list is interpretated
+     * amount of coordinates entries, used for interpolation. An empty list is interpreted
      * as a list filled with {0,1,2,...,number of coordinates}. Filling this list with other
      * values changes the returned section fraction. It allows for, for example, adding
      * extra coordinates automatically, and still reference the user provided coordinates by
-     * the original number. Note that no whole numbers may be skiped. So for a list of 4 points,
+     * the original number. Note that no whole numbers may be skipped. So for a list of 4 points,
      * {0,0.5,1,2} is allowed, but {0,2,3,4} is not.
+     *
+     * The function returns a struct that contains which segment and section of the curved
+     * planes the point is closest to, what fraction of those segment and section lies before
+     * the point (looking from the start of segment/section), the distance
+     * of the point from the plane and the distance of the point along the plane,
+     * and the average angle of the closest segment/section.
      */
-    std::map<std::string,double> distance_point_from_curved_planes(const Point<3> &point,
-                                                                   const Point<2> &reference_point,
-                                                                   const std::vector<Point<2> > &point_list,
-                                                                   const std::vector<std::vector<double> > &plane_segment_lengths,
-                                                                   const std::vector<std::vector<Point<2> > > &plane_segment_angles,
-                                                                   const double start_radius,
-                                                                   const std::unique_ptr<CoordinateSystems::Interface> &coordinate_system,
-                                                                   const bool only_positive,
-                                                                   const InterpolationType interpolation_type,
-                                                                   const interpolation &x_spline,
-                                                                   const interpolation &y_spline,
-                                                                   std::vector<double> global_x_list = {});
+    PointDistanceFromCurvedPlanes distance_point_from_curved_planes(const Point<3> &check_point,
+                                                                    const Objects::NaturalCoordinate &check_point_natural,
+                                                                    const Point<2> &reference_point,
+                                                                    const std::vector<Point<2> > &point_list,
+                                                                    const std::vector<std::vector<double> > &plane_segment_lengths,
+                                                                    const std::vector<std::vector<Point<2> > > &plane_segment_angles,
+                                                                    const double start_radius,
+                                                                    const std::unique_ptr<CoordinateSystems::Interface> &coordinate_system,
+                                                                    const bool only_positive,
+                                                                    const Objects::BezierCurve &bezier_curve);
 
 
 
@@ -311,7 +406,7 @@ namespace WorldBuilder
 
 
     /**
-     * Transorm a rotation matrix into euler angles
+     * Transform a rotation matrix into euler angles
      */
     std::array<double,3>
     euler_angles_from_rotation_matrix(const std::array<std::array<double,3>,3> &rotation_matrix);
@@ -321,8 +416,18 @@ namespace WorldBuilder
      */
     std::array<std::array<double,3>,3>
     euler_angles_to_rotation_matrix(double phi1, double theta, double phi2);
-  }
-}
+
+    /**
+     * Read a file and distribute the content over all MPI processes.
+     * If WB_WITH_MPI is not defined, this function will just read the file.
+     *
+     * @param filename The name of the file to read.
+     * @return The content of the file.
+    */
+    std::string
+    read_and_distribute_file_content(const std::string &filename);
+  } // namespace Utilities
+} // namespace WorldBuilder
 
 
 #endif

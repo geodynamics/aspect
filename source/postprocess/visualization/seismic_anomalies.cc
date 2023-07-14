@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -68,6 +68,7 @@ namespace aspect
 
         MaterialModel::MaterialModelInputs<dim> in(n_q_points, this->n_compositional_fields());
         MaterialModel::MaterialModelOutputs<dim> out(n_q_points, this->n_compositional_fields());
+        in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
         std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
@@ -84,7 +85,7 @@ namespace aspect
                     // Get the pressure, temperature and composition in the cell
                     fe_values.reinit (cell);
 
-                    in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
+                    in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
                     out.additional_outputs.push_back(
                       std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
@@ -143,7 +144,7 @@ namespace aspect
                     // Get the pressure, temperature and composition in the cell
                     fe_values.reinit (cell);
 
-                    in.reinit (fe_values, cell, this->introspection(), this->get_solution(), /* compute_strain_rate = */ false);
+                    in.reinit (fe_values, cell, this->introspection(), this->get_solution());
 
                     out.additional_outputs.push_back(
                       std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
@@ -211,6 +212,7 @@ namespace aspect
 
         MaterialModel::MaterialModelInputs<dim> in(n_q_points, this->n_compositional_fields());
         MaterialModel::MaterialModelOutputs<dim> out(n_q_points, this->n_compositional_fields());
+        in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
         std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
@@ -227,7 +229,7 @@ namespace aspect
                     // Get the pressure, temperature and composition in the cell
                     fe_values.reinit (cell);
 
-                    in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
+                    in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
                     out.additional_outputs.push_back(
                       std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>>(n_q_points));
@@ -296,9 +298,6 @@ namespace aspect
                     fe_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
                                                                                                  in.pressure_gradient);
                     in.position = fe_values.get_quadrature_points();
-
-                    // we do not need the strain rate
-                    in.strain_rate.resize(0);
 
                     // Loop over compositional fields to get composition values
                     for (unsigned int c=0; c<this->n_compositional_fields(); ++c)

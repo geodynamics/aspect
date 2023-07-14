@@ -1,5 +1,5 @@
 
-Loading shared library <./libnsinker.so>
+Loading shared library <./libnsinker.debug.so>
 
 Number of active cells: 8 (on 2 levels)
 Number of degrees of freedom: 532 (375+32+125)

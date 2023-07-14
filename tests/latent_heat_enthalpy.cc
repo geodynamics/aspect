@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -72,7 +72,7 @@ namespace aspect
 
           if (in.current_cell.state() == IteratorState::valid)
             {
-              const QTrapez<dim> quadrature_formula;
+              const QTrapezoid<dim> quadrature_formula;
               const unsigned int n_q_points = quadrature_formula.size();
 
               FEValues<dim> fe_values (this->get_mapping(),

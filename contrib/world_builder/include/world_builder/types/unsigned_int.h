@@ -17,21 +17,24 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_feature_types_unsigned_int_h
-#define _world_feature_types_unsigned_int_h
+#ifndef WORLD_BUILDER_TYPES_UNSIGNED_INT_H
+#define WORLD_BUILDER_TYPES_UNSIGNED_INT_H
 
-#include <world_builder/types/interface.h>
+
+#include "world_builder/types/interface.h"
 
 
 namespace WorldBuilder
 {
+  class Parameters;
+
   namespace Types
   {
 
     /**
      * This class represents a bool value with documentation
      */
-    class UnsignedInt : public Interface
+    class UnsignedInt final: public Interface
     {
       public:
         /**
@@ -47,7 +50,7 @@ namespace WorldBuilder
         /**
          * Destructor
          */
-        ~UnsignedInt();
+        ~UnsignedInt() override final;
 
 
         /**
@@ -57,7 +60,7 @@ namespace WorldBuilder
                           const std::string &name,
                           const std::string &documentation) const override final;
 
-        unsigned int value;
+        unsigned int value {0};
         unsigned int default_value;
 
       protected:
@@ -71,7 +74,7 @@ namespace WorldBuilder
       private:
 
     };
-  }
-}
+  } // namespace Types
+} // namespace WorldBuilder
 
 #endif

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,8 +25,6 @@
 #include <aspect/simulator_access.h>
 #include <aspect/initial_composition/interface.h>
 #include <aspect/material_model/interface.h>
-#include <fstream>
-#include <iostream>
 #include <array>
 
 #include <boost/lexical_cast.hpp>
@@ -337,7 +335,7 @@ namespace aspect
               in.velocity[0] = Tensor<1,3> ();
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
                 in.composition[0][c] = this->get_initial_composition_manager().initial_composition(position, c);
-              in.strain_rate.resize(0);
+              in.requested_properties = MaterialModel::MaterialProperties::thermal_expansion_coefficient;
 
               this->get_material_model().evaluate(in, out);
 

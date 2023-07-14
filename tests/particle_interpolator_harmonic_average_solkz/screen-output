@@ -1,5 +1,5 @@
 
-Loading shared library <./libparticle_interpolator_harmonic_average_solkz.so>
+Loading shared library <./libparticle_interpolator_harmonic_average_solkz.debug.so>
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 8,164 (2,178+289+1,089+2,304+2,304)

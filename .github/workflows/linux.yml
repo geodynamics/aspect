@@ -1,10 +1,23 @@
 name: linux
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - 'main'
+      - 'aspect-*'
+  pull_request:
 
 concurrency:
   group: ${{ github.actor }}-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  OMPI_MCA_btl_base_warn_component_unused: 0
+  OMPI_MCA_mpi_yield_when_idle: 1
+  OMPI_MCA_rmaps_base_oversubscribe: 1
+  OMPI_ALLOW_RUN_AS_ROOT: 1
+  OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+  OMPI_MCA_btl_vader_single_copy_mechanism: none
 
 jobs:
   linux-nounity:
@@ -13,34 +26,36 @@ jobs:
     runs-on: [ubuntu-20.04]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: setup
       run: |
+        sudo apt-get update
         sudo apt-get install -y software-properties-common
-        sudo add-apt-repository ppa:ginggs/deal.ii-9.3.2-backports
+        sudo add-apt-repository ppa:ginggs/deal.ii-9.4.0-backports
         sudo apt-get update
         sudo apt-get install -yq --no-install-recommends libdeal.ii-dev
     - name: compile
       run: |
         mkdir build-no-unity
         cd build-no-unity
-        cmake -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF -D CMAKE_CXX_FLAGS='-Werror' ..
+        cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF -D CMAKE_CXX_FLAGS='-Werror' ..
         make -j 2
         ./aspect --test
 
   linux:
-    #linux build including indent and documentation
+    #linux build including indent, examples and documentation
     name: indent+documentation
     runs-on: [ubuntu-20.04]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: setup
       run: |
-        sudo apt-get install -y software-properties-common
-        sudo add-apt-repository ppa:ginggs/deal.ii-9.3.2-backports
         sudo apt-get update
-        sudo apt-get install -yq --no-install-recommends texlive-plain-generic texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python3-pip python-setuptools libdeal.ii-dev doxygen inkscape
+        sudo apt-get install -y software-properties-common
+        sudo add-apt-repository ppa:ginggs/deal.ii-9.4.0-backports
+        sudo apt-get update
+        sudo apt-get install -yq --no-install-recommends texlive-plain-generic texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python3-pip python-setuptools libdeal.ii-dev doxygen latexmk biber inkscape
         doxygen --version
 
         wget https://github.com/tjhei/astyle/releases/download/v2.04/astyle_2.04_linux.tar.gz
@@ -62,11 +77,18 @@ jobs:
     - name: check indentation
       run: |
         git diff --exit-code
+    - name: citation list
+      run: |
+        cd doc
+        latexmk -pdf -f citations-list.tex
+        grep WARN citations-list.blg && echo "warnings found!" && exit 1
+        echo "OK"
     - name: compile
       run: |
         mkdir build
         cd build
-        cmake -D ASPECT_PRECOMPILE_HEADERS=ON -D ASPECT_UNITY_BUILD=ON -D CMAKE_CXX_FLAGS='-Werror' ..
+        cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=ON -D ASPECT_UNITY_BUILD=ON \
+        -D CMAKE_CXX_FLAGS='-Werror' -D ASPECT_INSTALL_EXAMPLES=ON ..
         make -j 2
         ./aspect --test
     - name: doc
@@ -74,60 +96,49 @@ jobs:
         cd doc
         export OMPI_MCA_btl="self,vader"
         ./update_parameters.sh $GITHUB_WORKSPACE/build/aspect
-        make manual.pdf
-    - name: archive
-      uses: actions/upload-artifact@v1
-      with:
-        name: manual.log
-        path: doc/manual/manual.log
-
-  dealii-dev:
-    # linux build with deal.II dev
-    name: test-dealii-dev
-    runs-on: [ubuntu-18.04]
-    container:
-      image: dealii/dealii:master-focal
-      options: --user 0
-    steps:
-    - uses: actions/checkout@v2
-    - name: compile
-      run: |
-        mkdir build
-        cd build
-        cmake \
-        -G 'Ninja' \
-        -D CMAKE_CXX_FLAGS='-Werror' \
-        -D ASPECT_TEST_GENERATOR='Ninja' \
-        -D ASPECT_PRECOMPILE_HEADERS=ON \
-        -D ASPECT_UNITY_BUILD=ON \
-        ..
-        ninja
-        cat detailed.log
-        ./aspect -v
-        ./aspect --test
 
   tests:
     #linux build including tests
     name: tests
     runs-on: [ubuntu-latest]
-    container: geodynamics/aspect-tester:focal-dealii-9.3-v2
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: "geodynamics/aspect-tester:focal-dealii-9.4-v3"
+            run-tests: "ON"
+            compare-tests: "ON"
+            result-file: "changes-test-results-9.4.diff"
+            container-options: '--name container'
+          - image: "geodynamics/aspect-tester:focal-dealii-master"
+            run-tests: "ON"
+            compare-tests: "OFF"
+            result-file: "changes-test-results-master.diff"
+            container-options: '--user 0 --name container'
+
+    container: 
+      image: ${{ matrix.image }}
+      options: ${{ matrix.container-options }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: compile
       run: |
         mkdir build
         cd build
         cmake \
+        -D CMAKE_BUILD_TYPE=Debug \
         -G 'Ninja' \
         -D CMAKE_CXX_FLAGS='-Werror' \
         -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3' \
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=ON \
         -D ASPECT_UNITY_BUILD=ON \
-        -D ASPECT_RUN_ALL_TESTS='ON' \
+        -D ASPECT_RUN_ALL_TESTS='${{ matrix.run-tests }}' \
+        -D ASPECT_COMPARE_TEST_RESULTS='${{ matrix.compare-tests }}' \
+        -D CMAKE_UNITY_BUILD_BATCH_SIZE=8 \
         ..
-        ninja
+        ninja -j 2
         ./aspect --test
     - name: prebuild tests
       run: |
@@ -151,7 +162,7 @@ jobs:
     - name: archive test results
       uses: actions/upload-artifact@v2
       with:
-        name: changes-test-results.diff
+        name: ${{ matrix.result-file }}
         path: build/changes-test-results.diff
     - name: check test results
       run: |

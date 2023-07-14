@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -79,11 +79,12 @@ namespace aspect
          * are requesting the temperature.
          * @param position The position of the point at which we ask for the
          * temperature.
+         *
          * @return Boundary temperature at position @p position.
          */
         virtual
         double boundary_temperature (const types::boundary_id boundary_indicator,
-                                     const Point<dim> &position) const;
+                                     const Point<dim> &position) const = 0;
 
         /**
          * Return the minimal temperature on that part of the boundary on
@@ -233,7 +234,7 @@ namespace aspect
         register_boundary_temperature (const std::string &name,
                                        const std::string &description,
                                        void (*declare_parameters_function) (ParameterHandler &),
-                                       Interface<dim> *(*factory_function) ());
+                                       std::unique_ptr<Interface<dim>> (*factory_function) ());
 
 
         /**
@@ -249,18 +250,6 @@ namespace aspect
          */
         const std::vector<std::unique_ptr<Interface<dim>>> &
         get_active_boundary_temperature_conditions () const;
-
-        /**
-         * Go through the list of all boundary temperature models that have been selected in
-         * the input file (and are consequently currently active) and see if one
-         * of them has the desired type specified by the template argument. If so,
-         * return a pointer to it. If no boundary temperature model is active
-         * that matches the given type, return a nullptr.
-         */
-        template <typename BoundaryTemperatureType>
-        DEAL_II_DEPRECATED
-        BoundaryTemperatureType *
-        find_boundary_temperature_model () const;
 
         /**
          * Go through the list of all boundary temperature models that have been selected
@@ -354,19 +343,6 @@ namespace aspect
         bool allow_fixed_temperature_on_outflow_boundaries;
     };
 
-
-
-    template <int dim>
-    template <typename BoundaryTemperatureType>
-    inline
-    BoundaryTemperatureType *
-    Manager<dim>::find_boundary_temperature_model () const
-    {
-      for (const auto &p : boundary_temperature_objects)
-        if (BoundaryTemperatureType *x = dynamic_cast<BoundaryTemperatureType *> ( p.get()) )
-          return x;
-      return nullptr;
-    }
 
 
     template <int dim>

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -23,8 +23,9 @@
 #ifdef ASPECT_WITH_WORLD_BUILDER
 #include <aspect/initial_composition/world_builder.h>
 #include <aspect/geometry_model/interface.h>
-#include <world_builder/world.h>
 #include <aspect/citation_info.h>
+
+#include <world_builder/world.h>
 
 
 namespace aspect
@@ -37,6 +38,7 @@ namespace aspect
     initialize()
     {
       CitationInfo::add("GWB");
+      world_builder = this->get_world_builder_pointer();
     }
 
 
@@ -47,9 +49,9 @@ namespace aspect
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
     {
       if (relevant_compositions[n_comp] == true)
-        return this->get_world_builder().composition(Utilities::convert_point_to_array(position),
-                                                     -this->get_geometry_model().height_above_reference_surface(position),
-                                                     n_comp);
+        return world_builder->composition(Utilities::convert_point_to_array(position),
+                                          -this->get_geometry_model().height_above_reference_surface(position),
+                                          n_comp);
 
       return 0.0;
     }

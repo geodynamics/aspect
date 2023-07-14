@@ -1,3 +1,0 @@
-This program allows to use the world builder library directly with a world builder file and a data file. The data file will be filled with intitial conditions from the world as set by the world builder file.
-Besides providing two files, where the first is the world builder file and the second is the data file, the available options are: 
--h or --help to get this help screen.

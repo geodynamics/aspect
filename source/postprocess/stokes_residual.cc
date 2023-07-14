@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -48,7 +48,7 @@ namespace aspect
 
     template <int dim>
     StokesResidual<dim>::StokesResidual ()
-    {}
+      = default;
 
 
 
@@ -60,8 +60,8 @@ namespace aspect
       // On the root process, write out the file.
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          std::ofstream f((this->get_output_directory() +
-                           "stokes_residuals.txt").c_str());
+          std::ofstream f(this->get_output_directory() +
+                          "stokes_residuals.txt");
           f << "# time solveidx residual\n";
           for (unsigned int i=0; i<entries.size(); ++i)
             {

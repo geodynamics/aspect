@@ -16,19 +16,19 @@ automatic refinement criteria do not always refine these interfaces as well as
 necessary.
 
 To alleviate this, ASPECT has plugins for mesh
-refinement. Through the parameters in {ref}`sec:3.129][], one can select
+refinement. Through the parameters in {ref}`parameters:Mesh_20refinement/Strategy`, one can select
 when to refine but also which refinement criteria should be used and how they
 should be combined if multiple refinement criteria are selected. Furthermore,
 through the usual plugin mechanism, one can extend the list of available mesh
 refinement criteria (see the parameter "Strategy" in
-{ref}`sec:3.129][]). Each such plugin is responsible for producing a
+{ref}`parameters:Mesh_20refinement/Strategy`). Each such plugin is responsible for producing a
 vector of values (one per active cell on the current processor, though only
 those values for cells that the current processor owns are used) with an
 indicator of how badly this cell needs to be refined: large values mean that
 the cell should be refined, small values that the cell may be coarsened away.
 
 To implement a new mesh refinement criterion, you need to overload the
-[aspect::MeshRefinement::Interface][] class and use the
+`aspect::MeshRefinement::Interface` class and use the
 `ASPECT_REGISTER_MESH_REFINEMENT_CRITERION` macro to register your new class.
 The implementation of the new class should be in namespace
 `aspect::MeshRefinement`.
@@ -63,5 +63,5 @@ simulation.
 
 The remaining functions are obvious, and are also discussed in the
 documentation of this interface class at
-[aspect::MeshRefinement::Interface][]. The purpose of the last two functions
+`aspect::MeshRefinement::Interface`. The purpose of the last two functions
 has been discussed in the general overview of plugins above.

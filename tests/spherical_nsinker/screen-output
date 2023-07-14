@@ -1,5 +1,5 @@
 
-Loading shared library <./libspherical_nsinker.so>
+Loading shared library <./libspherical_nsinker.debug.so>
 
 Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 768 (on 2 levels)
@@ -11,9 +11,9 @@ Number of degrees of freedom: 28,690 (20,790+970+6,930)
     GMG n_levels: 2
     Viscosity range: 0.1 - 433.496
     GMG workload imbalance: 1
-    Stokes solver: 117+0 iterations.
-    Schur complement preconditioner: 119+0 iterations.
-    A block preconditioner: 119+0 iterations.
+    Stokes solver: 106+0 iterations.
+    Schur complement preconditioner: 107+0 iterations.
+    A block preconditioner: 107+0 iterations.
 
    Postprocessing:
      System matrix memory consumption:  0.34 MB

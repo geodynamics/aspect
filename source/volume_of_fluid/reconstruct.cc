@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+ Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -79,7 +79,7 @@ namespace aspect
     for (unsigned int i=0; i<dim; ++i)
       reconstruction_stencil_unit_cell_center[i] = 0.5;
 
-    std::vector<types::global_dof_index> cell_dof_indicies (system_fe.dofs_per_cell);
+    std::vector<types::global_dof_index> cell_dof_indices (system_fe.dofs_per_cell);
     std::vector<types::global_dof_index> local_dof_indices (system_fe.dofs_per_cell);
 
     const FEVariable<dim> &volume_of_fluid_var = field.volume_fraction;
@@ -129,7 +129,7 @@ namespace aspect
             // Due to mesh structure, we need to obtain the cells by
             // considering the pattern of neighboring cells
             //
-            // Indicies used for the stencil references follow the
+            // Indices used for the stencil references follow the
             // pattern
             //
             // 6 7 8
@@ -204,7 +204,7 @@ namespace aspect
                     if (curr != endc)
                       {
                         // Cell reference is valid, so get data
-                        curr->get_dof_indices (cell_dof_indicies);
+                        curr->get_dof_indices (cell_dof_indices);
                         stencil_unit_cell_centers[3 * j + i] = Point<dim> (-1.0 + i,
                                                                            -1.0 + j);
                       }
@@ -213,11 +213,11 @@ namespace aspect
                         // Cell reference is invalid, so replace with current
                         // cell to reduce branching complexity in the later
                         // algorithm
-                        cell->get_dof_indices (cell_dof_indicies);
+                        cell->get_dof_indices (cell_dof_indices);
                         stencil_unit_cell_centers[3 * j + i] = Point<dim> (0.0,
                                                                            0.0);
                       }
-                    local_volume_of_fluids (3 * j + i) = solution (cell_dof_indicies[volume_of_fluid_ind]);
+                    local_volume_of_fluids (3 * j + i) = solution (cell_dof_indices[volume_of_fluid_ind]);
                     neighbor_cells[3 * j + i] = curr;
                   }
               }
@@ -321,9 +321,9 @@ namespace aspect
               const std::vector<double> weights = fevalues.get_JxW_values();
 
               double cell_vol = 0.0;
-              for (unsigned int j=0; j<weights.size(); ++j)
+              for (const double weight : weights)
                 {
-                  cell_vol+=weights[j];
+                  cell_vol+=weight;
                 }
               for (unsigned int nind = 0; nind < n_candidate_normals; ++nind)
                 {
@@ -359,9 +359,9 @@ namespace aspect
                 const std::vector<double> weights = fevalues.get_JxW_values();
 
                 double cell_vol = 0.0;
-                for (unsigned int j=0; j<weights.size(); ++j)
+                for (const double weight : weights)
                   {
-                    cell_vol+=weights[j];
+                    cell_vol+=weight;
                   }
 
                 for (unsigned int nind = 0; nind < n_candidate_normals; ++nind)

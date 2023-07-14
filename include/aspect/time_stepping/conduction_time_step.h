@@ -50,7 +50,6 @@ namespace aspect
         /**
          * @copydoc aspect::TimeStepping::Interface<dim>::execute()
          */
-        virtual
         double
         execute() override;
 

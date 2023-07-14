@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -43,7 +43,7 @@ namespace aspect
        * We only compute the residual between the second invariant of the strain rate
        * and therefore, the input data is an ascii data file with columns corresponding
        * to coordinates and one data column representing the second invariant of the strain rate.
-      .*
+       *
        * This quantity only makes sense at the surface of the domain.
        * Thus, the value is set to zero in all the cells inside of the domain.
        *

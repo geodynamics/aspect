@@ -4,7 +4,6 @@ channels:
   - defaults
 dependencies:
   - myst-parser
-  - pydata-sphinx-theme
   - sphinx-book-theme
   - sphinxcontrib-bibtex
   - pip>=20.1

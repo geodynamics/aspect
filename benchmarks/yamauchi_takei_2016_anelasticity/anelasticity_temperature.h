@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -55,7 +55,7 @@ namespace aspect
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize ();
+        initialize () override;
 
         // Avoid -Woverloaded-virtual:
         using Utilities::AsciiDataInitial<dim>::initialize;
@@ -65,7 +65,7 @@ namespace aspect
          * current class, this function returns value from the text files.
          */
         double
-        initial_temperature (const Point<dim> &position) const;
+        initial_temperature (const Point<dim> &position) const override;
 
         /**
          * Declare the parameters for the input files.
@@ -78,7 +78,7 @@ namespace aspect
          * Read the parameters from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
 

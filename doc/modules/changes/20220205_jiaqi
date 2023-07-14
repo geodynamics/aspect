@@ -1,5 +1,0 @@
-Fixed: The GMG solver could fail in problems with large viscosity variations 
-and Q1 viscosity averaging, because viscosities would become negative 
-on coarser GMG levels. This is now fixed.
-<br>
-(Timo Heister, Jiaqi Zhang, 2022/02/05)

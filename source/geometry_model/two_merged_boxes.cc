@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -77,32 +77,43 @@ namespace aspect
     TwoMergedBoxes<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &total_coarse_grid) const
     {
-      std::vector<unsigned int> lower_rep_vec(lower_repetitions, lower_repetitions+dim);
-      std::vector<unsigned int> upper_rep_vec(upper_repetitions, upper_repetitions+dim);
+      std::vector<unsigned int> lower_rep_vec(lower_repetitions.begin(), lower_repetitions.end());
+      if (use_merged_grids)
+        {
+          std::vector<unsigned int> upper_rep_vec(upper_repetitions.begin(), upper_repetitions.end());
 
-      // the two triangulations that will be merged
-      Triangulation<dim> lower_coarse_grid;
-      Triangulation<dim> upper_coarse_grid;
+          // the two triangulations that will be merged
+          Triangulation<dim> lower_coarse_grid;
+          Triangulation<dim> upper_coarse_grid;
 
-      // create lower_coarse_grid mesh
-      GridGenerator::subdivided_hyper_rectangle (lower_coarse_grid,
-                                                 lower_rep_vec,
-                                                 lower_box_origin,
-                                                 lower_box_origin+lower_extents,
-                                                 false);
+          // create lower_coarse_grid mesh
+          GridGenerator::subdivided_hyper_rectangle (lower_coarse_grid,
+                                                     lower_rep_vec,
+                                                     lower_box_origin,
+                                                     lower_box_origin+lower_extents,
+                                                     false);
 
-      // create upper_coarse_grid mesh
-      GridGenerator::subdivided_hyper_rectangle (upper_coarse_grid,
-                                                 upper_rep_vec,
-                                                 upper_box_origin,
-                                                 upper_box_origin+upper_extents,
-                                                 false);
+          // create upper_coarse_grid mesh
+          GridGenerator::subdivided_hyper_rectangle (upper_coarse_grid,
+                                                     upper_rep_vec,
+                                                     upper_box_origin,
+                                                     upper_box_origin+upper_extents,
+                                                     false);
 
-      // merge the lower and upper mesh into one total_coarse_grid.
-      // now we have at least two cells
-      GridGenerator::merge_triangulations(lower_coarse_grid,
-                                          upper_coarse_grid,
-                                          total_coarse_grid);
+          // merge the lower and upper mesh into one total_coarse_grid.
+          // now we have at least two cells
+          GridGenerator::merge_triangulations(lower_coarse_grid,
+                                              upper_coarse_grid,
+                                              total_coarse_grid);
+        }
+      else
+        {
+          GridGenerator::subdivided_hyper_rectangle (total_coarse_grid,
+                                                     lower_rep_vec,
+                                                     lower_box_origin,
+                                                     upper_box_origin+upper_extents,
+                                                     false);
+        }
 
       // set the boundary indicators
       set_boundary_indicators(total_coarse_grid);
@@ -153,41 +164,37 @@ namespace aspect
         {
           case 2:
           {
-            static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("left",   0),
-                  std::pair<std::string,types::boundary_id>("right",  1),
-                  std::pair<std::string,types::boundary_id>("bottom", 2),
-                  std::pair<std::string,types::boundary_id>("top",    3),
-                  std::pair<std::string,types::boundary_id>("left lithosphere", 4),
-                  std::pair<std::string,types::boundary_id>("right lithosphere",5)
-                };
-
-            return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                             std::end(mapping));
+            return
+            {
+              {"left",   0},
+              {"right",  1},
+              {"bottom", 2},
+              {"top",    3},
+              {"left lithosphere", 4},
+              {"right lithosphere",5}
+            };
           }
 
           case 3:
           {
-            static const std::pair<std::string,types::boundary_id> mapping[]
-              = { std::pair<std::string,types::boundary_id>("left",   0),
-                  std::pair<std::string,types::boundary_id>("right",  1),
-                  std::pair<std::string,types::boundary_id>("front",  2),
-                  std::pair<std::string,types::boundary_id>("back",   3),
-                  std::pair<std::string,types::boundary_id>("bottom", 4),
-                  std::pair<std::string,types::boundary_id>("top",    5),
-                  std::pair<std::string,types::boundary_id>("left lithosphere",  6),
-                  std::pair<std::string,types::boundary_id>("right lithosphere", 7),
-                  std::pair<std::string,types::boundary_id>("front lithosphere", 8),
-                  std::pair<std::string,types::boundary_id>("back lithosphere",  9)
-                };
-
-            return std::map<std::string,types::boundary_id> (std::begin(mapping),
-                                                             std::end(mapping));
+            return
+            {
+              {"left",   0},
+              {"right",  1},
+              {"front",  2},
+              {"back",   3},
+              {"bottom", 4},
+              {"top",    5},
+              {"left lithosphere",  6},
+              {"right lithosphere", 7},
+              {"front lithosphere", 8},
+              {"back lithosphere",  9}
+            };
           }
         }
 
       Assert (false, ExcNotImplemented());
-      return std::map<std::string,types::boundary_id>();
+      return {};
     }
 
 
@@ -319,7 +326,7 @@ namespace aspect
       AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      for (unsigned int d = 0; d < dim; d++)
+      for (unsigned int d = 0; d < dim; ++d)
         if (point[d] > extents[d]+lower_box_origin[d]+std::numeric_limits<double>::epsilon()*extents[d] ||
             point[d] < lower_box_origin[d]-std::numeric_limits<double>::epsilon()*extents[d])
           return false;
@@ -341,7 +348,7 @@ namespace aspect
     TwoMergedBoxes<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
       std::array<double,dim> position_array;
-      for (unsigned int i = 0; i < dim; i++)
+      for (unsigned int i = 0; i < dim; ++i)
         position_array[i] = position_point(i);
 
       return position_array;
@@ -354,7 +361,7 @@ namespace aspect
     TwoMergedBoxes<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
     {
       Point<dim> position_point;
-      for (unsigned int i = 0; i < dim; i++)
+      for (unsigned int i = 0; i < dim; ++i)
         position_point[i] = position_tensor[i];
 
       return position_point;
@@ -443,6 +450,20 @@ namespace aspect
                              Patterns::Bool (),
                              "Whether the box should be periodic in Y direction in the lithosphere. "
                              "This value is ignored if the simulation is in 2d. ");
+
+          // grid creation parameters
+          prm.declare_entry ("Use merged grids", "true",
+                             Patterns::Bool (),
+                             "Whether to make the grid by gluing together two boxes, or just "
+                             "use one chunk to make the grid. Using two grids glued together "
+                             "is a safer option, since it forces the boundary conditions "
+                             "to be always applied to the same depth, but using one grid allows "
+                             "for a more flexible usage of the adaptive refinement. Note that if "
+                             "there is no cell boundary exactly on the boundary between the lithosphere "
+                             "and the mantle, the velocity boundary will not be exactly at that depth. "
+                             "Therefore, using a merged grid is generally recommended over using one grid."
+                             "When using one grid, the parameter for lower repetitions is used and the upper "
+                             "repetitions are ignored.");
         }
         prm.leave_subsection();
       }
@@ -475,14 +496,14 @@ namespace aspect
 
           extents[1]           = prm.get_double ("Y extent");
           lower_box_origin[1]  = prm.get_double ("Box origin Y coordinate");
-          periodic[1]          = prm.get_bool ("Y periodic");;
+          periodic[1]          = prm.get_bool ("Y periodic");
           lower_repetitions[1] = prm.get_integer ("Y repetitions");
 
           if (dim == 2)
             {
               lower_extents[1]     = extents[1] - thickness_lith;
               upper_extents[1]     = thickness_lith;
-              upper_box_origin[1]  = lower_extents[1];
+              upper_box_origin[1]  = lower_box_origin[1] + lower_extents[1];
               upper_repetitions[1] = prm.get_integer ("Y repetitions lithosphere");
             }
 
@@ -499,14 +520,14 @@ namespace aspect
               lower_extents[2]     = extents[2] - thickness_lith;
               upper_extents[2]     = thickness_lith;
               lower_box_origin[2]  = prm.get_double ("Box origin Z coordinate");
-              upper_box_origin[2]  = lower_extents[2];
+              upper_box_origin[2]  = lower_box_origin[2] + lower_extents[2];
               periodic[2]          = prm.get_bool ("Z periodic");
               lower_repetitions[2] = prm.get_integer ("Z repetitions");
               upper_repetitions[2] = prm.get_integer ("Z repetitions lithosphere");
             }
 
-          height_lith = extents[dim-1] - thickness_lith;
-
+          height_lith = upper_box_origin[dim-1];
+          use_merged_grids = prm.get_bool ("Use merged grids");
         }
         prm.leave_subsection();
       }

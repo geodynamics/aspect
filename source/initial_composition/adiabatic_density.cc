@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,7 +32,7 @@ namespace aspect
     AdiabaticDensity<dim>::
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
     {
-      if (n_comp == this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density))
+      if (n_comp == this->introspection().find_composition_type(CompositionalFieldDescription::density))
         return this->get_adiabatic_conditions().density(position);
 
       return 0.0;

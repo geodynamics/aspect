@@ -17,4 +17,5 @@ Additional information:
     of output variables' contains entries more than once. This is not
     allowed. Please check your parameter file.
 
-Aborting!
+Stacktrace:
+(rest of the output replaced by default.sh script)

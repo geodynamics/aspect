@@ -61,107 +61,107 @@ Number of mesh deformation degrees of freedom: 1522
      Topography min/max: -393.6 m, 876.5 m
      RMS, max velocity:  0.000764 m/year, 0.00216 m/year
 
-*** Timestep 2:  t=2.10724e+06 years, dt=1.43194e+06 years
+*** Timestep 2:  t=1.96513e+06 years, dt=1.28983e+06 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 23 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+
+   Postprocessing:
+     Topography min/max: -1949 m, 953.8 m
+     RMS, max velocity:  0.00118 m/year, 0.0029 m/year
+
+*** Timestep 3:  t=2.54493e+06 years, dt=579805 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 17 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+
+   Postprocessing:
+     Topography min/max: -251.2 m, 115.5 m
+     RMS, max velocity:  0.000587 m/year, 0.00183 m/year
+
+*** Timestep 4:  t=3.39802e+06 years, dt=853085 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 19 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+
+   Postprocessing:
+     Topography min/max: -237.4 m, 532.7 m
+     RMS, max velocity:  0.000453 m/year, 0.00101 m/year
+
+*** Timestep 5:  t=5.01115e+06 years, dt=1.61314e+06 years
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 24 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
 
    Postprocessing:
-     Topography min/max: -2260 m, 1102 m
-     RMS, max velocity:  0.00121 m/year, 0.00303 m/year
+     Topography min/max: -1138 m, 558.2 m
+     RMS, max velocity:  0.000695 m/year, 0.00179 m/year
 
-*** Timestep 3:  t=2.68732e+06 years, dt=580073 years
+Number of active cells: 730 (on 6 levels)
+Number of degrees of freedom: 10,107 (6,202+804+3,101)
+
+Number of mesh deformation degrees of freedom: 1608
+
+
+
+*** Timestep 6:  t=5.88358e+06 years, dt=872430 years
    Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 17 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-
-   Postprocessing:
-     Topography min/max: -482.8 m, 227.6 m
-     RMS, max velocity:  0.000784 m/year, 0.00212 m/year
-
-*** Timestep 4:  t=3.42446e+06 years, dt=737144 years
-   Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 17 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-
-   Postprocessing:
-     Topography min/max: -339.2 m, 713.7 m
-     RMS, max velocity:  0.000602 m/year, 0.0016 m/year
-
-*** Timestep 5:  t=5.34668e+06 years, dt=1.92222e+06 years
-   Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 27 iterations.
+   Solving temperature system... 25 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+14 iterations.
 
    Postprocessing:
-     Topography min/max: -2422 m, 1244 m
-     RMS, max velocity:  0.001 m/year, 0.00243 m/year
+     Topography min/max: -42.93 m, 88.97 m
+     RMS, max velocity:  0.000366 m/year, 0.00113 m/year
 
-Number of active cells: 736 (on 5 levels)
-Number of degrees of freedom: 10,146 (6,226+807+3,113)
-
-Number of mesh deformation degrees of freedom: 1614
-
-
-
-*** Timestep 6:  t=6.07945e+06 years, dt=732774 years
-   Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 24 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-
-   Postprocessing:
-     Topography min/max: -610.1 m, 308.7 m
-     RMS, max velocity:  0.00077 m/year, 0.00186 m/year
-
-*** Timestep 7:  t=6.91747e+06 years, dt=838022 years
+*** Timestep 7:  t=6.63482e+06 years, dt=751231 years
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 22 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
 
    Postprocessing:
-     Topography min/max: -382.7 m, 752.4 m
-     RMS, max velocity:  0.000572 m/year, 0.00152 m/year
+     Topography min/max: -11.72 m, 26.1 m
+     RMS, max velocity:  0.000375 m/year, 0.00114 m/year
 
-*** Timestep 8:  t=8.84988e+06 years, dt=1.9324e+06 years
+*** Timestep 8:  t=7.38642e+06 years, dt=751601 years
    Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 33 iterations.
+   Solving temperature system... 21 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+14 iterations.
 
    Postprocessing:
-     Topography min/max: -2237 m, 1217 m
-     RMS, max velocity:  0.000948 m/year, 0.00224 m/year
+     Topography min/max: -30.07 m, 69.45 m
+     RMS, max velocity:  0.000355 m/year, 0.00105 m/year
 
-*** Timestep 9:  t=9.66251e+06 years, dt=812638 years
+*** Timestep 9:  t=8.19751e+06 years, dt=811091 years
    Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 24 iterations.
+   Solving temperature system... 22 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
+   Solving Stokes system... 0+14 iterations.
 
    Postprocessing:
-     Topography min/max: -389.5 m, 207.8 m
-     RMS, max velocity:  0.000551 m/year, 0.00135 m/year
+     Topography min/max: -11.74 m, 29.94 m
+     RMS, max velocity:  0.000359 m/year, 0.00105 m/year
 
-*** Timestep 10:  t=1.08169e+07 years, dt=1.15441e+06 years
+*** Timestep 10:  t=9.01762e+06 years, dt=820118 years
    Solving mesh displacement system... 1 iterations.
-   Solving temperature system... 24 iterations.
+   Solving temperature system... 22 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
+   Solving Stokes system... 0+14 iterations.
 
    Postprocessing:
-     Topography min/max: -385.9 m, 736.4 m
-     RMS, max velocity:  0.000439 m/year, 0.00111 m/year
+     Topography min/max: -28.75 m, 66.65 m
+     RMS, max velocity:  0.000341 m/year, 0.000971 m/year
 
-Number of active cells: 829 (on 5 levels)
-Number of degrees of freedom: 11,433 (7,018+906+3,509)
+Number of active cells: 808 (on 6 levels)
+Number of degrees of freedom: 11,173 (6,858+886+3,429)
 
-Number of mesh deformation degrees of freedom: 1812
+Number of mesh deformation degrees of freedom: 1772
 
 
 

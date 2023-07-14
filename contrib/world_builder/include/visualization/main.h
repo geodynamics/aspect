@@ -20,6 +20,9 @@
 #ifndef WORLD_BUILDER_VISUALIZATION_MAIN_H_
 #define WORLD_BUILDER_VISUALIZATION_MAIN_H_
 
+#include <vector>
+#include <string>
+
 void project_on_sphere(double, double &, double &, double &);
 
 void lay_points(double x1, double y1, double z1,

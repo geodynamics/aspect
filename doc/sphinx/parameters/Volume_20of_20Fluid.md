@@ -1,8 +1,8 @@
 (parameters:Volume_20of_20Fluid)=
-# **Volume of Fluid**
+# Volume of Fluid
 
 
-## **Parameters in section** Volume of Fluid
+## **Subsection:** Volume of Fluid
 
 
 (parameters:Volume_20of_20Fluid/Number_20initialization_20samples)=
@@ -11,7 +11,7 @@
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
-**Documentation:** Number of divisions per dimension when computing the initial volume fractions.If set to the default of 3 for a 2D model, then initialization will be based on the initialization criterion at $3^2=9$ points within each cell. If the initialization based on a composition style initial condition, a larger value may be desired for better approximation of the initial fluid fractions. Smaller values will suffice in the case of level set initializations due to the presence of more information to better approximate the initial fluid fractions.
+**Documentation:** Number of divisions per dimension when computing the initial volume fractions.If set to the default of 3 for a 2d model, then initialization will be based on the initialization criterion at $3^2=9$ points within each cell. If the initialization based on a composition style initial condition, a larger value may be desired for better approximation of the initial fluid fractions. Smaller values will suffice in the case of level set initializations due to the presence of more information to better approximate the initial fluid fractions.
 
 (parameters:Volume_20of_20Fluid/Volume_20fraction_20threshold)=
 ### __Parameter name:__ Volume fraction threshold
@@ -27,4 +27,4 @@
 
 **Pattern:** [Double 0...1 (inclusive)]
 
-**Documentation:** The relative tolerance up to which the linear system for the Volume of Fluid system gets solved. See 'Solver parameters/Composition solver tolerance' for more details.
+**Documentation:** The relative tolerance up to which the linear system for the Volume of Fluid system gets solved. See &rsquo;Solver parameters/Composition solver tolerance&rsquo; for more details.

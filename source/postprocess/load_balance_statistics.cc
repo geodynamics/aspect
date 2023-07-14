@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -110,7 +110,7 @@ namespace aspect
                                   "of cells across all processes. All of these numbers "
                                   "can be useful to assess the load balance between "
                                   "different MPI ranks, as the difference between the "
-                                  "mimimal and maximal load should be as small as "
+                                  "minimal and maximal load should be as small as "
                                   "possible.")
   }
 }

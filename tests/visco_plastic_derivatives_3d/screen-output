@@ -1,5 +1,5 @@
 
-Loading shared library <./libvisco_plastic_derivatives_3d.so>
+Loading shared library <./libvisco_plastic_derivatives_3d.debug.so>
 
 * Connecting signals
 
@@ -80,7 +80,7 @@ strain-rate: point = 1, component = 5, Finite difference = 4.56937e+27, Analytic
 strain-rate: point = 2, component = 5, Finite difference = -3.20297e+27, Analytical derivative = -3.20297e+27
 strain-rate: point = 3, component = 5, Finite difference = 0, Analytical derivative = 0
 strain-rate: point = 4, component = 5, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
-Some parts of the test where not successful.
+Some parts of the test were not successful.
 
 Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter arithmetic
 pressure: point = 0, Finite difference = 0, Analytical derivative = 0

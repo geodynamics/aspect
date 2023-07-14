@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -57,7 +57,7 @@ namespace aspect
          * adiabatic conditions along a vertical transect of the geometry
          * based on the given material model and other quantities.
          */
-        virtual void initialize ();
+        void initialize () override;
 
         /**
          * Some plugins need to know whether the adiabatic conditions are
@@ -69,37 +69,35 @@ namespace aspect
          * profile. This way the plugin behaves differently at initialization
          * time of the adiabatic conditions and during the main model run.
          */
-        virtual bool is_initialized() const;
+        bool is_initialized() const override;
 
         /**
          * Return the adiabatic temperature at a given point of the domain.
          */
-        virtual double temperature (const Point<dim> &p) const;
+        double temperature (const Point<dim> &p) const override;
 
         /**
          * Return the adiabatic pressure at a given point of the domain.
          */
-        virtual double pressure (const Point<dim> &p) const;
+        double pressure (const Point<dim> &p) const override;
 
         /**
          * Return the reference density at a given point of the domain.
          */
-        virtual double density (const Point<dim> &p) const;
+        double density (const Point<dim> &p) const override;
 
         /**
          * Return the derivative of the density with respect to depth
          * at the given point @p p.
          */
-        virtual
-        double density_derivative (const Point<dim> &p) const;
+        double density_derivative (const Point<dim> &p) const override;
 
         static
         void
         declare_parameters (ParameterHandler &prm);
 
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**

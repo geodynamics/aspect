@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,8 +25,6 @@
 
 #include <deal.II/base/utilities.h>
 #include <deal.II/base/table.h>
-#include <fstream>
-#include <iostream>
 
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -42,8 +40,8 @@ namespace aspect
       GPlatesLookup<dim>::GPlatesLookup(const Tensor<1,2> &surface_point_one,
                                         const Tensor<1,2> &surface_point_two)
       {
-        // get the Cartesian coordinates of the points the 2D model will lie in
-        // this computation is done also for 3D since it is not expensive and the
+        // get the Cartesian coordinates of the points the 2d model will lie in
+        // this computation is done also for 3d since it is not expensive and the
         // template dim is currently not used here. Could be changed.
         const Tensor<1,3> point_one = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_one));
         const Tensor<1,3> point_two = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_two));
@@ -81,7 +79,7 @@ namespace aspect
                    << "   Input point 2 normalized cartesian coordinates: " << point_two  << std::endl
                    << "   Input point 2 rotated model coordinates: " << transpose(rotation_matrix) * point_two << std::endl
                    << std::endl <<  std::setprecision(2)
-                   << "   Model will be rotated by " << -rotation_angle * 180.0 / numbers::PI
+                   << "   Model will be rotated by " << -rotation_angle *constants::radians_to_degree
                    << " degrees around axis " << rotation_axis << std::endl
                    << "   The ParaView rotation angles are: " << angles[0] << ' ' << angles [1] << ' ' << angles[2] << std::endl
                    << "   The inverse ParaView rotation angles are: " << back_angles[0] << ' ' << back_angles [1] << ' ' << back_angles[2]
@@ -157,7 +155,7 @@ namespace aspect
             velocity_values[0][idx_theta][idx_phi]= spherical_velocities[0] * cmyr_si;
             velocity_values[1][idx_theta][idx_phi]= spherical_velocities[1] * cmyr_si;
 
-            i++;
+            ++i;
           }
 
         // Pad the longitude data with values for phi == 2*pi (== 0),
@@ -184,7 +182,7 @@ namespace aspect
         grid_extent[1].first = 0;
         grid_extent[1].second = 2 * numbers::PI;
 
-        for (unsigned int i = 0; i < 2; i++)
+        for (unsigned int i = 0; i < 2; ++i)
           {
             velocities[i]
               = std::make_unique<Functions::InterpolatedUniformGridData<2>> (grid_extent,
@@ -268,14 +266,14 @@ namespace aspect
         // Main work, interpolate velocity at this point
         Tensor<1,2> interpolated_velocity;
 
-        for (unsigned int i = 0; i < 2; i++)
+        for (unsigned int i = 0; i < 2; ++i)
           interpolated_velocity[i] = velocities[i]->value(lookup_coordinates);
 
         // Transform interpolated_velocity in cartesian coordinates
         const Tensor<1,3> interpolated_velocity_in_cart = sphere_to_cart_velocity(interpolated_velocity,spherical_point);
 
-        // Convert_tensor conveniently also handles the projection to the 2D plane by
-        // omitting the z-component of velocity (since the 2D model lies in the x-y plane).
+        // Convert_tensor conveniently also handles the projection to the 2d plane by
+        // omitting the z-component of velocity (since the 2d model lies in the x-y plane).
         const Tensor<1,dim> output_boundary_velocity = (dim == 2)
                                                        ?
                                                        convert_tensor<3,dim>(transpose(rotation_matrix) * interpolated_velocity_in_cart)
@@ -396,7 +394,7 @@ namespace aspect
           }
 
         double theta = atan2(sinTheta, cosTheta);
-        orientation[1] = - theta * 180 / numbers::PI;
+        orientation[1] = - theta * constants::radians_to_degree;
 
         // now rotate about x axis
         double d = sqrt(x2*x2 + y2*y2 + z2*z2);
@@ -419,7 +417,7 @@ namespace aspect
           }
 
         double phi = atan2(sinPhi, cosPhi);
-        orientation[0] = phi * 180 / numbers::PI;
+        orientation[0] = phi * constants::radians_to_degree;
 
         // finally, rotate about z
         double x3p = x3*cosTheta - z3*sinTheta;
@@ -439,7 +437,7 @@ namespace aspect
           }
 
         double alpha = atan2(sinAlpha, cosAlpha);
-        orientation[2] = alpha * 180 / numbers::PI;
+        orientation[2] = alpha * constants::radians_to_degree;
         return orientation;
       }
 
@@ -451,7 +449,7 @@ namespace aspect
       GPlatesLookup<dim>::convert_tensor (const Tensor<1,in> &old_tensor) const
       {
         Tensor<1,out> new_tensor;
-        for (unsigned int i = 0; i < out; i++)
+        for (unsigned int i = 0; i < out; ++i)
           if (i < in) new_tensor[i] = old_tensor[i];
           else new_tensor[i] = 0.0;
 
@@ -470,7 +468,7 @@ namespace aspect
 
         const int gplates_1_3_version[3] = {1,6,322};
 
-        for (unsigned int i = 0; i < int_versions.size(); i++)
+        for (unsigned int i = 0; i < int_versions.size(); ++i)
           {
             if (int_versions[i] > gplates_1_3_version[i])
               return true;
@@ -517,7 +515,7 @@ namespace aspect
 
       if (dim == 2)
         Assert (pointone != pointtwo,
-                ExcMessage ("To define a plane for the 2D model the two assigned points "
+                ExcMessage ("To define a plane for the 2d model the two assigned points "
                             "may not be equal."));
 
       AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
@@ -545,7 +543,7 @@ namespace aspect
                         << create_filename (current_file_number) << '.' << std::endl << std::endl;
 
       const std::string filename (create_filename (current_file_number));
-      if (Utilities::fexists(filename))
+      if (Utilities::fexists(filename, this->get_mpi_communicator()))
         lookup->load_file(filename,this->get_mpi_communicator());
       else
         AssertThrow(false,
@@ -568,7 +566,7 @@ namespace aspect
           const std::string filename (create_filename (next_file_number));
           this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
                             << filename << '.' << std::endl << std::endl;
-          if (Utilities::fexists(filename))
+          if (Utilities::fexists(filename, this->get_mpi_communicator()))
             {
               lookup.swap(old_lookup);
               lookup->load_file(filename,this->get_mpi_communicator());
@@ -658,7 +656,7 @@ namespace aspect
           const std::string filename (create_filename (current_file_number));
           this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
                             << filename << '.' << std::endl << std::endl;
-          if (Utilities::fexists(filename))
+          if (Utilities::fexists(filename, this->get_mpi_communicator()))
             {
               lookup.swap(old_lookup);
               lookup->load_file(filename,this->get_mpi_communicator());
@@ -679,7 +677,7 @@ namespace aspect
       const std::string filename (create_filename (next_file_number));
       this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
                         << filename << '.' << std::endl << std::endl;
-      if (Utilities::fexists(filename))
+      if (Utilities::fexists(filename, this->get_mpi_communicator()))
         {
           lookup.swap(old_lookup);
           lookup->load_file(filename,this->get_mpi_communicator());
@@ -797,12 +795,12 @@ namespace aspect
                              "plate reconstruction.");
           prm.declare_entry ("Point one", "1.570796,0.0",
                              Patterns::Anything (),
-                             "Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle) and "
-                             "phi in radians. This value is not utilized in 3D geometries, and can therefore be set to the default or any user-defined quantity.");
+                             "Point that determines the plane in which a 2d model lies in. Has to be in the format `a,b' where a and b are theta (polar angle) and "
+                             "phi in radians. This value is not utilized in 3d geometries, and can therefore be set to the default or any user-defined quantity.");
           prm.declare_entry ("Point two", "1.570796,1.570796",
                              Patterns::Anything (),
-                             "Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle) and "
-                             "phi in radians. This value is not utilized in 3D geometries, and can therefore be set to the default or any user-defined quantity.");
+                             "Point that determines the plane in which a 2d model lies in. Has to be in the format `a,b' where a and b are theta (polar angle) and "
+                             "phi in radians. This value is not utilized in 3d geometries, and can therefore be set to the default or any user-defined quantity.");
           prm.declare_entry ("Lithosphere thickness", "100000.",
                              Patterns::Double (0.),
                              "Determines the depth of the lithosphere, so that the GPlates velocities can be applied at the sides of the model "

@@ -1,5 +1,5 @@
 
-Loading shared library <./libsolver_history.so>
+Loading shared library <./libsolver_history.debug.so>
 
 Connecting signals
 Number of active cells: 1,024 (on 6 levels)

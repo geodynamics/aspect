@@ -1,5 +1,5 @@
 
-Loading shared library <./libadditional_outputs_02.so>
+Loading shared library <./libadditional_outputs_02.debug.so>
 
 * Connecting signals
 * set_assemblers()
@@ -12,11 +12,11 @@ Number of degrees of freedom: 84 (50+9+25)
 * evaluate called without additional outputs!
 * evaluate called without additional outputs!
 * evaluate called without additional outputs!
-* evaluate called without additional outputs!
-* evaluate called without additional outputs!
-* evaluate called without additional outputs!
-* evaluate called without additional outputs!
    Solving temperature system... 0 iterations.
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
+* evaluate called without additional outputs!
 * create_additional_material_model_outputs() called
    creating additional output!
 * evaluate called with additional outputs!

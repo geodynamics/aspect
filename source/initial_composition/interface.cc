@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -59,7 +59,7 @@ namespace aspect
 
     template <int dim>
     Manager<dim>::~Manager()
-    {}
+      = default;
 
 
 
@@ -79,7 +79,7 @@ namespace aspect
     Manager<dim>::register_initial_composition (const std::string &name,
                                                 const std::string &description,
                                                 void (*declare_parameters_function) (ParameterHandler &),
-                                                Interface<dim> *(*factory_function) ())
+                                                std::unique_ptr<Interface<dim>> (*factory_function) ())
     {
       std::get<dim>(registered_plugins).register_plugin (name,
                                                          description,
@@ -163,7 +163,7 @@ namespace aspect
         {
           composition = model_operators[i](composition,
                                            initial_composition_object->initial_composition(position,n_comp));
-          i++;
+          ++i;
         }
 
       return composition;

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -74,6 +74,7 @@ TEST_CASE("AdditionalOutputs works")
   using namespace aspect::MaterialModel;
   MaterialModelInputs<dim> in(1,1);
   MaterialModelOutputs<dim> out(1,1);
+  in.requested_properties = MaterialProperties::additional_outputs;
 
 
   REQUIRE(out.get_additional_output<AdditionalOutputs1<dim>>() == NULL);

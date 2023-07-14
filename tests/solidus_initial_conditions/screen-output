@@ -1,5 +1,5 @@
 
-Loading shared library <./libsolidus_initial_conditions.so>
+Loading shared library <./libsolidus_initial_conditions.debug.so>
 
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 10,656 (6,528+864+3,264)

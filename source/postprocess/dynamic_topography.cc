@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -147,6 +147,7 @@ namespace aspect
             // Evaluate the material model in the cell volume.
             MaterialModel::MaterialModelInputs<dim> in_volume(fe_volume_values, cell, this->introspection(), this->get_solution());
             MaterialModel::MaterialModelOutputs<dim> out_volume(fe_volume_values.n_quadrature_points, this->n_compositional_fields());
+            in_volume.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::viscosity;
             this->get_material_model().evaluate(in_volume, out_volume);
 
             // Get solution values for the divergence of the velocity, which is not
@@ -267,6 +268,7 @@ namespace aspect
             // Evaluate the material model on the cell face.
             MaterialModel::MaterialModelInputs<dim> in_support(fe_support_values, cell, this->introspection(), this->get_solution());
             MaterialModel::MaterialModelOutputs<dim> out_support(fe_support_values.n_quadrature_points, this->n_compositional_fields());
+            in_support.requested_properties = MaterialModel::MaterialProperties::density;
             this->get_material_model().evaluate(in_support, out_support);
 
             fe_support_values[this->introspection().extractors.velocities].get_function_values(topo_vector, stress_support_values);
@@ -315,6 +317,7 @@ namespace aspect
             // Evaluate the material model on the cell face.
             MaterialModel::MaterialModelInputs<dim> in_output(fe_output_values, cell, this->introspection(), this->get_solution());
             MaterialModel::MaterialModelOutputs<dim> out_output(fe_output_values.n_quadrature_points, this->n_compositional_fields());
+            in_output.requested_properties = MaterialModel::MaterialProperties::density;
             this->get_material_model().evaluate(in_output, out_output);
 
             fe_output_values[this->introspection().extractors.velocities].get_function_values(topo_vector, stress_output_values);
@@ -398,7 +401,7 @@ namespace aspect
     std::list<std::string>
     DynamicTopography<dim>::required_other_postprocessors() const
     {
-      return std::list<std::string> (1, "boundary pressures");
+      return {"boundary pressures"};
     }
 
 
@@ -413,6 +416,14 @@ namespace aspect
                                            double>> &stored_values)
     {
       std::ostringstream output;
+
+      // On processor 0, write header lines
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          output << "# "
+                 << ((dim==2)? "x y " : "x y z ")
+                 << (upper ? "surface topography" : "bottom topography") << std::endl;
+        }
 
       for (unsigned int i=0; i<stored_values.size(); ++i)
         {
@@ -430,21 +441,7 @@ namespace aspect
       if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
         filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
 
-      const std::vector<std::string> data = Utilities::MPI::gather(this->get_mpi_communicator(), output.str());
-
-      // On processor 0, collect all of the data the individual processors sent
-      // and concatenate them into one file:
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        {
-          std::ofstream file (filename.c_str());
-
-          file << "# "
-               << ((dim==2)? "x y " : "x y z ")
-               << (upper ? "surface topography" : "bottom topography") << std::endl;
-
-          for (const auto &str : data)
-            file << str;
-        }
+      Utilities::collect_and_write_file_content(filename, output.str(), this->get_mpi_communicator());
     }
 
 

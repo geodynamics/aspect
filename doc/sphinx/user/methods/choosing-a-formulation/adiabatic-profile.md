@@ -16,9 +16,3 @@ If there is no adiabatic heating in the model, $\bar{T}$ is constant by default 
 The density gradient is always computed by a simple finite difference approximation of the depth derivative of $\bar{\rho}$.
 
 However, users can also supply their own adiabatic conditions models or define an arbitrary profile using the "function" plugin, which allows the user to define arbitrary functions for $\bar{T}(z)$, $\bar{p}(z)$ and $\bar{\rho}(z)$, see {ref}`parameters:Adiabatic_20conditions_20model`.
-
-:::{admonition} TODO
-:class: error
-
-Parameters references
-:::

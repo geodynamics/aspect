@@ -1,5 +1,5 @@
 
-Loading shared library <./libmelt_property_visualization.so>
+Loading shared library <./libmelt_property_visualization.debug.so>
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)

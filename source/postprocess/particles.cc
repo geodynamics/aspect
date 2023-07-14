@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -69,7 +69,7 @@ namespace aspect
                                                     :
                                                     property_information.get_position_by_field_index(field_index);
 
-                // HDF5 only supports 3D vector output, therefore only treat output fields as vector if we
+                // HDF5 only supports 3d vector output, therefore only treat output fields as vector if we
                 // have a dimension of 3 and 3 components.
                 const bool field_is_vector = (only_group_3d_vectors == false
                                               ?
@@ -79,8 +79,8 @@ namespace aspect
 
                 // Determine if this field should be excluded, if so, skip it
                 bool exclude_property = false;
-                for (unsigned int i = 0; i < exclude_output_properties.size(); ++i)
-                  if (field_name.find(exclude_output_properties[i]) != std::string::npos)
+                for (const auto &property : exclude_output_properties)
+                  if (field_name.find(property) != std::string::npos)
                     {
                       exclude_property = true;
                       break;
@@ -104,10 +104,10 @@ namespace aspect
                     // If the property has dim components, we treat it as vector
                     if (n_components == dim)
                       {
-                        vector_datasets.push_back(std::make_tuple(property_index_to_output_index[field_position],
-                                                                  property_index_to_output_index[field_position]+n_components-1,
-                                                                  field_name,
-                                                                  DataComponentInterpretation::component_is_part_of_vector));
+                        vector_datasets.emplace_back(property_index_to_output_index[field_position],
+                                                     property_index_to_output_index[field_position]+n_components-1,
+                                                     field_name,
+                                                     DataComponentInterpretation::component_is_part_of_vector);
                       }
                   }
               }
@@ -121,10 +121,6 @@ namespace aspect
           {
             patches[i].vertices[0] = particle->get_location();
             patches[i].patch_index = i;
-
-#if !DEAL_II_VERSION_GTE(9,4,0)
-            patches[i].n_subdivisions = 1;
-#endif
 
             patches[i].data.reinit(dataset_names.size(),1);
 
@@ -196,9 +192,9 @@ namespace aspect
 
     template <int dim>
     // We need to pass the arguments by value, as this function can be called on a separate thread:
-    void Particles<dim>::writer (const std::string filename, //NOLINT(performance-unnecessary-value-param)
-                                 const std::string temporary_output_location, //NOLINT(performance-unnecessary-value-param)
-                                 const std::string *file_contents)
+    void Particles<dim>::writer (const std::string &filename, //NOLINT(performance-unnecessary-value-param)
+                                 const std::string &temporary_output_location, //NOLINT(performance-unnecessary-value-param)
+                                 const std::string &file_contents)
     {
       std::string tmp_filename = filename;
       if (temporary_output_location != "")
@@ -237,7 +233,7 @@ namespace aspect
             close(tmp_file_desc);
         }
 
-      std::ofstream out(tmp_filename.c_str());
+      std::ofstream out(tmp_filename);
 
       AssertThrow (out, ExcMessage(std::string("Trying to write to file <") +
                                    filename +
@@ -245,7 +241,7 @@ namespace aspect
 
       // now write and then move the tmp file to its final destination
       // if necessary
-      out << *file_contents;
+      out << file_contents;
       out.close ();
 
       if (tmp_filename != filename)
@@ -258,9 +254,6 @@ namespace aspect
                                  + filename + ". On processor "
                                  + Utilities::int_to_string(Utilities::MPI::this_mpi_process (MPI_COMM_WORLD)) + "."));
         }
-
-      // destroy the pointer to the data we needed to write
-      delete file_contents;
     }
 
     template <int dim>
@@ -275,8 +268,8 @@ namespace aspect
       const std::string
       pvtu_master_filename = (solution_file_prefix +
                               ".pvtu");
-      std::ofstream pvtu_master ((this->get_output_directory() + "particles/" +
-                                  pvtu_master_filename).c_str());
+      std::ofstream pvtu_master (this->get_output_directory() + "particles/" +
+                                 pvtu_master_filename);
       data_out.write_pvtu_record (pvtu_master, filenames);
 
       // now also generate a .pvd file that matches simulation
@@ -285,18 +278,18 @@ namespace aspect
 
       const std::string
       pvd_master_filename = (this->get_output_directory() + "particles.pvd");
-      std::ofstream pvd_master (pvd_master_filename.c_str());
+      std::ofstream pvd_master (pvd_master_filename);
 
       DataOutBase::write_pvd_record (pvd_master, times_and_pvtu_file_names);
 
-      // finally, do the same for Visit via the .visit file for this
+      // finally, do the same for VisIt via the .visit file for this
       // time step, as well as for all time steps together
       const std::string
       visit_master_filename = (this->get_output_directory()
                                + "particles/"
                                + solution_file_prefix
                                + ".visit");
-      std::ofstream visit_master (visit_master_filename.c_str());
+      std::ofstream visit_master (visit_master_filename);
 
       DataOutBase::write_visit_record (visit_master, filenames);
 
@@ -304,6 +297,7 @@ namespace aspect
         // the global .visit file needs the relative path because it sits a
         // directory above
         std::vector<std::string> filenames_with_path;
+        filenames_with_path.reserve(filenames.size());
         for (const auto &filename : filenames)
           {
             filenames_with_path.push_back("particles/" + filename);
@@ -312,8 +306,8 @@ namespace aspect
         output_file_names_by_timestep.push_back (filenames_with_path);
       }
 
-      std::ofstream global_visit_master ((this->get_output_directory() +
-                                          "particles.visit").c_str());
+      std::ofstream global_visit_master (this->get_output_directory() +
+                                         "particles.visit");
 
       std::vector<std::pair<double, std::vector<std::string>>> times_and_output_file_names;
       for (unsigned int timestep=0; timestep<times_and_pvtu_file_names.size(); ++timestep)
@@ -445,12 +439,12 @@ namespace aspect
                 {
                   // Put the content we want to write into a string object that
                   // we can then write in the background
-                  const std::string *file_contents;
+                  std::unique_ptr<std::string> file_contents;
                   {
                     std::ostringstream tmp;
 
                     data_out.write (tmp, DataOutBase::parse_output_format(output_format));
-                    file_contents = new std::string (tmp.str());
+                    file_contents = std::make_unique<std::string>(tmp.str());
                   }
 
                   if (write_in_background_thread)
@@ -462,18 +456,20 @@ namespace aspect
 
                       // ...then continue with writing our own data.
                       background_thread
-                        = std::thread([&]()
+                        = std::thread([ my_filename = std::move(filename),
+                                        my_temporary_output_location = temporary_output_location,
+                                        my_file_contents = std::move(file_contents)]()
                       {
-                        writer (filename, temporary_output_location, file_contents);
+                        writer (my_filename, my_temporary_output_location, *my_file_contents);
                       });
                     }
                   else
-                    writer(filename,temporary_output_location,file_contents);
+                    writer(filename,temporary_output_location,*file_contents);
                 }
               // Just write one data file in parallel
               else if (group_files == 1)
                 {
-                  data_out.write_vtu_in_parallel(filename.c_str(),
+                  data_out.write_vtu_in_parallel(filename,
                                                  this->get_mpi_communicator());
                 }
               // Write as many output files as 'group_files' groups
@@ -485,7 +481,7 @@ namespace aspect
                   int ierr = MPI_Comm_split(this->get_mpi_communicator(), color, my_id, &comm);
                   AssertThrowMPI(ierr);
 
-                  data_out.write_vtu_in_parallel(filename.c_str(), comm);
+                  data_out.write_vtu_in_parallel(filename, comm);
                   ierr = MPI_Comm_free(&comm);
                   AssertThrowMPI(ierr);
                 }
@@ -506,7 +502,7 @@ namespace aspect
                                            + DataOutBase::default_suffix
                                            (DataOutBase::parse_output_format(output_format));
 
-              std::ofstream out (filename.c_str());
+              std::ofstream out (filename);
 
               AssertThrow(out,
                           ExcMessage("Unable to open file for writing: " + filename +"."));
@@ -727,7 +723,7 @@ namespace aspect
           exclude_output_properties = Utilities::split_string_list(prm.get("Exclude output properties"));
 
           // Never output the integrator properties that are for internal use only
-          exclude_output_properties.push_back("internal: integrator properties");
+          exclude_output_properties.emplace_back("internal: integrator properties");
         }
         prm.leave_subsection ();
       }

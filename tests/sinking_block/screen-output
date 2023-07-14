@@ -1,5 +1,5 @@
 
-Loading shared library <./libsinking_block.so>
+Loading shared library <./libsinking_block.debug.so>
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)

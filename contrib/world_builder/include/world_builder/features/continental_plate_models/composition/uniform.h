@@ -17,17 +17,20 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _world_builder_features_continental_plate_composition_uniform_h
-#define _world_builder_features_continental_plate_composition_uniform_h
+#ifndef WORLD_BUILDER_FEATURES_CONTINENTAL_PLATE_MODELS_COMPOSITION_UNIFORM_H
+#define WORLD_BUILDER_FEATURES_CONTINENTAL_PLATE_MODELS_COMPOSITION_UNIFORM_H
 
-#include <world_builder/features/continental_plate_models/composition/interface.h>
-#include <world_builder/world.h>
+
+#include "world_builder/features/continental_plate_models/composition/interface.h"
+#include "world_builder/objects/surface.h"
+#include "world_builder/features/feature_utilities.h"
 
 
 namespace WorldBuilder
 {
   namespace Features
   {
+    using namespace FeatureUtilities;
     namespace ContinentalPlateModels
     {
       namespace Composition
@@ -38,7 +41,7 @@ namespace WorldBuilder
          * the returned temperature or composition of the temperature and composition
          * functions of this class will be.
          */
-        class Uniform : public Interface
+        class Uniform final : public Interface
         {
           public:
             /**
@@ -49,7 +52,7 @@ namespace WorldBuilder
             /**
              * Destructor
              */
-            ~Uniform();
+            ~Uniform() override final;
 
             /**
              * declare and read in the world builder file into the parameters class
@@ -60,7 +63,7 @@ namespace WorldBuilder
             /**
              * declare and read in the world builder file into the parameters class
              */
-            void parse_entries(Parameters &prm) override final;
+            void parse_entries(Parameters &prm, const std::vector<Point<2>> &coordinates) override final;
 
 
             /**
@@ -68,6 +71,7 @@ namespace WorldBuilder
              * gravity and current composition.
              */
             double get_composition(const Point<3> &position,
+                                   const Objects::NaturalCoordinate &position_in_natural_coordinates,
                                    const double depth,
                                    const unsigned int composition_number,
                                    double composition,
@@ -77,16 +81,19 @@ namespace WorldBuilder
 
           private:
             // uniform composition submodule parameters
+
             double min_depth;
+            Objects::Surface min_depth_surface;
             double max_depth;
+            Objects::Surface max_depth_surface;
             std::vector<unsigned int> compositions;
             std::vector<double> fractions;
-            std::string operation;
+            Operations operation;
 
         };
-      }
-    }
-  }
-}
+      } // namespace Composition
+    } // namespace ContinentalPlateModels
+  } // namespace Features
+} // namespace WorldBuilder
 
 #endif

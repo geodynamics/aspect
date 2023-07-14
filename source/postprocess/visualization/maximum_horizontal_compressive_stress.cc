@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -56,6 +56,9 @@ namespace aspect
                                                    this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
+
+        // We do not need to compute anything but the viscosity
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
         // Compute the viscosity...
         this->get_material_model().evaluate(in, out);
@@ -262,7 +265,7 @@ namespace aspect
                                                   "    +(\\mathbf v^T \\sigma_c \\mathbf v)(\\sin\\alpha)^2."
                                                   "\\end{align*}"
                                                   "\n\n"
-                                                  "The maximum of $f(\\alpha)$ is attained where $f'(\\alpha)=0$. "
+                                                  "The maximum of $f(\\alpha)$ is attained where $f^\\prime(\\alpha)=0$. "
                                                   "Evaluating the derivative and using trigonometric identities, "
                                                   "one finds that $\\alpha$ has to satisfy the equation "
                                                   "\\begin{align*}"
@@ -280,7 +283,7 @@ namespace aspect
                                                   "$\\alpha_2=\\alpha_1+\\frac{\\pi}{2}$, one of which will "
                                                   "correspond to a minimum and the other to a maximum of "
                                                   "$f(\\alpha)$. One checks the sign of "
-                                                  "$f''(\\alpha)=-2(\\mathbf u^T \\sigma_c \\mathbf u - "
+                                                  "$f^{\\prime\\prime}(\\alpha)=-2(\\mathbf u^T \\sigma_c \\mathbf u - "
                                                   "\\mathbf v^T \\sigma_c \\mathbf v)\\cos(2\\alpha) "
                                                   "- 2 (\\mathbf u^T \\sigma_c \\mathbf v) \\sin(2\\alpha)$ for "
                                                   "each of these to determine the $\\alpha$ that maximizes "

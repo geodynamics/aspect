@@ -140,7 +140,7 @@ end
 # For the model without melt migration, we do not have to use
 # mesh adaptivity, because time- and length scales of material
 # motion does do not vary a lot across the model, and a global
-# resolution of 4 is sufficient to capture the behaviour of
+# resolution of 4 is sufficient to capture the behavior of
 # upwellings and downwellings.
 subsection Mesh refinement
   set Initial adaptive refinement              = 0

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -289,9 +289,9 @@ namespace aspect
          * of these arguments and deletes them at the end of its work.
          */
         static
-        void writer (const std::string filename,
-                     const std::string temporary_filename,
-                     const std::string *file_contents);
+        void writer (const std::string &filename,
+                     const std::string &temporary_filename,
+                     const std::string &file_contents);
 
         /**
          * Write the various master record files. The master files are used by
@@ -299,7 +299,7 @@ namespace aspect
          * directory, possibly one file written by each processor, belong to a
          * single time step and/or form the different time steps of a
          * simulation. For Paraview, this is a <code>.pvtu</code> file per
-         * time step and a <code>.pvd</code> for all time steps. For Visit it
+         * time step and a <code>.pvd</code> for all time steps. For VisIt it
          * is a <code>.visit</code> file per time step and one for all time
          * steps.
          *

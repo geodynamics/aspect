@@ -1,0 +1,42 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for Stokes solver
+# 14: Velocity iterations in Stokes preconditioner
+# 15: Schur complement iterations in Stokes preconditioner
+# 16: RMS velocity (m/year)
+# 17: Max. velocity (m/year)
+# 18: Minimal temperature (K)
+# 19: Average temperature (K)
+# 20: Maximal temperature (K)
+# 21: Average nondimensional temperature (K)
+# 22: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 23: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 24: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 25: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 26: Visualization file name
+# 27: Minimal value for composition porosity
+# 28: Maximal value for composition porosity
+# 29: Global mass for composition porosity
+# 30: Minimal value for composition molar_Fe_in_solid
+# 31: Maximal value for composition molar_Fe_in_solid
+# 32: Global mass for composition molar_Fe_in_solid
+# 33: Minimal value for composition molar_Fe_in_melt
+# 34: Maximal value for composition molar_Fe_in_melt
+# 35: Global mass for composition molar_Fe_in_melt
+# 36: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 37: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 38: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 39: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 3267 2 0  0 0 0  82  86 10411 3.98037996e-13 9.80975408e-13 2.51000000e+03 2.51000000e+03 2.51000000e+03 -1.56684749e-14 0.00000000e+00 0.00000000e+00 0.00000000e+00  1.54925092e-06 output-boukare_conserve_mass/solution/solution-00000 1.38879439e-12 1.00000000e-01 2.51327117e+06 7.00000000e-02 7.00000000e-02 2.80000000e+07 7.00000000e-02 7.00000000e-02 2.80000000e+07 0.00000000e+00 0.00000000e+00 0.00000000e+00  1.58445898e-05 
+1 5.000000000000e+04 5.000000000000e+04 256 2467 1089 3267 5 0 33 0 0 139 149 52260 1.50474579e-05 2.82104432e-05 2.51000000e+03 2.51000000e+03 2.51000000e+03 -1.56684749e-14 0.00000000e+00 0.00000000e+00 0.00000000e+00 -2.28431128e+02 output-boukare_conserve_mass/solution/solution-00001 1.38879439e-12 3.46016032e-02 8.96856823e+05 7.00000000e-02 7.00000000e-02 2.80000000e+07 7.00000000e-02 7.00000000e-02 2.80000000e+07 0.00000000e+00 0.00000000e+00 0.00000000e+00 -2.33600022e+03 
+2 1.000000000000e+05 5.000000000000e+04 256 2467 1089 3267 4 0 32 0 0 131 139 36366 5.22855651e-06 9.80888831e-06 2.51000000e+03 2.51000000e+03 2.51000000e+03 -1.56684749e-14 0.00000000e+00 0.00000000e+00 0.00000000e+00 -7.94443006e+01 output-boukare_conserve_mass/solution/solution-00002 1.38879439e-12 1.21752186e-02 3.30010465e+05 7.00000000e-02 7.00000000e-02 2.80000000e+07 7.00000000e-02 7.00000000e-02 2.80000000e+07 0.00000000e+00 0.00000000e+00 0.00000000e+00 -8.12419485e+02 

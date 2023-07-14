@@ -109,6 +109,7 @@ end
 # is too low to fully resolve the mantle flow, however it does capture
 # the main features.
 subsection Mesh refinement
+  set Time steps between mesh refinement = 0
   set Initial global refinement          = 2
   set Initial adaptive refinement        = 0
 end

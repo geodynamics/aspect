@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -87,7 +87,7 @@ namespace aspect
           /**
            * Read the parameters this class declares from the parameter file.
            * If @p expected_n_phases_per_composition points to a vector of
-           * unsigned integers this is considered the number of phase transitions
+           * unsigned integers this is considered the number of phases
            * for each compositional field and will be checked against the parsed
            * parameters.
            */

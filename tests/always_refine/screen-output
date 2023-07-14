@@ -29,10 +29,9 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
      Temperature min/avg/max:   0 K, 0.5011 K, 1 K
      Compositions min/max/mass: -0.006514/1.046/0.4591 // -0.01399/1.066/0.4168
 
-Number of active cells: 40 (on 4 levels)
-Number of degrees of freedom: 1,020 (386+55+193+193+193)
+Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 2:  t=0.1875 seconds, dt=0.125 seconds
+*** Timestep 2:  t=0.181875 seconds, dt=0.119375 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 10 iterations.
@@ -41,13 +40,12 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00002
-     Temperature min/avg/max:   0 K, 0.5036 K, 1 K
-     Compositions min/max/mass: -0.007209/1.061/0.46 // -0.02002/1.071/0.4161
+     Temperature min/avg/max:   0 K, 0.5035 K, 1 K
+     Compositions min/max/mass: -0.007355/1.061/0.46 // -0.0199/1.072/0.4161
 
-Number of active cells: 40 (on 4 levels)
-Number of degrees of freedom: 1,020 (386+55+193+193+193)
+Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 3:  t=0.3125 seconds, dt=0.125 seconds
+*** Timestep 3:  t=0.306875 seconds, dt=0.125 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
@@ -56,13 +54,12 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00003
-     Temperature min/avg/max:   0 K, 0.506 K, 1 K
-     Compositions min/max/mass: -0.003341/1.052/0.4603 // -0.01607/1.05/0.4153
+     Temperature min/avg/max:   0 K, 0.5059 K, 1 K
+     Compositions min/max/mass: -0.003499/1.052/0.4603 // -0.01649/1.051/0.4154
 
-Number of active cells: 40 (on 4 levels)
-Number of degrees of freedom: 1,020 (386+55+193+193+193)
+Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 4:  t=0.4375 seconds, dt=0.125 seconds
+*** Timestep 4:  t=0.431875 seconds, dt=0.125 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 10 iterations.
@@ -71,13 +68,12 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00004
-     Temperature min/avg/max:   0 K, 0.5079 K, 1 K
-     Compositions min/max/mass: -0.00311/1.041/0.4605 // -0.01845/1.022/0.4147
+     Temperature min/avg/max:   0 K, 0.5078 K, 1 K
+     Compositions min/max/mass: -0.003148/1.041/0.4605 // -0.01899/1.023/0.4148
 
-Number of active cells: 40 (on 4 levels)
-Number of degrees of freedom: 1,020 (386+55+193+193+193)
+Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 5:  t=0.5 seconds, dt=0.0625 seconds
+*** Timestep 5:  t=0.5 seconds, dt=0.068125 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 10 iterations.
@@ -87,10 +83,9 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
    Postprocessing:
      Writing graphical output:  output-always_refine/solution/solution-00005
      Temperature min/avg/max:   0 K, 0.5083 K, 1 K
-     Compositions min/max/mass: -0.003011/1.035/0.4605 // -0.01499/0.9936/0.4151
+     Compositions min/max/mass: -0.003033/1.035/0.4605 // -0.01536/0.9925/0.4153
 
-Number of active cells: 40 (on 4 levels)
-Number of degrees of freedom: 1,020 (386+55+193+193+193)
+Skipping mesh refinement, because the mesh did not change.
 
 Termination requested by criterion: end time
 

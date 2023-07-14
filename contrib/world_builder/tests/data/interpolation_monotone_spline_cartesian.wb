@@ -1,9 +1,10 @@
 {
-"version":"0.4",
+"version":"0.5",
 "cross section": [[100e3,100e3],[400e3,500e3]],
 "coordinate system":{"model":"cartesian"},
+"gravity model":{"model":"uniform", "magnitude":10},
 "maximum distance between coordinates": 10e3,
-"interpolation":"monotone spline",
+"interpolation":"continuous monotone spline",
 "features":
 [
   {"model":"continental plate","name":"First continental plate", "max depth":250e3, "coordinates":[[-1e3,500e3],[500e3,500e3],[250e3,750e3],[500e3,1000e3],[-1e3,1000e3]],
