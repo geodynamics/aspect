@@ -146,7 +146,7 @@ namespace aspect
 
       template <int dim>
       const std::vector<std::string> &
-      ThermodynamicTableLookup<dim>::get_phase_names_one_lookup(unsigned int lookup_index) const
+      ThermodynamicTableLookup<dim>::get_phase_names(const unsigned int lookup_index) const
       {
         return material_lookup[lookup_index]->get_dominant_phase_names();
       }
@@ -557,7 +557,7 @@ namespace aspect
 
       template <int dim>
       const MaterialModel::MaterialUtilities::Lookup::MaterialLookup &
-      ThermodynamicTableLookup<dim>::get_material_lookup (unsigned int lookup_index) const
+      ThermodynamicTableLookup<dim>::get_material_lookup (const unsigned int lookup_index) const
       {
         return *material_lookup[lookup_index].get();
       }
