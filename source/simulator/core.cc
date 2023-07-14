@@ -1889,7 +1889,7 @@ namespace aspect
 
         case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
         {
-          solve_single_advection_iterated_newton_stokes();
+          solve_single_advection_and_iterated_newton_stokes();
           break;
         }
 
