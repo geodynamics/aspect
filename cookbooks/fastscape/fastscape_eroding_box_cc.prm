@@ -1,0 +1,195 @@
+# At the top, we define the number of space dimensions we would like to
+# work in:
+set Dimension                              = 3
+
+set Use years in output instead of seconds = true
+set End time                               = 1e6
+set Maximum time step                      = 1000
+set Output directory                       = eroding_box
+
+set Pressure normalization                 = no
+set Surface pressure                       = 0
+
+# A box which has one half raised by 1 km.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100e3
+    set Y extent = 100e3
+    set Z extent = 25e3
+    set X repetitions = 5
+    set Y repetitions = 5
+  end
+end
+
+#   subsection Initial topography model
+#     set Model name = function
+#     subsection Function
+#       set Function expression = if(y>20e3 && y<80e3 && x>20e3 && x<80e3, 2500, 0)
+#     end
+#   end
+# end
+
+# We do not consider temperature in this setup
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = initial temperature
+end
+
+# X Set all boundaries except the top to freeslip.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, front, back, right, left
+#  set Prescribed velocity boundary indicators = left x:function
+#    subsection Function
+#        set Variable names      = x,y,t
+#        set Function constants  = cm=0.01,year=1
+#        set Function expression =  if(x<50e3, 1*cm/year,0) ;0
+#    end
+end
+
+
+
+
+# Here we setup the top boundary with fastscape.
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top : fastscapecc
+
+    subsection Fastscapecc
+      # As the highest resolution at the surface is 4 in the mesh refinement function, we set this the same.
+      set Maximum surface refinement level = 0
+
+      # Because we only have the same level across the entire surface we set this to zero.
+      # If we had multiple resolutions, e.g. 3 different cell sizes at the surface,
+      # this would be set to 2 (number of cell sizes at surface - 1).
+      set Surface refinement difference = 0
+
+      # We set FastScape as 1 level more resolved than ASPECT's initial global surface resolution.
+      set Additional fastscape refinement = 0
+
+      # Number of FastScape timesteps we want per ASPECT timestep.
+      set Number of steps = 5
+
+      # Set the maximum allowable FastScape timestep. If the (ASPECT timestep)/(Number of steps)
+      # is greater than this value, then the number of steps is automatically doubled.
+      # This is continued until the FastScape timestep is less than this value.
+      set Maximum timestep = 10000
+
+      # Seed number for initial topography noise
+      set Fastscape seed = 0
+
+
+      # Fix all boundaries in FastScape.
+      subsection Boundary conditions
+        set Front = 1
+        set Right  = 1
+        set Back    = 1
+        set Left   = 1
+      end
+
+      # We use both the Steam Power Law (SPL) and hillslope diffusion. The bedrock deposition
+      # variable allows deposition of sediment, however, because
+      # the sediment variables are not set, they are equal to
+      # bedrock values.
+      subsection Erosional parameters
+        set Drainage area exponent = 0.4
+        set Bedrock diffusivity = 1e-2
+        set Bedrock river incision rate = 1e-4
+        set Slope exponent = 1
+       end
+   end
+
+   set Additional tangential mesh velocity boundary indicators = left, right, front, back
+
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+# Dimensionless
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1
+  end
+end
+
+
+# We also have to specify that we want to use the Boussinesq
+# approximation (assuming the density in the temperature
+# equation to be constant, and incompressibility).
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+
+# We set a maximum surface refinement level of 4 using the max/minimum refinement level.
+# This will make it so that the ASPECT surface refinement is the same as what we set
+# for our maximum surface refinement level for FastScape.
+# subsection Mesh refinement
+#   set Initial global refinement                = 4
+#   set Initial adaptive refinement              = 1
+#   set Time steps between mesh refinement       = 0
+#   set Strategy                                 = minimum refinement function, maximum refinement function
+
+#     subsection Maximum refinement function
+#       set Coordinate system   = cartesian
+#       set Variable names      = x,y,z
+#       set Function expression = if(z>=21000, 4, 2)
+#   end
+
+#       subsection Minimum refinement function
+#       set Coordinate system   = cartesian
+#       set Variable names      = x,y,z
+#       set Function expression = if(z>=21000, 4, 2)
+#   end
+# end
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  # set Strategy                                 = minimum refinement function, maximum refinement function
+
+  #   subsection Maximum refinement function
+  #     set Coordinate system   = cartesian
+  #     set Variable names      = x,y,z
+  #     set Function expression = if(z>=21000, 4, 2)
+  # end
+
+  #     subsection Minimum refinement function
+  #     set Coordinate system   = cartesian
+  #     set Variable names      = x,y,z
+  #     set Function expression = if(z>=21000, 4, 2)
+  # end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Time between graphical output = 0
+    set List of output variables      = strain rate
+    set Interpolate output = false
+    set Write higher order output = false
+  end
+end
