@@ -3310,7 +3310,7 @@ namespace aspect
       {
         SymmetricTensor<2,6> result;
 
-        constexpr double sqrt_2_inv = 1/sqrt(2);
+        const double sqrt_2_inv = 1./std::sqrt(2.);
 
         result[0][0] = input[0];
         result[1][1] = input[1];
