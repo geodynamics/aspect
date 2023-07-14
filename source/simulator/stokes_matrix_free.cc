@@ -281,11 +281,11 @@ namespace aspect
               // processors
               catch (const std::exception &exc)
                 {
-                  Utilities::linear_solver_failed("iterative (bottom right) solver",
-                                                  "BlockSchurGMGPreconditioner::vmult",
-                                                  std::vector<SolverControl> {solver_control},
-                                                  exc,
-                                                  src.block(0).get_mpi_communicator());
+                  Utilities::throw_linear_solver_failure_exception("iterative (bottom right) solver",
+                                                                   "BlockSchurGMGPreconditioner::vmult",
+                                                                   std::vector<SolverControl> {solver_control},
+                                                                   exc,
+                                                                   src.block(0).get_mpi_communicator());
                 }
             }
         }
@@ -322,11 +322,11 @@ namespace aspect
           // processors
           catch (const std::exception &exc)
             {
-              Utilities::linear_solver_failed("iterative (top left) solver",
-                                              "BlockSchurGMGPreconditioner::vmult",
-                                              std::vector<SolverControl> {solver_control},
-                                              exc,
-                                              src.block(0).get_mpi_communicator());
+              Utilities::throw_linear_solver_failure_exception("iterative (top left) solver",
+                                                               "BlockSchurGMGPreconditioner::vmult",
+                                                               std::vector<SolverControl> {solver_control},
+                                                               exc,
+                                                               src.block(0).get_mpi_communicator());
             }
         }
       else
@@ -2227,12 +2227,12 @@ namespace aspect
             if (sim.parameters.n_expensive_stokes_solver_steps > 0)
               solver_controls.push_back(solver_control_expensive);
 
-            Utilities::linear_solver_failed("iterative Stokes solver",
-                                            "StokesMatrixFreeHandlerImplementation::solve",
-                                            solver_controls,
-                                            exc,
-                                            sim.mpi_communicator,
-                                            sim.parameters.output_directory+"solver_history.txt");
+            Utilities::throw_linear_solver_failure_exception("iterative Stokes solver",
+                                                             "StokesMatrixFreeHandlerImplementation::solve",
+                                                             solver_controls,
+                                                             exc,
+                                                             sim.mpi_communicator,
+                                                             sim.parameters.output_directory+"solver_history.txt");
           }
       }
 

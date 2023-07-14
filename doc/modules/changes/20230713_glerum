@@ -1,0 +1,6 @@
+ Improved: The initial lithostatic pressure plugin for
+ boundary tractions now includes the initial topography
+ of the reference point into its pressure profile 
+ instead of the maximum topography within the domain.
+ <br>
+ (Anne Glerum, 2023/07/13)

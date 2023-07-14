@@ -105,8 +105,6 @@ namespace aspect
          * based on depth interpolation between computed pressure values.
          */
         double interpolate_pressure (const Point<dim> &p) const;
-
-
     };
   }
 }

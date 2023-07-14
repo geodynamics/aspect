@@ -689,32 +689,6 @@ namespace aspect
     }
     prm.leave_subsection();
 
-    prm.enter_subsection ("Boundary traction model");
-    {
-      prm.declare_entry ("Prescribed traction boundary indicators", "",
-                         Patterns::Map (Patterns::Anything(),
-                                        Patterns::Selection(BoundaryTraction::get_names<dim>())),
-                         "A comma separated list denoting those boundaries "
-                         "on which a traction force is prescribed, i.e., where "
-                         "known external forces act, resulting in an unknown velocity. This is "
-                         "often used to model ``open'' boundaries where we only know the pressure. "
-                         "This pressure then produces a force that is normal to the boundary and "
-                         "proportional to the pressure."
-                         "\n\n"
-                         "The format of valid entries for this parameter is that of a map "
-                         "given as ``key1 [selector]: value1, key2 [selector]: value2, key3: value3, ...'' where "
-                         "each key must be a valid boundary indicator (which is either an "
-                         "integer or the symbolic name the geometry model in use may have "
-                         "provided for this part of the boundary) "
-                         "and each value must be one of the currently implemented boundary "
-                         "traction models. ``selector'' is an optional string given as a subset "
-                         "of the letters `xyz' that allows you to apply the boundary conditions "
-                         "only to the components listed. As an example, '1 y: function' applies "
-                         "the type `function' to the y component on boundary 1. Without a selector "
-                         "it will affect all components of the traction.");
-    }
-    prm.leave_subsection();
-
     prm.enter_subsection ("Boundary heat flux model");
     {
       prm.declare_entry ("Fixed heat flux boundary indicators", "",
@@ -2212,31 +2186,6 @@ namespace aspect
               while ((key_and_comp.size()>0) && (key_and_comp[key_and_comp.size()-1] == ' '))
                 key_and_comp.erase (--key_and_comp.end());
             }
-
-          // finally, try to translate the key into a boundary_id. then
-          // make sure we haven't seen it yet
-          types::boundary_id boundary_id;
-          try
-            {
-              boundary_id = geometry_model.translate_symbolic_boundary_name_to_id(key_and_comp);
-            }
-          catch (const std::string &error)
-            {
-              AssertThrow (false, ExcMessage ("While parsing the entry <Boundary traction model/Prescribed "
-                                              "traction indicators>, there was an error. Specifically, "
-                                              "the conversion function complained as follows:\n\n"
-                                              + error));
-            }
-
-          AssertThrow (prescribed_traction_boundary_indicators.find(boundary_id)
-                       == prescribed_traction_boundary_indicators.end(),
-                       ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
-                                   "> appears more than once in the list of indicators "
-                                   "for nonzero traction boundaries."));
-
-          // finally, put it into the list
-          prescribed_traction_boundary_indicators[boundary_id] =
-            std::pair<std::string,std::string>(comp,value);
         }
     }
     prm.leave_subsection ();
@@ -2288,7 +2237,7 @@ namespace aspect
     BoundaryComposition::Manager<dim>::declare_parameters (prm);
     AdiabaticConditions::declare_parameters<dim> (prm);
     BoundaryVelocity::Manager<dim>::declare_parameters (prm);
-    BoundaryTraction::declare_parameters<dim> (prm);
+    BoundaryTraction::Manager<dim>::declare_parameters (prm);
     BoundaryHeatFlux::declare_parameters<dim> (prm);
   }
 }

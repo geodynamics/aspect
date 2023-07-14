@@ -2886,12 +2886,12 @@ namespace aspect
 
 
 
-    void linear_solver_failed(const std::string &solver_name,
-                              const std::string &function_name,
-                              const std::vector<SolverControl> &solver_controls,
-                              const std::exception &exc,
-                              const MPI_Comm &mpi_communicator,
-                              const std::string &output_filename)
+    void throw_linear_solver_failure_exception(const std::string &solver_name,
+                                               const std::string &function_name,
+                                               const std::vector<SolverControl> &solver_controls,
+                                               const std::exception &exc,
+                                               const MPI_Comm &mpi_communicator,
+                                               const std::string &output_filename)
     {
       if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
         {
@@ -3281,9 +3281,9 @@ namespace aspect
           input[0][0],           // 0  // 1
           input[1][1],           // 1  // 2
           input[2][2],           // 2  // 3
-          sqrt(2)*input[1][2],   // 3  // 4
-          sqrt(2)*input[0][2],   // 4  // 5
-          sqrt(2)*input[0][1],   // 5  // 6
+          numbers::SQRT2 *input[1][2],  // 3  // 4
+          numbers::SQRT2 *input[0][2],  // 4  // 5
+          numbers::SQRT2 *input[0][1],  // 5  // 6
           2*input[3][3],         // 6  // 7
           2*input[4][4],         // 7  // 8
           2*input[5][5],         // 8  // 9
@@ -3296,9 +3296,9 @@ namespace aspect
           2*input[1][3],         // 15 // 16
           2*input[2][4],         // 16 // 17
           2*input[0][5],         // 17 // 18
-          2*sqrt(2)*input[4][5], // 18 // 19
-          2*sqrt(2)*input[3][5], // 19 // 20
-          2*sqrt(2)*input[3][4]  // 20 // 21
+          2*numbers::SQRT2 *input[4][5], // 18 // 19
+          2*numbers::SQRT2 *input[3][5], // 19 // 20
+          2*numbers::SQRT2 *input[3][4] // 20 // 21
         });
 
       }
@@ -3348,9 +3348,9 @@ namespace aspect
           input_tensor[0][0][0][0],           // 0  // 1
           input_tensor[1][1][1][1],           // 1  // 2
           input_tensor[2][2][2][2],           // 2  // 3
-          sqrt(2)*0.5*(input_tensor[1][1][2][2] + input_tensor[2][2][1][1]),   // 3  // 4
-          sqrt(2)*0.5*(input_tensor[0][0][2][2] + input_tensor[2][2][0][0]),   // 4  // 5
-          sqrt(2)*0.5*(input_tensor[0][0][1][1] + input_tensor[1][1][0][0]),   // 5  // 6
+          numbers::SQRT2*0.5*(input_tensor[1][1][2][2] + input_tensor[2][2][1][1]),   // 3  // 4
+          numbers::SQRT2*0.5*(input_tensor[0][0][2][2] + input_tensor[2][2][0][0]),   // 4  // 5
+          numbers::SQRT2*0.5*(input_tensor[0][0][1][1] + input_tensor[1][1][0][0]),   // 5  // 6
           0.5*(input_tensor[1][2][1][2]+input_tensor[1][2][2][1]+input_tensor[2][1][1][2]+input_tensor[2][1][2][1]),         // 6  // 7
           0.5*(input_tensor[0][2][0][2]+input_tensor[0][2][2][0]+input_tensor[2][0][0][2]+input_tensor[2][0][2][0]),         // 7  // 8
           0.5*(input_tensor[1][0][1][0]+input_tensor[1][0][0][1]+input_tensor[0][1][1][0]+input_tensor[0][1][0][1]),         // 8  // 9
@@ -3363,9 +3363,9 @@ namespace aspect
           0.5*(input_tensor[1][1][1][2]+input_tensor[1][1][2][1]+input_tensor[1][2][1][1]+input_tensor[2][1][1][1]),         // 15 // 16
           0.5*(input_tensor[2][2][0][2]+input_tensor[2][2][2][0]+input_tensor[0][2][2][2]+input_tensor[2][0][2][2]),         // 16 // 17
           0.5*(input_tensor[0][0][0][1]+input_tensor[0][0][1][0]+input_tensor[0][1][0][0]+input_tensor[1][0][0][0]),         // 17 // 18
-          sqrt(2)*0.25*(input_tensor[0][2][0][1]+input_tensor[0][2][1][0]+input_tensor[2][0][0][1]+input_tensor[2][0][1][0]+input_tensor[0][1][0][2]+input_tensor[0][1][2][0]+input_tensor[1][0][0][2]+input_tensor[1][0][2][0]), // 18 // 19
-          sqrt(2)*0.25*(input_tensor[1][2][0][1]+input_tensor[1][2][1][0]+input_tensor[2][1][0][1]+input_tensor[2][1][1][0]+input_tensor[0][1][1][2]+input_tensor[0][1][2][1]+input_tensor[1][0][1][2]+input_tensor[1][0][2][1]), // 19 // 20
-          sqrt(2)*0.25*(input_tensor[1][2][0][2]+input_tensor[1][2][2][0]+input_tensor[2][1][0][2]+input_tensor[2][1][2][0]+input_tensor[0][2][1][2]+input_tensor[0][2][2][1]+input_tensor[2][0][1][2]+input_tensor[2][0][2][1])  // 20 // 21
+          numbers::SQRT2*0.25*(input_tensor[0][2][0][1]+input_tensor[0][2][1][0]+input_tensor[2][0][0][1]+input_tensor[2][0][1][0]+input_tensor[0][1][0][2]+input_tensor[0][1][2][0]+input_tensor[1][0][0][2]+input_tensor[1][0][2][0]), // 18 // 19
+          numbers::SQRT2*0.25*(input_tensor[1][2][0][1]+input_tensor[1][2][1][0]+input_tensor[2][1][0][1]+input_tensor[2][1][1][0]+input_tensor[0][1][1][2]+input_tensor[0][1][2][1]+input_tensor[1][0][1][2]+input_tensor[1][0][2][1]), // 19 // 20
+          numbers::SQRT2*0.25*(input_tensor[1][2][0][2]+input_tensor[1][2][2][0]+input_tensor[2][1][0][2]+input_tensor[2][1][2][0]+input_tensor[0][2][1][2]+input_tensor[0][2][2][1]+input_tensor[2][0][1][2]+input_tensor[2][0][2][1])  // 20 // 21
         });
 
       }
