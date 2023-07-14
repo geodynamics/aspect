@@ -408,10 +408,10 @@ namespace aspect
 
 
   template <int dim>
-  const std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim>>> &
-  SimulatorAccess<dim>::get_boundary_traction () const
+  const BoundaryTraction::Manager<dim> &
+  SimulatorAccess<dim>::get_boundary_traction_manager () const
   {
-    return simulator->boundary_traction;
+    return simulator->boundary_traction_manager;
   }
 
 

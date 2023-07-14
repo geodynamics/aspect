@@ -1025,22 +1025,20 @@ namespace aspect
 
       const typename DoFHandler<dim>::face_iterator face = cell->face(face_no);
 
-      if (this->get_boundary_traction()
+      if (this->get_boundary_traction_manager().get_active_boundary_traction_names()
           .find (face->boundary_id())
           !=
-          this->get_boundary_traction().end())
+          this->get_boundary_traction_manager().get_active_boundary_traction_names().end())
         {
           scratch.face_finite_element_values.reinit (cell, face_no);
 
           for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
             {
               const Tensor<1,dim> traction
-                = this->get_boundary_traction().find(
-                    face->boundary_id()
-                  )->second
-                  ->boundary_traction (face->boundary_id(),
-                                       scratch.face_finite_element_values.quadrature_point(q),
-                                       scratch.face_finite_element_values.normal_vector(q));
+                = this->get_boundary_traction_manager().
+                  boundary_traction (face->boundary_id(),
+                                     scratch.face_finite_element_values.quadrature_point(q),
+                                     scratch.face_finite_element_values.normal_vector(q));
 
               for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
                 {
@@ -1676,7 +1674,7 @@ namespace aspect
       std::make_unique<aspect::Assemblers::MeltStokesSystemBoundary<dim>>());
 
     // add the terms for traction boundary conditions
-    if (!this->get_boundary_traction().empty())
+    if (!this->get_boundary_traction_manager().get_active_boundary_traction_names().empty())
       {
         assemblers.stokes_system_on_boundary_face.push_back(
           std::make_unique<Assemblers::MeltBoundaryTraction<dim>> ());
