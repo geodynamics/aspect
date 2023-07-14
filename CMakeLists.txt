@@ -171,12 +171,13 @@ if(ASPECT_WITH_WORLD_BUILDER)
 
     # generate config.cc and include it:
     IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
-      CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/source/world_builder/config.cc" @ONLY)
+      CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in"
+                     "${CMAKE_BINARY_DIR}/source/world_builder/config.cc" @ONLY)
       LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
       FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder/config.h")
     ELSE()
-      Message(STATUS "C ${CMAKE_BINARY_DIR}")
-      CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/include/world_builder/config.h.in" "${CMAKE_BINARY_DIR}/include/world_builder/config.h" @ONLY)
+      CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/include/world_builder/config.h.in"
+                     "${CMAKE_BINARY_DIR}/include/world_builder/config.h" @ONLY)
       INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/include/")
       FILE(REMOVE "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
     ENDIF()
