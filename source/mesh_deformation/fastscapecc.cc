@@ -44,9 +44,9 @@ namespace aspect
       array_size = nx*ny;
 
       // Sub intervals are 3 less than points, if including the ghost nodes. Otherwise 1 less.
-      table_intervals[0] = 5 ;
+      table_intervals[0] = nx ;
       table_intervals[dim-1] = 1;
-      table_intervals[1] = 5;
+      table_intervals[1] = ny;
 
       const GeometryModel::Box<dim> *geometry
         = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
@@ -106,7 +106,7 @@ namespace aspect
 
                     // Find what x point we're at. Add 1 or 2 depending on if ghost nodes are used.
                     // Subtract the origin point so that it corresponds to an origin of 0,0 in FastScape.
-                    const double indx = 1+(vertex(0) - grid_extent[0].first)/20000;
+                    const double indx = 1+(vertex(0) - grid_extent[0].first)/dx;
 
                     // If our x or y index isn't close to a whole number, then it's likely an artifact
                     // from using an over-resolved quadrature rule, in that case ignore it.
@@ -117,7 +117,7 @@ namespace aspect
                     // If we're in 2D, we want to take the values and apply them to every row of X points.
                     if (dim == 2)
                       {
-                        for (int ys=0; ys<5; ++ys)
+                        for (int ys=0; ys<ny; ++ys)
                           {
                             // FastScape indexes from 1 to n, starting at X and Y = 0, and increases
                             // across the X row. At the end of the row, it jumps back to X = 0
@@ -125,7 +125,7 @@ namespace aspect
                             // this to correctly place the variables later on.
                             // Nx*ys effectively tells us what row we are in
                             // and then indx tells us what position in that row.
-                            const double index = round(indx)+5*ys;
+                            const double index = round(indx)+nx*ys;
 
                             temporary_variables[0].push_back(vertex(dim-1) - grid_extent[dim-1].second);
                             temporary_variables[1].push_back(index-1);
@@ -141,12 +141,12 @@ namespace aspect
                     else
                       {
                         // Because indy only gives us the row we're in, we don't need to add 2 for the ghost node.
-                        const double indy = 1+(vertex(1) - grid_extent[1].first)/20000;
+                        const double indy = 1+(vertex(1) - grid_extent[1].first)/dx;
 
                         if (abs(indy - round(indy)) >= precision)
                           continue;
 
-                        const double index = round((indy-1))*5+round(indx);
+                        const double index = round((indy-1))*nx+round(indx);
 
                         temporary_variables[0].push_back(vertex(dim-1) - grid_extent[dim-1].second);   //z component
                         temporary_variables[1].push_back(index-1);
@@ -239,7 +239,7 @@ namespace aspect
       // raster grid and boundary conditions
       fastscapelib::raster_boundary_status bs(fastscapelib::node_status::fixed_value);
 
-      auto grid = fastscapelib::raster_grid::from_length({ 5, 5 }, { 100000, 100000}, bs);
+      auto grid = fastscapelib::raster_grid::from_length({ static_cast<unsigned long>(nx), static_cast<unsigned long>(ny) }, { x_extent, y_extent}, bs);
 
       // flow graph with single direction flow routing
       fastscapelib::flow_graph<fastscapelib::raster_grid> flow_graph(
@@ -275,7 +275,7 @@ namespace aspect
       auto col_bounds = xt::view(uplift_rate, xt::all(), xt::keep(0, -1));
       col_bounds = 0.0;
 
-      std::vector<std::size_t> shape = { 5, 5 };
+      std::vector<std::size_t> shape = { static_cast<unsigned long>(nx), static_cast<unsigned long>(ny) };
       auto elevation = xt::adapt(h, shape);
       auto elevation_old = xt::adapt(h_old, shape);
 
@@ -344,7 +344,7 @@ namespace aspect
         }
 
       // Initialize a table to hold all velocity values that will be interpolated back to ASPECT.
-      Table<dim,double> velocity_table = fill_data_table(V, size_idx, 5, 5);
+      Table<dim,double> velocity_table = fill_data_table(V, size_idx, nx, ny);
 
       // As our grid_extent variable end points do not account for the change related to an origin
       // not at 0, we adjust this here into an interpolation extent.
@@ -405,7 +405,7 @@ namespace aspect
                   idx[0] = j;
 
                   // Convert back to m/s.
-                  data_table(idx) = values[(5+1)+5*i+j] / year_in_seconds;
+                  data_table(idx) = values[(nx+1)+nx*i+j] / year_in_seconds;
 
                 }
             }
