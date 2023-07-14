@@ -57,7 +57,7 @@ namespace aspect
       };
 
       /**
-       * Additional output fields for the the material type, decribing if we are in the
+       * Additional output fields for the the material type, describing if we are in the
        * crust/lithosphere/asthenosphere/lower mantle.
        */
       template <int dim>
@@ -259,7 +259,7 @@ namespace aspect
       // the largest depth in the profile).
       double reference_viscosity = reference_viscosity_profile->compute_viscosity(reference_viscosity_coordinates.at(depth_index));
 
-      // By default, ashtenosphere_viscosity is set to the value in the reference profile.
+      // By default, ashtenosphere_viscosity is set to the second layer in the reference profile.
       if (depth_index == 1)
         reference_viscosity = asthenosphere_viscosity;
 
@@ -372,7 +372,7 @@ namespace aspect
           // TODO: if we update the interface of the diffusion_viscosity and dislocation_viscosity functions,
           // we don't need this vector anymore
           std::vector<double> composition (in.composition[i]);
-          double grain_size = in.composition[i][this->introspection().compositional_index_for_name("grain_size")];
+          double grain_size = in.composition[i][grain_size_index];
           grain_size = std::max(min_grain_size, grain_size);
 
           // Only consider dislocation creep and equilibrium grain size if we have a sufficient strain rate
@@ -438,8 +438,10 @@ namespace aspect
                 out.viscosities[i] *= compute_viscosity_scaling(this->get_geometry_model().depth(in.position[i]));
             }
 
+          // We assume a constant lithospheric viscosity if using constant thickness lithosphere
+          // based on Tutu et al., (2018).
           if (use_constant_lithosphere_thickness && depth <= lithosphere_thickness)
-            out.viscosities[i] = 1e24; // Tutu et al., (2018)
+            out.viscosities[i] = 1e24;
 
           // Ensure we respect viscosity bounds
           out.viscosities[i] = std::min(std::max(min_eta, out.viscosities[i]),max_eta);
@@ -894,9 +896,6 @@ namespace aspect
         const_cast<std::shared_ptr<const aspect::InitialTemperature::Manager<dim>>&>(initial_temperature_manager)
           = this->get_initial_temperature_manager_pointer();
 
-      if (initial_temperature_manager == nullptr)
-        const_cast<std::shared_ptr<const aspect::InitialTemperature::Manager<dim>>&>(initial_temperature_manager)
-          = this->get_initial_temperature_manager_pointer();
       const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
         initial_temperature_manager->template get_matching_initial_temperature_model<InitialTemperature::AdiabaticBoundary<dim>>();
 
@@ -987,7 +986,6 @@ namespace aspect
             {
               // Temperature and density of the upper part of the mantle are computed separately,
               // based on Tutu et al. (2018).
-              // Reference temperature is 20 C in Tutu et al. (2018).
               double deltaT  = new_temperature - 293.;
 
               unsigned int material_type = 0;
@@ -1040,7 +1038,7 @@ namespace aspect
                   if (use_depth_dependent_rho_vs)
                     density_vs_scaling = rho_vs_depth_profile.get_data_component(Point<1>(depth), density_scaling_index);
                   else
-                    // Values from Becker [2006], GJI
+                    // Values from Becker (2006), GJI
                     density_vs_scaling = 0.15;
 
                   double density_anomaly = delta_log_vs * density_vs_scaling;
@@ -1177,12 +1175,6 @@ namespace aspect
                              "A flag indicating whether the computation should use the equilibrium grain size "
                              "when computing the viscosity (if true), or use a constant grain size instead (if "
                              "false).");
-          prm.declare_entry ("Use paleowattmeter", "true",
-                             Patterns::Bool (),
-                             "A flag indicating whether the computation should use the "
-                             "paleowattmeter approach of Austin and Evans (2007) for grain size reduction "
-                             "in the dislocation creep regime (if true) or the paleopiezometer approach "
-                             "from Hall and Parmetier (2003) (if false).");
           prm.declare_entry ("Average specific grain boundary energy", "1.0",
                              Patterns::List (Patterns::Double(0)),
                              "The average specific grain boundary energy $\\gamma$. "
@@ -1263,22 +1255,6 @@ namespace aspect
                              Patterns::Double (0),
                              "The maximum viscosity that is allowed in the whole model domain. "
                              "Units: \\si{\\pascal\\second}.");
-          prm.declare_entry ("Minimum specific heat", "500",
-                             Patterns::Double (0),
-                             "The minimum specific heat that is allowed in the whole model domain. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
-          prm.declare_entry ("Maximum specific heat", "6000",
-                             Patterns::Double (0),
-                             "The maximum specific heat that is allowed in the whole model domain. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
-          prm.declare_entry ("Minimum thermal expansivity", "1e-5",
-                             Patterns::Double (),
-                             "The minimum thermal expansivity that is allowed in the whole model domain. "
-                             "Units: \\si{\\per\\kelvin}.");
-          prm.declare_entry ("Maximum thermal expansivity", "1e-3",
-                             Patterns::Double (),
-                             "The maximum thermal expansivity that is allowed in the whole model domain. "
-                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/material-model/steinberger/",
                              Patterns::DirectoryName (),
                              "The path to the model data. The path may also include the special "
@@ -1387,19 +1363,19 @@ namespace aspect
           Rheology::AsciiDepthProfile<dim>::declare_parameters(prm);
 
           // Depth-dependent density scaling parameters
-          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "../../input_data/", "rho_vs_scaling.txt",
+          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/", "rho_vs_scaling.txt",
                                                             "Density velocity scaling");
 
           // Depth-dependent density scaling parameters
-          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "../../input_data/", "dT_vs_scaling.txt",
+          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/", "dT_vs_scaling.txt",
                                                             "Temperature velocity scaling");
 
           // Depth-dependent thermal expansivity parameters
-          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "../../input_data/",
+          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/",
                                                             "thermal_expansivity_steinberger_calderwood.txt", "Thermal expansivity profile");
 
           // Crustal boundary depths parameters
-          Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "../../input_data/",
+          Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "$ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/",
                                                                 "crustal_structure.txt", "Crustal depths");
         }
         prm.leave_subsection();
@@ -1466,7 +1442,6 @@ namespace aspect
                                                   (Utilities::split_string_list(prm.get ("Reciprocal required strain")));
           equilibrate_grain_size                = prm.get_bool ("Use equilibrium grain size");
 
-          use_paleowattmeter                    = prm.get_bool ("Use paleowattmeter");
           grain_boundary_energy                 = Utilities::string_to_double
                                                   (Utilities::split_string_list(prm.get ("Average specific grain boundary energy")));
           boundary_area_change_work_fraction    = Utilities::string_to_double
@@ -1498,10 +1473,6 @@ namespace aspect
           max_temperature_dependence_of_eta     = prm.get_double ("Maximum temperature dependence of viscosity");
           min_eta                               = prm.get_double ("Minimum viscosity");
           max_eta                               = prm.get_double ("Maximum viscosity");
-          min_specific_heat                     = prm.get_double ("Minimum specific heat");
-          max_specific_heat                     = prm.get_double ("Maximum specific heat");
-          min_thermal_expansivity               = prm.get_double ("Minimum thermal expansivity");
-          max_thermal_expansivity               = prm.get_double ("Maximum thermal expansivity");
 
           if (grain_growth_activation_energy.size() != grain_growth_activation_volume.size() ||
               grain_growth_activation_energy.size() != grain_growth_rate_constant.size() ||
@@ -1519,7 +1490,7 @@ namespace aspect
                         ExcMessage("Error: The lists of grain size evolution and flow law parameters "
                                    "need to have the same length!"));
 
-          if (use_paleowattmeter)
+          if (equilibrate_grain_size)
             {
               if (grain_growth_activation_energy.size() != grain_boundary_energy.size() ||
                   grain_growth_activation_energy.size() != boundary_area_change_work_fraction.size() ||
@@ -1528,10 +1499,6 @@ namespace aspect
                             ExcMessage("Error: One of the lists of grain size evolution parameters "
                                        "given for the paleowattmeter does not have the correct length!"));
             }
-          else
-            AssertThrow(grain_growth_activation_energy.size() == reciprocal_required_strain.size(),
-                        ExcMessage("Error: The list of grain size evolution parameters in the "
-                                   "paleopiezometer does not have the correct length!"));
 
           AssertThrow(grain_growth_activation_energy.size() == transition_depths.size()+1,
                       ExcMessage("Error: The lists of grain size evolution and flow law parameters need to "

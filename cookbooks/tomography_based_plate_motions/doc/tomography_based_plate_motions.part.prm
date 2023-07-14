@@ -9,7 +9,7 @@ subsection Initial composition model
 
   subsection Ascii data model
     set Data directory = ../../input_data/
-    set Data file name = LLNL_model_cropped_cratons_faults.txt
+    set Data file name = LLNL_model_cropped_cratons_faults.txt.gz
     set Slice dataset in 2D plane = true
   end
 
@@ -23,10 +23,10 @@ subsection Temperature field
 end
 
 subsection Material model
-  set Model name         = equilibrium grain size
+  set Model name         = tomography based plate motions
   set Material averaging = harmonic average only viscosity
 
-  subsection Equilibrium grain size model
+  subsection Tomography based plate motions model
    set Uppermost mantle thickness                  = 300000
 
    set Use depth dependent viscosity               = true

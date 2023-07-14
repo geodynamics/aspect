@@ -12,7 +12,7 @@ In this cookbook, the input tomography data uses the LLNL-G3D-JPS model {cite}`s
 ```{literalinclude} input_tomography.part.txt
 ```
 
-where grain_size is set to a constant value of 5mm, Vp and Vs are the P- and S-wave seismic velocities, respectively, Vs_anomaly is the S-wave velocity anomaly relative a reference velocity profile, faults represent the composition value at plate boundaries, and cratons represent the composition value within the continental cratons. Both faults and cratons have composition values set to 0 in this ASCII file because they are defined separately using the Geodynamics World Builder (GWB) {cite}`Fraters2019c` and the input file `cookbooks/tomography_based_plate_motions/input_file/world_builder_smac_cratons_faults_2D.json`.
+where grain_size is set to a constant value of 5mm, Vp and Vs are the P- and S-wave seismic velocities, respectively, Vs_anomaly is the S-wave velocity anomaly relative to a reference velocity profile, faults represent the composition value at plate boundaries, and cratons represent the composition value within the continental cratons. Both faults and cratons have composition values set to 0 in this ASCII file because they are defined separately using the Geodynamics World Builder (GWB) {cite}`Fraters2019c` and the input file `cookbooks/tomography_based_plate_motions/input_file/world_builder_smac_cratons_faults_2D.json`.
 
 For defining plate boundary geometry, we use the Nuvel model{cite}`demets:etal:1990` input as `fault` features and the locations of cratons taken from{cite}`nataf:etal:1996` input as `continental plate` features regions in GWB {cite}`Fraters2019c`. The compositional value of faults transitions smoothly from 1 at the fault trace to 0 over a width of 50 km on either side of the fault. We do this to ensure that the prescribed plate boundary viscosity which is based on the fault composition is also smooth.
 Note that while the input file includes plate boundary geometry and cratons for the whole Earth, we only compute the compositions along a cross-section in this cookbook.
@@ -46,7 +46,7 @@ The model defines different viscosities at the plate boundaries and  within the 
 ## Running the model
 The plugin that implements the material properties described above is `tomography_based_plate_motions.cc` located in [cookbooks/tomography_based_plate_motions/plugins][https://www.github.com/geodynamics/aspect/blob/main/cookbooks/tomography_based_plate_motions/plugins] directory, and can be compiled with
 `cmake . && make` in the this directory.
-The model can then be run using the prm file [2D_slice_with_faults_and_cratons.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/tomography_based_plate_motions/models/tests/2D_slice_with_faults_and_cratons.prm). The sections relevant to this cookbook are:
+The model can then be run using the prm file [2D_slice_with_faults_and_cratons.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/tomography_based_plate_motions/models/2D_slice_with_faults_and_cratons.prm). The sections relevant to this cookbook are:
 
 ```{literalinclude} tomography_based_model.part.prm
 ```

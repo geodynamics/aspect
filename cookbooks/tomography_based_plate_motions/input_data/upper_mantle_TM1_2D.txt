@@ -1,4 +1,7 @@
-# 2D version of the TM1 dataset, using the theta value closest to pi/2. 
+# 2D version of the TM1 dataset from Osei Tutu et al. 2018, using the theta value closest to pi/2.
+# Osei Tutu, A., Sobolev, S. V., Steinberger, B., Popov, A. A., & Rogozhina, I., (2018).
+# Evaluating the influence of plate boundary friction and mantle
+# viscosity on plate velocities. Geochemistry, Geophysics, Geosystems, 19 (3), 642–666 
 # Only next line is parsed in format: [nx] [ny] [nz] because of keyword "POINTS:"
 # POINTS: 9 360
 # Columns: r phi temperature [K] 

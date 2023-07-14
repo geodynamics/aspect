@@ -34,9 +34,16 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A model in which the adiabatic profile is
+     * A model similar to the compute profile model
+     * in which the adiabatic profile is
      * calculated by solving the hydrostatic equations for
      * pressure and temperature in depth.
+     * The difference is that we use densities from
+     * an input reference profile to be consistent
+     * with the reference seismic profile against which
+     * the tomography model is generated.
+     * In regions where we do not use tomography model,
+     * the reference densities come from the material model.
      * The gravity is assumed to be in depth direction
      * and the composition is either given by the initial
      * composition at reference points or computed
