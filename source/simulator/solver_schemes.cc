@@ -1372,8 +1372,7 @@ namespace aspect
                                                   newton_handler->parameters.nonlinear_switch_tolerance);
 
     // Now iterate out the nonlinearities.
-    dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
-                                                      numbers::signaling_nan<double>());
+    dcr.stokes_residuals = {numbers::signaling_nan<double>(), numbers::signaling_nan<double>()};
 
     double relative_residual = std::numeric_limits<double>::max();
     nonlinear_iteration = 0;
