@@ -1344,7 +1344,7 @@ namespace aspect
 
       template <int dim>
       const std::vector<std::string> &
-      PhaseFunctionLookup<dim>::transition_lookup_phase_names () const
+      PhaseFunctionLookup<dim>::get_phase_names () const
       {
         return transition_lookup_phases;
       }

@@ -276,11 +276,11 @@ namespace aspect
         std::vector<double> thermal_diffusivities;
 
         /**
-         * String describing whether to use the lookup tables
+         * boolean describing whether to use the lookup tables
          * for computing the viscosity, rather than the temperature
          * or pressure.
          */
-        std::string material_lookup_setting;
+        bool enable_material_lookup;
 
         /**
          * Whether to use user-defined thermal conductivities instead of thermal diffusivities.

@@ -669,11 +669,9 @@ namespace aspect
       };
 
       /**
-       * A class that bundles functionality to compute the values and
-       * derivatives of phase functions based on lookup tables. The
-       * class can handle arbitrary numbers of phase transitions, but
-       * the calling side has to determine how to use the return
-       * values of this object (e.g. in terms of density or viscosity).
+       * A class to compute the values of phase functions 
+       * based on lookup tables. The class can handle 
+       * an arbitrary numbers of phase transitions.
        */
       template <int dim>
       class PhaseFunctionLookup: public ::aspect::SimulatorAccess<dim>
@@ -683,7 +681,7 @@ namespace aspect
            * Return vector of phase names used from lookup table.
            */
           const std::vector<std::string> &
-          transition_lookup_phase_names () const;
+          get_phase_names () const;
 
           /**
            * Return the total number of phases.
@@ -725,7 +723,7 @@ namespace aspect
 
         private:
           /**
-           * A vector that stores names of .
+           * A vector that stores names of phases used to set phase functions.
            */
           std::vector<std::string> transition_lookup_phases;
 
