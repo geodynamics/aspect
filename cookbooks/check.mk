@@ -17,34 +17,39 @@ then \
 fi; \
 make_lib() { \
 cd $$1; \
-if [[ -e CMakeLists.txt ]]; \
-then \
-  echo "building plugin in `pwd` using ${BUILD}..."; \
+base_path=`pwd`; \
+for file in `find . -name CMakeLists.txt`; do \
+  echo "building plugin in `dirname $${file}` using ${BUILD}..."; \
+  cd `dirname $${file}`; \
   rm -rf CMakeCache.txt CMakeFiles; \
   cmake -D Aspect_DIR=${BUILD} -G "Unix Makefiles" -D CMAKE_CXX_FLAGS='-Werror' . >/dev/null || { echo "cmake in `pwd` failed!"; return 1; }; \
   make >/dev/null || { echo "make in `pwd` failed!"; return 2; }; \
   echo "done building plugin in `pwd`"; \
-fi; \
+  cd $${base_path}; \
+done; \
 };\
 run_prm() { \
-cd $$1; \
+dir=$$1; \
 prm=$$2; \
-echo "    running $$prm in `pwd` ..."; \
+echo "    running $$prm in $$dir ..."; \
+basepath=`pwd`; \
+cd $$dir; \
 [[ -f $$prm ]] || { echo "File '$$prm' missing in `pwd`."; return 7; }; \
 cp $$prm $$prm.tmp || return 5; \
 echo "set End time=0" >> $$prm.tmp; \
 echo "set Max nonlinear iterations = 5" >> $$prm.tmp; \
 ${BUILD}/aspect ${CHECK} $$prm.tmp >/dev/null || { rm -f $$prm.tmp; echo "run of $$prm failed"; return 2; }; \
 rm -f $$prm.tmp; \
+cd $${basepath}; \
 }; \
 run_all_prms() { \
+echo "  running all prms in $$1 ..."; \
 cd $$1; \
-echo "  running all prms in `pwd` ..."; \
-for prm in *.prm; \
+for prm in `find . -name "*.prm" -not -path "*doc*"`; \
   do \
-    run_prm . $$prm || return 4; \
+    run_prm `dirname $${prm}` `basename $${prm}` || return 4; \
   done; \
-echo "  running all prms in `pwd` done"; \
+echo "  running all prms in $$1 done"; \
 }
 
 allsubdirs:= $(wildcard */)
@@ -70,17 +75,12 @@ mainprms:= $(wildcard *.prm)
 
 main: dummy $(mainprms)
 
-
 #
 #
 # Custom rules. Make them dependent on dummy like this:
 #
 # example/: dummy
 #	@$(def); run_prm $@ test.prm
-
-free_surface_with_crust/: dummy
-	+@$(def); make_lib $@/plugin
-	@$(def); run_all_prms $@
 
 # This does not run without generating an input file using a python script
 prescribed_velocity_ascii_data/: dummy

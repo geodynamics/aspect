@@ -17,32 +17,37 @@ then \
 fi; \
 make_lib() { \
 cd $$1; \
-if [[ -e CMakeLists.txt ]]; \
-then \
-  echo "building plugin in `pwd` using ${BUILD}..."; \
+base_path=`pwd`; \
+for file in `find . -name CMakeLists.txt`; do \
+  echo "building plugin in `dirname $${file}` using ${BUILD}..."; \
+  cd `dirname $${file}`; \
   rm -rf CMakeCache.txt CMakeFiles; \
   cmake -D Aspect_DIR=${BUILD} -G "Unix Makefiles" -D CMAKE_CXX_FLAGS='-Werror' . >/dev/null || { echo "cmake in `pwd` failed!"; return 1; }; \
   make >/dev/null || { echo "make in `pwd` failed!"; return 2; }; \
   echo "done building plugin in `pwd`"; \
-fi; \
+  cd $${base_path}; \
+done; \
 };\
 run_prm() { \
-cd $$1; \
+dir=$$1; \
 prm=$$2; \
-echo "    running $$prm in `pwd` ..."; \
+echo "    running $$prm in $$dir ..."; \
+basepath=`pwd`; \
+cd $$dir; \
 [[ -f $$prm ]] || { echo "File '$$prm' missing in `pwd`."; return 7; }; \
 cp $$prm $$prm.tmp || return 5; \
 echo "set End time=0" >> $$prm.tmp; \
 echo "set Max nonlinear iterations = 5" >> $$prm.tmp; \
 ${BUILD}/aspect ${CHECK} $$prm.tmp >/dev/null || { rm -f $$prm.tmp; echo "run of $$prm failed"; return 2; }; \
 rm -f $$prm.tmp; \
+cd $${basepath}; \
 }; \
 run_all_prms() { \
+echo "  running all prms in $$1 ..."; \
 cd $$1; \
-echo "  running all prms in `pwd` ..."; \
-for prm in *.prm; \
+for prm in `find . -name "*.prm" -not -path "*doc*"`; \
   do \
-    run_prm . $$prm || return 4; \
+    run_prm `dirname $${prm}` `basename $${prm}` || return 4; \
   done; \
 echo "  running all prms in `pwd` done"; \
 }
@@ -74,33 +79,6 @@ main: dummy
 # example/: dummy
 #	@$(def); run_prm $@ test.prm
 
-annulus/: dummy
-	+@$(def); make_lib $@/plugin
-	@$(def); run_all_prms $@/instantaneous
-	@$(def); run_all_prms $@/transient
-
-blankenbach/: dummy
-	+@$(def); make_lib $@/plugin
-	@$(def); run_all_prms $@
-
-crameri_et_al/:  dummy
-	+@$(def); make_lib $@/case_1
-	@$(def); run_all_prms $@/case_1
-	@$(def); run_all_prms $@/case_2
-
-davies_et_al/: dummy
-	+@$(def); make_lib $@/case-2.3-plugin
-	@$(def); run_prm $@ case-2.1.prm
-	@$(def); run_all_prms $@
-
-entropy_adiabat/: dummy
-	+@$(def); make_lib $@/plugins
-	@$(def); run_all_prms $@
-
-free_surface_tractions/: dummy
-	@$(def); run_all_prms $@/viscoelastic
-	@$(def); run_all_prms $@/viscous
-
 # default file is too fine:
 geoid-spectral-comparison/: dummy
 	@$(def); run_prm $@ spectral-comparison.prm "subsection Mesh refinement\n set Initial global refinement=2\n end"
@@ -109,7 +87,6 @@ inclusion/: dummy
 	+@$(def); make_lib $@
 	@$(def); run_prm $@ global.prm.base
 	@$(def); run_prm $@ adaptive.prm.base
-	+@$(def); make_lib $@/compositional_fields
 	@$(def); run_all_prms $@/compositional_fields
 
 newton_solver_benchmark_set/: dummy tosi_et_al_2015_gcubed/
@@ -124,51 +101,11 @@ newton_solver_benchmark_set/: dummy tosi_et_al_2015_gcubed/
 onset-of-convection/: dummy
 	@echo "TODO"
 
-operator_splitting/: dummy
-	+@$(def); make_lib $@/advection_reaction
-	@$(def); run_all_prms $@/advection_reaction
-	+@$(def); make_lib $@/exponential_decay
-	@$(def); run_all_prms $@/exponential_decay
-
-rayleigh_taylor_instability/: dummy
-	+@$(def); make_lib $@
-	@$(def); run_prm $@ rayleigh_taylor_instability.prm
-
-rigid_shear/: dummy
-	+@$(def); make_lib $@/plugin
-	@$(def); run_all_prms $@/instantaneous
-	@$(def); run_all_prms $@/steady-state
-	@$(def); run_all_prms $@/transient
-
-sinking_block/: dummy
-	+@$(def); make_lib $@
-	@$(def); run_prm $@ sinking_block.prm
-
-solcx/: dummy
-	+@$(def); make_lib $@
-	@$(def); run_all_prms $@
-	+@$(def); make_lib $@/compositional_fields
-	@$(def); run_all_prms $@/compositional_fields
-
-solkz/: dummy
-	+@$(def); make_lib $@
-	@$(def); run_all_prms $@
-	+@$(def); make_lib $@/compositional_fields
-	@$(def); run_all_prms $@/compositional_fields
-
-solubility/: dummy
-	+@$(def); make_lib $@/plugin
-	@$(def); run_prm $@ solubility.prm
-
 tangurnis/: dummy
 	+@$(def); make_lib $@/code
 	@$(def); run_prm $@ ba/tan.prm
 	@$(def); run_prm $@ tala/tan.prm
 	@$(def); run_prm $@ tala_c/tan.prm
-
-time_dependent_annulus/: dummy
-	+@$(def); make_lib $@/plugin
-	@$(def); run_all_prms $@
 
 compressibility_formulations/: dummy
 	+@$(def); make_lib $@/plugins
@@ -177,10 +114,6 @@ compressibility_formulations/: dummy
 	@$(def); run_prm $@/lateral_pipe_increase_pressure lateral_pipe.prm
 	@$(def); run_prm $@/lateral_pipe_transient lateral_pipe.prm
 	@$(def); run_prm $@/vertical_pipe vertical_pipe.prm
-
-viscoelastic_plastic_shear_bands/: dummy
-	@$(def); run_all_prms $@/gerya_2019
-	@$(def); run_all_prms $@/kaus_2010
 
 # amg.prm does not converge with a coarse mesh
 nsinker_spherical_shell/: dummy
