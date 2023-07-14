@@ -3369,6 +3369,27 @@ namespace aspect
         });
 
       }
+
+
+      template <>
+      const Tensor<3,3> &levi_civita<3>()
+      {
+        static const Tensor<3,3> t =
+          []()
+        {
+          Tensor<3,3> permutation_operator_3d;
+
+          permutation_operator_3d[0][1][2]  = 1;
+          permutation_operator_3d[1][2][0]  = 1;
+          permutation_operator_3d[2][0][1]  = 1;
+          permutation_operator_3d[0][2][1]  = -1;
+          permutation_operator_3d[1][0][2]  = -1;
+          permutation_operator_3d[2][1][0]  = -1;
+          return permutation_operator_3d;
+        }();
+
+        return t;
+      }
     }
 
 
