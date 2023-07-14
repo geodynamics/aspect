@@ -1116,10 +1116,7 @@ TEST_CASE("CPO elastic tensor")
   cpo.parse_parameters(prm);
   cpo.initialize();
 
-
   cpo_elastic_tensor.parse_parameters(prm);
-  //cpo_elastic_tensor.initialize();
-
 
   // All these numbers are directly from the Fortran D-Rex
   // Had to fix the random seed to get consistent results.
@@ -1402,7 +1399,7 @@ TEST_CASE("CPO elastic tensor")
                                37
                               };
 
-  // There used be be 36 unique entries, but now because we are using the
+  // There used to be 36 unique entries, but now because we are using the
   // symmetric tensor, there are only 21 unique entries.
   std::vector<double> array_plus_100 = {0.0,
                                         101.,102.,103.,104.,105.,106.,

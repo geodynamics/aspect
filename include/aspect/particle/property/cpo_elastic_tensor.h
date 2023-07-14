@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2022 by the authors of the ASPECT code.
+ Copyright (C) 2023 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -37,8 +37,8 @@ namespace aspect
        * Computes the elastic tensor $C_{ijkl} based on the cpo in both olivine
        * and enstatite. It uses a Voigt average.
        *
-       * The layout of the data vector per partcle is the following (note that
-       * for this plugin the following dim's are always 3):
+       * The layout of the data vector per particle is the following (note that
+       * for this plugin the following dims are always 3):
        * 1 unrolled tensor -> 3x3x3x3 (dim*dim*dim*dim) doubles, starts at:
        *                                   data_position
        *
@@ -60,7 +60,6 @@ namespace aspect
           void
           initialize () override;
 
-
           /**
            * This implements the Voigt averaging as described in the equation at the
            * bottom of page 385 in Mainprice (1990, doi: 10.1016/0098-3004(90)90072-2):
@@ -70,7 +69,6 @@ namespace aspect
            * Mainprice (1990): $C_{ijkl} = R_{ip} R_{jg} R_{kr} R_{is} C_{pgrs}$, where
            * R_{ij} is the cpo orientation matrix.
            */
-          virtual
           SymmetricTensor<2,6>
           voigt_average_elastic_tensor (const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property,
                                         const unsigned int cpo_data_position,
@@ -93,7 +91,7 @@ namespace aspect
 
           /**
            * Update function. This function is called every time an update is
-           * request by need_update() for every particle for every property.
+           * requested by need_update() for every particle for every property.
            *
            * @param [in] data_position An unsigned integer that denotes which
            * component of the particle property vector is associated with the
@@ -120,7 +118,7 @@ namespace aspect
                                         const ArrayView<double> &particle_properties) const override;
 
           /**
-           * This implementation tells the particle manager that
+           * This function tells the particle manager that
            * we need to update particle properties every time step.
            */
           UpdateTimeFlags
@@ -128,7 +126,7 @@ namespace aspect
 
           /**
            * Return which data has to be provided to update the property.
-           * The integrated strains needs the gradients of the velocity.
+           * For example, the strains needs the gradients of the velocity.
            */
           UpdateFlags
           get_needed_update_flags () const override;
@@ -158,7 +156,7 @@ namespace aspect
           void
           set_elastic_tensor(unsigned int cpo_data_position,
                              const ArrayView<double> &data,
-                             SymmetricTensor<2,6> &elastic_tensor);
+                             const SymmetricTensor<2,6> &elastic_tensor);
 
           /**
            * Declare the parameters this class takes through input files.
@@ -168,7 +166,7 @@ namespace aspect
           declare_parameters (ParameterHandler &prm);
 
           /**
-           * Read the parameters this class declares from the parameter file.
+           * Parses the parameters this class declares from the parameter file.
            */
           void
           parse_parameters (ParameterHandler &prm) override;

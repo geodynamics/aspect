@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 by the authors of the ASPECT code.
+  Copyright (C) 2023 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -84,7 +84,7 @@ namespace aspect
                                                            const unsigned int cpo_data_position,
                                                            const ArrayView<double> &data) const
       {
-        SymmetricTensor<2,6,double> Sav;
+        SymmetricTensor<2,6> C_average;
         const SymmetricTensor<2,6> *stiffness_matrix = &stiffness_matrix_olivine;
         for (size_t mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
@@ -110,11 +110,11 @@ namespace aspect
             for (size_t grain_i = 0; grain_i < n_grains; grain_i++)
               {
                 const auto rotated_matrix = Utilities::Tensors::rotate_voigt_stiffness_matrix(transpose(cpo_particle_property.get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i)),*stiffness_matrix);
-                Sav += cpo_particle_property.get_volume_fractions_grains(cpo_data_position,data,mineral_i,grain_i) * cpo_particle_property.get_volume_fraction_mineral(cpo_data_position,data,mineral_i) * rotated_matrix;
+                C_average += cpo_particle_property.get_volume_fractions_grains(cpo_data_position,data,mineral_i,grain_i) * cpo_particle_property.get_volume_fraction_mineral(cpo_data_position,data,mineral_i) * rotated_matrix;
               }
           }
 
-        return Sav;
+        return C_average;
       }
 
 
@@ -157,8 +157,8 @@ namespace aspect
 
 
         const SymmetricTensor<2,6> C_average = voigt_average_elastic_tensor(cpo_particle_property,
-                                                                      cpo_data_position,
-                                                                      data);
+                                                                            cpo_data_position,
+                                                                            data);
 
         Particle::Property::CpoElasticTensor<dim>::set_elastic_tensor(data_position,
                                                                       data,
@@ -186,7 +186,7 @@ namespace aspect
       void
       CpoElasticTensor<dim>::set_elastic_tensor(unsigned int cpo_data_position,
                                                 const ArrayView<double> &data,
-                                                SymmetricTensor<2,6> &elastic_tensor)
+                                                const SymmetricTensor<2,6> &elastic_tensor)
       {
         for (unsigned int i = 0; i < SymmetricTensor<2,6>::n_independent_components ; ++i)
           data[cpo_data_position + i] = elastic_tensor[SymmetricTensor<2,6>::unrolled_to_component_indices(i)];
@@ -201,12 +201,16 @@ namespace aspect
         return update_output_step;
       }
 
+
+
       template <int dim>
       UpdateFlags
       CpoElasticTensor<dim>::get_needed_update_flags () const
       {
         return update_default;
       }
+
+
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
@@ -219,17 +223,19 @@ namespace aspect
         return property_information;
       }
 
+
+
       template <int dim>
       void
       CpoElasticTensor<dim>::declare_parameters (ParameterHandler &)
       {}
 
 
+
       template <int dim>
       void
       CpoElasticTensor<dim>::parse_parameters (ParameterHandler &prm)
       {
-
         prm.enter_subsection("Postprocess");
         {
           prm.enter_subsection("Particles");
@@ -248,8 +254,6 @@ namespace aspect
           prm.leave_subsection ();
         }
         prm.leave_subsection ();
-
-
       }
     }
   }
@@ -266,7 +270,7 @@ namespace aspect
                                         "cpo elastic tensor",
                                         "A plugin in which the particle property tensor is "
                                         "defined as the Voigt average of the "
-                                        "elastic tensors of the cpo grains of the minerals."
+                                        "elastic tensors of the minerals in the textured rock."
                                         "Currently only Olivine and Enstatite are supported.")
     }
   }
