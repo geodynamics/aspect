@@ -1293,7 +1293,8 @@ namespace aspect
       }
 
       /**
-       * Creates a Levi-Civita tensor, also called a permunation tensor.
+       * The Levi-Civita tensor, also called a permutation or "totally antisymmetric" tensor.
+       * See https://en.wikipedia.org/wiki/Levi-Civita_symbol for a definition.
        * See https://en.wikipedia.org/wiki/Levi-Civita_symbol for more info.
        */
       template<int dim>
