@@ -48,7 +48,7 @@ namespace aspect
 
       entropy_reader = std::make_unique<MaterialUtilities::Lookup::EntropyReader>();
       entropy_reader->initialize(this->get_mpi_communicator(), data_directory, material_file_name);
-      
+
       lateral_viscosity_prefactor_lookup = std::make_unique<internal::LateralViscosityLookup>(data_directory+lateral_viscosity_file_name,
                                            this->get_mpi_communicator());
     }
