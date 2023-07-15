@@ -289,6 +289,11 @@ namespace aspect
         unsigned int n_phases;
 
         /**
+         * Map to associate lookup index with phase names.
+         */
+        std::unordered_map<std::string, unsigned int> lookup_index_map;
+
+        /**
          * Object for computing the equation of state.
          */
         EquationOfState::MulticomponentIncompressible<dim> equation_of_state;

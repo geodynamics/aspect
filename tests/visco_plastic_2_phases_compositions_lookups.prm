@@ -61,6 +61,7 @@ subsection Compositional fields
   set Number of fields = 2
   # background is assumed to be lithosphere
   set Names of fields  = upper_crust, lower_crust
+  set Compositional field methods = field, field
 end
 
 subsection Initial composition model
@@ -78,16 +79,15 @@ subsection Material model
     set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/test-steinberger-compressible/
     set Material file names              = constant_material_small.txt, constant_material_2_small.txt, constant_material_small.txt
     set Material lookup setting = true
-    set Phase transition lookup phases = upper_crust: pv|ol, lower_crust: cpx, background: ol|wa|ri
+    set Phase transition lookup phases = upper_crust: ol|wa|ri|pv, lower_crust: ol|cpx|gt|pv, background: ol|wa|ri|pv
+    set Phase transition depths = upper_crust: 1e3|2e3|3e3, lower_crust: 4e3|5e3|6e3, background: 1e3|2e3|3e3
+    set Phase transition widths = upper_crust: 1e3|1e3|1e3, lower_crust: 1e3|1e3|1e3, background: 1e3|1e3|1e3
+    set Phase transition temperatures = upper_crust: 1000|1000|1000, lower_crust: 1000|1000|1000, background: 1000|1000|1000
+    set Phase transition Clapeyron slopes = upper_crust: 0|0|0, lower_crust: 0|0|0, background: 0|0|0
 
-    set Phase transition depths = upper_crust: 10e3, background: 70e3|90e3
-    set Phase transition widths = upper_crust: 1e3,background: 1e3|1e3
-    set Phase transition temperatures = upper_crust: 1000, background: 1000|1000
-    set Phase transition Clapeyron slopes = upper_crust: 0, background: 0|0
-
-    set Densities = upper_crust: 2700|2750, lower_crust: 2850, background:3300|3400|3500
-    set Thermal expansivities = upper_crust: 1e-5|1.5e-5, lower_crust: 7e-5, background:3.5e-5|2e-5|1e-5
-    set Heat capacities = upper_crust: 900|800, lower_crust: 600, background:1200|1000|700
+    set Densities = upper_crust: 3300|3800|3900|3910, lower_crust: 3300|3300|3500|3910, background:3300|3800|3900|3910
+    set Thermal expansivities = upper_crust: 1e-5|1.5e-5|1e-5|1e-5, lower_crust: 7e-5|7e-5|7e-5|7e-5, background:1e-5|1e-5|1e-5|1e-5
+    set Heat capacities = upper_crust: 1200|1000|700|700, lower_crust: 600|600|600|600, background:1200|1000|700|700
 
     set Reference strain rate = 1.e-16
     set Viscous flow law = dislocation

@@ -36,6 +36,11 @@ namespace aspect
     ViscoPlastic<dim>::initialize()
     {
       equation_of_state_lookup.initialize();
+
+      const std::vector<std::string> transition_lookup_phases = phase_function_lookup.get_phase_names();
+      for (unsigned int i = 0; i < transition_lookup_phases.size(); ++i) {
+        lookup_index_map[transition_lookup_phases[i]] = i;
+      }      
     }
 
     template <int dim>
@@ -163,7 +168,14 @@ namespace aspect
           else
             {
               // We only want to compute mass/volume fractions for fields that are chemical compositions.
-              mass_fractions = MaterialUtilities::compute_composition_fractions(this->introspection.chemical_composition_field_indices(), *composition_mask);
+              std::vector<double> chemical_compositions;
+              const std::vector<CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
+
+              for (unsigned int c = 0; c < in.composition[i].size(); ++c)
+                if (composition_descriptions[c].type == CompositionalFieldDescription::chemical_composition || composition_descriptions[c].type == CompositionalFieldDescription::unspecified)
+                  chemical_compositions.push_back(in.composition[i][c]);
+
+              mass_fractions = MaterialUtilities::compute_composition_fractions(chemical_compositions, *composition_mask);
             }
           // mass fractions are volume fractions because lookup is incompressible
           volume_fractions_lookup[i] = mass_fractions;
