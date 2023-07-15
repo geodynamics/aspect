@@ -189,22 +189,24 @@ namespace aspect
         delta_temperature = temperature-adiabatic_temperature;
 
       // For an explanation on this formula see the Steinberger & Calderwood 2006 paper
-      // We here compute the lateral variation of viscosity due to temperature (vis_lateral) as
+      // We here compute the lateral variation of viscosity due to temperature (temperature_prefactor) as
       // V_lT = exp [-(H/nR)*dT/(T_adiabatic*(T_adiabatic + dT))] as in Eq. 6 of the paper.
       // We get H/nR from the lateral_viscosity_lookup->lateral_viscosity function.
-      const double vis_lateral_exp = -1.0*lateral_viscosity_lookup->lateral_viscosity(depth)*delta_temperature/(temperature*adiabatic_temperature);
+      const double log_temperature_prefactor = -1.0*lateral_viscosity_lookup->lateral_viscosity(depth)*delta_temperature/(temperature*adiabatic_temperature);
 
       // Limit the lateral viscosity variation to a reasonable interval
-      const double vis_lateral = std::max(std::min(std::exp(vis_lateral_exp),max_lateral_eta_variation),1/max_lateral_eta_variation);
+      const double temperature_prefactor = std::max(std::min(std::exp(log_temperature_prefactor),max_lateral_eta_variation),1/max_lateral_eta_variation);
 
       //Visc_rT = exp[(H/nR)/T_adiabatic], Eq. 7 of the paper
-      const double vis_radial = radial_viscosity_lookup->radial_viscosity(depth);
+      const double eta_ref = radial_viscosity_lookup->radial_viscosity(depth);
 
-
-      const double vis_compositional = MaterialUtilities::average_value (volume_fractions, viscosity_prefactors, viscosity_averaging);
+// std::cout<<"size vf"<<volume_fractions.size()<<std::endl;
+// std::cout<<"size vis_pre"<<viscosity_prefactors.size()<<std::endl;
+      const double compositional_prefactor = MaterialUtilities::average_value (volume_fractions, viscosity_prefactors, viscosity_averaging);
+      // std::cout<<"size vf"<<volume_fractions.size()<<std::endl;
 
       // Radial viscosity profile is multiplied with lateral and compositional viscosity variation
-      return std::max(std::min(vis_lateral * vis_radial * vis_compositional,max_eta),min_eta);
+      return std::max(std::min(temperature_prefactor * eta_ref * compositional_prefactor,max_eta),min_eta);
     }
 
 
@@ -303,7 +305,7 @@ namespace aspect
                   chemical_compositions.push_back(in.composition[i][c]);
 
               mass_fractions = MaterialUtilities::compute_composition_fractions(chemical_compositions, *composition_mask);
-
+// std::cout<<"mf"<<mass_fractions<<std::endl;
               // The function compute_volumes_from_masses expects as many mass_fractions as densities.
               // But the function compute_composition_fractions always adds another element at the start
               // of the vector that represents the background field. If there is no lookup table for
@@ -578,9 +580,12 @@ namespace aspect
                                   + " fields of type chemical composition."));
 
           has_background_field = (equation_of_state.number_of_lookups() == n_chemical_fields + 1);
-          const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
-
-          viscosity_prefactors = Utilities::parse_map_to_double_array (prm.get("Viscosity prefactors"),
+         std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+         if (equation_of_state.number_of_lookups() == 1)
+         list_of_composition_names.resize(1, "background");
+         if ((equation_of_state.number_of_lookups() == 1) && (has_background_field))
+         list_of_composition_names.resize(0, "background");
+        viscosity_prefactors = Utilities::parse_map_to_double_array (prm.get("Viscosity prefactors"),
                                                                        list_of_composition_names,
                                                                        has_background_field,
                                                                        "Viscosity prefactors");
