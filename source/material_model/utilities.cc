@@ -881,7 +881,12 @@ namespace aspect
       {
         Assert(masses.size() == densities.size(),
                ExcMessage ("The mass fractions and densities vectors used for computing "
-                           "volumes from masses have to have the same length!"));
+                           "volumes from masses have to have the same length! "
+                           "You have provided "
+                           + Utilities::int_to_string(masses.size()) +
+                           " mass fractions and "
+                           + Utilities::int_to_string(densities.size()) +
+                           " densities."));
 
         const unsigned int n_fields = masses.size();
         std::vector<double> volumes(n_fields);
@@ -942,7 +947,11 @@ namespace aspect
       {
         Assert(volume_fractions.size() == parameter_values.size(),
                ExcMessage ("The volume fractions and parameter values vectors used for averaging "
-                           "have to have the same length!"));
+                           "have to have the same length! You have provided "
+                           + Utilities::int_to_string(volume_fractions.size()) +
+                           " volume fractions and "
+                           + Utilities::int_to_string(parameter_values.size()) +
+                           " parameter values."));
 
         double averaged_parameter = 0.0;
 
