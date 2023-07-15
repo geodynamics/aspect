@@ -90,8 +90,8 @@ namespace aspect
           temperature_scaling_factor = prm.get_double("Temperature scaling factor");
 
           composition_scaling_factors
-            = Utilities::string_to_double(
-                Utilities::split_string_list(prm.get("Compositional field scaling factors")));
+            = dealii::Utilities::string_to_double(
+                dealii::Utilities::split_string_list(prm.get("Compositional field scaling factors")));
 
           AssertThrow (composition_scaling_factors.size() == this->n_compositional_fields()
                        ||
