@@ -286,15 +286,7 @@ namespace aspect
           else
             {
               // We only want to compute mass/volume fractions for fields that are chemical compositions.
-              std::vector<double> chemical_compositions;
-              const std::vector<CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
-
-              for (unsigned int c=0; c<in.composition[i].size(); ++c)
-                if (composition_descriptions[c].type == CompositionalFieldDescription::chemical_composition
-                    || composition_descriptions[c].type == CompositionalFieldDescription::unspecified)
-                  chemical_compositions.push_back(in.composition[i][c]);
-
-              mass_fractions = MaterialUtilities::compute_composition_fractions(chemical_compositions, *composition_mask);
+              mass_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i], this->introspection().chemical_composition_field_indices());
 
               // The function compute_volumes_from_masses expects as many mass_fractions as densities.
               // But the function compute_composition_fractions always adds another element at the start
@@ -495,6 +487,7 @@ namespace aspect
           conductivity_transition_depths = Utilities::string_to_double
                                            (Utilities::split_string_list(prm.get ("Thermal conductivity transition depths")));
           const unsigned int n_conductivity_layers = conductivity_transition_depths.size() + 1;
+
           AssertThrow (std::is_sorted(conductivity_transition_depths.begin(), conductivity_transition_depths.end()),
                        ExcMessage("The list of 'Thermal conductivity transition depths' must "
                                   "be sorted such that the values increase monotonically."));
@@ -523,22 +516,11 @@ namespace aspect
           // Check if compositional fields represent a composition
           const std::vector<CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
 
-          // All chemical compositional fields are assumed to represent mass fractions.
-          // If the field type is unspecified (has not been set in the input file),
-          // we have to assume it also represents a chemical composition for reasons of
-          // backwards compatibility.
-          composition_mask = std::make_unique<ComponentMask> (this->n_compositional_fields(), false);
-          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            if (composition_descriptions[c].type == CompositionalFieldDescription::chemical_composition
-                || composition_descriptions[c].type == CompositionalFieldDescription::unspecified)
-              composition_mask->set(c, true);
-
-          const unsigned int n_chemical_fields = composition_mask->n_selected_components();
-
           // Assign background field and do some error checking
+          has_background_field = (equation_of_state.number_of_lookups() == this->introspection().n_chemical_composition_fields() + 1);
           AssertThrow ((equation_of_state.number_of_lookups() == 1) ||
-                       (equation_of_state.number_of_lookups() == n_chemical_fields) ||
-                       (equation_of_state.number_of_lookups() == n_chemical_fields + 1),
+                       (equation_of_state.number_of_lookups() == this->introspection().n_chemical_composition_fields()) ||
+                       (equation_of_state.number_of_lookups() == this->introspection().n_chemical_composition_fields() + 1),
                        ExcMessage("The Steinberger material model assumes that all compositional "
                                   "fields of the type chemical composition correspond to mass fractions of "
                                   "materials. There must either be one material lookup file, the same "
@@ -547,10 +529,8 @@ namespace aspect
                                   "have "
                                   + Utilities::int_to_string(equation_of_state.number_of_lookups())
                                   + " material data files, but there are "
-                                  + Utilities::int_to_string(n_chemical_fields)
+                                  + Utilities::int_to_string(this->introspection().n_chemical_composition_fields())
                                   + " fields of type chemical composition."));
-
-          has_background_field = (equation_of_state.number_of_lookups() == n_chemical_fields + 1);
 
           prm.leave_subsection();
         }
