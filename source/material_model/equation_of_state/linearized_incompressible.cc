@@ -38,9 +38,9 @@ namespace aspect
 
         Assert(maximum_number_of_compositions+1 >= out.densities.size(),
                ExcMessage("Error: You are trying to evaluate the equation of state with "
-                          + Utilities::to_string(out.densities.size()-1) +
+                          + dealii::Utilities::to_string(out.densities.size()-1) +
                           " compositional fields, which is larger than "
-                          + Utilities::to_string(maximum_number_of_compositions) +
+                          + dealii::Utilities::to_string(maximum_number_of_compositions) +
                           ", the number of fields the equation of state was set up with."));
 
 
