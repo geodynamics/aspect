@@ -184,13 +184,14 @@ namespace aspect
         // The following while loop conducts a Newton iteration to obtain the
         // creep stress, which we need in order to calculate the viscosity.
         double strain_rate_residual = 2*strain_rate_residual_threshold;
-        double strain_rate_deriv = 0;
         unsigned int stress_iteration = 0;
+        double log_edot_ii = std::log(edot_ii);
+        double log_stress_ii = std::log(creep_stress);
+
         while (std::abs(strain_rate_residual) > strain_rate_residual_threshold
                && stress_iteration < stress_max_iteration_number)
           {
-
-            const std::pair<double, double> creep_edot_and_deriv = compute_strain_rate_and_derivative (creep_stress,
+            const std::pair<double, double> creep_edot_and_deriv = compute_strain_rate_and_derivative(creep_stress,
                                                                    pressure,
                                                                    temperature,
                                                                    diffusion_creep_parameters,
@@ -199,13 +200,18 @@ namespace aspect
                                                                    drucker_prager_parameters);
 
             const double strain_rate = creep_stress/(2.*maximum_viscosity) + (maximum_viscosity/(maximum_viscosity - minimum_viscosity))*creep_edot_and_deriv.first;
-            strain_rate_deriv = 1./(2.*maximum_viscosity) + (maximum_viscosity/(maximum_viscosity - minimum_viscosity))*creep_edot_and_deriv.second;
-
+            const double strain_rate_deriv = 1./(2.*maximum_viscosity) + (maximum_viscosity/(maximum_viscosity - minimum_viscosity))*creep_edot_and_deriv.second;
+            const double log_strain_rate_deriv = creep_stress / strain_rate * strain_rate_deriv;
+            const double log_strain_rate_residual = std::log(strain_rate) - log_edot_ii;
             strain_rate_residual = strain_rate - edot_ii;
 
+            // Update log_stress_ii and creep_stress as both are needed for the next iteration
             // If the strain rate derivative is zero, we catch it below.
             if (strain_rate_deriv>std::numeric_limits<double>::min())
-              creep_stress -= strain_rate_residual/strain_rate_deriv;
+              {
+                log_stress_ii -= log_strain_rate_residual/log_strain_rate_deriv;
+                creep_stress = std::exp(log_stress_ii);
+              }
             stress_iteration += 1;
 
             // If anything that would be used in the next iteration is not finite, the
@@ -214,9 +220,9 @@ namespace aspect
             // Currently, we still throw an exception, but if this exception is thrown,
             // another more robust iterative scheme should be implemented
             // (similar to that seen in the diffusion-dislocation material model).
-            const bool abort_newton_iteration = !numbers::is_finite(creep_stress)
-                                                || !numbers::is_finite(strain_rate_residual)
-                                                || !numbers::is_finite(strain_rate_deriv)
+            const bool abort_newton_iteration = !numbers::is_finite(log_stress_ii)
+                                                || !numbers::is_finite(log_strain_rate_residual)
+                                                || !numbers::is_finite(log_strain_rate_deriv)
                                                 || strain_rate_deriv < std::numeric_limits<double>::min()
                                                 || stress_iteration == stress_max_iteration_number;
             AssertThrow(!abort_newton_iteration,
@@ -231,7 +237,7 @@ namespace aspect
         // The creep stress is not the total stress, so we still need to do a little work to obtain the effective viscosity.
         // First, we compute the stress running through the strain rate limiter, and then add that to the creep stress
         // NOTE: The viscosity of the strain rate limiter is equal to (minimum_viscosity*maximum_viscosity)/(maximum_viscosity - minimum_viscosity)
-        const double lim_stress = 2.*minimum_viscosity*(edot_ii - creep_stress/(2.*maximum_viscosity));
+        const double lim_stress = 2. * minimum_viscosity * (edot_ii - creep_stress / (2. * maximum_viscosity));
         const double total_stress = creep_stress + lim_stress;
 
         // Compute the strain rate experienced by the different mechanisms
