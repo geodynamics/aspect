@@ -581,34 +581,34 @@ TEST_CASE("CPO elastic tensor transform functions")
    */
   {
 
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[0][0][0] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[0][0][1] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[0][0][2] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[0][1][0] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[0][1][1] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[0][1][2] == Approx(1.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[0][2][0] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[0][2][1] == Approx(-1.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[0][2][2] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[0][0][0] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[0][0][1] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[0][0][2] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[0][1][0] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[0][1][1] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[0][1][2] == Approx(1.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[0][2][0] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[0][2][1] == Approx(-1.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[0][2][2] == Approx(0.0));
 
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[1][0][0] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[1][0][1] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[1][0][2] == Approx(-1.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[1][1][0] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[1][1][1] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[1][1][2] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[1][2][0] == Approx(1.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[1][2][1] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[1][2][2] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[1][0][0] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[1][0][1] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[1][0][2] == Approx(-1.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[1][1][0] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[1][1][1] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[1][1][2] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[1][2][0] == Approx(1.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[1][2][1] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[1][2][2] == Approx(0.0));
 
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[2][0][0] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[2][0][1] == Approx(1.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[2][0][2] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[2][1][0] == Approx(-1.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[2][1][1] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[2][1][2] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[2][2][0] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[2][2][1] == Approx(0.0));
-    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>[2][2][2] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][0][0] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][0][1] == Approx(1.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][0][2] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][1][0] == Approx(-1.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][1][1] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][1][2] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][2][0] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][2][1] == Approx(0.0));
+    REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][2][2] == Approx(0.0));
   }
 }
