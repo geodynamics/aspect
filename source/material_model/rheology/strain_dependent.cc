@@ -556,75 +556,113 @@ namespace aspect
 
             // We need to obtain the strain values from compositional fields at the previous time step,
             // as the values from the current linearization point are an extrapolation of the solution
-            // from the old timesteps. First, create arrays to store these values
-            std::vector<double> old_plastic_strain(in.n_evaluation_points());
-            std::vector<double> old_viscous_strain(in.n_evaluation_points());
-            std::vector<double> old_total_strain(in.n_evaluation_points());
-            std::vector<double> old_noninitial_plastic_strain(in.n_evaluation_points());
-
+            // from the old timesteps.
             // Prepare the field function and extract the old solution values at the current cell.
-            Functions::FEFieldFunction<dim, LinearAlgebra::BlockVector>
-            fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
-            fe_value.set_active_cell(in.current_cell);
+            std::vector<Point<dim>> quadrature_positions(1,this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]));
+            boost::container::small_vector<double, 100> old_solution_values(this->get_fe().dofs_per_cell);
+            in.current_cell->get_dof_values(this->get_old_solution(),
+                                            old_solution_values.begin(),
+                                            old_solution_values.end());
+
+            if (composition_evaluators.size() == 0)
+              composition_evaluators.resize(this->n_compositional_fields());
+
+            Assert(composition_evaluators.size() == this->n_compositional_fields(),
+                   ExcMessage("The number of composition evaluators should be equal to the number of compositional fields."));
+
+            const auto &component_indices = this->introspection().component_indices.compositional_fields;
 
             // Assign incremental strain values to reaction terms
             if (weakening_mechanism == plastic_weakening_with_plastic_strain_only)
               {
-                const int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
+                const unsigned int strain_index = this->introspection().compositional_index_for_name("plastic_strain");
+                // Only create the evaluator the first time we get here
+                if (!composition_evaluators[strain_index])
+                  composition_evaluators[strain_index].reset(new FEPointEvaluation<1, dim>(this->get_mapping(),
+                                                                                           this->get_fe(),
+                                                                                           update_values,
+                                                                                           component_indices[strain_index]));
 
-                fe_value.value_list(in.position,
-                                    old_plastic_strain,
-                                    this->introspection().component_indices.compositional_fields[plastic_strain_index]);
-
-                out.reaction_terms[i][plastic_strain_index] = std::max(delta_e_ii_plastic, -old_plastic_strain[i]);
+                composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
+                composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
+                                                               EvaluationFlags::values);
+                out.reaction_terms[i][strain_index] = std::max(delta_e_ii_plastic,
+                                                               -composition_evaluators[strain_index]->get_value(0));
               }
             if (weakening_mechanism == viscous_weakening_with_viscous_strain_only)
               {
-                const int viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
+                const unsigned int strain_index = this->introspection().compositional_index_for_name("viscous_strain");
+                // Only create the evaluator the first time we get here
+                if (!composition_evaluators[strain_index])
+                  composition_evaluators[strain_index].reset(new FEPointEvaluation<1, dim>(this->get_mapping(),
+                                                                                           this->get_fe(),
+                                                                                           update_values,
+                                                                                           component_indices[strain_index]));
 
-                fe_value.value_list(in.position,
-                                    old_viscous_strain,
-                                    this->introspection().component_indices.compositional_fields[viscous_strain_index]);
-
-                out.reaction_terms[i][viscous_strain_index] = std::max(delta_e_ii_viscous, -old_viscous_strain[i]);
+                composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
+                composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
+                                                               EvaluationFlags::values);
+                out.reaction_terms[i][strain_index] = std::max(delta_e_ii_viscous,
+                                                               -composition_evaluators[strain_index]->get_value(0));
               }
             if (weakening_mechanism == total_strain || weakening_mechanism == plastic_weakening_with_total_strain_only)
               {
-                const int total_strain_index = this->introspection().compositional_index_for_name("total_strain");
-
-                fe_value.value_list(in.position,
-                                    old_total_strain,
-                                    this->introspection().component_indices.compositional_fields[total_strain_index]);
-
-                out.reaction_terms[i][total_strain_index] = std::max(delta_e_ii,  -old_total_strain[i]);
+                const unsigned int strain_index = this->introspection().compositional_index_for_name("total_strain");
+                // Only create the evaluator the first time we get here
+                if (!composition_evaluators[strain_index])
+                  composition_evaluators[strain_index].reset(new FEPointEvaluation<1, dim>(this->get_mapping(),
+                                                                                           this->get_fe(),
+                                                                                           update_values,
+                                                                                           component_indices[strain_index]));
+                composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
+                composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
+                                                               EvaluationFlags::values);
+                out.reaction_terms[i][strain_index] = std::max(delta_e_ii,
+                                                               -composition_evaluators[strain_index]->get_value(0));
               }
             if (weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
               {
-                const int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
+                const unsigned int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
+                // Only create the evaluator the first time we get here
+                if (!composition_evaluators[plastic_strain_index])
+                  composition_evaluators[plastic_strain_index].reset(new FEPointEvaluation<1, dim>(this->get_mapping(),
+                                                                     this->get_fe(),
+                                                                     update_values,
+                                                                     component_indices[plastic_strain_index]));
+                composition_evaluators[plastic_strain_index]->reinit(in.current_cell, quadrature_positions);
+                composition_evaluators[plastic_strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
+                                                                       EvaluationFlags::values);
+                out.reaction_terms[i][plastic_strain_index] = std::max(delta_e_ii_plastic,
+                                                                       -composition_evaluators[plastic_strain_index]->get_value(0));
 
-                fe_value.value_list(in.position,
-                                    old_plastic_strain,
-                                    this->introspection().component_indices.compositional_fields[plastic_strain_index]);
-
-                out.reaction_terms[i][plastic_strain_index] = std::max(delta_e_ii_plastic, -old_plastic_strain[i]);
-
-                const int viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
-
-                fe_value.value_list(in.position,
-                                    old_viscous_strain,
-                                    this->introspection().component_indices.compositional_fields[viscous_strain_index]);
-
-                out.reaction_terms[i][viscous_strain_index] = std::max(delta_e_ii_viscous, -old_viscous_strain[i]);
+                const unsigned viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
+                // Only create the evaluator the first time we get here
+                if (!composition_evaluators[viscous_strain_index])
+                  composition_evaluators[viscous_strain_index].reset(new FEPointEvaluation<1, dim>(this->get_mapping(),
+                                                                     this->get_fe(),
+                                                                     update_values,
+                                                                     component_indices[viscous_strain_index]));
+                composition_evaluators[viscous_strain_index]->reinit(in.current_cell, quadrature_positions);
+                composition_evaluators[viscous_strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
+                                                                       EvaluationFlags::values);
+                out.reaction_terms[i][viscous_strain_index] = std::max(delta_e_ii_viscous,
+                                                                       -composition_evaluators[viscous_strain_index]->get_value(0));
               }
             if (this->introspection().compositional_name_exists("noninitial_plastic_strain"))
               {
-                const int noninitial_plastic_strain_index = this->introspection().compositional_index_for_name("noninitial_plastic_strain");
+                const unsigned int strain_index = this->introspection().compositional_index_for_name("noninitial_plastic_strain");
+                // Only create the evaluator the first time we get here
+                if (!composition_evaluators[strain_index])
+                  composition_evaluators[strain_index].reset(new FEPointEvaluation<1, dim>(this->get_mapping(),
+                                                                                           this->get_fe(),
+                                                                                           update_values,
+                                                                                           component_indices[strain_index]));
 
-                fe_value.value_list(in.position,
-                                    old_noninitial_plastic_strain,
-                                    this->introspection().component_indices.compositional_fields[noninitial_plastic_strain_index]);
-
-                out.reaction_terms[i][noninitial_plastic_strain_index] = std::max(delta_e_ii_plastic, -old_noninitial_plastic_strain[i]);
+                composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
+                composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
+                                                               EvaluationFlags::values);
+                out.reaction_terms[i][strain_index] = std::max(delta_e_ii_plastic,
+                                                               -composition_evaluators[strain_index]->get_value(0));
               }
           }
       }
