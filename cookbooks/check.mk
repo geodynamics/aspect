@@ -17,14 +17,16 @@ then \
 fi; \
 make_lib() { \
 cd $$1; \
-if [[ -e CMakeLists.txt ]]; \
-then \
-  echo "building plugin in `pwd` using ${BUILD}..."; \
+base_path=`pwd`; \
+for file in `find . -name CMakeLists.txt`; do \
+  echo "building plugin in `dirname $${file}` using ${BUILD}..."; \
+  cd `dirname $${file}`; \
   rm -rf CMakeCache.txt CMakeFiles; \
   cmake -D Aspect_DIR=${BUILD} -G "Unix Makefiles" -D CMAKE_CXX_FLAGS='-Werror' . >/dev/null || { echo "cmake in `pwd` failed!"; return 1; }; \
   make >/dev/null || { echo "make in `pwd` failed!"; return 2; }; \
   echo "done building plugin in `pwd`"; \
-fi; \
+  cd $${base_path}; \
+done; \
 };\
 run_prm() { \
 cd $$1; \
@@ -78,10 +80,6 @@ main: dummy $(mainprms)
 # example/: dummy
 #	@$(def); run_prm $@ test.prm
 
-free_surface_with_crust/: dummy
-	+@$(def); make_lib $@/plugin
-	@$(def); run_all_prms $@
-
 # This does not run without generating an input file using a python script
 prescribed_velocity_ascii_data/: dummy
 	+@$(def); make_lib $@
@@ -95,7 +93,3 @@ future/: dummy
 	@$(def); run_prm $@ radiogenic_heating.prm
 	@$(def); run_prm $@ radiogenic_heating_function.prm
 	@$(def); run_prm $@ sphere.prm
-
-vankeken_subduction/: dummy
-	+@$(def); make_lib $@/plugin
-	@$(def); run_all_prms $@

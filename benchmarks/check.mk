@@ -17,14 +17,16 @@ then \
 fi; \
 make_lib() { \
 cd $$1; \
-if [[ -e CMakeLists.txt ]]; \
-then \
-  echo "building plugin in `pwd` using ${BUILD}..."; \
+base_path=`pwd`; \
+for file in `find . -name CMakeLists.txt`; do \
+  echo "building plugin in `dirname $${file}` using ${BUILD}..."; \
+  cd `dirname $${file}`; \
   rm -rf CMakeCache.txt CMakeFiles; \
   cmake -D Aspect_DIR=${BUILD} -G "Unix Makefiles" -D CMAKE_CXX_FLAGS='-Werror' . >/dev/null || { echo "cmake in `pwd` failed!"; return 1; }; \
   make >/dev/null || { echo "make in `pwd` failed!"; return 2; }; \
   echo "done building plugin in `pwd`"; \
-fi; \
+  cd $${base_path}; \
+done; \
 };\
 run_prm() { \
 cd $$1; \
@@ -79,10 +81,6 @@ annulus/: dummy
 	@$(def); run_all_prms $@/instantaneous
 	@$(def); run_all_prms $@/transient
 
-blankenbach/: dummy
-	+@$(def); make_lib $@/plugin
-	@$(def); run_all_prms $@
-
 crameri_et_al/:  dummy
 	+@$(def); make_lib $@/case_1
 	@$(def); run_all_prms $@/case_1
@@ -91,10 +89,6 @@ crameri_et_al/:  dummy
 davies_et_al/: dummy
 	+@$(def); make_lib $@/case-2.3-plugin
 	@$(def); run_prm $@ case-2.1.prm
-	@$(def); run_all_prms $@
-
-entropy_adiabat/: dummy
-	+@$(def); make_lib $@/plugins
 	@$(def); run_all_prms $@
 
 free_surface_tractions/: dummy
@@ -165,10 +159,6 @@ tangurnis/: dummy
 	@$(def); run_prm $@ ba/tan.prm
 	@$(def); run_prm $@ tala/tan.prm
 	@$(def); run_prm $@ tala_c/tan.prm
-
-time_dependent_annulus/: dummy
-	+@$(def); make_lib $@/plugin
-	@$(def); run_all_prms $@
 
 compressibility_formulations/: dummy
 	+@$(def); make_lib $@/plugins
