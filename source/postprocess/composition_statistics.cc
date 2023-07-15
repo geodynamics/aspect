@@ -71,9 +71,9 @@ namespace aspect
           }
       // compute the sum over all processors
       std::vector<double> global_compositional_integrals (local_compositional_integrals.size());
-      Utilities::MPI::sum (local_compositional_integrals,
-                           this->get_mpi_communicator(),
-                           global_compositional_integrals);
+      dealii::Utilities::MPI::sum (local_compositional_integrals,
+                                   this->get_mpi_communicator(),
+                                   global_compositional_integrals);
 
       // compute min/max by simply
       // looping over the elements of the
@@ -103,12 +103,12 @@ namespace aspect
       std::vector<double> global_max_compositions (this->n_compositional_fields(),
                                                    std::numeric_limits<double>::lowest());
       {
-        Utilities::MPI::min (local_min_compositions,
-                             this->get_mpi_communicator(),
-                             global_min_compositions);
-        Utilities::MPI::max (local_max_compositions,
-                             this->get_mpi_communicator(),
-                             global_max_compositions);
+        dealii::Utilities::MPI::min (local_min_compositions,
+                                     this->get_mpi_communicator(),
+                                     global_min_compositions);
+        dealii::Utilities::MPI::max (local_max_compositions,
+                                     this->get_mpi_communicator(),
+                                     global_max_compositions);
       }
 
       // finally produce something for the statistics file

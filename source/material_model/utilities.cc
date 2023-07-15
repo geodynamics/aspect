@@ -21,7 +21,9 @@
 
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
+#include <aspect/structured_data.h>
 
+#include <aspect/geometry_model/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
 
@@ -786,6 +788,91 @@ namespace aspect
           AssertThrow(i == n_temperature*n_pressure, ExcMessage("Material table size not consistent with header."));
 
         }
+
+
+
+        void
+        EntropyReader::initialize(const MPI_Comm comm,
+                                  const std::string data_directory,
+                                  const std::string material_file_name)
+        {
+          material_lookup = std::make_unique<Utilities::StructuredDataLookup<2>>(7,1.0);
+          material_lookup->load_file(data_directory+material_file_name,
+                                     comm);
+        }
+
+        double
+        EntropyReader::specific_heat(const double entropy,
+                                     const double pressure) const
+        {
+          Point<2> entropy_pressure(entropy, pressure);
+          const double specific_heat = material_lookup->get_data(entropy_pressure, 3);
+          return specific_heat;
+        }
+
+        double
+        EntropyReader::density(const double entropy,
+                               const double pressure) const
+        {
+          Point<2> entropy_pressure(entropy, pressure);
+          const double density = material_lookup->get_data(entropy_pressure, 1);
+          return density;
+        }
+
+        double
+        EntropyReader::thermal_expansivity(const double entropy,
+                                           const double pressure) const
+        {
+          Point<2> entropy_pressure(entropy, pressure);
+          const double thermal_expansivity = material_lookup->get_data(entropy_pressure, 2);
+          return thermal_expansivity;
+        }
+
+        double
+        EntropyReader::compressibility(const double entropy,
+                                       const double pressure) const
+        {
+          Point<2> entropy_pressure(entropy, pressure);
+          const double compressibility = material_lookup->get_data(entropy_pressure, 2);
+          return compressibility;
+        }
+
+        double
+        EntropyReader::temperature(const double entropy,
+                                   const double pressure) const
+        {
+          Point<2> entropy_pressure(entropy, pressure);
+          const double temperature = material_lookup->get_data(entropy_pressure, 0);
+          return temperature;
+        }
+
+        double
+        EntropyReader::seismic_vp(const double entropy,
+                                  const double pressure) const
+        {
+          Point<2> entropy_pressure(entropy, pressure);
+          const double seismic_vp = material_lookup->get_data(entropy_pressure, 4);
+          return seismic_vp;
+        }
+
+        double
+        EntropyReader::seismic_vs(const double entropy,
+                                  const double pressure) const
+        {
+          Point<2> entropy_pressure(entropy, pressure);
+          const double seismic_vs = material_lookup->get_data(entropy_pressure, 5);
+          return seismic_vs;
+        }
+
+        Tensor<1, 2>
+        EntropyReader::calc_density_gradient(const double entropy,
+                                             const double pressure) const
+        {
+          Point<2> entropy_pressure(entropy, pressure);
+          const Tensor<1, 2> density_gradient= material_lookup->get_gradients(entropy_pressure, 1);
+          return density_gradient;
+        }
+
       }
 
 

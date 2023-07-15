@@ -69,11 +69,11 @@ namespace aspect
           }
 
       const double global_integrated_viscosity
-        = Utilities::MPI::sum (local_integrated_viscosity, this->get_mpi_communicator());
+        = dealii::Utilities::MPI::sum (local_integrated_viscosity, this->get_mpi_communicator());
       const double global_integrated_volume
-        = Utilities::MPI::sum (local_volume, this->get_mpi_communicator());
+        = dealii::Utilities::MPI::sum (local_volume, this->get_mpi_communicator());
       const double global_maximum_viscosity
-        = Utilities::MPI::max (local_maximum_viscosity, this->get_mpi_communicator());
+        = dealii::Utilities::MPI::max (local_maximum_viscosity, this->get_mpi_communicator());
 
       const double average_viscosity = global_integrated_viscosity / global_integrated_volume;
 

@@ -29,7 +29,7 @@ namespace aspect
     Command<dim>::execute (TableHandler &)
     {
       if (on_all_processes ||
-          (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0))
+          (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0))
         {
 
           // Check if a command-processor is available by calling system() with a
@@ -45,7 +45,7 @@ namespace aspect
           if (error != 0)
             {
               std::string err_str = (error<0 ? "-" : "") +
-                                    Utilities::int_to_string(std::abs(error));
+                                    dealii::Utilities::int_to_string(std::abs(error));
 
 
               if (terminate_on_failure)

@@ -18,7 +18,6 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
 #include "entropy_model.h"
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/utilities.h>
@@ -47,24 +46,20 @@ namespace aspect
                    ExcMessage("The 'entropy model' material model requires the existence of a compositional field "
                               "named 'entropy'. This field does not exist."));
 
-      material_lookup = std::make_unique<Utilities::StructuredDataLookup<2>>(7,1.0);
-      material_lookup->load_file(data_directory+material_file_name,
-                                 this->get_mpi_communicator());
+      entropy_reader = std::make_unique<MaterialUtilities::Lookup::EntropyReader>();
+      entropy_reader->initialize(this->get_mpi_communicator(), data_directory, material_file_name);
+      
       lateral_viscosity_prefactor_lookup = std::make_unique<internal::LateralViscosityLookup>(data_directory+lateral_viscosity_file_name,
                                            this->get_mpi_communicator());
     }
 
-
-
     template <int dim>
     bool
     EntropyModel<dim>::
-    is_compressible () const
+    is_compressible() const
     {
       return true;
     }
-
-
 
     template <int dim>
     double
@@ -118,33 +113,33 @@ namespace aspect
       const unsigned int projected_density_index = this->introspection().compositional_index_for_name("density_field");
       const unsigned int entropy_index = this->introspection().compositional_index_for_name("entropy");
 
-      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
           // Use the adiabatic pressure instead of the real one,
           // to stabilize against pressure oscillations in phase transitions.
           // This is a requirement of the projected density approximation for
           // the Stokes equation and not related to the entropy formulation.
           // Also convert pressure from Pa to bar, bar is used in the table.
-          Point<2> entropy_pressure(in.composition[i][entropy_index],
-                                    this->get_adiabatic_conditions().pressure(in.position[i]) / 1.e5);
+          const double entropy = in.composition[i][entropy_index];
+          const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]) / 1.e5;
 
-          out.densities[i]                      = material_lookup->get_data(entropy_pressure,1);
-          out.thermal_expansion_coefficients[i] = material_lookup->get_data(entropy_pressure,2);
-          out.specific_heat[i]                  = material_lookup->get_data(entropy_pressure,3);
+          out.densities[i] = entropy_reader->density(entropy,pressure);
+          out.thermal_expansion_coefficients[i] = entropy_reader->thermal_expansivity(entropy,pressure);
+          out.specific_heat[i] = entropy_reader->specific_heat(entropy,pressure);
 
-          const Tensor<1,2> density_gradient    = material_lookup->get_gradients(entropy_pressure,1);
-          const Tensor<1,2> pressure_unit_vector ({0.0,1.0});
-          out.compressibilities[i]              = (density_gradient * pressure_unit_vector) / out.densities[i];
+          const Tensor<1, 2> density_gradient = entropy_reader->calc_density_gradient(entropy,pressure);
+          const Tensor<1, 2> pressure_unit_vector({0.0, 1.0});
+          out.compressibilities[i] = (density_gradient * pressure_unit_vector) / out.densities[i];
 
 
           // Thermal conductivity can be pressure temperature dependent
-          const double temperature_lookup =  material_lookup->get_data(entropy_pressure,0);
+          const double temperature_lookup =  entropy_reader->temperature(entropy,pressure);
           out.thermal_conductivities[i] = thermal_conductivity(temperature_lookup, in.pressure[i], in.position[i]);
 
-          out.entropy_derivative_pressure[i]    = 0.;
+          out.entropy_derivative_pressure[i] = 0.;
           out.entropy_derivative_temperature[i] = 0.;
-          for (unsigned int c=0; c<in.composition[i].size(); ++c)
-            out.reaction_terms[i][c]            = 0.;
+          for (unsigned int c = 0; c < in.composition[i].size(); ++c)
+            out.reaction_terms[i][c] = 0.;
 
           // set up variable to interpolate prescribed field outputs onto compositional fields
           if (PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>())
@@ -216,17 +211,15 @@ namespace aspect
           // fill seismic velocities outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
             {
-              seismic_out->vp[i] = material_lookup->get_data(entropy_pressure,4);
-              seismic_out->vs[i] = material_lookup->get_data(entropy_pressure,5);
+              seismic_out->vp[i] = entropy_reader-> seismic_vp(entropy, pressure);
+              seismic_out->vs[i] = entropy_reader->seismic_vs(entropy, pressure);
             }
         }
     }
 
-
-
     template <int dim>
     void
-    EntropyModel<dim>::declare_parameters (ParameterHandler &prm)
+    EntropyModel<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
@@ -356,11 +349,9 @@ namespace aspect
       }
     }
 
-
-
     template <int dim>
     void
-    EntropyModel<dim>::parse_parameters (ParameterHandler &prm)
+    EntropyModel<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Material model");
       {
@@ -412,7 +403,7 @@ namespace aspect
         }
 
         depth_dependent_rheology = std::make_unique<Rheology::AsciiDepthProfile<dim>>();
-        depth_dependent_rheology->initialize_simulator (this->get_simulator());
+        depth_dependent_rheology->initialize_simulator(this->get_simulator());
         depth_dependent_rheology->parse_parameters(prm, "Depth dependent viscosity");
         depth_dependent_rheology->initialize();
 
@@ -431,29 +422,27 @@ namespace aspect
 
     template <int dim>
     void
-    EntropyModel<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    EntropyModel<dim>::create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+            std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>>(n_points));
         }
 
       if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == NULL)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>>
-            (n_points, this->n_compositional_fields()));
+            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>>(n_points, this->n_compositional_fields()));
         }
 
       if (out.template get_additional_output<PrescribedTemperatureOutputs<dim>>() == NULL)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::PrescribedTemperatureOutputs<dim>>
-            (n_points));
+            std::make_unique<MaterialModel::PrescribedTemperatureOutputs<dim>>(n_points));
         }
 
       if (out.template get_additional_output<PlasticAdditionalOutputs<dim>>() == nullptr)
@@ -466,7 +455,6 @@ namespace aspect
 
   }
 }
-
 
 // explicit instantiations
 namespace aspect

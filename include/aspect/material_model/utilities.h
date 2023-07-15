@@ -28,17 +28,26 @@
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
 
+
 namespace aspect
 {
-  template <int dim> class SimulatorAccess;
+  template <int dim>
+  class SimulatorAccess;
+
+  namespace Utilities
+  {
+    template <int dim>
+    class StructuredDataLookup;
+  }
 
   namespace MaterialModel
   {
     using namespace dealii;
 
-    template <int dim> struct MaterialModelOutputs;
-    template <int dim> struct EquationOfStateOutputs;
-
+    template <int dim>
+    struct MaterialModelOutputs;
+    template <int dim>
+    struct EquationOfStateOutputs;
     /**
      * A namespace in which we define utility functions that
      * might be used in many different places in the material
@@ -57,7 +66,6 @@ namespace aspect
         class MaterialLookup
         {
           public:
-
             double
             specific_heat(const double temperature,
                           const double pressure) const;
@@ -88,8 +96,8 @@ namespace aspect
              * approximation of the derivative.
              */
             double
-            dHdT (const double temperature,
-                  const double pressure) const;
+            dHdT(const double temperature,
+                 const double pressure) const;
 
             /**
              * Computes the derivative of enthalpy for pressure, using the
@@ -97,8 +105,8 @@ namespace aspect
              * approximation of the derivative.
              */
             double
-            dHdp (const double temperature,
-                  const double pressure) const;
+            dHdp(const double temperature,
+                 const double pressure) const;
 
             /**
              * Compute the enthalpy derivatives for temperature and pressure
@@ -112,22 +120,22 @@ namespace aspect
              * equally spaced pressure-temperature steps, the derivatives are
              * computed for each substep and then averaged.
              */
-            std::array<std::pair<double, unsigned int>,2>
+            std::array<std::pair<double, unsigned int>, 2>
             enthalpy_derivatives(const std::vector<double> &temperatures,
                                  const std::vector<double> &pressures,
                                  const unsigned int n_substeps = 1) const;
 
             double
-            dRhodp (const double temperature,
-                    const double pressure) const;
+            dRhodp(const double temperature,
+                   const double pressure) const;
 
             /**
              * Returns the index that indicates the phase with the largest volume
              * fraction at a given temperature and pressure.
              */
             unsigned int
-            dominant_phase (const double temperature,
-                            const double pressure) const;
+            dominant_phase(const double temperature,
+                           const double pressure) const;
 
             /**
              * Returns whether a lookup has a column that indicates which is the
@@ -156,9 +164,8 @@ namespace aspect
              * Returns the size of the data tables in pressure (first entry)
              * and temperature (second entry) dimensions.
              */
-            std::array<double,2>
+            std::array<double, 2>
             get_pT_steps() const;
-
 
             /**
              * Get the list of names of all of the dominant phases
@@ -178,10 +185,10 @@ namespace aspect
              * value.
              */
             double
-            value (const double temperature,
-                   const double pressure,
-                   const Table<2, double> &values,
-                   const bool interpol) const;
+            value(const double temperature,
+                  const double pressure,
+                  const Table<2, double> &values,
+                  const bool interpol) const;
 
             /**
              * Access that data value of the property that is stored in table
@@ -189,9 +196,9 @@ namespace aspect
              * using the closest point value.
              */
             unsigned int
-            value (const double temperature,
-                   const double pressure,
-                   const Table<2, unsigned int> &values) const;
+            value(const double temperature,
+                  const double pressure,
+                  const Table<2, unsigned int> &values) const;
 
             /**
              * Find the position in a data table given a temperature.
@@ -203,13 +210,13 @@ namespace aspect
              */
             double get_np(const double pressure) const;
 
-            dealii::Table<2,double> density_values;
-            dealii::Table<2,double> thermal_expansivity_values;
-            dealii::Table<2,double> specific_heat_values;
-            dealii::Table<2,double> vp_values;
-            dealii::Table<2,double> vs_values;
-            dealii::Table<2,double> enthalpy_values;
-            dealii::Table<2,unsigned int> dominant_phase_indices;
+            dealii::Table<2, double> density_values;
+            dealii::Table<2, double> thermal_expansivity_values;
+            dealii::Table<2, double> specific_heat_values;
+            dealii::Table<2, double> vp_values;
+            dealii::Table<2, double> vs_values;
+            dealii::Table<2, double> enthalpy_values;
+            dealii::Table<2, unsigned int> dominant_phase_indices;
 
             /**
              * The vector of column names corresponding to each phase,
@@ -218,7 +225,7 @@ namespace aspect
              * The ordering of both vectors is the same.
              */
             std::vector<std::string> phase_column_names;
-            std::vector<dealii::Table<2,double>> phase_volume_fractions;
+            std::vector<dealii::Table<2, double>> phase_volume_fractions;
 
             double delta_press;
             double min_press;
@@ -258,6 +265,88 @@ namespace aspect
             PerplexReader(const std::string &filename,
                           const bool interpol,
                           const MPI_Comm &comm);
+        };
+
+        /**
+        * This class reads in entropy-pressure material table and looks up for material
+        * proporties when entropy and pressure are given
+        */
+        class EntropyReader
+        {
+          public:
+
+            /**
+             * Read the table into material_lookup
+             */
+            void
+            initialize(const MPI_Comm comm,
+                       const std::string data_directory,
+                       const std::string material_file_name);
+
+            /**
+             * Reads the specific heat for a given entropy and pressure from material_lookup
+             */
+            double
+            specific_heat(const double entropy,
+                          const double pressure) const;
+
+            /**
+             * Reads the density for a given entropy and pressure from material_lookup
+             */
+            double
+            density(const double entropy,
+                    const double pressure) const;
+
+            /**
+             * Reads the thermal_expansivity for a given entropy and pressure
+             * from material_lookup
+             */
+            double
+            thermal_expansivity(const double entropy,
+                                const double pressure) const;
+
+            /**
+             * Reads the compressibility for a given entropy and pressure from material_lookup
+             */
+            double
+            compressibility(const double entropy,
+                            const double pressure) const;
+
+            /**
+             * Reads the temperature for a given entropy and pressure from material_lookup
+             */
+            double
+            temperature(const double entropy,
+                        const double pressure) const;
+
+            /**
+             * Reads the seismic p wave velocity for a given entropy and pressure
+             * from material_lookup
+             */
+            double
+            seismic_vp(const double entropy,
+                       const double pressure) const;
+
+            /**
+             * Reads the seismic s wave velocity for a given entropy and pressure
+             * from material_lookup
+             */
+            double
+            seismic_vs(const double entropy,
+                       const double pressure) const;
+
+            /**
+             * Gets density gradient for a given entropy and pressure
+             */
+            Tensor<1, 2>
+            calc_density_gradient(const double entropy,
+                                  const double pressure) const;
+
+          private:
+            std::unique_ptr<Utilities::StructuredDataLookup<2>> material_lookup;
+
+            std::string data_directory;
+            std::string material_file_name;
         };
       }
 
@@ -339,18 +428,14 @@ namespace aspect
         maximum_composition
       };
 
-
-
       /**
        * Read the compositional averaging operation from the parameter file,
        * using the parameter name given in @p parameter_name, and return the
        * enum that corresponds to this operation.
        */
       CompositionalAveragingOperation
-      parse_compositional_averaging_operation (const std::string &parameter_name,
-                                               const ParameterHandler &prm);
-
-
+      parse_compositional_averaging_operation(const std::string &parameter_name,
+                                              const ParameterHandler &prm);
 
       /**
        * For multicomponent material models:
@@ -371,11 +456,9 @@ namespace aspect
        * strain, so the implementation is independent of the number of entries in
        * @p volume_fractions.
        */
-      double average_value (const std::vector<double> &volume_fractions,
-                            const std::vector<double> &parameter_values,
-                            const CompositionalAveragingOperation &average_type);
-
-
+      double average_value(const std::vector<double> &volume_fractions,
+                           const std::vector<double> &parameter_values,
+                           const CompositionalAveragingOperation &average_type);
 
       /**
        * This function computes averages of multicomponent thermodynamic properties
@@ -398,8 +481,6 @@ namespace aspect
                                               const std::vector<double> &volume_fractions,
                                               const unsigned int i,
                                               MaterialModelOutputs<dim> &out);
-
-
 
       /**
        * Utilities for material models with multiple phases
@@ -434,13 +515,11 @@ namespace aspect
        * to the other. The values of the phase function used to average the properties varies
        * between 0 and 1.
        */
-      double phase_average_value (const std::vector<double> &phase_function_values,
-                                  const std::vector<unsigned int> &n_phase_transitions_per_composition,
-                                  const std::vector<double> &parameter_values,
-                                  const unsigned int composition_index,
-                                  const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::arithmetic);
-
-
+      double phase_average_value(const std::vector<double> &phase_function_values,
+                                 const std::vector<unsigned int> &n_phase_transitions_per_composition,
+                                 const std::vector<double> &parameter_values,
+                                 const unsigned int composition_index,
+                                 const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::arithmetic);
 
       /**
        * A data structure with all inputs for the
@@ -487,7 +566,7 @@ namespace aspect
        * density or viscosity).
        */
       template <int dim>
-      class PhaseFunction: public ::aspect::SimulatorAccess<dim>
+      class PhaseFunction : public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**
@@ -495,41 +574,41 @@ namespace aspect
            * transition to the higher-pressure material (this is done
            * individually for each transition and summed up in the end)
            */
-          double compute_value (const PhaseFunctionInputs<dim> &in) const;
+          double compute_value(const PhaseFunctionInputs<dim> &in) const;
 
           /**
            * Return the derivative of the phase function with respect to
            * pressure.
            */
-          double compute_derivative (const PhaseFunctionInputs<dim> &in) const;
+          double compute_derivative(const PhaseFunctionInputs<dim> &in) const;
 
           /**
            * Return the total number of phase transitions.
            */
-          unsigned int n_phase_transitions () const;
+          unsigned int n_phase_transitions() const;
 
           /**
            * Return the total number of phases.
            */
-          unsigned int n_phases () const;
+          unsigned int n_phases() const;
 
           /**
            * Return the Clapeyron slope (dp/dT of the transition) for
            * phase transition number @p phase_index.
            */
-          double get_transition_slope (const unsigned int phase_index) const;
+          double get_transition_slope(const unsigned int phase_index) const;
 
           /**
            * Return how many phase transitions there are for each composition.
            */
           const std::vector<unsigned int> &
-          n_phase_transitions_for_each_composition () const;
+          n_phase_transitions_for_each_composition() const;
 
           /**
            * Return how many phases there are for each composition.
            */
           const std::vector<unsigned int> &
-          n_phases_for_each_composition () const;
+          n_phases_for_each_composition() const;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -537,9 +616,8 @@ namespace aspect
            * i.e. the parameters will be declared in the subsection that
            * was active before calling this function.
            */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
+          static void
+          declare_parameters(ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
@@ -548,8 +626,7 @@ namespace aspect
            * was active before calling this function.
            */
           void
-          parse_parameters (ParameterHandler &prm);
-
+          parse_parameters(ParameterHandler &prm);
 
         private:
           /**
@@ -591,6 +668,5 @@ namespace aspect
     }
   }
 }
-
 
 #endif
