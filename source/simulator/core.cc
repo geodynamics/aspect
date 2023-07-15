@@ -428,6 +428,10 @@ namespace aspect
         newton_handler->parameters.parse_parameters(prm);
       }
 
+    // check for GMG support and fall back to AMG if necessary
+    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
+      fallback_to_amg_preconditioner_if_necessary();
+
     if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       {
         switch (parameters.stokes_velocity_degree)

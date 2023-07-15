@@ -2070,6 +2070,45 @@ namespace aspect
   }
 
 
+
+  template <int dim>
+  void
+  Simulator<dim>::fallback_to_amg_preconditioner_if_necessary()
+  {
+    if (parameters.include_melt_transport == true)
+      {
+        parameters.stokes_solver_type = Parameters<dim>::StokesSolverType::block_amg;
+
+        pcout << "Warning, the GMG preconditioner is not supported for models with two-phase flow. Disabling GMG preconditioner." << std::endl;
+      }
+    else if (parameters.use_locally_conservative_discretization == true)
+      {
+        parameters.stokes_solver_type = Parameters<dim>::StokesSolverType::block_amg;
+
+        pcout << "Warning, the GMG preconditioner is not supported for models locally conservative discretization. Disabling GMG preconditioner." << std::endl;
+      }
+    else if (geometry_model->get_periodic_boundary_pairs().size() > 0)
+      {
+        parameters.stokes_solver_type = Parameters<dim>::StokesSolverType::block_amg;
+
+        pcout << "Warning, the GMG preconditioner is not supported for models with periodic boundary conditions. Disabling GMG preconditioner." << std::endl;
+      }
+    else if (material_model->is_compressible() == true && parameters.formulation_mass_conservation !=
+             Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
+      {
+        parameters.stokes_solver_type = Parameters<dim>::StokesSolverType::block_amg;
+
+        pcout << "Warning, the GMG preconditioner is not supported for models with the implicit reference density profile formulation. Disabling GMG preconditioner." << std::endl;
+      }
+    else if (parameters.stokes_velocity_degree < 2 || parameters.stokes_velocity_degree > 3)
+      {
+        parameters.stokes_solver_type = Parameters<dim>::StokesSolverType::block_amg;
+
+        pcout << "Warning, the GMG preconditioner is not supported for the selected Stokes velocity element degree. Disabling GMG preconditioner." << std::endl;
+      }
+  }
+
+
   template <int dim>
   void
   Simulator<dim>::replace_outflow_boundary_ids(const unsigned int offset)
@@ -2489,6 +2528,7 @@ namespace aspect
   template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset); \
   template void Simulator<dim>::restore_outflow_boundary_ids(const unsigned int boundary_id_offset); \
   template void Simulator<dim>::check_consistency_of_boundary_conditions() const; \
+  template void Simulator<dim>::fallback_to_amg_preconditioner_if_necessary(); \
   template double Simulator<dim>::compute_initial_newton_residual(const LinearAlgebra::BlockVector &linearized_stokes_initial_guess); \
   template double Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne, \
                                                                             const double maximum_linear_stokes_solver_tolerance, \
