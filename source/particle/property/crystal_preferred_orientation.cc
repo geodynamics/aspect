@@ -35,14 +35,7 @@ namespace aspect
 
       template <int dim>
       CrystalPreferredOrientation<dim>::CrystalPreferredOrientation ()
-      {
-        permutation_operator_3d[0][1][2]  = 1;
-        permutation_operator_3d[1][2][0]  = 1;
-        permutation_operator_3d[2][0][1]  = 1;
-        permutation_operator_3d[0][2][1]  = -1;
-        permutation_operator_3d[1][0][2]  = -1;
-        permutation_operator_3d[2][1][0]  = -1;
-      }
+      {}
 
 
 
@@ -787,7 +780,7 @@ namespace aspect
             const double volume_fraction_grain = get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
             if (volume_fraction_grain >= threshold_GBS/n_grains)
               {
-                deriv_a_cosine_matrices[grain_i] = permutation_operator_3d * w  * nondimensionalization_value;
+                deriv_a_cosine_matrices[grain_i] = Utilities::Tensors::levi_civita<3> *w  * nondimensionalization_value;
 
                 // volume averaged strain energy
                 mean_strain_energy += volume_fraction_grain * strain_energy[grain_i];

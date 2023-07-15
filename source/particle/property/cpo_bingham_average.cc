@@ -31,14 +31,7 @@ namespace aspect
     {
       template <int dim>
       CpoBinghamAverage<dim>::CpoBinghamAverage ()
-      {
-        permutation_operator_3d[0][1][2]  = 1;
-        permutation_operator_3d[1][2][0]  = 1;
-        permutation_operator_3d[2][0][1]  = 1;
-        permutation_operator_3d[0][2][1]  = -1;
-        permutation_operator_3d[1][0][2]  = -1;
-        permutation_operator_3d[2][1][0]  = -1;
-      }
+      {}
 
 
 
