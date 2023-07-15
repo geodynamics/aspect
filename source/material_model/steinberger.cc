@@ -580,12 +580,12 @@ namespace aspect
                                   + " fields of type chemical composition."));
 
           has_background_field = (equation_of_state.number_of_lookups() == n_chemical_fields + 1);
-         std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
-         if (equation_of_state.number_of_lookups() == 1)
-         list_of_composition_names.resize(1, "background");
-         if ((equation_of_state.number_of_lookups() == 1) && (has_background_field))
-         list_of_composition_names.resize(0, "background");
-        viscosity_prefactors = Utilities::parse_map_to_double_array (prm.get("Viscosity prefactors"),
+          std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+          if (equation_of_state.number_of_lookups() == 1)
+            list_of_composition_names.resize(1, "background");
+          if ((equation_of_state.number_of_lookups() == 1) && (has_background_field))
+            list_of_composition_names.resize(0, "background");
+          viscosity_prefactors = Utilities::parse_map_to_double_array (prm.get("Viscosity prefactors"),
                                                                        list_of_composition_names,
                                                                        has_background_field,
                                                                        "Viscosity prefactors");
