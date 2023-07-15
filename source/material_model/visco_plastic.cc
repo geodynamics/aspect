@@ -220,10 +220,12 @@ namespace aspect
           out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
           out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
 
-          // Compute the effective viscosity if requested and retrieve whether the material is plastically yielding
+          // Compute the effective viscosity if requested and retrieve whether the material is plastically yielding.
+          // Also always compute the viscosity if additional outputs are requested, because the viscosity is needed
+          // to compute the elastic force term.
           bool plastic_yielding = false;
           IsostrainViscosities isostrain_viscosities;
-          if (in.requests_property(MaterialProperties::viscosity))
+          if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs))
             {
               // Currently, the viscosities for each of the compositional fields are calculated assuming
               // isostrain amongst all compositions, allowing calculation of the viscosity ratio.
