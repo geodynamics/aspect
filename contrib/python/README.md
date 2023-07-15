@@ -1,7 +1,7 @@
 Python contributions for ASPECT 
 ==============================
 
-This folder contains python script, functions, and notebooks that ASPECT users can find useful.
+This folder contains python scripts, functions, and notebooks that ASPECT users can find useful.
 
 Python packages needed:
 - numpy
