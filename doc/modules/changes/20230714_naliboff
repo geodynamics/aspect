@@ -1,0 +1,4 @@
+Fixed: The strain rheology now uses the correct 'old strain'
+when computing the reaction term updates. 
+<br>
+(John Naliboff 2023/07/14)
