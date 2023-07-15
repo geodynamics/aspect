@@ -1,0 +1,9 @@
+ Added: A sea level postprocessor that computes the
+ sea level for glacial isostatic adjustment modeling.
+ It computes the sea level based on the free
+ surface topography, ocean basin, ice melt from
+ boundary traction, and perturbed gravitational
+ potential of the Earth model from the geoid
+ postprocessor.
+ <br>
+ (Maaike Weerdesteijn, 2023/07/14)
