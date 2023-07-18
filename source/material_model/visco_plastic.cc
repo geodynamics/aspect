@@ -390,6 +390,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     ViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)
