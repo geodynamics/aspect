@@ -2,6 +2,19 @@
 # compositions and have different numbers of phase transitions
 # for different compositions (including 0).
 
+# The difference relative to visco_plastic_phases.prm outputs
+# is rheologies are assigned based on the dominant phases from
+# lookup tables.
+# Dominant phases are determined from lookup tables based on a
+# column of dominant phases (currently only available for
+# PerpleX lookup tables) at a given pressure and temperature.
+# However, other properties, such as densities, are not yet
+# assigned based on lookup tables.
+# Therefore, currently only the pressure, temperature, and
+# dominant phase columns are actively used in the lookup
+# tables (constant_material_small.txt,
+# constant_material_2_small.txt)
+
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1000
