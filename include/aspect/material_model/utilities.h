@@ -669,8 +669,8 @@ namespace aspect
       };
 
       /**
-       * A class to compute the values of phase functions 
-       * based on lookup tables. The class can handle 
+       * A class to compute the values of phase functions
+       * based on lookup tables. The class can handle
        * an arbitrary numbers of phase transitions.
        */
       template <int dim>
@@ -680,7 +680,7 @@ namespace aspect
           /**
            * Return vector of phase names used from lookup table.
            */
-          const std::vector<std::string> &
+          const std::vector<std::vector<std::string>> &
           get_phase_names () const;
 
           /**
@@ -718,14 +718,13 @@ namespace aspect
            * was active before calling this function.
            */
           void
-          parse_parameters (ParameterHandler &prm,
-                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
+          parse_parameters (ParameterHandler &prm);
 
         private:
           /**
            * A vector that stores names of phases used to set phase functions.
            */
-          std::vector<std::string> transition_lookup_phases;
+          std::vector<std::vector<std::string>> transition_lookup_phases;
 
           /**
            * A vector that stores how many phases there are for each compositional field.
