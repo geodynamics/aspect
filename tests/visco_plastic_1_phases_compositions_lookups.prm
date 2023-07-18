@@ -1,6 +1,18 @@
 # Copy of visco_plastic_phases.prm, but include multiple
 # compositions and have different numbers of phase transitions
-# for different compositions (including 0).
+# for one composition.
+
+# The difference relative to visco_plastic_phases.prm outputs
+# is rheologies are assigned based on the dominant phases from
+# a lookup table.
+# Dominant phases are determined from a lookup table based on a
+# column of dominant phases (currently only available for
+# PerpleX lookup tables) at a given pressure and temperature.
+# However, other properties, such as densities, are not yet
+# assigned based on a lookup table.
+# Therefore, currently only the pressure, temperature, and
+# dominant phase columns are actively used in the lookup
+# table (constant_material_small.txt)
 
 set Dimension                              = 2
 set Start time                             = 0
@@ -68,7 +80,7 @@ subsection Initial composition model
   set Model name = function
 
   subsection Function
-    set Function expression = (y > 80000) ? 1.0 : 0.0
+    set Function expression = (y > 80000) ? 1.0 : 0.0;
   end
 end
 
@@ -79,6 +91,10 @@ subsection Material model
     set Material file names              = constant_material_small.txt, constant_material_small.txt
     set Material lookup setting = true
     set Phase transition lookup phases = upper_crust: ol|wa|ri|pv, background: ol|wa|ri|pv
+    set Phase transition depths = upper_crust: 1e3|2e3|3e3, background: 1e3|2e3|3e3
+    set Phase transition widths = upper_crust: 1e3|1e3|1e3, background: 1e3|1e3|1e3
+    set Phase transition temperatures = upper_crust: 1000|1000|1000, background: 1000|1000|1000
+    set Phase transition Clapeyron slopes = upper_crust: 0|0|0, background: 0|0|0
 
     set Densities = upper_crust: 3300|3800|3900|3910, background:3300|3800|3900|3910
     set Thermal expansivities = upper_crust: 1e-5|1.5e-5|1e-5|1e-5, background:1e-5|1e-5|1e-5|1e-5
