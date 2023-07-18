@@ -218,12 +218,12 @@ namespace aspect
               for (unsigned int c=0; c<n_fields; ++c)
                 {
                   const std::vector<std::string> dominant_phase_names = equation_of_state_lookup.get_phase_names(c);
-                  const MaterialModel::PhaseOutputs<dim> *result
+                  const MaterialModel::PhaseOutputs<dim> *phase_outputs
                     = out.template get_additional_output<PhaseOutputs<dim>>();
 
-                  if (result)
+                  if (phase_outputs)
                     {
-                      std::vector<double> dominant_phase_index_vals = result->get_nth_output(0); //
+                      std::vector<double> dominant_phase_index_vals = phase_outputs->get_nth_output(0); //
                       std::string name_dominant_phase = dominant_phase_names[static_cast<int>(dominant_phase_index_vals[i])];
 
                       int index_of_lookup_phase = lookup_index_map.at(name_dominant_phase);
