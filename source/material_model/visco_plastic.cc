@@ -504,7 +504,7 @@ namespace aspect
           AssertThrow((equation_of_state_lookup.number_of_lookups() == 1) ||
                       (equation_of_state_lookup.number_of_lookups() == n_chemical_fields) ||
                       (equation_of_state_lookup.number_of_lookups() == n_chemical_fields + 1),
-                      ExcMessage("The Steinberger material model assumes that all compositional "
+                      ExcMessage("The viscoplastic material model with lookup tables assumes that all compositional "
                                  "fields of the type chemical composition correspond to mass fractions of "
                                  "materials. There must either be one material lookup file, the same "
                                  "number of material lookup files as compositional fields of type chemical "
