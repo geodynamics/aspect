@@ -1553,10 +1553,10 @@ namespace aspect
         n_phases_total = 0;
         n_phases_per_composition.clear();
         transition_lookup_phases.clear();
-        
-        // for each composition make string of dominant phase names to be used lookup table 
+
+        // for each composition make string of dominant phase names to be used lookup table
         const std::vector<std::string> &phase_transition_lookup_phases_compositions  = Utilities::split_string_list(prm.get("Phase transition lookup phases"));
-        
+
         // parse name of each phase from string of dominant phase names
         for (auto &phase_transition_lookup_phases_composition : phase_transition_lookup_phases_compositions)
           {
