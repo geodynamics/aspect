@@ -34,29 +34,90 @@ namespace aspect
     void
     FastScapecc<dim>::initialize ()
     {
+        AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
+                         ExcMessage("FastScape can only be run with a box geometry model."));
 
-      dx = 20000;
-      dy = dx ;
-      x_extent = 100e3;
-      y_extent = 100e3;
-      nx = 5 ;
-      ny = 5 ;
-      array_size = nx*ny;
+             const GeometryModel::Box<dim> *geometry
+               = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
 
-      // Sub intervals are 3 less than points, if including the ghost nodes. Otherwise 1 less.
-      table_intervals[0] = nx ;
-      table_intervals[dim-1] = 1;
-      table_intervals[1] = ny;
+             // Find the id associated with the top boundary and boundaries that call mesh deformation.
+             const types::boundary_id top_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
+             const std::set<types::boundary_id> mesh_deformation_boundary_ids
+               = this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
 
-      const GeometryModel::Box<dim> *geometry
-        = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
+             // Get the deformation type names called for each boundary.
+             std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
+               = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
 
-      // The first entry represents the minimum coordinates of the model domain, the second the model extent.
-      for (unsigned int i=0; i<dim; ++i)
-        {
-          grid_extent[i].first = geometry->get_origin()[i];
-          grid_extent[i].second = geometry->get_extents()[i];
-        }
+             // Loop over each mesh deformation boundary, and make sure FastScape is only called on the surface.
+             for (std::set<types::boundary_id>::const_iterator p = mesh_deformation_boundary_ids.begin();
+                  p != mesh_deformation_boundary_ids.end(); ++p)
+               {
+                 const std::vector<std::string> names = mesh_deformation_boundary_indicators_map[*p];
+                 for (unsigned int i = 0; i < names.size(); ++i )
+                   {
+                     if (names[i] == "fastscape")
+                       AssertThrow((*p == top_boundary),
+                                   ExcMessage("FastScape can only be called on the surface boundary."));
+                   }
+               }
+
+            // The first entry represents the minimum coordinates of the model domain, the second the model extent.
+            for (unsigned int i=0; i<dim; ++i)
+              {
+                grid_extent[i].first = geometry->get_origin()[i];
+                grid_extent[i].second = geometry->get_extents()[i];
+              }
+
+         nx = repetitions[0] + 1;
+
+         // Size of FastScape cell.
+         dx = (grid_extent[0].second)/( repetitions[0]);
+
+         // FastScape X extent, which is generally ASPECT's extent unless the ghost nodes are used,
+         // in which case 2 cells are added on either side.
+         x_extent = (grid_extent[0].second) ;
+
+        // Sub intervals are 1 less than points.
+        table_intervals[0] = repetitions[0];
+        table_intervals[dim-1] = 1;
+
+        ny = repetitions[1] + 1;
+        dy = (grid_extent[1].second)/( repetitions[1]);
+        table_intervals[1] = repetitions[1];
+        y_extent = (grid_extent[1].second)  ;
+        array_size = nx*ny;
+        
+        
+        
+        
+        
+        
+        
+        
+//
+//      dx = 20000;
+//      dy = dx ;
+//      x_extent = 100e3;
+//      y_extent = 100e3;
+//      nx = 5 ;
+//      ny = 5 ;
+//      array_size = nx*ny;
+//
+//      // Sub intervals are 3 less than points, if including the ghost nodes. Otherwise 1 less.
+//      table_intervals[0] = nx ;
+//      table_intervals[dim-1] = 1;
+//      table_intervals[1] = ny;
+
+//      const GeometryModel::Box<dim> *geometry
+//        = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
+//
+//      // The first entry represents the minimum coordinates of the model domain, the second the model extent.
+//      for (unsigned int i=0; i<dim; ++i)
+//        {
+//          grid_extent[i].first = geometry->get_origin()[i];
+//          grid_extent[i].second = geometry->get_extents()[i];
+//        }
     }
 
 
@@ -330,9 +391,11 @@ namespace aspect
 
       // Find out our velocities from the change in height.
       // Where V is a vector of array size that exists on all processes.
+        
+        std::cout<<"Timestep : "<<this->get_timestep()<<std::endl;
       for (unsigned int i=0; i<array_size; ++i)
         {
-          V[i] = (elevation_std[i] - elevation_old_std[i])/ this->get_timestep();
+          V[i] = (elevation_std[i] - elevation_old_std[i])/ (this->get_timestep()/ year_in_seconds);
         }
       std::cout << "here it works 11 "<<std::endl;
 
@@ -386,6 +449,8 @@ namespace aspect
       Table<dim,double> data_table;
       data_table.TableBase<dim,double>::reinit(size_idx);
       TableIndices<dim> idx;
+//      Assert(values.size() == data_table.size()[0]*data_table.size()[1]*data_table.size()[2],
+//                     ExcMessage("The size of the data table does not match the size of the values.");
 
       std::cout << "here it works 12"<<std::endl;
 
@@ -405,7 +470,8 @@ namespace aspect
                   idx[0] = j;
 
                   // Convert back to m/s.
-                  data_table(idx) = values[(nx+1)+nx*i+j] / year_in_seconds;
+                  data_table(idx) = values[nx*i+j] / year_in_seconds;
+                    
 
                 }
             }
