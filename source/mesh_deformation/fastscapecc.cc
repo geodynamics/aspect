@@ -62,12 +62,15 @@ namespace aspect
                    }
                }
 
-            // The first entry represents the minimum coordinates of the model domain, the second the model extent.
-            for (unsigned int i=0; i<dim; ++i)
-              {
-                grid_extent[i].first = geometry->get_origin()[i];
-                grid_extent[i].second = geometry->get_extents()[i];
-              }
+      // Initialize parameters for restarting FastScape
+      restart = this->get_parameters().resume_computation;
+      
+        // The first entry represents the minimum coordinates of the model domain, the second the model extent.
+        for (unsigned int i=0; i<dim; ++i)
+          {
+            grid_extent[i].first = geometry->get_origin()[i];
+            grid_extent[i].second = geometry->get_extents()[i];
+          }
 
          nx = repetitions[0] + 1;
 
@@ -87,37 +90,7 @@ namespace aspect
         table_intervals[1] = repetitions[1];
         y_extent = (grid_extent[1].second)  ;
         array_size = nx*ny;
-        
-        
-        
-        
-        
-        
-        
-        
-//
-//      dx = 20000;
-//      dy = dx ;
-//      x_extent = 100e3;
-//      y_extent = 100e3;
-//      nx = 5 ;
-//      ny = 5 ;
-//      array_size = nx*ny;
-//
-//      // Sub intervals are 3 less than points, if including the ghost nodes. Otherwise 1 less.
-//      table_intervals[0] = nx ;
-//      table_intervals[dim-1] = 1;
-//      table_intervals[1] = ny;
 
-//      const GeometryModel::Box<dim> *geometry
-//        = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
-//
-//      // The first entry represents the minimum coordinates of the model domain, the second the model extent.
-//      for (unsigned int i=0; i<dim; ++i)
-//        {
-//          grid_extent[i].first = geometry->get_origin()[i];
-//          grid_extent[i].second = geometry->get_extents()[i];
-//        }
     }
 
 
@@ -223,6 +196,8 @@ namespace aspect
       // // Vector to hold the velocities that represent the change to the surface.
       std::vector<double> V(array_size);
 
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
       // Initialize the variables that will be sent to FastScape.
       std::vector<double> h(array_size, std::numeric_limits<double>::max());
       std::vector<double> vx(array_size);
@@ -245,19 +220,54 @@ namespace aspect
             vy[index] = temporary_variables[3][i];
         }
 
+      for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
+        {
+
+          // First, find out the size of the array a process wants to send.
+          MPI_Status status;
+          MPI_Probe(p, 42, this->get_mpi_communicator(), &status);
+          int incoming_size = 0;
+          MPI_Get_count(&status, MPI_DOUBLE, &incoming_size);
+
+          // Resize the array so it fits whatever the process sends.
+          for (unsigned int i=0; i<temporary_variables.size(); ++i)
+            {
+              temporary_variables[i].resize(incoming_size);
+            }
+
+          for (unsigned int i=0; i<temporary_variables.size(); ++i)
+            MPI_Recv(&temporary_variables[i][0], incoming_size, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
+
+          // Now, place the numbers into the correct place based off the index.
+          for (unsigned int i=0; i<temporary_variables[1].size(); ++i)
+            {
+              int index = static_cast<int>(temporary_variables[1][i]);
+              h[index] = temporary_variables[0][i];
+              vx[index] = temporary_variables[2][i];
+              vz[index] = temporary_variables[dim+1][i];
+
+              // In 2D there are no y velocities, so we set them to zero.
+              if (dim == 2 )
+                vy[index] = 0;
+              else
+                vy[index] = temporary_variables[3][i];
+            }
+        }
 
       // Initialize kf and kd, and check that there are no empty mesh points due to
       // an improperly set maximum_surface_refinement_level, additional_refinement,
       // and surface_refinement_difference
-
+      // int fastscape_mesh_filled = true;
       for (unsigned int i=0; i<array_size; ++i)
         {
           kf[i] = kff;
-          kd[i] = kdd;
+          kd[i] = kdd;        
         }
 
+      //Execute Fastscape
       // TimerOutput::Scope timer_section(this->get_computing_timer(), "Execute FastScape");
-
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) != 0)
+        return;
 
       this->get_pcout() << "   Initializing FastScape... " << (1 + maximum_surface_refinement_level + additional_refinement) <<
                         " levels, cell size: " << dx << " m." << std::endl;
@@ -397,6 +407,14 @@ namespace aspect
         {
           V[i] = (elevation_std[i] - elevation_old_std[i])/ (this->get_timestep()/ year_in_seconds);
         }
+          MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator());
+      }
+      else{
+          for (unsigned int i=0; i<temporary_variables.size(); ++i)
+            MPI_Ssend(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
+          
+          MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator()); 
+      }  
       std::cout << "here it works 11 "<<std::endl;
 
       // Get the sizes needed for a data table of the mesh velocities.
