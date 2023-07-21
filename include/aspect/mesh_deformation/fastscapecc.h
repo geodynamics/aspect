@@ -48,7 +48,7 @@ namespace aspect
         //  * Destructor for FastScape.
         //  */
         // ~FastScape() override;
-
+ 
         /**
           * A function that creates constraints for the velocity of certain mesh
           * vertices (e.g. the surface vertices) for a specific boundary.
@@ -97,6 +97,7 @@ namespace aspect
          */
         double maximum_fastscape_timestep;
 
+        mutable bool restart;
 
         /**
          * We want to check that every point within the FastScape mesh has been given a value.
