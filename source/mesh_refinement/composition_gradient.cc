@@ -116,8 +116,8 @@ namespace aspect
         prm.enter_subsection("Composition gradient");
         {
           composition_scaling_factors
-            = Utilities::string_to_double(
-                Utilities::split_string_list(prm.get("Compositional field scaling factors")));
+            = dealii::Utilities::string_to_double(
+                dealii::Utilities::split_string_list(prm.get("Compositional field scaling factors")));
 
           AssertThrow (composition_scaling_factors.size() == this->n_compositional_fields()
                        ||

@@ -110,8 +110,8 @@ namespace aspect
         prm.enter_subsection("Composition threshold");
         {
           composition_thresholds
-            = Utilities::string_to_double(
-                Utilities::split_string_list(prm.get("Compositional field thresholds")));
+            = dealii::Utilities::string_to_double(
+                dealii::Utilities::split_string_list(prm.get("Compositional field thresholds")));
 
           AssertThrow (composition_thresholds.size() == this->n_compositional_fields(),
                        ExcMessage ("The number of thresholds given here must be "
