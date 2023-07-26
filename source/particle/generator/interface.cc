@@ -41,7 +41,7 @@ namespace aspect
       void
       Interface<dim>::initialize ()
       {
-        const unsigned int my_rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+        const unsigned int my_rank = dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
         random_number_generator.seed(5432+my_rank);
       }
 
