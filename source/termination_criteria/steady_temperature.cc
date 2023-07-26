@@ -84,7 +84,7 @@ namespace aspect
           }
 
       const double global_temperature_integral
-        = Utilities::MPI::sum (local_temperature_integral, this->get_mpi_communicator());
+        = dealii::Utilities::MPI::sum (local_temperature_integral, this->get_mpi_communicator());
 
       // Calculate the average global temperature
       const double average_temperature = global_temperature_integral / this->get_volume();
