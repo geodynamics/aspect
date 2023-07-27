@@ -132,12 +132,12 @@ namespace aspect
           {
             prm.enter_subsection("Compositional fields as vectors");
             {
-              vector_names = Utilities::split_string_list(prm.get("Names of vectors"), ',');
+              vector_names = dealii::Utilities::split_string_list(prm.get("Names of vectors"), ',');
 
-              const std::vector<std::string> sets_list = Utilities::split_string_list(prm.get("Names of fields"), ';');
+              const std::vector<std::string> sets_list = dealii::Utilities::split_string_list(prm.get("Names of fields"), ';');
               for (const auto &set_string : sets_list)
                 {
-                  const std::vector<std::string> set = Utilities::split_string_list(set_string, ',');
+                  const std::vector<std::string> set = dealii::Utilities::split_string_list(set_string, ',');
                   AssertThrow((set.size() == dim || set.size() == 1),
                               ExcMessage("Sets of compositional fields to be output as vectors must have dim components, "
                                          "or one component (i.e. the first field in a sequence of dim consecutive fields)."));

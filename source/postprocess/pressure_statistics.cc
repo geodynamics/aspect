@@ -78,7 +78,7 @@ namespace aspect
           }
 
       const double global_pressure_integral
-        = Utilities::MPI::sum (local_pressure_integral, this->get_mpi_communicator());
+        = dealii::Utilities::MPI::sum (local_pressure_integral, this->get_mpi_communicator());
 
       // now do the reductions that are
       // min/max operations. do them in
@@ -90,7 +90,7 @@ namespace aspect
         double local_values[2] = { -local_min_pressure, local_max_pressure };
         double global_values[2];
 
-        Utilities::MPI::max (local_values, this->get_mpi_communicator(), global_values);
+        dealii::Utilities::MPI::max (local_values, this->get_mpi_communicator(), global_values);
 
         global_min_pressure = -global_values[0];
         global_max_pressure = global_values[1];

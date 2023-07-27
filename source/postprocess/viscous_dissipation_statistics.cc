@@ -101,7 +101,7 @@ namespace aspect
           }
 
       std::vector<double> viscous_dissipation (local_dissipation_integral.size());
-      Utilities::MPI::sum (local_dissipation_integral, this->get_mpi_communicator(), viscous_dissipation);
+      dealii::Utilities::MPI::sum (local_dissipation_integral, this->get_mpi_communicator(), viscous_dissipation);
 
       const std::string unit = (dim == 3) ? "(W)" : "(W/m)";
 

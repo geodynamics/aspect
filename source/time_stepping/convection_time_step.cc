@@ -75,7 +75,7 @@ namespace aspect
           }
 
       const double max_global_speed_over_meshsize
-        = Utilities::MPI::max (max_local_speed_over_meshsize, this->get_mpi_communicator());
+        = dealii::Utilities::MPI::max (max_local_speed_over_meshsize, this->get_mpi_communicator());
 
       double min_convection_timestep = std::numeric_limits<double>::max();
 
