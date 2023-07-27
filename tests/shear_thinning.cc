@@ -172,7 +172,7 @@ namespace aspect
 
       std::ostringstream screen_text;
       screen_text.precision(4);
-      screen_text << Utilities::MPI::sum(viscosity_integral, this->get_mpi_communicator());
+      screen_text << dealii::Utilities::MPI::sum(viscosity_integral, this->get_mpi_communicator());
 
       return std::pair<std::string, std::string> ("Average viscosity:",
                                                   screen_text.str());

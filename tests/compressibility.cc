@@ -192,8 +192,8 @@ namespace aspect
       std::ostringstream screen_text2;
       screen_text1.precision(4);
       screen_text2.precision(4);
-      screen_text1 << Utilities::MPI::sum(bottom_flux_integral, this->get_mpi_communicator());
-      screen_text2 << Utilities::MPI::sum(top_flux_integral, this->get_mpi_communicator());
+      screen_text1 << dealii::Utilities::MPI::sum(bottom_flux_integral, this->get_mpi_communicator());
+      screen_text2 << dealii::Utilities::MPI::sum(top_flux_integral, this->get_mpi_communicator());
 
       return std::pair<std::string, std::string> ("Top/bottom flux:",
                                                   screen_text2.str() + "/" + screen_text1.str());
