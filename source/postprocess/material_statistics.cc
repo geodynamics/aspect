@@ -73,9 +73,9 @@ namespace aspect
           }
 
       // compute the sum over all processors
-      const double global_mass = Utilities::MPI::sum (local_mass, this->get_mpi_communicator());
-      const double global_viscosity = Utilities::MPI::sum (local_viscosity, this->get_mpi_communicator());
-      const double global_volume = Utilities::MPI::sum (local_volume, this->get_mpi_communicator());
+      const double global_mass = dealii::Utilities::MPI::sum (local_mass, this->get_mpi_communicator());
+      const double global_viscosity = dealii::Utilities::MPI::sum (local_viscosity, this->get_mpi_communicator());
+      const double global_volume = dealii::Utilities::MPI::sum (local_volume, this->get_mpi_communicator());
       const double average_density = global_mass / global_volume;
       const double average_viscosity = global_viscosity / global_volume;
 
