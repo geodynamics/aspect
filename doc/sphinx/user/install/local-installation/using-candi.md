@@ -32,6 +32,8 @@ class="smallcaps">p4est</span> and Trilinos.
     While not mandatory, we recommend to download this file and
     place it inside the `candi` directory (you should then have two
     configuration files in that directory, named `candi.cfg` and `local.cfg`).
+    When both `candi.cfg` and `local.cfg` are present in the directory, running
+    candi (see below) will by default use the configuration options in `local.cfg`.
 
 2.  *Installing deal.II and its dependencies:*
     Execute `candi` by running
