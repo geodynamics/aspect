@@ -1617,7 +1617,7 @@ namespace aspect
     LinearAlgebra::BlockVector distributed_reaction_vector (introspection.index_sets.system_partitioning,
                                                             mpi_communicator);
 
-    pcout << "   Solving composition reactions with SUNDIALS... " << std::flush;
+    pcout << "   Solving composition reactions... " << std::flush;
 
     // make one fevalues for the composition, and one for the temperature (they might use different finite elements)
     const Quadrature<dim> quadrature_C(dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).get_unit_support_points());
@@ -1688,8 +1688,58 @@ namespace aspect
     // TODO: make this more efficient.
 
     using VectorType = Vector<double>;
-    SUNDIALS::ARKode<VectorType>::AdditionalData data (0.0, time_step, 0.001*time_step, 0.1*time_step, 1.e-6*time_step);
+    SUNDIALS::ARKode<VectorType>::AdditionalData data (time,             /* initial_time */
+                                                       time + time_step, /* final_time */
+                                                       0.01*time_step,   /* initial_step_size */
+                                                       time_step,        /* output_period */
+                                                       1.e-6*time_step   /* minimum_step_size */);
     SUNDIALS::ARKode<VectorType> ode(data);
+
+    std::vector<std::vector<double>> initial_values_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
+    std::vector<double> initial_values_T (quadrature_C.size());
+
+    // We have to store all values of the temperature and composition fields in one long vector.
+    // Create the vector and functions for transferring values between this vector and the material model inputs object.
+    const unsigned int n_q_points = dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell;
+    const unsigned int n_fields = 1 + introspection.n_compositional_fields;
+    VectorType fields (n_q_points * n_fields);
+
+    auto copy_fields_into_one_vector = [n_q_points,n_fields](const MaterialModel::MaterialModelInputs<dim> &in,
+                                                             VectorType &fields)
+    {
+      for (unsigned int j=0; j<n_q_points; ++j)
+        for (unsigned int f=0; f<n_fields; ++f)
+          if (f==0)
+            fields[j*n_fields+f] = in.temperature[j];
+          else
+            fields[j*n_fields+f] = in.composition[j][f-1];
+      return;
+    };
+
+    auto copy_fields_into_material_model_inputs = [n_q_points,n_fields](const VectorType &fields,
+                                                                        MaterialModel::MaterialModelInputs<dim> &in)
+    {
+      for (unsigned int j=0; j<n_q_points; ++j)
+        for (unsigned int f=0; f<n_fields; ++f)
+          if (f==0)
+            in.temperature[j]      = fields[j*n_fields+f];
+          else
+            in.composition[j][f-1] = fields[j*n_fields+f];
+      return;
+    };
+
+    auto copy_rates_into_one_vector = [n_q_points,n_fields](const MaterialModel::ReactionRateOutputs<dim> *reaction_out,
+                                                            const HeatingModel::HeatingModelOutputs &heating_out,
+                                                            VectorType &rates)
+    {
+      for (unsigned int j=0; j<n_q_points; ++j)
+        for (unsigned int f=0; f<n_fields; ++f)
+          if (f==0)
+            rates[j*n_fields+f] = heating_out.rates_of_temperature_change[j];
+          else
+            rates[j*n_fields+f] = reaction_out->reaction_rates[j][f-1];
+      return;
+    };
 
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
@@ -1700,50 +1750,22 @@ namespace aspect
           std::vector<std::vector<double>> accumulated_reactions_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
           std::vector<double> accumulated_reactions_T (quadrature_T.size());
 
-          std::vector<std::vector<double>> initial_values_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
           initial_values_C = in_C.composition;
-          std::vector<double> initial_values_T (quadrature_C.size());
           initial_values_T = in_C.temperature;
 
-          // We have to store all values of the temperature and composition fields in one long vector
-          const unsigned int n_q_points = dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell;
-          const unsigned int n_fields = 1 + introspection.n_compositional_fields;
-          VectorType fields (n_q_points * n_fields);
-
-          for (unsigned int j=0; j<n_q_points; ++j)
-            for (unsigned int f=0; f<n_fields; ++f)
-              if (f==0)
-                fields[j*n_fields+f] = in_C.temperature[j];
-              else
-                fields[j*n_fields+f] = in_C.composition[j][f-1];
+          copy_fields_into_one_vector (in_C, fields);
 
           ode.explicit_function = [&] (const double /*time*/,
                                        const VectorType &y,
                                        VectorType &ydot)
           {
-            // Loop over composition element
-            for (unsigned int j=0; j<n_q_points; ++j)
-              for (unsigned int f=0; f<n_fields; ++f)
-                {
-                  if (f==0)
-                    in_C.temperature[j]      = y[j*n_fields+f];
-                  else
-                    in_C.composition[j][f-1] = y[j*n_fields+f];
-                }
+            copy_fields_into_material_model_inputs (y, in_C);
 
             material_model->fill_additional_material_model_inputs(in_C, solution, fe_values_C, introspection);
-
             material_model->evaluate(in_C, out_C);
             heating_model_manager.evaluate(in_C, out_C, heating_model_outputs_C);
 
-            for (unsigned int j=0; j<n_q_points; ++j)
-              for (unsigned int f=0; f<n_fields; ++f)
-                {
-                  if (f==0)
-                    ydot[j*n_fields+f] = heating_model_outputs_C.rates_of_temperature_change[j];
-                  else
-                    ydot[j*n_fields+f] = reaction_rate_outputs_C->reaction_rates[j][f-1];
-                }
+            copy_rates_into_one_vector (reaction_rate_outputs_C, heating_model_outputs_C, ydot);
           };
 
           ode.solve_ode(fields);
