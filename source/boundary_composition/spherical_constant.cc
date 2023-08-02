@@ -25,62 +25,53 @@
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 
-#include <utility>
-#include <limits>
-
 
 namespace aspect
 {
   namespace BoundaryComposition
   {
-// ------------------------------ SphericalConstant -------------------
+    template <int dim>
+    void
+    SphericalConstant<dim>::
+    initialize ()
+    {
+      // verify that the geometry is supported by this plugin
+      AssertThrow ( Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>>(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>>(this->get_geometry_model()),
+                    ExcMessage ("This boundary model is only implemented if the geometry is "
+                                "one of the spherical geometries."));
+
+      // no inner boundary in a full sphere
+      if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()))
+        inner_boundary_indicator = numbers::invalid_unsigned_int;
+      else
+        inner_boundary_indicator = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
+
+      outer_boundary_indicator = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+
+    }
+
+
 
     template <int dim>
     double
     SphericalConstant<dim>::
     boundary_composition (const types::boundary_id boundary_indicator,
                           const Point<dim> &/*position*/,
-                          const unsigned int /*compositional_field*/) const
+                          const unsigned int compositional_field) const
     {
-      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
-      const std::string boundary_name = geometry_model->translate_id_to_symbol_name(boundary_indicator);
-
-      if (boundary_name == "bottom")
-        return inner_composition;
-      else if (boundary_name =="top")
-        return outer_composition;
+      if (boundary_indicator == outer_boundary_indicator)
+        return outer_composition[compositional_field];
+      else if (boundary_indicator == inner_boundary_indicator)
+        return inner_composition[compositional_field];
       else
-        {
-          Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. "
-                                     "The given boundary should be ``top'' or ``bottom''."));
-          return numbers::signaling_nan<double>();
-        }
-    }
+        AssertThrow (false,
+                     ExcMessage ("Unknown boundary indicator for geometry model. "
+                                 "The given boundary should be ``top'' or ``bottom''."));
 
-
-
-    template <int dim>
-    double
-    SphericalConstant<dim>::
-    minimal_composition (const std::set<types::boundary_id> &) const
-    {
-      if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()))
-        return outer_composition;
-      else
-        return std::min (inner_composition, outer_composition);
-    }
-
-
-
-    template <int dim>
-    double
-    SphericalConstant<dim>::
-    maximal_composition (const std::set<types::boundary_id> &) const
-    {
-      if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()))
-        return outer_composition;
-      else
-        return std::max (inner_composition, outer_composition);
+      return numbers::signaling_nan<double>();
     }
 
 
@@ -94,13 +85,17 @@ namespace aspect
         prm.enter_subsection("Spherical constant");
         {
           prm.declare_entry ("Outer composition", "0.",
-                             Patterns::Double (),
-                             "Composition at the outer boundary (lithosphere water/air). "
-                             "For a spherical geometry model, this is the only boundary. "
+                             Patterns::List(Patterns::Double ()),
+                             "A comma separated list of composition boundary values "
+                             "at the top boundary (at maximal radius). This list must have "
+                             "one entry or as many entries as there are compositional fields. "
                              "Units: none.");
           prm.declare_entry ("Inner composition", "1.",
-                             Patterns::Double (),
-                             "Composition at the inner boundary (core mantle boundary). Units: none.");
+                             Patterns::List(Patterns::Double ()),
+                             "A comma separated list of composition boundary values "
+                             "at the bottom boundary (at minimal radius). This list must have "
+                             "one entry or as many entries as there are compositional fields. "
+                             "Units: none.");
         }
         prm.leave_subsection ();
       }
@@ -112,12 +107,19 @@ namespace aspect
     void
     SphericalConstant<dim>::parse_parameters (ParameterHandler &prm)
     {
+      const unsigned int n_compositional_fields = this->n_compositional_fields();
+
       prm.enter_subsection("Boundary composition model");
       {
         prm.enter_subsection("Spherical constant");
         {
-          inner_composition = prm.get_double ("Inner composition");
-          outer_composition = prm.get_double ("Outer composition");
+          inner_composition = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Inner composition"))),
+                                                                      n_compositional_fields,
+                                                                      "boundary composition values");
+
+          outer_composition = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Outer composition"))),
+                                                                      n_compositional_fields,
+                                                                      "boundary composition values");
         }
         prm.leave_subsection ();
       }
@@ -134,7 +136,7 @@ namespace aspect
     ASPECT_REGISTER_BOUNDARY_COMPOSITION_MODEL(SphericalConstant,
                                                "spherical constant",
                                                "A model in which the composition is chosen constant on "
-                                               "the inner and outer boundaries of a surface, spherical "
+                                               "the inner and outer boundaries of a sphere, spherical "
                                                "shell, chunk or ellipsoidal chunk. "
                                                "Parameters are read from subsection 'Spherical constant'.")
   }
