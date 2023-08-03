@@ -162,14 +162,12 @@ namespace aspect
                     ExcMessage("No cpo property plugin found."));
         AssertThrow(manager.plugin_name_exists("cpo elastic tensor"),
                     ExcMessage("No cpo elastic tensor property plugin found."));
-        Assert(manager.plugin_name_exists("decompose elastic matrix"),
-               ExcMessage("No hexagonal axes property plugin found."));
 
-        AssertThrow(manager.check_plugin_order("crystal preferred orientation","decompose elastic matrix"),
-                    ExcMessage("To use the decompose elastic matrix plugin, the cpo plugin need to be defined before this plugin."));
+        AssertThrow(manager.check_plugin_order("crystal preferred orientation","elastic tensor decomposition"),
+                    ExcMessage("To use the elastic tensor decomposition plugin, the cpo plugin need to be defined before this plugin."));
 
-        AssertThrow(manager.check_plugin_order("cpo elastic tensor","decompose elastic matrix"),
-                    ExcMessage("To use the decompose elastic matrix plugin, the cpo elastic tensor plugin need to be defined before this plugin."));
+        AssertThrow(manager.check_plugin_order("cpo elastic tensor","elastic tensor decomposition"),
+                    ExcMessage("To use the elastic tensor decomposition plugin, the cpo elastic tensor plugin need to be defined before this plugin."));
 
         cpo_elastic_tensor_data_position = manager.get_data_info().get_position_by_plugin_index(manager.get_plugin_index_by_name("cpo elastic tensor"));
       }
@@ -487,15 +485,15 @@ namespace aspect
             // replaced by the lines below.
             //auto ortho_and_higher_vector = projection_matrix_mono_to_ortho*mono_and_higher_vector;
             dealii::Tensor<1,9>  mono_and_higher_vector_cropped;
-            mono_and_higher_vector_croped[0] = mono_and_higher_vector[0];
-            mono_and_higher_vector_croped[1] = mono_and_higher_vector[1];
-            mono_and_higher_vector_croped[2] = mono_and_higher_vector[2];
-            mono_and_higher_vector_croped[3] = mono_and_higher_vector[3];
-            mono_and_higher_vector_croped[4] = mono_and_higher_vector[4];
-            mono_and_higher_vector_croped[5] = mono_and_higher_vector[5];
-            mono_and_higher_vector_croped[6] = mono_and_higher_vector[6];
-            mono_and_higher_vector_croped[7] = mono_and_higher_vector[7];
-            mono_and_higher_vector_croped[8] = mono_and_higher_vector[8];
+            mono_and_higher_vector_cropped[0] = mono_and_higher_vector[0];
+            mono_and_higher_vector_cropped[1] = mono_and_higher_vector[1];
+            mono_and_higher_vector_cropped[2] = mono_and_higher_vector[2];
+            mono_and_higher_vector_cropped[3] = mono_and_higher_vector[3];
+            mono_and_higher_vector_cropped[4] = mono_and_higher_vector[4];
+            mono_and_higher_vector_cropped[5] = mono_and_higher_vector[5];
+            mono_and_higher_vector_cropped[6] = mono_and_higher_vector[6];
+            mono_and_higher_vector_cropped[7] = mono_and_higher_vector[7];
+            mono_and_higher_vector_cropped[8] = mono_and_higher_vector[8];
             dealii::Tensor<1,9> ortho_and_higher_vector;
             ortho_and_higher_vector[0] = mono_and_higher_vector[0];
             ortho_and_higher_vector[1] = mono_and_higher_vector[1];
@@ -506,7 +504,7 @@ namespace aspect
             ortho_and_higher_vector[6] = mono_and_higher_vector[6];
             ortho_and_higher_vector[7] = mono_and_higher_vector[7];
             ortho_and_higher_vector[8] = mono_and_higher_vector[8];
-            auto mono_vector = mono_and_higher_vector_croped-ortho_and_higher_vector;
+            auto mono_vector = mono_and_higher_vector_cropped-ortho_and_higher_vector;
             norms[1][permutation_i] = mono_vector.norm_square();
 
 
@@ -535,15 +533,6 @@ namespace aspect
       ElasticTensorDecomposition<dim>::need_update() const
       {
         return update_output_step;
-      }
-
-
-
-      template <int dim>
-      UpdateFlags
-      ElasticTensorDecomposition<dim>::get_needed_update_flags () const
-      {
-        return update_default;
       }
 
 

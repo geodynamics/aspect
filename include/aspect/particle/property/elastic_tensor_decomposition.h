@@ -101,21 +101,18 @@ namespace aspect
           need_update () const override;
 
           /**
-           * Return which data has to be provided to update the property.
-           * The integrated strains needs the gradients of the velocity.
-           */
-          UpdateFlags
-          get_needed_update_flags () const  override;
-
-          /**
-           * Return a specific permutation based on an index
+           * Return an even permutation based on an index. This is an internal
+           * utility function, also used by the unit tester.
            */
           static
           std::array<unsigned short int, 3>
           indexed_even_permutation(const unsigned short int index);
 
           /**
-           * Computes the voigt stiffness tensor from the elastic tensor
+           * Computes the voigt stiffness tensor from the elastic tensor.
+          * the Voigt stiffness tensor (see Browaeys and chevrot, 2004)
+          * defines the stress needed to cause an isotropic strain in the
+          * material
            */
           static
           SymmetricTensor<2,3>
@@ -123,6 +120,8 @@ namespace aspect
 
           /**
            * Computes the dilatation stiffness tensor from the elastic tensor
+          * The dilatational stiffness tensor (see Browaeys and chevrot, 2004)
+          * defines the stress to cause isotropic dilatation in the material.
            */
           static
           SymmetricTensor<2,3>
@@ -130,9 +129,21 @@ namespace aspect
 
           /**
            * Computes the Symmetry Cartesian Coordinate System (SCCS).
+           *
+           * This is based on Browaeys and Chevrot (2004), GJI (doi: 10.1111/j.1365-246X.2004.024115.x),
+           * which states at the end of paragraph 3.3 that "... an important property of an orthogonal projection
+           * is that the distance between a vector $X$ and its orthogonal projection $X_H = p(X)$ on a given
+           * subspace is minimum. These two features ensure that the decomposition is optimal once a 3-D Cartesian
+           * coordinate system is chosen.". The other property they talk about is that "The space of elastic
+           * vectors has a finite dimension [...], i.e. using a different norm from eq. (2.3 will change distances
+           * but not the resulting decomposition.".
+           *
            * With the three SCCS directions, the elastic tensor can be decomposed into the different
            * symmetries in those three SCCS direction, that is, triclinic, monoclinic, orthorhombic,
            * tetragonal, hexagonal, and isotropic (Browaeys & Chevrot, 2004).
+           *
+           * The dilatation_stiffness_tensor defines the stress to cause isotropic dilatation in the material.
+           * The voigt_stiffness_tensor defines the stress needed to cause an isotropic strain in the material
            */
           static
           Tensor<2,3> compute_unpermutated_SCCS(const SymmetricTensor<2,3> &dilatation_stiffness_tensor,
@@ -179,6 +190,9 @@ namespace aspect
           parse_parameters (ParameterHandler &prm) override;
 
 
+          /**
+           * The tenors below can be used to project matrices to different symmetries.
+           */
           static SymmetricTensor<2,21> projection_matrix_tric_to_mono;
           static SymmetricTensor<2,9> projection_matrix_mono_to_ortho;
           static SymmetricTensor<2,9> projection_matrix_ortho_to_tetra;
