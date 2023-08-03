@@ -437,8 +437,8 @@ namespace aspect
          * which states at the end of paragraph 3.3 that "... an important property of an orthogonal projection
          * is that the distance between a vector $X$ and its orthogonal projection $X_H = p(X)$ on a given
          * subspace is minimum. These two features ensure that the decomposition is optimal once a 3-D Cartesian
-         * coordiante systeem is chosen.". The other property they talk about is that "The space of elastic
-         * vectors has a finite dimension [...], i.e. using a differnt norm from eq. (2.3 will change disstances
+         * coordinate system is chosen.". The other property they talk about is that "The space of elastic
+         * vectors has a finite dimension [...], i.e. using a different norm from eq. (2.3 will change distances
          * but not the resulting decomposition.".
          */
         Tensor<2,3> permutated[3];
@@ -486,7 +486,7 @@ namespace aspect
             // The following line would do the same as the lines below, but it is slow. It has therefore been
             // replaced by the lines below.
             //auto ortho_and_higher_vector = projection_matrix_mono_to_ortho*mono_and_higher_vector;
-            dealii::Tensor<1,9>  mono_and_higher_vector_croped;
+            dealii::Tensor<1,9>  mono_and_higher_vector_cropped;
             mono_and_higher_vector_croped[0] = mono_and_higher_vector[0];
             mono_and_higher_vector_croped[1] = mono_and_higher_vector[1];
             mono_and_higher_vector_croped[2] = mono_and_higher_vector[2];

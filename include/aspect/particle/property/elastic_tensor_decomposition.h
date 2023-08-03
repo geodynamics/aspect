@@ -14,8 +14,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _aspect_particle_property_elastic_tensor_decomposion_h
-#define _aspect_particle_property_elastic_tensor_decomposion_h
+#ifndef _aspect_particle_property_elastic_tensor_decomposition_h
+#define _aspect_particle_property_elastic_tensor_decomposition_h
 
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
@@ -30,7 +30,7 @@ namespace aspect
 
       /**
        * Computes several properties of a elastic tensor stored on a particle.
-       * These include the eigenvectors and several projectsion on symmetry axis.
+       * These include the eigenvectors and conversions between different forms of 4th order tensors.
        *
        * @ingroup ParticleProperties
        */
@@ -69,21 +69,21 @@ namespace aspect
            * Update function. This function is called every time an update is
            * request by need_update() for every particle for every property.
            *
-           * @param [in] data_position An unsigned integer that denotes which
+           * @param [in] data_position. An unsigned integer that denotes which
            * component of the particle property vector is associated with the
            * current property. For properties that own several components it
            * denotes the first component of this property, all other components
            * fill consecutive entries in the @p particle_properties vector.
            *
-           * @param [in] position The current particle position.
+           * @param [in] position. The current particle position.
            *
-           * @param [in] solution The values of the solution variables at the
+           * @param [in] solution. The values of the solution variables at the
            * current particle position.
            *
-           * @param [in] gradients The gradients of the solution variables at
+           * @param [in] gradients. The gradients of the solution variables at
            * the current particle position.
            *
-           * @param [in,out] particle_properties The properties of the particle
+           * @param [in,out] particle_properties. The properties of the particle
            * that is updated within the call of this function.
            */
           void
@@ -94,8 +94,8 @@ namespace aspect
                                         const ArrayView<double> &particle_properties) const  override;
 
           /**
-           * This implementation tells the particle manager that
-           * we need to update particle properties every time step.
+           * This function tells the particle manager that
+           * we need to update particle properties.
            */
           UpdateTimeFlags
           need_update () const override;
@@ -145,8 +145,8 @@ namespace aspect
            * which states at the end of paragraph 3.3 that "... an important property of an orthogonal projection
            * is that the distance between a vector $X$ and its orthogonal projection $X_H = p(X)$ on a given
            * subspace is minimum. These two features ensure that the decomposition is optimal once a 3-D Cartesian
-           * coordiante systeem is chosen.". The other property they talk about is that "The space of elastic
-           * vectors has a finite dimension [...], i.e. using a differnt norm from eq. (2.3 will change disstances
+           * coordinate system is chosen.". The other property they talk about is that "The space of elastic
+           * vectors has a finite dimension [...], i.e. using a different norm from eq. (2.3 will change distances
            * but not the resulting decomposition.".
            */
           static
@@ -166,7 +166,7 @@ namespace aspect
           get_property_information() const  override;
 
           /**
-           * Declare paramters
+           * Declare parameters
            */
           static
           void
