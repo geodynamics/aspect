@@ -15,7 +15,7 @@ Publication List
 ----------------
 
 The publication list hosted at https://aspect.geodynamics.org/publications.html is built the following way:
- - Add citations to the file https://github.com/geodynamics/aspect/blob/master/doc/manual/citing_aspect.bib
+ - Add citations to the file https://github.com/geodynamics/aspect/blob/main/doc/manual/citing_aspect.bib
  - the webserver will automatically export the html page using JabRef html export and the template located at https://github.com/geodynamics/aspect/tree/www/jabref-template
 
 
@@ -23,8 +23,8 @@ Citing.html
 -----------
 
 The interactive citation tool hosted at https://aspect.geodynamics.org/citing.html is built the following way:
-- Add citations to https://github.com/geodynamics/aspect/blob/master/doc/manual/manual.bib
-- Run https://github.com/geodynamics/aspect/blob/master/doc/make_cite_html.py and update the code block in the .py file
+- Add citations to https://github.com/geodynamics/aspect/blob/main/doc/manual/manual.bib
+- Run https://github.com/geodynamics/aspect/blob/main/doc/make_cite_html.py and update the code block in the .py file
 - Copy newly created database.js to the www repository.
 - Change the date in the citing.html where the database.js is included.
 - To add new checkboxes:
