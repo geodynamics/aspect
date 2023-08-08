@@ -559,14 +559,20 @@ namespace aspect
             // from the old timesteps.
             // Prepare the field function and extract the old solution values at the current cell.
             std::vector<Point<dim>> quadrature_positions(1,this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]));
+
+            // Use a boost::small_vector to avoid memory allocation if possible.
+            // Create 100 values by default, which should be enough for most cases.
+            // If there are more than 100 DoFs per cell, this will work like a normal vector.
             boost::container::small_vector<double, 100> old_solution_values(this->get_fe().dofs_per_cell);
             in.current_cell->get_dof_values(this->get_old_solution(),
                                             old_solution_values.begin(),
                                             old_solution_values.end());
 
+            // If we have not been here before, create one evaluator for each compositional field
             if (composition_evaluators.size() == 0)
               composition_evaluators.resize(this->n_compositional_fields());
 
+            // Make sure the evaluators have been initialized correctly, and have not been tampered with
             Assert(composition_evaluators.size() == this->n_compositional_fields(),
                    ExcMessage("The number of composition evaluators should be equal to the number of compositional fields."));
 
