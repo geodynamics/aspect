@@ -54,36 +54,45 @@ pipeline
 
       stages
       {
-        stage("check")
+        stage ("Check Permissions") {
+        when {
+          // check for "ready to test" if it is a PR and not by one of the people listed
+          allOf {
+            changeRequest()
+            not {changeRequest authorEmail: "rene.gassmoeller@mailbox.org"}
+            not {changeRequest authorEmail: "timo.heister@gmail.com"}
+            not {changeRequest authorEmail: "bangerth@colostate.edu"}
+            not {changeRequest authorEmail: "judannberg@gmail.com"}
+            not {changeRequest authorEmail: "ja3170@columbia.edu"}
+            not {changeRequest authorEmail: "jbnaliboff@ucdavis.edu"}
+            not {changeRequest authorEmail: "menno.fraters@outlook.com"}
+            not {changeRequest authorEmail: "a.c.glerum@uu.nl"}
+            not {changeRequest authorEmail: "myhill.bob@gmail.com"}
+            not {changeRequest authorEmail: "ljhwang@ucdavis.edu"}
+          }
+        }
+        steps {
+          // For /rebuild to work you need to:
+          // 1) select "issue comment" to be delivered in the github webhook setting
+          // 2) install "GitHub PR Comment Build Plugin" on Jenkins
+          // 3) in project settings select "add property" "Trigger build on pr comment" with
+          //    the phrase ".*/rebuild.*" (without quotes)
+          sh '''
+          wget -q -O - https://api.github.com/repos/geodynamics/aspect/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
+          { echo "This commit will only be tested when it has the label 'ready to test'. Trigger a rebuild by adding a comment that contains '/rebuild'..."; exit 1; }
+          '''
+        }
+        post
         {
-          when {
-            not {
-              anyOf {
-                branch 'master'
-                branch pattern: "aspect-*", comparator: "GLOB"
-              }
-            }
-          }
-
-          steps
+          failure
           {
-            githubNotify context: 'Jenkins: OSX', description: 'pending...',  status: 'PENDING'
-            sh '''
-               wget -q -O - https://api.github.com/repos/geodynamics/aspect/issues/${CHANGE_ID}/labels | grep 'ready to test' || \
-               { echo "This commit will only be tested when it has the label 'ready to test'. Trigger a rebuild by adding a comment that contains '/rebuild'..."; exit 1; }
-               '''
-          }
-          post
-          {
-            failure
+            githubNotify context: 'Jenkins: OSX', description: 'need ready to test label and /rebuild',  status: 'PENDING'
+            script
             {
-              githubNotify context: 'Jenkins: OSX', description: 'need ready to test label and /rebuild',  status: 'PENDING'
-              script
-              {
-                currentBuild.result='NOT_BUILT'
-              }
+              currentBuild.result='NOT_BUILT'
             }
           }
+        }
         }
 
         stage('build')
