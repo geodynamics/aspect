@@ -282,7 +282,10 @@ namespace aspect
           // Calculate changes in viscosity with iterative dampening and update the reaction terms
           if (rheology->use_iterative_viscosity_dampening)
             {
-              if (in.current_cell.state() == IteratorState::valid)
+              // set up variable to interpolate prescribed field outputs onto compositional fields
+              PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
+
+              if (in.current_cell.state() == IteratorState::valid && prescribed_field_out != NULL)
                 {
                   const double old_viscosity = in.composition[i][this->introspection().compositional_index_for_name("viscosity_field")];
 
@@ -290,10 +293,8 @@ namespace aspect
                   if (this->get_nonlinear_iteration() > 0)
                     out.viscosities[i] = rheology->iterative_dampening->calculate_viscosity(old_viscosity, out.viscosities[i]);
 
-                  rheology->iterative_dampening->fill_reaction_outputs(in, i, old_viscosity, out);
+                  prescribed_field_out->prescribed_field_outputs[i][this->introspection().compositional_index_for_name("viscosity_field")] = out.viscosities[i];
                 }
-
-
             }
 
           // Fill plastic outputs if they exist.
@@ -472,6 +473,13 @@ namespace aspect
 
       if (this->get_parameters().enable_elasticity)
         rheology->elastic_rheology.create_elastic_outputs(out);
+      
+      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == NULL)
+        {
+          const unsigned int n_points = out.n_evaluation_points();
+          out.additional_outputs.push_back(
+            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points,this->n_compositional_fields()));
+        }
     }
 
   }

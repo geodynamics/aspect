@@ -62,6 +62,7 @@ end
 subsection Compositional fields
   set Number of fields = 1
   set Names of fields = viscosity_field
+  set Compositional field methods = prescribed field 
 end
 
 # Set the initial composition for the viscosity field
