@@ -28,6 +28,7 @@
 #include <aspect/material_model/rheology/ascii_depth_profile.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/steinberger.h>
+#include <aspect/material_model/utilities.h>
 
 namespace aspect
 {
@@ -158,9 +159,10 @@ namespace aspect
         std::string lateral_viscosity_file_name;
 
         /**
-         * Pointer to the StructuredDataLookup object that holds the material data.
+         * Pointer to the EntropyReader that reads in material data for
+         * given entropy and pressure.
          */
-        std::unique_ptr<Utilities::StructuredDataLookup<2>> material_lookup;
+        std::unique_ptr<MaterialUtilities::Lookup::EntropyReader> entropy_reader;
 
         /**
          * Pointer to an object that reads and processes data for the lateral
