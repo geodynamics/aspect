@@ -164,12 +164,12 @@ namespace aspect
                                                     const PeierlsCreepParameters creep_parameters) const;
 
           /**
-           * Compute the logarithm of the strain rate and its first
-           * derivative with respect to the logarithm of stress
-           * as a function of stress based on the exact Peierls creep law.
+           * Compute the natural logarithm of the strain rate norm and its first
+           * derivative with respect to the natural logarithm of the stress norm
+           * based on the exact Peierls creep law.
            */
           std::pair<double, double>
-          compute_exact_log_strain_rate_and_derivative (const double stress,
+          compute_exact_log_strain_rate_and_derivative (const double log_stress,
                                                         const double pressure,
                                                         const double temperature,
                                                         const PeierlsCreepParameters creep_parameters) const;
