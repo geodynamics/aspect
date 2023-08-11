@@ -389,11 +389,14 @@ namespace aspect
               std::vector<std::vector<std::array<double,3>>> weighted_euler_angles;
 
               weighted_euler_angles.resize(n_minerals);
+              weighted_rotation_matrices.resize(n_minerals);
               std::vector<std::vector<double>> volume_fractions_grains(n_minerals,std::vector<double>(n_grains,-1.));
               for (unsigned int mineral = 0; mineral < n_minerals; ++mineral)
                 {
                   for (unsigned int i_grain = 0; i_grain < n_grains; ++i_grain)
                     {
+                      weighted_euler_angles[mineral].resize(n_grains);
+                      weighted_rotation_matrices[mineral].resize(n_grains);
                       volume_fractions_grains[mineral][i_grain] = cpo_particle_property.get_volume_fractions_grains(
                                                                     cpo_data_position,
                                                                     properties,
