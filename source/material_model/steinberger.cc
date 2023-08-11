@@ -590,7 +590,7 @@ namespace aspect
           // if ((equation_of_state.number_of_lookups() > 1) && (has_background_field))
           // list_of_composition_names.resize(equation_of_state.number_of_lookups(), "background");
           if (equation_of_state.number_of_lookups() > 1)
-            list_of_composition_names.resize(n_chemical_fields, "background");
+            list_of_composition_names.resize(n_chemical_fields);
           viscosity_prefactors = Utilities::parse_map_to_double_array (prm.get("Viscosity prefactors"),
                                                                        list_of_composition_names,
                                                                        has_background_field,
