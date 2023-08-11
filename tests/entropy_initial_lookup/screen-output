@@ -1,0 +1,25 @@
+
+Loading shared library <./libentropy_initial_lookup.debug.so>
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 3,217 (1,206+202+603+603+603)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Copying properties into prescribed temperature field... done.
+   Solving temperature system... 7 iterations.
+   Solving entropy system ... 3 iterations.
+   Copying properties into prescribed compositional field density_field... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_initial_lookup/solution/solution-00000
+     RMS, max velocity:                  0.01 m/year, 0.01 m/year
+     Temperature min/avg/max:            1596 K, 1600 K, 1603 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 6.213e+05 kg/yr, -4.081e+05 kg/yr
+     Compositions min/max/mass:          2197/2533/3.957e+13 // 3140/4779/6.908e+13
+
+Termination requested by criterion: end time
+
+
+

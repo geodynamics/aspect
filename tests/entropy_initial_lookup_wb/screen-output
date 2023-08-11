@@ -1,0 +1,54 @@
+
+Loading shared library <./libentropy_initial_lookup_wb.debug.so>
+
+Number of active cells: 384 (on 4 levels)
+Number of degrees of freedom: 8,686 (3,298+441+1,649+1,649+1,649)
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_initial_lookup_wb/solution/solution-00000
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            273 K, 2171 K, 3500 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          577.9/2758/1.077e+17 // 0/0/0
+
+Number of active cells: 684 (on 5 levels)
+Number of degrees of freedom: 16,784 (6,378+839+3,189+3,189+3,189)
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_initial_lookup_wb/solution/solution-00001
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            273 K, 2183 K, 3500 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          577.9/2758/1.086e+17 // 0/0/0
+
+Number of active cells: 1,023 (on 6 levels)
+Number of degrees of freedom: 25,535 (9,702+1,280+4,851+4,851+4,851)
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_initial_lookup_wb/solution/solution-00002
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Temperature min/avg/max:            273 K, 2185 K, 3500 K
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Compositions min/max/mass:          577.9/2758/1.089e+17 // 0/0/0
+
+Number of active cells: 1,950 (on 7 levels)
+Number of degrees of freedom: 47,413 (18,018+2,368+9,009+9,009+9,009)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving entropy system ... 0 iterations.
+   Copying properties into prescribed compositional field density_field... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 68+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-entropy_initial_lookup_wb/solution/solution-00003
+     RMS, max velocity:                  0.0129 m/year, 0.121 m/year
+     Temperature min/avg/max:            273 K, 2184 K, 3500 K
+     Mass fluxes through boundary parts: 0.004753 kg/yr, 0.04504 kg/yr, 0 kg/yr, -6.767e-09 kg/yr
+     Compositions min/max/mass:          577.9/2758/1.089e+17 // 3228/5592/1.939e+17
+
+Termination requested by criterion: end time
+
+
+
