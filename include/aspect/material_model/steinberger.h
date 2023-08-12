@@ -216,7 +216,7 @@ namespace aspect
         double thermal_conductivity (const double temperature,
                                      const double pressure,
                                      const Point<dim> &position) const;
-        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
+
         /**
          * Whether the compositional fields representing mass fractions
          * should be normalized to one when computing their fractions
@@ -276,13 +276,13 @@ namespace aspect
         std::vector<double> saturation_scaling;
         double maximum_conductivity;
 
-
         /**
-         * viscosity_prefactors are dimensionless quantities which
-         * are multiplied by the reference viscosity profile based on
-         * volume fraction
+         * Compositional prefactors with which to multiply the reference viscosity.
+         * Volume fractions are used to weight the prefactors according to the
+         * assigned viscosity averaging scheme.
          */
         std::vector<double> viscosity_prefactors;
+        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging_scheme;
 
         /**
          * Information about lateral temperature averages.

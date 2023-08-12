@@ -1,10 +1,6 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
-Number of active cells: 1,024 (on 5 levels)
-Number of degrees of freedom: 26,647 (8,514+1,105+4,257+4,257+4,257+4,257)
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 13,431 (4,290+561+2,145+2,145+2,145+2,145)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
@@ -12,28 +8,23 @@ Number of degrees of freedom: 26,647 (8,514+1,105+4,257+4,257+4,257+4,257)
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+53 iterations.
+   Solving Stokes system... 30+32 iterations.
 
    Postprocessing:
      Writing graphical output: output-multicomponent_steinberger/solution/solution-00000
 
 *** Timestep 1:  t=60000 years, dt=60000 years
    Solving temperature system... 0 iterations.
-   Solving C_1 system ... 9 iterations.
-   Solving C_2 system ... 9 iterations.
-   Solving C_3 system ... 10 iterations.
+   Solving C_1 system ... 8 iterations.
+   Solving C_2 system ... 10 iterations.
+   Solving C_3 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+36 iterations.
+   Solving Stokes system... 30+26 iterations.
 
    Postprocessing:
-     Writing graphical output: output-multicomponent_steinberger/solution/solution-00001
 
+Termination requested by criterion: end step
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

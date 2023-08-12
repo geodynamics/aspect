@@ -177,8 +177,6 @@ namespace aspect
       const double depth = this->get_geometry_model().depth(position);
       const double adiabatic_temperature = this->get_adiabatic_conditions().temperature(position);
 
-
-
       double delta_temperature;
       if (use_lateral_average_temperature)
         {
@@ -189,24 +187,21 @@ namespace aspect
         delta_temperature = temperature-adiabatic_temperature;
 
       // For an explanation on this formula see the Steinberger & Calderwood 2006 paper
-      // We here compute the lateral variation of viscosity due to temperature (temperature_prefactor) as
+      // We here compute the lateral variation of viscosity due to temperature (thermal_prefactor) as
       // V_lT = exp [-(H/nR)*dT/(T_adiabatic*(T_adiabatic + dT))] as in Eq. 6 of the paper.
       // We get H/nR from the lateral_viscosity_lookup->lateral_viscosity function.
-      const double log_temperature_prefactor = -1.0*lateral_viscosity_lookup->lateral_viscosity(depth)*delta_temperature/(temperature*adiabatic_temperature);
+      const double log_thermal_prefactor = -1.0 * lateral_viscosity_lookup->lateral_viscosity(depth) * delta_temperature / (temperature * adiabatic_temperature);
 
       // Limit the lateral viscosity variation to a reasonable interval
-      const double temperature_prefactor = std::max(std::min(std::exp(log_temperature_prefactor),max_lateral_eta_variation),1/max_lateral_eta_variation);
+      const double thermal_prefactor = std::max(std::min(std::exp(log_thermal_prefactor), max_lateral_eta_variation), 1/max_lateral_eta_variation);
 
-      //Visc_rT = exp[(H/nR)/T_adiabatic], Eq. 7 of the paper
+      const double compositional_prefactor = MaterialUtilities::average_value (volume_fractions, viscosity_prefactors, viscosity_averaging_scheme);
+
+      // Visc_rT = exp[(H/nR)/T_adiabatic], Eq. 7 of the paper
       const double eta_ref = radial_viscosity_lookup->radial_viscosity(depth);
 
-// std::cout<<"size vf"<<volume_fractions.size()<<std::endl;
-// std::cout<<"size vis_pre"<<viscosity_prefactors.size()<<std::endl;
-      const double compositional_prefactor = MaterialUtilities::average_value (volume_fractions, viscosity_prefactors, viscosity_averaging);
-      // std::cout<<"size vf"<<volume_fractions.size()<<std::endl;
-
-      // Radial viscosity profile is multiplied with lateral and compositional viscosity variation
-      return std::max(std::min(temperature_prefactor * eta_ref * compositional_prefactor,max_eta),min_eta);
+      // Radial viscosity profile is multiplied by thermal and compositional prefactors
+      return std::max(std::min(thermal_prefactor * compositional_prefactor * eta_ref, max_eta), min_eta);
     }
 
 
@@ -310,10 +305,8 @@ namespace aspect
                                                                                eos_outputs[i].densities,
                                                                                true);
 
-
           if (in.requests_property(MaterialProperties::viscosity))
             out.viscosities[i] = viscosity(in.temperature[i], in.pressure[i], volume_fractions[i], in.strain_rate[i], in.position[i]);
-
 
           MaterialUtilities::fill_averaged_equation_of_state_outputs(eos_outputs[i], mass_fractions, volume_fractions[i], i, out);
           fill_prescribed_outputs(i, volume_fractions[i], in, out);
@@ -390,6 +383,16 @@ namespace aspect
                              "The relative cutoff value for lateral viscosity variations "
                              "caused by temperature deviations. The viscosity may vary "
                              "laterally by this factor squared.");
+          prm.declare_entry ("Composition viscosity prefactors", "1",
+                             Patterns::Anything (),
+                             "List of N prefactors that are used to modify the reference viscosity, "
+                             "where N is either equal to one or the number of chemical components "
+                             "in the simulation. If only one value is given, then all components "
+                             "use the same value. Units: \\si{\\pascal\\second}.");
+          prm.declare_entry ("Viscosity averaging scheme", "harmonic",
+                             Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
+                             "Method to average viscosities over multiple compositional fields. "
+                             "One of arithmetic, harmonic, geometric or maximum composition.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. Only used in case "
@@ -461,17 +464,6 @@ namespace aspect
                              Patterns::Double (0.),
                              "The maximum thermal conductivity that is allowed in the "
                              "model. Larger values will be cut off.");
-          prm.declare_entry ("Viscosity averaging scheme", "harmonic",
-                             Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
-                             "When more than one compositional field is present at a point "
-                             "with different viscosities, we need to come up with an average "
-                             "viscosity at that point. Select a weighted harmonic, arithmetic, "
-                             "geometric, or maximum composition.");
-          prm.declare_entry ("Viscosity prefactors", "1",
-                             Patterns::Anything(),
-                             "List of dimensionless quantities for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: \\si{\\pascal\\second}.");
 
           // Table lookup parameters
           EquationOfState::ThermodynamicTableLookup<dim>::declare_parameters(prm);
@@ -492,18 +484,17 @@ namespace aspect
       {
         prm.enter_subsection("Steinberger model");
         {
-          data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
-          radial_viscosity_file_name   = prm.get ("Radial viscosity file name");
-          lateral_viscosity_file_name  = prm.get ("Lateral viscosity file name");
+          data_directory                  = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
+          radial_viscosity_file_name      = prm.get ("Radial viscosity file name");
+          lateral_viscosity_file_name     = prm.get ("Lateral viscosity file name");
           use_lateral_average_temperature = prm.get_bool ("Use lateral average temperature for viscosity");
-          n_lateral_slices = prm.get_integer("Number lateral average bands");
-          min_eta              = prm.get_double ("Minimum viscosity");
-          max_eta              = prm.get_double ("Maximum viscosity");
-          max_lateral_eta_variation    = prm.get_double ("Maximum lateral viscosity variation");
-          thermal_conductivity_value = prm.get_double ("Thermal conductivity");
-          viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
-                                prm);
-
+          n_lateral_slices                = prm.get_integer("Number lateral average bands");
+          min_eta                         = prm.get_double ("Minimum viscosity");
+          max_eta                         = prm.get_double ("Maximum viscosity");
+          max_lateral_eta_variation       = prm.get_double ("Maximum lateral viscosity variation");
+          viscosity_averaging_scheme      = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
+                                            prm);
+          thermal_conductivity_value      = prm.get_double ("Thermal conductivity");
 
           // Rheological parameters
           if (prm.get ("Thermal conductivity formulation") == "constant")
@@ -542,41 +533,46 @@ namespace aspect
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters(prm);
 
-          // Check if compositional fields represent a composition
-          const std::vector<CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
-
           // Assign background field and do some error checking
-          has_background_field = (equation_of_state.number_of_lookups() == this->introspection().n_chemical_composition_fields() + 1);
+          has_background_field = ((equation_of_state.number_of_lookups() == 1) ||
+                                  (equation_of_state.number_of_lookups() == this->introspection().n_chemical_composition_fields() + 1));
           AssertThrow ((equation_of_state.number_of_lookups() == 1) ||
                        (equation_of_state.number_of_lookups() == this->introspection().n_chemical_composition_fields()) ||
                        (equation_of_state.number_of_lookups() == this->introspection().n_chemical_composition_fields() + 1),
-                       ExcMessage("The Steinberger material model assumes that all compositional "
-                                  "fields of the type chemical composition correspond to mass fractions of "
-                                  "materials. There must either be one material lookup file, the same "
-                                  "number of material lookup files as compositional fields of type chemical "
-                                  "composition, or one additional file (if a background field is used). You "
-                                  "have "
+                       ExcMessage("The Steinberger material model assumes that either there is a single material "
+                                  "in the simulation, or that all compositional fields of the type "
+                                  "chemical composition correspond to mass fractions of different materials. "
+                                  "There must either be one material lookup file, the same number of "
+                                  "material lookup files as compositional fields of type chemical composition, "
+                                  "or one additional file (if a background field is used). You have "
                                   + Utilities::int_to_string(equation_of_state.number_of_lookups())
                                   + " material data files, but there are "
                                   + Utilities::int_to_string(this->introspection().n_chemical_composition_fields())
                                   + " fields of type chemical composition."));
 
-          has_background_field = (equation_of_state.number_of_lookups() == n_chemical_fields + 1);
-          std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+          // Parse the Composition viscosity prefactors parameter
+          std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
+          std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+
+          // If there is only one lookup, the list of Viscosity prefactors should have length one.
+          // The following if statement applies when defined fields of type chemical composition
+          // are not intended to be used as volume fractions of distinct materials.
           if (equation_of_state.number_of_lookups() == 1)
-            list_of_composition_names.resize(1, "background");
-          if ((equation_of_state.number_of_lookups() == 1) && (has_background_field))
-            list_of_composition_names.resize(0, "background");
-          // if (equation_of_state.number_of_lookups() > 1)
-          // list_of_composition_names.resize(equation_of_state.number_of_lookups(), "background");
-          // if ((equation_of_state.number_of_lookups() > 1) && (has_background_field))
-          // list_of_composition_names.resize(equation_of_state.number_of_lookups(), "background");
-          if (equation_of_state.number_of_lookups() > 1)
-            list_of_composition_names.resize(n_chemical_fields);
-          viscosity_prefactors = Utilities::parse_map_to_double_array (prm.get("Viscosity prefactors"),
-                                                                       list_of_composition_names,
-                                                                       has_background_field,
-                                                                       "Viscosity prefactors");
+            {
+              chemical_field_names.clear();
+              compositional_field_names.clear();
+            }
+
+          if (has_background_field)
+            {
+              chemical_field_names.insert(chemical_field_names.begin(),"background");
+              compositional_field_names.insert(compositional_field_names.begin(),"background");
+            }
+
+          Utilities::MapParsing::Options options(chemical_field_names, "Composition viscosity prefactors");
+          options.list_of_allowed_keys = compositional_field_names;
+          viscosity_prefactors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Composition viscosity prefactors"), options);
+
           prm.leave_subsection();
         }
         prm.leave_subsection();
