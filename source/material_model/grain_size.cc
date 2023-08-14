@@ -196,106 +196,67 @@ namespace aspect
     GrainSize<dim>::
     compute_partitioning_fraction (const double temperature) const
     {
-      const double power_term_numerator    =  std::pow (mantle_temperature, grain_size_reduction_work_fraction_exponent) -
+      const double power_term_base = maximum_grain_size_reduction_work_fraction/minimum_grain_size_reduction_work_fraction;
+
+      const double power_term_numerator    =  minimum_partitioning_power_temperature -
                                               std::pow (temperature, grain_size_reduction_work_fraction_exponent);
 
-      const double power_term_denominator  =  std::pow (mantle_temperature, grain_size_reduction_work_fraction_exponent) -
-                                              std::pow (surface_temperature, grain_size_reduction_work_fraction_exponent);
+      const double power_term_denominator  =  minimum_partitioning_power_temperature -
+                                              maximum_partitioning_power_temperature;
 
-      const double partitioning_fraction = minimum_grain_size_reduction_work_fraction * std::pow((maximum_grain_size_reduction_work_fraction/minimum_grain_size_reduction_work_fraction),
-                                           (power_term_numerator/power_term_denominator));
+      // We have to ensure the power term exponent is between 0 and 1, otherwise the partitioning fraction
+      // will be outside the set bounds for the work fraction.
+      const double power_term_exponent = std::max(std::min(power_term_numerator / power_term_denominator, 1.0), 0.0);
 
-      return partitioning_fraction;
-    }
+      const double power_term = std::pow(power_term_base,
+                                         power_term_exponent);
 
-
-    template <int dim>
-    double
-    GrainSize<dim>::
-    moment_of_grain_size_distribution (const int n) const
-    {
-      // This function normalizes the grain size distribution using the nth moment.
-      // Description can be found in eq 8 of Bercovici and Richard (2012)
-      // This is the variance of the log-normal distribution
-      const double sigma = 0.8;
-
-      return exp (n * n * sigma * sigma / 2.);
-    }
-
-
-    template <int dim>
-    double
-    GrainSize<dim>::
-    roughness_to_grain_size_factor (const double volume_fraction_phase_one)  const
-    {
-      // This factor is used to convert the roughness equation into mean grain size
-      // Refer to Appendix H.1, eqs 8, F.28 in Bercovici and Richard (2012) for more details.
-      const double b1 = 1./20 ;
-      const double c1 = 3 * b1 * moment_of_grain_size_distribution(4) / (8 * moment_of_grain_size_distribution (2));
-
-      const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
-
-      const double h1 = c1 * (1 - volume_fraction_phase_one);
-      const double h2 = c1 * (1 - volume_fraction_phase_two);
-
-      return (volume_fraction_phase_one /sqrt (h1)  + volume_fraction_phase_two/sqrt(h2)) ;
-    }
-
-
-    template <int dim>
-    double
-    GrainSize<dim>::
-    phase_distribution_function (const double volume_fraction_phase_one)  const
-    {
-      // This factor is used in pinned grain size formulation of the Mulyukova and Bercovici (2018).
-      const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
-
-      return (volume_fraction_phase_one * volume_fraction_phase_two);
+      return minimum_grain_size_reduction_work_fraction * power_term;
     }
 
 
 
-    template <int dim>
-    double
-    GrainSize<dim>::
-    moment_of_grain_size_distribution (const int n) const
+    namespace
     {
-      // This function normalizes the grain size distribution using the nth moment.
-      // Description can be found in eq 8 of Bercovici and Ricard (2012)
-      const double sigma = 0.8;
+      double moment_of_grain_size_distribution (const unsigned int n)
+      {
+        // This function normalizes the grain size distribution using the nth moment.
+        // Description can be found in eq 8 of Bercovici and Richard (2012)
+        // This is the variance of the log-normal distribution
+        const double sigma = 0.8;
 
-      return exp (n * n * sigma * sigma / 2.);
-    }
-
-
-    template <int dim>
-    double
-    GrainSize<dim>::
-    roughness_to_grain_size_factor (const double volume_fraction_phase_one)  const
-    {
-      const double b1 = 1./20. ;
-      const double c1 = 3.0 * b1 * moment_of_grain_size_distribution(4) / (8.0 * moment_of_grain_size_distribution (2));
-
-      const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
-
-      const double h1 = c1 * (1 - volume_fraction_phase_one);
-      const double h2 = c1 * (1 - volume_fraction_phase_two);
-
-      const double one_over_sqrt_h = volume_fraction_phase_one /std::sqrt (h1)  + volume_fraction_phase_two / std::sqrt(h2) ;
-
-      return (1./one_over_sqrt_h);
-    }
+        return std::exp(n * n * sigma * sigma / 2.);
+      }
 
 
-    template <int dim>
-    double
-    GrainSize<dim>::
-    phase_distribution_function (const double volume_fraction_phase_one)  const
-    {
-      // This factor is used in pinned state grain damage formulation.
-      const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
 
-      return (volume_fraction_phase_one * volume_fraction_phase_two);
+      double phase_distribution_function (const double volume_fraction_phase_one)
+      {
+        // This factor is used in pinned state grain damage formulation.
+        const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
+
+        return (volume_fraction_phase_one * volume_fraction_phase_two);
+      }
+
+
+
+      double
+      roughness_to_grain_size_factor (const double volume_fraction_phase_one)
+      {
+        // This factor is used to convert from an interface roughness equation to a mean grain size
+        // Refer to Appendix H.1, eqs 8, F.28 in Bercovici and Richard (2012) for more details.
+        const double b1 = 1./20 ;
+        const double c1 = 3.0 * b1 * moment_of_grain_size_distribution(4) / (8.0 * moment_of_grain_size_distribution (2));
+
+        const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
+
+        const double h1 = c1 * (1 - volume_fraction_phase_one);
+        const double h2 = c1 * (1 - volume_fraction_phase_two);
+
+        const double one_over_sqrt_h = volume_fraction_phase_one / std::sqrt(h1) + volume_fraction_phase_two / std::sqrt(h2);
+
+        return (1./one_over_sqrt_h);
+      }
     }
 
 
@@ -332,6 +293,14 @@ namespace aspect
       // find out in which phase we are
       const unsigned int phase_index = get_phase_index(position, temperature, pressure);
 
+      // precompute the partitioning_fraction since its constant during the evolution.
+      // this is only used for the pinned_grain_damage formulation
+      const double partitioning_fraction = (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
+                                           ?
+                                           compute_partitioning_fraction(temperature)
+                                           :
+                                           0.0;
+
       // we keep the dislocation viscosity of the last iteration as guess
       // for the next one
       double current_dislocation_viscosity = 0.0;
@@ -366,8 +335,8 @@ namespace aspect
 
           // in the two-phase damage model grain growth depends on the proportion of the two phases
           if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
-            grain_size_growth_rate *= geometric_constant[phase_index] * phase_distribution_function (volume_fraction_phase_one) /
-                                      std::pow(roughness_to_grain_size_factor(volume_fraction_phase_one), m);
+            grain_size_growth_rate *= geometric_constant[phase_index] * phase_distribution /
+                                      std::pow(roughness_to_grain_size, m);
 
           const double grain_size_growth = grain_size_growth_rate * grain_growth_timestep;
 
@@ -401,9 +370,9 @@ namespace aspect
             {
               // pinned_grain_damage: Mulyukova and Bercovici (2018) Collapse of passive margins by lithospheric damage and plunging grain size. Earth and Planetary Science Letters, 484, 341-352.
               const double stress = 2.0 * second_strain_rate_invariant * current_viscosity;
-              const double grain_size_reduction_rate = 2.0 * stress * compute_partitioning_fraction(temperature) * second_strain_rate_invariant * pow(grain_size,2)
-                                                       * roughness_to_grain_size_factor (volume_fraction_phase_one)
-                                                       / (geometric_constant[phase_index] * grain_boundary_energy[phase_index] * phase_distribution_function(volume_fraction_phase_one));
+              const double grain_size_reduction_rate = 2.0 * stress * partitioning_fraction * second_strain_rate_invariant * grain_size * grain_size
+                                                       * roughness_to_grain_size
+                                                       / (geometric_constant[phase_index] * grain_boundary_energy[phase_index] * phase_distribution);
               grain_size_reduction = grain_size_reduction_rate * grain_growth_timestep;
             }
           else if (grain_size_evolution_formulation == Formulation::paleopiezometer)
@@ -538,23 +507,6 @@ namespace aspect
         }
 
       const double strain_rate_dependence = (1.0 - dislocation_creep_exponent[phase_index]) / dislocation_creep_exponent[phase_index];
-
-      return dislocation_creep_prefactor[phase_index]
-             * std::pow(second_strain_rate_invariant,strain_rate_dependence)
-             * energy_term;
-    }
-
-
-
-    template <int dim>
-    double
-    GrainSize<dim>::
-    viscosity (const double temperature,
-               const double pressure,
-               const std::vector<double> &composition,
-               const SymmetricTensor<2,dim> &strain_rate,
-               const Point<dim> &position) const
-    {
       const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
       const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
@@ -1188,7 +1140,7 @@ namespace aspect
                              "When set to zero, grain size will not be reduced. "
                              "List must have the same number of entries as Phase transition depths. "
                              "Units: \\si{\\meter}.");
-          prm.declare_entry ("Volume fraction of phase", "0.4",
+          prm.declare_entry ("Phase volume fraction", "0.4",
                              Patterns::Double (0., 1.),
                              "The volume fraction of one of the phases in the two-phase damage model of Bercovici and Ricard (2012). "
                              "The volume fraction of the other phase can be simply calculated by subtracting from one. "
@@ -1384,13 +1336,13 @@ namespace aspect
                              "to compute material properties (slower but more accurate).");
           prm.enter_subsection("Grain damage partitioning");
           {
-            prm.declare_entry ("Mantle temperature", "1600",
+            prm.declare_entry ("Minimum partitioning temperature", "1600",
                                Patterns::Double (0.),
                                "This parameter determines the temperature at which the computed coefficient of shear energy "
                                "partitioned into grain damage is minimum. This is used in the pinned state limit of the grain "
                                "size evolution. One choice of this parameter is the mantle temperature at the ridge axis, "
                                "see Mulyukova and Bercovici (2018) for details.");
-            prm.declare_entry ("Surface temperature", "283",
+            prm.declare_entry ("Maximum partitioning temperature", "283",
                                Patterns::Double (0.),
                                "This parameter determines the temperature at which the computed coefficient of shear energy "
                                "partitioned into grain damage is maximum. This is used in the pinned state limit of the grain "
@@ -1399,11 +1351,11 @@ namespace aspect
             prm.declare_entry ("Minimum grain size reduction work fraction", "1e-12",
                                Patterns::Double (0., 1.),
                                "This parameter determines the minimum value of the partitioning coefficient, which governs "
-                               "amount of shear heating partitioned into grain damage in the pinned state limit." );
+                               "the amount of shear heating partitioned into grain damage in the pinned state limit.");
             prm.declare_entry ("Maximum grain size reduction work fraction", "1e-1",
                                Patterns::Double (0., 1.),
                                "This parameter determines the maximum value of the partitioning coefficient, which governs "
-                               "amount of shear heating partitioned into grain damage in the pinned state limit.");
+                               "the amount of shear heating partitioned into grain damage in the pinned state limit.");
             prm.declare_entry ("Grain size reduction work fraction exponent", "10",
                                Patterns::Double (0.),
                                "This parameter determines the variability in how much shear heating is partitioned into "
@@ -1485,14 +1437,13 @@ namespace aspect
                  ExcMessage("The parameter 'Use paleowattmeter' has been removed. "
                             "Use the parameter 'Grain size evolution formulation instead'."));
 
-          volume_fraction_phase_one             = Utilities::string_to_double
-                                                  (Utilities::split_string_list(prm.get ("Volume fraction of phase")));
+          const double volume_fraction_phase_one = prm.get_double ("Phase volume fraction");
 
-          if (volume_fraction_phase_one.size()>1)
-            for (unsigned int i=0; i<volume_fraction_phase_one.size(); ++i)
-              AssertThrow( (volume_fraction_phase_one[i] != 0. && volume_fraction_phase_one[i] != 1.),
-                           ExcMessage("Error: Volume fraction must be between (0, 1) to use two phase damage in the pinned state!"));
+          AssertThrow(volume_fraction_phase_one != 0. && volume_fraction_phase_one != 1.,
+                      ExcMessage("Volume fraction must be between (0, 1) to use two phase damage in the pinned state!"));
 
+          phase_distribution = phase_distribution_function(volume_fraction_phase_one);
+          roughness_to_grain_size = roughness_to_grain_size_factor(volume_fraction_phase_one);
 
           grain_boundary_energy                 = Utilities::string_to_double
                                                   (Utilities::split_string_list(prm.get ("Average specific grain boundary energy")));
@@ -1508,16 +1459,24 @@ namespace aspect
                 grain_size_reduction_work_fraction_exponent = prm.get_double ("Grain size reduction work fraction exponent");
                 maximum_grain_size_reduction_work_fraction  = prm.get_double ("Maximum grain size reduction work fraction");
                 minimum_grain_size_reduction_work_fraction  = prm.get_double ("Minimum grain size reduction work fraction");
-                mantle_temperature                          = prm.get_double ("Mantle temperature");
-                surface_temperature                         = prm.get_double ("Surface temperature");
+
+                AssertThrow(maximum_grain_size_reduction_work_fraction > 0. && maximum_grain_size_reduction_work_fraction < 1.,
+                            ExcMessage("Maximum grain size reduction work fraction cannot be smaller or equal to 0 or larger or equal to 1."));
+                AssertThrow(minimum_grain_size_reduction_work_fraction > 0. && minimum_grain_size_reduction_work_fraction < 1.,
+                            ExcMessage("Minimum grain size reduction work fraction cannot be smaller or equal to 0 or larger or equal to 1."));
+                AssertThrow(maximum_grain_size_reduction_work_fraction >= minimum_grain_size_reduction_work_fraction,
+                            ExcMessage("Maximum grain size reduction work fraction must be larger than minimum grain size reduction work fraction."));
+
+                const double minimum_partition_temperature  = prm.get_double ("Minimum partitioning temperature");
+                const double maximum_partition_temperature  = prm.get_double ("Maximum partitioning temperature");
+
+                AssertThrow(minimum_partition_temperature > maximum_partition_temperature,
+                            ExcMessage("Minimum partitioning temperature must be larger than Maximum partitioning temperature."));
+
+                minimum_partitioning_power_temperature = std::pow(minimum_partition_temperature,grain_size_reduction_work_fraction_exponent);
+                maximum_partitioning_power_temperature = std::pow(maximum_partition_temperature,grain_size_reduction_work_fraction_exponent);
               }
               prm.leave_subsection();
-
-              AssertThrow( (maximum_grain_size_reduction_work_fraction > 0. && maximum_grain_size_reduction_work_fraction < 1.),
-                           ExcMessage("Error: Maximum grain size reduction fraction must be between (0, 1)!"));
-
-              AssertThrow( (minimum_grain_size_reduction_work_fraction > 0. && minimum_grain_size_reduction_work_fraction < 1.),
-                           ExcMessage("Error: Minimum grain size reduction fraction must be between (0, 1)!"));
             }
 
           // rheology parameters

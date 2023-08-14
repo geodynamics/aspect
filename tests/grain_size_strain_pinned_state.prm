@@ -1,12 +1,13 @@
-# A test for the grain size material model using pinned state damage formulation.
+# A test for the grain size material model using the pinned state damage formulation.
 # Over time the model maintains nearly constant temperatures, pressures and
 # strain rates. The grain size in the test approaches the equilibrium
-# grain size for t -> infinity. At 200 Myr the equilibrium grain size should
+# grain size for t -> infinity. At 400 Myr the equilibrium grain size should
 # be 0.015124 m.
 
 include $ASPECT_SOURCE_DIR/tests/grain_size_strain.prm
 
 set Output directory                       = output_grain_size_strain_pinned_state
+set End time = 1e6
 
 subsection Material model
   set Model name = grain size
@@ -49,4 +50,10 @@ subsection Material model
       set Minimum grain size reduction work fraction = 1e-6
     end
   end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
 end

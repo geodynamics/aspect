@@ -2,10 +2,10 @@
 # across a 100 km square domain.
 # Over time the model maintains nearly constant temperatures, pressures and
 # strain rates.
-# The model output can be compared to the analytical equations derived in
-# Mulyukova & Bercovici 2018, which is done in a python notebook
-# stored in
-# $ASPECT_SOURCE_DIR/contrib/grain_size/dynamic_grain_size_pinned_state.ipynb
+# The model change in grain size can be compared to the analytical
+# equations derived in Mulyukova & Bercovici 2018, which is done
+# in a python notebook stored in
+# $ASPECT_SOURCE_DIR/benchmarks/grain_size_pinned_state/dynamic_grain_size_pinned_state.ipynb
 
 set Dimension                              = 2
 

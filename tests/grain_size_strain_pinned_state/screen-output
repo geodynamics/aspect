@@ -1,50 +1,239 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
-Number of active cells: 256 (on 5 levels)
-Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 40 (18+4+9+9)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.001/0.001/1e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
-     RMS, max velocity:         0.577 m/year, 0.993 m/year
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
 
-*** Timestep 1:  t=3125 years, dt=3125 years
+*** Timestep 1:  t=50000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 18 iterations.
+   Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.001482/0.001482/1.482e+07
+     Compositions min/max/mass: 0.002781/0.002781/2.781e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
-     RMS, max velocity:         0.577 m/year, 0.993 m/year
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
 
-*** Timestep 2:  t=5000 years, dt=1875 years
+*** Timestep 2:  t=100000 years, dt=50000 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 10 iterations.
+   Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.001629/0.001629/1.629e+07
+     Compositions min/max/mass: 0.003472/0.003472/3.472e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
-     RMS, max velocity:         0.577 m/year, 0.993 m/year
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 3:  t=150000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.003828/0.003828/3.828e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 4:  t=200000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.004072/0.004072/4.072e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 5:  t=250000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.004267/0.004267/4.267e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 6:  t=300000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.004436/0.004436/4.436e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 7:  t=350000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.004587/0.004587/4.587e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 8:  t=400000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.004725/0.004725/4.725e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 9:  t=450000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.004852/0.004852/4.852e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 10:  t=500000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.004971/0.004971/4.971e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 11:  t=550000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.005081/0.005081/5.081e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 12:  t=600000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.005186/0.005186/5.186e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 13:  t=650000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.005284/0.005284/5.284e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 14:  t=700000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.005378/0.005378/5.378e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 15:  t=750000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.005466/0.005466/5.466e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 16:  t=800000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.005551/0.005551/5.551e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 17:  t=850000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.005632/0.005632/5.632e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 18:  t=900000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.00571/0.00571/5.71e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 19:  t=950000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.005785/0.005785/5.785e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
+
+*** Timestep 20:  t=1e+06 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0.005857/0.005857/5.857e+07
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0.577 m/year, 0.887 m/year
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

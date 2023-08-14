@@ -269,11 +269,11 @@ namespace aspect
          * Parameters controlling the partitioning of energy
          * into grain damage in the pinned state.
          */
-        double              grain_size_reduction_work_fraction_exponent;
-        double              maximum_grain_size_reduction_work_fraction;
-        double              minimum_grain_size_reduction_work_fraction;
-        double              mantle_temperature;
-        double              surface_temperature;
+        double grain_size_reduction_work_fraction_exponent;
+        double minimum_grain_size_reduction_work_fraction;
+        double maximum_grain_size_reduction_work_fraction;
+        double minimum_partitioning_power_temperature;
+        double maximum_partitioning_power_temperature;
 
         /**
          * Functions and parameters controlling conversion from interface roughness to grain size,
@@ -285,17 +285,13 @@ namespace aspect
          * Mechanisms for the generation of plate tectonics by two-phase grain-damage
          * and pinning. Physics of the Earth and Planetary Interiors 202 (2012): 27-55.
          */
-        std::vector<double> volume_fraction_phase_one;
-
-        double moment_of_grain_size_distribution (const int n) const;
+        double phase_distribution;
 
         /**
-         * This function returns the factor used to convert roughness into the equivalent mean grain
+         * The factor used to convert roughness into the equivalent mean grain
          * size for a given volume fraction of a mineral in the two-phase damage model.
-         */
-        double roughness_to_grain_size_factor    (const double volume_fraction_phase_one) const;
-
-        double phase_distribution_function       (const double volume_fraction_phase_one) const;
+        */
+        double roughness_to_grain_size;
 
         /**
          * Parameters controlling the viscosity.

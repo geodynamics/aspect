@@ -1,14 +1,16 @@
-# A test for the grain size material model using pinned state damage formulation. 
-# This test uses the parameters from Mulyukova and Bercovici (2018) at constant 
-# temperature and stress in their figure 4 setup.
+# A test for the grain size material model using pinned state damage formulation.
+# This test is like tests/grain_size_strain_pinned_state.prm, but uses the parameters
+# from Mulyukova and Bercovici (2018) at constant
+# temperature and stress in their Figure 4.
 
-#include grain_size_strain.prm
 set Dimension                              = 2
-set End time                               = 1e8
-set Output directory                       = output-mulyukova-bercovici-1
+set End time                               = 1e7
+set Output directory                       = output-grain_size_plunge
 set Use years in output instead of seconds = true
-set Maximum time step                      = 5e4
-set Nonlinear solver scheme                = iterated Advection and Stokes
+set Maximum first time step                = 10
+set Maximum relative increase in time step = 1
+set Nonlinear solver scheme                = iterated Advection and defect correction Stokes
+set Max nonlinear iterations = 1
 
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1100
@@ -28,6 +30,7 @@ subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top,bottom
 end
 
+
 subsection Boundary temperature model
   set List of model names = initial temperature
   subsection Initial temperature
@@ -35,9 +38,11 @@ subsection Boundary temperature model
   end
 end
 
+
 subsection Boundary composition model
   set List of model names = initial composition
 end
+
 
 subsection Gravity model
   set Model name = vertical
@@ -46,31 +51,22 @@ subsection Gravity model
   end
 end
 
-subsection Boundary traction model
-  set Prescribed traction boundary indicators = top x: function, bottom x: function # pressure bc: Prescribe a horizontal traction on the left boundary and vertical traction on the top boundary
-end
 
 subsection Boundary traction model
+  set Prescribed traction boundary indicators = top x: function, bottom x: function
+
   subsection Function
     set Variable names = x,y
-    set  Function constants = pressure = 50e6, y_extent = 1e5
-    # This is sqrt(50e6^2/2)
-    # We want to prescribe a pressure of 50 at the left boundary
-    # and -50 at the top boundary.
-    # The traction in this case is defined as:
-    # tau =  - pressure * normal_vector.
-    # On the left boundary, the outward pointing normal vector is
-    # (-1;0). On the top (0;1).
-    # Therefore:
-    # Left boundary:  tau = - pressure(left) (-1;0) = - (50) (-1;0) = (50;0).
-    # Top boundary: tau   = - pressure(top) (0;1) = - (50) (0;1) = (0;-50).
-    set Function expression = if (y>y_extent/2, pressure, -pressure)  ;  0
+    # We want to prescribe a tangential traction of 50 MPa
+    # at the top boundary and -50 at the bottom boundary.
+    set  Function constants = traction = 50e6, y_extent = 1e5
+    set Function expression = if (y>y_extent/2, traction, -traction)  ;  0
   end
 end
 
 
 subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = top y: function, bottom y: function 
+  set Prescribed velocity boundary indicators = top y: function, bottom y: function
 
   subsection Function
     set Variable names = x,y
@@ -90,15 +86,18 @@ subsection Initial temperature model
   end
 end
 
+
 subsection Initial composition model
   set Model name = function
 
   subsection Function
     set Variable names      = x,z
-    set Function constants  =
+    # This is the test case from Mulyukova and Bercovici (2018) using
+    # the parameters from their figure 4 and a grain size of 1e-2 m.
     set Function expression = 1e-2
   end
 end
+
 
 subsection Compositional fields
   set Number of fields = 1
@@ -141,7 +140,7 @@ subsection Material model
     set Dislocation creep exponent           =3
     set Dislocation activation energy        =530000 # J/mol
     set Dislocation activation volume        =0 # m^3/mol
-    
+
     set Minimum grain size                   = 1e-8
 
     subsection Grain damage partitioning
@@ -151,19 +150,22 @@ subsection Material model
   end
 end
 
+
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
   set Time steps between mesh refinement = 0
 end
 
+
 subsection Postprocess
   set List of postprocessors = composition statistics,temperature statistics, velocity statistics, visualization, material statistics
   subsection Visualization
     set List of output variables = viscosity, shear stress, stress, stress second invariant
-    set Time steps between graphical output = 10
+    set Time between graphical output = 5e3
   end
 end
+
 
 subsection Nullspace removal
   set Remove nullspace = net x translation

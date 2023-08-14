@@ -1,5 +1,6 @@
-Changed: The 'grain size' material model now supports additional formulations
-for grain size evolution. For this purpose the old input parameter 'Use paleowattmeter'
+Changed: The 'grain size' material model now supports the grain size evolution
+equations of Mulyukova & Bercovici 2018 in addition to the existing
+formulations. For this purpose the old input parameter 'Use paleowattmeter'
 has been deprecated and replaced with 'Grain size evolution formulation'. The
 default behavior of the material model has not changed.
 <br>

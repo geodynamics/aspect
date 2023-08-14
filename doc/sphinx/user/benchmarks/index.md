@@ -78,4 +78,5 @@ benchmarks/nsinker/README.md
 benchmarks/nsinker_spherical_shell/README.md
 benchmarks/time_dependent_annulus/README.md
 benchmarks/viscoelastic_plastic_shear_bands/README.md
+benchmarks/grain_size_pinned_state/README.md
 :::
