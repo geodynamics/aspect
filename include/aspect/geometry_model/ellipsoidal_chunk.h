@@ -106,6 +106,14 @@ namespace aspect
             push_forward(const Point<3> &chart_point) const override;
 
             /**
+            * This function provides the derivatives of the push_forward
+            * function to the spherical coordinates, which are needed
+            * in the computation of vectors tangential to the domain boundaries.
+            */
+            DerivativeForm<1, 3, 3>
+            push_forward_gradient(const Point<3> &chart_point) const override;
+
+            /**
              * This function does the actual pull back from the ellipsoid.
              * For the equation details, please see deal.ii step 53.
              */

@@ -127,6 +127,39 @@ namespace aspect
     }
 
     template <int dim>
+    DerivativeForm<1,3,3>
+    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_gradient(const Point<3> &chart_point) const
+    {
+      // The following converts phi, theta and negative depth to x, y, z
+      // Depth is measured perpendicular to the ellipsoid surface
+      // (i.e. along a vector which does not generally pass through the origin)
+      // Expressions can be found in Ellipsoidal and Cartesian Coordinates Conversion
+      // Subirana, Zornoza and Hernandez-Pajares, 2011:
+      // https://gssc.esa.int/navipedia/index.php/Ellipsoidal_and_Cartesian_Coordinates_Conversion
+
+      const double phi   = chart_point[0]; // Longitude in radians
+      const double theta = chart_point[1]; // Latitude in radians
+      const double d     = chart_point[2]; // The negative depth (a depth of 10 meters is -10)
+
+      const double R_bar = semi_major_axis_a / std::sqrt(1 - (eccentricity * eccentricity *
+                                                              std::sin(theta) * std::sin(theta))); // radius of curvature of the prime vertical
+
+      Tensor<2,3> DX;
+      // The derivatives of the cartesian points to topo_point
+      DX[0][0] =      std::cos(phi) * std::cos(theta);
+      DX[0][1] = -(R_bar + d) * std::cos(theta) * std::sin(phi);
+      DX[0][2] = -(R_bar + d) * std::sin(theta) * std::cos(phi); //reorder
+      DX[1][0] =      std::cos(theta) * std::sin(phi);
+      DX[1][1] =  (R_bar + d) * std::cos(theta) * std::cos(phi);
+      DX[1][2] = -(R_bar + d) * std::sin(theta) * std::sin(phi);
+      DX[2][0] =      std::sin(theta);
+      DX[2][1] = 0;
+      DX[2][2] =  ((1 - eccentricity * eccentricity) * R_bar + d) * std::cos(theta);
+
+      return DX;
+    }
+
+    template <int dim>
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::pull_back_ellipsoid(const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const
     {
