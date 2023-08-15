@@ -81,6 +81,7 @@ namespace aspect
         double sediment_density;
         double crustal_density;
         double rock_infill_height;
+        double background_density;
     };
   }
 }

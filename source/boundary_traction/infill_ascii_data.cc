@@ -63,7 +63,7 @@ namespace aspect
       const double load = Utilities::AsciiDataBoundary<dim>::get_data_component(surface_boundary_id,
                                                                                 position,
                                                                                 0);
-      Tensor<1, dim> traction = normal_vector;
+      Tensor<1, dim> traction = normal_vector * 0;
       const double gravity_norm = this->get_gravity_model().gravity_vector(position).norm();
       const double elevation = this->get_geometry_model().height_above_reference_surface(position);
 
@@ -82,11 +82,11 @@ namespace aspect
       // features makes it unrealistic to set rock_infill_height=0.
       if (load >= rock_infill_height*gravity_norm*rock_density)
         {
-          traction = (-load + elevation*gravity_norm*rock_density) * normal_vector;
+          traction = (-load + elevation*gravity_norm*(rock_density - background_density)) * normal_vector;
         }
       else
         {
-          traction = (-load + elevation*gravity_norm*sediment_density) * normal_vector;
+          traction = (-load + elevation*gravity_norm*(sediment_density - background_density)) * normal_vector;
         }
       return traction;
     }
@@ -126,6 +126,10 @@ namespace aspect
                              "If the load defined in the ASCII file has a height equal to or greater than "
                              "the Height for specifying rock infill, then the infill material will be rock, "
                              "otherwise it will be sediment");
+          prm.declare_entry ("Background density", "1000",
+                             Patterns::Double(0.),
+                             "Density of the background material that the infill is displacing. "
+                             "For example, for seawater this value would be set at 1030.");
         }
         prm.leave_subsection();
       }
@@ -146,6 +150,7 @@ namespace aspect
           rock_density = prm.get_double("Rock density");
           sediment_density = prm.get_double("Sediment density");
           rock_infill_height = prm.get_double("Height for specifying rock infill");
+          background_density = prm.get_double("Background density");
         }
         prm.leave_subsection();
       }

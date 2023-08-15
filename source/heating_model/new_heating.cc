@@ -60,34 +60,32 @@ namespace aspect
           const double temp = material_model_inputs.temperature[q];
           const double T_surface = this->get_boundary_temperature_manager().minimal_temperature(this->get_fixed_temperature_boundary_indicators());
           const double T_bottom = this->get_boundary_temperature_manager().maximal_temperature(this->get_fixed_temperature_boundary_indicators());
-          const double zlo = 125e3;
           double T_profile = 1623;
           //MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
           //MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
           const double therm_diff = material_model_outputs.thermal_conductivities[q] / (material_model_outputs.densities[q] * material_model_outputs.specific_heat[q]);
-          const double heaty_cappy = material_model_outputs.specific_heat[q];
+          const double heat_cap = material_model_outputs.specific_heat[q];
           if (depth > zlo)
             {
               T_profile = T_bottom;
             }
           else
             {
-              const double pi = 3.1415;
               const double sea_age = Utilities::AsciiDataBoundary<dim>::get_data_component(surface_boundary_id,
                                                                                            material_model_inputs.position[q],
                                                                                            0);
 
-              const double exp_fac = -therm_diff * std::pow(pi, 2) * sea_age / std::pow(zlo, 2);
-              const double sin_fac = pi / zlo;
+              const double exp_fac = -therm_diff * std::pow(numbers::PI, 2) * sea_age / std::pow(zlo, 2);
+              const double sin_fac = numbers::PI / zlo;
               unsigned int n = 1;
-              unsigned int m = 5;
+              unsigned int m = 101;
               double sum_terms = 0;
               while (n <= m)
                 {
                   sum_terms += 1/(double)n * std::exp(std::pow((double)n, 2) * exp_fac) * std::sin((double)n * depth * sin_fac);
                   n += 1;
                 }
-              T_profile = T_surface + (T_bottom - T_surface) * (depth / zlo + 2 / pi * sum_terms);
+              T_profile = T_surface + (T_bottom - T_surface) * (depth / zlo + 2 / numbers::PI * sum_terms);
             }
           double T_diff = 0;
           if ( (T_profile - temp) > 0 )
@@ -105,7 +103,7 @@ namespace aspect
             }
 //          heating_model_outputs.heating_source_terms[q] = T_diff * material_model_outputs.densities[q] * heat_cap / dt / 60 / 60 / 24 / 365.25;
 //          heating_model_outputs.heating_source_terms[q] = T_diff * material_model_outputs.densities[q] * heaty_cappy / dt / 60 / 60 / 24 / 365.25;
-          heating_model_outputs.heating_source_terms[q] = T_diff * material_model_outputs.densities[q] * heaty_cappy / dt;
+          heating_model_outputs.heating_source_terms[q] = T_diff * material_model_outputs.densities[q] * heat_cap / dt;
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
     }
@@ -136,6 +134,10 @@ namespace aspect
           prm.declare_entry ("Thermal diffusivity", "0.8e-7",
                              Patterns::Anything(),
                              "The thermal diffusivity");
+          prm.declare_entry ("Lithosphere thickness", "125e3",
+                             Patterns::Anything(),
+                             "The lithosphere thickness");
+
         }
         prm.leave_subsection();
       }
@@ -156,6 +158,7 @@ namespace aspect
         {
           heat_cap = prm.get_double("Heat capacity");
           kappa = prm.get_double("Thermal diffusivity");
+          zlo = prm.get_double("Lithosphere thickness");
         }
         prm.leave_subsection();
       }

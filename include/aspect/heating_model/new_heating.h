@@ -107,6 +107,7 @@ namespace aspect
       private:
         double heat_cap;
         double kappa;
+        double zlo;
         types::boundary_id surface_boundary_id;
     };
   }
