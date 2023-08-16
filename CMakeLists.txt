@@ -130,9 +130,16 @@ IF(NOT DEAL_II_WITH_TRILINOS)
     SET(_DEALII_GOOD OFF)
 ENDIF()
 
+IF(NOT DEAL_II_WITH_SUNDIALS)
+    MESSAGE(SEND_ERROR
+      "\n-- deal.II was built without support for SUNDIALS!\n"
+      )
+    SET(_DEALII_GOOD OFF)
+ENDIF()
+
 IF (NOT _DEALII_GOOD)
   MESSAGE(FATAL_ERROR
-    "\nASPECT requires a deal.II installation built with support for Trilinos and p4est but one or both of these appears to be missing!\n"
+    "\nASPECT requires a deal.II installation built with certain features enabled that seem to be missing (see above)!\n"
     )
 ENDIF()
 
