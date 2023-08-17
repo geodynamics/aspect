@@ -1,6 +1,12 @@
-# A test based on the SolKz benchmark that performs bilinear
-# least squares interpolation from particle properties to
+# A test based on the SolKz benchmark that performs a cellwise
+# average using harmonic averaging from particle properties to
 # compositional fields that are flagged as 'particle' advected fields.
+
+# Note that since the test performs harmonic averaging, the density
+# values being averaged all have to be positive, which required a
+# modification of the original density from the benchmark. Therefore,
+# the error in pressure is large (since the pressure no longer
+# corresponds to the analytical solution).
 
 set Additional shared libraries            = ./libparticle_interpolator_harmonic_average_solkz.so
 
@@ -72,12 +78,14 @@ subsection Compositional fields
   set Mapped particle properties = density_comp:function[0], viscosity_comp:function[1]
 end
 
+# The initial condition is adapted from the original solkz benchmark by adding a constant
+# value of 1 to keep all properties positive (which is necessary for harmonic averaging)
 subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,z
     set Function constants  = pi=3.1415926, eta_b=1e6
-    set Function expression = -1 * sin(2*z) * cos(3*pi*x); exp(log(eta_b)*z)
+    set Function expression = 1 - sin(2*z) * cos(3*pi*x); exp(log(eta_b)*z)
   end
 end
 
@@ -96,11 +104,13 @@ subsection Postprocess
     set Maximum particles per cell = 4096
     set Update ghost particles = true
 
+    # The initial condition is adapted from the original solkz benchmark by adding a constant
+    # value of 1 to keep all properties positive (which is necessary for harmonic averaging)
     subsection Function
       set Number of components = 2
       set Variable names      = x, z
       set Function constants  = pi=3.1415926, eta_b=1e6
-      set Function expression =  -1 * sin(2*z) * cos(3*pi*x); exp(log(eta_b)*z)
+      set Function expression = 1 - sin(2*z) * cos(3*pi*x); exp(log(eta_b)*z)
     end
 
     set Particle generator name = reference cell
