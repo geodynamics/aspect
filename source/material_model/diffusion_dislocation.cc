@@ -43,6 +43,7 @@ namespace aspect
       // strain rate (often simplified as epsilondot_ii)
       const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.)),
                                       min_strain_rate);
+      const double log_edot_ii = std::log(edot_ii);
 
 
       // Find effective viscosities for each of the individual phases
@@ -77,22 +78,26 @@ namespace aspect
                               edot_ii/prefactor_stress_diffusion
                               :
                               0.5 / maximum_viscosity);
-          double strain_rate_residual = 2*strain_rate_residual_threshold;
-          double strain_rate_deriv = 0;
+          double log_stress_ii = std::log(stress_ii);
+          double log_strain_rate_residual = 2 * log_strain_rate_residual_threshold;
+          double log_strain_rate_deriv = 0;
           unsigned int stress_iteration = 0;
-          while (std::abs(strain_rate_residual) > strain_rate_residual_threshold
+          while (std::abs(log_strain_rate_residual) > log_strain_rate_residual_threshold
                  && stress_iteration < stress_max_iteration_number)
             {
+              const std::pair<double, double> log_diff_edot_and_deriv = diffusion_creep.compute_log_strain_rate_and_derivative(log_stress_ii, pressure, temperature, diffusion_creep_parameters);
+              const std::pair<double, double> log_disl_edot_and_deriv = dislocation_creep.compute_log_strain_rate_and_derivative(log_stress_ii, pressure, temperature, dislocation_creep_parameters);
 
-              const std::pair<double, double> diff_edot_and_deriv = diffusion_creep.compute_strain_rate_and_derivative(stress_ii, pressure, temperature, diffusion_creep_parameters);
-              const std::pair<double, double> disl_edot_and_deriv = dislocation_creep.compute_strain_rate_and_derivative(stress_ii, pressure, temperature, dislocation_creep_parameters);
+              const double strain_rate_diffusion = std::exp(log_diff_edot_and_deriv.first);
+              const double strain_rate_dislocation = std::exp(log_disl_edot_and_deriv.first);
+              log_strain_rate_residual = std::log(strain_rate_diffusion + strain_rate_dislocation) - log_edot_ii;
+              log_strain_rate_deriv = (strain_rate_diffusion * log_diff_edot_and_deriv.second + strain_rate_dislocation * log_disl_edot_and_deriv.second)/
+                                      (strain_rate_diffusion + strain_rate_dislocation);
 
-              strain_rate_residual = diff_edot_and_deriv.first + disl_edot_and_deriv.first - edot_ii;
-              strain_rate_deriv = diff_edot_and_deriv.second + disl_edot_and_deriv.second ;
-
-              // If the strain rate derivative is zero, we catch it below.
-              if (strain_rate_deriv>std::numeric_limits<double>::min())
-                stress_ii -= strain_rate_residual/strain_rate_deriv;
+              // If the log strain rate derivative is zero, we catch it below.
+              if (log_strain_rate_deriv>std::numeric_limits<double>::min())
+                log_stress_ii -= log_strain_rate_residual/log_strain_rate_deriv;
+              stress_ii = std::exp(log_stress_ii);
               stress_iteration += 1;
 
               // In case the Newton iteration does not succeed, we do a fixpoint iteration.
@@ -104,9 +109,9 @@ namespace aspect
               // Newton iteration would trigger an exception and we want to do the fixpoint
               // iteration instead.
               const bool abort_newton_iteration = !numbers::is_finite(stress_ii)
-                                                  || !numbers::is_finite(strain_rate_residual)
-                                                  || !numbers::is_finite(strain_rate_deriv)
-                                                  || strain_rate_deriv < std::numeric_limits<double>::min()
+                                                  || !numbers::is_finite(log_strain_rate_residual)
+                                                  || !numbers::is_finite(log_strain_rate_deriv)
+                                                  || log_strain_rate_deriv < std::numeric_limits<double>::min()
                                                   || !numbers::is_finite(std::pow(stress_ii, diffusion_creep_parameters.stress_exponent-1))
                                                   || !numbers::is_finite(std::pow(stress_ii, dislocation_creep_parameters.stress_exponent-1))
                                                   || stress_iteration == stress_max_iteration_number;
@@ -146,15 +151,15 @@ namespace aspect
                       AssertThrow(stress_iteration < stress_max_iteration_number,
                                   ExcMessage("No convergence has been reached in the loop that determines "
                                              "the ratio of diffusion/dislocation viscosity. Aborting! "
-                                             "Residual is " + Utilities::to_string(strain_rate_residual) +
+                                             "Residual is " + Utilities::to_string(log_strain_rate_residual) +
                                              " after " + Utilities::to_string(stress_iteration) + " iterations. "
                                              "You can increase the number of iterations by adapting the "
                                              "parameter 'Maximum strain rate ratio iterations'."));
 
-                      strain_rate_residual = std::abs((diffusion_strain_rate-old_diffusion_strain_rate) / diffusion_strain_rate);
+                      log_strain_rate_residual = std::abs(std::log(diffusion_strain_rate/old_diffusion_strain_rate));
                       stress_ii = 2.0 * edot_ii * 1./(1./diffusion_viscosity + 1./dislocation_viscosity);
                     }
-                  while (strain_rate_residual > strain_rate_residual_threshold);
+                  while (log_strain_rate_residual > log_strain_rate_residual_threshold);
 
                   break;
                 }
@@ -277,8 +282,8 @@ namespace aspect
                              "Scaling coefficient for effective viscosity.");
 
           // Viscosity iteration parameters
-          prm.declare_entry ("Strain rate residual tolerance", "1e-22", Patterns::Double(0.),
-                             "Tolerance for correct diffusion/dislocation strain rate ratio.");
+          prm.declare_entry ("Strain rate residual tolerance", "1e-10", Patterns::Double(0.),
+                             "Tolerance for determining the correct stress and viscosity from the strain rate by internal iteration. The tolerance is expressed as the difference between the natural logarithm of the input strain rate and the strain rate at the current iteration. This determines that strain rate is correctly partitioned between diffusion and dislocation creep assuming that both mechanisms experience the same stress.");
           prm.declare_entry ("Maximum strain rate ratio iterations", "40", Patterns::Integer(0),
                              "Maximum number of iterations to find the correct "
                              "diffusion/dislocation strain rate ratio.");
@@ -397,7 +402,7 @@ namespace aspect
           veff_coefficient = prm.get_double ("Effective viscosity coefficient");
 
           // Iteration parameters
-          strain_rate_residual_threshold = prm.get_double ("Strain rate residual tolerance");
+          log_strain_rate_residual_threshold = prm.get_double ("Strain rate residual tolerance");
           stress_max_iteration_number = prm.get_integer ("Maximum strain rate ratio iterations");
 
           // Equation of state parameters

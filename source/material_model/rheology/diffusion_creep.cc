@@ -114,7 +114,6 @@ namespace aspect
       }
 
 
-
       template <int dim>
       std::pair<double, double>
       DiffusionCreep<dim>::compute_strain_rate_and_derivative (const double stress,
@@ -138,6 +137,33 @@ namespace aspect
 
         return std::make_pair(strain_rate_diffusion, dstrain_rate_dstress_diffusion);
       }
+
+
+      template <int dim>
+      std::pair<double, double>
+      DiffusionCreep<dim>::compute_log_strain_rate_and_derivative (const double log_stress,
+                                                                   const double pressure,
+                                                                   const double temperature,
+                                                                   const DiffusionCreepParameters creep_parameters) const
+      {
+        // Power law creep equation
+        // log(edot_ii_partial) = std::log(A) + n*std::log(stress) - m*std::log(d) - (E + P*V)/(RT)
+        //   d(log_edot_ii_partial)/d(log_stress) = n
+        // A: prefactor, edot_ii_partial: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
+        // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
+        // V; activation volume, R: gas constant, T: temperature.
+        // For diffusion creep, n = 1 (strain rate is linearly dependent on stress).
+        const double log_strain_rate_diffusion = std::log(creep_parameters.prefactor) +
+                                                 log_stress -
+                                                 creep_parameters.grain_size_exponent * std::log(grain_size) -
+                                                 (creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
+                                                 (constants::gas_constant*temperature);
+
+        const double dlog_strain_rate_dlog_stress_diffusion = 1.0;
+
+        return std::make_pair(log_strain_rate_diffusion, dlog_strain_rate_dlog_stress_diffusion);
+      }
+
 
 
 

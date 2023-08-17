@@ -141,6 +141,30 @@ namespace aspect
       }
 
 
+      template <int dim>
+      std::pair<double, double>
+      DislocationCreep<dim>::compute_log_strain_rate_and_derivative (const double log_stress,
+                                                                     const double pressure,
+                                                                     const double temperature,
+                                                                     const DislocationCreepParameters creep_parameters) const
+      {
+        // Power law creep equation
+        // log(edot_ii_partial) = std::log(A) + n*std::log(stress) - m*std::log(d) - (E + P*V)/(RT)
+        //   d(log_edot_ii_partial)/d(log_stress) = n
+        // A: prefactor, edot_ii_partial: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
+        // stress: deviatoric stress, E: activation energy, P: pressure,
+        // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
+        const double log_strain_rate_dislocation = std::log(creep_parameters.prefactor) +
+                                                   creep_parameters.stress_exponent * log_stress -
+                                                   (creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
+                                                   (constants::gas_constant*temperature);
+
+        const double dlog_strain_rate_dlog_stress_dislocation = creep_parameters.stress_exponent;
+
+        return std::make_pair(log_strain_rate_dislocation, dlog_strain_rate_dlog_stress_dislocation);
+      }
+
+
 
       template <int dim>
       void
