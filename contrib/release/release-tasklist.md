@@ -23,10 +23,10 @@ and the links are working
 - setup:
 
   ```
-  export OLDVER=2.0.0
-  export VER=2.1.0
-  export VERSHORT=2.1
-  export NEXTVER=2.2.0-pre
+  export OLDVER=2.4.0
+  export VER=2.5.0
+  export VERSHORT=2.5
+  export NEXTVER=2.6.0-pre
   # Make sure DEALSRCDIR is set to correct path
   export DEALSRCDIR=$DEAL_II_DIR
   ```
@@ -164,10 +164,12 @@ and the links are working
   - license: GPL 2
   - check CIG comments: https://github.com/geodynamics/best_practices/blob/master/ZenodoBestPractices.md
   - add to "Computational Infrastructure for Geodynamics" community
-  - update zenodo badge in README.md to newest version (see badge button on the right of zenodo page)
-  - add zenodo badge also to the release on github (on top, see 2.0.1 for an example)
-  - readme / release notes: add zenodo DOI button
+  - update Zenodo button on main readme (see badge button on the right of zenodo page)
   - doc/sphinx/references.bib: add new zenodo entry
+- add to github release:
+    - Zenodo button
+    - [![pdf manual](https://img.shields.io/badge/get-PDF-green.svg)](https://doi.org/10.6084/m9.figshare.4865333)
+    - [![online manual](https://img.shields.io/badge/online-manual-red)](https://aspect-documentation.readthedocs.io/en/v2.5.0/)
 - create figshare DOI for manual (just upload a new version as the same entry)
   - update doc/sphinx/references.bib entry
 - update doc/sphinx/references.bib with src and manual doi
@@ -182,7 +184,9 @@ and the links are working
   - update the list of contributors
 
 - update the spack installation package with the latest tarball,
-  see https://github.com/spack/spack/pull/13830 for an example
+  see https://github.com/spack/spack/pull/13830 for an example:
+      spack checksum aspect
+
 - announce on
   - cig-all@geodynamics.org
   - https://community.geodynamics.org/c/aspect
