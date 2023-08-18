@@ -19,7 +19,7 @@
 */
 
 
-#include "prescribed_temperature.h"
+#include <aspect/initial_temperature/prescribed_temperature.h>
 
 #include <aspect/initial_composition/interface.h>
 #include <aspect/material_model/interface.h>

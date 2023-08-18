@@ -19,7 +19,7 @@
 */
 
 #include "entropy_advection.h"
-#include "entropy_model.h"
+#include <aspect/material_model/entropy_model.h>
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>

@@ -19,7 +19,7 @@
 */
 
 
-#include "entropy_model.h"
+#include <aspect/material_model/entropy_model.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/utilities.h>
 
