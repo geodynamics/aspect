@@ -809,6 +809,8 @@ namespace aspect
   namespace MaterialModel
   {
 #define INSTANTIATE(dim) \
+  template class PlasticAdditionalOutputs<dim>; \
+  \
   namespace Rheology \
   { \
     template class ViscoPlastic<dim>; \

@@ -19,7 +19,7 @@
 */
 
 
-#include "compute_entropy_profile.h"
+#include <aspect/adiabatic_conditions/compute_entropy_profile.h>
 #include <aspect/gravity_model/interface.h>
 
 #include <deal.II/base/signaling_nan.h>
