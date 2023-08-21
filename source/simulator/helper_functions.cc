@@ -790,12 +790,15 @@ namespace aspect
   void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
                                                         LinearAlgebra::Vector &vec)
   {
+    Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
+
     AffineConstraints<double> hanging_constraints(introspection.index_sets.system_relevant_set);
     DoFTools::make_hanging_node_constraints(dof_handler, hanging_constraints);
     hanging_constraints.close();
 
-    Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
     const std::vector<Point<dim>> mesh_support_points = finite_element.base_element(introspection.base_elements.velocities).get_unit_support_points();
+    const unsigned int n_velocity_dofs_per_cell = finite_element.base_element(introspection.base_elements.velocities).dofs_per_cell;
+
     FEValues<dim> mesh_points (*mapping, finite_element, mesh_support_points, update_quadrature_points);
     std::vector<types::global_dof_index> cell_dof_indices (finite_element.dofs_per_cell);
 
@@ -804,13 +807,12 @@ namespace aspect
         {
           mesh_points.reinit(cell);
           cell->get_dof_indices (cell_dof_indices);
-          for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.velocities).dofs_per_cell; ++j)
+          for (unsigned int j=0; j<n_velocity_dofs_per_cell; ++j)
             for (unsigned int dir=0; dir<dim; ++dir)
               {
-                unsigned int support_point_index
+                const unsigned int support_point_index
                   = finite_element.component_to_system_index(/*velocity component=*/ introspection.component_indices.velocities[dir],
                                                                                      /*dof index within component=*/ j);
-                Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
                 vec[cell_dof_indices[support_point_index]] = func.value(mesh_points.quadrature_point(j))[dir];
               }
         }
