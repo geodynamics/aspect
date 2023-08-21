@@ -261,45 +261,28 @@ namespace aspect
     Tensor<1,dim> local_momentum;
     double local_mass = 0.0;
 
-
-    // Vectors for evaluating the finite element solution
-    std::vector<std::vector<double>> composition_values (introspection.n_compositional_fields,
-                                                          std::vector<double> (n_q_points));
-    std::vector<Tensor<1,dim>> velocities( n_q_points );
-
-    typename DoFHandler<dim>::active_cell_iterator cell;
     // loop over all local cells
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
           fe.reinit (cell);
 
-          // get the velocity at each quadrature point
-          fe[introspection.extractors.velocities].get_function_values (relevant_dst, velocities);
-
           // get the density at each quadrature point if necessary
           MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                      introspection.n_compositional_fields);
           MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
                                                        introspection.n_compositional_fields);
-          in.requested_properties = MaterialModel::MaterialProperties::density;
 
-          if (!use_constant_density)
+          if (use_constant_density)
             {
-              fe[introspection.extractors.pressure].get_function_values(relevant_dst, in.pressure);
-              fe[introspection.extractors.temperature].get_function_values(relevant_dst, in.temperature);
-              in.velocity = velocities;
-              fe[introspection.extractors.pressure].get_function_gradients(relevant_dst, in.pressure_gradient);
-              for (unsigned int c = 0; c < introspection.n_compositional_fields; ++c)
-                fe[introspection.extractors.compositional_fields[c]].get_function_values(relevant_dst,
-                                                                                         composition_values[c]);
-
-              for (unsigned int i = 0; i < n_q_points; ++i)
-                {
-                  in.position[i] = fe.quadrature_point(i);
-                  for (unsigned int c = 0; c < introspection.n_compositional_fields; ++c)
-                    in.composition[i][c] = composition_values[c][i];
-                }
+              // get only the velocity at each quadrature point
+              fe[introspection.extractors.velocities].get_function_values (relevant_dst, in.velocity);
+            }
+          else
+            {
+              // get all material inputs including velocity and evaluate for density
+              in.reinit(fe,cell,introspection,relevant_dst);
+              in.requested_properties = MaterialModel::MaterialProperties::density;
               material_model->evaluate(in, out);
             }
 
@@ -308,15 +291,16 @@ namespace aspect
             {
               // get the density at this quadrature point
               const double rho = (use_constant_density ? 1.0 : out.densities[k]);
+              const double JxW = fe.JxW(k);
 
-              local_momentum += velocities[k] * rho * fe.JxW(k);
-              local_mass += rho * fe.JxW(k);
+              local_momentum += in.velocity[k] * rho * JxW;
+              local_mass += rho * JxW;
             }
         }
 
     // Calculate the total mass and velocity correction
-    const double mass = Utilities::MPI::sum( local_mass, mpi_communicator);
-    Tensor<1,dim> velocity_correction = Utilities::MPI::sum(local_momentum, mpi_communicator)/mass;
+    const double mass = Utilities::MPI::sum(local_mass, mpi_communicator);
+    Tensor<1,dim> velocity_correction = Utilities::MPI::sum(local_momentum, mpi_communicator) / mass;
 
     // We may only want to remove the nullspace for a single component, so zero out
     // the velocity correction if it is not selected by the NullspaceRemoval flag
