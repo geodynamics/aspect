@@ -108,5 +108,6 @@ cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.md
 cookbooks/kinematically_driven_subduction_2d/doc/kinematically_driven_subduction_2d.md
 cookbooks/inclusions/doc/inclusions.md
 cookbooks/subduction_initiation/doc/subduction_initiation.md
+cookbooks/vankeken_subduction/doc/vankeken_subduction.md
 cookbooks/future/README.md
 :::

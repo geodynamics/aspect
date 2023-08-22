@@ -10,15 +10,18 @@ The half space cooling model prescribed on the left boundary is advected downdip
 
 ```{figure-md} fig:vanKeken-temperature
 <img src="velocity_field.png" alt="Screenshot"  width="100%"/>
+
 The temperature field of the subducting slab after ~100 Myr. A half space cooling model is applied to the left boundary, which is advected at a 45 degree angle at a rate of 5 cm/yr within the subducting plate.
 ```
 
 ```{figure-md} fig:vanKeken-velocity
 <img src="velocity_field.png" alt="Screenshot"  width="100%"/>
+
 The velocity field of the subducting slab after ~100 Myr which is advected at a 45 degree angle at a rate of 5 cm/yr within the subducting plate.
 ```
 
 ```{figure-md} fig:vanKeken-pressure
 <img src="pressure_mesh.png" alt="Screenshot"  width="100%"/>
+
 The pressure field in the corner of the mantle wedge. The pressure solution was solved using a continuous $Q_1$ discretization, which was made possible with the custom mesh design used for this cookbook.
 ```
