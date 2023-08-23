@@ -272,8 +272,8 @@ namespace aspect
         double grain_size_reduction_work_fraction_exponent;
         double minimum_grain_size_reduction_work_fraction;
         double maximum_grain_size_reduction_work_fraction;
-        double minimum_partitioning_power_temperature;
-        double maximum_partitioning_power_temperature;
+        double temperature_minimum_partitioning_power;
+        double temperature_maximum_partitioning_power;
 
         /**
          * Functions and parameters controlling conversion from interface roughness to grain size,

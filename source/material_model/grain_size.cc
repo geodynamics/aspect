@@ -198,11 +198,11 @@ namespace aspect
     {
       const double power_term_base = maximum_grain_size_reduction_work_fraction/minimum_grain_size_reduction_work_fraction;
 
-      const double power_term_numerator    =  minimum_partitioning_power_temperature -
+      const double power_term_numerator    =  temperature_minimum_partitioning_power -
                                               std::pow (temperature, grain_size_reduction_work_fraction_exponent);
 
-      const double power_term_denominator  =  minimum_partitioning_power_temperature -
-                                              maximum_partitioning_power_temperature;
+      const double power_term_denominator  =  temperature_minimum_partitioning_power -
+                                              temperature_maximum_partitioning_power;
 
       // We have to ensure the power term exponent is between 0 and 1, otherwise the partitioning fraction
       // will be outside the set bounds for the work fraction.
@@ -1336,13 +1336,13 @@ namespace aspect
                              "to compute material properties (slower but more accurate).");
           prm.enter_subsection("Grain damage partitioning");
           {
-            prm.declare_entry ("Minimum partitioning temperature", "1600",
+            prm.declare_entry ("Temperature for minimum grain damage partitioning", "1600",
                                Patterns::Double (0.),
                                "This parameter determines the temperature at which the computed coefficient of shear energy "
                                "partitioned into grain damage is minimum. This is used in the pinned state limit of the grain "
                                "size evolution. One choice of this parameter is the mantle temperature at the ridge axis, "
                                "see Mulyukova and Bercovici (2018) for details.");
-            prm.declare_entry ("Maximum partitioning temperature", "283",
+            prm.declare_entry ("Temperature for maximum grain damage partitioning", "283",
                                Patterns::Double (0.),
                                "This parameter determines the temperature at which the computed coefficient of shear energy "
                                "partitioned into grain damage is maximum. This is used in the pinned state limit of the grain "
@@ -1467,14 +1467,14 @@ namespace aspect
                 AssertThrow(maximum_grain_size_reduction_work_fraction >= minimum_grain_size_reduction_work_fraction,
                             ExcMessage("Maximum grain size reduction work fraction must be larger than minimum grain size reduction work fraction."));
 
-                const double minimum_partition_temperature  = prm.get_double ("Minimum partitioning temperature");
-                const double maximum_partition_temperature  = prm.get_double ("Maximum partitioning temperature");
+                const double temperature_minimum_partition  = prm.get_double ("Temperature for minimum grain damage partitioning");
+                const double temperature_maximum_partition  = prm.get_double ("Temperature for maximum grain damage partitioning");
 
-                AssertThrow(minimum_partition_temperature > maximum_partition_temperature,
-                            ExcMessage("Minimum partitioning temperature must be larger than Maximum partitioning temperature."));
+                AssertThrow(temperature_minimum_partition > temperature_maximum_partition,
+                            ExcMessage("Temperature for minimum grain damage partitioning must be larger than Temperature for maximum grain damage partitioning."));
 
-                minimum_partitioning_power_temperature = std::pow(minimum_partition_temperature,grain_size_reduction_work_fraction_exponent);
-                maximum_partitioning_power_temperature = std::pow(maximum_partition_temperature,grain_size_reduction_work_fraction_exponent);
+                temperature_minimum_partitioning_power = std::pow(temperature_minimum_partition,grain_size_reduction_work_fraction_exponent);
+                temperature_maximum_partitioning_power = std::pow(temperature_maximum_partition,grain_size_reduction_work_fraction_exponent);
               }
               prm.leave_subsection();
             }
