@@ -1,0 +1,5 @@
+New: There is now a new viscosity profile data file that
+is more consistent with how the profile is computed in
+the original Steinberger and Calderwood paper.
+<br>
+(Juliane Dannberg, Bernhard Steinberger, 2023/08/22)
