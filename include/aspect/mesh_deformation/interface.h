@@ -34,6 +34,7 @@
 #include <deal.II/lac/la_parallel_vector.h>
 #include <deal.II/multigrid/mg_constrained_dofs.h>
 #include <deal.II/multigrid/mg_transfer_matrix_free.h>
+#include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
 #include <aspect/simulator/assemblers/interface.h>
 
 
@@ -604,7 +605,7 @@ namespace aspect
         /**
          * Multigrid transfer operator for the displacements
          */
-        MGTransferMatrixFree<dim, double> mg_transfer;
+        MGTransferMF<dim, double> mg_transfer;
 
 
         /**
