@@ -1,3 +1,4 @@
+(sec:run-aspect:run-faster:debug-vs-optimized)=
 # Debug vs. optimized mode
 
 Both deal.II and

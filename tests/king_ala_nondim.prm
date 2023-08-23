@@ -2,20 +2,10 @@
 # like king_ala.prm but using the nondimensional material model
 
 set Dimension                              = 2
-set CFL number = 10.0
-
-
-
-set Adiabatic surface temperature              = 0.091 #0.100
-#set Use conduction timestep = true
-
-
-# There are several global variables that have to do with what
-# time system we want to work in and what the end time is. We
-# also designate an output directory.
+set CFL number                             = 10.0
+set Adiabatic surface temperature          = 0.091
 set Use years in output instead of seconds = false
 set End time                               = 0.15
-set Output directory                       = output
 
 subsection Discretization
   subsection Stabilization parameters
@@ -24,16 +14,6 @@ subsection Discretization
     set cR                                                 = 0.033
   end
 end
-
-# Then there are variables that describe the tolerance of
-# the linear solver as well as how the pressure should
-# be normalized. Here, we choose a zero average pressure
-# at the surface of the domain (for the current geometry, the
-# surface is defined as the top boundary).
-
-set Pressure normalization                 = surface
-set Surface pressure                       = 0
-
 
 
 subsection Adiabatic conditions model
@@ -86,15 +66,6 @@ subsection Initial temperature model
   end
 end
 
-subsection Initial temperature model
-  set Model name = function
-  subsection Function
-#    set Function constants  = z1=0.102367, z2=0.897633, pi=3.14159265359
-#    set Function expression = if(z<z1,0.5+0.5*(z1-z)/z1,if(z>z2,0.5*(1-z)/(1-z2),0.5)) + 0.1 * cos(x*pi) * sin(z*pi)
-#    set Variable names      = x,z
-  end
-end
-
 
 # Then follows a section that describes the boundary conditions
 # for the temperature. The model we choose is called 'box' and
@@ -105,7 +76,7 @@ end
 # at the left and right does not matter.)
 subsection Boundary temperature model
   set List of model names = box
-
+  set Fixed temperature boundary indicators   = top, bottom
 
   subsection Box
     set Top temperature    = 0.091
@@ -115,32 +86,13 @@ subsection Boundary temperature model
   end
 end
 
-# We then also have to prescribe several other parts of the model such as
-# which boundaries actually carry a prescribed boundary temperature, whereas
-# all other parts of the boundary are insulated (i.e., no heat flux through
-# these boundaries; this is also often used to specify symmetry boundaries).
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = top, bottom
-end
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
 end
 
 subsection Heating model
-  # shear heating: 1/2 eta*e(u): ... need  -> 1/2 e(u): ..  * Di/Ra
-  # adiabatic heating: alpha T (u . \nabla p)
-  #
-
-  set List of model names = adiabatic heating, shear heating#, constant heating
-
-  subsection Constant heating
-    set Radiogenic heating rate = 1.25e-12#5e-9
-  end
+  set List of model names = adiabatic heating, shear heating
 
   subsection Adiabatic heating
     # A flag indicating whether the adiabatic heating should be simplified
@@ -155,8 +107,6 @@ end
 
 subsection Formulation
   set Formulation = anelastic liquid approximation
-  #set Mass conservation        = reference density profile
-  #set Temperature equation     = reference density profile
 end
 
 subsection Gravity model
@@ -169,18 +119,12 @@ end
 
 
 subsection Material model
-  #set Model name = simple compressible
   set Model name = nondimensional
   subsection Nondimensional model
     set Di                      = 0.25
     set Ra                      = 1e4
-    # Reference density $\rho_0$. Units: \\si{\\kilogram\\per\\meter\\cubed}.
     set Reference density       = 1
-
-    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.
     set Reference specific heat = 1
-
-    # Whether to use the TALA instead of the ALA approximation.
     set Use TALA                = false
     set gamma                   = 1.0
   end
@@ -201,7 +145,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 1.0
-  #set Additional refinement times              = 0.1, 0.2, 0.3, 0.5, 1.0, 1.5, 2.0
   set Additional refinement times              = 0.35
 end
 
@@ -218,19 +161,13 @@ end
 # we will obtain 50 output files.
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, depth average, heating statistics
-
-  subsection Visualization
-    set Interpolate output = false
-    set Time between graphical output = 1e-3
-    set List of output variables      = material properties, adiabat, thermal conductivity, heating, artificial viscosity
-  end
 end
 
 subsection Solver parameters
   set Temperature solver tolerance = 1e-10
 
   subsection Stokes solver parameters
-    set Use direct solver for Stokes system = true#false
+    set Use direct solver for Stokes system = true
     set Linear solver tolerance = 1e-7
   end
 end

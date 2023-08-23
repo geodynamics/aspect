@@ -1,4 +1,6 @@
 
+Loading shared library <./libblankenbach_case1a.debug.so>
+
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
@@ -8,7 +10,6 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system... 33+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach_case1a/solution/solution-00000
      RMS, max velocity:                  17.9 m/s, 25.3 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -4.884 W, 4.884 W

@@ -18,6 +18,8 @@ end
 
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = bottom, top
+
   subsection Box
     set Bottom temperature = 1
     set Left temperature   = 0
@@ -75,25 +77,15 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-subsection Heating model
-  set List of model names = #adiabatic heating, shear heating#, constant heating
-end
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top
-end
 
 subsection Formulation
   set Formulation = Boussinesq approximation # this overwrites the parameters below
-  set Mass conservation                 = implicit reference density profile
+  set Mass conservation = incompressible
   set Temperature equation = reference density profile
 end
 

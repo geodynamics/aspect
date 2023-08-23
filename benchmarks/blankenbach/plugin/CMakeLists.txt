@@ -35,5 +35,5 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 SET(TARGET "blankenbach")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED code.cc)
+ADD_LIBRARY(${TARGET} SHARED code.cc heat_flux_statistics_gradient.h heat_flux_statistics_gradient.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})

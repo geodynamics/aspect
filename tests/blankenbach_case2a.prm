@@ -1,6 +1,6 @@
-# blankenbach case 1a as described in benchmarks/blankenbach/README.md
+# blankenbach case 2a as described in benchmarks/blankenbach/README.md
 
-include $ASPECT_SOURCE_DIR/benchmarks/blankenbach/base_case1a.prm
+include $ASPECT_SOURCE_DIR/benchmarks/blankenbach/base_case2a.prm
 
 set End time                               = 0.02
 set CFL number = 5.0
