@@ -1,0 +1,10 @@
+# A test for the grain size material model using the pinned state damage formulation.
+# This test is like grain_size_strain_pinned_state, but uses the parameters
+# from Mulyukova and Bercovici (2018) at constant
+# temperature and stress in their figure 4 to reproduce a grain size plunge.
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/grain_size_pinned_state/grain_size_plunge.prm
+
+set End time                               = 1e2

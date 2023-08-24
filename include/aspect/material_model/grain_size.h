@@ -192,17 +192,106 @@ namespace aspect
 
         /**
          * Parameters controlling the dynamic grain recrystallization.
-         * (following paleowattmeter as described in Austin, N. J., & Evans, B.
-         * (2007). Paleowattmeters: A scaling relation for dynamically
-         * recrystallized grain size. Geology, 35(4), 343-346.). If this is
-         * set to false we use the approach of Hall, C. E.,
-         * Parmentier, E. M. (2003). Influence of grain size evolution on
-         * convective instability. Geochemistry, Geophysics, Geosystems, 4(3).
          */
-        bool use_paleowattmeter;
         std::vector<double> grain_boundary_energy;
         std::vector<double> boundary_area_change_work_fraction;
         std::vector<double> geometric_constant;
+
+        /**
+          * A struct that contains information about which
+          * formulation of grain size evolution should be used.
+          */
+        struct Formulation
+        {
+          /**
+           * This enum lists available options that
+           * determine the equations being used for grain size evolution.
+           *
+           * We currently support three approaches:
+           *
+           * 'paleowattmeter':
+           * Austin, N. J., & Evans, B. (2007). Paleowattmeters: A scaling
+           * relation for dynamically recrystallized grain size. Geology, 354), 343-346.).
+           *
+           * 'paleopiezometer':
+           * Hall, C. E., Parmentier, E. M. (2003). Influence of grain size
+           * evolution on convective instability. Geochemistry, Geophysics,
+           * Geosystems, 4(3).
+           *
+           * 'pinned_grain_damage':
+           * Mulyukova, E., & Bercovici, D. (2018). Collapse of passive margins
+           * by lithospheric damage and plunging grain size. Earth and Planetary
+           * Science Letters, 484, 341-352.
+           */
+          enum Kind
+          {
+            paleowattmeter,
+            paleopiezometer,
+            pinned_grain_damage
+          };
+
+          /**
+           * This function translates an input string into the
+           * available enum options.
+           */
+          static
+          Kind
+          parse(const std::string &input)
+          {
+            if (input == "paleowattmeter")
+              return Formulation::paleowattmeter;
+            else if (input == "paleopiezometer")
+              return Formulation::paleopiezometer;
+            else if (input == "pinned grain damage")
+              return Formulation::pinned_grain_damage;
+            else
+              AssertThrow(false, ExcNotImplemented());
+
+            return Formulation::Kind();
+          }
+        };
+
+        /**
+         * A variable that records the formulation of how to evolve grain size.
+         * See the type of this variable for a description of available options.
+        */
+        typename Formulation::Kind grain_size_evolution_formulation;
+
+        /**
+        * This function returns the fraction of shear heating energy partitioned
+        * into grain damage using the implementation by Mulyukova and Bercovici (2018)
+        * Collapse of passive margins by lithospheric damage
+        * and plunging grain size. Earth and Planetary Science Letters, 484, 341-352.
+        */
+        double  compute_partitioning_fraction (const double temperature) const;
+
+        /**
+         * Parameters controlling the partitioning of energy
+         * into grain damage in the pinned state.
+         */
+        double grain_size_reduction_work_fraction_exponent;
+        double minimum_grain_size_reduction_work_fraction;
+        double maximum_grain_size_reduction_work_fraction;
+        double temperature_minimum_partitioning_power;
+        double temperature_maximum_partitioning_power;
+
+        /**
+         * Functions and parameters controlling conversion from interface roughness to grain size,
+         * used in pinned state formulation of grain damage. This conversion depends on the
+         * proportion of the two mineral phases.
+         *
+         * A detailed description of this approach can be found in Appendix H.1, in Equation (8) in
+         * the main manuscript, and in equation (F.28) of Bercovici, David, and Yanick Ricard (2012).
+         * Mechanisms for the generation of plate tectonics by two-phase grain-damage
+         * and pinning. Physics of the Earth and Planetary Interiors 202 (2012): 27-55.
+         */
+        double phase_distribution;
+
+        /**
+         * The factor used to convert roughness into the equivalent mean grain
+         * size for a given volume fraction of a mineral in the two-phase damage model.
+        */
+        double roughness_to_grain_size;
 
         /**
          * Parameters controlling the viscosity.
