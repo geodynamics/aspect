@@ -253,8 +253,8 @@ non-optimized normalized viscosity profiles (as in their Figure 4), and then
 optimize them based on observational data. During this optimization, the different
 layers that make up the profiles (usually lithosphere, upper mantle, transition
 zone, and lower mantle) are shifted left or right relative to each other.
-The figures that show these optizimed profiles in the paper represent them as
-piece-wise constant within 22 layers, and the profiles shown in Figures
+The figures that show these optimized profiles in the paper represent them as
+piece-wise constant values within 22 layers, and the profiles shown in Figures
 {numref}`fig:steinberger-viscosity1` and {numref}`fig:steinberger-viscosity2`
 are interpolations between these 22 layers. However, we can also represent
 the profile as a variation of the initial normalized viscosity profile, with
@@ -264,6 +264,9 @@ optimization. This viscosity profile is given in
 The image below illustrates the difference compared to
 [data/material-model/steinberger/radial-visc-simple.txt](https://www.github.com/geodynamics/aspect/blob/main/data/material-model/steinberger/radial-visc-simple.txt), the profile based
 on interpolation of the discrete layers.
+The profile with the continuously varying viscosity within 4 layers is the more faithful
+representation of the results of {cite:t}`steinberger:calderwood:2006`, and we therefore
+recommend its use in models that use their viscosity profile.
 
 ```{figure-md} fig:steinberger-viscosity3
 <img src="comparison.svg" style="width:48.0%" />
