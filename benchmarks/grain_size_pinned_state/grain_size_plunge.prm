@@ -3,6 +3,9 @@
 # from Mulyukova and Bercovici (2018) at constant
 # temperature and stress in their Figure 4.
 
+# The output can be compared to the analytical solution computed in the
+# grain_size_plunge.ipynb notebook located in the same folder as this input file.
+
 set Dimension                              = 2
 set End time                               = 1e7
 set Output directory                       = output-grain_size_plunge
