@@ -1,0 +1,41 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 768 (on 5 levels)
+Number of degrees of freedom: 13,637 (6,402+833+3,201+3,201)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Copying properties into prescribed compositional field density_field... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 274+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-steinberger_continuous_viscosity/solution/solution-00000
+     RMS, max velocity:                  0.00747 m/year, 0.0332 m/year
+     Temperature min/avg/max:            273 K, 2045 K, 3773 K
+     Heat fluxes through boundary parts: -3.307e+05 W, 4.179e+05 W, 5.93e+04 W, -5.93e+04 W
+
+*** Timestep 1:  t=2e+06 years, dt=2e+06 years
+   Solving temperature system... 8 iterations.
+   Copying properties into prescribed compositional field density_field... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 167+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-steinberger_continuous_viscosity/solution/solution-00001
+     RMS, max velocity:                  0.00758 m/year, 0.0336 m/year
+     Temperature min/avg/max:            273 K, 2044 K, 3773 K
+     Heat fluxes through boundary parts: -3.643e+05 W, 5.282e+05 W, 3.16e+04 W, -3.16e+04 W
+
+Termination requested by criterion: end time
+
+
++------------------------------------------------+------------+------------+
++------------------------------------+-----------+------------+------------+
++------------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
