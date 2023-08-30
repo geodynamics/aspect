@@ -277,6 +277,14 @@ namespace aspect
         double maximum_conductivity;
 
         /**
+         * Compositional prefactors with which to multiply the reference viscosity.
+         * Volume fractions are used to weight the prefactors according to the
+         * assigned viscosity averaging scheme.
+         */
+        std::vector<double> viscosity_prefactors;
+        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging_scheme;
+
+        /**
          * Information about lateral temperature averages.
          */
         std::vector<double> average_temperature;

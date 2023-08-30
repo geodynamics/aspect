@@ -1,0 +1,6 @@
+New: The steinberger material model now allows the
+viscosities of different materials to differ from
+the reference viscosity by a constant factor
+via the parameter Composition viscosity prefactors.
+<br>
+(Poulami Roy and Bob Myhill, 2023/08/14)
