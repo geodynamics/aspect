@@ -19,7 +19,7 @@ os.chdir(os.path.dirname(__file__))
 
 # Add the ASPECT root directory to the path so we can import from the aspect_data module
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-from contrib.python.aspect_data import read_statistics
+from contrib.python.scripts.aspect_data import read_statistics
 
 # Define the cases and refinements that will appear in the output
 cases = ["1a", "1b", "1c", "2a", "2b"]
@@ -161,9 +161,9 @@ y = 10 * x
 y2 = 5 * x*x
 y3 = 0.1 * x*x*x
 
-ax[1].plot(x,y, label='$x$', linestyle='--', color='grey')
-ax[1].plot(x,y2, label='$x^2$', linestyle='-.', color='grey')
-ax[1].plot(x,y3, label='$x^3$', linestyle=':', color='grey')
+ax[1].plot(x,y, label='$h$', linestyle='--', color='grey')
+ax[1].plot(x,y2, label='$h^2$', linestyle='-.', color='grey')
+ax[1].plot(x,y3, label='$h^3$', linestyle=':', color='grey')
 
 # Prettify image
 ax[1].set_xscale('log')
