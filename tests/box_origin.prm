@@ -9,13 +9,14 @@ set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 subsection Boundary temperature model
-  set List of model names = box
+  set List of model names = box # Test comment
 end
 
 
 
 subsection Gravity model
-  set Model name = vertical
+  #test comment3
+  set Model name = vertical#test comment2
 end
 
 
