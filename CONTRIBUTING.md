@@ -1,10 +1,12 @@
 # Contributing to ASPECT
+
 ASPECT is a community project that lives by the participation of its
 members — i.e., including you! It is our goal to build an inclusive
 and participatory community so we are happy that you are interested in
-participating! 
+participating!
 
 ## Getting started with git and GitHub
+
 If you are new to using git or the GitHub platform you may find it
 helpful to review [video lecture
 32.8](http://www.math.colostate.edu/~bangerth/videos.676.32.8.html), which
@@ -14,24 +16,25 @@ guide on the process of contributing to an open-source project
 [here](https://opensource.guide/how-to-contribute/).
 
 ## Asking and answering questions about ASPECT
-For questions about ASPECT on all levels, please use the 
-[ASPECT forum](https://community.geodynamics.org/c/aspect). 
-Archived discussions from the inactive aspect-devel mailing list can be downloaded 
+
+For questions about ASPECT on all levels, please use the
+[ASPECT forum](https://community.geodynamics.org/c/aspect).
+Archived discussions from the inactive aspect-devel mailing list can be downloaded
 at [aspect-devel archives](http://lists.geodynamics.org/pipermail/aspect-devel).
 
 ## Bug reports
+
 It is a great help to the community if you report any bugs that you
 may find. We keep track of all open issues related to ASPECT
-[here](https://github.com/geodynamics/aspect/issues). 
+[here](https://github.com/geodynamics/aspect/issues).
 
 Please follow these simple instructions before opening a new bug report:
 
 - Do a quick search in the list of open and closed issues for a duplicate of
   your issue.
 - Do a google search in the archived mailing list discussions for a
-  duplicate of your issue by searching for 
-
-  `your search term site:http://lists.geodynamics.org/pipermail/aspect-devel/`
+  duplicate of your issue by searching for
+  `your search term site:https://geodynamics.org/pipermail/aspect-devel/`
 - If you did not find an answer, open a new
   [issue](https://github.com/geodynamics/aspect/issues/new) and explain your
   problem in as much detail as possible.
@@ -43,6 +46,7 @@ Please follow these simple instructions before opening a new bug report:
     how to reproduce it.
 
 ## Making ASPECT better
+
 ASPECT is a community project, and we are encouraging all kinds of
 contributions. Obvious candidates are implementations of new plugins as discussed in
 the manual, since they are typically self-contained and do not
@@ -60,6 +64,7 @@ planned, or that conflicts with other plans.
 ### Opening pull requests
 
 To make a change to ASPECT you should:
+
 - Create a
 [fork](https://guides.github.com/activities/forking/#fork) (through GitHub) of
 the code base.
@@ -68,7 +73,7 @@ the code base.
 feature branch) on which you do your modifications.
 - You can propose that your branch be merged into the ASPECT
 code by opening a [pull request](https://guides.github.com/introduction/flow/).
-This will give others a chance to review your code. 
+This will give others a chance to review your code.
 
 We follow the philosophy that no pull request (independent of the author) is
 merged without a review from one other member of the community, and approval of
@@ -90,19 +95,21 @@ not sure what to do.
 ### Coding conventions
 
 Since ASPECT is a fairly large project with lots of contributors we
-use a set of [coding
-conventions](https://www.dealii.org/developer/doxygen/deal.II/CodingConventions.html)
-equal to those used by <a href="http://www.dealii.org">deal.II</a>
+use a set of
+[coding conventions](https://www.dealii.org/developer/doxygen/deal.II/CodingConventions.html)
+equal to those used by [deal.II](http://www.dealii.org)
 upon which ASPECT is based, so as to keep the style of the source code
 consistent. This convention essentially consists of using
 [astyle](http://astyle.sourceforge.net/astyle.html) v.2.04 with a
-[style file](contrib/utilities/astyle.rc) for indentation, CamelCase for classes and
+[style file](https://github.com/geodynamics/aspect/blob/main/contrib/utilities/astyle.rc)
+for indentation, CamelCase for classes and
 namespaces, and lower_case_names_with_underscores for everything else. If you
 are new to the project then we will work with you to ensure your contributions
 are formatted with this style, so please do not think of it as a road block if
 you would like to contribute some code.
 
 ### Installing astyle
+
 To correctly indent the code in ASPECT you can use `make indent` or `ninja indent`
 depending on the build system you are using. The indenting script needs version 2.04 astyle.
 If you installed deal.II through candi, the correct astyle may already on your system and in your path.
@@ -120,7 +127,8 @@ If your new pull request creates a change that is noticeable to ASPECT users,
 please add an entry to our
 [changelog](http://aspect.geodynamics.org/doc/doxygen/changes_current.html). To
 add such an entry, make a copy of one of the files in the
-[doc/modules/changes/](doc/modules/changes/) folder and modify it to explain
+[doc/modules/changes/](https://github.com/geodynamics/aspect/tree/main/doc/modules/changes)
+folder and modify it to explain
 your change. The name of the file consists of the date of the change
 (approximately) and the name of the author. Start the file with a tag
 (added/changed/fixed/removed) that explains the nature of your change and
@@ -132,6 +140,7 @@ files, this ensures you will get credit for your work.
 The ASPECT community is grateful for every contribution! But, beyond
 this gratitude, there are also several *formal*
 ways in which your contribution will be acknowledged by the ASPECT community:
+
 - Every commit that is merged into the ASPECT repository makes you part of
   the growing group of ASPECT
   [contributors](https://github.com/geodynamics/aspect/graphs/contributors).
@@ -142,8 +151,9 @@ ways in which your contribution will be acknowledged by the ASPECT community:
   [changelog](http://aspect.geodynamics.org/doc/doxygen/changes_current.html)
   are selected to generate our release announcements. Additionally, all entries
   remain available for all previous releases of ASPECT inside the
-  [repository](doc/modules/) and on our website (under "Development"), which
-  documents the functionality that you contributed to ASPECT.
+  [repository](https://github.com/geodynamics/aspect/tree/main/doc/modules)
+  and on our website (under "Development"), which documents the functionality
+  that you contributed to ASPECT.
 - If you contributed a significant part of the manual (such as a new cookbook,
   benchmark, or subsection), you will be listed as one of the contributing
   authors of the manual.
@@ -159,10 +169,13 @@ ways in which your contribution will be acknowledged by the ASPECT community:
   - Regular and active contributions to ASPECT for more than one year,
     not restricted to user meetings.
 
-  The group of current Principal Developers is listed in the [AUTHORS](AUTHORS.md)
+  The group of current Principal Developers is listed in the
+  [AUTHORS.md](https://github.com/geodynamics/aspect/blob/main/AUTHORS.md)
   file in the main repository.
 
 ## License
-ASPECT is published under the [GPL v2 or newer](LICENSE); while you
-will retain copyright on your contributions, all changes to the code
+
+ASPECT is published under the
+[GPL v2 or newer](https://github.com/geodynamics/aspect/blob/main/LICENSE);
+while you will retain copyright on your contributions, all changes to the code
 must be provided under this common license.

@@ -55,7 +55,6 @@ Taken from {cite:t}`matsumoto:tomoda:1983`.
 6 | $10^{22}$ | $10^{19}$ | $800\times 140$ |
 ```
 
-
 Rather interestingly the model is built in such a way that the
 lithostatic pressure is uniform at the bottom of the domain.
 Models are run for 50 Myr.
