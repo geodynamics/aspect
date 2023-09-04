@@ -18,21 +18,11 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/postprocess/interface.h>
-#include <aspect/material_model/simple.h>
-#include <aspect/boundary_temperature/interface.h>
+#include <aspect/global.h>
+
+#include <aspect/material_model/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/global.h>
-#include <aspect/geometry_model/box.h>
-
-#include <deal.II/dofs/dof_tools.h>
-#include <deal.II/numerics/data_out.h>
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/base/function_lib.h>
-#include <deal.II/numerics/error_estimator.h>
-#include <deal.II/numerics/vector_tools.h>
-
 
 
 namespace aspect

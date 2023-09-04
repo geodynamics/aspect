@@ -68,13 +68,8 @@ subsection Material model
   subsection Nondimensional model
     set Di                      = 0.0
     set Ra                      = 1e4
-    # Reference density $\rho_0$. Units: \\si{\\kilogram\\per\\meter\\cubed}.
     set Reference density       = 1
-
-    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.
     set Reference specific heat = 1
-
-    # Whether to use the TALA instead of the ALA approximation.
     set Use TALA                = false
     set Viscosity temperature prefactor = 6.907755279
     set Viscosity depth prefactor = 0.0
@@ -104,7 +99,7 @@ subsection Formulation
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, heating statistics, heat flux densities, temperature ascii out
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, heat flux statistics gradient, heating statistics, heat flux densities, temperature ascii out
 subsection Visualization
     set Time between graphical output = 0.05
     set List of output variables      = material properties, adiabat, thermal conductivity, heating, artificial viscosity

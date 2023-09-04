@@ -19,17 +19,12 @@
 */
 #include <aspect/global.h>
 #include <aspect/utilities.h>
-
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/base/data_out_base.h>
-
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
-#include <deal.II/numerics/vector_tools.h>
 
-#include <math.h>
 #include <algorithm>
 
 
@@ -71,22 +66,20 @@ namespace aspect
 
       std::vector<double> temperature_values(n_q_points);
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-      for (; cell != endc; ++cell)
-        {
-          fe_values.reinit (cell);
-          fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(), temperature_values);
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit (cell);
+            fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(), temperature_values);
 
-          for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
-            {
-              entry e;
-              e.p = fe_values.quadrature_point(q);
-              e.t = temperature_values[q];
-              entries.push_back(e);
-            }
-        }
+            for (unsigned int q=0; q<fe_values.n_quadrature_points; ++q)
+              {
+                entry e;
+                e.p = fe_values.quadrature_point(q);
+                e.t = temperature_values[q];
+                entries.push_back(e);
+              }
+          }
 
       struct sorter
       {

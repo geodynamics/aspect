@@ -18,5 +18,5 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include "../benchmarks/king2dcompressible/plugin/code.cc"
+#include "../benchmarks/blankenbach/plugin/code.cc"
 #include "../benchmarks/blankenbach/plugin/heat_flux_statistics_gradient.cc"
