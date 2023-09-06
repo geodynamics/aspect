@@ -432,7 +432,7 @@ namespace aspect
         pressure.reinit (cell);
         pressure.gather_evaluate (src.block(1), EvaluationFlags::values);
 
-        for (unsigned int q=0; q<velocity.n_q_points; ++q)
+        for (const unsigned int q : velocity.quadrature_point_indices())
           {
             // Only update the viscosity if a Q1 projection is used.
             if (use_viscosity_at_quadrature_points)
@@ -526,7 +526,7 @@ namespace aspect
         velocity.reinit(face);
         velocity.gather_evaluate (src.block(0), EvaluationFlags::values);
 
-        for (unsigned int q = 0; q < velocity.n_q_points; ++q)
+        for (const unsigned int q : velocity.quadrature_point_indices())
           {
             const Tensor<1, dim, VectorizedArray<number>> phi_u_i = velocity.get_value(q);
             const auto &normal_vector = velocity.get_normal_vector(q);
@@ -623,7 +623,7 @@ namespace aspect
         pressure.reinit (cell);
         pressure.gather_evaluate (src, EvaluationFlags::values);
 
-        for (unsigned int q=0; q<pressure.n_q_points; ++q)
+        for (const unsigned int q : pressure.quadrature_point_indices())
           {
             // Only update the viscosity if a Q1 projection is used.
             if (use_viscosity_at_quadrature_points)
@@ -734,7 +734,7 @@ namespace aspect
 
             pressure.evaluate (EvaluationFlags::values);
 
-            for (unsigned int q=0; q<pressure.n_q_points; ++q)
+            for (const unsigned int q : pressure.quadrature_point_indices())
               {
                 // Only update the viscosity if a Q1 projection is used.
                 if (use_viscosity_at_quadrature_points)
@@ -810,7 +810,7 @@ namespace aspect
     const unsigned int cell = velocity.get_current_cell_index();
     VectorizedArray<number> viscosity_x_2 = 2.0*cell_data->viscosity(cell, 0);
 
-    for (unsigned int q=0; q<velocity.n_q_points; ++q)
+    for (const unsigned int q : velocity.quadrature_point_indices())
       {
         // Only update the viscosity if a Q1 projection is used.
         if (use_viscosity_at_quadrature_points)
@@ -1600,7 +1600,7 @@ namespace aspect
         pressure.read_dof_values_plain (u0.block(1));
         pressure.evaluate (EvaluationFlags::values);
 
-        for (unsigned int q=0; q<velocity.n_q_points; ++q)
+        for (const unsigned int q : velocity.quadrature_point_indices())
           {
             // Only update the viscosity if a Q1 projection is used.
             if (use_viscosity_at_quadrature_points)
@@ -1651,7 +1651,7 @@ namespace aspect
             velocity_boundary.read_dof_values_plain (u0.block(0));
             velocity_boundary.evaluate (EvaluationFlags::values);
 
-            for (unsigned int q = 0; q < velocity_boundary.n_q_points; ++q)
+            for (const unsigned int q : velocity_boundary.quadrature_point_indices())
               {
                 const Tensor<1, dim, VectorizedArray<double>> phi_u_i = velocity_boundary.get_value(q);
                 const auto &normal_vector = velocity_boundary.get_normal_vector(q);
