@@ -10,9 +10,9 @@ set Use years in output instead of seconds = true
 set End time                               = 1.0e5
 set Output directory                       = output-depth-dependent-3d-shell-list-simple
 
-
 subsection Material model
   set Model name = depth dependent
+
   subsection Depth dependent model
     set Base model = simple
     set Depth dependence method = List
@@ -27,7 +27,6 @@ subsection Material model
   end
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
 
@@ -37,45 +36,32 @@ subsection Geometry model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = inner
-end
-
-subsection Boundary velocity model
   set Tangential velocity boundary indicators = outer
 end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = inner, outer
-end
-
-
-subsection Boundary temperature model
   set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 1973
     set Outer temperature = 973
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1473
   end
 end
 
-
 subsection Gravity model
   set Model name = ascii data
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 0
@@ -84,7 +70,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, depth average
 
@@ -92,7 +77,6 @@ subsection Postprocess
     set Time between graphical output = 1.0e6
   end
 end
-
 
 subsection Checkpointing
   set Steps between checkpoint = 50

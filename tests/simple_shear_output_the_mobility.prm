@@ -37,6 +37,7 @@ set Output directory = simple_shear_output_the_mobility
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent  = 1.0
     set Y extent  = 1.0
@@ -46,6 +47,7 @@ end
 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = bottom:function, top:function
+
   subsection Function
     set Function expression = if (y < 0.5, -1, 1); 0
   end
@@ -53,6 +55,7 @@ end
 
 subsection Material model
   set Model name = finite strain
+
   subsection Simple model
     set Reference density             = 1010
     set Viscosity                     = 1e2
@@ -62,6 +65,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10
   end
@@ -78,6 +82,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 1.0;0.0;0.0;1.0
   end
@@ -88,6 +93,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
@@ -101,8 +107,6 @@ subsection Mesh refinement
   set Initial global refinement          = 3
   set Time steps between mesh refinement = 0
 end
-
-
 
 ############### Parameters describing what to do with the solution
 
@@ -121,14 +125,13 @@ subsection Postprocess
     set Time between data output = 0.05
     set Data output format = vtu
     set List of particle properties = integrated strain
-
     set Particle generator name = ascii file
+
     subsection Generator
       subsection Ascii file
         set Data directory = $ASPECT_SOURCE_DIR/benchmarks/finite_strain/
         set Data file name = simple_shear_particle.dat
       end
-
     end
   end
 end

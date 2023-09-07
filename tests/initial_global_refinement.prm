@@ -15,15 +15,14 @@ set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Output directory                       = refine
 
-
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = 0, 1
 end
 
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -38,11 +37,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = perturbed box
 end
-
 
 subsection Material model
   set Model name = simple
@@ -57,18 +54,19 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement = 4
   set Initial adaptive refinement = 0
   set Time steps between mesh refinement = 0
   set Strategy = minimum refinement function, maximum refinement function
   set Minimum refinement level = 0
+
   subsection Minimum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y
     set Function expression = if( y>=0.751 , 4, if (y>=0.251, 2, 0))
   end
+
   subsection Maximum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y
@@ -76,19 +74,8 @@ subsection Mesh refinement
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0, 1
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 1
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0, 2, 3
 end
 

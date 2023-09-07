@@ -1,15 +1,11 @@
 # Test for vertical heat flux visualization postprocessor
 
 set Dimension                              = 2
-
 set Use years in output instead of seconds = false
 set End time                               = 0.0
 set Output directory                       = output
-
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
-
 
 subsection Geometry model
   set Model name = box
@@ -19,7 +15,6 @@ subsection Geometry model
     set Y extent = 1
   end
 end
-
 
 subsection Initial temperature model
   set Model name = function
@@ -31,9 +26,9 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = bottom, top
 
   subsection Box
     set Bottom temperature = 1
@@ -43,19 +38,9 @@ subsection Boundary temperature model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
-
 
 subsection Gravity model
   set Model name = vertical
@@ -64,7 +49,6 @@ subsection Gravity model
     set Magnitude = 1e14   # = Ra / Thermal expansion coefficient
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -79,13 +63,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement                = 4
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
-
 
 # add vertical heat flux to visualization postprocessor
 subsection Postprocess

@@ -9,12 +9,9 @@ subsection Geometry model
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2, 3
+  set List of model names = initial temperature
 end
 
 subsection Boundary velocity model
@@ -69,10 +66,6 @@ subsection Material model
     set Reference temperature = 293
     set Minimum strain rate = 5e-19                             ## Value used in paper is 1.4e-20
   end
-end
-
-subsection Boundary temperature model
-  set List of model names = initial temperature
 end
 
 subsection Boundary composition model

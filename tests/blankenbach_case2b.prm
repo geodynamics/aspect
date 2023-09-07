@@ -7,6 +7,7 @@ set CFL number = 5.0
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names      = x,z
     set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1, ratio=2.5

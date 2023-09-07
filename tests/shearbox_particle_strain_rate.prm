@@ -1,6 +1,5 @@
 # A description of convection in a 3d box. See the manual for more information.
 set CFL number = 0.1
-
 set Timing output frequency = 5000
 
 # At the top, we define the number of space dimensions we would like to
@@ -13,16 +12,14 @@ set Dimension                              = 3
 set Use years in output instead of seconds = false
 set End time                               = 0.001 #100. #00.0 #0.0125 #5.0
 set Nonlinear solver scheme = single Advection, no Stokes
-
 set Output directory  = test_shearbox3d
+
 # Then there are variables that describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
 # at the surface of the domain (for the current geometry, the
 # surface is defined as the top boundary).
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
-
-
 
 # Then come a number of sections that deal with the setup
 # of the problem to solve. The first one deals with the
@@ -45,7 +42,6 @@ subsection Geometry model
   end
 end
 
-
 # The next section deals with the initial conditions for the
 # temperature (there are no initial conditions for the
 # velocity variable since the velocity is assumed to always
@@ -63,7 +59,6 @@ subsection Initial temperature model
     set Function expression = 1 ## Annotation: Temperature function
   end
 end
-
 
 # Then follows a section that describes the boundary conditions for the
 # temperature. The model we choose is called 'box' and allows to set a constant
@@ -85,7 +80,6 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Boundary velocity model
   subsection Function
     set Variable names = x,y,z,t
@@ -95,11 +89,11 @@ end
 
 subsection Prescribed Stokes solution
   set Model name = function
+
   subsection Velocity function
     set Variable names = x,y,z,t
     set Function expression = z;0;0; ## Annotation: set velocity condition
   end
-
 end
 
 # The following two sections describe first the
@@ -115,7 +109,6 @@ subsection Gravity model
   end
 end
 
-
 subsection Material model
   set Model name = simple # default:
 
@@ -129,7 +122,6 @@ subsection Material model
   end
 end
 
-
 # The settings above all pertain to the description of the
 # continuous partial differential equations we want to solve.
 # The following section deals with the discretization of
@@ -139,12 +131,12 @@ end
 subsection Mesh refinement
   set Initial global refinement                = 3
   set Initial adaptive refinement              = 0
-#  set Time steps between mesh refinement       = 5
-#  set Strategy = strain rate
 
-#  set Additional refinement times              = 0.003
+  #  set Time steps between mesh refinement       = 5
+  #  set Strategy = strain rate
+
+  #  set Additional refinement times              = 0.003
 end
-
 
 # The final part is to specify what ASPECT should do with the
 # solution once computed at the end of every time step. The
@@ -163,21 +155,22 @@ subsection Postprocess
     set Time between graphical output = 0.001 #0.024999
     set List of output variables = strain rate tensor
   end
+
   subsection Particles
     set Number of particles        = 10 #0
     set Time between data output = 0.001 #0.02499999999999
     set Data output format       = vtu, ascii
     set List of particle properties =  integrated strain invariant, strain rate
     set Particle generator name = ascii file
+
     subsection Generator
       subsection Ascii file
-        set  Data directory = $ASPECT_SOURCE_DIR/data/particle/generator/ascii/
+        set Data directory = $ASPECT_SOURCE_DIR/data/particle/generator/ascii/
         set Data file name = shearbox_particle_strain_rate.dat
       end
     end
   end
 end
-
 
 subsection Checkpointing
   # The number of timesteps between performing checkpoints. If 0 and time
@@ -185,7 +178,6 @@ subsection Checkpointing
   # Units: None.
   #set Steps between checkpoint = 50
 end
-
 
 subsection Solver parameters
   set Temperature solver tolerance = 1e-10

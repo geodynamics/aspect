@@ -21,6 +21,7 @@ subsection Solver parameters
     set Linear solver tolerance = 1e-7
     set Number of cheap Stokes solver steps = 0
   end
+
   subsection Newton solver parameters
     set Max Newton line search iterations        = 5
     set Max pre-Newton nonlinear iterations      = 200
@@ -34,7 +35,6 @@ subsection Solver parameters
     set Use Eisenstat Walker method for Picard iterations = true
   end
 end
-
 
 # Model geometry (100x100 km, initial 50 km spacing)
 subsection Geometry model
@@ -67,11 +67,11 @@ subsection Formulation
   set Enable elasticity = true
 end
 
-
 # Velocity boundary conditions (5e-9 m/s on each boundary)
 # The imposed velocity produces a background strain-rate
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left x: function, right x:function, top y: function, bottom y: function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = vel=0.15778463
@@ -89,6 +89,7 @@ end
 # Spatial domain of different compositional fields
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  =
@@ -114,6 +115,7 @@ end
 # Temperature initial conditions (isothermal)
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 293
   end
@@ -122,6 +124,7 @@ end
 # Gravity model
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0.
   end
@@ -129,56 +132,44 @@ end
 
 # Material model
 subsection Material model
-
   set Material averaging = none
-
   set Model name = visco plastic
 
   subsection Visco Plastic
-
     set Densities                   = 2700
     set Reference strain rate       = 1.e-13
     set Maximum viscosity           = 1.e23
     set Minimum viscosity           = 1.e17
-
     set Prefactors for dislocation creep          = 5e-24, 1e-50, 1e-50, 1e-50, 5e-24, 5.e-18, 5e-18
     set Stress exponents for dislocation creep    = 1.0
     set Activation energies for dislocation creep = 0.
     set Activation volumes for dislocation creep  = 0.
-
     set Elastic shear moduli        = 1e50
     set Use fixed elastic time step = false
     set Fixed elastic time step     = 5e3
     set Viscosity averaging scheme  = harmonic
-
     set Angles of internal friction = 37., 0., 0., 0., 37., 0., 0.
     set Cohesions                   = 100.e6, 1.e50, 1.e50, 1.e50, 100.e6, 10.e6, 10.e6
-
   end
-
 end
 
 # Post processing
 subsection Postprocess
   set List of postprocessors = basic statistics, composition statistics, velocity statistics, visualization
+  set Run postprocessors on nonlinear iterations = true
 
   subsection Visualization
     set List of output variables = material properties, strain rate, named additional outputs
+    set Time between graphical output = 0e3
+    set Interpolate output = true
 
     subsection Material properties
       set List of material properties = density, viscosity
     end
-
-    set Time between graphical output = 0e3
-    set Interpolate output = true
-
   end
-
-  set Run postprocessors on nonlinear iterations = true
-
 end
 
 # Termination criteria
 subsection Termination criteria
- set Termination criteria = end time
+  set Termination criteria = end time
 end

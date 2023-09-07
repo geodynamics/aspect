@@ -7,23 +7,23 @@
 # this is so
 
 set Dimension = 2
-
 set CFL number                             = 1.0
 set End time                               = 1
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false
-
 set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Max nonlinear iterations               = 5
 
-
-
+# no gravity. the pressure will equal just the dynamic component
 subsection Gravity model
   set Model name = vertical
-end
 
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
 
 subsection Geometry model
   set Model name = box
@@ -35,24 +35,14 @@ subsection Geometry model
   end
 end
 
-
 # temperature field doesn't matter. set it to zero
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
 end
-
-
-# no gravity. the pressure will equal just the dynamic component
-subsection Gravity model
-  set Model name = vertical
-  subsection Vertical
-    set Magnitude = 10.0
-  end
-end
-
 
 subsection Material model
   set Model name = no adiabatic heating
@@ -67,26 +57,15 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 4
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 1
-end
-
-subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 2: function
-end
 
-subsection Boundary velocity model
   subsection Function
     set Variable names = x,y
     set Function expression = 0;1

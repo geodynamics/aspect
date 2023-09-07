@@ -2,6 +2,7 @@ set Dimension = 2
 
 include $ASPECT_SOURCE_DIR/benchmarks/solcx/compositional_fields/solcx_particles.prm
 
+
 subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 1

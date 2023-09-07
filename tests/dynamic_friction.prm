@@ -26,6 +26,7 @@ end
 
 subsection Mesh deformation
   set Mesh deformation boundary indicators        = top: free surface
+
   # Advecting the free surface vertically rather than
   # in the surface normal direction can result in a
   # more stable mesh when the deformation is large
@@ -36,6 +37,7 @@ end
 
 subsection Material model
   set Model name = visco plastic
+
   subsection Visco Plastic
     set Densities                  = 2800
     set Thermal expansivities      = 4e-5
@@ -68,6 +70,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end
@@ -75,25 +78,23 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = if( x > 40.e3 & x < 41.e3 & y < 0.4e3, 0, 1)
   end
 end
 
-
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left: function, right:function
   set Tangential velocity boundary indicators = bottom
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = cm=0.01, year=1
     set Function expression =  if (x==0 , 1*cm/year, if (x==80.e3, -1*cm/year, 0)) ; 0
   end
 end
-
-
-
 
 ############### Parameters describing the temperature field
 subsection Initial temperature model
@@ -103,7 +104,6 @@ subsection Initial temperature model
     set Function expression = 1
   end
 end
-
 
 ############### Parameters describing the discretization
 # The following parameters describe how often we want to refine
@@ -120,7 +120,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 1
   set Run postprocessors on initial refinement = true
 end
-
 
 ############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to

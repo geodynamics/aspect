@@ -10,7 +10,6 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-
 subsection Boundary temperature model
   set List of model names = spherical constant
   set Fixed temperature boundary indicators = 0, 1
@@ -21,17 +20,17 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude = 9.81
   end
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Inner radius = 5711000
     set Outer radius = 6371000
@@ -42,17 +41,17 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1500.0
   end
 end
 
-
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Reference density             = 3300
     set Reference specific heat       = 1250
@@ -63,21 +62,19 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
 end
-
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0
   set Zero velocity boundary indicators       = 1
 end
 
-
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics, temperature statistics, heat flux statistics
+
   subsection Visualization
     set Output format       = gnuplot
     set Interpolate output = false

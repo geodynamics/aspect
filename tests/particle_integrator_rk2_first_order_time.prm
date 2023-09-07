@@ -8,8 +8,8 @@ set Use years in output instead of seconds = false
 
 include $ASPECT_SOURCE_DIR/tests/particle_integrator_euler.prm
 
-subsection Postprocess
 
+subsection Postprocess
   subsection Particles
     set Data output format = gnuplot
     set Integration scheme = rk2

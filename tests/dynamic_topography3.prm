@@ -5,15 +5,15 @@ set Start time                             = 0
 set End time                               = 0
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-
 subsection Boundary temperature model
   set List of model names = spherical constant
+  set Fixed temperature boundary indicators   = inner, outer
+
   subsection Spherical constant
     set Inner temperature = 1600
     set Outer temperature = 1600
   end
 end
-
 
 subsection Gravity model
   set Model name = radial constant
@@ -23,18 +23,18 @@ subsection Gravity model
   end
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Inner radius  = 3480000
     set Outer radius  = 6336000
   end
 end
 
-
 subsection Initial temperature model
   set Model name = harmonic perturbation
+
   subsection Harmonic perturbation
     set Vertical wave number = 2
     set Lateral wave number one = 3
@@ -43,7 +43,6 @@ subsection Initial temperature model
     set Reference temperature = 1600
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -58,26 +57,15 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
   set Strategy                           = temperature
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = inner,outer
 end
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = inner, outer
-end
-
 
 subsection Postprocess
   set List of postprocessors = dynamic topography, visualization
@@ -88,5 +76,4 @@ subsection Postprocess
     set List of output variables = dynamic topography
     set Output format                 = gnuplot
   end
-
 end

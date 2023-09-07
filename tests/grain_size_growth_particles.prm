@@ -27,6 +27,7 @@ set End time                               = 50000
 
 include $ASPECT_SOURCE_DIR/tests/grain_size_growth.prm
 
+
 subsection Postprocess
   set List of postprocessors = composition statistics,temperature statistics, velocity statistics, particles
 

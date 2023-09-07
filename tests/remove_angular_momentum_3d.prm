@@ -2,16 +2,13 @@
 # that we solve for the velocity solution and remove the angular momentum.
 
 set Dimension                              = 3
-
 set Use years in output instead of seconds = false
 set End time                               = 1
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-
 subsection Nullspace removal
   set Remove nullspace = angular momentum
 end
-
 
 subsection Geometry model
   set Model name = sphere
@@ -20,7 +17,6 @@ subsection Geometry model
     set Radius = 1
   end
 end
-
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = top
@@ -34,7 +30,6 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Gravity model
   set Model name = radial constant
 
@@ -42,7 +37,6 @@ subsection Gravity model
     set Magnitude = 1
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -57,13 +51,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement                = 2
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, rotation statistics

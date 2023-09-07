@@ -11,7 +11,6 @@ set Dimension                              = 3
 set Use years in output instead of seconds = true
 set End time                               = 0
 
-
 ############### Parameters describing the model
 # We create a non-coordinate-parallel ellipsoidal chunk with
 # a large eccentricity (0.5).
@@ -20,43 +19,32 @@ set End time                               = 0
 
 subsection Geometry model
   set Model name = ellipsoidal chunk
-    subsection Ellipsoidal chunk
-        set NE corner = 5:30
-        set NW corner = 0:0
-        set SW corner = 10:-10
-        set Depth = 3000000
-        set Eccentricity = 0.5
-        set East-West subdivisions = 1
-        set North-South subdivisions = 2
-        set Depth subdivisions = 3
-   end
+
+  subsection Ellipsoidal chunk
+    set NE corner = 5:30
+    set NW corner = 0:0
+    set SW corner = 10:-10
+    set Depth = 3000000
+    set Eccentricity = 0.5
+    set East-West subdivisions = 1
+    set North-South subdivisions = 2
+    set Depth subdivisions = 3
+  end
 end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = inner
-end
-
-subsection Boundary velocity model
   set Tangential velocity boundary indicators = outer,north,south,east,west
 end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = inner, outer, east, west, north, south
-end
-
-
-subsection Boundary temperature model
   set List of model names = constant
+
   subsection Constant
     set Boundary indicator to temperature mappings = west: 0, east: 1, south: 2, north: 3, inner: 4, outer:5
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -69,11 +57,11 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1.473e3
   end
 end
-
 
 subsection Gravity model
   set Model name = ascii data
@@ -95,6 +83,5 @@ subsection Postprocess
     set Interpolate output = false
     set List of output variables          = density
     set Output format                     = gnuplot
-
   end
 end

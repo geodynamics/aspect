@@ -4,7 +4,6 @@
 set Use years in output instead of seconds = false
 set End time                               = 2e12
 set Maximum time step                      = 1e12
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 90
@@ -27,17 +26,15 @@ subsection Geometry model
   end
 end
 
-
 # We then choose a vertical gravity model and describe the
 # initial temperature with a vertical gradient.
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 1.42
   end
 end
-
-
 
 # The next section deals with the initial conditions for the
 # temperature (there are no initial conditions for the
@@ -54,12 +51,12 @@ subsection Initial temperature model
 end
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 0:function,1:function, 2:function,3:function
+
   subsection Function
     set Function expression = 0;0
   end
-  set Prescribed velocity boundary indicators = 0:function,1:function, 2:function,3:function
 end
-
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top
@@ -70,7 +67,6 @@ subsection Boundary heat flux model
   set Fixed heat flux boundary indicators = bottom
   set Model name = heatflux update
 end
-
 
 subsection Material model
   set Model name = simple
@@ -98,6 +94,7 @@ end
 # visualization.
 subsection Postprocess
   set List of postprocessors = temperature statistics, heat flux statistics, visualization
+
   subsection Visualization
     set Interpolate output = false
     set List of output variables      =  heat flux map

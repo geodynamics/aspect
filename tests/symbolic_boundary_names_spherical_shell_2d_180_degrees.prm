@@ -10,30 +10,26 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-
 subsection Boundary temperature model
   set List of model names = spherical constant
+  set Fixed temperature boundary indicators   = inner, outer
 end
-
-
 
 subsection Gravity model
   set Model name = radial constant
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Opening angle = 180
   end
 end
 
-
 subsection Initial temperature model
   set Model name = spherical hexagonal perturbation
 end
-
 
 subsection Material model
   set Model name = simpler
@@ -48,32 +44,18 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 3
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = inner, outer
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = inner, left
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = outer, right
 end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics
-
 
   subsection Visualization
     set Interpolate output = false

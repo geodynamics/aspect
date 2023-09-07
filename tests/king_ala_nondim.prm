@@ -15,7 +15,6 @@ subsection Discretization
   end
 end
 
-
 subsection Adiabatic conditions model
   set Model name = function
 
@@ -24,9 +23,7 @@ subsection Adiabatic conditions model
     set Function expression = 0.091*exp(depth*Di); gamma/Di*(exp(depth*Di/gamma)-1); exp(depth*Di/gamma)  # T,p,rho
     set Variable names      = depth
   end
-
 end
-
 
 # Then come a number of sections that deal with the setup
 # of the problem to solve. The first one deals with the
@@ -44,7 +41,6 @@ subsection Geometry model
     set Y extent = 1
   end
 end
-
 
 # The next section deals with the initial conditions for the
 # temperature (there are no initial conditions for the
@@ -66,7 +62,6 @@ subsection Initial temperature model
   end
 end
 
-
 # Then follows a section that describes the boundary conditions
 # for the temperature. The model we choose is called 'box' and
 # allows to set a constant temperature on each of the four sides
@@ -85,7 +80,6 @@ subsection Boundary temperature model
     set Right temperature  = 0
   end
 end
-
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
@@ -117,9 +111,9 @@ subsection Gravity model
   end
 end
 
-
 subsection Material model
   set Model name = nondimensional
+
   subsection Nondimensional model
     set Di                      = 0.25
     set Ra                      = 1e4
@@ -128,10 +122,7 @@ subsection Material model
     set Use TALA                = false
     set gamma                   = 1.0
   end
-
-
 end
-
 
 # The settings above all pertain to the description of the
 # continuous partial differential equations we want to solve.
@@ -147,7 +138,6 @@ subsection Mesh refinement
   set Refinement fraction                      = 1.0
   set Additional refinement times              = 0.35
 end
-
 
 # The final part is to specify what ASPECT should do with the
 # solution once computed at the end of every time step. The

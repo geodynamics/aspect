@@ -11,21 +11,18 @@ set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Pressure normalization                 = volume
 
-
-
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = 0, 1
 end
-
-
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0
   end
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -36,11 +33,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
 end
-
 
 subsection Material model
   set Model name = simple
@@ -55,30 +50,15 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 2
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0, 1
-end
-
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 3: function
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0, 1
-end
 
-subsection Boundary velocity model
   subsection Function
     set Variable names = x,z
     set Function expression = 0;x*(1-x)*z

@@ -4,6 +4,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/particle_periodic_boundaries.prm
 
+
 subsection Discretization
   set Use discontinuous composition discretization = true
 end
@@ -25,6 +26,7 @@ subsection Postprocess
     set Number of particles = 10000
     set Interpolation scheme = quadratic least squares
     set Update ghost particles = true
+
     subsection Interpolator
       subsection Quadratic least squares
         set Use quadratic least squares limiter = true

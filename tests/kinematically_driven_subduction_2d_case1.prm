@@ -9,16 +9,17 @@
 
 # 2D
 set Dimension                              = 2
+
 # Run for 0.1 My
 set Start time                             = 0
 set End time                               = 1.e5
 set CFL number                             = 0.5
 set Use years in output instead of seconds = true
+
 # Linear solver
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Output directory                       = output-Case1
 set Adiabatic surface temperature          = 0
-
 
 # We fix composition on the right boundary,
 # because we have inflow there.
@@ -27,14 +28,13 @@ subsection Boundary composition model
   set List of model names = initial composition
 end
 
-
 # We fix temperature on the top and bottom,
 # as well as on the right boundary because
 # we have inflow through the latter.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top, right
-
   set List of model names = box
+
   subsection Box
     set Bottom temperature = 0
     set Left temperature   = 0
@@ -63,12 +63,12 @@ subsection Material model
   subsection Multicomponent
     set Reference temperature         = 0.0
     set Viscosity averaging scheme    = maximum composition
+
     # OP, ML SP, crust SP
     set Viscosities                   = 1.e20, 1.e23, 1.e23, 1.e20
     set Densities                     = 3200.0, 3250.0, 3250.0, 3250.0
     set Thermal conductivities        = 1
   end
-
 end
 
 subsection Compositional fields
@@ -78,6 +78,7 @@ end
 
 subsection Initial composition model
   set List of model names = function
+
   subsection Function
     set Function constants  = Ax=1475600.0, Az=670000.0, \
                               Bx=1500000.0, Bz=670000.0, \
@@ -94,10 +95,8 @@ subsection Initial composition model
   end
 end
 
-
 subsection Discretization
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -111,11 +110,11 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end
 end
-
 
 # We ignore any temperature effects
 subsection Initial temperature model
@@ -148,14 +147,11 @@ subsection Mesh refinement
     set Function constants = vel=150e3, L=100e3, crust=10e3
     set Function expression = if(x<crust,8,if(x<L,7,if(x<vel,6,4)))
   end
-
 end
-
 
 subsection Formulation
   set Formulation = Boussinesq approximation
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, heating statistics, maximum depth of field, composition velocity statistics, viscous dissipation statistics
@@ -170,11 +166,9 @@ subsection Postprocess
   end
 end
 
-
 subsection Termination criteria
   set Termination criteria      = end time
 end
-
 
 subsection Solver parameters
   subsection Stokes solver parameters

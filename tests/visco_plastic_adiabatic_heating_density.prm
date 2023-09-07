@@ -35,6 +35,7 @@ end
 
 subsection Heating model
   set List of model names = shear heating, adiabatic heating
+
   subsection Adiabatic heating
     set Use simplified adiabatic heating = true
   end
@@ -43,6 +44,7 @@ end
 # Model geometry (100x100 km, 100 km spacing)
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent      = 100e3
     set Y extent      = 100e3
@@ -74,8 +76,8 @@ end
 # Material model
 subsection Material model
   set Model name = visco plastic
-  subsection Visco Plastic
 
+  subsection Visco Plastic
     # Since adiabatic heating is used, the reference temperature
     # specified below will be ignored and the density formulation
     # will use the adiabatic temperature.
@@ -95,6 +97,7 @@ end
 # Gravity model
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
@@ -103,6 +106,7 @@ end
 # Post processing
 subsection Postprocess
   set List of postprocessors = material statistics, temperature statistics, visualization
+
   subsection Visualization
     set Interpolate output = false
     set List of output variables = adiabat, density

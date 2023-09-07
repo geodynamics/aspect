@@ -18,6 +18,10 @@ set Use years in output instead of seconds = false
 
 subsection Gravity model
   set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1.0
+  end
 end
 
 subsection Geometry model
@@ -37,6 +41,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0.1 * sin(2*3.1416*x) * sin(2*3.1416*y)
   end
@@ -44,19 +49,11 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0.0; 0.0
   end
 end
-
-
-subsection Gravity model
-  set Model name = vertical
-  subsection Vertical
-    set Magnitude = 1.0
-  end
-end
-
 
 subsection Material model
   set Model name = prescribed field material
@@ -71,16 +68,10 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 4
 end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 1, 2, 3
@@ -91,7 +82,6 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
-
     set List of output variables      = density
     set Number of grouped files       = 0
     set Output format                 = vtu

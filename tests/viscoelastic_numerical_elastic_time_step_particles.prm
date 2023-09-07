@@ -11,6 +11,7 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
 
+
 #  Global parameters
 set End time                               = 2e3
 set Output directory                       = viscoelastic_numerical_elastic_time_step_particles
@@ -35,7 +36,6 @@ end
 
 # Material model
 subsection Material model
-
   set Model name = viscoelastic
 
   subsection Viscoelastic
@@ -46,12 +46,12 @@ subsection Material model
     set Fixed elastic time step     = 1e3
     set Viscosity averaging scheme  = harmonic
   end
-
 end
 
 # Post processing
 subsection Postprocess
   set List of postprocessors = basic statistics, composition statistics, particles
+
   subsection Particles
     set Number of particles = 12e3
     set Minimum particles per cell  = 25

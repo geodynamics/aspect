@@ -23,7 +23,6 @@ set Output directory                       = output
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
-
 # Then come a number of sections that deal with the setup
 # of the problem to solve. The first one deals with the
 # geometry of the domain within which we want to solve.
@@ -40,7 +39,6 @@ subsection Geometry model
     set Y extent = 1
   end
 end
-
 
 # The next section deals with the initial conditions for the
 # temperature (there are no initial conditions for the
@@ -62,7 +60,6 @@ subsection Initial temperature model
   end
 end
 
-
 # Then follows a section that describes the boundary conditions
 # for the temperature. The model we choose is called 'box' and
 # allows to set a constant temperature on each of the four sides
@@ -70,8 +67,14 @@ end
 # heated from below and cooled from above. (As will be seen
 # in the next section, the actual temperature prescribed here
 # at the left and right does not matter.)
+# We then also have to prescribe several other parts of the model such as
+# which boundaries actually carry a prescribed boundary temperature, whereas
+# all other parts of the boundary are insulated (i.e., no heat flux through
+# these boundaries; this is also often used to specify symmetry boundaries).
+
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = bottom, top
 
   subsection Box
     set Bottom temperature = 1
@@ -79,19 +82,6 @@ subsection Boundary temperature model
     set Right temperature  = 0
     set Top temperature    = 0
   end
-end
-
-
-# We then also have to prescribe several other parts of the model such as
-# which boundaries actually carry a prescribed boundary temperature, whereas
-# all other parts of the boundary are insulated (i.e., no heat flux through
-# these boundaries; this is also often used to specify symmetry boundaries).
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top
 end
 
 subsection Boundary velocity model
@@ -111,7 +101,6 @@ subsection Gravity model
   end
 end
 
-
 subsection Material model
   set Model name = simple
 
@@ -125,14 +114,12 @@ subsection Material model
   end
 end
 
-
 # We also have to specify that we want to use the Boussinesq
 # approximation (assuming the density in the temperature
 # equation to be constant, and incompressibility).
 subsection Formulation
   set Formulation = Boussinesq approximation
 end
-
 
 # The settings above all pertain to the description of the
 # continuous partial differential equations we want to solve.
@@ -145,7 +132,6 @@ subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
-
 
 # The final part is to specify what ASPECT should do with the
 # solution once computed at the end of every time step. The
@@ -167,7 +153,6 @@ subsection Postprocess
     set Number of grouped files = 1
   end
 end
-
 
 subsection Termination criteria
   set End step                  = 10

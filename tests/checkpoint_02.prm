@@ -16,16 +16,13 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-
 subsection Checkpointing
   set Steps between checkpoint = 5
 end
 
-
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -37,11 +34,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = perturbed box
 end
-
 
 subsection Material model
   set Model name = simple
@@ -56,35 +51,28 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 5
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 1
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0, 2, 3
 end
 
 subsection Postprocess
-  set List of postprocessors =depth average, visualization, composition statistics, temperature statistics, velocity statistics
- subsection Visualization
+  set List of postprocessors = depth average, visualization, composition statistics, temperature statistics, velocity statistics
+
+  subsection Visualization
     set Interpolate output = false
-     set Output format                 = gnuplot
+    set Output format                 = gnuplot
     set Time between graphical output = 1e6
- end
-subsection Depth average
- set Time between graphical output = 1e6
-end
+  end
+
+  subsection Depth average
+    set Time between graphical output = 1e6
+  end
 end
 
 subsection Termination criteria

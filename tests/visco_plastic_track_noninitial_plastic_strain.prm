@@ -17,6 +17,7 @@ end
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X repetitions = 10
     set Y repetitions = 10
@@ -32,32 +33,13 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
 # Boundary classifications (fixed T boundaries, prescribed velocity)
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top, left, right
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
-end
-
-# Velocity on boundaries characterized by functions
-subsection Boundary velocity model
-  subsection Function
-    set Variable names      = x,y
-    set Function constants  = m=0.0005, year=1
-    set Function expression = if (x<50e3 , -1*m/year, 1*m/year); if (y<50e3 , 1*m/year, -1*m/year);
-  end
-end
 
 # Temperature boundary and initial conditions
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
   set List of model names = box
+
   subsection Box
     set Bottom temperature = 273
     set Left temperature   = 273
@@ -65,8 +47,21 @@ subsection Boundary temperature model
     set Top temperature    = 273
   end
 end
+
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = m=0.0005, year=1
+    set Function expression = if (x<50e3 , -1*m/year, 1*m/year); if (y<50e3 , 1*m/year, -1*m/year);
+  end
+end
+
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 273
   end
@@ -81,6 +76,7 @@ end
 # We prescribe some initial strain at the center of the domain
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = if(x>=40e3 & x<=60e3 & y>=40.3e3& y<=60.e3, 0.2, 0); 0.0;
@@ -95,6 +91,7 @@ end
 # Material model (values for background material)
 subsection Material model
   set Model name = visco plastic
+
   subsection Visco Plastic
     set Reference strain rate = 1.e-16
     set Viscous flow law = dislocation
@@ -116,6 +113,7 @@ end
 # Gravity model
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
@@ -125,6 +123,7 @@ end
 # named additional outputs includes the weakened cohesions and friction angles
 subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics, visualization
+
   subsection Visualization
     set Interpolate output = false
     set List of output variables = viscosity, strain rate, named additional outputs

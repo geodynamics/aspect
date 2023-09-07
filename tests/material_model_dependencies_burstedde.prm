@@ -1,29 +1,25 @@
-# Evaluate the nonlinear dependencies of the material model used here
-
-subsection Material model
-  set Model name = BursteddeMaterial
-end
-subsection Postprocess
-  set List of postprocessors = material model dependencies
-end
-
-
 #############################
 # Otherwise use the setup of burstedde
 
 
 set Dimension                              = 3
-
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
-
 set Nonlinear solver scheme                = no Advection, iterated Stokes
-
 set Output directory                       = output
-
 set Pressure normalization                 = volume
 
+# Evaluate the nonlinear dependencies of the material model used here
+
+
+subsection Material model
+  set Model name = BursteddeMaterial
+end
+
+subsection Postprocess
+  set List of postprocessors = material model dependencies
+end
 
 ############### Parameters describing the model
 # The setup is a 3d unit cube.
@@ -43,27 +39,18 @@ subsection Geometry model
 end
 
 #Boundary conditions
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0:BursteddeBoundary, 1: BursteddeBoundary, 2: BursteddeBoundary, 3: BursteddeBoundary, 4: BursteddeBoundary, 5: BursteddeBoundary
 end
-
-
-subsection Material model
-  set Model name = BursteddeMaterial
-end
-
 
 subsection Gravity model
   set Model name = BursteddeGravity
 end
 
 subsection Burstedde benchmark
-   #Viscosity parameter is beta
-   set Viscosity parameter             = 20
+  #Viscosity parameter is beta
+  set Viscosity parameter             = 20
 end
 
 ############### Parameters describing the temperature field
@@ -78,7 +65,6 @@ subsection Initial temperature model
   end
 end
 
-
 ############### Parameters describing the discretization
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
@@ -91,8 +77,6 @@ subsection Mesh refinement
   set Refinement fraction                = 0.2
   set Strategy                           = velocity
 end
-
-
 
 subsection Solver parameters
   subsection Stokes solver parameters

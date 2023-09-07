@@ -22,12 +22,12 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = 1.e-5; 0; 0;
   end
 end
-
 
 # Post processing
 # named additional outputs includes the weakened cohesions and friction angles

@@ -9,6 +9,7 @@ set End time  = 1e3
 # Significantly reduce resolution
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X repetitions = 15
     set Y repetitions = 10

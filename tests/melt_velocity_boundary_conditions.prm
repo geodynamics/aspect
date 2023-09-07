@@ -28,6 +28,7 @@ set Maximum time step                      = 1e4
 subsection Boundary temperature model
   set List of model names = constant
   set Fixed temperature boundary indicators   = 2,3
+
   subsection Constant
     set Boundary indicator to temperature mappings = 2:0,3:0
   end
@@ -35,6 +36,7 @@ end
 
 subsection Boundary fluid pressure model
   set Plugin name = density
+
   subsection Density
     set Density formulation = fluid density
   end
@@ -44,6 +46,7 @@ subsection Discretization
   set Stokes velocity polynomial degree       = 2
   set Temperature polynomial degree           = 2
   set Use locally conservative discretization = false
+
   subsection Stabilization parameters
     set alpha = 2
     set beta  = 0.078
@@ -51,9 +54,9 @@ subsection Discretization
   end
 end
 
-
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 500.e3
     set Y extent = 200.e3
@@ -62,26 +65,26 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression =  if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
   end
 end
 
-
 subsection Material model
   set Model name = melt free surface
+
   subsection Simple model
     set Reference density             = 3300
     set Reference specific heat       = 1250
@@ -91,7 +94,6 @@ subsection Material model
     set Viscosity                     = 1.e21
   end
 end
-
 
 subsection Mesh refinement
   set Additional refinement times        =
@@ -103,16 +105,8 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,3
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = 2
 end
 
@@ -127,6 +121,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = 0.02 * y/2.e5

@@ -10,11 +10,10 @@ set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 0
 set Start time                             = 0
-set End time                               = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
-
+set Adiabatic surface temperature = 1200
 
 ############ These parameters are of interest for this test: #########
 
@@ -31,9 +30,9 @@ subsection Geometry model
   end
 end
 
-set Adiabatic surface temperature = 1200
 subsection Initial temperature model
   set Model name = adiabatic
+
   subsection Adiabatic
     set Radius          = 400000.0
     set Amplitude       = 100
@@ -43,8 +42,8 @@ end
 
 subsection Boundary temperature model
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = inner, outer
 end
-
 
 ########################################################################
 
@@ -56,7 +55,6 @@ subsection Gravity model
     set Magnitude = 9.81
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -71,7 +69,6 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 3
   set Strategy                           = temperature
@@ -79,20 +76,8 @@ subsection Mesh refinement
   set Initial global refinement          = 0
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = inner, outer
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = inner, west, east
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = outer
 end
 

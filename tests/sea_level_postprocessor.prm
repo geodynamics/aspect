@@ -10,10 +10,11 @@ set Pressure normalization                 = no
 
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Inner radius = 3480.e3
     set Outer radius = 6371.e3
-  set Opening angle = 360
+    set Opening angle = 360
   end
 end
 
@@ -31,6 +32,7 @@ end
 
 subsection Mesh deformation
   set Mesh deformation boundary indicators = outer: free surface
+
   subsection Free surface
     set Surface velocity projection = normal
   end
@@ -51,6 +53,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y,z
     set Function constants  =
@@ -70,6 +73,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 293
   end
@@ -81,6 +85,7 @@ end
 
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude = 9.81
   end
@@ -88,20 +93,23 @@ end
 
 subsection Postprocess
   set List of postprocessors = basic statistics, composition statistics, temperature statistics, velocity statistics, topography, geoid, sea level
+
   subsection Topography
     set Output to file = true
   end
+
   subsection Geoid
-  set Include surface topography contribution = true
-  set Include CMB topography contribution = false
-  set Output data in geographical coordinates = true
-  set Maximum degree = 3
+    set Include surface topography contribution = true
+    set Include CMB topography contribution = false
+    set Output data in geographical coordinates = true
+    set Maximum degree = 3
   end
+
   subsection Sea level
     set Output to file = true
   end
 end
 
 subsection Termination criteria
- set Termination criteria = end time
+  set Termination criteria = end time
 end

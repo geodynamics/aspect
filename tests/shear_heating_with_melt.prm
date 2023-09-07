@@ -21,16 +21,12 @@ set Adiabatic surface temperature          = 1600
 set CFL number                             = 1.0
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 10
-
 set Dimension                              = 2
-
 set End time                               = 1e4
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
-
 set Use years in output instead of seconds = true
 set Use operator splitting                 = true
 
@@ -38,6 +34,10 @@ subsection Solver parameters
   subsection Operator splitting parameters
     set Reaction time step                     = 2e2
     set Reaction time steps per advection step = 10
+  end
+
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = false
   end
 end
 
@@ -55,9 +55,9 @@ subsection Compositional fields
   set Names of fields = porosity, peridotite
 end
 
-
 subsection Boundary temperature model
   set List of model names = function
+  set Fixed temperature boundary indicators   = 2
 
   subsection Initial temperature
     set Minimal temperature = 293
@@ -72,9 +72,13 @@ end
 
 subsection Boundary composition model
   set List of model names = initial composition
+  set Fixed composition boundary indicators   = 2
 end
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 2:function
+  set Tangential velocity boundary indicators = 0,1
+
   subsection Function
     set Function constants  = u0=1.5
     set Variable names      = x,z
@@ -90,26 +94,25 @@ subsection Geometry model
     set Y extent  = 300000
     set Y repetitions = 40
   end
-
 end
-
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
-
 end
-
 
 subsection Initial temperature model
   set Model name = adiabatic
+
   subsection Adiabatic
     set Age top boundary layer      = 5e9
     set Age bottom boundary layer   = 0.0
     set Amplitude                   = 0
     set Radius                      = 0
+
     subsection Function
       set Function expression       = 0;0
     end
@@ -118,6 +121,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function constants  = pi=3.1415926,a = 1e-6, b = 300000, c = 20000, d=0.0
     set Function expression = 0;0 #d + a * exp(-((x-b)*(x-b)+y*y)/(2*c*c)); d + a * exp(-((x-b)*(x-b)+y*y)/(2*c*c))
@@ -125,10 +129,9 @@ subsection Initial composition model
   end
 end
 
-
 subsection Material model
-
   set Model name = melt simple
+
   subsection Melt simple
     set Reference solid density = 3400
     set Reference melt density = 2776
@@ -151,11 +154,9 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Coarsening fraction                      = 0.00
   set Refinement fraction                      = 0.999
-
   set Initial adaptive refinement              = 1
   set Initial global refinement                = 0
   set Strategy                                 = minimum refinement function, composition threshold
@@ -176,39 +177,16 @@ subsection Mesh refinement
   end
 end
 
-
 subsection Boundary fluid pressure model
   set Plugin name = density
+
   subsection Density
     set Density formulation = solid density
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = 2
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 2:function
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0,1
-end
-
 subsection Melt settings
   set Include melt transport                  = true
-end
-
-subsection Melt settings
   set Heat advection by melt                  = true
 end
 
@@ -217,12 +195,14 @@ subsection Heating model
 end
 
 subsection Postprocess
-
   set List of postprocessors = composition statistics,velocity statistics, mass flux statistics, heating statistics, temperature statistics, visualization
 
   subsection Visualization
-
     set List of output variables      = material properties, melt material properties, nonadiabatic temperature, nonadiabatic pressure, melt fraction, heating
+    set Number of grouped files       = 0
+    set Interpolate output            = false
+    set Output format                 = vtu
+    set Time between graphical output = 2500
 
     subsection Material properties
       set List of material properties = density, viscosity, thermal expansivity, reaction terms
@@ -231,17 +211,5 @@ subsection Postprocess
     subsection Melt material properties
       set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
     end
-
-    set Number of grouped files       = 0
-    set Interpolate output            = false
-    set Output format                 = vtu
-    set Time between graphical output = 2500
-  end
-
-end
-
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Use direct solver for Stokes system = false
   end
 end

@@ -10,6 +10,7 @@ set Timing output frequency                = 1
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X repetitions = 10
     set Y repetitions = 10
@@ -25,27 +26,21 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
 # Boundary classifications (fixed T boundaries, prescribed velocity)
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = bottom, top, left, right
-end
 
 # Temperature boundary conditions
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
   set List of model names = box
+
   subsection Box
     set Bottom temperature = 1543
     set Top temperature    =  273
   end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top, left, right
 end
 
 # Initial temperature field
@@ -75,6 +70,7 @@ end
 #         843. + (0.025/2.5)*30.e3 - (0. * 70.e3**2)/(2.*2.5) = 1543
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names = x,y
     set Function constants = h=100e3,tsc=273,tsm=843,qsc=0.07,qsm=0.025,k=2.5,A=1.5e-6
@@ -93,6 +89,7 @@ end
 # and initial temperature profile representative of a continental geotherm.
 subsection Heating model
   set List of model names = compositional heating
+
   subsection Compositional heating
     set Use compositional field for heat production averaging = 1, 1
     set Compositional heating values = 0., 1.5e-6
@@ -108,6 +105,7 @@ end
 # Initial composition model
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = if(y>=70.e3, 1, 0);
@@ -122,8 +120,8 @@ end
 # Material model (values for background material (mantle) and crust)
 subsection Material model
   set Model name = visco plastic
-  subsection Visco Plastic
 
+  subsection Visco Plastic
     # Reference values and viscosity averaging
     set Minimum strain rate = 1.e-20
     set Reference strain rate = 1.e-16
@@ -144,13 +142,13 @@ subsection Material model
     set Stress exponents for dislocation creep = 1.0
     set Activation energies for dislocation creep = 0.
     set Activation volumes for dislocation creep = 0.
-
   end
 end
 
 # Gravity model
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end

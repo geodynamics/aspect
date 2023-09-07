@@ -2,6 +2,7 @@ set Dimension = 3
 
 include $ASPECT_SOURCE_DIR/benchmarks/nsinker_spherical_shell/gmg.prm
 
+
 subsection Mesh refinement
   set Initial global refinement                = 1
   set Initial adaptive refinement              = 0

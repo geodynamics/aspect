@@ -18,6 +18,7 @@ set Output directory                       = visco_plastic_vep_brick_extension
 # Model geometry (40x10 km, 2 km spacing)
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X repetitions = 20
     set Y repetitions = 5
@@ -27,6 +28,7 @@ end
 # Change seed size from 800x400 to 4000x2000 meters
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  =

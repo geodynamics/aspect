@@ -5,7 +5,6 @@
 # with a different density flows in until it fills the whole domain.
 
 set Dimension = 2
-
 set End time                               = 1e8
 set Use years in output instead of seconds = true
 set Adiabatic surface temperature          = 1600
@@ -20,9 +19,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0.0
   end
@@ -53,7 +52,6 @@ subsection Initial temperature model
   set Model name = adiabatic
 end
 
-
 subsection Material model
   set Model name = simple
 
@@ -71,13 +69,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = material statistics

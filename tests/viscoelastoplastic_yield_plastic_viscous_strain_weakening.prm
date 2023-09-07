@@ -1,5 +1,6 @@
 include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_plastic_viscous_strain_weakening.prm
 
+
 # Global parameters
 set Dimension                              = 2
 set End time                               = 1000
@@ -16,6 +17,7 @@ end
 # plastic_strain, viscous_strain
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = 0; 0; 0; \
@@ -37,6 +39,7 @@ end
 # Material model (values for background material)
 subsection Material model
   set Model name = visco plastic
+
   subsection Visco Plastic
     set Reference strain rate = 1.e-16
     set Viscous flow law = dislocation
@@ -55,18 +58,17 @@ subsection Material model
     set End plasticity strain weakening intervals = 1.0
     set Cohesion strain weakening factors = 0.5
     set Friction strain weakening factors = 0.5
-
     set Elastic shear moduli        = 1.e10
     set Use fixed elastic time step = false
     set Fixed elastic time step     = 1e3
   end
 end
 
-
 # Post processing
 # named additional outputs includes the weakened cohesions and friction angles
 subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics, visualization
+
   subsection Visualization
     set Interpolate output = false
     set List of output variables = viscosity, strain rate, named additional outputs

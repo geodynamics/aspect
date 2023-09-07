@@ -21,18 +21,16 @@ set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 100
 set CFL number                             = 1.0
 set Maximum time step                      = 1e5
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
-
 set Use operator splitting                     = true
+
 subsection Solver parameters
   subsection Operator splitting parameters
     set Reaction time step                     = 1e3
     set Reaction time steps per advection step = 10
   end
 end
-
 
 ############### Parameters describing the model
 # Let us here choose again a box domain
@@ -48,11 +46,6 @@ subsection Geometry model
     set Y extent = 100000
   end
 end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 1, 2, 3
@@ -74,18 +67,18 @@ subsection Compositional fields
   set Names of fields = porosity, peridotite
 end
 
-
 # We don't need gravity.
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0.0
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression       = 1000.2
   end
@@ -100,7 +93,6 @@ subsection Initial composition model
     set Function expression = 0.0; 0.0
   end
 end
-
 
 subsection Material model
   set Model name = melt simple
@@ -138,6 +130,7 @@ end
 
 subsection Heating model
   set List of model names = latent heat melt
+
   subsection Latent heat melt
     set Melting entropy change = -1.0
   end
@@ -152,20 +145,17 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-
   set List of postprocessors = composition statistics, temperature statistics, visualization
 
   subsection Visualization
     set Interpolate output = false
-
     set List of output variables      = density, viscosity, thermal expansivity, melt material properties, melt fraction
-    subsection Melt material properties
-      set List of properties = permeability, fluid density, compaction viscosity, fluid viscosity
-    end
     set Number of grouped files       = 0
     set Output format                 = vtu
     set Time between graphical output = 0
 
+    subsection Melt material properties
+      set List of properties = permeability, fluid density, compaction viscosity, fluid viscosity
+    end
   end
-
 end

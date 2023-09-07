@@ -1,15 +1,13 @@
 # Enable if: ASPECT_WITH_WORLD_BUILDER
-set Nonlinear solver scheme =no Advection, no Stokes
+set Nonlinear solver scheme = no Advection, no Stokes
 set World builder file                     = $ASPECT_SOURCE_DIR/tests/world_builder_simple_2d_cartesian_sticky_air.wb
 set Use years in output instead of seconds = false
 set Output directory = wbdir3
 set Adiabatic surface temperature = 1613
+set End time = 0
 
 subsection Boundary velocity model
   set Zero velocity boundary indicators = 1
-end
-
-subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 2, 3
 end
 
@@ -19,12 +17,12 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization
+
   subsection Visualization
     set Interpolate output = false
     set List of output variables = adiabat
     set Output format = gnuplot
   end
-
 end
 
 subsection Compositional fields
@@ -33,24 +31,26 @@ end
 
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Reference temperature = 1613
     set Viscosity = 1e21
     set Thermal conductivity = 1e-06
     set Density differential for compositional field 1 = 500
   end
-
 end
 
-set End time = 0
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 500e3
     set Y extent = 800e3
   end
+
   subsection Initial topography model
     set Model name = function
+
     subsection Function
       set Function expression = 100e3
     end

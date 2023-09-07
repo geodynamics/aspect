@@ -16,30 +16,29 @@ subsection Geometry model
   end
 end
 
-
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names = x, y, z
     set Function expression = if(z < 500000,if(x < 330000 && y < 330000,100+z/1000,100+z/250),0)
   end
 end
 
-
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names = x, y, z
     set Function expression = if(z < 500000,if(x < 330000 && y < 330000,1,0),0);if(z < 500000,if(x < 330000 && y < 330000,0,0),1);if(z < 500000,if(x < 330000 && y < 330000,0,1),0)
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement          = 1
   set Initial adaptive refinement        = 2
   set Strategy = isosurfaces
+
   subsection Isosurfaces
     # Although the isosurface entry specifies min/max level 4, refinement level will
     # not be more than 2 because initial global + initial adaptive = 2

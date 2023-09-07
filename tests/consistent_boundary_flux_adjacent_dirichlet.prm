@@ -8,7 +8,6 @@
 set Dimension                              = 2
 set Use years in output instead of seconds = false
 set End time                               = 2.5e11
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 90  # -183°C adiabat
@@ -25,6 +24,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0.0
   end
@@ -35,10 +35,11 @@ subsection Initial temperature model
 end
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 0:function,1:function, 2:function,3:function
+
   subsection Function
     set Function expression = 0;0
   end
-  set Prescribed velocity boundary indicators = 0:function,1:function, 2:function,3:function
 end
 
 subsection Discretization
@@ -62,7 +63,6 @@ subsection Boundary heat flux model
   end
 end
 
-
 subsection Material model
   set Model name = simple
 
@@ -82,6 +82,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = temperature statistics, heat flux statistics
+
   subsection Visualization
     set Interpolate output = false
     set List of output variables      =  heat flux map

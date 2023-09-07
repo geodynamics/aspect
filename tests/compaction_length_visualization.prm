@@ -8,19 +8,15 @@ set Max nonlinear iterations               = 20
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
-
 set End time                               = 0
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
-
 set Use years in output instead of seconds = true
 
 subsection Compositional fields
   set Number of fields = 2
   set Names of fields = porosity, peridotite
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -29,7 +25,6 @@ subsection Geometry model
     set X extent = 1
     set Y extent = 1
   end
-
 end
 
 subsection Gravity model
@@ -42,6 +37,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression       = 1 + 4.605170186 * y
   end
@@ -49,16 +45,16 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0.5 - 0.4286 * x; 0
     set Variable names      = x,y
   end
 end
 
-
 subsection Material model
-
   set Model name = melt global
+
   subsection Melt global
     set Thermal conductivity              = 0
     set Reference solid density           = 1
@@ -77,11 +73,9 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Coarsening fraction                      = 0.5
   set Refinement fraction                      = 0.5
-
   set Initial adaptive refinement              = 5
   set Initial global refinement                = 5
   set Strategy                                 = compaction length
@@ -92,17 +86,13 @@ subsection Mesh refinement
   end
 end
 
-
 subsection Boundary fluid pressure model
   set Plugin name = density
+
   subsection Density
     set Density formulation = solid density
   end
 end
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
@@ -112,15 +102,15 @@ subsection Melt settings
   set Include melt transport                  = true
 end
 
-
 subsection Postprocess
-
   set List of postprocessors = visualization,composition statistics,velocity statistics, temperature statistics
 
   subsection Visualization
     set Interpolate output = false
-
     set List of output variables      = material properties, nonadiabatic temperature, melt fraction, strain rate, melt material properties
+    set Number of grouped files       = 0
+    set Output format                 = gnuplot
+    set Time between graphical output = 0
 
     subsection Material properties
       set List of material properties = density, viscosity, thermal expansivity, reaction terms
@@ -129,9 +119,5 @@ subsection Postprocess
     subsection Melt material properties
       set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity, compaction length, is melt cell
     end
-
-    set Number of grouped files       = 0
-    set Output format                 = gnuplot
-    set Time between graphical output = 0
   end
 end

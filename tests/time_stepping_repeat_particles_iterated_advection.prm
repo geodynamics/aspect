@@ -21,6 +21,7 @@ set Nonlinear solver scheme    = iterated Advection and Stokes
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, left, right
   set Prescribed velocity boundary indicators = top: function
+
   subsection Function
     set Variable names      = x,z,t
     set Function constants  = pi=3.1415926

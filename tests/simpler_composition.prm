@@ -10,6 +10,7 @@ end
 
 subsection Initial composition model
   set List of model names = function
+
   subsection Function
     set Function expression = 1
   end
@@ -17,6 +18,7 @@ end
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent                = 1024e3
     set X repetitions           = 2
@@ -27,6 +29,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end
@@ -34,6 +37,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 500
   end
@@ -41,6 +45,7 @@ end
 
 subsection Material model
   set Model name         = simpler
+
   subsection Simpler model
     set Viscosity = 1e21
   end
@@ -50,10 +55,6 @@ subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 2
 end
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom

@@ -4,7 +4,9 @@
 ############### Global parameters
 
 set Dimension                              = 2
+
 include $ASPECT_SOURCE_DIR/tests/grain_size_growth.prm
+
 set End time = 0
 
 subsection Mesh refinement

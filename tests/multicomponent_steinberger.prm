@@ -25,6 +25,7 @@ subsection Discretization
   set Stokes velocity polynomial degree       = 2
   set Temperature polynomial degree           = 2
   set Use locally conservative discretization = false
+
   subsection Stabilization parameters
     set alpha = 2
     set beta  = 0.078
@@ -34,6 +35,7 @@ end
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 2.e6
     set Y extent = 2.e6
@@ -43,6 +45,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
@@ -50,6 +53,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = 1600
@@ -62,6 +66,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = if( sqrt( (x-5.e5 )^2 + (y-5.e5)^2) < 2.e5 , 1,0); if( sqrt((x-10.e5)^2 + (y-15.e5)^2 ) < 2.e5, 1,0); if( sqrt((x-15.e5)^2 + (y-10.e5)^2) < 2.e5, 1, 0)
@@ -69,8 +74,9 @@ subsection Initial composition model
 end
 
 subsection Material model
-set Model name = Steinberger
-subsection Steinberger model
+  set Model name = Steinberger
+
+  subsection Steinberger model
     set Use lateral average temperature for viscosity = false
     set Data directory                                = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
     set Radial viscosity file name                    = radial-visc.txt
@@ -79,7 +85,7 @@ subsection Steinberger model
     set Material file names                           = pyr-ringwood88.txt, pyr-ringwood88.txt, pyr-ringwood88.txt, pyr-ringwood88.txt
     set Minimum viscosity                             = 1e19
     set Maximum viscosity                             = 1e24
- end
+  end
 end
 
 subsection Mesh refinement
@@ -99,6 +105,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization
+
   subsection Visualization
     set Interpolate output = false
     set List of output variables = viscosity,density

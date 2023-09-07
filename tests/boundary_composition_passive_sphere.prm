@@ -21,36 +21,31 @@ subsection Geometry model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = inner
-end
-
-subsection Boundary velocity model
   set Tangential velocity boundary indicators = outer, left, right
 end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = inner, outer
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = inner, outer, left, right
-end
-
-
-subsection Boundary temperature model
   set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 1
     set Outer temperature = 0
   end
 end
 
+subsection Boundary composition model
+  set Fixed composition boundary indicators   = inner, outer, left, right
+  set List of model names = function
+
+  subsection Function
+    set Variable names      = r, theta
+    set Coordinate system   = spherical
+    set Function expression = if(r<0.5, 1,  0) ; if(theta>0.8, 1, 0)
+  end
+end
 
 subsection Gravity model
   set Model name = radial constant
@@ -59,7 +54,6 @@ subsection Gravity model
     set Magnitude = 9.81
   end
 end
-
 
 subsection Initial temperature model
   set Model name = function
@@ -71,7 +65,6 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Material model
   set Model name = simple
 
@@ -82,13 +75,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 2
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, composition statistics
@@ -100,7 +91,6 @@ subsection Postprocess
   end
 end
 
-
 # This is the new part: We declare that there will
 # be two compositional fields that will be
 # advected along. Their initial conditions are given by
@@ -109,14 +99,4 @@ end
 # and one in the top most 0.2 height units in the latter.
 subsection Compositional fields
   set Number of fields = 2
-end
-
-subsection Boundary composition model
-  set List of model names = function
-
-  subsection Function
-    set Variable names      = r, theta
-    set Coordinate system   = spherical
-    set Function expression = if(r<0.5, 1,  0) ; if(theta>0.8, 1, 0)
-  end
 end

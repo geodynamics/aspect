@@ -2,26 +2,24 @@
 # with a sinking blob.
 
 set Dimension = 2
-
 set CFL number                             = 0.1
-
 set End time                               = 1e8
 set Output directory                       = output
-
 set Pressure normalization                 = no
 set Use years in output instead of seconds = true
 
-
 subsection Boundary temperature model
   set List of model names = constant
+  set Fixed temperature boundary indicators   = left, right, bottom, top
+
   subsection Constant
     set Boundary indicator to temperature mappings = left:0, right:0, bottom:0, top:0
   end
 end
 
-
 subsection Discretization
   set Use locally conservative discretization = false
+
   subsection Stabilization parameters
     set alpha = 2
     set beta  = 0.078
@@ -31,6 +29,7 @@ end
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 500.e3
     set Y extent = 200.e3
@@ -41,6 +40,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
@@ -48,6 +48,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = 0.0
@@ -56,6 +57,7 @@ end
 
 subsection Material model
   set Model name = multicomponent
+
   subsection Multicomponent
     set Densities             = 2970., 3800.
     set Viscosities                     = 1.e20, 1.e24
@@ -72,17 +74,10 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 5
   set Refinement criteria merge operation         = plus
   set Refinement criteria scaling factors         = 2, 1
+
   subsection Boundary
     set Boundary refinement indicators = top
   end
-end
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = left, right, bottom, top
 end
 
 subsection Boundary velocity model
@@ -91,6 +86,7 @@ end
 
 subsection Mesh deformation
   set Mesh deformation boundary indicators = top: free surface
+
   subsection Free surface
     set Free surface stabilization theta = 0.5
     set Surface velocity projection = vertical
@@ -108,6 +104,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = if( sqrt( (x-250.e3)^2 + (y-160.e3)^2 ) < 25.e3, 1.0, 0.0)
@@ -116,6 +113,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization,topography,velocity statistics,
+
   subsection Visualization
     set Interpolate output = false
     set Output format = gnuplot

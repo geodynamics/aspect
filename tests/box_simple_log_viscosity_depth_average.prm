@@ -7,7 +7,6 @@ set End time                               = 0
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
-
 # Geometry of the domain. In order to test the depth averaging,
 # we use the X and Y repititions such that four equal depth
 # layers of visocisty are created in the depth-dependent material
@@ -23,7 +22,6 @@ subsection Geometry model
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement = 0
 end
@@ -38,9 +36,9 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = bottom, top
 
   subsection Box
     set Bottom temperature = 2773
@@ -50,15 +48,9 @@ subsection Boundary temperature model
   end
 end
 
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
-
 
 # The following two sections describe first the
 # direction (vertical) and magnitude of gravity and the
@@ -70,7 +62,6 @@ subsection Gravity model
     set Magnitude = 10
   end
 end
-
 
 subsection Material model
   set Model name = depth dependent
@@ -93,7 +84,6 @@ subsection Material model
   end
 end
 
-
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, depth average
 
@@ -103,9 +93,7 @@ subsection Postprocess
     set Number of zones = 2
     set Depth boundaries of zones = 0, 1e6, 2e6
   end
-
 end
-
 
 subsection Solver parameters
   set Temperature solver tolerance = 1e-10

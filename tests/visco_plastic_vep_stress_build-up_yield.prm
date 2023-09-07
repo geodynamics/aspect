@@ -38,37 +38,30 @@ subsection Geometry model
   end
 end
 
-
 # Material model
 subsection Material model
-
   set Model name = visco plastic
 
   subsection Visco Plastic
-
     set Viscous flow law                          = dislocation
     set Prefactors for dislocation creep          = 5e-22
     set Stress exponents for dislocation creep    = 1.0
     set Activation energies for dislocation creep = 0.
     set Activation volumes for dislocation creep  = 0.
-
     set Elastic shear moduli        = 1.e10
     set Use fixed elastic time step = false
     set Fixed elastic time step     = 1e3
     set Viscosity averaging scheme  = harmonic
-
     set Angles of internal friction = 0.
     set Cohesions                   = 1.e6
-
     set Densities                   = 2800
-
   end
-
 end
 
 # Post processing
 subsection Postprocess
   set List of postprocessors = velocity statistics, depth average
+
   subsection Depth average
     set Time between graphical output = 0
     set Number of zones = 5

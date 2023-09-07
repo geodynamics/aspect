@@ -28,6 +28,7 @@ end
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, left, right
   set Prescribed velocity boundary indicators = top: function
+
   subsection Function
     set Variable names      = x,z,t
     set Function constants  = pi=3.1415926
@@ -49,7 +50,6 @@ subsection Gravity model
   set Model name = vertical
 end
 
-
 subsection Initial temperature model
   set Model name = function
 
@@ -58,7 +58,6 @@ subsection Initial temperature model
     set Function expression = if(z<0.2, 1, 0)
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -70,13 +69,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 3
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, particles
@@ -85,7 +82,8 @@ subsection Postprocess
     set Interpolate output = false
     set Time between graphical output = 1e-1
     set Output format = gnuplot
- end
+  end
+
   subsection Particles
     set Number of particles = 64
     set Time between data output = 1e-1
@@ -108,7 +106,6 @@ subsection Postprocess
     end
   end
 end
-
 
 subsection Compositional fields
   set Number of fields = 2

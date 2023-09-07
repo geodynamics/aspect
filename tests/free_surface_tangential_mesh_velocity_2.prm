@@ -22,7 +22,8 @@ end
 
 subsection Mesh deformation
   set Mesh deformation boundary indicators        = top: free surface
-    set Additional tangential mesh velocity boundary indicators = left,right, top
+  set Additional tangential mesh velocity boundary indicators = left,right, top
+
   subsection Free surface
     set Free surface stabilization theta = 0.5
   end
@@ -39,6 +40,7 @@ end
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, left, right
+
   subsection Function
     set Function expression = if(x>0, 1e-2 , -1e-2); 0
   end
@@ -52,11 +54,9 @@ subsection Gravity model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = adiabatic
 end
-
 
 subsection Material model
   set Model name = simple

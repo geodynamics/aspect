@@ -45,6 +45,7 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
 
+
 #  Global parameters
 set Dimension                              = 2
 set Start time                             = 0
@@ -63,6 +64,7 @@ end
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, left
   set Prescribed velocity boundary indicators = bottom y:function, right x:function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = Lx = 100000, yinsec = 31557600, eps_ii = 1e-14
@@ -74,6 +76,7 @@ end
 # ve_stress_xx, ve_stress_yy, ve_stress_xy
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = eta = 1e22, mu = 1e10, eps = 1e-14, t = 250000, yinsec = 31557600
@@ -92,5 +95,4 @@ subsection Postprocess
     set Time between graphical output = 1e3
     set Output format = gnuplot
   end
-
 end

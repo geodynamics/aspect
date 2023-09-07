@@ -12,8 +12,6 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-
-
 subsection Gravity model
   set Model name = radial constant
 
@@ -21,7 +19,6 @@ subsection Gravity model
     set Magnitude = 10
   end
 end
-
 
 subsection Geometry model
   set Model name = chunk
@@ -36,9 +33,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = ascii data
+
   subsection Ascii data model
     set Data directory       = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
     set Data file name       = shell_2d.txt
@@ -47,6 +44,8 @@ end
 
 subsection Boundary temperature model
   set List of model names = spherical constant
+  set Fixed temperature boundary indicators   = inner, outer
+
   subsection Spherical constant
     set Inner temperature = 0
     set Outer temperature = 0
@@ -55,6 +54,7 @@ end
 
 subsection Material model
   set Model name = simpler
+
   subsection Simple model
     set Viscosity = 1e21
   end
@@ -65,20 +65,8 @@ subsection Mesh refinement
   set Initial global refinement          = 4
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = inner, outer
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = outer
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = inner
 end
 

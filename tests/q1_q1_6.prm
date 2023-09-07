@@ -19,6 +19,7 @@ set Pressure normalization                 = volume
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 1
     set Y extent = 1
@@ -59,7 +60,6 @@ subsection Initial temperature model
   end
 end
 
-
 ############### Parameters describing the discretization
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
@@ -79,6 +79,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, DoneaHuertaPostprocessor
+
   subsection Visualization
     set List of output variables = density, viscosity, strain rate, gravity
   end
@@ -88,6 +89,7 @@ subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-12
     set Number of cheap Stokes solver steps = 0
-#    set Use direct solver for Stokes system             = true
+
+    #    set Use direct solver for Stokes system             = true
   end
 end

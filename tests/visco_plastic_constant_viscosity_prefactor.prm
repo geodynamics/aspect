@@ -11,6 +11,7 @@ set Timing output frequency                = 1
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X repetitions = 10
     set Y repetitions = 10
@@ -28,6 +29,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 273
   end
@@ -51,6 +53,7 @@ end
 # The compositional field is only present in the lower half of the model
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = if (y<=50e3,1,0)
@@ -65,6 +68,7 @@ end
 # Material model (values for background material)
 subsection Material model
   set Model name = visco plastic
+
   subsection Visco Plastic
     # Background and compositional field both have initial viscosity of 1e23 Pa s
     set Viscous flow law = dislocation
@@ -72,6 +76,7 @@ subsection Material model
     set Stress exponents for dislocation creep = 1.0
     set Activation energies for dislocation creep = 0.
     set Activation volumes for dislocation creep = 0.
+
     # The compositional field viscosity is reduced by a factor of 10 before yielding
     set Constant viscosity prefactors = 1., 0.1
   end
@@ -80,6 +85,7 @@ end
 # Gravity model
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0.0
   end
@@ -89,6 +95,7 @@ end
 # named additional outputs includes the weakened cohesions and friction angles
 subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics, visualization
+
   subsection Visualization
     set Interpolate output = false
     set List of output variables = material properties

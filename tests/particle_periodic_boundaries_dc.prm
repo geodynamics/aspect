@@ -4,6 +4,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/particle_periodic_boundaries.prm
 
+
 subsection Discretization
   set Use discontinuous composition discretization = true
 end

@@ -15,8 +15,11 @@ set Use years in output instead of seconds = false
 # of deformation regimes, we prescribe a flow field in the section called
 # `Prescribed Stokes Solution` below.
 set Nonlinear solver scheme                = single Advection, no Stokes
-
 set End time                               = 0
+
+##################### Melting and freezing ########################
+
+set Use operator splitting                     = false
 
 subsection Prescribed Stokes solution
   set Model name = function
@@ -42,10 +45,6 @@ subsection Prescribed Stokes solution
   end
 end
 
-##################### Melting and freezing ########################
-
-set Use operator splitting                     = false
-
 subsection Solver parameters
   subsection Operator splitting parameters
     set Reaction time step                     = 2e2
@@ -53,9 +52,9 @@ subsection Solver parameters
   end
 end
 
-
 subsection Material model
   set Model name = EXPERIMENTAL melt visco plastic
+
   subsection Melt visco plastic
     set Exponential melt weakening factor = 0
     set Cohesions                         = 4e7
@@ -81,6 +80,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0.0
   end
@@ -90,6 +90,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression       = 293
   end
@@ -118,6 +119,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0.01; 0.01
     set Variable names      = x,y
@@ -134,7 +136,6 @@ end
 subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.0
-
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 4
   set Time steps between mesh refinement       = 0
@@ -143,12 +144,14 @@ end
 ##################### Postprocessing ########################
 
 subsection Postprocess
-
   set List of postprocessors = visualization, composition statistics, velocity statistics
 
   # We mainly want to look at material properties of the solid and the melt.
   subsection Visualization
     set List of output variables      = material properties, melt material properties, melt fraction, named additional outputs, stress, strain rate tensor
+    set Output format                 = gnuplot
+    set Time between graphical output = 0
+    set Interpolate output = true
 
     subsection Material properties
       set List of material properties = density, viscosity
@@ -161,10 +164,5 @@ subsection Postprocess
     subsection Melt material properties
       set List of properties = compaction viscosity, permeability, fluid density, is melt cell
     end
-
-    set Output format                 = gnuplot
-    set Time between graphical output = 0
-    set Interpolate output = true
   end
-
 end
