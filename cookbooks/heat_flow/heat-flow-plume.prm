@@ -27,7 +27,6 @@ subsection Geometry model
   end
 end
 
-
 # In order to allow plume material to flow in with the
 # temperature selected in the initial temperature section,
 # we apply the initial temperature as the boundary temperature.
@@ -40,7 +39,6 @@ subsection Boundary temperature model
     set Minimal temperature = 293
   end
 end
-
 
 # In this model we want material to be able to (1) flow in freely
 # through the base, (2) flow freely in the horizontal direction
@@ -73,7 +71,6 @@ subsection Boundary traction model
   end
 end
 
-
 # We then choose a vertical gravity model.
 subsection Gravity model
   set Model name = vertical
@@ -102,7 +99,6 @@ subsection Initial temperature model
   end
 end
 
-
 # This model uses the composition reaction material model,
 # where most material properties are constant, except for the
 # viscosity and the density, which depend on temperature as
@@ -121,7 +117,6 @@ subsection Material model
     set Reference temperature         = 1600
   end
 end
-
 
 # This part of this input file describes how many times the
 # mesh is refined and what to do with the solution once computed.
@@ -144,7 +139,6 @@ subsection Mesh refinement
     set Function expression = if(depth<7000,6,if(depth<30000,5,4))
   end
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, heat flux densities

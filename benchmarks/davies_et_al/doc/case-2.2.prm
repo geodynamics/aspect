@@ -4,8 +4,6 @@
 # point to the folder that contains the results of Case 2.1.
 
 set CFL number                             = 10
-
 set End time                               = 3
 set Output directory                       = output
-
 set Resume computation                     = true

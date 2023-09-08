@@ -1,7 +1,6 @@
 include Tosi_base.prm
 
 set Additional shared libraries            = ./libtosi_benchmark.so
-
 set Output directory                       = Case5_6
 
 # Between the cases the "Pressure viscosity parameter" ($\Delta_{\eta}_z$),
@@ -16,7 +15,6 @@ subsection Material model
     set Nonlinear viscosity constant  = 1e-3
   end
 end
-
 
 subsection Mesh refinement
   set Initial global refinement                = 6

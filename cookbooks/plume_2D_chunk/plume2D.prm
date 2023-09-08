@@ -9,8 +9,8 @@ set Nonlinear solver scheme                = iterated Advection and Stokes
 
 subsection Material model
   set Model name = visco plastic
-  subsection Visco Plastic
 
+  subsection Visco Plastic
     # Reference temperature and viscosity
     set Reference temperature = 273
 
@@ -24,7 +24,6 @@ subsection Material model
     set Heat capacities       =  1250.
     set Densities             =  3250
     set Thermal expansivities =  3e-5
-
     set Viscous flow law      = diffusion
     set Activation volumes for diffusion creep  = 0
     set Grain size = 1
@@ -36,12 +35,12 @@ subsection Material model
     # Plasticity parameters - irrelevant
     # set to very high value so that it is not used
     set Cohesions = 1e15
-
   end
 end
 
 subsection Geometry model
   set Model name = chunk
+
   subsection Chunk
     set Chunk inner radius = 3480000
     set Chunk outer radius = 6371000
@@ -62,6 +61,7 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
   set List of model names = function
+
   subsection Function
     set Coordinate system = spherical
     set Variable names = r, phi
@@ -72,6 +72,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1023
   end
@@ -79,6 +80,7 @@ end
 
 subsection Gravity model
   set Model name = radial constant
+
   subsection Vertical
     set Magnitude = 9.81
   end
@@ -92,6 +94,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics
+
   subsection Visualization
     set List of output variables = density, viscosity, vertical heat flux
     set Output format                 = vtu

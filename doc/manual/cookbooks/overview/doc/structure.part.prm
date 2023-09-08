@@ -18,5 +18,3 @@ subsection Material model
     set Viscosity                 = 5e24
   end
 end
-
-...

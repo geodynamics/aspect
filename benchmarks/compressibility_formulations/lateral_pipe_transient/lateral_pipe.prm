@@ -7,7 +7,6 @@
 # the mass flow out of the pipe exists.
 
 set Additional shared libraries = ../plugins/libcompressibility_formulations.so
-
 set Dimension = 2
 
 # 1e7 years
@@ -17,7 +16,6 @@ set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Nonlinear solver tolerance             = 1e-12
 set Maximum time step                      = 31557600e5
-
 set Output directory                       = output-lateral_pipe
 
 subsection Adiabatic conditions model
@@ -28,9 +26,9 @@ subsection Adiabatic conditions model
 end
 
 subsection Discretization
-   set Use locally conservative discretization = true
-   set Use discontinuous composition discretization = true
-   set Use discontinuous temperature discretization = true
+  set Use locally conservative discretization = true
+  set Use discontinuous composition discretization = true
+  set Use discontinuous temperature discretization = true
 end
 
 subsection Solver parameters
@@ -65,14 +63,13 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0.0
   end
 end
-
 
 subsection Heating model
   set List of model names = function
@@ -82,7 +79,6 @@ subsection Heating model
     set Function expression = 1e-4 / 31557600 * 1000
   end
 end
-
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators =
@@ -106,7 +102,6 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Material model
   set Model name = compressibility formulations
 
@@ -120,13 +115,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, material statistics

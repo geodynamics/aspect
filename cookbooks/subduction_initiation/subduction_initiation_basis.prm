@@ -9,6 +9,7 @@ set Pressure normalization                 = surface
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent  = 400e3
     set Y extent  = 180e3
@@ -22,6 +23,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end
@@ -34,6 +36,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end

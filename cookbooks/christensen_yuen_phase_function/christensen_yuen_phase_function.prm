@@ -14,6 +14,7 @@ set Output directory                       = christensen_yuen
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 500
 set Maximum time step                      = 1e5
+set Adiabatic surface temperature = 500
 
 subsection Solver parameters
   subsection Stokes solver parameters
@@ -24,14 +25,13 @@ end
 # This model assumes the Boussinesq approximation, so it is
 # incompressible and has a constant reference density.
 subsection Formulation
-   set Formulation = Boussinesq approximation
+  set Formulation = Boussinesq approximation
 end
 
 # For the Boussinesq approximation, all heating terms are switched off.
 subsection Heating model
   set List of model names =
 end
-
 
 # The model domain is a quadratic box.
 subsection Geometry model
@@ -43,14 +43,12 @@ subsection Geometry model
   end
 end
 
-
-set Adiabatic surface temperature = 500
-
 # Set the reference profile.
 # The temperature on the reference profile is 500 K, halfway between the
 # top temperature of 0 K and the bottom temperature of 1000 K.
 subsection Adiabatic conditions model
   set Model name = function
+
   subsection Function
     set Function constants = density=1000
     set Function expression = 500; density*10*depth; density
@@ -81,11 +79,9 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, bottom, left, right
 end
-
 
 subsection Gravity model
   set Model name = vertical
@@ -94,8 +90,6 @@ subsection Gravity model
     set Magnitude = 10
   end
 end
-
-
 
 # This material model uses phase functions.
 # The model in Christensen & Yuen is nondimensional, but we want to keep
@@ -120,7 +114,6 @@ subsection Material model
     set Reference specific heat                        = 1000
     set Thermal expansion coefficient                  = 1e-4
     set Compressibility                                = 0
-
     set Thermal conductivity                           = 246.03750       # k = 2.460375e7/Ra, corresponds to Ra = 1e5
 
     # There is one phase transition in the center of the box (at a depth of 675 km),
@@ -146,19 +139,18 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement                = 6
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
 
-
 # Stop the model run when a steady state heat flux is reached.
 # Some of the models do not reach steady state and will continue
 # until the end time is reached.
 subsection Termination criteria
   set Termination criteria = end time, steady state heat flux
+
   subsection Steady state heat flux
     set Maximum relative deviation = 0.005
     set Time in steady state = 1e7
@@ -166,16 +158,15 @@ subsection Termination criteria
   end
 end
 
-
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, heating statistics, visualization
 
   subsection Visualization
-     set Time between graphical output = 1e5
-     set List of output variables      = material properties, adiabat, strain rate
+    set Time between graphical output = 1e5
+    set List of output variables      = material properties, adiabat, strain rate
 
-     subsection Material properties
-       set List of material properties = viscosity, density
-     end
+    subsection Material properties
+      set List of material properties = viscosity, density
+    end
   end
 end

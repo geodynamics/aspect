@@ -7,6 +7,7 @@ set Additional shared libraries            = ./libnsinker_spherical_shell.so
 include gmg.prm
 
 set Dimension                              = 3
+set Output directory = output-amg
 
 subsection Solver parameters
   subsection Stokes solver parameters
@@ -17,5 +18,3 @@ subsection Solver parameters
     set GMRES solver restart length                     = 100
   end
 end
-
-set Output directory = output-amg

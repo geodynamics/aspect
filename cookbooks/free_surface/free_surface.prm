@@ -30,6 +30,7 @@ set Pressure normalization                 = no
 # here use a box model with vertical downwards gravity.
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 500.e3
     set Y extent = 200.e3
@@ -38,14 +39,13 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
 end
-
 
 # Here is the major new section for this parameter file, specifying the
 # parameters for running free surface calculations.
@@ -68,7 +68,6 @@ subsection Mesh deformation
   end
 end
 
-
 # Here we specify that the model has free slip velocity boundary conditions for
 # the sides and bottom. We do not specify a boundary condition for the top,
 # which is equivalent to a zero stress boundary condition. This means while the
@@ -81,34 +80,34 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom
 end
 
-
 # We prescribe a zero boundary temperature, as we are just modeling a single
 # rising blob
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = left, right, bottom, top
   set List of model names = constant
+
   subsection Constant
     set Boundary indicator to temperature mappings = left:0, right:0, bottom:0, top:0
   end
 end
 
-
 # Our temperature initial conditions are simply a blob of hot
 # rock in the center of the domain.
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = sqrt((x-250.e3)^2 + (y-100.e3)^2) < 25.e3 ? 200.0 : 0.0
   end
 end
 
-
 # A fairly standard simple material model, except we use an
 # artificially low thermal conductivity to keep our anomaly
 # from diffusing too fast.
 subsection Material model
   set Model name = simpler
+
   subsection Simpler model
     set Reference density             = 3300
     set Reference specific heat       = 1250
@@ -118,7 +117,6 @@ subsection Material model
     set Viscosity                     = 1.e20
   end
 end
-
 
 # For simplicity we disable adaptive mesh refinement,
 # although it would significantly speed up this model
@@ -130,7 +128,6 @@ subsection Mesh refinement
   set Strategy                           = temperature
   set Time steps between mesh refinement = 0
 end
-
 
 # We also include the topography postprocessor, which just calculates
 # the maximum and minimum topography on your free surface at

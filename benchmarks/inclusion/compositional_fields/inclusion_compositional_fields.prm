@@ -5,27 +5,22 @@
 ############### Global parameters
 
 set Additional shared libraries            = ./libinclusion_compositional_fields.so
-
-
 set Dimension                              = 2
-
 set Start time                             = 0
 set End time                               = 0
-
 set Pressure normalization                 = volume
 set Nonlinear solver scheme                = no Advection, iterated Stokes
-
 
 ############### Parameters describing the model
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 2
     set Y extent = 2
   end
 end
-
 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left  : InclusionBoundary, \
@@ -36,6 +31,7 @@ end
 
 subsection Material model
   set Model name = InclusionCompositionalMaterial
+
   subsection Inclusion
     set Viscosity jump = 1e3
   end
@@ -45,14 +41,11 @@ subsection Gravity model
   set Model name = vertical
 end
 
-
 ############### Parameters describing the temperature field
 
 subsection Initial temperature model
   set Model name = perturbed box
 end
-
-
 
 ############### Parameters describing the discretization
 
@@ -76,6 +69,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,z
     set Function constants  = eta_b=1e3, rmax=0.2
@@ -83,12 +77,11 @@ subsection Initial composition model
   end
 end
 
-
-
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
   set List of postprocessors = visualization, InclusionPostprocessor
+
   subsection Visualization
     set Output format                 = vtu
     set Number of grouped files       = 1

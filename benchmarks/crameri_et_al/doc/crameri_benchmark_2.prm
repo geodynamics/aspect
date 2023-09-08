@@ -2,6 +2,7 @@ set CFL number                   = 0.1
 
 subsection Material model
   set Model name = multicomponent
+
   subsection Multicomponent
     set Densities = 3300, 3200, 3300
     set Viscosities = 1.e21, 1.e20, 1.e23

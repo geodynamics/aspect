@@ -1,4 +1,3 @@
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
 end

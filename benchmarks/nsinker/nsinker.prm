@@ -6,7 +6,6 @@
 # between sinkers and background.
 
 set Additional shared libraries            = ./libnsinker.so
-
 set Dimension                              = 3
 set End time                               = 0
 set Pressure normalization                 = volume
@@ -25,11 +24,9 @@ subsection Solver parameters
   end
 end
 
-
 subsection Discretization
   set Use locally conservative discretization = true
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -41,11 +38,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left,right,bottom,front,back
 end
-
 
 subsection Material model
   set Model name = nsinker
@@ -57,7 +52,6 @@ subsection Material model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
 
@@ -66,17 +60,14 @@ subsection Gravity model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
 end
-
 
 subsection Mesh refinement
   set Initial global refinement                = 4
   set Initial adaptive refinement              = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization

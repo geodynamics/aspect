@@ -26,7 +26,6 @@ subsection Geometry model
   end
 end
 
-
 # We fix the temperature at the top, representing the Earth's
 # surface, and at the bottom, where material flows in and we
 # need to prescribe what temperature this material should
@@ -40,7 +39,6 @@ subsection Boundary temperature model
     set Top temperature    = 293
   end
 end
-
 
 # The velocity along the top boundary models a spreading
 # center of a mid-ocean ridge. The horizontal component of
@@ -71,12 +69,12 @@ subsection Boundary traction model
   end
 end
 
-
 # We then choose a vertical gravity model and describe the
 # initial temperature as a constant (being equivalent to a
 # plate age of 0).
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10
   end
@@ -95,7 +93,6 @@ subsection Initial temperature model
   end
 end
 
-
 # This model uses the composition reaction material model,
 # where most material properties are constant. Here, only
 # the density depends on temperature as expressed by the
@@ -109,7 +106,6 @@ subsection Material model
     set Viscosity                     = 1e23
   end
 end
-
 
 # This part of this input file describes how many times the
 # mesh is refined and what to do with the solution once computed.
@@ -132,7 +128,6 @@ subsection Mesh refinement
     set Function expression = if(depth<7000,6,if(depth<30000,5,if(depth<45000,4,3)))
   end
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, heat flux statistics

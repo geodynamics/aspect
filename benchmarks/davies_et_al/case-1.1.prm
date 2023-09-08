@@ -1,26 +1,22 @@
 ############### Global parameters
 
 set CFL number                             = 10
-
 set End time                               = 2
 set Output directory                       = output
-
 set Start time                             = 0
-
 set Use years in output instead of seconds = false
-
 
 ############### Parameters describing the model
 
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Inner radius  = 1.22
     set Opening angle = 360
     set Outer radius  = 2.22
   end
 end
-
 
 subsection Boundary velocity model
   set Zero velocity boundary indicators = top, bottom
@@ -30,6 +26,7 @@ end
 # Ra = 10^4
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude =  1e10
   end
@@ -37,6 +34,7 @@ end
 
 subsection Material model
   set Model name = simpler
+
   subsection Simpler model
     set Reference density             = 1
     set Reference specific heat       = 1.
@@ -63,6 +61,7 @@ end
 
 subsection Initial temperature model
   set Model name = spherical hexagonal perturbation
+
   subsection Spherical hexagonal perturbation
     set Angular mode          = 4
     set Rotation offset       = 0
@@ -87,15 +86,11 @@ subsection Mesh refinement
   set Additional refinement times        =
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 5
-  set Additional refinement times        =
   set Refinement fraction                = 1
   set Coarsening fraction                = 0
-
   set Strategy                           = temperature
-
   set Time steps between mesh refinement = 0
 end
-
 
 ############### Parameters describing what to do with the solution
 

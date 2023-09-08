@@ -72,10 +72,11 @@ subsection Discretization
   set Use locally conservative discretization = false
   set Use discontinuous temperature discretization = false
   set Use discontinuous composition discretization = true
+
   subsection Stabilization parameters
-      set Use limiter for discontinuous composition solution = true
-      set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.0
-      set Global composition minimum = -1.e11, -1.e11, -1.e11, 0.0
+    set Use limiter for discontinuous composition solution = true
+    set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.0
+    set Global composition minimum = -1.e11, -1.e11, -1.e11, 0.0
   end
 end
 
@@ -99,6 +100,7 @@ end
 # Spatial domain of different compositional fields
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  =
@@ -116,6 +118,7 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top, left, right
   set List of model names = box
+
   subsection Box
     set Bottom temperature = 293
     set Left temperature   = 293
@@ -127,6 +130,7 @@ end
 # Temperature initial conditions
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 293
   end
@@ -134,7 +138,6 @@ end
 
 # Material model
 subsection Material model
-
   set Model name = viscoelastic
 
   subsection Viscoelastic
@@ -145,12 +148,12 @@ subsection Material model
     set Use fixed elastic time step = false
     set Viscosity averaging scheme  = maximum composition
   end
-
 end
 
 # Gravity model
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.
   end
@@ -159,23 +162,22 @@ end
 # Post processing
 subsection Postprocess
   set List of postprocessors = velocity statistics, basic statistics, temperature statistics, visualization
+
   subsection Visualization
     set List of output variables = material properties, strain rate
+    set Time between graphical output = 0
+    set Interpolate output = true
 
     subsection Material properties
       set List of material properties = density, viscosity
     end
-
-    set Time between graphical output = 0
-    set Interpolate output = true
   end
-
 end
 
 # Termination criteria
 subsection Termination criteria
- set Termination criteria = end step
- set End step = 500
+  set Termination criteria = end step
+  set End step = 500
 end
 
 subsection Checkpointing

@@ -2,7 +2,6 @@
 # ---------------------
 
 set Additional shared libraries            = ./code/libtangurnis.so
-
 set Dimension                              = 2
 set CFL number                             = 1.0
 
@@ -15,7 +14,6 @@ set Output directory                       = output_tala
 # solve the Stokes system
 set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Use years in output instead of seconds = false
-
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 
@@ -27,12 +25,12 @@ set Surface pressure                       = 0
 # in the material model below.
 subsection Adiabatic conditions model
   set Model name = function
+
   subsection Function
     set Function constants  = Di=0.5, gamma=1.0
     set Function expression = 0;0;exp(Di/gamma*depth)  # T,p,rho
     set Variable names      = depth
   end
-
 end
 
 # This case of the benchmark uses the truncated anelastic liquid approximation.
@@ -50,7 +48,6 @@ subsection Boundary temperature model
   set List of model names = Tan Gurnis
 end
 
-
 subsection Discretization
   subsection Stabilization parameters
     # The exponent $\alpha$ in the entropy viscosity stabilization. Units:
@@ -64,7 +61,6 @@ subsection Discretization
     # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
     set cR    = 0.5
   end
-
 end
 
 # The model domain is the unit square.
@@ -78,14 +74,13 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = sin(pi*y)*cos(pi*1*x)
   end
@@ -105,12 +100,9 @@ subsection Material model
   subsection Tan Gurnis model
     set Di                            = 0.5
     set gamma                         = 1
-
     set a                             = 0   # constant viscosity
-
     set wavenumber                    = 1
   end
-
 end
 
 # This subsection describes which heating models we want to use.
@@ -128,11 +120,9 @@ subsection Mesh refinement
   set Initial global refinement          = 6
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
-
 
 subsection Postprocess
   set List of postprocessors = Tan Gurnis error, visualization, heating statistics

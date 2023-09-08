@@ -1,4 +1,4 @@
-# This test ensures that the PerpleX lookup material model works 
+# This test ensures that the PerpleX lookup material model works
 # with compositional fields enabled
 
 # WARNING: Please understand that the PerpleX Lookup material model is only a
@@ -8,7 +8,6 @@
 set Dimension                              = 2
 set End time                               = 0
 set Adiabatic surface temperature          = 1300
-
 
 # KLB composition in the CFMAS system
 # The bulk composition is given by five compositional fields
@@ -24,6 +23,7 @@ end
 
 subsection Initial composition model
   set List of model names = function
+
   subsection Function
     set Function expression = 0.44; 0.04; 0.08; 0.44
   end
@@ -31,14 +31,16 @@ end
 
 subsection Material model
   set Model name                   = perplex lookup
+
   subsection PerpleX lookup model
-    set PerpleX input file name	   = pyrolite
+    set PerpleX input file name    = pyrolite
     set Viscosity                  = 1e21
   end
 end
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent                = 200e3
     set X repetitions           = 1
@@ -49,6 +51,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1300
   end
@@ -60,6 +63,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end

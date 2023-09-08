@@ -7,6 +7,7 @@ set Dimension                              = 2
 set End time                               = 7.8894e14 #seconds = 25My
 set Use years in output instead of seconds = true
 set Output directory                       = output_slab_detachment
+
 #set Nonlinear solver scheme                = iterated Advection and Newton Stokes
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Nonlinear solver tolerance             = 1e-6
@@ -16,17 +17,19 @@ set CFL number                             = 1
 # A 2D rectangle of 1000x660 km.
 subsection Geometry model
   set Model name = box
-    subsection Box
-      set X extent = 1000000.0
-      set Y extent = 660000.0
-      set X repetitions = 100
-      set Y repetitions = 66
+
+  subsection Box
+    set X extent = 1000000.0
+    set Y extent = 660000.0
+    set X repetitions = 100
+    set Y repetitions = 66
   end
 end
 
 # Vertical gravity.
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end
@@ -52,30 +55,21 @@ end
 # Temperature effects are not considered.
 
 subsection Material model
-
   set Material averaging = harmonic average
-
   set Model name = visco plastic
 
   subsection Visco Plastic
-
     set Reference temperature  = 273
-
     set Minimum strain rate = 1.e-20
     set Reference strain rate = 1.e-15
-
     set Minimum viscosity = 1e21
     set Maximum viscosity = 1e25
-
     set Viscosity averaging scheme = harmonic
-
     set Thermal diffusivities = 0,      0
     set Heat capacities       = 750.,   750.
     set Densities             = 3150,   3300
     set Thermal expansivities = 0,      0
-
     set Viscous flow law = dislocation
-
     set Prefactors for dislocation creep          =  1e-21, 1.22773766e-48
     set Stress exponents for dislocation creep    =   1, 4
     set Activation energies for dislocation creep =   0, 0
@@ -86,7 +80,6 @@ subsection Material model
     # by the material model.
     set Angles of internal friction = 0 , 0
     set Cohesions                   = 1e15, 1e15
-
   end
 end
 
@@ -107,6 +100,7 @@ end
 # so we set everything to zero.
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 273 # cannot be zero!!!
   end
@@ -114,20 +108,23 @@ end
 
 # Description of the initial compositional fields mantle and slab
 subsection Initial composition model
-   set Model name = function
-   subsection Function
-     set Variable names = x,z
-     set Function expression = if((x<460000.0&z<580000.0)|(z<330000.0&x>=460000.0&x<540000.0)|(z<580000.0&x>=540000.0),0,1)
-   end
+  set Model name = function
+
+  subsection Function
+    set Variable names = x,z
+    set Function expression = if((x<460000.0&z<580000.0)|(z<330000.0&x>=460000.0&x<540000.0)|(z<580000.0&x>=540000.0),0,1)
+  end
 end
 
 # We output the solution every 1 My and monitor the velocity
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, particles
+
   subsection Visualization
     set Time between graphical output = 1e6
     set List of output variables      = strain rate, viscosity, density
   end
+
   # We read a file with 22 initial particle locations and
   # output the new particle locations over time to an ascii file.
   subsection Particles
@@ -135,6 +132,7 @@ subsection Postprocess
     set Time between data output  = 1e6
     set Data output format        = ascii
     set Particle generator name   = ascii file
+
     subsection Generator
       subsection Ascii file
         set Data directory = $ASPECT_SOURCE_DIR/benchmarks/slab_detachment/

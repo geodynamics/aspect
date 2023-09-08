@@ -11,10 +11,11 @@ set Additional shared libraries            = ./plugin/libking.so
 # ratio of the dimensional surface temperature T_surf = 273 K and
 # the temperature change across the domain DeltaT = 3000 K.
 set Adiabatic surface temperature          = 0.091
-
 set Use years in output instead of seconds = false
 set End time                               = 10
 set Output directory                       = output
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
 
 subsection Discretization
   subsection Stabilization parameters
@@ -23,10 +24,6 @@ subsection Discretization
     set cR                                                 = 0.033
   end
 end
-
-
-set Pressure normalization                 = surface
-set Surface pressure                       = 0
 
 subsection Termination criteria
   set Checkpoint on termination = true
@@ -55,12 +52,10 @@ subsection Adiabatic conditions model
   end
 end
 
-
 # The King benchmark uses the anelastic liquid approximation.
 subsection Formulation
   set Formulation = anelastic liquid approximation
 end
-
 
 # The benchmark is defined in terms of the nondimensional numbers
 # Di (dissipation number) and Ra (Rayleigh number).
@@ -71,6 +66,7 @@ end
 # to Di, and the viscosity, which is set to Di/Ra.
 subsection Material model
   set Model name = king material
+
   subsection King model
     set Reference density             = 1
     set Reference specific heat       = 1
@@ -88,7 +84,6 @@ subsection Material model
   end
 end
 
-
 # The model domain is the unit square.
 subsection Geometry model
   set Model name = box
@@ -98,7 +93,6 @@ subsection Geometry model
     set Y extent = 1
   end
 end
-
 
 # We choose a linear initial temperature profile that
 # matches the boundary conditions defined below plus
@@ -146,7 +140,6 @@ subsection Heating model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
 
@@ -154,7 +147,6 @@ subsection Gravity model
     set Magnitude = 1
   end
 end
-
 
 # As we are only interested in the steady state, we start on a
 # coarse mesh and refine once the solution is close to steady state.
@@ -165,7 +157,6 @@ subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 1.0
 end
-
 
 # In addition to some general postprocessing, we output
 # velocity statistics (needed for the root mean square velocity),

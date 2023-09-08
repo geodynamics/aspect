@@ -5,7 +5,6 @@
 # Keller et al., 2013; Schmeling, 200
 
 set Additional shared libraries            = ./libsolitary_wave.so
-
 set Adiabatic surface temperature          = 1623
 set CFL number                             = 1.0
 set Nonlinear solver scheme                = iterated Advection and Stokes
@@ -21,12 +20,10 @@ set Dimension                              = 2
 # This end time is chosen in such a way that the solitary wave travels
 # approximately 5 times its wavelength during the model time.
 set End time                               = 6e6
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
-
 set Use years in output instead of seconds = true
 
 subsection Discretization
@@ -40,7 +37,6 @@ subsection Compositional fields
   set Names of fields = porosity
 end
 
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom
   set List of model names = initial temperature
@@ -52,7 +48,6 @@ subsection Boundary temperature model
     # Temperature at the outer boundary (lithosphere water/air). Units: K.
     set Minimal temperature = 273
   end
-
 end
 
 subsection Boundary composition model
@@ -66,11 +61,13 @@ end
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right
   set Prescribed velocity boundary indicators = top:function, bottom:function
+
   subsection Function
-#    set Function expression = 0;-8.2836999e-5
+    #    set Function expression = 0;-8.2836999e-5
     set Function expression = 0;-1.65673998e-4
-#    set Function expression = 0;-3.31347996e-4
-#    set Function expression = 0;-6.62695992e-4
+
+    #    set Function expression = 0;-3.31347996e-4
+    #    set Function expression = 0;-6.62695992e-4
   end
 end
 
@@ -82,25 +79,21 @@ subsection Geometry model
     set Y extent  = 400
     set Y repetitions = 40
   end
-
 end
-
 
 subsection Gravity model
   set Model name = vertical
-
 
   subsection Vertical
     # Magnitude of the gravity vector in $m/s^2$. The direction is always
     # radially outward from the center of the earth.
     set Magnitude = 10.0
   end
-
 end
-
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
@@ -108,6 +101,7 @@ end
 
 subsection Initial composition model
   set Model name = Solitary wave initial condition
+
   subsection Solitary wave initial condition
     set Offset = 200
     set Read solution from file = true
@@ -116,42 +110,32 @@ subsection Initial composition model
   end
 end
 
-
 subsection Material model
   set Model name = Solitary Wave
+
   subsection Solitary wave
     set Reference permeability = 5e-9
   end
 end
 
-
 subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.0
-
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 4
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
 
-
 subsection Melt settings
   set Include melt transport                  = true
 end
 
-
 subsection Postprocess
-
   set List of postprocessors = visualization,composition statistics,velocity statistics,solitary wave statistics
 
   subsection Visualization
-
     set List of output variables      = density, viscosity, thermal expansivity, melt material properties
-
-    subsection Melt material properties
-      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
-    end
 
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no
@@ -168,11 +152,12 @@ subsection Postprocess
     # step. Units: years if the 'Use years in output instead of seconds'
     # parameter is set; seconds otherwise.
     set Time between graphical output = 5e5
+
+    subsection Melt material properties
+      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
+    end
   end
-
 end
-
-
 
 subsection Solver parameters
   set Composition solver tolerance = 1e-14

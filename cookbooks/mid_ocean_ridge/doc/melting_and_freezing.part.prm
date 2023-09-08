@@ -28,6 +28,7 @@ end
 
 subsection Material model
   set Model name = melt simple
+
   subsection Melt simple
     set Reference permeability = 1e-7
     set Melt extraction depth = 0.0

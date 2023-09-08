@@ -55,6 +55,7 @@ end
 
 subsection Material model
   set Model name = melt simple
+
   subsection Melt simple
     set Reference permeability = 1e-7
     set Melt extraction depth = 0.0
@@ -86,6 +87,7 @@ end
 # The gravity is constant and points downward.
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
@@ -105,6 +107,7 @@ end
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top:function
   set Tangential velocity boundary indicators = left
+
   subsection Function
     # We choose a half-spreading rate of u0=3cm/yr.
     set Function constants  = u0=0.03, x0=10000
@@ -132,10 +135,12 @@ end
 # beginning, the material is still solid and the porosity is zero.
 subsection Initial temperature model
   set Model name = adiabatic
+
   subsection Adiabatic
     set Age top boundary layer      = 1e8
     set Age bottom boundary layer   = 1e5
     set Amplitude                   = 0
+
     subsection Function
       set Function expression       = 0;0
     end
@@ -185,6 +190,7 @@ end
 # (zero porosity) and has the average mantle composition (zero depletion).
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0; 0
     set Variable names      = x,y
@@ -230,12 +236,12 @@ end
 ##################### Postprocessing ########################
 
 subsection Postprocess
-
   set List of postprocessors = visualization, composition statistics, velocity statistics
 
   # We mainly want to look at material properties of the solid and the melt.
   subsection Visualization
     set List of output variables      = material properties, melt material properties, melt fraction
+    set Time between graphical output = 0
 
     subsection Material properties
       set List of material properties = density, viscosity
@@ -248,10 +254,7 @@ subsection Postprocess
     subsection Melt material properties
       set List of properties = compaction viscosity, permeability, fluid density, is melt cell
     end
-
-    set Time between graphical output = 0
   end
-
 end
 
 # We write a checkpoint every 100 time steps, so that we are able to restart

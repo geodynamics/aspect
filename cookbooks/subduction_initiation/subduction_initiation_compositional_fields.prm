@@ -4,7 +4,6 @@ include subduction_initiation_basis.prm
 
 set Output directory                       = output-subduction-initiation-comp
 
-
 #materials are:
 # asthenosphere left,
 # asthenosphere right,
@@ -14,6 +13,7 @@ set Output directory                       = output-subduction-initiation-comp
 
 subsection Material model
   set Model name = multicomponent
+
   subsection Multicomponent
     set Densities = 3200, 3200, 3300, 3300, 1030
     set Viscosities = 1e21, 1e21, 1e22, 1e22, 1e18
@@ -28,6 +28,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = L0=300e3, H=180e3
@@ -40,6 +41,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, composition statistics, pressure statistics, material statistics, global statistics
+
   subsection Visualization
     set List of output variables = density, viscosity, strain rate
     set Time between graphical output = 0

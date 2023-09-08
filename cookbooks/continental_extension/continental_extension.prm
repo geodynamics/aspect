@@ -37,6 +37,7 @@ end
 # Model geometry (200x100 km, 20 km spacing)
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X repetitions = 10
     set Y repetitions = 5
@@ -55,6 +56,7 @@ subsection Mesh refinement
   set Initial global refinement          = 3
   set Time steps between mesh refinement = 0
   set Strategy = minimum refinement function
+
   subsection Minimum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y
@@ -71,6 +73,7 @@ subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 0
   end
+
   subsection Newton solver parameters
     set Maximum linear Stokes solver tolerance   = 1e-2
     set Use Eisenstat Walker method for Picard iterations = true
@@ -83,9 +86,11 @@ end
 # the free surface at each time step.
 subsection Mesh deformation
   set Mesh deformation boundary indicators        = top: free surface, top: diffusion
+
   subsection Free surface
     set Surface velocity projection = normal
   end
+
   subsection Diffusion
     # Diffusivity term. Increasing this value will result
     # in a smoother free surface and lower topography
@@ -109,7 +114,6 @@ subsection Boundary velocity model
   end
 end
 
-
 # Number and names of compositional fields
 # The five compositional fields represent:
 # 1. The plastic strain that accumualates over time, with the initial plastic strain removed
@@ -122,7 +126,6 @@ subsection Compositional fields
   set Names of fields = noninitial_plastic_strain, plastic_strain, crust_upper, crust_lower, mantle_lithosphere
 end
 
-
 # Initial values of different compositional fields
 # The upper crust (20 km thick), lower crust (20 km thick)
 # and mantle (60 km thick) are continuous horizontal layers
@@ -131,6 +134,7 @@ end
 # 0.5 and 1.5.
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = 0; \
@@ -155,6 +159,7 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
   set List of model names = box
+
   subsection Box
     set Bottom temperature = 1613
     set Top temperature    =  273
@@ -184,6 +189,7 @@ end
 #       (tests/continental_extension.prm).
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names = x,y
     set Function constants = h=100e3, ts1=273, ts2=633, ts3=893, \
@@ -202,6 +208,7 @@ end
 # and compositional fields.
 subsection Heating model
   set List of model names = compositional heating
+
   subsection Compositional heating
     set Use compositional field for heat production averaging = 1, 0, 0, 1, 1, 1
     set Compositional heating values = 0.0, 0.0, 0.0, 1.0e-6, 0.25e-6, 0.
@@ -219,7 +226,6 @@ subsection Material model
   set Model name = visco plastic
 
   subsection Visco Plastic
-
     # Reference temperature and viscosity
     set Reference temperature = 273
 
@@ -283,7 +289,6 @@ subsection Material model
     set End plasticity strain weakening intervals    = 1.5
     set Cohesion strain weakening factors            = 0.25
     set Friction strain weakening factors            = 0.25
-
   end
 end
 
@@ -296,15 +301,14 @@ subsection Gravity model
   end
 end
 
-
 # Post processing
 subsection Postprocess
   set List of postprocessors = basic statistics, composition statistics, heat flux densities, heat flux statistics, mass flux statistics, matrix statistics, pressure statistics, temperature statistics, topography, velocity statistics, visualization
+
   subsection Visualization
     set List of output variables = density, heat flux map, named additional outputs, strain rate, viscosity
-    set Output format = vtu
+    set Output format                 = vtu
     set Time between graphical output = 100.e3
     set Interpolate output            = true
-    set Output format                 = vtu
   end
 end

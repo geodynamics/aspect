@@ -11,6 +11,7 @@ set Pressure normalization       = volume
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent  = 512e3
     set Y extent  = 512e3
@@ -23,6 +24,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10
   end
@@ -33,6 +35,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
@@ -42,9 +45,11 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, point values, matrix statistics
+
   subsection Point values
     set Evaluation points = 256e3,384e3
   end
+
   subsection Visualization
     set Output format                 = vtu
     set Time between graphical output = 0

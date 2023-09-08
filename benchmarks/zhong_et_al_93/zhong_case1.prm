@@ -1,14 +1,13 @@
 set Dimension                              = 2
 set End time                               = 0
 set Output directory                       = output
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
-
 
 # Use a one by one box
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 1
     set Y extent = 1
@@ -19,13 +18,13 @@ end
 # perturbation at depth
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names      = x1,x2
     set Function constants  = lambda=1, pi=3.1415926536, L=1, depth=62, sigma = 0.5, N=64
     set Function expression = 1/(sigma/N*L * sqrt( 2 * pi) ) * exp( -0.5*(x2-depth/N)*(x2-depth/N)/sigma/sigma/L/L*N*N ) * cos(2*pi/lambda*x1/L)
   end
 end
-
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
@@ -43,7 +42,6 @@ subsection Formulation
   set Temperature equation = reference density profile
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
@@ -55,7 +53,6 @@ subsection Gravity model
     set Magnitude = 1
   end
 end
-
 
 subsection Material model
   set Model name = nondimensional
@@ -78,7 +75,6 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement                = 5
   set Initial adaptive refinement              = 0
@@ -98,7 +94,6 @@ subsection Postprocess
   subsection Dynamic topography
     set Density above          = 0
   end
-
 
   subsection Depth average
     set Time between graphical output = 1e6

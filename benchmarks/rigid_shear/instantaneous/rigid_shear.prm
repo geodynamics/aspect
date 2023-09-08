@@ -4,16 +4,12 @@
 # Modeling Incompressible Stokes Flow" for a discussion.
 
 set Additional shared libraries            = ../plugin/librigid_shear.so
-
 set Dimension                              = 2
 set End time                               = 0.0
 set Output directory                       = output
-
 set Pressure normalization                 = no
 set Nonlinear solver scheme                = no Advection, single Stokes
-
 set Use years in output instead of seconds = false
-
 
 subsection Geometry model
   set Model name = box
@@ -24,11 +20,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
-
 
 subsection Compositional fields
   set Names of fields = density_comp
@@ -43,7 +37,6 @@ subsection Initial composition model
   end
 end
 
-
 subsection Material model
   set Model name = rigid shear
 end
@@ -57,12 +50,10 @@ subsection Gravity model
   set Model name = rigid shear
 end
 
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators =
   set List of model names =
 end
-
 
 subsection Initial temperature model
   set Model name = function
@@ -72,13 +63,11 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 5
   set Time steps between mesh refinement       = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, rigid shear

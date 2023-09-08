@@ -12,6 +12,7 @@ end
 
 subsection Initial composition model
   set List of model names = function
+
   subsection Function
     set Function constants  = Ax=1475600.0, Az=670000.0, \
                               Bx=1500000.0, Bz=670000.0, \

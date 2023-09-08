@@ -6,13 +6,14 @@ set Output directory                       = output-subduction-initiation-pic
 
 subsection Material model
   set Model name = multicomponent
+  set Material averaging = harmonic average
+
   subsection Multicomponent
     set Densities = 0, 3200, 3200, 3300, 3300, 1030
     set Viscosities = 1e30, 1e21, 1e21, 1e22, 1e22, 1e18
     set Viscosity averaging scheme = harmonic
     set Thermal expansivities = 0
   end
-  set Material averaging = harmonic average
 end
 
 subsection Compositional fields
@@ -24,6 +25,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = L0=300e3
@@ -37,6 +39,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, composition statistics, pressure statistics, material statistics, global statistics, particles
+
   subsection Particles
     set Number of particles      = 350000
     set Time between data output = 0
@@ -46,6 +49,7 @@ subsection Postprocess
     set Interpolation scheme = cell average
     set Update ghost particles = true
   end
+
   subsection Visualization
     set List of output variables = density, viscosity, strain rate
     set Time between graphical output = 0

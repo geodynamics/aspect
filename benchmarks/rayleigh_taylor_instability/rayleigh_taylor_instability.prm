@@ -8,6 +8,7 @@ set Use years in output instead of seconds = false
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent  = 512e3
     set Y extent  = 512e3
@@ -21,18 +22,20 @@ end
 
 subsection Material model
   set Model name  = RTinstabilityMaterial
+
   subsection RTinstability
-     set eta1 = 1e21
-     set eta2 = 1e21
-     set rho1 = 3300
-     set rho2 = 3000
-     set amplitude = 4000
-     set lambda = 256e3
+    set eta1 = 1e21
+    set eta2 = 1e21
+    set rho1 = 3300
+    set rho2 = 3000
+    set amplitude = 4000
+    set lambda = 256e3
   end
 end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10
   end
@@ -43,6 +46,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
@@ -62,6 +66,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics
+
   subsection Visualization
     set Output format                 = vtu
     set Time between graphical output = 0

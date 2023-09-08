@@ -59,10 +59,11 @@ subsection Discretization
   set Use locally conservative discretization = true
   set Use discontinuous temperature discretization = false
   set Use discontinuous composition discretization = true
+
   subsection Stabilization parameters
-      set Use limiter for discontinuous composition solution = true
-      set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.0, 1.0
-      set Global composition minimum = -1.e11, -1.e11, -1.e11, 0.0, 0.0
+    set Use limiter for discontinuous composition solution = true
+    set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.0, 1.0
+    set Global composition minimum = -1.e11, -1.e11, -1.e11, 0.0, 0.0
   end
 end
 
@@ -81,6 +82,7 @@ end
 subsection Mesh deformation
   set Mesh deformation boundary indicators = top: free surface
   set Additional tangential mesh velocity boundary indicators = left, right
+
   subsection Free surface
     set Surface velocity projection = normal
   end
@@ -95,6 +97,7 @@ end
 # Spatial domain of different compositional fields
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  =
@@ -119,6 +122,7 @@ end
 # Initial temperature is constant
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 273
   end
@@ -126,24 +130,22 @@ end
 
 # Material model
 subsection Material model
-
   set Model name = viscoelastic
 
   subsection Viscoelastic
-     set Densities                   =  2700,  2700,  2700,  2700,  2700,  1890
-     set Viscosities                 = 1.e17, 1.e17, 1.e17, 1.e17, 1.e35, 1.e35
-     set Elastic shear moduli        = 1.e50, 1.e50, 1.e50, 1.e50, 3.e10, 3.e10
-     set Fixed elastic time step     = 5
-     set Use fixed elastic time step = false
-     set Viscosity averaging scheme  = maximum composition
+    set Densities                   =  2700,  2700,  2700,  2700,  2700,  1890
+    set Viscosities                 = 1.e17, 1.e17, 1.e17, 1.e17, 1.e35, 1.e35
+    set Elastic shear moduli        = 1.e50, 1.e50, 1.e50, 1.e50, 3.e10, 3.e10
+    set Fixed elastic time step     = 5
+    set Use fixed elastic time step = false
+    set Viscosity averaging scheme  = maximum composition
   end
-
 end
-
 
 # Gravity model
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end
@@ -154,25 +156,22 @@ subsection Postprocess
   set List of postprocessors = basic statistics, material statistics, velocity statistics, topography, visualization
 
   subsection Visualization
-
     set List of output variables = material properties, strain rate, named additional outputs
+    set Time between graphical output = 100
+    set Interpolate output = true
 
     subsection Material properties
       set List of material properties = density, viscosity
     end
-
-    set Time between graphical output = 100
-    set Interpolate output = true
   end
 
   subsection Topography
     set Output to file           = true
     set Time between text output = 100
   end
-
 end
 
 # Termination criteria
 subsection Termination criteria
- set Termination criteria = end time
+  set Termination criteria = end time
 end

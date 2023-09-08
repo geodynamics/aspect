@@ -9,16 +9,12 @@
 # equal to the start time to force a single time
 # step before the program terminates.
 set Additional shared libraries            = ./libburstedde.so
-
 set Dimension                              = 3
-
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = no Advection, iterated Stokes
-
 set Output directory                       = output
-
 set Pressure normalization                 = volume
 
 subsection Solver parameters
@@ -56,19 +52,17 @@ subsection Boundary velocity model
                                                 top   : BursteddeBoundary
 end
 
-
 subsection Material model
   set Model name = BursteddeMaterial
 end
-
 
 subsection Gravity model
   set Model name = BursteddeGravity
 end
 
 subsection Burstedde benchmark
-   #Viscosity parameter is beta
-   set Viscosity parameter             = 20
+  #Viscosity parameter is beta
+  set Viscosity parameter             = 20
 end
 
 ############### Parameters describing the temperature field
@@ -84,7 +78,6 @@ subsection Initial temperature model
   end
 end
 
-
 ############### Parameters describing the discretization
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
@@ -97,7 +90,6 @@ subsection Mesh refinement
   set Refinement fraction                = 0.2
   set Strategy                           = velocity
 end
-
 
 ############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to

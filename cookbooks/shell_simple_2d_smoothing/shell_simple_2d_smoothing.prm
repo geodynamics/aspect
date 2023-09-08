@@ -37,7 +37,6 @@ subsection Material model
   end
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
 
@@ -48,39 +47,34 @@ subsection Geometry model
   end
 end
 
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = bottom
   set Tangential velocity boundary indicators = top, left, right
 end
 
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
   set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 4273
     set Outer temperature = 973
   end
 end
 
-
 subsection Initial temperature model
   set Model name = spherical hexagonal perturbation
 end
 
-
 subsection Gravity model
   set Model name = ascii data
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 6
   set Initial adaptive refinement        = 0
   set Strategy                           = temperature
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
@@ -95,7 +89,6 @@ subsection Postprocess
     set Time between graphical output = 115
   end
 end
-
 
 subsection Heating model
   set List of model names =  shear heating

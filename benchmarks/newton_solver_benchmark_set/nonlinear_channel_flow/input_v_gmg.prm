@@ -2,7 +2,9 @@
 # benchmark, but use GMG instead.
 
 include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/input_v.prm
+
 set Additional shared libraries = libsimple_nonlinear.so
+set Output directory = results/output-v-gmg
 
 subsection Material model
   set Material averaging = harmonic average
@@ -12,9 +14,8 @@ subsection Solver parameters
   subsection Matrix Free
     set Output details = true
   end
+
   subsection Stokes solver parameters
     set Stokes solver type = block GMG
   end
 end
-
-set Output directory = results/output-v-gmg
