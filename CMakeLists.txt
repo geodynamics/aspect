@@ -16,7 +16,7 @@
 # along with ASPECT; see the file doc/COPYING.  If not see
 # <http://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.3.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.13.4)
 
 MESSAGE(STATUS "====================================================")
 MESSAGE(STATUS "============ Configuring ASPECT ====================")
@@ -168,38 +168,22 @@ if(ASPECT_WITH_WORLD_BUILDER)
     ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
     INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/world_builder/include/")
   ELSE()
-    IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
-      FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/*.cc")
-    ELSE()
-      FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/*.cc")
-    ENDIF()
+    FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/*.cc")
     LIST(APPEND TARGET_SRC ${wb_files})
     ADD_DEFINITIONS(-DWB_WITH_MPI)
 
     # generate config.cc and include it:
-    IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
-      CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in"
-                     "${CMAKE_BINARY_DIR}/source/world_builder/config.cc" @ONLY)
-      LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
-      FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder/config.h")
-    ELSE()
-      CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/include/world_builder/config.h.in"
-                     "${CMAKE_BINARY_DIR}/include/world_builder/config.h" @ONLY)
-      INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/include/")
-      FILE(REMOVE "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
-    ENDIF()
+    CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/include/world_builder/config.h.in"
+                    "${CMAKE_BINARY_DIR}/include/world_builder/config.h" @ONLY)
+    INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/include/")
+    FILE(REMOVE "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
 
     # Move some file to the end for unity builds to make sure other file come
     # "before". Note: The current design keeps all ASPECT files (including
     # ASPECT_UNITY_LAST files) before all GWB files. Mixing them will causes
     # many issues with non-unique namespace names like Utilities.
-    IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
-      SET(UNITY_WB_LAST_FILES
-      "${WORLD_BUILDER_SOURCE_DIR}/source/parameters.cc")
-    ELSE()
-      SET(UNITY_WB_LAST_FILES
-      "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/parameters.cc")
-    ENDIF()
+    SET(UNITY_WB_LAST_FILES
+        "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/parameters.cc")
 
     FOREACH(_source_file ${UNITY_WB_LAST_FILES})
       LIST(FIND TARGET_SRC ${_source_file} _index)
@@ -214,13 +198,11 @@ if(ASPECT_WITH_WORLD_BUILDER)
     FOREACH(_source_file ${wb_files})
       # exclude the world builder files from including precompiled headers, they
       # do not include ASPECT's dependencies at all.
-      SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE )
       SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
       # Temporarily disable world builder unity builds:
       SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE )
     ENDFOREACH()
 
-    SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY COTIRE_EXCLUDED TRUE )
     SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
   ENDIF()
 ENDIF()
@@ -730,15 +712,9 @@ CONFIGURE_FILE(
 
 
 # Check if we want to precompile header files. This speeds up compile time,
-# but can fail on some machines with old cmake, therefore it is disabled by
-# default. Also cotire currently has issues with cmake generator expressions
-# used in deal.II for cmake version 3.9 and above. Disable cotire for cmake >=
-# 3.9. Starting with cmake 3.16 there is native support inside cmake and we can
-# use that.
-IF(CMAKE_VERSION VERSION_LESS 3.9)
-  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time. Currently only supported for cmake 3.8 and older versions, or 3.16 and newer versions.")
-  SET(ASPECT_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions." FORCE)
-ELSEIF(NOT CMAKE_VERSION VERSION_LESS 3.16)
+# but can fail on some machines with old cmake. Starting with cmake 3.16
+# there is native support inside cmake and we can precompile headers.
+IF(NOT CMAKE_VERSION VERSION_LESS 3.16)
   SET(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake 3.8 and older versions or 3.16 and newer versions.")
   SET(ASPECT_UNITY_BUILD ON CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions.")
 ELSE()
@@ -753,25 +729,7 @@ IF (ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
 ENDIF()
 
 IF (ASPECT_PRECOMPILE_HEADERS)
-  IF (CMAKE_VERSION VERSION_LESS 3.9)
-    MESSAGE(STATUS "Enabling cotire to precompile external header files.")
-    INCLUDE(cmake/cotire)
-
-    FOREACH(_T ${TARGETS})
-      # Set some properties that are necessary for the header precompilations
-      # and unity build to pass. We need to exclude some headers that
-      # frequently cause problems, and undefine some macros between source
-      # files that would otherwise interfere with each other.
-      SET_TARGET_PROPERTIES (${_T} PROPERTIES
-        COTIRE_PREFIX_HEADER_IGNORE_PATH
-        "/usr/include/;${CMAKE_SOURCE_DIR};${CMAKE_BINARY_DIR}")
-
-      # This line activates the cotire module for the aspect target,
-      # and therefore the whole precompilation
-      cotire(${_T})
-    ENDFOREACH()
-
-  ELSEIF (NOT CMAKE_VERSION VERSION_LESS 3.16)
+  IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
     MESSAGE(STATUS "Precompiling common header files.")
     # Use the native cmake support to precompile some common headers
     # from ASPECT and deal.II that are frequently included, but rarely changed.
@@ -785,7 +743,7 @@ IF (ASPECT_PRECOMPILE_HEADERS)
         <deal.II/particles/particle_handler.h>)
     ENDFOREACH()
   ELSE()
-    MESSAGE(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake 3.8 and older versions or 3.16 and newer versions.")
+    MESSAGE(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake 3.16 and newer versions.")
   ENDIF()
 
 ELSE()
