@@ -1,0 +1,9 @@
+Changed: The input subsection 'Particles' has been moved
+from the 'Postprocess' subsection into its own subsection
+at the top level. This is to make it more clear that
+particles are not simply a postprocessing feature.
+All included input files have been adjusted and the reformatting
+script has been adjusted. Users will have to apply the reformatting
+script to their input files manually.
+<br>
+(Rene Gassmoeller, 2023/09/10)

@@ -68,10 +68,27 @@ def reformat (parameters):
     return parameters
 
 
+
+def move_particle_parameters_to_own_subsection(parameters):
+    """ Move the particle parameters to their own subsection. """
+
+    # Find the particle parameters
+    if "Postprocess" in parameters:
+        if "Particles" in parameters["Postprocess"]["value"]:
+            parameters["Particles"] = parameters["Postprocess"]["value"]["Particles"]
+            del parameters["Postprocess"]["value"]["Particles"]
+
+    return parameters
+
+
+
 def main(input_file, output_file):
     """Echo the input arguments to standard output"""
     parameters = aspect.read_parameter_file(input_file)
+
     parameters = reformat(parameters)
+    parameters = move_particle_parameters_to_own_subsection(parameters)
+
     aspect.write_parameter_file(parameters, output_file)
 
 
