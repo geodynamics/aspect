@@ -196,6 +196,12 @@ namespace aspect
 
       if (cooling_model == "half-space cooling")
         {
+          if (age_top > 0.0 || age_bottom > 0.0)
+            AssertThrow (kappa > 0.0,
+                         ExcMessage ("The thermal diffusivity needs to be larger than zero "
+                                     "for computing thermal boundary layers with the half-space "
+                                     "cooling model."));
+
           // analytical solution for the thermal boundary layer from half-space cooling model
           surface_cooling_temperature = age_top > 0.0 ?
                                         (T_surface - adiabatic_surface_temperature) *
