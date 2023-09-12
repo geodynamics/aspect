@@ -252,8 +252,17 @@ namespace aspect
                       {
                         // Assert that the limiter was reasonably effective. We can not expect perfect accuracy
                         // due to inaccuracies e.g. in the inversion of the mapping.
-                        Assert(interpolated_value >= property_minimums[property_index] - 1e-9 * std::max(std::abs(property_minimums[property_index]), std::abs(property_maximums[property_index])), ExcInternalError());
-                        Assert(interpolated_value <= property_maximums[property_index] + 1e-9 * std::max(std::abs(property_minimums[property_index]), std::abs(property_maximums[property_index])), ExcInternalError());
+                        const double tolerance = std::sqrt(std::numeric_limits<double>::epsilon())
+                                                 * std::max(std::abs(property_minimums[property_index]),
+                                                            std::abs(property_maximums[property_index]));
+                        (void) tolerance;
+                        Assert(interpolated_value >= property_minimums[property_index] - tolerance,
+                               ExcMessage("The particle interpolation limiter did not succeed. Interpolated value: " + std::to_string(interpolated_value)
+                                          + " is smaller than the minimum particle property value: " + std::to_string(property_minimums[property_index]) + "."));
+                        Assert(interpolated_value <= property_maximums[property_index] + tolerance,
+                               ExcMessage("The particle interpolation limiter did not succeed. Interpolated value: " + std::to_string(interpolated_value)
+                                          + " is larger than the maximum particle property value: " + std::to_string(property_maximums[property_index]) + "."));
+
                         interpolated_value = std::min(interpolated_value, property_maximums[property_index]);
                         interpolated_value = std::max(interpolated_value, property_minimums[property_index]);
                       }
