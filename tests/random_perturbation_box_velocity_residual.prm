@@ -65,8 +65,13 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, velocity residual statistics
-  
+  set List of postprocessors = visualization, velocity statistics, velocity residual statistics, point values
+
+  subsection Point values
+    set Evaluation points = 0, 0  ; \
+                            0 , 330000
+  end
+
   subsection Visualization
     set Interpolate output = false
     set Number of grouped files       = 0

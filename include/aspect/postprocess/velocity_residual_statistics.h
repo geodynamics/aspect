@@ -43,6 +43,11 @@ namespace aspect
     {
       public:
         /**
+         * Constructor
+         */
+        VelocityResidualStatistics ();
+
+        /**
          * This function reads the specified input velocity ascii data files.
          */
         void initialize () override;
@@ -51,8 +56,8 @@ namespace aspect
          * This function returns the input data velocity at a point.
          * This function is called from execute() function.
          */
-        Tensor<1,dim>
-        get_data_velocity (const Point<dim> &p) const;
+        std::pair <Point<dim>, Tensor<1,dim>>
+        get_observed_data (const unsigned int p) const;
 
         /**
          * Evaluate the solution for some velocity residual statistics.
@@ -84,7 +89,7 @@ namespace aspect
         /**
          * Pointer to the structured data
          */
-        std::unique_ptr<Utilities::StructuredDataLookup<dim>> data_lookup;
+        std::unique_ptr<Utilities::StructuredDataLookup<1>> data_lookup;
 
         /**
          * Directory in which the input data files are present.
@@ -97,12 +102,20 @@ namespace aspect
         std::string data_file_name;
 
         /**
-         * Scale the input data by a scalar factor. Can be used to transform
-         * the unit of the data (if they are not specified in SI units (m/s or
-         * m/yr depending on the "Use years in output instead of seconds"
-         * parameter).
+         * Interval between the generation of output in seconds.
          */
-        double scale_factor;
+        double output_interval;
+
+        /**
+         * A time (in seconds) the last output has been produced.
+         */
+        double last_output_time;
+
+        /**
+          * Consecutively counted number indicating the how-manyth time we will
+          * create output the next time we get to it.
+          */
+        unsigned int output_file_number;
     };
   }
 }
