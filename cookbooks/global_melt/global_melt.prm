@@ -47,8 +47,8 @@ end
 
 # The end time of the simulation. Because we want to see how upwellings
 # and downwellings evolve over time, and if differences develop between
-# the model with and without melt migration, we set the end time to 140 Ma.
-set End time                               = 1.4e8
+# the model with and without melt migration, we set the end time to 200 Ma.
+set End time                               = 2e8
 
 
 # We prescribe free-slip boundary conditions on all sides.
@@ -102,8 +102,8 @@ end
 # We choose an adiabatic temperature profile as initial condition,
 # with conductive temperature profiles in the top and bottom boundary
 # layers, which were computed using a half space cooling model.
-# The cold top boundary layer corresponds to an age of 300 Ma,
-# and the hot top boundary layer corresponds to an age of 500 Ma.
+# The cold top boundary layer corresponds to an age of 70 Ma,
+# and the hot top boundary layer corresponds to an age of 700 Ma.
 # A small temperature perturbation is added at the bottom of the
 # domain. To make the model asymmetric, we place it in a distance of
 # x = 2900 km from the left boundary.
@@ -112,8 +112,8 @@ end
 subsection Initial temperature model
   set List of model names = adiabatic, function
   subsection Adiabatic
-    set Age bottom boundary layer = 5e8
-    set Age top boundary layer    = 3e8
+    set Age bottom boundary layer = 7e8
+    set Age top boundary layer    = 7e7
 
     subsection Function
       set Function expression       = 0;0
@@ -149,7 +149,7 @@ subsection Boundary temperature model
 
   subsection Initial temperature
     set Minimal temperature = 293
-    set Maximal temperature = 3700
+    set Maximal temperature = 3900
   end
 end
 
@@ -288,28 +288,33 @@ end
 ##################### Mesh refinement #########################
 
 # For the model with melt migration, we use adaptive refinement.
-# We make use of two different refinement criteria: we set a minimum of 4 global
+# We make use of two different refinement criteria: we set a minimum of 5 global
 # refinements everywhere in the model (which is the same resolution as for the
 # model without melt), and we refine in regions where melt is present, to be
-# precise, everywhere where the porosity is bigger than 1e-5.
+# precise, everywhere where the porosity is bigger than 1e-6.
 # We adapt the mesh every 5 time steps.
 subsection Mesh refinement
   set Coarsening fraction                      = 0.05
   set Refinement fraction                      = 0.8
 
   set Initial adaptive refinement              = 2
-  set Initial global refinement                = 4
-  set Strategy                                 = composition threshold, minimum refinement function
+  set Initial global refinement                = 5
+  set Strategy                                 = composition threshold, minimum refinement function, boundary
   set Time steps between mesh refinement       = 5
 
-  # minimum of 4 global refinements
+  # minimum of 5 global refinements
   subsection Minimum refinement function
-    set Function expression = 4
+    set Function expression = 5
   end
 
-  # refine where the porosity is bigger than 1e-8
+  # refine where the porosity is bigger than 1e-6
   subsection Composition threshold
-    set Compositional field thresholds = 1e-8,1.0
+    set Compositional field thresholds = 1e-6,1.0
+  end
+
+  # refine at top and bottom boundary
+  subsection Boundary
+    set Boundary refinement indicators = top, bottom
   end
 end
 
