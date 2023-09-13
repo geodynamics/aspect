@@ -493,6 +493,22 @@ namespace aspect
       }
 
 
+
+      namespace
+      {
+        bool
+        all_entries_NaN (const std::vector<double> &values)
+        {
+          for (const double value : values)
+            if (std::isnan(value) == false)
+              return false;
+
+          return true;
+        }
+      }
+
+
+
       // Do the requested averaging operation for one array. The
       // projection matrix argument is only used if the operation
       // chosen is project_to_Q1.
@@ -501,11 +517,6 @@ namespace aspect
                              const FullMatrix<double>      &expansion_matrix,
                              std::vector<double>           &values_out)
       {
-        // if an output field has not been filled (because it was
-        // not requested), then simply do nothing -- no harm no foul
-        if (values_out.size() == 0)
-          return;
-
 #ifdef DEBUG
 #ifdef ASPECT_USE_FP_EXCEPTIONS
         // disable floating point exceptions while averaging. Errors will be reported
@@ -513,6 +524,12 @@ namespace aspect
         fedisableexcept(FE_DIVBYZERO|FE_INVALID);
 #endif
 #endif
+
+        // if an output field has not been filled (because it was
+        // not requested), then simply do nothing -- no harm no foul
+        // note that it is still an error if only some entries are NaN
+        if (values_out.size() == 0 || all_entries_NaN(values_out) == true)
+          return;
 
         const unsigned int N = values_out.size();
         const unsigned int P = expansion_matrix.n();
