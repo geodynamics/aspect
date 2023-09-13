@@ -2,7 +2,21 @@
 # -*- coding: utf-8 -*-
 
 """ This script reformats the given .prm files to follow our
-general formatting guidelines.
+general formatting guidelines. These are:
+
+- indent by two spaces for each subsection level, and indent comments as well
+  as content
+- ensure an empty line before a subsection or a comment, unless it is a
+  subsection/comment following directly another subsection, or it is at the
+  start of the file
+- combine content of subsections that are duplicated
+- if values are duplicated, merge them and use the last one in the file (as
+  ASPECT does when it reads the file)
+- retain as much user formatting in comments and parameter values as possible,
+  e.g. spaces for padding values to align between adjacent lines. This is not
+  always perfectly possible.
+- retain broken lines (`\`) in values of parameters and comments, remove them
+  from subsection or parameter names.
 """
 
 import sys
@@ -65,7 +79,7 @@ def main(input_file, output_file):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
                     prog='ASPECT .prm file reformatter',
-                    description='Reformats ASPECT .prm files to follow our general formatting guidelines.')
+                    description='Reformats ASPECT .prm files to follow our general formatting guidelines. See the documentation of this script for details.')
     parser.add_argument('input_file', type=str, help='The .prm file to reformat')
     parser.add_argument('output_file', type=str, help='The .prm file to write the reformatted file to')
     args = parser.parse_args()
