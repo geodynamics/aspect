@@ -22,7 +22,6 @@ set End time                               = 1.7
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
-
 # Then come a number of sections that deal with the setup
 # of the problem to solve. The first one deals with the
 # geometry of the domain within which we want to solve.
@@ -39,7 +38,6 @@ subsection Geometry model
     set Y extent = 1
   end
 end
-
 
 # The next section deals with the initial conditions for the
 # temperature (there are no initial conditions for the
@@ -94,7 +92,6 @@ subsection Boundary composition model
   set List of model names = initial composition
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right
   set Prescribed velocity boundary indicators = top:function, bottom:function
@@ -118,7 +115,6 @@ subsection Gravity model
   end
 end
 
-
 subsection Material model
   set Model name = simple
 
@@ -132,14 +128,12 @@ subsection Material model
   end
 end
 
-
 # We also have to specify that we want to use the Boussinesq
 # approximation (assuming the density in the temperature
 # equation to be constant, and incompressibility).
 subsection Formulation
   set Formulation = Boussinesq approximation
 end
-
 
 # The settings above all pertain to the description of the
 # continuous partial differential equations we want to solve.
@@ -153,7 +147,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
   set Strategy = temperature
 end
-
 
 # The final part is to specify what ASPECT should do with the
 # solution once computed at the end of every time step. The

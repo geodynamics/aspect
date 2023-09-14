@@ -11,16 +11,6 @@
 set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Max nonlinear iterations               = 50
 set Nonlinear solver tolerance             = 1e-10
-
-subsection Mesh refinement
-  set Initial global refinement                = 4
-  set Refinement fraction                      = 0.0
-  set Coarsening fraction                      = 0.0
-  set Time steps between mesh refinement       = 0
-  set Initial adaptive refinement              = 0
-end
-
-
 set Adiabatic surface temperature          = 100.0
 set CFL number                             = 1.0
 
@@ -30,13 +20,19 @@ set Dimension                              = 2
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
 set End time                               = 0
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0.01
 set Resume computation                     = false
 set Start time                             = 0
-
 set Use years in output instead of seconds = false
+
+subsection Mesh refinement
+  set Initial global refinement                = 4
+  set Refinement fraction                      = 0.0
+  set Coarsening fraction                      = 0.0
+  set Time steps between mesh refinement       = 0
+  set Initial adaptive refinement              = 0
+end
 
 subsection Formulation
   set Formulation = custom
@@ -46,6 +42,7 @@ end
 
 subsection Boundary temperature model
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 0,1,2,3
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.
@@ -54,13 +51,11 @@ subsection Boundary temperature model
     # Temperature at the outer boundary (lithosphere water/air). Units: K.
     set Minimal temperature = 99.0
   end
-
 end
 
 subsection Boundary composition model
   set List of model names = initial composition
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -68,18 +63,19 @@ subsection Geometry model
   subsection Box
     set X extent  = 1
     set Y extent  = 0.99
-#    set Box origin X coordinate = -1
+
+    #    set Box origin X coordinate = -1
     set Box origin Y coordinate = -0.5
   end
-
 end
 
 subsection Gravity model
   set Model name = MyGravity
-
 end
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
+
   subsection Function
     set Function constants = u1=1,w1=0.5
     set Function expression = -2*u1*pi*sin(2*pi*x)+u1*cos(2*pi*x)-w1*(pi*pi+1)*cos(pi*z);-w1*pi*sin(pi*z)+w1*cos(pi*z)-u1*(4*pi*pi+1)*cos(2*pi*x)
@@ -87,32 +83,18 @@ subsection Boundary velocity model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 100.0 + sin(2*pi*x) * cos(pi*z)
     set Variable names      = x,z
   end
 end
 
-
 subsection Material model
   set Model name = test material
 end
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,1,2,3
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
-end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, pressure statistics, velocity boundary statistics, error calculation
@@ -122,8 +104,6 @@ subsection Postprocess
     set List of output variables      = material properties, gravity
   end
 end
-
-
 
 subsection Solver parameters
   subsection Stokes solver parameters

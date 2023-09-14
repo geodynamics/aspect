@@ -7,7 +7,6 @@ set Use years in output instead of seconds = true
 set End time                               = 0
 set Adiabatic surface temperature          = 1613.0
 
-
 subsection Geometry model
   set Model name = box
 
@@ -19,29 +18,27 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1000
   end
 end
 
-
 subsection Compositional fields
   set Number of fields = 1
 end
 
-
 subsection Initial composition model
   set Model name = ascii data layered
+
   subsection Ascii data model
     set Data directory        = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
     set Data file names       = initial_composition_top_mantle_box_2d.txt, initial_composition_top_crust_box_2d.txt
     set Interpolation scheme  = piecewise constant
   end
 end
-
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
@@ -55,14 +52,13 @@ subsection Gravity model
   end
 end
 
-
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Viscosity = 1e21
   end
 end
-
 
 subsection Mesh refinement
   set Initial global refinement                = 3
@@ -70,7 +66,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
   set Strategy                                 = temperature
 end
-
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, depth average, composition statistics

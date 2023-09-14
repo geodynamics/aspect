@@ -7,6 +7,7 @@ set End time                               = 0.5
 set Use years in output instead of seconds = false
 set CFL number                             = 0.5
 set Output directory                       = output
+set Nonlinear solver scheme                   = single Advection, no Stokes
 
 subsection Volume of Fluid
   set Number initialization samples = 16
@@ -58,15 +59,13 @@ end
 
 subsection Prescribed Stokes solution
   set Model name = function
+
   subsection Velocity function
     set Variable names = x,y,t
-
     set Function constants = init=1.25, x0=1.0, y0=0.0, xv=-0.25, yv=-0.25
     set Function expression = xv;yv
   end
 end
-
-set Nonlinear solver scheme                   = single Advection, no Stokes
 
 subsection Postprocess
   set List of postprocessors = composition statistics, volume of fluid statistics, volume of fluid mms
@@ -85,7 +84,6 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set Time between graphical output = 1.0
-
     set List of output variables = volume of fluid values
 
     subsection Volume of Fluid

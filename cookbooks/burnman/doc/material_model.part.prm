@@ -1,5 +1,6 @@
 subsection Material model
   set Model name = ascii reference profile
+  set Material averaging = harmonic average
 
   subsection Ascii data model
     set Data file name = isentrope_properties.txt
@@ -10,6 +11,4 @@ subsection Material model
     set Thermal viscosity exponent = 10.0
     set Viscosity prefactors = 1.0, 0.1, 1.0, 10.0
   end
-
-  set Material averaging = harmonic average
 end

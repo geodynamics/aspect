@@ -5,16 +5,13 @@
 # advected into the model.
 
 set Additional shared libraries = ../plugins/libcompressibility_formulations.so
-
 set Dimension = 2
-
 set End time                               = 6201145.069582775
 set Use years in output instead of seconds = true
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Nonlinear solver tolerance             = 1e-14
 set Max nonlinear iterations               = 25
-
 set Output directory                       = output-lateral_pipe
 
 subsection Adiabatic conditions model
@@ -24,11 +21,9 @@ subsection Adiabatic conditions model
   end
 end
 
-
 subsection Heating model
   set List of model names =
 end
-
 
 subsection Discretization
   set Stokes velocity polynomial degree = 2
@@ -42,6 +37,7 @@ end
 subsection Solver parameters
   set Temperature solver tolerance = 1e-14
   set Composition solver tolerance = 1e-14
+
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-14
   end
@@ -68,14 +64,13 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0.0
   end
 end
-
 
 ############### Boundary conditions
 # We only fix the temperature at the upper boundary, the other boundaries
@@ -103,11 +98,11 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1600 + 200 * ln(1-x*(exp(1)-1)/(2*1000000))
   end
 end
-
 
 subsection Material model
   set Model name = compressibility formulations
@@ -117,13 +112,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, material statistics, mass flux statistics

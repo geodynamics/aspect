@@ -12,7 +12,6 @@ set Additional shared libraries            = ../plugin/libannulus.so
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
-
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = no Advection, single Stokes
 set Output directory                       = output
@@ -24,6 +23,7 @@ set Pressure normalization                 = surface
 
 subsection Geometry model
   set Model name = spherical shell
+
   # NOTE: the analytical solutions are hard-coded
   # to these geometry values: do not change them.
   subsection Spherical shell
@@ -48,7 +48,7 @@ end
 
 # k controls the number of convection cells.
 subsection Annulus benchmark
-   set k = 4
+  set k = 4
 end
 
 # Temperature does not influence this benchmark

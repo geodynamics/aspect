@@ -5,6 +5,7 @@ set Output directory                       = output_figure_6_1e22
 
 subsection Material model
   set Model name = visco plastic
+
   subsection Visco Plastic
     set Prefactors for dislocation creep = 5.e-25, 5.e-25, 5.e-25, 5.e-25, 5.e-23
   end

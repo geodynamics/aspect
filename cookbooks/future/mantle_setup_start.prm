@@ -4,12 +4,12 @@
 # restarts it with melt migration enabled.
 
 set Dimension                              = 2
-
 set Use years in output instead of seconds = true
 set End time                               = 1.5e8    # run until 1.5e8, then restart with Melt scaling factor threshold = 1e-8
 set Output directory                       = output_ULVZ_2
 set Nonlinear solver scheme                = iterated IMPES
 set Max nonlinear iterations               = 20
+
 #set Resume computation = true
 set Pressure normalization                 = surface
 
@@ -46,7 +46,6 @@ subsection Solver parameters
   end
 end
 
-
 subsection Geometry model
   set Model name = box
 
@@ -58,12 +57,12 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set List of model names = adiabatic, function
 
   subsection Adiabatic
     set Age bottom boundary layer = 5e7
+
     subsection Function
       set Function expression = 0; 0.07; 0.07
     end
@@ -77,8 +76,9 @@ end
 
 subsection Initial composition model
   set List of model names = function, porosity
+
   subsection Function
-   set Function expression = 0; 0.07; 0.07
+    set Function expression = 0; 0.07; 0.07
   end
 end
 
@@ -92,6 +92,7 @@ subsection Boundary temperature model
   set Allow fixed temperature on outflow boundaries = false
   set Fixed temperature boundary indicators   = bottom, top
   set List of model names = initial temperature
+
   subsection Initial temperature
     set Maximal temperature = 4000
   end
@@ -103,7 +104,6 @@ subsection Boundary composition model
   set Model name = initial composition
 end
 
-
 subsection Heating model
   set List of model names = adiabatic heating, shear heating, latent heat melt
 
@@ -113,8 +113,6 @@ subsection Heating model
   end
 end
 
-
-
 subsection Gravity model
   set Model name = vertical
 
@@ -122,7 +120,6 @@ subsection Gravity model
     set Magnitude = 10.0
   end
 end
-
 
 subsection Material model
   set Model name = melt boukare
@@ -137,14 +134,11 @@ subsection Material model
     set Exponential melt weakening factor    = 20
     set Include melting and freezing  = true
     set Melting time scale for operator splitting = 1e5
-
     set Fe mantle melting temperature = 2774.5
     set Mg mantle melting temperature = 4171.2
-
     set Reference permeability        = 5e-12
   end
 end
-
 
 subsection Mesh refinement
   set Initial global refinement                = 4
@@ -162,14 +156,11 @@ subsection Mesh refinement
   end
 end
 
-
 subsection Boundary fluid pressure model
   subsection Density
     set Density formulation = fluid density
   end
 end
-
-
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, composition statistics
@@ -179,7 +170,6 @@ subsection Postprocess
     set List of output variables = material properties, nonadiabatic temperature, melt fraction, melt material properties, named additional outputs
     set Output format = vtu
     set Interpolate output = false
-
 
     subsection Material properties
       set List of material properties = density,thermal expansivity,specific heat,viscosity,compressibility
@@ -196,7 +186,6 @@ subsection Checkpointing
   # checkpoint step frequency instead. Units: Seconds.
   set Time between checkpoint  = 900
 end
-
 
 subsection Termination criteria
   set Checkpoint on termination = true

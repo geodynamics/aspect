@@ -13,48 +13,49 @@ set CFL number                             = .5
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent  = 500e3
     set Y extent  = 500e3
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
 # Thermal expansion coeff = 0 --> no temperature dependence
+
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Reference density             = 3200
     set Viscosity                     = 1e21
     set Thermal expansion coefficient = 0
+    set Density differential for compositional field 1 = 100  # 3300 kg/m^3
+    set Composition viscosity prefactor = 1  # ONLY PARAMETER THAT CHANGES IN THESE TESTS
   end
 end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end
 end
-
 
 ############### Parameters describing the temperature field
 # Note: The temperature plays no role in this model
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
 end
-
 
 ############### Parameters describing the compositional field
 # Note: The compositional field is what drives the flow
@@ -66,19 +67,12 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,z
     set Function expression = if(((x>187.5e3)&&(x<375e3)&&(z>312.5e3)&&(z<375e3)), 1, 0);if((x>125e3)&&(x<312.5e3)&&((z>312.5e3)&&(z<437.5e3)), 2, 0);
- end
-end
-
-subsection Material model
-  subsection Simple model
-    set Density differential for compositional field 1 = 100  # 3300 kg/m^3
-    set Composition viscosity prefactor = 1  # ONLY PARAMETER THAT CHANGES IN THESE TESTS
   end
 end
-
 
 ############### Parameters describing the discretization
 
@@ -89,8 +83,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 1
 end
 
-
-
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
@@ -99,9 +91,10 @@ end
 
 subsection Discretization
   set Use discontinuous composition discretization = true
+
   subsection Stabilization parameters
-      set Use limiter for discontinuous composition solution = true # apply the limiter to the DG solutions
-      set Global composition maximum = 1.0, 2.0
-      set Global composition minimum = 0.0, 0.0
+    set Use limiter for discontinuous composition solution = true # apply the limiter to the DG solutions
+    set Global composition maximum = 1.0, 2.0
+    set Global composition minimum = 0.0, 0.0
   end
 end

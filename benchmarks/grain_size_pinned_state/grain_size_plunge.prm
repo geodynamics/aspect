@@ -14,7 +14,6 @@ set Maximum first time step                = 10
 set Maximum relative increase in time step = 1
 set Nonlinear solver scheme                = iterated Advection and defect correction Stokes
 set Max nonlinear iterations               = 50
-
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1100
 
@@ -28,45 +27,39 @@ subsection Geometry model
   end
 end
 
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top,bottom
-end
-
-
-subsection Boundary temperature model
   set List of model names = initial temperature
+
   subsection Initial temperature
     set Minimal temperature = 1100
   end
 end
 
-
 subsection Boundary composition model
   set List of model names = initial composition
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0.0
   end
 end
-
 
 subsection Boundary traction model
   set Prescribed traction boundary indicators = top x: function, bottom x: function
 
   subsection Function
     set Variable names = x,y
+
     # We want to prescribe a tangential traction of 50 MPa
     # at the top boundary and -50 at the bottom boundary.
-    set  Function constants = traction = 50e6, y_extent = 1e5
+    set Function constants = traction = 50e6, y_extent = 1e5
     set Function expression = if (y>y_extent/2, traction, -traction)  ;  0
   end
 end
-
 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top y: function, bottom y: function
@@ -77,36 +70,34 @@ subsection Boundary velocity model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = adiabatic
 
   subsection Adiabatic
     set Age top boundary layer      = 0
+
     subsection Function
       set Function expression       = 0
     end
   end
 end
 
-
 subsection Initial composition model
   set Model name = function
 
   subsection Function
     set Variable names      = x,z
+
     # This is the test case from Mulyukova and Bercovici (2018) using
     # the parameters from their figure 4 and a grain size of 1e-2 m.
     set Function expression = 1e-2
   end
 end
 
-
 subsection Compositional fields
   set Number of fields = 1
   set Names of fields   = grain_size
 end
-
 
 subsection Material model
   set Model name = grain size
@@ -120,7 +111,6 @@ subsection Material model
     set Minimum viscosity                = 1e16
     set Reference temperature            = 1100
     set Recrystallized grain size        =
-
     set Grain growth activation energy       = 3e5
     set Grain growth activation volume       = 0.0
     set Grain growth rate constant           = 1.6E-022
@@ -131,19 +121,18 @@ subsection Material model
 
     # Mulyukova and Bercovici (2018)
     # Diffusion creep
-    set Diffusion creep prefactor            =27.2e-24 # s^-1 Pa^-1 m^p
-    set Diffusion creep exponent             =1.0 # 1 for diffusion creep
-    set Diffusion creep grain size exponent  =3
-    set Diffusion activation energy          =3e5 #J/mol
-    set Diffusion activation volume          =0 # m^3/mol
-
+    set Diffusion creep prefactor            = 27.2e-24 # s^-1 Pa^-1 m^p
+    set Diffusion creep exponent             = 1.0 # 1 for diffusion creep
+    set Diffusion creep grain size exponent  = 3
+    set Diffusion activation energy          = 3e5 #J/mol
+    set Diffusion activation volume          = 0 # m^3/mol
     set Dislocation viscosity iteration threshold = 1e-3
-    # Dislocation creep
-    set Dislocation creep prefactor          =8.8e-13 # s^-1 Pa^-n
-    set Dislocation creep exponent           =3
-    set Dislocation activation energy        =530000 # J/mol
-    set Dislocation activation volume        =0 # m^3/mol
 
+    # Dislocation creep
+    set Dislocation creep prefactor          = 8.8e-13 # s^-1 Pa^-n
+    set Dislocation creep exponent           = 3
+    set Dislocation activation energy        = 530000 # J/mol
+    set Dislocation activation volume        = 0 # m^3/mol
     set Minimum grain size                   = 1e-8
 
     subsection Grain damage partitioning
@@ -153,22 +142,20 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
   set Time steps between mesh refinement = 0
 end
 
-
 subsection Postprocess
   set List of postprocessors = composition statistics,temperature statistics, velocity statistics, visualization, material statistics
+
   subsection Visualization
     set List of output variables = viscosity, shear stress, stress, stress second invariant
     set Time between graphical output = 5e3
   end
 end
-
 
 subsection Nullspace removal
   set Remove nullspace = net x translation

@@ -26,14 +26,13 @@ subsection Boundary composition model
   set List of model names = initial composition
 end
 
-
 # We fix temperature on the top and bottom,
 # as well as on the right boundary because
 # we have inflow through the latter.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top, right
-
   set List of model names = box
+
   subsection Box
     set Bottom temperature = 0
     set Left temperature   = 0
@@ -63,12 +62,12 @@ subsection Material model
   subsection Multicomponent
     set Reference temperature         = 0.0
     set Viscosity averaging scheme    = maximum composition
+
     # background, OP, ML SP, crust SP
     set Viscosities                   = 1.e20, 1.e23, 1.e23, 1.e20
     set Densities                     = 3200.0, 3250.0, 3250.0, 3250.0
     set Thermal conductivities        = 1
   end
-
 end
 
 subsection Compositional fields
@@ -78,6 +77,7 @@ end
 
 subsection Initial composition model
   set List of model names = function
+
   subsection Function
     set Function constants  = Ax=1475600.0, Az=670000.0, \
                               Bx=1500000.0, Bz=670000.0, \
@@ -106,11 +106,11 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end
 end
-
 
 # We ignore any temperature effects
 subsection Initial temperature model
@@ -139,19 +139,15 @@ subsection Mesh refinement
     set Function constants = vel_trans=150e3
     set Function expression = if(x<vel_trans,6,4)
   end
-
 end
-
 
 subsection Formulation
   set Formulation = Boussinesq approximation
 end
 
-
 subsection Postprocess
   set List of postprocessors = velocity statistics, maximum depth of field, viscous dissipation statistics
 end
-
 
 subsection Solver parameters
   subsection Stokes solver parameters

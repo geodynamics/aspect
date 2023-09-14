@@ -1,4 +1,3 @@
-
 include $ASPECT_SOURCE_DIR/cookbooks/vankeken_subduction/vankeken_corner_flow.prm
 
 set End time = 0

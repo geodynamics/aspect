@@ -43,12 +43,15 @@
 
 include $ASPECT_SOURCE_DIR/tests/visco_plastic_peierls_mei_exact.prm
 
+
 # Material model (values for background material)
 subsection Material model
   set Model name = visco plastic
+
   subsection Visco Plastic
     set Reference strain rate                     = 9.326722654162315e-11
     set Minimum strain rate                       = 9.326722654162315e-11
+
     # dislocation creep parameters
     # These values produce such a sufficiently high viscosity that the
     # composite viscosity between the diffusion and dislocation creep
@@ -58,6 +61,7 @@ subsection Material model
     set Stress exponents for dislocation creep    = 1.0
     set Activation energies for dislocation creep = 0
     set Activation volumes for dislocation creep  = 0
+
     # Peierls creep parameters
     set Include Peierls creep                     = true
     set Peierls creep flow law                    = viscosity approximation

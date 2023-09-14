@@ -55,12 +55,12 @@ set Max nonlinear iterations               = 1
 set Maximum time step                      = 2e6
 set Output directory                       = visco_plastic_total_strain_healing_temperature_dependent
 set Timing output frequency                = 1
-
 set Adiabatic surface temperature = 293
 
 # Model geometry (100x100 km, 25 km spacing)
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X repetitions = 5
     set Y repetitions = 5
@@ -76,22 +76,19 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
+# Temperature boundary and initial conditions
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top, left, right
+  set List of model names = initial temperature
 end
 
 subsection Boundary velocity model
   set Zero velocity boundary indicators = bottom, top, left, right
 end
 
-# Temperature boundary and initial conditions
-subsection Boundary temperature model
-  set List of model names = initial temperature
-end
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 273
   end
@@ -106,6 +103,7 @@ end
 # Prescribe initial values for total_strain
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = 0.2
@@ -120,35 +118,26 @@ end
 # Material model (values for background material)
 subsection Material model
   set Model name = visco plastic
+
   subsection Visco Plastic
-
     set Reference strain rate = 1.e-20
-
     set Viscous flow law                          = dislocation
     set Prefactors for dislocation creep          = 5.e-23
     set Stress exponents for dislocation creep    = 1.0
     set Activation energies for dislocation creep = 0.
     set Activation volumes for dislocation creep  = 0.
-
     set Yield mechanism = drucker
-
     set Angles of internal friction = 30.
     set Cohesions                   = 1.e9
-
     set Strain weakening mechanism = total strain
-
     set Start prefactor strain weakening intervals  = 0.0
     set End prefactor strain weakening intervals    = 0.2
     set Prefactor strain weakening factors          = 0.5
-
     set Start plasticity strain weakening intervals = 0.0
     set End plasticity strain weakening intervals   = 0.2
-
     set Cohesion strain weakening factors           = 0.5
     set Friction strain weakening factors           = 0.5
-
     set Strain healing mechanism  = temperature dependent
-
     set Strain healing temperature dependent recovery rate = 1.e-15
     set Strain healing temperature dependent prefactor     = 15.
   end
@@ -157,6 +146,7 @@ end
 # Gravity model
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
@@ -166,6 +156,7 @@ end
 # named additional outputs includes the weakened cohesions and friction angles
 subsection Postprocess
   set List of postprocessors = composition statistics, material statistics, temperature statistics, velocity statistics, visualization
+
   subsection Visualization
     set Interpolate output = false
     set List of output variables = viscosity, strain rate, named additional outputs

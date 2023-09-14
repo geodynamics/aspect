@@ -16,8 +16,6 @@ set End time                               = 0
 set Use years in output instead of seconds = true
 set Pressure normalization                 = surface
 
-
-
 ############### Parameters describing the model
 # The setup is a 3d box with edge length 2890000 in which
 # all sides except the left have free slip boundary conditions. Because
@@ -36,34 +34,26 @@ subsection Geometry model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 1,2,3,4,5
 end
 
 subsection Boundary traction model
   set Prescribed traction boundary indicators = 0: initial lithostatic pressure #, 1: initial lithostatic pressure
-end
 
-subsection Nullspace removal
-  set Remove nullspace                        = #linear x momentum
-end
-
-
-subsection Boundary traction model
   subsection Initial lithostatic pressure
     set Representative point = 10000,10000,2890000
   end
+
   subsection Function
     set Variable names = x,z
     set Function expression = (289e4-z)*9.81*33e2;0
   end
 end
 
+subsection Nullspace removal
+  set Remove nullspace                        = #linear x momentum
+end
 
 subsection Material model
   set Model name = simple
@@ -75,7 +65,6 @@ subsection Material model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
 
@@ -83,7 +72,6 @@ subsection Gravity model
     set Magnitude = 9.81
   end
 end
-
 
 ############### Parameters describing the temperature field
 # As above, there is no need to set anything for the
@@ -123,10 +111,6 @@ subsection Initial composition model
   end
 end
 
-
-
-
-
 ############### Parameters describing the discretization
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
@@ -143,7 +127,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
 end
 
-
 ############### Parameters describing the what to do with the solution
 # The final section allows us to choose which postprocessors to
 # run at the end of each time step. We select to generate graphical
@@ -154,5 +137,4 @@ end
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, basic statistics, velocity boundary statistics, boundary pressures
-
 end

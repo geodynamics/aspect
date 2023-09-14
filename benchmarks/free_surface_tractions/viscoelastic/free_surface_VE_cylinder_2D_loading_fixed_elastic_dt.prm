@@ -4,13 +4,13 @@
 
 include free_surface_VE_cylinder_2D_loading.prm
 
+
 #  Global parameters
 set Dimension                              = 2
 set Output directory                       = output_free_surface_VE_cylinder_2D_loading_fixed_elastic_dt
 
 # Material model
 subsection Material model
-
   set Model name = viscoelastic
 
   subsection Viscoelastic
@@ -18,5 +18,4 @@ subsection Material model
     set Fixed elastic time step     = 1e2
     set Viscosity averaging scheme  = harmonic
   end
-
 end

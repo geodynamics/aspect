@@ -7,8 +7,6 @@ set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
 
-
-
 subsection Geometry model
   set Model name = box
 
@@ -40,7 +38,6 @@ subsection Initial temperature model
   end
 end
 
-
 # Compared to the passive material model, we here make
 # the density composition dependent by letting it depend
 # linearly on the value of the first compositional field.
@@ -56,13 +53,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 5
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics

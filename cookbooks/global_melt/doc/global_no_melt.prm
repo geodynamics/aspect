@@ -57,6 +57,7 @@ end
 # added (by default).
 subsection Initial temperature model
   set List of model names = adiabatic, function
+
   subsection Adiabatic
     set Age bottom boundary layer = 7e8
     set Age top boundary layer    = 7e7
@@ -99,7 +100,6 @@ subsection Geometry model
     set Y extent = 2900000
     set X repetitions = 3
   end
-
 end
 
 ################ Gravity and material properties ##################
@@ -122,8 +122,8 @@ end
 # properties are not used, so we do not have to specify them
 # here.
 subsection Material model
-
   set Model name = melt global
+
   subsection Melt global
     set Thermal conductivity              = 4.7
     set Reference solid density           = 3400
@@ -188,21 +188,19 @@ subsection Postprocess
 
   subsection Visualization
     set List of output variables      = material properties, nonadiabatic temperature
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 6e5
 
     subsection Material properties
       set List of material properties = density, viscosity, melt fraction
     end
-
-    set Number of grouped files       = 0
-    set Output format                 = vtu
-    set Time between graphical output = 6e5
   end
 
   subsection Depth average
     set Number of zones = 12
     set Time between graphical output = 6e5
   end
-
 end
 
 # We write a checkpoint approximately every half an hour,

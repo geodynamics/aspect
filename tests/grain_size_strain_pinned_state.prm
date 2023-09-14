@@ -21,7 +21,6 @@ subsection Material model
     set Minimum viscosity                = 1e16
     set Reference temperature            = 1600
     set Recrystallized grain size        =
-
     set Grain growth activation energy       = 39072
     set Grain growth activation volume       = 0.0
     set Grain growth rate constant           = 1.6E-022
@@ -32,19 +31,19 @@ subsection Material model
 
     # Mulyukova and Bercovici (2018)
     # Diffusion creep
-    set Diffusion creep prefactor            =1e-200 # s^-1 Pa^-1 m^p
-    set Diffusion creep exponent             =1.0 # 1 for diffusion creep
-    set Diffusion creep grain size exponent  =3
-    set Diffusion activation energy          =3e5 #J/mol
-    set Diffusion activation volume          =0 # m^3/mol
-
+    set Diffusion creep prefactor            = 1e-200 # s^-1 Pa^-1 m^p
+    set Diffusion creep exponent             = 1.0 # 1 for diffusion creep
+    set Diffusion creep grain size exponent  = 3
+    set Diffusion activation energy          = 3e5 #J/mol
+    set Diffusion activation volume          = 0 # m^3/mol
     set Dislocation viscosity iteration threshold = 1e-3
+
     # Kawazoe et al. (2009)
     # Dislocation creep
-    set Dislocation creep prefactor          =1e-13 # s^-1 Pa^-n
-    set Dislocation creep exponent           =3
-    set Dislocation activation energy        =390720 # J/mol
-    set Dislocation activation volume        =0 # m^3/mol
+    set Dislocation creep prefactor          = 1e-13 # s^-1 Pa^-n
+    set Dislocation creep exponent           = 3
+    set Dislocation activation energy        = 390720 # J/mol
+    set Dislocation activation volume        = 0 # m^3/mol
 
     subsection Grain damage partitioning
       set Minimum grain size reduction work fraction = 1e-6

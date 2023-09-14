@@ -17,5 +17,5 @@ subsection Material model
 end
 
 subsection Mesh refinement
-set Time steps between mesh refinement = 5
+  set Time steps between mesh refinement = 5
 end

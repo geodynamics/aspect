@@ -20,24 +20,35 @@ set Nonlinear solver scheme                = single Advection, single Stokes
 # Inflow occurs along the left top
 # boundary, so we prescribe temperature
 # there.
+# In 3D the additional boundary indicators have value 6 (left lithosphere),
+# 7 (right lithosphere), 8 (front lithosphere) and 9 (back lithosphere).
+# We prescribe a velocity field oblique to all vertical boundaries
+# (so in the X- and Y-direction) to the left and right lithosphere
+# and the top boundary.
+# Boundaries with inflow that are not periodic get a prescribed
+# temperature and composition.
+# The mantle velocity is restricted to tangential only.
 subsection Boundary temperature model
   set List of model names = box with lithosphere boundary indicators
+  set Fixed temperature boundary indicators   = 6
+
   subsection Box with lithosphere boundary indicators
     set Left temperature lithosphere = 0
     set Front temperature lithosphere = 0
   end
 end
 
-
 # We use the initial composition as boundary
 # condition.
+
 subsection Boundary composition model
   set List of model names = initial composition
+  set Fixed composition boundary indicators   = 6
 end
-
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10
   end
@@ -65,14 +76,13 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
-   set Function expression = 0
+    set Function expression = 0
   end
 end
-
 
 # We prescribe one compositional field
 # to represent the lithosphere as a
@@ -91,39 +101,15 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
 end
 
-
-# In 3D the additional boundary indicators have value 6 (left lithosphere),
-# 7 (right lithosphere), 8 (front lithosphere) and 9 (back lithosphere).
-# We prescribe a velocity field oblique to all vertical boundaries
-# (so in the X- and Y-direction) to the left and right lithosphere
-# and the top boundary.
-# Boundaries with inflow that are not periodic get a prescribed
-# temperature and composition.
-# The mantle velocity is restricted to tangential only.
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 6
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = 6
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 1, 2, 3, 4
-end
-
-subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 5: function, 6:function, 7:function
-end
 
-
-subsection Boundary velocity model
   # On the lithospheric part of the boundary,
   # prescribe a velocity in the X- and Y-direction [m/yr].
   subsection Function
@@ -135,30 +121,29 @@ subsection Boundary velocity model
   end
 end
 
-
 # The lithosphere is represented by a lower density,
 # higher viscosity compositional field.
 subsection Compositional fields
   set Number of fields = 1
 end
 
-
 # The lithosphere is 100 km thick.
 subsection Initial composition model
   set Model name = function
+
   subsection Function
-   set Variable names = x,y,z
-   set Function constants = lith_depth=100e3, model_height=600e3
-   set Function expression = if((model_height-z)<lith_depth,1,0)
+    set Variable names = x,y,z
+    set Function constants = lith_depth=100e3, model_height=600e3
+    set Function expression = if((model_height-z)<lith_depth,1,0)
   end
 end
-
 
 # We look at the velocity statistics. Max velocity will be
 # the prescribed velocity of 0.71 cm/year. The boundary indicator
 # visualization shows us the indicators we set at the boundaries.
 subsection Postprocess
   set List of postprocessors = velocity statistics, visualization
+
   subsection Visualization
     set Interpolate output = false
     set Output format            = gnuplot

@@ -20,4 +20,4 @@ bash ${UTIL_DIR}/update_prm_files.sh $PRM_FILES
 # To remove the backup files that are created you will likely want to use the
 # following command. It is commented out by default, because you should think
 # carefully before automatically removing files.
-# find ${BASE_DIR} -name *.bak -delete
+#find ${BASE_DIR} -name *.bak -delete

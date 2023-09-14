@@ -1,32 +1,26 @@
 set Additional shared libraries            = ./case-2.3-plugin/libVoT.so
 
-
 ############### Global parameters
 # Case 2.3 begins with the final steady state solution of Case 2.1
 # Resume computation must be set to true, and Output directory must
 # point to the folder that contains the results of Case 2.1.
 
 set CFL number                             = 10
-
 set End time                               = 3
 set Output directory                       = output
-
 set Resume computation                     = true
-
 set Start time                             = 0
-
 set Use years in output instead of seconds = false
-
 
 subsection Checkpointing
   set Steps between checkpoint = 15
 end
 
-
 ############### Parameters describing the model
 
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Inner radius  = 1.22
     set Opening angle = 360
@@ -34,11 +28,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Nullspace removal
   set Remove nullspace                        = net rotation
 end
-
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
@@ -46,6 +38,7 @@ end
 
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude =  1e8
   end
@@ -74,13 +67,13 @@ subsection Boundary temperature model
   end
 end
 
-
 ############### Parameters describing the temperature field
 # Angular mode is set to 4 in order to match the number of
 # convective cells reported by Davies et al.
 
 subsection Initial temperature model
   set Model name = spherical hexagonal perturbation
+
   subsection Spherical hexagonal perturbation
     set Angular mode          = 4
     set Rotation offset       = 0
@@ -105,15 +98,11 @@ subsection Mesh refinement
   set Additional refinement times        =
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 5
-  set Additional refinement times        =
   set Refinement fraction                = 1
   set Coarsening fraction                = 0
-
   set Strategy                           = temperature
-
   set Time steps between mesh refinement = 0
 end
-
 
 ############### Parameters describing what to do with the solution
 

@@ -3,6 +3,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/pressure_compatibility.prm
 
+
 subsection Discretization
   set Use locally conservative discretization = true
 end

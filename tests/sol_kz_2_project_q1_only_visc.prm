@@ -2,6 +2,7 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/solkz/solkz.prm
 
+
 subsection Material model
   set Model name = SolKzMaterial
   set Material averaging = project to Q1 only viscosity

@@ -8,16 +8,17 @@ set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 0
 set Start time                             = 0
-set End time                               = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
-
+set Adiabatic surface temperature = 1600
 
 ############ These parameters are of interest for this test: #########
 
+
 subsection Boundary temperature model
   set List of model names = spherical constant
+  set Fixed temperature boundary indicators   = 0, 1
 
   subsection Spherical constant
     set Inner temperature = 3000.0
@@ -25,8 +26,6 @@ subsection Boundary temperature model
   end
 end
 
-
-set Adiabatic surface temperature = 1600
 subsection Initial temperature model
   set Model name = adiabatic
 
@@ -36,7 +35,6 @@ subsection Initial temperature model
     set Subadiabaticity = 200
   end
 end
-
 
 ########################################################################
 
@@ -49,7 +47,6 @@ subsection Gravity model
   end
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
 
@@ -59,7 +56,6 @@ subsection Geometry model
     set Opening angle = 90
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -74,26 +70,13 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 5
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0, 1
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 2, 3
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = 1
 end
 

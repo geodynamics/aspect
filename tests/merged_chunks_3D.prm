@@ -11,29 +11,41 @@ set Pressure normalization                 = surface
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude = 10
   end
 end
 
+# In 3D the radial boundary indicators are
+# upper|lower east|west|south|north.
+# Because we want flow through the upper part of the boundaries
+# we set fixed temperature and composition boundary conditions.
+# For now we set the lower part of the radial boundaries to
+# zero velocity, while prescribing a velocity function on the
+# upper boundaries. Note that this particular example can be accomplished
+# without additional boundary indicators and just prescribing a
+# velocity function on the whole radial boundaries.
+# Along the top and the lithospheric part of the vertical boundaries
+# we prescribe a plate velocity of 1 cm/year.
 
 subsection Boundary temperature model
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = uppereast, upperwest, uppernorth, uppersouth, bottom, top
 end
-
 
 subsection Boundary composition model
   set List of model names = initial composition
+  set Fixed composition boundary indicators   = uppereast, upperwest, uppernorth, uppersouth, top
 end
-
 
 subsection Geometry model
   set Model name = chunk with lithosphere boundary indicators
-# We start the outer chunk at a depth of
-# 150 km
+
+  # We start the outer chunk at a depth of
+  # 150 km
   subsection Chunk with lithosphere boundary indicators
     set Chunk inner radius = 5771000
     set Chunk outer radius = 6371000
@@ -49,11 +61,11 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
-   set Function expression = 1600
+    set Function expression = 1600
   end
 end
 
@@ -80,31 +92,12 @@ subsection Mesh refinement
   set Initial global refinement          = 0
 end
 
-# In 3D the radial boundary indicators are
-# upper|lower east|west|south|north.
-# Because we want flow through the upper part of the boundaries
-# we set fixed temperature and composition boundary conditions.
-# For now we set the lower part of the radial boundaries to
-# zero velocity, while prescribing a velocity function on the
-# upper boundaries. Note that this particular example can be accomplished
-# without additional boundary indicators and just prescribing a
-# velocity function on the whole radial boundaries.
-# Along the top and the lithospheric part of the vertical boundaries
-# we prescribe a plate velocity of 1 cm/year.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = uppereast, upperwest, uppernorth, uppersouth, bottom, top
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = uppereast, upperwest, uppernorth, uppersouth, top
-end
-
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = uppernorth:function, uppersouth:function, uppereast:function, \
                                                 upperwest:function, outer:function
   set Tangential velocity boundary indicators = bottom
   set Zero velocity boundary indicators       = lowereast, lowerwest, lowernorth, lowersouth
+
   subsection Function
     set Variable names      = x,y,z
     set Function constants  = vel_mag=0.01
@@ -112,16 +105,15 @@ subsection Boundary velocity model
   end
 end
 
-
 # The lithosphere is represented by a lower density,
 # higher viscosity compositional field.
 subsection Compositional fields
- set Number of fields = 1
+  set Number of fields = 1
 end
-
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y,z
     set Function constants  = lith_depth=125e3, model_radius=6371e3
@@ -129,12 +121,12 @@ subsection Initial composition model
   end
 end
 
-
 # We look at the velocity statistics; max velocity will be
 # the prescribed velocity of 1 cm/year. The boundary indicator
 # visualization shows us the indicators we set at the boundaries.
 subsection Postprocess
   set List of postprocessors = velocity statistics, visualization
+
   subsection Visualization
     set List of output variables = boundary indicators
     set Output format            = gnuplot

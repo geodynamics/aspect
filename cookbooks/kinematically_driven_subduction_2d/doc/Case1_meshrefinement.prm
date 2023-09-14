@@ -18,5 +18,4 @@ subsection Mesh refinement
     set Function constants = vel=150e3, L=100e3, crust=10e3
     set Function expression = if(x<crust,10,if(x<L,9,if(x<vel,8,6)))
   end
-
 end

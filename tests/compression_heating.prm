@@ -22,7 +22,6 @@ set Nonlinear solver scheme                = iterated Advection and Stokes
 # time system we want to work in and what the end time is.
 set Use years in output instead of seconds = false
 set End time                               = 0.3
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1600
@@ -31,7 +30,6 @@ subsection Discretization
   set Stokes velocity polynomial degree    = 2
   set Composition polynomial degree        = 1
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -49,13 +47,15 @@ end
 
 subsection Initial temperature model
   set Model name = function
-    subsection Function
-      set Function expression       = 1600
+
+  subsection Function
+    set Function expression       = 1600
   end
 end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0.5; 0.0
   end
@@ -66,17 +66,11 @@ subsection Boundary composition model
 end
 
 subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2
+
   subsection Function
     set Function expression = 0;0
   end
-end
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0,1,2
 end
 
 subsection Melt settings
@@ -89,6 +83,7 @@ end
 
 subsection Boundary fluid pressure model
   set Plugin name = density
+
   subsection Density
     set Density formulation = fluid density
   end
@@ -101,7 +96,6 @@ subsection Gravity model
     set Magnitude = 10
   end
 end
-
 
 subsection Material model
   set Model name = melt global compression
@@ -124,13 +118,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement                = 4
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = temperature statistics, heating statistics, visualization

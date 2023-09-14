@@ -10,7 +10,8 @@ set Start time                             = 0
 set End time                               = 4
 set Use years in output instead of seconds = false
 set CFL number                             = 0.5
-set Output directory                       = output
+set Output directory = periodic_test
+set Nonlinear solver scheme                   = single Advection, no Stokes
 
 subsection Mesh refinement
   set Minimum refinement level           = 2
@@ -48,15 +49,13 @@ end
 
 subsection Prescribed Stokes solution
   set Model name = function
+
   subsection Velocity function
     set Variable names = x,y,t
-
     set Function constants = init=1.4, x0=1.0, y0=0.3, xv=0.0, yv=-0.25
     set Function expression = xv;yv
   end
 end
-
-set Nonlinear solver scheme                   = single Advection, no Stokes
 
 subsection Compositional fields
   set Number of fields = 1
@@ -64,6 +63,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names = x,y,t
     set Function expression = if (y<0.65, if(y>0.35, 1.0, 0.0), 0.0)
@@ -78,5 +78,3 @@ subsection Postprocess
     set Time between graphical output = 0.0
   end
 end
-
-set Output directory = periodic_test

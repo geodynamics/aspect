@@ -8,7 +8,6 @@ set End time                               = 1e5
 set Adiabatic surface temperature          = 1600.0
 set Use years in output instead of seconds = true
 
-
 subsection Boundary temperature model
   set List of model names = spherical constant
   set Fixed temperature boundary indicators = 0,1
@@ -18,7 +17,6 @@ subsection Boundary temperature model
     set Outer temperature = 273
   end
 end
-
 
 subsection Geometry model
   set Model name = spherical shell
@@ -30,7 +28,6 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = radial constant
 
@@ -39,7 +36,6 @@ subsection Gravity model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = harmonic perturbation
 
@@ -47,7 +43,6 @@ subsection Initial temperature model
     set Magnitude = 200.0
   end
 end
-
 
 subsection Material model
   set Model name = Steinberger
@@ -61,29 +56,23 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 3
-
   set Refinement fraction                = 0.0
   set Coarsening fraction                = 0.0
   set Strategy                           = velocity
-
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Heating model
   set List of model names = adiabatic heating
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,2,3
   set Zero velocity boundary indicators       = 1
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics, temperature statistics, heat flux statistics, depth average

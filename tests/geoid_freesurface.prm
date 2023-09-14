@@ -11,6 +11,7 @@ set Pressure normalization                 = no
 
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Thermal expansion coefficient = 0.1
     set Viscosity                     = 1.0
@@ -27,6 +28,7 @@ end
 
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Inner radius = 200000
     set Outer radius = 400000
@@ -43,6 +45,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Coordinate system = spherical
     set Function constants = pi=3.1415926536
@@ -53,6 +56,7 @@ end
 
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude = 9.8
   end
@@ -66,6 +70,7 @@ end
 
 subsection Mesh deformation
   set Mesh deformation boundary indicators = outer: free surface
+
   subsection Free surface
     set Surface velocity projection = normal
   end
@@ -73,13 +78,16 @@ end
 
 subsection Postprocess
   set List of postprocessors = basic statistics, geoid, dynamic topography, topography
-    subsection Topography
+
+  subsection Topography
     set Output to file = true
   end
-    subsection Dynamic topography
+
+  subsection Dynamic topography
     set Density above = 0.
     set Density below = 2.0
   end
+
   subsection Geoid
     set Include surface topography contribution = true
     set Include CMB topography contribution = true

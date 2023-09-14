@@ -18,6 +18,7 @@ subsection Material model
     set Viscosity                     = 1e21
     set Thermal viscosity exponent    = 15.0
     set Reference temperature         = 1600
+
     # 'background' or 'all' are identical identifiers, because there is just
     # background material
     set Phase transition depths           = all:410000|660000
@@ -30,7 +31,6 @@ subsection Material model
   end
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
 
@@ -41,28 +41,19 @@ subsection Geometry model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = inner, outer, left, right
 end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = inner, outer
-end
-
-
-subsection Boundary temperature model
   set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 2600
     set Outer temperature = 273
   end
 end
-
 
 subsection Initial temperature model
   set Model name = adiabatic
@@ -73,7 +64,6 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Gravity model
   set Model name = radial constant
 
@@ -82,7 +72,6 @@ subsection Gravity model
   end
 end
 
-
 subsection Mesh refinement
   set Refinement fraction                = 0.0
   set Coarsening fraction                = 0.0
@@ -90,7 +79,6 @@ subsection Mesh refinement
   set Initial global refinement          = 5
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average

@@ -15,7 +15,6 @@
 
 
 set Additional shared libraries = ./plugin/libtime_dependent_annulus.so
-
 set Dimension                              = 2
 set End time                               = 0.09817477042468103
 set Output directory                       = output-time_dependent_annulus
@@ -43,6 +42,7 @@ end
 
 subsection Material model
   set Model name = time dependent annulus
+  set Material averaging = none
 
   subsection Time dependent annulus
     set Use analytic density = false
@@ -68,9 +68,7 @@ subsection Material model
       end
     end
   end
-  set Material averaging = none
 end
-
 
 subsection Gravity model
   set Model name = function
@@ -82,7 +80,6 @@ subsection Gravity model
   end
 end
 
-
 subsection Compositional fields
   set Number of fields = 1
   set Names of fields = density_comp
@@ -92,20 +89,20 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = 48*sqrt(x^2 + y^2)^5
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
 end
-
 
 subsection Adiabatic conditions model
   set Model name = function
@@ -115,9 +112,7 @@ subsection Adiabatic conditions model
     set Function expression = 0; 0; 0
     set Variable names      = depth
   end
-
 end
-
 
 subsection Discretization
   set Stokes velocity polynomial degree = 2
@@ -125,13 +120,11 @@ subsection Discretization
   set Use discontinuous composition discretization = true
 end
 
-
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-12
   end
 end
-
 
 subsection Mesh refinement
   set Initial global refinement   = 3
@@ -140,7 +133,6 @@ subsection Mesh refinement
   set Refinement fraction         = 0
   set Coarsening fraction         = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = time dependent annulus, particles, visualization
@@ -175,11 +167,9 @@ subsection Postprocess
   end
 end
 
-
 subsection Termination criteria
   set Checkpoint on termination = true
 end
-
 
 subsection Checkpointing
   set Time between checkpoint  = 7200

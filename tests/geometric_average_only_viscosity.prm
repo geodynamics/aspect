@@ -8,7 +8,6 @@
 
 set Dimension                              = 2
 set End time                               = 0
-
 set Adiabatic surface temperature          = 100
 
 subsection Solver parameters
@@ -16,7 +15,6 @@ subsection Solver parameters
     set Stokes solver type = block GMG
   end
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -41,11 +39,9 @@ subsection Boundary temperature model
   set List of model names = initial temperature
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, bottom, left, right
 end
-
 
 subsection Gravity model
   set Model name = vertical
@@ -54,7 +50,6 @@ subsection Gravity model
     set Magnitude = 10
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -68,13 +63,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement                = 1
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization

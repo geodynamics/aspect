@@ -10,11 +10,9 @@ set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Use conduction timestep = true
 
-
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -25,7 +23,6 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
 
@@ -33,7 +30,6 @@ subsection Initial temperature model
     set Function expression = (1-y)*x
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -48,12 +44,10 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 3
 end
-
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom

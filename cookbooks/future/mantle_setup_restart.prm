@@ -1,7 +1,6 @@
 include ./mantle_setup_start.prm
 
 set Dimension                              = 2
-
 set End time                               = 3e8
 set Resume computation                     = true
 set Nonlinear solver tolerance             = 1e-4
@@ -23,7 +22,6 @@ subsection Material model
     set Melting time scale for operator splitting = 1e3
   end
 end
-
 
 subsection Mesh refinement
   set Initial global refinement                = 4

@@ -5,6 +5,7 @@
 # the two layers.
 subsection Material model
   set Model name = simpler with crust
+
   subsection Simpler with crust model
     set Reference density             = 3300
     set Reference specific heat       = 1250

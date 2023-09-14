@@ -16,17 +16,15 @@ subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 0
     set Maximum number of expensive Stokes solver steps = 3000
-  end
-  subsection Stokes solver parameters
     set Stokes solver type = block GMG
   end
 end
-
 
 ############### Parameters describing the model
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent  = 1200e3
     set Y extent  = 600e3
@@ -45,6 +43,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y,z
     set Function constants  = a=200e3
@@ -54,16 +53,18 @@ end
 
 subsection Material model
   set Model name = simple
+  set Material averaging = harmonic average
+
   subsection Simple model
     set Viscosity = 2e18
     set Density differential for compositional field 1 = 10
     set Composition viscosity prefactor = 1000
   end
-  set Material averaging = harmonic average
 end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0
   end
@@ -73,6 +74,7 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = front,back
   set Zero velocity boundary indicators = bottom,top
   set Prescribed velocity boundary indicators = left: function, right:function
+
   subsection Function
     set Variable names      = x,y,z
     set Function constants  = cm=0.01, year=1 , b=7.5e3
@@ -84,6 +86,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
@@ -104,6 +107,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, pressure statistics
+
   subsection Visualization
     set Output format = vtu
     set List of output variables = density, viscosity, strain rate

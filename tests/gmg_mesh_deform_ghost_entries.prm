@@ -10,13 +10,13 @@ set End time = 10
 
 subsection Material model
   set Model name = viscoelastic
+  set Material averaging = project to Q1 only viscosity
 
   subsection Viscoelastic
     set Use fixed elastic time step = true
     set Fixed elastic time step     = 1e2
     set Viscosity averaging scheme  = harmonic
   end
-
 end
 
 subsection Solver parameters
@@ -27,13 +27,10 @@ subsection Solver parameters
   end
 end
 
-subsection Material model
-  set Material averaging = project to Q1 only viscosity
-end
-
 subsection Mesh deformation
   set Additional tangential mesh velocity boundary indicators = left,right
   set Mesh deformation boundary indicators = top: boundary function
+
   subsection Boundary function
     set Variable names      = x,y,t
     set Function expression = 0;  -3.168808781e-16*(x-1e5)

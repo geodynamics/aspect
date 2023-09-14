@@ -7,16 +7,15 @@ set Use years in output instead of seconds = true
 set End time                               = 1.5e9
 set Output directory                       = output-shell_simple_2d
 
-
 subsection Material model
   set Model name = simple
+  set Material averaging = harmonic average only viscosity
 
   subsection Simple model
     set Thermal expansion coefficient = 4e-5
     set Viscosity                     = 1e22
   end
 end
-
 
 subsection Geometry model
   set Model name = spherical shell
@@ -28,12 +27,10 @@ subsection Geometry model
   end
 end
 
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = bottom
   set Tangential velocity boundary indicators = top, left, right
 end
-
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
@@ -45,21 +42,17 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Heating model
   set List of model names =  shear heating
 end
-
 
 subsection Initial temperature model
   set Model name = spherical hexagonal perturbation
 end
 
-
 subsection Gravity model
   set Model name = ascii data
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 5
@@ -67,7 +60,6 @@ subsection Mesh refinement
   set Strategy                           = temperature
   set Time steps between mesh refinement = 15
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
@@ -83,14 +75,8 @@ subsection Postprocess
   end
 end
 
-
 subsection Solver parameters
   subsection Stokes solver parameters
     set Stokes solver type = block GMG
   end
-end
-
-
-subsection Material model
-  set Material averaging = harmonic average only viscosity
 end

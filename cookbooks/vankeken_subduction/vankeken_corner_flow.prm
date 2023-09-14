@@ -8,7 +8,6 @@
 
 # Load the prescribed velocity and pressure library
 set Additional shared libraries            = ./plugin/libvankeken_subduction.so
-
 set Dimension                              = 2
 set Output directory                       = vankeken-output
 set Use years in output instead of seconds = true
@@ -55,8 +54,10 @@ end
 # Prescribe a half space cooling model on the left boundary and in the overriding plate
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names = x,y,t
+
     # H is the model Y extent, Hl is the overriding plate thickness, TS is the surface temperature
     # T0 is the temperature at the base of the slab
     set Function constants = H=6.0e5, Hl=5.0e4, TS=273.0, T0=1573.0, kappa=0.7272e-6, t50=1.5778463e15
@@ -80,6 +81,7 @@ end
 # Prescribe a velocity of 5 cm/yr on the left boundary, 0 on the top
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left: function, top:function
+
   subsection Function
     set Variable names = x,y,t
     set Function constants = H=6.01e5, v=0.035355339
@@ -91,6 +93,7 @@ end
 # No gravity
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0.
   end
@@ -100,6 +103,7 @@ end
 # a viscosiy of 1e20 Pa s
 subsection Material model
   set Model name         = simpler
+
   subsection Simpler model
     set Reference density             = 3300.0
     set Thermal expansion coefficient = 0.000035
@@ -121,16 +125,18 @@ end
 subsection Prescribed velocities
   subsection Indicator function
     set Variable names = x,y,t
+
     # Return where to prescribe u_x; u_y
     # 1 if velocity should be prescribed, 0 otherwise
 
     set Function constants  = H=6.0e5, W=6.6e5, de=100
     set Function expression = if( abs(H-y-x)<=de | (y>=601e3 - x  & y>=550e3), 1, 0); \
                               if( abs(H-y-x)<=de | (y>=601e3 - x  & y>=550e3), 1, 0)
-
   end
+
   subsection Velocity function
     set Variable names = x,y,t
+
     # Return the prescribed u_x; u_y;
     set Function constants  = H=6.0e5, W=6.6e5, de=100, v=0.035355339, s2yr=31557600
     set Function expression = if(abs(H-y-x)<=de, v/s2yr, 0.0); \
@@ -141,6 +147,7 @@ end
 # Postprocessing
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, velocity statistics
+
   subsection Visualization
     set List of output variables = density, viscosity, strain rate, stress second invariant, heat flux map, depth
     set Output format = vtu

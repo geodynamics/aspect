@@ -5,7 +5,6 @@
 # than plus/minus 5% in a time frame of 2 Myr.
 
 set Dimension                              = 2
-
 set Use years in output instead of seconds = true
 set End time                               = 2e8
 
@@ -13,7 +12,6 @@ set End time                               = 2e8
 set Nonlinear solver tolerance             = 1e-5
 set Maximum time step                      = 1e5
 set Adiabatic surface temperature          = 500
-
 
 subsection Solver parameters
   subsection Stokes solver parameters
@@ -28,7 +26,6 @@ subsection Formulation
   set Temperature equation = reference density profile
 end
 
-
 subsection Geometry model
   set Model name = box
 
@@ -38,23 +35,21 @@ subsection Geometry model
   end
 end
 
-
 # For the Boussinesq approximation, all heating terms are switched off.
 subsection Heating model
   set List of model names =
 end
 
-
 # Set the reference profile.
 subsection Adiabatic conditions model
   set Model name = function
+
   subsection Function
     set Function constants = density=1000
     set Function expression = 500; density*10*depth; density
     set Variable names = depth
   end
 end
-
 
 # This temperature initial condition resembles the one in Christensen & Yuen, 1985.
 # It has conductive boundary layers at the top and bottom, and sinusoidal
@@ -79,11 +74,9 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, bottom, left, right
 end
-
 
 subsection Gravity model
   set Model name = vertical
@@ -92,8 +85,6 @@ subsection Gravity model
     set Magnitude = 10
   end
 end
-
-
 
 # This material model uses phase functions.
 # The model in Christensen & Yuen is nondimensional. To make this
@@ -131,13 +122,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement                = 3
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = heat flux statistics
@@ -145,6 +134,7 @@ end
 
 subsection Termination criteria
   set Termination criteria = end time, steady state heat flux
+
   subsection Steady state heat flux
     set Maximum relative deviation = 0.05
     set Time in steady state = 2e6

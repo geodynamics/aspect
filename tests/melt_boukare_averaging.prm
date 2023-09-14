@@ -17,7 +17,6 @@ set Maximum time step                      = 1e7
 set Output directory                       = test
 set Nonlinear solver scheme                = first timestep only, single Stokes
 set Max nonlinear iterations               = 5
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 100.e9
 set Adiabatic surface temperature          = 2000
@@ -32,7 +31,6 @@ subsection Compositional fields
   set Number of fields = 3
   set Names of fields  = molar_Fe_in_solid, molar_Fe_in_melt, porosity
 end
-
 
 # Then come a number of sections that deal with the setup
 # of the problem to solve. The first one deals with the
@@ -51,7 +49,6 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set List of model names = function
 
@@ -62,8 +59,9 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
-   set Function expression = 0.41; 0.43; 0.2
+    set Function expression = 0.41; 0.43; 0.2
   end
 end
 
@@ -76,6 +74,7 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
   set List of model names = initial temperature
+
   subsection Initial temperature
     set Maximal temperature = 2000
   end
@@ -91,7 +90,6 @@ subsection Heating model
   set List of model names = adiabatic heating, shear heating
 end
 
-
 subsection Gravity model
   set Model name = vertical
 
@@ -99,7 +97,6 @@ subsection Gravity model
     set Magnitude = 0
   end
 end
-
 
 subsection Material model
   set Model name = melt boukare
@@ -112,7 +109,6 @@ subsection Material model
   end
 end
 
-
 # The settings above all pertain to the description of the
 # continuous partial differential equations we want to solve.
 # The following section deals with the discretization of
@@ -124,7 +120,6 @@ subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
-
 
 # The final part is to specify what ASPECT should do with the
 # solution once computed at the end of every time step. The

@@ -6,15 +6,11 @@ set Additional shared libraries            = ./libsolcx.so
 ############### Global parameters
 
 set Dimension                              = 2
-
 set Start time                             = 0
 set End time                               = 0
-
 set Output directory                       = output
-
 set Pressure normalization                 = volume
 set Nonlinear solver scheme                = no Advection, iterated Stokes
-
 set Use years in output instead of seconds = false
 
 ############### Parameters describing the model
@@ -28,12 +24,9 @@ subsection Geometry model
   end
 end
 
-
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
-
 
 subsection Material model
   set Model name = SolCxMaterial
@@ -43,11 +36,9 @@ subsection Material model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
 end
-
 
 ############### Parameters describing the temperature field
 
@@ -56,8 +47,6 @@ subsection Initial temperature model
   set Model name = perturbed box
 end
 
-
-
 ############### Parameters describing the discretization
 
 subsection Discretization
@@ -65,12 +54,10 @@ subsection Discretization
   set Use locally conservative discretization = false
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 4
 end
-
 
 ############### Parameters describing what to do with the solution
 

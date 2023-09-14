@@ -18,26 +18,21 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-
 subsection Checkpointing
   set Steps between checkpoint = 4
 end
-
 
 subsection Gravity model
   set Model name = radial constant
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
 end
 
-
 subsection Initial temperature model
   set Model name = harmonic perturbation
 end
-
 
 subsection Material model
   set Model name = simple
@@ -47,31 +42,24 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 3
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = surface
-end
-
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = bottom
 end
 
-
 subsection Postprocess
-  set List of postprocessors =visualization, composition statistics, temperature statistics, velocity statistics
- subsection Visualization
+  set List of postprocessors = visualization, composition statistics, temperature statistics, velocity statistics
+
+  subsection Visualization
     set Output format                 = gnuplot
     set Time between graphical output = 1e6
- end
+  end
 end
-
 
 subsection Termination criteria
   set Checkpoint on termination = false

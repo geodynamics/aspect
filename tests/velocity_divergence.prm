@@ -24,12 +24,10 @@ set Dimension                              = 2
 # This end time is chosen in such a way that the solitary wave travels
 # approximately 5 times its wavelength during the model time.
 set End time                               = 250.0
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
-
 set Use years in output instead of seconds = true
 
 subsection Compositional fields
@@ -37,9 +35,9 @@ subsection Compositional fields
   set Names of fields = porosity
 end
 
-
 subsection Boundary temperature model
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 0,1,2,3
 
   subsection Box
     set Top temperature = 293
@@ -50,9 +48,13 @@ end
 subsection Boundary composition model
   set Allow fixed composition on outflow boundaries = true
   set List of model names = initial composition
+  set Fixed composition boundary indicators   = 0,1,2,3
 end
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 0:function, 1:function #,2:function, 3:function
+  set Tangential velocity boundary indicators = 2,3
+
   subsection Function
     set Function constants  = z0=35000, u0=1.00, x0=10000, z1=35000
     set Variable names      = x,z
@@ -67,23 +69,22 @@ subsection Geometry model
     set X extent  = 70000
     set Y extent  = 35000
     set X repetitions = 2
-#    set X periodic = true
+
+    #    set X periodic = true
   end
-
 end
-
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0.0
   end
-
 end
-
 
 subsection Initial temperature model
   set Model name = adiabatic
+
   subsection Adiabatic
     set Age top boundary layer      = 1e7
     set Age bottom boundary layer   = 0.0
@@ -94,6 +95,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function constants  = pi=3.1415926,a = 1e-5, b = 35000, c = 2000, d=17500
     set Function expression = a * exp(-((x-b)*(x-b)+(y-d)*(y-d))/(2*c*c))
@@ -101,16 +103,13 @@ subsection Initial composition model
   end
 end
 
-
 subsection Material model
   set Model name = test material
 end
 
-
 subsection Mesh refinement
   set Coarsening fraction                      = 0.005
   set Refinement fraction                      = 0.0
-
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 6
   set Strategy                                 = minimum refinement function, composition
@@ -121,61 +120,35 @@ subsection Mesh refinement
     set Function expression = if(y>35000,if(x<60000,7,if(x<15000,5,5)),5)
     set Variable names      = x,y
   end
-
 end
-
 
 subsection Boundary fluid pressure model
   set Plugin name = density
+
   subsection Density
     set Density formulation = solid density
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,1,2,3
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = 0,1,2,3
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 0:function, 1:function #,2:function, 3:function
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 2,3
-end
-
-
 subsection Postprocess
-
   set List of postprocessors = visualization,composition statistics,velocity statistics, mass flux statistics
 
   subsection Visualization
     set List of output variables      = material properties, nonadiabatic temperature, melt fraction, strain rate
-
-    subsection Material properties
-      set List of material properties = density, viscosity, thermal expansivity, reaction terms
-    end
-
     set Number of grouped files       = 0
     set Interpolate output            = false
     set Output format                 = vtu
     set Time between graphical output = 0
-  end
 
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, reaction terms
+    end
+  end
 end
 
 subsection Checkpointing
   set Steps between checkpoint = 10
 end
-
 
 subsection Solver parameters
   set Composition solver tolerance = 1e-10

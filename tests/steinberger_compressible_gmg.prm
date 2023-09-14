@@ -2,6 +2,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/steinberger_compressible.prm
 
+
 subsection Solver parameters
   subsection Stokes solver parameters
     set Stokes solver type = block GMG
@@ -9,7 +10,7 @@ subsection Solver parameters
 end
 
 subsection Material model
- set Material averaging = harmonic average only viscosity
+  set Material averaging = harmonic average only viscosity
 end
 
 subsection Postprocess

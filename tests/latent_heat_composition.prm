@@ -7,11 +7,9 @@
 # and the temperature increases.
 
 set Dimension = 2
-
 set Start time                             = 0
 set End time                               = 1e15
 set Use years in output instead of seconds = false
-
 
 subsection Geometry model
   set Model name = box
@@ -22,44 +20,24 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
+############### Boundary conditions
+# We set the top temperature to T1=1000K.
 subsection Boundary temperature model
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. Likewise, composition is only fixed along the upper boundary
   # where there is inflow. To guarantee a steady downward flow, we fix the
   # velocity at the top and bottom, and set it to free slip on the sides.
   set Fixed temperature boundary indicators   = 3
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = 3
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 2:function, 3:function
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0, 1
-end
-
-
-############### Boundary conditions
-# We set the top temperature to T1=1000K.
-subsection Boundary temperature model
   set List of model names = box
+
   subsection Box
     set Top temperature = 1000
   end
@@ -67,11 +45,15 @@ end
 
 # Boundary composition derived from initial conditions
 subsection Boundary composition model
+  set Fixed composition boundary indicators   = 3
   set List of model names = initial composition
 end
 
 # We prescribe a constant downward flow.
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 2:function, 3:function
+  set Tangential velocity boundary indicators = 0, 1
+
   subsection Function
     set Function expression = 0;-2.1422e-11
     set Variable names      = x,y
@@ -80,6 +62,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1000.0
     set Variable names      = x,y
@@ -88,6 +71,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = if(y>=500000, 1, 0);
@@ -98,11 +82,10 @@ subsection Compositional fields
   set Number of fields = 1
 end
 
-
 subsection Material model
   set Model name = latent heat
-  subsection Latent heat
 
+  subsection Latent heat
     # The change of density across the phase transitions. Together with the
     # Clapeyron slope, this is what determines the entropy change. Phase 0
     # and 1 are reflective of the compositional field values, which are used
@@ -132,7 +115,6 @@ subsection Material model
     # change this parameter to see how latent heating depends on the width
     # of the phase transition.
     set Phase transition widths                        = 20000, 20000
-
     set Reference density                              = 3400
     set Reference specific heat                        = 1000
     set Reference temperature                          = 1000
@@ -152,14 +134,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 4
   set Time steps between mesh refinement = 0
-
 end
-
 
 subsection Discretization
   subsection Stabilization parameters
@@ -176,9 +155,7 @@ subsection Discretization
   end
 end
 
-
 subsection Postprocess
-
   set List of postprocessors = temperature statistics
 end
 

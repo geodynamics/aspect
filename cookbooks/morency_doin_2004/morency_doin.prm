@@ -1,9 +1,7 @@
 set Dimension = 2
 set Maximum time step = 1e4
 set Nonlinear solver scheme = iterated Advection and Stokes
-
 set Output directory = output-morency_doin
-
 set Additional shared libraries            = ./libmorency_doin.so
 
 subsection Geometry model
@@ -87,6 +85,7 @@ subsection Mesh refinement
   set Initial global refinement                 = 5
   set Initial adaptive refinement               = 3
   set Strategy                                  = minimum refinement function
+
   subsection Minimum refinement function
     set Variable names = d,ignored
     set Function expression = if(d<100e3,8,5)

@@ -21,7 +21,6 @@ set Use years in output instead of seconds = true
 set End time                               = 2e6
 set Nonlinear solver scheme                = first timestep only, single Stokes
 set Max nonlinear iterations               = 3
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 120.e9
 set Adiabatic surface temperature          = 5000
@@ -65,7 +64,6 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set List of model names = function
 
@@ -77,8 +75,9 @@ end
 
 subsection Initial composition model
   set List of model names = function
+
   subsection Function
-   set Function expression = 0; x; x
+    set Function expression = 0; x; x
   end
 end
 
@@ -92,7 +91,6 @@ subsection Heating model
   set List of model names =
 end
 
-
 subsection Gravity model
   set Model name = vertical
 
@@ -100,7 +98,6 @@ subsection Gravity model
     set Magnitude = 0.0
   end
 end
-
 
 subsection Material model
   set Model name = melt boukare
@@ -114,7 +111,6 @@ subsection Material model
     set Melting time scale for operator splitting = 1e5
   end
 end
-
 
 # The settings above all pertain to the description of the
 # continuous partial differential equations we want to solve.
@@ -133,7 +129,6 @@ subsection Mesh refinement
     set Compositional field thresholds = 0.1,1,1
   end
 end
-
 
 # The final part is to specify what ASPECT should do with the
 # solution once computed at the end of every time step. The

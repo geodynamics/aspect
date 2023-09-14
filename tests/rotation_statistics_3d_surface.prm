@@ -9,11 +9,12 @@ set Dimension                              = 3
 
 include $ASPECT_SOURCE_DIR/tests/rotation_statistics_3d.prm
 
+
 subsection Prescribed Stokes solution
   set Model name = function
+
   subsection Velocity function
     set Variable names = x,y,z,t
-
     set Function expression = -y*sqrt(x*x+y*y+z*z); x*sqrt(x*x+y*y+z*z); 0
   end
 end

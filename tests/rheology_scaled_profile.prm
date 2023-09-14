@@ -6,7 +6,6 @@ set End time                               = 1.0e5
 
 subsection Material model
   set Model name = scaled viscosity profile
-
   set Material averaging = harmonic average
 
   subsection Simple model
@@ -14,7 +13,6 @@ subsection Material model
     set Viscosity                     = 1e22
   end
 end
-
 
 subsection Geometry model
   set Model name = spherical shell
@@ -26,17 +24,14 @@ subsection Geometry model
   end
 end
 
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = inner
   set Tangential velocity boundary indicators = top, left, right
 end
 
-
 subsection Heating model
   set List of model names =  shear heating
 end
-
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
@@ -48,16 +43,13 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = spherical hexagonal perturbation
 end
 
-
 subsection Gravity model
   set Model name = ascii data
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 3
@@ -65,7 +57,6 @@ subsection Mesh refinement
   set Strategy                           = temperature
   set Time steps between mesh refinement = 15
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average, material statistics

@@ -10,6 +10,7 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
 
+
 #  Global parameters
 set End time                               = 1e3
 set Output directory                       = viscoelastic_fixed_elastic_time_step
@@ -26,10 +27,8 @@ subsection Geometry model
   end
 end
 
-
 # Material model
 subsection Material model
-
   set Model name = viscoelastic
 
   subsection Viscoelastic
@@ -40,12 +39,12 @@ subsection Material model
     set Fixed elastic time step     = 2e3
     set Viscosity averaging scheme  = harmonic
   end
-
 end
 
 # Post processing
 subsection Postprocess
   set List of postprocessors = velocity statistics, depth average
+
   subsection Depth average
     set Time between graphical output = 0
     set Number of zones = 5

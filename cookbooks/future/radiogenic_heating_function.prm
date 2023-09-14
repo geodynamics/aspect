@@ -4,11 +4,9 @@
 # end time to approximately 2 million years.
 
 set Dimension = 2
-
 set Start time                             = 0
 set End time                               = 3e6
 set Use years in output instead of seconds = false
-
 set Output directory                       = output-radiogenic_heating_function
 
 # As we only want to look at the effects of radiogenic heating, this one
@@ -32,14 +30,13 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
 end
-
 
 ############### Boundary conditions
 # We only fix the temperature at the upper boundary, the other boundaries
@@ -65,33 +62,28 @@ subsection Boundary velocity model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1000.0
     set Variable names      = x,y
   end
 end
 
-
 subsection Material model
   set Model name = simple
 
   subsection Simple model
-
     set Reference density                              = 3400
     set Reference specific heat                        = 1000
     set Reference temperature                          = 1000
     set Thermal conductivity                           = 0.0
-
     set Thermal expansion coefficient                  = 0.0
-
     set Thermal viscosity exponent                     = 0.0
     set Viscosity                                      = 1e21
   end
 end
-
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
@@ -99,13 +91,10 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
 subsection Postprocess
-
   set List of postprocessors = visualization
 
   subsection Visualization
-
     set Number of grouped files       = 0
     set Output format                 = vtu
 

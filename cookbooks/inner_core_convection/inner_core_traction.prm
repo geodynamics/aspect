@@ -10,7 +10,6 @@
 # with phase change at its boundary. GJI, 194, 1310-133.
 
 set Additional shared libraries            = ./libinner_core_convection.so
-
 set Dimension                              = 3
 set Use years in output instead of seconds = false
 set End time                               = 1.5e9
@@ -31,18 +30,18 @@ subsection Material model
     set Viscosity                     = 1
   end
 
-# The 'inner core material' model also contains a function that
-# represents the resistance to melting/freezing at the inner core
-# boundary.
-# This phase boundary model combines a prescribed a normal
-# velocity and normal stress. The relation between the two scales
-# with the phase change number P, which is given in the 'Function
-# expression'.
-# For P-->inifinity, the boundary is a free slip boundary, and for
-# P-->0, the boundary is an open boundary (with zero normal stress).
+  # The 'inner core material' model also contains a function that
+  # represents the resistance to melting/freezing at the inner core
+  # boundary.
+  # This phase boundary model combines a prescribed a normal
+  # velocity and normal stress. The relation between the two scales
+  # with the phase change number P, which is given in the 'Function
+  # expression'.
+  # For P-->inifinity, the boundary is a free slip boundary, and for
+  # P-->0, the boundary is an open boundary (with zero normal stress).
 
-# For time dependence, the variable names have to have dim+1 entries,
-# and the last variable will be the time
+  # For time dependence, the variable names have to have dim+1 entries,
+  # and the last variable will be the time
   subsection Inner core
     subsection Phase change resistance function
       set Variable names      = x,y,z
@@ -107,7 +106,6 @@ subsection Gravity model
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement          = 3
   set Initial adaptive refinement        = 0
@@ -120,7 +118,6 @@ subsection Mesh refinement
   end
 end
 
-
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics
 
@@ -130,5 +127,4 @@ subsection Postprocess
     set Number of grouped files       = 0
     set List of output variables      = strain rate, gravity, density, specific heat, heating
   end
-
 end

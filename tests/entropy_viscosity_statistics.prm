@@ -5,6 +5,7 @@ set Dimension                              = 2
 
 include $ASPECT_SOURCE_DIR/tests/artificial_viscosity.prm
 
+
 subsection Postprocess
   set List of postprocessors = composition statistics, temperature statistics, entropy viscosity statistics
 end

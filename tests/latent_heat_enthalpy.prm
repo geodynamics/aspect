@@ -15,7 +15,6 @@
 # bottom of the model is the same (T2 = 1107.39 K).
 
 set Dimension = 2
-
 set Start time                             = 0
 set End time                               = 2.5e14
 set Use years in output instead of seconds = false
@@ -31,18 +30,13 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
 end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 # Warning: Merge the parameter in the following subsection with any
 # other parameter of the same name, otherwise your model results might change
@@ -50,26 +44,15 @@ subsection Heating model
   set List of model names = adiabatic heating
 end
 
+############### Boundary conditions
+# We set the top temperature to T1=1000K.
 subsection Boundary temperature model
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. To guarantee a steady downward flow, we fix the velocity
   # at the top and bottom, and set it to free slip on the sides.
   set Fixed temperature boundary indicators   = 3
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 2:function, 3:function
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0, 1
-end
-
-
-############### Boundary conditions
-# We set the top temperature to T1=1000K.
-subsection Boundary temperature model
   set List of model names = box
+
   subsection Box
     set Top temperature = 1000
   end
@@ -77,6 +60,9 @@ end
 
 # We prescribe a constant downward flow.
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 2:function, 3:function
+  set Tangential velocity boundary indicators = 0, 1
+
   subsection Function
     set Function expression = 0;-2.1422e-11
     set Variable names      = x,y
@@ -85,12 +71,13 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
-# In contrast to the other latent heat test we need a small temperature
-# perturbation to be able to compute derivatives from the material table.
-# This is because we compute derivatives from the differences between cell
-# vertices, and if they have identical pressure-temperature conditions, we
-# can not compute a reasonable derivative
+    # In contrast to the other latent heat test we need a small temperature
+    # perturbation to be able to compute derivatives from the material table.
+    # This is because we compute derivatives from the differences between cell
+    # vertices, and if they have identical pressure-temperature conditions, we
+    # can not compute a reasonable derivative
     set Function expression = 1000.0 + (y-1000000)/1000000
     set Variable names      = x,y
   end
@@ -102,13 +89,11 @@ subsection Material model
   set Model name = latent heat enthalpy
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 2
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Discretization
   subsection Stabilization parameters
@@ -124,7 +109,6 @@ subsection Discretization
     set cR    = 0.5
   end
 end
-
 
 subsection Postprocess
   set List of postprocessors = temperature statistics

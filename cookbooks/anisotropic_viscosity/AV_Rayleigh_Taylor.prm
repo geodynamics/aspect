@@ -13,9 +13,12 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Output directory                       = output-AV-Rayleigh-Taylor-noAV
 
-
 subsection Gravity model
   set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
 end
 
 subsection Geometry model
@@ -30,15 +33,9 @@ end
 # temperature field doesn't matter. set it to zero
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
-  end
-end
-
-subsection Gravity model
-  set Model name = vertical
-  subsection Vertical
-    set Magnitude = 10.0
   end
 end
 
@@ -54,51 +51,50 @@ subsection Material model
   # density is hard-coded into the AV_material.cc plugin
   # everything else is set to 0
 
-    subsection AV
-        set Normal viscosity    = 1
-        set Shear viscosity     = 1
+  subsection AV
+    set Normal viscosity    = 1
+    set Shear viscosity     = 1
   end
 end
 
 subsection Initial composition model
-    set Model name = function
-    subsection Function
-        set Variable names      = x,z
-        set Function constants  = pi=3.1415926;
+  set Model name = function
 
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926;
     set Function expression = 0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02)); \
                             (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? sin(45*pi/180) : 0.0; \
                             (0.5*(1+tanh((z-0.85-0.02*cos(2*pi*x/2))/0.02))) > 0.8 ? cos(45*pi/180) : 0.0;
-    end
+  end
 end
 
 subsection Mesh refinement
-    set Initial global refinement          = 6
-    set Initial adaptive refinement        = 2
-    set Strategy                           = composition
-    set Time steps between mesh refinement = 1
-      set Coarsening fraction                = 0.05
-    set Refinement fraction                = 0.1
+  set Initial global refinement          = 6
+  set Initial adaptive refinement        = 2
+  set Strategy                           = composition
+  set Time steps between mesh refinement = 1
+  set Coarsening fraction                = 0.05
+  set Refinement fraction                = 0.1
 end
 
-
-
 subsection Boundary velocity model
-    set Tangential velocity boundary indicators = left, right
-    set Zero velocity boundary indicators       = bottom, top
+  set Tangential velocity boundary indicators = left, right
+  set Zero velocity boundary indicators       = bottom, top
 end
 
 subsection Postprocess
-      set List of postprocessors = visualization, velocity statistics, composition statistics, material statistics
-      subsection Visualization
+  set List of postprocessors = visualization, velocity statistics, composition statistics, material statistics
 
-     # add "named additional outputs" to the list to save the stress-strain director (AV tensor)
-          set List of output variables = compositional vector, density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
-          set Output format                 = vtu
-          set Time between graphical output = 0.5
-          subsection Compositional fields as vectors
-            set Names of fields = ni,nj
-            set Names of vectors = n
-        end
+  subsection Visualization
+    # add "named additional outputs" to the list to save the stress-strain director (AV tensor)
+    set List of output variables = compositional vector, density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
+    set Output format                 = vtu
+    set Time between graphical output = 0.5
+
+    subsection Compositional fields as vectors
+      set Names of fields = ni,nj
+      set Names of vectors = n
     end
+  end
 end

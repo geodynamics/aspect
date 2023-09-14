@@ -33,6 +33,7 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
   set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 3700
     set Outer temperature = 273
@@ -64,24 +65,19 @@ subsection Material model
     set Material file names              = pyr-ringwood88.txt
     set Radial viscosity file name       = radial-visc-simple.txt
     set Bilinear interpolation           = true
-
     set Latent heat                      = false
     set Use lateral average temperature for viscosity  = false
     set Maximum viscosity                = 1.5e23
     set Minimum viscosity                = 5e19
-
     set Maximum lateral viscosity variation = 1e4
   end
 end
-
-
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 2
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics
@@ -99,7 +95,8 @@ subsection Solver parameters
     set GMRES solver restart length = 200
     set Number of cheap Stokes solver steps = 500
   end
-    subsection Matrix Free
-        set Output details = true
-    end
+
+  subsection Matrix Free
+    set Output details = true
+  end
 end

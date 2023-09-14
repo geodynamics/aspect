@@ -15,17 +15,19 @@ set Nonlinear solver scheme                = single Advection, single Stokes
 
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = 2,3
+
   subsection Box
     set Top temperature = 0.0
     set Bottom temperature = 0.0
   end
 end
 
-
 subsection Discretization
   set Stokes velocity polynomial degree       = 2
   set Temperature polynomial degree           = 2
   set Use locally conservative discretization = false
+
   subsection Stabilization parameters
     set alpha = 2
     set beta  = 0.078
@@ -33,9 +35,9 @@ subsection Discretization
   end
 end
 
-
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 28.e5
     set Y extent = 7.e5
@@ -43,26 +45,26 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression =  if( sqrt( (x-5.e5)^2 + (y-3.e5)^2 ) < 5.e4, 1, 0)
   end
 end
 
-
 subsection Material model
   set Model name = multicomponent
+
   subsection Multicomponent
     set Reference temperature = 0.0
     set Densities = 3300, 3200, 3600,3400
@@ -74,7 +76,6 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Additional refinement times        =
   set Initial adaptive refinement        = 1
@@ -83,15 +84,6 @@ subsection Mesh refinement
   set Coarsening fraction                = 0.05
   set Strategy                           = composition
   set Time steps between mesh refinement = 5
-end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2,3
 end
 
 subsection Boundary velocity model
@@ -104,6 +96,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = if( sqrt( (x-5.e5 )^2 + (y-3.e5)^2) < 5.e4 , 1,0); if( sqrt((x-12.e5)^2 + (y-3.e5)^2 ) < 5.e4, 1,0); if( sqrt((x-17.e5)^2 + (y-3.e5)^2) < 5.e4, 1, 0)
@@ -117,6 +110,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization
+
   subsection Visualization
     set Interpolate output = false
     set List of output variables = viscosity,density

@@ -1,5 +1,6 @@
 subsection Initial temperature model
   set Model name = S40RTS perturbation
+
   subsection S40RTS perturbation
     set Data directory                    = $ASPECT_SOURCE_DIR/data/initial-temperature/S40RTS/
     set Initial condition file name       = S20RTS.sph

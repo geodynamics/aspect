@@ -13,9 +13,13 @@ set Use years in output instead of seconds = true
 
 subsection Boundary temperature model
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators = top
 end
 
 subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom
+  set Prescribed velocity boundary indicators = left: function, right:function
+
   subsection Function
     set Function constants  = cm=0.01, year=3.155e7, pi=3.141593, angle=60, total_depth=512e3, crustal_depth=30e3, lithospheric_depth=120e3
     set Function expression = if (x<50e3, if (z > total_depth-lithospheric_depth, 1*cm, -(lithospheric_depth/(total_depth-lithospheric_depth))*cm), if (z > total_depth-lithospheric_depth, -1*cm, (lithospheric_depth/(total_depth-lithospheric_depth))*cm)); 0
@@ -26,6 +30,7 @@ end
 subsection Mesh deformation
   set Mesh deformation boundary indicators     = top: free surface
   set Additional tangential mesh velocity boundary indicators = right, left
+
   subsection Free surface
     set Free surface stabilization theta = 0.5
     set Surface velocity projection = vertical
@@ -34,6 +39,7 @@ end
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set Box origin X coordinate = 0
     set Box origin Y coordinate = 0
@@ -46,8 +52,10 @@ subsection Geometry model
     set Y repetitions           = 1
   end
 end
+
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end
@@ -55,12 +63,12 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function constants  = reference_t=293, crustal_t = 420, lith_t = 1350, mantle_t = 1470, total_depth=512e3, crustal_depth=30e3, lithospheric_depth=120e3,
     set Function expression = if (z>total_depth-crustal_depth,reference_t+(total_depth-z)*(crustal_t/crustal_depth), if (z>total_depth-lithospheric_depth,reference_t+crustal_t+(total_depth-crustal_depth-z)*(lith_t-crustal_t)/(lithospheric_depth-crustal_depth), reference_t+lith_t+(total_depth-lithospheric_depth-z)*(mantle_t-lith_t)/(total_depth-lithospheric_depth)))
     set Variable names      = x,z
   end
-
 end
 
 subsection Material model
@@ -74,33 +82,15 @@ subsection Mesh refinement
   set Minimum refinement level                 = 4
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = bottom
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = left: function, right:function
-end
-
 subsection Boundary composition model
   set Fixed composition boundary indicators   = left, right
-end
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators = top
-end
-
-subsection Boundary composition model
   set List of model names = initial composition
 end
 
 subsection Postprocess
   set List of postprocessors = topography
-    subsection Topography
+
+  subsection Topography
     set Time between text output       = 0
     set Output to file = true
   end
@@ -109,10 +99,12 @@ end
 subsection Termination criteria
   set End step                  = 1
   set Termination criteria      = end step
+
   subsection Steady state velocity
     set Maximum relative deviation = 0.05
     set Time in steady state       = 1e6
   end
+
   subsection User request
     set File name = terminate-aspect
   end

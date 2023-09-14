@@ -28,6 +28,7 @@ end
 subsection Mesh deformation
   set Mesh deformation boundary indicators = top: boundary function
   set Additional tangential mesh velocity boundary indicators = left, right
+
   subsection Boundary function
     set Function expression = 0;if(y<1,0,1)
   end
@@ -50,15 +51,14 @@ subsection Postprocess
 
   subsection Visualization
     set List of output variables      =
-
-    subsection Material properties
-      set List of material properties = density, viscosity
-    end
-
     set Number of grouped files       = 0
     set Interpolate output            = false
     set Output format                 = gnuplot
     set Time between graphical output = 0
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 
   subsection Particles
@@ -69,6 +69,7 @@ subsection Postprocess
     set Data output format = ascii
     set List of particle properties = initial position, position, reference position
     set Particle generator name = uniform box
+
     subsection Generator
       subsection Uniform box
         set Minimum x = 0.5
@@ -78,5 +79,4 @@ subsection Postprocess
       end
     end
   end
-
 end

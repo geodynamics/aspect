@@ -9,10 +9,10 @@ set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 0
 
-
 ############ These parameters are of interest for this test: #########
 
 set Adiabatic surface temperature = 1200
+
 subsection Initial temperature model
   set Model name = adiabatic
 
@@ -21,7 +21,6 @@ subsection Initial temperature model
     set Age bottom boundary layer = 1e8
   end
 end
-
 
 ########################################################################
 
@@ -34,7 +33,6 @@ subsection Gravity model
   end
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
 
@@ -45,27 +43,17 @@ subsection Geometry model
   end
 end
 
-
 subsection Material model
   set Model name = simple
 end
-
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 4
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 2, 3
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = 1
 end
 

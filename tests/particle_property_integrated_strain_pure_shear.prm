@@ -11,32 +11,29 @@ set Use years in output instead of seconds = false
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent  = 1.0
     set Y extent  = 1.0
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left,bottom
-end
-
-subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top:function, right:function
-end
 
-subsection Boundary velocity model
   subsection Function
     set Function expression = 1-y; x-1
   end
 end
 
+############### Parameters describing the compositional field
+# Note: The compositional field is what drives the flow
+# in this example
+
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Reference density             = 1010
     set Viscosity                     = 1e2
@@ -46,31 +43,22 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10
   end
 end
-
 
 ############### Parameters describing the temperature field
 # Note: The temperature plays no role in this model
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
 end
-
-
-############### Parameters describing the compositional field
-# Note: The compositional field is what drives the flow
-# in this example
-
-subsection Material model
-  set Model name = simple
-end
-
 
 ############### Parameters describing the discretization
 
@@ -80,8 +68,6 @@ subsection Mesh refinement
   set Initial global refinement          = 2
   set Time steps between mesh refinement = 0
 end
-
-
 
 ############### Parameters describing what to do with the solution
 
@@ -93,7 +79,6 @@ subsection Postprocess
     set Time between data output = 1.0
     set Data output format = ascii
     set List of particle properties = integrated strain
-
     set Particle generator name = random uniform
   end
 end

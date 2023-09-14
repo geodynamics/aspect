@@ -13,6 +13,7 @@ subsection Solver parameters
   subsection Matrix Free
     set Output details = true
   end
+
   subsection Stokes solver parameters
     set Stokes solver type = block GMG
     set Number of cheap Stokes solver steps             = 200
@@ -22,30 +23,30 @@ subsection Solver parameters
   end
 end
 
-
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = 0, 1
+
   subsection Box
     set Left temperature = 0
   end
 end
 
+subsection Initial temperature model
+  set Model name = function
 
- subsection Initial temperature model
-   set Model name = function
-   subsection Function
+  subsection Function
     set Function expression = 0
-   end
- end
-
+  end
+end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0
   end
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -55,12 +56,6 @@ subsection Geometry model
     set Y extent = 1
   end
 end
-
-
-subsection Initial temperature model
-  set Model name = function
-end
-
 
 subsection Material model
   set Model name = simple
@@ -76,33 +71,17 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 4
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0, 1
-end
-
 subsection Boundary traction model
   set Prescribed traction boundary indicators = 0 : function, 1 : function
-end
 
-subsection Boundary velocity model
-  set Zero velocity boundary indicators       = 2, 3
-end
-
-
-subsection Boundary traction model
   subsection Function
     set Variable names = x,z
+
     # We want to prescribe a pressure of 2 at the left boundary
     # and -2 at the right boundary.
     # The traction in this case is defined as:
@@ -117,6 +96,9 @@ subsection Boundary traction model
   end
 end
 
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 2, 3
+end
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, pressure statistics, mass flux statistics

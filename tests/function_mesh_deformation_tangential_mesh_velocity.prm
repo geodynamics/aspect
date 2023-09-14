@@ -20,32 +20,8 @@ subsection Geometry model
   end
 end
 
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
-end
-
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = bottom, top
-  set Zero velocity boundary indicators       = left, right
-end
-
-
-subsection Mesh deformation
-  set Mesh deformation boundary indicators        = top: boundary function
-  # The left and right boundary are allowed to move,
-  # even though the Stokes velocity is zero along these boundaries.
-  set Additional tangential mesh velocity boundary indicators = left,right
-  # Prescribe a boundary velocity in m/s equal to max 1000 m/My
-  subsection Boundary function
-    set Variable names      = x,y,t
-    set Function expression = 0;  -3.168808781e-16*(x-1e5)
-  end
-end
-
-
-subsection Boundary temperature model
   set List of model names = function
 
   subsection Function
@@ -53,6 +29,24 @@ subsection Boundary temperature model
   end
 end
 
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top
+  set Zero velocity boundary indicators       = left, right
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators        = top: boundary function
+
+  # The left and right boundary are allowed to move,
+  # even though the Stokes velocity is zero along these boundaries.
+  set Additional tangential mesh velocity boundary indicators = left,right
+
+  # Prescribe a boundary velocity in m/s equal to max 1000 m/My
+  subsection Boundary function
+    set Variable names      = x,y,t
+    set Function expression = 0;  -3.168808781e-16*(x-1e5)
+  end
+end
 
 subsection Gravity model
   set Model name = vertical
@@ -62,11 +56,9 @@ subsection Gravity model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = adiabatic
 end
-
 
 subsection Material model
   set Model name = simple

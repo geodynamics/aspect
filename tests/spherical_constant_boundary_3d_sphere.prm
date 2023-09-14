@@ -11,6 +11,7 @@ end
 
 subsection Initial composition model
   set List of model names = function
+
   subsection Function
     set Function expression = 1
   end
@@ -18,6 +19,8 @@ end
 
 subsection Boundary composition model
   set List of model names = spherical constant
+  set Fixed composition boundary indicators   = 0
+
   subsection Spherical constant
     set Outer composition = 0
   end
@@ -29,6 +32,7 @@ end
 
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude = 9.81
   end
@@ -36,6 +40,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 500
   end
@@ -43,8 +48,9 @@ end
 
 subsection Material model
   set Model name         = simpler
+
   subsection Simpler model
-  set Viscosity = 1e21
+    set Viscosity = 1e21
   end
 end
 
@@ -53,20 +59,13 @@ subsection Mesh refinement
   set Initial global refinement                = 2
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = 0
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0
 end
 
 subsection Postprocess
   set List of postprocessors = visualization
+
   subsection Visualization
     set Interpolate output = false
     set List of output variables = depth

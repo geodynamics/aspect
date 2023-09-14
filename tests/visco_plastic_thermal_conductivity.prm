@@ -6,12 +6,14 @@
 # The thermal conductivity is thus 3000*1250*0.8e-6 = 3.0 (W/(m K)).
 include $ASPECT_SOURCE_DIR/tests/visco_plastic_diffusion.prm
 
+
 # Global parameters
 set Dimension                              = 2
 
 # Material model (values for background material)
 subsection Material model
   set Model name = visco plastic
+
   subsection Visco Plastic
     set Define thermal conductivities = true
     set Thermal conductivities = 3.0

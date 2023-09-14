@@ -8,17 +8,14 @@ set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Pressure normalization                 = no
 
-
 subsection Boundary temperature model
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 0, 1
 end
-
-
 
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Geometry model
   set Model name = box with lithosphere boundary indicators
@@ -30,14 +27,13 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1000
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -52,26 +48,13 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 1
   set Initial global refinement          = 2
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0, 1
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3,6,7,8,9
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = 4
 end
 
@@ -81,6 +64,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization
+
   subsection Visualization
     set List of output variables = depth
     set Output format = gnuplot

@@ -6,6 +6,7 @@ subsection Material model
   subsection Multicomponent
     set Reference temperature         = 0.0
     set Viscosity averaging scheme    = maximum composition
+
     # background, OP, ML SP, crust SP
     set Viscosities                   = 1.e20, 1.e23, 1.e23, 1.e20
     set Densities                     = 3200.0, 3250.0, 3250.0, 3250.0

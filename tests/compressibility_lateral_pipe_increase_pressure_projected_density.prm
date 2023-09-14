@@ -2,6 +2,7 @@ set Dimension = 2
 
 include $ASPECT_SOURCE_DIR/benchmarks/compressibility_formulations/lateral_pipe_increase_pressure/lateral_pipe.prm
 
+
 include $ASPECT_SOURCE_DIR/benchmarks/compressibility_formulations/lateral_pipe_increase_pressure/projected_density.prm
 
 set End time = 1e12

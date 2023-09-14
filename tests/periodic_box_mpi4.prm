@@ -19,6 +19,7 @@ subsection Discretization
   set Stokes velocity polynomial degree       = 2
   set Temperature polynomial degree           = 2
   set Use locally conservative discretization = false
+
   subsection Stabilization parameters
     set alpha = 2
     set beta  = 0.078
@@ -26,9 +27,9 @@ subsection Discretization
   end
 end
 
-
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X periodic = true
     set Y periodic = true
@@ -38,26 +39,26 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = if((sqrt((x-1.e5)^2+(y-4.0e5)^2)<5.0e4) | (sqrt((x-3.e5)^2+(y-2.e5)^2)<1.0e5) , 800.0, 0)
   end
 end
 
-
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Reference density             = 3300
     set Reference specific heat       = 1250
@@ -77,11 +78,6 @@ subsection Mesh refinement
   set Strategy                           = temperature
   set Time steps between mesh refinement = 0
 end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Nullspace removal
   set Remove nullspace                        = net translation

@@ -8,16 +8,15 @@ set Adiabatic surface temperature          = 1613.0
 set Surface pressure                       = 0
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-
 subsection Boundary temperature model
   set List of model names = spherical constant
+  set Fixed temperature boundary indicators   = 0, 1
 
   subsection Spherical constant
     set Inner temperature = 1613.0
     set Outer temperature = 1613.0
   end
 end
-
 
 subsection Gravity model
   set Model name = radial constant
@@ -26,7 +25,6 @@ subsection Gravity model
     set Magnitude = 9.81
   end
 end
-
 
 subsection Geometry model
   set Model name = chunk
@@ -39,15 +37,14 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
 
   subsection Function
-    set Function expression = 1613.0
+    set Function expression = if((sqrt((x-3e6)^2+(y-2e6)^2)<1e6) , 800.0, 0)
+    set Variable names      = x,y
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -62,33 +59,13 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 4
 end
 
-subsection Initial temperature model
-  set Model name = function
-  subsection Function
-    set Variable names      = x,y
-    set Function expression = if((sqrt((x-3e6)^2+(y-2e6)^2)<1e6) , 800.0, 0)
-  end
-end
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0, 1
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 2, 3
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = 1
 end
 
@@ -106,5 +83,4 @@ subsection Postprocess
                             6300e3, 0.3491
     set Use natural coordinates = true
   end
-
 end

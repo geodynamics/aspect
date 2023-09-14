@@ -29,7 +29,6 @@ set Use years in output instead of seconds = true
 set Output directory                       = output-logo
 set Use conduction timestep                = true
 
-
 subsection Material model
   set Model name = simple
 
@@ -38,7 +37,6 @@ subsection Material model
     set Viscosity                     = 2e22
   end
 end
-
 
 subsection Geometry model
   set Model name = spherical shell
@@ -50,11 +48,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, top
 end
-
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
@@ -66,7 +62,6 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
 
@@ -75,16 +70,13 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Gravity model
   set Model name = radial constant
 end
 
-
 subsection Nullspace removal
   set Remove nullspace = net rotation
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 4
@@ -95,14 +87,12 @@ subsection Mesh refinement
   set Minimum refinement level = 3
 end
 
-
 # We increase the solver tolerance to speed things up
 subsection Solver parameters
   subsection Stokes solver parameters
-     set Linear solver tolerance = 1e-3
+    set Linear solver tolerance = 1e-3
   end
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization
@@ -113,7 +103,6 @@ subsection Postprocess
     set Number of grouped files       = 1
   end
 end
-
 
 subsection Termination criteria
   set Checkpoint on termination = true

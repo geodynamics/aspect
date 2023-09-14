@@ -20,7 +20,6 @@ set Dimension                              = 2
 # time system we want to work in and what the end time is.
 set Use years in output instead of seconds = false
 set End time                               = 2.5e13
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1623.15   # 1350°C adiabat
@@ -53,7 +52,6 @@ subsection Geometry model
   end
 end
 
-
 # The next section deals with the initial conditions for the
 # temperature (there are no initial conditions for the
 # velocity variable since the velocity is assumed to always
@@ -66,6 +64,7 @@ end
 # a small perturbation:
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1746.794 - z/183540.0 * 300
     set Variable names      = x,z
@@ -74,6 +73,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 1.0
   end
@@ -81,6 +81,8 @@ end
 
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = 2
+
   subsection Box
     set Bottom temperature = 1746.794  # 1350°C adiabat
   end
@@ -88,34 +90,17 @@ end
 
 subsection Boundary composition model
   set List of model names = initial composition
+  set Fixed composition boundary indicators   = 2
 end
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 2:function
+  set Tangential velocity boundary indicators = 0,1
+
   subsection Function
     set Function expression = 0;1e-10
   end
 end
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 2:function
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0,1
-end
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = 2
-end
-
 
 # The following two sections describe first the
 # direction (vertical) and magnitude of gravity and the
@@ -129,7 +114,6 @@ subsection Gravity model
     set Magnitude = 10
   end
 end
-
 
 subsection Material model
   set Model name = latent heat melt
@@ -146,7 +130,6 @@ subsection Material model
   end
 end
 
-
 # The settings above all pertain to the description of the
 # continuous partial differential equations we want to solve.
 # The following section deals with the discretization of
@@ -158,7 +141,6 @@ subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
-
 
 # The final part is to specify what ASPECT should do with the
 # solution once computed at the end of every time step. The
@@ -173,7 +155,6 @@ end
 subsection Postprocess
   set List of postprocessors = temperature statistics
 end
-
 
 subsection Heating model
   set List of model names = adiabatic heating, latent heat

@@ -10,6 +10,7 @@ subsection Geometry model
 
   subsection Initial topography model
     set Model name = ascii data
+
     subsection Ascii data model
       set Data directory       = $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
       set Data file name       = shell_3d_outer_2.0.txt

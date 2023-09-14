@@ -6,7 +6,6 @@ set Dimension                              = 2
 set Use years in output instead of seconds = true
 set End time                               = 1e6
 
-
 subsection Material model
   set Model name = simple
 
@@ -15,7 +14,6 @@ subsection Material model
     set Viscosity                     = 1e22
   end
 end
-
 
 subsection Geometry model
   set Model name = spherical shell
@@ -42,6 +40,7 @@ end
 
 subsection Heating model
   set List of model names = radioactive decay
+
   subsection Radioactive decay
     set Number of elements    = 2
     set Heating rates                 = 1e-5,  2e-5
@@ -50,45 +49,31 @@ subsection Heating model
     set Initial concentrations crust  = 0.1,   0.0
     set Crust defined by composition  = true
     set Crust composition number      = 0
-
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0
-end
-
-subsection Boundary velocity model
   set Tangential velocity boundary indicators = 1
 end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0,1
-end
-
-
-subsection Boundary temperature model
   set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 4273
     set Outer temperature = 973
   end
 end
 
-
 subsection Initial temperature model
   set Model name = spherical hexagonal perturbation
 end
 
-
 subsection Gravity model
   set Model name = ascii data
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 3
@@ -97,8 +82,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
 subsection Postprocess
   set List of postprocessors = heating statistics
-
 end

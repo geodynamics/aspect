@@ -1,10 +1,8 @@
 ##### simple test for using multiple initial temperature plugins
 
 set Dimension                              = 2
-
 set Use years in output instead of seconds = true
 set End time                               = 0
-
 set Adiabatic surface temperature          = 1613.0
 
 subsection Geometry model
@@ -19,6 +17,7 @@ end
 subsection Initial temperature model
   set List of model names = ascii data, function
   set List of model operators = add, subtract
+
   subsection Ascii data model
     set Data directory       = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
     set Data file name       = box_2d.txt
@@ -29,22 +28,13 @@ subsection Initial temperature model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = bottom:function,left:function,right:function,top:function
-end
 
-
-subsection Boundary velocity model
   subsection Function
     set Function expression = 1;0
   end
 end
-
 
 subsection Gravity model
   set Model name = vertical
@@ -54,14 +44,13 @@ subsection Gravity model
   end
 end
 
-
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Viscosity = 1e21
   end
 end
-
 
 subsection Mesh refinement
   set Initial global refinement                = 4
@@ -69,7 +58,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
   set Strategy                                 = temperature
 end
-
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics

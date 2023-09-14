@@ -22,6 +22,7 @@ end
 # Significantly reduce resolution
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X repetitions = 15
     set Y repetitions = 10
@@ -36,6 +37,7 @@ end
 # Post processing
 subsection Postprocess
   set List of postprocessors = velocity statistics, depth average
+
   subsection Depth average
     set Time between graphical output = 0
     set Number of zones = 5

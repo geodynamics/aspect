@@ -25,10 +25,10 @@ include $ASPECT_SOURCE_DIR/tests/darcy_velocity.prm
 
 set End time                               = 200
 
-
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top y:function, bottom y:function
   set Tangential velocity boundary indicators = left, right
+
   subsection Function
     set Coordinate system = cartesian
     set Variable names = x,y,t

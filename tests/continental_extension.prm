@@ -37,13 +37,13 @@ end
 # Initial temperature field
 subsection Initial temperature model
   set Model name = continental geotherm
+
   subsection Continental geotherm
-          set Lithosphere-Asthenosphere boundary isotherm = 1613.
-          set Surface temperature = 273.
-          set Layer thicknesses = 20000., 20000., 60000.
+    set Lithosphere-Asthenosphere boundary isotherm = 1613.
+    set Surface temperature = 273.
+    set Layer thicknesses = 20000., 20000., 60000.
   end
 end
-
 
 # Post processing
 subsection Postprocess

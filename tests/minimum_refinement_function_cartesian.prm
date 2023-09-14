@@ -22,14 +22,11 @@ set Dimension                              = 2
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
 set End time                               = 0
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
-
 set Use years in output instead of seconds = true
-
 
 subsection Boundary temperature model
   # Select one of the following models:
@@ -43,6 +40,7 @@ subsection Boundary temperature model
   # `box': A model in which the temperature is chosen constant on all the
   # sides of a box.
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 0,3
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.
@@ -51,13 +49,10 @@ subsection Boundary temperature model
     # Temperature at the outer boundary (lithosphere water/air). Units: K.
     set Minimal temperature = 273
   end
-
 end
-
 
 subsection Discretization
   subsection Stabilization parameters
-
     # The $\beta$ factor in the artificial viscosity stabilization. An
     # appropriate value for 2d is 0.078 and 0.117 for 3d. Units: None.
     set beta  = 0.078
@@ -65,9 +60,7 @@ subsection Discretization
     # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
     set cR    = 0.33
   end
-
 end
-
 
 subsection Geometry model
   # Select one of the following models:
@@ -89,25 +82,21 @@ subsection Geometry model
     set X extent  = 500000
     set Y extent  = 500000
   end
-
 end
-
 
 subsection Gravity model
   set Model name = vertical
-
 
   subsection Vertical
     # Magnitude of the gravity vector in $m/s^2$. The direction is always
     # radially outward from the center of the earth.
     set Magnitude = 10.0
   end
-
 end
-
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function constants  = l=250000
     set Function expression = if(x < l, 1873, 1623)
@@ -115,32 +104,22 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Material model
-
   set Model name = simple
-
 end
 
-
 subsection Mesh refinement
-
   set Additional refinement times              =
-
   set Coarsening fraction                      = 0.05
   set Refinement fraction                      = 0.3
-
   set Initial adaptive refinement              = 3
   set Initial global refinement                = 3
-
   set Normalize individual refinement criteria = true
   set Refinement criteria merge operation      = max
-
   set Run postprocessors on initial refinement = true
-
   set Strategy                                 = temperature, minimum refinement function
-
   set Time steps between mesh refinement       = 1
+
   subsection Minimum refinement function
     set Coordinate system      = cartesian
     set Function constants     =
@@ -149,26 +128,12 @@ subsection Mesh refinement
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,3
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       =
 end
 
-
 subsection Postprocess
-
   set List of postprocessors = visualization,velocity statistics, basic statistics, temperature statistics,heat flux statistics, depth average
 
   subsection Depth average
@@ -181,7 +146,6 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
-
     set List of output variables      =
 
     # VTU file output supports grouping files from several CPUs into one file
@@ -200,5 +164,4 @@ subsection Postprocess
     # parameter is set; seconds otherwise.
     set Time between graphical output = 0
   end
-
 end

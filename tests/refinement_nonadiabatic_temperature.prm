@@ -11,7 +11,6 @@ subsection Mesh refinement
   set Initial global refinement                = 3
   set Initial adaptive refinement              = 2
   set Time steps between mesh refinement       = 1
-
   set Strategy = nonadiabatic temperature threshold, minimum refinement function, maximum refinement function
 
   subsection Minimum refinement function

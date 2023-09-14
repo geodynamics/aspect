@@ -2,11 +2,9 @@
 # phase transition in terms of pressure instead of depth.
 
 set Dimension = 2
-
 set Start time                             = 0
 set End time                               = 1e15
 set Use years in output instead of seconds = false
-
 
 subsection Geometry model
   set Model name = box
@@ -17,39 +15,23 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
+############### Boundary conditions
+# We set the top temperature to T1=1000K.
 subsection Boundary temperature model
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. To guarantee a steady downward flow, we fix the velocity
   # at the top and bottom, and set it to free slip on the sides.
   set Fixed temperature boundary indicators   = 3
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 2:function, 3:function
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0, 1
-end
-
-
-############### Boundary conditions
-# We set the top temperature to T1=1000K.
-subsection Boundary temperature model
   set List of model names = box
+
   subsection Box
     set Top temperature = 1000
   end
@@ -57,6 +39,9 @@ end
 
 # We prescribe a constant downward flow.
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 2:function, 3:function
+  set Tangential velocity boundary indicators = 0, 1
+
   subsection Function
     set Function expression = 0;-2.1422e-11
     set Variable names      = x,y
@@ -65,17 +50,17 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1000.0
     set Variable names      = x,y
   end
 end
 
-
 subsection Material model
   set Model name = latent heat
-  subsection Latent heat
 
+  subsection Latent heat
     # The change of density across the phase transition. Together with the
     # Clapeyron slope, this is what determines the entropy change.
     set Phase transition density jumps                 = 115.6
@@ -90,10 +75,8 @@ subsection Material model
     set Phase transition pressures                     = 1.7e10
     set Phase transition pressure widths               = 6.8e8
     set Define transition by depth instead of pressure = false
-
     set Phase transition temperatures                  = 1000
     set Phase transition Clapeyron slopes              = 1e7
-
     set Reference density                              = 3400
     set Reference specific heat                        = 1000
     set Reference temperature                          = 1000
@@ -113,14 +96,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 4
   set Time steps between mesh refinement = 0
-
 end
-
 
 subsection Discretization
   subsection Stabilization parameters
@@ -137,9 +117,7 @@ subsection Discretization
   end
 end
 
-
 subsection Postprocess
-
   set List of postprocessors = temperature statistics
 end
 

@@ -7,7 +7,6 @@
 include $ASPECT_SOURCE_DIR/tests/maximum_refinement_function_spherical.prm
 
 
-
 subsection Postprocess
   subsection Visualization
     set Write in background thread = true

@@ -10,8 +10,6 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-
-
 subsection Gravity model
   set Model name = radial constant
 
@@ -19,7 +17,6 @@ subsection Gravity model
     set Magnitude = 10
   end
 end
-
 
 subsection Geometry model
   set Model name = chunk
@@ -35,8 +32,10 @@ subsection Geometry model
     set Chunk outer radius = 6000000
     set Radius repetitions = 1
   end
+
   subsection Initial topography model
     set Model name = ascii data
+
     subsection Ascii data model
       set Data directory       = $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
       set Data file name       = shell_3d_outer.0.txt
@@ -44,9 +43,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1613.0
   end
@@ -54,6 +53,8 @@ end
 
 subsection Boundary temperature model
   set List of model names = function
+  set Fixed temperature boundary indicators   = inner, outer
+
   subsection Function
     set Function expression = 1613.0
   end
@@ -61,6 +62,7 @@ end
 
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Reference density = 3340
     set Reference specific heat = 1200
@@ -69,26 +71,13 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 2
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = inner, outer
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = outer, east, west, north, south
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = inner
 end
 

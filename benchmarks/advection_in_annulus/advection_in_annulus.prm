@@ -87,12 +87,11 @@ end
 
 subsection Boundary temperature model
   set List of model names = function
+  set Fixed temperature boundary indicators = top
 
   subsection Function
     set Function expression = 0
   end
-
-  set Fixed temperature boundary indicators = top
 end
 
 subsection Initial temperature model

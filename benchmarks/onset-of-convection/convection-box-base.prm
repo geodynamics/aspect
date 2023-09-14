@@ -6,11 +6,8 @@
 # without substituting appropriate values for each UPPERCASE string.
 
 set Dimension                              = 2
-
 set Use years in output instead of seconds = false
 set Output directory                       = output
-
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Use conduction timestep                = true
@@ -57,7 +54,6 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
@@ -69,7 +65,6 @@ subsection Gravity model
     set Magnitude = GRAVITY
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -92,6 +87,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, point values
+
   subsection Point values
     set Evaluation points = EVALUATION_POINTS
   end

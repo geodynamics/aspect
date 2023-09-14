@@ -4,6 +4,7 @@
 include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/input_t.prm
 
 set Nonlinear solver scheme = single Advection, iterated defect correction Stokes
+set Max nonlinear iterations = 10
 
 subsection Material model
   set Material averaging = harmonic average
@@ -14,5 +15,3 @@ subsection Solver parameters
     set Stokes solver type = block GMG
   end
 end
-
-set Max nonlinear iterations = 10

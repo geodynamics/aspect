@@ -12,7 +12,6 @@ set End time                               = 0
 # this means the solution will not be converged.
 
 subsection Solver parameters
-
   subsection Stokes solver parameters
     set Linear solver tolerance            = 1e-6 # can set to 1e-3 for checking IC
   end

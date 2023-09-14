@@ -5,37 +5,34 @@ set Start time                             = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-
 subsection Boundary temperature model
   set List of model names = constant
+  set Fixed temperature boundary indicators   = 0
+
   subsection Constant
     set Boundary indicator to temperature mappings = surface: 0.0
   end
 end
 
-
-
 subsection Gravity model
   set Model name = radial linear
+
   subsection Radial linear
-    set Magnitude at bottom = 0.0
     set Magnitude at bottom = 0.0
   end
 end
-
 
 subsection Geometry model
   set Model name = sphere
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1000
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -50,20 +47,10 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 2
   set Strategy = temperature
-end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0
 end
 
 subsection Boundary velocity model
@@ -72,6 +59,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization
+
   subsection Visualization
     set Interpolate output = false
     set List of output variables = depth

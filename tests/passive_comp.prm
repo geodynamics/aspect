@@ -50,6 +50,12 @@ subsection Boundary temperature model
   # the left and right sides of a box.
   set List of model names = spherical constant
 
+  # A comma separated list of integers denoting those boundaries on which the
+  # temperature is fixed and described by the boundary temperature object
+  # selected in its own section of this input file. All boundary indicators
+  # used by the geometry but not explicitly listed here will end up with
+  # no-flux (insulating) boundary conditions.
+  set Fixed temperature boundary indicators   = 0,1
 
   subsection Spherical constant
     # Temperature at the inner boundary (core mantle boundary). Units: K.
@@ -58,9 +64,7 @@ subsection Boundary temperature model
     # Temperature at the outer boundary (lithosphere water/air). Units: K.
     set Outer temperature = 0
   end
-
 end
-
 
 subsection Discretization
   # The polynomial degree to use for the velocity variables in the Stokes
@@ -79,7 +83,6 @@ subsection Discretization
   # globally conservative (false).
   set Use locally conservative discretization = false
 
-
   subsection Stabilization parameters
     # The exponent $\alpha$ in the entropy viscosity stabilization. Units:
     # None.
@@ -92,14 +95,11 @@ subsection Discretization
     # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
     set cR    = 0.11
   end
-
 end
 
 subsection Compositional fields
-
   set Number of fields = 1
   set List of normalized fields =
-
 end
 
 subsection Geometry model
@@ -114,8 +114,6 @@ subsection Geometry model
   # in each coordinate direction is set in the parameter file.
   set Model name = spherical shell
 
-
-
   subsection Spherical shell
     # Inner radius of the spherical shell. Units: \\si{\\meter}.
     set Inner radius  = 3481000
@@ -127,22 +125,17 @@ subsection Geometry model
     # Outer radius of the spherical shell. Units: \\si{\\meter}.
     set Outer radius  = 6336000
   end
-
 end
-
 
 subsection Gravity model
   set Model name = ascii data
-
 
   subsection Radial constant
     # Magnitude of the gravity vector in $m/s^2$. The direction is always
     # radially outward from the center of the earth.
     set Magnitude = 9.81
   end
-
 end
-
 
 subsection Initial temperature model
   # Select one of the following models:
@@ -165,7 +158,6 @@ subsection Initial temperature model
   # boundary.
   set Model name = spherical hexagonal perturbation
 
-
   subsection Spherical gaussian perturbation
     # The amplitude of the perturbation.
     set Amplitude             = 0.00
@@ -183,7 +175,6 @@ subsection Initial temperature model
     # The sign of the perturbation.
     set Sign                  = 1
   end
-
 end
 
 subsection Initial composition model
@@ -196,10 +187,8 @@ subsection Initial composition model
   set Model name = function
 
   subsection Function
-
     set Variable names = x,y
     set Function expression = if(x > 0,0,1)
-
   end
 end
 
@@ -221,7 +210,6 @@ subsection Material model
   # read from the parameter file in subsection 'Simple model'.
   set Model name = simple
 
-
   subsection Simple model
     # Reference density $\rho_0$. Units: \\si{\\kilogram\\per\\meter\\cubed}.
     set Reference density             = 3300
@@ -238,10 +226,7 @@ subsection Material model
     # The value of the constant viscosity. Units: \\si{\\pascal\\second}.
     set Viscosity                     = 1e22
   end
-
-
 end
-
 
 subsection Mesh refinement
   # A list of times so that if the end time of a time step is beyond this
@@ -252,7 +237,6 @@ subsection Mesh refinement
   # finer mesh. Units: each element of the list has units years if the 'Use
   # years in output instead of seconds' parameter is set; seconds otherwise.
   set Additional refinement times        =
-
 
   # The number of adaptive refinement steps performed after initial global
   # refinement but while still within the first time step.
@@ -278,25 +262,9 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 5
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  # A comma separated list of integers denoting those boundaries on which the
-  # temperature is fixed and described by the boundary temperature object
-  # selected in its own section of this input file. All boundary indicators
-  # used by the geometry but not explicitly listed here will end up with
-  # no-flux (insulating) boundary conditions.
-  set Fixed temperature boundary indicators   = 0,1
-end
-
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 0: function, 1:function
-end
 
-subsection Boundary velocity model
   subsection Function
     # The name of the variables as they will be used in the function,
     # separated by ','.
@@ -308,9 +276,7 @@ subsection Boundary velocity model
     # Vector valued expression for the velocity; separate components by ';'
     set Function expression = if(x>0,-1.e-14*sqrt(x*x+y*y)*sin(atan(y/x)),1.e-14*sqrt(x*x+y*y)*sin(atan(y/x))); if(x>0,1.e-14*sqrt(x*x+y*y)*cos(atan(y/x)),-1.e-14*sqrt(x*x+y*y)*cos(atan(y/x)))
   end
-
 end
-
 
 subsection Postprocess
   # A comma separated list of postprocessor objects that should be run at the
@@ -346,10 +312,8 @@ subsection Postprocess
   # that computes some statistics about the heat flux across boundaries.
   set List of postprocessors = visualization,velocity statistics, basic statistics, temperature statistics,heat flux statistics, depth average
 
-
   subsection Visualization
     set Interpolate output = false
-
     set Number of grouped files       = 0
 
     # The file format to be used for graphical output.
@@ -366,10 +330,7 @@ subsection Postprocess
     set Time between graphical output = 1e6
     set Number of zones = 10
   end
-
 end
-
-
 
 subsection Heating model
   set List of model names =  shear heating

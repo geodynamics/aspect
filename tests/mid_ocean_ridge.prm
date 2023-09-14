@@ -7,6 +7,7 @@ set End time = 1e4
 
 subsection Material model
   set Model name = melt simple
+
   subsection Melt simple
     set Thermal bulk viscosity exponent = 7
   end

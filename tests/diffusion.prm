@@ -25,7 +25,6 @@
 # simulation
 set Dimension = 2
 
-
 # In computations, the time step $k$ is chosen according to $k = c \min_K
 # \frac{h_K}{\|u\|_{\infty,K} p_T}$ where $h_K$ is the diameter of cell $K$,
 # and the denominator is the maximal magnitude of the velocity on cell $K$
@@ -101,6 +100,13 @@ subsection Boundary temperature model
   # read from subsection 'Spherical constant'.
   set List of model names = box
 
+  # A comma separated list of integers denoting those boundaries on which the
+  # temperature is fixed and described by the boundary temperature object
+  # selected in its own section of this input file. All boundary indicators
+  # used by the geometry but not explicitly listed here will end up with
+  # no-flux (insulating) boundary conditions.
+  set Fixed temperature boundary indicators   = 2, 3
+
   subsection Box
     set Bottom temperature = 0
     set Top temperature    = 1
@@ -133,9 +139,7 @@ subsection Discretization
     # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
     set cR    = 0.5
   end
-
 end
-
 
 subsection Geometry model
   # Select one of the following models:
@@ -161,11 +165,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Initial temperature model
   # Select one of the following models:
@@ -185,13 +187,11 @@ subsection Initial temperature model
   # parameter file in subsection 'Spherical gaussian perturbation'.
   set Model name = function
 
-    subsection Function
+  subsection Function
     set Variable names = x,y
     set Function expression = 0.0
   end
-
 end
-
 
 subsection Material model
   # Select one of the following models:
@@ -228,9 +228,7 @@ subsection Material model
     # The value of the constant viscosity. Units: \\si{\\pascal\\second}.
     set Viscosity                     = 1
   end
-
 end
-
 
 subsection Mesh refinement
   # A list of times so that if the end time of a time step is beyond this
@@ -266,20 +264,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 5
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  # A comma separated list of integers denoting those boundaries on which the
-  # temperature is fixed and described by the boundary temperature object
-  # selected in its own section of this input file. All boundary indicators
-  # used by the geometry but not explicitly listed here will end up with
-  # no-flux (insulating) boundary conditions.
-  set Fixed temperature boundary indicators   = 2, 3
-end
-
 subsection Boundary velocity model
   # A comma separated list of integers denoting those boundaries on which the
   # velocity is tangential and unrestrained, i.e., where no external forces
@@ -289,12 +273,13 @@ subsection Boundary velocity model
 end
 
 subsection Checkpointing
-   # The wall time between performing checkpoints. If 0, will use the
-   # checkpoint step frequency instead.
-   set Time between checkpoint                = 0
-   # The number of timesteps between performing checkpoints. If 0 and time
-   # between checkpoint is not specified, checkpointing will not be performed.
-   set Steps between checkpoint               = 50
+  # The wall time between performing checkpoints. If 0, will use the
+  # checkpoint step frequency instead.
+  set Time between checkpoint                = 0
+
+  # The number of timesteps between performing checkpoints. If 0 and time
+  # between checkpoint is not specified, checkpointing will not be performed.
+  set Steps between checkpoint               = 50
 end
 
 subsection Postprocess
@@ -342,6 +327,7 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
+
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no
     # grouping. This will disable parallel file output and instead write one

@@ -12,7 +12,6 @@
 # proportional to the ratio between solid and melt velocity.
 
 set Additional shared libraries            = ./plugin/libsolubility.so
-
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Output directory                       = output
@@ -21,7 +20,6 @@ set Nonlinear solver tolerance             = 1e-5
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
-
 set End time                               = 6e6
 
 # Because the model includes reactions that might be on a faster time scale
@@ -52,6 +50,7 @@ end
 # of the material is 1%.
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0.0; 0.01
   end
@@ -69,6 +68,7 @@ end
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right
   set Prescribed velocity boundary indicators = bottom:function
+
   subsection Function
     set Function expression = 0; 1e-2
   end
@@ -86,9 +86,7 @@ subsection Geometry model
     set Y extent  = 1e5
     set Y repetitions = 500
   end
-
 end
-
 
 subsection Gravity model
   set Model name = vertical
@@ -96,13 +94,13 @@ subsection Gravity model
   subsection Vertical
     set Magnitude = 10.0
   end
-
 end
 
 # The temperature is not important for this model, so we simply
 # set it to 1600 K everywhere (including the boundary).
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1600
   end
@@ -118,11 +116,11 @@ subsection Boundary temperature model
   end
 end
 
-
 # We use a custom material model that implements the layers with
 # different solubility.
 subsection Material model
   set Model name = volatiles
+
   subsection Volatile model
     set Base model = visco plastic
     set Reference fluid density = 2995
@@ -136,49 +134,38 @@ subsection Material model
   subsection Visco Plastic
     set Reference temperature                   = 1600
     set Prefactors for diffusion creep          = 5e-21
-
     set Viscous flow law = diffusion
-
     set Densities                   = 3000
     set Viscosity averaging scheme  = harmonic
-
     set Minimum viscosity           = 1e19
     set Maximum viscosity           = 1e19
   end
 end
 
-
 subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.0
-
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 0
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
 
-
 subsection Melt settings
   set Include melt transport                  = true
 end
 
-
 subsection Postprocess
-
   set List of postprocessors = visualization, composition statistics, velocity statistics
 
   subsection Visualization
-
     set List of output variables      = density, viscosity, thermal expansivity, melt material properties, melt fraction
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    set Interpolate output            = false
 
     subsection Melt material properties
       set List of properties          = fluid density, permeability, fluid viscosity, compaction viscosity
     end
-
-    set Output format                 = vtu
-    set Time between graphical output = 0
-    set Interpolate output            = false
   end
-
 end

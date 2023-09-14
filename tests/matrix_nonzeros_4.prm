@@ -8,7 +8,6 @@ set Start time                             = 0
 set End time                               = 0.3
 set Use years in output instead of seconds = false
 
-
 ############### Parameters describing the model
 # Let us here choose again a box domain of size 2x1
 # where we fix the temperature at the bottom and top,
@@ -25,23 +24,30 @@ subsection Geometry model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
+# We then set the temperature to one at the bottom and zero
+# at the top:
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2, 3
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Top temperature    = 0
+  end
 end
 
+# The velocity along the top boundary models a spreading
+# center that is moving left and right:
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 1, 2
-end
-
-subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 3: function
-end
 
+  subsection Function
+    set Variable names      = x,z,t
+    set Function constants  = pi=3.1415926
+    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
+  end
+end
 
 subsection Compositional fields
   set Number of fields = 2
@@ -51,29 +57,6 @@ subsection Boundary composition model
   set List of model names = initial composition
 end
 
-# We then set the temperature to one at the bottom and zero
-# at the top:
-subsection Boundary temperature model
-  set List of model names = box
-
-  subsection Box
-    set Bottom temperature = 1
-    set Top temperature    = 0
-  end
-end
-
-
-# The velocity along the top boundary models a spreading
-# center that is moving left and right:
-subsection Boundary velocity model
-  subsection Function
-    set Variable names      = x,z,t
-    set Function constants  = pi=3.1415926
-    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
-  end
-end
-
-
 # We then choose a vertical gravity model and describe the
 # initial temperature with a vertical gradient. The default
 # strength for gravity is one. The material model is the
@@ -81,7 +64,6 @@ end
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Initial temperature model
   set Model name = function
@@ -102,7 +84,6 @@ subsection Initial composition model
   end
 end
 
-
 subsection Material model
   set Model name = composition reaction
 
@@ -116,7 +97,6 @@ subsection Material model
   end
 end
 
-
 # The final part of this input file describes how many times the
 # mesh is refined and what to do with the solution once computed
 subsection Mesh refinement
@@ -125,9 +105,9 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
 subsection Postprocess
   set List of postprocessors = composition statistics, memory statistics, matrix statistics
+
   subsection Memory statistics
     set Output peak virtual memory (VmPeak) = false
   end

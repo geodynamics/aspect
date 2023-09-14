@@ -16,12 +16,12 @@ set Output directory                       = output_bulk_3
 set Nonlinear solver scheme                = iterated IMPES
 set Max nonlinear iterations               = 10
 set Nonlinear solver tolerance             = 1e-4
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 1.34888e+11
 set Adiabatic surface temperature          = 2510
 set Use conduction timestep                = true
 set Use operator splitting                 = true
+
 #set Maximum time step                      = 2e5
 
 subsection Compositional fields
@@ -64,12 +64,12 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set List of model names = adiabatic
 
   subsection Adiabatic
     set Age bottom boundary layer = 1e8
+
     subsection Function
       set Function expression = 0; 0.07; 0.49
     end
@@ -83,8 +83,9 @@ end
 
 subsection Initial composition model
   set List of model names = function #, porosity
+
   subsection Function
-   set Function expression = 0; 0.07; 0.49
+    set Function expression = 0; 0.07; 0.49
   end
 end
 
@@ -103,6 +104,7 @@ subsection Boundary temperature model
   set Allow fixed temperature on outflow boundaries = false
   set Fixed temperature boundary indicators   = bottom, top
   set List of model names = initial temperature
+
   subsection Initial temperature
     set Maximal temperature = 4000
   end
@@ -123,8 +125,6 @@ subsection Heating model
   end
 end
 
-
-
 subsection Gravity model
   set Model name = vertical
 
@@ -132,7 +132,6 @@ subsection Gravity model
     set Magnitude = 10.0
   end
 end
-
 
 subsection Material model
   set Model name = melt boukare
@@ -145,15 +144,12 @@ subsection Material model
     set Thermal bulk viscosity exponent    = 10
     set Exponential melt weakening factor    = 15
     set Melting time scale for operator splitting = 5e4 #5e3
-
     set Fe mantle melting temperature = 2824.5 #default: 3424.5
     set Mg mantle melting temperature = 4221.2 #default: 4821.2
     set Reference permeability        = 5e-13
-
     set Include melting and freezing  = true
   end
 end
-
 
 # The settings above all pertain to the description of the
 # continuous partial differential equations we want to solve.
@@ -178,13 +174,11 @@ subsection Mesh refinement
   end
 end
 
-
 subsection Boundary fluid pressure model
   subsection Density
     set Density formulation = fluid density
   end
 end
-
 
 # The final part is to specify what ASPECT should do with the
 # solution once computed at the end of every time step. The

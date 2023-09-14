@@ -1,9 +1,15 @@
-""" Routines to read output files from ASPECT """
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+""" Routines to read output files of ASPECT """
 
 import numpy as np
 import pandas as pd
 import os
+
+__author__ = 'The authors of the ASPECT code'
+__copyright__ = 'Copyright 2023, ASPECT'
+__license__ = 'GNU GPL 2 or later'
 
 
 
@@ -69,67 +75,3 @@ def read_gnuplot_visu(fname):
     data = pd.read_csv(fname,comment='#', header=None, names=header, sep=" ", index_col=False)
     data.dropna(axis=0, how='any', thresh=None, subset=None, inplace=False) # remove the empty lines
     return data
-
-
-
-
-def set_param(line):
-    """ Read a line in parameter file and extract the name and value associated """
-    
-    debut = line.index("=")
-    param_name = line[1:debut]
-    param_name = ' '.join(word for word in param_name)
-        
-    param_value = line[debut+1:]
-    
-    if '#' in param_value: 
-        fin = param_value.index("#")
-        param_value = param_value[:fin]
-
-    return param_name, param_value   
-    
-def read_parameter_file(file):
-    """ Read parameter file, and return a dictionary with all values. 
-    
-    Numerical values are not considered as such. Use float() later to use them.
-    """
-    
-    with open(file) as f:
-        file_param = f.read().splitlines()
-
-    parameters = dict({}) 
-    section = ""
-    for line in file_param:
-
-        line = line.split()
-        if len(line)==0:
-            pass
-        elif line[0] == "#":
-            pass
-        elif line[0] == "end":
-            if ":" in section:
-                section = section[:section.rindex(":")]
-            else:    
-                section = ""
-        elif line[0] == "subsection":
-            name_section = ' '.join(word for word in line[1:])
-            if section == "":
-                section = name_section
-            else:
-                section = section+": "+name_section
-
-        elif line[0] == 'set':
-
-            name, value = set_param(line)
-            if section == "":
-                parameters[name] = value
-            else:
-                if section in parameters:
-                    parameters[section][name] = value
-                else:
-                    parameters[section] = dict({})
-                    parameters[section][name] = value
-    return parameters
-
-
-

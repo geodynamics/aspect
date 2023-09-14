@@ -9,7 +9,6 @@ subsection Material model
     set Reference specific heat                        = 1000
     set Thermal expansion coefficient                  = 1e-4
     set Compressibility                                = 0
-
     set Thermal conductivity                           = 246.03750       # k = 2.460375e7/Ra, corresponds to Ra = 1e5
 
     # There is one phase transition in the center of the box (at a depth of 675 km),

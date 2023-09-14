@@ -15,7 +15,6 @@ subsection Material model
   end
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
 
@@ -25,12 +24,10 @@ subsection Geometry model
   end
 end
 
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = bottom
   set Tangential velocity boundary indicators = top
 end
-
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom
@@ -42,19 +39,17 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1.473e3
   end
 end
 
-
 subsection Gravity model
   set Model name = ascii data
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 1
@@ -88,12 +83,11 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set List of output variables = artificial viscosity, artificial viscosity composition
+    set Output format                 = gnuplot
+    set Time between graphical output = 0
 
     subsection Artificial viscosity composition
       set Name of compositional field = C_1
     end
-
-    set Output format                 = gnuplot
-    set Time between graphical output = 0
   end
 end

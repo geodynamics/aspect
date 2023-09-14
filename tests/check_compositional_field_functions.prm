@@ -1,7 +1,9 @@
 # This test checks whether the compositional field functions are implemented correctly.
 
 set Dimension = 3
+
 include $ASPECT_SOURCE_DIR/tests/composite_viscous_outputs.prm
+
 set Additional shared libraries = tests/libcheck_compositional_field_functions.so
 
 subsection Compositional fields

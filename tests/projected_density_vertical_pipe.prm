@@ -3,6 +3,7 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/compressibility_formulations/vertical_pipe/vertical_pipe.prm
 
+
 # It makes sure that boundary conditions are not applied to the projected density field
 
 # Fewer time steps, higher solver tolerance
@@ -10,15 +11,15 @@ set End time                    = 2.2e6
 set Nonlinear solver tolerance  = 1e-5
 
 subsection Boundary composition model
-    set Allow fixed composition on outflow boundaries = true
-    set Fixed composition boundary indicators = top, bottom
-    set Model name = box
+  set Allow fixed composition on outflow boundaries = true
+  set Fixed composition boundary indicators = top, bottom
+  set Model name = box
 
-    # The test is to make sure these values are ignored
-    subsection Box
-      set Bottom composition = 2000
-      set Top composition = 3000
-    end
+  # The test is to make sure these values are ignored
+  subsection Box
+    set Bottom composition = 2000
+    set Top composition = 3000
+  end
 end
 
 subsection Postprocess

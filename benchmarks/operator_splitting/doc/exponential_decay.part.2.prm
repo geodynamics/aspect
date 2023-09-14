@@ -18,7 +18,6 @@ subsection Initial composition model
   end
 end
 
-
 # We choose material and heating models that let temperature
 # and composition decay over time, and that is implemented in
 # a plugin.

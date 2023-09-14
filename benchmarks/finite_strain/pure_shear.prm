@@ -40,7 +40,6 @@
 # values with increasing resolution.
 
 set Additional shared libraries            = ./libfinite_strain.so
-
 set Dimension                              = 2
 set End time                               = 1.0
 set Use years in output instead of seconds = false
@@ -48,6 +47,7 @@ set Output directory                       = output-pure_shear
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent  = 1.0
     set Y extent  = 1.0
@@ -57,6 +57,7 @@ end
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, bottom
   set Prescribed velocity boundary indicators = top:function, right:function
+
   subsection Function
     set Function expression = 1-y; x-1
   end
@@ -64,6 +65,7 @@ end
 
 subsection Material model
   set Model name = finite strain
+
   subsection Simple model
     set Reference density             = 1010
     set Viscosity                     = 1e2
@@ -73,6 +75,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10
   end
@@ -89,6 +92,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 1.0;0.0;0.0;1.0
   end
@@ -99,6 +103,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
@@ -126,8 +131,8 @@ subsection Postprocess
     set Time between data output = 0.05
     set Data output format = vtu
     set List of particle properties = integrated strain
-
     set Particle generator name = ascii file
+
     subsection Generator
       subsection Ascii file
         set Data directory = ./

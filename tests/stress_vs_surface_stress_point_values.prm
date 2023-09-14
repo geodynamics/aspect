@@ -4,7 +4,9 @@
 # boundary. The two ought to agree on their results at the boundary.
 
 set Dimension                              = 2
+
 include $ASPECT_SOURCE_DIR/tests/stress_vs_surface_stress.prm
+
 
 subsection Postprocess
   set List of postprocessors = visualization

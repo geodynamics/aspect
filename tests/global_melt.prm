@@ -18,17 +18,16 @@ set Dimension                              = 2
 # This end time is chosen in such a way that the solitary wave travels
 # approximately 5 times its wavelength during the model time.
 set End time                               = 5e5
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
-
 set Use years in output instead of seconds = true
 
 subsection Discretization
   set Stokes velocity polynomial degree    = 2
   set Composition polynomial degree        = 1
+
   subsection Stabilization parameters
     set beta  = 0.2
   end
@@ -39,9 +38,9 @@ subsection Compositional fields
   set Names of fields = porosity, peridotite
 end
 
-
 subsection Boundary temperature model
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 2,3
 
   subsection Initial temperature
     set Minimal temperature = 293
@@ -51,9 +50,12 @@ end
 
 subsection Boundary composition model
   set List of model names = initial composition
+  set Fixed composition boundary indicators   = #2,3
 end
 
 subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+
   subsection Function
     set Function constants  = b=100000, c=20000
     set Variable names      = x,y
@@ -67,10 +69,10 @@ subsection Geometry model
   subsection Box
     set X extent = 8700000
     set Y extent = 2900000
-#    set X periodic = true
+
+    #    set X periodic = true
     set X repetitions = 3
   end
-
 end
 
 subsection Gravity model
@@ -81,9 +83,9 @@ subsection Gravity model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = adiabatic
+
   subsection Adiabatic
     set Age bottom boundary layer = 5e8
     set Age top boundary layer    = 3e8
@@ -103,6 +105,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function constants  = pi=3.1415926,a = 0.0, b = 2500000, c = 100000, d=1450000
     set Function expression = a * exp(-((y-b)*(y-b)+(0.2*(x-d))*(0.2*(x-d)))/(2*c*c)); a * exp(-((y-b)*(y-b)+(0.2*(x-d))*(0.2*(x-d)))/(2*c*c))
@@ -110,10 +113,9 @@ subsection Initial composition model
   end
 end
 
-
 subsection Material model
-
   set Model name = melt global
+
   subsection Melt global
     set Thermal conductivity              = 4.7
     set Reference solid density           = 3400
@@ -133,11 +135,9 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Coarsening fraction                      = 0.05
   set Refinement fraction                      = 0.8
-
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 3
   set Strategy                                 = composition threshold, minimum refinement function #, nonadiabatic temperature
@@ -154,9 +154,9 @@ subsection Mesh refinement
   end
 end
 
-
 subsection Boundary fluid pressure model
   set Plugin name = density
+
   subsection Density
     set Density formulation = solid density
   end
@@ -166,24 +166,8 @@ subsection Heating model
   set List of model names = adiabatic heating #, latent heat melt, shear heating
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2,3
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = #2,3
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0,1,2,3
-end
-
 subsection Nullspace removal
-#  set Remove nullspace                        = net x translation
+  #  set Remove nullspace                        = net x translation
 
 end
 
@@ -191,14 +175,15 @@ subsection Melt settings
   set Include melt transport                  = true
 end
 
-
 subsection Postprocess
-
   set List of postprocessors = visualization,composition statistics,velocity statistics, temperature statistics, depth average
 
   subsection Visualization
-
     set List of output variables      = material properties, nonadiabatic temperature, melt fraction, strain rate, melt material properties
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    set Interpolate output            = true
 
     subsection Material properties
       set List of material properties = density, viscosity, thermal expansivity, reaction terms
@@ -207,24 +192,17 @@ subsection Postprocess
     subsection Melt material properties
       set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
     end
-
-    set Number of grouped files       = 0
-    set Output format                 = vtu
-    set Time between graphical output = 0
-    set Interpolate output            = true
   end
 
   subsection Depth average
     set Number of zones = 12
     set Time between graphical output = 6e5
   end
-
 end
 
 subsection Checkpointing
   set Time between checkpoint = 1700
 end
-
 
 subsection Solver parameters
   set Composition solver tolerance = 1e-14

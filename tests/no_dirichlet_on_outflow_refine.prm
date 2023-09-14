@@ -6,7 +6,6 @@
 # second step.
 
 set Dimension                              = 2
-
 set Use years in output instead of seconds = true
 set End time                               = 2e6
 set Output directory                       = test
@@ -21,6 +20,7 @@ set Adiabatic surface temperature          = 1600
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 800e3
     set Y extent = 800e3
@@ -58,14 +58,13 @@ subsection Boundary velocity model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
 end
-
 
 subsection Material model
   set Model name = latent heat
@@ -81,7 +80,6 @@ subsection Material model
     set Reference temperature         = 1600
     set Compressibility               = 0
     set Thermal viscosity exponent    = 50.0
-
     set Phase transition density jumps                 = 110
     set Corresponding phase for density jump           = 0
     set Phase transition depths                        = 300000
@@ -92,14 +90,12 @@ subsection Material model
   end
 end
 
-
 # We also have to specify that we want to use the Boussinesq
 # approximation (assuming the density in the temperature
 # equation to be constant, and incompressibility).
 subsection Formulation
   set Formulation = Boussinesq approximation
 end
-
 
 # The following section deals with the discretization of
 # this problem, namely the kind of mesh we want to compute
@@ -115,7 +111,6 @@ subsection Mesh refinement
     set Function expression = 4
   end
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, heat flux statistics

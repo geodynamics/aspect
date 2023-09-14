@@ -12,7 +12,6 @@ subsection Compositional fields
   set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy
 end
 
-
 # Post processing
 subsection Postprocess
   set List of postprocessors = basic statistics, composition statistics, particles, temperature statistics, velocity statistics, visualization

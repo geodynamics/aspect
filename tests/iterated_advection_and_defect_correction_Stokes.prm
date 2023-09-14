@@ -16,12 +16,10 @@ set Dimension                              = 2
 # This end time is chosen in such a way that the solitary wave travels
 # approximately 5 times its wavelength during the model time.
 set End time                               = 1e5
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
-
 set Use years in output instead of seconds = true
 
 subsection Discretization
@@ -37,9 +35,9 @@ subsection Compositional fields
   set Names of fields = porosity
 end
 
-
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = 2,3
 
   subsection Box
     set Top temperature = 0
@@ -49,6 +47,7 @@ end
 
 subsection Boundary composition model
   set List of model names = initial composition
+  set Fixed composition boundary indicators   = 2,3
 end
 
 subsection Geometry model
@@ -59,20 +58,19 @@ subsection Geometry model
     set Y extent  = 65000
     set X repetitions = 2
   end
-
 end
-
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
-
 end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function constants  = pi=3.1415926,x0=150000,a = 0.2, b = 75000, c = 10000, d=0.0
     set Function expression = d + a * exp(-((x-b)*(x-b)+y*y)/(2*c*c))
@@ -82,6 +80,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function constants  = pi=3.1415926,x0=150000,a = 0.2, b = 75000, c = 10000, d=0.0
     set Function expression = d + a * exp(-((x-b)*(x-b)+y*y)/(2*c*c))
@@ -89,9 +88,9 @@ subsection Initial composition model
   end
 end
 
-
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Thermal conductivity = 0
     set Thermal expansion coefficient = 1
@@ -103,40 +102,22 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.0
-
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 4
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2,3
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = 2,3
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
 end
 
-
 subsection Postprocess
   set List of postprocessors =
 end
-
-
 
 subsection Solver parameters
   subsection Stokes solver parameters

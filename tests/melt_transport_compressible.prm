@@ -1,3 +1,24 @@
+set Adiabatic surface temperature          = 1623
+set CFL number                             = 1.0
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 50
+
+# This model is very sensitive to nonlinear solver tolerance and sometimes does
+# not quite reach 1e-5, increase to 2e-5 to avoid non-convergence
+set Nonlinear solver tolerance             = 2e-5
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+set End time                               = 0
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Resume computation                     = false
+set Start time                             = 0
+set Use years in output instead of seconds = false
+
 # A testcase that demonstrates melt transport with a compactible matrix,
 # and compressible matrix and fluid. Boundary conditions for the
 # velocity and fluid pressure as well as porosity initial conditions
@@ -18,40 +39,18 @@ subsection Discretization
   set Temperature polynomial degree           = 2
 end
 
-set Adiabatic surface temperature          = 1623
-set CFL number                             = 1.0
-set Nonlinear solver scheme                = iterated Advection and Stokes
-set Max nonlinear iterations               = 50
-
-# This model is very sensitive to nonlinear solver tolerance and sometimes does
-# not quite reach 1e-5, increase to 2e-5 to avoid non-convergence
-set Nonlinear solver tolerance             = 2e-5
-
-# The number of space dimensions you want to run this program in.
-set Dimension                              = 2
-
-# The end time of the simulation. Units: years if the 'Use years in output
-# instead of seconds' parameter is set; seconds otherwise.
-set End time                               = 0
-
-set Pressure normalization                 = surface
-set Surface pressure                       = 0
-set Resume computation                     = false
-set Start time                             = 0
-
-set Use years in output instead of seconds = false
-
 subsection Compositional fields
   set Number of fields = 1
   set Names of fields = porosity
 end
 
 subsection Boundary fluid pressure model
- set Plugin name = PressureBdry
+  set Plugin name = PressureBdry
 end
 
 subsection Boundary temperature model
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 2,3
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.
@@ -60,13 +59,12 @@ subsection Boundary temperature model
     # Temperature at the outer boundary (lithosphere water/air). Units: K.
     set Minimal temperature = 273
   end
-
 end
 
 subsection Boundary composition model
   set List of model names = initial composition
+  set Fixed composition boundary indicators   = 0,1,2,3
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -75,29 +73,30 @@ subsection Geometry model
     set X extent  = 1
     set Y extent  = 1
   end
-
 end
-
 
 subsection Gravity model
   set Model name = function
+
   subsection Function
     set Function expression = 0;-exp(y)
     set Variable names      = x,y
   end
-
 end
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
+  set Zero velocity boundary indicators       =
+
   subsection Function
     set Function expression = 0.1*exp(y);-0.3/4.0*exp(y)
     set Variable names      = x,y
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
     set Variable names      = x,y
@@ -106,71 +105,35 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 1.0 - 0.3 * exp(y)
     set Variable names      = x,y
   end
 end
 
-
 subsection Material model
-
   set Model name = compressible melt material
-
-
 end
-
 
 subsection Melt settings
   set Use discontinuous compaction pressure = false
   set Average melt velocity                 = false
+  set Include melt transport                  = true
 end
-
 
 subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.0
-
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 6
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2,3
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = 0,1,2,3
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
-end
-
-subsection Boundary velocity model
-  set Zero velocity boundary indicators       =
-end
-
-subsection Melt settings
-  set Include melt transport                  = true
-end
-
-
 subsection Postprocess
-
   set List of postprocessors = velocity statistics, pressure statistics, velocity boundary statistics, compressible melt error
-
-
 end
-
-
 
 subsection Solver parameters
   subsection Stokes solver parameters

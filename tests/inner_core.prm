@@ -12,7 +12,6 @@
 # MPI: 2
 
 set Additional shared libraries            = ./libinner_core_convection.so
-
 set Dimension                              = 3
 set Use years in output instead of seconds = false
 set End time                               = 50
@@ -33,18 +32,18 @@ subsection Material model
     set Viscosity                     = 1
   end
 
-# The 'inner core material' model also contains a function that
-# represents the resistance to melting/freezing at the inner core
-# boundary.
-# This phase boundary model combines a prescribed a normal
-# velocity and normal stress. The relation between the two scales
-# with the phase change number P, which is given in the 'Function
-# expression'.
-# For P-->infinity, the boundary is a free slip boundary, and for
-# P-->0, the boundary is an open boundary (with zero normal stress).
+  # The 'inner core material' model also contains a function that
+  # represents the resistance to melting/freezing at the inner core
+  # boundary.
+  # This phase boundary model combines a prescribed a normal
+  # velocity and normal stress. The relation between the two scales
+  # with the phase change number P, which is given in the 'Function
+  # expression'.
+  # For P-->infinity, the boundary is a free slip boundary, and for
+  # P-->0, the boundary is an open boundary (with zero normal stress).
 
-# For time dependence, the variable names have to have dim+1 entries,
-# and the last variable will be the time
+  # For time dependence, the variable names have to have dim+1 entries,
+  # and the last variable will be the time
   subsection Inner core
     subsection Phase change resistance function
       set Variable names      = x,y,z
@@ -67,16 +66,20 @@ end
 # into account the effect of melting/freezing of material at
 # the boundary of inner and outer core, and which is implemented
 # in the shared library.
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Boundary traction model
   set Prescribed traction boundary indicators = surface: zero traction
 end
 
+# The (potential) temperature is set to zero at the outer boundary.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = surface
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 0.8
+    set Outer temperature = 0
+  end
 end
 
 # We use a constant radiogenic heating rate.
@@ -85,15 +88,6 @@ subsection Heating model
 
   subsection Constant core heating
     set Radiogenic heating rate = 6
-  end
-end
-
-# The (potential) temperature is set to zero at the outer boundary.
-subsection Boundary temperature model
-  set List of model names = spherical constant
-  subsection Spherical constant
-    set Inner temperature = 0.8
-    set Outer temperature = 0
   end
 end
 
@@ -111,11 +105,9 @@ subsection Gravity model
 
   subsection Radial linear
     set Magnitude at bottom = 0.0
-    set Magnitude at bottom = 0.0
     set Magnitude at surface = 2     # <-- Ra
   end
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 2
@@ -128,7 +120,6 @@ subsection Mesh refinement
     set Function expression = if(depth>0.1,if(depth>0.3,5,6),7)
   end
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics

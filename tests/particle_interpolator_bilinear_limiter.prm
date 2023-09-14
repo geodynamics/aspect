@@ -10,12 +10,12 @@ set Maximum time step                      = 0.25
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 1
     set Y extent = 1
   end
 end
-
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
@@ -27,13 +27,13 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom,top
 end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 1
   end
@@ -50,6 +50,7 @@ end
 
 subsection Material model
   set Model name = multicomponent
+
   subsection Multicomponent
     set Densities = 1, 2, 0
     set Viscosities = 1, 1000, 0.001
@@ -63,7 +64,6 @@ subsection Mesh refinement
   set Initial global refinement          = 4
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, composition statistics, pressure statistics, material statistics, global statistics, particles
@@ -79,19 +79,19 @@ subsection Postprocess
     set Interpolation scheme = bilinear least squares
     set Update ghost particles = true
     set Particle generator name = reference cell
+
     subsection Generator
       subsection Reference cell
         set Number of particles per cell per direction = 3
       end
     end
+
     subsection Interpolator
       subsection Bilinear least squares
         set Use linear least squares limiter = true
       end
     end
-
   end
-
 end
 
 # Here, we track compositional fields via active particle particles.
@@ -108,6 +108,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = r=0.123456789, xc=0.5, yc=0.6

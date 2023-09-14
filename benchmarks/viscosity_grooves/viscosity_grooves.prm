@@ -14,6 +14,7 @@ set Pressure normalization                 = volume
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 2
     set Y extent = 2
@@ -40,13 +41,14 @@ end
 # This is the epsilon parameter
 
 subsection ViscosityGrooves benchmark
-   set Viscosity parameter = 0.01
+  set Viscosity parameter = 0.01
 end
 
 ############### Parameters describing the temperature field
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
@@ -63,6 +65,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, ViscosityGroovesPostprocessor
+
   subsection Visualization
     set Output format = vtu
     set List of output variables = density, viscosity, strain rate, gravity

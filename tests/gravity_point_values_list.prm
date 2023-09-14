@@ -11,6 +11,7 @@ set Nonlinear solver scheme                = no Advection, no Stokes
 # Model geometry
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Inner radius  = 1
     set Outer radius  = 2
@@ -26,6 +27,7 @@ end
 # Material model
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Reference density                 = 1e6
   end
@@ -34,6 +36,7 @@ end
 # Model initial temperature
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 273
   end
@@ -42,6 +45,7 @@ end
 # Model gravity
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude  = 10
   end
@@ -55,6 +59,7 @@ end
 # Postprocessing
 subsection Postprocess
   set List of postprocessors = gravity calculation
+
   subsection Gravity calculation
     set Sampling scheme           = list of points
     set List of radius            = 4

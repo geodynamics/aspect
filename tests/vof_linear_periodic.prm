@@ -7,15 +7,16 @@ set End time                               = 4
 set Use years in output instead of seconds = false
 set CFL number                             = 0.5
 set Output directory                       = output
+set Nonlinear solver scheme                   = single Advection, no Stokes
 
 subsection Volume of Fluid
-    set Number initialization samples = 16
+  set Number initialization samples = 16
 end
 
 subsection Compositional fields
-    set Number of fields = 1
-    set Names of fields = F_1
-    set Compositional field methods = volume of fluid
+  set Number of fields = 1
+  set Names of fields = F_1
+  set Compositional field methods = volume of fluid
 end
 
 subsection Mesh refinement
@@ -59,15 +60,13 @@ end
 
 subsection Prescribed Stokes solution
   set Model name = function
+
   subsection Velocity function
     set Variable names = x,y,t
-
     set Function constants = init=1.4, x0=1.0, y0=0.3, xv=0.0, yv=-0.25
     set Function expression = xv;yv
   end
 end
-
-set Nonlinear solver scheme                   = single Advection, no Stokes
 
 subsection Postprocess
   set List of postprocessors = volume of fluid statistics, volume of fluid mms
@@ -86,7 +85,6 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set Time between graphical output = 0.0
-
     set List of output variables = volume of fluid values
 
     subsection Volume of Fluid

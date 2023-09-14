@@ -5,9 +5,10 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
-# A gravity is currently necessary to compute the reference profile.
-# Set is so low that it does not affect the solution
+    # A gravity is currently necessary to compute the reference profile.
+    # Set is so low that it does not affect the solution
     set Magnitude = 0.000000001
   end
 end

@@ -34,22 +34,23 @@ set Nonlinear solver tolerance             = 1e-5
 # and maximum number of cheap Stokes solver steps to improve the nonlinear
 # convergence behavior.
 set Use operator splitting                     = true
-subsection Solver parameters
-  subsection Operator splitting parameters
-    set Reaction time step                     = 1e4
-    set Reaction time steps per advection step = 10
-  end
-  subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-8
-    set Number of cheap Stokes solver steps = 100
-  end
-end
 
 # The end time of the simulation. Because we want to see how upwellings
 # and downwellings evolve over time, and if differences develop between
 # the model with and without melt migration, we set the end time to 200 Ma.
 set End time                               = 2e8
 
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction time step                     = 1e4
+    set Reaction time steps per advection step = 10
+  end
+
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-8
+    set Number of cheap Stokes solver steps = 100
+  end
+end
 
 # We prescribe free-slip boundary conditions on all sides.
 subsection Boundary velocity model
@@ -111,6 +112,7 @@ end
 # added (by default).
 subsection Initial temperature model
   set List of model names = adiabatic, function
+
   subsection Adiabatic
     set Age bottom boundary layer = 7e8
     set Age top boundary layer    = 7e7
@@ -132,6 +134,7 @@ end
 # of the model run.
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0; 0
     set Variable names      = x,y
@@ -171,6 +174,7 @@ end
 # flow in or out). This is what we choose as our boundary condition here.
 subsection Boundary fluid pressure model
   set Plugin name = density
+
   subsection Density
     set Density formulation = fluid density
   end
@@ -188,7 +192,6 @@ subsection Geometry model
     set Y extent = 2900000
     set X repetitions = 3
   end
-
 end
 
 ################ Gravity and material properties ##################
@@ -210,10 +213,9 @@ end
 # In addition to the material properties for the solid rock,
 # we also have to specify properties for the melt.
 subsection Material model
-
   set Model name = melt global
-  subsection Melt global
 
+  subsection Melt global
     # First we describe the parameters for the solid, in the same way
     # we did in the model without melt transport
     set Thermal conductivity              = 4.7
@@ -296,7 +298,6 @@ end
 subsection Mesh refinement
   set Coarsening fraction                      = 0.05
   set Refinement fraction                      = 0.8
-
   set Initial adaptive refinement              = 2
   set Initial global refinement                = 5
   set Strategy                                 = composition threshold, minimum refinement function, boundary
@@ -335,7 +336,6 @@ end
 # the "depth average" postprocessor that will allow us to plot
 # depth-averaged model quantities over time.
 subsection Postprocess
-
   set List of postprocessors = visualization, composition statistics, velocity statistics, temperature statistics, depth average
 
   # For the model with melt migration, also add a visualization
@@ -344,6 +344,9 @@ subsection Postprocess
 
   subsection Visualization
     set List of output variables      = material properties, nonadiabatic temperature, strain rate, melt material properties
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 6e5
 
     subsection Material properties
       set List of material properties = density, viscosity, thermal expansivity
@@ -352,17 +355,12 @@ subsection Postprocess
     subsection Melt material properties
       set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
     end
-
-    set Number of grouped files       = 0
-    set Output format                 = vtu
-    set Time between graphical output = 6e5
   end
 
   subsection Depth average
     set Number of zones = 12
     set Time between graphical output = 6e5
   end
-
 end
 
 # We write a checkpoint approximately every half an hour,

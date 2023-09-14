@@ -35,3 +35,10 @@ for script in `ls ${SCRIPT_FOLDER}/*.pl`; do
     mv "$file.tmp" "$file"
   done
 done
+
+for script in `ls ${SCRIPT_FOLDER}/*.py`; do
+  for file in $@ ; do
+    python3 $script $file "$file.tmp"
+    mv "$file.tmp" "$file"
+  done
+done

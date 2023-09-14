@@ -7,11 +7,9 @@ set Dimension = 3
 set CFL number                             = 1.0
 set End time                               = 0
 set Start time                             = 0
-set End time                               = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
-
 
 subsection Geometry model
   set Model name = chunk
@@ -31,13 +29,13 @@ end
 
 subsection Initial temperature model
   set Model name = ascii data layered
+
   subsection Ascii data model
     set Data directory        = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
     set Data file names       = initial_isotherm_1000K_chunk_3d.txt, initial_isotherm_500K_chunk_3d.txt
     set Interpolation scheme  = linear
   end
 end
-
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = inner, outer, west, east, south, north
@@ -51,7 +49,6 @@ subsection Gravity model
   end
 end
 
-
 subsection Material model
   set Model name = simple
 
@@ -60,14 +57,12 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Strategy                           = temperature
   set Refinement fraction                = 0.95
   set Initial global refinement          = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, depth average

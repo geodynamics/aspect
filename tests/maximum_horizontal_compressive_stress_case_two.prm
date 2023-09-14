@@ -1,4 +1,3 @@
-
 ############### Global parameters
 
 set Dimension                              = 3
@@ -15,6 +14,7 @@ set Timing output frequency                = 1
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent  = 1
     set Y extent  =  1
@@ -22,20 +22,17 @@ subsection Geometry model
   end
 end
 
-
-
 subsection Material model
   set Model name = simpler
 end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 1
   end
 end
-
-
 
 # The velocity along the top boundary models a spreading
 # center that is moving left and right:
@@ -56,7 +53,6 @@ subsection Boundary traction model
     set Representative point = 0,0,0
   end
 end
-
 
 ############### Parameters describing the temperature field
 # As above, there is no need to set anything for the
@@ -87,7 +83,6 @@ subsection Mesh refinement
   set Run postprocessors on initial refinement = true
 end
 
-
 ############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to
 # run at the end of each time step. We select to generate graphical
@@ -98,6 +93,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, topography, pressure statistics
+
   subsection Visualization
     set List of output variables = density, viscosity, maximum horizontal compressive stress
     set Time between graphical output = 0
@@ -105,8 +101,6 @@ subsection Postprocess
     set Output format = gnuplot
   end
 end
-
-
 
 subsection Solver parameters
   subsection Stokes solver parameters

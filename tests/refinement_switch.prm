@@ -1,13 +1,9 @@
 set Dimension                              = 2
-
 set Use years in output instead of seconds = false
 set End time                               = 0.5
 set Output directory                       = refinement_switch
-
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
-
 
 subsection Geometry model
   set Model name = box
@@ -17,7 +13,6 @@ subsection Geometry model
     set Y extent = 1
   end
 end
-
 
 subsection Initial temperature model
   set Model name = function
@@ -29,9 +24,9 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = bottom, top
 
   subsection Box
     set Bottom temperature = 1
@@ -41,19 +36,9 @@ subsection Boundary temperature model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
-
 
 subsection Gravity model
   set Model name = vertical
@@ -62,7 +47,6 @@ subsection Gravity model
     set Magnitude = 1e14   # = Ra / Thermal expansion coefficient
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -76,7 +60,6 @@ subsection Material model
     set Viscosity                     = 1
   end
 end
-
 
 subsection Mesh refinement
   set Initial global refinement                = 2
@@ -94,14 +77,15 @@ subsection Compositional fields
   set Names of fields           = heat
   set Number of fields          = 1
 end
+
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = if (y > 0.5, 1, 0)
     set Variable names      = x,y
   end
 end
-
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization

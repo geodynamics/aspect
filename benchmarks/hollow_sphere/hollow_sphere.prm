@@ -27,7 +27,6 @@ subsection Geometry model
     set Outer radius = 1.0
     set Cells along circumference = 12
   end
-
 end
 
 #Boundary conditions
@@ -37,22 +36,21 @@ subsection Boundary velocity model
                                                 top : HollowSphereBoundary
 end
 
-
 subsection Material model
   set Model name = HollowSphereMaterial
 end
 
-
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude = 1.0
   end
 end
 
 subsection HollowSphere benchmark
-   #Viscosity parameter is m
-   set Viscosity parameter             = 3
+  #Viscosity parameter is m
+  set Viscosity parameter             = 3
 end
 
 ############### Parameters describing the temperature field
@@ -66,7 +64,6 @@ subsection Initial temperature model
     set Function expression = 0
   end
 end
-
 
 ############### Parameters describing the discretization
 # The following parameters describe how often we want to refine

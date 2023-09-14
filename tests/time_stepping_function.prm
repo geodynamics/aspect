@@ -10,8 +10,8 @@ set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 
 subsection Time stepping
-
   set List of model names = function
+
   subsection Function
     set Function expression = if (time<5e3,2e2+1e2*cos(2*3.141*time/5e3),3e2+time/1e3)
   end
@@ -20,7 +20,6 @@ end
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -32,11 +31,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = perturbed box
 end
-
 
 subsection Material model
   set Model name = simple
@@ -51,7 +48,6 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 3
@@ -59,9 +55,6 @@ end
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 1
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0, 2, 3
 end
 
