@@ -34,7 +34,7 @@ namespace aspect
     {
 
       /**
-       * Computes the elastic tensor $C_{ijkl} based on the cpo in both olivine
+       * Computes the elastic tensor $C_{ijkl}$ based on the cpo in both olivine
        * and enstatite. It uses a Voigt average.
        *
        * The layout of the data vector per particle is the following (note that
