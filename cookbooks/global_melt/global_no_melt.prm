@@ -11,8 +11,8 @@ set Use years in output instead of seconds = true
 
 # The end time of the simulation. Because we want to see how upwellings
 # and downwellings evolve over time, and if differences develop between
-# the model with and without melt migration, we set the end time to 140 Ma.
-set End time                               = 1.4e8
+# the model with and without melt migration, we set the end time to 200 Ma.
+set End time                               = 2e8
 
 # We choose a stricter than default linear Stokes solver tolerance,
 # to be consistent with the global_melt cookbook.
@@ -23,7 +23,7 @@ subsection Solver parameters
   end
 end
 
-# We fix prescribe free-slip boundary conditions on all
+# We prescribe free-slip boundary conditions on all
 # sides.
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
@@ -48,8 +48,8 @@ end
 # We choose an adiabatic temperature profile as initial condition,
 # with conductive temperature profiles in the top and bottom boundary
 # layers, which were computed using a half space cooling model.
-# The cold top boundary layer corresponds to an age of 300 Ma,
-# and the hot top boundary layer corresponds to an age of 500 Ma.
+# The cold top boundary layer corresponds to an age of 70 Ma,
+# and the hot top boundary layer corresponds to an age of 700 Ma.
 # A small temperature perturbation is added at the bottom of the
 # domain. To make the model asymmetric, we place it in a distance of
 # x = 2900 km from the left boundary.
@@ -58,8 +58,8 @@ end
 subsection Initial temperature model
   set List of model names = adiabatic, function
   subsection Adiabatic
-    set Age bottom boundary layer = 5e8
-    set Age top boundary layer    = 3e8
+    set Age bottom boundary layer = 7e8
+    set Age top boundary layer    = 7e7
 
     subsection Function
       set Function expression       = 0;0
@@ -83,7 +83,7 @@ subsection Boundary temperature model
 
   subsection Initial temperature
     set Minimal temperature = 293
-    set Maximal temperature = 3700
+    set Maximal temperature = 3900
   end
 end
 
@@ -140,12 +140,25 @@ end
 # For the model without melt migration, we do not have to use
 # mesh adaptivity, because time- and length scales of material
 # motion does do not vary a lot across the model, and a global
-# resolution of 4 is sufficient to capture the behavior of
-# upwellings and downwellings.
+# resolution of 5 is sufficient to capture the behavior of
+# upwellings and downwellings. We nevertheless want to refine
+# the mesh near the top and bottom boundaries where large
+# thermal gradients occur.
 subsection Mesh refinement
-  set Initial adaptive refinement              = 0
-  set Initial global refinement                = 4
+  set Initial adaptive refinement              = 2
+  set Initial global refinement                = 5
+  set Strategy                                 = minimum refinement function, boundary
   set Time steps between mesh refinement       = 0
+
+  # minimum of 5 global refinements
+  subsection Minimum refinement function
+    set Function expression = 5
+  end
+
+  # refine at top and bottom boundary
+  subsection Boundary
+    set Boundary refinement indicators = top, bottom
+  end
 end
 
 # As the model is compressible and has an adiabatic temperature profile, we include
