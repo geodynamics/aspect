@@ -36,7 +36,9 @@ void print_aspect_header(Stream &stream)
   const int n_tasks = dealii::Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
 
   stream << "-----------------------------------------------------------------------------\n"
-         << "-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.\n"
+         << "--                             This is ASPECT                              --\n"
+         << "-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --\n"
+         << "-----------------------------------------------------------------------------\n"
          << "--     . version " << ASPECT_PACKAGE_VERSION;
   if (strcmp(ASPECT_GIT_BRANCH,"") != 0)
     stream << " (" << ASPECT_GIT_BRANCH << ", " << ASPECT_GIT_SHORTREV << ")\n";

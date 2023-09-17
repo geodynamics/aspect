@@ -1,5 +1,6 @@
-ASPECT - Advanced Solver for Problems in Earth's ConvecTion
-===========================================================
+ASPECT - the Advanced Solver for Planetary Evolution, Convection, and Tectonics
+====================================================================================
+
 [![License GPL2+:](https://img.shields.io/badge/License-GPL%202%2B-red)](https://github.com/geodynamics/aspect/blob/main/LICENSE)
 [![Online Documentation](https://readthedocs.org/projects/aspect-documentation/badge/?version=latest)](https://aspect-documentation.readthedocs.io/en/latest/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6903424.svg)](https://doi.org/10.5281/zenodo.6903424)
@@ -10,12 +11,12 @@ ASPECT - Advanced Solver for Problems in Earth's ConvecTion
 About
 -----
 
-ASPECT is a code to simulate convection in Earth's mantle and elsewhere.
-It has grown from a pure mantle-convection code into a tool for many
-geodynamic applications including applications for inner core convection,
-lithospheric scale deformation, two-phase flow, and numerical methods development.
-The project is supported by CIG (http://geodynamics.org).
-
+ASPECT is a code to simulate convection and tectonic processes in
+Earth and other planetary bodies. It has grown from a pure
+mantle-convection code into a tool for many geodynamic applications
+including applications for inner core convection, lithospheric scale
+deformation, two-phase flow, and numerical methods development. The
+project is supported by CIG (https://geodynamics.org).
 
 
 Installation instructions
