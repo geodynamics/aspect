@@ -24,6 +24,7 @@
 
 #include <aspect/heating_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/rheology/drucker_prager.h>
 
 namespace aspect
 {
@@ -60,6 +61,29 @@ namespace aspect
          */
         void
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const override;
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        void
+        parse_parameters (ParameterHandler &prm) override;
+
+        /**
+         * @}
+         */
+
+      private:
+        bool limit_stress;
+        double cohesion;
+        double friction_angle;
+        MaterialModel::Rheology::DruckerPrager<dim> drucker_prager_plasticity;
     };
 
 
