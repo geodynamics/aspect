@@ -79,8 +79,10 @@ def escape_doc_string(text) :
     tmp = (text
            .replace("``", "&ldquo;")
            .replace("''", "&rdquo;")
+           .replace("\`", "[[[backtick]]]")
            .replace("`", "&lsquo;")
            .replace("'", "&rsquo;")
+           .replace("[[[backtick]]]", "`")
            .replace("\\aspect{}", "ASPECT")
            .replace("\\dealii{}", "deal.II")
     )
