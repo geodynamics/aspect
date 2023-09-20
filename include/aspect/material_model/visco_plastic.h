@@ -256,13 +256,12 @@ namespace aspect
         std::vector<double> thermal_conductivities;
 
 	/**
-	 * Whether to use the concept of hydrothermal conductivity or not.
-	 * If this is the case, then the folowing 4 parameters need to be defined too.
+	 * Whether conductivity should be adjusted taking into account hydrothermal circulation or not.
 	 */
 	bool use_hydrothermal_conductiviy;
 
 	/**
-	 * temperature and depth up to which hydrothermal conductivity takes place.
+	 * temperature and depth up to which hydrothermal circulation is considered to take place.
 	 */
 	double cutoff_maximum_temperature_hydrothermal_conductivity;
 
