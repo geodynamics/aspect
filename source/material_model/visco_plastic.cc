@@ -394,7 +394,7 @@ namespace aspect
 	  //Think about that, Nusselt number should be >1 (so that consuctivity is increased, 
 	  //is this correctly implemented?), but what default value does make sense? In paper is written "1-8"
 	  prm.declare_entry ("Nusselt number", "2.0",
-			     Patterns::Double(1),
+			     Patterns::Double(0),
 			     "Single value, describes the Nusselt number, that is the ratio of convective "
 			     "to conductive heat transfer across the boundary of the crust. "
 			     "The factor by which the conductivity at the surface is increased due to "
@@ -402,7 +402,7 @@ namespace aspect
 			     "and A is the smoothing factor. ");
 	  //Is this how to say that the number should lie between 0 and 1? Seems to be good a good range.
 	  prm.declare_entry ("Smoothing factor", "0.75",
-			     Patterns::Double(0.),
+			     Patterns::Double(0),
 			     "Single value, this is a smoothing factor that controls the influence of hydrothermal "
 			     "circulation on the conductivity. "
                              "The factor by which the conductivity at the surface is increased due to "
