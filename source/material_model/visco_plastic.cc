@@ -396,7 +396,7 @@ namespace aspect
 			     "circulation on the conductivity. "
                              "The factor by which the conductivity at the surface is increased due to "
                              "hydrothermal circulation is given by Nu*exp(A), where Nu is the Nusselt number "
-                             "and A is the smoothing factor. "
+                             "and A is the smoothing factor. ");
         }
         prm.leave_subsection();
       }
