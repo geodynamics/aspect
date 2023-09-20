@@ -223,7 +223,7 @@ namespace aspect
 	    out.thermal_conductivities[i] = out.thermal_conductivities[i] + out.thermal_conductivities[i] * 
 					    (nusselt_number -1) * std::exp(smoothing_factor * 
 					    (1 - in.temperature [i] / cutoff_maximum_temperature)) *
-					    std::exp(smoothing_factor * (1 - in.depth[i](<dim>)  / cutoff_maximum_depth)); 
+					    std::exp(smoothing_factor * (1 - in.position[i](1)  / cutoff_maximum_depth)); 
 	    }
 	
 
