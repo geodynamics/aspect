@@ -48,7 +48,7 @@ def line_contains_pattern_to_remove(line):
 
 
 
-def reformat (parameters):
+def remove_outdated_lines (parameters):
     for entry in parameters:
         if parameters[entry]["comment"] != "":
             comment_lines = parameters[entry]["comment"].split("\n")
@@ -63,7 +63,7 @@ def reformat (parameters):
             parameters[entry]["comment"] = formatted_comment
 
             if isinstance(parameters[entry]["value"], dict):
-                parameters[entry]["value"] = reformat(parameters[entry]["value"])
+                parameters[entry]["value"] = remove_outdated_lines(parameters[entry]["value"])
 
     return parameters
 
@@ -85,6 +85,11 @@ def move_particle_parameters_to_own_subsection(parameters):
         if key == "Postprocess" and particles != {}:
             new_parameters["Particles"] = particles
         new_parameters[key] = value
+
+    # If moving the particles emptied the postprocess subsection, remove it
+    if "Postprocess" in new_parameters:
+        if new_parameters["Postprocess"]["value"] == {}:
+                del new_parameters["Postprocess"]
 
     return new_parameters
 
@@ -128,7 +133,7 @@ def main(input_file, output_file):
     """Echo the input arguments to standard output"""
     parameters = aspect.read_parameter_file(input_file)
 
-    parameters = reformat(parameters)
+    parameters = remove_outdated_lines(parameters)
     parameters = move_particle_parameters_to_own_subsection(parameters)
     parameters = move_number_of_particles_to_correct_subsection(parameters)
 
