@@ -14,6 +14,3 @@ subsection Particles
   set Load balancing strategy = repartition
   set Particle weight = 10
 end
-
-subsection Postprocess
-end

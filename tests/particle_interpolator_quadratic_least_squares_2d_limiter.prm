@@ -21,8 +21,3 @@ subsection Particles
     end
   end
 end
-
-############### Parameters describing what to do with the solution
-
-subsection Postprocess
-end
