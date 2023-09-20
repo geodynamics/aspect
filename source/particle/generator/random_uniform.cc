@@ -49,17 +49,17 @@ namespace aspect
       {
         prm.enter_subsection("Particles");
         {
-          prm.declare_entry ("Number of particles", "1000",
-                             Patterns::Double (0.),
-                             "Total number of particles to create (not per processor or per element). "
-                             "The number is parsed as a floating point number (so that one can "
-                             "specify, for example, '1e4' particles) but it is interpreted as "
-                             "an integer, of course.");
-
           prm.enter_subsection("Generator");
           {
             prm.enter_subsection("Probability density function");
             {
+              prm.declare_entry ("Number of particles", "1000",
+                                 Patterns::Double (0.),
+                                 "Total number of particles to create (not per processor or per element). "
+                                 "The number is parsed as a floating point number (so that one can "
+                                 "specify, for example, '1e4' particles) but it is interpreted as "
+                                 "an integer, of course.");
+
               prm.declare_entry ("Random cell selection", "true",
                                  Patterns::Bool(),
                                  "If true, particle numbers per cell are calculated randomly "
@@ -96,12 +96,11 @@ namespace aspect
       {
         prm.enter_subsection("Particles");
         {
-          n_particles    = static_cast<types::particle_index>(prm.get_double ("Number of particles"));
-
           prm.enter_subsection("Generator");
           {
             prm.enter_subsection("Probability density function");
             {
+              n_particles = static_cast<types::particle_index>(prm.get_double ("Number of particles"));
               random_cell_selection = prm.get_bool("Random cell selection");
               random_number_seed = prm.get_integer("Random number seed");
             }

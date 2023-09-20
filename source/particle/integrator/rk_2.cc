@@ -184,17 +184,17 @@ namespace aspect
 
 
 // explicit instantiations
-  namespace aspect
+namespace aspect
+{
+  namespace Particle
   {
-    namespace Particle
+    namespace Integrator
     {
-      namespace Integrator
-      {
-        ASPECT_REGISTER_PARTICLE_INTEGRATOR(RK2,
-                                            "rk2",
-                                            "Second Order Runge Kutta integrator "
-                                            "$y_{n+1} = y_n + \\Delta t\\, v(t_{n+1/2}, y_{n} + \\frac{1}{2} k_1)$ "
-                                            "where $k_1 = \\Delta t\\, v(t_{n}, y_{n})$")
-      }
+      ASPECT_REGISTER_PARTICLE_INTEGRATOR(RK2,
+                                          "rk2",
+                                          "Second Order Runge Kutta integrator "
+                                          "$y_{n+1} = y_n + \\Delta t\\, v(t_{n+1/2}, y_{n} + \\frac{1}{2} k_1)$ "
+                                          "where $k_1 = \\Delta t\\, v(t_{n}, y_{n})$")
     }
   }
+}

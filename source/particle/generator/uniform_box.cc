@@ -85,17 +85,16 @@ namespace aspect
       {
         prm.enter_subsection("Particles");
         {
-          prm.declare_entry ("Number of particles", "1000",
-                             Patterns::Double (0.),
-                             "Total number of particles to create (not per processor or per element). "
-                             "The number is parsed as a floating point number (so that one can "
-                             "specify, for example, '1e4' particles) but it is interpreted as "
-                             "an integer, of course.");
-
           prm.enter_subsection("Generator");
           {
             prm.enter_subsection("Uniform box");
             {
+              prm.declare_entry ("Number of particles", "1000",
+                                 Patterns::Double (0.),
+                                 "Total number of particles to create (not per processor or per element). "
+                                 "The number is parsed as a floating point number (so that one can "
+                                 "specify, for example, '1e4' particles) but it is interpreted as "
+                                 "an integer, of course.");
               prm.declare_entry ("Minimum x", "0.",
                                  Patterns::Double (),
                                  "Minimum x coordinate for the region of particles.");
@@ -129,12 +128,11 @@ namespace aspect
       {
         prm.enter_subsection("Particles");
         {
-          n_particles    = static_cast<types::particle_index>(prm.get_double ("Number of particles"));
-
           prm.enter_subsection("Generator");
           {
             prm.enter_subsection("Uniform box");
             {
+              n_particles = static_cast<types::particle_index>(prm.get_double ("Number of particles"));
               P_min(0) = prm.get_double ("Minimum x");
               P_max(0) = prm.get_double ("Maximum x");
               P_min(1) = prm.get_double ("Minimum y");

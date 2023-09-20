@@ -123,17 +123,16 @@ namespace aspect
       {
         prm.enter_subsection("Particles");
         {
-          prm.declare_entry ("Number of particles", "1000",
-                             Patterns::Double (0.),
-                             "Total number of particles to create (not per processor or per element). "
-                             "The number is parsed as a floating point number (so that one can "
-                             "specify, for example, '1e4' particles) but it is interpreted as "
-                             "an integer, of course.");
-
           prm.enter_subsection("Generator");
           {
             prm.enter_subsection("Uniform radial");
             {
+              prm.declare_entry ("Number of particles", "1000",
+                                 Patterns::Double (0.),
+                                 "Total number of particles to create (not per processor or per element). "
+                                 "The number is parsed as a floating point number (so that one can "
+                                 "specify, for example, '1e4' particles) but it is interpreted as "
+                                 "an integer, of course.");
               prm.declare_entry ("Center x", "0.",
                                  Patterns::Double (),
                                  "x coordinate for the center of the spherical region, "
@@ -191,12 +190,12 @@ namespace aspect
       {
         prm.enter_subsection("Particles");
         {
-          n_particles    = static_cast<types::particle_index>(prm.get_double ("Number of particles"));
-
           prm.enter_subsection("Generator");
           {
             prm.enter_subsection("Uniform radial");
             {
+              n_particles = static_cast<types::particle_index>(prm.get_double ("Number of particles"));
+
               P_center[0] = prm.get_double ("Center x");
               P_center[1] = prm.get_double ("Center y");
 
