@@ -10,6 +10,76 @@ __copyright__ = 'Copyright 2023, ASPECT'
 __license__ = 'GNU GPL 2 or later'
 
 
+def get_parameter_value(parameters, name):
+    """ Given a dictionary of parameters with a structure as
+    the one created by read_parameter_file(), return the value
+    of the parameter with the given name. Returns None if the
+    parameter is not found.
+    """
+
+    if name in parameters:
+        return parameters[name]["value"]
+    else:
+        for entry in parameters:
+            if parameters[entry]["type"] == "subsection":
+                value = get_parameter_value(parameters[entry]["value"], name)
+                if value != None:
+                    return value
+
+    return None
+
+
+
+def get_parameter_value_from_subsection(parameters, name, subsection = []):
+    """ Given a dictionary of parameters with a structure as
+    the one created by read_parameter_file(), return the value
+    of the parameter with the given name in the given subsection.
+    Subsection is a list of strings that identifies a single subsection
+    by providing a list of nested subsections.
+    If no subsection is given, search in global parameters.
+    Returns None if the parameter is not found.
+    """
+
+    if subsection == []:
+        if name in parameters:
+            return parameters[name]["value"]
+        else:
+            return None
+
+    if subsection[0] in parameters:
+        current_subsection = subsection.pop(0)
+        return get_parameter_value_from_subsection(parameters[current_subsection]["value"], name, subsection)
+
+    return None
+
+
+
+def set_parameter_value(parameters, name, value, subsection = []):
+    """ Given a dictionary of parameters with a structure as
+    the one created by read_parameter_file(), set the value
+    of the parameter with the given name to the given value.
+    Subsection is a list of strings that identifies a particular subsection
+    by providing a list of nested subsections. If the subsection
+    does not exist, it is created. If no subsection is given,
+    the parameter is set in the global section.
+    Returns 0 if the parameter was found and set, 1 otherwise.
+    """
+
+    if subsection == []:
+        if type(value) is not dict:
+            parameters[name] = {"comment": "", "value": value, "alignment spaces": 0, "type": "parameter"}
+        else:
+            parameters[name] = value
+        return 0
+    else:
+        current_subsection = subsection.pop(0)
+        if current_subsection not in parameters:
+            parameters[current_subsection] = {"comment": "", "value" : dict({}), "type": "subsection"}
+
+        return set_parameter_value(parameters[current_subsection]["value"], name, value, subsection)
+
+    return 1
+
 
 def split_parameter_line(line):
     """ Read a 'set parameter' line and extract the name, value, and format. """

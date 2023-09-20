@@ -72,11 +72,53 @@ def reformat (parameters):
 def move_particle_parameters_to_own_subsection(parameters):
     """ Move the particle parameters to their own subsection. """
 
-    # Find the particle parameters
+    # Find the particle parameters and remove from the main dictionary
+    particles = {}
     if "Postprocess" in parameters:
         if "Particles" in parameters["Postprocess"]["value"]:
-            parameters["Particles"] = parameters["Postprocess"]["value"]["Particles"]
+            particles = parameters["Postprocess"]["value"]["Particles"]
             del parameters["Postprocess"]["value"]["Particles"]
+
+    # Add the particle parameters to their own subsection before the postprocess subsection
+    new_parameters = {}
+    for key,value in parameters.items():
+        if key == "Postprocess" and particles != {}:
+            new_parameters["Particles"] = particles
+        new_parameters[key] = value
+
+    return new_parameters
+
+
+
+def move_number_of_particles_to_correct_subsection(parameters):
+    """ Move the number of particles to the correct subsection. """
+
+    # Find the particle parameters and remove
+    number_of_particles = None
+    if "Particles" in parameters:
+        if "Number of particles" in parameters["Particles"]["value"]:
+            number_of_particles = parameters["Particles"]["value"]["Number of particles"]
+            del parameters["Particles"]["value"]["Number of particles"]
+
+    # Add the number of particles to the correct subsection
+    if number_of_particles is not None:
+            # which generator is used?
+            particle_generator = aspect.get_parameter_value_from_subsection(parameters,"Particle generator name", ["Particles"])
+            if particle_generator == None:
+                particle_generator = "random uniform"
+
+            # Find the correct subsection
+            particle_generator_subsection = ""
+            if particle_generator == "random uniform" or particle_generator == "probability density function":
+                particle_generator_subsection = "Probability density function"
+            if particle_generator == "uniform box":
+                particle_generator_subsection = "Uniform box"
+            if particle_generator == "uniform radial":
+                particle_generator_subsection = "Uniform radial"
+            
+            # All other generators ignore this parameter, only add if necessary
+            if particle_generator_subsection != "":
+                aspect.set_parameter_value(parameters, "Number of particles", number_of_particles, ["Particles", "Generator", particle_generator_subsection])
 
     return parameters
 
@@ -88,6 +130,7 @@ def main(input_file, output_file):
 
     parameters = reformat(parameters)
     parameters = move_particle_parameters_to_own_subsection(parameters)
+    parameters = move_number_of_particles_to_correct_subsection(parameters)
 
     aspect.write_parameter_file(parameters, output_file)
 
