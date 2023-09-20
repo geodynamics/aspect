@@ -215,6 +215,17 @@ namespace aspect
               // option was selected.
               out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
             }
+	
+	/* In the following, the thermal conductivity is computed, if this option was selected.
+	 */
+	  if (use_hydrothermal_conductivity == true)
+	    {
+	    out.thermal_conductivities[i] = out.thermal_conductivities[i] + out.thermal_conductivities[i] * 
+					    (nusselt_number -1) * std::exp(smoothing_factor * 
+					    (1 - in.temperature [i] / cutoff_maximum_temperature) *
+					    std::exp(smoothing_factor * (1 - in.depth[i]  / cutoff_maximum_depth); 
+	    }
+	
 
           out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
           out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);

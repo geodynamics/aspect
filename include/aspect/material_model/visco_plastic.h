@@ -263,16 +263,16 @@ namespace aspect
 	/**
 	 * temperature and depth up to which hydrothermal circulation is considered to take place.
 	 */
-	double cutoff_maximum_temperature_hydrothermal_conductivity;
+	double cutoff_maximum_temperature;
 
-        double cutoff_maximum_depth_hydrothermal_conductivity;
+        double cutoff_maximum_depth;
 
 	/**
 	 * Nusselt number and a smoothing factor used for the computation of thermal conductivity
 	 */
-	double nusselt_number_hydrothermal_conductivity;
+	double nusselt_number;
 
-	double smoothing_factor_hydrothermal_conductivity;
+	double smoothing_factor;
 
         /**
          * Number of phase transitions for each chemical composition (including the background field).
