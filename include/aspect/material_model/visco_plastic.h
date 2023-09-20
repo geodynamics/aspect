@@ -258,7 +258,7 @@ namespace aspect
 	/**
 	 * Whether conductivity should be adjusted taking into account hydrothermal circulation or not.
 	 */
-	bool use_hydrothermal_conductiviy;
+	bool use_hydrothermal_conductivity;
 
 	/**
 	 * temperature and depth up to which hydrothermal circulation is considered to take place.
