@@ -373,7 +373,7 @@ namespace aspect
                              "instead of calculating the values through the specified thermal diffusivities, "
                              "densities, and heat capacities. ");
           prm.declare_entry ("Thermal conductivities", "3.0",
-                             Patterns::List(Patterns::Double(0.)),
+                             Patterns::List(Patterns::Double (0.)),
                              "List of thermal conductivities, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
@@ -382,26 +382,26 @@ namespace aspect
 			     Patterns::Bool (),
 			     "Whether hydrothermal circulation is included in the calculation of the "
 			     "conductivity or not.");
-	  prm.declare_entry ("Cutoff maximum temperature", "873,15",
-			     Patterns::Double(0.),
+	  prm.declare_entry ("Cutoff maximum temperature", "873.15",
+			     Patterns::Double (0.),
 			     "Single value, declares up to which temperature hydrothermal conductivity is relevant. " 
 			     "Units: \\si{\\kelvin}.");
 	  //Is this correct, if I want the input in km?
 	  prm.declare_entry ("Cutoff maximum depth", "6.0",
-			     Patterns::Double(0.),
+			     Patterns::Double (0.),
 			     "Single value, declares up to which depth hydrothermal conductivity is relevant. "
 			     "Units: 1000\\si{\\m}.");
 	  //Think about that, Nusselt number should be >1 (so that consuctivity is increased, 
 	  //is this correctly implemented?), but what default value does make sense? In paper is written "1-8"
 	  prm.declare_entry ("Nusselt number", "2.0",
-			     Patterns::Double(1.),
+			     Patterns::Double (1.),
 			     "Single value, describes the Nusselt number, that is the ratio of convective "
 			     "to conductive heat transfer across the boundary of the crust. "
 			     "The factor by which the conductivity at the surface is increased due to "
 			     "hydrothermal circulation is given by Nu*exp(A), where Nu is the Nusselt number "
 			     "and A is the smoothing factor. ");
 	  prm.declare_entry ("Smoothing factor", "0.75",
-			     Patterns::Double(0.),
+			     Patterns::Double (0.),
 			     "Single value, this is a smoothing factor that controls the influence of hydrothermal "
 			     "circulation on the conductivity. "
                              "The factor by which the conductivity at the surface is increased due to "
