@@ -134,6 +134,17 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
 end
 
+subsection Particles
+  set Time between data output = 1e7
+  set Data output format = vtu
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 1000
+    end
+  end
+end
+
 # The final part is to specify what ASPECT should do with the
 # solution once computed at the end of every time step. The
 # process of evaluating the solution is called `postprocessing'
@@ -149,12 +160,6 @@ subsection Postprocess
     set Time between graphical output = 1e7
     set Output format                 = vtu
     set List of output variables      = material properties
-  end
-
-  subsection Particles
-    set Number of particles = 1000
-    set Time between data output = 1e7
-    set Data output format = vtu
   end
 end
 

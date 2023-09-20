@@ -70,6 +70,26 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
+subsection Particles
+  set Data output format       = none
+  set List of particle properties = initial composition
+  set Interpolation scheme = bilinear least squares
+  set Update ghost particles   = true
+  set Particle generator name = reference cell
+
+  subsection Interpolator
+    subsection Bilinear least squares
+      set Use linear least squares limiter = true
+    end
+  end
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 2
+    end
+  end
+end
+
 subsection Postprocess
   set List of postprocessors = particles, velocity statistics, composition statistics, temperature statistics
 
@@ -77,27 +97,6 @@ subsection Postprocess
     set Interpolate output = false
     set List of output variables = material properties
     set Time between graphical output = 0
-  end
-
-  subsection Particles
-    set Number of particles        = 4096
-    set Data output format       = none
-    set List of particle properties = initial composition
-    set Interpolation scheme = bilinear least squares
-    set Update ghost particles   = true
-    set Particle generator name = reference cell
-
-    subsection Interpolator
-      subsection Bilinear least squares
-        set Use linear least squares limiter = true
-      end
-    end
-
-    subsection Generator
-      subsection Reference cell
-        set Number of particles per cell per direction = 2
-      end
-    end
   end
 end
 

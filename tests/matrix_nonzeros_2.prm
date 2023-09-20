@@ -72,6 +72,20 @@ subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0, 2, 3
 end
 
+subsection Particles
+  set Time between data output = 70
+  set Data output format = none
+  set List of particle properties = initial composition
+  set Interpolation scheme = cell average
+  set Update ghost particles = true
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 100
+    end
+  end
+end
+
 subsection Postprocess
   set List of postprocessors = matrix statistics, particles
 
@@ -79,14 +93,5 @@ subsection Postprocess
     set Interpolate output = false
     set Output format                 = gnuplot
     set Time between graphical output = 0
-  end
-
-  subsection Particles
-    set Number of particles = 100
-    set Time between data output = 70
-    set Data output format = none
-    set List of particle properties = initial composition
-    set Interpolation scheme = cell average
-    set Update ghost particles = true
   end
 end

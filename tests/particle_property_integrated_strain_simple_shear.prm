@@ -68,16 +68,21 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
+subsection Particles
+  set Time between data output = 1
+  set Data output format = ascii
+  set List of particle properties = integrated strain
+  set Particle generator name = random uniform
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 10
+    end
+  end
+end
+
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
   set List of postprocessors = particles
-
-  subsection Particles
-    set Number of particles = 10
-    set Time between data output = 1
-    set Data output format = ascii
-    set List of particle properties = integrated strain
-    set Particle generator name = random uniform
-  end
 end

@@ -78,16 +78,21 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
+subsection Particles
+  set Time between data output = 0.03
+  set Data output format       = none
+  set List of particle properties = initial composition
+  set Update ghost particles   = true
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles        = 20000
+    end
+  end
+end
+
 subsection Postprocess
   set List of postprocessors = particles, velocity statistics, composition statistics, temperature statistics
-
-  subsection Particles
-    set Number of particles        = 20000
-    set Time between data output = 0.03
-    set Data output format       = none
-    set List of particle properties = initial composition
-    set Update ghost particles   = true
-  end
 end
 
 # This is the new part: We declare that there will

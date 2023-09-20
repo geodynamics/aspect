@@ -108,6 +108,20 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
+subsection Particles
+  set Time between data output = 0.05
+  set Data output format = vtu
+  set List of particle properties = integrated strain
+  set Particle generator name = ascii file
+
+  subsection Generator
+    subsection Ascii file
+      set Data directory = $ASPECT_SOURCE_DIR/benchmarks/finite_strain/
+      set Data file name = simple_shear_particle.dat
+    end
+  end
+end
+
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
@@ -118,20 +132,5 @@ subsection Postprocess
     set List of output variables = strain rate, stress, principal stress
     set Output format = gnuplot
     set Time between graphical output = 0.05
-  end
-
-  subsection Particles
-    set Number of particles = 1
-    set Time between data output = 0.05
-    set Data output format = vtu
-    set List of particle properties = integrated strain
-    set Particle generator name = ascii file
-
-    subsection Generator
-      subsection Ascii file
-        set Data directory = $ASPECT_SOURCE_DIR/benchmarks/finite_strain/
-        set Data file name = simple_shear_particle.dat
-      end
-    end
   end
 end

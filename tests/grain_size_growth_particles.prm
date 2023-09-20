@@ -28,14 +28,19 @@ set End time                               = 50000
 include $ASPECT_SOURCE_DIR/tests/grain_size_growth.prm
 
 
+subsection Particles
+  set Time between data output = 0
+  set Data output format = gnuplot
+  set List of particle properties = grain size
+  set Integration scheme = rk2
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 10
+    end
+  end
+end
+
 subsection Postprocess
   set List of postprocessors = composition statistics,temperature statistics, velocity statistics, particles
-
-  subsection Particles
-    set Number of particles = 10
-    set Time between data output = 0
-    set Data output format = gnuplot
-    set List of particle properties = grain size
-    set Integration scheme = rk2
-  end
 end

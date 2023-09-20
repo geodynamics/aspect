@@ -114,21 +114,21 @@ subsection Melt settings
   set Include melt transport                  = true
 end
 
-subsection Postprocess
-  set List of postprocessors = visualization,composition statistics,velocity statistics, temperature statistics, depth average, particles
+subsection Particles
+  set Particle generator name       = reference cell
+  set List of particle properties   = melt particle
+  set Time between data output      = 0
+  set Data output format            = ascii
 
-  subsection Particles
-    set Particle generator name       = reference cell
-    set List of particle properties   = melt particle
-    set Time between data output      = 0
-    set Data output format            = ascii
-
-    subsection Generator
-      subsection Reference cell
-        set Number of particles per cell per direction = 1
-      end
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 1
     end
   end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization,composition statistics,velocity statistics, temperature statistics, depth average, particles
 
   subsection Visualization
     set List of output variables      = material properties, nonadiabatic temperature, melt fraction, strain rate, melt material properties

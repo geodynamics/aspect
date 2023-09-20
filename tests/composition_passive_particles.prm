@@ -69,18 +69,23 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
+subsection Particles
+  set Time between data output = 0.1
+  set Data output format = vtu
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 10
+    end
+  end
+end
+
 subsection Postprocess
   set List of postprocessors = visualization, particles
 
   subsection Visualization
     set Interpolate output = false
     set Time between graphical output = 0.1
-  end
-
-  subsection Particles
-    set Number of particles = 10
-    set Time between data output = 0.1
-    set Data output format = vtu
   end
 end
 

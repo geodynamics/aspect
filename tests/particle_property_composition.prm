@@ -132,21 +132,20 @@ subsection Melt settings
   set Include melt transport                  = true
 end
 
-subsection Postprocess
-  set List of postprocessors = particles,visualization,composition statistics,velocity statistics,solitary wave statistics
+subsection Particles
+  set Particle generator name       = ascii file
+  set List of particle properties   = composition
+  set Time between data output      = 0
 
-  subsection Particles
-    set Particle generator name       = ascii file
-    set List of particle properties   = composition
-    set Time between data output      = 0
-    set Number of particles           = 10
-
-    subsection Generator
-      subsection Ascii file
-        set Data file name            = particle_property_composition.txt
-      end
+  subsection Generator
+    subsection Ascii file
+      set Data file name            = particle_property_composition.txt
     end
   end
+end
+
+subsection Postprocess
+  set List of postprocessors = particles,visualization,composition statistics,velocity statistics,solitary wave statistics
 
   subsection Visualization
     set Interpolate output = false
