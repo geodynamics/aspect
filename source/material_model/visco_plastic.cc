@@ -388,7 +388,7 @@ namespace aspect
 			     "to conductive heat transfer across the boundary of the crust. "
 			     "The factor by which the conductivity at the surface is increased due to "
 			     "hydrothermal circulation is given by Nu*exp(A), where Nu is the Nusselt number "
-			     "and A is the smoothing factor. "
+			     "and A is the smoothing factor. ");
 	  //Is this how to say that the number should lie between 0 and 1? Seems to be good a good range.
 	  prm.declare_entry ("Smoothing factor", "0.75",
 			     Patterns::Double(0.),
