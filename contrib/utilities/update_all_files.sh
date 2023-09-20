@@ -10,8 +10,8 @@ BASE_DIR=`cd ${UTIL_DIR}/../..;pwd`
 echo "Scanning ${BASE_DIR} for changes..."
 
 # Update source files
-# SOURCE_FILES=`find $BASE_DIR -type f \( -name *.cc -or -name *.h \) -and -not -name *.bak | grep -v doc`
-# bash ${UTIL_DIR}/update_source_files.sh $SOURCE_FILES
+SOURCE_FILES=`find $BASE_DIR -type f \( -name *.cc -or -name *.h \) -and -not -name *.bak | grep -v doc`
+bash ${UTIL_DIR}/update_source_files.sh $SOURCE_FILES
 
 # Update prm files
 PRM_FILES=`find $BASE_DIR -type f -name *.prm* -not -name *update_script* -not -name *.bak`

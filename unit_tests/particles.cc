@@ -30,10 +30,8 @@ TEST_CASE("Particle Manager plugin names")
   aspect::Particle::World<2>::declare_parameters(prm);
   aspect::Particle::Property::Manager<2> manager;
   manager.declare_parameters(prm);
-  prm.enter_subsection("Postprocess");
   prm.enter_subsection("Particles");
   prm.set("List of particle properties","composition, position");
-  prm.leave_subsection();
   prm.leave_subsection();
   manager.parse_parameters(prm);
 
