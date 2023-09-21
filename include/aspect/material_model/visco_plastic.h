@@ -255,24 +255,24 @@ namespace aspect
 
         std::vector<double> thermal_conductivities;
 
-	/**
-	 * Whether conductivity should be adjusted taking into account hydrothermal circulation or not.
-	 */
-	bool use_hydrothermal_conductivity;
+        /**
+         * Whether conductivity should be adjusted taking into account hydrothermal circulation or not.
+         */
+        bool use_hydrothermal_conductivity;
 
-	/**
-	 * temperature and depth up to which hydrothermal circulation is considered to take place.
-	 */
-	double cutoff_maximum_temperature;
+        /**
+         * temperature and depth up to which hydrothermal circulation is considered to take place.
+         */
+        double cutoff_maximum_temperature;
 
         double cutoff_maximum_depth;
 
-	/**
-	 * Nusselt number and a smoothing factor used for the computation of thermal conductivity
-	 */
-	double nusselt_number;
+        /**
+         * Nusselt number and a smoothing factor used for the computation of thermal conductivity
+         */
+        double nusselt_number;
 
-	double smoothing_factor;
+        double smoothing_factor;
 
         /**
          * Number of phase transitions for each chemical composition (including the background field).

@@ -32,7 +32,7 @@ namespace aspect
   {
 
     template <int dim>
-    bool            
+    bool
     ViscoPlastic<dim>::
     is_yielding (const double pressure,
                  const double temperature,
@@ -42,7 +42,7 @@ namespace aspect
       /* The following returns whether or not the material is plastically yielding
        * as documented in evaluate.
        */
-      bool plastic_yielding = false; 
+      bool plastic_yielding = false;
 
       MaterialModel::MaterialModelInputs <dim> in (/*n_evaluation_points=*/1,
                                                                            this->n_compositional_fields());
@@ -215,17 +215,17 @@ namespace aspect
               // option was selected.
               out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
             }
-	
-	/* In the following, the thermal conductivity is computed, if this option was selected.
-	 */
-	  if (use_hydrothermal_conductivity == true)
-	    {
-	    out.thermal_conductivities[i] = out.thermal_conductivities[i] + out.thermal_conductivities[i] * 
-					    (nusselt_number -1) * std::exp(smoothing_factor * 
-					    (1 - in.temperature [i] / cutoff_maximum_temperature)) *
-					    std::exp(smoothing_factor * (1 - in.position[i](1)  / cutoff_maximum_depth)); 
-	    }
-	
+
+          /* In the following, the thermal conductivity is computed, if this option was selected.
+           */
+          if (use_hydrothermal_conductivity == true)
+            {
+              out.thermal_conductivities[i] = out.thermal_conductivities[i] + out.thermal_conductivities[i] *
+                                              (nusselt_number -1) * std::exp(smoothing_factor *
+                                                                             (1 - in.temperature [i] / cutoff_maximum_temperature)) *
+                                              std::exp(smoothing_factor * (1 - in.position[i](1)  / cutoff_maximum_depth));
+            }
+
 
           out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
           out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
@@ -378,32 +378,32 @@ namespace aspect
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
-	  prm.declare_entry ("Use hydrothermal conductivity", "false",
-			     Patterns::Bool (),
-			     "Whether hydrothermal circulation is included in the calculation of the "
-			     "conductivity or not.");
-	  prm.declare_entry ("Cutoff maximum temperature", "873.15",
-			     Patterns::Double (0.),
-			     "Single value, declares up to which temperature hydrothermal conductivity is relevant. " 
-			     "Units: \\si{\\kelvin}.");
-	  //Is this correct, if I want the input in km?
-	  prm.declare_entry ("Cutoff maximum depth", "6.0",
-			     Patterns::Double (0.),
-			     "Single value, declares up to which depth hydrothermal conductivity is relevant. "
-			     "Units: 1000\\si{\\m}.");
-	  //Think about that, Nusselt number should be >1 (so that consuctivity is increased, 
-	  //is this correctly implemented?), but what default value does make sense? In paper is written "1-8"
-	  prm.declare_entry ("Nusselt number", "2.0",
-			     Patterns::Double (1.),
-			     "Single value, describes the Nusselt number, that is the ratio of convective "
-			     "to conductive heat transfer across the boundary of the crust. "
-			     "The factor by which the conductivity at the surface is increased due to "
-			     "hydrothermal circulation is given by Nu*exp(A), where Nu is the Nusselt number "
-			     "and A is the smoothing factor. ");
-	  prm.declare_entry ("Smoothing factor", "0.75",
-			     Patterns::Double (0.),
-			     "Single value, this is a smoothing factor that controls the influence of hydrothermal "
-			     "circulation on the conductivity. "
+          prm.declare_entry ("Use hydrothermal conductivity", "false",
+                             Patterns::Bool (),
+                             "Whether hydrothermal circulation is included in the calculation of the "
+                             "conductivity or not.");
+          prm.declare_entry ("Cutoff maximum temperature", "873.15",
+                             Patterns::Double (0.),
+                             "Single value, declares up to which temperature hydrothermal conductivity is relevant. "
+                             "Units: \\si{\\kelvin}.");
+          //Is this correct, if I want the input in km?
+          prm.declare_entry ("Cutoff maximum depth", "6.0",
+                             Patterns::Double (0.),
+                             "Single value, declares up to which depth hydrothermal conductivity is relevant. "
+                             "Units: 1000\\si{\\m}.");
+          //Think about that, Nusselt number should be >1 (so that conductivity is increased,
+          //is this correctly implemented?), but what default value does make sense? In paper is written "1-8"
+          prm.declare_entry ("Nusselt number", "2.0",
+                             Patterns::Double (1.),
+                             "Single value, describes the Nusselt number, that is the ratio of convective "
+                             "to conductive heat transfer across the boundary of the crust. "
+                             "The factor by which the conductivity at the surface is increased due to "
+                             "hydrothermal circulation is given by Nu*exp(A), where Nu is the Nusselt number "
+                             "and A is the smoothing factor. ");
+          prm.declare_entry ("Smoothing factor", "0.75",
+                             Patterns::Double (0.),
+                             "Single value, this is a smoothing factor that controls the influence of hydrothermal "
+                             "circulation on the conductivity. "
                              "The factor by which the conductivity at the surface is increased due to "
                              "hydrothermal circulation is given by Nu*exp(A), where Nu is the Nusselt number "
                              "and A is the smoothing factor. ");
