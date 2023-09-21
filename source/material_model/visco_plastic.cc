@@ -480,7 +480,7 @@ namespace aspect
 	  cutoff_maximum_temperature = prm.get_double ("Cutoff maximum temperature");
 	  cutoff_maximum_depth = prm.get_double ("Cutoff maximum depth");
 	  nusselt_number = prm.get_double ("Nusselt number");
-	  smoothing_factor = prm.get_double ("Smoothing_factor");
+	  smoothing_factor = prm.get_double ("Smoothing factor");
 
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
