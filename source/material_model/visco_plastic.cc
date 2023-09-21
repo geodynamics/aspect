@@ -476,11 +476,11 @@ namespace aspect
           options.property_name = "Thermal conductivities";
           thermal_conductivities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Thermal conductivities"), options);
 	  
-  	  use_hydrothermal_cconductivity = prm.get_bool ("Use thermal conductivity");
-	  cutoff_maximum_temperature = prm.get ("Cutoff maximum temperature");
-	  cutoff_maximum_depth = prm.get ("Cutoff maximum depth");
-	  nusselt_number = prm.get ("Nusselt number");
-	  smoothing_factor = prm.get ("Smoothing_factor");
+  	  use_hydrothermal_conductivity = prm.get_bool ("Use thermal conductivity");
+	  cutoff_maximum_temperature = Utilities::MapParsing::parse_map_to_double_array (prm.get ("Cutoff maximum temperature"), options);
+	  cutoff_maximum_depth = Utilities::MapParsing::parse_map_to_double_array (prm.get ("Cutoff maximum depth"), options);
+	  nusselt_number = Utilities::MapParsing::parse_map_to_double_array (prm.get ("Nusselt number"), options);
+	  smoothing_factor = Utilities::MapParsing::parse_map_to_double_array (prm.get ("Smoothing_factor"), options);
 
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
