@@ -222,8 +222,8 @@ namespace aspect
             {
               out.thermal_conductivities[i] = out.thermal_conductivities[i] + out.thermal_conductivities[i] *
                                               (nusselt_number -1) * std::exp(smoothing_factor *
-                                                                             (1 - in.temperature [i] / cutoff_maximum_temperature)) *
-                                              std::exp(smoothing_factor * (1 - in.position[i](1)  / cutoff_maximum_depth));
+                                                                             (1 - in.temperature[i] / cutoff_maximum_temperature)) *
+                                              std::exp(smoothing_factor * (1 - ((this->get_geometry_model().maximal_depth - this->get_geometry_model().depth(in.position[i]))  / cutoff_maximum_depth)));
             }
 
 
@@ -382,25 +382,24 @@ namespace aspect
                              Patterns::Bool (),
                              "Whether hydrothermal circulation is included in the calculation of the "
                              "conductivity or not.");
-          prm.declare_entry ("Cutoff maximum temperature", "873.15",
+          prm.declare_entry ("Cutoff maximum temperature for hydrothermal conductivity", "873.15",
                              Patterns::Double (0.),
                              "Single value, declares up to which temperature hydrothermal conductivity is relevant. "
                              "Units: \\si{\\kelvin}.");
-          //Is this correct, if I want the input in km?
-          prm.declare_entry ("Cutoff maximum depth", "6.0",
+          prm.declare_entry ("Cutoff maximum depth for hydrothermal conductivities", "6.0",
                              Patterns::Double (0.),
                              "Single value, declares up to which depth hydrothermal conductivity is relevant. "
-                             "Units: 1000\\si{\\m}.");
+                             "Units: \\si{\\m}.");
           //Think about that, Nusselt number should be >1 (so that conductivity is increased,
           //is this correctly implemented?), but what default value does make sense? In paper is written "1-8"
-          prm.declare_entry ("Nusselt number", "2.0",
+          prm.declare_entry ("Nusselt number for hydrothermal conductivity", "2.0",
                              Patterns::Double (1.),
                              "Single value, describes the Nusselt number, that is the ratio of convective "
                              "to conductive heat transfer across the boundary of the crust. "
                              "The factor by which the conductivity at the surface is increased due to "
                              "hydrothermal circulation is given by Nu*exp(A), where Nu is the Nusselt number "
                              "and A is the smoothing factor. ");
-          prm.declare_entry ("Smoothing factor", "0.75",
+          prm.declare_entry ("Smoothing factor for hydrothermal conductivity", "0.75",
                              Patterns::Double (0.),
                              "Single value, this is a smoothing factor that controls the influence of hydrothermal "
                              "circulation on the conductivity. "
@@ -477,10 +476,10 @@ namespace aspect
           thermal_conductivities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Thermal conductivities"), options);
 	  
   	  use_hydrothermal_conductivity = prm.get_bool ("Use hydrothermal conductivity");
-	  cutoff_maximum_temperature = prm.get_double ("Cutoff maximum temperature");
-	  cutoff_maximum_depth = prm.get_double ("Cutoff maximum depth");
-	  nusselt_number = prm.get_double ("Nusselt number");
-	  smoothing_factor = prm.get_double ("Smoothing factor");
+	  cutoff_maximum_temperature = prm.get_double ("Cutoff maximum temperature for hydrothermal conductivity");
+	  cutoff_maximum_depth = prm.get_double ("Cutoff maximum depth for hydrothermal conductivity");
+	  nusselt_number = prm.get_double ("Nusselt number for hydrothermal conductivity");
+	  smoothing_factor = prm.get_double ("Smoothing factor for hydrothermal conductivity");
 
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
