@@ -386,7 +386,7 @@ namespace aspect
                              Patterns::Double (0.),
                              "Single value, declares up to which temperature hydrothermal conductivity is relevant. "
                              "Units: \\si{\\kelvin}.");
-          prm.declare_entry ("Cutoff maximum depth for hydrothermal conductivity", "6.0",
+          prm.declare_entry ("Cutoff maximum depth for hydrothermal conductivity", "6000.0",
                              Patterns::Double (0.),
                              "Single value, declares up to which depth hydrothermal conductivity is relevant. "
                              "Units: \\si{\\m}.");
