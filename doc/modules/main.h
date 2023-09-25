@@ -3,8 +3,9 @@
  *
  * @image html unlabeled_logo_small.png
  *
- * This is the documentation of ASPECT, an Advanced Solver for Problems in
- * Earth's ConvecTion. The primary entry point to the documentation are
+ * This is the documentation of ASPECT, the Advanced Solver for
+ * Planetary Evolution, Convection, and Tectonics. The primary entry
+ * point to the documentation are
  *
  * - the <a href="https://aspect-documentation.readthedocs.io/en/latest/">manual</a>
  * for a broad overview;
