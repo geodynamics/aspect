@@ -20,11 +20,12 @@
 
 
 
-#ifndef _aspect_postprocess_velocity_residual_statistics_h
-#define _aspect_postprocess_velocity_residual_statistics_h
+#ifndef _aspect_postprocess_velocity_points_residual_h
+#define _aspect_postprocess_velocity_points_residual_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
@@ -32,20 +33,25 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes some statistics about the velocity residual in the model.
-     * The velocity residual is calculated as the difference between the modeled velocities and
-     * input ascii data velocities.
+     * A postprocessor that computes some point value statistics about the velocity
+     * residual in the model. The velocity residual is the rms residual between the
+     * modeled and the observed velocities at individual data points specified in the input
+     * ascii file.
+     * The postprocessor outputs the velocity residual at individual points into text files
+     * for each non linear iteration, and the output format is similar to the input data
+     * format such that these generated files can be used as an input in the next iteration.
+     * The postprocessor also outputs the rms residual statictics.
      *
      * @ingroup Postprocessing
      */
     template <int dim>
-    class VelocityResidualStatistics : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class VelocityPointsResidual : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
          * Constructor
          */
-        VelocityResidualStatistics ();
+        VelocityPointsResidual ();
 
         /**
          * This function reads the specified input velocity ascii data files.
@@ -53,7 +59,9 @@ namespace aspect
         void initialize () override;
 
         /**
-         * This function returns the input data velocity at a point.
+         * This function returns the input data point and the velocity at that point
+         * from the ascii data file. The ascii data is structured in 1 dimension such
+         * that the first column represents the point ids.
          * This function is called from execute() function.
          */
         std::pair <Point<dim>, Tensor<1,dim>>
@@ -87,7 +95,7 @@ namespace aspect
         bool use_spherical_unit_vectors;
 
         /**
-         * Pointer to the structured data
+         * Pointer to the structured data that stores the evaluation points.
          */
         std::unique_ptr<Utilities::StructuredDataLookup<1>> data_lookup;
 
@@ -100,16 +108,6 @@ namespace aspect
          * Filename of the input ascii data file.
          */
         std::string data_file_name;
-
-        /**
-         * Interval between the generation of output in seconds.
-         */
-        double output_interval;
-
-        /**
-         * A time (in seconds) the last output has been produced.
-         */
-        double last_output_time;
 
         /**
           * Consecutively counted number indicating the how-manyth time we will

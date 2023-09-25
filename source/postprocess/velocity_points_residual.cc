@@ -20,7 +20,7 @@
 
 
 
-#include <aspect/postprocess/velocity_residual_statistics.h>
+#include <aspect/postprocess/velocity_points_residual.h>
 #include <aspect/utilities.h>
 #include <aspect/geometry_model/interface.h>
 
@@ -34,19 +34,14 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    VelocityResidualStatistics<dim>::VelocityResidualStatistics ()
+    VelocityPointsResidual<dim>::VelocityPointsResidual ()
       :
-      // the following value is later read from the input file
-      output_interval (0),
-      // initialize this to a nonsensical value; set it to the actual time
-      // the first time around we get to check it
-      last_output_time (std::numeric_limits<double>::quiet_NaN()),
       output_file_number (numbers::invalid_unsigned_int)
     {}
 
     template <int dim>
     void
-    VelocityResidualStatistics<dim>::initialize ()
+    VelocityPointsResidual<dim>::initialize ()
     {
       // The input ascii table contains one column that just represents points id.
       // The scale factor is set to 1 because the columns contain the observed point
@@ -59,7 +54,7 @@ namespace aspect
 
     template <int dim>
     std::pair <Point<dim>, Tensor<1,dim>>
-    VelocityResidualStatistics<dim>::get_observed_data (const unsigned int p) const
+    VelocityPointsResidual<dim>::get_observed_data (const unsigned int p) const
     {
       Tensor<1,dim> data_velocity;
       Point<dim> data_position;
@@ -94,23 +89,12 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    VelocityResidualStatistics<dim>::execute (TableHandler &statistics)
+    VelocityPointsResidual<dim>::execute (TableHandler &statistics)
     {
-      // if this is the first time we get here, set the next output time
-      // to the current time. this makes sure we always produce data during
-      // the first time step
-      if (std::isnan(last_output_time))
-        last_output_time = this->get_time() - output_interval;
-
-      // see if output is requested at this time
-      if (this->get_time() < last_output_time + output_interval)
-        return {"", ""};
-
       // Add the rms residual in the statistics file.
       const std::string units = (this->convert_output_to_years() == true) ? "m/year" : "m/s";
       const double unit_scale_factor = (this->convert_output_to_years() == true) ? year_in_seconds : 1.0;
 
-      // TODO: Modify here for inversion.
       const bool increase_file_number = (this->get_nonlinear_iteration() == 0) ||
                                         (!this->get_parameters().run_postprocessors_on_nonlinear_iterations);
       if (output_file_number == numbers::invalid_unsigned_int)
@@ -207,6 +191,7 @@ namespace aspect
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             f << " <" << this->introspection().name_for_compositional_index(c) << '>';
           f << '\n';
+          f << "# POINTS: " << n_rows << '\n';
 
           for (unsigned int i=0; i<n_rows; ++i)
             {
@@ -262,14 +247,14 @@ namespace aspect
 
     template <int dim>
     void
-    VelocityResidualStatistics<dim>::declare_parameters (ParameterHandler  &prm)
+    VelocityPointsResidual<dim>::declare_parameters (ParameterHandler  &prm)
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("Velocity residual statistics");
+        prm.enter_subsection("Velocity points residual");
         {
           prm.declare_entry ("Data directory",
-                             "$ASPECT_SOURCE_DIR/data/postprocess/velocity-residual/",
+                             "$ASPECT_SOURCE_DIR/data/postprocess/velocity-points-residual/",
                              Patterns::DirectoryName (),
                              "The name of a directory that contains the input ascii data "
                              "against which the velocity residual in the model is computed. "
@@ -283,8 +268,10 @@ namespace aspect
           prm.declare_entry ("Data file name", "point_values_velocity.txt",
                              Patterns::Anything (),
                              "The file name of the input ascii velocity data. "
-                             "The file is provided in the same format as described in "
-                             " 'ascii data' initial composition plugin." );
+                             "The file is provided in a structured data format in one dimension "
+                             "such that the first column represents point ids from zero to n-1 "
+                             " (for n number of points) and the subsequent columns are data coordinates "
+                             "and the observed velocities at those points.");
           prm.declare_entry ("Use spherical unit vectors", "false",
                              Patterns::Bool (),
                              "Specify velocity as r, phi, and theta components "
@@ -301,11 +288,11 @@ namespace aspect
 
     template <int dim>
     void
-    VelocityResidualStatistics<dim>::parse_parameters (ParameterHandler &prm)
+    VelocityPointsResidual<dim>::parse_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("Velocity residual statistics");
+        prm.enter_subsection("Velocity points residual");
         {
           // Get the path to the data files. If it contains a reference
           // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
@@ -333,11 +320,13 @@ namespace aspect
 {
   namespace Postprocess
   {
-    ASPECT_REGISTER_POSTPROCESSOR(VelocityResidualStatistics,
-                                  "velocity residual statistics",
-                                  "A postprocessor that computes some statistics about "
-                                  "the velocity residual in the model. The velocity residual "
-                                  "is the difference between the model solution velocities and the input "
-                                  "ascii data velocities.")
+    ASPECT_REGISTER_POSTPROCESSOR(VelocityPointsResidual,
+                                  "velocity points residual",
+                                  "A postprocessor that computes root mean square velocity "
+                                  "residual as \\frac{1}{n} \\sum_n \\lVert \\mathbf u_i^{\\text{solution}} -"
+                                  "\\mathbf u_i^{\\text{input}} \\rVert_2, where \\lVert\\cdot\\rVert "
+                                  "denotes the L2-norm at specified evaluation points, i, in the input data. "
+                                  "The velocity residual is the difference between the model solution "
+                                  "velocities and the input ascii data velocities at the evaluation points.")
   }
 }

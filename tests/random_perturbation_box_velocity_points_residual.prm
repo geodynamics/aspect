@@ -1,11 +1,14 @@
-# This is a test for the random Gaussian perturbation initial
-# temperature model. 10 perturbations are placed within the
-# box.
+# This is a test for the velocity points residual postprocessor.
+# The input ascii data file has two points that have
+# zero velocities. The modeled velocities at these points
+# is evaluated using point values postprocessor, which
+# should give same velocities as the velocity residual
+# postprocessor in this case.
 
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
-set Use years in output instead of seconds = false
+set Use years in output instead of seconds = true
 
 
 
@@ -65,7 +68,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, velocity residual statistics, point values
+  set List of postprocessors = visualization, velocity statistics, velocity points residual, point values
 
   subsection Point values
     set Evaluation points = 0, 0  ; \
