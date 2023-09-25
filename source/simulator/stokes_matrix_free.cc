@@ -2467,7 +2467,11 @@ namespace aspect
           {
             IndexSet relevant_dofs;
             DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
+#if DEAL_II_VERSION_GTE(9,6,0)
+            level_constraints_v.reinit(dof_handler_v.locally_owned_dofs(), relevant_dofs);
+#else
             level_constraints_v.reinit(relevant_dofs);
+#endif
             level_constraints_v.add_lines(mg_constrained_dofs_A_block.get_boundary_indices(level));
             level_constraints_v.close();
 
@@ -2476,8 +2480,11 @@ namespace aspect
             if (!no_flux_boundary.empty())
               {
                 AffineConstraints<double> user_level_constraints;
+#if DEAL_II_VERSION_GTE(9,6,0)
+                user_level_constraints.reinit(dof_handler_v.locally_owned_dofs(), relevant_dofs);
+#else
                 user_level_constraints.reinit(relevant_dofs);
-
+#endif
                 const IndexSet &refinement_edge_indices =
                   mg_constrained_dofs_A_block.get_refinement_edge_indices(level);
                 dealii::VectorTools::compute_no_normal_flux_constraints_on_level(
