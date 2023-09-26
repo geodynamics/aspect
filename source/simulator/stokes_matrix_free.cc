@@ -1422,6 +1422,10 @@ namespace aspect
 
                       active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
                         = derivatives->viscosity_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
+                      Assert(std::isfinite(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]),
+                             ExcMessage("active_cell_data.newton_factor_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]) +
+                                        ". Relevant variables are derivatives->viscosity_derivative_wrt_pressure[q] = " + std::to_string(derivatives->viscosity_derivative_wrt_pressure[q]) +
+                                        ", and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
 
                       for (unsigned int m=0; m<dim; ++m)
                         for (unsigned int n=0; n<dim; ++n)
@@ -1432,6 +1436,11 @@ namespace aspect
                             active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
                               = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n]
                                 * newton_derivative_scaling_factor * alpha;
+
+                            Assert(std::isfinite(active_cell_data.strain_rate_table(cell, q)[m][n][i]),
+                                   ExcMessage("active_cell_data.strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.strain_rate_table(cell, q)[m][n][i])));
+                            Assert(std::isfinite(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]),
+                                   ExcMessage("active_cell_data.newton_factor_wrt_strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i])));
                           }
                     }
                 }
