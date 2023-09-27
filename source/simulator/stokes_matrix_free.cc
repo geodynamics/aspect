@@ -2477,7 +2477,7 @@ namespace aspect
             IndexSet relevant_dofs;
             DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
 #if DEAL_II_VERSION_GTE(9,6,0)
-            level_constraints_v.reinit(dof_handler_v.locally_owned_dofs(), relevant_dofs);
+            level_constraints_v.reinit(dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
 #else
             level_constraints_v.reinit(relevant_dofs);
 #endif
@@ -2490,7 +2490,7 @@ namespace aspect
               {
                 AffineConstraints<double> user_level_constraints;
 #if DEAL_II_VERSION_GTE(9,6,0)
-                user_level_constraints.reinit(dof_handler_v.locally_owned_dofs(), relevant_dofs);
+                user_level_constraints.reinit(dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
 #else
                 user_level_constraints.reinit(relevant_dofs);
 #endif
