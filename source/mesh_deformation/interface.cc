@@ -587,7 +587,8 @@ namespace aspect
       // Now construct the mesh displacement constraints
       mesh_velocity_constraints.clear();
 #if DEAL_II_VERSION_GTE(9,6,0)
-      mesh_velocity_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(), mesh_locally_relevant);
+      mesh_velocity_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(),
+                                       mesh_locally_relevant);
 #else
       mesh_velocity_constraints.reinit(mesh_locally_relevant);
 #endif
@@ -689,7 +690,8 @@ namespace aspect
       // compute_mesh_displacements().
       mesh_velocity_constraints.clear();
 #if DEAL_II_VERSION_GTE(9,6,0)
-      mesh_velocity_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(), mesh_locally_relevant);
+      mesh_velocity_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(),
+                                       mesh_locally_relevant);
 #else
       mesh_velocity_constraints.reinit(mesh_locally_relevant);
 #endif
@@ -1041,7 +1043,8 @@ namespace aspect
                                                         relevant_dofs);
           AffineConstraints<double> level_constraints;
 #if DEAL_II_VERSION_GTE(9,6,0)
-          level_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(), relevant_dofs);
+          level_constraints.reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
+                                   relevant_dofs);
 #else
           level_constraints.reinit(relevant_dofs);
 #endif
@@ -1056,7 +1059,8 @@ namespace aspect
             {
               AffineConstraints<double> user_level_constraints;
 #if DEAL_II_VERSION_GTE(9,6,0)
-              user_level_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(), relevant_dofs);
+              user_level_constraints.reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
+                                            relevant_dofs);
 #else
               user_level_constraints.reinit(relevant_dofs);
 #endif
@@ -1400,7 +1404,8 @@ namespace aspect
       // refinement.
       mesh_vertex_constraints.clear();
 #if DEAL_II_VERSION_GTE(9,6,0)
-      mesh_vertex_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(), mesh_locally_relevant);
+      mesh_vertex_constraints.reinit(mesh_deformation_dof_handler.locally_owned_dofs(),
+                                     mesh_locally_relevant);
 #else
       mesh_vertex_constraints.reinit(mesh_locally_relevant);
 #endif
