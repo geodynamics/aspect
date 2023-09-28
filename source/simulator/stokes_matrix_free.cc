@@ -1422,6 +1422,10 @@ namespace aspect
 
                       active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
                         = derivatives->viscosity_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
+                      Assert(std::isfinite(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]),
+                             ExcMessage("active_cell_data.newton_factor_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]) +
+                                        ". Relevant variables are derivatives->viscosity_derivative_wrt_pressure[q] = " + std::to_string(derivatives->viscosity_derivative_wrt_pressure[q]) +
+                                        ", and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
 
                       for (unsigned int m=0; m<dim; ++m)
                         for (unsigned int n=0; n<dim; ++n)
@@ -1432,6 +1436,11 @@ namespace aspect
                             active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
                               = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n]
                                 * newton_derivative_scaling_factor * alpha;
+
+                            Assert(std::isfinite(active_cell_data.strain_rate_table(cell, q)[m][n][i]),
+                                   ExcMessage("active_cell_data.strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.strain_rate_table(cell, q)[m][n][i])));
+                            Assert(std::isfinite(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]),
+                                   ExcMessage("active_cell_data.newton_factor_wrt_strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i])));
                           }
                     }
                 }
@@ -2467,7 +2476,11 @@ namespace aspect
           {
             IndexSet relevant_dofs;
             DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
+#if DEAL_II_VERSION_GTE(9,6,0)
+            level_constraints_v.reinit(dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
+#else
             level_constraints_v.reinit(relevant_dofs);
+#endif
             level_constraints_v.add_lines(mg_constrained_dofs_A_block.get_boundary_indices(level));
             level_constraints_v.close();
 
@@ -2476,8 +2489,11 @@ namespace aspect
             if (!no_flux_boundary.empty())
               {
                 AffineConstraints<double> user_level_constraints;
+#if DEAL_II_VERSION_GTE(9,6,0)
+                user_level_constraints.reinit(dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
+#else
                 user_level_constraints.reinit(relevant_dofs);
-
+#endif
                 const IndexSet &refinement_edge_indices =
                   mg_constrained_dofs_A_block.get_refinement_edge_indices(level);
                 dealii::VectorTools::compute_no_normal_flux_constraints_on_level(

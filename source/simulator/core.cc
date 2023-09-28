@@ -657,7 +657,11 @@ namespace aspect
     // if the set of constraints has changed. If it did, we need to update the sparsity patterns.
     AffineConstraints<double> new_current_constraints;
     new_current_constraints.clear ();
+#if DEAL_II_VERSION_GTE(9,6,0)
+    new_current_constraints.reinit (dof_handler.locally_owned_dofs(), introspection.index_sets.system_relevant_set);
+#else
     new_current_constraints.reinit (introspection.index_sets.system_relevant_set);
+#endif
     new_current_constraints.merge (constraints);
     compute_current_velocity_boundary_constraints(new_current_constraints);
 
@@ -791,8 +795,14 @@ namespace aspect
                                                                       mpi_communicator) > 0;
     if (any_constrained_dofs_set_changed)
       rebuild_sparsity_and_matrices = true;
-
+    current_constraints.clear();
+#if DEAL_II_VERSION_GTE(9,6,0)
+    current_constraints.reinit (dof_handler.locally_owned_dofs(), introspection.index_sets.system_relevant_set);
+#else
+    current_constraints.reinit (introspection.index_sets.system_relevant_set);
+#endif
     current_constraints.copy_from(new_current_constraints);
+    current_constraints.close();
 
     // TODO: We should use current_constraints.is_consistent_in_parallel()
     // here to assert that our constraints are consistent between
@@ -1449,7 +1459,11 @@ namespace aspect
 
     // Reconstruct the constraint-matrix:
     constraints.clear();
+#if DEAL_II_VERSION_GTE(9,6,0)
+    constraints.reinit (dof_handler.locally_owned_dofs(), introspection.index_sets.system_relevant_set);
+#else
     constraints.reinit(introspection.index_sets.system_relevant_set);
+#endif
 
     // Set up the constraints for periodic boundary conditions:
 
