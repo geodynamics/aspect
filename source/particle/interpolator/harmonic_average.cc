@@ -83,7 +83,7 @@ namespace aspect
                   if (selected_properties[i])
                     {
                       AssertThrow(particle_properties[i] > 0,
-                                  ExcMessage ("All particle property values values must be greater than 0 for harmonic averaging!"));
+                                  ExcMessage ("All particle property values must be greater than 0 for harmonic averaging!"));
                       cell_properties[i] += 1/particle_properties[i];
                     }
               }
@@ -116,7 +116,11 @@ namespace aspect
 
                 for (unsigned int i = 0; i < n_particle_properties; ++i)
                   if (selected_properties[i])
-                    cell_properties[i] += 1/neighbor_properties[i];
+                    {
+                      AssertThrow(neighbor_properties[i] > 0,
+                                  ExcMessage ("All particle property values must be greater than 0 for harmonic averaging!"));
+                      cell_properties[i] += 1/neighbor_properties[i];
+                    }
 
                 ++non_empty_neighbors;
               }
