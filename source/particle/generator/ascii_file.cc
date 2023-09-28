@@ -131,9 +131,9 @@ namespace aspect
                                          "Note that this plugin always generates as many particles "
                                          "as there are coordinates in the data file. "
                                          "All of the values that define this generator are read "
-                                         "from a section ``Postprocess/Particles/Generator/Ascii file'' in the "
+                                         "from a section ``Particles/Generator/Ascii file'' in the "
                                          "input file, see "
-                                         "Section~\\ref{parameters:Postprocess/Particles/Generator/Ascii_20file}.")
+                                         "Section~\\ref{parameters:Particles/Generator/Ascii_20file}.")
     }
   }
 }
