@@ -33,7 +33,7 @@ namespace aspect
     EntropyTableLookUp<dim>::initialize()
     {
       AssertThrow (this->introspection().compositional_name_exists("entropy"),
-                   ExcMessage("The 'entropy model' material model requires the existence of a compositional field "
+                   ExcMessage("The 'entropy table lookup' initial composition requires the existence of a compositional field "
                               "named 'entropy'. This field does not exist."));
 
       // Make sure we keep track of the initial temperature manager and
@@ -127,10 +127,10 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL(EntropyTableLookUp,
                                               "entropy table lookup",
                                               "A class that implements initial conditions for the entropy field "
-                                              "by converting the initial temperature field through a look up table"
-                                              "Note that this plugin only works if there is a compositional field"
-                                              "called `entropy', and an additional look up table that can convert"
-                                              "pressure and temperature to entropy for each composition in the model."
+                                              "by converting the initial temperature field through a look up table. "
+                                              "Note that this plugin only works if there is a compositional field "
+                                              "called `entropy', and an additional look up table that can convert "
+                                              "pressure and temperature to entropy. "
                                               "For all compositional fields except entropy this plugin returns 0.0, "
                                               "and they are therefore not changed as long as the default `add' "
                                               "operator is selected for this plugin.")
