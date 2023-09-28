@@ -137,11 +137,11 @@ subsection Material model
     set Reference temperature = 293
     
     #Hydrothermal conductivity
-    set Use hydrothermal conductivity = true
-    set Nusselt number for hydrothermal conductivity = 2   #has to be >=1
-    set Smoothing factor for hydrothermal conductivity = .8
-    set Cutoff maximum temperature for hydrothermal conductivity = 873.15
-    set Cutoff maximum depth for hydrothermal conductivity = 3.e3
+    set Approximate hydrothermal cooling through thermal conductivity = true
+    set Nusselt number for hydrothermal cooling approximation  = 2   #has to be >=1
+    set Smoothing factor for hydrothermal cooling approximation = .8
+    set Cutoff maximum temperature for hydrothermal cooling approximation = 873.15
+    set Cutoff maximum depth for hydrothermal cooling approximation = 3.e3
 
     # The minimum strain-rate helps limit large viscosities values that arise
     # as the strain-rate approaches zero.
