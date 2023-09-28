@@ -1,24 +1,18 @@
-#### Continental Extension Cookbook
-# This cookbook is based off numerous published studies, three of which are listed below.
-# For additional information, see these publications and references therein.
-#   1. Brune, S., Heine, C., Perez-Gussinye, M., and Sobolev, S.V. (2014), Nat. Comm., v.5, n.4014,
-#      Rift migration explains continental margin asymmetry and crustal hyperextension
-#   2. Huismans, R., and Beaumont, C. (2011), Nature, v.473, p.71-75.
-#      Depth-dependent extension, two-stage breakup and cratonic underplating at rifted margins
-#   3. Naliboff, J., and Buiter, S.H. (2015), Earth Planet. Sci. Lett., v.421, p.58-67,
-#      "Rift Reactivation and migration during multiphase extension"
+## This is a test for models that use the viscoplastic material model 
+## and which  use the approximation of hydrothermal cooling
+
 
 ####  Global parameters
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 0    #instead of 20e6, 1 timestep
+set End time                               = 0    # 1 timestep
 set Maximum time step                      = 150000
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = iterated Stokes
 set Nonlinear solver tolerance             = 1e-4
 set Max nonlinear iterations               = 20
 set CFL number                             = 0.5	#Courant-Friedrichs-Lewy
-set Output directory                       = output_lithosphere_test
+set Output directory                       = hydrothermal_cooling
 set Pressure normalization                 = no
 
 
@@ -32,7 +26,7 @@ end
 
 #### Parameters describing the model
 
-# Model geometry (400x100 km, 4 km spacing)
+# Model geometry (80x20 km)
 subsection Geometry model
   set Model name = box
   subsection Box
@@ -43,8 +37,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications (no mesh refinement, 
-# but the coarse mesh is already 100x25, see above)
+# Mesh refinement specifications (no mesh refinement)
 subsection Mesh refinement
   set Initial global refinement          = 3
 end
@@ -59,19 +52,15 @@ subsection Mesh deformation
   end
 end
 
-# Velocity on boundaries characterized by functions:
-# outflow on sides, compensating inflow at base.
-# The outward velocity (x-direction) on the left and right walls is 0.25 cm/year
-# The vertical velocity at the base is 0.125 cm/year (balances outflow on sides)
-# Velocity components parallel to the base (x-velocity) and side walls (y-velocity)
-# are unconstrained (i.e. 'free'). 
+# Velocity on boundaries:
+# Free slip on the left, right and the bottom boundary
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom
 end
 
 
 # Number and names of compositional fields
-# The four compositional fields represent the upper crust, lower crust
+# The two compositional fields represent the crust
 # and a 'seed' placed in the mantle to help localize deformation.
 subsection Compositional fields
   set Number of fields = 2
@@ -80,8 +69,8 @@ end
 
 
 # Spatial domain of different compositional fields
-# The upper crust, lower crust and mantle are continuous horizontal layers
-# of varying thickness.  The top of the seed (4x8 km) is placed 2 km beneath
+# The crust is a continuous horizontal layer that is 6 km thick.
+# The top of the seed (2.5x2.5 km) is placed 0.25 km beneath
 # the base of the crust and straddles the horizontal midpoint.
 subsection Initial composition model
   set Model name = function
@@ -114,30 +103,12 @@ subsection Boundary temperature model
 end
 
 # Initial temperature field
-# Typical continental geotherm based on equations 4-6 from:
-#   D.S. Chapman (1986), "Thermal gradients in the continental crust",
-#   Geological Society of London Special Publications, v.24, p.63-70.
-# The initial constraints are:
-#   Layer Surface Temperature - upper crust (ts1) = 273 K; 
-#                               mantle      (ts3) = 823 K;  
-#   Model Base Temperature - (tb) = 1573 K;
-#   Heat Production - upper crust (A) = 1.5e-6 W/m^3; 
-#   Thermal Conductivity - upper crust (k1) = 2.5 (W/(m K)); 
-#                          lower crust (k2) = 2.5 (W/(m K)); 
-#                          mantle      (k3) = 3.3 (W/(m K));
-# To satisfy these constraints, the following values are required:
-#   Layer Surface Heat Flow - upper crust (qs1) = 0.065357 W/m^2; 
-#                             lower crust (qs2) = 0.035357 W/m^2; 
-#                             mantle      (qs3) = 0.035357 W/m^2;
-#   Temperature - base of upper crust (ts2) = 681.5714
 subsection Initial temperature model
   set Model name = function
   subsection Function
     set Variable names = x,y
-    set Function constants = h=20.e3,ts1=273,ts2=681.5714,ts3=823., tbot=1200, \
-                                     k1=2.5,k2=2.5,k3=3.3,A=1.5e-6, \
-                             qs1=0.0653571,qs2=0.035357,qs3=0.035357,qb3=0.035357
-    set Function expression = if( (h-y)<=6.e3, ts1, tbot)
+    set Function constants = h=20.e3,ts=273, tbot=1200
+    set Function expression = if((h-y)<=6.e3, ts, tbot)
   end
 end
 
@@ -243,7 +214,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heating statistics, visualization
   subsection Visualization
     set List of output variables = density, viscosity, strain rate, thermal conductivity
-    set Output format = vtu
+    set Output format = gnuplot
     set Time between graphical output = 0
     set Interpolate output = true
   end
