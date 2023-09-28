@@ -665,152 +665,148 @@ namespace aspect
         end_time *= year_in_seconds;
 
       unsigned int n_minerals;
-      prm.enter_subsection("Postprocess");
+      prm.enter_subsection("Particles");
       {
-        prm.enter_subsection("Particles");
-        {
-          prm.enter_subsection("Crystal Preferred Orientation");
-          {
-            prm.enter_subsection("Initial grains");
-            {
-              // Static variable of CPO has not been initialize yet, so we need to get it directly.
-              n_minerals = dealii::Utilities::split_string_list(prm.get("Minerals")).size();
-            }
-            prm.leave_subsection();
-          }
-          prm.leave_subsection ();
-        }
-        prm.leave_subsection ();
         prm.enter_subsection("Crystal Preferred Orientation");
         {
-          output_interval = prm.get_double ("Time between data output");
-          if (this->convert_output_to_years())
-            output_interval *= year_in_seconds;
-
-          random_number_seed = prm.get_integer ("Random number seed");
-
-          AssertThrow(this->get_parameters().run_postprocessors_on_nonlinear_iterations == false,
-                      ExcMessage("Postprocessing nonlinear iterations in models with "
-                                 "particles is currently not supported."));
-
-          aspect::Utilities::create_directory (this->get_output_directory() + "particles_cpo/",
-                                               this->get_mpi_communicator(),
-                                               true);
-
-          write_in_background_thread = prm.get_bool("Write in background thread");
-          temporary_output_location = prm.get("Temporary output location");
-
-          if (temporary_output_location != "")
-            {
-              // Check if a command-processor is available by calling system() with a
-              // null pointer. System is guaranteed to return non-zero if it finds
-              // a terminal and zero if there is none (like on the compute nodes of
-              // some cluster architectures, e.g. IBM BlueGene/Q)
-              AssertThrow(system((char *)nullptr) != 0,
-                          ExcMessage("Usage of a temporary storage location is only supported if "
-                                     "there is a terminal available to move the files to their final location "
-                                     "after writing. The system() command did not succeed in finding such a terminal."));
-            }
-
-          std::vector<std::string> write_raw_cpo_list = Utilities::split_string_list(prm.get("Write out raw cpo data"));
-          write_raw_cpo.resize(write_raw_cpo_list.size());
-          bool found_euler_angles = false;
-          for (unsigned int i = 0; i < write_raw_cpo_list.size(); ++i)
-            {
-              std::vector<std::string> split_raw_cpo_instructions = Utilities::split_string_list(write_raw_cpo_list[i],':');
-
-              AssertThrow(split_raw_cpo_instructions.size() == 2,
-                          ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option "
-                                     + "because it should contain a mineral identification and a output specifier seprated by a colon (:). This entry "
-                                     + "does not follow those rules."));
-
-              // get mineral number
-              std::vector<std::string> mineral_instructions = Utilities::split_string_list(split_raw_cpo_instructions[0],' ');
-              AssertThrow(mineral_instructions.size() == 2,
-                          ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option "
-                                     + "because the mineral identification part should contain two elements, the word mineral and a number."));
-
-              AssertThrow(mineral_instructions[0] == "mineral",
-                          ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option "
-                                     + "because the mineral identification part should start with the word mineral and it starts with \""
-                                     + mineral_instructions[0] + "\"."));
-
-              int mineral_number = Utilities::string_to_int(mineral_instructions[1]);
-              Assert(mineral_number >= 0, ExcMessage("Internal error: mineral_number is negative: " + std::to_string(mineral_number) + "."));
-
-              AssertThrow((unsigned int) mineral_number < n_minerals,
-                          ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option "
-                                     + "because the mineral number (" + std::to_string(mineral_number) + ") is larger than the number of minerals "
-                                     + "provided in the CPO subsection (" + std::to_string(n_minerals) + ")."));
-
-              // get mineral fabric/deformation type
-              Output cpo_fabric_instruction = string_to_output_enum(split_raw_cpo_instructions[1]);
-
-              AssertThrow(cpo_fabric_instruction != Output::not_found,
-                          ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option."))
-
-              if (cpo_fabric_instruction == Output::EulerAngles)
-                found_euler_angles = true;
-
-              write_raw_cpo[i] = std::make_pair(mineral_number,cpo_fabric_instruction);
-            }
-
-          std::vector<std::string> write_draw_volume_weighted_cpo_list = Utilities::split_string_list(prm.get("Write out draw volume weighted cpo data"));
-          write_draw_volume_weighted_cpo.resize(write_draw_volume_weighted_cpo_list.size());
-          bool found_rotation_matrix = false;
-          for (unsigned int i = 0; i < write_draw_volume_weighted_cpo_list.size(); ++i)
-            {
-              std::vector<std::string> split_draw_volume_weighted_cpo_instructions = Utilities::split_string_list(write_draw_volume_weighted_cpo_list[i],':');
-
-              AssertThrow(split_draw_volume_weighted_cpo_instructions.size() == 2,
-                          ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option "
-                                     + "because it should contain a mineral identification and a output specifier seprated by a colon (:). This entry "
-                                     + "does not follow those rules."));
-
-              // get mineral number
-              std::vector<std::string> mineral_instructions = Utilities::split_string_list(split_draw_volume_weighted_cpo_instructions[0],' ');
-              AssertThrow(mineral_instructions.size() == 2,
-                          ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option "
-                                     + "because the mineral identification part should contain two elements, the word mineral and a number."));
-
-              AssertThrow(mineral_instructions[0] == "mineral",
-                          ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option "
-                                     + "because the mineral identification part should start with the word mineral and it starts with \""
-                                     + mineral_instructions[0] + "\"."));
-
-              int mineral_number = Utilities::string_to_int(mineral_instructions[1]);
-              Assert(mineral_number >= 0, ExcMessage("Internal error: mineral_number is negative: " + std::to_string(mineral_number) + "."));
-
-              AssertThrow((unsigned int) mineral_number < n_minerals,
-                          ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option "
-                                     + "because the mineral number (" + std::to_string(mineral_number) + ") is larger than the number of minerals "
-                                     + "provided in the CPO subsection (" + std::to_string(n_minerals) + ")."));
-
-              // get mineral fabric/deformation type
-              Output cpo_fabric_instruction = string_to_output_enum(split_draw_volume_weighted_cpo_instructions[1]);
-
-              AssertThrow(cpo_fabric_instruction != Output::not_found,
-                          ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option."))
-
-              if (cpo_fabric_instruction == Output::RotationMatrix)
-                found_rotation_matrix = true;
-
-              write_draw_volume_weighted_cpo[i] = std::make_pair(mineral_number,cpo_fabric_instruction);
-            }
-
-          if (write_draw_volume_weighted_cpo_list.size() != 0 || found_euler_angles == true)
-            compute_raw_euler_angles = true;
-          else
-            compute_raw_euler_angles = false;
-
-          if (write_draw_volume_weighted_cpo_list.size() != 0 && found_rotation_matrix == true)
-            compute_weighted_rotation_matrix = true;
-          else
-            compute_weighted_rotation_matrix = false;
-
-          compress_cpo_data_files = prm.get_bool("Compress cpo data files");
+          prm.enter_subsection("Initial grains");
+          {
+            // Static variable of CPO has not been initialize yet, so we need to get it directly.
+            n_minerals = dealii::Utilities::split_string_list(prm.get("Minerals")).size();
+          }
+          prm.leave_subsection();
         }
         prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+      prm.enter_subsection("Crystal Preferred Orientation");
+      {
+        output_interval = prm.get_double ("Time between data output");
+        if (this->convert_output_to_years())
+          output_interval *= year_in_seconds;
+
+        random_number_seed = prm.get_integer ("Random number seed");
+
+        AssertThrow(this->get_parameters().run_postprocessors_on_nonlinear_iterations == false,
+                    ExcMessage("Postprocessing nonlinear iterations in models with "
+                               "particles is currently not supported."));
+
+        aspect::Utilities::create_directory (this->get_output_directory() + "particles_cpo/",
+                                             this->get_mpi_communicator(),
+                                             true);
+
+        write_in_background_thread = prm.get_bool("Write in background thread");
+        temporary_output_location = prm.get("Temporary output location");
+
+        if (temporary_output_location != "")
+          {
+            // Check if a command-processor is available by calling system() with a
+            // null pointer. System is guaranteed to return non-zero if it finds
+            // a terminal and zero if there is none (like on the compute nodes of
+            // some cluster architectures, e.g. IBM BlueGene/Q)
+            AssertThrow(system((char *)nullptr) != 0,
+                        ExcMessage("Usage of a temporary storage location is only supported if "
+                                   "there is a terminal available to move the files to their final location "
+                                   "after writing. The system() command did not succeed in finding such a terminal."));
+          }
+
+        std::vector<std::string> write_raw_cpo_list = Utilities::split_string_list(prm.get("Write out raw cpo data"));
+        write_raw_cpo.resize(write_raw_cpo_list.size());
+        bool found_euler_angles = false;
+        for (unsigned int i = 0; i < write_raw_cpo_list.size(); ++i)
+          {
+            std::vector<std::string> split_raw_cpo_instructions = Utilities::split_string_list(write_raw_cpo_list[i],':');
+
+            AssertThrow(split_raw_cpo_instructions.size() == 2,
+                        ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option "
+                                   + "because it should contain a mineral identification and a output specifier seprated by a colon (:). This entry "
+                                   + "does not follow those rules."));
+
+            // get mineral number
+            std::vector<std::string> mineral_instructions = Utilities::split_string_list(split_raw_cpo_instructions[0],' ');
+            AssertThrow(mineral_instructions.size() == 2,
+                        ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option "
+                                   + "because the mineral identification part should contain two elements, the word mineral and a number."));
+
+            AssertThrow(mineral_instructions[0] == "mineral",
+                        ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option "
+                                   + "because the mineral identification part should start with the word mineral and it starts with \""
+                                   + mineral_instructions[0] + "\"."));
+
+            int mineral_number = Utilities::string_to_int(mineral_instructions[1]);
+            Assert(mineral_number >= 0, ExcMessage("Internal error: mineral_number is negative: " + std::to_string(mineral_number) + "."));
+
+            AssertThrow((unsigned int) mineral_number < n_minerals,
+                        ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option "
+                                   + "because the mineral number (" + std::to_string(mineral_number) + ") is larger than the number of minerals "
+                                   + "provided in the CPO subsection (" + std::to_string(n_minerals) + ")."));
+
+            // get mineral fabric/deformation type
+            Output cpo_fabric_instruction = string_to_output_enum(split_raw_cpo_instructions[1]);
+
+            AssertThrow(cpo_fabric_instruction != Output::not_found,
+                        ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option."))
+
+            if (cpo_fabric_instruction == Output::EulerAngles)
+              found_euler_angles = true;
+
+            write_raw_cpo[i] = std::make_pair(mineral_number,cpo_fabric_instruction);
+          }
+
+        std::vector<std::string> write_draw_volume_weighted_cpo_list = Utilities::split_string_list(prm.get("Write out draw volume weighted cpo data"));
+        write_draw_volume_weighted_cpo.resize(write_draw_volume_weighted_cpo_list.size());
+        bool found_rotation_matrix = false;
+        for (unsigned int i = 0; i < write_draw_volume_weighted_cpo_list.size(); ++i)
+          {
+            std::vector<std::string> split_draw_volume_weighted_cpo_instructions = Utilities::split_string_list(write_draw_volume_weighted_cpo_list[i],':');
+
+            AssertThrow(split_draw_volume_weighted_cpo_instructions.size() == 2,
+                        ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option "
+                                   + "because it should contain a mineral identification and a output specifier seprated by a colon (:). This entry "
+                                   + "does not follow those rules."));
+
+            // get mineral number
+            std::vector<std::string> mineral_instructions = Utilities::split_string_list(split_draw_volume_weighted_cpo_instructions[0],' ');
+            AssertThrow(mineral_instructions.size() == 2,
+                        ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option "
+                                   + "because the mineral identification part should contain two elements, the word mineral and a number."));
+
+            AssertThrow(mineral_instructions[0] == "mineral",
+                        ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option "
+                                   + "because the mineral identification part should start with the word mineral and it starts with \""
+                                   + mineral_instructions[0] + "\"."));
+
+            int mineral_number = Utilities::string_to_int(mineral_instructions[1]);
+            Assert(mineral_number >= 0, ExcMessage("Internal error: mineral_number is negative: " + std::to_string(mineral_number) + "."));
+
+            AssertThrow((unsigned int) mineral_number < n_minerals,
+                        ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option "
+                                   + "because the mineral number (" + std::to_string(mineral_number) + ") is larger than the number of minerals "
+                                   + "provided in the CPO subsection (" + std::to_string(n_minerals) + ")."));
+
+            // get mineral fabric/deformation type
+            Output cpo_fabric_instruction = string_to_output_enum(split_draw_volume_weighted_cpo_instructions[1]);
+
+            AssertThrow(cpo_fabric_instruction != Output::not_found,
+                        ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option."))
+
+            if (cpo_fabric_instruction == Output::RotationMatrix)
+              found_rotation_matrix = true;
+
+            write_draw_volume_weighted_cpo[i] = std::make_pair(mineral_number,cpo_fabric_instruction);
+          }
+
+        if (write_draw_volume_weighted_cpo_list.size() != 0 || found_euler_angles == true)
+          compute_raw_euler_angles = true;
+        else
+          compute_raw_euler_angles = false;
+
+        if (write_draw_volume_weighted_cpo_list.size() != 0 && found_rotation_matrix == true)
+          compute_weighted_rotation_matrix = true;
+        else
+          compute_weighted_rotation_matrix = false;
+
+        compress_cpo_data_files = prm.get_bool("Compress cpo data files");
       }
       prm.leave_subsection ();
 
