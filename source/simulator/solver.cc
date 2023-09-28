@@ -616,18 +616,20 @@ namespace aspect
 
         current_constraints.distribute (distributed_stokes_solution);
 
-        // now rescale the pressure back to real physical units:
+        // Now rescale the pressure back to real physical units. Note that we are
+        // working on a vector in which all velocities and pressures are in one
+        // block (that's the design for block layout in case we're using a direct
+        // solver), and so unlike in the "common" case, we can't just scale a
+        // whole vector block -- we have to do it element by element.
         {
-          IndexSet &pressure_idxset = parameters.include_melt_transport ?
-                                      introspection.index_sets.locally_owned_melt_pressure_dofs
-                                      : introspection.index_sets.locally_owned_pressure_dofs;
+          const IndexSet &pressure_idxset
+            = (parameters.include_melt_transport ?
+               introspection.index_sets.locally_owned_melt_pressure_dofs
+               : introspection.index_sets.locally_owned_pressure_dofs);
+          for (const types::global_dof_index i : pressure_idxset)
+            distributed_stokes_solution(i) *= pressure_scaling;
 
-          for (unsigned int i=0; i< pressure_idxset.n_elements(); ++i)
-            {
-              types::global_dof_index idx = pressure_idxset.nth_index_in_set(i);
-              distributed_stokes_solution(idx) *= pressure_scaling;
-            }
-          distributed_stokes_solution.compress(VectorOperation::insert);
+          distributed_stokes_solution.block(0).compress(VectorOperation::insert);
         }
 
         // then copy back the solution from the temporary (non-ghosted) vector
