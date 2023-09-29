@@ -274,6 +274,12 @@ namespace aspect
     Box<dim>::
     update ()
     {
+        AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
+                  ExcMessage("The geometry update function currently only works with a 2D box geometry model."));
+
+        AssertThrow(dim==2,
+                  ExcMessage("The geometry update function currently only works with a 2D box geometry model."));
+
         this->get_pcout() << "   Updating surface values... " <<std::endl;
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Geometry model surface update");
 
@@ -403,6 +409,13 @@ namespace aspect
     double
     Box<dim>::depth_including_mesh_deformation(const Point<dim> &position) const
     {
+
+      AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
+                  ExcMessage("Depth with mesh deformation currently only works with a 2D box geometry model."));
+
+      AssertThrow(dim==2,
+                  ExcMessage("Depth with mesh deformation currently only works with a 2D box geometry model."));
+
       // Convert the point to dim-1, as we aren't interested in the vertical component
       // for the function.
       Point<dim-1> p;

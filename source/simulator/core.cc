@@ -1861,7 +1861,12 @@ namespace aspect
         signals.post_mesh_deformation(*this);
 
         // We update this after mesh deformation so the most recent surface is kept.
-        geometry_model->update();
+        // TODO: This doesn't seem to cause issues if called from a non-box geometry
+        // using the empty default geometry update function, but it would be safer
+        // to only call it with a 2d box model. However, the general plugins_type_match
+        // used to check the geometry_model hits an error here.
+        if(dim == 2)
+            geometry_model->update();
       }
 
     // Compute the reactions of compositional fields and temperature in case of operator splitting.
