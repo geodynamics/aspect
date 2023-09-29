@@ -604,17 +604,19 @@ namespace aspect
                          "and the full density for the temperature equation.\n"
                          "* `custom': A custom selection of `Mass conservation' and "
                          "`Temperature equation'.\n"
-                         ":::{note}"
+                         ":::{warning}\n"
                          "The `custom' option is "
                          "implemented for advanced users that want full control over the "
                          "equations solved. It is possible to choose inconsistent formulations "
                          "and no error checking is performed on the consistency of the resulting "
-                         "equations.}:::"
-                         ":::{note}"
+                         "equations.\n"
+                         ":::"
+                         ":::{warning}\n"
                          "The `anelastic liquid approximation' option here can also be "
                          "used to set up the `truncated anelastic liquid approximation' as long as "
                          "this option is chosen together with a material model that defines a "
-                         "density that depends on temperature and depth and not on the pressure.:::");
+                         "density that depends on temperature and depth and not on the pressure.\n"
+                         ":::");
 
       prm.declare_entry ("Mass conservation", "ask material model",
                          Patterns::Selection ("incompressible|isentropic compression|hydrostatic compression|"
