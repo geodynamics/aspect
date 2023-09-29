@@ -796,7 +796,13 @@ namespace aspect
     if (any_constrained_dofs_set_changed)
       rebuild_sparsity_and_matrices = true;
 
+#if DEAL_II_VERSION_GTE(9,6,0)
     current_constraints = std::move(new_current_constraints);
+#else
+    current_constraints.clear();
+    current_constraints.reinit (introspection.index_sets.system_relevant_set);
+    current_constraints.copy_from(new_current_constraints);
+#endif
     current_constraints.close();
 
     // TODO: We should use current_constraints.is_consistent_in_parallel()
