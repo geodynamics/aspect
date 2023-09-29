@@ -113,7 +113,8 @@ namespace aspect
         std::unique_ptr<Functions::InterpolatedTensorProductGridData<1>> viscosity_file_function;
 
         /**
-         * Function to calculate depth-dependent viscosity.
+         * Function to calculate depth-dependent multiplicative prefactor to be applied
+         * to base model viscosity.
          */
         double
         calculate_depth_dependent_prefactor(const double &depth) const;
