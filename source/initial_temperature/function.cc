@@ -124,6 +124,6 @@ namespace aspect
                                               "Specify the initial temperature in terms of an "
                                               "explicit formula. The format of these "
                                               "functions follows the syntax understood by the "
-                                              "muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.")
+                                              "muparser library, see {ref}\\`sec:run-aspect:parameters-overview:muparser-format\\`.")
   }
 }

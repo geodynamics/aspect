@@ -125,7 +125,7 @@ namespace aspect
                                   "``Heating model|Function''. The format of these "
                                   "functions follows the syntax understood by the "
                                   "muparser library, see "
-                                  "{ref}`sec:run-aspect:parameters-overview:muparser-format`."
+                                  "{ref}\\`sec:run-aspect:parameters-overview:muparser-format\\`."
                                   "\n\n"
                                   "The formula is interpreted as having units "
                                   "W/kg."
