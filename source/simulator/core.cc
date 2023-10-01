@@ -655,13 +655,12 @@ namespace aspect
   {
     // We put the constraints we compute into a separate AffineConstraints<double> so we can check
     // if the set of constraints has changed. If it did, we need to update the sparsity patterns.
-    AffineConstraints<double> new_current_constraints;
-    new_current_constraints.clear ();
+    AffineConstraints<double> new_current_constraints(
 #if DEAL_II_VERSION_GTE(9,6,0)
-    new_current_constraints.reinit (dof_handler.locally_owned_dofs(), introspection.index_sets.system_relevant_set);
-#else
-    new_current_constraints.reinit (introspection.index_sets.system_relevant_set);
+      dof_handler.locally_owned_dofs(),
 #endif
+      introspection.index_sets.system_relevant_set
+    );
     new_current_constraints.merge (constraints);
     compute_current_velocity_boundary_constraints(new_current_constraints);
 
@@ -791,17 +790,19 @@ namespace aspect
       }
 
     // If at least one processor has different constraints, force rebuilding the matrices:
-    const bool any_constrained_dofs_set_changed = Utilities::MPI::sum(constraints_changed ? 1 : 0,
-                                                                      mpi_communicator) > 0;
+    const bool any_constrained_dofs_set_changed = (Utilities::MPI::sum(constraints_changed ? 1 : 0,
+                                                                       mpi_communicator)
+                                                   > 0);
     if (any_constrained_dofs_set_changed)
       rebuild_sparsity_and_matrices = true;
-    current_constraints.clear();
+
 #if DEAL_II_VERSION_GTE(9,6,0)
-    current_constraints.reinit (dof_handler.locally_owned_dofs(), introspection.index_sets.system_relevant_set);
+    current_constraints = std::move(new_current_constraints);
 #else
+    current_constraints.clear();
     current_constraints.reinit (introspection.index_sets.system_relevant_set);
-#endif
     current_constraints.copy_from(new_current_constraints);
+#endif
     current_constraints.close();
 
     // TODO: We should use current_constraints.is_consistent_in_parallel()
