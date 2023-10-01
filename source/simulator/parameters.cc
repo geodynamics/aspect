@@ -610,7 +610,7 @@ namespace aspect
                          "equations solved. It is possible to choose inconsistent formulations "
                          "and no error checking is performed on the consistency of the resulting "
                          "equations.\n"
-                         ":::"
+                         ":::\n\n"
                          ":::{warning}\n"
                          "The `anelastic liquid approximation' option here can also be "
                          "used to set up the `truncated anelastic liquid approximation' as long as "
