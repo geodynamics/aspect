@@ -62,14 +62,11 @@ namespace aspect
 
           switch (fluid_solid_reaction_scheme)
             {
-              case no_reaction:
+              case zero_solubility:
               {
-                // A fluid-rock reaction model where no reactions occur.
-                // The melt (fluid) fraction (volume percent) at any point is
-                // equal to the sume of the bound fluid content and porosity,
-                // with the latter determined by the assigned initial
-                // porosity, fluid boundary conditions, and fluid
-                // transport through the model.
+                // The fluid volume fraction in equilibrium with the solid
+                // at any point (stored in the melt_fractions vector) is
+                // equal to the sum of the bound fluid content and porosity.
                 const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
                 melt_fractions[q] = in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx];
                 break;
@@ -241,10 +238,10 @@ namespace aspect
                              "computed. If the model does not use operator splitting, this parameter is not used. "
                              "Units: yr or s, depending on the ``Use years "
                              "in output instead of seconds'' parameter.");
-          prm.declare_entry ("Fluid solid reaction scheme", "no reaction",
-                             Patterns::Selection("no reaction"),
+          prm.declare_entry ("Fluid-solid reaction scheme", "zero solubility",
+                             Patterns::Selection("zero solubility"),
                              "Select what type of scheme to use for reactions between fluid and solid phases. "
-                             "The only present option is to have no reactions between the two phases.");
+                             "The only present option is to have a solid with zero solubility.");
         }
         prm.leave_subsection();
       }
@@ -285,10 +282,10 @@ namespace aspect
             fluid_reaction_time_scale *= year_in_seconds;
 
           // Reaction scheme parameter
-          if (prm.get ("Fluid solid reaction scheme") == "no reaction")
-            fluid_solid_reaction_scheme = no_reaction;
+          if (prm.get ("Fluid-solid reaction scheme") == "zero solubility")
+            fluid_solid_reaction_scheme = zero_solubility;
           else
-            AssertThrow(false, ExcMessage("Not a valid viscous flow law"));
+            AssertThrow(false, ExcMessage("Not a valid fluid-solid reaction scheme"));
 
           if (this->get_parameters().use_operator_splitting)
             {

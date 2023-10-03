@@ -1,19 +1,35 @@
-# This is a 1D test case for an insoluble fluid moving upwards in a
-# narrow channel through porous coupled two-phase flow.
+# This is a ~ 1D test case for an insoluble fluid that is assigned
+# a given amount (1%) of initial bound fluid. As the solid is 
+# insoluble, all of the fluid should be released into the free
+# fluid phase (porosity) field in a single (sufficiently large)
+# `time step. 
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Output directory                       = reactive_fluid_transport_no_reaction
+set Output directory                       = reactive_fluid_transport_zero_solubility
 set Max nonlinear iterations               = 1
 set Nonlinear solver tolerance             = 1e-5
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
 
-set End time                               = 1e1
+set End time                               = 10e3
 
+# Because the model includes reactions that might be on a faster time scale
+# than the time step of the model (release of bound fluid into free fluid),
+# we use the operator splitting scheme.
+set Use operator splitting                     = true
 
-set Use operator splitting                     = false
+subsection Solver parameters
+  subsection Operator splitting parameters
+    # We choose the size of the reaction time step as 100 years, small enough
+    # so that it can accurately model melting and freezinddg.
+    set Reaction time step                     = 1e2
 
+    # Additionally, we always want to do at least 10 operator splitting time
+    # steps in each model time step, to accurately compute the reactions.
+    set Reaction time steps per advection step = 10
+  end
+end
 
 # There are two compositional fields, one that tracks the amount of free fluid
 # (the porosity) and one that tracks the amount of bound fluid (bound_fluid).
@@ -27,25 +43,19 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = if (y<=2e2,0.1,0); 0
+    set Function expression = 0; 0.1
   end
 end
 
-# The material flowing in from the bottom has the same porosity as prescribed
-# in the initial condition.
+# The composition is not fixed on any boundary
 subsection Boundary composition model
-  set Fixed composition boundary indicators   = bottom
+  set Fixed composition boundary indicators = 
   set List of model names = initial composition
 end
 
-# We prescribe an upwelling velocity of 1 cm/yr at the bottom,
-# the left and right boundaries are closed and the top is open.
+# Free slip on all sides
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = left, right
-  set Prescribed velocity boundary indicators = bottom:function
-  subsection Function
-    set Function expression = 0; 1e-2
-  end
+  set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
 # The model is 0.2 km wide and extends 2 km in the vertical direction.
@@ -101,7 +111,7 @@ subsection Material model
     set Reference fluid viscosity = 10
     set Reference permeability = 2.5e-6
     set Exponential fluid weakening factor = 0
-    set Fluid solid reaction scheme = no reaction
+    set Fluid-solid reaction scheme = zero solubility
   end
 
   subsection Visco Plastic
