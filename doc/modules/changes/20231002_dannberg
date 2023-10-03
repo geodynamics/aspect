@@ -1,0 +1,7 @@
+New: The amount of shear heating in a computation can
+now be limited by setting a maximum stress to be used,
+based on a Drucker-Prager yield stress with a user-
+specified cohesion and friction angle. This is useful
+in models with unrealistically high stresses.
+<br>
+(Juliane Dannberg, 2023/10/01)
