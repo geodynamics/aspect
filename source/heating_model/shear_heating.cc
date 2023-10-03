@@ -67,8 +67,11 @@ namespace aspect
 
               // Scale the stress accordingly.
               const double deviatoric_stress = 2 * material_model_outputs.viscosities[q] * std::sqrt(std::fabs(second_invariant(deviatoric_strain_rate)));
-              const double scaling_factor = std::max(deviatoric_stress / yield_stress, 1.0);
-              stress /= scaling_factor;
+              double scaling_factor = 1.0;
+              if (deviatoric_stress > 0.0)
+                scaling_factor = std::min(yield_stress / deviatoric_stress, 1.0);
+
+              stress *= scaling_factor;
             }
 
           heating_model_outputs.heating_source_terms[q] = stress * deviatoric_strain_rate;

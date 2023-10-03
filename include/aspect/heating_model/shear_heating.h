@@ -75,11 +75,15 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
-        /**
-         * @}
-         */
-
       private:
+        /**
+         * Parameters used for limiting the stress being used in the shear
+         * heating computation. To prevent shear heating from becoming
+         * unrealistically high, a Drucker-Prager yield criterion as given
+         * in the DruckerPrager rheology model can be used to define a
+         * maximum stress computed from the given cohesion and friction
+         * angle.
+         */
         bool limit_stress;
         double cohesion;
         double friction_angle;
