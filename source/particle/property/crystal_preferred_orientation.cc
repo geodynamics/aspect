@@ -1252,6 +1252,8 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_PROPERTY(CrystalPreferredOrientation,
                                         "crystal preferred orientation",
+                                        "WARNING: all the CPO plugins are a work in progress and not ready for production use yet. "
+                                        "See https://github.com/geodynamics/aspect/issues/3885 for current status and alternatives. "
                                         "The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO) "
                                         "on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation "
                                         "matrix. This allows for CPO evolution tracking with polycrystalline kinematic CrystalPreferredOrientation evolution models such "
