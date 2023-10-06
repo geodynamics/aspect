@@ -528,14 +528,27 @@ namespace aspect
         return stokes_matrix_free->solve();
       }
 
-    // extract Stokes parts of solution vector, without any ghost elements
-    LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning, mpi_communicator);
+    // In the following, we will operate on a vector that contains only
+    // the velocity and pressure DoFs, rather than on the full
+    // system. Set such a reduced vector up, without any ghost elements.
+    // (Worth noting: for direct solvers, this vector has one block,
+    // whereas for the iterative solvers, the result has two blocks.)
+    LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning,
+                                                            mpi_communicator);
 
     double initial_nonlinear_residual = numbers::signaling_nan<double>();
     double final_linear_residual      = numbers::signaling_nan<double>();
 
     if (parameters.use_direct_stokes_solver)
       {
+        Assert (distributed_stokes_solution.n_blocks() == 1, ExcInternalError());
+
+        // Many parts of the solver depend on the block layout (typically,
+        // velocity = 0, pressure = 1, but differently for direct solver
+        // setups -- see the comment above).
+        const unsigned int block_vel_and_pres = introspection.block_indices.velocities;
+        Assert(block_vel_and_pres == 0, ExcNotImplemented());
+
         // We hard-code the blocks down below, so make sure block 0 is indeed
         // the block containing velocity and pressure:
         Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
@@ -546,17 +559,17 @@ namespace aspect
                 && introspection.variable("compaction pressure").block_index == 0),
                ExcNotImplemented());
 
-        // start with a reasonable guess
-        solution.block(0) = current_linearization_point.block(0);
-
+        // Start with a reasonable guess.
+        //
         // While we don't need to set up the initial guess for the direct solver
         // (it will be ignored by the solver anyway), we need this if we are
         // using a nonlinear scheme, because we use this to compute the current
         // nonlinear residual (see initial_residual below).
+        solution.block(block_vel_and_pres) = current_linearization_point.block(block_vel_and_pres);
 
         // TODO: if there was an easy way to know if the caller needs the
         // initial residual we could skip all of this stuff.
-        distributed_stokes_solution.block(0) = solution.block(0);
+        distributed_stokes_solution.block(0) = solution.block(block_vel_and_pres);
         denormalize_pressure (this->last_pressure_normalization_adjustment,
                               distributed_stokes_solution,
                               solution);
@@ -578,19 +591,19 @@ namespace aspect
         // we need a temporary vector for the residual (even if we don't care about it)
         LinearAlgebra::Vector residual (introspection.index_sets.stokes_partitioning[0], mpi_communicator);
 
-        initial_nonlinear_residual = system_matrix.block(0,0).residual(
+        initial_nonlinear_residual = system_matrix.block(block_vel_and_pres,block_vel_and_pres).residual(
                                        residual,
                                        distributed_stokes_solution.block(0),
-                                       system_rhs.block(0));
+                                       system_rhs.block(block_vel_and_pres));
 
         SolverControl cn;
         // TODO: can we re-use the direct solver?
         TrilinosWrappers::SolverDirect solver(cn);
         try
           {
-            solver.solve(system_matrix.block(0,0),
+            solver.solve(system_matrix.block(block_vel_and_pres,block_vel_and_pres),
                          distributed_stokes_solution.block(0),
-                         system_rhs.block(0));
+                         system_rhs.block(block_vel_and_pres));
 
             // if we got here, we have successfully solved the linear system
             // with a direct solver, and the final linear residual should
@@ -632,14 +645,21 @@ namespace aspect
           distributed_stokes_solution.block(0).compress(VectorOperation::insert);
         }
 
-        // then copy back the solution from the temporary (non-ghosted) vector
-        // into the ghosted one with all solution components
-        solution.block(0) = distributed_stokes_solution.block(0);
+        // Then copy back the solution from the temporary (non-ghosted) vector
+        // into the ghosted one with all solution components. Note that
+        // for a direct solver, we have only one block for velocity+pressure,
+        // and so only one block needs to be copied.
+        solution.block(block_vel_and_pres) = distributed_stokes_solution.block(0);
 
         pcout << "done." << std::endl;
       }
     else // use iterative solver
       {
+        Assert (distributed_stokes_solution.n_blocks() == 2, ExcInternalError());
+        Assert(!parameters.include_melt_transport
+               || introspection.variable("compaction pressure").block_index == 1,
+               ExcNotImplemented());
+
         // Many parts of the solver depend on the block layout (velocity = 0,
         // pressure = 1). For example the linearized_stokes_initial_guess vector or the StokesBlock matrix
         // wrapper. Let us make sure that this holds (and shorten their names):
@@ -650,7 +670,8 @@ namespace aspect
         Assert(block_vel == 0, ExcNotImplemented());
         Assert(block_p == 1, ExcNotImplemented());
         Assert(!parameters.include_melt_transport
-               || introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
+               || introspection.variable("compaction pressure").block_index == 1,
+               ExcNotImplemented());
 
         const internal::StokesBlock stokes_block(system_matrix);
 
@@ -896,8 +917,8 @@ namespace aspect
 
         // then copy back the solution from the temporary (non-ghosted) vector
         // into the ghosted one with all solution components
-        solution.block(block_vel) = distributed_stokes_solution.block(block_vel);
-        solution.block(block_p) = distributed_stokes_solution.block(block_p);
+        solution.block(block_vel) = distributed_stokes_solution.block(0);
+        solution.block(block_p) = distributed_stokes_solution.block(1);
       }
 
 
