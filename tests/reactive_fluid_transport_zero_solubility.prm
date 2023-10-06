@@ -1,8 +1,12 @@
-# This is a ~ 1D test case for an insoluble fluid that is assigned
-# a given amount (1%) of initial bound fluid. As the solid is
-# insoluble, all of the fluid should be released into the free
-# fluid phase (porosity) field in a single (sufficiently large)
-# `time step.
+
+# This model tests the reactive material model "zero solubility"
+# reaction scenario, where all of the bound fluid in a solid
+# with zero solubility should go into the free fluid phase
+# (tracked by porosity field). The model begins with no free fluid
+# (zero porosity) and 1% bound fluid (0.01). For a fluid reaction
+# time scale of 1e3 years and a time step size of 10e3 years,
+# the reaction should be complete at the end of the first time step
+# giving a porosity of 0.01 and a bound fluid value of 0.
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Output directory                       = reactive_fluid_transport_zero_solubility
@@ -23,7 +27,7 @@ subsection Solver parameters
   subsection Operator splitting parameters
     # We choose the size of the reaction time step as 100 years, small enough
     # so that it can accurately model melting and freezinddg.
-    set Reaction time step                     = 1e2
+    set Reaction time step                     = 1e3
 
     # Additionally, we always want to do at least 10 operator splitting time
     # steps in each model time step, to accurately compute the reactions.
@@ -43,7 +47,7 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = 0; 0.1
+    set Function expression = 0; 0.01
   end
 end
 
@@ -58,14 +62,13 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
-# The model is 0.2 km wide and extends 2 km in the vertical direction.
+# The model is 2x2 km
 subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X extent  = 2e2
+    set X extent  = 2e3
     set Y extent  = 2e3
-    set Y repetitions = 10
   end
 
 end
@@ -111,6 +114,7 @@ subsection Material model
     set Reference fluid viscosity = 10
     set Reference permeability = 2.5e-6
     set Exponential fluid weakening factor = 0
+    set Fluid reaction time scale for operator splitting = 1e3
     set Fluid-solid reaction scheme = zero solubility
   end
 
