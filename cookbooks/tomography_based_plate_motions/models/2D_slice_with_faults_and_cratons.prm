@@ -1,4 +1,4 @@
-# This cookbook demonstrates how we can setup instantaneous mantle flow models
+# This cookbook demonstrates how we can set up instantaneous mantle flow models
 # using available geophysical constraints. To avoid large computational cost,
 # this model is a 2D spherical shell with imposed plate boundaries and driven
 # by mantle forces arising from observed mantle heterogeneity.
@@ -101,7 +101,7 @@ end
 
 
 # We set the net rotation of the velocities at the surface to zero.
-# This is useful for comparision with the observed GPS velocities in the no
+# This is useful for comparison with the observed GPS velocities in the no
 # net rotation frame.
 subsection Nullspace removal
   set Remove nullspace = net surface rotation
@@ -118,10 +118,11 @@ subsection Boundary temperature model
 end
 
 
-# We use intial temperatures from an ASCII file but we also use adiabatic
-# boundary plugin such it returns very small temperatures, and on taking
-# the maximum between the two temperatures we have the temperature distribution
-# from the ASCII file.
+# We want to use intial temperatures from an ASCII data file. However,
+# we use adiabatic boundary plugin to use the lithospheric depths but
+# set the other value of temperature gradient as zero such that on taking
+# the maximum between the two temperature models we have the temperature
+# distribution from the ASCII file.
 # We do this because we need the lithospheric depths for density computation
 # because the reference density, thermal expansivity, and compressibility varies
 # between the crust, lithosphere, and asthenosphere in our model.
@@ -211,7 +212,7 @@ subsection Material model
 
    set Uppermost mantle thickness                  = 300000
 
-# The following parameters governs if we want to scale the laterally
+# The following parameters govern whether we want to scale the laterally
 # averaged viscosity to a reference profile, and the location of that
 # profile.
    set Use depth dependent viscosity               = true

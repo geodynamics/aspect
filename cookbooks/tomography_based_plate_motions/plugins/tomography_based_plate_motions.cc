@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -178,16 +178,16 @@ namespace aspect
       for (unsigned i = 0; i < n_material_data; i++)
         {
           if (material_file_format == perplex)
-            material_lookup.emplace_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
-                                         (new MaterialUtilities::Lookup::PerplexReader(data_directory+material_file_names[i],
-                                                                                       /*use_bilinear_interpolation*/ true,
-                                                                                       this->get_mpi_communicator())));
+            material_lookup.emplace_back(std::make_shared<MaterialUtilities::Lookup::PerplexReader>
+                                         (data_directory+material_file_names[i],
+                                          /*use_bilinear_interpolation*/ true,
+                                          this->get_mpi_communicator()));
           else if (material_file_format == hefesto)
-            material_lookup.emplace_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
-                                         (new MaterialUtilities::Lookup::HeFESToReader(data_directory+material_file_names[i],
-                                                                                       data_directory+derivatives_file_names[i],
-                                                                                       /*use_bilinear_interpolation*/ true,
-                                                                                       this->get_mpi_communicator())));
+            material_lookup.emplace_back(std::make_shared<MaterialUtilities::Lookup::HeFESToReader>
+                                         (data_directory+material_file_names[i],
+                                          data_directory+derivatives_file_names[i],
+                                          /*use_bilinear_interpolation*/ true,
+                                          this->get_mpi_communicator()));
           else
             AssertThrow (false, ExcNotImplemented());
         }
@@ -1046,7 +1046,7 @@ namespace aspect
                   if (!this->get_adiabatic_conditions().is_initialized())
                     density_anomaly = 0;
 
-                  // We only want to use the PREM densities in the part of the model that also
+                  // We only want to use the reference densities in the part of the model that also
                   // uses seismic velocities to determine the densities. Otherwise, use the density
                   // computed by the material model.
                   const double reference_density = this->get_adiabatic_conditions().is_initialized()
@@ -1363,19 +1363,19 @@ namespace aspect
           Rheology::AsciiDepthProfile<dim>::declare_parameters(prm);
 
           // Depth-dependent density scaling parameters
-          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/", "rho_vs_scaling.txt",
+          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/", "rho_vs_scaling.txt",
                                                             "Density velocity scaling");
 
           // Depth-dependent density scaling parameters
-          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/", "dT_vs_scaling.txt",
+          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/", "dT_vs_scaling.txt",
                                                             "Temperature velocity scaling");
 
           // Depth-dependent thermal expansivity parameters
-          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/",
+          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "$ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/",
                                                             "thermal_expansivity_steinberger_calderwood.txt", "Thermal expansivity profile");
 
           // Crustal boundary depths parameters
-          Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "$ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/",
+          Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "$ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/",
                                                                 "crustal_structure.txt", "Crustal depths");
         }
         prm.leave_subsection();

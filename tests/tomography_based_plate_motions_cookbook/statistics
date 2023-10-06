@@ -1,0 +1,32 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for Stokes solver
+# 17: Velocity iterations in Stokes preconditioner
+# 18: Schur complement iterations in Stokes preconditioner
+# 19: Maximum velocity residual magnitude on boundary with indicator 1 ("top") (m/year)
+# 20: Minimum velocity residual magnitude on boundary with indicator 1 ("top") (m/year)
+# 21: RMS velocity residual on boundary with indicator 1 ("top") (m/year)
+# 22: Maximum velocity magnitude on boundary with indicator 0 ("bottom") (m/year)
+# 23: Minimum velocity magnitude on boundary with indicator 0 ("bottom") (m/year)
+# 24: RMS velocity on boundary with indicator 0 ("bottom") (m/year)
+# 25: Maximum velocity magnitude on boundary with indicator 1 ("top") (m/year)
+# 26: Minimum velocity magnitude on boundary with indicator 1 ("top") (m/year)
+# 27: RMS velocity on boundary with indicator 1 ("top") (m/year)
+# 28: Visualization file name
+# 29: Surface visualization file name
+# 30: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 31: Outward heat flux through boundary with indicator 1 ("top") (W)
+0 0.000000000000e+00 0.000000000000e+00 192 1968 864 5184 1 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 4294967295 64 66 66 1.12272865e+00 4.10405715e-04 4.24759968e-01 8.43820918e-01 7.74970677e-04 3.24608973e-01 1.12272865e+00 4.10406812e-04 4.24759967e-01 output-tomography_based_plate_motions_cookbook/solution/solution-00000 output-tomography_based_plate_motions_cookbook/solution_surface/solution_surface-00000 -1.24218107e+07 5.98015751e+07 

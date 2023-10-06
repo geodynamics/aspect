@@ -1,5 +1,5 @@
 # 2D version of the crustal structure dataset, using the theta value closest to pi/2. 
-# Only next line is parsed in format: [nx] [ny] [nz] because of keyword "POINTS:"
+# Only next line is parsed in format: [nx] [ny] because of keyword "POINTS:"
 # POINTS: 360 1
 # Columns: phi (radians) crustal_depth (m)
 0.00873    7990

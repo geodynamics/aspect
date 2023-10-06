@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -203,7 +203,7 @@ namespace aspect
         Utilities::AsciiDataProfile<dim> reference_profile;
 
         /**
-         * The column indices of the density column in the reference profile file.
+         * The column index of the density column in the reference profile file.
          */
         unsigned int density_index;
     };

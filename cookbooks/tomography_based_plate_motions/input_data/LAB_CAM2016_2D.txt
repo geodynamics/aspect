@@ -1,5 +1,5 @@
 # 2D version of the lithosphere structure dataset, using the theta value closest to pi/2. 
-# Only next line is parsed in format: [nx] [ny] [nz] because of keyword "POINTS:"
+# Only next line is parsed in format: [nx] [ny] because of keyword "POINTS:"
 # POINTS: 180 1
 # Columns: phi (radians) LAB_depth (m)
 0.017453 107000
