@@ -1,11 +1,13 @@
-# This is a ~ 1D test case for an insoluble fluid that is assigned
-# a given amount (1%) of initial bound fluid. As the solid is
-# insoluble, all of the fluid should be released into the free
-# fluid phase (porosity) field in a single (sufficiently large)
-# `time step.
+# This model tests the reactive fluid transport material
+# 'no reaction' to ensure that there is indeed no reaction
+# between the fluid and solid phases. The values of
+# porosity (0) the bound fluid (0.01) are initially
+# spatially uniform, and the lack of reaction and
+# near zero velocities (free-slip on all sides) should
+# produce no change in their values through time.
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Output directory                       = reactive_fluid_transport_zero_solubility
+set Output directory                       = reactive_fluid_transport_no_reaction
 set Max nonlinear iterations               = 1
 set Nonlinear solver tolerance             = 1e-5
 
@@ -17,19 +19,7 @@ set End time                               = 10e3
 # Because the model includes reactions that might be on a faster time scale
 # than the time step of the model (release of bound fluid into free fluid),
 # we use the operator splitting scheme.
-set Use operator splitting                     = true
-
-subsection Solver parameters
-  subsection Operator splitting parameters
-    # We choose the size of the reaction time step as 100 years, small enough
-    # so that it can accurately model melting and freezinddg.
-    set Reaction time step                     = 1e2
-
-    # Additionally, we always want to do at least 10 operator splitting time
-    # steps in each model time step, to accurately compute the reactions.
-    set Reaction time steps per advection step = 10
-  end
-end
+set Use operator splitting                     = false
 
 # There are two compositional fields, one that tracks the amount of free fluid
 # (the porosity) and one that tracks the amount of bound fluid (bound_fluid).
@@ -43,7 +33,7 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = 0; 0.1
+    set Function expression = 0; 0.01
   end
 end
 
@@ -58,14 +48,13 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
-# The model is 0.2 km wide and extends 2 km in the vertical direction.
+# The model is 2x2 km
 subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X extent  = 2e2
+    set X extent  = 2e3
     set Y extent  = 2e3
-    set Y repetitions = 10
   end
 
 end

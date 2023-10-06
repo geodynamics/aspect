@@ -62,6 +62,14 @@ namespace aspect
 
           switch (fluid_solid_reaction_scheme)
             {
+              case no_reaction:
+              {
+                // No reactions occur between the solid and fluid phases,
+                // and the fluid volume fraction (stored in the melt_fractions
+                // vector) is equal to the porosity.
+                melt_fractions[q] = in.composition[q][porosity_idx];
+                break;
+              }
               case zero_solubility:
               {
                 // The fluid volume fraction in equilibrium with the solid
@@ -238,10 +246,12 @@ namespace aspect
                              "computed. If the model does not use operator splitting, this parameter is not used. "
                              "Units: yr or s, depending on the ``Use years "
                              "in output instead of seconds'' parameter.");
-          prm.declare_entry ("Fluid-solid reaction scheme", "zero solubility",
-                             Patterns::Selection("zero solubility"),
+          prm.declare_entry ("Fluid-solid reaction scheme", "no reaction",
+                             Patterns::Selection("no reaction|zero solubility"),
                              "Select what type of scheme to use for reactions between fluid and solid phases. "
-                             "The only present option is to have a solid with zero solubility.");
+                             "The current available options are models where no reactions occur between "
+                             "the two phases, or the solid phase is insoluble (zero solubility) and all "
+                             "of the bound fluid is released into the fluid phase.");
         }
         prm.leave_subsection();
       }
@@ -284,6 +294,8 @@ namespace aspect
           // Reaction scheme parameter
           if (prm.get ("Fluid-solid reaction scheme") == "zero solubility")
             fluid_solid_reaction_scheme = zero_solubility;
+          else if (prm.get ("Fluid-solid reaction scheme") == "no reaction")
+            fluid_solid_reaction_scheme = no_reaction;
           else
             AssertThrow(false, ExcMessage("Not a valid fluid-solid reaction scheme"));
 
@@ -342,9 +354,9 @@ namespace aspect
                                    "reactive fluid transport",
                                    "Material model that is designed to advect fluids and compute "
                                    "fluid release and absorption based on different models for "
-                                   "fluid-rock interaction. At present, a model where no fluid-rock "
-                                   "interactions occur is the only available model. The properties "
-                                   "of the solid can be taken from another material model that is "
-                                   "used as a base model.")
+                                   "fluid-rock interaction. At present, models where no fluid-rock "
+                                   "interactions occur or the solid has zero solubility are available. "
+                                   "The properties of the solid can be taken from another material model "
+                                   "that is used as a base model.")
   }
 }

@@ -140,26 +140,34 @@ namespace aspect
 
         /**
          * Enumeration for selecting which type of scheme to use for
-        * reactions between fluids and solids. The only current
-        * option is a scheme where the solid has zero solubility.
+         * reactions between fluids and solids. The available
+         * reaction models are described below.
         *
+        * The no reaction model does not include any reactions
+        * between the solid and fluid phases. As a result,
+        * there is no exchange between the bound fluid and porosity
+        * compositional fields. However, the values of each field
+        * may vary through the model evolution through advection
+        * from their initial configurations.
+         *
         * The zero solubility model describes a scenario where the
-        * solid cannot accommodate any fluid (i.e., zero solubility).
-        * The fluid volume fraction in equilibrium with the solid
-        * at any point (stored in the melt_fractions vector) is
-        * equal to the sum of the bound fluid content and porosity,
-        * with the latter determined by the assigned initial
-        * porosity, fluid boundary conditions, and fluid
-        * transport through the model. Significantly, this reaction
-        * model is thus assuming that the bound water fraction is a
-        * volume fraction (i.e., since porosity is always a volume
-        * fraction). This latter assumption also requires the selected
-        * base model is incompressible, as otherwise the advection
-        * equation would only be valid for mass and not volume
-        * fractions.
+         * solid cannot accommodate any fluid (i.e., zero solubility).
+         * The fluid volume fraction in equilibrium with the solid
+         * at any point (stored in the melt_fractions vector) is
+         * equal to the sum of the bound fluid content and porosity,
+         * with the latter determined by the assigned initial
+         * porosity, fluid boundary conditions, and fluid
+         * transport through the model. Significantly, this reaction
+         * model is thus assuming that the bound water fraction is a
+         * volume fraction (i.e., since porosity is always a volume
+         * fraction). This latter assumption also requires the selected
+         * base model is incompressible, as otherwise the advection
+         * equation would only be valid for mass and not volume
+         * fractions.
          */
         enum ReactionScheme
         {
+          no_reaction,
           zero_solubility
         } fluid_solid_reaction_scheme;
     };
