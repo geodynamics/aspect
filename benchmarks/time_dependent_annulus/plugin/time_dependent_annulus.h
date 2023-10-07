@@ -209,7 +209,7 @@ namespace aspect
               {
                 prm.enter_subsection("Function");
                 {
-                  density_function.reset(new Functions::ParsedFunction<dim>(1));
+                  density_function = std::make_unique<Functions::ParsedFunction<dim>>(1);
                   density_function->parse_parameters(prm);
                 }
                 prm.leave_subsection();
@@ -220,7 +220,7 @@ namespace aspect
               {
                 prm.enter_subsection("Function");
                 {
-                  pressure_function.reset(new Functions::ParsedFunction<dim>(1));
+                  pressure_function = std::make_unique<Functions::ParsedFunction<dim>>(1);
                   pressure_function->parse_parameters(prm);
                 }
                 prm.leave_subsection();
@@ -233,7 +233,7 @@ namespace aspect
                 {
                   try
                     {
-                      velocity_function.reset (new Functions::ParsedFunction<dim>(dim));
+                      velocity_function = std::make_unique<Functions::ParsedFunction<dim>>(dim);
                       velocity_function->parse_parameters (prm);
                     }
                   catch (...)
@@ -310,10 +310,10 @@ namespace aspect
           const MaterialModel::TimeDependentAnnulus<dim> &material_model =
             Plugins::get_plugin_as_type<const MaterialModel::TimeDependentAnnulus<dim>>(this->get_material_model());
 
-          ref_func.reset (new AnalyticSolutions::FunctionStreamline<dim>(material_model.get_pressure(),
-                                                                         material_model.get_velocity(),
-                                                                         material_model.get_density(),
-                                                                         1 + dim + 1 + this->n_compositional_fields()));
+          ref_func = std::make_unique<AnalyticSolutions::FunctionStreamline<dim>>(material_model.get_pressure(),
+                                                                                   material_model.get_velocity(),
+                                                                                   material_model.get_density(),
+                                                                                   1 + dim + 1 + this->n_compositional_fields());
         }
 
         std::pair<std::string,std::string>

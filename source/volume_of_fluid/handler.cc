@@ -222,21 +222,18 @@ namespace aspect
       {
         // Add declaration for volume fraction field
         vars.push_back(VariableDeclaration<dim>("volume_fraction_"+volume_of_fluid_field_names[f],
-                                                std::unique_ptr<FiniteElement<dim>>(
-                                                  new FE_DGQ<dim>(0)),
+                                                std::make_unique<FE_DGQ<dim>>(0),
                                                 1,
                                                 1));
 
         // Add declaration for reconstructed interface cache
         vars.push_back(VariableDeclaration<dim>("volume_of_fluid_interface_reconstruction_"+volume_of_fluid_field_names[f],
-                                                std::unique_ptr<FiniteElement<dim>>(
-                                                  new FE_DGQ<dim>(0)),
+                                                std::make_unique<FE_DGQ<dim>>(0),
                                                 dim+1,
                                                 1));
 
         vars.push_back(VariableDeclaration<dim>("volume_of_fluid_contour_"+volume_of_fluid_field_names[f],
-                                                std::unique_ptr<FiniteElement<dim>>(
-                                                  new FE_DGQ<dim>(1)),
+                                                std::make_unique<FE_DGQ<dim>>(1),
                                                 1,
                                                 1));
       }

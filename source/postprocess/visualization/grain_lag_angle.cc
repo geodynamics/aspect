@@ -43,7 +43,8 @@ namespace aspect
 
 
       template<int dim>
-      std::pair<std::string, Vector<float> *> GrainLagAngle<dim>::execute() const
+      std::pair<std::string, Vector<float> *>
+      GrainLagAngle<dim>::execute() const
       {
         std::pair<std::string, Vector<float> *> return_value("grain_lag_angle",
                                                              new Vector<float>(this->get_triangulation().n_active_cells()));

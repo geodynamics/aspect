@@ -221,8 +221,8 @@ namespace aspect
         include_initial_topography(false)
     {
       // Now reset the mapping of the simulator to be something that captures mesh deformation in time.
-      sim.mapping.reset (new MappingQ1Eulerian<dim, LinearAlgebra::Vector> (mesh_deformation_dof_handler,
-                                                                            mesh_displacements));
+      sim.mapping = std::make_unique<MappingQ1Eulerian<dim, LinearAlgebra::Vector>> (mesh_deformation_dof_handler,
+                                                                                      mesh_displacements);
     }
 
 
@@ -967,8 +967,8 @@ namespace aspect
         MatrixFree<dim, double>::AdditionalData::none;
       const UpdateFlags update_flags(update_values | update_JxW_values | update_gradients);
       additional_data.mapping_update_flags = update_flags;
-      std::shared_ptr<MatrixFree<dim, double>> system_mf_storage(
-        new MatrixFree<dim, double>());
+      std::shared_ptr<MatrixFree<dim, double>> system_mf_storage
+        = std::make_shared<MatrixFree<dim, double>>();
       system_mf_storage->reinit(*sim.mapping,
                                 mesh_deformation_dof_handler,
                                 mesh_velocity_constraints,
@@ -1088,8 +1088,8 @@ namespace aspect
             MatrixFree<dim, double>::AdditionalData::none;
           additional_data.mapping_update_flags = update_flags;
           additional_data.mg_level = level;
-          std::shared_ptr<MatrixFree<dim, double>> mg_mf_storage_level(
-            new MatrixFree<dim, double>());
+          std::shared_ptr<MatrixFree<dim, double>> mg_mf_storage_level
+            = std::make_shared<MatrixFree<dim, double>>();
 
           mg_mf_storage_level->reinit(mapping,
                                       mesh_deformation_dof_handler,

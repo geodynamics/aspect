@@ -947,8 +947,8 @@ namespace aspect
       if (this->get_timestep_number()==0)
         {
           store_initial_pressure();
-          ref_func.reset (new AnalyticSolutions::FunctionSolitaryWave<dim>(offset,0.0,initial_pressure,
-                                                                           this->get_geometry_model().maximal_depth(), this->introspection().n_components));
+          ref_func = std::make_unique<AnalyticSolutions::FunctionSolitaryWave<dim>>(offset,0.0,initial_pressure,
+                                                                                     this->get_geometry_model().maximal_depth(), this->introspection().n_components);
         }
 
       double delta=0;
