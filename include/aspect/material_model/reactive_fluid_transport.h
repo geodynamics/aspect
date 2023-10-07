@@ -161,7 +161,7 @@ namespace aspect
          * model is thus assuming that the bound water fraction is a
          * volume fraction (i.e., since porosity is always a volume
          * fraction). This latter assumption also requires the selected
-         * base model is incompressible, as otherwise the advection
+         * base model to be incompressible, as otherwise the advection
          * equation would only be valid for mass and not volume
          * fractions.
          */

@@ -299,26 +299,24 @@ namespace aspect
           else
             AssertThrow(false, ExcMessage("Not a valid fluid-solid reaction scheme"));
 
-          if (prm.get ("Fluid-solid reaction scheme") == "no reaction")
+          if (fluid_solid_reaction_scheme == no_reaction)
             {
               AssertThrow(this->get_parameters().use_operator_splitting == false,
                           ExcMessage("The Fluid-reaction scheme no reaction should not be used with operator splitting."));
             }
 
-          if (prm.get ("Fluid-solid reaction scheme") == "zero solubility")
+          if (fluid_solid_reaction_scheme == zero_solubility)
             {
               AssertThrow(this->get_parameters().use_operator_splitting,
                           ExcMessage("The Fluid-reaction scheme zero solubility must be used with operator splitting."));
-              AssertThrow(this->get_material_model().is_compressible() == false,
-                          ExcMessage("The Fluid-reaction scheme zero solubility must be used with an incompressible base model."));
             }
 
           if (this->get_parameters().use_operator_splitting)
             {
               AssertThrow(fluid_reaction_time_scale >= this->get_parameters().reaction_time_step,
                           ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
-                                     + " in the operator splitting scheme is too large to compute melting rates! "
-                                     "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
+                                     + " in the operator splitting scheme is too large to compute fluid release rates! "
+                                     "You have to choose it in such a way that it is smaller than the 'Fluid reaction time scale for "
                                      "operator splitting' chosen in the material model, which is currently "
                                      + Utilities::to_string(fluid_reaction_time_scale) + "."));
               AssertThrow(fluid_reaction_time_scale > 0,
@@ -340,6 +338,12 @@ namespace aspect
       // After parsing the parameters for this model, parse parameters related to the base model.
       base_model->parse_parameters(prm);
       this->model_dependence = base_model->get_model_dependence();
+
+      if (fluid_solid_reaction_scheme = zero_solubility)
+        {
+          AssertThrow(this->get_material_model().is_compressible() == false,
+                      ExcMessage("The Fluid-reaction scheme zero solubility must be used with an incompressible base model."));
+        }
     }
 
 
