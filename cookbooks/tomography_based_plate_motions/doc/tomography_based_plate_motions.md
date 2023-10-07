@@ -36,7 +36,7 @@ We compute the density from the thermal anomalies in the TM1 model relative to a
 
 Below "uppermost mantle thickness", the temperature and the density fields are computed using the corresponding depth-dependent scaling values taken from {cite}`steinberger:calderwood:2006` relative to the input Vs anomalies (compositional field `Vs_anomaly`), using the scaling files `dT_vs_scaling.txt` and `rho_vs_scaling.txt`, respectively, located in `cookbooks/tomography_based_plate_motions/input_data/`.
 
-In order to avoid jumps in the temperature distribution, we smooth the temperatures between the two models across the `uppermost mantle thickness` depth using a sigmoid function with a half-width of 20km.
+In order to avoid jumps in the temperature distribution, we smooth the temperatures between the two models across the "uppermost mantle thickness" depth using a sigmoid function with a half-width of 20km.
 
 The viscosity in the model follows a dislocation diffusion creep law with prefactors, activation energies and volumes for major phase transitions. Additionally, we scale the laterally averaged viscosity to a reference viscosity profile from the profile of {cite:t}`steinberger:calderwood:2006`. The user can choose from the available reference viscosity profiles in the `cookbooks/tomography_based_plate_motions/input_data/viscosity_profiles` folder.
 The model defines different viscosities at the plate boundaries and within the cratonic regions. For Earth-like behavior, plate boundaries and cratons have reduced and increased viscosity, respectively, compared to the surrounding lithosphere.
@@ -44,7 +44,7 @@ The model defines different viscosities at the plate boundaries and within the c
 ## Running the model
 The plugin that implements the material properties described above is `tomography_based_plate_motions.cc` located in the [cookbooks/tomography_based_plate_motions/plugins](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/tomography_based_plate_motions/plugins) directory, and can be compiled with
 `cmake . && make` in this directory.
-The model can then be run using the prm file [2D_slice_with_faults_and_cratons.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/tomography_based_plate_motions/models/2D_slice_with_faults_and_cratons.prm). The sections relevant to this cookbook are:
+The model can then be run using the prm file [2D_slice_with_faults_and_cratons.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/tomography_based_plate_motions/2D_slice_with_faults_and_cratons.prm). The sections relevant to this cookbook are:
 
 ```{literalinclude} tomography_based_plate_motions.part.prm
 ```

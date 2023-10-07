@@ -24,8 +24,8 @@ subsection Solver parameters
   subsection Stokes solver parameters
    set Linear solver tolerance                         = 1e-4
    set Stokes solver type                              = block GMG
-   set Number of cheap Stokes solver steps             = 5000
-   set GMRES solver restart length                     = 1000
+   set Number of cheap Stokes solver steps             = 500
+   set GMRES solver restart length                     = 400
    set Maximum number of expensive Stokes solver steps = 0
    set Use full A block as preconditioner              = true
    set Linear solver A block tolerance                 = 1e-2
