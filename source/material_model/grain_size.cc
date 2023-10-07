@@ -755,15 +755,17 @@ namespace aspect
 
           // Only create the evaluator the first time we get here
           if (!temperature_evaluator)
-            temperature_evaluator.reset(new FEPointEvaluation<1,dim>(this->get_mapping(),
-                                                                     this->get_fe(),
-                                                                     update_values,
-                                                                     this->introspection().component_indices.temperature));
+            temperature_evaluator
+              = std::make_unique<FEPointEvaluation<1,dim>>(this->get_mapping(),
+                                                            this->get_fe(),
+                                                            update_values,
+                                                            this->introspection().component_indices.temperature);
           if (!pressure_evaluator)
-            pressure_evaluator.reset(new FEPointEvaluation<1,dim>(this->get_mapping(),
-                                                                  this->get_fe(),
-                                                                  update_values,
-                                                                  this->introspection().component_indices.pressure));
+            pressure_evaluator
+              = std::make_unique<FEPointEvaluation<1,dim>>(this->get_mapping(),
+                                                            this->get_fe(),
+                                                            update_values,
+                                                            this->introspection().component_indices.pressure);
 
 
           // Initialize the evaluator for the temperature

@@ -207,7 +207,7 @@ namespace aspect
       variables.push_back(
         VariableDeclaration<dim>(
           "pressure",
-          std::shared_ptr<FiniteElement<dim>>(new FE_Q<dim>(parameters.stokes_velocity_degree)),
+          std::make_shared<FE_Q<dim>>(parameters.stokes_velocity_degree),
           1,
           1));
 

@@ -43,7 +43,8 @@ namespace aspect
 
 
       template<int dim>
-      std::pair<std::string, Vector<float> *> ISARotationTimescale<dim>::execute() const
+      std::pair<std::string, Vector<float> *>
+      ISARotationTimescale<dim>::execute() const
       {
         std::pair<std::string, Vector<float> *> return_value("ISA_rotation_timescale",
                                                              new Vector<float>(this->get_triangulation().n_active_cells()));

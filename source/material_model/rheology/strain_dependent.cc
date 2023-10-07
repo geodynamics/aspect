@@ -584,10 +584,11 @@ namespace aspect
                 const unsigned int strain_index = this->introspection().compositional_index_for_name("plastic_strain");
                 // Only create the evaluator the first time we get here
                 if (!composition_evaluators[strain_index])
-                  composition_evaluators[strain_index].reset(new FEPointEvaluation<1, dim>(this->get_mapping(),
-                                                                                           this->get_fe(),
-                                                                                           update_values,
-                                                                                           component_indices[strain_index]));
+                  composition_evaluators[strain_index]
+                    = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                                   this->get_fe(),
+                                                                   update_values,
+                                                                   component_indices[strain_index]);
 
                 composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
                 composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
@@ -600,10 +601,11 @@ namespace aspect
                 const unsigned int strain_index = this->introspection().compositional_index_for_name("viscous_strain");
                 // Only create the evaluator the first time we get here
                 if (!composition_evaluators[strain_index])
-                  composition_evaluators[strain_index].reset(new FEPointEvaluation<1, dim>(this->get_mapping(),
-                                                                                           this->get_fe(),
-                                                                                           update_values,
-                                                                                           component_indices[strain_index]));
+                  composition_evaluators[strain_index]
+                    = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                                   this->get_fe(),
+                                                                   update_values,
+                                                                   component_indices[strain_index]);
 
                 composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
                 composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
@@ -616,10 +618,11 @@ namespace aspect
                 const unsigned int strain_index = this->introspection().compositional_index_for_name("total_strain");
                 // Only create the evaluator the first time we get here
                 if (!composition_evaluators[strain_index])
-                  composition_evaluators[strain_index].reset(new FEPointEvaluation<1, dim>(this->get_mapping(),
-                                                                                           this->get_fe(),
-                                                                                           update_values,
-                                                                                           component_indices[strain_index]));
+                  composition_evaluators[strain_index]
+                    = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                                   this->get_fe(),
+                                                                   update_values,
+                                                                   component_indices[strain_index]);
                 composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
                 composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
                                                                EvaluationFlags::values);
@@ -631,10 +634,11 @@ namespace aspect
                 const unsigned int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
                 // Only create the evaluator the first time we get here
                 if (!composition_evaluators[plastic_strain_index])
-                  composition_evaluators[plastic_strain_index].reset(new FEPointEvaluation<1, dim>(this->get_mapping(),
-                                                                     this->get_fe(),
-                                                                     update_values,
-                                                                     component_indices[plastic_strain_index]));
+                  composition_evaluators[plastic_strain_index]
+                    = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                                   this->get_fe(),
+                                                                   update_values,
+                                                                   component_indices[plastic_strain_index]);
                 composition_evaluators[plastic_strain_index]->reinit(in.current_cell, quadrature_positions);
                 composition_evaluators[plastic_strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
                                                                        EvaluationFlags::values);
@@ -644,10 +648,11 @@ namespace aspect
                 const unsigned viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
                 // Only create the evaluator the first time we get here
                 if (!composition_evaluators[viscous_strain_index])
-                  composition_evaluators[viscous_strain_index].reset(new FEPointEvaluation<1, dim>(this->get_mapping(),
-                                                                     this->get_fe(),
-                                                                     update_values,
-                                                                     component_indices[viscous_strain_index]));
+                  composition_evaluators[viscous_strain_index]
+                    = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                                   this->get_fe(),
+                                                                   update_values,
+                                                                   component_indices[viscous_strain_index]);
                 composition_evaluators[viscous_strain_index]->reinit(in.current_cell, quadrature_positions);
                 composition_evaluators[viscous_strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
                                                                        EvaluationFlags::values);
@@ -659,10 +664,11 @@ namespace aspect
                 const unsigned int strain_index = this->introspection().compositional_index_for_name("noninitial_plastic_strain");
                 // Only create the evaluator the first time we get here
                 if (!composition_evaluators[strain_index])
-                  composition_evaluators[strain_index].reset(new FEPointEvaluation<1, dim>(this->get_mapping(),
-                                                                                           this->get_fe(),
-                                                                                           update_values,
-                                                                                           component_indices[strain_index]));
+                  composition_evaluators[strain_index]
+                    = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                                   this->get_fe(),
+                                                                   update_values,
+                                                                   component_indices[strain_index]);
 
                 composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
                 composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
@@ -697,10 +703,10 @@ namespace aspect
 
             // Only create the evaluator the first time we get here
             if (!evaluator)
-              evaluator.reset(new FEPointEvaluation<dim, dim>(this->get_mapping(),
-                                                              this->get_fe(),
-                                                              update_gradients,
-                                                              this->introspection().component_indices.velocities[0]));
+              evaluator = std::make_unique<FEPointEvaluation<dim, dim>>(this->get_mapping(),
+                                                                         this->get_fe(),
+                                                                         update_gradients,
+                                                                         this->introspection().component_indices.velocities[0]);
 
             // Initialize the evaluator for the old velocity gradients
             evaluator->reinit(in.current_cell, quadrature_positions);

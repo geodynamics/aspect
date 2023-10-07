@@ -383,7 +383,7 @@ namespace aspect
       std::shared_ptr<Function<dim>> ref_func;
       {
 
-        ref_func.reset (new AnalyticSolutions::FunctionViscosityGrooves<dim>(this->get_geometry_model()));
+        ref_func = std::make_unique<AnalyticSolutions::FunctionViscosityGrooves<dim>>(this->get_geometry_model());
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);

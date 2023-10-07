@@ -509,7 +509,7 @@ namespace aspect
         material_model
           = Plugins::get_plugin_as_type<const HollowSphereMaterial<dim>>(this->get_material_model());
 
-        ref_func.reset (new AnalyticSolutions::FunctionHollowSphere<dim>(material_model.get_mmm()));
+        ref_func = std::make_unique<AnalyticSolutions::FunctionHollowSphere<dim>>(material_model.get_mmm());
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);

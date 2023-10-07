@@ -286,10 +286,10 @@ namespace aspect
 
             // Only create the evaluator the first time we get here
             if (!evaluator)
-              evaluator.reset(new FEPointEvaluation<dim,dim>(this->get_mapping(),
-                                                             this->get_fe(),
-                                                             update_gradients,
-                                                             this->introspection().component_indices.velocities[0]));
+              evaluator = std::make_unique<FEPointEvaluation<dim,dim>>(this->get_mapping(),
+                                                                        this->get_fe(),
+                                                                        update_gradients,
+                                                                        this->introspection().component_indices.velocities[0]);
 
             // Initialize the evaluator for the old velocity gradients
             evaluator->reinit(in.current_cell, quadrature_positions);
