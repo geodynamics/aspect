@@ -278,9 +278,9 @@ namespace aspect
       },
       coarse_grid);
 
-      // also attach the real manifold to slot 15. we won't use it
-      // during regular operation, but we set manifold_ids for all
-      // cells, faces and edges immediately before refinement and
+      // Also attach the real manifold to slot 15 (arbitrarily chosen).
+      // We won't use it during regular operation, but we set manifold_ids for
+      // all cells, faces and edges immediately before refinement and
       // clear it again afterwards
       coarse_grid.set_manifold (15, manifold);
 
