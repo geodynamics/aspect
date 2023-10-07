@@ -48,7 +48,7 @@ jobs:
 
       - name: Build and push Docker image for main
         if: contains(github.event_name, 'push')
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./contrib/docker/docker/
           cache-from: type=registry,ref=ubuntu:22.04
@@ -61,7 +61,7 @@ jobs:
 
       - name: Build and push Docker image for release
         if: contains(github.event_name, 'release')
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./contrib/docker/docker/
           cache-from: type=registry,ref=ubuntu:22.04
@@ -100,7 +100,7 @@ jobs:
 
       - name: Build and push Docker image for main
         if: contains(github.event_name, 'push')
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./contrib/docker/docker_tacc/
           cache-from: type=registry,ref=ubuntu:22.04
@@ -113,7 +113,7 @@ jobs:
 
       - name: Build and push Docker image for release
         if: contains(github.event_name, 'release')
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./contrib/docker/docker_tacc/
           cache-from: type=registry,ref=ubuntu:22.04
