@@ -299,6 +299,21 @@ namespace aspect
           else
             AssertThrow(false, ExcMessage("Not a valid fluid-solid reaction scheme"));
 
+          if (prm.get ("Fluid-solid reaction scheme") == "no reaction")
+            {
+              AssertThrow(this->get_parameters().use_operator_splitting == false,
+                          ExcMessage("The Fluid-reaction scheme no reaction should not be used with operator splitting."));
+            }
+
+
+          if (prm.get ("Fluid-solid reaction scheme") == "zero solubility")
+            {
+              AssertThrow(this->get_parameters().use_operator_splitting,
+                          ExcMessage("The Fluid-reaction scheme zero solubility must be used with operator splitting."));
+              AssertThrow(this->get_material_model().is_compressible() == false,
+                          ExcMessage("The Fluid-reaction scheme zero solubility must be used with an incompressible base model."));
+            }
+
           if (this->get_parameters().use_operator_splitting)
             {
               AssertThrow(fluid_reaction_time_scale >= this->get_parameters().reaction_time_step,
