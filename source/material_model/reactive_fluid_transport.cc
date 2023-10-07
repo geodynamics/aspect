@@ -339,7 +339,7 @@ namespace aspect
       base_model->parse_parameters(prm);
       this->model_dependence = base_model->get_model_dependence();
 
-      if (fluid_solid_reaction_scheme = zero_solubility)
+      if (fluid_solid_reaction_scheme == zero_solubility)
         {
           AssertThrow(this->get_material_model().is_compressible() == false,
                       ExcMessage("The Fluid-reaction scheme zero solubility must be used with an incompressible base model."));
