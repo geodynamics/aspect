@@ -312,7 +312,7 @@ namespace aspect
         double noise_amplitude;
         double background_porosity;
         std::array<unsigned int,dim> grid_intervals;
-        Functions::InterpolatedUniformGridData<dim> *interpolate_noise;
+        std::unique_ptr<Functions::InterpolatedUniformGridData<dim>> interpolate_noise;
     };
 
 
@@ -374,9 +374,10 @@ namespace aspect
             }
         }
 
-      interpolate_noise = new Functions::InterpolatedUniformGridData<dim> (grid_extents,
-                                                                           grid_intervals,
-                                                                           white_noise);
+      interpolate_noise
+        = std::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extents,
+                                                                          grid_intervals,
+                                                                          white_noise);
     }
 
 
