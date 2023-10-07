@@ -792,10 +792,6 @@ namespace aspect
   {
     Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
 
-    AffineConstraints<double> hanging_constraints(introspection.index_sets.system_relevant_set);
-    DoFTools::make_hanging_node_constraints(dof_handler, hanging_constraints);
-    hanging_constraints.close();
-
     const std::vector<Point<dim>> mesh_support_points = finite_element.base_element(introspection.base_elements.velocities).get_unit_support_points();
     const unsigned int n_velocity_dofs_per_cell = finite_element.base_element(introspection.base_elements.velocities).dofs_per_cell;
 
@@ -818,7 +814,37 @@ namespace aspect
         }
 
     vec.compress(VectorOperation::insert);
-    hanging_constraints.distribute(vec);
+
+    AffineConstraints<double> hanging_node_constraints(introspection.index_sets.system_relevant_set);
+    DoFTools::make_hanging_node_constraints(dof_handler, hanging_node_constraints);
+    hanging_node_constraints.close();
+
+    // Create a view of all constraints that only pertains to the
+    // Stokes subset of degrees of freedom. We can then use this later
+    // to call constraints.distribute(), constraints.set_zero(), etc.,
+    // on those block vectors that only have the Stokes components in
+    // them.
+    //
+    // For the moment, assume that the Stokes degrees are first in the
+    // overall vector, so that they form a contiguous range starting
+    // at zero. The assertion checks this, but this could easily be
+    // generalized if the Stokes block were not starting at zero.
+#if DEAL_II_VERSION_GTE(9,6,0)
+    Assert (introspection.block_indices.velocities == 0,
+            ExcNotImplemented());
+    if (parameters.use_direct_stokes_solver == false)
+      Assert (introspection.block_indices.pressure == 1,
+              ExcNotImplemented());
+
+    IndexSet stokes_dofs (dof_handler.n_dofs());
+    stokes_dofs.add_range (0, vec.size());
+    const AffineConstraints<double> stokes_hanging_node_constraints
+      = hanging_node_constraints.get_view (stokes_dofs);
+#else
+    const AffineConstraints<double> &stokes_hanging_node_constraints = hanging_node_constraints;
+#endif
+
+    stokes_hanging_node_constraints.distribute(vec);
   }
 
 
