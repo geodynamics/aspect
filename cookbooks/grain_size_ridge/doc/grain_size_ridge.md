@@ -8,7 +8,7 @@ The input file for this model can be found at
 
 Note that this model may take a significant time to run due to the high
 resolution and large number of time steps. We recommend to either run it
-on a workstation or cluster or ti reduce the model resolution.
+on a workstation or cluster or to reduce the model resolution.
 
 This model features the spreading of an oceanic plate away from a mid-ocean
 ridge, with the ridge being in the top left corner of the model. Its vertical
@@ -38,7 +38,7 @@ diffusion--dislocation rheology, with diffusion creep depending on the
 evolving grain size, and deformation by dislocation creep reducing the grain
 size. For more details on this material model and how to use it for global
 mantle convection models, see {cite:t}`dannberg:grain:size`.
-We have to specify the parameter for both creep mechanisms and for the grain
+We have to specify the parameters for both creep mechanisms and for the grain
 size evolution.
 
 ```{literalinclude} material_model.part.prm
@@ -48,21 +48,21 @@ Many of these parameters, in particular the prefactors and activation volumes,
 have large uncertainties. The values used here should therefore only be seen
 as example values. It often makes sense to choose their values based on the
 viscosity profile one wants to use. These viscosity profiles are usually
-constrained be observations, such as the geoid or mineral physics data, and
+constrained by observations, such as the geoid or mineral physics data, and
 therefore provide additional constraints to the values we get from experiments.
 
 Note that diffusion creep depends on the third power of the grain size as
-specified by the``Diffusion creep grain size exponent'' parameter, and that
+specified by the `Diffusion creep grain size exponent` parameter, and that
 the stress-dependence of dislocation creep is controlled by the
-``set Dislocation creep exponent'' parameter.
+`set Dislocation creep exponent` parameter.
 
 
 ## Tracking the grain size on particles.
 
 To track this evolving mineral grain size on particles, we have to have a
-compositional field with the name ``grain_size'', we have to specify that
-we wan to advcet this field using the particle method, and we have to select
-``grain_size'' as the mapped particle property:
+compositional field with the name `grain_size`, we have to specify that
+we want to advect this field using the particle method, and we have to select
+`grain_size` as the particle property to be mapped to this compositional field:
 
 ```{literalinclude} fields.part.prm
 ```
@@ -75,7 +75,7 @@ at least 40 and not more than 640 particles in each cell. This means that a
 cell with 160 particles can either be refined once (resulting in about 40
 particles in each new cell) or coarsened once (resulting in about 640 in the
 new bigger cell) without having to add or remove particles. We also use the
-biliniear least squares interpolation scheme to interpolate from the particles
+bilinear least squares interpolation scheme to interpolate from the particles
 to the grid, which is more accurate than schemes based on, for example, the
 cell average. To make sure this scheme does not generate any over- or under-
 shoots in the grain size, we switch on the linear least squares limiter. To
@@ -88,7 +88,7 @@ Finally, we use a second Order Runge Kutta integrator to advect the particles.
 
 ## Model evolution.
 
-We run the model for 200 million years. In the first few tens of millions of
+We run the model for 200 million years. In the first few tens of millions of years
 there are no large changes in the temperature structure, except that the
 thermal boundary layer increases slightly in thickness. In addition, the grain
 size evolves from its intially constant value, with the grain size being

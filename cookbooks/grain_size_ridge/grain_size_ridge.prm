@@ -1,7 +1,7 @@
 # This is a model of an oceanic plate moving away from a mid-ocean ridge.
 # The rheology is grain-size dependent and the grain size evolves over
 # time, being tracked on particles. Eventually, small-scale convection
-# develops at the base of the lithsophere as it increases in age.
+# develops at the base of the lithosphere as it increases in age.
 
 # We want to run the model for 200 Myrs.
 set End time                               = 2e8
@@ -32,7 +32,7 @@ set Maximum first time step                = 500
 set Maximum relative increase in time step = 10
 
 # We use the geometric multigrid solver, but because this is a difficult
-# linear problem to solve with a large viscosity contrast, weincrease the
+# linear problem to solve with a large viscosity contrast, we increase the
 # number of cheap iterations and the restart length to make sure it
 # converges.
 subsection Solver parameters
@@ -46,7 +46,7 @@ end
 # The model is a box with a width of 4000 km and a depth of 410 km.
 # The number of X and Y repetitions determine the shape of the coarsest
 # mesh cells (that will then be refined adaptively) relative to the
-# shape of the box. To achienve an aspect ration of approximately one
+# shape of the box. To achieve an aspect ratio of approximately one
 # for the cells, we choose more X than Y repetitions.
 subsection Geometry model
   set Model name = box
