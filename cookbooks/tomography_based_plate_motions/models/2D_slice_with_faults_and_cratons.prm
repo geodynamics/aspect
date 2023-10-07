@@ -118,14 +118,10 @@ subsection Boundary temperature model
 end
 
 
-# We want to use intial temperatures from an ASCII data file. However,
-# we use adiabatic boundary plugin to use the lithospheric depths but
-# set the other value of temperature gradient as zero such that on taking
-# the maximum between the two temperature models we have the temperature
-# distribution from the ASCII file.
-# We do this because we need the lithospheric depths for density computation
-# because the reference density, thermal expansivity, and compressibility varies
-# between the crust, lithosphere, and asthenosphere in our model.
+# We set initial temperatures purely from an ASCII data file.
+# The only reason we also activate the adiabatic boundary plugin is that it
+# allows us to to read a dataset of lithospheric thicknesses that we use to
+# determine reference density, thermal expansivity, and compressibility.
 subsection Initial temperature model
   set List of model names = ascii data, adiabatic boundary
   set List of model operators = maximum
