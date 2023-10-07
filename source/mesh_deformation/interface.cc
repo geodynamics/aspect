@@ -1227,10 +1227,7 @@ namespace aspect
 
           std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
 
-          typename DoFHandler<dim>::active_cell_iterator cell = mesh_deformation_dof_handler.begin_active(),
-                                                         endc = mesh_deformation_dof_handler.end();
-
-          for (; cell!=endc; ++cell)
+          for (const auto &cell : mesh_deformation_dof_handler.active_cell_iterators())
             if (cell->is_locally_owned())
               {
                 cell->get_dof_indices (cell_dof_indices);
@@ -1240,7 +1237,7 @@ namespace aspect
                   {
                     Point<dim-1> surface_point;
                     std::array<double, dim> natural_coord = this->get_geometry_model().cartesian_to_natural_coordinates(fs_fe_values.quadrature_point(j));
-                    if (const GeometryModel::Box<dim> *geometry = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()))
+                    if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) != nullptr)
                       {
                         for (unsigned int d=0; d<dim-1; ++d)
                           surface_point[d] = natural_coord[d];
