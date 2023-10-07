@@ -91,6 +91,12 @@ namespace aspect
         Tensor<1,dim-1> topo_derivatives;
         if (const InitialTopographyModel::AsciiData<dim> *itm = dynamic_cast<const InitialTopographyModel::AsciiData<dim> *> (topo))
           topo_derivatives = itm->vector_gradient(push_forward_sphere(chart_point));
+        else if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim> *> (topo))
+          {
+            // Gradient is zero (which it is already initialized to from before)
+          }
+        else
+          Assert (false, ExcNotImplemented());
 
         // Construct surface point in lon(,lat) coordinates
         Point<dim-1> surface_point;
