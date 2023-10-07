@@ -23,6 +23,16 @@ set End time                               = 10e3
 # we use the operator splitting scheme.
 set Use operator splitting                     = true
 
+# Mellt transport is turned on to ensure it works
+# with this reaction scheme. If set to false,
+# a separate velocity and pressure would not be
+# calculated for the fluid phase, and the porosity
+# field would be advected with the solid velocity
+# unless a separate advection scheme is specified.
+subsection Melt settings
+  set Include melt transport                  = true
+end
+
 subsection Solver parameters
   subsection Operator splitting parameters
     # We choose the size of the reaction time step as 100 years, small enough
@@ -141,11 +151,6 @@ subsection Mesh refinement
   set Initial global refinement                = 0
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
-end
-
-
-subsection Melt settings
-  set Include melt transport                  = true
 end
 
 

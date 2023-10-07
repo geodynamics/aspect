@@ -305,7 +305,6 @@ namespace aspect
                           ExcMessage("The Fluid-reaction scheme no reaction should not be used with operator splitting."));
             }
 
-
           if (prm.get ("Fluid-solid reaction scheme") == "zero solubility")
             {
               AssertThrow(this->get_parameters().use_operator_splitting,

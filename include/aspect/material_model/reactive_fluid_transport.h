@@ -142,15 +142,15 @@ namespace aspect
          * Enumeration for selecting which type of scheme to use for
          * reactions between fluids and solids. The available
          * reaction models are described below.
-        *
-        * The no reaction model does not include any reactions
-        * between the solid and fluid phases. As a result,
-        * there is no exchange between the bound fluid and porosity
-        * compositional fields. However, the values of each field
-        * may vary through the model evolution through advection
-        * from their initial configurations.
          *
-        * The zero solubility model describes a scenario where the
+         * The no reaction model does not include any reactions
+         * between the solid and fluid phases. As a result,
+         * there is no exchange between the bound fluid and porosity
+         * compositional fields. However, the values of each field
+         * may vary through the model evolution through advection
+         * from their initial configurations.
+         *
+         * The zero solubility model describes a scenario where the
          * solid cannot accommodate any fluid (i.e., zero solubility).
          * The fluid volume fraction in equilibrium with the solid
          * at any point (stored in the melt_fractions vector) is

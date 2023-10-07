@@ -1,10 +1,10 @@
 # This model tests the reactive fluid transport material
-# 'no reaction' to ensure that there is indeed no reaction
+# 'no reaction' scenario to ensure that there is no reaction
 # between the fluid and solid phases. The values of
-# porosity (0) the bound fluid (0.01) are initially
-# spatially uniform, and the lack of reaction and
-# near zero velocities (free-slip on all sides) should
-# produce no change in their values through time.
+# porosity (0) and the bound fluid (0.01) are initially
+# spatially uniform. The absence of reactions between
+# the two phases and near zero velocities (free-slip on
+# all sides) produces no change in their values through time.
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Output directory                       = reactive_fluid_transport_no_reaction
@@ -16,10 +16,19 @@ set Dimension                              = 2
 
 set End time                               = 10e3
 
-# Because the model includes reactions that might be on a faster time scale
-# than the time step of the model (release of bound fluid into free fluid),
-# we use the operator splitting scheme.
+# As there are no reactions between the fluid and solid,
+# there is no need to use operator splitting.
 set Use operator splitting                     = false
+
+# Mellt transport is turned on to ensure it works
+# with this reaction scheme. If set to false,
+# a separate velocity and pressure would not be
+# calculated for the fluid phase, and the porosity
+# field would be advected with the solid velocity
+# unless a separate advection scheme is specified.
+subsection Melt settings
+  set Include melt transport                  = true
+end
 
 # There are two compositional fields, one that tracks the amount of free fluid
 # (the porosity) and one that tracks the amount of bound fluid (bound_fluid).
@@ -127,12 +136,6 @@ subsection Mesh refinement
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
-
-
-subsection Melt settings
-  set Include melt transport                  = true
-end
-
 
 subsection Postprocess
 
