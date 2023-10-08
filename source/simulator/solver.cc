@@ -536,6 +536,38 @@ namespace aspect
     LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning,
                                                             mpi_communicator);
 
+    // Create a view of all constraints that only pertains to the
+    // Stokes subset of degrees of freedom. We can then use this later
+    // to call constraints.distribute(), constraints.set_zero(), etc.,
+    // on those block vectors that only have the Stokes components in
+    // them.
+    //
+    // For the moment, assume that the Stokes degrees are first in the
+    // overall vector, so that they form a contiguous range starting
+    // at zero. The assertion checks this, but this could easily be
+    // generalized if the Stokes block were not starting at zero.
+#if DEAL_II_VERSION_GTE(9,6,0)
+    {
+      const unsigned int block_vel = introspection.block_indices.velocities;
+
+      Assert (block_vel == 0, ExcNotImplemented());
+      if (parameters.use_direct_stokes_solver == false)
+        {
+          const unsigned int block_p = (parameters.include_melt_transport) ?
+                                       introspection.variable("fluid pressure").block_index
+                                       : introspection.block_indices.pressure;
+          Assert (block_p == 1, ExcNotImplemented());
+        }
+    }
+
+    IndexSet stokes_dofs (dof_handler.n_dofs());
+    stokes_dofs.add_range (0, distributed_stokes_solution.size());
+    const AffineConstraints<double> current_stokes_constraints
+      = current_constraints.get_view (stokes_dofs);
+#else
+    const AffineConstraints<double> &current_stokes_constraints = current_constraints;
+#endif
+
     double initial_nonlinear_residual = numbers::signaling_nan<double>();
     double final_linear_residual      = numbers::signaling_nan<double>();
 
@@ -573,7 +605,7 @@ namespace aspect
         denormalize_pressure (this->last_pressure_normalization_adjustment,
                               distributed_stokes_solution,
                               solution);
-        current_constraints.set_zero (distributed_stokes_solution);
+        current_stokes_constraints.set_zero (distributed_stokes_solution);
 
         // Undo the pressure scaling:
         IndexSet &pressure_idxset = parameters.include_melt_transport ?
@@ -627,7 +659,7 @@ namespace aspect
           }
 
 
-        current_constraints.distribute (distributed_stokes_solution);
+        current_stokes_constraints.distribute (distributed_stokes_solution);
 
         // Now rescale the pressure back to real physical units. Note that we are
         // working on a vector in which all velocities and pressures are in one
@@ -708,7 +740,7 @@ namespace aspect
             linearized_stokes_initial_guess.block (block_p) = 0;
           }
 
-        current_constraints.set_zero (linearized_stokes_initial_guess);
+        current_stokes_constraints.set_zero (linearized_stokes_initial_guess);
         linearized_stokes_initial_guess.block (block_p) /= pressure_scaling;
 
         double solver_tolerance = 0;
@@ -910,7 +942,7 @@ namespace aspect
 
         // distribute hanging node and
         // other constraints
-        current_constraints.distribute (distributed_stokes_solution);
+        current_stokes_constraints.distribute (distributed_stokes_solution);
 
         // now rescale the pressure back to real physical units
         distributed_stokes_solution.block(block_p) *= pressure_scaling;
