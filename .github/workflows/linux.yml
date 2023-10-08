@@ -31,7 +31,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y software-properties-common
-        sudo add-apt-repository ppa:ginggs/deal.ii-9.4.0-backports
+        sudo add-apt-repository ppa:ginggs/deal.ii-9.5.1-backports
         sudo apt-get update
         sudo apt-get install -yq --no-install-recommends libdeal.ii-dev
     - name: compile
@@ -53,7 +53,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y software-properties-common
-        sudo add-apt-repository ppa:ginggs/deal.ii-9.4.0-backports
+        sudo add-apt-repository ppa:ginggs/deal.ii-9.5.1-backports
         sudo apt-get update
         sudo apt-get install -yq --no-install-recommends texlive-plain-generic texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python3-pip python-setuptools libdeal.ii-dev doxygen latexmk biber inkscape
         doxygen --version
@@ -110,6 +110,11 @@ jobs:
             compare-tests: "ON"
             result-file: "changes-test-results-9.4.diff"
             container-options: '--name container'
+          - image: "geodynamics/aspect-tester:focal-dealii-9.5-v1"
+            run-tests: "ON"
+            compare-tests: "OFF"
+            result-file: "changes-test-results-9.5.diff"
+            container-options: '--name container'
           - image: "geodynamics/aspect-tester:focal-dealii-master"
             run-tests: "ON"
             compare-tests: "OFF"
@@ -158,15 +163,15 @@ jobs:
       run: |
         cd build
         ninja generate_reference_output
-        git diff ../tests > changes-test-results.diff
+        git diff ../tests > ${{ matrix.result-file }}
     - name: archive test results
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.result-file }}
-        path: build/changes-test-results.diff
+        path: build/${{ matrix.result-file }}}
     - name: check test results
       run: |
-        if [ -f build/test_run_failed ] || [ -s build/changes-test-results.diff ]; then
+        if [ -f build/test_run_failed ] || [ -s build/${{ matrix.result-file}} ]; then
           exit 1
         else
           exit 0
