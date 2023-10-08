@@ -271,8 +271,9 @@ namespace aspect
       // Get the sea level offset (constant for every location).
       sea_level_offset = compute_sea_level_offset();
 
-      // Writing output data.
-      // Get a quadrature rule that exists only on the corners.
+      // Define a quadrature rule that has points only on the vertices of
+      // a face, so that we can evaluate the solution at the surface
+      // nodes.
       const QTrapezoid<dim-1> face_corners;
 
       FEFaceValues<dim> face_vals (this->get_mapping(), this->get_fe(), face_corners, update_quadrature_points);

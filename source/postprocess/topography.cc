@@ -51,7 +51,9 @@ namespace aspect
 
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
 
-      // Get a quadrature rule that exists only on the corners
+      // Define a quadrature rule that has points only on the vertices of
+      // a face, so that we can evaluate the solution at the surface
+      // nodes.
       const QTrapezoid<dim-1> face_corners;
       FEFaceValues<dim> face_vals (this->get_mapping(), this->get_fe(), face_corners, update_quadrature_points);
 
