@@ -113,8 +113,8 @@ namespace aspect
       },
       coarse_grid);
 
-      // Deal with a curved mesh
-      // Attach the real manifold to slot 15.
+      // Deal with a curved mesh by assigning a manifold. We arbitrarily
+      // choose manifold_id 15 for this.
       coarse_grid.set_manifold (15, manifold);
       for (const auto &cell : coarse_grid.active_cell_iterators())
         cell->set_all_manifold_ids (15);
