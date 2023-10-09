@@ -280,8 +280,16 @@ namespace aspect
 
         /**
          * Smoothing factor used for the computation of the approximation of cooling.
+         * Controls the influence of the temperature on the resultig thermal conductivity.
          */
-        double smoothing_factor;
+        double smoothing_factor_temperature;
+
+
+	/**
+         * Smoothing factor used for the computation of the approximation of cooling.
+         * Controls the influence of the depth on the resulting thermal conductivity.
+         */
+        double smoothing_factor_depth;
 
         /**
          * Number of phase transitions for each chemical composition (including the background field).

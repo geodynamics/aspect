@@ -223,9 +223,9 @@ namespace aspect
           if (use_hydrothermal_cooling_approximation  == true)
             {
               out.thermal_conductivities[i] = out.thermal_conductivities[i] + out.thermal_conductivities[i] *
-                                              (Nusselt_number - 1.) * std::exp(smoothing_factor *
+                                              (Nusselt_number - 1.) * std::exp(smoothing_factor_temperature *
                                                                              (1. - in.temperature[i] / cutoff_maximum_temperature)) *
-                                              std::exp(smoothing_factor * (1. - this->get_geometry_model().depth(in.position[i])  / cutoff_maximum_depth));
+                                              std::exp(smoothing_factor_depth * (1. - this->get_geometry_model().depth(in.position[i])  / cutoff_maximum_depth));
             }
 
 
@@ -398,10 +398,17 @@ namespace aspect
 			     "across the boundary of the crust. "
 			     "Increasing the Nusselt number will mimic the effect of faster circulating fluids and "
 			     "thus increase the thermal conductivity");
-          prm.declare_entry ("Smoothing factor for hydrothermal cooling approximation", "0.75",
+          prm.declare_entry ("Temperature smoothing factor for hydrothermal cooling approximation", "0.75",
                              Patterns::Double (0.),
-                             "Smoothing factor that controls the influence of hydrothermal fluid circulation "
-			     "on the hydrothermal cooling. ");
+                             "Smoothing factor that controls the influence of the temperature "
+			     "on the hydrothermal cooling. If it is set to zero, the temperature is not considered "
+			     "in the calculation of the thermal conductivity");
+	  prm.declare_entry ("Depth smoothing factor for hydrothermal cooling approximation", "0.75",
+                             Patterns::Double (0.),
+                             "Smoothing factor that controls the influence of the depth "
+                             "on the hydrothermal cooling. If it is set to zero, the temperature is not considered "
+                             "in the calculation of the thermal conductivity");
+
         }
         prm.leave_subsection();
       }
@@ -475,7 +482,9 @@ namespace aspect
 	  cutoff_maximum_temperature = prm.get_double ("Cutoff maximum temperature for hydrothermal cooling approximation");
 	  cutoff_maximum_depth = prm.get_double ("Cutoff maximum depth for hydrothermal cooling approximation");
 	  Nusselt_number = prm.get_double ("Nusselt number for hydrothermal cooling approximation");
-	  smoothing_factor = prm.get_double ("Smoothing factor for hydrothermal cooling approximation");
+	  smoothing_factor_temperature = prm.get_double ("Temperature smoothing factor for hydrothermal cooling approximation");
+	  smoothing_factor_depth = prm.get_double ("Depth smoothing factor for hydrothermal cooling approximation")
+;
 
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
