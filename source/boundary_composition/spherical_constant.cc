@@ -115,11 +115,11 @@ namespace aspect
         {
           inner_composition = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Inner composition"))),
                                                                       n_compositional_fields,
-                                                                      "boundary composition values");
+                                                                      "Inner boundary composition values");
 
           outer_composition = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Outer composition"))),
                                                                       n_compositional_fields,
-                                                                      "boundary composition values");
+                                                                      "Outer boundary composition values");
         }
         prm.leave_subsection ();
       }
