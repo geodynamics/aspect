@@ -594,59 +594,63 @@ namespace aspect
     void
     Particles<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Particles");
+      prm.enter_subsection("Postprocess");
       {
-        prm.declare_entry ("Time between data output", "1e8",
-                           Patterns::Double (0.),
-                           "The time interval between each generation of "
-                           "output files. A value of zero indicates that "
-                           "output should be generated every time step.\n\n"
-                           "Units: years if the "
-                           "'Use years in output instead of seconds' parameter is set; "
-                           "seconds otherwise.");
+        prm.enter_subsection("Particles");
+        {
+          prm.declare_entry ("Time between data output", "1e8",
+                             Patterns::Double (0.),
+                             "The time interval between each generation of "
+                             "output files. A value of zero indicates that "
+                             "output should be generated every time step.\n\n"
+                             "Units: years if the "
+                             "'Use years in output instead of seconds' parameter is set; "
+                             "seconds otherwise.");
 
-        // now also see about the file format we're supposed to write in
-        // Note: "ascii" is a legacy format used by ASPECT before particle output
-        // in deal.II was implemented. It is nearly identical to the gnuplot format, thus
-        // we now simply replace "ascii" by "gnuplot" should it be selected.
-        prm.declare_entry ("Data output format", "vtu",
-                           Patterns::MultipleSelection (DataOutBase::get_output_format_names ()+"|ascii"),
-                           "A comma separated list of file formats to be used for graphical "
-                           "output. The list of possible output formats that can be given "
-                           "here is documented in the appendix of the manual where the current "
-                           "parameter is described.");
+          // now also see about the file format we're supposed to write in
+          // Note: "ascii" is a legacy format used by ASPECT before particle output
+          // in deal.II was implemented. It is nearly identical to the gnuplot format, thus
+          // we now simply replace "ascii" by "gnuplot" should it be selected.
+          prm.declare_entry ("Data output format", "vtu",
+                             Patterns::MultipleSelection (DataOutBase::get_output_format_names ()+"|ascii"),
+                             "A comma separated list of file formats to be used for graphical "
+                             "output. The list of possible output formats that can be given "
+                             "here is documented in the appendix of the manual where the current "
+                             "parameter is described.");
 
-        prm.declare_entry ("Number of grouped files", "16",
-                           Patterns::Integer(0),
-                           "VTU file output supports grouping files from several CPUs "
-                           "into a given number of files using MPI I/O when writing on a parallel "
-                           "filesystem. Select 0 for no grouping. This will disable "
-                           "parallel file output and instead write one file per processor. "
-                           "A value of 1 will generate one big file containing the whole "
-                           "solution, while a larger value will create that many files "
-                           "(at most as many as there are MPI ranks).");
+          prm.declare_entry ("Number of grouped files", "16",
+                             Patterns::Integer(0),
+                             "VTU file output supports grouping files from several CPUs "
+                             "into a given number of files using MPI I/O when writing on a parallel "
+                             "filesystem. Select 0 for no grouping. This will disable "
+                             "parallel file output and instead write one file per processor. "
+                             "A value of 1 will generate one big file containing the whole "
+                             "solution, while a larger value will create that many files "
+                             "(at most as many as there are MPI ranks).");
 
-        prm.declare_entry ("Write in background thread", "false",
-                           Patterns::Bool(),
-                           "File operations can potentially take a long time, blocking the "
-                           "progress of the rest of the model run. Setting this variable to "
-                           "`true' moves this process into a background thread, while the "
-                           "rest of the model continues.");
+          prm.declare_entry ("Write in background thread", "false",
+                             Patterns::Bool(),
+                             "File operations can potentially take a long time, blocking the "
+                             "progress of the rest of the model run. Setting this variable to "
+                             "`true' moves this process into a background thread, while the "
+                             "rest of the model continues.");
 
-        prm.declare_entry ("Temporary output location", "",
-                           Patterns::Anything(),
-                           "On large clusters it can be advantageous to first write the "
-                           "output to a temporary file on a local file system and later "
-                           "move this file to a network file system. If this variable is "
-                           "set to a non-empty string it will be interpreted as a "
-                           "temporary storage location.");
+          prm.declare_entry ("Temporary output location", "",
+                             Patterns::Anything(),
+                             "On large clusters it can be advantageous to first write the "
+                             "output to a temporary file on a local file system and later "
+                             "move this file to a network file system. If this variable is "
+                             "set to a non-empty string it will be interpreted as a "
+                             "temporary storage location.");
 
-        prm.declare_entry ("Exclude output properties", "",
-                           Patterns::Anything(),
-                           "A comma separated list of particle properties that should "
-                           "\\textit{not} be output. If this list contains the "
-                           "entry `all', only the id of particles will be provided in "
-                           "graphical output files.");
+          prm.declare_entry ("Exclude output properties", "",
+                             Patterns::Anything(),
+                             "A comma separated list of particle properties that should "
+                             "\\textit{not} be output. If this list contains the "
+                             "entry `all', only the id of particles will be provided in "
+                             "graphical output files.");
+        }
+        prm.leave_subsection ();
       }
       prm.leave_subsection ();
 
@@ -658,66 +662,70 @@ namespace aspect
     void
     Particles<dim>::parse_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Particles");
+      prm.enter_subsection("Postprocess");
       {
-        output_interval = prm.get_double ("Time between data output");
-        if (this->convert_output_to_years())
-          output_interval *= year_in_seconds;
+        prm.enter_subsection("Particles");
+        {
+          output_interval = prm.get_double ("Time between data output");
+          if (this->convert_output_to_years())
+            output_interval *= year_in_seconds;
 
-        AssertThrow(this->get_parameters().run_postprocessors_on_nonlinear_iterations == false,
-                    ExcMessage("Postprocessing nonlinear iterations in models with "
-                               "particles is currently not supported."));
+          AssertThrow(this->get_parameters().run_postprocessors_on_nonlinear_iterations == false,
+                      ExcMessage("Postprocessing nonlinear iterations in models with "
+                                 "particles is currently not supported."));
 
-        output_formats   = Utilities::split_string_list(prm.get ("Data output format"));
-        AssertThrow(Utilities::has_unique_entries(output_formats),
-                    ExcMessage("The list of strings for the parameter "
-                               "'Particles/Data output format' contains entries more than once. "
-                               "This is not allowed. Please check your parameter file."));
+          output_formats   = Utilities::split_string_list(prm.get ("Data output format"));
+          AssertThrow(Utilities::has_unique_entries(output_formats),
+                      ExcMessage("The list of strings for the parameter "
+                                 "'Particles/Data output format' contains entries more than once. "
+                                 "This is not allowed. Please check your parameter file."));
 
-        AssertThrow ((std::find (output_formats.begin(),
-                                 output_formats.end(),
-                                 "none") == output_formats.end())
-                     ||
-                     (output_formats.size() == 1),
-                     ExcMessage ("If you specify 'none' for the parameter \"Data output format\", "
-                                 "then this needs to be the only value given."));
+          AssertThrow ((std::find (output_formats.begin(),
+                                   output_formats.end(),
+                                   "none") == output_formats.end())
+                       ||
+                       (output_formats.size() == 1),
+                       ExcMessage ("If you specify 'none' for the parameter \"Data output format\", "
+                                   "then this needs to be the only value given."));
 
-        if (std::find (output_formats.begin(),
-                       output_formats.end(),
-                       "none") == output_formats.end())
-          aspect::Utilities::create_directory (this->get_output_directory() + "particles/",
-                                               this->get_mpi_communicator(),
-                                               true);
+          if (std::find (output_formats.begin(),
+                         output_formats.end(),
+                         "none") == output_formats.end())
+            aspect::Utilities::create_directory (this->get_output_directory() + "particles/",
+                                                 this->get_mpi_communicator(),
+                                                 true);
 
-        // Note: "ascii" is a legacy format used by ASPECT before particle output
-        // in deal.II was implemented. It is nearly identical to the gnuplot format, thus
-        // we simply replace "ascii" by "gnuplot" should it be selected.
-        std::vector<std::string>::iterator output_format =  std::find (output_formats.begin(),
-                                                                       output_formats.end(),
-                                                                       "ascii");
-        if (output_format != output_formats.end())
-          *output_format = "gnuplot";
+          // Note: "ascii" is a legacy format used by ASPECT before particle output
+          // in deal.II was implemented. It is nearly identical to the gnuplot format, thus
+          // we simply replace "ascii" by "gnuplot" should it be selected.
+          std::vector<std::string>::iterator output_format =  std::find (output_formats.begin(),
+                                                                         output_formats.end(),
+                                                                         "ascii");
+          if (output_format != output_formats.end())
+            *output_format = "gnuplot";
 
-        group_files     = prm.get_integer("Number of grouped files");
-        write_in_background_thread = prm.get_bool("Write in background thread");
-        temporary_output_location = prm.get("Temporary output location");
+          group_files     = prm.get_integer("Number of grouped files");
+          write_in_background_thread = prm.get_bool("Write in background thread");
+          temporary_output_location = prm.get("Temporary output location");
 
-        if (temporary_output_location != "")
-          {
-            // Check if a command-processor is available by calling system() with a
-            // null pointer. System is guaranteed to return non-zero if it finds
-            // a terminal and zero if there is none (like on the compute nodes of
-            // some cluster architectures, e.g. IBM BlueGene/Q)
-            AssertThrow(system((char *)nullptr) != 0,
-                        ExcMessage("Usage of a temporary storage location is only supported if "
-                                   "there is a terminal available to move the files to their final location "
-                                   "after writing. The system() command did not succeed in finding such a terminal."));
-          }
+          if (temporary_output_location != "")
+            {
+              // Check if a command-processor is available by calling system() with a
+              // null pointer. System is guaranteed to return non-zero if it finds
+              // a terminal and zero if there is none (like on the compute nodes of
+              // some cluster architectures, e.g. IBM BlueGene/Q)
+              AssertThrow(system((char *)nullptr) != 0,
+                          ExcMessage("Usage of a temporary storage location is only supported if "
+                                     "there is a terminal available to move the files to their final location "
+                                     "after writing. The system() command did not succeed in finding such a terminal."));
+            }
 
-        exclude_output_properties = Utilities::split_string_list(prm.get("Exclude output properties"));
+          exclude_output_properties = Utilities::split_string_list(prm.get("Exclude output properties"));
 
-        // Never output the integrator properties that are for internal use only
-        exclude_output_properties.emplace_back("internal: integrator properties");
+          // Never output the integrator properties that are for internal use only
+          exclude_output_properties.emplace_back("internal: integrator properties");
+        }
+        prm.leave_subsection ();
       }
       prm.leave_subsection ();
     }

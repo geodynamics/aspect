@@ -123,7 +123,16 @@ def move_number_of_particles_to_correct_subsection(parameters):
             
             # All other generators ignore this parameter, only add if necessary
             if particle_generator_subsection != "":
-                aspect.set_parameter_value(parameters, "Number of particles", number_of_particles, ["Particles", "Generator", particle_generator_subsection])
+                parameters = aspect.set_parameter_value(parameters, "Number of particles", number_of_particles, ["Particles", "Generator", particle_generator_subsection])
+
+    return parameters
+
+
+
+def move_particle_postprocessing_to_postprocess(parameters):
+    """ Move the particle postprocess parameters to the postprocess subsection. """
+
+    parameters = aspect.move_entry_to_subsection(parameters, ["Particles", "Time between data output"], ["Postprocess","Particles","Time between data output"])
 
     return parameters
 
@@ -136,6 +145,7 @@ def main(input_file, output_file):
     parameters = remove_outdated_lines(parameters)
     parameters = move_particle_parameters_to_own_subsection(parameters)
     parameters = move_number_of_particles_to_correct_subsection(parameters)
+    parameters = move_particle_postprocessing_to_postprocess(parameters)
 
     aspect.write_parameter_file(parameters, output_file)
 
