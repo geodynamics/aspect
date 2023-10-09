@@ -90,14 +90,6 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 
 subsection Boundary temperature model
-  # Select one of the following models:
-  #
-  # `box': A model in which the temperature is chosen constant on the left and
-  # right sides of a box.
-  #
-  # `spherical constant': A model in which the temperature is chosen constant
-  # on the inner and outer boundaries of a spherical shell. Parameters are
-  # read from subsection 'Spherical constant'.
   set List of model names = box
 
   # A comma separated list of integers denoting those boundaries on which the
@@ -142,14 +134,6 @@ subsection Discretization
 end
 
 subsection Geometry model
-  # Select one of the following models:
-  #
-  # `box': A box geometry parallel to the coordinate directions. The extent of
-  # the box in each coordinate direction is set in the parameter file.
-  #
-  # `spherical shell': A geometry representing a spherical shell or a piece of
-  # it. Inner and outer radii are read from the parameter file in subsection
-  # 'Spherical shell'.
   set Model name = box
 
   subsection Box
@@ -170,21 +154,6 @@ subsection Gravity model
 end
 
 subsection Initial temperature model
-  # Select one of the following models:
-  #
-  # `perturbed box': An initial temperature field in which the temperature is
-  # perturbed slightly from an otherwise constant value equal to one. The
-  # perturbation is chosen in such a way that the initial temperature is
-  # constant to one along the entire boundary.
-  #
-  # `spherical hexagonal perturbation': An initial temperature field in which
-  # the temperature is perturbed following a six-fold pattern in angular
-  # direction from an otherwise spherically symmetric state.
-  #
-  # `spherical gaussian perturbation': An initial temperature field in which
-  # the temperature is perturbed by a single Gaussian added to an otherwise
-  # spherically symmetric state. Additional parameters are read from the
-  # parameter file in subsection 'Spherical gaussian perturbation'.
   set Model name = function
 
   subsection Function
@@ -194,19 +163,6 @@ subsection Initial temperature model
 end
 
 subsection Material model
-  # Select one of the following models:
-  #
-  # `simple': A simple material model that has constant values for all
-  # coefficients but the density. This model uses the formulation that assumes
-  # an incompressible medium despite the fact that the density follows the law
-  # $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$. The value for the components
-  # of this formula and additional parameters are read from the parameter file
-  # in subsection 'Simple model'.
-  #
-  # `Steinberger': lookup from the paper of Steinberger/Calderwood
-  #
-  # `table': A material model that reads tables of pressure and temperature
-  # dependent material coefficients from files.
   set Model name = simple
 
   subsection Simple model
