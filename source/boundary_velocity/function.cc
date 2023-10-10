@@ -165,7 +165,7 @@ namespace aspect
                                             "``Boundary velocity model|Function''. The format of these "
                                             "functions follows the syntax understood by the "
                                             "muparser library, see "
-                                            "{ref}`sec:run-aspect:parameters-overview:muparser-format`."
+                                            "{ref}\\`sec:run-aspect:parameters-overview:muparser-format\\`."
                                             "\n\n"
                                             "The formula you describe in the mentioned "
                                             "section is a semicolon separated list of velocities "
