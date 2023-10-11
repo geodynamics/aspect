@@ -9,7 +9,7 @@
 ### __Parameter name:__ List of postprocessors
 **Default value:**
 
-**Pattern:** [MultipleSelection Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|depth average|domain volume statistics|dynamic topography|entropy viscosity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particles|point values|pressure statistics|rotation statistics|spherical velocity statistics|temperature statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
+**Pattern:** [MultipleSelection Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|composition velocity statistics|core statistics|crystal preferred orientation|depth average|domain volume statistics|dynamic topography|entropy viscosity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particles|point values|pressure statistics|rotation statistics|sea level|spherical velocity statistics|temperature statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
 
 **Documentation:** A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text &lsquo;all&rsquo; indicates that all available postprocessors should be run after each time step.
 
@@ -34,6 +34,8 @@ The following postprocessors are available:
 &lsquo;composition velocity statistics&rsquo;: A postprocessor that computes the root mean square velocity over the area spanned by each compositional field (i.e. where the field values are larger or equal to 0.5.
 
 &lsquo;core statistics&rsquo;: A postprocessor that computes some statistics about the core evolution. (Working only with dynamic core boundary temperature plugin)
+
+&lsquo;crystal preferred orientation&rsquo;: A Postprocessor that writes out CPO specific particle data.It can write out the CPO data as it is stored (raw) and/or as arandom draw volume weighted representation. The latter oneis recommended for plotting against real data. For both representationsthe specific output fields and their order can be set.The work of this postprocessor should better be done by the main particles postprocessor, however we need to be able to process the data before outputing it, which does not work with that postprocessor. If this is added to the other postprocessor in the future this one becomes obsolete.
 
 &lsquo;depth average&rsquo;: A postprocessor that computes depth averaged quantities and writes them into a file <depth_average.ext> in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section `Postprocess/Depth average` in the input file.
 
@@ -106,6 +108,10 @@ In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates o
 
 &lsquo;rotation statistics&rsquo;: A postprocessor that computes some statistics about the rotational velocity of the model (i.e. integrated net rotation and angular momentum). In 2d we assume the model to be a cross-section through an infinite domain in z direction, with a zero z-velocity. Thus, the z-axis is the only possible rotation axis and both moment of inertia and angular momentum are scalar instead of tensor quantities.
 
+&lsquo;sea level&rsquo;: A postprocessor that computes the sea level for glacial isostatic adjustmentmodeling. When ice melts and enters the ocean, the ocean water needs to beredistributed in a gravitationally consistent way. With the updated surfaceloading (ocean and ice) the free surface deformation needs to be computediteratively before moving to the next time step. A postprocessor intended for use with a deforming top surface. After every step it computes the sea level based on the topography, ocean basin, ice melt, perturbed gravitational potential of the Earth model and gravitational potential of the ice load, relative to a reference datum (initial radius for a spherical shell geometry model). The sea level computation is based on \cite{Martinec2018}. If &rsquo;SeaLevel.Output to file&rsquo; is set to true, also outputs sea level into text files named &lsquo;sea_level.NNNNN&rsquo; in the output directory, where NNNNN is the number of the time step.
+
+The file format then consists of lines with Euclidean coordinates followed by the corresponding sea level value. Sea level is printed/written in meters.
+
 &lsquo;spherical velocity statistics&rsquo;: A postprocessor that computes radial, tangential and total RMS velocity.
 
 &lsquo;temperature statistics&rsquo;: A postprocessor that computes some statistics about the temperature field.
@@ -117,7 +123,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 &lsquo;velocity statistics&rsquo;: A postprocessor that computes the root mean square and maximum velocity in the computational domain.
 
-&lsquo;viscous dissipation statistics&rsquo;: A postprocessor that outputs the viscous rate of dissipation of energy for each compositional field (where the field has a value of 0.5 or more) as well as over the whole domain. When all the fields represent lithologies and there is no background field, the sum of the individual field&rsquo;s dissipation should equal that over the whole domain. The viscous dissipation is computed as: $\int_{V}\left(\sigma&rsquo; \dot{\epsilon}&rsquo; \right)$, where $\sigma&rsquo;$  is the deviatoric stress and $\dot{\epsilon}&rsquo;$ the deviatoric strain rate.Note then when shear heating is included in the temperature equation, it is better to use the &rsquo;heating statistics&rsquo; postprocessor.
+&lsquo;viscous dissipation statistics&rsquo;: A postprocessor that outputs the viscous rate of dissipation of energy for each compositional field (where the field has a value of 0.5 or more) as well as over the whole domain. When all the fields represent lithologies and there is no background field, the sum of the individual field&rsquo;s dissipation should equal that over the whole domain. The viscous dissipation is computed as: $\int_{V}\left(\sigma^\prime \dot{\epsilon}^\prime \right)$, where $\sigma^\prime$  is the deviatoric stress and $\dot{\epsilon}^\prime$ the deviatoric strain rate.Note then when shear heating is included in the temperature equation, it is better to use the &rsquo;heating statistics&rsquo; postprocessor.
 
 &lsquo;visualization&rsquo;: A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection &rsquo;Visualization&rsquo;.
 
@@ -234,6 +240,68 @@ The file format then consists of lines with Euclidean coordinates followed by th
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list of names for each of the compositional fields that you want to compute the combined RMS velocity for.
+
+(parameters:Postprocess/Crystal_20Preferred_20Orientation)=
+## **Subsection:** Postprocess / Crystal Preferred Orientation
+(parameters:Postprocess/Crystal_20Preferred_20Orientation/Compress_20cpo_20data_20files)=
+### __Parameter name:__ Compress cpo data files
+**Default value:** true
+
+**Pattern:** [Bool]
+
+**Documentation:** Wether to compress the raw and weighted cpo data output files with zlib.
+
+(parameters:Postprocess/Crystal_20Preferred_20Orientation/Random_20number_20seed)=
+### __Parameter name:__ Random number seed
+**Default value:** 1
+
+**Pattern:** [Integer range 0...2147483647 (inclusive)]
+
+**Documentation:** The seed used to generate random numbers. This will make sure that results are reproducable as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = random number seed + MPI Rank.
+
+(parameters:Postprocess/Crystal_20Preferred_20Orientation/Temporary_20output_20location)=
+### __Parameter name:__ Temporary output location
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** On large clusters it can be advantageous to first write the output to a temporary file on a local file system and later move this file to a network file system. If this variable is set to a non-empty string it will be interpreted as a temporary storage location.
+
+(parameters:Postprocess/Crystal_20Preferred_20Orientation/Time_20between_20data_20output)=
+### __Parameter name:__ Time between data output
+**Default value:** 1e8
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The time interval between each generation of output files. A value of zero indicates that output should be generated every time step.
+
+Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+
+(parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20in_20background_20thread)=
+### __Parameter name:__ Write in background thread
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to &lsquo;true&rsquo; moves this process into background threads, while the rest of the model continues.
+
+(parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20out_20draw_20volume_20weighted_20cpo_20data)=
+### __Parameter name:__ Write out draw volume weighted cpo data
+**Default value:** olivine Euler angles,enstatite Euler angles
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** A list containing the what part of the random draw volume weighted particle cpo data needs to be written out after the particle id. after using a random draw volume weighting. The random draw volume weigthing uses a uniform random distribution This writes out the raw cpo data files for each MPI process. It can write out the following data: olivine volume fraction, olivine rotation matrix, olivine Euler angles, enstatite volume fraction, enstatite rotation matrix, enstatite Euler angles.
+Note that the rotation matrix and Euler angles both contain the same information, but in a different format. Euler angles are recommended over the rotation matrix since they only require to write 3 values instead of 9. If the list is empty, this file will not be written. Furthermore, the entries will be written out in the order given, and if entries are entered muliple times, they will be written out multiple times.
+
+(parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20out_20raw_20cpo_20data)=
+### __Parameter name:__ Write out raw cpo data
+**Default value:** olivine volume fraction,olivine Euler angles,enstatite volume fraction,enstatite Euler angles
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** A list containing what particle cpo data needs to be written out after the particle id. This writes out the raw cpo data files for each MPI process. It can write out the following data: olivine volume fraction, olivine rotation matrix, olivine Euler angles, enstatite volume fraction, enstatite rotation matrix, enstatite Euler angles.
+Note that the rotation matrix and Euler angles both contain the same information, but in a different format. Euler angles are recommended over the rotation matrix since they only require to write 3 values instead of 9. If the list is empty, this file will not be written.Furthermore, the entries will be written out in the order given, and if entries are entered muliple times, they will be written out multiple times.
 
 (parameters:Postprocess/Depth_20average)=
 ## **Subsection:** Postprocess / Depth average
@@ -644,7 +712,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Bool]
 
-**Documentation:** By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles. In case both the current cell and its neighbors are empty, the interpolator will return 0 for the current cell&rsquo;s properties.
+**Documentation:** By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles, In case both the current cell and its neighbors are empty, the interpolator will return 0 for the current cell&rsquo;s properties.
 
 (parameters:Postprocess/Particles/Data_20output_20format)=
 ### __Parameter name:__ Data output format
@@ -704,7 +772,7 @@ Select one of the following models:
 ### __Parameter name:__ List of particle properties
 **Default value:**
 
-**Pattern:** [MultipleSelection composition|cpo bingham average|crystal preferred orientation|elastic stress|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
+**Pattern:** [MultipleSelection composition|cpo bingham average|cpo elastic tensor|crystal preferred orientation|elastic stress|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
 
 **Documentation:** A comma separated list of particle properties that should be tracked. By default none is selected, which means only position, velocity and id of the particles are output.
 
@@ -714,7 +782,9 @@ The following properties are available:
 
 &lsquo;cpo bingham average&rsquo;: This is a particle property plugin which computes the Bingham average for the Crystal Preferred Orientation particle property plugin so that it can be visualized.
 
-&lsquo;crystal preferred orientation&rsquo;: The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO) on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation matrix. This allows for CPO evolution tracking with polycrystalline kinematic CrystalPreferredOrientation evolution models such as D-Rex (Kaminski and Ribe, 2001; Kaminski et al., 2004).
+&lsquo;cpo elastic tensor&rsquo;: A plugin in which the particle property tensor is defined as the Voigt average of the elastic tensors of the minerals in the textured rock.Currently only Olivine and Enstatite are supported.
+
+&lsquo;crystal preferred orientation&rsquo;: WARNING: all the CPO plugins are a work in progress and not ready for production use yet. See https://github.com/geodynamics/aspect/issues/3885 for current status and alternatives. The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO) on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation matrix. This allows for CPO evolution tracking with polycrystalline kinematic CrystalPreferredOrientation evolution models such as D-Rex (Kaminski and Ribe, 2001; Kaminski et al., 2004).
 
 &lsquo;elastic stress&rsquo;: A plugin in which the particle property tensor is defined as the total elastic stress a particle has accumulated. See the viscoelastic material model documentation for more detailed information.
 
@@ -1342,6 +1412,72 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Whether to use a constant density of one for the computation of the angular momentum and moment of inertia. This is an approximation that assumes that the &rsquo;volumetric&rsquo; rotation is equal to the &rsquo;mass&rsquo; rotation. If this parameter is true this postprocessor computes &rsquo;net rotation&rsquo; instead of &rsquo;angular momentum&rsquo;.
 
+(parameters:Postprocess/Sea_20level)=
+## **Subsection:** Postprocess / Sea level
+(parameters:Postprocess/Sea_20level/Data_20directory_20ice_20height)=
+### __Parameter name:__ Data directory ice height
+**Default value:** $ASPECT_SOURCE_DIR/data/postprocess/sea-level/
+
+**Pattern:** [DirectoryName]
+
+**Documentation:** The name of a directory that contains the ice height [m] ascii data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+
+(parameters:Postprocess/Sea_20level/Data_20directory_20topography)=
+### __Parameter name:__ Data directory topography
+**Default value:** $ASPECT_SOURCE_DIR/data/postprocess/sea-level/
+
+**Pattern:** [DirectoryName]
+
+**Documentation:** The name of a directory that contains the topography ascii data. This path may either be absolute (if starting with a &lsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &lsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+
+(parameters:Postprocess/Sea_20level/Data_20file_20name_20ice_20height)=
+### __Parameter name:__ Data file name ice height
+**Default value:** shell_3d_ice_top.0.txt
+
+**Pattern:** [Anything]
+
+**Documentation:** The file name of the ice height ascii data. For the ascii data, provide file in the same format as described in &rsquo;ascii data&rsquo; initial composition plugin.
+
+(parameters:Postprocess/Sea_20level/Data_20file_20name_20topography)=
+### __Parameter name:__ Data file name topography
+**Default value:** shell_3d_topo_top.0.txt
+
+**Pattern:** [Anything]
+
+**Documentation:** The file name of the topography ascii data. For the ascii data, provide file in the same format as described in &rsquo;ascii data&rsquo; initial composition plugin.
+
+(parameters:Postprocess/Sea_20level/Ice_20density)=
+### __Parameter name:__ Ice density
+**Default value:** 931
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The density of ice [kg/m3]
+
+(parameters:Postprocess/Sea_20level/Output_20to_20file)=
+### __Parameter name:__ Output to file
+**Default value:** false
+
+**Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Whether or not to write sea level to a text file named named &rsquo;sea_level.NNNNN&rsquo; in the output directory
+
+(parameters:Postprocess/Sea_20level/Time_20between_20text_20output)=
+### __Parameter name:__ Time between text output
+**Default value:** 0.
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &rsquo;Use years in output instead of seconds&rsquo; parameter is set; seconds otherwise.
+
+(parameters:Postprocess/Sea_20level/Water_20density)=
+### __Parameter name:__ Water density
+**Default value:** 1000
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The density of water [kg/m3]
+
 (parameters:Postprocess/Topography)=
 ## **Subsection:** Postprocess / Topography
 (parameters:Postprocess/Topography/Output_20to_20file)=
@@ -1388,7 +1524,7 @@ Of course, activating this option also greatly increases the amount of data ASPE
 ### __Parameter name:__ List of output variables
 **Default value:**
 
-**Pattern:** [MultipleSelection ISA rotation timescale|Vp anomaly|Vs anomaly|adiabat|artificial viscosity|artificial viscosity composition|boundary indicators|boundary strain rate residual|boundary velocity residual|compositional vector|depth|dynamic topography|error indicator|geoid|grain lag angle|gravity|heat flux map|heating|material properties|maximum horizontal compressive stress|melt fraction|melt material properties|named additional outputs|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|principal stress|shear stress|spd factor|spherical velocity components|strain rate|strain rate tensor|stress|stress second invariant|surface dynamic topography|surface stress|temperature anomaly|vertical heat flux|volume of fluid values|volumetric strain rate|density|specific heat|thermal conductivity|thermal diffusivity|thermal expansivity|viscosity ]
+**Pattern:** [MultipleSelection ISA rotation timescale|Vp anomaly|Vs anomaly|adiabat|artificial viscosity|artificial viscosity composition|boundary indicators|boundary strain rate residual|boundary velocity residual|compositional vector|depth|dynamic topography|error indicator|geoid|grain lag angle|gravity|heat flux map|heating|material properties|maximum horizontal compressive stress|melt fraction|melt material properties|named additional outputs|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|principal stress|shear stress|spd factor|spherical velocity components|strain rate|strain rate tensor|stress|stress second invariant|surface dynamic topography|surface strain rate tensor|surface stress|temperature anomaly|vertical heat flux|volume of fluid values|volumetric strain rate|density|specific heat|thermal conductivity|thermal diffusivity|thermal expansivity|viscosity ]
 
 **Documentation:** A comma separated list of visualization objects that should be run whenever writing graphical output. By default, the graphical output files will always contain the primary variables velocity, pressure, and temperature. However, one frequently wants to also visualize derived quantities, such as the thermodynamic phase that corresponds to a given temperature-pressure value, or the corresponding seismic wave speeds. The visualization objects do exactly this: they compute such derived quantities and place them into the output file. The current parameter is the place where you decide which of these additional output variables you want to have in your output file.
 
@@ -1484,7 +1620,7 @@ In two space dimensions, $\mathbf n$ is simply a vector that is horizontal (we c
 
 In three space dimensions, given two horizontal, perpendicular, unit length, but otherwise arbitrarily chosen vectors $\mathbf u,\mathbf v$, we can express $\mathbf n = (\cos \alpha)\mathbf u + (\sin\alpha)\mathbf v$ where $\alpha$ maximizes the expression \begin{align*}  f(\alpha) = \mathbf n^T \sigma_c \mathbf n  = (\mathbf u^T \sigma_c \mathbf u)(\cos\alpha)^2    +2(\mathbf u^T \sigma_c \mathbf v)(\cos\alpha)(\sin\alpha)    +(\mathbf v^T \sigma_c \mathbf v)(\sin\alpha)^2.\end{align*}
 
-The maximum of $f(\alpha)$ is attained where $f&rsquo;(\alpha)=0$. Evaluating the derivative and using trigonometric identities, one finds that $\alpha$ has to satisfy the equation \begin{align*}  \tan(2\alpha) = \frac{2.0\mathbf u^T \sigma_c \mathbf v}                          {\mathbf u^T \sigma_c \mathbf u                            - \mathbf v^T \sigma_c \mathbf v}.\end{align*}Since the transform $\alpha\mapsto\alpha+\pi$ flips the direction of $\mathbf n$, we only need to seek a solution to this equation in the interval $\alpha\in[0,\pi)$. These are given by $\alpha_1=\frac 12 \arctan \frac{\mathbf u^T \sigma_c \mathbf v}{\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v}$ and $\alpha_2=\alpha_1+\frac{\pi}{2}$, one of which will correspond to a minimum and the other to a maximum of $f(\alpha)$. One checks the sign of $f&rdquo;(\alpha)=-2(\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v)\cos(2\alpha) - 2 (\mathbf u^T \sigma_c \mathbf v) \sin(2\alpha)$ for each of these to determine the $\alpha$ that maximizes $f(\alpha)$, and from this immediately arrives at the correct form for the maximum horizontal stress $\mathbf n$.
+The maximum of $f(\alpha)$ is attained where $f^\prime(\alpha)=0$. Evaluating the derivative and using trigonometric identities, one finds that $\alpha$ has to satisfy the equation \begin{align*}  \tan(2\alpha) = \frac{2.0\mathbf u^T \sigma_c \mathbf v}                          {\mathbf u^T \sigma_c \mathbf u                            - \mathbf v^T \sigma_c \mathbf v}.\end{align*}Since the transform $\alpha\mapsto\alpha+\pi$ flips the direction of $\mathbf n$, we only need to seek a solution to this equation in the interval $\alpha\in[0,\pi)$. These are given by $\alpha_1=\frac 12 \arctan \frac{\mathbf u^T \sigma_c \mathbf v}{\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v}$ and $\alpha_2=\alpha_1+\frac{\pi}{2}$, one of which will correspond to a minimum and the other to a maximum of $f(\alpha)$. One checks the sign of $f^{\prime\prime}(\alpha)=-2(\mathbf u^T \sigma_c \mathbf u - \mathbf v^T \sigma_c \mathbf v)\cos(2\alpha) - 2 (\mathbf u^T \sigma_c \mathbf v) \sin(2\alpha)$ for each of these to determine the $\alpha$ that maximizes $f(\alpha)$, and from this immediately arrives at the correct form for the maximum horizontal stress $\mathbf n$.
 
 The description above computes a 3d *direction* vector $\mathbf n$. If one were to scale this vector the same way as done in 2d, i.e., with the magnitude of the stress in this direction, one will typically get vectors whose length is principally determined by the hydrostatic pressure at a given location simply because the hydrostatic pressure is the largest component of the overall stress. On the other hand, the hydrostatic pressure does not determine any principal direction because it is an isotropic, anti-compressive force. As a consequence, there are often points in simulations (e.g., at the center of convection rolls) where the stress has no dominant horizontal direction, and the algorithm above will then in essence choose a random direction because the stress is approximately equal in all horizontal directions. If one scaled the output by the magnitude of the stress in this direction (i.e., approximately equal to the hydrostatic pressure at this point), one would get randomly oriented vectors at these locations with significant lengths.
 
@@ -1566,7 +1702,11 @@ In contrast to the &lsquo;dynamic topography&rsquo; visualization postprocessor,
 
 Physical units: \si{\meter}.
 
-&lsquo;surface stress&rsquo;: A visualization output object that generates output on the surface of the domain for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is included, its contribution is accounted for. Note that the convention of positive compressive stress is followed.
+&lsquo;surface strain rate tensor&rsquo;: A visualization output object that generates output on the surface of the domain for the 4 (in 2d) or 9 (in 3d) components of the strain rate tensor, i.e., for the components of the tensor $\varepsilon(\mathbf u)$ in the incompressible case and $\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I$ in the compressible case.Note that both in 2d and in 3d the output tensor will have 9 elements, but that in 2d, only 4 are filled.
+
+Physical units: \si{\per\second}.
+
+&lsquo;surface stress&rsquo;: A visualization output object that generates output on the surface of the domain for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is included, its contribution is accounted for. Note that the convention of positive compressive stress is followed.The stress outputted on the surface of the domain will equal the stress on the surface of the volume output if the parameter &rsquo;Point-wise stress and strain&rsquo; in the Visualization subsection is set to true.
 
 Physical units: \si{\pascal}.
 

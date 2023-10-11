@@ -38,12 +38,11 @@
 **Documentation:** Select a formulation for the basic equations. Different published formulations are available in ASPECT (see the list of possible values for this parameter in the manual for available options). Two ASPECT specific options are
   * &lsquo;isentropic compression&rsquo;: ASPECT&rsquo;s original formulation, using the explicit compressible mass equation, and the full density for the temperature equation.
   * &lsquo;custom&rsquo;: A custom selection of &lsquo;Mass conservation&rsquo; and &lsquo;Temperature equation&rsquo;.
-
 :::{warning}
 The &lsquo;custom&rsquo; option is implemented for advanced users that want full control over the equations solved. It is possible to choose inconsistent formulations and no error checking is performed on the consistency of the resulting equations.
 :::
 
-:::{warning}
+:::{note}
 The &lsquo;anelastic liquid approximation&rsquo; option here can also be used to set up the &lsquo;truncated anelastic liquid approximation&rsquo; as long as this option is chosen together with a material model that defines a density that depends on temperature and depth and not on the pressure.
 :::
 

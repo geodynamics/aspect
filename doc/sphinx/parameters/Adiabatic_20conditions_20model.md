@@ -9,11 +9,13 @@
 ### __Parameter name:__ Model name
 **Default value:** compute profile
 
-**Pattern:** [Selection ascii data|compute profile|function ]
+**Pattern:** [Selection ascii data|compute entropy profile|compute profile|function ]
 
 **Documentation:** Select one of the following models:
 
 &lsquo;ascii data&rsquo;: A model in which the adiabatic profile is read from a file that describes the reference state. Note the required format of the input data: The first lines may contain any number of comments if they begin with &lsquo;#&rsquo;, but one of these lines needs to contain the number of points in the reference state as for example &lsquo;# POINTS: 3&rsquo;. Following the comment lines there has to be a single line containing the names of all data columns, separated by arbitrarily many spaces. Column names are not allowed to contain spaces. The file can contain unnecessary columns, but for this plugin it needs to at least provide columns named &lsquo;temperature&rsquo;, &lsquo;pressure&rsquo;, and &lsquo;density&rsquo;. Note that the data lines in the file need to be sorted in order of increasing depth from 0 to the maximal depth in the model domain. Points in the model that are outside of the provided depth range will be assigned the maximum or minimum depth values, respectively. Points do not need to be equidistant, but the computation of properties is optimized in speed if they are.
+
+&lsquo;compute entropy profile&rsquo;: A model in which the adiabatic profile is calculated by solving the hydrostatic equations for pressure and entropy in depth. Of course the entropy along an adiabat is constant. This plugin requires the material model to provide an additional output object of type PrescribedTemperatureOutputs. It also requires that there is a compositional field of type &rsquo;entropy&rsquo; that represents the entropy of the material.
 
 &lsquo;compute profile&rsquo;: A model in which the adiabatic profile is calculated by solving the hydrostatic equations for pressure and temperature in depth. The gravity is assumed to be in depth direction and the composition is either given by the initial composition at reference points or computed as a reference depth-function. All material parameters are computed by the material model plugin. The surface conditions are either constant or changing over time as prescribed by a user-provided function.
 
@@ -44,6 +46,24 @@
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+
+(parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile)=
+## **Subsection:** Adiabatic conditions model / Compute entropy profile
+(parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Number_20of_20points)=
+### __Parameter name:__ Number of points
+**Default value:** 1000
+
+**Pattern:** [Integer range 5...2147483647 (inclusive)]
+
+**Documentation:** The number of points we use to compute the adiabatic profile. The higher the number of points, the more accurate the downward integration from the adiabatic surface conditions will be.
+
+(parameters:Adiabatic_20conditions_20model/Compute_20entropy_20profile/Surface_20entropy)=
+### __Parameter name:__ Surface entropy
+**Default value:** 0
+
+**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The surface entropy for the profile.
 
 (parameters:Adiabatic_20conditions_20model/Compute_20profile)=
 ## **Subsection:** Adiabatic conditions model / Compute profile
