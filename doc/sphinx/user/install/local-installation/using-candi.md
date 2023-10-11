@@ -19,11 +19,9 @@ class="smallcaps">p4est</span> and Trilinos.
 
 2.  *Obtaining a suitable candi configuration file:* As
     mentioned above the default configuration of candi includes
-    a number of packages that are not necessary for ASPECT.
-    We require at least the packages p4est,
-    Trilinos, and finally deal.II. We may require SUNDIALS
-    in future ASPECT versions. In addition there are some
-    configuration options that make ASPECT faster.
+    a number of packages that are not necessary for ASPECT and
+    some optional ASPECT dependencies are not enabled by default.
+    In addition there are some configuration options that make ASPECT faster.
     We provide a candi configuration file that is optimized for
     ASPECT at
 
@@ -34,6 +32,15 @@ class="smallcaps">p4est</span> and Trilinos.
     configuration files in that directory, named `candi.cfg` and `local.cfg`).
     When both `candi.cfg` and `local.cfg` are present in the directory, running
     candi (see below) will by default use the configuration options in `local.cfg`.
+    
+    If you want to work without the `local.cfg`, be aware that you should enable
+    - p4est
+    - trilinos
+    - hdf5 (optional)
+    - netcdf (optional)
+    - sundials (optional)
+    - deal.II
+    and that you should consider enabling `NATIVE_OPTIMIZATIONS`.
 
 2.  *Installing deal.II and its dependencies:*
     Execute `candi` by running
