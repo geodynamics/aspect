@@ -118,23 +118,55 @@ namespace aspect
                     const unsigned int root_process = numbers::invalid_unsigned_int);
 
         /**
-         * Loads a data text file. Throws an exception if the file does not
-         * exist, if the data file format is incorrect or if the file grid
-         * changes over model runtime.
+         * Loads a data text file replacing the current data.
+         *
+         * Throws an exception if the file does not
+         * exist, if the data file format is incorrect, or if the file data
+         * like the number and names of columns change (if this class contains
+         * existing data for example when used with a collection of ascii files
+         * changing over the simulation time).
+         *
+         * This function supports normal text / ASCII files that can optionally
+         * be compressed using .gz. If the given filename is a URL and libDAB
+         * support is enabled, the data is downloaded and parsed from the ASCII
+         * data received.
+         *
+         * This function uses the given MPI communicator to only load the data on
+         * rank 0 and broadcasting the information to all other ranks.
          */
         void
-        load_file(const std::string &filename,
-                  const MPI_Comm &communicator);
+        load_ascii(const std::string &filename,
+                   const MPI_Comm &communicator);
 
         /**
          * Fill the current object with data read from a NetCDF file
          * with filename @p filename. This call will fail if ASPECT is not
          * configured with NetCDF support.
          *
-         * @p column_names specifies the list of data columns to load (in the specified order). If
+         * @p data_column_names specifies the list of data columns to load (in the specified order). If
          * an empty vector is passed, all columns will be loaded.
          */
-        void load_netcdf(const std::string &filename, const std::vector<std::string> &data_column_names = {});
+        void
+        load_netcdf(const std::string &filename, const std::vector<std::string> &data_column_names = {});
+
+
+        /**
+         * Loads data from a file replacing the current data.
+         *
+         * Throws an exception if the file does not
+         * exist, if the data file format is incorrect, or if the file data
+         * like the number and names of columns change (if this class contains
+         * existing data for example when used with a collection of ascii files
+         * changing over the simulation time).
+         *
+         * The following formats are currently supported:
+         * - ASCII files (typically ending in .txt)
+         * - gzip compressed ASCII files (ending in .gz)
+         * - URLs starting with "http" (handled by libDAB)
+         */
+        void
+        load_file(const std::string &filename,
+                  const MPI_Comm &communicator);
 
         /**
          * Returns the computed data (velocity, temperature, etc. - according
