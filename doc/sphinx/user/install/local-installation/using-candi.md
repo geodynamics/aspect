@@ -20,7 +20,7 @@ class="smallcaps">p4est</span> and Trilinos.
 2.  *Obtaining a suitable candi configuration file:* As
     mentioned above the default configuration of candi includes
     a number of packages that are not necessary for ASPECT.
-    We require at least the packages <span-class="smallcaps">p4est</span>,
+    We require at least the packages p4est,
     Trilinos, and finally deal.II. We may require SUNDIALS
     in future ASPECT versions. In addition there are some
     configuration options that make ASPECT faster.
