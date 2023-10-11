@@ -97,6 +97,9 @@ def escape_doc_string(text) :
     tmp = re.sub(r'\\texttt\{(.*?)\}',
                  r'`\1`',
                  tmp)
+    tmp = re.sub(r'\\note\{(.*?)\}',
+                 r':::{note}\1:::',
+                 tmp)
 
     # Finally escape some characters that have special meaning in markdown:
     tmp = re.sub(r'\[(.*)\]\(',
