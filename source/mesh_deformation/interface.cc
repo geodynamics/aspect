@@ -1372,9 +1372,31 @@ namespace aspect
 
         }
 
-      this->get_pcout() << "Number of mesh deformation degrees of freedom: "
-                        << mesh_deformation_dof_handler.n_dofs()
-                        << std::endl;
+      {
+        std::locale s = this->get_pcout().get_stream().getloc();
+        // Creating std::locale with an empty string previously caused problems
+        // on some platforms, so the functionality to catch the exception and ignore
+        // is kept here, even though explicitly setting a facet should always work.
+        try
+          {
+            // Imbue the stream with a locale that does the right thing. The
+            // locale is responsible for later deleting the object pointed
+            // to by the last argument (the "facet"), see
+            // https://en.cppreference.com/w/cpp/locale/locale/locale
+            this->get_pcout().get_stream().imbue(std::locale(std::locale(),
+                                                             new aspect::Utilities::ThousandSep));
+          }
+        catch (const std::runtime_error &e)
+          {
+            // If the locale doesn't work, just give up
+          }
+
+        this->get_pcout() << "Number of mesh deformation degrees of freedom: "
+                          << mesh_deformation_dof_handler.n_dofs()
+                          << std::endl;
+
+        this->get_pcout().get_stream().imbue(s);
+      }
 
       mesh_locally_owned = mesh_deformation_dof_handler.locally_owned_dofs();
       DoFTools::extract_locally_relevant_dofs (mesh_deformation_dof_handler,
