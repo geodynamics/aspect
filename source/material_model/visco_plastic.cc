@@ -382,8 +382,8 @@ namespace aspect
                              "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Approximate hydrothermal cooling through thermal conductivity", "false",
                              Patterns::Bool (),
-                             "Whether hydrothermal fluid circulation is considered in the calculation of the "
-                             "conductivity or not.");
+                             "Whether the thermal conductivity should be adapted to mimic the cooling exerted "
+			     "by hydrothermal fluid circulation in the shallow subsurface.");
           prm.declare_entry ("Cutoff maximum temperature for hydrothermal cooling approximation", "873.15",
                              Patterns::Double (0.),
                              "Temperature up to which the hydrothermal cooling approximation is applied. "
@@ -397,17 +397,17 @@ namespace aspect
                              "Nusselt number, that is the ratio of convective to conductive heat transfer "
 			     "across the boundary of the crust. "
 			     "Increasing the Nusselt number will mimic the effect of faster circulating fluids and "
-			     "thus increase the thermal conductivity");
+			     "thus increase the thermal conductivity.");
           prm.declare_entry ("Temperature smoothing factor for hydrothermal cooling approximation", "0.75",
                              Patterns::Double (0.),
                              "Smoothing factor that controls the influence of the temperature "
 			     "on the hydrothermal cooling. If it is set to zero, the temperature is not considered "
-			     "in the calculation of the thermal conductivity");
+			     "in the calculation of the thermal conductivity.");
 	  prm.declare_entry ("Depth smoothing factor for hydrothermal cooling approximation", "0.75",
                              Patterns::Double (0.),
                              "Smoothing factor that controls the influence of the depth "
                              "on the hydrothermal cooling. If it is set to zero, the temperature is not considered "
-                             "in the calculation of the thermal conductivity");
+                             "in the calculation of the thermal conductivity.");
 
         }
         prm.leave_subsection();

@@ -258,8 +258,9 @@ namespace aspect
         /**
          * Whether thermal conductivity should be increased as an approximation
          * of cooling through hydrothermal fluid circulation (if true) or not (default).
-         * The approximation of cooling follows Eq. 8 of Gregg et al.
-         * (Melt generation, crystallization, and extraction beneath segmented oceanic transform faults).
+         * The approximation of cooling follows Eq. 8 of Gregg et al. (2009)
+         * ('Melt generation, crystallization, and extraction beneath segmented oceanic transform faults' in
+         * Journal of Geophysical Research: Solid Earth, 114, B11102).
          */
         bool use_hydrothermal_cooling_approximation;
 
@@ -280,14 +281,14 @@ namespace aspect
 
         /**
          * Smoothing factor used for the computation of the approximation of cooling.
-         * Controls the influence of the temperature on the resultig thermal conductivity.
+         * This factor controls the influence of the temperature on the resulting thermal conductivity.
          */
         double smoothing_factor_temperature;
 
 
 	/**
          * Smoothing factor used for the computation of the approximation of cooling.
-         * Controls the influence of the depth on the resulting thermal conductivity.
+         * This factor controls the influence of the depth on the resulting thermal conductivity.
          */
         double smoothing_factor_depth;
 

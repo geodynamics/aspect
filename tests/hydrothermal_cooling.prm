@@ -1,5 +1,5 @@
 ## This is a test for models that use the viscoplastic material model 
-## and which  use the approximation of hydrothermal cooling
+## including the spproximation of hydrothermal cooling through an incresed thermal conductivity.
 
 
 ####  Global parameters
@@ -11,8 +11,7 @@ set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = iterated Stokes
 set Nonlinear solver tolerance             = 1e-4
 set Max nonlinear iterations               = 20
-set CFL number                             = 0.5	#Courant-Friedrichs-Lewy
-set Output directory                       = hydrothermal_cooling
+set CFL number                             = 0.5
 set Pressure normalization                 = no
 
 
@@ -37,7 +36,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications (no mesh refinement)
+# Mesh refinement specifications (no adaptive mesh refinement)
 subsection Mesh refinement
   set Initial global refinement          = 3
 end
@@ -108,7 +107,7 @@ subsection Initial temperature model
   subsection Function
     set Variable names = x,y
     set Function constants = h=20.e3,ts=273, tbot=1200
-    set Function expression = if((h-y)<=6.e3, ts, tbot)
+    set Function expression = ts+(h-y)/h*(tbot-ts)
   end
 end
 
@@ -138,8 +137,9 @@ subsection Material model
     
     #Hydrothermal conductivity
     set Approximate hydrothermal cooling through thermal conductivity = true
-    set Nusselt number for hydrothermal cooling approximation  = 2   #has to be >=1
-    set Smoothing factor for hydrothermal cooling approximation = .8
+    set Nusselt number for hydrothermal cooling approximation  = 2   #should be >=1
+    set Temperature smoothing factor for hydrothermal cooling approximation = .8
+    set Depth smoothing factor for hydrothermal cooling approximation = .8
     set Cutoff maximum temperature for hydrothermal cooling approximation = 873.15
     set Cutoff maximum depth for hydrothermal cooling approximation = 3.e3
 
