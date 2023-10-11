@@ -16,7 +16,7 @@ not available as packages but need to be compiled from scratch. Finally, for
 obtaining a recent development version of
 ASPECT, you will need the git version control system.
 
-An exemplary command to obtain all required packages on Ubuntu 14.04 would be:
+An exemplary command to obtain all required packages on Ubuntu 20.04 would be:
 
     sudo apt-get install build-essential \
                          cmake \
