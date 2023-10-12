@@ -32,15 +32,19 @@ class="smallcaps">p4est</span> and Trilinos.
     configuration files in that directory, named `candi.cfg` and `local.cfg`).
     When both `candi.cfg` and `local.cfg` are present in the directory, running
     candi (see below) will by default use the configuration options in `local.cfg`.
-    
+
     If you want to work without the `local.cfg`, be aware that you should enable
-    - p4est
-    - trilinos
-    - hdf5 (optional)
-    - netcdf (optional)
-    - sundials (optional)
-    - deal.II
-    and that you should consider enabling `NATIVE_OPTIMIZATIONS`.
+      - p4est
+      - trilinos
+      - hdf5 (optional)
+      - netcdf (optional)
+      - sundials (optional)
+      - deal.II
+    and that you should consider enabling `NATIVE_OPTIMIZATIONS`. The packages above
+    marked `(optional)` are not required to be able to run ASPECT, but some features
+    like HDF5 output will not be available if the corresponding package is not installed.
+    Therefore, we recommend installing all packages as listed above (or use the
+    provided `local.cfg`).
 
 2.  *Installing deal.II and its dependencies:*
     Execute `candi` by running
