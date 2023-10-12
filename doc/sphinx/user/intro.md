@@ -58,16 +58,31 @@ Also see {cite:t}`aspectmanual,aspect-doi-v1.5.0,aspect-doi-v2.0.0,aspect-doi-v2
 
 ## Publishing with ASPECT
 Open research statements are now a common requirement when publishing research. These support reuse, validation, and citation and often take the form of *Data availability, Data access, Code availability, Open Research*, and *Software availability* statements.
- We recommend depositing input files that allow your published research to be reproduced and output model data in support of your research outcomes and figures. In addition, consider depositing model files that may be reused by others.
+ We recommend depositing input files in an approved repository that allow your published research to be reproduced and output model data in support of your research outcomes and figures. In addition, consider depositing model files that may be reused by others.
+
+Recommended files to deposit include: 
+
+- Input files (.prm files)
+ 
+  - Original input parameter file. Use `original.prm` in the output directory if you modified the input parameter file after running the model.
+  - If specified as separate files:
+    - Material model
+    - Geometry model
+    - Gravity model
+    - Initial conditions
+    - Boundary conditions
+	
+  - Install configuration specifications and code changes unless fully documented by `log.txt` output.
+
+- Output files
+  - `Log.txt` files
+  - Data and scripts needed to reproduce figures
+  - Solutions relevant to the conclusions (.vtu, hdf5/xdmf, etc.)
+
+Remember to cite software and data in your text as well as in your data availability or similar statement. For suggestions on crafting a data availability statement, please see **<https://aspect.geodynamics.org/cite.html>**.
 
 
-Remember to cite software and data in your text as well as in your Data Availability or similar statement.
-
-File should be deposited in an approved repository.
-
-Specifc guidance in meeting publisher’s data availability requirements for ASPECT is available here: **insert aspect website here**.
-
-Additional information on [Publishing](https://geodynamics.org/software/software-bp/software-publishing) is available on the CIG website.
+Additional information on publishing and guidance on approved repositories is available on the CIG website: **<https://geodynamics.org/software/software-bp/software-publishing>**.
 
 ## Acknowledgments
 
