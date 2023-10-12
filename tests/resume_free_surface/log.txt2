@@ -2,7 +2,7 @@
 Number of active cells: 2,560 (on 5 levels)
 Number of degrees of freedom: 34,068 (20,930+2,673+10,465)
 
-Number of mesh deformation degrees of freedom: 5346
+Number of mesh deformation degrees of freedom: 5,346
    Solving mesh displacement system... 0 iterations.
    Added initial topography to grid
 
