@@ -399,9 +399,8 @@ namespace aspect
     double
     Box<dim>::depth_including_mesh_deformation(const Point<dim> &position) const
     {
-
       AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
-                  ExcMessage("Depth with mesh deformation currently only works with a 2D box geometry model."));
+      ExcMessage("Depth with mesh deformation currently only works with a 2D box geometry model."));
 
       AssertThrow(dim==2,
                   ExcMessage("Depth with mesh deformation currently only works with a 2D box geometry model."));
@@ -411,8 +410,9 @@ namespace aspect
       Point<dim-1> p;
       for (unsigned int d=0; d<dim-1; ++d)
         p[d] = position[d];
-
+              
       double depth_from_surface = surface_function->value(p) - position[dim-1];
+      
       return std::max (depth_from_surface, 0.);
     }
 
