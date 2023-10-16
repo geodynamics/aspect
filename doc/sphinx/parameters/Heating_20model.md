@@ -206,3 +206,29 @@ If the function you are describing represents a vector-valued function with mult
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** Number of radioactive elements
+
+(parameters:Heating_20model/Shear_20heating)=
+## **Subsection:** Heating model / Shear heating
+(parameters:Heating_20model/Shear_20heating/Cohesion_20for_20maximum_20shear_20stress)=
+### __Parameter name:__ Cohesion for maximum shear stress
+**Default value:** 2e7
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Cohesion for maximum shear stress that should be used for the computation of shear heating. It can be useful to limit the shear stress in models where velocities are prescribed, and actual stresses in the Earth would be lower than the stresses introduced by the boundary conditions. Only used if &rsquo;Limit stress contribution to shear heating&rsquo; is true. Units: Pa.
+
+(parameters:Heating_20model/Shear_20heating/Friction_20angle_20for_20maximum_20shear_20stress)=
+### __Parameter name:__ Friction angle for maximum shear stress
+**Default value:** 0
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** Friction angle for maximum shear stress that should be used for the computation of shear heating. It can be useful to limit the shear stress in models where velocities are prescribed, and actual stresses in the Earth would be lower than the stresses introduced by the boundary conditions. Only used if &rsquo;Limit stress contribution to shear heating&rsquo; is true. Units: none.
+
+(parameters:Heating_20model/Shear_20heating/Limit_20stress_20contribution_20to_20shear_20heating)=
+### __Parameter name:__ Limit stress contribution to shear heating
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** In models with prescribed boundary velocities, stresses can become unrealistically large. Using these large stresses when calculating the amount of shear heating would then lead to an unreasonable increase in temperature. This parameter indicates if the stress being used to compute the amount of shear heating should be limited based on a Drucker-Prager yield criterion with the cohesion given by the &rsquo;Cohesion for maximum shear stress&rsquo; parameter and the friction angle given by the &rsquo;Friction angle for maximum shear stress&rsquo; parameter.
