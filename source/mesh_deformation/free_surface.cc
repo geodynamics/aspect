@@ -321,6 +321,6 @@ namespace aspect
                                            "left open to flow, this flow will carry the mesh with it. "
                                            "The implementation was described in \\cite{rose_freesurface}, "
                                            "with the stabilization of the free surface originally described "
-                                           "in \\cite{KMM2010}.")
+                                           "in \\cite{kaus:etal:2010}.")
   }
 }

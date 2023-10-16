@@ -440,7 +440,7 @@ namespace aspect
         prm.declare_entry ("Number of cheap Stokes solver steps", "200",
                            Patterns::Integer(0),
                            "As explained in the paper that describes ASPECT (Kronbichler, Heister, and Bangerth, "
-                           "2012, see \\cite{KHB12}) we first try to solve the Stokes system in every "
+                           "2012, see \\cite{kronbichler:etal:2012}) we first try to solve the Stokes system in every "
                            "time step using a GMRES iteration with a poor but cheap "
                            "preconditioner. By default, we try whether we can converge the GMRES "
                            "solver in 200 such iterations before deciding that we need a better "
@@ -474,7 +474,7 @@ namespace aspect
                            "of the Stokes system is computed. This approximate $A$ is used in the "
                            "preconditioning used in the GMRES solver. The exact definition of this "
                            "block preconditioner for the Stokes equation can be found in "
-                           "\\cite{KHB12}.");
+                           "\\cite{kronbichler:etal:2012}.");
 
         prm.declare_entry ("Use full A block as preconditioner", "false",
                            Patterns::Bool(),
@@ -482,7 +482,7 @@ namespace aspect
                            "$A$ block as preconditioner for the Stokes solver, or the full $A$ block. The "
                            "simplified approximation only contains the terms that describe the coupling of "
                            "identical components (plus boundary conditions) as described in "
-                           "\\cite{KHB12}. The full block is closer to the description in "
+                           "\\cite{kronbichler:etal:2012}. The full block is closer to the description in "
                            "\\cite{rudi2017weighted}."
                            "\n\n"
                            "There is no clear way to determine which preconditioner "
@@ -504,7 +504,7 @@ namespace aspect
                            "system is computed. This approximate inverse of the $S$ block is used "
                            "in the preconditioning used in the GMRES solver. The exact definition of "
                            "this block preconditioner for the Stokes equation can be found in "
-                           "\\cite{KHB12}.");
+                           "\\cite{kronbichler:etal:2012}.");
       }
       prm.leave_subsection ();
 
@@ -944,7 +944,7 @@ namespace aspect
                          "the error is generally smaller with this choice."
                          "\n\n"
                          "For an in-depth discussion of these issues and a quantitative evaluation "
-                         "of the different choices, see \\cite{KHB12}.");
+                         "of the different choices, see \\cite{kronbichler:etal:2012}.");
       prm.declare_entry ("Use equal order interpolation for Stokes", "false",
                          Patterns::Bool(),
                          "By default (i.e., when this parameter is set to its default value "
@@ -1003,7 +1003,7 @@ namespace aspect
         prm.declare_entry ("Stabilization method", "entropy viscosity",
                            Patterns::Selection("entropy viscosity|SUPG"),
                            "Select the method for stabilizing the advection equation. The original "
-                           "method implemented is 'entropy viscosity' as described in \\cite {KHB12}. "
+                           "method implemented is 'entropy viscosity' as described in \\cite {kronbichler:etal:2012}. "
                            "SUPG is currently experimental.");
 
         prm.declare_entry ("List of compositional fields with disabled boundary entropy viscosity", "",
@@ -1018,7 +1018,7 @@ namespace aspect
         prm.declare_entry ("Use artificial viscosity smoothing", "false",
                            Patterns::Bool (),
                            "If set to false, the artificial viscosity of a cell is computed and "
-                           "is computed on every cell separately as discussed in \\cite{KHB12}. "
+                           "is computed on every cell separately as discussed in \\cite{kronbichler:etal:2012}. "
                            "If set to true, the maximum of the artificial viscosity in "
                            "the cell as well as the neighbors of the cell is computed and used "
                            "instead.");
@@ -1028,10 +1028,10 @@ namespace aspect
                            "The exponent $\\alpha$ in the entropy viscosity stabilization. Valid "
                            "options are 1 or 2. The recommended setting is 2. (This parameter does "
                            "not correspond to any variable in the 2012 paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{kronbichler:etal:2012}. "
                            "Rather, the paper always uses 2 as the exponent in the definition "
                            "of the entropy, following equation (15) of the paper. The full "
-                           "approach is discussed in \\cite{GPP11}.) Note that this is not the "
+                           "approach is discussed in \\cite{guermond:etal:2011}.) Note that this is not the "
                            "thermal expansion coefficient, also commonly referred to as $\\alpha$."
                            "Units: None.");
         prm.declare_entry ("cR", "0.11",
@@ -1048,7 +1048,7 @@ namespace aspect
                            "for the temperature, which already has some physical diffusion. "
                            "(For historical reasons, the name used here is different "
                            "from the one used in the 2012 paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{kronbichler:etal:2012}. "
                            "This parameter corresponds "
                            "to the factor $\\alpha_E$ in the formulas following equation (15) of "
                            "the paper.) Units: None.");
@@ -1061,7 +1061,7 @@ namespace aspect
                            "field itself or its residual. An appropriate value for 2d is 0.052 and "
                            "0.78 for 3d. (For historical reasons, the name used here is different "
                            "from the one used in the 2012 paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{kronbichler:etal:2012}. "
                            "This parameter can be given as a single value or as a list with as "
                            "many entries as one plus the number of compositional fields. In the "
                            "former case all advection fields use the same stabilization parameters, "
@@ -1077,7 +1077,7 @@ namespace aspect
                            "stabilization. This parameter determines how much the strain rate (in addition "
                            "to the velocity) should influence the stabilization. (This parameter does "
                            "not correspond to any variable in the 2012 paper by Kronbichler, "
-                           "Heister and Bangerth that describes ASPECT, see \\cite{KHB12}. "
+                           "Heister and Bangerth that describes ASPECT, see \\cite{kronbichler:etal:2012}. "
                            "Rather, the paper always uses "
                            "0, i.e. they specify the maximum dissipation $\\nu_h^\\text{max}$ as "
                            "$\\nu_h^\\text{max}\\vert_K = \\alpha_{\\text{max}} h_K \\|\\mathbf u\\|_{\\infty,K}$. "
