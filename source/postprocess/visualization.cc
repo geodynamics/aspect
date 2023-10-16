@@ -1230,7 +1230,8 @@ namespace aspect
                              "output properties. Activating this function reduces the disk space "
                              "by about a factor of $2^{dim}$ for HDF5 output, and currently has no "
                              "effect on other output formats. "
-                             "\\note{\\textbf{Warning:} Setting this flag to true will result in "
+                             ":::{warning}\n"
+                             "Setting this flag to true will result in "
                              "visualization output that does not accurately represent discontinuous "
                              "fields. This may be because you are using a discontinuous finite "
                              "element for the pressure, temperature, or compositional variables, "
@@ -1238,7 +1239,8 @@ namespace aspect
                              "quantities as discontinuous fields (e.g., the strain rate, viscosity, "
                              "etc.). These will then all be visualized as \\textit{continuous} "
                              "quantities even though, internally, \\aspect{} considers them as "
-                             "discontinuous fields.}");
+                             "discontinuous fields.\n"
+                             ":::");
 
           prm.declare_entry ("Output mesh velocity", "false",
                              Patterns::Bool(),

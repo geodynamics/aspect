@@ -976,15 +976,17 @@ namespace aspect
                          "provided for the parameter ``Stokes velocity polynomial "
                          "degree''."
                          "\n\n"
-                         "\\note{While \\aspect{} \\textit{allows} you to use this "
-                         "  method, it is generally understood that this is not a "
-                         "  great idea as it leads to rather low accuracy in "
-                         "  general as documented in \\cite{thba22}. "
-                         "  It also leads to substantial problems when "
-                         "  using free surfaces. As a consequence, the presence "
-                         "  of this parameter should not be seen as an "
-                         "  endorsement of the method, or a suggestion to "
-                         "  actually use it. It simply makes the method available.}");
+                         ":::{note}\n"
+                         "While \\aspect{} \\textit{allows} you to use this "
+                         "method, it is generally understood that this is not a "
+                         "great idea as it leads to rather low accuracy in "
+                         "general as documented in \\cite{thba22}. "
+                         "It also leads to substantial problems when "
+                         "using free surfaces. As a consequence, the presence "
+                         "of this parameter should not be seen as an "
+                         "endorsement of the method, or a suggestion to "
+                         "actually use it. It simply makes the method available.\n"
+                         ":::");
       prm.declare_entry ("Use discontinuous temperature discretization", "false",
                          Patterns::Bool (),
                          "Whether to use a temperature discretization that is discontinuous "

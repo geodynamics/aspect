@@ -356,12 +356,14 @@ namespace aspect
                                   "set, in years. In the latter case, the velocity is also converted "
                                   "to meters/year, instead of meters/second."
                                   "\n\n"
-                                  "\\note{Evaluating the solution of a finite element field at "
+                                  ":::{note}\n"
+                                  "Evaluating the solution of a finite element field at "
                                   "arbitrarily chosen points is an expensive process. Using this "
                                   "postprocessor will only be efficient if the number of evaluation "
                                   "points or output times is relatively small. If you need a very large number of "
                                   "evaluation points, you should consider extracting this "
                                   "information from the visualization program you use to display "
-                                  "the output of the `visualization' postprocessor.}")
+                                  "the output of the `visualization' postprocessor.\n"
+                                  ":::")
   }
 }
