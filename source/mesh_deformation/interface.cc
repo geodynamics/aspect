@@ -374,7 +374,7 @@ namespace aspect
         {
           prm.declare_entry("Free surface stabilization theta", "0.5",
                             Patterns::Double(0., 1.),
-                            "Theta parameter described in \\cite{KMM2010}. "
+                            "Theta parameter described in \\cite{kaus:etal:2010}. "
                             "An unstabilized free surface can overshoot its "
                             "equilibrium position quite easily and generate "
                             "unphysical results.  One solution is to use a "

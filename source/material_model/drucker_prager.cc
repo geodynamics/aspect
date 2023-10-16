@@ -299,7 +299,7 @@ namespace aspect
                                    " $\\sigma_y = P \\sin(\\phi) + C \\cos(\\phi)$. "
                                    "Note that in 2d for $\\phi=0$, these criteria "
                                    "revert to the von Mises criterion (no pressure dependence). "
-                                   "See for example \\cite{Thieulot:2011}. "
+                                   "See for example \\cite{thieulot:2011}. "
                                    "\n\n"
                                    "Note that we enforce the pressure to be positive to prevent negative "
                                    "yield strengths and viscosities. "
