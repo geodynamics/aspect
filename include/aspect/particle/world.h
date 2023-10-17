@@ -308,13 +308,6 @@ namespace aspect
         std::unique_ptr<Interpolator::Interface<dim>> interpolator;
 
         /**
-         * The property manager stores information about the additional
-         * particle properties and handles the initialization and update of
-         * these properties.
-         */
-        std::unique_ptr<Property::Manager<dim>> property_manager;
-
-        /**
          * Particle handler object that is responsible for storing and
          * managing the internal particle structures.
          */
@@ -327,6 +320,13 @@ namespace aspect
          * each outer advection iteration.
          */
         Particles::ParticleHandler<dim> particle_handler_backup;
+
+        /**
+         * The property manager stores information about the additional
+         * particle properties and handles the initialization and update of
+         * these properties.
+         */
+        std::unique_ptr<Property::Manager<dim>> property_manager;
 
         /**
          * Strategy for particle load balancing.
