@@ -25,6 +25,9 @@
 #include <aspect/newton.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+
 
 namespace aspect
 {
@@ -238,8 +241,8 @@ namespace aspect
 		}
               else
 		{
-		  AssertThrow(!this->get_parameters().mesh_deformation_enabled,
-		  ExcMessage("Using the hydrothermal cooling approximation together with mesh deformation only works for two dimensional box models."));
+		  //AssertThrow(!this->get_parameters().mesh_deformation_enabled,
+		  //ExcMessage("Using the hydrothermal cooling approximation together with mesh deformation only works for two dimensional box models."));
 
                   depth = depth_with_respect_to_initial_surface; 
 		}
@@ -251,7 +254,7 @@ namespace aspect
                                                 (Nusselt_number - 1.) * std::exp(smoothing_factor_temperature *
                                                 (1. - in.temperature[i] / cutoff_maximum_temperature)) *
                                                 std::exp(smoothing_factor_depth * (1. - depth / cutoff_maximum_depth)) *
-		    		  	        (use_depth_of_sea == true ? std::max(0, std::min(depth_of_sea, maximum_depth_of_sea)/maximum_depth_of_sea) : 1);
+		    		  	        (use_depth_of_sea == true ? std::max(0., std::min(depth_of_sea, maximum_depth_of_sea)/maximum_depth_of_sea) : 1.);
                 }
 	    }
 
@@ -436,7 +439,7 @@ namespace aspect
                              "Smoothing factor that controls the influence of the depth below the surface"
                              "on the hydrothermal cooling. If it is set to zero, the temperature is not considered "
                              "in the calculation of the thermal conductivity. ");
-	  prm.declare_entry ("Maximum depth of the sea", "5000",
+	  prm.declare_entry ("Maximum depth of the sea", "5000.0",
 			     Patterns::Double (1.),
 			     "Cutoff value for the sea depth, at which thermal conductivity no longer increases "
 			     "with increasing sea depth. The effect of cooling in the shallow subsurface in general "

@@ -292,6 +292,12 @@ namespace aspect
          */
         double smoothing_factor_depth;
 
+	/**
+	 * Cutoff value for the depth of the sea at which the thermal conductivity does not increase anymore
+	 * with increasing sea depth.
+	 */
+	double maximum_depth_of_sea;  
+
         /**
          * Number of phase transitions for each chemical composition (including the background field).
          */
