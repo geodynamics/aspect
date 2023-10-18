@@ -293,6 +293,12 @@ namespace aspect
         double smoothing_factor_depth;
 
 	/**
+	 * Whether the sea depth should be relevant for the amount of increase in conductivity.
+	 * Only applicable in combination with a two-dimensional box model that uses mesh deformation.
+	 */
+	bool use_depth_of_sea;
+
+	/**
 	 * Cutoff value for the depth of the sea at which the thermal conductivity does not increase anymore
 	 * with increasing sea depth.
 	 */
