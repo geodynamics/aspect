@@ -464,7 +464,7 @@ namespace aspect
 			     "zero initial topography. If it is set to 'true', then the initial surface will be "
 			     "considered to be the sea level. The effect of cooling in the shallow subsurface then "
                              "becomes stronger up to a certain cutoff depth as the sea depth increases." );
-	  prm.declare_entry ("Maximum depth of the sea", "5000.0",
+	  prm.declare_entry ("Maximum depth of sea", "5000.0",
 			     Patterns::Double (1.),
 			     "Cutoff value for the sea depth, at which thermal conductivity no longer increases "
 			     "with increasing sea depth. "
@@ -545,7 +545,7 @@ namespace aspect
 	  smoothing_factor_temperature = prm.get_double ("Temperature smoothing factor for hydrothermal cooling approximation");
 	  smoothing_factor_depth = prm.get_double ("Depth smoothing factor for hydrothermal cooling approximation");
 	  use_depth_of_sea = prm.get_bool ("Use depth of sea for hydrothermal cooling approximation");
-	  maximum_depth_of_sea = prm.get_double ("Maximum depth of the sea");
+	  maximum_depth_of_sea = prm.get_double ("Maximum depth of sea");
 	  
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
