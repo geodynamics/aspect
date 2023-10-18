@@ -332,8 +332,8 @@ namespace aspect
 
     template <int dim>
     void
-    StructuredDataLookup<dim>::load_file(const std::string &filename,
-                                         const MPI_Comm &comm)
+    StructuredDataLookup<dim>::load_ascii(const std::string &filename,
+                                          const MPI_Comm &comm)
     {
       const unsigned int root_process = 0;
 
@@ -836,6 +836,14 @@ namespace aspect
       // ready to go:
       this->reinit(data_column_names, std::move(coordinate_values),std::move(data_tables));
 #endif
+    }
+
+    template <int dim>
+    void
+    StructuredDataLookup<dim>::load_file(const std::string &filename,
+                                         const MPI_Comm &communicator)
+    {
+      load_ascii(filename, communicator);
     }
 
     template <int dim>
