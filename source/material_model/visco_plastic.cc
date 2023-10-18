@@ -256,7 +256,8 @@ namespace aspect
 		  //this, it has to be set to 'false'. Otherwise the hydrothermal cooling approximation would have
 		  //no effect on the thermal conductivity, which is not intended.
 		  if (!this->get_parameters().mesh_deformation_enabled)
-                    use_depth_of_sea = false;
+                    AssertThrow(!use_depth_of_sea == false,
+                    ExcMessage("The parameter 'Use depth of sea for hydrothermal cooling approximation' can only be set to 'true' for a two-dimensional box model that uses mesh deformaion and has zero initial topography."))
 		  
 		}
               
