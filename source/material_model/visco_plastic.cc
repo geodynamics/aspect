@@ -458,7 +458,7 @@ namespace aspect
                              "in the calculation of the thermal conductivity. Reasonable values for this parameter "
 			     "are betweeen 0.5 and 5, also depending on whether only one or both smoothing factors "
 			     "are used. ");
-	  prm.declare_entry ("Use depth of sea for hydrothermal cooling", "false",
+	  prm.declare_entry ("Use depth of sea for hydrothermal cooling approximation", "false",
 			     Patterns::Bool (),
 			     "Only applicable to a two-dimensional box model, which uses mesh deformation and has "
 			     "zero initial topography. If it is set to 'true', then the initial surface will be "
@@ -544,7 +544,7 @@ namespace aspect
 	  Nusselt_number = prm.get_double ("Nusselt number for hydrothermal cooling approximation");
 	  smoothing_factor_temperature = prm.get_double ("Temperature smoothing factor for hydrothermal cooling approximation");
 	  smoothing_factor_depth = prm.get_double ("Depth smoothing factor for hydrothermal cooling approximation");
-	  use_depth_of_sea = prm.get_bool ("Use depth of sea for hydrothermal cooling");
+	  use_depth_of_sea = prm.get_bool ("Use depth of sea for hydrothermal cooling approximation");
 	  maximum_depth_of_sea = prm.get_double ("Maximum depth of the sea");
 	  
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
