@@ -222,38 +222,52 @@ namespace aspect
           // Adapt the thermal conductivity to approximate hydrothermal cooling, if this option was selected.
           // The depth that the geometry model returns is not the actual depth below the subsurface,
           // but the depth below the initial surface of the model domain.
-          // Therefore, the depth needs to be adjusted in case the model uses mesh deformation.
           if (use_hydrothermal_cooling_approximation  == true)
             { 
-	      double depth = 0.;
+	      double depth_with_respect_to_current_surface = 0.;
 	      double depth_with_respect_to_initial_surface = this->get_geometry_model().depth(in.position[i]);
-	      bool use_depth_of_sea = false;
 	      double depth_of_sea = 0.;
 
-              if(this->simulator_is_past_initialization() && Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()) && dim == 2 && this->get_parameters().mesh_deformation_enabled)
+	      //In the case of a two-dimensional box model, there is an updated depth function that returns
+	      //the depth with respect to the current surface of the model, even after the mesh has been deformed.
+	      //Therefore, mesh deformation can be taken into account.
+              if (this->simulator_is_past_initialization() && Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()) && dim == 2 && this->get_parameters().mesh_deformation_enabled)
 		{
 		  AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
 		  ExcMessage("The usage of the hydrothermal cooling approximation together with mesh deformation is only possible if there is no initial topography")); 
 
-                  depth = this->get_geometry_model().depth_including_mesh_deformation(in.position[i]);
-		  use_depth_of_sea = true;
-		  depth_of_sea = depth_with_respect_to_initial_surface - depth;
+                  depth_with_respect_to_current_surface = this->get_geometry_model().depth_including_mesh_deformation(in.position[i]);
+		  depth_of_sea = depth_with_respect_to_initial_surface - depth_with_respect_to_current_surface;
 		}
+	      //In any other case or if the simulator is not yet past initialisation, the updated depth function 
+	      //cannot be used. Therefore, the depth with respect to the initial surface is used.
               else
-		{
-		  //AssertThrow(!this->get_parameters().mesh_deformation_enabled,
-		  //ExcMessage("Using the hydrothermal cooling approximation together with mesh deformation only works for two dimensional box models."));
+		{ 
+		  depth_with_respect_to_current_surface = depth_with_respect_to_initial_surface;
+		
+		  //If the model is not a two dimensional box model, the hydrothermal cooling approximation 
+		  //can only be used without mesh deformation.
+		  if (!(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()) && dim == 2))
+		    AssertThrow(!this->get_parameters().mesh_deformation_enabled,
+		    ExcMessage("Using the hydrothermal cooling approximation together with mesh deformation only works for two dimensional box models."));
 
-                  depth = depth_with_respect_to_initial_surface; 
+		  //If the model does not use mesh deformation, the option 'Use depth of sea for hydrothermal 
+		  //cooling approximation' is not allowed to be set to 'true'. If the user has nevertheless done
+		  //this, it has to be set to 'false'. Otherwise the hydrothermal cooling approximation would have
+		  //no effect on the thermal conductivity, which is not intended.
+		  if (!this->get_parameters().mesh_deformation_enabled)
+                    use_depth_of_sea = false;
+		  
 		}
               
-	      //Hydrothermal fluid circulation only occurs where the surface is below sea level
-	      if(depth_of_sea >= 0)
+	      //If 'Use depth of sea for hydrothermal cooling approximation' is set to 'true', the conductivity will 
+	      //only be adapted at the points, where the surface is below the sea level (initial surface).
+	      if((use_depth_of_sea && depth_of_sea >= 0) || !use_depth_of_sea)
 	        {
 		  out.thermal_conductivities[i] = out.thermal_conductivities[i] + out.thermal_conductivities[i] *
                                                 (Nusselt_number - 1.) * std::exp(smoothing_factor_temperature *
                                                 (1. - in.temperature[i] / cutoff_maximum_temperature)) *
-                                                std::exp(smoothing_factor_depth * (1. - depth / cutoff_maximum_depth)) *
+                                                std::exp(smoothing_factor_depth * (1. - depth_with_respect_to_current_surface / cutoff_maximum_depth)) *
 		    		  	        (use_depth_of_sea == true ? std::max(0., std::min(depth_of_sea, maximum_depth_of_sea)/maximum_depth_of_sea) : 1.);
                 }
 	    }
@@ -422,7 +436,7 @@ namespace aspect
           prm.declare_entry ("Cutoff maximum depth for hydrothermal cooling approximation", "6000.0",
                              Patterns::Double (0.),
                              "Depth below the surface up to which the hydrothermal cooling approximation is applied. "
-                             "Units: \\si{\\m}.");
+                             "Units: \\si{\\meter}.");
           prm.declare_entry ("Nusselt number for hydrothermal cooling approximation", "2.0",
                              Patterns::Double (1.),
                              "Nusselt number, that is the ratio of convective to conductive heat transfer "
@@ -433,17 +447,27 @@ namespace aspect
                              Patterns::Double (0.),
                              "Smoothing factor that controls the influence of the temperature "
 			     "on the hydrothermal cooling. If it is set to zero, the temperature is not considered "
-			     "in the calculation of the thermal conductivity. ");
+			     "in the calculation of the thermal conductivity. Reasonable values for this parameter "
+                             "are betweeen 0.5 and 5, also depending on whether only one or both smoothing factors "
+                             "are used. ");
 	  prm.declare_entry ("Depth smoothing factor for hydrothermal cooling approximation", "0.75",
                              Patterns::Double (0.),
                              "Smoothing factor that controls the influence of the depth below the surface"
                              "on the hydrothermal cooling. If it is set to zero, the temperature is not considered "
-                             "in the calculation of the thermal conductivity. ");
+                             "in the calculation of the thermal conductivity. Reasonable values for this parameter "
+			     "are betweeen 0.5 and 5, also depending on whether only one or both smoothing factors "
+			     "are used. ");
+	  prm.declare_entry ("Use depth of sea for hydrothermal cooling", "false",
+			     Patterns::Bool (),
+			     "Only applicable to a two-dimensional box model, which uses mesh deformation and has "
+			     "zero initial topography. If it is set to 'true', then the initial surface will be "
+			     "considered to be the sea level. The effect of cooling in the shallow subsurface then "
+                             "becomes stronger up to a certain cutoff depth as the sea depth increases." );
 	  prm.declare_entry ("Maximum depth of the sea", "5000.0",
 			     Patterns::Double (1.),
 			     "Cutoff value for the sea depth, at which thermal conductivity no longer increases "
-			     "with increasing sea depth. The effect of cooling in the shallow subsurface in general "
-			     "gets bigger the more water there is above the surface. ");
+			     "with increasing sea depth. "
+			     "Units: \\si{\\meter}.");
         }
         prm.leave_subsection();
       }
@@ -519,8 +543,9 @@ namespace aspect
 	  Nusselt_number = prm.get_double ("Nusselt number for hydrothermal cooling approximation");
 	  smoothing_factor_temperature = prm.get_double ("Temperature smoothing factor for hydrothermal cooling approximation");
 	  smoothing_factor_depth = prm.get_double ("Depth smoothing factor for hydrothermal cooling approximation");
+	  use_depth_of_sea = prm.get_bool ("Use depth of sea for hydrothermal cooling");
 	  maximum_depth_of_sea = prm.get_double ("Maximum depth of the sea");
-
+	  
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
           rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(phase_function.n_phases_for_each_composition()));
