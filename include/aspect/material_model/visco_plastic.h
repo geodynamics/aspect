@@ -294,7 +294,8 @@ namespace aspect
 
 	/**
 	 * Whether the sea depth should be relevant for the amount of increase in conductivity.
-	 * Only applicable in combination with a two-dimensional box model that uses mesh deformation.
+	 * Only applicable in combination with a two-dimensional box model that uses mesh deformation 
+	 * and has zero initial topography.
 	 */
 	bool use_depth_of_sea;
 
