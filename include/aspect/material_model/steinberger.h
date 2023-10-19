@@ -50,7 +50,7 @@ namespace aspect
            * Read in a file.
            */
           LateralViscosityLookup(const std::string &filename,
-                                 const MPI_Comm &comm);
+                                 const MPI_Comm comm);
 
           /**
            * Returns a temperature-dependency for a given depth.
@@ -89,7 +89,7 @@ namespace aspect
            * Constructor. Reads in the given file.
            */
           RadialViscosityLookup(const std::string &filename,
-                                const MPI_Comm &comm);
+                                const MPI_Comm comm);
 
           /**
            * Return the viscosity for a given depth.

@@ -49,7 +49,7 @@ namespace aspect
 
         SphericalHarmonicsLookup::
         SphericalHarmonicsLookup(const std::string &filename,
-                                 const MPI_Comm &comm)
+                                 const MPI_Comm comm)
         {
           std::string temp;
           // Read data from disk and distribute among processes
@@ -119,7 +119,7 @@ namespace aspect
         // lib/libS20/splhsetup.f which is part of the plotting package downloadable at
         // http://www.earth.lsa.umich.edu/~jritsema/research.html
         SplineDepthsLookup::SplineDepthsLookup(const std::string &filename,
-                                               const MPI_Comm &comm)
+                                               const MPI_Comm comm)
         {
           std::string temp;
           // Read data from disk and distribute among processes

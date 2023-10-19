@@ -189,7 +189,7 @@ namespace aspect
     StructuredDataLookup<dim>::reinit(const std::vector<std::string> &column_names,
                                       std::vector<std::vector<double>> &&coordinate_values_,
                                       std::vector<Table<dim,double>> &&data_table,
-                                      const MPI_Comm &mpi_communicator,
+                                      const MPI_Comm mpi_communicator,
                                       const unsigned int root_process)
     {
       // If this is the root process, or if the user did not request
@@ -333,7 +333,7 @@ namespace aspect
     template <int dim>
     void
     StructuredDataLookup<dim>::load_ascii(const std::string &filename,
-                                          const MPI_Comm &comm)
+                                          const MPI_Comm comm)
     {
       const unsigned int root_process = 0;
 
@@ -841,7 +841,7 @@ namespace aspect
     template <int dim>
     void
     StructuredDataLookup<dim>::load_file(const std::string &filename,
-                                         const MPI_Comm &communicator)
+                                         const MPI_Comm communicator)
     {
       load_ascii(filename, communicator);
     }
@@ -1844,7 +1844,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataProfile<dim>::initialize (const MPI_Comm &communicator)
+    AsciiDataProfile<dim>::initialize (const MPI_Comm communicator)
     {
       lookup = std::make_unique<Utilities::StructuredDataLookup<1>> (this->scale_factor);
 

@@ -1336,8 +1336,7 @@ namespace aspect
 
 
     bool
-    fexists(const std::string &filename,
-            MPI_Comm comm)
+    fexists(const std::string &filename, const MPI_Comm comm)
     {
       bool file_exists = false;
       if (Utilities::MPI::this_mpi_process(comm) == 0)
@@ -1366,7 +1365,7 @@ namespace aspect
 
     std::string
     read_and_distribute_file_content(const std::string &filename,
-                                     const MPI_Comm &comm)
+                                     const MPI_Comm comm)
     {
       std::string data_string;
 
@@ -1561,7 +1560,7 @@ namespace aspect
     void
     collect_and_write_file_content(const std::string &filename,
                                    const std::string &file_content,
-                                   const MPI_Comm &comm)
+                                   const MPI_Comm comm)
     {
       const std::vector<std::string> collected_content = Utilities::MPI::gather(comm, file_content);
 
@@ -1639,7 +1638,7 @@ namespace aspect
 
 
     void create_directory(const std::string &pathname,
-                          const MPI_Comm &comm,
+                          const MPI_Comm comm,
                           bool silent)
     {
       // verify that the output directory actually exists. if it doesn't, create
@@ -2890,7 +2889,7 @@ namespace aspect
                                                const std::string &function_name,
                                                const std::vector<SolverControl> &solver_controls,
                                                const std::exception &exc,
-                                               const MPI_Comm &mpi_communicator,
+                                               const MPI_Comm mpi_communicator,
                                                const std::string &output_filename)
     {
       if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)

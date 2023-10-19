@@ -46,7 +46,7 @@ namespace aspect
         {
           public:
             SphericalHarmonicsLookup(const std::string &filename,
-                                     const MPI_Comm &comm)
+                                     const MPI_Comm comm)
             {
               std::string temp;
               // Read data from disk and distribute among processes
@@ -120,7 +120,7 @@ namespace aspect
         {
           public:
             SplineDepthsLookup(const std::string &filename,
-                               const MPI_Comm &comm)
+                               const MPI_Comm comm)
             {
               std::string temp;
               // Read data from disk and distribute among processes

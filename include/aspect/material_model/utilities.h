@@ -252,7 +252,7 @@ namespace aspect
             HeFESToReader(const std::string &material_filename,
                           const std::string &derivatives_filename,
                           const bool interpol,
-                          const MPI_Comm &comm);
+                          const MPI_Comm comm);
         };
 
         /**
@@ -264,7 +264,7 @@ namespace aspect
           public:
             PerplexReader(const std::string &filename,
                           const bool interpol,
-                          const MPI_Comm &comm);
+                          const MPI_Comm comm);
         };
 
         /**

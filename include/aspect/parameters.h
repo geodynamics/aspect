@@ -395,7 +395,7 @@ namespace aspect
      * verify some of the input arguments.
      */
     Parameters (ParameterHandler &prm,
-                MPI_Comm mpi_communicator);
+                const MPI_Comm mpi_communicator);
 
     /**
      * Declare the run-time parameters this class takes, and call the

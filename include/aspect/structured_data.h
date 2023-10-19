@@ -114,7 +114,7 @@ namespace aspect
         void reinit(const std::vector<std::string> &column_names,
                     std::vector<std::vector<double>> &&coordinate_values,
                     std::vector<Table<dim,double>> &&data_table,
-                    const MPI_Comm &mpi_communicator = MPI_COMM_SELF,
+                    const MPI_Comm mpi_communicator = MPI_COMM_SELF,
                     const unsigned int root_process = numbers::invalid_unsigned_int);
 
         /**
@@ -136,7 +136,7 @@ namespace aspect
          */
         void
         load_ascii(const std::string &filename,
-                   const MPI_Comm &communicator);
+                   const MPI_Comm communicator);
 
         /**
          * Fill the current object with data read from a NetCDF file
@@ -166,7 +166,7 @@ namespace aspect
          */
         void
         load_file(const std::string &filename,
-                  const MPI_Comm &communicator);
+                  const MPI_Comm communicator);
 
         /**
          * Returns the computed data (velocity, temperature, etc. - according
@@ -701,7 +701,7 @@ namespace aspect
          */
         virtual
         void
-        initialize (const MPI_Comm &communicator);
+        initialize (const MPI_Comm communicator);
 
 
         /**
