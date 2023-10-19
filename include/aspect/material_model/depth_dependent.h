@@ -21,13 +21,12 @@
 #ifndef _aspect_material_model_depth_dependent_h
 #define _aspect_material_model_depth_dependent_h
 
-#include <deal.II/base/function_lib.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <deal.II/base/parsed_function.h>
 #include <aspect/material_model/rheology/ascii_depth_profile.h>
 
-#include <boost/lexical_cast.hpp>
+#include <deal.II/base/function_lib.h>
+#include <deal.II/base/parsed_function.h>
 
 namespace aspect
 {
@@ -60,6 +59,12 @@ namespace aspect
         void update() override;
 
         /**
+         * Method that indicates whether material is compressible. Depth dependent model is compressible
+         * if and only if base model is compressible.
+         */
+        bool is_compressible () const override;
+
+        /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in.
          */
@@ -78,27 +83,22 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
-        /**
-         * Method that indicates whether material is compressible. Depth dependent model is compressible
-         * if and only if base model is compressible.
-         */
-        bool is_compressible () const override;
-
       private:
-
         /**
          * An enum to describe where the depth dependency of the viscosity is coming from.
          */
         enum ViscositySource
         {
-          Function,
-          File,
-          List,
-          None
+          function,
+          file,
+          list,
+          none
         };
 
-        // The viscosity that will be used as a reference for scaling the depth-dependent
-        // prefactor.
+        /**
+         * The viscosity that will be used as a reference for computing the depth-dependent
+         * prefactor.
+         */
         double reference_viscosity;
 
         /**
@@ -113,18 +113,6 @@ namespace aspect
         std::unique_ptr<Functions::InterpolatedTensorProductGridData<1>> viscosity_file_function;
 
         /**
-         * Function to calculate viscosity at depth using values provided as List input
-         */
-        double
-        viscosity_from_list(const double &depth) const;
-
-        /**
-         * function to calculate viscosity at depth using values provided from File input
-         */
-        double
-        viscosity_from_file(const double &depth) const;
-
-        /**
          * Function to calculate depth-dependent multiplicative prefactor to be applied
          * to base model viscosity.
          */
@@ -132,13 +120,13 @@ namespace aspect
         calculate_depth_dependent_prefactor(const double &depth) const;
 
         /**
-         * Values of depth specified by the user if using List depth dependence method
+         * Values of depth specified by the user if using the depth dependence method 'list'
          */
         std::vector<double> depth_values;
         std::vector<double> viscosity_values;
 
         /**
-         * Parsed function that specifies viscosity depth-dependence when using the Function
+         * Parsed function that specifies viscosity depth-dependence when using the 'function'
          * method.
          */
         Functions::ParsedFunction<1> viscosity_function;
