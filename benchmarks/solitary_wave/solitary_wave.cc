@@ -159,7 +159,7 @@ namespace aspect
        * @param filename Name of the input file.
        */
       void read_solitary_wave_solution (const std::string &filename,
-                                        MPI_Comm comm)
+                                        const MPI_Comm comm)
       {
         std::string temp;
         std::stringstream in(Utilities::read_and_distribute_file_content(filename, comm));
@@ -195,7 +195,7 @@ namespace aspect
                              const double compaction_length,
                              const bool read_solution,
                              const std::string file_name,
-                             MPI_Comm comm)
+                             const MPI_Comm comm)
       {
         // non-dimensionalize the amplitude
         const double non_dim_amplitude = amplitude / background_porosity;

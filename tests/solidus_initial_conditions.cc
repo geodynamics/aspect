@@ -42,7 +42,7 @@ namespace aspect
          * Read the data file into the class.
          */
         void read(const std::string &filename,
-                  const MPI_Comm &comm);
+                  const MPI_Comm comm);
 
         /**
          * Get the melting temperature.
@@ -166,7 +166,7 @@ namespace aspect
     };
 
     void MeltingCurve::read(const std::string &filename,
-                            const MPI_Comm &comm)
+                            const MPI_Comm comm)
     {
       data_filename=filename;
       // Read data from disk and distribute among processes

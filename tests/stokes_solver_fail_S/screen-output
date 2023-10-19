@@ -36,7 +36,7 @@ Additional information:
 (line in output replaced by default.sh script)
     void aspect::Utilities::throw_linear_solver_failure_exception(const
     string&, const string&, const std::vector<dealii::SolverControl>&,
-    const std::exception&, ompi_communicator_t* const&, const string&)
+    const std::exception&, MPI_Comm, const string&)
     The violated condition was:
     false
     Additional information:

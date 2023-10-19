@@ -305,7 +305,7 @@ namespace aspect
         HeFESToReader::HeFESToReader(const std::string &material_filename,
                                      const std::string &derivatives_filename,
                                      const bool interpol,
-                                     const MPI_Comm &comm)
+                                     const MPI_Comm comm)
         {
           /* Initializing variables */
           interpolation = interpol;
@@ -511,7 +511,7 @@ namespace aspect
 
         PerplexReader::PerplexReader(const std::string &filename,
                                      const bool interpol,
-                                     const MPI_Comm &comm)
+                                     const MPI_Comm comm)
         {
           /* Initializing variables */
           interpolation = interpol;

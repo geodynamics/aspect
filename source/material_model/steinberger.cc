@@ -38,7 +38,7 @@ namespace aspect
     namespace internal
     {
       LateralViscosityLookup::LateralViscosityLookup(const std::string &filename,
-                                                     const MPI_Comm &comm)
+                                                     const MPI_Comm comm)
       {
         std::string temp;
         // Read data from disk and distribute among processes
@@ -85,7 +85,7 @@ namespace aspect
       }
 
       RadialViscosityLookup::RadialViscosityLookup(const std::string &filename,
-                                                   const MPI_Comm &comm)
+                                                   const MPI_Comm comm)
       {
         std::string temp;
         // Read data from disk and distribute among processes

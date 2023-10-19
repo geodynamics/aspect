@@ -39,7 +39,7 @@ namespace aspect
 {
   template <int dim>
   Parameters<dim>::Parameters (ParameterHandler &prm,
-                               MPI_Comm mpi_communicator)
+                               const MPI_Comm mpi_communicator)
   {
     parse_parameters (prm, mpi_communicator);
   }
@@ -2252,7 +2252,7 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template Parameters<dim>::Parameters (ParameterHandler &prm, \
-                                        MPI_Comm mpi_communicator); \
+                                        const MPI_Comm mpi_communicator); \
   template void Parameters<dim>::declare_parameters (ParameterHandler &prm); \
   template void Parameters<dim>::parse_parameters(ParameterHandler &prm, \
                                                   const MPI_Comm mpi_communicator); \
