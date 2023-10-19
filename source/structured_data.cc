@@ -548,7 +548,7 @@ namespace aspect
                                   "lines against the POINTS header in the file."));
         }
 
-      // If deal.II is new enough to support sharing data (since 9.4), then we have
+      // deal.II supports sharing data (since 9.4), so we have to
       // set up member variables on the root process, but not on any of
       // the other processes. So broadcast the data to the remaining
       // processes -- the code above really only wrote into one
