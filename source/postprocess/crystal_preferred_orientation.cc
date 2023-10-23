@@ -132,7 +132,7 @@ namespace aspect
 
       AssertThrow (out, ExcMessage(std::string("Trying to write to file <") +
                                    filename +
-                                   ">, but the file can't be opened!"))
+                                   ">, but the file can't be opened!"));
 
       // now write and then move the tmp file to its final destination
       // if necessary
@@ -747,7 +747,7 @@ namespace aspect
               Output cpo_fabric_instruction = string_to_output_enum(split_raw_cpo_instructions[1]);
 
               AssertThrow(cpo_fabric_instruction != Output::not_found,
-                          ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option."))
+                          ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option."));
 
               if (cpo_fabric_instruction == Output::EulerAngles)
                 found_euler_angles = true;
@@ -790,7 +790,7 @@ namespace aspect
               Output cpo_fabric_instruction = string_to_output_enum(split_draw_volume_weighted_cpo_instructions[1]);
 
               AssertThrow(cpo_fabric_instruction != Output::not_found,
-                          ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option."))
+                          ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option."));
 
               if (cpo_fabric_instruction == Output::RotationMatrix)
                 found_rotation_matrix = true;

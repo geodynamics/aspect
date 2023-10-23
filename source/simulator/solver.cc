@@ -549,6 +549,7 @@ namespace aspect
 #if DEAL_II_VERSION_GTE(9,6,0)
     {
       const unsigned int block_vel = introspection.block_indices.velocities;
+      (void) block_vel;
 
       Assert (block_vel == 0, ExcNotImplemented());
       if (parameters.use_direct_stokes_solver == false)
@@ -556,6 +557,7 @@ namespace aspect
           const unsigned int block_p = (parameters.include_melt_transport) ?
                                        introspection.variable("fluid pressure").block_index
                                        : introspection.block_indices.pressure;
+          (void) block_p;
           Assert (block_p == 1, ExcNotImplemented());
         }
     }
@@ -649,13 +651,15 @@ namespace aspect
         catch (const std::exception &exc)
           {
             if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-              AssertThrow (false,
-                           ExcMessage (std::string("The direct Stokes solver "
-                                                   "did not succeed. It reported the following error:\n\n")
-                                       +
-                                       exc.what()))
-              else
-                throw QuietException();
+              {
+                AssertThrow (false,
+                             ExcMessage (std::string("The direct Stokes solver "
+                                                     "did not succeed. It reported the following error:\n\n")
+                                         +
+                                         exc.what()));
+              }
+            else
+              throw QuietException();
           }
 
 
