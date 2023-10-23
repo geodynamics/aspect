@@ -651,13 +651,15 @@ namespace aspect
         catch (const std::exception &exc)
           {
             if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-              AssertThrow (false,
-                           ExcMessage (std::string("The direct Stokes solver "
-                                                   "did not succeed. It reported the following error:\n\n")
-                                       +
-                                       exc.what()));
-              else
-                throw QuietException();
+              {
+                AssertThrow (false,
+                             ExcMessage (std::string("The direct Stokes solver "
+                                                     "did not succeed. It reported the following error:\n\n")
+                                         +
+                                         exc.what()));
+              }
+            else
+              throw QuietException();
           }
 
 

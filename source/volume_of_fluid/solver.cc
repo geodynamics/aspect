@@ -69,13 +69,15 @@ namespace aspect
     catch (const std::exception &exc)
       {
         if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-          AssertThrow (false,
-                       ExcMessage (std::string("The iterative advection solver "
-                                               "did not converge. It reported the following error:\n\n")
-                                   +
-                                   exc.what()));
-          else
-            throw QuietException();
+          {
+            AssertThrow (false,
+                         ExcMessage (std::string("The iterative advection solver "
+                                                 "did not converge. It reported the following error:\n\n")
+                                     +
+                                     exc.what()));
+          }
+        else
+          throw QuietException();
       }
 
     sim.current_constraints.distribute (distributed_solution);
