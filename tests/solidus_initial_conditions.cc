@@ -95,8 +95,7 @@ namespace aspect
         /**
          * Return the initial temperature as a function of position.
          */
-        virtual
-        double initial_temperature (const Point<dim> &position) const;
+        double initial_temperature (const Point<dim> &position) const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -108,9 +107,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**
@@ -193,7 +191,7 @@ namespace aspect
               else if (T_Unit!="K")
                 {
                   AssertThrow(false,ExcMessage ("Unit of the first column of melting curve data "
-                                                "has to be one of the following: C/K."))
+                                                "has to be one of the following: C/K."));
                 }
 
               is_radius=false;                    // Second column is pressure
@@ -208,8 +206,8 @@ namespace aspect
                     p*=1.e3;                    // km to meters
                   else if (P_Unit!="m")
                     AssertThrow(false,ExcMessage ("Unit of the second column of melting curve data "
-                                                  "has to be one of the following: Pa/GPa/km/m."))
-                  }
+                                                  "has to be one of the following: Pa/GPa/km/m."));
+                }
               T_array.push_back(T);
               P_or_R_array.push_back(p);
               n_points++;
