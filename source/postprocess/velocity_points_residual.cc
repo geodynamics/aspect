@@ -325,8 +325,8 @@ namespace aspect
                                   "A postprocessor that computes root mean square velocity "
                                   "residual as \\frac{1}{n} \\sum_n \\lVert \\mathbf u_i^{\\text{solution}} -"
                                   "\\mathbf u_i^{\\text{input}} \\rVert_2, where \\lVert\\cdot\\rVert "
-                                  "denotes the L2-norm at specified evaluation points, i, in the input data. "
-                                  "The velocity residual is the difference between the model solution "
-                                  "velocities and the input ascii data velocities at the evaluation points.")
+                                  "denotes the L2-norm of the difference between the model solution "
+                                  "velocities and the input ascii data velocities at a specified "
+                                  "evaluation point i in the input data for n numer of data points.")
   }
 }
