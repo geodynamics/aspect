@@ -233,7 +233,7 @@ namespace aspect
                             ExcMessage("A material model with strain weakening using the full strain tensor only works if there are "
                                        "compositional fields called sij, with i=1,..,dim and j=1,...,dim listed in the following order: "
                                        "s11, s12, s21, s22."));
-                AssertThrow(n_s22 == n_s11+s-1, ExcMessage("The strain tensor components should be represented by consecutive fields."))
+                AssertThrow(n_s22 == n_s11+s-1, ExcMessage("The strain tensor components should be represented by consecutive fields."));
               }
             if (dim==3)
               {

@@ -73,7 +73,7 @@ namespace aspect
                        ExcMessage (std::string("The iterative advection solver "
                                                "did not converge. It reported the following error:\n\n")
                                    +
-                                   exc.what()))
+                                   exc.what()));
           else
             throw QuietException();
       }
