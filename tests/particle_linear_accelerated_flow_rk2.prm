@@ -54,6 +54,23 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
 end
 
+subsection Particles
+  set Time between data output = 1
+  set Data output format = ascii
+  set Particle generator name = uniform box
+  set Integration scheme = rk2
+
+  subsection Generator
+    subsection Uniform box
+      set Minimum x = 0.0
+      set Maximum x = 0.1
+      set Minimum y = 0.5
+      set Maximum y = 0.55
+      set Number of particles = 1
+    end
+  end
+end
+
 subsection Postprocess
   set List of postprocessors = velocity statistics, particles
 
@@ -62,22 +79,5 @@ subsection Postprocess
     set Output format                 = vtu
     set Time between graphical output = 0
     set List of output variables      = partition
-  end
-
-  subsection Particles
-    set Number of particles = 1
-    set Time between data output = 1
-    set Data output format = ascii
-    set Particle generator name = uniform box
-    set Integration scheme = rk2
-
-    subsection Generator
-      subsection Uniform box
-        set Minimum x = 0.0
-        set Maximum x = 0.1
-        set Minimum y = 0.5
-        set Maximum y = 0.55
-      end
-    end
   end
 end

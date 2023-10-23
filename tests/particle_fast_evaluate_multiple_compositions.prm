@@ -90,15 +90,20 @@ subsection Mesh deformation
   set Mesh deformation boundary indicators = top: free surface
 end
 
+subsection Particles
+  set List of particle properties   = composition
+  set Time between data output      = 0
+  set Data output format            = gnuplot
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles           = 10
+    end
+  end
+end
+
 subsection Postprocess
   set List of postprocessors = particles,visualization,composition statistics,velocity statistics
-
-  subsection Particles
-    set List of particle properties   = composition
-    set Time between data output      = 0
-    set Number of particles           = 10
-    set Data output format            = gnuplot
-  end
 
   subsection Visualization
     set Interpolate output = false

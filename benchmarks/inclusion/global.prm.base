@@ -1,16 +1,11 @@
 ############### Global parameters
 
 set Additional shared libraries            = ./libinclusion.so
-
-
 set Dimension                              = 2
-
 set Start time                             = 0
 set End time                               = 0
-
 set Pressure normalization                 = volume
 set Nonlinear solver scheme                = no Advection, iterated Stokes
-
 set Use years in output instead of seconds = false
 
 ############### Parameters describing the model
@@ -24,15 +19,12 @@ subsection Geometry model
   end
 end
 
-
-
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left  : InclusionBoundary, \
                                                 right : InclusionBoundary, \
                                                 bottom: InclusionBoundary, \
                                                 top   : InclusionBoundary
 end
-
 
 subsection Material model
   set Model name = InclusionMaterial
@@ -42,19 +34,15 @@ subsection Material model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
 end
-
 
 ############### Parameters describing the temperature field
 
 subsection Initial temperature model
   set Model name = perturbed box
 end
-
-
 
 ############### Parameters describing the discretization
 
@@ -63,13 +51,10 @@ subsection Discretization
   set Use locally conservative discretization = false
 end
 
-
 subsection Mesh refinement
   set Initial global refinement                = 5
   set Initial adaptive refinement              = 0
 end
-
-
 
 ############### Parameters describing what to do with the solution
 

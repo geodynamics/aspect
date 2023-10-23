@@ -67,19 +67,24 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
+subsection Particles
+  set Time between data output = 0.1
+  set Data output format       = vtu
+  set List of particle properties = initial position, initial composition, PostInitializeParticleProperty, velocity
+  set Exclude output properties = initial C_2, initial C_9
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles        = 100
+    end
+  end
+end
+
 subsection Postprocess
   set List of postprocessors = visualization, particles
 
   subsection Visualization
     set Time between graphical output = 0.1
-  end
-
-  subsection Particles
-    set Number of particles        = 100
-    set Time between data output = 0.1
-    set Data output format       = vtu
-    set List of particle properties = initial position, initial composition, PostInitializeParticleProperty, velocity
-    set Exclude output properties = initial C_2, initial C_9
   end
 end
 

@@ -10,6 +10,118 @@ __copyright__ = 'Copyright 2023, ASPECT'
 __license__ = 'GNU GPL 2 or later'
 
 
+def get_parameter_value(parameters, name):
+    """ Given a dictionary of parameters with a structure as
+    the one created by read_parameter_file(), return the value
+    of the parameter with the given name. Returns None if the
+    parameter is not found.
+    """
+
+    if name in parameters:
+        return parameters[name]["value"]
+    else:
+        for entry in parameters:
+            if parameters[entry]["type"] == "subsection":
+                value = get_parameter_value(parameters[entry]["value"], name)
+                if value != None:
+                    return value
+
+    return None
+
+
+
+def get_entry(parameters, entry):
+    """ Given a dictionary of parameters with a structure as
+    the one created by read_parameter_file(), return the 
+    entry (parameter or subsection) specified by 'entry'.
+    'entry' should be a list of strings that identifies a single entry
+    by providing a list of nested subsections and the entry name.
+    If only a single string is given in 'entry', search in global parameters.
+    Returns None if the parameter is not found.
+    """
+
+    if len(entry) == 1:
+        if entry[0] in parameters:
+            return parameters[entry[0]]
+        else:
+            return None
+    elif entry[0] in parameters:
+        current_subsection = entry.pop(0)
+        return get_entry(parameters[current_subsection]["value"], entry)
+
+    return None
+
+
+
+def move_entry_to_subsection(parameters, entry, new_entry):
+    """ Given a dictionary of parameters with a structure as
+    the one created by read_parameter_file(), move the entry
+    with the given name to the given subsection. If the subsection
+    does not exist, it is created. If the old entry is the only
+    entry in its subsection, the old subsection is removed.
+    'entry' has to be a list of strings that identifies a single entry
+    by providing a list of nested subsections and the entry name.
+    'new_subsection' has to be a list of strings that identifies a single subsection
+    by providing a list of nested subsections. If new_subsection is empty,
+    the entry is moved to the global section.
+    """
+
+    # Find the parameter and remove from the main dictionary
+    if len(entry) == 1:
+        if entry[0] in parameters:
+            parameter = parameters.pop(entry[0])
+            print ("Moving parameter " + entry[0] + " with value " + str(parameter) + " to " + str(new_entry))
+            # Add the parameter to their new subsection
+            parameters = set_parameter_value(parameters, new_entry, parameter)
+            return parameters
+        else:
+            raise "Parameter " + entry + " not found."
+
+    else:
+        if entry[0] in parameters:
+            current_subsection = entry.pop(0)
+            parameters[current_subsection]["value"] = move_entry_to_subsection(parameters[current_subsection]["value"], entry, new_entry)
+
+            # If the subsection that contained the entry is now empty, remove it
+            #if len(entry) == 2 and parameters[current_subsection]["value"] == {}:
+            #    del parameters[current_subsection]
+
+        else:
+            raise "Subsection " + entry[0] + " not found."
+        
+    return parameters
+
+
+
+def set_parameter_value(parameters, entry, value):
+    """ Given a dictionary of parameters with a structure as
+    the one created by read_parameter_file(), set the value
+    of the entry with the given name to the given value.
+    'entry' is a list of strings that identifies a particular entry
+    by providing a list of nested subsections and potentially a
+    parameter name. If no subsection is given,
+    the parameter is set in the global section.
+    If the parameter does not exist in the given subsection,
+    it is created.
+    """
+
+    if len(entry) == 1:
+        if type(value) is not dict:
+            parameters[entry[0]] = {"comment": "", "value": value, "alignment spaces": 0, "type": "parameter"}
+        else:
+            parameters[entry[0]] = value
+
+        return parameters
+    else:
+        current_subsection = entry.pop(0)
+        if current_subsection not in parameters:
+            parameters[current_subsection] = {"comment": "", "value" : dict({}), "type": "subsection"}
+
+        parameters[current_subsection]["value"] = set_parameter_value(parameters[current_subsection]["value"], entry, value)
+        return parameters
+
+
+
 
 def split_parameter_line(line):
     """ Read a 'set parameter' line and extract the name, value, and format. """

@@ -70,6 +70,27 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
+subsection Particles
+  set Data output format       = none
+  set List of particle properties = initial composition
+  set Interpolation scheme = quadratic least squares
+  set Update ghost particles   = true
+  set Particle generator name = reference cell
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 3
+    end
+  end
+
+  subsection Interpolator
+    subsection Quadratic least squares
+      set Use quadratic least squares limiter = true
+      set Use boundary extrapolation = false
+    end
+  end
+end
+
 subsection Postprocess
   set List of postprocessors = particles, velocity statistics, composition statistics, temperature statistics
 
@@ -77,27 +98,6 @@ subsection Postprocess
     set Interpolate output = false
     set List of output variables = material properties
     set Time between graphical output = 0
-  end
-
-  subsection Particles
-    set Data output format       = none
-    set List of particle properties = initial composition
-    set Interpolation scheme = quadratic least squares
-    set Update ghost particles   = true
-    set Particle generator name = reference cell
-
-    subsection Generator
-      subsection Reference cell
-        set Number of particles per cell per direction = 3
-      end
-    end
-
-    subsection Interpolator
-      subsection Quadratic least squares
-        set Use quadratic least squares limiter = true
-        set Use boundary extrapolation = false
-      end
-    end
   end
 end
 

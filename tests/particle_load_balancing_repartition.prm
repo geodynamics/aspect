@@ -10,9 +10,7 @@ include $ASPECT_SOURCE_DIR/tests/particle_load_balancing_none.prm
 
 set Dimension                              = 2
 
-subsection Postprocess
-  subsection Particles
-    set Load balancing strategy = repartition
-    set Particle weight = 10
-  end
+subsection Particles
+  set Load balancing strategy = repartition
+  set Particle weight = 10
 end

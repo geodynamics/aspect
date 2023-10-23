@@ -20,11 +20,16 @@ subsection Mesh refinement
   set Initial global refinement          = 3
 end
 
+subsection Particles
+  set Interpolation scheme = bilinear least squares
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 10000
+    end
+  end
+end
+
 subsection Postprocess
   set List of postprocessors = visualization, particles, composition statistics
-
-  subsection Particles
-    set Interpolation scheme = bilinear least squares
-    set Number of particles = 10000
-  end
 end

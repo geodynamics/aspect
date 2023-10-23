@@ -79,24 +79,24 @@ subsection Mesh refinement
   set Refinement fraction                = 0.3
 end
 
+subsection Particles
+  set Time between data output = 100
+  set Load balancing strategy = none
+  set Data output format = ascii
+  set Integration scheme = euler
+  set Particle generator name = probability density function
+
+  subsection Generator
+    subsection Probability density function
+      set Variable names      = x,z
+      set Function expression = x*x*z
+      set Number of particles = 10
+    end
+  end
+end
+
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
   set List of postprocessors = particles
-
-  subsection Particles
-    set Number of particles = 10
-    set Time between data output = 100
-    set Load balancing strategy = none
-    set Data output format = ascii
-    set Integration scheme = euler
-    set Particle generator name = probability density function
-
-    subsection Generator
-      subsection Probability density function
-        set Variable names      = x,z
-        set Function expression = x*x*z
-      end
-    end
-  end
 end
