@@ -1,0 +1,117 @@
+# This prm file is used to generate a phase diagram for a single 
+# composition undergoing multiple phase transitions. This is achieved
+# without solving any equations by only running the post processors
+# through the "no Advection, no Stokes" nonlinear solver scheme.
+# In this scenario, the material properties are computed as a function of
+# the initial conditions and a reference strain rate (invariant) specified in the 
+# material model section. The resulting solutions and phase diagram is useful
+# to check for any intersection phase transitions and the first-order effects of 
+# the phase transitions on material properties. Varying structures of densities and
+# viscosities could be assigned to phases through the current interface
+
+
+set Dimension                              = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Adiabatic surface temperature          = 1573.0
+set Output directory                       = output_pyrolite
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme = no Advection, no Stokes
+
+# Model geometry
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 200
+    set Y repetitions = 200
+    set X extent      = 800e3
+    set Y extent      = 800e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = left, right
+  set List of model names = box
+  subsection Box
+    set Left temperature   = 273
+    set Right temperature  = 2273
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x, y
+    set Function constants = XMAX=800e3, Tl=273.0, Tr=2273
+    set Function expression = Tl * (x - XMAX)/(-XMAX) + Tr * x / XMAX
+  end
+end
+
+
+subsection Material model
+    set Model name = visco plastic
+    set Material averaging = harmonic average
+    subsection Visco Plastic
+        set Reference temperature = 273
+        set Minimum strain rate = 1.e-20
+        set Reference strain rate = 1e-15
+        set Minimum viscosity = 1e18
+        set Maximum viscosity = 1e24
+
+
+        set Phase transition depths = background:410e3|520e3|560e3| 670e3|670e3|670e3| 670e3|670e3,
+        set Phase transition widths = background:13e3|25e3|60e3| 5e3|5e3|5e3| 5e3|5e3,
+        set Phase transition temperatures = background:1662.0|1662.0|1662.0| 1662.0|1662.0|1662.0| 1662.0|1662.,
+        set Phase transition temperature lower limits = background:-1e31|-1e31|-1e31| -1e31|-1e31|-1e31| 1662.0|1662.0,
+        set Phase transition temperature upper limits = background:1e31|1e31|1e31| 1662.0|1662.0|1662.0| 1e31|1e31,
+        set Phase transition Clapeyron slopes = background:4e6|4.1e6|4e6| 4e6|-2e6|-3.1e6| -2e6|1.3e6
+
+        set Thermal diffusivities = 1.0e-6
+        set Heat capacities = 1250.0
+
+        set Densities = background:3300.0|3394.4|3442.1|3453.2| 3527.1|3691.45|3774.7| 3616.45|3772.0
+
+        set Thermal expansivities = 3.1e-5
+        set Viscosity averaging scheme = harmonic
+        set Viscous flow law = diffusion
+        set Grain size = 1.0000e-02
+    end
+end
+
+subsection Postprocess
+    set List of postprocessors = visualization, velocity statistics, temperature statistics, depth average
+    subsection Depth average
+        set Number of zones = 50
+        set Output format = txt
+        set Time between graphical output = 0
+    end
+    subsection Visualization
+        set List of output variables = density, viscosity, nonadiabatic pressure, strain rate, stress
+        set Output format = vtu
+        set Time steps between graphical output = 1
+    end
+end
+
+subsection Termination criteria 
+    set End step = 1 
+    set Termination criteria = end step 
+end 

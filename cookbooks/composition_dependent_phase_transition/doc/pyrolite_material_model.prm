@@ -1,0 +1,24 @@
+subsection Material model
+    set Model name = visco plastic
+    subsection Visco Plastic
+        # phase transitions are (from left to right):
+        # 1: ol -> wd
+        # 2: wd -> rd
+        # 3: grt -> CaPv + grt
+        # 4: grt -> il
+        # 5: rw -> pv + mw, pt1
+        # 6: il -> pv
+        # 7: rw -> pv + mw, pt2
+        # 8: grt -> pv
+        set Phase transition depths = background:410e3|520e3|560e3| 670e3|670e3|670e3| 670e3|670e3,
+        set Phase transition widths = background:13e3|25e3|60e3| 5e3|5e3|5e3| 5e3|5e3,
+        set Phase transition temperatures = background:1662.0|1662.0|1662.0| 1662.0|1662.0|1662.0| 1662.0|1662.,
+        set Phase transition temperature lower limits = background:-1e31|-1e31|-1e31| -1e31|-1e31|-1e31| 1662.0|1662.0,
+        set Phase transition temperature upper limits = background:1e31|1e31|1e31| 1662.0|1662.0|1662.0| 1e31|1e31,
+        set Phase transition Clapeyron slopes = background:4e6|4.1e6|4e6| 4e6|-2e6|-3.1e6| -2e6|1.3e6
+        
+        # Density values have one component from every phase,
+        # thus has +1 components to the number of the phase transtions
+        set Densities = background:3300.0|3394.4|3442.1|3453.2| 3527.1|3691.45|3774.7| 3616.45|3772.0
+    end
+end

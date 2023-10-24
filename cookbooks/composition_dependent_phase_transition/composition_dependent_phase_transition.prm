@@ -1,0 +1,278 @@
+# What we show in the cookbook: 
+#   This cookbook illustrates the usage of the layered phase transitions 
+# in the visco-plastic material model. The interface for the layered phase
+# transitions is designed to read various properties of 
+# the phase transitions (depth, temperature, Clapeyron slope, and width),
+# as well as the material properties of each phase (density, rheology, etc).
+# Both the parameter file and manual description highlight the steps in setting
+# up these models, and workflows for visualizing the phase diagrams to aid in 
+# designing physically realistic scenarios. Significantly, 
+# the Nonlinear solver scheme is set to 'no Advection, no Stokes', 
+# runs the post-processors without solving the underlying equations.
+# For the purposes of this cookbook, visualizing the initial model outputs
+# without solving the underlying equations is sufficient.
+
+
+
+# Special setup of the solver:
+#   The Nonlinear solver scheme is set to no Advection, no Stokes, in this way, 
+#   only the post-process steps are executed without updating the convection
+#   field.
+set Dimension = 2
+set Use years in output instead of seconds = true
+set Start time = 0
+set End time = 0
+set Output directory = output
+set Timing output frequency = 10
+set Pressure normalization = surface
+set Surface pressure = 0
+set Adiabatic surface temperature = 1573.0
+set Resume computation = false
+set Nonlinear solver scheme = no Advection, no Stokes
+set World builder file = composition_dependent_phase_transition.wb
+
+subsection Discretization
+    set Composition polynomial degree = 2
+    set Stokes velocity polynomial degree = 2
+    set Temperature polynomial degree = 2
+    set Use discontinuous composition discretization = false
+end
+
+
+subsection Formulation
+    set Formulation = custom
+    set Mass conservation = incompressible
+    set Temperature equation = reference density profile
+end
+
+# Geometry:
+#   The mesh is a 2-D chunk that spans 171.5 degree in longitude
+subsection Geometry model
+    set Model name = chunk
+    subsection Chunk
+        set Chunk inner radius = 3.481e6
+        set Chunk outer radius = 6.371e6
+        set Chunk maximum longitude = 1.7150e+02
+        set Chunk minimum longitude = 0.0
+        set Longitude repetitions = 6
+    end
+end
+
+
+# Mesh refinement:
+#   We combine the strategies of the isosurfaces with the viscosity.
+#   In this way, we can refine the level of the refinement in the
+#   slab core controlled by the colder temperature in the slab.
+subsection Mesh refinement
+    set Initial global refinement = 5
+    set Initial adaptive refinement = 4
+    set Minimum refinement level = 5
+    set Strategy = isosurfaces, minimum refinement function, viscosity
+    set Time steps between mesh refinement = 10
+    set Refinement fraction = 0.2
+    set Coarsening fraction = 0.2
+    set Run postprocessors on initial refinement = true
+    set Skip solvers on initial refinement = true
+    subsection Isosurfaces
+        set Isosurfaces = max, max, spcrust: 0.5 | 1.0; max-1, max, spharz: 0.5 | 1.0;  max-1, max, opcrust: 0.5 | 1.0; max-2, max, opharz: 0.5 | 1.0; max-1, max, Temperature: 270.0 | 1173.0
+    end
+    subsection Minimum refinement function
+        set Coordinate system = spherical
+        set Variable names = r,phi,t
+        set Function constants = Ro=6.3710e+06, UM=670e3, DD=100e3
+        set Function expression = ((Ro-r<UM)? \
+                                   ((Ro-r<DD)? 8: 6): 0.0)
+    end
+end
+
+
+subsection Boundary velocity model
+    set Tangential velocity boundary indicators = 0, 1, 2, 3
+end
+
+
+subsection Heating model
+    set List of model names = adiabatic heating, latent heat, shear heating
+end
+
+
+subsection Initial temperature model
+    set List of model names = world builder, adiabatic
+    set List of model operators = add
+    subsection Adiabatic
+        subsection Function
+            set Function expression = 0.0; 0.0; 0.0; 0.0
+        end
+    end
+end
+
+
+subsection Boundary temperature model
+    set Fixed temperature boundary indicators = bottom, top
+    set List of model names = spherical constant
+    subsection Spherical constant
+        set Inner temperature = 3500
+        set Outer temperature = 273
+    end
+end
+
+
+# A total of 4 compositions are included in the model.
+#    sp_crust - the subducting oceanic crust
+#    sp-harz - the subducting harzburgite layer
+#    op-crust - the overiding plate crust
+#    op-harz - the overriding plate harzburgite layer
+subsection Compositional fields
+    set Number of fields = 4
+    set Names of fields = spcrust,spharz,opcrust,opharz
+    set Compositional field methods = field,field,field,field
+end
+
+
+subsection Initial composition model
+    set List of model names = world builder
+end
+
+
+subsection Boundary composition model
+    set Fixed composition boundary indicators = bottom, top
+    set List of model names = initial composition
+    subsection Initial composition
+        set Minimal composition = 0
+        set Maximal composition = 1
+    end
+end
+
+# We use the visco plastic material model for
+# this cookbook.
+# The viscosity is calculated from a composite
+# viscosity scheme with both the diffusion creep and
+# the dislocation creep rheology.
+# phase transitions are (from left to right):
+# 1: ol -> wd
+# 2: wd -> rd
+# 3: grt -> CaPv + grt
+# 4: grt -> il
+# 5: rw -> pv + mw, pt1
+# 6: il -> pv
+# 7: rw -> pv + mw, pt2
+# 8: grt -> pv
+subsection Material model
+    set Model name = visco plastic
+    set Material averaging = harmonic average
+    subsection Visco Plastic
+        set Reference temperature = 273
+        set Minimum strain rate = 1.e-20
+        # As the nonlinear solver scheme 'no Advection, no Stokes' is selected, the material model will by default use the reference strain rate when computing strain-rate dependent material properties.
+        set Reference strain rate = 1e-15
+        set Minimum viscosity = 1e18
+        set Maximum viscosity = 1e24
+
+
+        set Phase transition depths = background:410e3|520e3|560e3| 670e3|670e3|670e3| 670e3|670e3, \
+        	spcrust:80e3| 665e3|720e3, spharz:410e3|520e3|560e3| 670e3|670e3|670e3| 670e3|670e3
+	
+        set Phase transition widths = background:13e3|25e3|60e3| 5e3|5e3|5e3| 5e3|5e3, \
+        	spcrust:5e3| 60e3|5e3, spharz:13e3|25e3|60e3| 5e3|5e3|5e3| 5e3|5e3
+        
+        set Phase transition temperatures = background:1662.0|1662.0|1662.0| 1662.0|1662.0|1662.0| 1662.0|1662., \
+        	spcrust:1173.0|  1662.0|1662.0, spharz:1662.0|1662.0|1662.0| 1662.0|1662.0|1662.0| 1662.0|1662.0
+        
+	    set Phase transition temperature lower limits = background:-1e31|-1e31|-1e31| -1e31|-1e31|-1e31| 1662.0|1662.0, \
+		    spcrust:-1e31| -1e31|-1e31, spharz:-1e31|-1e31|-1e31| -1e31|-1e31|-1e31| 1662.0|1662.0
+        
+	    set Phase transition temperature upper limits = background:1e31|1e31|1e31| 1662.0|1662.0|1662.0| 1e31|1e31, \
+		    spcrust:1e31|  1e31|1e31, spharz:1e31|1e31|1e31| 1662.0|1662.0|1662.0| 1e31|1e31
+
+        set Phase transition Clapeyron slopes = background:4e6|4.1e6|4e6| 4e6|-2e6|-3.1e6| -2e6|1.3e6, \
+            spcrust:0.0|  4e6|1.3e6, spharz:4e6|4.1e6|4e6| 4e6|-2e6|-3.1e6| -2e6|1.3e6
+
+        
+        set Thermal diffusivities = 1.0e-6
+        set Heat capacities = 1250.0
+
+        set Densities = background:3300.0|3394.4|3442.1|3453.2| 3527.1|3691.45|3774.7| 3616.45|3772.0, \
+        	spcrust:3000.0|3540.0| 3613.0|3871.7, \
+   		    spharz:3235.0|3372.3|3441.7|3441.7| 3478.7|3716.1|3759.4| 3679.1|3759.4, \
+		    opcrust:3000.0, opharz:3235.0
+
+
+        set Thermal expansivities = 3.1e-5
+        set Viscosity averaging scheme = harmonic
+        set Viscous flow law = composite
+        set Yield mechanism = drucker
+        set Grain size = 1.0000e-02
+
+        set Prefactors for diffusion creep = \
+		    background:2.4536e-17|2.4536e-17|2.4536e-17|2.4536e-17|2.4536e-17|6.3318e-20|6.3318e-20|6.3318e-20|6.3318e-20, \
+            spcrust:5.0000e-21|2.4536e-17|6.3318e-20|6.3318e-20, \
+		    spharz:2.4536e-17|2.4536e-17|2.4536e-17|2.4536e-17|2.4536e-17|6.3318e-20|6.3318e-20|6.3318e-20|6.3318e-20, \
+ 		    opcrust:2.4536e-17, opharz:2.4536e-17       
+
+        set Grain size exponents for diffusion creep = \
+        	background:3.0000e+00|3.0000e+00|3.0000e+00|3.0000e+00|3.0000e+00|3.0000e+00|3.0000e+00|3.0000e+00|3.0000e+00, \
+       	    spcrust:0.0000e+00|3.0000e+00|3.0000e+00|3.0000e+00, \
+		    spharz:3.0000e+00|3.0000e+00|3.0000e+00|3.0000e+00|3.0000e+00|3.0000e+00|3.0000e+00|3.0000e+00|3.0000e+00, \
+ 		    opcrust:3.0000e+00, opharz:3.0000e+00
+
+        set Activation energies for diffusion creep = \
+		    background:2.8500e+05|2.8500e+05|2.8500e+05|2.8500e+05|2.8500e+05|2.8500e+05|2.8500e+05|2.8500e+05|2.8500e+05, \
+        	spcrust:0.0000e+00|2.8500e+05|2.8500e+05|2.8500e+05, \
+	 	    spharz:2.8500e+05|2.8500e+05|2.8500e+05|2.8500e+05|2.8500e+05|2.8500e+05|2.8500e+05|2.8500e+05|2.8500e+05, \
+		    opcrust:2.8500e+05, opharz:2.8500e+05         
+
+        set Activation volumes for diffusion creep = \
+		    background:6.9000e-06|6.9000e-06|6.9000e-06|6.9000e-06|6.9000e-06|3.0000e-06|3.0000e-06|3.0000e-06|3.0000e-06, \
+        	spcrust:0.0000e+00|6.9000e-06|3.0000e-06|3.0000e-06, \
+		    spharz:6.9000e-06|6.9000e-06|6.9000e-06|6.9000e-06|6.9000e-06|3.0000e-06|3.0000e-06|3.0000e-06|3.0000e-06, \
+		    opcrust:6.9000e-06, opharz:6.9000e-06         	
+
+        set Prefactors for dislocation creep = \
+		    background:3.5831e-17|3.5831e-17|3.5831e-17|3.5831e-17|3.5831e-17|5.0000e-32|5.0000e-32|5.0000e-32|5.0000e-32, \
+        	spcrust:5.0000e-32|3.5831e-17|5.0000e-32|5.0000e-32,\
+		    spharz:3.5831e-17|3.5831e-17|3.5831e-17|3.5831e-17|3.5831e-17|5.0000e-32|5.0000e-32|5.0000e-32|5.0000e-32, \
+        	opcrust:3.5831e-17, opharz:3.5831e-17
+
+	    set Stress exponents for dislocation creep = \
+		    background:3.5000e+00|3.5000e+00|3.500e+00|3.5000e+00|3.5000e+00|1.0000e+00|1.0000e+00|1.0000e+00|1.0000e+00, \
+        	spcrust:1.0000e+00|3.5000e+00|1.0000e+00|1.0000e+00, \
+		    spharz:3.5000e+00|3.5000e+00|3.5000e+00|3.5000e+00|3.5000e+00|1.0000e+00|1.0000e+00|1.0000e+00|1.0000e+00, \
+        	opcrust:3.5000e+00, opharz:3.5000e+00        
+	
+        set Activation energies for dislocation creep = \
+		    background:5.0240e+05|5.0240e+05|5.0240e+05|5.0240e+05|5.0240e+05|0.0000e+00|0.0000e+00|0.000e+00|0.000e+00, \
+        	spcrust:0.0000e+00|5.0240e+05|0.0000e+00|0.0000e+00, \
+		    spharz:5.0240e+05|5.0240e+05|5.0240e+05|5.0240e+05|5.0240e+05|0.0000e+00|0.0000e+00|0.0000e+00|0.0000e+00, \
+        	opcrust:5.0240e+05, opharz:5.0240e+05	
+		
+        set Activation volumes for dislocation creep = \
+		    background:1.2480e-05|1.2480e-05|1.2480e-05|1.2480e-05|1.2480e-05|0.0000e+00|0.0000e+00|0.0000e+00|0.000e+00, \
+        	spcrust:0.0000e+00|1.2480e-05|0.0000e+00|0.0000e+00, \
+		    spharz:1.2480e-05|1.2480e-05|1.2480e-05|1.2480e-05|1.2480e-05|0.0000e+00|0.0000e+00|0.0000e+00|0.0000e+00, \
+		    opcrust:1.2480e-05, opharz:1.2480e-05
+
+        set Angles of internal friction = 25.0
+        set Cohesions = 50.e6
+        set Include Peierls creep = false
+    end
+end
+
+
+subsection Gravity model
+    set Model name = ascii data
+end
+
+
+subsection Postprocess
+    set List of postprocessors = visualization, velocity statistics, temperature statistics, depth average
+    subsection Depth average
+        set Number of zones = 50
+        set Output format = txt
+        set Time between graphical output = 0
+    end
+    subsection Visualization
+        set List of output variables = density, viscosity, nonadiabatic pressure, strain rate, stress
+        set Output format = vtu
+        set Time steps between graphical output = 1
+    end
+end
