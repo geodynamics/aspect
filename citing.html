@@ -78,14 +78,18 @@
 
             var intext = "Computations were done using the ASPECT code version <i>VERSION</i>, see \n\\cite{CITEKEYS}.";
 
+            var datatext = "The code modifications, parameter, data, and log files used for the models in the study are available at DOI (Authors X, Y, Z) under CC BY-NC-SA 4.0.<br><br>ASPECT version <i>VERSION</i>, \\cite{CITEKEYS}}) used in these computations is freely available under the GPL v2.0 or later license through its software landing page https://geodynamics.org/resources/aspect or https://aspect.geodynamics.org and is being actively developed on GitHub and can be accessed via https://github.com/geodynamics/aspect."
+
             var thanks = "We thank the Computational Infrastructure for Geodynamics (geodynamics.org) which is funded by the National Science Foundation under award EAR-0949446 and EAR-1550901 for supporting the development of ASPECT.";
           </script>
 
           <br />
 
           <div class="well well-sm">
-            <h3>Step 1: Select among the features your ASPECT runs use</h3>
-
+            <h3>Step 1: Feature Selection</h3>
+            <p>
+	       Select the ASPECT version used for your computations and specific features that you used. Depending on your choice, different papers will be listed below. If you came to this page with a link from the output of an ASPECT computation, the boxes should have been populated already.
+	    </p>
             <form action="" class="editbox">
               <label>Version: <select id="ver" onchange="update()">
                   <option value="dev">dev</option>
@@ -117,17 +121,40 @@
           </div>
 
           <div class="well well-sm">
-            <h3>Step 2: Use the following text within your publications to cite ASPECT</h3>
+            <h3>Step 2: How to cite</h3>
+	    <p>
+	      Use the following text within your publications to cite ASPECT:
+	    </p>
             <div id="intext" class="box"></div>
+	    <p>
+	      <br>See below for the details about these papers.
+	    </p>
           </div>
 
           <div class="well well-sm">
-            <h3>Step 3: Use the following text in your "Acknowledgements"</h3>
+            <h3>Step 3: Data Availability</h3>
+            <p>
+	      We strongly recommend making your data available for reproducibilty and
+	      replicability. Consider depositing your data (code, parameter files, data, log files, ...)
+	      in an approved repository, which
+	      will assign an identifier (e.g. a DOI) and enable citation of your data. See <a href="https://geodynamics.org/software/software-bp/software-publishing">geodynamics.org software publishing guidance</a>.
+	      <br/>
+	      Then add the following to your data availability statement:
+            </p>
+	      <div id="datatext" class="box"></div>
+            <br/>
+	  </div>
+
+          <div class="well well-sm">
+            <h3>Step 4: Acknowledgements</h3>
+	    <p>
+	      Please consider using the following text in your Acknowledgements section:
+	      </p>
             <div id="thanks" class="box"></div>
           </div>
 
           <div class="well well-sm">
-            <h3>Step 4: Add the following papers to your list of references</h3>
+            <h3>Step 5: Add the following papers to your list of references</h3>
             <p>
               The following paper describe all aspects of the methods
               you used in your ASPECT runs, using your selection of
@@ -187,6 +214,7 @@
             }
 
             document.getElementById('intext').innerHTML = intext.replace("CITEKEYS", keys.join(",")).replace("VERSION",version);
+            document.getElementById('datatext').innerHTML = datatext.replace("CITEKEYS", keys.join(",")).replace("VERSION",version);
             document.getElementById('thanks').innerHTML = thanks;
             document.getElementById('paper').innerHTML = txt.replace(/\n/g, "\n<br/>");
             document.getElementById('bibtex').innerHTML = "<pre><code>"+bibtxt+"</code></pre>";
