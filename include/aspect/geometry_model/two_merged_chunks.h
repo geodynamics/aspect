@@ -77,12 +77,6 @@ namespace aspect
         void initialize () override;
 
         /**
-         * This function calls the initialize function of the manifold
-         * with the given pointer to the initial topography model.
-         */
-        void set_topography_model (const InitialTopographyModel::Interface<dim> *topo_pointer);
-
-        /**
          * Generate a coarse mesh for the geometry described by this class.
          */
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const override;
