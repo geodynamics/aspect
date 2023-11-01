@@ -84,6 +84,10 @@ main: dummy $(mainprms)
 prescribed_velocity_ascii_data/: dummy
 	+@$(def); make_lib $@
 
+# Fastscape is not compiled by default, so we cannot test this
+fastscape_eroding_box/: dummy
+	
+
 # Manually list files (and ignore mantle_setup_restart.prm as _start does not generate
 # a checkpoint file after 1 step
 future/: dummy
