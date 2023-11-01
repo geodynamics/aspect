@@ -25,8 +25,6 @@
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <deal.II/grid/manifold_lib.h>
-
 namespace aspect
 {
   namespace GeometryModel
@@ -50,7 +48,7 @@ namespace aspect
         /**
          * Constructor.
          */
-        SphericalShell();
+        SphericalShell() = default;
 
         /**
          * Generate a coarse mesh for the geometry described by this class.
@@ -269,11 +267,6 @@ namespace aspect
          * Number of tangential mesh cells in the initial, coarse mesh.
          */
         int n_cells_along_circumference;
-
-        /**
-         * The manifold that describes the geometry.
-         */
-        const SphericalManifold<dim> spherical_manifold;
 
         /**
          * Set the manifold ids on all cells (also boundaries) before

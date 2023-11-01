@@ -24,6 +24,7 @@
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/grid_tools.h>
+#include <deal.II/grid/manifold_lib.h>
 #include <aspect/utilities.h>
 #include <deal.II/dofs/dof_tools.h>
 
@@ -52,14 +53,6 @@ namespace aspect
         subcell_data.boundary_quads.push_back(face);
       }
     }
-
-
-
-    template <int dim>
-    SphericalShell<dim>::SphericalShell()
-      :
-      spherical_manifold()
-    {}
 
 
 
@@ -251,11 +244,10 @@ namespace aspect
           Assert (false, ExcInternalError());
         }
 
-      // Use a manifold description for all cells. use manifold_id 99 in order
-      // not to step on the boundary indicators used below
-      coarse_grid.set_manifold (99, spherical_manifold);
+      // Use a manifold description for all cells. Use manifold_id 99 in order
+      // not to step on the boundary indicators used below.
+      coarse_grid.set_manifold (99, SphericalManifold<dim>());
       set_manifold_ids(coarse_grid);
-
     }
 
 
