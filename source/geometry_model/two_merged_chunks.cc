@@ -37,22 +37,20 @@ namespace aspect
   {
     template <int dim>
     void
-    TwoMergedChunks<dim>::initialize ()
+    TwoMergedChunks<dim>::
+    create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
       AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr ||
                   dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used with the TwoMergedChunks geometry model."));
 
-      manifold.initialize(&(this->get_initial_topography_model()));
-    }
+      // First create a manifold description that we will then attach
+      // to the triangulation (and which the triangulation will copy):
+      internal::ChunkGeometry<dim> manifold;
+      manifold.set_min_longitude(point1[1]);
+      manifold.set_min_radius(point1[0]);
+      manifold.set_max_depth(point2[0]-point1[0]);
 
-
-
-    template <int dim>
-    void
-    TwoMergedChunks<dim>::
-    create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
-    {
       if (use_merged_grids)
         {
           // The two triangulations that will be merged into coarse_grid.
@@ -103,9 +101,9 @@ namespace aspect
 
       // Deal with a curved mesh by assigning a manifold. We arbitrarily
       // choose manifold_id 15 for this.
-      coarse_grid.set_manifold (15, manifold);
+      coarse_grid.set_manifold (my_manifold_id, manifold);
       for (const auto &cell : coarse_grid.active_cell_iterators())
-        cell->set_all_manifold_ids (15);
+        cell->set_all_manifold_ids (my_manifold_id);
 
       // Set the boundary indicators.
       set_boundary_indicators(coarse_grid);
@@ -256,6 +254,10 @@ namespace aspect
     double
     TwoMergedChunks<dim>::depth_wrt_topo(const Point<dim> &position) const
     {
+      const internal::ChunkGeometry<dim> &manifold
+        = dynamic_cast<const internal::ChunkGeometry<dim>&>
+          (this->get_triangulation().get_manifold(my_manifold_id));
+
       // depth is defined wrt the reference surface point2[0] + the topography
       // depth is therefore always positive
       const double outer_radius = manifold.get_radius(position);
@@ -290,6 +292,9 @@ namespace aspect
       p[0] = point2[0]-depth;
 
       // Now convert to Cartesian coordinates
+      const internal::ChunkGeometry<dim> &manifold
+        = dynamic_cast<const internal::ChunkGeometry<dim>&>
+          (this->get_triangulation().get_manifold(my_manifold_id));
       return manifold.push_forward_sphere(p);
     }
 
@@ -407,6 +412,9 @@ namespace aspect
       AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
 
+      const internal::ChunkGeometry<dim> &manifold
+        = dynamic_cast<const internal::ChunkGeometry<dim>&>
+          (this->get_triangulation().get_manifold(my_manifold_id));
       const Point<dim> spherical_point = manifold.pull_back(point);
 
       for (unsigned int d = 0; d < dim; ++d)
@@ -427,6 +435,9 @@ namespace aspect
       // This is exactly what we need.
       // Ignore the topography to avoid a loop when calling the
       // AsciiDataBoundary for topography which uses this function....
+      const internal::ChunkGeometry<dim> &manifold
+        = dynamic_cast<const internal::ChunkGeometry<dim>&>
+          (this->get_triangulation().get_manifold(my_manifold_id));
       const Point<dim> transformed_point = manifold.pull_back_sphere(position_point);
       std::array<double,dim> position_array;
       for (unsigned int i = 0; i < dim; ++i)
@@ -459,6 +470,10 @@ namespace aspect
       Point<dim> position_point;
       for (unsigned int i = 0; i < dim; ++i)
         position_point[i] = position_tensor[i];
+
+      const internal::ChunkGeometry<dim> &manifold
+        = dynamic_cast<const internal::ChunkGeometry<dim>&>
+          (this->get_triangulation().get_manifold(my_manifold_id));
       const Point<dim> transformed_point = manifold.push_forward_sphere(position_point);
 
       return transformed_point;
@@ -567,13 +582,6 @@ namespace aspect
                       ExcMessage("Maximum - minimum longitude should be less than 360 degrees."));
           AssertThrow(point3[0] < point2[0],
                       ExcMessage("Middle boundary radius must be less than outer radius."));
-
-          // Inform the manifold about the minimum longitude
-          manifold.set_min_longitude(point1[1]);
-          // Inform the manifold about the minimum radius
-          manifold.set_min_radius(point1[0]);
-          // Inform the manifold about the maximum depth (without topo)
-          manifold.set_max_depth(point2[0]-point1[0]);
 
           if (dim == 3)
             {

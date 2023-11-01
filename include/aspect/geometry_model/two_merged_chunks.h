@@ -67,16 +67,6 @@ namespace aspect
       public:
 
         /**
-         * Initialization function. This function is called once at the
-         * beginning of the program after parse_parameters is run and after
-         * the SimulatorAccess (if applicable) is initialized.
-         * This function calls the initialize function of the manifold
-         * with a pointer to the initial topography model obtained
-         * from SimulatorAccess.
-         */
-        void initialize () override;
-
-        /**
          * Generate a coarse mesh for the geometry described by this class.
          */
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const override;
@@ -311,9 +301,10 @@ namespace aspect
         std::array<unsigned int, dim> upper_repetitions;
 
         /**
-         * An object that describes the geometry.
+         * The manifold id to use for the triangulation we create here. This
+         * number is used to set and query manifold objects.
          */
-        internal::ChunkGeometry<dim> manifold;
+        static constexpr types::manifold_id my_manifold_id = 15;
 
         /**
          * Bind boundary indicators to child cells after each mesh refinement round.
