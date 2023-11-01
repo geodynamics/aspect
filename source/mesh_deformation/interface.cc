@@ -659,8 +659,15 @@ namespace aspect
                     {
                       if (plugin_constraints.is_constrained(local_line) == false)
                         {
+#if DEAL_II_VERSION_GTE(9,6,0)
+                          plugin_constraints.add_constraint(local_line,
+                                                            {},
+                                                            current_plugin_constraints.get_inhomogeneity(local_line));
+#else
                           plugin_constraints.add_line(local_line);
-                          plugin_constraints.set_inhomogeneity(local_line, current_plugin_constraints.get_inhomogeneity(local_line));
+                          plugin_constraints.set_inhomogeneity(local_line,
+                                                               current_plugin_constraints.get_inhomogeneity(local_line));
+#endif
                         }
                       else
                         {
@@ -772,8 +779,15 @@ namespace aspect
                     {
                       if (plugin_constraints.is_constrained(local_line) == false)
                         {
+#if DEAL_II_VERSION_GTE(9,6,0)
+                          plugin_constraints.add_constraint(local_line,
+                                                            {},
+                                                            current_plugin_constraints.get_inhomogeneity(local_line));
+#else
                           plugin_constraints.add_line(local_line);
-                          plugin_constraints.set_inhomogeneity(local_line, current_plugin_constraints.get_inhomogeneity(local_line));
+                          plugin_constraints.set_inhomogeneity(local_line,
+                                                               current_plugin_constraints.get_inhomogeneity(local_line));
+#endif
                         }
                       else
                         {
@@ -1045,10 +1059,12 @@ namespace aspect
 #if DEAL_II_VERSION_GTE(9,6,0)
           level_constraints.reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
                                    relevant_dofs);
+          for (const auto index : mg_constrained_dofs.get_boundary_indices(level))
+            level_constraints.constrain_dof_to_zero(index);
 #else
           level_constraints.reinit(relevant_dofs);
-#endif
           level_constraints.add_lines(mg_constrained_dofs.get_boundary_indices(level));
+#endif
           level_constraints.close();
 
           const Mapping<dim> &mapping = get_level_mapping(level);
@@ -1076,7 +1092,7 @@ namespace aspect
                 level);
 
               user_level_constraints.close();
-              mg_constrained_dofs.add_user_constraints(level,user_level_constraints);
+              mg_constrained_dofs.add_user_constraints(level, user_level_constraints);
 
               // let Dirichlet values win over no normal flux:
               level_constraints.merge(user_level_constraints, AffineConstraints<double>::left_object_wins);

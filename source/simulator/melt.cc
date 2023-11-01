@@ -1572,7 +1572,12 @@ namespace aspect
     for_constraints.subtract_set(nonzero_pc_dofs);
 
     // and constrain the remaining dofs (that are not in melt cells).
+#if DEAL_II_VERSION_GTE(9,6,0)
+    for (const auto index : for_constraints)
+      constraints.constrain_dof_to_zero(index);
+#else
     constraints.add_lines(for_constraints);
+#endif
   }
 
 

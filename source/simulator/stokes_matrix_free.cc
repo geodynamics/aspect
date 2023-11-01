@@ -2498,10 +2498,12 @@ namespace aspect
             DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
 #if DEAL_II_VERSION_GTE(9,6,0)
             level_constraints_v.reinit(dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
+            for (const auto index : mg_constrained_dofs_A_block.get_boundary_indices(level))
+              level_constraints_v.constrain_dof_to_zero(index);
 #else
             level_constraints_v.reinit(relevant_dofs);
-#endif
             level_constraints_v.add_lines(mg_constrained_dofs_A_block.get_boundary_indices(level));
+#endif
             level_constraints_v.close();
 
             std::set<types::boundary_id> no_flux_boundary
