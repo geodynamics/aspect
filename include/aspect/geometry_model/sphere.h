@@ -20,7 +20,6 @@
 #ifndef _aspect_geometry_model_sphere_h
 #define _aspect_geometry_model_sphere_h
 
-#include <deal.II/grid/manifold_lib.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 
@@ -37,7 +36,7 @@ namespace aspect
         /**
          * Constructor.
          */
-        Sphere();
+        Sphere() = default;
 
         /**
          * Generate a coarse mesh for the geometry described by this class.
@@ -157,11 +156,6 @@ namespace aspect
          * Radius of the sphere
          */
         double R;
-
-        /**
-         * The manifold that describes the geometry.
-         */
-        const SphericalManifold<dim> spherical_manifold;
     };
   }
 }
