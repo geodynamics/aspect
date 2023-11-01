@@ -47,18 +47,6 @@ namespace aspect
     }
 
 
-    template <int dim>
-    void
-    TwoMergedChunks<dim>::set_topography_model (const InitialTopographyModel::Interface<dim> *topo_pointer)
-    {
-      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo_pointer) != nullptr ||
-                  dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(topo_pointer) != nullptr,
-                  ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used with the TwoMergedChunks geometry model."));
-
-      manifold.initialize(topo_pointer);
-    }
-
-
 
     template <int dim>
     void
