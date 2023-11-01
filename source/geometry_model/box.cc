@@ -226,6 +226,13 @@ namespace aspect
     }
 
     template <int dim>
+    const std::array<unsigned int, dim> &
+    Box<dim>::get_repetitions () const
+    {
+      return repetitions;
+    }
+
+    template <int dim>
     Point<dim>
     Box<dim>::get_origin () const
     {

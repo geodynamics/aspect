@@ -455,6 +455,7 @@ namespace aspect
     double                         nonlinear_tolerance;
     bool                           resume_computation;
     double                         start_time;
+    double                         end_time;
     double                         CFL_number;
     double                         maximum_time_step;
     double                         maximum_relative_increase_time_step;

@@ -72,6 +72,13 @@ namespace aspect
         Point<dim> get_extents () const;
 
         /**
+         * Return an integer array that denotes the number of repetitions of
+         * the box's coarse mesh.
+         */
+        const std::array<unsigned int, dim> &
+        get_repetitions () const;
+
+        /**
          * Return a point that denotes the lower left corner of the box
          * domain.
          */
