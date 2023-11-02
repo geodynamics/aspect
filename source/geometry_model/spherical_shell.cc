@@ -34,21 +34,14 @@ namespace aspect
   {
     namespace
     {
-      template <int dim>
-      void append_face_to_subcell_data(SubCellData &subcell_data, const CellData<dim-1> & face);
-
-
-
-      template <>
-      void append_face_to_subcell_data<2>(SubCellData &subcell_data, const CellData<1> &face)
+      void append_face_to_subcell_data(SubCellData &subcell_data, const CellData<1> &face)
       {
         subcell_data.boundary_lines.push_back(face);
       }
 
 
 
-      template <>
-      void append_face_to_subcell_data<3>(SubCellData &subcell_data, const CellData<2> &face)
+      void append_face_to_subcell_data(SubCellData &subcell_data, const CellData<2> &face)
       {
         subcell_data.boundary_quads.push_back(face);
       }
@@ -179,7 +172,7 @@ namespace aspect
                               cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
                           face.boundary_id = 0;
 
-                          append_face_to_subcell_data<dim>(subcell_data, face);
+                          append_face_to_subcell_data(subcell_data, face);
                         }
 
                       // Mark the top face of the cell as boundary 1 if we are in
@@ -193,7 +186,7 @@ namespace aspect
                               (cell_layer + 1) * sphere_mesh.n_vertices();
                           face.boundary_id = 1;
 
-                          append_face_to_subcell_data<dim>(subcell_data, face);
+                          append_face_to_subcell_data(subcell_data, face);
                         }
 
                     }
