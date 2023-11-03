@@ -2102,7 +2102,8 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::replace_outflow_boundary_ids(const unsigned int offset)
+  Simulator<dim>::replace_outflow_boundary_ids(const unsigned int offset,
+                                               const bool replace_noflow_boundary_ids)
   {
     const Quadrature<dim-1> &quadrature_formula = introspection.face_quadratures.temperature;
 
@@ -2146,7 +2147,8 @@ namespace aspect
 
                 // ... and change the boundary id of any outflow boundary faces.
                 // If there is no flow, we do not want to apply dirichlet boundary conditions either.
-                if (integrated_flow >= 0)
+                if ((integrated_flow > 0) ||
+                 (integrated_flow == 0 && replace_noflow_boundary_ids == true))
                   face->set_boundary_id(face->boundary_id() + offset);
               }
           }
@@ -2516,7 +2518,8 @@ namespace aspect
   template void Simulator<dim>::compute_reactions(); \
   template void Simulator<dim>::interpolate_material_output_into_advection_field(const AdvectionField &adv_field); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
-  template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset); \
+  template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset, \
+                                                             const bool replace_noflow_boundary_ids); \
   template void Simulator<dim>::restore_outflow_boundary_ids(const unsigned int boundary_id_offset); \
   template void Simulator<dim>::check_consistency_of_boundary_conditions() const; \
   template double Simulator<dim>::compute_initial_newton_residual(const LinearAlgebra::BlockVector &linearized_stokes_initial_guess); \

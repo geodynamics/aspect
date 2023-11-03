@@ -677,7 +677,7 @@ namespace aspect
     // so we want to offset them by 128 and not allow more than 128 boundary ids.
     const unsigned int boundary_id_offset = 128;
     if (!boundary_temperature_manager.allows_fixed_temperature_on_outflow_boundaries())
-      replace_outflow_boundary_ids(boundary_id_offset);
+      replace_outflow_boundary_ids(boundary_id_offset, /*replace_noflow_boundary_ids=*/ false);
 
     // if using continuous temperature FE, do the same for the temperature variable:
     // evaluate the current boundary temperature and add these constraints as well
@@ -716,7 +716,7 @@ namespace aspect
     // use the same trick for marking up outflow boundary conditions for compositional fields
     // as we did above already for the temperature.
     if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
-      replace_outflow_boundary_ids(boundary_id_offset);
+      replace_outflow_boundary_ids(boundary_id_offset, /*replace_noflow_boundary_ids=*/ true);
 
     // now do the same for the composition variable:
     if (!parameters.use_discontinuous_composition_discretization)
