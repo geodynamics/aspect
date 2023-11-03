@@ -33,6 +33,39 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace
+    {
+      template <int dim>
+      bool solver_scheme_is_supported(const Parameters<dim> &parameters)
+      {
+        // If we solve advection equations, we need to iterate them, because this material
+        // models splits temperature diffusion from entropy advection.
+        switch (parameters.nonlinear_solver)
+          {
+            case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Stokes:
+            case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_defect_correction_Stokes:
+            case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
+            case Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes:
+            case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_defect_correction_Stokes:
+            case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_Stokes:
+            case Parameters<dim>::NonlinearSolver::Kind::no_Advection_single_Stokes:
+            case Parameters<dim>::NonlinearSolver::Kind::first_timestep_only_single_Stokes:
+              return true;
+
+            case Parameters<dim>::NonlinearSolver::Kind::single_Advection_single_Stokes:
+            case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Stokes:
+            case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_defect_correction_Stokes:
+            case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
+            case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
+              return false;
+          }
+        Assert(false, ExcNotImplemented());
+        return false;
+      }
+    }
+
+
+
     template <int dim>
     void
     EntropyModel<dim>::initialize()
@@ -46,6 +79,11 @@ namespace aspect
       AssertThrow (this->introspection().compositional_name_exists("entropy"),
                    ExcMessage("The 'entropy model' material model requires the existence of a compositional field "
                               "named 'entropy'. This field does not exist."));
+
+      AssertThrow(solver_scheme_is_supported(this->get_parameters()) == true,
+                  ExcMessage("The 'entropy model' material model requires the use of a solver scheme that "
+                             "iterates over the advection equations but a non iterating solver scheme was selected. "
+                             "Please check the consistency of your solver scheme."));
 
       entropy_reader = std::make_unique<MaterialUtilities::Lookup::EntropyReader>();
       entropy_reader->initialize(this->get_mpi_communicator(), data_directory, material_file_name);

@@ -11,7 +11,7 @@ set Pressure normalization = surface
 set Surface pressure = 0
 set Adiabatic surface temperature = 1573.0
 set Resume computation = false
-set Nonlinear solver scheme                = single Advection, single Stokes
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set World builder file = $ASPECT_SOURCE_DIR/tests/entropy_initial_lookup_wb.wb
 
 

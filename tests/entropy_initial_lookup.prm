@@ -5,7 +5,7 @@ set Dimension                              = 2
 set Use years in output instead of seconds = true
 
 set End time                               = 0
-set Nonlinear solver scheme                = single Advection, single Stokes
+set Nonlinear solver scheme                = iterated Advection and Stokes
 
 
 subsection Formulation

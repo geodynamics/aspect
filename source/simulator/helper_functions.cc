@@ -2005,6 +2005,7 @@ namespace aspect
   }
 
 
+
   template <int dim>
   void
   Simulator<dim>::check_consistency_of_formulation()
@@ -2030,7 +2031,8 @@ namespace aspect
       }
     else if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::isentropic_compression
              || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile
-             || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
+             || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile
+             || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::projected_density_field)
       {
         AssertThrow(material_model->is_compressible() == true,
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
