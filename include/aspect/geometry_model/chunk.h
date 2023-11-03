@@ -57,19 +57,15 @@ namespace aspect
           /**
            * Constructor
            */
-          ChunkGeometry();
+          ChunkGeometry(const InitialTopographyModel::Interface<dim> &topography,
+                        const double min_longitude,
+                        const double min_radius,
+                        const double max_depth);
 
           /**
            * Copy constructor
            */
-          ChunkGeometry(const ChunkGeometry &other);
-
-          /*
-           * An initialization function to make sure that the
-           * manifold has access to the topography plugins.
-           */
-          void
-          initialize(const InitialTopographyModel::Interface<dim> *topography);
+          ChunkGeometry(const ChunkGeometry &other) = default;
 
           /**
            * This function receives a point in cartesian coordinates x, y and z,
@@ -129,32 +125,10 @@ namespace aspect
           get_radius(const Point<dim> &space_point) const;
 
           /**
-           * Set the minimum longitude of the domain,
-           * which is used in pulling back cartesian coordinates
-           * to spherical to get the longitude in the correct
-           * quarter.
-           */
-          virtual
-          void
-          set_min_longitude(const double p1_lon);
-
-          /**
            * Return a copy of this manifold.
            */
           std::unique_ptr<Manifold<dim,dim>>
           clone() const override;
-
-          /**
-           * Set the minimal radius of the domain.
-           */
-          void
-          set_min_radius(const double p1_rad);
-
-          /**
-           * Set the maximum depth of the domain.
-           */
-          void
-          set_max_depth(const double p2_rad_minus_p1_rad);
 
         private:
           /**
@@ -445,9 +419,22 @@ namespace aspect
         std::array<unsigned int, dim> repetitions;
 
         /**
-         * An object that describes the geometry.
+         * An object that describes the geometry. This pointer is
+         * initialized in the initialize() function, and serves as the manifold
+         * object that the triangulation is later given in create_coarse_mesh()
+         * where the triangulation clones it.
+         *
+         * The object is marked as 'const' to make it clear that it should not
+         * be modified once created. That is because the triangulation copies it,
+         * and modifying the current object will not have any impact on the
+         * manifold used by the triangulation.
          */
-        internal::ChunkGeometry<dim> manifold;
+        std::unique_ptr<const internal::ChunkGeometry<dim>> manifold;
+
+        /**
+         * Give a symbolic name to the manifold id to be used by this class.
+         */
+        static const types::manifold_id my_manifold_id = 15;
     };
   }
 }

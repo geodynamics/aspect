@@ -311,9 +311,22 @@ namespace aspect
         std::array<unsigned int, dim> upper_repetitions;
 
         /**
-         * An object that describes the geometry.
+         * An object that describes the geometry. This pointer is
+         * initialized in the initialize() function, and serves as the manifold
+         * object that the triangulation is later given in create_coarse_mesh()
+         * where the triangulation clones it.
+         *
+         * The object is marked as 'const' to make it clear that it should not
+         * be modified once created. That is because the triangulation copies it,
+         * and modifying the current object will not have any impact on the
+         * manifold used by the triangulation.
          */
-        internal::ChunkGeometry<dim> manifold;
+        std::unique_ptr<const internal::ChunkGeometry<dim>> manifold;
+
+        /**
+         * Give a symbolic name to the manifold id to be used by this class.
+         */
+        static const types::manifold_id my_manifold_id = 15;
 
         /**
          * Bind boundary indicators to child cells after each mesh refinement round.
