@@ -161,6 +161,20 @@ namespace aspect
           {
             return SphericalManifold<dim>::get_new_point(vertices, weights);
           }
+
+        private:
+#if !DEAL_II_VERSION_GTE(9,6,0)
+          virtual void
+          get_new_points(const ArrayView<const Point<dim>> &surrounding_points,
+                         const ArrayView<const double>          &weights,
+                         ArrayView<Point<dim>>              new_points) const override
+          {
+            (void)surrounding_points;
+            (void)weights;
+            (void)new_points;
+//            SphericalManifold<dim>::get_new_points(surrounding_points, weights, new_points);
+          }
+#endif
       };
     }
 
