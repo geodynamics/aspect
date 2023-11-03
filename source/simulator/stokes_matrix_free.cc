@@ -2063,8 +2063,14 @@ namespace aspect
           dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
           dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
           time_this("stokes_vmult", 10,
-                    [&] {stokes_matrix.vmult(tmp_dst, tmp_src);},
-                    [&] {tmp_src = tmp_dst;}
+                    [&] ()
+          {
+            stokes_matrix.vmult(tmp_dst, tmp_src);
+          },
+          [&] ()
+          {
+            tmp_src = tmp_dst;
+          }
                    );
         }
 
@@ -2073,8 +2079,14 @@ namespace aspect
           dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
           dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
           time_this("stokes_preconditioner", 1,
-                    [&] {preconditioner_cheap.vmult(tmp_dst, tmp_src);},
-                    [&] {tmp_src = tmp_dst;}
+                    [&] ()
+          {
+            preconditioner_cheap.vmult(tmp_dst, tmp_src);
+          },
+          [&] ()
+          {
+            tmp_src = tmp_dst;
+          }
                    );
         }
         // A preconditioner
@@ -2082,8 +2094,14 @@ namespace aspect
           dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
           dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
           time_this("A_preconditioner", 1,
-                    [&] {prec_A.vmult(tmp_dst.block(0), tmp_src.block(0));},
-                    [&] {tmp_src = tmp_dst;}
+                    [&] ()
+          {
+            prec_A.vmult(tmp_dst.block(0), tmp_src.block(0));
+          },
+          [&] ()
+          {
+            tmp_src = tmp_dst;
+          }
                    );
         }
         // S preconditioner
@@ -2091,8 +2109,14 @@ namespace aspect
           dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
           dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
           time_this("S_preconditioner", 5,
-                    [&] {prec_Schur.vmult(tmp_dst.block(1), tmp_src.block(1));},
-                    [&] {tmp_src = tmp_dst;}
+                    [&] ()
+          {
+            prec_Schur.vmult(tmp_dst.block(1), tmp_src.block(1));
+          },
+          [&] ()
+          {
+            tmp_src = tmp_dst;
+          }
                    );
         }
         // Solve
@@ -2115,7 +2139,10 @@ namespace aspect
             tmp_src,
             preconditioner_cheap);
           },
-          [&] {tmp_dst = solution_copy;}
+          [&] ()
+          {
+            tmp_dst = solution_copy;
+          }
                    );
 
           time_this("Stokes_solve_cheap_gmres", 1,
@@ -2132,7 +2159,10 @@ namespace aspect
             tmp_src,
             preconditioner_cheap);
           },
-          [&] {tmp_dst = solution_copy;}
+          [&] ()
+          {
+            tmp_dst = solution_copy;
+          }
                    );
         }
       }
