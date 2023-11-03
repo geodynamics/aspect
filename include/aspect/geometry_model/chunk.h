@@ -125,32 +125,10 @@ namespace aspect
           get_radius(const Point<dim> &space_point) const;
 
           /**
-           * Set the minimum longitude of the domain,
-           * which is used in pulling back cartesian coordinates
-           * to spherical to get the longitude in the correct
-           * quarter.
-           */
-          virtual
-          void
-          set_min_longitude(const double p1_lon);
-
-          /**
            * Return a copy of this manifold.
            */
           std::unique_ptr<Manifold<dim,dim>>
           clone() const override;
-
-          /**
-           * Set the minimal radius of the domain.
-           */
-          void
-          set_min_radius(const double p1_rad);
-
-          /**
-           * Set the maximum depth of the domain.
-           */
-          void
-          set_max_depth(const double p2_rad_minus_p1_rad);
 
         private:
           /**

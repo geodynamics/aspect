@@ -340,16 +340,6 @@ namespace aspect
 
 
       template <int dim>
-      void
-      ChunkGeometry<dim>::
-      set_min_longitude(const double p1_lon)
-      {
-        point1_lon = p1_lon;
-      }
-
-
-
-      template <int dim>
       std::unique_ptr<Manifold<dim,dim>>
       ChunkGeometry<dim>::
       clone() const
@@ -434,26 +424,6 @@ namespace aspect
 
         // return the outer radius at this phi, theta point including topography
         return topography + inner_radius + max_depth;
-      }
-
-
-
-      template <int dim>
-      void
-      ChunkGeometry<dim>::
-      set_min_radius(const double p1_rad)
-      {
-        inner_radius = p1_rad;
-      }
-
-
-
-      template <int dim>
-      void
-      ChunkGeometry<dim>::
-      set_max_depth(const double p2_p1_rad)
-      {
-        max_depth = p2_p1_rad;
       }
     }
 
