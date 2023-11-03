@@ -43,7 +43,12 @@ namespace aspect
                   dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used with the TwoMergedChunks geometry model."));
 
-      manifold.initialize(&(this->get_initial_topography_model()));
+      manifold = std::make_unique<internal::ChunkGeometry<dim>>();
+
+      manifold->initialize(&(this->get_initial_topography_model()));
+      manifold->set_min_longitude(point1[1]);
+      manifold->set_min_radius(point1[0]);
+      manifold->set_max_depth(point2[0]-point1[0]);
     }
 
 
@@ -97,15 +102,15 @@ namespace aspect
       GridTools::transform (
         [&](const Point<dim> &p) -> Point<dim>
       {
-        return manifold.push_forward(p);
+        return manifold->push_forward(p);
       },
       coarse_grid);
 
       // Deal with a curved mesh by assigning a manifold. We arbitrarily
       // choose manifold_id 15 for this.
-      coarse_grid.set_manifold (15, manifold);
+      coarse_grid.set_manifold (my_manifold_id, *manifold);
       for (const auto &cell : coarse_grid.active_cell_iterators())
-        cell->set_all_manifold_ids (15);
+        cell->set_all_manifold_ids (my_manifold_id);
 
       // Set the boundary indicators.
       set_boundary_indicators(coarse_grid);
@@ -258,8 +263,8 @@ namespace aspect
     {
       // depth is defined wrt the reference surface point2[0] + the topography
       // depth is therefore always positive
-      const double outer_radius = manifold.get_radius(position);
-      const Point<dim> rtopo_phi_theta = manifold.pull_back_sphere(position);
+      const double outer_radius = manifold->get_radius(position);
+      const Point<dim> rtopo_phi_theta = manifold->pull_back_sphere(position);
       Assert (rtopo_phi_theta[0] <= outer_radius, ExcMessage("The radius is bigger than the maximum radius."));
       return std::max(0.0, outer_radius - rtopo_phi_theta[0]);
     }
@@ -290,7 +295,7 @@ namespace aspect
       p[0] = point2[0]-depth;
 
       // Now convert to Cartesian coordinates
-      return manifold.push_forward_sphere(p);
+      return manifold->push_forward_sphere(p);
     }
 
 
@@ -407,7 +412,7 @@ namespace aspect
       AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      const Point<dim> spherical_point = manifold.pull_back(point);
+      const Point<dim> spherical_point = manifold->pull_back(point);
 
       for (unsigned int d = 0; d < dim; ++d)
         if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
@@ -427,7 +432,7 @@ namespace aspect
       // This is exactly what we need.
       // Ignore the topography to avoid a loop when calling the
       // AsciiDataBoundary for topography which uses this function....
-      const Point<dim> transformed_point = manifold.pull_back_sphere(position_point);
+      const Point<dim> transformed_point = manifold->pull_back_sphere(position_point);
       std::array<double,dim> position_array;
       for (unsigned int i = 0; i < dim; ++i)
         position_array[i] = transformed_point(i);
@@ -459,7 +464,7 @@ namespace aspect
       Point<dim> position_point;
       for (unsigned int i = 0; i < dim; ++i)
         position_point[i] = position_tensor[i];
-      const Point<dim> transformed_point = manifold.push_forward_sphere(position_point);
+      const Point<dim> transformed_point = manifold->push_forward_sphere(position_point);
 
       return transformed_point;
     }
@@ -567,13 +572,6 @@ namespace aspect
                       ExcMessage("Maximum - minimum longitude should be less than 360 degrees."));
           AssertThrow(point3[0] < point2[0],
                       ExcMessage("Middle boundary radius must be less than outer radius."));
-
-          // Inform the manifold about the minimum longitude
-          manifold.set_min_longitude(point1[1]);
-          // Inform the manifold about the minimum radius
-          manifold.set_min_radius(point1[0]);
-          // Inform the manifold about the maximum depth (without topo)
-          manifold.set_max_depth(point2[0]-point1[0]);
 
           if (dim == 3)
             {

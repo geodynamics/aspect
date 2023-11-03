@@ -313,7 +313,12 @@ namespace aspect
         /**
          * An object that describes the geometry.
          */
-        internal::ChunkGeometry<dim> manifold;
+        std::unique_ptr<internal::ChunkGeometry<dim>> manifold;
+
+        /**
+         * Give a symbolic name to the manifold id to be used by this class.
+         */
+        static const types::manifold_id my_manifold_id = 15;
 
         /**
          * Bind boundary indicators to child cells after each mesh refinement round.
