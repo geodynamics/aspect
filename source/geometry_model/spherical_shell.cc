@@ -357,7 +357,8 @@ namespace aspect
     template <int dim>
     void
     SphericalShell<dim>::adjust_positions_for_periodicity (Point<dim> &position,
-                                                           const ArrayView<Point<dim>> &connected_positions) const
+                                                           const ArrayView<Point<dim>> &connected_positions,
+                                                           const ArrayView<Tensor<1, dim>> &connected_velocities) const
     {
       AssertThrow(dim == 2,
                   ExcMessage("Periodic boundaries currently "
@@ -388,6 +389,9 @@ namespace aspect
 
           for (auto &connected_position: connected_positions)
             connected_position = rotation_matrix * connected_position;
+
+          for (auto &connected_velocity: connected_velocities)
+            connected_velocity = rotation_matrix * connected_velocity;
         }
 
       return;

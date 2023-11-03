@@ -61,7 +61,8 @@ namespace aspect
     template <int dim>
     void
     Interface<dim>::adjust_positions_for_periodicity (Point<dim> &/*position*/,
-                                                      const ArrayView<Point<dim>> &/*connected_positions*/) const
+                                                      const ArrayView<Point<dim>> &/*connected_positions*/,
+                                                      const ArrayView<Tensor<1, dim>> &/*connected_velocities*/) const
     {
       AssertThrow(false,
                   ExcMessage("Positions cannot be adjusted for periodicity in the chosen geometry model."));

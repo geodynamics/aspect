@@ -315,10 +315,15 @@ namespace aspect
          * have reasonably crossed a periodic boundary. If so, it will adjust the position
          * as described by the periodic boundary (e.g. a translation in a box, or a rotation
          * in a spherical shell). Afterwards, if it adjusted @p position, it will also adjust
-         * all locations given in @p connected_positions (if any where given) in the same way.
-         * Adjusting @p connected_positions allows to adjust related temporary variables,
+         * all locations given in @p connected_positions (if any where given) and all
+         * velocities given in @p connected_velocities in the same way.
+         * Adjusting both of these allows to adjust related temporary variables,
          * e.g. the intermediate results of an ordinary differential equation solver
-         * that are used to compute differences/directions between points.
+         * that are used to compute differences/directions between points. The reason
+         * positions and velocities have to be treated separately is that some geometries
+         * have to adjust them differently across a periodic boundary, e.g. a box has
+         * to translate positions but not velocities, while a spherical shell has to
+         * translate positions (by rotation around the center) and rotate velocities.
          *
          * This function does not check that the position after the adjustment is inside the
          * domain; to check this is the responsibility of the calling function.
@@ -327,7 +332,8 @@ namespace aspect
         virtual
         void
         adjust_positions_for_periodicity (Point<dim> &position,
-                                          const ArrayView<Point<dim>> &connected_positions = {}) const;
+                                          const ArrayView<Point<dim>> &connected_positions = {},
+                                          const ArrayView<Tensor<1,dim>> &connected_velocities = {}) const;
 
         /**
          * If true, the geometry contains cells with boundaries that are not
