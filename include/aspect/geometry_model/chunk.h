@@ -57,19 +57,15 @@ namespace aspect
           /**
            * Constructor
            */
-          ChunkGeometry();
+          ChunkGeometry(const InitialTopographyModel::Interface<dim> &topography,
+                        const double min_longitude,
+                        const double min_radius,
+                        const double max_depth);
 
           /**
            * Copy constructor
            */
-          ChunkGeometry(const ChunkGeometry &other);
-
-          /*
-           * An initialization function to make sure that the
-           * manifold has access to the topography plugins.
-           */
-          void
-          initialize(const InitialTopographyModel::Interface<dim> *topography);
+          ChunkGeometry(const ChunkGeometry &other) = default;
 
           /**
            * This function receives a point in cartesian coordinates x, y and z,

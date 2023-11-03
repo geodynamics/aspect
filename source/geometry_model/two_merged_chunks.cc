@@ -43,12 +43,10 @@ namespace aspect
                   dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr,
                   ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used with the TwoMergedChunks geometry model."));
 
-      manifold = std::make_unique<internal::ChunkGeometry<dim>>();
-
-      manifold->initialize(&(this->get_initial_topography_model()));
-      manifold->set_min_longitude(point1[1]);
-      manifold->set_min_radius(point1[0]);
-      manifold->set_max_depth(point2[0]-point1[0]);
+      manifold = std::make_unique<internal::ChunkGeometry<dim>>(this->get_initial_topography_model(),
+                                                                 point1[1],
+                                                                 point1[0],
+                                                                 point2[0]-point1[0]);
     }
 
 
