@@ -287,6 +287,14 @@ namespace aspect
         bool
         allows_fixed_temperature_on_outflow_boundaries() const;
 
+        /*
+         * Return whether Dirichlet boundary conditions will be applied
+         * on parts of the boundaries where material flow is parallel
+         * to the boundary or zero.
+         */
+        bool
+        allows_fixed_temperature_on_closed_boundaries() const;
+
         /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
@@ -341,6 +349,12 @@ namespace aspect
          * where material flows out of the domain.
          */
         bool allow_fixed_temperature_on_outflow_boundaries;
+
+        /**
+         * Whether we allow the temperature to be fixed on parts of the boundary
+         * where material flow is zero normal to the boundary.
+         */
+        bool allow_fixed_temperature_on_closed_boundaries;
     };
 
 

@@ -669,15 +669,14 @@ namespace aspect
     boundary_temperature_manager.update();
     boundary_heat_flux->update();
 
-    // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
-    // we update the boundary indicators of all faces that belong to outflow boundaries
+    // If we do not want to prescribe Dirichlet boundary conditions on some boundaries,
+    // we update the boundary indicators of all faces that belong to these boundaries
     // so that they are not in the list of fixed temperature boundary indicators any more.
     // We will undo this change in a later step, after the constraints have been set.
-    // As long as we allow deal.II 8.5, we can not have boundary ids of more than 256,
-    // so we want to offset them by 128 and not allow more than 128 boundary ids.
-    const unsigned int boundary_id_offset = 128;
-    if (!boundary_temperature_manager.allows_fixed_temperature_on_outflow_boundaries())
-      replace_outflow_boundary_ids(boundary_id_offset, /*replace_noflow_boundary_ids=*/ false);
+    const types::boundary_id boundary_id_offset = std::numeric_limits<types::boundary_id>::max() / 2;
+    replace_boundary_ids(boundary_id_offset,
+                         boundary_temperature_manager.allows_fixed_temperature_on_outflow_boundaries() == false,
+                         boundary_temperature_manager.allows_fixed_temperature_on_closed_boundaries() == false);
 
     // if using continuous temperature FE, do the same for the temperature variable:
     // evaluate the current boundary temperature and add these constraints as well
@@ -705,18 +704,16 @@ namespace aspect
           }
       }
 
-    if (!boundary_temperature_manager.allows_fixed_temperature_on_outflow_boundaries())
-      restore_outflow_boundary_ids(boundary_id_offset);
+    restore_boundary_ids(boundary_id_offset);
 
-    // If there are fixed boundary compositions,
-    // update the composition boundary condition.
+    // Update the composition boundary condition.
     boundary_composition_manager.update();
 
-    // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
-    // use the same trick for marking up outflow boundary conditions for compositional fields
-    // as we did above already for the temperature.
-    if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
-      replace_outflow_boundary_ids(boundary_id_offset, /*replace_noflow_boundary_ids=*/ true);
+    // If we do not want to prescribe Dirichlet boundary conditions on on some boundaries,
+    // use the same trick for compositional fields as we did above for the temperature.
+    replace_boundary_ids(boundary_id_offset,
+                         boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries() == false,
+                         boundary_composition_manager.allows_fixed_composition_on_closed_boundaries() == false);
 
     // now do the same for the composition variable:
     if (!parameters.use_discontinuous_composition_discretization)
@@ -744,8 +741,7 @@ namespace aspect
             }
       }
 
-    if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
-      restore_outflow_boundary_ids(boundary_id_offset);
+    restore_boundary_ids(boundary_id_offset);
 
     if (parameters.include_melt_transport)
       melt_handler->add_current_constraints (new_current_constraints);

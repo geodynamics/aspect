@@ -175,6 +175,7 @@ namespace aspect
           }
 
         allow_fixed_temperature_on_outflow_boundaries = prm.get_bool ("Allow fixed temperature on outflow boundaries");
+        allow_fixed_temperature_on_closed_boundaries = prm.get_bool ("Allow fixed temperature on closed boundaries");
       }
       prm.leave_subsection ();
 
@@ -281,6 +282,15 @@ namespace aspect
 
 
     template <int dim>
+    bool
+    Manager<dim>::allows_fixed_temperature_on_closed_boundaries() const
+    {
+      return allow_fixed_temperature_on_closed_boundaries;
+    }
+
+
+
+    template <int dim>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -372,6 +382,22 @@ namespace aspect
                            "Dirichlet boundary conditions (i.e., prescribe a fixed temperature "
                            "value at the boundary) at those boundaries where material flows in. "
                            "This would correspond to the ``false'' setting of this parameter.");
+
+        prm.declare_entry ("Allow fixed temperature on closed boundaries", "true",
+                           Patterns::Bool(),
+                           "When the temperature is fixed on a given boundary as determined "
+                           "by the list of 'Fixed temperature boundary indicators', there "
+                           "may be parts of the boundary where flow is parallel to the boundary and "
+                           "one may want to prescribe the temperature only on those parts of "
+                           "the boundary where there is inflow. This parameter determines "
+                           "if temperature boundary conditions are allowed at these parallel "
+                           "flow boundaries (if true), or if they are disabled (if false). "
+                           "By default, this parameter is set to true. "
+                           "Note that in this context, 'fixed' refers to the fact that these "
+                           "are the boundary indicators where Dirichlet boundary conditions are "
+                           "applied, and does not imply that the boundary temperature is "
+                           "time-independent. Please see the documentation of the parameter "
+                           "'Allow fixed temperature on outflow boundaries' for more details.");
       }
       prm.leave_subsection ();
 

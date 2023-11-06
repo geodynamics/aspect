@@ -1515,23 +1515,34 @@ namespace aspect
                                         const bool limit_to_top_faces = false);
 
       /**
-       * Offset the boundary id of all faces located on an outflow boundary
+       * Offset the boundary id of all faces located on a boundary where material
+       * flows out of the domain (if @p replace_outflow_boundary_ids is set to true)
+       * and/or where material flow normal to the face is equal to 0 (if
+       * @p replace_noflow_boundary_ids is set to true). The boundary id is offset
        * by a fixed value given by the input parameter @p boundary_id_offset.
+       *
+       * The purpose of this function is to disable boundary conditions on the
+       * selected faces, which is necessary, because dirichlet boundary conditions
+       * do not make sense for the non-diffusive advection equation on outflow
+       * or noflow boundaries. However, there are also cases where one wants to
+       * disable Dirichlet boundary conditions on outflow faces, but not on noflow
+       * faces (e.g. for the advection-diffusion equation).
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void replace_outflow_boundary_ids(const unsigned int boundary_id_offset,
-                                        const bool replace_noflow_boundary_ids);
+      void replace_boundary_ids(const types::boundary_id boundary_id_offset,
+                                const bool replace_outflow_boundary_ids,
+                                const bool replace_noflow_boundary_ids);
 
       /**
-       * Undo the offset of the boundary ids done in replace_outflow_boundary_ids
+       * Undo the offset of the boundary ids done in replace_boundary_ids()
        * by resetting all boundary ids to their original value.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void restore_outflow_boundary_ids(const unsigned int boundary_id_offset);
+      void restore_boundary_ids(const types::boundary_id boundary_id_offset);
 
       /**
        * Remove the linear momentum of the given vector

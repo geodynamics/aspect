@@ -1,0 +1,9 @@
+New: ASPECT now has two additional input parameters 'Allow fixed temperature on
+closed boundaries', and 'Allow fixed composition on closed boundaries' that
+allow to toggle prescribed boundary conditions on boundaries that have no
+normal flow (either as part of free-slip boundary conditions, or prescribed,
+but tangential flow).  Previously these boundary conditions would always be
+handled as the boundary conditions on inflow boundaries (ASPECT 2.4.0 and
+before) or as the boundary conditions on outflow boundaries (ASPECT 2.5.0).
+<br>
+(Rene Gassmoeller, 2023/11/06)

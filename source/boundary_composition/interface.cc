@@ -180,6 +180,16 @@ namespace aspect
         else
           AssertThrow(false, ExcMessage("'Allow fixed composition on outflow boundaries' "
                                         "must be set to 'true' or 'false', or to its default value."));
+
+        if (prm.get ("Allow fixed composition on closed boundaries") == "true")
+          allow_fixed_composition_on_closed_boundaries = true;
+        else if (prm.get ("Allow fixed composition on closed boundaries") == "false")
+          allow_fixed_composition_on_closed_boundaries = false;
+        else if (prm.get ("Allow fixed composition on closed boundaries") == "false for models without melt")
+          allow_fixed_composition_on_closed_boundaries = this->get_parameters().include_melt_transport;
+        else
+          AssertThrow(false, ExcMessage("'Allow fixed composition on closed boundaries' "
+                                        "must be set to 'true' or 'false', or to its default value."));
       }
       prm.leave_subsection ();
 
@@ -258,6 +268,15 @@ namespace aspect
 
 
     template <int dim>
+    bool
+    Manager<dim>::allows_fixed_composition_on_closed_boundaries() const
+    {
+      return allow_fixed_composition_on_closed_boundaries;
+    }
+
+
+
+    template <int dim>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -327,11 +346,11 @@ namespace aspect
                            "might be parts of the boundary where material flows out and "
                            "one may want to prescribe the composition only on those parts of "
                            "the boundary where there is inflow. This parameter determines "
-                           "if compositions are only prescribed at these inflow parts of the "
-                           "boundary (if false) or everywhere on a given boundary, independent "
-                           "of the flow direction (if true). By default, this parameter is set "
-                           "to false, except in models with melt transport (see below). "
-                           "Note that in this context, `fixed' refers to the fact that these "
+                           "if compositions are prescribed at these outflow parts of the "
+                           "boundary (if true) or if they are disabled (if false). "
+                           "By default, this parameter is set to false, except in models with "
+                           "melt transport (see below). "
+                           "Note that in this context, 'fixed' refers to the fact that these "
                            "are the boundary indicators where Dirichlet boundary conditions are "
                            "applied, and does not imply that the boundary composition is "
                            "time-independent. "
@@ -360,6 +379,22 @@ namespace aspect
                            "models where melt transport is enabled. Be aware that if you change "
                            "this default setting, you will not use the melt velocity, but the solid "
                            "velocity to determine on which parts of the boundaries there is outflow.");
+
+        prm.declare_entry ("Allow fixed composition on closed boundaries", "false for models without melt",
+                           Patterns::Selection("true|false|false for models without melt"),
+                           "When the composition is fixed on a given boundary as determined "
+                           "by the list of 'Fixed composition boundary indicators', there "
+                           "may be parts of the boundary where flow is parallel to the boundary and "
+                           "one may want to prescribe the composition only on those parts of "
+                           "the boundary where there is inflow. This parameter determines "
+                           "if composition boundary conditions are allowed at these parallel "
+                           "flow boundaries (if true), or if they are disabled (if false). "
+                           "By default, this parameter is set to false, except in models with melt transport. "
+                           "Note that in this context, 'fixed' refers to the fact that these "
+                           "are the boundary indicators where Dirichlet boundary conditions are "
+                           "applied, and does not imply that the boundary composition is "
+                           "time-independent. Please see the documentation of the parameter "
+                           "'Allow fixed composition on outflow boundaries' for more details.");
       }
       prm.leave_subsection ();
 

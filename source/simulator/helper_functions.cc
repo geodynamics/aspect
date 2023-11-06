@@ -2102,9 +2102,14 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::replace_outflow_boundary_ids(const unsigned int offset,
-                                               const bool replace_noflow_boundary_ids)
+  Simulator<dim>::replace_boundary_ids(const types::boundary_id offset,
+                                       const bool replace_outflow_boundary_ids,
+                                       const bool replace_noflow_boundary_ids)
   {
+    if (replace_outflow_boundary_ids == false &&
+        replace_noflow_boundary_ids == false)
+      return;
+
     const Quadrature<dim-1> &quadrature_formula = introspection.face_quadratures.temperature;
 
     FEFaceValues<dim> fe_face_values (*mapping,
@@ -2115,40 +2120,83 @@ namespace aspect
 
     std::vector<Tensor<1,dim>> face_current_velocity_values (fe_face_values.n_quadrature_points);
 
-    // Do not replace the id on boundaries with tangential velocity
-    const std::set<types::boundary_id> &tangential_velocity_boundaries =
-      boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
-
     // Loop over all of the boundary faces, ...
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (!cell->is_artificial())
         for (const unsigned int face_number : cell->face_indices())
           {
             const typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
-            if (face->at_boundary() &&
-                tangential_velocity_boundaries.find(face->boundary_id()) == tangential_velocity_boundaries.end())
+
+            if (face->at_boundary())
               {
                 Assert(face->boundary_id() <= offset,
                        ExcMessage("If you do not 'Allow fixed temperature/composition on outflow boundaries', "
                                   "you are only allowed to use boundary ids between 0 and 128."));
 
+                const bool face_at_zero_velocity_boundary =
+                  boundary_velocity_manager.get_zero_boundary_velocity_indicators().find(face->boundary_id()) !=
+                  boundary_velocity_manager.get_zero_boundary_velocity_indicators().end();
+
+                const bool face_at_tangential_velocity_boundary =
+                  boundary_velocity_manager.get_tangential_boundary_velocity_indicators().find(face->boundary_id()) !=
+                  boundary_velocity_manager.get_tangential_boundary_velocity_indicators().end();
+
+                const bool face_at_prescribed_velocity_boundary =
+                  boundary_velocity_manager.get_active_boundary_velocity_names().find(face->boundary_id()) !=
+                  boundary_velocity_manager.get_active_boundary_velocity_names().end();
+
+                // We know the normal flow is zero across tangential and zero velocity boundaries.
+                // Save some time computing it
+                if (replace_noflow_boundary_ids == true &&
+                    (face_at_zero_velocity_boundary == true ||
+                     face_at_tangential_velocity_boundary == true))
+                  {
+                    face->set_boundary_id(face->boundary_id() + offset);
+                    continue;
+                  }
+
                 fe_face_values.reinit (cell, face_number);
                 fe_face_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
                                                                                         face_current_velocity_values);
 
-                // ... check if the face is an outflow boundary by integrating the normal velocities
-                // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
-                double integrated_flow = 0;
+                // ... compute the the normal velocities and categorize flow across face:
+                // If any one quadrature point has inflow, the face is considered an inflow boundary,
+                // because we need to apply dirichlet boundary conditions there.
+                // On the remaining faces, if any point has outflow, the face is considered an outflow boundary.
+                // If all quadrature points have zero flow, the face is considered a noflow boundary.
+                bool is_outflow_boundary = true;
+                bool is_noflow_boundary = true;
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
-                    integrated_flow += (face_current_velocity_values[q] * fe_face_values.normal_vector(q)) *
-                                       fe_face_values.JxW(q);
+                    Tensor<1,dim> flow_velocity;
+                    // Use analytical boundary velocity, where known
+                    if (face_at_prescribed_velocity_boundary == true)
+                      flow_velocity = boundary_velocity_manager.boundary_velocity(face->boundary_id(), fe_face_values.quadrature_point(q));
+                    else
+                      flow_velocity = face_current_velocity_values[q];
+
+                    const double normal_flow = flow_velocity * fe_face_values.normal_vector(q);
+
+                    if (normal_flow < 0)
+                      {
+                        // inflow
+                        is_outflow_boundary = false;
+                        is_noflow_boundary = false;
+                      }
+                    else if (normal_flow > 0)
+                      {
+                        // outflow
+                        is_noflow_boundary = false;
+                      }
                   }
 
-                // ... and change the boundary id of any outflow boundary faces.
-                // If there is no flow, we do not want to apply dirichlet boundary conditions either.
-                if ((integrated_flow > 0) ||
-                 (integrated_flow == 0 && replace_noflow_boundary_ids == true))
+                // noflow if none of the other conditions applied
+                if (is_noflow_boundary)
+                  is_outflow_boundary = false;
+
+                // change the boundary id of any faces if requested.
+                if ((is_outflow_boundary && replace_outflow_boundary_ids == true) ||
+                    (is_noflow_boundary && replace_noflow_boundary_ids == true))
                   face->set_boundary_id(face->boundary_id() + offset);
               }
           }
@@ -2157,7 +2205,7 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::restore_outflow_boundary_ids(const unsigned int offset)
+  Simulator<dim>::restore_boundary_ids(const types::boundary_id offset)
   {
     // Loop over all of the boundary faces...
     for (const auto &cell : dof_handler.active_cell_iterators())
@@ -2167,7 +2215,7 @@ namespace aspect
             const typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
             if (face->at_boundary())
               {
-                // ... and reset all of the boundary ids we changed in replace_outflow_boundary_ids above.
+                // ... and reset all of the boundary ids we changed in replace_boundary_ids above.
                 if (face->boundary_id() >= offset)
                   face->set_boundary_id(face->boundary_id() - offset);
               }
@@ -2518,9 +2566,10 @@ namespace aspect
   template void Simulator<dim>::compute_reactions(); \
   template void Simulator<dim>::interpolate_material_output_into_advection_field(const AdvectionField &adv_field); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
-  template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset, \
-                                                             const bool replace_noflow_boundary_ids); \
-  template void Simulator<dim>::restore_outflow_boundary_ids(const unsigned int boundary_id_offset); \
+  template void Simulator<dim>::replace_boundary_ids(const types::boundary_id boundary_id_offset, \
+                                                     const bool replace_outflow_boundary_ids, \
+                                                     const bool replace_noflow_boundary_ids); \
+  template void Simulator<dim>::restore_boundary_ids(const types::boundary_id boundary_id_offset); \
   template void Simulator<dim>::check_consistency_of_boundary_conditions() const; \
   template double Simulator<dim>::compute_initial_newton_residual(const LinearAlgebra::BlockVector &linearized_stokes_initial_guess); \
   template double Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne, \
