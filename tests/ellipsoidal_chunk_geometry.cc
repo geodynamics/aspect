@@ -28,7 +28,7 @@
 using namespace aspect;
 using namespace dealii;
 
-bool test_point(const GeometryModel::EllipsoidalChunk<3>::EllipsoidalChunkGeometry ellipsoidal_manifold,
+bool test_point(const GeometryModel::internal::EllipsoidalChunkGeometry<3> ellipsoidal_manifold,
                 const Point<3> &test_point)
 {
   const Point<3> converted_point = ellipsoidal_manifold.pull_back(test_point);
@@ -54,7 +54,7 @@ int f()
   const unsigned int dim=3;
 
   InitialTopographyModel::ZeroTopography<dim> topography;
-  GeometryModel::EllipsoidalChunk<dim>::EllipsoidalChunkGeometry ellipsoidal_manifold;
+  GeometryModel::internal::EllipsoidalChunkGeometry<dim> ellipsoidal_manifold;
   ellipsoidal_manifold.initialize(&topography);
 
   std::vector<Point<2>> corners(2,Point<2>(-15.0,-15.0));
