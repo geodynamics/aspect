@@ -1,0 +1,6 @@
+Fixed: The 'principal stress' postprocessor used the wrong
+sign for stresses in models with elastic deformation, leading
+to principal stress directions that were rotated by 90 degrees.
+This is fixed now.
+<br>
+(Rene Gassmoeller, Rebecca Fildes, 2023/11/09)

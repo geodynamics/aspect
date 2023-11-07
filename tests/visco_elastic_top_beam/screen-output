@@ -1,0 +1,50 @@
+
+Number of active cells: 150 (on 1 levels)
+Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Solving beam system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 35+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:        0.000658 m/year, 0.002 m/year
+     Temperature min/avg/max:  293 K, 293 K, 293 K
+     Writing graphical output: output-visco_elastic_top_beam/solution/solution-00000
+
+*** Timestep 1:  t=1000 years, dt=1000 years
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 2 iterations.
+   Solving ve_stress_yy system ... 2 iterations.
+   Solving ve_stress_xy system ... 3 iterations.
+   Solving beam system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:        0.000543 m/year, 0.00167 m/year
+     Temperature min/avg/max:  293 K, 293 K, 293 K
+     Writing graphical output: output-visco_elastic_top_beam/solution/solution-00001
+
+*** Timestep 2:  t=2000 years, dt=1000 years
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 2 iterations.
+   Solving ve_stress_yy system ... 2 iterations.
+   Solving ve_stress_xy system ... 2 iterations.
+   Solving beam system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:        0.0005 m/year, 0.00148 m/year
+     Temperature min/avg/max:  293 K, 293 K, 293 K
+     Writing graphical output: output-visco_elastic_top_beam/solution/solution-00002
+
+Termination requested by criterion: end time
+
+
+
