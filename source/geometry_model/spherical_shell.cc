@@ -22,6 +22,8 @@
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
+#include <aspect/compat.h>
+
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/grid/manifold_lib.h>
@@ -51,7 +53,7 @@ namespace aspect
     namespace
     {
       template <int dim>
-      class SphericalManifoldWithTopography : public SphericalManifold<dim>
+      class SphericalManifoldWithTopography : public aspect::SphericalManifold<dim>
       {
         public:
           /**
@@ -161,20 +163,6 @@ namespace aspect
           {
             return SphericalManifold<dim>::get_new_point(vertices, weights);
           }
-
-        private:
-#if !DEAL_II_VERSION_GTE(9,6,0)
-          virtual void
-          get_new_points(const ArrayView<const Point<dim>> &surrounding_points,
-                         const ArrayView<const double>          &weights,
-                         ArrayView<Point<dim>>              new_points) const override
-          {
-            (void)surrounding_points;
-            (void)weights;
-            (void)new_points;
-//            SphericalManifold<dim>::get_new_points(surrounding_points, weights, new_points);
-          }
-#endif
       };
     }
 
