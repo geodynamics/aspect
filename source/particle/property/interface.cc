@@ -575,21 +575,43 @@ namespace aspect
                                                                                         std::vector<Point<dim>> (1,particle_location),
                                                                                         ComponentMask(property_information.n_components(),true),
                                                                                         found_cell);
-                      for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
-                        particle_properties.push_back(interpolated_properties[0][property_information.get_position_by_plugin_index(property_index)+property_component]);
+
+                      const unsigned int n_property_components = property_information.get_components_by_plugin_index(property_index);
+                      const unsigned int start_index = property_information.get_position_by_plugin_index(property_index);
+
+                      for (unsigned int property_component = 0; property_component < n_property_components; ++property_component)
+                        particle_properties.push_back(interpolated_properties[0][start_index+property_component]);
                     }
-                  // Otherwise use the boundary condition
+                  // Otherwise use the value of the boundary condition of the corresponding compositional field
                   else
                     {
-                      Assert(property_information.get_components_by_plugin_index(property_index) == this->n_compositional_fields(),
-                             ExcInternalError());
-
                       const types::boundary_id boundary_id = cell->face(boundary_face)->boundary_id();
+                      const unsigned int n_property_components = property_information.get_components_by_plugin_index(property_index);
+                      const std::string particle_property_name = property_information.get_field_name_by_index(property_index);
 
-                      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                      for (unsigned int particle_property_component = 0; particle_property_component < n_property_components; ++particle_property_component)
                         {
-                          const double composition = manager.boundary_composition(boundary_id,particle_location,c);
-                          particle_properties.push_back(composition);
+                          // search through all particle properties that are mapped to compositional fields to find the one that
+                          // matches the current particle property, throw an exception if there isnt one
+                          unsigned int composition_field_index = numbers::invalid_unsigned_int;
+                          for (const std::pair<unsigned int,std::pair<std::string,unsigned int>> field_and_particle : this->get_parameters().mapped_particle_properties)
+                            {
+                              // field_and_particle.first is the index of the compositional field
+                              // field_and_particle.second.first is the name of the particle property
+                              // field_and_particle.second.second is the component of the particle property (one property can have multiple components)
+                              if (field_and_particle.second.first == particle_property_name && field_and_particle.second.second == particle_property_component)
+                                composition_field_index = field_and_particle.first;
+                            }
+
+                          Assert(composition_field_index != numbers::invalid_unsigned_int,
+                                 ExcMessage("Could not find particle property index " + std::to_string(property_index)
+                                            + " with name " + particle_property_name + " in the list of compositions."));
+
+                          const double field_boundary_value = manager.boundary_composition(boundary_id,
+                                                                                           particle_location,
+                                                                                           composition_field_index);
+
+                          particle_properties.push_back(field_boundary_value);
                         }
                     }
 
