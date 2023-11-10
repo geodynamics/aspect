@@ -77,7 +77,7 @@ end
 subsection Postprocess
   subsection Visualization
     set Time between graphical output = 1e3
-    set List of output variables = shear stress, stress second invariant
+    set List of output variables = stress, shear stress, stress second invariant
     set Output format = gnuplot
   end
 end

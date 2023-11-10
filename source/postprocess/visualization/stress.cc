@@ -68,11 +68,10 @@ namespace aspect
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             // Compressive stress is negative by the sign convention
-            // used by the engineering community, and internally by ASPECT.
+            // used by the engineering community, and as input and used
+            // internally by ASPECT.
             // Here, we change the sign of the stress to match the
-            // sign convention used by the geoscience community,
-            // which is also the sign convention for stress expected
-            // in ASPECT parameter files.
+            // sign convention used by the geoscience community.
             SymmetricTensor<2,dim> stress = in.pressure[q] * unit_symmetric_tensor<dim>();
 
             // If elasticity is enabled, the deviatoric stress is stored
