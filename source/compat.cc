@@ -632,7 +632,7 @@ namespace aspect
 
     // In this case, we treated the case that the candidate is the center and
     // obtained the new locations from the PolarManifold object otherwise.
-    if constexpr (spacedim < 3)
+    if (spacedim < 3)
       return;
     else
       {
