@@ -1,0 +1,4 @@
+Fixed: The stress visualization postprocessor now outputs
+the correct stresses when elasticity is enabled.
+<br>
+(Bob Myhill, 2023/11/10)
