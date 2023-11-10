@@ -1175,7 +1175,7 @@ namespace aspect
                              "\n\n"
                              "The effect of using this option can be seen in the following "
                              "picture showing a variation of the output produced with the "
-                             "input files from Section~\\ref{sec:shell-simple-2d}:"
+                             "input files from Section~\\ref{sec:cookbooks:shell_simple_2d}:"
                              "\n\n"
                              "\\begin{center}"
                              "  \\includegraphics[width=0.5\\textwidth]{viz/parameters/build-patches}"
