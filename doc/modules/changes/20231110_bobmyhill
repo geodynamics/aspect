@@ -1,4 +1,4 @@
-Fixed: The stress visualization postprocessor now outputs
-the correct stresses when elasticity is enabled.
+Fixed: The stress and shear stress visualization postprocessors
+now output the correct stresses when elasticity is enabled.
 <br>
-(Bob Myhill, 2023/11/10)
+(Bob Myhill, Rebecca Fildes, 2023/11/10)
