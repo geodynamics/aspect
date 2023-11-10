@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: RMS velocity (m/year)
+# 12: Max. velocity (m/year)
+# 13: Minimal temperature (K)
+# 14: Average temperature (K)
+# 15: Maximal temperature (K)
+# 16: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 17: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 18: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 19: Outward heat flux through boundary with indicator 3 ("top") (W)
+0 0.000000000000e+00 0.000000000000e+00 80 843 369 0         28 30 30 5.34729757e-03 1.41310611e-02 0.00000000e+00 1.48816667e+03 1.91300000e+03 -5.64516357e+05 5.64516357e+05 5.60645186e+05 1.66118667e+05 
+1 1.000000000000e-02 1.000000000000e-02 80 843 369 2 4294967295  0  0 5.34729757e-03 1.41310611e-02 0.00000000e+00 1.48816667e+03 1.91300000e+03 -5.64516357e+05 5.64516357e+05 5.90782832e+05 2.83160891e+05 

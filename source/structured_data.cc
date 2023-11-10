@@ -30,8 +30,10 @@
 #include <aspect/geometry_model/initial_topography_model/ascii_data.h>
 #include <aspect/geometry_model/two_merged_chunks.h>
 
-#include <boost/lexical_cast.hpp>
 #include <deal.II/base/exceptions.h>
+
+#include <boost/lexical_cast.hpp>
+#include <regex>
 
 #ifdef ASPECT_WITH_NETCDF
 
@@ -823,7 +825,7 @@ namespace aspect
                 for (int i=0; i<dim; ++i)
                   ind_to_use[i] = ind[dimids_to_use[i]];
 
-                data_tables[var](ind) = raw_data[n];
+                data_tables[var](ind) = scale_factor * raw_data[n];
               }
           }
 
@@ -843,7 +845,11 @@ namespace aspect
     StructuredDataLookup<dim>::load_file(const std::string &filename,
                                          const MPI_Comm communicator)
     {
-      load_ascii(filename, communicator);
+      const bool is_netcdf_filename = std::regex_search(filename, std::regex("\\.(nc|NC)$"));
+      if (is_netcdf_filename)
+        load_netcdf(filename);
+      else
+        load_ascii(filename, communicator);
     }
 
     template <int dim>
