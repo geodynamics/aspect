@@ -67,7 +67,12 @@ namespace aspect
         // ...and use it to compute the stresses
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            // Compressive stress is positive in geoscience applications
+            // Compressive stress is negative by the sign convention
+            // used by the engineering community, and internally by ASPECT.
+            // Here, we change the sign of the stress to match the
+            // sign convention used by the geoscience community,
+            // which is also the sign convention for stress expected
+            // in ASPECT parameter files.
             SymmetricTensor<2,dim> stress = in.pressure[q] * unit_symmetric_tensor<dim>();
 
             // If elasticity is enabled, the deviatoric stress is stored
@@ -75,15 +80,15 @@ namespace aspect
             // can be obtained from the viscosity and strain rate.
             if (this->get_parameters().enable_elasticity)
               {
-                stress[0][0] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
-                stress[1][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
-                stress[0][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
+                stress[0][0] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
+                stress[1][1] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
+                stress[0][1] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
 
                 if (dim == 3)
                   {
-                    stress[2][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
-                    stress[0][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
-                    stress[1][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
+                    stress[2][2] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
+                    stress[0][2] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
+                    stress[1][2] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
                   }
               }
             else

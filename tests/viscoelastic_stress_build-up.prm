@@ -10,7 +10,7 @@
 #
 # The analytical solution for viscoelastic stress build-up in
 # an incompressible medium with a constant strain-rate is:
-#   simga_ij = 2 * edot_ii * eta * (1 - e^(-mu*t/eta)),
+#   sigma_ij = 2 * edot_ii * eta * (1 - e^(-mu*t/eta)),
 # where sigma_ij is the elastic deviatoric stress tensor, edot_ij is
 # the deviatoric strain-rate, eta is the background viscosity, mu is the
 # shear modulus and t is time.
@@ -35,8 +35,8 @@
 # in the compositional fields tracking viscoelastic stresses.
 #
 # For the current test, we prescribe initial values to the compositional fields
-# that track the viscoelastic stresses that are equal to the eventual
-# analytical solution for the viscoelastic stress.
+# that track the viscoelastic stresses that are equal to the
+# analytical solution for the viscoelastic stress after 250 Kyr.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
 
@@ -77,6 +77,7 @@ end
 subsection Postprocess
   subsection Visualization
     set Time between graphical output = 1e3
+    set List of output variables = stress second invariant
     set Output format = gnuplot
   end
 end
