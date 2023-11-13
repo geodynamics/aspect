@@ -35,7 +35,7 @@ Using this definition, the plugin then solves for one time step, i.e., using as 
 
 This surface velocity is used to deform the surface and as a boundary condition for solving the Laplace equation to determine the mesh velocity in the domain interior. Diffusion can be applied every timestep, mimicking surface processes of erosion and deposition, or at a user-defined timestep interval to purely smooth the surface topography to avoid too great a distortion of mesh elements when a free surface is also used.
 
-&lsquo;free surface&rsquo;: A plugin that computes the deformation of surface vertices according to the solution of the flow problem. In particular this means if the surface of the domain is left open to flow, this flow will carry the mesh with it. The implementation was described in \cite{rose_freesurface}, with the stabilization of the free surface originally described in \cite{KMM2010}.
+&lsquo;free surface&rsquo;: A plugin that computes the deformation of surface vertices according to the solution of the flow problem. In particular this means if the surface of the domain is left open to flow, this flow will carry the mesh with it. The implementation was described in {cite}`rose_freesurface`, with the stabilization of the free surface originally described in {cite}`kaus:etal:2010`.
 
 (parameters:Mesh_20deformation/Ascii_20data_20model)=
 ## **Subsection:** Mesh deformation / Ascii data model
@@ -119,7 +119,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double 0...1 (inclusive)]
 
-**Documentation:** Theta parameter described in \cite{KMM2010}. An unstabilized free surface can overshoot its equilibrium position quite easily and generate unphysical results.  One solution is to use a quasi-implicit correction term to the forces near the free surface.  This parameter describes how much the free surface is stabilized with this term, where zero is no stabilization, and one is fully implicit.
+**Documentation:** Theta parameter described in {cite}`kaus:etal:2010`. An unstabilized free surface can overshoot its equilibrium position quite easily and generate unphysical results.  One solution is to use a quasi-implicit correction term to the forces near the free surface.  This parameter describes how much the free surface is stabilized with this term, where zero is no stabilization, and one is fully implicit.
 
 (parameters:Mesh_20deformation/Free_20surface/Surface_20velocity_20projection)=
 ### __Parameter name:__ Surface velocity projection

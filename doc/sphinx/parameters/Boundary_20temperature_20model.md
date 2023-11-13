@@ -45,7 +45,7 @@ The following boundary temperature models are available:
 
 &lsquo;constant&rsquo;: A model in which the temperature is chosen constant on a given boundary indicator.  Parameters are read from the subsection &rsquo;Constant&rsquo;.
 
-&lsquo;dynamic core&rsquo;: This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following \cite{NPB+04}, and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the &lsquo;snowing core&rsquo; regime (i.e., the core solidifies from the top instead of bottom).
+&lsquo;dynamic core&rsquo;: This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following {cite}`NPB+04`, and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the &lsquo;snowing core&rsquo; regime (i.e., the core solidifies from the top instead of bottom).
 
 &lsquo;function&rsquo;: Implementation of a model in which the boundary temperature is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary temperature model|Function&rdquo;.
 
@@ -85,7 +85,7 @@ Because this class simply takes what the initial temperature had described, this
 
 &lsquo;constant&rsquo;: A model in which the temperature is chosen constant on a given boundary indicator.  Parameters are read from the subsection &rsquo;Constant&rsquo;.
 
-&lsquo;dynamic core&rsquo;: This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following \cite{NPB+04}, and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the &lsquo;snowing core&rsquo; regime (i.e., the core solidifies from the top instead of bottom).
+&lsquo;dynamic core&rsquo;: This is a boundary temperature model working only with spherical shell geometry and core statistics postprocessor. The temperature at the top is constant, and the core mantle boundary temperature is dynamically evolving through time by calculating the heat flux into the core and solving the core energy balance. The formulation is mainly following {cite}`NPB+04`, and the plugin is used in Zhang et al. [2016]. The energy of core cooling and freeing of the inner core is included in the plugin. However, current plugin can not deal with the energy balance if the core is in the &lsquo;snowing core&rsquo; regime (i.e., the core solidifies from the top instead of bottom).
 
 &lsquo;function&rsquo;: Implementation of a model in which the boundary temperature is given in terms of an explicit formula that is elaborated in the parameters in section &ldquo;Boundary temperature model|Function&rdquo;.
 
@@ -271,7 +271,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Compositional expansion coefficient $Beta_c$. See \cite{NPB+04} for more details.
+**Documentation:** Compositional expansion coefficient $Beta_c$. See {cite}`NPB+04` for more details.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/CMB_20pressure)=
 ### __Parameter name:__ CMB pressure
@@ -343,7 +343,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Core compressibility at zero pressure. See \cite{NPB+04} for more details.
+**Documentation:** Core compressibility at zero pressure. See {cite}`NPB+04` for more details.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Lh)=
 ### __Parameter name:__ Lh
@@ -383,7 +383,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Core density at zero pressure. Units: \si{\kilogram\per\meter\cubed}. See \cite{NPB+04} for more details.
+**Documentation:** Core density at zero pressure. Units: \si{\kilogram\per\meter\cubed}. See {cite}`NPB+04` for more details.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/dR_20over_20dt)=
 ### __Parameter name:__ dR over dt
@@ -425,7 +425,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Melting curve (\cite{NPB+04} eq. (40)) parameter Theta.
+**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Theta.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Tm0)=
 ### __Parameter name:__ Tm0
@@ -433,7 +433,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Melting curve (\cite{NPB+04} eq. (40)) parameter Tm0. Units: \si{\kelvin}.
+**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm0. Units: \si{\kelvin}.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Tm1)=
 ### __Parameter name:__ Tm1
@@ -441,7 +441,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Melting curve (\cite{NPB+04} eq. (40)) parameter Tm1. Units: \si{\per\tera\pascal}.
+**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm1. Units: \si{\per\tera\pascal}.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Tm2)=
 ### __Parameter name:__ Tm2
@@ -449,7 +449,7 @@ Because this class simply takes what the initial temperature had described, this
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Melting curve (\cite{NPB+04} eq. (40)) parameter Tm2. Units: \si{\per\tera\pascal\squared}.
+**Documentation:** Melting curve ({cite}`NPB+04` eq. (40)) parameter Tm2. Units: \si{\per\tera\pascal\squared}.
 
 (parameters:Boundary_20temperature_20model/Dynamic_20core/Geotherm_20parameters/Use_20BW11)=
 ### __Parameter name:__ Use BW11

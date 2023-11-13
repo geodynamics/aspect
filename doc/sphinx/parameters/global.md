@@ -83,7 +83,7 @@ For more information, see the section in the manual that discusses the general m
 
 **Documentation:** Set a percentage with which the length of the time step is limited to increase. Generally the time step based on the CFL number should be sufficient, but for complicated models which may suddenly drastically change behavior, it may be useful to limit the increase in the time step, without limiting the time step size of the whole simulation to a particular number. For example, if this parameter is set to $50$, then that means that the length of a time step can at most increase by 50\% from one time step to the next, or by a factor of 1.5.
 
-Here, the default value is set to be 91\% because the best available step-size ratio bound guaranteeing stability in the PDE context seems to be 1.91, see \cite{Denner:2014}. In that thesis, the bound was proved in the context of semilinear parabolic problem, but it appears reasonable to also use this value as an upper bound in the current context.
+Here, the default value is set to be 91\% because the best available step-size ratio bound guaranteeing stability in the PDE context seems to be 1.91, see {cite}`Denner:2014`. In that thesis, the bound was proved in the context of semilinear parabolic problem, but it appears reasonable to also use this value as an upper bound in the current context.
 
 Units: \%.
 
@@ -189,7 +189,7 @@ For more information, see the section in the manual that discusses the general m
 
 **Documentation:** When computing results for mantle convection simulations, it is often difficult to judge the order of magnitude of results when they are stated in MKS units involving seconds. Rather, some kinds of results such as velocities are often stated in terms of meters per year (or, sometimes, centimeters per year). On the other hand, for non-dimensional computations, one wants results in their natural unit system as used inside the code. If this flag is set to &lsquo;true&rsquo; conversion to years happens; if it is &lsquo;false&rsquo;, no such conversion happens.
 
-Contrary to the word &ldquo;output&rdquo; in the name of this parameter, a number of plugins also use this parameter to determine how to interpret their *inputs*. For example, when &lsquo;true&rsquo;, several of the boundary velocity models described in Section~\ref{parameters:Boundary_20velocity_20model} interpret both specific times in years instead of seconds, and velocities in meters per year instead of meters per second.
+Contrary to the word &ldquo;output&rdquo; in the name of this parameter, a number of plugins also use this parameter to determine how to interpret their *inputs*. For example, when &lsquo;true&rsquo;, several of the boundary velocity models described in {ref}`parameters:Boundary_20velocity_20model` interpret both specific times in years instead of seconds, and velocities in meters per year instead of meters per second.
 
 (parameters:World_20builder_20file)=
 ### __Parameter name:__ World builder file
