@@ -100,6 +100,9 @@ def escape_doc_string(text) :
     tmp = re.sub(r'\\cite\{(.*?)\}',
                  r'{cite}`\1`',
                  tmp)
+    tmp = re.sub(r'Section~\\ref\{(.*?)\}',
+                 r'{ref}`\1`',
+                 tmp)
 
     # Finally escape some characters that have special meaning in markdown:
     tmp = re.sub(r'\[(.*)\]\(',

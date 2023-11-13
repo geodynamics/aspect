@@ -777,7 +777,7 @@ namespace aspect
                                    "the velocity in direction of the cylinder axes is zero. "
                                    "This is consistent with the definition of what we consider "
                                    "the two-dimension case given in "
-                                   "Section~\\ref{sec:meaning-of-2d}."
+                                   "Section~\\ref{sec:methods:2d-models}."
                                    "\n\n"
                                    "The model assigns boundary indicators as follows: In 2d, "
                                    "inner and outer boundaries get boundary indicators zero "

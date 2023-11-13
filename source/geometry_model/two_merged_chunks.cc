@@ -642,7 +642,7 @@ namespace aspect
                                    "the velocity in direction of the cylinder axes is zero. "
                                    "This is consistent with the definition of what we consider "
                                    "the two-dimension case given in "
-                                   "Section~\\ref{sec:meaning-of-2d}. "
+                                   "Section~\\ref{sec:methods:2d-models}. "
                                    "It is also possible to add initial topography to the chunk geometry, "
                                    "based on an ascii data file. ")
   }
