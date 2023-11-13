@@ -278,11 +278,8 @@ namespace aspect
     void MeshDeformationHandler<dim>::set_assemblers(const SimulatorAccess<dim> &,
                                                      aspect::Assemblers::Manager<dim> &assemblers) const
     {
-      aspect::Assemblers::ApplyStabilization<dim> *surface_stabilization
-        = new aspect::Assemblers::ApplyStabilization<dim>(surface_theta);
-
       assemblers.stokes_system.push_back(
-        std::unique_ptr<aspect::Assemblers::ApplyStabilization<dim>> (surface_stabilization));
+        std::make_unique<aspect::Assemblers::ApplyStabilization<dim>> (surface_theta));
 
       // Note that we do not want face_material_model_data, because we do not
       // connect to a face assembler. We instead connect to a normal assembler,
