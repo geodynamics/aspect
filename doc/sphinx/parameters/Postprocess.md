@@ -68,7 +68,9 @@ Note that the &ldquo;heat flux statistics&rdquo; postprocessor computes the same
 
 As stated, this postprocessor computes the *outbound* heat flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
 
-\note{In geodynamics, the term &ldquo;heat flux&rdquo; is often understood to be the quantity $- k \nabla T$, which is really a heat flux *density*, i.e., a vector-valued field. In contrast to this, the current postprocessor only computes the integrated flux over each part of the boundary. Consequently, the units of the quantity computed here are $W=\frac{J}{s}$.}
+:::{note}
+In geodynamics, the term &ldquo;heat flux&rdquo; is often understood to be the quantity $- k \nabla T$, which is really a heat flux *density*, i.e., a vector-valued field. In contrast to this, the current postprocessor only computes the integrated flux over each part of the boundary. Consequently, the units of the quantity computed here are $W=\frac{J}{s}$.
+:::
 
 The &ldquo;heat flux densities&rdquo; postprocessor computes the same quantity as the one here, but divided by the area of the surface.
 
@@ -80,7 +82,9 @@ The &ldquo;heat flux densities&rdquo; postprocessor computes the same quantity a
 
 As stated, this postprocessor computes the *outbound* mass flux. If you are interested in the opposite direction, for example from the core into the mantle when the domain describes the mantle, then you need to multiply the result by -1.
 
-\note{In geodynamics, the term &ldquo;mass flux&rdquo; is often understood to be the quantity $\rho \mathbf v$, which is really a mass flux *density*, i.e., a vector-valued field. In contrast to this, the current postprocessor only computes the integrated flux over each part of the boundary. Consequently, the units of the quantity computed here are $\frac{kg}{s}$.}
+:::{note}
+In geodynamics, the term &ldquo;mass flux&rdquo; is often understood to be the quantity $\rho \mathbf v$, which is really a mass flux *density*, i.e., a vector-valued field. In contrast to this, the current postprocessor only computes the integrated flux over each part of the boundary. Consequently, the units of the quantity computed here are $\frac{kg}{s}$.
+:::
 
 &lsquo;material statistics&rsquo;: A postprocessor that computes some statistics about the material properties. In particular, it computes the volume-averages of the density and viscosity, and the total mass in the model. Specifically, it implements the following formulas in each time step: $\left<\rho\right> = \frac{1}{|\Omega|} \int_\Omega \rho(\mathbf x) \, \text{d}x$, $\left<\eta\right> = \frac{1}{|\Omega|} \int_\Omega \eta(\mathbf x) \, \text{d}x$, $M = \int_\Omega \rho(\mathbf x) \, \text{d}x$, where $|\Omega|$ is the volume of the domain.
 
@@ -102,13 +106,15 @@ As stated, this postprocessor computes the *outbound* mass flux. If you are inte
 
 In the output file, data is organized as (i) time, (ii) the 2 or 3 coordinates of the evaluation points, and (iii) followed by the values of the solution vector at this point. The time is provided in seconds or, if the global &ldquo;Use years in output instead of seconds&rdquo; parameter is set, in years. In the latter case, the velocity is also converted to meters/year, instead of meters/second.
 
-\note{Evaluating the solution of a finite element field at arbitrarily chosen points is an expensive process. Using this postprocessor will only be efficient if the number of evaluation points or output times is relatively small. If you need a very large number of evaluation points, you should consider extracting this information from the visualization program you use to display the output of the &lsquo;visualization&rsquo; postprocessor.}
+:::{note}
+Evaluating the solution of a finite element field at arbitrarily chosen points is an expensive process. Using this postprocessor will only be efficient if the number of evaluation points or output times is relatively small. If you need a very large number of evaluation points, you should consider extracting this information from the visualization program you use to display the output of the &lsquo;visualization&rsquo; postprocessor.
+:::
 
 &lsquo;pressure statistics&rsquo;: A postprocessor that computes some statistics about the pressure field.
 
 &lsquo;rotation statistics&rsquo;: A postprocessor that computes some statistics about the rotational velocity of the model (i.e. integrated net rotation and angular momentum). In 2d we assume the model to be a cross-section through an infinite domain in z direction, with a zero z-velocity. Thus, the z-axis is the only possible rotation axis and both moment of inertia and angular momentum are scalar instead of tensor quantities.
 
-&lsquo;sea level&rsquo;: A postprocessor that computes the sea level for glacial isostatic adjustmentmodeling. When ice melts and enters the ocean, the ocean water needs to beredistributed in a gravitationally consistent way. With the updated surfaceloading (ocean and ice) the free surface deformation needs to be computediteratively before moving to the next time step. A postprocessor intended for use with a deforming top surface. After every step it computes the sea level based on the topography, ocean basin, ice melt, perturbed gravitational potential of the Earth model and gravitational potential of the ice load, relative to a reference datum (initial radius for a spherical shell geometry model). The sea level computation is based on \cite{Martinec2018}. If &rsquo;SeaLevel.Output to file&rsquo; is set to true, also outputs sea level into text files named &lsquo;sea_level.NNNNN&rsquo; in the output directory, where NNNNN is the number of the time step.
+&lsquo;sea level&rsquo;: A postprocessor that computes the sea level for glacial isostatic adjustmentmodeling. When ice melts and enters the ocean, the ocean water needs to beredistributed in a gravitationally consistent way. With the updated surfaceloading (ocean and ice) the free surface deformation needs to be computediteratively before moving to the next time step. A postprocessor intended for use with a deforming top surface. After every step it computes the sea level based on the topography, ocean basin, ice melt, perturbed gravitational potential of the Earth model and gravitational potential of the ice load, relative to a reference datum (initial radius for a spherical shell geometry model). The sea level computation is based on {cite}`Martinec2018`. If &rsquo;SeaLevel.Output to file&rsquo; is set to true, also outputs sea level into text files named &lsquo;sea_level.NNNNN&rsquo; in the output directory, where NNNNN is the number of the time step.
 
 The file format then consists of lines with Euclidean coordinates followed by the corresponding sea level value. Sea level is printed/written in meters.
 
@@ -712,7 +718,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Bool]
 
-**Documentation:** By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles, In case both the current cell and its neighbors are empty, the interpolator will return 0 for the current cell&rsquo;s properties.
+**Documentation:** By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles. In case both the current cell and its neighbors are empty, the interpolator will return 0 for the current cell&rsquo;s properties.
 
 (parameters:Postprocess/Particles/Data_20output_20format)=
 ### __Parameter name:__ Data output format
@@ -862,7 +868,7 @@ The following properties are available:
 
 **Documentation:** Select one of the following models:
 
-&lsquo;ascii file&rsquo;: Generates a distribution of particles from coordinates specified in an Ascii data file. The file format is a simple text file, with as many columns as spatial dimensions and as many lines as particles to be generated. Initial comment lines starting with &lsquo;#&rsquo; will be discarded. Note that this plugin always generates as many particles as there are coordinates in the data file, the &ldquo;Postprocess/Particles/Number of particles&rdquo; parameter has no effect on this plugin. All of the values that define this generator are read from a section &ldquo;Postprocess/Particles/Generator/Ascii file&rdquo; in the input file, see Section~\ref{parameters:Postprocess/Particles/Generator/Ascii_20file}.
+&lsquo;ascii file&rsquo;: Generates a distribution of particles from coordinates specified in an Ascii data file. The file format is a simple text file, with as many columns as spatial dimensions and as many lines as particles to be generated. Initial comment lines starting with &lsquo;#&rsquo; will be discarded. Note that this plugin always generates as many particles as there are coordinates in the data file, the &ldquo;Postprocess/Particles/Number of particles&rdquo; parameter has no effect on this plugin. All of the values that define this generator are read from a section &ldquo;Postprocess/Particles/Generator/Ascii file&rdquo; in the input file, see {ref}`parameters:Postprocess/Particles/Generator/Ascii_20file`.
 
 &lsquo;probability density function&rsquo;: Generate a random distribution of particles over the entire simulation domain. The probability density is prescribed in the form of a user-prescribed function. The format of this function follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`. The return value of the function is always checked to be a non-negative probability density but it can be zero in parts of the domain.
 
@@ -1504,7 +1510,9 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Bool]
 
-**Documentation:** deal.II offers the possibility to filter duplicate vertices for HDF5 output files. This merges the vertices of adjacent cells and therefore saves disk space, but misrepresents discontinuous output properties. Activating this function reduces the disk space by about a factor of $2^{dim}$ for HDF5 output, and currently has no effect on other output formats. \note{**Warning:** Setting this flag to true will result in visualization output that does not accurately represent discontinuous fields. This may be because you are using a discontinuous finite element for the pressure, temperature, or compositional variables, or because you use a visualization postprocessor that outputs quantities as discontinuous fields (e.g., the strain rate, viscosity, etc.). These will then all be visualized as *continuous* quantities even though, internally, ASPECT considers them as discontinuous fields.}
+**Documentation:** deal.II offers the possibility to filter duplicate vertices for HDF5 output files. This merges the vertices of adjacent cells and therefore saves disk space, but misrepresents discontinuous output properties. Activating this function reduces the disk space by about a factor of $2^{dim}$ for HDF5 output, and currently has no effect on other output formats. :::{warning}
+Setting this flag to true will result in visualization output that does not accurately represent discontinuous fields. This may be because you are using a discontinuous finite element for the pressure, temperature, or compositional variables, or because you use a visualization postprocessor that outputs quantities as discontinuous fields (e.g., the strain rate, viscosity, etc.). These will then all be visualized as *continuous* quantities even though, internally, ASPECT considers them as discontinuous fields.
+:::
 
 (parameters:Postprocess/Visualization/Interpolate_20output)=
 ### __Parameter name:__ Interpolate output
@@ -1514,7 +1522,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** deal.II offers the possibility to linearly interpolate output fields of higher order elements to a finer resolution. This somewhat compensates the fact that most visualization software only offers linear interpolation between grid points and therefore the output file is a very coarse representation of the actual solution field. Activating this option increases the spatial resolution in each dimension by a factor equal to the polynomial degree used for the velocity finite element (usually 2). In other words, instead of showing one quadrilateral or hexahedron in the visualization per cell on which ASPECT computes, it shows multiple (for quadratic elements, it will describe each cell of the mesh on which we compute as $2\times 2$ or $2\times 2\times 2$ cells in 2d and 3d, respectively; correspondingly more subdivisions are used if you use cubic, quartic, or even higher order elements for the velocity).
 
-The effect of using this option can be seen in the following picture showing a variation of the output produced with the input files from Section~\ref{sec:shell-simple-2d}:
+The effect of using this option can be seen in the following picture showing a variation of the output produced with the input files from {ref}`sec:cookbooks:shell_simple_2d`:
 
 \begin{center}  \includegraphics[width=0.5\textwidth]{viz/parameters/build-patches}\end{center}Here, the left picture shows one visualization cell per computational cell (i.e., the option is switched off), and the right picture shows the same simulation with the option switched on (which is the default). The images show the same data, demonstrating that interpolating the solution onto bilinear shape functions as is commonly done in visualizing data loses information.
 
@@ -1530,7 +1538,7 @@ Of course, activating this option also greatly increases the amount of data ASPE
 
 The following postprocessors are available:
 
-&lsquo;ISA rotation timescale&rsquo;: A visualization output object that generates output showing the timescale for the rotation of grains toward the infinite strain axis. Kaminski and Ribe (see \cite{Kaminski2002}) call this quantity $\tau_\text{ISA}$ and define it as $\tau_\text{ISA} \approx \frac{1}{\dot{\epsilon}}$ where $\dot{\epsilon}$ is the largest eigenvalue of the strain rate tensor. It can be used, along with the grain lag angle $\Theta$, to calculate the grain orientation lag parameter.
+&lsquo;ISA rotation timescale&rsquo;: A visualization output object that generates output showing the timescale for the rotation of grains toward the infinite strain axis. Kaminski and Ribe (see {cite}`Kaminski2002`) call this quantity $\tau_\text{ISA}$ and define it as $\tau_\text{ISA} \approx \frac{1}{\dot{\epsilon}}$ where $\dot{\epsilon}$ is the largest eigenvalue of the strain rate tensor. It can be used, along with the grain lag angle $\Theta$, to calculate the grain orientation lag parameter.
 
 Physical units: \si{\second}.
 
@@ -1590,7 +1598,7 @@ Physical units: None. (Strictly speaking, errors have physical units of course, 
 
 Physical units: \si{\meter}.
 
-&lsquo;grain lag angle&rsquo;: A visualization output object that generates output showing the angle between the ~infinite strain axis and the flow velocity. Kaminski and Ribe (see \cite{Kaminski2002}) call this quantity $\Theta$ and define it as $\Theta = \cos^{-1}(\hat{u}\cdot\hat{e})$  where $\hat{u}=\vec{u}/|{u}|$, $\vec{u}$ is the local flow velocity, and $\hat{e}$ is the local infinite strain axis, which we calculate as the first eigenvector of the &rsquo;left stretch&rsquo; tensor. $\Theta$ can be used to calculate the grain orientation lag parameter.
+&lsquo;grain lag angle&rsquo;: A visualization output object that generates output showing the angle between the ~infinite strain axis and the flow velocity. Kaminski and Ribe (see {cite}`Kaminski2002`) call this quantity $\Theta$ and define it as $\Theta = \cos^{-1}(\hat{u}\cdot\hat{e})$  where $\hat{u}=\vec{u}/|{u}|$, $\vec{u}$ is the local flow velocity, and $\hat{e}$ is the local infinite strain axis, which we calculate as the first eigenvector of the &rsquo;left stretch&rsquo; tensor. $\Theta$ can be used to calculate the grain orientation lag parameter.
 
 Physical units: \si{\radian}.
 
@@ -1614,7 +1622,7 @@ Physical units: Various.
 
 &lsquo;maximum horizontal compressive stress&rsquo;: A plugin that computes the direction and magnitude of the maximum horizontal component of the compressive stress as a vector field. The direction of this vector can often be used to visualize the principal mode of deformation (e.g., at normal faults or extensional margins) and can be correlated with seismic anisotropy. Recall that the *compressive* stress is simply the negative stress, $\sigma_c=-\sigma=-\left[     2\eta (\varepsilon(\mathbf u)             - \frac 13 (\nabla \cdot \mathbf u) I)     + pI\right]$.
 
-Following \cite{LundTownend07}, we define the maximum horizontal stress direction as that *horizontal* direction $\mathbf n$ that maximizes $\mathbf n^T \sigma_c \mathbf n$. We call a vector *horizontal* if it is perpendicular to the gravity vector $\mathbf g$.
+Following {cite}`LundTownend07`, we define the maximum horizontal stress direction as that *horizontal* direction $\mathbf n$ that maximizes $\mathbf n^T \sigma_c \mathbf n$. We call a vector *horizontal* if it is perpendicular to the gravity vector $\mathbf g$.
 
 In two space dimensions, $\mathbf n$ is simply a vector that is horizontal (we choose one of the two possible choices). This direction is then scaled by the size of the horizontal stress in this direction, i.e., the plugin outputs the vector $\mathbf w = (\mathbf n^T \sigma_c \mathbf n) \; \mathbf n$.
 
