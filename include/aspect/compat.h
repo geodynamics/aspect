@@ -1070,4 +1070,147 @@ namespace dealii
 #endif
 
 
+#include <deal.II/grid/manifold.h>
+#include <deal.II/grid/manifold_lib.h>
+
+namespace aspect
+{
+  using namespace dealii;
+
+  /**
+   * The deal.II class SphericalManifold has a design flaw that made it
+   * impossible to derive from the class. This is fixed post-9.5,
+   * see https://github.com/dealii/dealii/pull/16242 and
+   * https://github.com/dealii/dealii/pull/16248, but we can't
+   * use deal.II 9.5 and earlier for this class. The current class
+   * here is therefore a copy of the fixed class.
+   */
+  template <int dim, int spacedim = dim>
+  class SphericalManifold : public Manifold<dim, spacedim>
+  {
+    public:
+      /**
+       * Constructor.
+       *
+       * @param[in] center The center of the coordinate system. Defaults to the
+       * origin.
+       */
+      SphericalManifold(const Point<spacedim> center = Point<spacedim>());
+
+      /**
+       * Make a clone of this Manifold object.
+       */
+      virtual std::unique_ptr<Manifold<dim, spacedim>>
+      clone() const override;
+
+      /**
+       * Given any two points in space, first project them on the surface
+       * of a sphere with unit radius, then connect them with a geodesic
+       * and find the intermediate point, and finally rescale the final
+       * radius so that the resulting one is the convex combination of the
+       * starting radii.
+       */
+      virtual Point<spacedim>
+      get_intermediate_point(const Point<spacedim> &p1,
+                             const Point<spacedim> &p2,
+                             const double           w) const override;
+
+      /**
+       * Compute the derivative of the get_intermediate_point() function
+       * with parameter w equal to zero.
+       */
+      virtual Tensor<1, spacedim>
+      get_tangent_vector(const Point<spacedim> &x1,
+                         const Point<spacedim> &x2) const override;
+
+      /**
+       * @copydoc Manifold::normal_vector()
+       */
+      virtual Tensor<1, spacedim>
+      normal_vector(
+        const typename Triangulation<dim, spacedim>::face_iterator &face,
+        const Point<spacedim> &p) const override;
+
+      /**
+       * Compute the normal vectors to the boundary at each vertex.
+       */
+      virtual void
+      get_normals_at_vertices(
+        const typename Triangulation<dim, spacedim>::face_iterator &face,
+        typename Manifold<dim, spacedim>::FaceVertexNormals &face_vertex_normals)
+      const override;
+
+      /**
+       * Compute a new set of points that interpolate between the given points @p
+       * surrounding_points. @p weights is a table with as many columns as @p
+       * surrounding_points.size(). The number of rows in @p weights must match
+       * the length of @p new_points.
+       *
+       * This function is optimized to perform on a collection
+       * of new points, by collecting operations that are not dependent on the
+       * weights outside of the loop over all new points.
+       *
+       * The implementation does not allow for @p surrounding_points and
+       * @p new_points to point to the same array, so make sure to pass different
+       * objects into the function.
+       */
+      virtual void
+      get_new_points(const ArrayView<const Point<spacedim>> &surrounding_points,
+                     const Table<2, double>                 &weights,
+                     ArrayView<Point<spacedim>> new_points) const override;
+
+      /**
+       * Return a point on the spherical manifold which is intermediate
+       * with respect to the surrounding points.
+       */
+      virtual Point<spacedim>
+      get_new_point(const ArrayView<const Point<spacedim>> &vertices,
+                    const ArrayView<const double>          &weights) const override;
+
+      /**
+       * The center of the spherical coordinate system.
+       */
+      const Point<spacedim> center;
+
+    private:
+      /**
+       * Return a point on the spherical manifold which is intermediate
+       * with respect to the surrounding points. This function uses a linear
+       * average of the directions to find an estimated point. It returns a pair
+       * of radius and direction from the center point to the candidate point.
+       */
+      std::pair<double, Tensor<1, spacedim>>
+      guess_new_point(const ArrayView<const Tensor<1, spacedim>> &directions,
+                      const ArrayView<const double>              &distances,
+                      const ArrayView<const double>              &weights) const;
+
+      /**
+       * This function provides an internal implementation of the get_new_points()
+       * interface.
+       *
+       * It computes a new set of points that interpolate between the given points
+       * @p
+       * surrounding_points. @p weights is an array view with as many entries as @p
+       * surrounding_points.size() times @p new_points.size().
+       *
+       * This function is optimized to perform on a collection
+       * of new points, by collecting operations that are not dependent on the
+       * weights outside of the loop over all new points.
+       *
+       * The implementation does not allow for @p surrounding_points and
+       * @p new_points to point to the same array, so make sure to pass different
+       * objects into the function.
+       */
+      void
+      do_get_new_points(const ArrayView<const Point<spacedim>> &surrounding_points,
+                        const ArrayView<const double>          &weights,
+                        ArrayView<Point<spacedim>>              new_points) const;
+
+      /**
+       * A manifold description to be used for get_new_point in 2d.
+       */
+      const PolarManifold<spacedim> polar_manifold;
+  };
+}
+
 #endif
