@@ -241,7 +241,7 @@ namespace aspect
         /**
          * Initial surface refinement for the custom mesh cases.
          */
-        int initial_lateral_refinement;
+        unsigned int initial_lateral_refinement;
 
         /**
          * Initial surface refinement for the custom mesh cases.
