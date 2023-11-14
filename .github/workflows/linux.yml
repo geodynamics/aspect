@@ -168,7 +168,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.result-file }}
-        path: build/${{ matrix.result-file }}}
+        path: build/${{ matrix.result-file }}
     - name: check test results
       run: |
         if [ -f build/test_run_failed ] || [ -s build/${{ matrix.result-file}} ]; then
