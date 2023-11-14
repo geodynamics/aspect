@@ -50,120 +50,90 @@ namespace aspect
     }
 
 
-    namespace
+    namespace internal
     {
       template <int dim>
-      class SphericalManifoldWithTopography : public aspect::SphericalManifold<dim>
+      SphericalManifoldWithTopography<dim>::
+      SphericalManifoldWithTopography(const Point<dim> center)
+        :
+        SphericalManifold<dim>(center)
+      {}
+
+
+      template <int dim>
+      std::unique_ptr<Manifold<dim, dim>>
+      SphericalManifoldWithTopography<dim>::clone() const
       {
-        public:
-          /**
-           * Constructor.
-           *
-           * @param[in] center The center of the coordinate system. Defaults to the
-           * origin.
-           */
-          SphericalManifoldWithTopography(const Point<dim> center = Point<dim>())
-            :
-            SphericalManifold<dim>(center)
-          {}
-
-          /**
-           * Copy constructor.
-           */
-          SphericalManifoldWithTopography(const SphericalManifoldWithTopography<dim> &) = default;
-
-          /**
-           * Make a clone of this Manifold object.
-           */
-          virtual std::unique_ptr<Manifold<dim, dim>>
-          clone() const override
-          {
-            return std::make_unique<SphericalManifoldWithTopography<dim>>(*this);
-          }
-
-          /**
-           * Given any two points in space, first project them on the surface
-           * of a sphere with unit radius, then connect them with a geodesic
-           * and find the intermediate point, and finally rescale the final
-           * radius so that the resulting one is the convex combination of the
-           * starting radii.
-           */
-          virtual Point<dim>
-          get_intermediate_point(const Point<dim> &p1,
-                                 const Point<dim> &p2,
-                                 const double           w) const override
-          {
-            return SphericalManifold<dim>::get_intermediate_point (p1, p2, w);
-          }
-
-          /**
-           * Compute the derivative of the get_intermediate_point() function
-           * with parameter w equal to zero.
-           */
-          virtual Tensor<1, dim>
-          get_tangent_vector(const Point<dim> &x1,
-                             const Point<dim> &x2) const override
-          {
-            return SphericalManifold<dim>::get_tangent_vector (x1, x2);
-          }
-
-          /**
-           * @copydoc Manifold::normal_vector()
-           */
-          virtual Tensor<1, dim>
-          normal_vector(
-            const typename Triangulation<dim, dim>::face_iterator &face,
-            const Point<dim> &p) const override
-          {
-            return SphericalManifold<dim>::normal_vector (face, p);
-          }
-
-          /**
-           * Compute the normal vectors to the boundary at each vertex.
-           */
-          virtual void
-          get_normals_at_vertices(
-            const typename Triangulation<dim, dim>::face_iterator &face,
-            typename Manifold<dim, dim>::FaceVertexNormals &face_vertex_normals)
-          const override
-          {
-            SphericalManifold<dim>::get_normals_at_vertices(face, face_vertex_normals);
-          }
+        return std::make_unique<SphericalManifoldWithTopography<dim>>(*this);
+      }
 
 
-          /**
-           * Compute a new set of points that interpolate between the given points @p
-           * surrounding_points. @p weights is a table with as many columns as @p
-           * surrounding_points.size(). The number of rows in @p weights must match
-           * the length of @p new_points.
-           *
-           * This function is optimized to perform on a collection
-           * of new points, by collecting operations that are not dependent on the
-           * weights outside of the loop over all new points.
-           *
-           * The implementation does not allow for @p surrounding_points and
-           * @p new_points to point to the same array, so make sure to pass different
-           * objects into the function.
-           */
-          virtual void
-          get_new_points(const ArrayView<const Point<dim>> &surrounding_points,
-                         const Table<2, double>                 &weights,
-                         ArrayView<Point<dim>> new_points) const override
-          {
-            SphericalManifold<dim>::get_new_points(surrounding_points, weights, new_points);
-          }
+      template <int dim>
+      Point<dim>
+      SphericalManifoldWithTopography<dim>::
+      get_intermediate_point(const Point<dim> &p1,
+                             const Point<dim> &p2,
+                             const double      w) const
+      {
+        return SphericalManifold<dim>::get_intermediate_point (p1, p2, w);
+      }
 
-          /**
-           * Return a point on the spherical manifold which is intermediate
-           * with respect to the surrounding points.
-           */
-          virtual Point<dim>
-          get_new_point(const ArrayView<const Point<dim>> &vertices,
-                        const ArrayView<const double>          &weights) const override
-          {
-            return SphericalManifold<dim>::get_new_point(vertices, weights);
-          }
-      };
+
+
+      template <int dim>
+      Tensor<1, dim>
+      SphericalManifoldWithTopography<dim>::
+      get_tangent_vector(const Point<dim> &x1,
+                         const Point<dim> &x2) const
+      {
+        return SphericalManifold<dim>::get_tangent_vector (x1, x2);
+      }
+
+
+
+      template <int dim>
+      Tensor<1, dim>
+      SphericalManifoldWithTopography<dim>::
+      normal_vector(const typename Triangulation<dim, dim>::face_iterator &face,
+                    const Point<dim> &p) const
+      {
+        return SphericalManifold<dim>::normal_vector (face, p);
+      }
+
+
+
+      template <int dim>
+      void
+      SphericalManifoldWithTopography<dim>::
+      get_normals_at_vertices(
+        const typename Triangulation<dim, dim>::face_iterator &face,
+        typename Manifold<dim, dim>::FaceVertexNormals &face_vertex_normals) const
+      {
+        SphericalManifold<dim>::get_normals_at_vertices(face, face_vertex_normals);
+      }
+
+
+
+      template <int dim>
+      void
+      SphericalManifoldWithTopography<dim>::
+      get_new_points(const ArrayView<const Point<dim>> &surrounding_points,
+                     const Table<2, double>            &weights,
+                     ArrayView<Point<dim>>              new_points) const
+      {
+        SphericalManifold<dim>::get_new_points(surrounding_points, weights, new_points);
+      }
+
+
+
+      template <int dim>
+      Point<dim>
+      SphericalManifoldWithTopography<dim>::
+      get_new_point(const ArrayView<const Point<dim>> &vertices,
+                    const ArrayView<const double>          &weights) const
+      {
+        return SphericalManifold<dim>::get_new_point(vertices, weights);
+      }
     }
 
 
@@ -358,7 +328,7 @@ namespace aspect
 
       // Use a manifold description for all cells. Use manifold_id 99 in order
       // not to step on the boundary indicators used below.
-      coarse_grid.set_manifold (99, SphericalManifoldWithTopography<dim>());
+      coarse_grid.set_manifold (99, internal::SphericalManifoldWithTopography<dim>());
       set_manifold_ids(coarse_grid);
     }
 
