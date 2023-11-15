@@ -31,6 +31,103 @@ namespace aspect
   {
     using namespace dealii;
 
+    namespace internal
+    {
+      /**
+       * A description of a manifold that describes a spherical shell with overlaid
+       * topography.
+       */
+      template <int dim>
+      class SphericalManifoldWithTopography : public aspect::SphericalManifold<dim>
+      {
+        public:
+          /**
+           * Constructor.
+           *
+           * @param[in] center The center of the coordinate system. Defaults to the
+           * origin.
+           */
+          SphericalManifoldWithTopography(const Point<dim> center = Point<dim>());
+
+          /**
+           * Copy constructor.
+           */
+          SphericalManifoldWithTopography(const SphericalManifoldWithTopography<dim> &) = default;
+
+          /**
+           * Make a clone of this Manifold object.
+           */
+          virtual std::unique_ptr<Manifold<dim, dim>>
+          clone() const override;
+
+          /**
+           * Given any two points in space, first project them on the surface
+           * of a sphere with unit radius, then connect them with a geodesic
+           * and find the intermediate point, and finally rescale the final
+           * radius so that the resulting one is the convex combination of the
+           * starting radii.
+           */
+          virtual Point<dim>
+          get_intermediate_point(const Point<dim> &p1,
+                                 const Point<dim> &p2,
+                                 const double      w) const override;
+
+          /**
+           * Compute the derivative of the get_intermediate_point() function
+           * with parameter w equal to zero.
+           */
+          virtual Tensor<1, dim>
+          get_tangent_vector(const Point<dim> &x1,
+                             const Point<dim> &x2) const override;
+
+          /**
+           * @copydoc Manifold::normal_vector()
+           */
+          virtual Tensor<1, dim>
+          normal_vector(
+            const typename Triangulation<dim, dim>::face_iterator &face,
+            const Point<dim> &p) const override;
+
+          /**
+           * Compute the normal vectors to the boundary at each vertex.
+           */
+          virtual void
+          get_normals_at_vertices(
+            const typename Triangulation<dim, dim>::face_iterator &face,
+            typename Manifold<dim, dim>::FaceVertexNormals &face_vertex_normals)
+          const override;
+
+
+          /**
+           * Compute a new set of points that interpolate between the given points @p
+           * surrounding_points. @p weights is a table with as many columns as @p
+           * surrounding_points.size(). The number of rows in @p weights must match
+           * the length of @p new_points.
+           *
+           * This function is optimized to perform on a collection
+           * of new points, by collecting operations that are not dependent on the
+           * weights outside of the loop over all new points.
+           *
+           * The implementation does not allow for @p surrounding_points and
+           * @p new_points to point to the same array, so make sure to pass different
+           * objects into the function.
+           */
+          virtual void
+          get_new_points(const ArrayView<const Point<dim>> &surrounding_points,
+                         const Table<2, double>                 &weights,
+                         ArrayView<Point<dim>> new_points) const override;
+
+          /**
+           * Return a point on the spherical manifold which is intermediate
+           * with respect to the surrounding points.
+           */
+          virtual Point<dim>
+          get_new_point(const ArrayView<const Point<dim>> &vertices,
+                        const ArrayView<const double>          &weights) const override;
+      };
+
+    }
+
     /**
      * A class that describes the geometry as a spherical shell. To be more
      * precise, at least in 2d this class can also simulate just a sector of
@@ -49,6 +146,16 @@ namespace aspect
          * Constructor.
          */
         SphericalShell() = default;
+
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after
+         * the SimulatorAccess (if applicable) is initialized.
+         * This function calls the initialize function of the manifold
+         * with a pointer to the initial topography model obtained
+         * from SimulatorAccess.
+         */
+        void initialize () override;
 
         /**
          * Generate a coarse mesh for the geometry described by this class.
@@ -278,6 +385,24 @@ namespace aspect
          * Flag whether the 2D quarter shell is periodic in phi.
          */
         bool periodic;
+
+        /**
+         * An object that describes the geometry. This pointer is
+         * initialized in the initialize() function, and serves as the manifold
+         * object that the triangulation is later given in create_coarse_mesh()
+         * where the triangulation clones it.
+         *
+         * The object is marked as 'const' to make it clear that it should not
+         * be modified once created. That is because the triangulation copies it,
+         * and modifying the current object will not have any impact on the
+         * manifold used by the triangulation.
+         */
+        std::unique_ptr<const internal::SphericalManifoldWithTopography<dim>> manifold;
+
+        /**
+         * Give a symbolic name to the manifold id to be used by this class.
+         */
+        static const types::manifold_id my_manifold_id = 99;
     };
   }
 }
