@@ -1,9 +1,9 @@
 
 
-   Loading Ascii data boundary file /ssd/aspect-git-clean/data/test/netcdf/box_2d_left.0.nc.
+   Loading Ascii data boundary file ASPECT_DIR/data/test/netcdf/box_2d_left.0.nc.
 
 
-   Loading Ascii data boundary file /ssd/aspect-git-clean/data/test/netcdf/box_2d_left.0.nc.
+   Loading Ascii data boundary file ASPECT_DIR/data/test/netcdf/box_2d_left.0.nc.
 
 Number of active cells: 80 (on 3 levels)
 Number of degrees of freedom: 1,212 (738+105+369)
