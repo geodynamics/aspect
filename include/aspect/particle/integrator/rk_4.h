@@ -109,7 +109,7 @@ namespace aspect
           /**
            * The location of the 4 RK4 data fields stored in the particle properties.
            */
-          std::array<unsigned int,4> property_index_k;
+          std::array<unsigned int,4> property_indices;
       };
     }
   }

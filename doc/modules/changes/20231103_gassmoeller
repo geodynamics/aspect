@@ -1,0 +1,5 @@
+Fixed: The RK4 particle interpolation scheme computed wrong
+particle locations for particles that crossed periodic boundaries
+in a box geometry. This is fixed now.
+<br>
+(Rene Gassmoeller, 2023/11/03)
