@@ -140,6 +140,15 @@ namespace aspect
 
     template <int dim>
     void
+    SphericalShell<dim>::initialize ()
+    {
+      manifold = std::make_unique<internal::SphericalManifoldWithTopography<dim>>();
+    }
+
+
+
+    template <int dim>
+    void
     SphericalShell<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
@@ -328,7 +337,7 @@ namespace aspect
 
       // Use a manifold description for all cells. Use manifold_id 99 in order
       // not to step on the boundary indicators used below.
-      coarse_grid.set_manifold (99, internal::SphericalManifoldWithTopography<dim>());
+      coarse_grid.set_manifold (my_manifold_id, *manifold);
       set_manifold_ids(coarse_grid);
     }
 
@@ -339,7 +348,7 @@ namespace aspect
     SphericalShell<dim>::set_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const
     {
       for (const auto &cell : triangulation.active_cell_iterators())
-        cell->set_all_manifold_ids (99);
+        cell->set_all_manifold_ids (my_manifold_id);
     }
 
 

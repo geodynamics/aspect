@@ -148,6 +148,16 @@ namespace aspect
         SphericalShell() = default;
 
         /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after
+         * the SimulatorAccess (if applicable) is initialized.
+         * This function calls the initialize function of the manifold
+         * with a pointer to the initial topography model obtained
+         * from SimulatorAccess.
+         */
+        void initialize () override;
+
+        /**
          * Generate a coarse mesh for the geometry described by this class.
          */
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const override;
@@ -375,6 +385,24 @@ namespace aspect
          * Flag whether the 2D quarter shell is periodic in phi.
          */
         bool periodic;
+
+        /**
+         * An object that describes the geometry. This pointer is
+         * initialized in the initialize() function, and serves as the manifold
+         * object that the triangulation is later given in create_coarse_mesh()
+         * where the triangulation clones it.
+         *
+         * The object is marked as 'const' to make it clear that it should not
+         * be modified once created. That is because the triangulation copies it,
+         * and modifying the current object will not have any impact on the
+         * manifold used by the triangulation.
+         */
+        std::unique_ptr<const internal::SphericalManifoldWithTopography<dim>> manifold;
+
+        /**
+         * Give a symbolic name to the manifold id to be used by this class.
+         */
+        static const types::manifold_id my_manifold_id = 99;
     };
   }
 }
