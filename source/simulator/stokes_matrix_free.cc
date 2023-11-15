@@ -57,41 +57,17 @@ namespace aspect
      */
     namespace ChangeVectorTypes
     {
-      void import(TrilinosWrappers::MPI::Vector &out,
-                  const dealii::LinearAlgebra::ReadWriteVector<double> &rwv,
-                  const VectorOperation::values                 operation)
-      {
-        Assert(out.size() == rwv.size(),
-               ExcMessage("Both vectors need to have the same size for import() to work!"));
-
-        Assert(out.locally_owned_elements() == rwv.get_stored_elements(),
-               ExcNotImplemented());
-
-        if (operation == VectorOperation::insert)
-          {
-            for (const auto idx : out.locally_owned_elements())
-              out[idx] = rwv[idx];
-          }
-        else if (operation == VectorOperation::add)
-          {
-            for (const auto idx : out.locally_owned_elements())
-              out[idx] += rwv[idx];
-          }
-        else
-          AssertThrow(false, ExcNotImplemented());
-
-        out.compress(operation);
-      }
-
-
       void copy(TrilinosWrappers::MPI::Vector &out,
                 const dealii::LinearAlgebra::distributed::Vector<double> &in)
       {
         dealii::LinearAlgebra::ReadWriteVector<double> rwv(out.locally_owned_elements());
+#if DEAL_II_VERSION_GTE(9,5,0)
+        rwv.import_elements(in, VectorOperation::insert);
+        out.import_elements(rwv,VectorOperation::insert);
+#else
         rwv.import(in, VectorOperation::insert);
-        //This import function doesn't exist until after dealii 9.0
-        //Implemented above
-        import(out, rwv,VectorOperation::insert);
+        out.import(rwv,VectorOperation::insert);
+#endif
       }
 
       void copy(dealii::LinearAlgebra::distributed::Vector<double> &out,
