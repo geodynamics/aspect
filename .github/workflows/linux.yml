@@ -107,12 +107,12 @@ jobs:
         include:
           - image: "geodynamics/aspect-tester:focal-dealii-9.4-v4"
             run-tests: "ON"
-            compare-tests: "ON"
+            compare-tests: "OFF"
             result-file: "changes-test-results-9.4.diff"
             container-options: '--name container'
           - image: "geodynamics/aspect-tester:focal-dealii-9.5-v2"
             run-tests: "ON"
-            compare-tests: "OFF"
+            compare-tests: "ON"
             result-file: "changes-test-results-9.5.diff"
             container-options: '--name container'
           - image: "geodynamics/aspect-tester:focal-dealii-master"
