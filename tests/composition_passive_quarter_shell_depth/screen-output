@@ -23,7 +23,7 @@ Number of degrees of freedom: 65,926 (25,090+3,201+12,545+12,545+12,545)
    Postprocessing:
      Writing graphical output:  output-composition_passive_quarter_shell_depth/solution/solution-00001
      Temperature min/avg/max:   0 K, 0.2417 K, 1 K
-     Compositions min/max/mass: -7.309e-08/1/0.1374 // -2.408e-07/1/0.1058
+     Compositions min/max/mass: -7.331e-08/1/0.1374 // -2.399e-07/1/0.1058
 
 Termination requested by criterion: end time
 

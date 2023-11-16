@@ -23,7 +23,7 @@ Number of degrees of freedom: 65,926 (25,090+3,201+12,545+12,545+12,545)
    Postprocessing:
      Writing graphical output:  output-composition_passive_quarter_shell_cartesian/solution/solution-00001
      Temperature min/avg/max:   0 K, 0.2417 K, 1 K
-     Compositions min/max/mass: -2.153e-07/1/0.08004 // -4.018e-06/1/0.04017
+     Compositions min/max/mass: -2.141e-07/1/0.08004 // -4.021e-06/1/0.04017
 
 Termination requested by criterion: end time
 

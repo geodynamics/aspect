@@ -23,15 +23,15 @@ Number of degrees of freedom: 8,016 (1,728+240+864+864+864+864+864+864+864)
 *** Timestep 0:  t=0 years, dt=0 years
    Copying properties into prescribed temperature field... done.
    Solving Stokes system... 65+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0.0121817
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0121817
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0.012107
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.012107
 
 
    Postprocessing:
-     Max, min, and RMS residual velocity along boundary parts: 1.137 m/year, 0.0003988 m/year, 0.4356 m/year
-     Max, min, and rms velocity along boundary parts:          0.8533 m/year, 0.001008 m/year, 0.3286 m/year, 1.137 m/year, 0.0003988 m/year, 0.4356 m/year
+     Max, min, and RMS residual velocity along boundary parts: 1.123 m/year, 0.0004104 m/year, 0.4248 m/year
+     Max, min, and rms velocity along boundary parts:          0.8438 m/year, 0.000775 m/year, 0.3246 m/year, 1.123 m/year, 0.0004104 m/year, 0.4248 m/year
      Writing graphical output:                                 output-tomography_based_plate_motions_cookbook/solution/solution-00000
-     Heat fluxes through boundary parts:                       -1.249e+07 W, 5.968e+07 W
+     Heat fluxes through boundary parts:                       -1.242e+07 W, 5.98e+07 W
      Writing depth average:                                    output-tomography_based_plate_motions_cookbook/depth_average
 
 Termination requested by criterion: end time

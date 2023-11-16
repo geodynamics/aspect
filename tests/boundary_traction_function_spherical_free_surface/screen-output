@@ -16,7 +16,7 @@ Number of mesh deformation degrees of freedom: 1,342
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 24+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.40777e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.40778e-07
 
 
 Number of active cells: 1,320 (on 2 levels)
@@ -36,7 +36,7 @@ Number of mesh deformation degrees of freedom: 2,910
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.33834e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.33828e-08
 
 
 Number of active cells: 4,380 (on 3 levels)
@@ -56,7 +56,7 @@ Number of mesh deformation degrees of freedom: 9,288
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.44569e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.44565e-08
 
 
    Postprocessing:
@@ -80,11 +80,11 @@ Number of mesh deformation degrees of freedom: 9,288
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.82747e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.75844e-08
 
 
    Postprocessing:
-     Compositions min/max/mass: -3.726e+04/3.726e+04/-5.107e+07 // -3.726e+04/3.726e+04/5.107e+07 // -7474/1.575e+04/3.431e+12
+     Compositions min/max/mass: -3.726e+04/3.726e+04/-4.918e+07 // -3.726e+04/3.726e+04/4.918e+07 // -7474/1.575e+04/3.431e+12
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -3.725e-09 m, -9.313e-10 m
      RMS, max velocity:         0.0109 m/year, 0.0377 m/year
@@ -104,11 +104,11 @@ Number of mesh deformation degrees of freedom: 9,288
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.88329e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.87235e-07
 
 
    Postprocessing:
-     Compositions min/max/mass: -1.235e+05/1.235e+05/3.226e+07 // -1.235e+05/1.235e+05/-3.226e+07 // -1.182e+05/4.016e+04/-5.46e+14
+     Compositions min/max/mass: -1.235e+05/1.235e+05/3.241e+07 // -1.235e+05/1.235e+05/-3.241e+07 // -1.182e+05/4.016e+04/-5.46e+14
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -0.09426 m, 0.02027 m
      RMS, max velocity:         0.00755 m/year, 0.0262 m/year

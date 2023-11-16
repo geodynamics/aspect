@@ -15,24 +15,24 @@ Number of degrees of freedom: 40,704 (24,960+3,264+12,480)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 23+0 iterations.
 
-Number of active cells: 5,088 (on 7 levels)
-Number of degrees of freedom: 74,496 (45,696+5,952+22,848)
+Number of active cells: 3,072 (on 7 levels)
+Number of degrees of freedom: 48,288 (29,568+3,936+14,784)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system... 23+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:       0.000117 m/year, 0.000479 m/year
+     RMS, max velocity:       0.000111 m/year, 0.00038 m/year
      Temperature min/avg/max: 273 K, 1984 K, 4273 K
 
 *** Timestep 1:  t=5.29e+07 years, dt=5.29e+07 years
-   Solving temperature system... 21 iterations.
-   Solving Stokes system... 18+0 iterations.
+   Solving temperature system... 15 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:       9.31e-05 m/year, 0.00049 m/year
+     RMS, max velocity:       8.87e-05 m/year, 0.000463 m/year
      Temperature min/avg/max: 273 K, 1970 K, 4273 K
 
 Termination requested by criterion: end step
