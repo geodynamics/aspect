@@ -2114,9 +2114,14 @@ namespace aspect
 
     std::vector<Tensor<1,dim>> face_current_velocity_values (fe_face_values.n_quadrature_points);
 
-    // Do not replace the id on boundaries with tangential velocity
-    const std::set<types::boundary_id> &tangential_velocity_boundaries =
+    const auto &tangential_velocity_boundaries =
       boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
+
+    const auto &zero_velocity_boundaries =
+      boundary_velocity_manager.get_zero_boundary_velocity_indicators();
+
+    const auto &prescribed_velocity_boundaries =
+      boundary_velocity_manager.get_active_boundary_velocity_conditions();
 
     // Loop over all of the boundary faces, ...
     for (const auto &cell : dof_handler.active_cell_iterators())
@@ -2124,8 +2129,11 @@ namespace aspect
         for (const unsigned int face_number : cell->face_indices())
           {
             const typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
+
+            // If the face is at a boundary where we may want to replace its id
             if (face->at_boundary() &&
-                tangential_velocity_boundaries.find(face->boundary_id()) == tangential_velocity_boundaries.end())
+                tangential_velocity_boundaries.find(face->boundary_id()) == tangential_velocity_boundaries.end() &&
+                zero_velocity_boundaries.find(face->boundary_id()) == zero_velocity_boundaries.end())
               {
                 Assert(face->boundary_id() <= offset,
                        ExcMessage("If you do not 'Allow fixed temperature/composition on outflow boundaries', "
@@ -2138,15 +2146,22 @@ namespace aspect
                 // ... check if the face is an outflow boundary by integrating the normal velocities
                 // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
                 double integrated_flow = 0;
+
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
-                    integrated_flow += (face_current_velocity_values[q] * fe_face_values.normal_vector(q)) *
+                    Tensor<1,dim> boundary_velocity;
+                    if (prescribed_velocity_boundaries.find(face->boundary_id()) == prescribed_velocity_boundaries.end())
+                      boundary_velocity = face_current_velocity_values[q];
+                    else
+                      boundary_velocity = boundary_velocity_manager.boundary_velocity(face->boundary_id(),
+                                                                                      fe_face_values.quadrature_point(q));
+
+                    integrated_flow += (boundary_velocity * fe_face_values.normal_vector(q)) *
                                        fe_face_values.JxW(q);
                   }
 
                 // ... and change the boundary id of any outflow boundary faces.
-                // If there is no flow, we do not want to apply dirichlet boundary conditions either.
-                if (integrated_flow >= 0)
+                if (integrated_flow > 0)
                   face->set_boundary_id(face->boundary_id() + offset);
               }
           }
