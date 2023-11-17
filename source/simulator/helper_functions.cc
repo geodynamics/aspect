@@ -2130,7 +2130,7 @@ namespace aspect
           {
             const typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
 
-            // If the face it at a boundary where we may want to replace its id
+            // If the face is at a boundary where we may want to replace its id
             if (face->at_boundary() &&
                 tangential_velocity_boundaries.find(face->boundary_id()) == tangential_velocity_boundaries.end() &&
                 zero_velocity_boundaries.find(face->boundary_id()) == zero_velocity_boundaries.end())
