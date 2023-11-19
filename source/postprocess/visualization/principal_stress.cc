@@ -115,36 +115,39 @@ namespace aspect
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q];
-            const SymmetricTensor<2,dim> deviatoric_strain_rate
-              = (this->get_material_model().is_compressible()
-                 ?
-                 strain_rate - 1./3. * trace(strain_rate) * unit_symmetric_tensor<dim>()
-                 :
-                 strain_rate);
-
-            const double eta = out.viscosities[q];
-
-            // Compressive stress is positive in geoscience applications
-            SymmetricTensor<2,dim> stress = -2. * eta * deviatoric_strain_rate + in.pressure[q] * unit_symmetric_tensor<dim>();
+            SymmetricTensor<2,dim> stress;
 
             // Add elastic stresses if existent
-            if (this->get_parameters().enable_elasticity == true)
+            if (this->get_parameters().enable_elasticity == false)
               {
-                stress[0][0] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
-                stress[1][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
-                stress[0][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
+                const SymmetricTensor<2,dim> deviatoric_strain_rate
+                  = (this->get_material_model().is_compressible()
+                     ?
+                     in.strain_rate[q] - 1./3. * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>()
+                     :
+                     in.strain_rate[q]);
+
+                // Compressive stress is positive in geoscience applications
+                stress = -2. * out.viscosities[q] * deviatoric_strain_rate;
+              }
+            else
+              {
+                // Compressive stress is positive in geoscience applications
+                stress[0][0] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
+                stress[1][1] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
+                stress[0][1] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
 
                 if (dim == 3)
                   {
-                    stress[2][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
-                    stress[0][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
-                    stress[1][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
+                    stress[2][2] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
+                    stress[0][2] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
+                    stress[1][2] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
                   }
               }
 
-            if (use_deviatoric_stress == true)
-              stress -= 1./dim * trace(stress) * unit_symmetric_tensor<dim>();
+
+            if (use_deviatoric_stress == false)
+              stress += in.pressure[q] * unit_symmetric_tensor<dim>();
 
             const std::array<std::pair<double, Tensor<1,dim>>, dim> principal_stresses_and_directions = eigenvectors(stress);
 
@@ -219,9 +222,17 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(PrincipalStress,
                                                   "principal stress",
                                                   "A visualization output object that outputs the "
-                                                  "principal stress values and directions, i.e., the "
+                                                  "principal stresses and directions, i.e., the "
                                                   "eigenvalues and eigenvectors of the stress tensor. "
-                                                  "The postprocessor can either operate on the full "
+                                                  "Wikipedia defines principal stresses as follows: "
+                                                  "At every point in a stressed body there are at least "
+                                                  "three planes, called principal planes, with normal "
+                                                  "vectors, called principal directions, where the "
+                                                  "corresponding stress vector is perpendicular to the "
+                                                  "plane, and where there are no normal "
+                                                  "shear stresses. The three stresses normal to these "
+                                                  "principal planes are called principal stresses. "
+                                                  "This postprocessor can either operate on the full "
                                                   "stress tensor or only on the deviatoric stress tensor, "
                                                   "depending on what run-time parameters are set."
                                                   "\n\n"
