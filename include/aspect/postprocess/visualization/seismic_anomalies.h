@@ -51,7 +51,7 @@ namespace aspect
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
-          std::pair<std::string, Vector<float> *>
+          std::pair<std::string, std::unique_ptr<Vector<float>>>
           execute () const override;
 
           /**
@@ -111,7 +111,7 @@ namespace aspect
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
-          std::pair<std::string, Vector<float> *>
+          std::pair<std::string, std::unique_ptr<Vector<float>>>
           execute () const override;
 
           /**

@@ -871,7 +871,7 @@ namespace aspect
                          (& *p))
                 {
                   // get the data produced here
-                  const std::pair<std::string, Vector<float> *>
+                  std::pair<std::string, std::unique_ptr<Vector<float>>>
                   cell_data = cell_data_creator->execute();
                   Assert (cell_data.second->size() ==
                           this->get_triangulation().n_active_cells(),
@@ -884,16 +884,15 @@ namespace aspect
                                                      visualization_field_names_and_units);
 
                   // store the pointer, then attach the vector to the DataOut object
-                  cell_data_vectors.push_back (std::unique_ptr<Vector<float>>
-                                               (cell_data.second));
+                  cell_data_vectors.push_back (std::move(cell_data.second));
 
                   if (dynamic_cast<const VisualizationPostprocessors::SurfaceOnlyVisualization<dim>*>
                       (& *p) == nullptr)
-                    data_out.add_data_vector (*cell_data.second,
+                    data_out.add_data_vector (*cell_data_vectors.back(),
                                               cell_data.first,
                                               DataOut<dim>::type_cell_data);
                   else
-                    data_out_faces.add_data_vector (*cell_data.second,
+                    data_out_faces.add_data_vector (*cell_data_vectors.back(),
                                                     cell_data.first,
                                                     DataOutFaces<dim>::type_cell_data);
                 }

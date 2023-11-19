@@ -43,12 +43,12 @@ namespace aspect
 
 
       template <int dim>
-      std::pair<std::string, Vector<float> *>
+      std::pair<std::string, std::unique_ptr<Vector<float>>>
       SeismicVsAnomaly<dim>::execute() const
       {
-        std::pair<std::string, Vector<float> *>
+        std::pair<std::string, std::unique_ptr<Vector<float>>>
         return_value ("Vs_anomaly",
-                      new Vector<float>(this->get_triangulation().n_active_cells()));
+                      std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
 
         // Calculate the maximum depth of the domain
         const double max_depth = this->get_geometry_model().maximal_depth();
@@ -187,12 +187,12 @@ namespace aspect
 
 
       template <int dim>
-      std::pair<std::string, Vector<float> *>
+      std::pair<std::string, std::unique_ptr<Vector<float>>>
       SeismicVpAnomaly<dim>::execute() const
       {
-        std::pair<std::string, Vector<float> *>
+        std::pair<std::string, std::unique_ptr<Vector<float>>>
         return_value ("Vp_anomaly",
-                      new Vector<float>(this->get_triangulation().n_active_cells()));
+                      std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
 
         // Calculate the maximum depth of the domain
         const double max_depth = this->get_geometry_model().maximal_depth();

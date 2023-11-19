@@ -43,11 +43,11 @@ namespace aspect
 
 
       template<int dim>
-      std::pair<std::string, Vector<float> *>
+      std::pair<std::string, std::unique_ptr<Vector<float>>>
       ISARotationTimescale<dim>::execute() const
       {
-        std::pair<std::string, Vector<float> *> return_value("ISA_rotation_timescale",
-                                                             new Vector<float>(this->get_triangulation().n_active_cells()));
+        std::pair<std::string, std::unique_ptr<Vector<float>>> return_value("ISA_rotation_timescale",
+                                                                              std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
 
         const QMidpoint<dim> quadrature_formula;
         const unsigned int n_q_points = quadrature_formula.size();
