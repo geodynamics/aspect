@@ -62,6 +62,6 @@ Additionally, the subdirectory
 [benchmarks/annulus/transient](https://github.com/geodynamics/aspect/tree/main/benchmarks/annulus/transient)
 contains an extension of the benchmark
 to time-dependent flow. The benchmark and its results are described in
-Gassmoeller et al. (2023), "Benchmarking the accuracy of higher order
-particle methods in geodynamic models of transient flow", see there
+{cite:t}`gassmoeller:etal:2023`, "Benchmarking the accuracy of higher
+order particle methods in geodynamic models of transient flow" see there
 for a detailed description.
