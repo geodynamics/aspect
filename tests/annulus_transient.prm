@@ -83,5 +83,6 @@ subsection Solver parameters
     set Number of cheap Stokes solver steps = 200
     set Stokes solver type = block GMG
     set Krylov method for cheap solver steps = IDR(s)
+    set IDR(s) parameter = 4
   end
 end

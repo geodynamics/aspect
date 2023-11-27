@@ -8,49 +8,49 @@ Number of degrees of freedom: 4,560 (1,728+240+864+1,728)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving density_field system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system... 5+0 iterations.
 
    Postprocessing:
      Writing graphical output:                                                        output-annulus_transient/solution/solution-00000
      RMS, max velocity:                                                               1.92 m/s, 3.72 m/s
      Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -2.36e+04 kg*m^2/s, 2.36e+04 kg*m^2, -1 1/s, -1 1/s
-     Pressure at top/bottom of domain:                                                2.043e-16 Pa, 1000 Pa
+     Pressure at top/bottom of domain:                                                -1.099e-16 Pa, 1000 Pa
      Computing dynamic topography                                                     
      Errors u_L2, p_L2, rho_L2, topo_L2:                                              1.106354e-02, 3.426667e-01, 9.250441e-04, 1.037264e-03
 
 *** Timestep 1:  t=0.0196519 seconds, dt=0.0196519 seconds
    Skipping temperature solve because RHS is zero.
    Solving density_field system ... 4 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system... 5+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               1.94 m/s, 3.76 m/s
      Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -2.4e+04 kg*m^2/s, 2.36e+04 kg*m^2, -1.02 1/s, -1.02 1/s
-     Pressure at top/bottom of domain:                                                -1.16e-16 Pa, 1000 Pa
+     Pressure at top/bottom of domain:                                                -2.761e-17 Pa, 1000 Pa
      Computing dynamic topography                                                     
      Errors u_L2, p_L2, rho_L2, topo_L2:                                              1.105923e-02, 3.426761e-01, 4.622173e-03, 1.037260e-03
 
 *** Timestep 2:  t=0.0392301 seconds, dt=0.0195783 seconds
    Skipping temperature solve because RHS is zero.
    Solving density_field system ... 3 iterations.
-   Solving Stokes system... 6+0 iterations.
+   Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               1.97 m/s, 3.79 m/s
      Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -2.45e+04 kg*m^2/s, 2.36e+04 kg*m^2, -1.04 1/s, -1.04 1/s
-     Pressure at top/bottom of domain:                                                1.546e-16 Pa, 1000 Pa
+     Pressure at top/bottom of domain:                                                5.301e-17 Pa, 1000 Pa
      Computing dynamic topography                                                     
      Errors u_L2, p_L2, rho_L2, topo_L2:                                              1.105671e-02, 3.426825e-01, 6.204944e-03, 1.037259e-03
 
 *** Timestep 3:  t=0.05 seconds, dt=0.0107699 seconds
    Skipping temperature solve because RHS is zero.
    Solving density_field system ... 3 iterations.
-   Solving Stokes system... 6+0 iterations.
+   Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               1.98 m/s, 3.82 m/s
      Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -2.48e+04 kg*m^2/s, 2.36e+04 kg*m^2, -1.05 1/s, -1.05 1/s
-     Pressure at top/bottom of domain:                                                -1.502e-16 Pa, 1000 Pa
+     Pressure at top/bottom of domain:                                                2.65e-17 Pa, 1000 Pa
      Computing dynamic topography                                                     
      Errors u_L2, p_L2, rho_L2, topo_L2:                                              1.105562e-02, 3.426849e-01, 6.461361e-03, 1.037259e-03
 
