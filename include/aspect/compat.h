@@ -1070,6 +1070,11 @@ namespace dealii
 #endif
 
 
+// deal.II versions up to 9.5 had a poorly designed interface of the
+// SphericalManifold class that made it impossible for us to use.
+// This file thus contains a copy of it.
+#if !DEAL_II_VERSION_GTE(9,6,0)
+
 #include <deal.II/grid/manifold.h>
 #include <deal.II/grid/manifold_lib.h>
 
@@ -1212,5 +1217,22 @@ namespace aspect
       const PolarManifold<spacedim> polar_manifold;
   };
 }
+
+#else
+
+// For sufficiently new deal.II versions, we can use the deal.II class, but to
+// avoid name clashes, we have to import the class into namespace aspect. Once
+// we rely on these sufficiently new versions of deal.II, we can not only remove
+// the code above, but also the following lines, and in all places where we
+// reference 'aspect::SphericalManifold' simply use 'SphericalManifold' instead
+// (which then refers to the deal.II class).
+
+#include <deal.II/grid/manifold_lib.h>
+namespace aspect
+{
+  using dealii::SphericalManifold;
+}
+
+#endif
 
 #endif

@@ -21,6 +21,11 @@
 
 #include <aspect/compat.h>
 
+// deal.II versions up to 9.5 had a poorly designed interface of the
+// SphericalManifold class that made it impossible for us to use.
+// This file thus contains a copy of it.
+#if !DEAL_II_VERSION_GTE(9,6,0)
+
 namespace aspect
 {
   namespace
@@ -797,3 +802,5 @@ namespace aspect
   template class SphericalManifold<2>;
   template class SphericalManifold<3>;
 }
+
+#endif
