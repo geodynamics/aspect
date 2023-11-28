@@ -315,7 +315,7 @@ namespace aspect
            * to.
            */
           virtual
-          std::pair<std::string, Vector<float> *>
+          std::pair<std::string, std::unique_ptr<Vector<float>>>
           execute () const = 0;
       };
 

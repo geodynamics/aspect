@@ -36,16 +36,16 @@ namespace aspect
       {}
 
       template <int dim>
-      std::pair<std::string, Vector<float> *>
+      std::pair<std::string, std::unique_ptr<Vector<float>>>
       ArtificialViscosityComposition<dim>::execute() const
       {
         Assert(this->n_compositional_fields()>0,
                ExcMessage ("The artificial viscosity for compositional fields can "
                            "only be calculated if compositional fields are used in the simulation."));
 
-        std::pair<std::string, Vector<float> *>
+        std::pair<std::string, std::unique_ptr<Vector<float>>>
         return_value ("artificial_viscosity_composition",
-                      new Vector<float>(this->get_triangulation().n_active_cells()));
+                      std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
         this->get_artificial_viscosity_composition(*return_value.second, compositional_field);
 
         // The function we call above sets the artificial viscosity to
