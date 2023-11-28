@@ -49,6 +49,7 @@ subsection Geometry model
 
     subsection Function
       set Function expression = (500e3-x)/500e3*100
+      set Maximum topography value = 100
     end
   end
 end
