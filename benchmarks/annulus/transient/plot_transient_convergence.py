@@ -14,11 +14,12 @@ from matplotlib.lines import Line2D
 
 refinements = ["2","3","4","5","6","7"]
 models = ["analytical_density", "compositional_field","continuous_compositional_field", "higher_order_true","higher_order_false"]
-labels = ["Analytical density", "DGQ2 field","Q2 field", "Particles RK2","Particles RK2 FOT"]
+labels = ["Density: Benchmark", "Density: FE field ($DGQ_2$)","Density: FE field ($Q_2$)", "Density: Particles (RK2)","Density: Particles (RK2 FOT)"]
 errors = ["u_L2","p_L2","rho_L2"]
 ylabels = [r"$\|\boldsymbol{u} - \boldsymbol{u}_h\|_{L_2}$",r"$\|p - p_h\|_{L_2}$",r"$\|\rho - \rho_h\|_{L_2}$"]
-markers=['o','X','P','v','s','D','<','>','^','+','x']
+markers=['v','<','>','^','o','D','<','>','^','+','x']
 colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+plt.rcParams['lines.markersize'] = 8.5
 
 h = []
 for refinement in refinements:
@@ -65,10 +66,9 @@ def plot_error_over_time(statistics, output_file):
         for model,label,marker,color in zip(models,labels,markers,colors):
             ax.loglog(statistics[model]["Time (seconds)"],statistics[model][errors[i_error]], label=label, color=color)
 
-        if (i_error == 2):
-            ax.set_ybound(lower=1e-6,upper=None)
+        ax.set_ybound(5e-8,0.9)
 
-    plt.xlabel("Time")
+    plt.xlabel("Time $t$")
     ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
     plt.savefig(output_file, bbox_inches='tight',dpi=200)
     return None
@@ -80,6 +80,7 @@ def plot_error_over_time_steps(statistics, output_file):
         ax = plt.subplot(3,1,i_error+1)
         ax.set_ylabel(ylabels[i_error])
         plt.xlim(1,1e4)
+        ax.set_ybound(5e-8,0.9)
 
         for model,label,marker,color in zip(models,labels,markers,colors):
             ax.loglog(statistics[model]["Time step number"],statistics[model][errors[i_error]], label=label, color=color)
@@ -123,12 +124,12 @@ def plot_rk2_error_over_resolution(statistics, timestep, output_file):
         # The density error is not reliable, because the analytical density error
         # is 0. Therefore we cannot compute the relative error.
         if i_error != 2:
-            line3, = ax.loglog(h,error_values[models[i]][errors[i_error]], marker=markers[6], color=colors[6], label="relative RK2")
+            line3, = ax.loglog(h,error_values[models[i]][errors[i_error]], marker=markers[5], color=colors[6], label="(RK2 - Benchmark) / Benchmark")
 
-    plt.xlabel("h")
+    plt.xlabel("Cell size $h$")
 
-    additional_legend_elements = [Line2D([0], [0], color=colors[0], label='Analytical density'),
-    Line2D([0], [0], color=colors[3], label='RK2')]
+    additional_legend_elements = [Line2D([0], [0], color=colors[0], label='Density: Benchmark'),
+    Line2D([0], [0], color=colors[3], label='Density: Particles (RK2)')]
 
     # Create the figure
     ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0., handles=[line1,line2,additional_legend_elements[0],additional_legend_elements[1],line3])
@@ -165,7 +166,7 @@ def plot_rk2_error_over_time(statistics, output_file):
         if (i_error == 2):
             ax.set_ybound(lower=3e-5,upper=5e-5)
 
-    plt.xlabel("Time (seconds)")
+    plt.xlabel("Time $t$")
     plt.savefig(output_file, bbox_inches='tight',dpi=200)
     return None
 
@@ -181,7 +182,7 @@ def plot_error_over_resolution(statistics, timestep, output_file):
             for refinement in refinements:
                 error_values[model][error].append(statistics[refinement][model].iloc[timestep][error])
 
-    scale_factors = [1.0,15.0,3.0]
+    scale_factors = [1.0,15.0,7.0]
     x = np.linspace(7e-3,0.25,100)
     y = 0.1 * x
     y2 = 0.1 * x*x
@@ -189,7 +190,6 @@ def plot_error_over_resolution(statistics, timestep, output_file):
 
     for i_error in range(3):
         ax = plt.subplot(3,1,i_error+1)
-        ax.set_ybound(1e-7,0.5)
         ax.plot(x,scale_factors[i_error] * y, label='$h$', linestyle='--', color='grey')
         ax.plot(x,scale_factors[i_error] * y2, label='$h^2$', linestyle='-.', color='grey')
         ax.plot(x,scale_factors[i_error] * y3, label='$h^3$', linestyle=':', color='grey')
@@ -197,10 +197,17 @@ def plot_error_over_resolution(statistics, timestep, output_file):
         ax.set_ylabel(ylabels[i_error])
 
         for i in range(len(models)):
+            # dont plot density error for the analytical model (it is 0)
+            if i_error == 2 and i == 0:
+                continue
             ax.loglog(h,error_values[models[i]][errors[i_error]], marker=markers[i], label=labels[i], color=colors[i])
 
-    plt.xlabel("h")
-    ax.legend(ncol=2, bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
+        ax.set_ybound(5e-8,0.9)
+
+        if i_error == 0:
+            ax.legend(ncol=2, bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
+
+    plt.xlabel("Cell size $h$")
     plt.savefig(output_file, bbox_inches='tight',dpi=200)
     return None
 
