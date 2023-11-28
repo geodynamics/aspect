@@ -82,7 +82,7 @@ namespace aspect
     Function<dim>::
     max_topography () const
     {
-      return 0;
+      return max_topo;
     }
 
 
