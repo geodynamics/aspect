@@ -79,15 +79,15 @@ namespace aspect
             // can be obtained from the viscosity and strain rate.
             if (this->get_parameters().enable_elasticity == true)
               {
-                shear_stress[0][0] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
-                shear_stress[1][1] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
-                shear_stress[0][1] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
+                shear_stress[0][0] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
+                shear_stress[1][1] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
+                shear_stress[0][1] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
 
                 if (dim == 3)
                   {
-                    shear_stress[2][2] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
-                    shear_stress[0][2] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
-                    shear_stress[1][2] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
+                    shear_stress[2][2] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
+                    shear_stress[0][2] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
+                    shear_stress[1][2] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
                   }
               }
             else
@@ -101,7 +101,7 @@ namespace aspect
                      strain_rate);
 
                 const double eta = out.viscosities[q];
-                shear_stress -= 2.*eta*deviatoric_strain_rate;
+                shear_stress = -2. * eta * deviatoric_strain_rate;
               }
 
             for (unsigned int d=0; d<dim; ++d)

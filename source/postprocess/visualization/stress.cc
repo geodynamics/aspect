@@ -101,7 +101,7 @@ namespace aspect
                      strain_rate);
 
                 const double eta = out.viscosities[q];
-                stress -= 2.*eta*deviatoric_strain_rate;
+                stress -= 2. * eta * deviatoric_strain_rate;
               }
 
             for (unsigned int d=0; d<dim; ++d)
