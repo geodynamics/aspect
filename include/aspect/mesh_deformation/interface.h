@@ -605,7 +605,11 @@ namespace aspect
         /**
          * Multigrid transfer operator for the displacements
          */
+#if DEAL_II_VERSION_GTE(9,6,0)
         MGTransferMF<dim, double> mg_transfer;
+#else
+        MGTransferMatrixFree<dim, double> mg_transfer;
+#endif
 
 
         /**

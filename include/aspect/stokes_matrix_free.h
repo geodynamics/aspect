@@ -483,14 +483,22 @@ namespace aspect
        * Return a pointer to the MGTransfer object used for the A block
        * of the block GMG Stokes solver.
        */
+#if DEAL_II_VERSION_GTE(9,6,0)
       virtual const MGTransferMF<dim,GMGNumberType> &
+#else
+      virtual const MGTransferMatrixFree<dim,GMGNumberType> &
+#endif
       get_mg_transfer_A () const = 0;
 
       /**
        * Return a pointer to the MGTransfer object used for the Schur
        * complement block of the block GMG Stokes solver.
        */
+#if DEAL_II_VERSION_GTE(9,6,0)
       virtual const MGTransferMF<dim,GMGNumberType> &
+#else
+      virtual const MGTransferMatrixFree<dim,GMGNumberType> &
+#endif
       get_mg_transfer_S () const = 0;
 
       /**
@@ -599,14 +607,22 @@ namespace aspect
        * Return a pointer to the MGTransfer object used for the A block
        * of the block GMG Stokes solver.
        */
+#if DEAL_II_VERSION_GTE(9,6,0)
       const MGTransferMF<dim,GMGNumberType> &
+#else
+      const MGTransferMatrixFree<dim,GMGNumberType> &
+#endif
       get_mg_transfer_A () const override;
 
       /**
        * Return a pointer to the MGTransfer object used for the Schur
        * complement block of the block GMG Stokes solver.
        */
+#if DEAL_II_VERSION_GTE(9,6,0)
       const MGTransferMF<dim,GMGNumberType> &
+#else
+      const MGTransferMatrixFree<dim,GMGNumberType> &
+#endif
       get_mg_transfer_S () const override;
 
 
@@ -691,8 +707,13 @@ namespace aspect
       MGConstrainedDoFs mg_constrained_dofs_Schur_complement;
       MGConstrainedDoFs mg_constrained_dofs_projection;
 
+#if DEAL_II_VERSION_GTE(9,6,0)
       MGTransferMF<dim,GMGNumberType> mg_transfer_A_block;
       MGTransferMF<dim,GMGNumberType> mg_transfer_Schur_complement;
+#else
+      MGTransferMatrixFree<dim,GMGNumberType> mg_transfer_A_block;
+      MGTransferMatrixFree<dim,GMGNumberType> mg_transfer_Schur_complement;
+#endif
 
       std::vector<std::shared_ptr<MatrixFree<dim,double>>> matrix_free_objects;
   };
