@@ -1482,21 +1482,21 @@ namespace aspect
 
       MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> distributed_level_displacements;
       distributed_level_displacements.resize(0, n_levels-1);
-          for (unsigned int level = 0; level < n_levels; ++level)
-            {
-              distributed_level_displacements[level].reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
-                                                sim.mpi_communicator);
-            }
+      for (unsigned int level = 0; level < n_levels; ++level)
+        {
+          distributed_level_displacements[level].reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
+                                                        sim.mpi_communicator);
+        }
 
       mg_transfer.interpolate_to_mg(mesh_deformation_dof_handler,
                                     distributed_level_displacements,
                                     displacements);
 
       for (unsigned int level = 0; level < n_levels; ++level)
-      {
-        level_displacements[level] = distributed_level_displacements[level];
-        level_displacements[level].update_ghost_values();
-      }
+        {
+          level_displacements[level] = distributed_level_displacements[level];
+          level_displacements[level].update_ghost_values();
+        }
 
     }
 
