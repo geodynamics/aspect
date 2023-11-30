@@ -1478,14 +1478,25 @@ namespace aspect
       dealii::LinearAlgebra::ReadWriteVector<double> rwv;
       rwv.reinit(mesh_displacements);
       displacements.import(rwv, VectorOperation::insert);
+      const unsigned int n_levels = sim.triangulation.n_global_levels();
+
+      MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> distributed_level_displacements;
+      distributed_level_displacements.resize(0, n_levels-1);
+          for (unsigned int level = 0; level < n_levels; ++level)
+            {
+              distributed_level_displacements[level].reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
+                                                sim.mpi_communicator);
+            }
 
       mg_transfer.interpolate_to_mg(mesh_deformation_dof_handler,
-                                    level_displacements,
+                                    distributed_level_displacements,
                                     displacements);
 
-      const unsigned int n_levels = sim.triangulation.n_global_levels();
       for (unsigned int level = 0; level < n_levels; ++level)
+      {
+        level_displacements[level] = distributed_level_displacements[level];
         level_displacements[level].update_ghost_values();
+      }
 
     }
 
