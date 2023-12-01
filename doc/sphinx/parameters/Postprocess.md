@@ -1672,7 +1672,7 @@ Physical units: None.
 
 Physical units: None.
 
-&lsquo;principal stress&rsquo;: A visualization output object that outputs the principal stress values and directions, i.e., the eigenvalues and eigenvectors of the stress tensor. The postprocessor can either operate on the full stress tensor or only on the deviatoric stress tensor, depending on what run-time parameters are set.
+&lsquo;principal stress&rsquo;: A visualization output object that outputs the principal stresses and directions, i.e., the eigenvalues and eigenvectors of the stress tensor. Wikipedia defines principal stresses as follows: At every point in a stressed body there are at least three planes, called principal planes, with normal vectors, called principal directions, where the corresponding stress vector is perpendicular to the plane, and where there are no normal shear stresses. The three stresses normal to these principal planes are called principal stresses. This postprocessor can either operate on the full stress tensor or only on the deviatoric stress tensor, depending on what run-time parameters are set.
 
 Physical units: \si{\pascal}.
 

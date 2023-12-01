@@ -1462,7 +1462,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect14MeshRefinement23NonadiabaticTemperatureILi2EEE -->
 <g id="edge250" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect14MeshRefinement23NonadiabaticTemperatureILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1227.56,-1219.75C1190.91,-1242.02 1137.71,-1273.14 1089.33,-1296.92 1078.86,-1302.06 1076.15,-1303.3 1065.07,-1306.96 1032.19,-1317.82 1022.43,-1315.18 989.51,-1325.91 975.64,-1330.43 961.3,-1337.02 948.41,-1343.75"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1227.54,-1223.36C1186.87,-1250.21 1124.7,-1287.26 1065.07,-1306.96 1032.19,-1317.82 1022.43,-1315.18 989.51,-1325.91 975.64,-1330.43 961.3,-1337.02 948.41,-1343.75"/>
 <polygon fill="none" stroke="gray" points="946.45,-1340.83 939.3,-1348.65 949.77,-1346.99 946.45,-1340.83"/>
 </g>
 <!-- N6aspect14MeshRefinement32NonadiabaticTemperatureThresholdILi2EEE -->
@@ -2202,7 +2202,7 @@
 <!-- SimulatorAccess&#45;&gt;N6aspect11Postprocess17HeatFluxDensitiesILi2EEE -->
 <g id="edge375" class="edge">
 <title>SimulatorAccess&#45;&gt;N6aspect11Postprocess17HeatFluxDensitiesILi2EEE</title>
-<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1227.5,-1211.81C1204.44,-1221.1 1175.71,-1231.13 1148.9,-1236.17 1112.28,-1243.05 1101.53,-1230.59 1065.08,-1238.33 1053.37,-1240.81 1041.16,-1245.13 1030.14,-1249.75"/>
+<path fill="none" stroke="gray" stroke-dasharray="1,5" d="M1227.58,-1208.61C1195.57,-1220.57 1157.04,-1234.64 1148.9,-1236.17 1112.28,-1243.05 1101.53,-1230.59 1065.08,-1238.33 1053.37,-1240.81 1041.16,-1245.13 1030.14,-1249.75"/>
 <polygon fill="none" stroke="gray" points="1028.55,-1246.62 1020.8,-1253.85 1031.37,-1253.03 1028.55,-1246.62"/>
 </g>
 <!-- N6aspect11Postprocess11HeatFluxMapILi2EEE -->
