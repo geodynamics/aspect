@@ -317,7 +317,8 @@ namespace aspect
     Box<dim>::point_is_in_domain(const Point<dim> &point) const
     {
       AssertThrow(!this->get_parameters().mesh_deformation_enabled ||
-                  this->simulator_is_past_initialization() == false,
+                  this->simulator_is_past_initialization() == false ||
+                  this->get_timestep_number() == 0,
                   ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       // The maximal extents of the unperturbed box domain
