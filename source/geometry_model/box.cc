@@ -320,12 +320,15 @@ namespace aspect
                   this->simulator_is_past_initialization() == false,
                   ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
-                  ExcMessage("After adding topography, this function can no longer be used "
-                             "to determine whether a point lies in the domain or not."));
+      // The maximal extents of the unperturbed box domain
+      Point<dim> max_point = extents+box_origin;
+
+      // Get the topography at the current point
+      if(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
+        max_point = add_topography(point);
 
       for (unsigned int d = 0; d < dim; ++d)
-        if (point[d] > extents[d]+box_origin[d]+std::numeric_limits<double>::epsilon()*extents[d] ||
+        if (point[d] > max_point[d]+std::numeric_limits<double>::epsilon()*extents[d] ||
             point[d] < box_origin[d]-std::numeric_limits<double>::epsilon()*extents[d])
           return false;
 
