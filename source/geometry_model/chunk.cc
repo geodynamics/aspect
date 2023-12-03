@@ -701,9 +701,6 @@ namespace aspect
                   this->simulator_is_past_initialization() == false,
                   ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
-                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
-
       const Point<dim> spherical_point = manifold->pull_back(point);
 
       for (unsigned int d = 0; d < dim; ++d)
