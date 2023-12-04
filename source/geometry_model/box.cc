@@ -354,13 +354,14 @@ namespace aspect
             }
         }
 
-      // The maximal extents of the unperturbed box domain
+      // The maximal extents of the unperturbed box domain.
       Point<dim> max_point = extents+box_origin;
 
-      // Get the topography at the current point
+      // Get the topography at the current point.
       if (Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
         max_point = add_topography(point);
 
+      // Check whether point lies within the min/max coordinates of the domain including initial topography.
       for (unsigned int d = 0; d < dim; ++d)
         if (point[d] > max_point[d]+std::numeric_limits<double>::epsilon()*extents[d] ||
             point[d] < box_origin[d]-std::numeric_limits<double>::epsilon()*extents[d])
