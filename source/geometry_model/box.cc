@@ -21,6 +21,7 @@
 
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator_signals.h>
 
 #include <deal.II/grid/grid_generator.h>
@@ -316,16 +317,48 @@ namespace aspect
     bool
     Box<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(!this->get_parameters().mesh_deformation_enabled ||
-                  this->simulator_is_past_initialization() == false ||
-                  this->get_timestep_number() == 0,
-                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+      // Assert that no initial mesh deformation is applied,
+      // and, if time-dependent mesh deformation is enabled,
+      // that we are still in timestep 0, when no deformation
+      // has occurred yet.
+      const std::set<types::boundary_id> mesh_deformation_boundary_ids
+        = this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
+
+      // If mesh deformation is not allowed on any boundary, we don't have to check.
+      if (!mesh_deformation_boundary_ids.empty())
+        {
+          // Get the plugins assigned to each mesh deformation boundary.
+          std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
+            = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
+
+          // Loop over each mesh deformation boundary.
+          for (const types::boundary_id id : mesh_deformation_boundary_ids)
+            {
+              // Currently there is only one plugin that applies initial mesh deformation, the ascii data plugin.
+              // TODO also capture future initial mesh deformation plugins.
+              const std::vector<std::string> &names = mesh_deformation_boundary_indicators_map[id];
+              for (const auto &name : names)
+                {
+                  if (name == "ascii data")
+                    {
+                      AssertThrow(false,
+                                  ExcMessage("After applying initial mesh deformation, this function can no longer be used to determine whether a point lies in the domain."));
+                    }
+                  else
+                    {
+                      AssertThrow(this->simulator_is_past_initialization() == false ||
+                                  this->get_timestep_number() == 0,
+                                  ExcMessage("After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
+                    }
+                }
+            }
+        }
 
       // The maximal extents of the unperturbed box domain
       Point<dim> max_point = extents+box_origin;
 
       // Get the topography at the current point
-      if(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
+      if (Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
         max_point = add_topography(point);
 
       for (unsigned int d = 0; d < dim; ++d)
