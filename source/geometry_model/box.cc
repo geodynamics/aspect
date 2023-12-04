@@ -321,12 +321,17 @@ namespace aspect
       // and, if time-dependent mesh deformation is enabled,
       // that we are still in timestep 0, when no deformation
       // has occurred yet.
-      const std::set<types::boundary_id> mesh_deformation_boundary_ids
-        = this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
 
       // If mesh deformation is not allowed on any boundary, we don't have to check.
-      if (!mesh_deformation_boundary_ids.empty())
+      if (this->get_parameters().mesh_deformation_enabled)
         {
+          AssertThrow(this->simulator_is_past_initialization(),
+                      ExcMessage("Because mesh deformation is enabled, but the simulator is not past initialization, this function cannot be used to determine whether a point lies in the domain."));
+
+          // Get the boundaries with assigned mesh deformation.
+          const std::set<types::boundary_id> mesh_deformation_boundary_ids
+            = this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
+
           // Get the plugins assigned to each mesh deformation boundary.
           std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
             = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
@@ -358,8 +363,17 @@ namespace aspect
       Point<dim> max_point = extents+box_origin;
 
       // Get the topography at the current point.
-      if (Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
-        max_point = add_topography(point);
+      if (!Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
+        {
+          // Get the surface x (,y) point
+          Point<dim-1> surface_point;
+          for (unsigned int d=0; d<dim-1; ++d)
+            surface_point[d] = point[d];
+
+          // Get the surface topography at this point
+          const double topo = topo_model->value(surface_point);
+          max_point[dim-1] += topo;
+        }
 
       // Check whether point lies within the min/max coordinates of the domain including initial topography.
       for (unsigned int d = 0; d < dim; ++d)
