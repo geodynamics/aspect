@@ -449,6 +449,7 @@ namespace aspect
     Chunk<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
+      // First create a box in Cartesian coordinates:
       const std::vector<unsigned int> rep_vec(repetitions.begin(), repetitions.end());
       GridGenerator::subdivided_hyper_rectangle (coarse_grid,
                                                  rep_vec,
@@ -456,7 +457,8 @@ namespace aspect
                                                  point2,
                                                  true);
 
-      // Transform box into spherical chunk
+      // Then transform this box into a spherical chunk (possibly with
+      // topography -- the 'manifold' has that built in):
       GridTools::transform (
         [&](const Point<dim> &p) -> Point<dim>
       {
