@@ -142,6 +142,9 @@ namespace aspect
     void
     SphericalShell<dim>::initialize ()
     {
+      AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) ,
+                  ExcMessage("At the moment, only the Zero initial topography model can be used with the SphericalShell geometry model."));
+
       manifold = std::make_unique<internal::SphericalManifoldWithTopography<dim>>();
     }
 
