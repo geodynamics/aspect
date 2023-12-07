@@ -162,10 +162,10 @@ jobs:
       continue-on-error: true
       run: |
         cd build
-        ninja generate_reference_output
         # TODO: temporary fix for a git incompability.
         # Can likely be removed when the tester image runs on Ubuntu 22.04
         /usr/bin/git config --system --add safe.directory /__w/aspect/aspect
+        ninja generate_reference_output
         git diff ../tests > ${{ matrix.result-file }}
     - name: archive test results
       uses: actions/upload-artifact@v3
