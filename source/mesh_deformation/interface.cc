@@ -1250,7 +1250,7 @@ namespace aspect
                   {
                     Point<dim-1> surface_point;
                     std::array<double, dim> natural_coord = this->get_geometry_model().cartesian_to_natural_coordinates(fs_fe_values.quadrature_point(j));
-                    if (dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model()) != nullptr)
+                    if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
                       {
                         for (unsigned int d=0; d<dim-1; ++d)
                           surface_point[d] = natural_coord[d];

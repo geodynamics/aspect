@@ -433,8 +433,8 @@ namespace aspect
     void
     Chunk<dim>::initialize ()
     {
-      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr ||
-                  dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr,
+      AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) ||
+                  Plugins::plugin_type_matches<const InitialTopographyModel::AsciiData<dim>>(this->get_initial_topography_model()),
                   ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used with the Chunk geometry model."));
 
       manifold = std::make_unique<internal::ChunkGeometry<dim>>(this->get_initial_topography_model(),
