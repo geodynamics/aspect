@@ -30,3 +30,8 @@ subsection Boundary traction model
     set Function expression = 0;10
   end
 end
+
+# Also test the point_is_in_domain function of the geometry model.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, topography, point is in domain
+end
