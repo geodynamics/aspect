@@ -697,10 +697,25 @@ namespace aspect
     bool
     Chunk<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(!this->get_parameters().mesh_deformation_enabled ||
-                  this->simulator_is_past_initialization() == false,
-                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+      // If mesh deformation has possibly been applied,
+      // e.g. initial mesh deformation after the simulator
+      // has been initialized or time-dependent mesh deformation
+      // after timestep 0, we cannot use information from the
+      // geometry model to determine whether the point lies in
+      // the model domain. Instead, we loop over all cells
+      // to check whether the point lies in one of them.
+      if (this->get_parameters().mesh_deformation_enabled &&
+          this->simulator_is_past_initialization())
+        {
+          std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
+              Point<dim>> it =
+                GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), point);
 
+          if (it.first.state() == IteratorState::valid)
+            return true;
+          else
+            return false;
+        }
       const Point<dim> spherical_point = manifold->pull_back(point);
 
       for (unsigned int d = 0; d < dim; ++d)
