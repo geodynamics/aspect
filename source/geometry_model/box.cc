@@ -329,21 +329,25 @@ namespace aspect
       // we loop over all the current grid cells to see if the point
       // lies within the domain.
       // Do note that this function can be called before mesh deformation
-      // is applied in the first timestep,
-      // and therefore there is no guarantee that the point will lie in
-      // the domain after initial mesh deformation.
-      if (this->get_parameters().mesh_deformation_enabled)
+      // is applied in the first timestep, and therefore there is no guarantee
+      // that the point will lie in the domain after initial mesh deformation.
+      // For example, boundary traction plugins are initialized before
+      // mesh deformation plugins and the initial_lithostatic_pressure
+      // plugin calls this function while the simulator is being initialized.
+      // However, if the simulator has not been initialized,
+      // no mesh deformation has been applied and we can use the geometry model's
+      // extents to check whether a point lies in the domain.
+      if (this->get_parameters().mesh_deformation_enabled &&
+          this->simulator_is_past_initialization())
         {
           std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
               Point<dim>> it =
                 GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), point);
 
-          // If no cell contains the point, throw.
-          AssertThrow(it.first.state() == IteratorState::valid,
-                      ExcMessage("The given point does not lie within the domain."));
-
-          // Return true, since we found a cell that contains our point.
-          return true;
+          if (it.first.state() == IteratorState::valid)
+            return true;
+          else
+            return false;
         }
 
       // The maximal extents of the unperturbed box domain.
