@@ -354,7 +354,7 @@ namespace aspect
       Point<dim> max_point = extents+box_origin;
 
       // If mesh deformation is not enabled, but initial topography
-      // was applied to the mesh, include this topography in the
+      // was/will be applied to the mesh, include this topography in the
       // extent of the domain.
       if (!Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
         {
