@@ -129,11 +129,24 @@ namespace aspect
     /**
      * Base class for material models that implement a melt fraction function.
      * This is used to compute some statistics about the melt fraction.
+     *
+     * This class is used as a "mix-in" class: Concrete material models will
+     * be derived from MaterialModel::Interface (and consequently have to
+     * implement the `virtual` functions of that class) *and also* from the
+     * current class (and consequently have to implement the `virtual` function
+     * of the current class). The inheritance from MaterialModel::Interface is
+     * typically via the MaterialModel::MeltInterface intermediate class.
      */
     template <int dim>
     class MeltFractionModel
     {
       public:
+        /**
+         * Destructor. Does nothing but is virtual so that derived classes
+         * destructors are also virtual.
+         */
+        virtual ~MeltFractionModel () = default;
+
         /**
          * Compute the equilibrium melt fractions for the given input conditions.
          * @p in and @p melt_fractions need to have the same size.
@@ -145,11 +158,6 @@ namespace aspect
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                                      std::vector<double> &melt_fractions) const = 0;
 
-        /**
-         * Destructor. Does nothing but is virtual so that derived classes
-         * destructors are also virtual.
-         */
-        virtual ~MeltFractionModel () = default;
     };
 
     /**

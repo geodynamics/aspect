@@ -44,7 +44,9 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class MeltGlobal : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>, public MaterialModel::MeltFractionModel<dim>
+    class MeltGlobal : public MaterialModel::MeltInterface<dim>,
+      public MaterialModel::MeltFractionModel<dim>,
+      public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
