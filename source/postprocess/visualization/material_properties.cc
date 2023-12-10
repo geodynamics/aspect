@@ -147,12 +147,11 @@ namespace aspect
         std::vector<double> melt_fractions(n_quadrature_points);
         if (std::find(property_names.begin(), property_names.end(), "melt fraction") != property_names.end())
           {
-            AssertThrow(Plugins::plugin_type_matches<const MaterialModel::MeltFractionModel<dim>> (this->get_material_model()),
+            AssertThrow(MaterialModel::MeltFractionModel<dim>::is_melt_fraction_model(this->get_material_model()),
                         ExcMessage("You are trying to visualize the melt fraction, but the material"
                                    "model you use does not actually compute a melt fraction."));
-
-            Plugins::get_plugin_as_type<const MaterialModel::MeltFractionModel<dim>> (this->get_material_model()).
-            melt_fractions(in, melt_fractions);
+            MaterialModel::MeltFractionModel<dim>::as_melt_fraction_model(this->get_material_model())
+            .melt_fractions(in, melt_fractions);
           }
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
