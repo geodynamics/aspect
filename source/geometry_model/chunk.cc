@@ -555,20 +555,6 @@ namespace aspect
 
     template <int dim>
     double
-    Chunk<dim>::depth_wrt_topo(const Point<dim> &position) const
-    {
-      // depth is defined wrt the reference surface point2[0] + the topography
-      // depth is therefore always positive
-      const double outer_radius = manifold->get_radius(position);
-      const Point<dim> rtopo_phi_theta = manifold->pull_back_sphere(position);
-      Assert (rtopo_phi_theta[0] <= outer_radius, ExcMessage("The radius is bigger than the maximum radius."));
-      return std::max(0.0, outer_radius - rtopo_phi_theta[0]);
-    }
-
-
-
-    template <int dim>
-    double
     Chunk<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
       return position.norm()-point2[0];
