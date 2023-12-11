@@ -707,23 +707,37 @@ namespace aspect
       if (this->get_parameters().mesh_deformation_enabled &&
           this->simulator_is_past_initialization())
         {
+          bool cell_found = false;
           std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
-              Point<dim>> it =
-                GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), point);
+              Point<dim>>
+              it =
+                GridTools::find_active_cell_around_point<>(this->get_mapping(), this->get_triangulation(), point);
 
-          if (it.first.state() == IteratorState::valid)
+          // If the cell the point is in is on this processor, we have found the right cell.
+          if (it.first.state() == IteratorState::valid && it.first->is_locally_owned())
+            cell_found = true;
+
+          // Compute how many processes found the cell.
+          const int n_procs_cell_found = Utilities::MPI::sum(cell_found ? 1 : 0, this->get_mpi_communicator());
+
+          // If at least one process found the cell, the point is in the domain.
+          if (n_procs_cell_found > 0)
             return true;
           else
             return false;
         }
-      const Point<dim> spherical_point = manifold->pull_back(point);
+      // Without mesh deformation enabled, it is much cheaper to check whether the point lies in the domain.
+      else
+        {
+          const Point<dim> spherical_point = manifold->pull_back(point);
 
-      for (unsigned int d = 0; d < dim; ++d)
-        if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
-            spherical_point[d] < point1[d]-std::numeric_limits<double>::epsilon()*std::abs(point2[d]))
-          return false;
+          for (unsigned int d = 0; d < dim; ++d)
+            if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
+                spherical_point[d] < point1[d]-std::numeric_limits<double>::epsilon()*std::abs(point2[d]))
+              return false;
 
-      return true;
+          return true;
+        }
     }
 
 

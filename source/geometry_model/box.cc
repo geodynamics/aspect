@@ -340,41 +340,54 @@ namespace aspect
       if (this->get_parameters().mesh_deformation_enabled &&
           this->simulator_is_past_initialization())
         {
+          bool cell_found = false;
           std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
               Point<dim>> it =
                 GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), point);
 
-          if (it.first.state() == IteratorState::valid)
+          // If the cell the point is in is on this processor, we have found the right cell.
+          if (it.first.state() == IteratorState::valid && it.first->is_locally_owned())
+            cell_found = true;
+
+          // Compute how many processes found the cell.
+          const int n_procs_cell_found = Utilities::MPI::sum(cell_found ? 1 : 0, this->get_mpi_communicator());
+
+          // If at least one process found the cell, the point is in the domain.
+          if (n_procs_cell_found > 0)
             return true;
           else
             return false;
         }
-
-      // The maximal extents of the unperturbed box domain.
-      Point<dim> max_point = extents+box_origin;
-
-      // If mesh deformation is not enabled, but initial topography
-      // was/will be applied to the mesh, include this topography in the
-      // extent of the domain.
-      if (!Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
+      // Without mesh deformation enabled, it is much cheaper to check whether the point lies in the domain.
+      else
         {
-          // Get the surface x (,y) point
-          Point<dim-1> surface_point;
-          for (unsigned int d=0; d<dim-1; ++d)
-            surface_point[d] = point[d];
 
-          // Get the surface topography at this point
-          const double topo = topo_model->value(surface_point);
-          max_point[dim-1] += topo;
+          // The maximal extents of the unperturbed box domain.
+          Point<dim> max_point = extents+box_origin;
+
+          // If mesh deformation is not enabled, but initial topography
+          // was/will be applied to the mesh, include this topography in the
+          // extent of the domain.
+          if (!Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
+            {
+              // Get the surface x (,y) point
+              Point<dim-1> surface_point;
+              for (unsigned int d=0; d<dim-1; ++d)
+                surface_point[d] = point[d];
+
+              // Get the surface topography at this point
+              const double topo = topo_model->value(surface_point);
+              max_point[dim-1] += topo;
+            }
+
+          // Check whether point lies within the min/max coordinates of the domain including initial topography.
+          for (unsigned int d = 0; d < dim; ++d)
+            if (point[d] > max_point[d]+std::numeric_limits<double>::epsilon()*extents[d] ||
+                point[d] < box_origin[d]-std::numeric_limits<double>::epsilon()*extents[d])
+              return false;
+
+          return true;
         }
-
-      // Check whether point lies within the min/max coordinates of the domain including initial topography.
-      for (unsigned int d = 0; d < dim; ++d)
-        if (point[d] > max_point[d]+std::numeric_limits<double>::epsilon()*extents[d] ||
-            point[d] < box_origin[d]-std::numeric_limits<double>::epsilon()*extents[d])
-          return false;
-
-      return true;
     }
 
     template <int dim>
