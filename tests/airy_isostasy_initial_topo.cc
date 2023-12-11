@@ -19,6 +19,7 @@
 */
 
 #include <aspect/postprocess/interface.h>
+#include <aspect/geometry_model/interface.h>
 #include <aspect/simulator_access.h>
 
 
