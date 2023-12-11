@@ -105,6 +105,12 @@ namespace aspect
          * based on depth interpolation between computed pressure values.
          */
         double interpolate_pressure (const Point<dim> &p) const;
+
+        /**
+         * A list of those boundary indicators that are prescribed
+         * the initial lithostatic pressure computed by this plugin.
+         */
+        std::set<types::boundary_id> traction_bi;
     };
   }
 }

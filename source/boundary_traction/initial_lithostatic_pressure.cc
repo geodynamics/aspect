@@ -48,7 +48,6 @@ namespace aspect
     {
       // Ensure the initial lithostatic pressure traction boundary conditions are used,
       // and register for which boundary indicators these conditions are set.
-      std::set<types::boundary_id> traction_bi;
       for (const auto &p : this->get_boundary_traction_manager().get_active_boundary_traction_conditions())
         {
           for (const auto &plugin : p.second)
@@ -272,16 +271,25 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     InitialLithostaticPressure<dim>::
-    boundary_traction (const types::boundary_id /*boundary_indicator*/,
+    boundary_traction (const types::boundary_id boundary_indicator,
                        const Point<dim> &position,
                        const Tensor<1,dim> &normal_vector) const
     {
       // We want to set the normal component to the vertical boundary
       // to the lithostatic pressure, the rest of the traction
       // components are left set to zero. We get the lithostatic pressure
-      // from a linear interpolation of the calculated profile.
-      Tensor<1,dim> traction;
-      traction = -interpolate_pressure(position) * normal_vector;
+      // from a linear interpolation of the calculated profile,
+      // unless boundary traction is only applied to the bottom boundary.
+      // In that case we return the deepest pressure of the pressure
+      // profile directly.
+      const types::boundary_id bottom_bi = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
+      Tensor<1, dim> traction;
+      if (boundary_indicator == bottom_bi &&
+          traction_bi.size() == 1 &&
+          *traction_bi.begin() == bottom_bi)
+        traction = -pressure.back() * normal_vector;
+      else
+        traction = -interpolate_pressure(position) * normal_vector;
 
       return traction;
     }
@@ -414,7 +422,9 @@ namespace aspect
                                             "geometries) include the initial topography. This depth is used "
                                             "to interpolate between the points of the reference pressure profile. "
                                             "Depths outside the reference profile get returned the pressure value "
-                                            "of the closest profile depth. "
+                                            "of the closest profile depth. When only the bottom boundary is "
+                                            "prescribed initial lithostatic pressure, the pressure value of "
+                                            "the deepest depth of the profile is returned. "
                                             "\n\n"
                                             "Gravity is expected to point along the depth direction. ")
   }
