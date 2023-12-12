@@ -153,7 +153,7 @@ namespace aspect
          * The height we add to vertical domain extent
          * to deal with any initial topography.
          */
-        const double maximum_initial_topography = 5000.;
+        const double maximum_initial_topography = 10000.;
     };
   }
 }
