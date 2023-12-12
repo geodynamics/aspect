@@ -586,8 +586,8 @@ namespace aspect
 
         /**
          * For mesh deformation computations ASPECT uses an Arbitrary-Lagrangian-
-         * Eulerian formulation to handle deforming the domain, but we output the
-         * mesh in its deformed state if this flag is set to true. If set to false,
+         * Eulerian formulation to handle deforming the domain, and we output the
+         * mesh in its deformed state by default. If this flag is set to true,
          * the mesh is written undeformed.
          */
         bool output_undeformed_mesh;
