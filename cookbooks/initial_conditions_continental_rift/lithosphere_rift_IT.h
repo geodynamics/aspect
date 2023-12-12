@@ -24,6 +24,7 @@
 #define _aspect_initial_temperature_lithosphere_rift_h
 
 #include <aspect/initial_temperature/interface.h>
+#include <aspect/initial_composition/interface.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -144,6 +145,14 @@ namespace aspect
          */
         bool use_compensation_depth;
         double compensation_depth;
+
+        /**
+         * A shared pointer to the initial composition object
+         * that ensures that the current object can continue
+         * to access the initial composition object beyond the
+         * first time step.
+         */
+        std::shared_ptr<const aspect::InitialComposition::Manager<dim>> initial_composition_manager;
     };
   }
 }
