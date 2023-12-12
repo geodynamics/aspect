@@ -279,12 +279,16 @@ namespace aspect
       // to the lithostatic pressure, the rest of the traction
       // components are left set to zero. We get the lithostatic pressure
       // from a linear interpolation of the calculated profile,
-      // unless boundary traction is only applied to the bottom boundary.
+      // unless boundary traction is only applied to the bottom boundary
+      // and initial topography is included.
       // In that case we return the deepest pressure of the pressure
-      // profile directly.
+      // profile directly. Otherwise, points on the bottom boundary
+      // with horizontal coordinates other than the reference point
+      // will not have a depth equal to the deepest depth of the profile.
       const types::boundary_id bottom_bi = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
       Tensor<1, dim> traction;
-      if (boundary_indicator == bottom_bi &&
+      if (!Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) &&
+          boundary_indicator == bottom_bi &&
           traction_bi.size() == 1 &&
           *traction_bi.begin() == bottom_bi)
         traction = -pressure.back() * normal_vector;
