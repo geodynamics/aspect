@@ -809,15 +809,17 @@ namespace aspect
       track_output_field_names_and_units(base_variables.get_names(),
                                          base_variables.get_physical_units(),
                                          visualization_field_names_and_units);
+
       internal::SurfaceBaseVariablePostprocessor<dim> surface_base_variables;
       if (output_base_variables_on_mesh_surface)
-        surface_base_variables.initialize_simulator (this->get_simulator());
+        {
+          surface_base_variables.initialize_simulator (this->get_simulator());
 
-      if (output_base_variables_on_mesh_surface)
-      // Insert surface base variable names into set of all output field names
-      track_output_field_names_and_units(surface_base_variables.get_names(),
-                                         surface_base_variables.get_physical_units(),
-                                         visualization_field_names_and_units);
+          // Insert surface base variable names into set of all output field names
+          track_output_field_names_and_units(surface_base_variables.get_names(),
+                                             surface_base_variables.get_physical_units(),
+                                             visualization_field_names_and_units);
+        }
 
       std::unique_ptr<MeshDeformationPostprocessor<dim>> mesh_deformation_velocity;
       std::unique_ptr<MeshDeformationPostprocessor<dim>> mesh_deformation_displacement;
@@ -901,6 +903,8 @@ namespace aspect
                     {
                       data_out_faces.add_data_vector (this->get_solution(),
                                                       *viz_postprocessor);
+                      // Apart from the base variables, other postprocessors
+                      // output on the mesh surface.
                       have_face_viz_postprocessors = true;
                     }
                 }
@@ -935,6 +939,8 @@ namespace aspect
                       data_out_faces.add_data_vector(*cell_data_vectors.back(),
                                                      cell_data.first,
                                                      DataOutFaces<dim>::type_cell_data);
+                      // Apart from the base variables, other postprocessors
+                      // output on the mesh surface.
                       have_face_viz_postprocessors = true;
                     }
                 }
@@ -1305,13 +1311,14 @@ namespace aspect
                              "in the reference state without deformation instead. If you output the mesh "
                              "displacement, you can obtain the deformed mesh by using the 'warp by vector' "
                              "ParaView filter.");
-       
-          prm.declare_entry ("Output base variables on mesh surface", "false",
-                             Patterns::Bool(),
-                             "Whether or not to also output the base variables velocity, pressure, "
-                             "temperature and compositional fields (when present) on the surface "
-                             "of the mesh. The mesh surface includes not only the top boundary, "
-                             "but all boundaries of the domain. ");
+
+          prm.declare_entry("Output base variables on mesh surface", "false",
+                            Patterns::Bool(),
+                            "Whether or not to also output the base variables velocity, fluid pressure "
+                            "(when present), fluid velocity (when present), pressure, "
+                            "temperature and compositional fields (when present) on the surface "
+                            "of the mesh. The mesh surface includes not only the top boundary, "
+                            "but all boundaries of the domain. ");
 
           // Finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors.
