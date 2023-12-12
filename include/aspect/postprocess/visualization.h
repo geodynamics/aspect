@@ -594,9 +594,9 @@ namespace aspect
 
         /**
          * Whether or not ASPECT should also generate output for the base variables
-         * velocity, pressure, temperature and the compositional fields on the
-         * surface of the mesh. The mesh surface includes all boundaries of the
-         * domain.
+         * velocity, (fluid pressure and velocity), pressure, temperature
+         * and the compositional fields on the surface of the mesh.
+         * The mesh surface includes all boundaries of the domain.
          */
         bool output_base_variables_on_mesh_surface;
 
