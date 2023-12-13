@@ -103,12 +103,6 @@ namespace aspect
       this->get_pcout() << "   Maximum initial topography of rift: " << topo_rift_amplitude << " m" << std::endl;
       this->get_pcout() << "   Maximum initial topography of polygon: " << topo_polygon_amplitude << " m" << std::endl;
 
-      // The simulator only keeps the initial conditions around for
-      // the first time step. As a consequence, we have to save a
-      // shared pointer to that object ourselves the first time we get
-      // here.
-      if (initial_composition_manager == nullptr)
-        initial_composition_manager = this->get_initial_composition_manager_pointer();
     }
 
 
@@ -117,6 +111,12 @@ namespace aspect
     LithosphereRift<dim>::
     value (const Point<dim-1> &position) const
     {
+      // The simulator only keeps the initial conditions around for
+      // the first time step. As a consequence, we have to save a
+      // shared pointer to that object ourselves the first time we get
+      // here.
+      if (initial_composition_manager == nullptr)
+        const_cast<std::shared_ptr<const aspect::InitialComposition::Manager<dim>>&>(initial_composition_manager) = this->get_initial_composition_manager_pointer();
       // Check that the required initial composition model is used
       // We have to do it here instead of in initialize() because
       // the names are not available upon initialization of the
