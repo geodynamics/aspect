@@ -43,7 +43,7 @@ Number of mesh deformation degrees of freedom: 4,162
      RMS, max velocity:     1.76e+06 m/year, 2.3e+06 m/year
      Pressure min/avg/max:  -1.132 Pa, 5.012 Pa, 10 Pa
      Topography min/max:    0 m, 0.05 m
-     Points lie in domain:  truefalsefalse
+     Points lie in domain:  true false false
 
 *** Timestep 1:  t=1.69957e-09 years, dt=1.69957e-09 years
    Solving mesh displacement system... 8 iterations.
@@ -56,7 +56,7 @@ Number of mesh deformation degrees of freedom: 4,162
      RMS, max velocity:     1.62e+06 m/year, 2.11e+06 m/year
      Pressure min/avg/max:  -1.119 Pa, 5.004 Pa, 10.01 Pa
      Topography min/max:    -4.848e-05 m, 0.04609 m
-     Points lie in domain:  truefalsefalse
+     Points lie in domain:  true false false
 
 *** Timestep 2:  t=3.5e-09 years, dt=1.80043e-09 years
    Solving mesh displacement system... 8 iterations.
@@ -69,7 +69,7 @@ Number of mesh deformation degrees of freedom: 4,162
      RMS, max velocity:     1.53e+06 m/year, 1.99e+06 m/year
      Pressure min/avg/max:  -0.8445 Pa, 5.003 Pa, 10.02 Pa
      Topography min/max:    -9.971e-05 m, 0.04229 m
-     Points lie in domain:  truefalsefalse
+     Points lie in domain:  true false false
 
 Termination requested by criterion: end time
 
