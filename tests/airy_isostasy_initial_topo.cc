@@ -53,8 +53,8 @@ namespace aspect
       const Point<dim> point_not_in_domain_2(2.0, 0.01);
 
       std::ostringstream screen_text;
-      screen_text << std::boolalpha << this->get_geometry_model().point_is_in_domain(point_in_domain) ;
-      screen_text << std::boolalpha << this->get_geometry_model().point_is_in_domain(point_not_in_domain);
+      screen_text << std::boolalpha << this->get_geometry_model().point_is_in_domain(point_in_domain) << " ";
+      screen_text << std::boolalpha << this->get_geometry_model().point_is_in_domain(point_not_in_domain) << " ";
       screen_text << std::boolalpha << this->get_geometry_model().point_is_in_domain(point_not_in_domain_2);
 
       return std::pair<std::string, std::string> ("Points lie in domain: ",
