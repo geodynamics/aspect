@@ -56,15 +56,6 @@ namespace aspect
     using namespace dealii;
     using namespace dealii::Utilities;
 
-    /** Given an
-     *
-     */
-    template <int dim>
-    bool
-    point_is_in_triangulation(const Mapping<dim> &mapping,
-                              const parallel::distributed::Triangulation<dim> &triangulation,
-                              const Point<dim> point,
-                              const MPI_Comm mpi_communicator);
 
     /**
      * Given an array @p values, consider three cases:
@@ -364,6 +355,19 @@ namespace aspect
     template <int dim>
     std::vector<Point<dim>> get_unit_support_points(const SimulatorAccess<dim> &simulator_access);
 
+
+
+    /**
+     * Given a point @p point, find out if any of the MPI
+     * processes own the cell in which this point lies. If
+     * not, the point lies outside the @p triangulation.
+     */
+    template <int dim>
+    bool
+    point_is_in_triangulation(const Mapping<dim> &mapping,
+                              const parallel::distributed::Triangulation<dim> &triangulation,
+                              const Point<dim> &point,
+                              const MPI_Comm mpi_communicator);
 
 
     namespace Coordinates

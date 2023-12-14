@@ -213,32 +213,7 @@ namespace aspect
 
 
 
-    template <int dim>
-    bool
-    point_is_in_triangulation(const Mapping<dim> &mapping,
-                              const parallel::distributed::Triangulation<dim> &triangulation,
-                              const Point<dim> point,
-                              const MPI_Comm mpi_communicator)
-    {
-      // Try to find the cell around the given point.
-      bool cell_found = false;
-      std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
-          Point<dim>> it =
-            GridTools::find_active_cell_around_point<>(mapping, triangulation, point);
 
-      // If we found the correct cell on this MPI process, we have found the right cell.
-      if (it.first.state() == IteratorState::valid && it.first->is_locally_owned())
-        cell_found = true;
-
-      // Compute how many processes found the cell.
-      const int n_procs_cell_found = Utilities::MPI::sum(cell_found ? 1 : 0, mpi_communicator);
-
-      // If at least one process found the cell, the point is in the triangulation.
-      if (n_procs_cell_found > 0)
-        return true;
-      else
-        return false;
-    }
 
 
     template <typename T>
@@ -752,6 +727,34 @@ namespace aspect
             }
           return unit_support_points;
         }
+    }
+
+
+
+    template <int dim>
+    bool
+    point_is_in_triangulation(const Mapping<dim> &mapping,
+                              const parallel::distributed::Triangulation<dim> &triangulation,
+                              const Point<dim> &point,
+                              const MPI_Comm mpi_communicator)
+    {
+      // Try to find the cell around the given point.
+      bool cell_found = false;
+      std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
+          Point<dim>> it =
+            GridTools::find_active_cell_around_point<>(mapping, triangulation, point);
+
+      // If we found the correct cell on this MPI process, we have found the right cell.
+      if (it.first.state() == IteratorState::valid && it.first->is_locally_owned())
+        cell_found = true;
+
+      // Compute how many processes found the cell.
+      const int n_procs_cell_found = Utilities::MPI::sum(cell_found ? 1 : 0, mpi_communicator);
+      // If at least one process found the cell, the point is in the triangulation.
+      if (n_procs_cell_found > 0)
+        return true;
+      else
+        return false;
     }
 
 
@@ -3453,6 +3456,12 @@ namespace aspect
   template \
   bool polygon_contains_point<dim>(const std::vector<Point<2>> &pointList, \
                                    const dealii::Point<2> &point); \
+  \
+  template \
+  bool point_is_in_triangulation<dim>(const Mapping<dim> &mapping, \
+                                      const parallel::distributed::Triangulation<dim> &triangulation, \
+                                      const Point<dim> &point, \
+                                      const MPI_Comm mpi_communicator); \
   \
   template \
   double signed_distance_to_polygon<dim>(const std::vector<Point<2>> &pointList, \
