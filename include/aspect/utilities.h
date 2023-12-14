@@ -56,6 +56,16 @@ namespace aspect
     using namespace dealii;
     using namespace dealii::Utilities;
 
+    /** Given an
+     *
+     */
+    template <int dim>
+    bool
+    point_is_in_triangulation(const Mapping<dim> &mapping,
+                              const parallel::distributed::Triangulation<dim> &triangulation,
+                              const Point<dim> point,
+                              const MPI_Comm mpi_communicator);
+
     /**
      * Given an array @p values, consider three cases:
      * - If it has size @p N, return the original array.

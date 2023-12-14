@@ -39,8 +39,7 @@
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/patterns.h>
-
-
+#include <deal.II/grid/grid_tools.h>
 
 #include <cerrno>
 #include <dirent.h>
@@ -212,6 +211,34 @@ namespace aspect
       }
     }
 
+
+
+    template <int dim>
+    bool
+    point_is_in_triangulation(const Mapping<dim> &mapping,
+                              const parallel::distributed::Triangulation<dim> &triangulation,
+                              const Point<dim> point,
+                              const MPI_Comm mpi_communicator)
+    {
+      // Try to find the cell around the given point.
+      bool cell_found = false;
+      std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
+          Point<dim>> it =
+            GridTools::find_active_cell_around_point<>(mapping, triangulation, point);
+
+      // If we found the correct cell on this MPI process, we have found the right cell.
+      if (it.first.state() == IteratorState::valid && it.first->is_locally_owned())
+        cell_found = true;
+
+      // Compute how many processes found the cell.
+      const int n_procs_cell_found = Utilities::MPI::sum(cell_found ? 1 : 0, mpi_communicator);
+
+      // If at least one process found the cell, the point is in the triangulation.
+      if (n_procs_cell_found > 0)
+        return true;
+      else
+        return false;
+    }
 
 
     template <typename T>
