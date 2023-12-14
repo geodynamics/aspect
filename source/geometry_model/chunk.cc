@@ -697,34 +697,20 @@ namespace aspect
     bool
     Chunk<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      // If mesh deformation has possibly been applied,
-      // e.g. initial mesh deformation after the simulator
-      // has been initialized or time-dependent mesh deformation
-      // after timestep 0, we cannot use information from the
-      // geometry model to determine whether the point lies in
-      // the model domain. Instead, we loop over all cells
-      // to check whether the point lies in one of them.
+      // If mesh deformation is enabled, we have to loop over all the current
+      // grid cells to see if the given point lies in the domain.
+      // If mesh deformation is not enabled, or has not happened yet,
+      // we can use the global extents of the model domain with or without
+      // initial topography instead.
+      // This function only checks if the given point lies in the domain
+      // in its current shape at the current time. It can be called before
+      // mesh deformation is applied in the first timestep (e.g., by the boundary
+      // traction plugins), and therefore there is no guarantee
+      // that the point will still lie in the domain after initial mesh deformation.
       if (this->get_parameters().mesh_deformation_enabled &&
           this->simulator_is_past_initialization())
         {
-          bool cell_found = false;
-          std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
-              Point<dim>>
-              it =
-                GridTools::find_active_cell_around_point<>(this->get_mapping(), this->get_triangulation(), point);
-
-          // If the cell the point is in is on this processor, we have found the right cell.
-          if (it.first.state() == IteratorState::valid && it.first->is_locally_owned())
-            cell_found = true;
-
-          // Compute how many processes found the cell.
-          const int n_procs_cell_found = Utilities::MPI::sum(cell_found ? 1 : 0, this->get_mpi_communicator());
-
-          // If at least one process found the cell, the point is in the domain.
-          if (n_procs_cell_found > 0)
-            return true;
-          else
-            return false;
+          return Utilities::point_is_in_triangulation(this->get_mapping(), this->get_triangulation(), point, this->get_mpi_communicator());
         }
       // Without mesh deformation enabled, it is much cheaper to check whether the point lies in the domain.
       else

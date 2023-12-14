@@ -23,6 +23,7 @@
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator_signals.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria_iterator.h>
@@ -317,51 +318,27 @@ namespace aspect
     bool
     Box<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      // If mesh deformation occurs over time, and we're past the
-      // first timestep (during which no mesh deformation is applied),
-      // we can no longer use the original extents of the model domain
-      // to check whether the point lies in the domain.
-      // Initial mesh deformation is applied during the first
-      // timestep, but this function might be called before the
-      // simulator is initialized and thus before we can ask whether initial
-      // or time-dependent mesh deformation is applied.
-      // Therefore, when any mesh deformation is enabled,
-      // we loop over all the current grid cells to see if the point
-      // lies within the domain.
-      // Do note that this function can be called before mesh deformation
-      // is applied in the first timestep, and therefore there is no guarantee
-      // that the point will lie in the domain after initial mesh deformation.
-      // For example, boundary traction plugins are initialized before
-      // mesh deformation plugins and the initial_lithostatic_pressure
-      // plugin calls this function while the simulator is being initialized.
-      // However, if the simulator has not been initialized,
-      // no mesh deformation has been applied and we can use the geometry model's
-      // extents to check whether a point lies in the domain.
+      // If mesh deformation is enabled, we have to loop over all the current
+      // grid cells to see if the given point lies in the domain.
+      // If mesh deformation is not enabled, or has not happened yet,
+      // we can use the global extents of the model domain with or without
+      // initial topography instead.
+      // This function only checks if the given point lies in the domain
+      // in its current shape at the current time. It can be called before
+      // mesh deformation is applied in the first timestep (e.g., by the boundary
+      // traction plugins), and therefore there is no guarantee
+      // that the point will still lie in the domain after initial mesh deformation.
       if (this->get_parameters().mesh_deformation_enabled &&
           this->simulator_is_past_initialization())
         {
-          bool cell_found = false;
-          std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
-              Point<dim>> it =
-                GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), point);
-
-          // If the cell the point is in is on this processor, we have found the right cell.
-          if (it.first.state() == IteratorState::valid && it.first->is_locally_owned())
-            cell_found = true;
-
-          // Compute how many processes found the cell.
-          const int n_procs_cell_found = Utilities::MPI::sum(cell_found ? 1 : 0, this->get_mpi_communicator());
-
-          // If at least one process found the cell, the point is in the domain.
-          if (n_procs_cell_found > 0)
-            return true;
-          else
-            return false;
+          return Utilities::point_is_in_triangulation<dim>(this->get_mapping(),
+                                                           this->get_triangulation(),
+                                                           point,
+                                                           this->get_mpi_communicator());
         }
       // Without mesh deformation enabled, it is much cheaper to check whether the point lies in the domain.
       else
         {
-
           // The maximal extents of the unperturbed box domain.
           Point<dim> max_point = extents+box_origin;
 
