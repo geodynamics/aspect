@@ -48,6 +48,7 @@ namespace aspect
     {
       // Ensure the initial lithostatic pressure traction boundary conditions are used,
       // and register for which boundary indicators these conditions are set.
+      std::set<types::boundary_id> traction_bi;
       for (const auto &p : this->get_boundary_traction_manager().get_active_boundary_traction_conditions())
         {
           for (const auto &plugin : p.second)
@@ -56,6 +57,14 @@ namespace aspect
         }
       AssertThrow(*(traction_bi.begin()) != numbers::invalid_boundary_id,
                   ExcMessage("Did not find any boundary indicators for the initial lithostatic pressure plugin."));
+
+      // Determine whether traction boundary conditions are only set on the bottom
+      // boundary and initial topography is applied.
+      bottom_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
+      if (!Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) &&
+          traction_bi.size() == 1 &&
+          *traction_bi.begin() == bottom_boundary_id)
+        prescribe_constant_pressure_at_bottom_boundary = true;
 
       // The below is adapted from adiabatic_conditions/initial_profile.cc,
       // but we use the initial temperature and composition and only calculate
@@ -285,12 +294,8 @@ namespace aspect
       // profile directly. Otherwise, points on the bottom boundary
       // with horizontal coordinates other than the reference point
       // will not have a depth equal to the deepest depth of the profile.
-      const types::boundary_id bottom_bi = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
       Tensor<1, dim> traction;
-      if (!Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) &&
-          boundary_indicator == bottom_bi &&
-          traction_bi.size() == 1 &&
-          *traction_bi.begin() == bottom_bi)
+      if (prescribe_constant_pressure_at_bottom_boundary && boundary_indicator == bottom_boundary_id)
         traction = -pressure.back() * normal_vector;
       else
         traction = -interpolate_pressure(position) * normal_vector;

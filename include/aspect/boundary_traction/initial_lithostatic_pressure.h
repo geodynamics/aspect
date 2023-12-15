@@ -107,10 +107,17 @@ namespace aspect
         double interpolate_pressure (const Point<dim> &p) const;
 
         /**
-         * A list of those boundary indicators that are prescribed
-         * the initial lithostatic pressure computed by this plugin.
+         * The id of the bottom boundary.
          */
-        std::set<types::boundary_id> traction_bi;
+        types::boundary_id bottom_boundary_id;
+
+        /**
+         * Whether or not initial lithostatic pressure is prescribed
+         * on the bottom boundary only and initial topography is included,
+         * and therefore the deepest pressure in the lithostatic pressure 
+         * profile is returned.
+         */
+        bool prescribe_constant_pressure_at_bottom_boundary = false;
     };
   }
 }
