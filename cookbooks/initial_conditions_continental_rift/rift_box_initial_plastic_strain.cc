@@ -147,7 +147,7 @@ namespace aspect
         prm.enter_subsection("Rift box initial plastic strain");
         {
           prm.declare_entry ("Random number generator seed", "0",
-                             Patterns::Double (0),
+                             Patterns::Integer (0),
                              "The value of the seed used for the random number generator. "
                              "Units: none.");
           prm.declare_entry ("Standard deviation of Gaussian noise amplitude distribution", "20000",
@@ -229,8 +229,10 @@ namespace aspect
       prm.leave_subsection();
 
       // The grid intervals equal the number of mesh cells.
+      // refinement, repetitions and grid_intervals are integers,
+      // but pow returns a double, so convert to int.
       for (unsigned int d = 0; d < dim; ++d)
-        grid_intervals[d] = repetitions[d] * std::pow(2, refinement);
+        grid_intervals[d] = repetitions[d] * int(std::pow(2, refinement));
 
       // Both initial mesh deformation and initial topography models
       // can distort the initial mesh such that the vertical coordinate
@@ -254,7 +256,7 @@ namespace aspect
         prm.enter_subsection("Rift box initial plastic strain");
         sigma                = prm.get_double ("Standard deviation of Gaussian noise amplitude distribution");
         A                    = prm.get_double ("Maximum amplitude of Gaussian noise amplitude distribution");
-        seed                 = prm.get_double ("Random number generator seed");
+        seed                 = prm.get_integer ("Random number generator seed");
         strain_height        = origin[dim-1] + extents[dim-1] - prm.get_double ("Depth around which Gaussian noise is smoothed out");
         strain_halfwidth     = prm.get_double ("Halfwidth with which Gaussian noise is smoothed out in depth");
 

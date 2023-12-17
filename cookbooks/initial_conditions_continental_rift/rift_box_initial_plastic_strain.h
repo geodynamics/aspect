@@ -93,7 +93,7 @@ namespace aspect
         /**
          * The value of the seed for the random number generator
          */
-        double seed;
+        unsigned int seed;
 
         /**
          * The maximum amplitude of the Gaussian amplitude of the noise.
