@@ -209,12 +209,6 @@ namespace aspect
     void
     LithosphereRift<dim>::parse_parameters (ParameterHandler &prm)
     {
-      unsigned int n_fields;
-      prm.enter_subsection ("Compositional fields");
-      {
-        n_fields = prm.get_integer ("Number of fields");
-      }
-      prm.leave_subsection();
       prm.enter_subsection ("Initial composition model");
       {
         prm.enter_subsection("Lithosphere with rift");
