@@ -48,7 +48,7 @@ namespace aspect
             this->get_boundary_composition_manager().template get_matching_boundary_composition_model<BoundaryComposition::InitialComposition<dim>>();
 
           std::cout << "InitialComposition is Box:"
-                    << Plugins::plugin_type_matches<const BoundaryComposition::Box<dim>>(initial_composition)
+                    << (dynamic_cast<const BoundaryComposition::Box<dim>*>(&initial_composition) != nullptr)
                     << std::endl;
 
           Plugins::get_plugin_as_type<const BoundaryComposition::Box<dim>>(initial_composition);
