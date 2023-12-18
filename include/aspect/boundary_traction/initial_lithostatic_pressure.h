@@ -114,7 +114,7 @@ namespace aspect
         /**
          * Whether or not initial lithostatic pressure is prescribed
          * on the bottom boundary only and initial topography is included,
-         * and therefore the deepest pressure in the lithostatic pressure 
+         * and therefore the deepest pressure in the lithostatic pressure
          * profile is returned.
          */
         bool prescribe_constant_pressure_at_bottom_boundary = false;
