@@ -338,8 +338,12 @@ namespace aspect
          * in the input file (and are consequently currently active) and return
          * true if one of them has the desired type specified by the template
          * argument.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
          */
-        template <typename MeshDeformationType>
+        template <typename MeshDeformationType,
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,MeshDeformationType>::value>>
         bool
         has_matching_mesh_deformation_object () const;
 
@@ -350,8 +354,12 @@ namespace aspect
          * argument or can be casted to that type. If so, return a reference
          * to it. If no mesh deformation object is active that matches the given type,
          * throw an exception.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
          */
-        template <typename MeshDeformationType>
+        template <typename MeshDeformationType,
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,MeshDeformationType>::value>>
         const MeshDeformationType &
         get_matching_mesh_deformation_object () const;
 
@@ -611,7 +619,7 @@ namespace aspect
 
 
     template <int dim>
-    template <typename MeshDeformationType>
+    template <typename MeshDeformationType, typename>
     inline
     bool
     MeshDeformationHandler<dim>::has_matching_mesh_deformation_object () const
@@ -627,7 +635,7 @@ namespace aspect
 
 
     template <int dim>
-    template <typename MeshDeformationType>
+    template <typename MeshDeformationType, typename>
     inline
     const MeshDeformationType &
     MeshDeformationHandler<dim>::get_matching_mesh_deformation_object () const

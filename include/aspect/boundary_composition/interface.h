@@ -222,8 +222,12 @@ namespace aspect
          * in the input file (and are consequently currently active) and return
          * true if one of them has the desired type specified by the template
          * argument.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
          */
-        template <typename BoundaryCompositionType>
+        template <typename BoundaryCompositionType,
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,BoundaryCompositionType>::value>>
         bool
         has_matching_boundary_composition_model () const;
 
@@ -234,8 +238,12 @@ namespace aspect
          * argument or can be casted to that type. If so, return a reference
          * to it. If no boundary composition model is active that matches the given type,
          * throw an exception.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
          */
-        template <typename BoundaryCompositionType>
+        template <typename BoundaryCompositionType,
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,BoundaryCompositionType>::value>>
         const BoundaryCompositionType &
         get_matching_boundary_composition_model () const;
 
@@ -312,7 +320,7 @@ namespace aspect
 
 
     template <int dim>
-    template <typename BoundaryCompositionType>
+    template <typename BoundaryCompositionType, typename>
     inline
     bool
     Manager<dim>::has_matching_boundary_composition_model () const
@@ -327,7 +335,7 @@ namespace aspect
 
 
     template <int dim>
-    template <typename BoundaryCompositionType>
+    template <typename BoundaryCompositionType, typename>
     inline
     const BoundaryCompositionType &
     Manager<dim>::get_matching_boundary_composition_model () const
