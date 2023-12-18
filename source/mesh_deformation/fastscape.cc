@@ -578,7 +578,7 @@ namespace aspect
       std::vector<std::vector<double>> local_aspect_values(dim+2, std::vector<double>());
 
       // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
-      const QIterated<dim-1> face_corners (QTrapez<1>(),
+      const QIterated<dim-1> face_corners (QTrapezoid<1>(),
                                            std::pow(2,additional_refinement_levels+surface_refinement_difference));
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
@@ -1548,6 +1548,18 @@ namespace aspect
       if (use_marine_component)
         out_silt_fraction << buffer_silt_fraction.str();
     }
+
+
+
+    template <int dim>
+    bool
+    FastScape<dim>::
+    needs_surface_stabilization () const
+    {
+      return true;
+    }
+
+
 
     template <int dim>
     void FastScape<dim>::declare_parameters(ParameterHandler &prm)

@@ -64,7 +64,12 @@ namespace aspect
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  AffineConstraints<double> &mesh_velocity_constraints,
-                                                 const std::set<types::boundary_id> &boundary_id) const;
+                                                 const std::set<types::boundary_id> &boundary_id) const override;
+
+        /**
+         * Returns whether or not the plugin requires surface stabilization
+         */
+        bool needs_surface_stabilization () const override;
 
         /**
          * Declare parameters for the FastScape plugin.
@@ -75,7 +80,7 @@ namespace aspect
         /**
          * Parse parameters for the FastScape plugin.
          */
-        void parse_parameters (ParameterHandler &prm);
+        void parse_parameters (ParameterHandler &prm) override;
 
       private:
         /**
