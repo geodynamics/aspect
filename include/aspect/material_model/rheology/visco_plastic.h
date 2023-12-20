@@ -227,12 +227,12 @@ namespace aspect
           Rheology::Elasticity<dim> elastic_rheology;
 
           /**
-           * Object for computing dampening of material properties between nonlinear iterations
+           * Object for computing dampening of material properties between nonlinear iterations.
            */
           std::unique_ptr<Rheology::IterativeDampening<dim>> iterative_dampening;
 
           /**
-           * Whether to damper the viscosity between nonlinear iterations
+           * Whether to dampen the viscosity between nonlinear iterations or not (default).
            */
           bool use_iterative_viscosity_dampening;
 

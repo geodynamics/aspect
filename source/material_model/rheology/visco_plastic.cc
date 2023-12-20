@@ -613,6 +613,11 @@ namespace aspect
         // Iterative viscosity dampening parameters
         Rheology::IterativeDampening<dim>::declare_parameters(prm);
 
+        prm.declare_entry("Use iterative viscosity dampening", "false",
+                          Patterns::Bool(),
+                          "Whether to dampen the viscosity between nonlinear iterations (if true) "
+                          "or not (default).");
+
         // Stress limiter parameters
         prm.declare_entry ("Stress limiter exponents", "1.0",
                            Patterns::List(Patterns::Double (0.)),
@@ -631,10 +636,6 @@ namespace aspect
                            "Using a pressure gradient of 32436 Pa/m, then a value of "
                            "0.3 K/km = 0.0003 K/m = 9.24e-09 K/Pa gives an earth-like adiabat."
                            "Units: \\si{\\kelvin\\per\\pascal}.");
-
-        prm.declare_entry ("Use iterative viscosity dampening", "false",
-                           Patterns::Bool (),
-                           "Whether to damper the viscosity between nonlinear iterations.");
       }
 
 
@@ -778,10 +779,6 @@ namespace aspect
         use_iterative_viscosity_dampening = prm.get_bool ("Use iterative viscosity dampening");
         if (use_iterative_viscosity_dampening)
           {
-            iterative_dampening = std::make_unique<Rheology::IterativeDampening<dim>>();
-            iterative_dampening->initialize_simulator (this->get_simulator());
-            iterative_dampening->parse_parameters(prm);
-
             AssertThrow (this->introspection().compositional_name_exists("viscosity_field"),
                          ExcMessage("Using an iterative viscosity dampening only works if there is a "
                                     "compositional field called viscosity_field."));
@@ -798,6 +795,10 @@ namespace aspect
                                     "nonlinear solver schemes 'iterated Advection and Stokes', "
                                     "'iterated Advection and Newton Stokes', and "
                                     "'iterated Advection and defect correction Stokes."));
+
+            iterative_dampening = std::make_unique<Rheology::IterativeDampening<dim>>();
+            iterative_dampening->initialize_simulator(this->get_simulator());
+            iterative_dampening->parse_parameters(prm);
           }
 
       }

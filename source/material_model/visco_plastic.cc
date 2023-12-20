@@ -279,21 +279,24 @@ namespace aspect
           // Calculate changes in strain invariants and update the reaction terms
           rheology->strain_rheology.fill_reaction_outputs(in, i, rheology->min_strain_rate, plastic_yielding, out);
 
-          // Calculate changes in viscosity with iterative dampening and update the reaction terms
+          // Calculate changes in viscosity with iterative dampening and fill prescribed output.
+          // TODO Should the damping be done before compute_viscosity_derivatives in line 254?
           if (rheology->use_iterative_viscosity_dampening)
             {
-              // set up variable to interpolate prescribed field outputs onto compositional fields
+              // Set up variable to interpolate the viscosity output onto the compositional field viscosity_field.
               PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
 
               if (in.current_cell.state() == IteratorState::valid && prescribed_field_out != NULL)
                 {
-                  const double old_viscosity = in.composition[i][this->introspection().compositional_index_for_name("viscosity_field")];
+                  const int field_index = this->introspection().compositional_index_for_name("viscosity_field");
+                  const double old_viscosity = in.composition[i][field_index];
 
-                  // Only dampen after the first nonlinear iteration
+                  // Only dampen the viscosity after the first nonlinear iteration.
                   if (this->get_nonlinear_iteration() > 0)
                     out.viscosities[i] = rheology->iterative_dampening->calculate_viscosity(old_viscosity, out.viscosities[i]);
 
-                  prescribed_field_out->prescribed_field_outputs[i][this->introspection().compositional_index_for_name("viscosity_field")] = out.viscosities[i];
+                  // Put the new viscosity onto the compositional field.
+                  prescribed_field_out->prescribed_field_outputs[i][field_index] = out.viscosities[i];
                 }
             }
 
@@ -473,7 +476,7 @@ namespace aspect
 
       if (this->get_parameters().enable_elasticity)
         rheology->elastic_rheology.create_elastic_outputs(out);
-      
+
       if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == NULL)
         {
           const unsigned int n_points = out.n_evaluation_points();

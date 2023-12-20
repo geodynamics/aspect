@@ -61,15 +61,6 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
           /**
-           * A function that fills the reaction terms for the finite strain invariant(s) in
-           * MaterialModelOutputs object that is handed over.
-           */
-          void fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                      const int i,
-                                      const double old_viscosity,
-                                      MaterialModel::MaterialModelOutputs<dim> &out) const;
-
-          /**
            * A function that calculate the dampened viscosity between successive nonlinear iterations
            */
           double calculate_viscosity (const double old_viscosity,
@@ -77,8 +68,8 @@ namespace aspect
 
           /**
            * A dampening factor for the viscosity that controls the rate of change
-           * between the viscosity calculated on the previous and current nonlinear
-           * itearation.
+           * between the viscosity calculated in the previous and current nonlinear
+           * iteration.
            */
           double iterative_viscosity_dampening_factor;
 

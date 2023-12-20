@@ -49,10 +49,11 @@ namespace aspect
         prm.declare_entry ("Iterative viscosity dampening factor", "1.0",
                            Patterns::Double (0.),
                            "A dampening factor for the viscosity that controls the rate of change "
-                           "between the viscosity calculated on the previous and current nonlinear "
+                           "between the viscosity calculated in the previous and current nonlinear "
                            "iteration. "
                            "Units: none.");
       }
+
 
       template <int dim>
       void
@@ -61,27 +62,6 @@ namespace aspect
         iterative_viscosity_dampening_factor = prm.get_double("Iterative viscosity dampening factor");
       }
 
-
-      template <int dim>
-      void
-      IterativeDampening<dim>::
-      fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                             const int i,
-                             const double old_viscosity,
-                             MaterialModel::MaterialModelOutputs<dim> &out) const
-      {
-        if  (this->simulator_is_past_initialization() && in.requests_property(MaterialProperties::reaction_terms))
-          {
-            Assert(std::isfinite(in.strain_rate[i].norm()),
-                   ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
-                              "not filled by the caller."));
-
-            // Index for viscosity compositional field
-            const int vis_index = this->introspection().compositional_index_for_name("viscosity_field");
-
-            out.reaction_terms[i][vis_index] = -old_viscosity + out.viscosities[i];
-          }
-      }
 
       template <int dim>
       double

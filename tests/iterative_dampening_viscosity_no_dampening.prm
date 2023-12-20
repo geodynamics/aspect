@@ -58,16 +58,16 @@ subsection Initial temperature model
   end
 end
 
-# Compositional fields used to track finite strain invariant
+# Compositional fields used to track the viscosity
 subsection Compositional fields
   set Number of fields = 1
   set Names of fields = viscosity_field
-  set Compositional field methods = prescribed field 
+  set Compositional field methods = prescribed field
 end
 
 # Set the initial composition for the viscosity field
 # to the same value as the background viscosity.
-# However,  his value can be set to any arbitrary
+# However, this value can be set to any arbitrary
 # viscosity and still have the iterative dampening
 # scheme work.
 subsection Initial composition model
@@ -88,13 +88,13 @@ subsection Material model
     set Use iterative viscosity dampening = true
     set Iterative viscosity dampening factor = 0
 
-    # These strain rate given to the material will
+    # The strain rate given to the material will
     # always be 1e-20, as all boundaries have
     # free slip conditions.
     set Reference strain rate = 1.e-20
     set Minimum strain rate   = 1.e-20
 
-    # Set the background viscosity to 1e26 P a s
+    # Set the background viscosity to 1e26 Pa s
     set Viscous flow law                          = dislocation
     set Prefactors for dislocation creep          = 5.e-27
     set Stress exponents for dislocation creep    = 1.0
@@ -120,6 +120,6 @@ end
 
 # Post processing
 subsection Postprocess
-  set List of postprocessors = basic statistics, composition statistics,  material statistics
+  set List of postprocessors = velocity statistics, composition statistics,  material statistics
   set Run postprocessors on nonlinear iterations = true
 end
