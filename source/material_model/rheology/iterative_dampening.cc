@@ -50,7 +50,8 @@ namespace aspect
                            Patterns::Double (0.),
                            "A dampening factor for the viscosity that controls the rate of change "
                            "between the viscosity calculated in the previous and current nonlinear "
-                           "iteration. "
+                           "iteration. A value of 1 (default) equals using the previous viscosity, a value of "
+                           "0 equals using the current viscosity. "
                            "Units: none.");
       }
 
