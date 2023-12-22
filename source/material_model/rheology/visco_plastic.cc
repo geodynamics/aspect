@@ -783,6 +783,17 @@ namespace aspect
                          ExcMessage("Using an iterative viscosity dampening only works if there is a "
                                     "compositional field called viscosity_field."));
 
+            const int prescribed_field_index = this->introspection().compositional_index_for_name("viscosity_field");
+
+            AssertThrow(this->get_parameters().compositional_field_methods[prescribed_field_index]
+                        == Parameters<dim>::AdvectionFieldMethod::prescribed_field,
+                        ExcMessage("Using an iterative viscosity dampening only works if the field "
+                                   "viscosity_field follows the prescribed field method."));
+
+            AssertThrow(this->introspection().get_composition_descriptions()[prescribed_field_index].type == CompositionalFieldDescription::generic,
+                        ExcMessage("Using an iterative viscosity dampening only works if the field "
+                                   "viscosity_field has a generic field description."));
+
             AssertThrow (this->get_parameters().nonlinear_solver ==
                          Parameters<dim>::NonlinearSolver::iterated_Advection_and_Stokes
                          ||
