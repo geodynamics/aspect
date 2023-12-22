@@ -281,24 +281,27 @@ namespace aspect
 
           // Calculate changes in viscosity with iterative dampening and fill prescribed output.
           // TODO Should the damping be done before compute_viscosity_derivatives in line 254?
-          if (rheology->use_iterative_viscosity_dampening)
-            {
-              // Set up variable to interpolate the viscosity output onto the compositional field viscosity_field.
-              PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
+          if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs))
+            if (rheology->use_iterative_viscosity_dampening)
+              {
+                // Set up variable to interpolate the viscosity output onto the compositional field viscosity_field.
+                PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
 
-              if (in.current_cell.state() == IteratorState::valid && prescribed_field_out != NULL)
-                {
-                  const int field_index = this->introspection().compositional_index_for_name("viscosity_field");
-                  const double old_viscosity = in.composition[i][field_index];
+                if (in.current_cell.state() == IteratorState::valid && prescribed_field_out != NULL)
+                  {
+                    const int field_index = this->introspection().compositional_index_for_name("viscosity_field");
+                    const double old_viscosity = in.composition[i][field_index];
 
-                  // Only dampen the viscosity after the first nonlinear iteration.
-                  if (this->get_nonlinear_iteration() > 0)
-                    out.viscosities[i] = rheology->iterative_dampening->calculate_viscosity(old_viscosity, out.viscosities[i]);
+                    // Only dampen the viscosity after the first nonlinear iteration.
+                    if (this->simulator_is_past_initialization() == true &&
+                        this->get_timestep_number() > 0 &&
+                        this->get_nonlinear_iteration() > 0)
+                      out.viscosities[i] = rheology->iterative_dampening->calculate_viscosity(old_viscosity, out.viscosities[i]);
 
-                  // Put the new viscosity onto the compositional field.
-                  prescribed_field_out->prescribed_field_outputs[i][field_index] = out.viscosities[i];
-                }
-            }
+                    // Put the new viscosity onto the compositional field.
+                    prescribed_field_out->prescribed_field_outputs[i][field_index] = out.viscosities[i];
+                  }
+              }
 
           // Fill plastic outputs if they exist.
           // The values in isostrain_viscosities only make sense when the calculate_isostrain_viscosities function
@@ -477,11 +480,12 @@ namespace aspect
       if (this->get_parameters().enable_elasticity)
         rheology->elastic_rheology.create_elastic_outputs(out);
 
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == NULL)
+      if (rheology->use_iterative_viscosity_dampening &&
+          out.template get_additional_output<PrescribedFieldOutputs<dim>>() == NULL)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points,this->n_compositional_fields()));
+            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>>(n_points, this->n_compositional_fields()));
         }
     }
 
