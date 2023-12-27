@@ -112,12 +112,12 @@ namespace aspect
         types::boundary_id bottom_boundary_id;
 
         /**
-         * Whether or not initial lithostatic pressure is prescribed
-         * on the bottom boundary only and initial topography is included,
-         * and therefore the deepest pressure in the lithostatic pressure
-         * profile is returned.
+         * Whether or not to prescribe the
+         * largest pressure in the lithostatic pressure
+         * profile at the bottom boundary independent of
+         * actual depth.
          */
-        bool prescribe_constant_pressure_at_bottom_boundary = false;
+        bool prescribe_constant_pressure_at_bottom_boundary;
     };
   }
 }

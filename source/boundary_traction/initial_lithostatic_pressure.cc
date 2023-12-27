@@ -65,6 +65,8 @@ namespace aspect
           traction_bi.size() == 1 &&
           *traction_bi.begin() == bottom_boundary_id)
         prescribe_constant_pressure_at_bottom_boundary = true;
+      else
+        prescribe_constant_pressure_at_bottom_boundary = false;
 
       // The below is adapted from adiabatic_conditions/initial_profile.cc,
       // but we use the initial temperature and composition and only calculate
