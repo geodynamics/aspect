@@ -226,8 +226,12 @@ namespace aspect
          * in the input file (and are consequently currently active) and return
          * true if one of them has the desired type specified by the template
          * argument.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
          */
-        template <typename MeshRefinementType>
+        template <typename MeshRefinementType,
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,MeshRefinementType>::value>>
         bool
         has_matching_mesh_refinement_strategy () const;
 
@@ -238,8 +242,12 @@ namespace aspect
          * argument or can be casted to that type. If so, return a reference
          * to it. If no mesh refinement strategy is active that matches the
          * given type, throw an exception.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
          */
-        template <typename MeshRefinementType>
+        template <typename MeshRefinementType,
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,MeshRefinementType>::value>>
         const MeshRefinementType &
         get_matching_mesh_refinement_strategy () const;
 
@@ -323,7 +331,7 @@ namespace aspect
 
 
     template <int dim>
-    template <typename MeshRefinementType>
+    template <typename MeshRefinementType, typename>
     inline
     bool
     Manager<dim>::has_matching_mesh_refinement_strategy () const
@@ -340,7 +348,7 @@ namespace aspect
 
 
     template <int dim>
-    template <typename MeshRefinementType>
+    template <typename MeshRefinementType, typename>
     inline
     const MeshRefinementType &
     Manager<dim>::get_matching_mesh_refinement_strategy () const

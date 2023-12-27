@@ -656,9 +656,12 @@ namespace aspect
            * in the input file (and are consequently currently active) and return
            * true if one of them has the desired type specified by the template
            * argument.
+           *
+           * This function can only be called if the given template type (the first template
+           * argument) is a class derived from the Interface class in this namespace.
            */
-          template <typename ParticlePropertyType>
-          inline
+          template <typename ParticlePropertyType,
+                    typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,ParticlePropertyType>::value>>
           bool
           has_matching_property () const;
 
@@ -669,9 +672,12 @@ namespace aspect
            * argument or can be casted to that type. If so, return a reference
            * to it. If no property is active that matches the given type,
            * throw an exception.
+           *
+           * This function can only be called if the given template type (the first template
+           * argument) is a class derived from the Interface class in this namespace.
            */
-          template <typename ParticlePropertyType>
-          inline
+          template <typename ParticlePropertyType,
+                    typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,ParticlePropertyType>::value>>
           const ParticlePropertyType &
           get_matching_property () const;
 
@@ -793,7 +799,7 @@ namespace aspect
 
 
       template <int dim>
-      template <typename ParticlePropertyType>
+      template <typename ParticlePropertyType, typename>
       inline
       bool
       Manager<dim>::has_matching_property () const
@@ -807,7 +813,7 @@ namespace aspect
 
 
       template <int dim>
-      template <typename ParticlePropertyType>
+      template <typename ParticlePropertyType, typename>
       inline
       const ParticlePropertyType &
       Manager<dim>::get_matching_property () const
