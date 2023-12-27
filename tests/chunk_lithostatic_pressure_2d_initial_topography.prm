@@ -1,0 +1,46 @@
+# In this variation on chunk_lithostatic_pressure_2d.prm
+# we test whether the point_is_in_domain function
+# handles the initial topography correctly. We therefore
+# add an initial topography and pick a representative point
+# for the initial lithostatic pressure that lies above
+# the unperturbed surface but below the surface plus
+# initial topography.
+
+include $ASPECT_SOURCE_DIR/tests/chunk_lithostatic_pressure_2d.prm
+
+set Dimension = 2
+set End time                               = 0
+
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Chunk
+    set Chunk inner radius = 3471000
+    set Chunk outer radius = 6371000
+    set Chunk minimum longitude = 0
+    set Chunk maximum longitude = 50
+  end
+
+  subsection Initial topography model
+    set Model name = ascii data
+
+    subsection Ascii data model
+      set Data directory       = $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
+      set Data file name       = shell_2d_outer.0.txt
+    end
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = inner, outer, west
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = east: initial lithostatic pressure
+
+  # Set a radius between 6371 and 6461 km (surface radius
+  # without and with 90 km initial topography at 0 degrees longitude.
+  subsection Initial lithostatic pressure
+    set Representative point =  6394000, 0.1
+  end
+end

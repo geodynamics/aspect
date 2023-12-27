@@ -685,21 +685,33 @@ namespace aspect
     bool
     Chunk<dim>::point_is_in_domain(const Point<dim> &point) const
     {
-      AssertThrow(!this->get_parameters().mesh_deformation_enabled ||
-                  this->simulator_is_past_initialization() == false,
-                  ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
+      // If mesh deformation is enabled, we have to loop over all the current
+      // grid cells to see if the given point lies in the domain.
+      // If mesh deformation is not enabled, or has not happened yet,
+      // we can use the global extents of the model domain with or without
+      // initial topography instead.
+      // This function only checks if the given point lies in the domain
+      // in its current shape at the current time. It can be called before
+      // mesh deformation is applied in the first timestep (e.g., by the boundary
+      // traction plugins), and therefore there is no guarantee
+      // that the point will still lie in the domain after initial mesh deformation.
+      if (this->get_parameters().mesh_deformation_enabled &&
+          this->simulator_is_past_initialization())
+        {
+          return Utilities::point_is_in_triangulation(this->get_mapping(), this->get_triangulation(), point, this->get_mpi_communicator());
+        }
+      // Without mesh deformation enabled, it is much cheaper to check whether the point lies in the domain.
+      else
+        {
+          const Point<dim> spherical_point = manifold->pull_back(point);
 
-      AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
-                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
+          for (unsigned int d = 0; d < dim; ++d)
+            if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
+                spherical_point[d] < point1[d]-std::numeric_limits<double>::epsilon()*std::abs(point2[d]))
+              return false;
 
-      const Point<dim> spherical_point = manifold->pull_back(point);
-
-      for (unsigned int d = 0; d < dim; ++d)
-        if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
-            spherical_point[d] < point1[d]-std::numeric_limits<double>::epsilon()*std::abs(point2[d]))
-          return false;
-
-      return true;
+          return true;
+        }
     }
 
 

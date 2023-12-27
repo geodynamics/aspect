@@ -1,6 +1,4 @@
 
-Loading shared library <./libairy_isostasy_initial_topo.debug.so>
-
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 
@@ -11,7 +9,7 @@ Number of mesh deformation degrees of freedom: 2,178
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+7 iterations.
+   Solving Stokes system... 200+5 iterations.
 
 Number of active cells: 1,204 (on 7 levels)
 Number of degrees of freedom: 21,360 (10,034+1,292+5,017+5,017)
@@ -23,7 +21,7 @@ Number of mesh deformation degrees of freedom: 2,584
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 166+0 iterations.
+   Solving Stokes system... 169+0 iterations.
 
 Number of active cells: 1,948 (on 8 levels)
 Number of degrees of freedom: 34,621 (16,270+2,081+8,135+8,135)
@@ -40,36 +38,9 @@ Number of mesh deformation degrees of freedom: 4,162
    Solving Stokes system... 200+16 iterations.
 
    Postprocessing:
-     RMS, max velocity:     1.76e+06 m/year, 2.3e+06 m/year
-     Pressure min/avg/max:  -1.132 Pa, 5.012 Pa, 10 Pa
-     Topography min/max:    0 m, 0.05 m
-     Points lie in domain:  true false false
-
-*** Timestep 1:  t=1.69957e-09 years, dt=1.69957e-09 years
-   Solving mesh displacement system... 8 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 9 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+10 iterations.
-
-   Postprocessing:
-     RMS, max velocity:     1.62e+06 m/year, 2.11e+06 m/year
-     Pressure min/avg/max:  -1.119 Pa, 5.004 Pa, 10.01 Pa
-     Topography min/max:    -4.848e-05 m, 0.04609 m
-     Points lie in domain:  true false false
-
-*** Timestep 2:  t=3.5e-09 years, dt=1.80043e-09 years
-   Solving mesh displacement system... 8 iterations.
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+4 iterations.
-
-   Postprocessing:
-     RMS, max velocity:     1.53e+06 m/year, 1.99e+06 m/year
-     Pressure min/avg/max:  -0.8445 Pa, 5.003 Pa, 10.02 Pa
-     Topography min/max:    -9.971e-05 m, 0.04229 m
-     Points lie in domain:  true false false
+     RMS, max velocity:    9.35e+05 m/year, 1.25e+06 m/year
+     Pressure min/avg/max: -0.5111 Pa, 5.145 Pa, 10.29 Pa
+     Topography min/max:   0 m, 0.05 m
 
 Termination requested by criterion: end time
 
