@@ -105,6 +105,19 @@ namespace aspect
          * based on depth interpolation between computed pressure values.
          */
         double interpolate_pressure (const Point<dim> &p) const;
+
+        /**
+         * The id of the bottom boundary.
+         */
+        types::boundary_id bottom_boundary_id;
+
+        /**
+         * Whether or not initial lithostatic pressure is prescribed
+         * on the bottom boundary only and initial topography is included,
+         * and therefore the deepest pressure in the lithostatic pressure
+         * profile is returned.
+         */
+        bool prescribe_constant_pressure_at_bottom_boundary = false;
     };
   }
 }
