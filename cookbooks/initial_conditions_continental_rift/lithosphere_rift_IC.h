@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 by the authors of the ASPECT code.
+  Copyright (C) 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -60,17 +60,18 @@ namespace aspect
                                     const unsigned int compositional_index) const;
 
         /**
-         * Return the overall shortest distance to the rift segments
+         * Return the overall shortest distance to the rift center segments.
          */
         double distance_to_rift (const Point<dim-1> &position) const;
 
         /*
-         * Return the overall shortest distance to the polygon segments
+         * Return the overall shortest distance to the polygon segments. Polygons
+         * can be used to specify lithosphere of different thicknesses.
          */
         std::pair<double,unsigned int> distance_to_polygon (const Point<dim-1> &position) const;
 
         /*
-         * Return the position of the point in surface coordinates
+         * Return the position of the point in surface coordinates,
          * i.e. x(,y) in meters or lon(,lat) in degrees.
          */
         Point<dim-1> surface_position (const Point<dim> &position,
@@ -93,10 +94,22 @@ namespace aspect
       private:
 
         /**
-         * The standard deviation of the Gaussian amplitude of the lithospheric thicknesses
-         * with distance from the rift axis.
+         * The standard deviation of the rift-perpendicular Gaussian distribution
+         * of the thinning/thickening of the lithospheric thicknesses with its
+         * maximum along the rift axis.
          */
         double sigma_rift;
+
+        /**
+         * The maximum amplitude of the Gaussian distribution of the thinning/thickening
+         * of the lithospheric thicknesses with distance from the rift axis.
+         * The amplitude should have values between -1 and 1, where positive
+         * numbers represent a reduction in thickness and negative numbers an increase.
+         * For example, values of 0.25, 0, 0 reduce the reference thickness of the
+         * upper crust by 25%, while the lower crust and mantle lithosphere are
+         * untouched.
+         */
+        std::vector<double> A_rift;
 
         /**
          * The half width of the hyperbolic tangent used to smooth the transitions
@@ -111,37 +124,29 @@ namespace aspect
         bool blend_rift_and_polygon;
 
         /**
-         * The maximum amplitude of the Gaussian distribution of the lithospheric thicknesses
-         * with distance from the rift axis. It should have values between -1 and 1, where positive
-         * numbers represent a reduction in thickness and negative numbers an increase.
-         */
-        std::vector<double> A;
-
-        /**
          * The list of line segments consisting of two 2d coordinates per segment.
          * The segments represent the rift axis.
          */
-        std::vector<std::array<Point<2>,2 > > point_list;
+        std::vector<std::array<Point<2>,2 >> rift_point_list;
 
         /**
          * The list of lists of polygon points.
-         * The polygon represents an area of different lithospheric thicknesses.
+         * The polygons can represent areas of different lithospheric thicknesses.
          */
-        std::vector<std::vector<Point<2> > > polygon_point_list;
+        std::vector<std::vector<Point<2>>> polygon_point_list;
 
         /**
-         * Vector for the reference field thicknesses away from the rift.
+         * Vector for the reference field thicknesses away from rift and polygons.
          */
-        std::vector<double> thicknesses;
+        std::vector<double> reference_thicknesses;
 
         /**
-         * Vector for the field thicknesses inside the polygons.
+         * Vector for the field thicknesses for each polygon.
          */
-        std::vector<std::vector<double> > polygon_thicknesses;
-
+        std::vector<std::vector<double>> polygon_thicknesses;
     };
   }
 }
 
 
-#endif
+#endiff
