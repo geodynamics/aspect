@@ -83,6 +83,7 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
+
         /**
          * Surface temperature
          */
@@ -94,48 +95,58 @@ namespace aspect
         double LAB_isotherm;
 
         /**
-         * Wheter or not to take the polygon thicknesses as dominant, or to smooth them
-         * gradually into rift areas.
-         */
-        bool blend_rift_and_polygon;
-
-        /**
-         * Vector for field heat production rates.
+         * Vector for lithospheric layer heat production rates.
          */
         std::vector<double> heat_productivities;
 
         /**
-         * Vector for thermal conductivities.
+         * Vector for lithospheric layer thermal conductivities.
          */
         std::vector<double> conductivities;
 
         /**
-         * Vector for field densities.
+         * Vector for lithospheric layer densities.
          */
         std::vector<double> densities;
 
         /**
          * Vector for the reference field thicknesses.
          */
-        std::vector<double> thicknesses;
+        std::vector<double> reference_thicknesses;
 
         /**
-         * Vector for the reference field thicknesses away from the rift.
-         */
-        std::vector<std::vector<double> > polygon_thicknesses;
-
-        /**
-         * The standard deviation of the Gaussian amplitude of the lithospheric thicknesses.
+         * The standard deviation of the Gaussian distribution of the lithospheric thicknesses
+         * around the rift segments.
          */
         double sigma_rift;
+
+        /**
+         * The maximum amplitude of the Gaussian distribution of the thinning/thickening
+         * of the lithospheric thicknesses with distance from the rift axis.
+         * The amplitude should have values between -1 and 1, where positive
+         * numbers represent a reduction in thickness and negative numbers an increase.
+         * For example, values of 0.25, 0, 0 reduce the reference thickness of the
+         * upper crust by 25%, while the lower crust and mantle lithosphere are
+         * untouched.
+         */
+        std::vector<double> A_rift;
+
+        /**
+         * Vector for the polygon thicknesses.
+         */
+        std::vector<std::vector<double>> polygon_thicknesses;
+
+        /**
+         * The half width of the hyperbolic tangent used to smooth the transitions
+         * between reference and polygon lithospheric thicknesses.
+         */
         double sigma_polygon;
 
         /**
-         * The maximum amplitude of the Gaussian distribution of the lithospheric thicknesses
-         * with distance from the rift axis. It should have values between -1 and 1, where positive
-         * numbers represent a reduction in thickness and negative numbers an increase.
+         * Whether or not to take the polygon thicknesses as dominant, or to smooth them
+         * gradually into rift areas.
          */
-        std::vector<double> A;
+        bool blend_rift_and_polygon;
 
         /**
          * Whether or not to use a compensation depth for the temperature
