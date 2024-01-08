@@ -51,8 +51,8 @@ namespace aspect
 
           /**
            * Perform an integration step of moving the particles of one cell
-           * by the specified timestep dt. This class implements a Runge-
-           * Kutta integration scheme that is fourth order accurate
+           * by the specified timestep dt. This class implements a Runge-Kutta
+           * integration scheme that is fourth order accurate
            * in space.
            *
            * @param [in] begin_particle An iterator to the first particle to be moved.

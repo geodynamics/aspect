@@ -34,8 +34,8 @@ namespace aspect
     /**
      * A class that implements a composition boundary condition for a
      * spherical shell geometry in which the composition at the inner and
-     * outer surfaces (i.e. at the core-mantle and the mantle-
-     * lithosphere/atmosphere boundaries) are constant.
+     * outer surfaces (i.e. at the core-mantle and the
+     * mantle-lithosphere/atmosphere boundaries) are constant.
      *
      * @ingroup BoundaryCompositions
      */

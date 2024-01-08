@@ -264,8 +264,8 @@ namespace aspect
          * Given the name of one plugin, create a corresponding object and
          * return a pointer to it. The second argument provides a hint where
          * this function was called from, to be printed in case there is an
-         * error. Before returning, let the newly created object read its run-
-         * time parameters from the parameter object.
+         * error. Before returning, let the newly created object read its
+         * run-time parameters from the parameter object.
          *
          * Ownership of the object is handed over to the caller of this
          * function.

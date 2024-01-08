@@ -42,11 +42,12 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * Base class for classes that describe adiabatic conditions, i.e. that
-     * starts at the top of the domain and integrate pressure and temperature
-     * as we go down into depth. There are several ways to do this (time-
-     * dependent or constant, using laterally averaged values or a reference
-     * profile), therefore we allow for user written plugins.
+     * Base class for classes that describe adiabatic conditions,
+     * i.e. that starts at the top of the domain and integrate
+     * pressure and temperature as we go down into depth. There are
+     * several ways to do this (time-dependent or constant, using
+     * laterally averaged values or a reference profile), therefore we
+     * allow for user written plugins.
      *
      * @ingroup AdiabaticConditions
      */

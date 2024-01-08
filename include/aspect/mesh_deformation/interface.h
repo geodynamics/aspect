@@ -82,7 +82,7 @@ namespace aspect
      * A base class for mesh deformation plugins. Each derived class should
      * implement a function that determines the deformation velocity for certain
      * mesh vertices and store them in a AffineConstraints<double> object. The velocities
-     * for all non-constrained vertices will be computed by solving a Laplace-
+     * for all non-constrained vertices will be computed by solving a Laplace
      * problem with the given constraints.
      */
     template<int dim>
@@ -215,8 +215,8 @@ namespace aspect
          * The main execution step for the mesh deformation implementation. This
          * computes the motion of the surface, moves the boundary nodes
          * accordingly, redistributes the internal nodes in order to
-         * preserve mesh regularity, and calculates the Arbitrary-
-         * Lagrangian-Eulerian correction terms for advected quantities.
+         * preserve mesh regularity, and calculates the
+         * Arbitrary-Lagrangian-Eulerian correction terms for advected quantities.
          */
         void execute();
 

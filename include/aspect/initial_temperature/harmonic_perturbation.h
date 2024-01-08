@@ -69,8 +69,8 @@ namespace aspect
         /**
          * The radial/depth wave number of the harmonic perturbation. All wave
          * number variables are in fact twice the wave number in a
-         * mathematical sense. This allows the user to prescribe a single up-
-         * / downswing or half periods.
+         * mathematical sense. This allows the user to prescribe a single
+         * up-/downswing or half periods.
          */
         int vertical_wave_number;
 
