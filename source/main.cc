@@ -289,7 +289,13 @@ void possibly_load_shared_libs (const std::string &parameters)
                        ExcMessage (std::string("Could not successfully load shared library <")
                                    + filename + ">. The operating system reports "
                                    + "that the error is this: <"
-                                   + dlerror() + ">."));
+                                   + dlerror() +
+                                   ">. Did you call 'cmake' and then compile "
+                                   "the plugin library you are trying to load, and did "
+                                   "you check the spelling of the library's name? "
+                                   "Are you running ASPECT in a directory so that the path "
+                                   "to the library in question is as specified in the "
+                                   ".prm file?"));
 
           // check again whether the list of shared libraries is
           // internally consistent or whether we link with both the
