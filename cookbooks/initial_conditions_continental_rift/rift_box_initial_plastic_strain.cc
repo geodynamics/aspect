@@ -37,7 +37,7 @@ namespace aspect
     void
     RiftBoxInitialPlasticStrain<dim>::initialize ()
     {
-      AssertThrow(Plugins::plugin_type_matches<MaterialModel::ViscoPlastic<dim> >(this->get_material_model()),
+      AssertThrow(Plugins::plugin_type_matches<MaterialModel::ViscoPlastic<dim>>(this->get_material_model()),
                   ExcMessage("This initial condition only makes sense in combination with the visco_plastic material model."));
 
 
@@ -196,7 +196,7 @@ namespace aspect
                   ExcMessage("This plugin requires a compositional field named plastic_strain. "));
       strain_composition_number = this->introspection().compositional_index_for_name("plastic_strain");
 
-      AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()),
+      AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model()),
                   ExcMessage("This initial condition only makes sense in combination with the box geometry model."));
 
       // Get the number of mesh cells in each direction
