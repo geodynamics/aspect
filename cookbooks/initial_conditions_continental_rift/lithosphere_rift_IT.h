@@ -174,6 +174,12 @@ namespace aspect
          * Vector containing the names of the compositional fields.
          */
         std::vector<std::string> list_of_composition_names;
+
+        /**
+         * Whether a cartesian box geometry is used, or a geometry
+         * of spherical type (e.g., shell or chunk).
+         */
+        bool cartesian_geometry;
     };
   }
 }
