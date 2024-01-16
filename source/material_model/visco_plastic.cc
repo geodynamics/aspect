@@ -284,21 +284,23 @@ namespace aspect
           if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs))
             if (rheology->use_iterative_viscosity_dampening)
               {
+                // Get the viscosity of the previous nonlinear iteration.
+                const int field_index = this->introspection().compositional_index_for_name("viscosity_field");
+                const double old_viscosity = in.composition[i][field_index];
+
+                // Dampen the viscosity, but only after the first timestep and after
+                // the first nonlinear iteration of each timestep.
+                if (this->simulator_is_past_initialization() == true &&
+                    this->get_timestep_number() > 0 &&
+                    this->get_nonlinear_iteration() > 0)
+                  out.viscosities[i] = rheology->iterative_dampening->calculate_viscosity(old_viscosity, out.viscosities[i]);
+
                 // Set up variable to interpolate the viscosity output onto the compositional field viscosity_field.
                 PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
 
-                if (in.current_cell.state() == IteratorState::valid && prescribed_field_out != NULL)
+                // If requested, fill the outputs to put the new viscosity onto the compositional field.
+                if (prescribed_field_out != NULL)
                   {
-                    const int field_index = this->introspection().compositional_index_for_name("viscosity_field");
-                    const double old_viscosity = in.composition[i][field_index];
-
-                    // Only dampen the viscosity after the first nonlinear iteration.
-                    if (this->simulator_is_past_initialization() == true &&
-                        this->get_timestep_number() > 0 &&
-                        this->get_nonlinear_iteration() > 0)
-                      out.viscosities[i] = rheology->iterative_dampening->calculate_viscosity(old_viscosity, out.viscosities[i]);
-
-                    // Put the new viscosity onto the compositional field.
                     prescribed_field_out->prescribed_field_outputs[i][field_index] = out.viscosities[i];
                   }
               }
