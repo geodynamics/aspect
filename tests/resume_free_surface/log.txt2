@@ -14,7 +14,7 @@ Number of mesh deformation degrees of freedom: 5,346
 
    Postprocessing:
 
-     Model domain depth (m):                        200000
+     Model domain depth (m):                        200100
      Temperature contrast across model domain (K):  0
      Reference depth (m):                           0
      Reference temperature (K):                     0
