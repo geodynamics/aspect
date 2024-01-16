@@ -35,7 +35,7 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 SET(TARGET "initial_conditions_continental_rift")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED 
+ADD_LIBRARY(${TARGET} SHARED
 lithosphere_rift_IC.cc
 lithosphere_rift_IT_2.cc
 lithosphere_rift_topo.cc

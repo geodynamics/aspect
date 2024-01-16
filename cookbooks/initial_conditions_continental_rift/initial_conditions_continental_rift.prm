@@ -141,36 +141,36 @@ subsection Initial composition model
     set Standard deviation of Gaussian rift geometry   = 60e3
     set Amplitude of Gaussian rift geometry            = -0.25, 0, 0.17647
     # LAB at 110 km
-    set Rift axis line segments                        = 350e3  
+    set Rift axis line segments                        = 350e3
     set Layer thicknesses                              = 20e3, 15e3, 85e3
-   
+
     # Polygon LAB at 200 km
     set Lithospheric polygon layer thicknesses         = 23e3, 20e3 , 157.e3
     set Lithospheric polygons                          = 450e3 > 3000e3
-    set Half width of polygon smoothing                = 10e3 
+    set Half width of polygon smoothing                = 10e3
   end
-  
-  # Inherited noise 
+
+  # Inherited noise
   subsection Rift box initial plastic strain
-    set Standard deviation of Gaussian noise amplitude distribution 	= 200e3    
+    set Standard deviation of Gaussian noise amplitude distribution   = 200e3
     set Maximum amplitude of Gaussian noise amplitude distribution      = 0.250000
     set Random number generator seed                                    = 2.000000
-    set Depth around which Gaussian noise is smoothed out               = 50e3      
-    set Halfwidth with which Gaussian noise is smoothed out in depth    = 10e3         
+    set Depth around which Gaussian noise is smoothed out               = 50e3
+    set Halfwidth with which Gaussian noise is smoothed out in depth    = 10e3
     #set Grid intervals for noise X or radius                            = 2240
     # Add 16 intervals for the additional 5 km that is added to the grid
     # to account for initial topography
     #set Grid intervals for noise Y or longitude                         = 976 #960
     set Rift axis line segments                                         = 350e3
   end
-  
+
   subsection Function
     set Variable names = x,y
     set Function expression           = 0; \
                                         0; \
                                         0; \
-					0; \
-					0
+          0; \
+          0
   end
 #  subsection Function
 #    set Variable names      = x,y
@@ -190,8 +190,8 @@ subsection Boundary composition model
     set Function expression           = 0; \
                                         0; \
                                         0; \
-					0; \
-					0
+          0; \
+          0
   end
 end
 
@@ -252,7 +252,7 @@ subsection Initial temperature model
                                            0; \
                                            0; \
                                            0; \
-					   0; \
+             0; \
                                            if(x<23e3,1,0); \
                                            if(x>=23e3&x<43e3,1,0); \
                                            if(x>=43e3&x<200e3,1,0); \

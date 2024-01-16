@@ -185,22 +185,22 @@ namespace aspect
       {
         prm.enter_subsection("Lithosphere with rift");
         {
-          prm.declare_entry ("Standard deviation of Gaussian rift geometry", "20000",
-                             Patterns::Double (0),
-                             "The standard deviation of the Gaussian distribution of the thinning/thickening "
-                             "of the lithosphere thicknesses. This parameter is taken to be the same "
-                             "for all rift segments. Units: $m$ or degrees.");
+          prm.declare_entry("Standard deviation of Gaussian rift geometry", "20000",
+                            Patterns::Double(0),
+                            "The standard deviation of the Gaussian distribution of the thinning/thickening "
+                            "of the lithosphere thicknesses. This parameter is taken to be the same "
+                            "for all rift segments. Units: \\si{\\meter} or degrees.");
           prm.declare_entry("Amplitude of Gaussian rift geometry", "0.2",
                             Patterns::List(Patterns::Double(-1, 1)),
                             "The amplitude of the Gaussian distribution of the thinning/thickening of the. "
                             "lithosphere thicknesses. This parameter is taken to be the same for all rift segments, "
                             "but can be set to vary per lithosphere layer. "
                             "Units: none.");
-          prm.declare_entry ("Half width of polygon smoothing", "20000",
-                             Patterns::Double (0),
-                             "The half width of the hyperbolic tangent smoothing used to transition to the "
-                             "lithospheric thicknesses of the polygon. This parameter is taken to be the same for all polygons. "
-                             "Units: $m$ or degrees.");
+          prm.declare_entry("Half width of polygon smoothing", "20000",
+                            Patterns::Double(0),
+                            "The half width of the hyperbolic tangent smoothing used to transition to the "
+                            "lithospheric thicknesses of the polygon. This parameter is taken to be the same for all polygons. "
+                            "Units: \\si{\\meter} or degrees.");
           prm.declare_entry ("Blend polygons and rifts", "true",
                              Patterns::Bool (),
                              "Whether or not to blend the contributions of polygons and rift segments. If true, "
@@ -210,7 +210,7 @@ namespace aspect
                             Patterns::List(Patterns::Double(0)),
                             "List of reference lithospheric layer thicknesses, i.e., the thicknesses of "
                             "the upper crust, lower crust and lithospheric mantle layers. "
-                            "Units: $m$");
+                            "Units: \\si{\\meter}");
           prm.declare_entry("Rift axis line segments",
                             "",
                             Patterns::Anything(),
@@ -220,22 +220,22 @@ namespace aspect
                             "\"x1,y1>x2,y2;x2,y2>x3,y3;x4,y4>x5,y5\". Note that the segments can be connected "
                             "or isolated. The units of the coordinates are "
                             "dependent on the geometry model. In the box model they are in meters, in the "
-                            "chunks they are in degrees. Units: $m$ or degrees.");
-          prm.declare_entry ("Lithospheric polygons",
-                             "",
-                             Patterns::List(Patterns::Anything()),
-                             "The points making up polygons that represent an area of different lithospheric thickness. "
-                             "The polygons are separated by semicolons. Each polygon is a list of "
-                             "points that represent horizontal coordinates (x,y) or (lon,lat). "
-                             "The exact format for the point list describing a polygon is "
-                             "\"x1,y1>x2,y2>x3,y3>x4,y4>x5,y5\". Note that the polygon is assumed to be closed. "
-                             "The units of the coordinates are dependent on the geometry model. "
-                             "In the box model they are in meters, in the chunks they are in degrees. Units: $m$ or degrees.");
-          prm.declare_entry ("Lithospheric polygon layer thicknesses", "30000.",
-                             Patterns::List(Patterns::List(Patterns::Double(0),0,3,","),0,10,";"),
-                             "List of thicknesses of the lithospheric layers for each polygon."
-                             "For each polygon, a total of 3 thicknesses should be given (upper crust, lower crust, mantle lithosphere)."
-                             "If only one value is given, then all layers are assigned the same value. Units: $m$");
+                            "chunks they are in degrees. Units: \\si{\\meter} or degrees.");
+          prm.declare_entry("Lithospheric polygons",
+                            "",
+                            Patterns::List(Patterns::Anything()),
+                            "The points making up polygons that represent an area of different lithospheric thickness. "
+                            "The polygons are separated by semicolons. Each polygon is a list of "
+                            "points that represent horizontal coordinates (x,y) or (lon,lat). "
+                            "The exact format for the point list describing a polygon is "
+                            "\"x1,y1>x2,y2>x3,y3>x4,y4>x5,y5\". Note that the polygon is assumed to be closed. "
+                            "The units of the coordinates are dependent on the geometry model. "
+                            "In the box model they are in meters, in the chunks they are in degrees. Units: \\si{\\meter} or degrees.");
+          prm.declare_entry("Lithospheric polygon layer thicknesses", "30000.",
+                            Patterns::List(Patterns::List(Patterns::Double(0), 0, 3, ","), 0, 10, ";"),
+                            "List of thicknesses of the lithospheric layers for each polygon."
+                            "For each polygon, a total of 3 thicknesses should be given (upper crust, lower crust, mantle lithosphere)."
+                            "If only one value is given, then all layers are assigned the same value. Units: \\si{\\meter}");
         }
         prm.leave_subsection();
       }

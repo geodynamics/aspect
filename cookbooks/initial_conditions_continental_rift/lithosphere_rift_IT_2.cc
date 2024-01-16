@@ -61,7 +61,7 @@ namespace aspect
 
       // Check that the required initial composition model is used.
       AssertThrow(initial_composition_manager->template has_matching_initial_composition_model<const InitialComposition::LithosphereRift<dim>>(),
-      ExcMessage("The initial temperature plugin lithosphere with rift requires the correspond initial composition plugin."));
+                  ExcMessage("The initial temperature plugin lithosphere with rift requires the correspond initial composition plugin."));
 
       // Determine whether a cartesian or a spherical geometry is used.
       cartesian_geometry = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model()) != NULL ? true : false;
@@ -73,42 +73,24 @@ namespace aspect
     LithosphereRift<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      // Determine coordinate system
-      //const bool cartesian_geometry = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model()) != NULL ? true : false;
-
       // Get the distance to the line segments along a path parallel to the surface
       double distance_to_rift_axis = 1e23;
       Point<dim-1> surface_position;
       std::pair<double, unsigned int> distance_to_L_polygon;
       // Get the initial composition plugin
       const InitialComposition::LithosphereRift<dim> &ic = initial_composition_manager->template get_matching_initial_composition_model<const InitialComposition::LithosphereRift<dim>>();
-      //for (typename std::list<std::unique_ptr<InitialComposition::Interface<dim>>>::const_iterator it = initial_composition_manager->get_active_initial_composition_conditions().begin();
-      //     it != initial_composition_manager->get_active_initial_composition_conditions().end();
-      //     ++it)
-      //  if ( InitialComposition::LithosphereRift<dim> *ic = dynamic_cast<InitialComposition::LithosphereRift<dim> *> ((*it).get()))
-      //    {
-            surface_position = ic.surface_position(position, cartesian_geometry);
-            distance_to_rift_axis = ic.distance_to_rift(surface_position);
-            distance_to_L_polygon = ic.distance_to_polygon(surface_position);
-      //    }
+      surface_position = ic.surface_position(position, cartesian_geometry);
+      distance_to_rift_axis = ic.distance_to_rift(surface_position);
+      distance_to_L_polygon = ic.distance_to_polygon(surface_position);
 
       // Compute the local thickness of the upper crust, lower crust and mantle part of the lithosphere
       // based on the distance from the rift axis.
       std::vector<double> local_thicknesses(3);
       for (unsigned int i = 0; i<3; ++i)
-      local_thicknesses[i] = ((0.5+0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*polygon_thicknesses[distance_to_L_polygon.second][i]
-                              +(0.5-0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*reference_thicknesses[i])
-                             *(!blend_rift_and_polygon && distance_to_L_polygon.first > 0.-2.*sigma_polygon ? 1. :
-                               (1.0 - A_rift[i] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
-
-      // local_thicknesses[1] = ((0.5+0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*polygon_thicknesses[distance_to_L_polygon.second][1]
-      //                         +(0.5-0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*thicknesses[1])
-      //                        *(!blend_rift_and_polygon && distance_to_L_polygon.first > 0.-2.*sigma_polygon ? 1. :
-      //                          (1.0 - A_rift[1] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
-      // local_thicknesses[2] = ((0.5+0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*polygon_thicknesses[distance_to_L_polygon.second][2]
-      //                         +(0.5-0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*thicknesses[2])
-      //                        *(!blend_rift_and_polygon && distance_to_L_polygon.first > 0.-2.*sigma_polygon ? 1. :
-      //                          (1.0 - A_rift[2] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
+        local_thicknesses[i] = ((0.5+0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*polygon_thicknesses[distance_to_L_polygon.second][i]
+                                +(0.5-0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*reference_thicknesses[i])
+                               *(!blend_rift_and_polygon && distance_to_L_polygon.first > 0.-2.*sigma_polygon ? 1. :
+                                 (1.0 - A_rift[i] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
 
       // Get depth with respect to the surface.
       const double depth = this->get_geometry_model().depth(position);
@@ -163,26 +145,27 @@ namespace aspect
       {
         prm.enter_subsection("Lithosphere with rift");
         {
-          prm.declare_entry ("Surface temperature", "273.15",
-                             Patterns::Double (0),
-                             "The value of the surface temperature. Units: Kelvin.");
-          prm.declare_entry ("LAB isotherm temperature", "1673.15",
-                             Patterns::Double (0),
-                             "The value of the isothermal boundary temperature assumed at the LAB "
-                             "and up to the compensation depth when this compensation is set. Units: Kelvin.");
+          prm.declare_entry("Surface temperature", "273.15",
+                            Patterns::Double(0),
+                            "The value of the surface temperature. Units: \\si{\\kelvin}.");
+          prm.declare_entry("LAB isotherm temperature", "1673.15",
+                            Patterns::Double(0),
+                            "The value of the isothermal boundary temperature assumed at the LAB "
+                            "and up to the compensation depth when 'Use temperature compensation depth' "
+                            "is set to true. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Use temperature compensation depth", "false",
                              Patterns::Bool (),
-                             "Whether or not to use a compensation depth to which the LAB isotherm temperature "
+                             "Whether or not to use a compensation depth up to which the LAB isotherm temperature "
                              "is prescribed below the lithosphere. If true, this plugin can be combined with "
-                             "the adabiatic temperature plugin. The adiabtic surface temperature can be used to "
-                             "match the LAB temperature and the adiabatic temperature at the compensation depth. "
-                             "If false, combining this plugin with the adiabtic temperature plugin will lead to "
+                             "the adabiatic temperature plugin. The adiabatic surface temperature can be adapted to "
+                             "ensure the LAB temperature and the adiabatic temperature match at the compensation depth. "
+                             "If false, combining this plugin with the adiabatic temperature plugin will lead to "
                              "jumps in the temperature profile at the LAB when the lithospheric thickness varies "
                              "laterally. Units: -.");
-          prm.declare_entry ("Temperature compensation depth", "120e3",
-                             Patterns::Double (0),
-                             "The depth of the temperature compensation, i.e. the depth up to which the LAB isotherm "
-                             "is prescribed below the lithosphere. Units: Kelvin.");
+          prm.declare_entry("Temperature compensation depth", "120e3",
+                            Patterns::Double(0),
+                            "The depth of the temperature compensation, i.e. the depth up to which the LAB isotherm "
+                            "is prescribed below the lithosphere. Units: \\si{\\meter}.");
         }
         prm.leave_subsection();
       }
@@ -210,11 +193,11 @@ namespace aspect
           sigma_polygon          = prm.get_double ("Half width of polygon smoothing");
           blend_rift_and_polygon = prm.get_bool ("Blend polygons and rifts");
           A_rift                 = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Amplitude of Gaussian rift geometry"))),
-                                                                         3,
-                                                                         "Amplitude of Gaussian rift geometry");
+                                                                           3,
+                                                                           "Amplitude of Gaussian rift geometry");
           reference_thicknesses = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Layer thicknesses"))),
-                                                                3,
-                                                                "Layer thicknesses");
+                                                                          3,
+                                                                          "Layer thicknesses");
           // Split the string into the separate polygons
           const std::vector<std::string> temp_thicknesses = Utilities::split_string_list(prm.get("Lithospheric polygon layer thicknesses"),';');
           const unsigned int n_polygons = temp_thicknesses.size();
