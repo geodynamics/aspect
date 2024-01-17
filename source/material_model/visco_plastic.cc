@@ -295,6 +295,8 @@ namespace aspect
                     this->get_nonlinear_iteration() > 0)
                   out.viscosities[i] = rheology->iterative_dampening->calculate_viscosity(old_viscosity, out.viscosities[i]);
 
+                // TODO apply user-set min and max viscosity again?
+
                 // Set up variable to interpolate the viscosity output onto the compositional field viscosity_field.
                 PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
 
