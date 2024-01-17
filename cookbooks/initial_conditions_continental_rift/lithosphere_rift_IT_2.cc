@@ -64,7 +64,7 @@ namespace aspect
                   ExcMessage("The initial temperature plugin lithosphere with rift requires the correspond initial composition plugin."));
 
       // Determine whether a cartesian or a spherical geometry is used.
-      cartesian_geometry = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model()) != NULL ? true : false;
+      cartesian_geometry = Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (geometry_model);
     }
 
 
