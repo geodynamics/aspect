@@ -254,7 +254,7 @@ namespace aspect
         options.property_name = "Activation volumes for diffusion creep";
         activation_volumes_diffusion = Utilities::MapParsing::parse_map_to_double_array(prm.get("Activation volumes for diffusion creep"),
                                                                                         options);
-                                                                                        
+
         grain_size = prm.get_double("Grain size");
 
         // Check that there are no entries set to zero,
@@ -262,10 +262,10 @@ namespace aspect
         // that is masked anyway, like strain. Despite
         // these compositions being masked, their viscosities
         // are computed anyway and this will lead to division by zero.
-      for (const double prefactor : prefactors_diffusion)
-        AssertThrow(prefactor > 0.,
-                    ExcMessage("The diffusion prefactor should be larger than zero."));
-        }
+        for (const double prefactor : prefactors_diffusion)
+          AssertThrow(prefactor > 0.,
+                      ExcMessage("The diffusion prefactor should be larger than zero."));
+      }
     }
   }
 }
