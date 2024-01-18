@@ -204,7 +204,7 @@ namespace aspect
         double viscosity = compute_approximate_viscosity(strain_rate, pressure, temperature, composition);
         double log_stress_ii = std::log(2.*viscosity*strain_rate);
 
-        // Before the first iteration, compute the residuel
+        // Before the first iteration, compute the residual
         // of the initial guess and the derivative
         unsigned int stress_iteration = 0;
         const std::pair<double, double> log_edot_and_deriv = compute_exact_log_strain_rate_and_derivative(log_stress_ii, pressure, temperature, p);
