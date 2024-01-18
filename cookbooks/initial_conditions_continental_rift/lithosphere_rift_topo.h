@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 by the authors of the ASPECT code.
+  Copyright (C) 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,8 +33,8 @@ namespace aspect
 
     /**
      * A class that describes an initial topography for the geometry model,
-     * by defining a set of polylines on the surface from the prm file. It
-     * sets the elevation in each Polyline to a constant value.
+     * based on isostatically balancing the thinning of lithospheric layers
+     * around a rift axis.
      */
     template <int dim>
     class LithosphereRift : public Interface<dim>,
@@ -76,8 +76,9 @@ namespace aspect
 
       private:
         /**
-         * The standard deviation of the Gaussian amplitude of the lithospheric thicknesses
-         * with distance from the rift axis.
+         * The standard deviation of the rift-perpendicular Gaussian distribution
+         * of the thinning/thickening of the lithospheric thicknesses with its
+         * maximum along the rift axis.
          */
         double sigma_rift;
 
@@ -88,11 +89,15 @@ namespace aspect
         double sigma_polygon;
 
         /**
-         * The maximum amplitude of the Gaussian distribution of the lithospheric thicknesses
-         * with distance from the rift axis. It should have values between -1 and 1, where positive
+         * The maximum amplitude of the Gaussian distribution of the thinning/thickening
+         * of the lithospheric thicknesses with distance from the rift axis.
+         * The amplitude should have values between -1 and 1, where positive
          * numbers represent a reduction in thickness and negative numbers an increase.
+         * For example, values of 0.25, 0, 0 reduce the reference thickness of the
+         * upper crust by 25%, while the lower crust and mantle lithosphere are
+         * untouched.
          */
-        std::vector<double> A;
+        std::vector<double> A_rift;
 
         /**
          * The maximum amplitude of the Gaussian distribution of the topography around the rift.
@@ -100,14 +105,19 @@ namespace aspect
         double topo_rift_amplitude;
 
         /**
-         * The reference lithospheric column used in computing the topography based on isostasy
-         * and the thickness of this column.
+         * The product of density, gravitational accelleration constant and thickness of the
+         * reference lithospheric column used in computing the topography based on isostasy.
          */
         double ref_rgh;
+
+        /**
+         * The thickness/depth of the reference lithospheric column used in computing the topography
+         * based on isostasy.
+         */
         double compensation_depth;
 
         /**
-         * Wheter or not to take the polygon thicknesses as dominant, or to smooth them
+         * Whether or not to take the polygon thicknesses as dominant, or to smooth them
          * gradually into rift areas.
          */
         bool blend_rift_and_polygon;
@@ -127,7 +137,7 @@ namespace aspect
         /**
          * Vector for the reference field thicknesses away from the rift.
          */
-        std::vector<double> thicknesses;
+        std::vector<double> reference_thicknesses;
 
         /**
          * Vector for the rift  thicknesses at the center.
