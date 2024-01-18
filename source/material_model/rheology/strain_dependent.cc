@@ -299,45 +299,45 @@ namespace aspect
 
 
         // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+        std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+
+        // Retrieve the list of names of fields that represent chemical compositions, and not, e.g.,
+        // plastic strain
+        std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
 
         // Establish that a background field is required here
-        const bool has_background_field = true;
+        compositional_field_names.insert(compositional_field_names.begin(), "background");
+        chemical_field_names.insert(chemical_field_names.begin(),"background");
 
-        start_plastic_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("Start plasticity strain weakening intervals"),
-                                                   list_of_composition_names,
-                                                   has_background_field,
-                                                   "Start plasticity strain weakening intervals");
+        Utilities::MapParsing::Options options(chemical_field_names, "Start plasticity strain weakening intervals");
+        options.list_of_allowed_keys = compositional_field_names;
 
-        end_plastic_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("End plasticity strain weakening intervals"),
-                                                                                       list_of_composition_names,
-                                                                                       has_background_field,
-                                                                                       "End plasticity strain weakening intervals");
+        start_plastic_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("Start plasticity strain weakening intervals"),
+                                                   options);
 
-        start_viscous_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("Start prefactor strain weakening intervals"),
-                                                   list_of_composition_names,
-                                                   has_background_field,
-                                                   "Start prefactor strain weakening intervals");
+        options.property_name = "End plasticity strain weakening intervals";
+        end_plastic_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("End plasticity strain weakening intervals"),
+                                                 options);
 
-        end_viscous_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("End prefactor strain weakening intervals"),
-                                                                                       list_of_composition_names,
-                                                                                       has_background_field,
-                                                                                       "End prefactor strain weakening intervals");
+        options.property_name = "Start prefactor strain weakening intervals";
+        start_viscous_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("Start prefactor strain weakening intervals"),
+                                                   options);
 
-        viscous_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Prefactor strain weakening factors"),
-                                                                                 list_of_composition_names,
-                                                                                 has_background_field,
-                                                                                 "Prefactor strain weakening factors");
+        options.property_name = "End prefactor strain weakening intervals";
+        end_viscous_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("End prefactor strain weakening intervals"),
+                                                 options);
 
-        cohesion_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Cohesion strain weakening factors"),
-                                                                                  list_of_composition_names,
-                                                                                  has_background_field,
-                                                                                  "Cohesion strain weakening factors");
+        options.property_name = "Prefactor strain weakening factors";
+        viscous_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactor strain weakening factors"),
+                                           options);
 
-        friction_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Friction strain weakening factors"),
-                                                                                  list_of_composition_names,
-                                                                                  has_background_field,
-                                                                                  "Friction strain weakening factors");
+        options.property_name = "Cohesion strain weakening factors";
+        cohesion_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Cohesion strain weakening factors"),
+                                            options);
+
+        options.property_name = "Friction strain weakening factors";
+        friction_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Friction strain weakening factors"),
+                                            options);
 
         if (prm.get ("Strain healing mechanism") == "no healing")
           healing_mechanism = no_healing;
