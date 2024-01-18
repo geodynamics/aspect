@@ -212,42 +212,49 @@ namespace aspect
                                              const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
         // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+        std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+
+        // Retrieve the list of names of fields that represent chemical compositions, and not, e.g.,
+        // plastic strain
+        std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
 
         // Establish that a background field is required here
-        const bool has_background_field = true;
+        compositional_field_names.insert(compositional_field_names.begin(), "background");
+        chemical_field_names.insert(chemical_field_names.begin(), "background");
+
+        // Make options file for parsing maps to double arrays
+        Utilities::MapParsing::Options options(chemical_field_names, "Prefactors for diffusion creep");
+        options.list_of_allowed_keys = compositional_field_names;
+        options.allow_multiple_values_per_key = true;
+        if (expected_n_phases_per_composition)
+          {
+            options.n_values_per_key = *expected_n_phases_per_composition;
+
+            // check_values_per_key is required to be true to duplicate single values
+            // if they are to be used for all phases associated with a given key.
+            options.check_values_per_key = true;
+          }
 
         // Read parameters, each of size of number of composition + number of phases + 1
-        prefactors_diffusion = Utilities::parse_map_to_double_array(prm.get("Prefactors for diffusion creep"),
-                                                                    list_of_composition_names,
-                                                                    has_background_field,
-                                                                    "Prefactors for diffusion creep",
-                                                                    true,
-                                                                    expected_n_phases_per_composition);
-        stress_exponents_diffusion = Utilities::parse_map_to_double_array(prm.get("Stress exponents for diffusion creep"),
-                                                                          list_of_composition_names,
-                                                                          has_background_field,
-                                                                          "Stress exponents for diffusion creep",
-                                                                          true,
-                                                                          expected_n_phases_per_composition);
-        grain_size_exponents_diffusion = Utilities::parse_map_to_double_array(prm.get("Grain size exponents for diffusion creep"),
-                                                                              list_of_composition_names,
-                                                                              has_background_field,
-                                                                              "Grain size exponents for diffusion creep",
-                                                                              true,
-                                                                              expected_n_phases_per_composition);
-        activation_energies_diffusion = Utilities::parse_map_to_double_array(prm.get("Activation energies for diffusion creep"),
-                                                                             list_of_composition_names,
-                                                                             has_background_field,
-                                                                             "Activation energies for diffusion creep",
-                                                                             true,
-                                                                             expected_n_phases_per_composition);
-        activation_volumes_diffusion = Utilities::parse_map_to_double_array(prm.get("Activation volumes for diffusion creep"),
-                                                                            list_of_composition_names,
-                                                                            has_background_field,
-                                                                            "Activation volumes for diffusion creep",
-                                                                            true,
-                                                                            expected_n_phases_per_composition);
+        prefactors_diffusion = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactors for diffusion creep"),
+                                                                                options);
+
+        options.property_name = "Stress exponents for diffusion creep";
+        stress_exponents_diffusion = Utilities::MapParsing::parse_map_to_double_array(prm.get("Stress exponents for diffusion creep"),
+                                                                                      options);
+
+        options.property_name = "Grain size exponents for diffusion creep";
+        grain_size_exponents_diffusion = Utilities::MapParsing::parse_map_to_double_array(prm.get("Grain size exponents for diffusion creep"),
+                                         options);
+
+        options.property_name = "Activation energies for diffusion creep";
+        activation_energies_diffusion = Utilities::MapParsing::parse_map_to_double_array(prm.get("Activation energies for diffusion creep"),
+                                        options);
+
+        options.property_name = "Activation volumes for diffusion creep";
+        activation_volumes_diffusion = Utilities::MapParsing::parse_map_to_double_array(prm.get("Activation volumes for diffusion creep"),
+                                                                                        options);
+                                                                                        
         grain_size = prm.get_double("Grain size");
 
         // Check that there are no entries set to zero,
@@ -255,10 +262,10 @@ namespace aspect
         // that is masked anyway, like strain. Despite
         // these compositions being masked, their viscosities
         // are computed anyway and this will lead to division by zero.
-        for (const double prefactor : prefactors_diffusion)
-          AssertThrow(prefactor > 0.,
-                      ExcMessage("The diffusion prefactor should be larger than zero."));
-      }
+      for (const double prefactor : prefactors_diffusion)
+        AssertThrow(prefactor > 0.,
+                    ExcMessage("The diffusion prefactor should be larger than zero."));
+        }
     }
   }
 }
