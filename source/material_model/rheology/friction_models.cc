@@ -220,15 +220,21 @@ namespace aspect
         dynamic_characteristic_strain_rate = prm.get_double("Dynamic characteristic strain rate");
 
         // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+        std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+
+        // Retrieve the list of names of fields that represent chemical compositions, and not, e.g.,
+        // plastic strain
+        std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
 
         // Establish that a background field is required here
-        const bool has_background_field = true;
+        compositional_field_names.insert(compositional_field_names.begin(), "background");
+        chemical_field_names.insert(chemical_field_names.begin(), "background");
 
-        dynamic_angles_of_internal_friction = Utilities::parse_map_to_double_array (prm.get("Dynamic angles of internal friction"),
-                                                                                    list_of_composition_names,
-                                                                                    has_background_field,
-                                                                                    "Dynamic angles of internal friction");
+        Utilities::MapParsing::Options options(chemical_field_names, "Dynamic angles of internal friction");
+        options.list_of_allowed_keys = compositional_field_names;
+
+        dynamic_angles_of_internal_friction = Utilities::MapParsing::parse_map_to_double_array (prm.get("Dynamic angles of internal friction"),
+                                              options);
 
         // Convert angles from degrees to radians
         for (double &angle : dynamic_angles_of_internal_friction)
@@ -243,6 +249,8 @@ namespace aspect
 
         // Get the number of fields for composition-dependent material properties
         // including the background field.
+        // TODO Make sure functions only have to be specified per chemical composition,
+        // but can still be specified for all fields for backwards compatibility.
         const unsigned int n_fields = this->n_compositional_fields() + 1;
 
         // if friction is specified as a function
