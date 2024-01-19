@@ -122,7 +122,6 @@ namespace aspect
          */
         bool blend_rift_and_polygon;
 
-
         /**
          * The maximum amplitude of the topography of the polygon area.
          */
@@ -150,7 +149,7 @@ namespace aspect
         std::vector<std::vector<double>> polygon_thicknesses;
 
         /**
-         * The maximum topography in this model
+         * The maximum topography in this model.
          */
         double maximum_topography;
 

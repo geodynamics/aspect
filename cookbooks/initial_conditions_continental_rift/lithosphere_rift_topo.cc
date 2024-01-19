@@ -81,7 +81,7 @@ namespace aspect
       double rift_rgh = 0;
       rift_thicknesses = thicknesses;
       for (unsigned int l=0; l<rift_thicknesses.size(); ++l)
-        rift_thicknesses[l] *= (1.-A[l]);
+        rift_thicknesses[l] *= (1.-A_rift[l]);
 
       for (unsigned int l=0; l<3; ++l)
         rift_rgh += densities[l+1] * rift_thicknesses[l];
@@ -165,15 +165,15 @@ namespace aspect
       local_thicknesses[0] = ((0.5+0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*polygon_thicknesses[distance_to_L_polygon.second][0]
                               +(0.5-0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*thicknesses[0])
                              *(!blend_rift_and_polygon && distance_to_L_polygon.first > 0.-2.*sigma_polygon ? 1. :
-                               (1.0 - A[0] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
+                               (1.0 - A_rift[0] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
       local_thicknesses[1] = ((0.5+0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*polygon_thicknesses[distance_to_L_polygon.second][1]
                               +(0.5-0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*thicknesses[1])
                              *(!blend_rift_and_polygon && distance_to_L_polygon.first > 0.-2.*sigma_polygon ? 1. :
-                               (1.0 - A[1] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
+                               (1.0 - A_rift[1] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
       local_thicknesses[2] = ((0.5+0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*polygon_thicknesses[distance_to_L_polygon.second][2]
                               +(0.5-0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*thicknesses[2])
                              *(!blend_rift_and_polygon && distance_to_L_polygon.first > 0.-2.*sigma_polygon ? 1. :
-                               (1.0 - A[2] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
+                               (1.0 - A_rift[2] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
 
       // The local lithospheric column
       double local_rgh = 0;
@@ -216,7 +216,7 @@ namespace aspect
           sigma_rift           = prm.get_double ("Standard deviation of Gaussian rift geometry");
           sigma_polygon        = prm.get_double ("Half width of polygon smoothing");
           blend_rift_and_polygon = prm.get_bool ("Blend polygons and rifts");
-          A                    = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Amplitude of Gaussian rift geometry"))),
+          A_rift                 = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Amplitude of Gaussian rift geometry"))),
                                                                          3,
                                                                          "Amplitude of Gaussian rift geometry");
           thicknesses = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Layer thicknesses"))),
@@ -247,12 +247,31 @@ namespace aspect
         prm.enter_subsection("Visco Plastic");
         {
           n_phases_for_each_composition = std::make_unique<std::vector<unsigned int>>();
-          temp_densities = Utilities::parse_map_to_double_array (prm.get("Densities"),
-                                                                 list_of_composition_names,
-                                                                 /*has_background_field=*/true,
-                                                                 "Densities",
-                                                                 true,
-                                                                 n_phases_for_each_composition);
+          
+          const std::vector<unsigned int> indices = this->introspection().chemical_composition_field_indices();
+
+          std::vector<unsigned int> n_phases_for_each_chemical_composition = {n_phases_for_each_composition[0]};
+          for (auto i : indices)
+          {
+            n_phases_for_each_chemical_composition.push_back(n_phases_for_each_composition[i + 1]);
+          }
+
+          std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
+          chemical_field_names.insert(chemical_field_names.begin(), "background");
+
+          std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+          compositional_field_names.insert(compositional_field_names.begin(), "background");
+
+          Utilities::MapParsing::Options options(chemical_field_names, "Densities");
+          options.list_of_allowed_keys = compositional_field_names;
+          options.allow_multiple_values_per_key = true;
+          options.n_values_per_key = n_phases_for_each_chemical_composition;
+          options.check_values_per_key = (options.n_values_per_key.size() != 0);
+          options.store_values_per_key = (options.n_values_per_key.size() == 0);
+
+
+          temp_densities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Densities"),
+                                                                 options);
         }
         prm.leave_subsection();
       }
