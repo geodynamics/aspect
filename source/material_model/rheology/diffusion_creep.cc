@@ -227,7 +227,7 @@ namespace aspect
         stress_exponents_diffusion = Utilities::parse_map_to_double_array(prm.get("Stress exponents for diffusion creep"),
                                                                           list_of_composition_names,
                                                                           has_background_field,
-                                                                          "Prefactors for diffusion creep",
+                                                                          "Stress exponents for diffusion creep",
                                                                           true,
                                                                           expected_n_phases_per_composition);
         grain_size_exponents_diffusion = Utilities::parse_map_to_double_array(prm.get("Grain size exponents for diffusion creep"),
