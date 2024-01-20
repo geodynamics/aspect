@@ -1868,8 +1868,6 @@ namespace aspect
       if (x_compositional_field_types.size() == 1)
         x_compositional_field_types = std::vector<std::string> (n_compositional_fields, x_compositional_field_types[0]);
 
-      // TODO ASPECT_4: Require all field types to be specified by the user
-      // Remove the following code block
       for (unsigned int i=0; i<n_compositional_fields; ++i)
         if (x_compositional_field_types[i] == "unspecified")
           {

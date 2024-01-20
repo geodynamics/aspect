@@ -389,11 +389,6 @@ namespace aspect
 
           std::vector<unsigned int> n_phases_for_each_composition = phase_function.n_phases_for_each_composition();
 
-          // TODO ASPECT_3: Require all field types to be specified by the user
-          // Remove the following code block *and* replace following code snippets matching
-          // MaterialUtilities::make_csv_substring(prm.get("*"), indices) with
-          // prm.get("*")
-          // BEGIN CODE BLOCK
           const std::vector<unsigned int> indices = this->introspection().chemical_composition_field_indices();
 
           // Currently, phase_function.n_phases_for_each_composition() returns a list of length
@@ -409,7 +404,6 @@ namespace aspect
               n_phase_transitions_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1] - 1);
               n_phases += n_phases_for_each_composition[i+1];
             }
-          // END CODE BLOCK
 
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
