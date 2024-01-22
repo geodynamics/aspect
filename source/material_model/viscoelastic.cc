@@ -50,10 +50,6 @@ namespace aspect
         {
           const std::vector<double> composition = in.composition[i];
 
-
-          // TODO: Update elasticity to only compute elastic moduli for chemical compositional fields
-          // Then remove volume_fractions_for_elasticity
-          const std::vector<double> volume_fractions_for_elasticity = MaterialUtilities::compute_composition_fractions(composition, composition_mask);
           const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition, this->introspection().chemical_composition_field_indices());
 
           equation_of_state.evaluate(in, i, eos_outputs);
@@ -78,7 +74,7 @@ namespace aspect
 
           // Average viscosity and shear modulus
           const double average_viscosity = MaterialUtilities::average_value(volume_fractions, viscosities, viscosity_averaging);
-          average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions_for_elasticity, elastic_shear_moduli, viscosity_averaging);
+          average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions, elastic_shear_moduli, viscosity_averaging);
 
           // Average viscoelastic (e.g., effective) viscosity (equation 28 in Moresi et al., 2003, J. Comp. Phys.)
           out.viscosities[i] = elastic_rheology.calculate_viscoelastic_viscosity(average_viscosity,
