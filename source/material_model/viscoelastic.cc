@@ -162,7 +162,7 @@ namespace aspect
 
           Utilities::MapParsing::Options options(chemical_field_names, "Viscosities");
           options.list_of_allowed_keys = compositional_field_names;
-          options.allow_multiple_values_per_key = true;
+          //options.allow_multiple_values_per_key = true;
 
           viscosities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Viscosities"), options);
           options.property_name = "Thermal conductivities";

@@ -218,6 +218,7 @@ namespace aspect
 
         if (expected_n_phases_per_composition)
           {
+            options.allow_multiple_values_per_key = true;
             options.n_values_per_key = *expected_n_phases_per_composition;
 
             // check_values_per_key is required to be true to duplicate single values
