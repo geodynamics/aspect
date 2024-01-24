@@ -180,6 +180,15 @@ namespace aspect
       base_model->parse_parameters(prm);
       this->model_dependence = base_model->get_model_dependence();
     }
+
+
+
+    template <int dim>
+    void
+    PrescribedViscosity<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      base_model->create_additional_named_outputs(out);
+    }
   }
 }
 
