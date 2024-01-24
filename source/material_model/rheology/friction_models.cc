@@ -90,8 +90,17 @@ namespace aspect
                 friction_function->set_time (this->get_time());
 
               // determine the friction angle based on position and composition
+              // The volume_fraction_index is based on the number of chemical compositional fields.
+              // However, this plugin reads a function for every compositional field, regardless of
+              // its type. Therefore we have to get the correct index.
+              // If no fields or no chemical fields are present, but only background material, the index is zero.
+              // If chemical fields are present, volume_fractions will be of size 1+n_chemical_composition_fields.
+              // The size of chemical_composition_field_indices will be one less.
+              unsigned int index = 0;
+              if (this->introspection().n_chemical_composition_fields() > 0)
+                index = this->introspection().chemical_composition_field_indices()[volume_fraction_index-1];
               double friction_from_function =
-                friction_function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),volume_fraction_index);
+                friction_function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),index);
 
               // Convert angles from degrees to radians
               friction_from_function *= constants::degree_to_radians;
@@ -159,7 +168,8 @@ namespace aspect
         prm.declare_entry ("Dynamic angles of internal friction", "2",
                            Patterns::List(Patterns::Double(0)),
                            "List of dynamic angles of internal friction, $\\phi$, for background material and compositional "
-                           "fields, for a total of N$+$1 values, where N is the number of compositional fields. "
+                           "fields, for a total of N$+$1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "Dynamic angles of friction are used as the current friction angle when the effective "
                            "strain rate is well above the 'dynamic characteristic strain rate'. "
                            "Units: \\si{\\degree}.");

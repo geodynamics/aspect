@@ -502,46 +502,54 @@ namespace aspect
         prm.declare_entry ("Prefactors for Peierls creep", "1.4e-19",
                            Patterns::Anything(),
                            "List of viscosity prefactors, $A$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\pascal}$^{-n_{\\text{peierls}}}$ \\si{\\per\\second}");
         prm.declare_entry ("Stress exponents for Peierls creep", "2.0",
                            Patterns::Anything(),
                            "List of stress exponents, $n_{\\text{peierls}}$, for background material and compositional "
-                           "fields, for a total of N+1 values, where N is the number of compositional fields. "
+                           "fields, for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
         prm.declare_entry ("Activation energies for Peierls creep", "320e3",
                            Patterns::Anything(),
                            "List of activation energies, $E$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. Units: \\si{\\joule\\per\\mole}.");
         prm.declare_entry ("Activation volumes for Peierls creep", "1.4e-5",
                            Patterns::Anything(),
                            "List of activation volumes, $V$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\meter\\cubed\\per\\mole}.");
         prm.declare_entry ("Peierls stresses", "5.e9",
                            Patterns::Anything(),
                            "List of stress limits for Peierls creep $\\sigma_{\\text{peierls}}$ for background "
                            "material and compositional fields, for a total of N+1 values, where N is the number "
-                           "of compositional fields. If only one value is given, then all use the same value. "
+                           "of all compositional fields or only those corresponding to chemical compositions. "
+                           "If only one value is given, then all use the same value. "
                            "Units: \\si{\\pascal}");
         prm.declare_entry ("Peierls fitting parameters", "0.17",
                            Patterns::Anything(),
                            "List of fitting parameters $\\gamma$ between stress $\\sigma$ and the Peierls "
                            "stress $\\sigma_{\\text{peierls}}$ for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. If only one "
-                           "value is given, then all use the same value. Units: none");
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. If only one value is given, "
+                           "then all use the same value. Units: none");
         prm.declare_entry ("Peierls glide parameters p", "0.5",
                            Patterns::Anything(),
                            "List of the first Peierls creep glide parameters, $p$, for background and compositional "
-                           "fields for a total of N+1 values, where N is the number of compositional fields. "
+                           "fields for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. Units: none");
         prm.declare_entry ("Peierls glide parameters q", "1.0",
                            Patterns::Anything(),
                            "List of the second Peierls creep glide parameters, $q$, for background and compositional "
-                           "fields for a total of N+1 values, where N is the number of compositional fields. "
+                           "fields for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. Units: none");
         prm.declare_entry ("Cutoff stresses for Peierls creep", "0.0",
                            Patterns::Anything(),

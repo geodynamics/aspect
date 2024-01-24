@@ -170,13 +170,15 @@ namespace aspect
         prm.declare_entry ("Angles of internal friction", "0.",
                            Patterns::Anything(),
                            "List of angles of internal friction, $\\phi$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "For a value of zero, in 2d the von Mises criterion is retrieved. "
                            "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
         prm.declare_entry ("Cohesions", "1e20",
                            Patterns::Anything(),
                            "List of cohesions, $C$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
                            "exceeding the yield stress. Units: \\si{\\pascal}.");
         prm.declare_entry ("Maximum yield stress", "1e12", Patterns::Double (0.),
@@ -249,6 +251,7 @@ namespace aspect
           damper_viscosity = prm.get_double("Plastic damper viscosity");
         else
           damper_viscosity = 0.;
+
       }
 
     }

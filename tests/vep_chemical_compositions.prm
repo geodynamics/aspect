@@ -45,7 +45,7 @@ subsection Material model
 
   # We test whether we can specify
   # 1. the same value for all fields
-  # 2. a value for each field
+  # 2. a value for each field (old behaviour, preserved for backwards compatability)
   # 3. only values for chemical composition fields
   subsection Visco Plastic
     set Reference strain rate = 1.e-16

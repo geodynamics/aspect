@@ -69,10 +69,11 @@ namespace aspect
       Elasticity<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("Elastic shear moduli", "75.0e9",
-                           Patterns::List(Patterns::Double (0.)),
+                           Patterns::List(Patterns::Double(0.)),
                            "List of elastic shear moduli, $G$, "
                            "for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "The default value of 75 GPa is representative of mantle rocks. Units: Pa.");
         prm.declare_entry ("Use fixed elastic time step", "unspecified",
                            Patterns::Selection("true|false|unspecified"),

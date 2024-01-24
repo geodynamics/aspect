@@ -183,7 +183,8 @@ namespace aspect
           const double temperature = in.temperature[i];
           const double pressure= in.pressure[i];
           const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(composition);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition,
+                                                       this->introspection().chemical_composition_field_indices());
 
           // Averaging composition-field dependent properties
 
@@ -298,13 +299,15 @@ namespace aspect
           prm.declare_entry ("Densities", "3300.",
                              Patterns::List(Patterns::Double(0.)),
                              "List of densities, $\\rho$, for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Thermal expansivities", "3.5e-5",
                              Patterns::List(Patterns::Double(0.)),
                              "List of thermal expansivities for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value.  Units: \\si{\\per\\kelvin}.");
 
           // Rheological parameters
@@ -318,29 +321,34 @@ namespace aspect
           prm.declare_entry ("Prefactors for diffusion creep", "1.5e-15",
                              Patterns::List(Patterns::Double(0.)),
                              "List of viscosity prefactors, $A$, for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\per\\pascal} \\si{\\meter}$^{m_{\\text{diffusion}}}$ \\si{\\per\\second}.");
           prm.declare_entry ("Stress exponents for diffusion creep", "1.",
                              Patterns::List(Patterns::Double(0.)),
                              "List of stress exponents, $n_{\\text{diffusion}}$, for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value.  Units: None.");
           prm.declare_entry ("Grain size exponents for diffusion creep", "3.",
                              Patterns::List(Patterns::Double(0.)),
                              "List of grain size exponents, $m_{\\text{diffusion}}$, for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value.  Units: None.");
           prm.declare_entry ("Activation energies for diffusion creep", "375e3",
                              Patterns::List(Patterns::Double(0.)),
                              "List of activation energies, $E_a$, for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\joule\\per\\mole}.");
           prm.declare_entry ("Activation volumes for diffusion creep", "6e-6",
                              Patterns::List(Patterns::Double(0.)),
                              "List of activation volumes, $V_a$, for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\meter\\cubed\\per\\mole}.");
 
@@ -348,24 +356,28 @@ namespace aspect
           prm.declare_entry ("Prefactors for dislocation creep", "1.1e-16",
                              Patterns::List(Patterns::Double(0.)),
                              "List of viscosity prefactors, $A$, for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\pascal}$^{-n_{\\text{dislocation}}}$\\si{\\per\\second}.");
           prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                              Patterns::List(Patterns::Double(0.)),
                              "List of stress exponents, $n_{\\text{dislocation}}$, for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value.  Units: None.");
           prm.declare_entry ("Activation energies for dislocation creep", "530e3",
                              Patterns::List(Patterns::Double(0.)),
                              "List of activation energies, $E_a$, for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\joule\\per\\mole}.");
           prm.declare_entry ("Activation volumes for dislocation creep", "1.4e-5",
                              Patterns::List(Patterns::Double(0.)),
                              "List of activation volumes, $V_a$, for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\meter\\cubed\\per\\mole}.");
 
@@ -413,37 +425,39 @@ namespace aspect
           grain_size = prm.get_double("Grain size");
 
           // Retrieve the list of composition names
-          const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
-
+          std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
           // Establish that a background field is required here
-          const bool has_background_field = true;
+          compositional_field_names.insert(compositional_field_names.begin(),"background");
 
-          densities = Utilities::parse_map_to_double_array (prm.get("Densities"),
-                                                            list_of_composition_names,
-                                                            has_background_field,
-                                                            "Densities");
+          // Make options file for parsing maps to double arrays
+          std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
+          // Establish that a background field is required here
+          chemical_field_names.insert(chemical_field_names.begin(),"background");
 
-          thermal_expansivities = Utilities::parse_map_to_double_array (prm.get("Thermal expansivities"),
-                                                                        list_of_composition_names,
-                                                                        has_background_field,
-                                                                        "Thermal expansivities");
+          Utilities::MapParsing::Options options(chemical_field_names, "Densities");
+          options.list_of_allowed_keys = compositional_field_names;
+
+          densities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Densities"),
+                                                                        options);
+
+          options.property_name = "Thermal expansivities";
+          thermal_expansivities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Thermal expansivities"),
+                                                                                    options);
 
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                                 prm);
 
-          // Rheological parameters
+          // Rheological parameters for chemical compositions
           // increment by one for background:
-          const unsigned int n_fields = this->n_compositional_fields() + 1;
+          const unsigned int n_chemical_composition_fields = this->introspection().n_chemical_composition_fields() + 1;
 
           // Diffusion creep parameters
           diffusion_creep.initialize_simulator (this->get_simulator());
-          diffusion_creep.parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_fields));
+          diffusion_creep.parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_chemical_composition_fields));
 
           // Dislocation creep parameters
           dislocation_creep.initialize_simulator (this->get_simulator());
-          dislocation_creep.parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_fields));
-
-
+          dislocation_creep.parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_chemical_composition_fields));
         }
         prm.leave_subsection();
       }

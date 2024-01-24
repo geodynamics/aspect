@@ -61,13 +61,15 @@ namespace aspect
         prm.declare_entry ("Viscosity ratios for Frank Kamenetskii", "15.",
                            Patterns::List(Patterns::Double (0.)),
                            "An adjusted viscosity ratio, $E$, for the viscosity approximation, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
                            "Units: None");
         prm.declare_entry ("Prefactors for Frank Kamenetskii", "1.e21",
                            Patterns::List(Patterns::Double (0.)),
                            "A viscosity prefactor for the viscosity approximation, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None");
       }
 

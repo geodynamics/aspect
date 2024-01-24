@@ -611,8 +611,8 @@ namespace aspect
                            Patterns::List(Patterns::Double (0.)),
                            "List of stress limiter exponents, $n_{\\text{lim}}$, "
                            "for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
-                           "Units: none.");
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. Units: none.");
 
         // Temperature gradient in viscosity laws to include an adiabat (note units of K/Pa)
         prm.declare_entry ("Adiabat temperature gradient for viscosity", "0.0", Patterns::Double (0.),
