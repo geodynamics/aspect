@@ -54,9 +54,12 @@ namespace aspect
     {
       template <int dim>
       SphericalManifoldWithTopography<dim>::
-      SphericalManifoldWithTopography(const Point<dim> center)
+      SphericalManifoldWithTopography(const double inner_radius,
+                                      const double outer_radius)
         :
-        SphericalManifold<dim>(center)
+        SphericalManifold<dim>(Point<dim>()),
+        R0 (inner_radius),
+        R1 (outer_radius)
       {}
 
 
@@ -68,6 +71,27 @@ namespace aspect
       }
 
 
+
+      template <int dim>
+      Point<dim>
+      SphericalManifoldWithTopography<dim>::
+      push_forward_from_sphere(const Point<dim> &p) const
+      {
+        return p;
+      }
+
+
+
+      template <int dim>
+      Point<dim>
+      SphericalManifoldWithTopography<dim>::
+      pull_back_to_sphere(const Point<dim> &p) const
+      {
+        return p;
+      }
+
+
+
       template <int dim>
       Point<dim>
       SphericalManifoldWithTopography<dim>::
@@ -75,7 +99,10 @@ namespace aspect
                              const Point<dim> &p2,
                              const double      w) const
       {
-        return SphericalManifold<dim>::get_intermediate_point (p1, p2, w);
+        return
+          push_forward_from_sphere
+          (SphericalManifold<dim>::get_intermediate_point (pull_back_to_sphere(p1),
+                                                           pull_back_to_sphere(p2), w));
       }
 
 
@@ -86,6 +113,7 @@ namespace aspect
       get_tangent_vector(const Point<dim> &x1,
                          const Point<dim> &x2) const
       {
+        // TODO: Deal with pull back and push forward
         return SphericalManifold<dim>::get_tangent_vector (x1, x2);
       }
 
@@ -97,6 +125,7 @@ namespace aspect
       normal_vector(const typename Triangulation<dim, dim>::face_iterator &face,
                     const Point<dim> &p) const
       {
+        // TODO: Deal with pull back and push forward
         return SphericalManifold<dim>::normal_vector (face, p);
       }
 
@@ -109,6 +138,7 @@ namespace aspect
         const typename Triangulation<dim, dim>::face_iterator &face,
         typename Manifold<dim, dim>::FaceVertexNormals &face_vertex_normals) const
       {
+        // TODO: Deal with pull back and push forward
         SphericalManifold<dim>::get_normals_at_vertices(face, face_vertex_normals);
       }
 
@@ -121,7 +151,21 @@ namespace aspect
                      const Table<2, double>            &weights,
                      ArrayView<Point<dim>>              new_points) const
       {
-        SphericalManifold<dim>::get_new_points(surrounding_points, weights, new_points);
+        // First compute the points in the untransformed coordinate system
+        // without surface topography:
+        std::vector<Point<dim>> untransformed_points;
+        untransformed_points.reserve(surrounding_points.size());
+        for (const Point<dim> &p : surrounding_points)
+          untransformed_points.emplace_back (pull_back_to_sphere(p));
+
+        // Call the function in the base class:
+        SphericalManifold<dim>::get_new_points(untransformed_points, weights, new_points);
+
+        // Since the function in the base class returned its information
+        // in a writable array, we can in-place push forward to the deformed
+        // sphere with topography:
+        for (Point<dim> &p : new_points)
+          p = push_forward_from_sphere(p);
       }
 
 
@@ -129,10 +173,20 @@ namespace aspect
       template <int dim>
       Point<dim>
       SphericalManifoldWithTopography<dim>::
-      get_new_point(const ArrayView<const Point<dim>> &vertices,
+      get_new_point(const ArrayView<const Point<dim>> &surrounding_points,
                     const ArrayView<const double>          &weights) const
       {
-        return SphericalManifold<dim>::get_new_point(vertices, weights);
+        // First compute the points in the untransformed coordinate system
+        // without surface topography:
+        std::vector<Point<dim>> untransformed_points;
+        untransformed_points.reserve(surrounding_points.size());
+        for (const Point<dim> &p : surrounding_points)
+          untransformed_points.emplace_back (pull_back_to_sphere(p));
+
+        // Call the function in the base class, and transform the
+        // returned value:
+        return push_forward_from_sphere(SphericalManifold<dim>::get_new_point(untransformed_points,
+                                                                              weights));
       }
     }
 
@@ -145,7 +199,7 @@ namespace aspect
       AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) ,
                   ExcMessage("At the moment, only the Zero initial topography model can be used with the SphericalShell geometry model."));
 
-      manifold = std::make_unique<internal::SphericalManifoldWithTopography<dim>>();
+      manifold = std::make_unique<internal::SphericalManifoldWithTopography<dim>>(R0, R1);
     }
 
 
@@ -337,6 +391,15 @@ namespace aspect
         {
           Assert (false, ExcInternalError());
         }
+
+      // Then add the topography to the mesh by moving all vertices from the
+      // undeformed sphere to the sphere with topography:
+      GridTools::transform (
+        [&](const Point<dim> &p) -> Point<dim>
+      {
+        return manifold->push_forward_from_sphere(p);
+      },
+      coarse_grid);
 
       // Use a manifold description for all cells. Use manifold_id 99 in order
       // not to step on the boundary indicators used below.
