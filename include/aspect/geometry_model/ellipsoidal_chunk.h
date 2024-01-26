@@ -46,19 +46,17 @@ namespace aspect
           /**
            * Constructor
            */
-          EllipsoidalChunkGeometry();
+          EllipsoidalChunkGeometry(const InitialTopographyModel::Interface<dim> &topography,
+                                   const double para_semi_major_axis_a,
+                                   const double para_eccentricity,
+                                   const double para_semi_minor_axis_b,
+                                   const double para_bottom_depth,
+                                   const std::vector<Point<2>> &para_corners);
 
           /**
            * Copy constructor
            */
           EllipsoidalChunkGeometry(const EllipsoidalChunkGeometry &other);
-
-          /**
-           * An initialization function necessary to make sure that the
-           * manifold has access to the topography plugins.
-           */
-          void
-          initialize(const InitialTopographyModel::Interface<dim> *topography);
 
           /**
            * Sets several parameters for the ellipsoidal manifold object.
@@ -336,9 +334,17 @@ namespace aspect
 
 
         /**
-         * Construct manifold object Pointer to an object that describes the geometry.
+         * An object that describes the geometry. This pointer is
+         * initialized in the initialize() function, and serves as the manifold
+         * object that the triangulation is later given in create_coarse_mesh()
+         * where the triangulation clones it.
+         *
+         * The object is marked as 'const' to make it clear that it should not
+         * be modified once created. That is because the triangulation copies it,
+         * and modifying the current object will not have any impact on the
+         * manifold used by the triangulation.
          */
-        internal::EllipsoidalChunkGeometry<dim>   manifold;
+        std::unique_ptr<const internal::EllipsoidalChunkGeometry<dim>>   manifold;
 
         void
         set_boundary_ids(parallel::distributed::Triangulation<dim> &coarse_grid) const;
