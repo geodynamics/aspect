@@ -84,34 +84,6 @@ namespace aspect
       }
 
 
-      // Copy constructor
-      template <int dim>
-      EllipsoidalChunkGeometry<dim>::EllipsoidalChunkGeometry(const EllipsoidalChunkGeometry &other)
-        :
-        ChartManifold<dim,3,3>(other),
-        topography (other.topography)
-      {
-        this->set_manifold_parameters(other.semi_major_axis_a, other.eccentricity, other.semi_minor_axis_b,
-                                      other.bottom_depth, other.corners);
-      }
-
-
-      template <int dim>
-      void
-      EllipsoidalChunkGeometry<dim>::set_manifold_parameters(const double para_semi_major_axis_a,
-                                                             const double para_eccentricity,
-                                                             const double para_semi_minor_axis_b,
-                                                             const double para_bottom_depth,
-                                                             const std::vector<Point<2>> &para_corners)
-      {
-        AssertThrow (dim == 3, ExcMessage("This manifold can currently only be used in 3d."));
-
-        semi_major_axis_a = para_semi_major_axis_a;
-        eccentricity = para_eccentricity;
-        semi_minor_axis_b = para_semi_minor_axis_b;
-        bottom_depth = para_bottom_depth;
-        corners=para_corners;
-      }
 
       template <int dim>
       Point<3>

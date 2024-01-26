@@ -56,17 +56,7 @@ namespace aspect
           /**
            * Copy constructor
            */
-          EllipsoidalChunkGeometry(const EllipsoidalChunkGeometry &other);
-
-          /**
-           * Sets several parameters for the ellipsoidal manifold object.
-           */
-          void
-          set_manifold_parameters(const double para_semi_major_axis_a,
-                                  const double para_eccentricity,
-                                  const double para_semi_minor_axis_b,
-                                  const double para_bottom_depth,
-                                  const std::vector<Point<2>> &para_corners);
+          EllipsoidalChunkGeometry(const EllipsoidalChunkGeometry &other) = default;
 
           /**
            * The deal.ii pull back function in 3d. This function receives
@@ -130,11 +120,11 @@ namespace aspect
            */
           const InitialTopographyModel::Interface<dim> *topography;
 
-          double semi_major_axis_a;
-          double eccentricity;
-          double semi_minor_axis_b;
-          double bottom_depth;
-          std::vector<Point<2>> corners;
+          const double semi_major_axis_a;
+          const double eccentricity;
+          const double semi_minor_axis_b;
+          const double bottom_depth;
+          const std::vector<Point<2>> corners;
       };
     }
 
