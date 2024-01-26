@@ -1,0 +1,41 @@
+# Like grain_size_growth.prm, but check that additional
+# material model outputs can be postprocessed correctly
+# in the prescribed viscosity material model.
+
+############### Global parameters
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/tests/grain_size_growth.prm
+
+set End time = 0
+
+subsection Material model
+  set Model name = prescribed viscosity
+
+   subsection Prescribed viscosity
+    set Base model = grain size
+
+    subsection Indicator function
+      # Return where to prescribe the viscosity
+      set Function expression = if(x>50000, 1, 0)
+    end
+
+    subsection Viscosity function
+      set Function expression = 1e22
+    end
+   end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 2
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics,temperature statistics, velocity statistics, visualization
+
+  subsection Visualization
+    set List of output variables = viscosity, named additional outputs
+    set Time between graphical output = 0
+  end
+end
