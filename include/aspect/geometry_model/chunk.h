@@ -132,6 +132,11 @@ namespace aspect
 
         private:
           /**
+           * A pointer to the topography model.
+           */
+          const InitialTopographyModel::Interface<dim> *topo;
+
+          /**
            * The minimum longitude of the domain.
            */
           double point1_lon;
@@ -164,11 +169,6 @@ namespace aspect
           virtual
           Point<dim>
           push_forward_topo(const Point<dim> &chart_point) const;
-
-          /**
-           * A pointer to the topography model.
-           */
-          const InitialTopographyModel::Interface<dim> *topo;
       };
     }
 

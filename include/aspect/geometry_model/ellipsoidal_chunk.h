@@ -127,13 +127,16 @@ namespace aspect
            */
           Point<3> pull_back_topography (const Point<3> &phi_theta_d) const;
 
+          /**
+           * A pointer to the topography model.
+           */
+          const InitialTopographyModel::Interface<dim> *topography;
 
           double semi_major_axis_a;
           double eccentricity;
           double semi_minor_axis_b;
           double bottom_depth;
           std::vector<Point<2>> corners;
-          const InitialTopographyModel::Interface<dim> *topography;
       };
     }
 

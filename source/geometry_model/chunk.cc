@@ -43,10 +43,10 @@ namespace aspect
                                         const double min_radius,
                                         const double max_depth)
         :
+        topo (&topo),
         point1_lon(min_longitude),
         inner_radius(min_radius),
-        max_depth(max_depth),
-        topo (&topo)
+        max_depth(max_depth)
       {}
 
 
