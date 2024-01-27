@@ -1,0 +1,20 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: RMS velocity (m/year)
+# 10: Max. velocity (m/year)
+# 11: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 12: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 13: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 14: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 15: Visualization file name
+# 16: Average density (kg/m^3)
+# 17: Average viscosity (Pa s)
+# 18: Total mass (kg)
+0 0.000000000000e+00 0.000000000000e+00 1600 14803 6561 13122 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 output-visco_plastic_2_phases_compositions_lookups/solution/solution-00000 3.90556442e+03 1.00000000e+22 3.90556442e+13 
+1 1.000000000000e+03 1.000000000000e+03 1600 14803 6561 13122 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                                         "" 3.90556442e+03 1.00000000e+22 3.90556442e+13 
