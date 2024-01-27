@@ -34,7 +34,20 @@ namespace big_mpi
 
 }
 
+// deal.II 9.6 introduces the new MGTransferMF class as a replacement
+// for MGTransferMatrixFree. Instead of putting an ifdef in every place,
+// do this in one central location:
+#if !DEAL_II_VERSION_GTE(9,6,0)
+#include <deal.II/multigrid/mg_transfer_matrix_free.h>
+namespace dealii
+{
+  template<int dim, class NumberType>
+  using MGTransferMF = MGTransferMatrixFree<dim,NumberType>;
+}
+#endif
 
+
+// Implement VectorTools::compute_no_normal_flux_constraints_on_level
 #if !DEAL_II_VERSION_GTE(9,5,0)
 #include <deal.II/numerics/vector_tools.h>
 #include <deal.II/hp/fe_values.h>
