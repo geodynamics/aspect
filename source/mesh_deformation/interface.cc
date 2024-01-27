@@ -1115,12 +1115,7 @@ namespace aspect
                                         level);
         }
 
-#if DEAL_II_VERSION_GTE(9,6,0)
       MGTransferMF<dim, double> mg_transfer(mg_constrained_dofs);
-#else
-      MGTransferMatrixFree<dim, double> mg_transfer(mg_constrained_dofs);
-#endif
-
       mg_transfer.build(mesh_deformation_dof_handler);
 
       using SmootherType =
@@ -1176,13 +1171,8 @@ namespace aspect
       mg.set_edge_matrices(mg_interface, mg_interface);
       PreconditionMG<dim,
                      dealii::LinearAlgebra::distributed::Vector<double>,
-#if DEAL_II_VERSION_GTE(9,6,0)
                      MGTransferMF<dim, double>>
                      preconditioner(mesh_deformation_dof_handler, mg, mg_transfer);
-#else
-                     MGTransferMatrixFree<dim, double>>
-                     preconditioner(mesh_deformation_dof_handler, mg, mg_transfer);
-#endif
 
 
       // solve

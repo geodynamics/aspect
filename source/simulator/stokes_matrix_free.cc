@@ -1246,11 +1246,7 @@ namespace aspect
     // Project the active level viscosity vector to multilevel vector representations
     // using MG transfer objects. This transfer is based on the same linear operator used to
     // transfer data inside a v-cycle.
-#if DEAL_II_VERSION_GTE(9,6,0)
     MGTransferMF<dim,GMGNumberType> transfer;
-#else
-    MGTransferMatrixFree<dim,GMGNumberType> transfer;
-#endif
 
     transfer.build(dof_handler_projection);
 
@@ -1829,11 +1825,7 @@ namespace aspect
     mg_Schur.set_edge_matrices(mg_interface_Schur, mg_interface_Schur);
 
     // GMG Preconditioner for ABlock and Schur complement
-#if DEAL_II_VERSION_GTE(9,6,0)
     using GMGPreconditioner = PreconditionMG<dim, VectorType, MGTransferMF<dim,GMGNumberType>>;
-#else
-    using GMGPreconditioner = PreconditionMG<dim, VectorType, MGTransferMatrixFree<dim,GMGNumberType>>;
-#endif
     GMGPreconditioner prec_A(dof_handler_v, mg_A, mg_transfer_A_block);
     GMGPreconditioner prec_Schur(dof_handler_p, mg_Schur, mg_transfer_Schur_complement);
 
@@ -2659,11 +2651,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-#if DEAL_II_VERSION_GTE(9,6,0)
   const MGTransferMF<dim,GMGNumberType> &
-#else
-  const MGTransferMatrixFree<dim,GMGNumberType> &
-#endif
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_mg_transfer_A() const
   {
     return mg_transfer_A_block;
@@ -2672,11 +2660,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-#if DEAL_II_VERSION_GTE(9,6,0)
   const MGTransferMF<dim,GMGNumberType> &
-#else
-  const MGTransferMatrixFree<dim,GMGNumberType> &
-#endif
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_mg_transfer_S() const
   {
     return mg_transfer_Schur_complement;
