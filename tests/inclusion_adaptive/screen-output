@@ -51,7 +51,7 @@ Number of degrees of freedom: 2,664 (1,634+213+817)
 
    Postprocessing:
      Writing graphical output:            output-inclusion_adaptive/solution/solution-00003
-     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 1847; 3.406466e-02, 5.739126e-01, 1.825218e-02, 1.110510e+00
+     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 1847; 3.406466e-02, 5.739125e-01, 1.825218e-02, 1.110510e+00
 
 Number of active cells: 268 (on 7 levels)
 Number of degrees of freedom: 4,172 (2,562+329+1,281)
