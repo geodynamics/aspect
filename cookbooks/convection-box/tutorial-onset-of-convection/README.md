@@ -31,45 +31,6 @@ If you run in your local JupyterLab environment, note the following dependencies
  * glob
  
  
-## Running using Docker
-The current version of the docker container supports an older version of ASPECT.  The model_input directory contains two files with `_old` in its name which will work with this container.
-
-Use at your own risk.
-
-Here are the old instructions
-
-A. Install Docker
-
-B. Download the docker image
-> docker pull tjhei/aspect-jupyter
-
-1. Start Docker
-2. In a terminal window, navigate to directory where your model input is located:
->	cd my_directory/ModelInput
-3. Load the Jupyter extension for widgets:
->jupyter nbextension enable widgetsnbextension --py --sys-prefix
-4. Spin up Timo’s container with Jupyter notebooks and map your current working directory as input: 
->	docker run -it -v "$(pwd):/home/dealii/aspect/model_input:ro" -d -p 8888:8888 --name tmpnb-aspect-jupyter tjhei/aspect-jupyter start-notebook.sh --NotebookApp.token=' ' 
-5. In a browser, type:
->	http://localhost:8888/tree?
-6. Upload this notebook and the image files.
-
-Remember you are now running in a Docker container and NOT your desktop.
-
-**Common problems:**
-
-	unexpected error address already in use.
-	change your local host address 8887:8888
-	change this to 8887 in step 5
-
-You have to remove (or rename) that container to be able to reuse that name.
-Easiest solution (somewhat heavy handed) stop your container, prune, and check.
-
-> docker stop CONTAINER_ID
-
-> docker container prune 
-
-> docker ps -a
  
 ## Packages install
  
