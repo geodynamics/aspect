@@ -83,6 +83,9 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm) override;
 
+        void
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+
       private:
         /**
          * An enum to describe where the depth dependency of the viscosity is coming from.
