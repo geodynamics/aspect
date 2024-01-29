@@ -302,11 +302,10 @@ namespace aspect
                 PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
 
                 // If requested, fill the outputs to put the new viscosity onto the compositional field.
-                if (prescribed_field_out != NULL)
+                if (prescribed_field_out != NULL && in.requests_property(MaterialProperties::additional_outputs))
                   {
                     Assert(out.viscosities[i] > 0.0, ExcMessage("The viscosity to store for iterative damping is negative."));
                     prescribed_field_out->prescribed_field_outputs[i][field_index] = out.viscosities[i];
-
                   }
               }
 
