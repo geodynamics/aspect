@@ -76,6 +76,10 @@ namespace aspect
       calculate_viscosity (const double old_viscosity,
                            const double new_viscosity) const
       {
+        Assert (!std::isnan(old_viscosity), ExcMessage("The old viscosity used for iterative viscosity dampening is a NaN."));
+        Assert (old_viscosity > 0.0, ExcMessage("The old viscosity used for iterative viscosity dampening is negative."));
+        Assert (!std::isnan(new_viscosity), ExcMessage("The new viscosity used for iterative viscosity dampening is a NaN."));
+
         const double dampened_viscosity = std::pow(old_viscosity, iterative_viscosity_dampening_factor) *
                                           std::pow(new_viscosity, 1. - iterative_viscosity_dampening_factor);
 

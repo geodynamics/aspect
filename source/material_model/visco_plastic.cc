@@ -288,6 +288,8 @@ namespace aspect
                 const int field_index = this->introspection().compositional_index_for_name("viscosity_field");
                 const double old_viscosity = in.composition[i][field_index];
 
+                Assert(old_viscosity > 0.0, ExcMessage("The viscosity stored for iterative damping is negative."));
+
                 // Dampen the viscosity, but only after the first timestep and after
                 // the first nonlinear iteration of each timestep.
                 if (this->simulator_is_past_initialization() == true &&
@@ -302,7 +304,9 @@ namespace aspect
                 // If requested, fill the outputs to put the new viscosity onto the compositional field.
                 if (prescribed_field_out != NULL)
                   {
+                    Assert(out.viscosities[i] > 0.0, ExcMessage("The viscosity to store for iterative damping is negative."));
                     prescribed_field_out->prescribed_field_outputs[i][field_index] = out.viscosities[i];
+
                   }
               }
 
