@@ -291,8 +291,7 @@ namespace aspect
                 // Dampen the viscosity, but only after the first timestep and after
                 // the first nonlinear iteration of each timestep.
                 if (this->simulator_is_past_initialization() == true &&
-                    this->get_timestep_number() > 0 &&
-                    this->get_nonlinear_iteration() > 0)
+                    this->get_nonlinear_iteration() > rheology->iterative_dampening->get_n_nonlinear_iterations_before_damping())
                   out.viscosities[i] = rheology->iterative_dampening->calculate_viscosity(old_viscosity, out.viscosities[i]);
 
                 // TODO apply user-set min and max viscosity again?

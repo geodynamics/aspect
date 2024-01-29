@@ -67,13 +67,25 @@ namespace aspect
                                       const double new_viscosity) const;
 
           /**
+           * A function that returns how many nonlinear iterations should be done per timestep
+           * before dampening is switched on.
+           */
+          unsigned int get_n_nonlinear_iterations_before_damping() const;
+
+        private:
+
+          /**
            * A dampening factor for the viscosity that controls the rate of change
            * between the viscosity calculated in the previous and current nonlinear
            * iteration.
            */
           double iterative_viscosity_dampening_factor;
 
-        private:
+          /**
+           * How many nonlinear iterations need to be computed before iterative
+           * damping is switched on.
+           */
+          int n_nonlinear_iterations_before_damping;
 
       };
     }

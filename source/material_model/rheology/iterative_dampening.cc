@@ -53,6 +53,11 @@ namespace aspect
                            "iteration. A value of 1 (default) equals using the previous viscosity, a value of "
                            "0 equals using the current viscosity. "
                            "Units: none.");
+        prm.declare_entry ("Number of nonlinear iterations before switching on iterative viscosity dampening", "10",
+                           Patterns::Integer (1.),
+                           "How many nonlinear iterations to perform before switching on iterative "
+                           "viscosity dampening. "
+                           "Units: none.");
       }
 
 
@@ -61,6 +66,7 @@ namespace aspect
       IterativeDampening<dim>::parse_parameters (ParameterHandler &prm)
       {
         iterative_viscosity_dampening_factor = prm.get_double("Iterative viscosity dampening factor");
+        n_nonlinear_iterations_before_damping = prm.get_integer("Number of nonlinear iterations before switching on iterative viscosity dampening");
       }
 
 
@@ -74,6 +80,16 @@ namespace aspect
                                           std::pow(new_viscosity, 1. - iterative_viscosity_dampening_factor);
 
         return dampened_viscosity;
+      }
+
+
+
+      template <int dim>
+      unsigned int
+      IterativeDampening<dim>::
+      get_n_nonlinear_iterations_before_damping() const
+      {
+        return n_nonlinear_iterations_before_damping;
       }
     }
   }
