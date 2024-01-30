@@ -44,7 +44,8 @@ namespace aspect
           /**
            * Constructor.
            */
-          SphericalManifoldWithTopography(const double inner_radius,
+          SphericalManifoldWithTopography(const InitialTopographyModel::Interface<dim> &topography,
+                                          const double inner_radius,
                                           const double outer_radius);
 
           /**
@@ -139,9 +140,20 @@ namespace aspect
 
         private:
           /**
+           * A pointer to the topography model.
+           */
+          const InitialTopographyModel::Interface<dim> *topo;
+
+          /**
            * Inner and outer radii of the spherical shell.
            */
           const double R0, R1;
+
+          /**
+           * Return the topography of the surface directly above the point given
+           * by the coordinates stored in the argument.
+           */
+          double topography_for_point (const Point<dim> &x_y_z) const;
       };
 
     }
