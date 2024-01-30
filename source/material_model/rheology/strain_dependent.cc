@@ -104,7 +104,8 @@ namespace aspect
                            "List of strain weakening interval initial strains "
                            "for the cohesion and friction angle parameters of the "
                            "background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. Units: None.");
 
         prm.declare_entry ("End plasticity strain weakening intervals", "1.",
@@ -112,21 +113,24 @@ namespace aspect
                            "List of strain weakening interval final strains "
                            "for the cohesion and friction angle parameters of the "
                            "background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
 
         prm.declare_entry ("Cohesion strain weakening factors", "1.",
                            Patterns::List(Patterns::Double (0.)),
                            "List of cohesion strain weakening factors "
                            "for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
 
         prm.declare_entry ("Friction strain weakening factors", "1.",
                            Patterns::List(Patterns::Double (0.)),
                            "List of friction strain weakening factors "
                            "for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
 
         prm.declare_entry ("Start prefactor strain weakening intervals", "0.",
@@ -134,7 +138,8 @@ namespace aspect
                            "List of strain weakening interval initial strains "
                            "for the diffusion and dislocation prefactor parameters of the "
                            "background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
 
         prm.declare_entry ("End prefactor strain weakening intervals", "1.",
@@ -142,14 +147,16 @@ namespace aspect
                            "List of strain weakening interval final strains "
                            "for the diffusion and dislocation prefactor parameters of the "
                            "background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
 
         prm.declare_entry ("Prefactor strain weakening factors", "1.",
                            Patterns::List(Patterns::Double(0., 1.)),
                            "List of viscous strain weakening factors "
                            "for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
 
         prm.declare_entry ("Strain healing mechanism", "no healing",
@@ -299,45 +306,45 @@ namespace aspect
 
 
         // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+        std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+
+        // Retrieve the list of names of fields that represent chemical compositions, and not, e.g.,
+        // plastic strain
+        std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
 
         // Establish that a background field is required here
-        const bool has_background_field = true;
+        compositional_field_names.insert(compositional_field_names.begin(), "background");
+        chemical_field_names.insert(chemical_field_names.begin(),"background");
 
-        start_plastic_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("Start plasticity strain weakening intervals"),
-                                                   list_of_composition_names,
-                                                   has_background_field,
-                                                   "Start plasticity strain weakening intervals");
+        Utilities::MapParsing::Options options(chemical_field_names, "Start plasticity strain weakening intervals");
+        options.list_of_allowed_keys = compositional_field_names;
 
-        end_plastic_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("End plasticity strain weakening intervals"),
-                                                                                       list_of_composition_names,
-                                                                                       has_background_field,
-                                                                                       "End plasticity strain weakening intervals");
+        start_plastic_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("Start plasticity strain weakening intervals"),
+                                                   options);
 
-        start_viscous_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("Start prefactor strain weakening intervals"),
-                                                   list_of_composition_names,
-                                                   has_background_field,
-                                                   "Start prefactor strain weakening intervals");
+        options.property_name = "End plasticity strain weakening intervals";
+        end_plastic_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("End plasticity strain weakening intervals"),
+                                                 options);
 
-        end_viscous_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("End prefactor strain weakening intervals"),
-                                                                                       list_of_composition_names,
-                                                                                       has_background_field,
-                                                                                       "End prefactor strain weakening intervals");
+        options.property_name = "Start prefactor strain weakening intervals";
+        start_viscous_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("Start prefactor strain weakening intervals"),
+                                                   options);
 
-        viscous_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Prefactor strain weakening factors"),
-                                                                                 list_of_composition_names,
-                                                                                 has_background_field,
-                                                                                 "Prefactor strain weakening factors");
+        options.property_name = "End prefactor strain weakening intervals";
+        end_viscous_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("End prefactor strain weakening intervals"),
+                                                 options);
 
-        cohesion_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Cohesion strain weakening factors"),
-                                                                                  list_of_composition_names,
-                                                                                  has_background_field,
-                                                                                  "Cohesion strain weakening factors");
+        options.property_name = "Prefactor strain weakening factors";
+        viscous_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactor strain weakening factors"),
+                                           options);
 
-        friction_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Friction strain weakening factors"),
-                                                                                  list_of_composition_names,
-                                                                                  has_background_field,
-                                                                                  "Friction strain weakening factors");
+        options.property_name = "Cohesion strain weakening factors";
+        cohesion_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Cohesion strain weakening factors"),
+                                            options);
+
+        options.property_name = "Friction strain weakening factors";
+        friction_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Friction strain weakening factors"),
+                                            options);
 
         if (prm.get ("Strain healing mechanism") == "no healing")
           healing_mechanism = no_healing;

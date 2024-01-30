@@ -502,46 +502,54 @@ namespace aspect
         prm.declare_entry ("Prefactors for Peierls creep", "1.4e-19",
                            Patterns::Anything(),
                            "List of viscosity prefactors, $A$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\pascal}$^{-n_{\\text{peierls}}}$ \\si{\\per\\second}");
         prm.declare_entry ("Stress exponents for Peierls creep", "2.0",
                            Patterns::Anything(),
                            "List of stress exponents, $n_{\\text{peierls}}$, for background material and compositional "
-                           "fields, for a total of N+1 values, where N is the number of compositional fields. "
+                           "fields, for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
         prm.declare_entry ("Activation energies for Peierls creep", "320e3",
                            Patterns::Anything(),
                            "List of activation energies, $E$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. Units: \\si{\\joule\\per\\mole}.");
         prm.declare_entry ("Activation volumes for Peierls creep", "1.4e-5",
                            Patterns::Anything(),
                            "List of activation volumes, $V$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\meter\\cubed\\per\\mole}.");
         prm.declare_entry ("Peierls stresses", "5.e9",
                            Patterns::Anything(),
                            "List of stress limits for Peierls creep $\\sigma_{\\text{peierls}}$ for background "
                            "material and compositional fields, for a total of N+1 values, where N is the number "
-                           "of compositional fields. If only one value is given, then all use the same value. "
+                           "of all compositional fields or only those corresponding to chemical compositions. "
+                           "If only one value is given, then all use the same value. "
                            "Units: \\si{\\pascal}");
         prm.declare_entry ("Peierls fitting parameters", "0.17",
                            Patterns::Anything(),
                            "List of fitting parameters $\\gamma$ between stress $\\sigma$ and the Peierls "
                            "stress $\\sigma_{\\text{peierls}}$ for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. If only one "
-                           "value is given, then all use the same value. Units: none");
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. If only one value is given, "
+                           "then all use the same value. Units: none");
         prm.declare_entry ("Peierls glide parameters p", "0.5",
                            Patterns::Anything(),
                            "List of the first Peierls creep glide parameters, $p$, for background and compositional "
-                           "fields for a total of N+1 values, where N is the number of compositional fields. "
+                           "fields for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. Units: none");
         prm.declare_entry ("Peierls glide parameters q", "1.0",
                            Patterns::Anything(),
                            "List of the second Peierls creep glide parameters, $q$, for background and compositional "
-                           "fields for a total of N+1 values, where N is the number of compositional fields. "
+                           "fields for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. Units: none");
         prm.declare_entry ("Cutoff stresses for Peierls creep", "0.0",
                            Patterns::Anything(),
@@ -561,10 +569,15 @@ namespace aspect
                                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
         // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+        std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+
+        // Retrieve the list of names of fields that represent chemical compositions, and not, e.g.,
+        // plastic strain
+        std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
 
         // Establish that a background field is required here
-        const bool has_background_field = true;
+        compositional_field_names.insert(compositional_field_names.begin(), "background");
+        chemical_field_names.insert(chemical_field_names.begin(),"background");
 
         if (prm.get ("Peierls creep flow law") == "viscosity approximation")
           peierls_creep_flow_law = viscosity_approximation;
@@ -578,67 +591,53 @@ namespace aspect
         stress_max_iteration_number = prm.get_integer ("Maximum Peierls strain rate iterations");
 
         // Rheological parameters
-        prefactors = Utilities::parse_map_to_double_array(prm.get("Prefactors for Peierls creep"),
-                                                          list_of_composition_names,
-                                                          has_background_field,
-                                                          "Prefactors for Peierls creep",
-                                                          true,
-                                                          expected_n_phases_per_composition);
+        // Make options file for parsing maps to double arrays
+        Utilities::MapParsing::Options options(chemical_field_names, "Prefactors for Peierls creep");
+        options.list_of_allowed_keys = compositional_field_names;
+        options.allow_multiple_values_per_key = true;
+        if (expected_n_phases_per_composition)
+          {
+            options.n_values_per_key = *expected_n_phases_per_composition;
 
-        stress_exponents = Utilities::parse_map_to_double_array(prm.get("Stress exponents for Peierls creep"),
-                                                                list_of_composition_names,
-                                                                has_background_field,
-                                                                "Stress exponents for Peierls creep",
-                                                                true,
-                                                                expected_n_phases_per_composition);
+            // check_values_per_key is required to be true to duplicate single values
+            // if they are to be used for all phases associated with a given key.
+            options.check_values_per_key = true;
+          }
 
-        activation_energies = Utilities::parse_map_to_double_array(prm.get("Activation energies for Peierls creep"),
-                                                                   list_of_composition_names,
-                                                                   has_background_field,
-                                                                   "Activation energies for Peierls creep",
-                                                                   true,
-                                                                   expected_n_phases_per_composition);
+        prefactors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactors for Peierls creep"),
+                                                                      options);
 
-        activation_volumes = Utilities::parse_map_to_double_array(prm.get("Activation volumes for Peierls creep"),
-                                                                  list_of_composition_names,
-                                                                  has_background_field,
-                                                                  "Activation volumes for Peierls creep",
-                                                                  true,
-                                                                  expected_n_phases_per_composition);
+        options.property_name = "Stress exponents for Peierls creep";
+        stress_exponents = Utilities::MapParsing::parse_map_to_double_array(prm.get("Stress exponents for Peierls creep"),
+                                                                            options);
 
-        peierls_stresses = Utilities::parse_map_to_double_array(prm.get("Peierls stresses"),
-                                                                list_of_composition_names,
-                                                                has_background_field,
-                                                                "Peierls stresses",
-                                                                true,
-                                                                expected_n_phases_per_composition);
+        options.property_name = "Activation energies for Peierls creep";
+        activation_energies = Utilities::MapParsing::parse_map_to_double_array(prm.get("Activation energies for Peierls creep"),
+                                                                               options);
 
-        fitting_parameters = Utilities::parse_map_to_double_array(prm.get("Peierls fitting parameters"),
-                                                                  list_of_composition_names,
-                                                                  has_background_field,
-                                                                  "Peierls fitting parameters",
-                                                                  true,
-                                                                  expected_n_phases_per_composition);
+        options.property_name = "Activation volumes for Peierls creep";
+        activation_volumes = Utilities::MapParsing::parse_map_to_double_array(prm.get("Activation volumes for Peierls creep"),
+                                                                              options);
 
-        glide_parameters_p = Utilities::parse_map_to_double_array(prm.get("Peierls glide parameters p"),
-                                                                  list_of_composition_names,
-                                                                  has_background_field,
-                                                                  "Peierls glide parameters p",
-                                                                  true,
-                                                                  expected_n_phases_per_composition);
+        options.property_name = "Peierls stresses";
+        peierls_stresses = Utilities::MapParsing::parse_map_to_double_array(prm.get("Peierls stresses"),
+                                                                            options);
 
-        glide_parameters_q = Utilities::parse_map_to_double_array(prm.get("Peierls glide parameters q"),
-                                                                  list_of_composition_names,
-                                                                  has_background_field,
-                                                                  "Peierls glide parameters q",
-                                                                  true,
-                                                                  expected_n_phases_per_composition);
-        stress_cutoffs = Utilities::parse_map_to_double_array(prm.get("Cutoff stresses for Peierls creep"),
-                                                              list_of_composition_names,
-                                                              has_background_field,
-                                                              "Cutoff stresses for Peierls creep",
-                                                              true,
-                                                              expected_n_phases_per_composition);
+        options.property_name = "Peierls fitting parameters";
+        fitting_parameters = Utilities::MapParsing::parse_map_to_double_array(prm.get("Peierls fitting parameters"),
+                                                                              options);
+
+        options.property_name = "Peierls glide parameters p";
+        glide_parameters_p = Utilities::MapParsing::parse_map_to_double_array(prm.get("Peierls glide parameters p"),
+                                                                              options);
+
+        options.property_name = "Peierls glide parameters q";
+        glide_parameters_q = Utilities::MapParsing::parse_map_to_double_array(prm.get("Peierls glide parameters q"),
+                                                                              options);
+
+        options.property_name = "Cutoff stresses for Peierls creep";
+        stress_cutoffs = Utilities::MapParsing::parse_map_to_double_array(prm.get("Cutoff stresses for Peierls creep"),
+                                                                          options);
 
         apply_strict_cutoff = prm.get_bool("Apply strict stress cutoff for Peierls creep");
       }

@@ -173,24 +173,28 @@ namespace aspect
         prm.declare_entry ("Prefactors for dislocation creep", "1.1e-16",
                            Patterns::Anything(),
                            "List of viscosity prefactors, $A$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\pascal}$^{-n_{\\text{dislocation}}}$ \\si{\\per\\second}.");
         prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                            Patterns::Anything(),
                            "List of stress exponents, $n_{\\text{dislocation}}$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
         prm.declare_entry ("Activation energies for dislocation creep", "530e3",
                            Patterns::Anything(),
                            "List of activation energies, $E_a$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\joule\\per\\mole}.");
         prm.declare_entry ("Activation volumes for dislocation creep", "1.4e-5",
                            Patterns::Anything(),
                            "List of activation volumes, $V_a$, for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\meter\\cubed\\per\\mole}.");
       }
@@ -203,37 +207,44 @@ namespace aspect
                                                const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
         // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+        std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
 
-        const bool has_background_field = true;
+        // Retrieve the list of names of fields that represent chemical compositions, and not, e.g.,
+        // plastic strain
+        std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
+
+        // Establish that a background field is required here
+        compositional_field_names.insert(compositional_field_names.begin(), "background");
+        chemical_field_names.insert(chemical_field_names.begin(), "background");
+
+        // Make options file for parsing maps to double arrays
+        Utilities::MapParsing::Options options(chemical_field_names, "Prefactors for dislocation creep");
+        options.list_of_allowed_keys = compositional_field_names;
+        options.allow_multiple_values_per_key = true;
+        if (expected_n_phases_per_composition)
+          {
+            options.n_values_per_key = *expected_n_phases_per_composition;
+
+            // check_values_per_key is required to be true to duplicate single values
+            // if they are to be used for all phases associated with a given key.
+            options.check_values_per_key = true;
+          }
 
         // Read parameters, each of size of number of composition + number of phases + 1
-        prefactors_dislocation = Utilities::parse_map_to_double_array(prm.get("Prefactors for dislocation creep"),
-                                                                      list_of_composition_names,
-                                                                      has_background_field,
-                                                                      "Prefactors for dislocation creep",
-                                                                      true,
-                                                                      expected_n_phases_per_composition);
+        prefactors_dislocation = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactors for dislocation creep"),
+                                                                                  options);
 
-        stress_exponents_dislocation = Utilities::parse_map_to_double_array(prm.get("Stress exponents for dislocation creep"),
-                                                                            list_of_composition_names,
-                                                                            has_background_field,
-                                                                            "Stress exponents for dislocation creep",
-                                                                            true,
-                                                                            expected_n_phases_per_composition);
+        options.property_name = "Stress exponents for dislocation creep";
+        stress_exponents_dislocation = Utilities::MapParsing::parse_map_to_double_array(prm.get("Stress exponents for dislocation creep"),
+                                                                                        options);
 
-        activation_energies_dislocation = Utilities::parse_map_to_double_array(prm.get("Activation energies for dislocation creep"),
-                                                                               list_of_composition_names,
-                                                                               has_background_field,
-                                                                               "Activation energies for dislocation creep",
-                                                                               true,
-                                                                               expected_n_phases_per_composition);
-        activation_volumes_dislocation  = Utilities::parse_map_to_double_array(prm.get("Activation volumes for dislocation creep"),
-                                                                               list_of_composition_names,
-                                                                               has_background_field,
-                                                                               "Activation volumes for dislocation creep",
-                                                                               true,
-                                                                               expected_n_phases_per_composition);
+        options.property_name = "Activation energies for dislocation creep";
+        activation_energies_dislocation = Utilities::MapParsing::parse_map_to_double_array(prm.get("Activation energies for dislocation creep"),
+                                          options);
+
+        options.property_name = "Activation volumes for dislocation creep";
+        activation_volumes_dislocation = Utilities::MapParsing::parse_map_to_double_array(prm.get("Activation volumes for dislocation creep"),
+                                         options);
 
         // Check that there are no prefactor entries set to zero,
         // for example because the entry is for a field
