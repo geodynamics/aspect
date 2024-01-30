@@ -66,43 +66,24 @@ namespace aspect
 
       // Constructor
       template <int dim>
-      EllipsoidalChunkGeometry<dim>::EllipsoidalChunkGeometry()
+      EllipsoidalChunkGeometry<dim>::EllipsoidalChunkGeometry(const InitialTopographyModel::Interface<dim> &topo,
+                                                              const double para_semi_major_axis_a,
+                                                              const double para_eccentricity,
+                                                              const double para_semi_minor_axis_b,
+                                                              const double para_bottom_depth,
+                                                              const std::vector<Point<2>> &para_corners)
         :
-        semi_major_axis_a (-1),
-        eccentricity (-1),
-        semi_minor_axis_b (-1),
-        bottom_depth (-1),
-        topography(nullptr)
-      {}
-
-      // Copy constructor
-      template <int dim>
-      EllipsoidalChunkGeometry<dim>::EllipsoidalChunkGeometry(const EllipsoidalChunkGeometry &other)
-        :
-        ChartManifold<dim,3,3>(other)
-      {
-        this->initialize(other.topography);
-        this->set_manifold_parameters(other.semi_major_axis_a, other.eccentricity, other.semi_minor_axis_b,
-                                      other.bottom_depth, other.corners);
-      }
-
-
-      template <int dim>
-      void
-      EllipsoidalChunkGeometry<dim>::set_manifold_parameters(const double para_semi_major_axis_a,
-                                                             const double para_eccentricity,
-                                                             const double para_semi_minor_axis_b,
-                                                             const double para_bottom_depth,
-                                                             const std::vector<Point<2>> &para_corners)
+        topography (&topo),
+        semi_major_axis_a (para_semi_major_axis_a),
+        eccentricity (para_eccentricity),
+        semi_minor_axis_b (para_semi_minor_axis_b),
+        bottom_depth (para_bottom_depth),
+        corners (para_corners)
       {
         AssertThrow (dim == 3, ExcMessage("This manifold can currently only be used in 3d."));
-
-        semi_major_axis_a = para_semi_major_axis_a;
-        eccentricity = para_eccentricity;
-        semi_minor_axis_b = para_semi_minor_axis_b;
-        bottom_depth = para_bottom_depth;
-        corners=para_corners;
       }
+
+
 
       template <int dim>
       Point<3>
@@ -225,23 +206,18 @@ namespace aspect
       {
         return std::make_unique<EllipsoidalChunkGeometry>(*this);
       }
-
-
-
-      template <int dim>
-      void
-      EllipsoidalChunkGeometry<dim>::initialize(const InitialTopographyModel::Interface<dim> *topography_)
-      {
-        AssertThrow (dim == 3, ExcMessage("This manifold can currently only be used in 3d."));
-        topography = topography_;
-      }
     }
 
     template <int dim>
     void
     EllipsoidalChunk<dim>::initialize()
     {
-      manifold.initialize(&(this->get_initial_topography_model()));
+      manifold = std::make_unique<internal::EllipsoidalChunkGeometry<dim>>(this->get_initial_topography_model(),
+                                                                            semi_major_axis_a,
+                                                                            eccentricity,
+                                                                            semi_minor_axis_b,
+                                                                            bottom_depth,
+                                                                            corners);
     }
 
 
@@ -280,7 +256,7 @@ namespace aspect
       GridTools::transform (
         [&](const Point<dim> &x) -> Point<dim>
       {
-        return manifold.push_forward(x);
+        return manifold->push_forward(x);
       },
       coarse_grid);
 
@@ -288,7 +264,7 @@ namespace aspect
       // We won't use it during regular operation, but we set manifold_ids for
       // all cells, faces and edges immediately before refinement and
       // clear it again afterwards
-      coarse_grid.set_manifold (15, manifold);
+      coarse_grid.set_manifold (15, *manifold);
 
       coarse_grid.signals.pre_refinement.connect (
         [&] {set_manifold_ids(coarse_grid);});
@@ -627,21 +603,13 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
-
-
-      // Construct manifold object Pointer to an object that describes the geometry.
-      manifold.set_manifold_parameters(semi_major_axis_a,
-                                       eccentricity,
-                                       semi_minor_axis_b,
-                                       bottom_depth,
-                                       corners);
     }
 
     template <int dim>
     double
     EllipsoidalChunk<dim>::depth(const Point<dim> &position) const
     {
-      return std::max(std::min(-manifold.pull_back(position)[dim-1], maximal_depth()), 0.0);
+      return std::max(std::min(-manifold->pull_back(position)[dim-1], maximal_depth()), 0.0);
     }
 
     template <int dim>
@@ -666,7 +634,7 @@ namespace aspect
     double
     EllipsoidalChunk<dim>::get_radius(const Point<dim> &position) const
     {
-      const Point<dim> long_lat_depth = manifold.pull_back(position);
+      const Point<dim> long_lat_depth = manifold->pull_back(position);
       return semi_major_axis_a / (std::sqrt(1 - eccentricity * eccentricity * std::sin(long_lat_depth[1]) * std::sin(long_lat_depth[1])));
     }
 
@@ -732,7 +700,7 @@ namespace aspect
                               (southLatitude + northLatitude) * 0.5 * constants::degree_to_radians,
                               -depth);
 
-      return manifold.push_forward(p);
+      return manifold->push_forward(p);
     }
 
 
@@ -745,7 +713,7 @@ namespace aspect
                   ExcMessage("After displacement of the mesh, this function can no longer be used to determine whether a point lies in the domain or not."));
 
       // dim = 3
-      const Point<dim> ellipsoidal_point = manifold.pull_back(point);
+      const Point<dim> ellipsoidal_point = manifold->pull_back(point);
 
       // compare deflection from the ellipsoid surface
       if (ellipsoidal_point[dim-1] > 0.0+std::numeric_limits<double>::epsilon()*bottom_depth ||
@@ -771,7 +739,7 @@ namespace aspect
       for (unsigned int d=0; d<dim; ++d)
         cartesian_point[d] = position_point[d];
 
-      Point<3> transformed_point = manifold.pull_back_ellipsoid(cartesian_point, semi_major_axis_a, eccentricity);
+      Point<3> transformed_point = manifold->pull_back_ellipsoid(cartesian_point, semi_major_axis_a, eccentricity);
 
       const double radius =  semi_major_axis_a /
                              (std::sqrt(1 - eccentricity * eccentricity * std::sin(transformed_point[1]) * std::sin(transformed_point[1])));
@@ -807,7 +775,7 @@ namespace aspect
       const double radius = semi_major_axis_a / (std::sqrt(1 - eccentricity * eccentricity * std::sin(position_point(1)) * std::sin(position_point(1))));
       position_point(2) = position_tensor[0] - radius;
 
-      Point<3> transformed_point = manifold.push_forward_ellipsoid(position_point, semi_major_axis_a, eccentricity);
+      Point<3> transformed_point = manifold->push_forward_ellipsoid(position_point, semi_major_axis_a, eccentricity);
       return transformed_point;
     }
 
@@ -827,7 +795,7 @@ template <int dim>
 typename aspect::GeometryModel::internal::EllipsoidalChunkGeometry<dim>
 aspect::GeometryModel::EllipsoidalChunk<dim>::get_manifold() const
 {
-  return manifold;
+  return *manifold;
 }
 
 // explicit instantiations
