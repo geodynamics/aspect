@@ -97,26 +97,35 @@ namespace aspect
       {
         const double topography = topography_for_point(p);
 
-        // We start from the undeformed sphere. So the current radius must be
-        // between R0 and R1. Check this, with a slight tolerance to account
-        // for the fact that our mesh is not *completely* spherical.
-        const double r = p.norm();
-        Assert (r>=R0*0.99, ExcInternalError());
-        Assert (r<=R1*1.01, ExcInternalError());
+        // We can short-circuit the computations here if the topography
+        // is zero.
+        if (topography == 0)
+          return p;
+        else
+          {
+            // For the case with (non-zero) topography, we have to project
+            // the point out/inward.
 
-        // Then we need to stretch the point p outward by a factor that is
-        // zero at the core-mantle boundary and results in the right topography
-        // at the top.
-        //
-        // The stretching factor is relative to the distance from the core
-        // mantle boundary.
-        const double cmb_stretching_factor = (R1+topography-R0)/(R1-R0);
+            // We start from the undeformed sphere. So the current radius must be
+            // between R0 and R1. Check this, with a slight tolerance to account
+            // for the fact that our mesh is not *completely* spherical.
+            const double r = p.norm();
+            Assert (r>=R0*0.99, ExcInternalError());
+            Assert (r<=R1*1.01, ExcInternalError());
 
-        // From this we can compute what the desired radius is going to be, and
-        // scale the given point accordingly:
-        const double new_radius = (r-R0)*cmb_stretching_factor + R0;
+            // Then we need to stretch the point p outward by a factor that is
+            // zero at the core-mantle boundary and results in the right topography
+            // at the top.
+            //
+            // The stretching factor is relative to the distance from the core
+            // mantle boundary.
+            const double cmb_stretching_factor = (R1+topography-R0)/(R1-R0);
 
-        return p * (new_radius/r);
+            // From this we can compute what the desired radius is going to be, and
+            // scale the given point accordingly:
+            const double new_radius = (r-R0)*cmb_stretching_factor + R0;
+            return p * (new_radius/r);
+          }
       }
 
 
@@ -128,22 +137,32 @@ namespace aspect
       {
         const double topography = topography_for_point(p);
 
-        // We start from the deformed sphere. So the current radius must be
-        // between R0 and R1+topography. Check this, with a slight tolerance
-        // to account for the fact that our mesh is not *completely* spherical.
-        const double r = p.norm();
-        Assert (r>=R0*0.99, ExcInternalError());
-        Assert (r<=(R1+topography)*1.01, ExcInternalError());
+        // We can short-circuit the computations here if the topography
+        // is zero.
+        if (topography == 0)
+          return p;
+        else
+          {
+            // For the case with (non-zero) topography, we have to project
+            // the point in/outward.
 
-        // Then we need to stretch(=shrink) the point p outward by a factor that is
-        // zero at the core-mantle boundary and results in the right topography
-        // at the top.
-        const double cmb_stretching_factor = (R1-R0)/(R1+topography-R0);
+            // We start from the deformed sphere. So the current radius must be
+            // between R0 and R1+topography. Check this, with a slight tolerance
+            // to account for the fact that our mesh is not *completely* spherical.
+            const double r = p.norm();
+            Assert (r>=R0*0.99, ExcInternalError());
+            Assert (r<=(R1+topography)*1.01, ExcInternalError());
 
-        // From this we can compute what the desired radius is going to be, and
-        // scale the given point accordingly:
-        const double new_radius = (r-R0)*cmb_stretching_factor + R0;
-        return p * (new_radius/r);
+            // Then we need to stretch(=shrink) the point p outward by a factor that is
+            // zero at the core-mantle boundary and results in the right topography
+            // at the top.
+            const double cmb_stretching_factor = (R1-R0)/(R1+topography-R0);
+
+            // From this we can compute what the desired radius is going to be, and
+            // scale the given point accordingly:
+            const double new_radius = (r-R0)*cmb_stretching_factor + R0;
+            return p * (new_radius/r);
+          }
       }
 
 
