@@ -162,6 +162,6 @@ namespace aspect
     ASPECT_REGISTER_INITIAL_TOPOGRAPHY_MODEL(Function,
                                              "function",
                                              "Implementation of a model in which the initial topography "
-                                             "is described by a function in cartesian or spherical coordinates. ")
+                                             "is described by a function in Cartesian or spherical coordinates. ")
   }
 }

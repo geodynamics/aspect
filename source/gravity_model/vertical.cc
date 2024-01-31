@@ -77,7 +77,7 @@ namespace aspect
 
       AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::cartesian,
                    ExcMessage ("Gravity model 'vertical' should not be used with geometry models that "
-                               "do not have a cartesian natural coordinate system."));
+                               "do not have a Cartesian natural coordinate system."));
     }
   }
 }

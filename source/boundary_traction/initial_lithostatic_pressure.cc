@@ -100,7 +100,7 @@ namespace aspect
       // Set the radius of the representative point to the surface radius for spherical domains
       // or set the vertical coordinate to the surface value for box domains.
       // Also get the depth extent without including initial topography, and the vertical coordinate
-      // of the bottom boundary (radius for spherical and z-coordinate for cartesian domains).
+      // of the bottom boundary (radius for spherical and z-coordinate for Cartesian domains).
       double depth_extent = 0.;
       if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
         {
@@ -187,7 +187,7 @@ namespace aspect
       in.requested_properties = MaterialModel::MaterialProperties::density;
 
       // Where to calculate the density
-      // for cartesian domains
+      // for Cartesian domains
       if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()) ||
           Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
         in.position[0] = representative_point;
@@ -233,7 +233,7 @@ namespace aspect
                                                        + dealii::Utilities::int_to_string(pressure.size())));
 
           // Where to calculate the density:
-          // for cartesian domains
+          // for Cartesian domains
           if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()) ||
               Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
             {
@@ -350,7 +350,7 @@ namespace aspect
                              "The point where the pressure profile will be calculated. "
                              "Cartesian coordinates $(x,y,z)$ when geometry is a box, otherwise enter radius, "
                              "longitude, and in 3d latitude. Note that the coordinate related to the depth "
-                             "($y$ in 2d cartesian, $z$ in 3d cartesian and radius in spherical coordinates) is "
+                             "($y$ in 2d Cartesian, $z$ in 3d Cartesian and radius in spherical coordinates) is "
                              "not used. "
                              "Units: \\si{\\meter} or degrees.");
           prm.declare_entry("Number of integration points", "1000",
@@ -417,7 +417,7 @@ namespace aspect
                                             "the pressure downward based on the initial composition "
                                             "and temperature along the user-specified depth profile. "
                                             "The user-specified profile is given in terms of a point "
-                                            "in cartesian coordinates for box geometries and "
+                                            "in Cartesian coordinates for box geometries and "
                                             "in spherical coordinates for all "
                                             "other geometries (radius, longitude, latitude), and "
                                             "the number of integration points. "
