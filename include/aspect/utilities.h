@@ -383,10 +383,10 @@ namespace aspect
       WGS84_coordinates(const dealii::Point<dim> &position);
 
       /**
-       * Returns spherical coordinates of a Cartesian point. The returned array
-       * is filled with radius, phi and theta (polar angle). If the dimension is
-       * set to 2 theta is omitted. Phi is always normalized to [0,2*pi].
-       *
+       * Returns spherical coordinates of a Cartesian point. If `dim==3`, then
+       * the returned array contains the three values radius, phi and theta
+       * (polar angle). If `dim==2`, then theta is omitted.
+       * Phi is always normalized to [0,2*pi].
        */
       template <int dim>
       std::array<double,dim>
