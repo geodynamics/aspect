@@ -77,14 +77,24 @@ namespace aspect
       template <int dim>
       double
       SphericalManifoldWithTopography<dim>::
-      topography_for_point(const Point<dim> &/*x_y_z*/) const
+      topography_for_point(const Point<dim> &x_y_z) const
       {
         if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo) != nullptr)
           return 0;
         else
           {
-            Assert (false, ExcNotImplemented());
-            return 0;
+            Assert (dim==3, ExcNotImplemented());
+
+            // The natural coordinate system of the sphere geometry is r/phi/theta.
+            // This is what we need to query the topography with. So start by
+            // converting into this coordinate system
+            const std::array<double, dim> r_phi_theta = Utilities::Coordinates::cartesian_to_spherical_coordinates(x_y_z);
+
+            // Grab lon,lat coordinates
+            Point<dim-1> surface_point;
+            for (unsigned int d=0; d<dim-1; ++d)
+              surface_point[d] = r_phi_theta[d+1];
+            return topo->value(surface_point);
           }
       }
 
