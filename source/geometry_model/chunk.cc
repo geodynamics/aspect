@@ -372,10 +372,10 @@ namespace aspect
         const double topo_radius = std::max(inner_radius,radius + (radius-inner_radius)/max_depth*topography);
 
         // return the point with adjusted radius
-        Point<dim> topor_phi_theta = r_phi_theta;
-        topor_phi_theta[0] = topo_radius;
+        Point<dim> topo_r_phi_theta = r_phi_theta;
+        topo_r_phi_theta[0] = topo_radius;
 
-        return topor_phi_theta;
+        return topo_r_phi_theta;
       }
 
 
@@ -383,15 +383,15 @@ namespace aspect
       template <int dim>
       Point<dim>
       ChunkGeometry<dim>::
-      pull_back_topo(const Point<dim> &topor_phi_theta) const
+      pull_back_topo(const Point<dim> &topo_r_phi_theta) const
       {
         // the radius of the point with topography
-        const double topo_radius = topor_phi_theta[0];
+        const double topo_radius = topo_r_phi_theta[0];
 
         // Grab lon,lat coordinates
         Point<dim-1> surface_point;
         for (unsigned int d=0; d<dim-1; ++d)
-          surface_point[d] = topor_phi_theta[d+1];
+          surface_point[d] = topo_r_phi_theta[d+1];
         // Convert latitude to colatitude
         if (dim == 3)
           surface_point[1] = 0.5*numbers::PI - surface_point[1];
@@ -401,7 +401,7 @@ namespace aspect
         const double radius = std::max(inner_radius,(topo_radius*max_depth+inner_radius*topography)/(max_depth+topography));
 
         // return the point without topography
-        Point<dim> r_phi_theta = topor_phi_theta;
+        Point<dim> r_phi_theta = topo_r_phi_theta;
         r_phi_theta[0] = radius;
         return r_phi_theta;
       }
