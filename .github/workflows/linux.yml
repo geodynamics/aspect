@@ -87,7 +87,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=ON -D ASPECT_UNITY_BUILD=ON \
+        /usr/bin/cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=ON -D ASPECT_UNITY_BUILD=ON \
         -D CMAKE_CXX_FLAGS='-Werror' -D ASPECT_INSTALL_EXAMPLES=ON ..
         make -j 2
         ./aspect --test
