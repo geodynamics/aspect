@@ -41,32 +41,55 @@ namespace aspect
       coordinate_system(Utilities::Coordinates::CoordinateSystem::cartesian)
     {}
 
+
+
     template <int dim>
     double
     Function<dim>::
     value (const Point<dim-1> &surface_point) const
     {
+      // In a first step, create a global 'dim'-dimensional point that we can pass to the
+      // function expression as input -- because the function is a dim-dimensional
+      // function.
+      //
+      // Different geometry models pass the surface point in in different ways.
+      // In the following, we will first normalize the input to a dim-dimensional
+      // point with a dummy vertical/radial coordinate that, one would hope,
+      // the function expression will then simply ignore.
       Point<dim> global_point;
+
       if (Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model()) ||
           Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
         {
-          // No need to set the vertical coordinate correctly,
-          // because it will be thrown away in get_data_component anyway
           for (unsigned int d=0; d<dim-1; ++d)
             global_point[d] = surface_point[d];
+
+          // Now for the vertical component:
+          global_point[dim-1] = 0;
+
+          // The point as it is would have to be translated into a different
+          // coordinate system if that was requested in the input file.
+          // This is not currently implemented.
+          Assert (coordinate_system == Utilities::Coordinates::CoordinateSystem::cartesian,
+                  ExcNotImplemented());
         }
       else if (Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
                Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
                Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) )
         {
-          // No need to set the radial coordinate correctly,
-          // because it will be thrown away in get_data_component anyway
           std::array<double, dim> point;
           point[0] = 6371000.0;
           for (unsigned int d=0; d<dim-1; ++d)
             point[d+1] = surface_point[d];
 
           global_point = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(point);
+
+          // The point as it is would have to be translated into a different
+          // coordinate system (or, perhaps, better just left in the spherical
+          // coordinates we received) if that was requested in the input file.
+          // This is not currently implemented.
+          Assert (coordinate_system == Utilities::Coordinates::CoordinateSystem::cartesian,
+                  ExcNotImplemented());
         }
       else
         AssertThrow(false, ExcNotImplemented());

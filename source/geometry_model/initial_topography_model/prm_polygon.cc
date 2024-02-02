@@ -32,7 +32,7 @@ namespace aspect
     PrmPolygon<dim>::
     value (const Point<dim-1> &p) const
     {
-      Point<2> p1 = (dim == 2 ?Point<2>(p[0],0) : Point<2>(p[0],p[1]));
+      const Point<2> p1 = (dim == 2 ? Point<2>(p[0],0) : Point<2>(p[0],p[1]));
 
       /**
        * We go through the loop in the reverse order, because we

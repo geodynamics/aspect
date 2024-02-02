@@ -58,25 +58,38 @@ namespace aspect
     double
     AsciiData<dim>::value (const Point<dim-1> &surface_point) const
     {
-      // Because the get_data_component function of AsciiDataBoundary
-      // expects a dim-dimensional cartesian point, we have to
-      // add a coordinate here, and, for spherical geometries,
-      // change to cartesian coordinates.
+      // In a first step, create a global 'dim'-dimensional point that we can pass to the
+      // function expression as input -- because the function is a dim-dimensional
+      // function.
+      //
+      // Different geometry models pass the surface point in in different ways.
+      // In the following, we will first normalize the input to a dim-dimensional
+      // point with a dummy vertical/radial coordinate that, one would hope,
+      // the AsciiDataBoundary class will then simply ignore.
       Point<dim> global_point;
       if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()) ||
           Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
         {
-          // No need to set the vertical coordinate correctly,
-          // because it will be thrown away in get_data_component anyway
           for (unsigned int d=0; d<dim-1; ++d)
             global_point[d] = surface_point[d];
+
+          // Now for the vertical component:
+          global_point[dim-1] = 0;
         }
       else if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>> (this->get_geometry_model()) ||
                Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()) ||
                Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
         {
-          // No need to set the radial coordinate correctly,
-          // because it will be thrown away in get_data_component anyway
+          // AsciiDataBoundary always expects to get the input
+          // parameters for its functions in Cartesian
+          // coordinates. The get_data_component function then changes
+          // the coordinate system, or more precisely it asks the
+          // geometry model to convert the point into its natural
+          // coordinate system, before doing the table lookup.
+          //
+          // This is of course all not very efficient (TODO: Think
+          // about a better scheme), but the first step then needs to
+          // be to convert what we have into Cartesian coordinates...
           std::array<double, dim> point;
           point[0] = 6371000.0;
           for (unsigned int d=0; d<dim-1; ++d)
@@ -87,12 +100,14 @@ namespace aspect
       else
         AssertThrow(false, ExcNotImplemented());
 
-      const double topo = Utilities::AsciiDataBoundary<dim>::get_data_component(surface_boundary_id,
-                                                                                global_point,
-                                                                                0);
+      const double topo = this->Utilities::AsciiDataBoundary<dim>::get_data_component(surface_boundary_id,
+                                                                                      global_point,
+                                                                                      0);
 
       return topo;
     }
+
+
 
     template <int dim>
     Tensor<1,dim-1>
@@ -101,12 +116,15 @@ namespace aspect
       return Utilities::AsciiDataBoundary<dim>::vector_gradient(surface_boundary_id, point,0);
     }
 
+
+
     template <int dim>
     double
     AsciiData<dim>::max_topography () const
     {
       return Utilities::AsciiDataBoundary<dim>::get_maximum_component_value(surface_boundary_id,0);
     }
+
 
 
     template <int dim>
