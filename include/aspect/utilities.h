@@ -384,8 +384,9 @@ namespace aspect
 
       /**
        * Returns spherical coordinates of a Cartesian point. If `dim==3`, then
-       * the returned array contains the three values radius, phi and theta
-       * (polar angle). If `dim==2`, then theta is omitted.
+       * the returned array contains the three values radius, phi, and theta
+       * (polar angle). In other words, the two angles correspond to longitude
+       * and *colatitude* (instead of latitude). If `dim==2`, then theta is omitted.
        * Phi is always normalized to [0,2*pi].
        */
       template <int dim>
