@@ -361,9 +361,22 @@ namespace aspect
         Point<dim-1> surface_point;
         for (unsigned int d=0; d<dim-1; ++d)
           surface_point[d] = r_phi_theta[d+1];
-        // Convert latitude to colatitude
+
+        // While throughout ASPECT we use co-latitude as a convention when
+        // representing points in spherical coordinates (see for example
+        // the Utilities::Coordinates::cartesian_to_spherical_coordinates()
+        // function), the current class uses latitude in its pull back and
+        // push forward functions. As a consequence, the argument provided
+        // to this function has latitude as one coordinate (at least in 3d).
+        // On the other hand, the InitialTopography::Interface::value()
+        // function expects colatitude (=standard form spherical coordinates)
+        // for geometry models that are (parts of) spherical objects.
+        //
+        // So do the conversion:
         if (dim == 3)
           surface_point[1] = 0.5*numbers::PI - surface_point[1];
+
+        // Then query the topography at this point:
         const double topography = topo->value(surface_point);
 
         // adjust the radius based on the radius of the point
@@ -392,17 +405,32 @@ namespace aspect
         Point<dim-1> surface_point;
         for (unsigned int d=0; d<dim-1; ++d)
           surface_point[d] = topo_r_phi_theta[d+1];
-        // Convert latitude to colatitude
+
+        // While throughout ASPECT we use co-latitude as a convention when
+        // representing points in spherical coordinates (see for example
+        // the Utilities::Coordinates::cartesian_to_spherical_coordinates()
+        // function), the current class uses latitude in its pull back and
+        // push forward functions. As a consequence, the argument provided
+        // to this function has latitude as one coordinate (at least in 3d).
+        // On the other hand, the InitialTopography::Interface::value()
+        // function expects colatitude (=standard form spherical coordinates)
+        // for geometry models that are (parts of) spherical objects.
+        //
+        // So do the conversion:
         if (dim == 3)
           surface_point[1] = 0.5*numbers::PI - surface_point[1];
+
+        // Then query the topography at this point:
         const double topography = topo->value(surface_point);
 
         // remove the topography (which scales with radius)
-        const double radius = std::max(inner_radius,(topo_radius*max_depth+inner_radius*topography)/(max_depth+topography));
+        const double radius = std::max(inner_radius,
+                                       (topo_radius*max_depth+inner_radius*topography)/(max_depth+topography));
 
         // return the point without topography
         Point<dim> r_phi_theta = topo_r_phi_theta;
         r_phi_theta[0] = radius;
+
         return r_phi_theta;
       }
 
