@@ -281,9 +281,6 @@ namespace aspect
     void
     SphericalShell<dim>::initialize ()
     {
-      AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) ,
-                  ExcMessage("At the moment, only the Zero initial topography model can be used with the SphericalShell geometry model."));
-
       manifold = std::make_unique<internal::SphericalManifoldWithTopography<dim>>(this->get_initial_topography_model(),
                                                                                    R0, R1);
     }
@@ -680,7 +677,7 @@ namespace aspect
     double
     SphericalShell<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
-      return position.norm()-outer_radius();
+      return position.norm()-R1;
     }
 
 
@@ -710,6 +707,7 @@ namespace aspect
     double
     SphericalShell<dim>::maximal_depth() const
     {
+      // TODO: Take into account topography
       return R1-R0;
     }
 
