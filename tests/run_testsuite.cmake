@@ -100,7 +100,7 @@
 # For details, consult the ./README file.
 #
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.3.0)
 MESSAGE("-- This is CTest ${CMAKE_VERSION}")
 
 #
