@@ -812,12 +812,19 @@ namespace aspect
         std::array<double,dim> scoord;
 
         scoord[0] = position.norm(); // R
-        scoord[1] = std::atan2(position(1),position(0)); // Phi
+
+        // Compute the longitude phi. Note that atan2 is documented to return
+        // its result as a value between -pi and +pi, whereas we use the
+        // convention that we consider eastern longitude between 0 and 2pi.
+        // As a consequence, we correct where necessary.
+        scoord[1] = std::atan2(position(1),position(0));
         if (scoord[1] < 0.0)
           scoord[1] += 2.0*numbers::PI; // correct phi to [0,2*pi]
+
+        // In 3d also compute the polar angle (=colatitude)
         if (dim==3)
           {
-            if (scoord[0] > std::numeric_limits<double>::min())
+            if (/* R= */scoord[0] > std::numeric_limits<double>::min())
               scoord[2] = std::acos(position(2)/scoord[0]);
             else
               scoord[2] = 0.0;
