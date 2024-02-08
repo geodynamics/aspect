@@ -712,14 +712,14 @@ CONFIGURE_FILE(
 
 
 # Check if we want to precompile header files. This speeds up compile time,
-# but can fail on some machines with old cmake. Starting with cmake 3.16
-# there is native support inside cmake and we can precompile headers.
-IF(NOT CMAKE_VERSION VERSION_LESS 3.16)
-  SET(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake 3.8 and older versions or 3.16 and newer versions.")
-  SET(ASPECT_UNITY_BUILD ON CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions.")
+# but can fail on some machines with old CMake. Starting with CMake 3.16
+# there is native support inside CMake and we can precompile headers.
+IF(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+  SET(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for CMake 3.16 and newer versions.")
+  SET(ASPECT_UNITY_BUILD ON CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for CMake 3.16 and newer versions.")
 ELSE()
-  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake 3.8 and older versions or 3.16 and newer versions." FORCE)
-  SET(ASPECT_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions." FORCE)
+  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for CMake 3.16 and newer versions." FORCE)
+  SET(ASPECT_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for CMake 3.16 and newer versions." FORCE)
 ENDIF()
 
 IF (ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
@@ -729,7 +729,7 @@ IF (ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
 ENDIF()
 
 IF (ASPECT_PRECOMPILE_HEADERS)
-  IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
+  IF (CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
     MESSAGE(STATUS "Precompiling common header files.")
     # Use the native cmake support to precompile some common headers
     # from ASPECT and deal.II that are frequently included, but rarely changed.
@@ -751,7 +751,7 @@ ELSE()
 ENDIF()
 
 IF (ASPECT_UNITY_BUILD)
-  IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
+  IF (CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
     FOREACH(_T ${TARGETS})
       SET_PROPERTY(TARGET ${_T} PROPERTY UNITY_BUILD TRUE)
     ENDFOREACH()
@@ -760,7 +760,7 @@ IF (ASPECT_UNITY_BUILD)
     MESSAGE(FATAL_ERROR "ASPECT_UNITY_BUILD is currently only supported for CMake 3.16 and newer versions.")
   ENDIF()
 ELSE()
-  IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
+  IF (CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
     SET_PROPERTY(TARGET ${TARGET} PROPERTY UNITY_BUILD FALSE)
   ENDIF()
 
