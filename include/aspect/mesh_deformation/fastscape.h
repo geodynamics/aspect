@@ -123,7 +123,7 @@ namespace aspect
         std::vector<std::vector<double>> get_aspect_values() const;
 
         /**
-         * Function to intialize or restart FastScape
+         * Function to initialize or restart FastScape
          */
         void initialize_fastscape(std::vector<double> &elevation,
                                   std::vector<double> &basement,
@@ -249,7 +249,7 @@ namespace aspect
 
         /**
          * Difference in refinement levels expected at the ASPECT surface,
-         * where this would be set to 2 if 3 refinement leves are set at the surface.
+         * where this would be set to 2 if 3 refinement levels are set at the surface.
          * This and surface_resolution are required to properly transfer node data from
          * ASPECT to FastScape.
          *

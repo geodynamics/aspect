@@ -230,9 +230,9 @@ namespace aspect
               AssertThrow(Utilities::fexists(this->get_output_directory() + "fastscape_elevation_restart.txt"),
                           ExcMessage("Cannot open topography file to restart FastScape."));
               AssertThrow(Utilities::fexists(this->get_output_directory() + "fastscape_basement_restart.txt"),
-                          ExcMessage("Cannot open topography file to restart FastScape."));
+                          ExcMessage("Cannot open basement file to restart FastScape."));
               AssertThrow(Utilities::fexists(this->get_output_directory() + "fastscape_silt_fraction_restart.txt"),
-                          ExcMessage("Cannot open topography file to restart FastScape."));
+                          ExcMessage("Cannot open silt fraction file to restart FastScape."));
             }
         }
 
