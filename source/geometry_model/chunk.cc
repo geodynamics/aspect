@@ -748,14 +748,23 @@ namespace aspect
     std::array<double,dim>
     Chunk<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
-      // the chunk manifold has a order of radius, longitude, latitude.
+      // The chunk manifold uses (radius, longitude, latitude).
       // This is exactly what we need.
+
       // Ignore the topography to avoid a loop when calling the
       // AsciiDataBoundary for topography which uses this function....
       const Point<dim> transformed_point = manifold->pull_back_sphere(position_point);
       std::array<double,dim> position_array;
       for (unsigned int i = 0; i < dim; ++i)
         position_array[i] = transformed_point(i);
+
+      // Internally, the Chunk geometry uses longitudes in the range -pi...pi,
+      // and that is what pull_back_sphere() produces. But externally, we need
+      // to use 0...2*pi to match what Utilities::Coordinates::cartesian_to_spherical_coordinates()
+      // returns, for example, and what we document the AsciiBoundaryData class
+      // wants to see from input files.
+      if (position_array[1] < 0)
+        position_array[1] += 2*numbers::PI;
 
       return position_array;
     }
