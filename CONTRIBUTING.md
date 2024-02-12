@@ -20,7 +20,7 @@ guide on the process of contributing to an open-source project
 For questions about ASPECT on all levels, please use the
 [ASPECT forum](https://community.geodynamics.org/c/aspect).
 Archived discussions from the inactive aspect-devel mailing list can be downloaded
-at [aspect-devel archives](http://lists.geodynamics.org/pipermail/aspect-devel).
+at [aspect-devel archives](https://geodynamics.org/pipermail/aspect-devel/).
 
 ## Bug reports
 
@@ -30,11 +30,10 @@ may find. We keep track of all open issues related to ASPECT
 
 Please follow these simple instructions before opening a new bug report:
 
-- Do a quick search in the list of open and closed issues for a duplicate of
-  your issue.
-- Do a google search in the archived mailing list discussions for a
-  duplicate of your issue by searching for
-  `your search term site:https://geodynamics.org/pipermail/aspect-devel/`
+- Do a search in the [list of open and closed issues](https://github.com/geodynamics/aspect/issues?q=is%3Aissue)
+  for a duplicate of your problem.
+- Do a search in the [ASPECT forum](https://community.geodynamics.org/c/aspect) for a
+  duplicate of your problem.
 - If you did not find an answer, open a new
   [issue](https://github.com/geodynamics/aspect/issues/new) and explain your
   problem in as much detail as possible.
@@ -144,7 +143,7 @@ ways in which your contribution will be acknowledged by the ASPECT community:
 - Every commit that is merged into the ASPECT repository makes you part of
   the growing group of ASPECT
   [contributors](https://github.com/geodynamics/aspect/graphs/contributors).
-- Our biweekly mailing list newsletter mentions all raised issues and proposed
+- Our biweekly forum newsletter mentions all raised issues and proposed
   and merged pull requests, including an acknowledgment of the author of the
   issue/pull request.
 - For every release the most significant entries of our
@@ -165,7 +164,7 @@ ways in which your contribution will be acknowledged by the ASPECT community:
   - A profound understanding of ASPECT's structure and vision;
   - A proven willingness to further the project's goals and help other users;
   - Significant contributions to ASPECT (not necessarily only source code,
-    also mailing list advice, documentation, benchmarks, tutorials);
+    also forum advice, documentation, benchmarks, tutorials);
   - Regular and active contributions to ASPECT for more than one year,
     not restricted to user meetings.
 
