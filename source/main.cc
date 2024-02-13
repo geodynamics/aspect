@@ -203,7 +203,7 @@ void validate_shared_lib_list (const bool before_loading_shared_libs)
         error << "Since this is happening already before opening additional\n"
               << "shared libraries, this means that something must have gone\n"
               << "wrong when you configured deal.II and/or ASPECT. Please\n"
-              << "contact the mailing lists for help.\n";
+              << "contact the forum for help.\n";
       else
         error << "Since this is happening after opening additional shared\n"
               << "library plugins, this likely means that you have compiled\n"
