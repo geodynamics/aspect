@@ -81,11 +81,7 @@ namespace aspect
         inline MPI_Datatype
         mpi_type_id(const bool *)
         {
-#  if DEAL_II_MPI_VERSION_GTE(2, 2)
           return MPI_CXX_BOOL;
-#  else
-          return MPI_C_BOOL;
-#  endif
         }
 
 
