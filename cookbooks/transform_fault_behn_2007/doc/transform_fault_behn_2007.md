@@ -1,4 +1,4 @@
-(sec:cookbooks:grain-size-ridge)=
+(sec:cookbooks:transform-fault-world-builder)=
 # Using the World Builder to model the thermal structure of oceanic transform faults
 
 *This section was contributed by Juliane Dannberg.*
