@@ -26,6 +26,10 @@
 #include <deal.II/base/revision.h>
 #include <deal.II/base/vectorization.h>
 
+#ifdef ASPECT_WITH_WORLD_BUILDER
+#include <world_builder/config.h>
+#endif
+
 #include <cstring>
 
 
@@ -70,6 +74,18 @@ void print_aspect_header(Stream &stream)
          << DEAL_II_P4EST_VERSION_MAJOR << '.'
          << DEAL_II_P4EST_VERSION_MINOR << '.'
          << DEAL_II_P4EST_VERSION_SUBMINOR << '\n';
+
+#ifdef ASPECT_WITH_WORLD_BUILDER
+  stream << "--     . using Geodynamic World Builder "
+         << WORLD_BUILDER_VERSION_MAJOR << '.'
+         << WORLD_BUILDER_VERSION_MINOR << '.'
+         << WORLD_BUILDER_VERSION_PATCH;
+
+  if (WorldBuilder::Version::GIT_SHA1 != "")
+    stream << " (" << WorldBuilder::Version::GIT_BRANCH << ", " << WorldBuilder::Version::GIT_SHA1.substr(0,9) << ')';
+
+  stream << '\n';
+#endif
 
 #ifdef DEBUG
   stream << "--     . running in DEBUG mode\n"
