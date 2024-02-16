@@ -167,6 +167,8 @@ if(ASPECT_WITH_WORLD_BUILDER)
   IF(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0)
     ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
     INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/world_builder/include/")
+    # if we configured with 0.5.0 before, we have a stray include file here. delete it.
+    FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder/config.h")
   ELSE()
     FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/*.cc")
     LIST(APPEND TARGET_SRC ${wb_files})
