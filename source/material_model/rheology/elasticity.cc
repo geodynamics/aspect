@@ -242,16 +242,15 @@ namespace aspect
 
       template <int dim>
       void
-      Elasticity<dim>::fill_elastic_force_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                                   const std::vector<double> &average_elastic_shear_moduli,
-                                                   MaterialModel::MaterialModelOutputs<dim> &out) const
+      Elasticity<dim>::fill_elastic_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                             const std::vector<double> &average_elastic_shear_moduli,
+                                             MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        // Create a reference to the structure for the elastic force terms that are needed to compute the
-        // right-hand side of the Stokes system
+        // Create a reference to the structure for the elastic outputs
         MaterialModel::ElasticOutputs<dim>
-        *force_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
+        *elastic_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
 
-        if (force_out == nullptr)
+        if (elastic_out == nullptr)
           return;
 
         if (in.requests_property(MaterialProperties::additional_outputs))
@@ -262,12 +261,10 @@ namespace aspect
               for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
                 stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
 
-              // Average viscoelastic viscosity
-              const double average_viscoelastic_viscosity = out.viscosities[i];
-
-              // Fill elastic force outputs (See equation 30 in Moresi et al., 2003, J. Comp. Phys.)
-              force_out->elastic_force[i] = -1. * ( average_viscoelastic_viscosity / calculate_elastic_viscosity(average_elastic_shear_moduli[i]) * stress_old );
-
+              // The viscoelastic strain rate is needed only when the Newton method or the DCP method is used for solving.
+              elastic_out->elastic_force[i] = -out.viscosities[i] / calculate_elastic_viscosity(average_elastic_shear_moduli[i]) * stress_old;
+              if (Parameters<dim>::is_defect_correction(this->get_parameters().nonlinear_solver))
+                elastic_out->viscoelastic_strain_rate[i] = calculate_viscoelastic_strain_rate(in.strain_rate[i], stress_old, average_elastic_shear_moduli[i]);
             }
       }
 
@@ -412,7 +409,7 @@ namespace aspect
 
 
       template <int dim>
-      double
+      SymmetricTensor<2,dim>
       Elasticity<dim>::
       calculate_viscoelastic_strain_rate(const SymmetricTensor<2,dim> &strain_rate,
                                          const SymmetricTensor<2,dim> &stored_stress,
@@ -425,10 +422,8 @@ namespace aspect
         // elastic stresses stored from the last time step.
         // Note the parallels with the viscous part of the strain rate deviator,
         // which is equal to 0.5 * stress / viscosity.
-        const SymmetricTensor<2,dim> edot_deviator = deviator(strain_rate) + 0.5*stored_stress /
-                                                     calculate_elastic_viscosity(shear_modulus);
-        // Return the norm of the strain rate, or 0, whichever is larger.
-        return std::sqrt(std::max(-second_invariant(edot_deviator), 0.));
+        return deviator(strain_rate) + 0.5 * deviator(stored_stress) /
+               calculate_elastic_viscosity(shear_modulus);
       }
     }
   }

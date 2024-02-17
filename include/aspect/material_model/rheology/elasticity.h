@@ -89,9 +89,9 @@ namespace aspect
            * fill an additional material model outputs objects with the elastic force terms.
            */
           void
-          fill_elastic_force_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                      const std::vector<double> &average_elastic_shear_moduli,
-                                      MaterialModel::MaterialModelOutputs<dim> &out) const;
+          fill_elastic_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                const std::vector<double> &average_elastic_shear_moduli,
+                                MaterialModel::MaterialModelOutputs<dim> &out) const;
 
           /**
            * Given the stress of the previous time step in the material model inputs @p in,
@@ -128,7 +128,7 @@ namespace aspect
                                             const double shear_modulus) const;
 
           /**
-           * Calculate the norm of the effective deviatoric strain rate tensor,
+           * Calculate the effective deviatoric strain rate tensor,
            * which equals the norm of the true deviatoric strain rate plus
            * a fictional strain rate which would arise from stored elastic stresses.
            * In ASPECT, this additional strain rate is
@@ -137,7 +137,7 @@ namespace aspect
            * by ensuring that the resulting strain rate tensor is equal to the
            * total current stress tensor multiplied by a scalar.
            */
-          double
+          SymmetricTensor<2,dim>
           calculate_viscoelastic_strain_rate (const SymmetricTensor<2,dim> &strain_rate,
                                               const SymmetricTensor<2,dim> &stored_stress,
                                               const double shear_modulus) const;
