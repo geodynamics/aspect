@@ -1,0 +1,11 @@
+Incompatible: When using the "AsciiDataBoundary" class to read initial
+topographies for the chunk geometry, the input file needed to provide
+topographies spaced on a grid in latitude and longitude where the
+longitude was to be provided from -pi (180 degrees west) to +pi (180
+degrees east). This is contrary to the rest of ASPECT, which generally
+uses 0 to 2*pi (0 to 360 degrees east) as a convention. This has now
+been changed: The initial topography plugin will be asked about
+topographies in lat-long with longitudes between 0 and 2*pi. This also
+means that input files have to be changed correspondingly.
+<br>
+(Wolfgang Bangerth, 2024/02/16)
