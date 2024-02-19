@@ -65,7 +65,12 @@ namespace aspect
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
 
-        const bool geometry_has_periodic_boundary = (this->get_geometry_model().get_periodic_boundary_pairs().size() != 0);
+        const auto &cell = begin_particle->get_surrounding_cell();
+        bool at_periodic_boundary = false;
+        for (const auto &face_index: cell->face_indices())
+          if (cell->at_boundary(face_index))
+            if (cell->has_periodic_neighbor(face_index))
+              at_periodic_boundary = true;
 
         typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
         typename std::vector<Tensor<1,dim>>::const_iterator velocity = velocities.begin();
@@ -82,7 +87,7 @@ namespace aspect
                 Point<dim> new_location = loc0 + 0.5 * k1;
 
                 // Check if we crossed a periodic boundary and if necessary adjust positions
-                if (geometry_has_periodic_boundary)
+                if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(new_location,
                                                                               ArrayView<Point<dim>>(loc0));
 
@@ -107,7 +112,7 @@ namespace aspect
                 Point<dim> new_location = loc0 + k2;
 
                 // no need to adjust loc0, because this is the last integrator step
-                if (geometry_has_periodic_boundary)
+                if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(new_location);
 
                 it->set_location(new_location);
