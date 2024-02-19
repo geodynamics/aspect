@@ -59,15 +59,21 @@ namespace aspect
                                      const std::vector<Tensor<1,dim>> &velocities,
                                      const double dt)
       {
-        Assert(static_cast<unsigned int> (std::distance(begin_particle, end_particle)) == old_velocities.size(),
-               ExcMessage("The particle integrator expects the old velocity vector to be of equal size "
-                          "to the number of particles to advect. For some unknown reason they are different, "
-                          "most likely something went wrong in the calling function."));
+        if (integrator_substep < 3)
+          {
+            Assert(static_cast<unsigned int> (std::distance(begin_particle, end_particle)) == old_velocities.size(),
+                   ExcMessage("The particle integrator expects the old velocity vector to be of equal size "
+                              "to the number of particles to advect. For some unknown reason they are different, "
+                              "most likely something went wrong in the calling function."));
+          }
 
-        Assert(old_velocities.size() == velocities.size(),
-               ExcMessage("The particle integrator expects the velocity vector to be of equal size "
-                          "to the number of particles to advect. For some unknown reason they are different, "
-                          "most likely something went wrong in the calling function."));
+        if (integrator_substep >= 1 && integrator_substep < 4)
+          {
+            Assert(static_cast<unsigned int> (std::distance(begin_particle, end_particle)) == velocities.size(),
+                   ExcMessage("The particle integrator expects the velocity vector to be of equal size "
+                              "to the number of particles to advect. For some unknown reason they are different, "
+                              "most likely something went wrong in the calling function."));
+          }
 
         const bool geometry_has_periodic_boundary = (this->get_geometry_model().get_periodic_boundary_pairs().size() != 0);
 
@@ -205,6 +211,29 @@ namespace aspect
 
         // Continue until we're at the last step
         return (integrator_substep != 0);
+      }
+
+
+      template <int dim>
+      std::array<bool, 3>
+      RK4<dim>::required_solution_vectors() const
+      {
+        switch (integrator_substep)
+          {
+            case 0:
+              return {{false, true, false}};
+            case 1:
+              return {{false, true, true}};
+            case 2:
+              return {{false, true, true}};
+            case 3:
+              return {{false, false, true}};
+            default:
+              Assert(false,
+                     ExcMessage("The RK4 integrator should never continue after four integration steps."));
+          }
+
+        return {{false, false, false}};
       }
     }
   }

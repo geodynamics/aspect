@@ -115,6 +115,17 @@ namespace aspect
           virtual std::size_t get_data_size() const;
 
           /**
+           * Return a list of boolean values indicating which solution vectors
+           * are required for the integration. The first entry indicates if
+           * the particle integrator requires the solution vector at the old
+           * old time (k-1), the second entry indicates if the particle integrator
+           * requires the solution vector at the old time (k), and the third entry
+           * indicates if the particle integrator requires the solution vector
+           * at the new time (k+1).
+          */
+          virtual std::array<bool, 3> required_solution_vectors() const;
+
+          /**
            * Read integration related data for a particle specified by particle_id
            * from the data array. This function is called after transferring
            * a particle to the local domain during an integration step.

@@ -55,6 +55,15 @@ namespace aspect
             it->set_location(new_location);
           }
       }
+
+
+
+      template <int dim>
+      std::array<bool, 3>
+      Euler<dim>::required_solution_vectors() const
+      {
+        return {{false, true, false}};
+      }
     }
   }
 }

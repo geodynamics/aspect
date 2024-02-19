@@ -544,38 +544,50 @@ namespace aspect
       for (auto particle = begin_particle; particle!=end_particle; ++particle)
         positions.push_back(particle->get_reference_location());
 
-      boost::container::small_vector<double, 100> solution_values(this->get_fe().dofs_per_cell);
-      boost::container::small_vector<double, 100> old_solution_values(this->get_fe().dofs_per_cell);
+      const std::array<bool, 3> required_solution_vectors = integrator->required_solution_vectors();
 
-      cell->get_dof_values(this->get_current_linearization_point(),
-                           solution_values.begin(),
-                           solution_values.end());
+      AssertThrow (required_solution_vectors[0] == false,
+                   ExcMessage("The integrator requires the old old solution vector, but it is not available."));
 
-      cell->get_dof_values(this->get_old_solution(),
-                           old_solution_values.begin(),
-                           old_solution_values.end());
 
       const bool use_fluid_velocity = this->include_melt_transport() &&
                                       property_manager->get_data_info().fieldname_exists("melt_presence");
-      auto &evaluator = evaluators.get_velocity_or_fluid_velocity_evaluator(use_fluid_velocity);
 
+      auto &evaluator = evaluators.get_velocity_or_fluid_velocity_evaluator(use_fluid_velocity);
       auto &mapping_info = evaluators.get_mapping_info();
       mapping_info.reinit(cell, {positions.data(),positions.size()});
-      evaluator.evaluate({solution_values.data(),solution_values.size()},
-                         EvaluationFlags::values);
 
       std::vector<Tensor<1,dim>> velocities;
-      velocities.reserve(n_particles_in_cell);
-      for (unsigned int i=0; i<n_particles_in_cell; ++i)
-        velocities.push_back(evaluator.get_value(i));
-
-      evaluator.evaluate({old_solution_values.data(),old_solution_values.size()},
-                         EvaluationFlags::values);
-
       std::vector<Tensor<1,dim>> old_velocities;
-      old_velocities.reserve(n_particles_in_cell);
-      for (unsigned int i=0; i<n_particles_in_cell; ++i)
-        old_velocities.push_back(evaluator.get_value(i));
+
+      if (required_solution_vectors[1] == true)
+        {
+          boost::container::small_vector<double, 100> old_solution_values(this->get_fe().dofs_per_cell);
+          cell->get_dof_values(this->get_old_solution(),
+                               old_solution_values.begin(),
+                               old_solution_values.end());
+
+          evaluator.evaluate({old_solution_values.data(),old_solution_values.size()},
+                             EvaluationFlags::values);
+
+          old_velocities.resize(n_particles_in_cell);
+          for (unsigned int i=0; i<n_particles_in_cell; ++i)
+            old_velocities[i] = evaluator.get_value(i);
+        }
+
+      if (required_solution_vectors[2] == true)
+        {
+          boost::container::small_vector<double, 100> solution_values(this->get_fe().dofs_per_cell);
+          cell->get_dof_values(this->get_current_linearization_point(),
+                               solution_values.begin(),
+                               solution_values.end());
+          evaluator.evaluate({solution_values.data(),solution_values.size()},
+                             EvaluationFlags::values);
+
+          velocities.resize(n_particles_in_cell);
+          for (unsigned int i=0; i<n_particles_in_cell; ++i)
+            velocities[i] = evaluator.get_value(i);
+        }
 
       integrator->local_integrate_step(begin_particle,
                                        end_particle,

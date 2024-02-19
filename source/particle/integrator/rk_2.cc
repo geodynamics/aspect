@@ -60,10 +60,11 @@ namespace aspect
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
 
-        Assert(old_velocities.size() == velocities.size(),
-               ExcMessage("The particle integrator expects the velocity vector to be of equal size "
-                          "to the number of particles to advect. For some unknown reason they are different, "
-                          "most likely something went wrong in the calling function."));
+        if (higher_order_in_time == true && integrator_substep == 1)
+          Assert(old_velocities.size() == velocities.size(),
+                 ExcMessage("The particle integrator expects the velocity vector to be of equal size "
+                            "to the number of particles to advect. For some unknown reason they are different, "
+                            "most likely something went wrong in the calling function."));
 
         const bool geometry_has_periodic_boundary = (this->get_geometry_model().get_periodic_boundary_pairs().size() != 0);
 
@@ -130,6 +131,31 @@ namespace aspect
 
         // Continue until we're at the last step
         return (integrator_substep != 0);
+      }
+
+
+
+      template <int dim>
+      std::array<bool, 3>
+      RK2<dim>::required_solution_vectors() const
+      {
+        switch (integrator_substep)
+          {
+            case 0:
+              return {{false, true, false}};
+            case 1:
+            {
+              if (higher_order_in_time)
+                return {{false, true, true}};
+              else
+                return {{false, true, false}};
+            }
+            default:
+              Assert(false,
+                     ExcMessage("The RK4 integrator should never continue after four integration steps."));
+
+              return {{false, false, false}};
+          }
       }
 
 
