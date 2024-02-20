@@ -49,6 +49,16 @@ namespace aspect
 
 
     template <int dim>
+    bool
+    Interface<dim>::has_periodic_boundary() const
+    {
+      return false;
+    }
+
+
+
+
+    template <int dim>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
     Interface<dim>::get_periodic_boundary_pairs() const
     {

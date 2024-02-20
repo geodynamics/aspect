@@ -40,12 +40,16 @@ namespace aspect
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
 
-        const auto &cell = begin_particle->get_surrounding_cell();
+        const auto cell = begin_particle->get_surrounding_cell();
         bool at_periodic_boundary = false;
-        for (const auto &face_index: cell->face_indices())
-          if (cell->at_boundary(face_index))
-            if (cell->has_periodic_neighbor(face_index))
-              at_periodic_boundary = true;
+        if (this->get_geometry_model().has_periodic_boundary())
+          for (const auto face_index: cell->face_indices())
+            if (cell->at_boundary(face_index))
+              if (cell->has_periodic_neighbor(face_index))
+                {
+                  at_periodic_boundary = true;
+                  break;
+                }
 
         typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
 
