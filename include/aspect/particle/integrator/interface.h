@@ -123,7 +123,7 @@ namespace aspect
            * indicates if the particle integrator requires the solution vector
            * at the new time (k+1).
           */
-          virtual std::array<bool, 3> required_solution_vectors() const;
+          virtual std::array<bool, 3> required_solution_vectors() const = 0;
 
           /**
            * Read integration related data for a particle specified by particle_id

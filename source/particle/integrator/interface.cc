@@ -69,15 +69,6 @@ namespace aspect
 
 
       template <int dim>
-      std::array<bool, 3>
-      Interface<dim>::required_solution_vectors() const
-      {
-        return {{false, true, true}};
-      }
-
-
-
-      template <int dim>
       const void *
       Interface<dim>::read_data(const typename ParticleHandler<dim>::particle_iterator &/*particle*/,
                                 const void *data)
