@@ -299,15 +299,6 @@ namespace aspect
         translate_id_to_symbol_name (const types::boundary_id boundary_id) const;
 
         /**
-         * Returns whether this geometry model has any periodic boundary
-         * conditions. The default implementation of this function returns
-         * false.
-         */
-        virtual
-        bool
-        has_periodic_boundary() const;
-
-        /**
          * Returns a set of periodic boundary pairs.  The elements of the set
          * are a pair of boundary ids and a cartesian unit direction each. The
          * base class returns an empty set, so this does nothing unless you

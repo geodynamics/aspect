@@ -182,27 +182,13 @@ namespace aspect
     }
 
 
-
-    template <int dim>
-    bool
-    Box<dim>::has_periodic_boundary() const
-    {
-      for (unsigned int i=0; i<dim; ++i)
-        if (periodic[i])
-          return true;
-
-      return false;
-    }
-
-
-
     template <int dim>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
     Box<dim>::
     get_periodic_boundary_pairs () const
     {
       std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries;
-      for (unsigned int i=0; i<dim; ++i)
+      for ( unsigned int i=0; i<dim; ++i)
         if (periodic[i])
           periodic_boundaries.insert( std::make_pair( std::pair<types::boundary_id, types::boundary_id>(2*i, 2*i+1), i) );
       return periodic_boundaries;

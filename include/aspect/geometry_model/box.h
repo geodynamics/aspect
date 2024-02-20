@@ -156,13 +156,6 @@ namespace aspect
         get_symbolic_boundary_names_map () const override;
 
         /**
-         * Returns whether this geometry model has any periodic boundary
-         * conditions.
-         */
-        bool
-        has_periodic_boundary() const override;
-
-        /**
          * Return the set of periodic boundaries as described in the input
          * file.
          */

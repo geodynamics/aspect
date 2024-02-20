@@ -71,7 +71,7 @@ namespace aspect
 
         const auto cell = begin_particle->get_surrounding_cell();
         bool at_periodic_boundary = false;
-        if (this->get_geometry_model().has_periodic_boundary())
+        if (this->get_triangulation().get_periodic_face_map().empty() == false)
           for (const auto &face_index: cell->face_indices())
             if (cell->at_boundary(face_index))
               if (cell->has_periodic_neighbor(face_index))

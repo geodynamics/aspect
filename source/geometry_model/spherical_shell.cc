@@ -590,21 +590,9 @@ namespace aspect
 
 
     template <int dim>
-    bool
-    SphericalShell<dim>::has_periodic_boundary() const
-    {
-      if (periodic)
-        return true;
-
-      return false;
-    }
-
-
-
-    template <int dim>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
     SphericalShell<dim>::
-    get_periodic_boundary_pairs() const
+    get_periodic_boundary_pairs () const
     {
       std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries;
       if (periodic)

@@ -200,25 +200,12 @@ namespace aspect
 
 
     template <int dim>
-    bool
-    TwoMergedBoxes<dim>::has_periodic_boundary() const
-    {
-      for (unsigned int i=0; i<dim; ++i)
-        if (periodic[i])
-          return true;
-
-      return false;
-    }
-
-
-
-    template <int dim>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
     TwoMergedBoxes<dim>::
-    get_periodic_boundary_pairs() const
+    get_periodic_boundary_pairs () const
     {
       std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries;
-      for (unsigned int i=0; i<dim+dim-1; ++i)
+      for ( unsigned int i=0; i<dim+dim-1; ++i)
         if (periodic[i])
           {
             const unsigned int direction = i>=dim ? i-dim : i;
