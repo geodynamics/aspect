@@ -75,7 +75,16 @@ namespace aspect
                               "most likely something went wrong in the calling function."));
           }
 
-        const bool geometry_has_periodic_boundary = (this->get_geometry_model().get_periodic_boundary_pairs().size() != 0);
+        const auto cell = begin_particle->get_surrounding_cell();
+        bool at_periodic_boundary = false;
+        if (this->get_triangulation().get_periodic_face_map().empty() == false)
+          for (const auto &face_index: cell->face_indices())
+            if (cell->at_boundary(face_index))
+              if (cell->has_periodic_neighbor(face_index))
+                {
+                  at_periodic_boundary = true;
+                  break;
+                }
 
         typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
         typename std::vector<Tensor<1,dim>>::const_iterator velocity = velocities.begin();
@@ -95,7 +104,7 @@ namespace aspect
                 Point<dim> new_location = old_location + 0.5 * k[0];
 
                 // Check if we crossed a periodic boundary and if necessary adjust positions
-                if (geometry_has_periodic_boundary)
+                if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(new_location,
                                                                               ArrayView<Point<dim>>(&old_location,1),
                                                                               ArrayView<Tensor<1,dim>>(&k[0],1));
@@ -116,7 +125,7 @@ namespace aspect
 
                 Point<dim> new_location = old_location + 0.5 * k[1];
 
-                if (geometry_has_periodic_boundary)
+                if (at_periodic_boundary)
                   {
                     for (unsigned int i=0; i<dim; ++i)
                       k[0][i] = properties[property_indices[1] + i];
@@ -146,7 +155,7 @@ namespace aspect
 
                 Point<dim> new_location = old_location + k[2];
 
-                if (geometry_has_periodic_boundary)
+                if (at_periodic_boundary)
                   {
                     for (unsigned int i=0; i<dim; ++i)
                       {
@@ -188,7 +197,7 @@ namespace aspect
                 Point<dim> new_location = old_location + (k[0] + 2.0*k[1] + 2.0*k[2] + k[3])/6.0;
 
                 // No need to fix intermediate values, this is the last integrator step
-                if (geometry_has_periodic_boundary)
+                if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(new_location);
 
                 it->set_location(new_location);
