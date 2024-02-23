@@ -141,6 +141,10 @@ namespace aspect
 
         // Time scale for fluid release and absorption.
         double fluid_reaction_time_scale;
+        double max_peridotite_water;
+        double max_gabbro_water;
+        double max_MORB_water;
+        double max_sediment_water;
 
         /**
          * Enumeration for selecting which type of scheme to use for
@@ -174,7 +178,7 @@ namespace aspect
           no_reaction,
           zero_solubility,
           tian_approximation
-        } 
+        }
         fluid_solid_reaction_scheme;
     };
   }

@@ -1,0 +1,48 @@
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Solving bound_fluid system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Skipping gabbro composition solve because RHS is zero.
+   Solving MORB system ... 0 iterations.
+   Skipping sediment composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.28181e-16, 0, 1.39664e-16, 0, 0, 8.51473e-17, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     Writing graphical output:  output/solution/solution-00000
+     Compositions min/max/mass: 0/0/0 // 0.11/0.11/4.4e+09 // 0/0/0 // 0/0/0 // 1/1/4e+10 // 0/0/0
+     RMS, max velocity:         5.54e-21 m/year, 1.26e-20 m/year
+
+*** Timestep 1:  t=1000 years, dt=1000 years
+   Solving composition reactions... in 10 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving bound_fluid system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Skipping gabbro composition solve because RHS is zero.
+   Solving MORB system ... 0 iterations.
+   Skipping sediment composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.51094e-16, 1.41145e-16, 1.62901e-16, 0, 0, 8.51473e-17, 0, 2.26011e-15
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.26011e-15
+
+
+   Postprocessing:
+     Writing graphical output:  output/solution/solution-00001
+     Compositions min/max/mass: 0.057/0.1095/3.858e+09 // 0.0005023/0.053/5.422e+08 // 0/0/0 // 0/0/0 // 1/1/4e+10 // 0/0/0
+     RMS, max velocity:         5.54e-21 m/year, 1.26e-20 m/year
+
+Termination requested by criterion: end time
+
+
+

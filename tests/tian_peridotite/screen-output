@@ -1,10 +1,5 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
-
------------------------------------------------------------------------------
------------------------------------------------------------------------------
-Number of active cells: 64 (on 4 levels)
-Number of degrees of freedom: 3,533 (578+273+578+81+289+289+289+289+289+289+289)
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
@@ -15,14 +10,16 @@ Number of degrees of freedom: 3,533 (578+273+578+81+289+289+289+289+289+289+289)
    Skipping MORB composition solve because RHS is zero.
    Skipping sediment composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 13+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.472e-16, 0, 1.43897e-16, 8.97361e-17, 0, 0, 0, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.28181e-16, 0, 1.39664e-16, 8.51473e-17, 0, 0, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
 
    Postprocessing:
+     Writing graphical output:  output/solution/solution-00000
      Compositions min/max/mass: 0/0/0 // 0.11/0.11/4.4e+09 // 1/1/4e+10 // 0/0/0 // 0/0/0 // 0/0/0
+     RMS, max velocity:         5.54e-21 m/year, 1.26e-20 m/year
 
 *** Timestep 1:  t=1000 years, dt=1000 years
    Solving composition reactions... in 10 substep(s).
@@ -36,19 +33,16 @@ Number of degrees of freedom: 3,533 (578+273+578+81+289+289+289+289+289+289+289)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.49262e-16, 1.65674e-16, 1.34504e-16, 8.97361e-17, 0, 0, 0, 4.8925e-15
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 4.8925e-15
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5647e-16, 1.32465e-16, 1.27181e-16, 8.51473e-17, 0, 0, 0, 2.20313e-15
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.20313e-15
 
 
    Postprocessing:
-     Compositions min/max/mass: 0/0.01051/2.845e+08 // 0.09949/0.11/4.115e+09 // 1/1/4e+10 // 0/0/0 // 0/0/0 // 0/0/0
+     Writing graphical output:  output/solution/solution-00001
+     Compositions min/max/mass: 0/0.11/2.981e+09 // 4.502e-05/0.11/1.419e+09 // 1/1/4e+10 // 0/0/0 // 0/0/0 // 0/0/0
+     RMS, max velocity:         5.54e-21 m/year, 1.26e-20 m/year
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

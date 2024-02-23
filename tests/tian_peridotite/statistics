@@ -1,0 +1,41 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for Stokes solver
+# 17: Velocity iterations in Stokes preconditioner
+# 18: Schur complement iterations in Stokes preconditioner
+# 19: Visualization file name
+# 20: Minimal value for composition porosity
+# 21: Maximal value for composition porosity
+# 22: Global mass for composition porosity
+# 23: Minimal value for composition bound_fluid
+# 24: Maximal value for composition bound_fluid
+# 25: Global mass for composition bound_fluid
+# 26: Minimal value for composition peridotite
+# 27: Maximal value for composition peridotite
+# 28: Global mass for composition peridotite
+# 29: Minimal value for composition gabbro
+# 30: Maximal value for composition gabbro
+# 31: Global mass for composition gabbro
+# 32: Minimal value for composition MORB
+# 33: Maximal value for composition MORB
+# 34: Global mass for composition MORB
+# 35: Minimal value for composition sediment
+# 36: Maximal value for composition sediment
+# 37: Global mass for composition sediment
+# 38: RMS velocity (m/year)
+# 39: Max. velocity (m/year)
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 486 1 0 0 0 0 0 0 0         12 14 90 output/solution/solution-00000 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.10000000e-01 1.10000000e-01 4.40000000e+09 1.00000000e+00 1.00000000e+00 4.00000000e+10 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 5.54090700e-21 1.25942419e-20 
+1 1.000000000000e+03 1.000000000000e+03 16 187 81 486 1 0 0 0 0 0 0 0 4294967295  0  0 output/solution/solution-00001 0.00000000e+00 1.09954980e-01 2.98093517e+09 4.50201641e-05 1.10000000e-01 1.41906483e+09 1.00000000e+00 1.00000000e+00 4.00000000e+10 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 5.54090700e-21 1.25942419e-20 

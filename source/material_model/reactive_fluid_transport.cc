@@ -60,7 +60,7 @@ namespace aspect
       const double pressure = in.pressure[q]<=0 ? 1e-12 : in.pressure[q]/1e9;
       const double inverse_pressure = std::pow(pressure, -1);
 
-      // The following coefficients are taken from the Tian et al., 2018 paper, and can be found
+      // The following coefficients are taken from a publication from Tian et al., 2019, and can be found
       // in Table 3 (Gabbro), Table B1 (MORB), Table B2 (Sediments) and Table B3 (peridotite).
       // LR refers to the effective enthalpy change for devolatilization reactions,
       // csat is the saturated mass fraction of water in the solid, and Td is the
@@ -123,7 +123,7 @@ namespace aspect
       std::vector<double> eq_bound_water_content;
 
       // Define the maximum bound water content allowed for the four different rock compositions
-      std::vector<double> max_bound_water_content = {11, 5.1, 5.3, 3.2};
+      std::vector<double> max_bound_water_content = {max_peridotite_water, max_gabbro_water, max_MORB_water, max_sediment_water};
 
       // Loop over all rock compositions and fill the equilibrium bound water content, divide by 100 to convert
       // from percentage to fraction (equation 1)
@@ -161,15 +161,9 @@ namespace aspect
               }
               case zero_solubility:
               {
-                // The fluid volume fraction in equilibrium with the solid
-                // at any point (stored in the melt_fractions vector) is
-                // equal to the sum of the bound fluid content and porosity.
-                const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
-                melt_fractions[q] = in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx];
-
                 // A fluid-rock reaction model where no reactions occur.
                 // The melt (fluid) fraction at any point is equal
-                // to the sume of the bound fluid content and porosity,
+                // to the sum of the bound fluid content and porosity,
                 // with the latter determined by the assigned initial
                 // porosity, fluid boundary conditions, and fluid
                 // transport through the model.
@@ -362,6 +356,18 @@ namespace aspect
                              "computed. If the model does not use operator splitting, this parameter is not used. "
                              "Units: yr or s, depending on the ``Use years "
                              "in output instead of seconds'' parameter.");
+          prm.declare_entry ("Maximum weight percent sediment", "3",
+                             Patterns::Double (0),
+                             "The maximum allowed weight percent that the sediment composition can hold.");
+          prm.declare_entry ("Maximum weight percent MORB", "2",
+                             Patterns::Double (0),
+                             "The maximum allowed weight percent that the sediment composition can hold.");
+          prm.declare_entry ("Maximum weight percent gabbro", "1",
+                             Patterns::Double (0),
+                             "The maximum allowed weight percent that the sediment composition can hold.");
+          prm.declare_entry ("Maximum weight percent peridotite", "8",
+                             Patterns::Double (0),
+                             "The maximum allowed weight percent that the sediment composition can hold.");
           prm.declare_entry ("Fluid-solid reaction scheme", "no reaction",
                              Patterns::Selection("no reaction|zero solubility|tian approximation"),
                              "Select what type of scheme to use for reactions between fluid and solid phases. "
@@ -369,7 +375,7 @@ namespace aspect
                              "the two phases, or the solid phase is insoluble (zero solubility) and all "
                              "of the bound fluid is released into the fluid phase, tian approximation "
                              "use polynomials to describe hydration and dehydration reactions for four different "
-                             "rock compositions as defined in Tian et al., 2018.");
+                             "rock compositions as defined in Tian et al., 2019.");
         }
         prm.leave_subsection();
       }
@@ -399,6 +405,11 @@ namespace aspect
           fluid_compressibility             = prm.get_double ("Fluid compressibility");
           fluid_reaction_time_scale         = prm.get_double ("Fluid reaction time scale for operator splitting");
 
+          max_peridotite_water              = prm.get_double ("Maximum weight percent peridotite");
+          max_gabbro_water                  = prm.get_double ("Maximum weight percent gabbro");
+          max_MORB_water                    = prm.get_double ("Maximum weight percent MORB");
+          max_sediment_water                = prm.get_double ("Maximum weight percent sediment");
+
           // Create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
           // leave the current section.
@@ -411,23 +422,14 @@ namespace aspect
 
           // Reaction scheme parameter
           if (prm.get ("Fluid-solid reaction scheme") == "zero solubility")
-            fluid_solid_reaction_scheme = zero_solubility;
+            {
+              fluid_solid_reaction_scheme = zero_solubility;
+            }
           else if (prm.get ("Fluid-solid reaction scheme") == "no reaction")
-            fluid_solid_reaction_scheme = no_reaction;
-
-          if (fluid_solid_reaction_scheme == no_reaction)
             {
-              AssertThrow(this->get_parameters().use_operator_splitting == false,
-                          ExcMessage("The Fluid-reaction scheme no reaction should not be used with operator splitting."));
+              fluid_solid_reaction_scheme = no_reaction;
             }
-
-          if (fluid_solid_reaction_scheme == zero_solubility)
-            {
-              AssertThrow(this->get_parameters().use_operator_splitting,
-                          ExcMessage("The Fluid-reaction scheme zero solubility must be used with operator splitting."));
-            }
-
-          else if (prm.get ("Fluid solid reaction scheme") == "tian approximation")
+          else if (prm.get ("Fluid-solid reaction scheme") == "tian approximation")
             {
               AssertThrow(this->introspection().compositional_name_exists("sediment"),
                           ExcMessage("The Tian approximation only works "
@@ -443,9 +445,26 @@ namespace aspect
                                      "if there is a compositional field called peridotite."));
               fluid_solid_reaction_scheme = tian_approximation;
             }
-
           else
             AssertThrow(false, ExcMessage("Not a valid fluid-solid reaction scheme"));
+
+          if (fluid_solid_reaction_scheme == no_reaction)
+            {
+              AssertThrow(this->get_parameters().use_operator_splitting == false,
+                          ExcMessage("The Fluid-reaction scheme no reaction should not be used with operator splitting."));
+            }
+
+          if (fluid_solid_reaction_scheme == zero_solubility)
+            {
+              AssertThrow(this->get_parameters().use_operator_splitting,
+                          ExcMessage("The Fluid-reaction scheme zero solubility must be used with operator splitting."));
+            }
+
+          if (fluid_solid_reaction_scheme == tian_approximation)
+            {
+              AssertThrow(this->get_parameters().use_operator_splitting,
+                          ExcMessage("The Fluid-reaction scheme tian approximation must be used with operator splitting."));
+            }
 
           if (this->get_parameters().use_operator_splitting)
             {
