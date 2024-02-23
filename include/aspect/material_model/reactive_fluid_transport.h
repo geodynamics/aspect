@@ -172,7 +172,7 @@ namespace aspect
         enum ReactionScheme
         {
           no_reaction,
-          zero_solubility
+          zero_solubility,
           tian_approximation
         } 
         fluid_solid_reaction_scheme;
