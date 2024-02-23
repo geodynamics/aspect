@@ -89,6 +89,7 @@ namespace aspect
               {
                 const Tensor<1,dim> k1 = dt * (*old_velocity);
 #if DEAL_II_VERSION_GTE(9, 6, 0)
+                // Get a reference to the particle location, so that we can update it in-place
                 Point<dim> &location = it->get_location();
 #else
                 Point<dim> location = it->get_location();
