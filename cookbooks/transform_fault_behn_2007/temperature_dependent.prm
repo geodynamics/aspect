@@ -1,6 +1,6 @@
 # This is a model of a mid-ocean ridge with a transform fault,
-# specifically, reproducing the setup of Behn et al., 2007: Thermal
-# structure of oceanic transform faults.
+# specifically, it is a model that reproduces the setup of Behn et
+# al., 2007: Thermal structure of oceanic transform faults.
 # This input file covers case 2 from that publication (with a
 # temperature-dependent viscosity).
 

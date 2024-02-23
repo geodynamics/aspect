@@ -10,35 +10,35 @@ Note that this model may take a few hours to run on a laptop because it is
 a 3D model that runs for a large number of time steps.
 
 This model features the spreading of an oceanic plate away from a mid-ocean
-ridge, with the ridge axis being segemented by a transform fault. The setup is
+ridge, with the ridge axis being segmented by a transform fault. The setup is
 taken from {cite:t}`behn:transform:fault` and features a box that is 250 km
 wide, 100 km across, and 100 km in depth. Both oceanic plates move away from
 the ridge with a velocity of 3 cm/yr, giving a full spreading rate of 6 cm/yr.
-To achieve this, the velocity is fixed at the top. Material flows in from the
-bottom, and then leaves the domain at the two sides perpendiculr to the
-spreading direction. The bottom, lef and right boundaries are therefore open,
+To achieve this, the velocity is fixed at the top boundary. Material flows in from the
+bottom, and then leaves the domain at the two sides perpendicular to the
+spreading direction. The bottom, left and right boundaries are therefore open,
 prescribing the lithostatic pressure as a boundary condition, whereas the front
 and back boundaries (parallel to the spreading direction) are (closed) free-slip
 boundaries. The model ignores buoyancy effects and is therefore fully driven by
 the boundary conditions.
 The initial temperature follows a half-space cooling model for each of the two
-ridge segments, created with the Geodynamic World Builder. Adiabatic heating and
-shear heating are ignored. The figure below shows the initial temperature
+ridge segments, created by the Geodynamic World Builder. Adiabatic heating and
+shear heating are not enabled. The figure below shows the initial temperature
 distribution.
 
 ```{figure-md} fig:transform-fault
 <img src="setup.png" style="width:100.0%" />
 
- Setup of the transform fault model. Background colors show depth of the 1500 K isotherm, arrows illustrate the velocity. Mesh is shown in the bottom part of the model.
+ Setup of the transform fault model. Background colors show depth of the 1500 K isotherm, arrows illustrate the velocity. The mesh is shown in the bottom part of the model.
 ```
 
-## Creating the initial temperature with the Geodynamic World Builder.
+## Creating the initial temperature with the Geodynamic World Builder
 
 The initial thermal structure of the model should follow a half-space cooling
 model for each of the two ridge segments. The easiest way of creating this
-temperature dictribution is to use the Geodynamic World Builder, which allows
+temperature distribution is to use the Geodynamic World Builder, which allows
 us to define features such as oceanic plates together with the desired thermal
-structure. Since the Geodynamic World Builder comes together with the ASPECT
+structure. Since the Geodynamic World Builder is included in the ASPECT
 installation, we only need to create an input file for the World Builder and
 then our thermal structure will be generated as part of the model run. For
 details on how to create this Geodynamic World Builder input file, see the
@@ -54,7 +54,7 @@ temperature and the adiabatic/mantle potential temperature are the same.
 ```{literalinclude} temperature.part.prm
 ```
 
-Since the thermal structure is computed accordning to the half-space cooling
+Since the thermal structure is computed according to the half-space cooling
 model, we also need to ensure that we use the same thermal diffusivity as in
 the Geodynamic World Builder input file:
 
@@ -93,7 +93,7 @@ illustrate the flow field.
 Thermal structure in a vertical slice through the center of the transform fault at
 the final state of the model with constant viscosity (top) and the model with a
 temperature-dependent viscosity (bottom). Left column shows the strain rate, right
-column shows the temperature dictribution. Black arrows illustrate the flow field.
+column shows the temperature distribution. Black arrows illustrate the flow field.
 ```
 
 The temperature-dependent viscosity reduces the temperature and focuses the

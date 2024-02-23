@@ -1,5 +1,5 @@
 # We use the Geodynamic World Builder to create the initial temperature.
-# Therefore we here have to specify the location of the GWB input file
+# Therefore, we have to specify the location of the GWB input file
 # that we want to use. The file we use here is located in the cookbooks
 # folder of the GWB repository. See the corresponding tutorial in the
 # Geodynamic World Builder on how to create this file.

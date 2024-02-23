@@ -1,11 +1,11 @@
 # This is a model of a mid-ocean ridge with a transform fault,
-# specifically, reproducing the setup of Behn et al., 2007: Thermal
-# structure of oceanic transform faults.
+# specifically, it is a model that reproduces the setup of Behn et
+# al., 2007: Thermal structure of oceanic transform faults.
 # This input file covers case 1 from that publication (with a
 # constant viscosity).
 
 # We use the Geodynamic World Builder to create the initial temperature.
-# Therefore we here have to specify the location of the GWB input file
+# Therefore, we have to specify the location of the GWB input file
 # that we want to use. The file we use here is located in the cookbooks
 # folder of the GWB repository. See the corresponding tutorial in the
 # Geodynamic World Builder on how to create this file.
@@ -134,10 +134,13 @@ subsection Material model
     set Minimum viscosity = 1e18
     set Maximum viscosity = 1e23
 
-    set Thermal diffusivities = 1.06060606e-6  # We assume a thermal conductivity of 3.5 W/m/K
     set Heat capacities       = 1000
     set Densities             = 3300           # Value from Behn et al., 2007
     set Thermal expansivities = 0              # Thermal buoyancy is ignored in Behn et al., 2007
+
+    set Define thermal conductivities = true
+    set Thermal conductivities        = 3.5
+
     set Viscous flow law      = diffusion
     set Activation volumes for diffusion creep  = 0
     set Grain size            = 1
