@@ -57,81 +57,50 @@ namespace aspect
                                           unsigned int q) const
     {
       // Pressure, which must be in GPa for the parametrization, or GPa^-1
-      const double pressure = in.pressure[q]<=0 ? 1e-12 : in.pressure[q]/1e9;
+      const double pressure = in.pressure[q]<=0 ? 1e-12 : in.pressure[q]/1.e9;
       const double inverse_pressure = std::pow(pressure, -1);
 
-      // The following coefficients are taken from a publication from Tian et al., 2019, and can be found
-      // in Table 3 (Gabbro), Table B1 (MORB), Table B2 (Sediments) and Table B3 (peridotite).
-      // LR refers to the effective enthalpy change for devolatilization reactions,
-      // csat is the saturated mass fraction of water in the solid, and Td is the
-      // onset temperature of devolatilization for water.
-      std::vector<double> LR_peridotite_poly_coeffs {-19.0609, 168.983, -630.032, 1281.84, -1543.14, 1111.88, -459.142, 95.4143, 1.97246};
-      std::vector<double> csat_peridotite_poly_coeffs {0.00115628, 2.42179};
-      std::vector<double> Td_peridotite_poly_coeffs {-15.4627, 94.9716, 636.603};
-
-      std::vector<double> LR_gabbro_poly_coeffs {-1.81745, 7.67198, -10.8507, 5.09329, 8.14519};
-      std::vector<double> csat_gabbro_poly_coeffs {-0.0176673, 0.0893044, 1.52732};
-      std::vector<double> Td_gabbro_poly_coeffs {-1.72277, 20.5898, 637.517};
-
-      std::vector<double> LR_MORB_poly_coeffs {-1.78177, 7.50871, -10.4840, 5.19725, 7.96365};
-      std::vector<double> csat_MORB_poly_coeffs {0.0102725, -0.115390, 0.324452, 1.41588};
-      std::vector<double> Td_MORB_poly_coeffs {-3.81280, 22.7809, 638.049};
-
-      std::vector<double> LR_sediment_poly_coeffs {-2.03283, 10.8186, -21.2119, 18.3351, -6.48711, 8.32459};
-      std::vector<double> csat_sediment_poly_coeffs {-0.150662, 0.301807, 1.01867};
-      std::vector<double> Td_sediment_poly_coeffs {2.83277, -24.7593, 85.9090, 524.898};
-
-      std::vector<std::vector<double>> LR_all_poly_coeffs {LR_peridotite_poly_coeffs, LR_gabbro_poly_coeffs, \
-                                                            LR_MORB_poly_coeffs, LR_sediment_poly_coeffs
-                                                           };
-      std::vector<std::vector<double>> csat_all_poly_coeffs {csat_peridotite_poly_coeffs, csat_gabbro_poly_coeffs, \
-                                                              csat_MORB_poly_coeffs, csat_sediment_poly_coeffs
-                                                             };
-      std::vector<std::vector<double>> Td_all_poly_coeffs {Td_peridotite_poly_coeffs, Td_gabbro_poly_coeffs, \
-                                                            Td_MORB_poly_coeffs, Td_sediment_poly_coeffs
-                                                           };
-
       // Create arrays that will store the values of the polynomials at the current pressure
-      std::vector<double> LR_values {0, 0, 0, 0};
-      std::vector<double> csat_values {0, 0, 0, 0};
-      std::vector<double> Td_values {0, 0, 0, 0};
+      std::vector<double> LR_values(4);
+      std::vector<double> csat_values(4);
+      std::vector<double> Td_values(4);
 
-      // Loop over the four rock types i (peridotite, gabbro, MORB, sediment) and the polynomial
-      // coefficients j to fill the vectors defined above. The polynomials for LR are defined in
+      // Loop over the four rock types (peridotite, gabbro, MORB, sediment) and the polynomial
+      // coefficients to fill the vectors defined above. The polynomials for LR are defined in
       // equations 13, B2, B10, and B18. csat polynomials are defined in equations 14, B1, B9, and B17.
       // Td polynomials are defined in equations 15, B3, B11, and B19.
-      for (unsigned int i = 0; i<LR_all_poly_coeffs.size(); ++i)
-        for (unsigned int j = 0; j<LR_all_poly_coeffs[i].size(); ++j)
-          {
-            LR_values[i] += LR_all_poly_coeffs[i][j] * std::pow(inverse_pressure, LR_all_poly_coeffs[i].size() - 1 - j);
-          }
+      for (unsigned int i = 0; i<devolatilization_enthalpy_changes.size(); ++i)
+        {
+          for (unsigned int j = 0; j<devolatilization_enthalpy_changes[i].size(); ++j)
+            {
+              LR_values[i] += devolatilization_enthalpy_changes[i][j] * std::pow(inverse_pressure, devolatilization_enthalpy_changes[i].size() - 1 - j);
+            }
 
-      for (unsigned int i = 0; i<csat_all_poly_coeffs.size(); ++i)
-        for (unsigned int j = 0; j<csat_all_poly_coeffs[i].size(); ++j)
-          {
-            csat_values[i] += i==3 ? csat_all_poly_coeffs[i][j] * std::pow(std::log10(pressure), csat_all_poly_coeffs[i].size() - 1 - j) :\
-                              csat_all_poly_coeffs[i][j] * std::pow(pressure, csat_all_poly_coeffs[i].size() - 1 - j);
-          }
+          for (unsigned int j = 0; j<water_mass_fractions[i].size(); ++j)
+            {
+              csat_values[i] += i==3 ? water_mass_fractions[i][j] * std::pow(std::log10(pressure), water_mass_fractions[i].size() - 1 - j) :\
+                                water_mass_fractions[i][j] * std::pow(pressure, water_mass_fractions[i].size() - 1 - j);
+            }
 
-      for (unsigned int i = 0; i<Td_all_poly_coeffs.size(); ++i)
-        for (unsigned int j = 0; j<Td_all_poly_coeffs[i].size(); ++j)
-          {
-            Td_values[i] += Td_all_poly_coeffs[i][j] * std::pow(pressure, Td_all_poly_coeffs[i].size() - 1 - j);
-          }
+          for (unsigned int j = 0; j<devolatilization_onset_temperatures[i].size(); ++j)
+            {
+              Td_values[i] += devolatilization_onset_temperatures[i][j] * std::pow(pressure, devolatilization_onset_temperatures[i].size() - 1 - j);
+            }
+        }
 
       // Create an array for the equilibrium bound water content that is calculated from these polynomials
-      std::vector<double> eq_bound_water_content;
+      std::vector<double> eq_bound_water_content(4);
 
       // Define the maximum bound water content allowed for the four different rock compositions
-      std::vector<double> max_bound_water_content = {max_peridotite_water, max_gabbro_water, max_MORB_water, max_sediment_water};
+      std::vector<double> max_bound_water_content = {tian_max_peridotite_water, tian_max_gabbro_water, tian_max_MORB_water, tian_max_sediment_water};
 
       // Loop over all rock compositions and fill the equilibrium bound water content, divide by 100 to convert
       // from percentage to fraction (equation 1)
       for (unsigned int k = 0; k<LR_values.size(); ++k)
         {
-          eq_bound_water_content.push_back(std::min(std::exp(csat_values[k]) * \
-                                                    std::exp(std::exp(LR_values[k]) * (1/in.temperature[q] - 1/Td_values[k])), \
-                                                    max_bound_water_content[k]) / 100.0);
+          eq_bound_water_content[k] = (std::min(std::exp(csat_values[k]) * \
+                                                std::exp(std::exp(LR_values[k]) * (1/in.temperature[q] - 1/Td_values[k])), \
+                                                max_bound_water_content[k]) / 100.0);
         }
       return eq_bound_water_content;
     }
@@ -152,7 +121,6 @@ namespace aspect
             {
               case no_reaction:
               {
-
                 // No reactions occur between the solid and fluid phases,
                 // and the fluid volume fraction (stored in the melt_fractions
                 // vector) is equal to the porosity.
@@ -161,34 +129,39 @@ namespace aspect
               }
               case zero_solubility:
               {
-                // A fluid-rock reaction model where no reactions occur.
-                // The melt (fluid) fraction at any point is equal
-                // to the sum of the bound fluid content and porosity,
-                // with the latter determined by the assigned initial
-                // porosity, fluid boundary conditions, and fluid
-                // transport through the model.
+                // The fluid volume fraction in equilibrium with the solid
+                // at any point (stored in the melt_fractions vector) is
+                // equal to the sum of the bound fluid content and porosity.
                 melt_fractions[q] = in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx];
                 break;
               }
               case tian_approximation:
               {
+                // The bound fluid content is calculated using parametrized phase
+                // diagrams for four different rock types: sediment, MORB, gabbro, and
+                // peridotite.
                 const unsigned int sediment_idx = this->introspection().compositional_index_for_name("sediment");
                 const unsigned int MORB_idx = this->introspection().compositional_index_for_name("MORB");
                 const unsigned int gabbro_idx = this->introspection().compositional_index_for_name("gabbro");
                 const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 
-                // Initialize a vector that stores the compositions which tracks the four different rock compositions,
-                // and these compositions are tracked as mass fractions
-                std::vector<double> tracked_rock_compositions;
-                tracked_rock_compositions.push_back(in.composition[q][peridotite_idx]);
-                tracked_rock_compositions.push_back(in.composition[q][gabbro_idx]);
-                tracked_rock_compositions.push_back(in.composition[q][MORB_idx]);
-                tracked_rock_compositions.push_back(in.composition[q][sediment_idx]);
+                // Initialize a vector that stores the compositions (mass fractions) for
+                // the four different rock compositions,
+                std::vector<double> tracked_rock_mass_fractions(4);
+                tracked_rock_mass_fractions[0] = (in.composition[q][peridotite_idx]);
+                tracked_rock_mass_fractions[1] = (in.composition[q][gabbro_idx]);
+                tracked_rock_mass_fractions[2] = (in.composition[q][MORB_idx]);
+                tracked_rock_mass_fractions[3] = (in.composition[q][sediment_idx]);
 
+                // The bound water content (water within the solid phase) for the four different rock types
                 std::vector<double> tian_eq_bound_water_content = tian_equilibrium_bound_water_content(in, q);
 
-                double average_eq_bound_water_content = MaterialUtilities::average_value (tracked_rock_compositions, tian_eq_bound_water_content, MaterialUtilities::arithmetic);
+                // average the water content between the four different rock types
+                double average_eq_bound_water_content = MaterialUtilities::average_value (tracked_rock_mass_fractions, tian_eq_bound_water_content, MaterialUtilities::arithmetic);
 
+                // The fluid volume fraction in equilibrium with the solid (stored in the melt_fractions vector)
+                // is equal to the sum of the porosity and the change in bound fluid content
+                // (current bound fluid - updated average bound fluid).
                 melt_fractions[q] = std::max(in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx] - average_eq_bound_water_content, 0.0);
                 break;
               }
@@ -227,9 +200,10 @@ namespace aspect
                                           typename Interface<dim>::MaterialModelOutputs &out) const
     {
       base_model->evaluate(in,out);
-      // Modify the viscosity from the base model based on the presence of fluid.
+
       const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
+      // Modify the viscosity from the base model based on the presence of fluid.
       if (in.requests_property(MaterialProperties::viscosity))
         {
           // Scale the base model viscosity value based on the porosity.
@@ -356,16 +330,16 @@ namespace aspect
                              "computed. If the model does not use operator splitting, this parameter is not used. "
                              "Units: yr or s, depending on the ``Use years "
                              "in output instead of seconds'' parameter.");
-          prm.declare_entry ("Maximum weight percent sediment", "3",
+          prm.declare_entry ("Maximum weight percent water in sediment", "3",
                              Patterns::Double (0),
                              "The maximum allowed weight percent that the sediment composition can hold.");
-          prm.declare_entry ("Maximum weight percent MORB", "2",
+          prm.declare_entry ("Maximum weight percent water in MORB", "2",
                              Patterns::Double (0),
                              "The maximum allowed weight percent that the sediment composition can hold.");
-          prm.declare_entry ("Maximum weight percent gabbro", "1",
+          prm.declare_entry ("Maximum weight percent water in gabbro", "1",
                              Patterns::Double (0),
                              "The maximum allowed weight percent that the sediment composition can hold.");
-          prm.declare_entry ("Maximum weight percent peridotite", "8",
+          prm.declare_entry ("Maximum weight percent water in peridotite", "8",
                              Patterns::Double (0),
                              "The maximum allowed weight percent that the sediment composition can hold.");
           prm.declare_entry ("Fluid-solid reaction scheme", "no reaction",
@@ -405,10 +379,10 @@ namespace aspect
           fluid_compressibility             = prm.get_double ("Fluid compressibility");
           fluid_reaction_time_scale         = prm.get_double ("Fluid reaction time scale for operator splitting");
 
-          max_peridotite_water              = prm.get_double ("Maximum weight percent peridotite");
-          max_gabbro_water                  = prm.get_double ("Maximum weight percent gabbro");
-          max_MORB_water                    = prm.get_double ("Maximum weight percent MORB");
-          max_sediment_water                = prm.get_double ("Maximum weight percent sediment");
+          tian_max_peridotite_water         = prm.get_double ("Maximum weight percent water in peridotite");
+          tian_max_gabbro_water             = prm.get_double ("Maximum weight percent water in gabbro");
+          tian_max_MORB_water               = prm.get_double ("Maximum weight percent water in MORB");
+          tian_max_sediment_water           = prm.get_double ("Maximum weight percent water in sediment");
 
           // Create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
@@ -493,6 +467,11 @@ namespace aspect
       // After parsing the parameters for this model, parse parameters related to the base model.
       base_model->parse_parameters(prm);
       this->model_dependence = base_model->get_model_dependence();
+      if (fluid_solid_reaction_scheme == zero_solubility)
+        {
+          AssertThrow(this->get_material_model().is_compressible() == false,
+                      ExcMessage("The Fluid-reaction scheme zero solubility must be used with an incompressible base model."));
+        }
     }
 
 

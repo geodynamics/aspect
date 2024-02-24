@@ -1,3 +1,9 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
 
@@ -10,21 +16,13 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Solving MORB system ... 0 iterations.
    Skipping sediment composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 11+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.28181e-16, 0, 1.39664e-16, 0, 0, 8.51473e-17, 0, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.54103e-16, 0, 1.39664e-16, 0, 0, 8.51473e-17, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
-
-   Postprocessing:
-     Writing graphical output:  output/solution/solution-00000
-     Compositions min/max/mass: 0/0/0 // 0.11/0.11/4.4e+09 // 0/0/0 // 0/0/0 // 1/1/4e+10 // 0/0/0
-     RMS, max velocity:         5.54e-21 m/year, 1.26e-20 m/year
-
-*** Timestep 1:  t=1000 years, dt=1000 years
-   Solving composition reactions... in 10 substep(s).
    Solving temperature system... 0 iterations.
-   Solving porosity system ... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
    Solving bound_fluid system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Skipping gabbro composition solve because RHS is zero.
@@ -33,16 +31,64 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.51094e-16, 1.41145e-16, 1.62901e-16, 0, 0, 8.51473e-17, 0, 2.26011e-15
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.26011e-15
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.54103e-16, 0, 1.39664e-16, 0, 0, 8.51473e-17, 0, 4.64648e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.64648e-10
 
 
    Postprocessing:
-     Writing graphical output:  output/solution/solution-00001
-     Compositions min/max/mass: 0.057/0.1095/3.858e+09 // 0.0005023/0.053/5.422e+08 // 0/0/0 // 0/0/0 // 1/1/4e+10 // 0/0/0
-     RMS, max velocity:         5.54e-21 m/year, 1.26e-20 m/year
+     Compositions min/max/mass: 0/0/0 // 0.11/0.11/4.4e+09 // 0/0/0 // 0/0/0 // 1/1/4e+10 // 0/0/0
+
+*** Timestep 1:  t=1000 years, dt=1000 years
+   Solving composition reactions... in 10 substep(s).
+   Solving temperature system... 2 iterations.
+   Solving porosity system ... 2 iterations.
+   Solving bound_fluid system ... 3 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Skipping gabbro composition solve because RHS is zero.
+   Solving MORB system ... 0 iterations.
+   Skipping sediment composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.98898e-10, 3.76711e-10, 1.67792e-09, 0, 0, 9.56536e-17, 0, 0.0192689
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0192689
+
+   Solving temperature system... 5 iterations.
+   Solving porosity system ... 7 iterations.
+   Solving bound_fluid system ... 6 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Skipping gabbro composition solve because RHS is zero.
+   Solving MORB system ... 0 iterations.
+   Skipping sediment composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.57094e-07, 1.16194e-05, 1.21423e-06, 0, 0, 7.0781e-17, 0, 9.90009e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 1.16194e-05
+
+   Solving temperature system... 1 iterations.
+   Solving porosity system ... 2 iterations.
+   Solving bound_fluid system ... 1 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Skipping gabbro composition solve because RHS is zero.
+   Solving MORB system ... 0 iterations.
+   Skipping sediment composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.5218e-12, 1.52682e-10, 5.02896e-12, 0, 0, 1.07956e-16, 0, 1.87227e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.87227e-09
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0.057/0.1095/3.857e+09 // 0.0005016/0.053/5.432e+08 // 0/0/0 // 0/0/0 // 1/1/4e+10 // 0/0/0
 
 Termination requested by criterion: end time
 
 
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

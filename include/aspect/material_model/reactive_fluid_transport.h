@@ -63,8 +63,16 @@ namespace aspect
         virtual double reference_darcy_coefficient () const override;
 
 
-        virtual std::vector<double> tian_equilibrium_bound_water_content(const MaterialModel::MaterialModelInputs<dim> &in,
-                                                                         unsigned int q) const;
+        /**
+         * Compute the maximum allowed bound water content at the input
+         * pressure and temperature conditions. This is used to determine
+         * how free water interacts with the solid phase.
+         * @param in Object that contains the current conditions.
+         * @param q unsigned int from 0-3 indexing which rock phase the equilbrium
+         * bound water content is being calculated for
+         */
+        std::vector<double> tian_equilibrium_bound_water_content(const MaterialModel::MaterialModelInputs<dim> &in,
+                                                                 unsigned int q) const;
 
         /**
          * Compute the free fluid fraction that can be present in the material based on the
@@ -141,11 +149,47 @@ namespace aspect
 
         // Time scale for fluid release and absorption.
         double fluid_reaction_time_scale;
-        double max_peridotite_water;
-        double max_gabbro_water;
-        double max_MORB_water;
-        double max_sediment_water;
 
+        // The maximum water content for each of the 4 rock types in the tian approximation
+        // method. These are important for keeping the polynomial bounded within reasonable
+        // values.
+        double tian_max_peridotite_water;
+        double tian_max_gabbro_water;
+        double tian_max_MORB_water;
+        double tian_max_sediment_water;
+
+        // The following coefficients are taken from a publication from Tian et al., 2019, and can be found
+        // in Table 3 (Gabbro), Table B1 (MORB), Table B2 (Sediments) and Table B3 (peridotite).
+        // LR refers to the effective enthalpy change for devolatilization reactions,
+        // csat is the saturated mass fraction of water in the solid, and Td is the
+        // onset temperature of devolatilization for water.
+        std::vector<double> LR_peridotite_poly_coeffs {-19.0609, 168.983, -630.032, 1281.84, -1543.14, 1111.88, -459.142, 95.4143, 1.97246};
+        std::vector<double> csat_peridotite_poly_coeffs {0.00115628, 2.42179};
+        std::vector<double> Td_peridotite_poly_coeffs {-15.4627, 94.9716, 636.603};
+
+        std::vector<double> LR_gabbro_poly_coeffs {-1.81745, 7.67198, -10.8507, 5.09329, 8.14519};
+        std::vector<double> csat_gabbro_poly_coeffs {-0.0176673, 0.0893044, 1.52732};
+        std::vector<double> Td_gabbro_poly_coeffs {-1.72277, 20.5898, 637.517};
+
+        std::vector<double> LR_MORB_poly_coeffs {-1.78177, 7.50871, -10.4840, 5.19725, 7.96365};
+        std::vector<double> csat_MORB_poly_coeffs {0.0102725, -0.115390, 0.324452, 1.41588};
+        std::vector<double> Td_MORB_poly_coeffs {-3.81280, 22.7809, 638.049};
+
+        std::vector<double> LR_sediment_poly_coeffs {-2.03283, 10.8186, -21.2119, 18.3351, -6.48711, 8.32459};
+        std::vector<double> csat_sediment_poly_coeffs {-0.150662, 0.301807, 1.01867};
+        std::vector<double> Td_sediment_poly_coeffs {2.83277, -24.7593, 85.9090, 524.898};
+
+        std::vector<std::vector<double>> devolatilization_enthalpy_changes {LR_peridotite_poly_coeffs, LR_gabbro_poly_coeffs, \
+                                                                             LR_MORB_poly_coeffs, LR_sediment_poly_coeffs
+                                                                            };
+
+        std::vector<std::vector<double>> water_mass_fractions {csat_peridotite_poly_coeffs, csat_gabbro_poly_coeffs, \
+                                                                csat_MORB_poly_coeffs, csat_sediment_poly_coeffs
+                                                               };
+
+        std::vector<std::vector<double>> devolatilization_onset_temperatures {Td_peridotite_poly_coeffs, Td_gabbro_poly_coeffs, \
+                                                                               Td_MORB_poly_coeffs, Td_sediment_poly_coeffs
+                                                                              };
         /**
          * Enumeration for selecting which type of scheme to use for
          * reactions between fluids and solids. The available
@@ -172,6 +216,18 @@ namespace aspect
          * base model to be incompressible, as otherwise the advection
          * equation would only be valid for mass and not volume
          * fractions.
+         *
+         * The tian approximation model implements parametrized phase
+         * diagrams from Tian et al., 2019 G3, https://doi.org/10.1029/2019GC008488
+         * and calculates the fluid-solid reactions for four different rock types:
+         * sediments, MORB, gabbro and peridotite. This is achieved by calculating the
+         * maximum allowed bound water content for each composition at the current
+         * Pressure-Temperature conditions, and releasing bound water as free water if:
+         * (maximum bound water content < current bound water content)
+         * or incorporating free water (if present) into the solid phase as bound water:
+         * maximum bound water content > current bound water content
+         * This model requires that 4 compositional fields named after the 4 different rock
+         * types exist in the input file.
          */
         enum ReactionScheme
         {

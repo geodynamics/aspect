@@ -1,6 +1,6 @@
 # This model generates a representation of a phase diagram for the equilibrium
-# wt% water that can be stored in an upper mantle peridotite (PUM) as shown in
-# Figure 11 of Tian et. al., 2019. This reproduces that phase diagram, with an important
+# wt% water that can be stored in a sediment as shown in Figure 8 of Tian et. al., 2019.
+# This model reproduces that phase diagram (very low res by default), with an important
 # caveat being that the pressure axis is inverted relative to the ASPECT output.
 # A surface pressure of 600 MPa is imposed to reproduce the pressure axis,
 # and a lateral temperature gradient is imposed to reproduce the temperature axis.
@@ -20,6 +20,6 @@ end
 
 subsection Material model
   subsection Reactive Fluid Transport Model
-    set Maximum weight percent sediment                 = 3.2
+    set Maximum weight percent water in sediment                 = 3.2
   end
 end

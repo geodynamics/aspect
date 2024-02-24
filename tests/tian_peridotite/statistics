@@ -16,26 +16,23 @@
 # 16: Iterations for Stokes solver
 # 17: Velocity iterations in Stokes preconditioner
 # 18: Schur complement iterations in Stokes preconditioner
-# 19: Visualization file name
-# 20: Minimal value for composition porosity
-# 21: Maximal value for composition porosity
-# 22: Global mass for composition porosity
-# 23: Minimal value for composition bound_fluid
-# 24: Maximal value for composition bound_fluid
-# 25: Global mass for composition bound_fluid
-# 26: Minimal value for composition peridotite
-# 27: Maximal value for composition peridotite
-# 28: Global mass for composition peridotite
-# 29: Minimal value for composition gabbro
-# 30: Maximal value for composition gabbro
-# 31: Global mass for composition gabbro
-# 32: Minimal value for composition MORB
-# 33: Maximal value for composition MORB
-# 34: Global mass for composition MORB
-# 35: Minimal value for composition sediment
-# 36: Maximal value for composition sediment
-# 37: Global mass for composition sediment
-# 38: RMS velocity (m/year)
-# 39: Max. velocity (m/year)
-0 0.000000000000e+00 0.000000000000e+00 16 187 81 486 1 0 0 0 0 0 0 0         12 14 90 output/solution/solution-00000 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.10000000e-01 1.10000000e-01 4.40000000e+09 1.00000000e+00 1.00000000e+00 4.00000000e+10 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 5.54090700e-21 1.25942419e-20 
-1 1.000000000000e+03 1.000000000000e+03 16 187 81 486 1 0 0 0 0 0 0 0 4294967295  0  0 output/solution/solution-00001 0.00000000e+00 1.09954980e-01 2.98093517e+09 4.50201641e-05 1.10000000e-01 1.41906483e+09 1.00000000e+00 1.00000000e+00 4.00000000e+10 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 5.54090700e-21 1.25942419e-20 
+# 19: Minimal value for composition porosity
+# 20: Maximal value for composition porosity
+# 21: Global mass for composition porosity
+# 22: Minimal value for composition bound_fluid
+# 23: Maximal value for composition bound_fluid
+# 24: Global mass for composition bound_fluid
+# 25: Minimal value for composition peridotite
+# 26: Maximal value for composition peridotite
+# 27: Global mass for composition peridotite
+# 28: Minimal value for composition gabbro
+# 29: Maximal value for composition gabbro
+# 30: Global mass for composition gabbro
+# 31: Minimal value for composition MORB
+# 32: Maximal value for composition MORB
+# 33: Global mass for composition MORB
+# 34: Minimal value for composition sediment
+# 35: Maximal value for composition sediment
+# 36: Global mass for composition sediment
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 486 2  0  0  0 0 0 0 0  9 12  76  0.00000000e+00 0.00000000e+00 0.00000000e+00 1.10000000e-01 1.10000000e-01 4.40000000e+09 1.00000000e+00 1.00000000e+00 4.00000000e+10 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+1 1.000000000000e+03 1.000000000000e+03 16 187 81 486 3 13 18 17 0 0 0 0 17 23 352 -5.90770726e-05 1.09922886e-01 2.97684650e+09 4.48790045e-05 1.10027775e-01 1.42195861e+09 1.00000000e+00 1.00000000e+00 4.00000000e+10 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 

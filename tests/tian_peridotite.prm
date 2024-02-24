@@ -1,12 +1,13 @@
 # This model generates a representation of a phase diagram for the equilibrium
 # wt% water that can be stored in an upper mantle peridotite (PUM) as shown in
-# Figure 11 of Tian et. al., 2019. This reproduces that phase diagram, with an important
-# caveat being that the pressure axis is inverted relative to the ASPECT output.
-# A surface pressure of 600 MPa is imposed to reproduce the pressure axis,
-# and a lateral temperature gradient is imposed to reproduce the temperature axis.
+# Figure 11 of  Tian et. al., 2019. This model reproduces that phase diagram
+# (very low res by default), with an important caveat being that the pressure axis
+# is inverted relative to the ASPECT output. A surface pressure of 600 MPa is imposed
+# to reproduce the pressure axis,and a lateral temperature gradient is imposed to
+# reproduce the temperature axis.
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 10
-set Nonlinear solver tolerance             = 1
+set Nonlinear solver tolerance             = 1e-5
 set Surface pressure                       = 0.6e9
 set Dimension                              = 2
 set End time                               = 1e3
@@ -101,29 +102,24 @@ subsection Material model
     set Reference fluid density                          = 3000
     set Fluid reaction time scale for operator splitting = 1e2
     set Fluid-solid reaction scheme                      = tian approximation
-    set Maximum weight percent peridotite                = 11
+    set Maximum weight percent water in peridotite       = 11
   end
 
   subsection Simpler model
     set Reference density             = 3000.0
-    set Thermal expansion coefficient = 0.0
+    set Thermal expansion coefficient = 1e-5
   end
 end
 
 subsection Melt settings
-  set Include melt transport                  = true
+  set Include melt transport = true
 end
 
 subsection Mesh refinement
-  set Initial global refinement               = 2
+  set Initial global refinement = 2
 end
 
 # Post processing
 subsection Postprocess
-  set List of postprocessors = visualization, composition statistics, velocity statistics
-  subsection Visualization
-    set List of output variables      = melt fraction
-    set Output format                 = vtu
-    set Time between graphical output = 0
-  end
+  set List of postprocessors = composition statistics
 end
