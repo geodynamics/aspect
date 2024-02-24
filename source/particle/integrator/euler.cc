@@ -56,13 +56,20 @@ namespace aspect
         for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
              it != end_particle; ++it, ++old_velocity)
           {
-            const Point<dim> loc = it->get_location();
-            Point<dim> new_location = loc + dt * (*old_velocity);
+#if DEAL_II_VERSION_GTE(9, 6, 0)
+            // Get a reference to the particle location, so that we can update it in-place
+            Point<dim> &location = it->get_location();
+#else
+            Point<dim> location = it->get_location();
+#endif
+            location += dt * (*old_velocity);
 
             if (at_periodic_boundary)
-              this->get_geometry_model().adjust_positions_for_periodicity(new_location);
+              this->get_geometry_model().adjust_positions_for_periodicity(location);
 
-            it->set_location(new_location);
+#if !DEAL_II_VERSION_GTE(9, 6, 0)
+            it->set_location(location);
+#endif
           }
       }
 

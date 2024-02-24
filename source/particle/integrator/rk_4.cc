@@ -89,7 +89,6 @@ namespace aspect
         typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
         typename std::vector<Tensor<1,dim>>::const_iterator velocity = velocities.begin();
 
-        Point<dim> old_location;
         std::array<Tensor<1,dim>,4> k;
         for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
              it != end_particle; ++it, ++velocity, ++old_velocity)
@@ -98,28 +97,39 @@ namespace aspect
 
             if (integrator_substep == 0)
               {
-                old_location = it->get_location();
+#if DEAL_II_VERSION_GTE(9, 6, 0)
+                // Get a reference to the particle location, so that we can update it in-place
+                Point<dim> &location = it->get_location();
+#else
+                Point<dim> location = it->get_location();
+#endif
                 k[0] = dt * (*old_velocity);
 
-                Point<dim> new_location = old_location + 0.5 * k[0];
+                Point<dim> new_location = location + 0.5 * k[0];
 
                 // Check if we crossed a periodic boundary and if necessary adjust positions
                 if (at_periodic_boundary)
                   this->get_geometry_model().adjust_positions_for_periodicity(new_location,
-                                                                              ArrayView<Point<dim>>(&old_location,1),
+                                                                              ArrayView<Point<dim>>(&location,1),
                                                                               ArrayView<Tensor<1,dim>>(&k[0],1));
 
                 for (unsigned int i=0; i<dim; ++i)
                   {
-                    properties[property_indices[0] + i] = old_location[i];
+                    properties[property_indices[0] + i] = location[i];
                     properties[property_indices[1] + i] = k[0][i];
+#if DEAL_II_VERSION_GTE(9, 6, 0)
+                    location[i] = new_location[i];
+#endif
                   }
 
+#if !DEAL_II_VERSION_GTE(9, 6, 0)
                 it->set_location(new_location);
+#endif
               }
             else if (integrator_substep == 1)
               {
-                k[1] = dt * ((*old_velocity) + (*velocity)) / 2.0;
+                k[1] = dt * ((*old_velocity) + (*velocity)) * 0.5;
+                Point<dim> old_location;
                 for (unsigned int i=0; i<dim; ++i)
                   old_location[i] = properties[property_indices[0] + i];
 
@@ -149,7 +159,8 @@ namespace aspect
               }
             else if (integrator_substep == 2)
               {
-                k[2] = dt * (*old_velocity + *velocity) / 2.0;
+                k[2] = dt * (*old_velocity + *velocity) * 0.5;
+                Point<dim> old_location;
                 for (unsigned int i=0; i<dim; ++i)
                   old_location[i] = properties[property_indices[0] + i];
 
@@ -186,6 +197,7 @@ namespace aspect
               {
                 k[3] = dt * (*velocity);
 
+                Point<dim> old_location;
                 for (unsigned int i=0; i<dim; ++i)
                   {
                     old_location[i] = properties[property_indices[0] + i];
