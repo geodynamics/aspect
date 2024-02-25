@@ -32,6 +32,7 @@
 #include "world_builder/features/interface.h"
 #include "world_builder/grains.h"
 #include "world_builder/objects/natural_coordinate.h"
+#include "world_builder/objects/segment.h"
 #include "world_builder/objects/surface.h"
 #include "world_builder/parameters.h"
 #include "world_builder/point.h"
@@ -65,7 +66,7 @@ extern "C" {
 #include <map>
 #include <memory>
 #include <random>
-#include <stddef.h>
+#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -853,7 +854,7 @@ TEST_CASE("WorldBuilder interface")
   const WorldBuilder::World world(file);
 
   CHECK_THROWS_WITH(world.properties({{1,2,3}},1., {{{{0,0,0}}}}),Contains("Unimplemented property provided. Only "));
-  CHECK_THROWS_WITH(world.properties({{1,2,3}},1., {{{{4,0,0}}}}),Contains("Unimplemented property provided. Only "));
+  CHECK_THROWS_WITH(world.properties({{1,2,3}},1., {{{{5,0,0}}}}),Contains("Unimplemented property provided. Only "));
 
   approval_tests_grains.emplace_back(world.grains(std::array<double,3> {{750e3,250e3,100e3}},10e3,0,3));
   approval_tests_grains.emplace_back(world.grains(std::array<double,2> {{750e3,100e3}},10e3,0,3));
@@ -1071,11 +1072,9 @@ TEST_CASE("WorldBuilder Features: Distance to Feature Plane")
     approval_tests.emplace_back(plane_distances3.get_distance_from_surface());
     approval_tests.emplace_back(plane_distances3.get_distance_along_surface());
 
-    ApprovalTests::Approvals::verifyAll("Test", approval_tests);
   }
 
-  // call the distance_to_plane to a fault feature, as this is not implemented yet, we should be
-  // informed by the assertion error message.
+  // call the distance_to_plane to a fault feature.
   const std::string file_name2 = WorldBuilder::Data::WORLD_BUILDER_SOURCE_DIR + "/tests/data/fault_constant_angles_cartesian.wb";
   WorldBuilder::World world2(file_name2);
   {
@@ -1086,10 +1085,23 @@ TEST_CASE("WorldBuilder Features: Distance to Feature Plane")
     fault->parse_entries(world2.parameters);
     world2.parameters.leave_subsection();
     world2.parameters.leave_subsection();
-    const std::array<double, 3> point = {{50e3,230e3,800e3}};
-    const double depth = 10e3;
-    CHECK_THROWS_WITH(world2.distance_to_plane(point, depth, "First fault"),
-                      Contains("The distance_to_feature_plane is not yet implemented for the desinated object"));
+    const std::array<double, 3> point1 = {{250e3,495e3,800e3}};
+    const double depth1 = 5.1e3;
+    auto plane_distances1 = world2.distance_to_plane(point1, depth1, "First fault");
+    approval_tests.emplace_back(plane_distances1.get_distance_from_surface());
+    approval_tests.emplace_back(plane_distances1.get_distance_along_surface());
+    const std::array<double, 3> point2 = {{502e3,500e3,800e3}};
+    const double depth2 = 0.45e3;
+    auto plane_distances2 = world2.distance_to_plane(point2, depth2, "First fault");
+    approval_tests.emplace_back(plane_distances2.get_distance_from_surface());
+    approval_tests.emplace_back(plane_distances2.get_distance_along_surface());
+    const std::array<double, 3> point3 = {{502e3,500e3,800e3}}; // point 3, shallower than point2, thus distance from plane = inf
+    const double depth3 = 0.43e3;
+    auto plane_distances3 = world2.distance_to_plane(point3, depth3, "First fault");
+    approval_tests.emplace_back(plane_distances3.get_distance_from_surface());
+    approval_tests.emplace_back(plane_distances3.get_distance_along_surface());
+
+    ApprovalTests::Approvals::verifyAll("Test", approval_tests);
   }
 }
 
@@ -1114,7 +1126,7 @@ TEST_CASE("WorldBuilder Features: Continental Plate")
     auto point = Point<3>(250e3,750e3,400e3,cartesian);
     std::vector<double> vector(1,0.);
     auto nat_coord = Objects::NaturalCoordinate(point,*(world1.parameters.coordinate_system));
-    CHECK_THROWS_WITH(continental_plate->properties(point,nat_coord,10e3, {{{4,0,0}}},10, {0},vector),
+    CHECK_THROWS_WITH(continental_plate->properties(point,nat_coord,10e3, {{{5,0,0}}},10, {0},vector),
     Contains("Internal error: Unimplemented property provided"));
   }
 
@@ -1361,7 +1373,7 @@ TEST_CASE("WorldBuilder Features: Mantle layer")
     auto point = Point<3>(250e3,750e3,400e3,cartesian);
     std::vector<double> vector(1,0.);
     auto nat_coord = Objects::NaturalCoordinate(point,*(world1.parameters.coordinate_system));
-    CHECK_THROWS_WITH(mantle_layer->properties(point,nat_coord,260e3, {{{4,0,0}}},10, {0},vector),
+    CHECK_THROWS_WITH(mantle_layer->properties(point,nat_coord,260e3, {{{5,0,0}}},10, {0},vector),
     Contains("Internal error: Unimplemented property provided"));
   }
   // Check continental plate through the world
@@ -1608,7 +1620,7 @@ TEST_CASE("WorldBuilder Features: Oceanic Plate")
     auto point = Point<3>(250e3,750e3,400e3,cartesian);
     std::vector<double> vector(1,0.);
     auto nat_coord = Objects::NaturalCoordinate(point,*(world1.parameters.coordinate_system));
-    CHECK_THROWS_WITH(oceanic_plate->properties(point,nat_coord,10e3, {{{4,0,0}}},10, {0},vector),
+    CHECK_THROWS_WITH(oceanic_plate->properties(point,nat_coord,10e3, {{{5,0,0}}},10, {0},vector),
     Contains("Internal error: Unimplemented property provided"));
   }
 
@@ -1995,7 +2007,7 @@ TEST_CASE("WorldBuilder Features: Subducting Plate")
     auto point = Point<3>(250e3,490e3,800e3,cartesian);
     std::vector<double> vector(1,0.);
     auto nat_coord = Objects::NaturalCoordinate(point,*(world1.parameters.coordinate_system));
-    CHECK_THROWS_WITH(subducting_plate->properties(point,nat_coord,100000, {{{4,0,0}}},10, {0},vector),
+    CHECK_THROWS_WITH(subducting_plate->properties(point,nat_coord,100000, {{{5,0,0}}},10, {0},vector),
     Contains("Internal error: Unimplemented property provided"));
   }
   // Check continental plate through the world
@@ -2495,7 +2507,7 @@ TEST_CASE("WorldBuilder Features: Fault")
     auto point = Point<3>(50e3,230e3,800e3,cartesian);
     std::vector<double> vector(1,0.);
     auto nat_coord = Objects::NaturalCoordinate(point,*(world1.parameters.coordinate_system));
-    CHECK_THROWS_WITH(fault->properties(point,nat_coord,1000, {{{4,0,0}}},10, {0},vector),
+    CHECK_THROWS_WITH(fault->properties(point,nat_coord,1000, {{{5,0,0}}},10, {0},vector),
     Contains("Internal error: Unimplemented property provided"));
   }
 
@@ -3157,7 +3169,7 @@ TEST_CASE("WorldBuilder Types: Double")
   CHECK(type.default_value == Approx(1.0));
   CHECK(type.get_type() == Types::type::TYPE);
 
-  Types::TYPE const type_copy(type);
+  Types::TYPE const &type_copy(type);
   CHECK(type_copy.default_value == Approx(1.0));
   CHECK(type_copy.get_type() == Types::type::TYPE);
 
@@ -3206,7 +3218,7 @@ TEST_CASE("WorldBuilder Types: String")
   CHECK(type.default_value == "1");
   CHECK(type.get_type() == Types::type::TYPE);
 
-  Types::TYPE const type_copy(type);
+  Types::TYPE const &type_copy(type);
   CHECK(type_copy.default_value == "1");
   CHECK(type_copy.get_type() == Types::type::TYPE);
 
@@ -3475,7 +3487,6 @@ TEST_CASE("WorldBuilder Types: Segment Object")
   CHECK(type.value_top_truncation[1] == Approx(4.0));
   CHECK(type.value_angle[0] == Approx(5.0));
   CHECK(type.value_angle[1] == Approx(6.0));
-  CHECK(type.get_type() == Types::type::TYPE);
 
   Objects::TYPE<Features::FaultModels::Temperature::Interface, Features::FaultModels::Composition::Interface, Features::FaultModels::Grains::Interface>
   type_copy(type);
@@ -3487,21 +3498,6 @@ TEST_CASE("WorldBuilder Types: Segment Object")
   CHECK(type_copy.value_top_truncation[1] == Approx(4.0));
   CHECK(type_copy.value_angle[0] == Approx(5.0));
   CHECK(type_copy.value_angle[1] == Approx(6.0));
-  CHECK(type_copy.get_type() == Types::type::TYPE);
-
-  const std::unique_ptr<Types::Interface> type_clone = type_copy.clone();
-  Objects::TYPE<Features::FaultModels::Temperature::Interface, Features::FaultModels::Composition::Interface, Features::FaultModels::Grains::Interface>
-  *type_clone_natural = dynamic_cast<Objects::TYPE<Features::FaultModels::Temperature::Interface,
-   Features::FaultModels::Composition::Interface,
-   Features::FaultModels::Grains::Interface> *>(type_clone.get());
-  CHECK(type_clone_natural->value_length == Approx(1.0));
-  CHECK(type_clone_natural->value_thickness[0] == Approx(1.0));
-  CHECK(type_clone_natural->value_thickness[1] == Approx(2.0));
-  CHECK(type_clone_natural->value_top_truncation[0] == Approx(3.0));
-  CHECK(type_clone_natural->value_top_truncation[1] == Approx(4.0));
-  CHECK(type_clone_natural->value_angle[0] == Approx(5.0));
-  CHECK(type_clone_natural->value_angle[1] == Approx(6.0));
-  CHECK(type_clone_natural->get_type() == Types::type::TYPE);
 
 #undef TYPE
 }
@@ -3514,7 +3510,7 @@ TEST_CASE("WorldBuilder Types: Array")
   CHECK(type.inner_type_ptr.get() != nullptr);
   CHECK(type.get_type() == Types::type::TYPE);
 
-  Types::TYPE const type_copy(type);
+  Types::TYPE const &type_copy(type);
   CHECK(type_copy.inner_type == Types::type::Double);
   CHECK(type_copy.inner_type_ptr.get() != nullptr);
   CHECK(type_copy.get_type() == Types::type::TYPE);
@@ -3589,7 +3585,7 @@ TEST_CASE("WorldBuilder Types: Bool")
   CHECK(type.get_type() == Types::type::TYPE);
 
 
-  Types::TYPE const type_copy(type);
+  Types::TYPE const &type_copy(type);
   CHECK(type_copy.default_value == true);
   CHECK(type_copy.get_type() == Types::type::TYPE);
 
@@ -3835,23 +3831,29 @@ TEST_CASE("WorldBuilder Parameters")
     CHECK(rapidjson::Pointer("/test/oneOf/0/oneOf/1/default value").Get(prm_temp.declarations)->GetDouble() == Approx(102.));
     CHECK(rapidjson::Pointer("/test/oneOf/1/default value").Get(prm_temp.declarations)->GetDouble() == Approx(103.));
   }
-  prm.declare_entry("one value at points one value string",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101.))),
+  prm.declare_entry("one value at points one value string",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101., 2.))),
                     "Documentation");
-  prm.declare_entry("array value at points one value string",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101.))),
+  prm.declare_entry("array value at points one value string",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101., 2.))),
                     "Documentation");
-  prm.declare_entry("value at points set ap val string",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101.))),
+  prm.declare_entry("value at points set ap val string",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101., 2.))),
                     "Documentation");
-  prm.declare_entry("value at points set ap p1 string",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101.))),
+  prm.declare_entry("value at points set ap p1 string",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101., 2.))),
                     "Documentation");
-  prm.declare_entry("value at points set ap p2 string",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101.))),
+  prm.declare_entry("value at points set ap p2 string",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101., 2.))),
                     "Documentation");
-  prm.declare_entry("one value at points one value",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101.))),
+  prm.declare_entry("one value at points one value",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101., 2.))),
                     "Documentation");
-  prm.declare_entry("array value at points one value",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101.))),
+  prm.declare_entry("array value at points one value",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101., 2.))),
                     "Documentation");
-  prm.declare_entry("value at points",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101.))),
+  prm.declare_entry("value at points",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101., 2.))),
                     "Documentation");
-  prm.declare_entry("value at points default ap",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101.))),
+  prm.declare_entry("value at points default ap",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101., 2.))),
+                    "Documentation");
+  prm.declare_entry("value at array full",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101., std::numeric_limits<uint64_t>::max()))),
+                    "Documentation");
+  prm.declare_entry("value at array",Types::OneOf(Types::Double(101.),Types::Array(Types::ValueAtPoints(101., std::numeric_limits<uint64_t>::max()))),
+                    "Documentation");
+  prm.declare_entry("vector for vector or double", Types::OneOf(Types::Double(-1), Types::Array(Types::Array(Types::Double(-1), 1), 1)),
                     "Documentation");
   prm.leave_subsection();
   const std::vector<Point<2> > additional_points = {Point<2>(-10,-10,cartesian),Point<2>(-10,10,cartesian),
@@ -4096,7 +4098,47 @@ TEST_CASE("WorldBuilder Parameters")
                     Contains("Could not convert values of /vector of vectors of points<2> nan/1 into doubles"));
 
 
+  std::pair<std::vector<double>,std::vector<double>> value_at_array = prm.get_value_at_array("value at array full");
+  approval_tests.emplace_back((double)value_at_array.first.size());
+  approval_tests.emplace_back(value_at_array.first[0]);
+  approval_tests.emplace_back(value_at_array.first[1]);
 
+  approval_tests.emplace_back((double)value_at_array.second.size());
+  approval_tests.emplace_back(value_at_array.second[0]);
+  approval_tests.emplace_back(value_at_array.second[1]);
+  approval_tests.emplace_back(value_at_array.second[2]);
+  approval_tests.emplace_back(value_at_array.second[3]);
+  approval_tests.emplace_back(value_at_array.second[4]);
+
+
+  std::pair<std::vector<double>,std::vector<double>> double_value_at_array = prm.get_value_at_array("one value at points one value");
+  approval_tests.emplace_back((double)double_value_at_array.first.size());
+  approval_tests.emplace_back(double_value_at_array.first[0]);
+  approval_tests.emplace_back((double)double_value_at_array.second.size());
+  approval_tests.emplace_back(double_value_at_array.second[0]);
+
+  std::pair<std::vector<double>,std::vector<double>> default_value_at_array = prm.get_value_at_array("value at array");
+  approval_tests.emplace_back((double)default_value_at_array.first.size());
+  approval_tests.emplace_back(default_value_at_array.first[0]);
+  approval_tests.emplace_back((double)default_value_at_array.second.size());
+  approval_tests.emplace_back(default_value_at_array.second[0]);
+
+  std::vector<std::vector<double>> vector_for_vector_or_double = prm.get_vector_or_double("vector for vector or double");
+  approval_tests.emplace_back((double)vector_for_vector_or_double.size());
+  approval_tests.emplace_back((double)vector_for_vector_or_double[0].size());
+  approval_tests.emplace_back((double)vector_for_vector_or_double[0][0]);
+  approval_tests.emplace_back((double)vector_for_vector_or_double[0][1]);
+  approval_tests.emplace_back((double)vector_for_vector_or_double[0][2]);
+  approval_tests.emplace_back((double)vector_for_vector_or_double[0][3]);
+
+  approval_tests.emplace_back((double)vector_for_vector_or_double[1].size());
+  approval_tests.emplace_back((double)vector_for_vector_or_double[1][0]);
+  approval_tests.emplace_back((double)vector_for_vector_or_double[1][1]);
+
+  std::vector<std::vector<double>> double_for_vector_or_double = prm.get_vector_or_double("one value at points one value");
+  approval_tests.emplace_back((double)double_for_vector_or_double.size());
+  approval_tests.emplace_back((double)double_for_vector_or_double[0].size());
+  approval_tests.emplace_back((double)double_for_vector_or_double[0][0]);
   /*CHECK_THROWS_WITH(prm.get_vector<std::string>("non existent string vector"),
                     Contains("internal error: could not retrieve the default value at"));
 
@@ -4838,10 +4880,10 @@ TEST_CASE("WorldBuilder Utilities function: distance_point_from_curved_planes ca
 
   const double dtr = Consts::PI/180;
   std::vector<std::vector<Point<2> > > slab_segment_angles(2);
-  slab_segment_angles[0].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
-  slab_segment_angles[0].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
-  slab_segment_angles[1].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
-  slab_segment_angles[1].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
+  slab_segment_angles[0].emplace_back(45 * dtr,45 * dtr,cartesian);
+  slab_segment_angles[0].emplace_back(45 * dtr,45 * dtr,cartesian);
+  slab_segment_angles[1].emplace_back(45 * dtr,45 * dtr,cartesian);
+  slab_segment_angles[1].emplace_back(45 * dtr,45 * dtr,cartesian);
 
   const double starting_radius = 10;
 
@@ -5310,8 +5352,8 @@ TEST_CASE("WorldBuilder Utilities function: distance_point_from_curved_planes ca
   slab_segment_lengths[2].push_back(200);
 
   slab_segment_angles.resize(3);
-  slab_segment_angles[2].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
-  slab_segment_angles[2].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
+  slab_segment_angles[2].emplace_back(45 * dtr,45 * dtr,cartesian);
+  slab_segment_angles[2].emplace_back(45 * dtr,45 * dtr,cartesian);
 
   distance_from_planes =
     Utilities::distance_point_from_curved_planes(position,
@@ -5778,12 +5820,12 @@ TEST_CASE("WorldBuilder Utilities function: distance_point_from_curved_planes ca
 
   const double dtr = Consts::PI/180;
   std::vector<std::vector<Point<2> > > slab_segment_angles(3);
-  slab_segment_angles[0].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
-  slab_segment_angles[0].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
-  slab_segment_angles[1].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
-  slab_segment_angles[1].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
-  slab_segment_angles[2].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
-  slab_segment_angles[2].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
+  slab_segment_angles[0].emplace_back(45 * dtr,45 * dtr,cartesian);
+  slab_segment_angles[0].emplace_back(45 * dtr,45 * dtr,cartesian);
+  slab_segment_angles[1].emplace_back(45 * dtr,45 * dtr,cartesian);
+  slab_segment_angles[1].emplace_back(45 * dtr,45 * dtr,cartesian);
+  slab_segment_angles[2].emplace_back(45 * dtr,45 * dtr,cartesian);
+  slab_segment_angles[2].emplace_back(45 * dtr,45 * dtr,cartesian);
 
   const double starting_radius = 10;
   // Now test the curves into the depth
@@ -7153,10 +7195,10 @@ TEST_CASE("WorldBuilder Utilities function: distance_point_from_curved_planes sp
 
   //double dtr = Consts::PI/180;
   std::vector<std::vector<Point<2> > > slab_segment_angles(2);
-  slab_segment_angles[0].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
-  slab_segment_angles[0].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
-  slab_segment_angles[1].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
-  slab_segment_angles[1].push_back(Point<2>(45 * dtr,45 * dtr,cartesian));
+  slab_segment_angles[0].emplace_back(45 * dtr,45 * dtr,cartesian);
+  slab_segment_angles[0].emplace_back(45 * dtr,45 * dtr,cartesian);
+  slab_segment_angles[1].emplace_back(45 * dtr,45 * dtr,cartesian);
+  slab_segment_angles[1].emplace_back(45 * dtr,45 * dtr,cartesian);
 
   const double starting_radius = 10;
 
@@ -7505,5 +7547,199 @@ TEST_CASE("Fast version of fmod")
   CHECK(FT::fmod(18.5,4.2) == Approx(std::fmod(18.5,4.2)));
   CHECK(std::isnan(FT::fmod(1,0)));
   //CHECK(std::isnan(std::fmod(1,0))); Return a signaling NAN (FE_INVALID is raised)
+}
+
+TEST_CASE("WorldBuilder Utilities function: calculate_ridge_distance_and_spreading")
+{
+  std::vector<double> approval_tests;
+
+  const std::unique_ptr<CoordinateSystems::Interface> cartesian_system = CoordinateSystems::Interface::create("cartesian", nullptr);;
+
+  // Ridge properties
+  const Point<2> p1a(std::array<double,2> {{200e3, -1e3}},cartesian);
+  const Point<2> p1b(std::array<double,2> {{200e3, 50e3}},cartesian);
+  const Point<2> p2a(std::array<double,2> {{50e3, 50e3}},cartesian);
+  const Point<2> p2b(std::array<double,2> {{50e3, 101e3}},cartesian);
+  const Point<2> p2c(std::array<double,2> {{100e3, 151e3}},cartesian);
+  const std::vector<Point<2>> mid_ocean_ridges_segment_1 = {p1a, p1b};
+  const std::vector<Point<2>> mid_ocean_ridges_segment_2 = {p2a, p2b, p2c};
+
+  std::vector<std::vector<Point<2>>> mid_oceanic_ridges;
+  mid_oceanic_ridges.push_back(mid_ocean_ridges_segment_1);
+  mid_oceanic_ridges.push_back(mid_ocean_ridges_segment_2);
+
+  const double mid_oceanic_spreading_velocitie_1a =  1.0;
+  const double mid_oceanic_spreading_velocitie_1b =  2.0;
+  const double mid_oceanic_spreading_velocitie_2a =  3.0;
+  const double mid_oceanic_spreading_velocitie_2b =  4.0;
+  const double mid_oceanic_spreading_velocitie_2c =  5.0;
+
+  std::vector<double> mid_oceanic_spreading_velocities_segment1 = {mid_oceanic_spreading_velocitie_1a, mid_oceanic_spreading_velocitie_1b};
+  std::vector<double> mid_oceanic_spreading_velocities_segment2 = {mid_oceanic_spreading_velocitie_2a, mid_oceanic_spreading_velocitie_2b,
+                                                                   mid_oceanic_spreading_velocitie_2c
+                                                                  };
+
+  std::vector<std::vector<double>> mid_oceanic_spreading_velocities;
+  mid_oceanic_spreading_velocities.push_back(mid_oceanic_spreading_velocities_segment1);
+  mid_oceanic_spreading_velocities.push_back(mid_oceanic_spreading_velocities_segment2);
+
+  const std::vector<std::vector<double>> subducting_plate_velocities = {{0.0}};
+  const std::vector<double> &ridge_migration_times = {0.0};
+
+  // Query point 1
+  Point<3> position_1(1e3,0,0,cartesian);
+  Objects::NaturalCoordinate position_in_natural_coordinates_1 = Objects::NaturalCoordinate(position_1,
+                                                                 *cartesian_system);
+
+  const std::vector<double> result1 = Utilities::calculate_ridge_distance_and_spreading(mid_oceanic_ridges,
+                                      mid_oceanic_spreading_velocities,
+                                      cartesian_system,
+                                      position_in_natural_coordinates_1,
+                                      subducting_plate_velocities,
+                                      ridge_migration_times);
+  approval_tests.emplace_back(result1[0]); // spreading velocity at ridge
+  approval_tests.emplace_back(result1[1]); // ridge distance
+  approval_tests.emplace_back(result1[2]); // subducting velocity at trench
+  approval_tests.emplace_back(result1[3]); // ridge migration time
+
+  // Query point 2: locates outside of the ridge, current solution is to take the end point as the reference point
+  Point<3> position_2(1e3,-2e3,0,cartesian);
+  Objects::NaturalCoordinate position_in_natural_coordinates_2 = Objects::NaturalCoordinate(position_2,
+                                                                 *cartesian_system);
+
+  const std::vector<double> result2 = Utilities::calculate_ridge_distance_and_spreading(mid_oceanic_ridges,
+                                      mid_oceanic_spreading_velocities,
+                                      cartesian_system,
+                                      position_in_natural_coordinates_2,
+                                      subducting_plate_velocities,
+                                      ridge_migration_times);
+  approval_tests.emplace_back(result2[0]); // spreading velocity at ridge
+  approval_tests.emplace_back(result2[1]); // ridge distance
+  approval_tests.emplace_back(result2[2]); // subducting velocity at trench
+  approval_tests.emplace_back(result2[3]); // ridge migration time
+
+  // Query point 3: the nearest point on the ridge is in the middle of p2b and p2c
+  // thus it should have intermediate velocity values
+  Point<3> position_3(50e3,151e3,0,cartesian);
+  Objects::NaturalCoordinate position_in_natural_coordinates_3 = Objects::NaturalCoordinate(position_3,
+                                                                 *cartesian_system);
+
+  const std::vector<double> result3 = Utilities::calculate_ridge_distance_and_spreading(mid_oceanic_ridges,
+                                      mid_oceanic_spreading_velocities,
+                                      cartesian_system,
+                                      position_in_natural_coordinates_3,
+                                      subducting_plate_velocities,
+                                      ridge_migration_times);
+  approval_tests.emplace_back(result3[0]); // spreading velocity at ridge
+  approval_tests.emplace_back(result3[1]); // ridge distance
+  approval_tests.emplace_back(result3[2]); // subducting velocity at trench
+  approval_tests.emplace_back(result3[3]); // ridge migration time
+
+  // Query point 4: the nearest point on the ridge is in the middle of p2a and p2b
+  // thus it should have intermediate velocity values
+  Point<3> position_4(100e3,76e3,0,cartesian);
+  Objects::NaturalCoordinate position_in_natural_coordinates_4 = Objects::NaturalCoordinate(position_4,
+                                                                 *cartesian_system);
+
+  const std::vector<double> result4 = Utilities::calculate_ridge_distance_and_spreading(mid_oceanic_ridges,
+                                      mid_oceanic_spreading_velocities,
+                                      cartesian_system,
+                                      position_in_natural_coordinates_4,
+                                      subducting_plate_velocities,
+                                      ridge_migration_times);
+  approval_tests.emplace_back(result4[0]); // spreading velocity at ridge
+  approval_tests.emplace_back(result4[1]); // ridge distance
+  approval_tests.emplace_back(result4[2]); // subducting velocity at trench
+  approval_tests.emplace_back(result4[3]); // ridge migration time
+
+  ApprovalTests::Approvals::verifyAll("TITLE", approval_tests);
+}
+
+TEST_CASE("WorldBuilder Utilities function: calculate_ridge_distance_and_spreading spherical")
+{
+  std::vector<double> approval_tests;
+
+  const std::unique_ptr<CoordinateSystems::Interface> spherical_system = CoordinateSystems::Interface::create("spherical", nullptr);;
+
+  // Ridge properties
+  const Point<2> p1a(std::array<double,2> {{0.3491, -0.6981}},spherical);
+  const Point<2> p1b(std::array<double,2> {{0.3491, 0.0}},spherical);
+  const Point<2> p2a(std::array<double,2> {{0.1745, 0.0}},spherical);
+  const Point<2> p2b(std::array<double,2> {{0.1745, 0.5236}},spherical);
+  const Point<2> p2c(std::array<double,2> {{0.3491, 0.6981}},spherical);
+  const std::vector<Point<2>> mid_ocean_ridges_segment_1 = {p1a, p1b};
+  const std::vector<Point<2>> mid_ocean_ridges_segment_2 = {p2a, p2b, p2c};
+
+  std::vector<std::vector<Point<2>>> mid_oceanic_ridges;
+  mid_oceanic_ridges.push_back(mid_ocean_ridges_segment_1);
+  mid_oceanic_ridges.push_back(mid_ocean_ridges_segment_2);
+
+  const double mid_oceanic_spreading_velocitie_1a =  1.0;
+  const double mid_oceanic_spreading_velocitie_1b =  2.0;
+  const double mid_oceanic_spreading_velocitie_2a =  3.0;
+  const double mid_oceanic_spreading_velocitie_2b =  4.0;
+  const double mid_oceanic_spreading_velocitie_2c =  5.0;
+
+  std::vector<double> mid_oceanic_spreading_velocities_segment1 = {mid_oceanic_spreading_velocitie_1a, mid_oceanic_spreading_velocitie_1b};
+  std::vector<double> mid_oceanic_spreading_velocities_segment2 = {mid_oceanic_spreading_velocitie_2a, mid_oceanic_spreading_velocitie_2b,
+                                                                   mid_oceanic_spreading_velocitie_2c
+                                                                  };
+
+  std::vector<std::vector<double>> mid_oceanic_spreading_velocities;
+  mid_oceanic_spreading_velocities.push_back(mid_oceanic_spreading_velocities_segment1);
+  mid_oceanic_spreading_velocities.push_back(mid_oceanic_spreading_velocities_segment2);
+
+  const std::vector<std::vector<double>> subducting_plate_velocities = {{0.0}};
+  const std::vector<double> &ridge_migration_times = {0.0};
+
+  // Query point 1, the nearest point on the ridge is in the middle of p1a and p1b
+  Point<3> position_1(6371e3, 0.1745, -0.3491, spherical);
+  Objects::NaturalCoordinate position_in_natural_coordinates_1 = Objects::NaturalCoordinate(Utilities::spherical_to_cartesian_coordinates(position_1.get_array()),
+                                                                 *spherical_system);
+
+  const std::vector<double> result1 = Utilities::calculate_ridge_distance_and_spreading(mid_oceanic_ridges,
+                                      mid_oceanic_spreading_velocities,
+                                      spherical_system,
+                                      position_in_natural_coordinates_1,
+                                      subducting_plate_velocities,
+                                      ridge_migration_times);
+  approval_tests.emplace_back(result1[0]); // spreading velocity at ridge
+  approval_tests.emplace_back(result1[1]); // ridge distance
+  approval_tests.emplace_back(result1[2]); // subducting velocity at trench
+  approval_tests.emplace_back(result1[3]); // ridge migration time
+
+  // Query point 2, the nearest point on the ridge is in the middle of p2b and p2c
+  Point<3> position_2(6371e3, 0.3491, 0.5236, spherical);
+  Objects::NaturalCoordinate position_in_natural_coordinates_2 = Objects::NaturalCoordinate(Utilities::spherical_to_cartesian_coordinates(position_2.get_array()),
+                                                                 *spherical_system);
+
+  const std::vector<double> result2 = Utilities::calculate_ridge_distance_and_spreading(mid_oceanic_ridges,
+                                      mid_oceanic_spreading_velocities,
+                                      spherical_system,
+                                      position_in_natural_coordinates_2,
+                                      subducting_plate_velocities,
+                                      ridge_migration_times);
+  approval_tests.emplace_back(result2[0]); // spreading velocity at ridge
+  approval_tests.emplace_back(result2[1]); // ridge distance
+  approval_tests.emplace_back(result2[2]); // subducting velocity at trench
+  approval_tests.emplace_back(result2[3]); // ridge migration time
+
+  // Query point 3, the nearest point on the ridge is p2b, the purpose is to test a negative value of longitude
+  Point<3> position_3(6371e3, -0.1745, 0.5236, spherical);
+  Objects::NaturalCoordinate position_in_natural_coordinates_3 = Objects::NaturalCoordinate(Utilities::spherical_to_cartesian_coordinates(position_3.get_array()),
+                                                                 *spherical_system);
+
+  const std::vector<double> result3 = Utilities::calculate_ridge_distance_and_spreading(mid_oceanic_ridges,
+                                      mid_oceanic_spreading_velocities,
+                                      spherical_system,
+                                      position_in_natural_coordinates_3,
+                                      subducting_plate_velocities,
+                                      ridge_migration_times);
+  approval_tests.emplace_back(result3[0]); // spreading velocity at ridge
+  approval_tests.emplace_back(result3[1]); // ridge distance
+  approval_tests.emplace_back(result3[2]); // subducting velocity at trench
+  approval_tests.emplace_back(result3[3]); // ridge migration time
+
+  ApprovalTests::Approvals::verifyAll("TITLE", approval_tests);
 }
 

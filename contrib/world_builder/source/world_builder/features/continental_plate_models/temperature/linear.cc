@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -26,10 +26,8 @@
 #include "world_builder/types/object.h"
 #include "world_builder/types/one_of.h"
 #include "world_builder/types/value_at_points.h"
-#include "world_builder/utilities.h"
 #include "world_builder/world.h"
 
-#include "world_builder/kd_tree.h"
 
 namespace WorldBuilder
 {
@@ -66,10 +64,10 @@ namespace WorldBuilder
                             "Linear temperature model. Can be set to use an adiabatic temperature at the boundaries.");
 
           // Declare entries of this plugin
-          prm.declare_entry("min depth", Types::OneOf(Types::Double(0),Types::Array(Types::ValueAtPoints(0.))),
+          prm.declare_entry("min depth", Types::OneOf(Types::Double(0),Types::Array(Types::ValueAtPoints(0., 2.))),
                             "The depth in meters from which the composition of this feature is present.");
 
-          prm.declare_entry("max depth", Types::OneOf(Types::Double(std::numeric_limits<double>::max()),Types::Array(Types::ValueAtPoints(std::numeric_limits<double>::max()))),
+          prm.declare_entry("max depth", Types::OneOf(Types::Double(std::numeric_limits<double>::max()),Types::Array(Types::ValueAtPoints(std::numeric_limits<double>::max(), 2.))),
                             "The depth in meters to which the composition of this feature is present.");
 
           prm.declare_entry("top temperature", Types::Double(293.15),
@@ -134,9 +132,9 @@ namespace WorldBuilder
                                                  (depth - min_depth_local) *
                                                  ((bottom_temperature_local - top_temperature_local) / (max_depth_local_local - min_depth_local_local));
 
-                  WBAssert(!std::isnan(new_temperature), "Temparture is not a number: " << new_temperature
+                  WBAssert(!std::isnan(new_temperature), "Temperature is not a number: " << new_temperature
                            << ", based on a temperature model with the name " << this->name);
-                  WBAssert(std::isfinite(new_temperature), "Temparture is not a finite: " << new_temperature
+                  WBAssert(std::isfinite(new_temperature), "Temperature is not a finite: " << new_temperature
                            << ", based on a temperature model with the name " << this->name
                            << ", top_temperature_local = " << top_temperature_local << ", depth = " << depth << ", min_depth_local = " << min_depth_local
                            << ", bottom_temperature_local= " << bottom_temperature_local << ", top_temperature_local=" << top_temperature_local

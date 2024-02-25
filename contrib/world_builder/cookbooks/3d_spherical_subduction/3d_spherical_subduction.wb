@@ -1,9 +1,8 @@
 {
-  "version":"0.5",
+  "version": "0.6",
   "coordinate system":{"model":"spherical", "depth method":"begin segment"},
   "cross section":[[0,0],[10,0]],
   "maximum distance between coordinates":0.01,
-  //"interpolation":"monotone spline",
   "features":
   [
     {"model":"mantle layer", "name":"upper mantle", "min depth":95e3, "max depth":660e3, "coordinates":[[-1,-1],[41,-1],[41,-1],[-1,-1]],

@@ -7,8 +7,8 @@ If you want a Fortran wrapper, then also make sure a Fortran compiler is install
 If you want a Python interface, make sure you have Python 3 installed.
 
 There are many ways to install the prerequisites of the World Builder per operating system.
-For each system, we show some options we which we know work.
-If it doesn't work for your system, please let us know through the GitHub issues (<https://github.com/GeodynamicWorldBuilder/WorldBuilder/issues>) and/or make a pull request to describe how to fix the issue for your system.
+For each system, we show some options which we know work.
+If it doesn't work for your system, please let us know through GitHub issues (<https://github.com/GeodynamicWorldBuilder/WorldBuilder/issues>) and/or make a pull request to describe how to fix the issue for your system.
 
 ::::::{tab-set}
 :::::{tab-item} Linux (Debian based)

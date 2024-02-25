@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.12)
+cmake_minimum_required(VERSION 2.8.12)
 
 project(WorldBuilder C CXX)
 
@@ -40,23 +40,25 @@ ENDIF()
 
 set (WORLD_BUILDER_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 
+# define some config options:
+set(WB_ENABLE_APPS ON CACHE BOOL "If enabled, applications gwb-grid and gwb-dat are built.")
+set(WB_ENABLE_HELPER_TARGETS ON CACHE BOOL "If enabled, targets to indenting and switching to debug/release mode are configured.")
+set(WB_ENABLE_TESTS ON CACHE BOOL "If enabled, tests are configured.")
+
+
 # generate version.cc
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/world_builder/config.h.in" "${PROJECT_BINARY_DIR}/include/world_builder/config.h" @ONLY)
+
 
 # determine whether to use clang-tidy
 set(WB_CHECK_CLANG_TIDY OFF CACHE BOOL "Whether or not to check the code with clang-tidy while compiling the world builder.")
 
 if(WB_CHECK_CLANG_TIDY)
-  set(WB_CHECK_CLANG_TIDY_CHECKS "clang-analyzer-*,performance-*,modernize-a*,modernize-c*,modernize-c*,modernize-l*,modernize-m*,modernize-p*,modernize-r*\
-,modernize-s*,modernize-un*,modernize-use-b*,modernize-use-d*,modernize-use-e*,modernize-use-n*,modernize-use-o*,modernize-use-tran*,modernize-use-u*\
-,misc-*,mpi-*,readability-c*,readability-d*,readability-e*,readability-i*,readability-mak*,readability-mi*,readability-n*,llvm-*\
-,readability-q*,readability-r*,readability-s*,readability-u*"
-  CACHE STRING "A list of items to check with clang-tidy")
   set(WB_CHECK_CLANG_TIDY_FIX OFF CACHE BOOL "Whether or not to try to automatically fix the clang-tidy issues when found.")
   if(WB_CHECK_CLANG_TIDY_FIX)
-    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=${WB_CHECK_CLANG_TIDY_CHECKS};--fix")
+    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;--fix;-header-filter=world_builder/.*")
   else()
-    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=${WB_CHECK_CLANG_TIDY_CHECKS}")
+    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-header-filter=world_builder/.*}")
   endif()
 endif()
 
@@ -169,6 +171,10 @@ IF(NOT CMAKE_BUILD_TYPE)
        FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
+IF (CMAKE_BUILD_TYPE STREQUAL DebugRelease)
+    MESSAGE(FATAL_ERROR "DebugRelease build mode is not supported!")
+ENDIF()
+
 IF(NOT WB_RUN_APP_TESTS)
    SET(WB_RUN_APP_TESTS ON
        CACHE BOOL "Whether to run or not to run the app tests."
@@ -247,7 +253,10 @@ FOREACH(_source_file ${UNITY_DISABLE_FILES})
   SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE)
 ENDFOREACH()
 
-add_library(WorldBuilder ${SOURCES})
+if(NOT DEFINED WB_TARGET)
+  set(WB_TARGET "WorldBuilder" CACHE STRING "")
+endif()
+add_library(${WB_TARGET} ${SOURCES})
 
 IF(NOT CMAKE_VERSION VERSION_LESS 3.16)
   SET(WB_UNITY_BUILD ON CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions.")
@@ -257,21 +266,23 @@ ENDIF()
 
 IF (WB_UNITY_BUILD)
   IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
-    SET_PROPERTY(TARGET WorldBuilder PROPERTY UNITY_BUILD TRUE)
+    SET_PROPERTY(TARGET ${WB_TARGET} PROPERTY UNITY_BUILD TRUE)
     MESSAGE(STATUS "Combining source files into unity build.")
   ELSEIF(CMAKE_VERSION VERSION_LESS 3.16)
     MESSAGE(FATAL_ERROR "ASPECT_UNITY_BUILD is currently only supported for CMake 3.16 and newer versions.")
   ENDIF()
 ELSE()
   IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
-    SET_PROPERTY(TARGET WorldBuilder PROPERTY UNITY_BUILD FALSE)
+    SET_PROPERTY(TARGET ${WB_TARGET} PROPERTY UNITY_BUILD FALSE)
   ENDIF()
 
   MESSAGE(STATUS "Disabling unity build.")
 ENDIF()
 
-add_executable(gwb-dat "${CMAKE_CURRENT_SOURCE_DIR}/source/gwb-dat/main.cc")
-add_executable(gwb-grid "${CMAKE_CURRENT_SOURCE_DIR}/source/gwb-grid/main.cc")
+if(WB_ENABLE_APPS)
+  add_executable(gwb-dat "${CMAKE_CURRENT_SOURCE_DIR}/source/gwb-dat/main.cc")
+  add_executable(gwb-grid "${CMAKE_CURRENT_SOURCE_DIR}/source/gwb-grid/main.cc")
+endif()
 
 if(MAKE_PYTHON_WRAPPER)
 
@@ -305,34 +316,35 @@ ELSE()
   SET(TARGET_WB_PREFIX "wb_")
 ENDIF()
 
-# Provide "indent" target for indenting all headers and source files
-ADD_CUSTOM_TARGET(${TARGET_WB_PREFIX}indent
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-  COMMAND ./doc/indent
-  COMMENT "Indenting all the World Builder header and source files..."
-  )
+if(WB_ENABLE_HELPER_TARGETS)
+  # Provide "indent" target for indenting all headers and source files
+  ADD_CUSTOM_TARGET(${TARGET_WB_PREFIX}indent
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMAND ./doc/indent
+    COMMENT "Indenting all the World Builder header and source files..."
+    )
 
-# Provide "release" target for switching to release mode
-ADD_CUSTOM_TARGET(${TARGET_WB_PREFIX}release
-  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Release .
-  COMMAND ${CMAKE_COMMAND} -E echo "Switched to Release mode. Now recompile with: ${_make_command}"
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  VERBATIM
-  COMMENT "switching to RELEASE mode..."
-  )
-
-
-# Provide "debug" target for switching to release mode
-ADD_CUSTOM_TARGET(${TARGET_WB_PREFIX}debug
-  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Debug .
-  COMMAND ${CMAKE_COMMAND} -E echo "Switched to Debug mode. Now recompile with: ${_make_command}"
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  VERBATIM
-  COMMENT "switching to DEBUG mode..."
-  )
+  # Provide "release" target for switching to release mode
+  ADD_CUSTOM_TARGET(${TARGET_WB_PREFIX}release
+    COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Release .
+    COMMAND ${CMAKE_COMMAND} -E echo "Switched to Release mode. Now recompile with: ${_make_command}"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    VERBATIM
+    COMMENT "switching to RELEASE mode..."
+    )
 
 
-  SET(FORCE_COLORED_OUTPUT ON CACHE BOOL "Forces colored output when compiling with gcc and clang.")
+  # Provide "debug" target for switching to release mode
+  ADD_CUSTOM_TARGET(${TARGET_WB_PREFIX}debug
+    COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Debug .
+    COMMAND ${CMAKE_COMMAND} -E echo "Switched to Debug mode. Now recompile with: ${_make_command}"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    VERBATIM
+    COMMENT "switching to DEBUG mode..."
+    )
+endif()
+
+SET(FORCE_COLORED_OUTPUT ON CACHE BOOL "Forces colored output when compiling with gcc and clang.")
 
 
 IF ( CMAKE_BUILD_TYPE STREQUAL Coverage )
@@ -444,18 +456,22 @@ endif()
 if(${CMAKE_VERSION} VERSION_LESS "3.9.0")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WB_COMPILER_OPTIONS_INTERFACE} ${WB_COMPILER_OPTIONS_PRIVATE} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_OLD}")
 else()
-  target_compile_options(WorldBuilder INTERFACE ${WB_COMPILER_OPTIONS_INTERFACE} PRIVATE ${WB_COMPILER_OPTIONS_PRIVATE} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW})
-  target_compile_options(gwb-dat INTERFACE ${WB_COMPILER_OPTIONS_INTERFACE} PRIVATE ${WB_COMPILER_OPTIONS_PRIVATE} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW})
-  target_compile_options(gwb-grid INTERFACE ${WB_COMPILER_OPTIONS_INTERFACE} PRIVATE ${WB_COMPILER_OPTIONS_PRIVATE} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW})
+  target_compile_options(${WB_TARGET} INTERFACE ${WB_COMPILER_OPTIONS_INTERFACE} PRIVATE ${WB_COMPILER_OPTIONS_PRIVATE} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW})
+  if (WB_ENABLE_APPS)
+    target_compile_options(gwb-dat INTERFACE ${WB_COMPILER_OPTIONS_INTERFACE} PRIVATE ${WB_COMPILER_OPTIONS_PRIVATE} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW})
+    target_compile_options(gwb-grid INTERFACE ${WB_COMPILER_OPTIONS_INTERFACE} PRIVATE ${WB_COMPILER_OPTIONS_PRIVATE} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW})
+  endif()
 endif()
 
 if(${CMAKE_VERSION} VERSION_LESS "3.13.0") 
     SET(CMAKE_EXE_LINKER_FLAGS "${WB_LINKER_OPTIONS} ${WB_VISU_LINKER_OPTIONS} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_OLD}")
 else()
-    target_link_options(WorldBuilder INTERFACE ${WB_LINKER_OPTIONS})
-    target_link_options(gwb-dat INTERFACE ${WB_LINKER_OPTIONS} )
-    target_link_options(gwb-grid INTERFACE ${WB_LINKER_OPTIONS})
-    target_link_options(gwb-grid PRIVATE  ${WB_VISU_LINKER_OPTIONS})
+    target_link_options(${WB_TARGET} INTERFACE ${WB_LINKER_OPTIONS})
+    if (WB_ENABLE_APPS)
+      target_link_options(gwb-dat INTERFACE ${WB_LINKER_OPTIONS} )
+      target_link_options(gwb-grid INTERFACE ${WB_LINKER_OPTIONS})
+      target_link_options(gwb-grid PRIVATE  ${WB_VISU_LINKER_OPTIONS})
+    endif()
 endif()
 
 if(${WB_USE_FP_EXCEPTIONS})
@@ -479,24 +495,27 @@ elseif(MSVC)
 else()
   SET(GWB_LIBRARY_WHOLE -Wl,-force_load WorldBuilder)
 endif()
+
 if(${USE_MPI})
-  target_link_libraries (WorldBuilder PUBLIC MPI::MPI_CXX)
-  target_link_libraries (gwb-dat PUBLIC MPI::MPI_CXX ${GWB_LIBRARY_WHOLE} )
-  if(${WB_USE_ZLIB})
-    target_link_libraries (gwb-grid PUBLIC MPI::MPI_CXX ${GWB_LIBRARY_WHOLE} ${ZLIB_LIBRARIES}) 
-  else()
-    target_link_libraries (gwb-grid PUBLIC MPI::MPI_CXX ${GWB_LIBRARY_WHOLE}) 
-  endif()
-else()
-  target_link_libraries (gwb-dat ${GWB_LIBRARY_WHOLE} )
-  if(${WB_USE_ZLIB})
-    target_link_libraries (gwb-grid ${GWB_LIBRARY_WHOLE} ${ZLIB_LIBRARIES})
-  else()
-    target_link_libraries (gwb-grid ${GWB_LIBRARY_WHOLE} )
-  endif()
+  target_link_libraries (${WB_TARGET} PUBLIC MPI::MPI_CXX)
 endif()
 
+if(WB_ENABLE_APPS)
+  set(_apps "gwb-dat" "gwb-grid")
+  set(_libs ${GWB_LIBRARY_WHOLE})
+  if(${WB_USE_ZLIB})
+    set(_libs ${_libs} ${ZLIB_LIBRARIES})
+  endif()
+  if (USE_MPI)
+    set(_mpi_dep "PUBLIC MPI::MPI_CXX")
+  else()
+    set(_mpi_dep "")
+  endif()
 
+  foreach (_app ${_apps})
+    target_link_libraries (${_app} ${_mpi_deb} ${_libs})
+  endforeach()
+endif()
 
 if(MAKE_PYTHON_WRAPPER)
 
@@ -540,11 +559,11 @@ endif()
 
 # binary:
 install(CODE "message(Installing...)")
-install (TARGETS WorldBuilder EXPORT WorldBuilder  DESTINATION bin)
-install (EXPORT WorldBuilder  DESTINATION bin)
+install(TARGETS ${WB_TARGET} EXPORT WorldBuilder DESTINATION bin)
+install(EXPORT WorldBuilder  DESTINATION bin)
 
 if(CMAKE_Fortran_COMPILER)
-  install (FILES ${CMAKE_CURRENT_BINARY_DIR}/mod/worldbuilder.mod DESTINATION include)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mod/worldbuilder.mod DESTINATION include)
 endif()
 
 if(MAKE_PYTHON_WRAPPER)
@@ -552,13 +571,15 @@ if(MAKE_PYTHON_WRAPPER)
 endif()
 
 # headers:
-INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
   DESTINATION include
   COMPONENT includes
   FILES_MATCHING PATTERN "*.h")
 
-enable_testing()
-add_subdirectory(tests)
+if(WB_ENABLE_TESTS)
+  enable_testing()
+  add_subdirectory(tests)
+endif()
 
 # Add the cmake folder so the FindSphinx module is found
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})

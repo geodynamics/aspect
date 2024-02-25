@@ -1,0 +1,41 @@
+{
+  "version": "0.6",
+  "gravity model":{"model":"uniform", "magnitude":10},
+  "cross section":[[0,50e3],[50e3,0]],
+  "features":
+  [
+    {
+      "model":"mantle layer", "name":"filter me", "max depth":2000e3,
+      "coordinates":[[100e3,100e3],[100e3,100e3],[550e3,550e3],[550e3,-550e3]],
+      "composition models":
+          [
+            {"model":"uniform", "compositions":[7], "max depth":30e3}
+          ]
+    },
+    {
+      "model":"continental plate", "name":"overriding plate", "max depth":200e3,
+      "coordinates":[[-550e3,-550e3],[-550e3,550e3],[550e3,550e3],[550e3,-550e3]],
+      "composition models":
+          [
+            {"model":"uniform", "compositions":[3], "max depth":30e3},
+            {"model":"uniform", "compositions":[4], "min depth":30e3},
+            {"model":"uniform", "compositions":[6], "min depth":30e3, "operation":"add"},
+            {"model":"uniform", "compositions":[6], "fractions":[0.5], "min depth":75e3, "operation":"subtract"},
+            {"model":"uniform", "compositions":[6], "fractions":[1.5], "min depth":150e3, "operation":"replace defined only"}
+          ]
+    },
+    {
+      "model":"subducting plate", "name":"Antilles slab", "dip point":[1e7,-1e7],
+      "coordinates":[[0,0],[50e3,50e3]], 
+      "segments":
+      [
+        {"length":600e3, "thickness":[200e3], "angle":[0,45], "top truncation":[-100.000e03]}
+      ],
+      "temperature models":[{"model":"uniform", "temperature":600}],
+      "composition models":[
+        {"model":"smooth", "compositions":[0], "top fractions":[0], "bottom fractions":[1], "min distance slab top":-100e3, "max distance slab top":0e3},
+        {"model":"uniform", "compositions":[0], "fractions":[1.25], "min distance slab top":0e3, "max distance slab top":50e3},
+        {"model":"smooth", "compositions":[0], "min distance slab top":50e3, "max distance slab top":200e3}]
+    }
+  ]
+}

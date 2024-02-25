@@ -1,0 +1,9 @@
+# This is a comment in the data
+# file. 
+# Now define parameters:
+# dim = 3
+# compositions = 2
+# x y z d T
+5.96291e+06 465152 1.09904e+06 395408.625
+5.9729e+06 518768 837228 416730.65625
+5.56627e+06 567790 850569 800000

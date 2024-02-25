@@ -5,4 +5,4 @@ Developers, Contributors and Acknowledgments
 :::{include} ../../../../AUTHORS
 ::::
 
-We also like to acknowledge funding support through NWO, CIG and NSF.
+We also like to acknowledge funding support through NWO, [CIG](https://geodynamics.org/aboutus/acknowledge) and NSF.

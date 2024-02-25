@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -26,6 +26,7 @@
 
 #include "rapidjson/schema.h"
 #include "world_builder/point.h"
+#include "world_builder/types/unsigned_int.h"
 
 namespace WorldBuilder
 {
@@ -40,6 +41,7 @@ namespace WorldBuilder
     class Array;
     class Bool;
     class UnsignedInt;
+    class Int;
   } // namespace Types
 
   namespace Features
@@ -107,14 +109,16 @@ namespace WorldBuilder
       T get(const std::string &name);
 
       /**
-       * A specialized verions of get which can return vecors/arrays.
+       * A specialized version of get which can return vectors/arrays.
        * \param name The name of the entry to retrieved
        */
       template<class T>
       std::vector<T> get_vector(const std::string &name);
 
+      std::vector<std::vector<double>> get_vector_or_double(const std::string &name);
+
       /**
-       * A specialized verions of get which can return a value at points type.
+       * A specialized version of get which can return a value at points type.
        * \param name The name of the entry to retrieved
        * \param name additional points to be added to the list at either the default value or at the value of a single value array in the list
        */
@@ -123,7 +127,13 @@ namespace WorldBuilder
                                                           const std::vector<Point<2> > &addition_points = {});
 
       /**
-       * A specialized verions of get which can return vecors/arrays.
+       * A specialized version of get which can return a values at times type.
+       * \param name The name of the entry to retrieved
+       */
+      std::pair<std::vector<double>,std::vector<double>> get_value_at_array(const std::string &name);
+
+      /**
+       * A specialized version of get which can return vectors/arrays.
        * This version is designed for the plugin system.
        * \param name The name of the entry to retrieved
        */
@@ -131,14 +141,14 @@ namespace WorldBuilder
       std::vector<T> get_vector(const std::string &name, std::vector<std::shared_ptr<A> > &, std::vector<std::shared_ptr<B> > &, std::vector<std::shared_ptr<C> > &);
 
       /**
-       * A specialized verions of get which can return unique pointers.
+       * A specialized version of get which can return unique pointers.
        * \param name The name of the entry to retrieved
        */
       template<class T>
       std::unique_ptr<T> get_unique_pointer(const std::string &name);
 
       /**
-       * A specialized verions of get which can return unique pointers as an argument
+       * A specialized version of get which can return unique pointers as an argument
        * and returns a bool to indicate whether it was successful or not.
        * Note that this function will erase all information in the vector.
        * \param name The name of the entry to retrieved
@@ -149,7 +159,7 @@ namespace WorldBuilder
       get_unique_pointers(const std::string &name, std::vector<std::unique_ptr<T> > &vector);
 
       /**
-       * A specialized verions of get which can return shared pointers as an argument
+       * A specialized version of get which can return shared pointers as an argument
        * and returns a bool to indicate whether it was successful or not.
        * Note that this function will erase all information in the vector.
        * \param name The name of the entry to retrieved
@@ -160,7 +170,7 @@ namespace WorldBuilder
       get_shared_pointers(const std::string &name, std::vector<std::shared_ptr<T> > & /*vector*/);
 
       /**
-       * Checks for the existance of an entry in the parameter file.
+       * Checks for the existence of an entry in the parameter file.
        * Return true when an entry is specified and false when it is not.
        * This is independent of whether an entry has been declared or not.
        * The main intended usage is to check whether the user has provided
@@ -172,7 +182,7 @@ namespace WorldBuilder
       check_entry(const std::string &name) const;
 
       /**
-       * Declares the existance an entry in the parameters class.
+       * Declares the existence an entry in the parameters class.
        * Default values are supplied by the type.
        * \param name The name of the entry to be declared
        * \param type The type of entry (e.g. Double, Array, etc.)
@@ -202,7 +212,7 @@ namespace WorldBuilder
       void leave_subsection();
 
       /**
-       * A utilties function for declaring plugin model entries. This always contains a model declaration entry with the plugin name.
+       * A utilities function for declaring plugin model entries. This always contains a model declaration entry with the plugin name.
        * @param model_group_name The name of the model group which is declared.
        * @param parent_name The name of the parent declaration group.
        * @param declaration_map A map containing plugin names and plugin declaration functions
@@ -223,10 +233,10 @@ namespace WorldBuilder
       World &world;
 
       /**
-       * This variable stores what path separtor is used in the property tree
+       * This variable stores what path separator is used in the property tree
        * and in this class.
        */
-      const std::string path_seperator = ".";
+      const std::string path_separator = ".";
 
       /**
        * This variable stores the path in a vector of strings.

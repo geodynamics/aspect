@@ -1,0 +1,13 @@
+{
+    "version": "0.6", 
+    "interpolation": "continuous monotone spline", 
+    "coordinate system": {"model": "spherical", "depth method": "starting point"}, 
+    "features": [{ "model": "fault", 
+        "name": "fault_1", 
+        "coordinates": [[122.8, 75.5], [126.7, 78.2], [122.0, 80.7], [98.5, 85.0], [43.0, 86.5], [7.5, 84.9], [0.0, 84.1], [-4.5, 83.4]], 
+        "dip point": [0, 1], 
+        "min depth": -1000.0, 
+        "max depth": 300000.0, 
+        "segments": [{"length": 300000.0, "thickness": [100000.0], "angle": [90, 90]}], 
+        "composition models": [{"model": "smooth", "compositions": [0], "side distance fault center": 50000.0}]}]
+}
