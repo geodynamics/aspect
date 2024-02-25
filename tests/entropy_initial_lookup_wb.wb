@@ -1,5 +1,5 @@
 {
-  "version": "0.5",
+  "version": "0.6",
   "specific heat": 1250,
   "thermal diffusivity": 1e-06,
   "thermal expansion coefficient": 3.1e-05,
