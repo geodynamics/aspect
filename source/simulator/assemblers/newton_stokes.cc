@@ -302,9 +302,10 @@ namespace aspect
                                                                             : nullptr;
 
       // If elasticity is enabled, then we need ElasticOutputs to compute the average elastic shear modulus.
+      const bool enable_elasticity = this->get_parameters().enable_elasticity;
       const MaterialModel::ElasticOutputs<dim> *elastic_out =
         scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
-      if (this->get_parameters().enable_elasticity)
+      if (enable_elasticity)
         AssertThrow(elastic_out != nullptr,
                     ExcMessage("Error: The Newton method requires ElasticOutputs when elasticity is enabled."));
 
@@ -358,11 +359,17 @@ namespace aspect
           // first assemble the rhs
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             {
-              data.local_rhs(i) -= (eta * 2.0 * (scratch.grads_phi_u[i] * effective_strain_rate)
+              data.local_rhs(i) -= (eta * 2.0 * (scratch.grads_phi_u[i] * 
+                                    scratch.material_model_inputs.strain_rate[q])
                                     - (scratch.div_phi_u[i] * pressure)
                                     - (pressure_scaling * scratch.phi_p[i] * velocity_divergence)
                                     -(density * gravity * scratch.phi_u[i]))
                                    * JxW;
+
+              if (enable_elasticity)
+                data.local_rhs(i) += ( deviator(elastic_out->elastic_force[q])
+                                       * scratch.grads_phi_u[i]
+                                     ) * JxW;
 
               if (enable_additional_stokes_rhs)
                 data.local_rhs(i) += (force->rhs_u[q] * scratch.phi_u[i]
