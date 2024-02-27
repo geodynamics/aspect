@@ -51,6 +51,63 @@ namespace aspect
 
 
     template <int dim>
+    std::vector<double>
+    ReactiveFluidTransport<dim>::
+    tian_equilibrium_bound_water_content (const MaterialModel::MaterialModelInputs<dim> &in,
+                                          unsigned int q) const
+    {
+      // Pressure, which must be in GPa for the parametrization, or GPa^-1
+      const double pressure = in.pressure[q]<=0 ? 1e-12 : in.pressure[q]/1.e9;
+      const double inverse_pressure = std::pow(pressure, -1);
+
+      // Create arrays that will store the values of the polynomials at the current pressure
+      std::vector<double> LR_values(4);
+      std::vector<double> csat_values(4);
+      std::vector<double> Td_values(4);
+
+      // Loop over the four rock types (peridotite, gabbro, MORB, sediment) and the polynomial
+      // coefficients to fill the vectors defined above. The polynomials for LR are defined in
+      // equations 13, B2, B10, and B18. csat polynomials are defined in equations 14, B1, B9, and B17.
+      // Td polynomials are defined in equations 15, B3, B11, and B19.
+      for (unsigned int i = 0; i<devolatilization_enthalpy_changes.size(); ++i)
+        {
+          for (unsigned int j = 0; j<devolatilization_enthalpy_changes[i].size(); ++j)
+            {
+              LR_values[i] += devolatilization_enthalpy_changes[i][j] * std::pow(inverse_pressure, devolatilization_enthalpy_changes[i].size() - 1 - j);
+            }
+
+          for (unsigned int j = 0; j<water_mass_fractions[i].size(); ++j)
+            {
+              csat_values[i] += i==3 ? water_mass_fractions[i][j] * std::pow(std::log10(pressure), water_mass_fractions[i].size() - 1 - j) :\
+                                water_mass_fractions[i][j] * std::pow(pressure, water_mass_fractions[i].size() - 1 - j);
+            }
+
+          for (unsigned int j = 0; j<devolatilization_onset_temperatures[i].size(); ++j)
+            {
+              Td_values[i] += devolatilization_onset_temperatures[i][j] * std::pow(pressure, devolatilization_onset_temperatures[i].size() - 1 - j);
+            }
+        }
+
+      // Create an array for the equilibrium bound water content that is calculated from these polynomials
+      std::vector<double> eq_bound_water_content(4);
+
+      // Define the maximum bound water content allowed for the four different rock compositions
+      std::vector<double> max_bound_water_content = {tian_max_peridotite_water, tian_max_gabbro_water, tian_max_MORB_water, tian_max_sediment_water};
+
+      // Loop over all rock compositions and fill the equilibrium bound water content, divide by 100 to convert
+      // from percentage to fraction (equation 1)
+      for (unsigned int k = 0; k<LR_values.size(); ++k)
+        {
+          eq_bound_water_content[k] = (std::min(std::exp(csat_values[k]) * \
+                                                std::exp(std::exp(LR_values[k]) * (1/in.temperature[q] - 1/Td_values[k])), \
+                                                max_bound_water_content[k]) / 100.0);
+        }
+      return eq_bound_water_content;
+    }
+
+
+
+    template <int dim>
     void
     ReactiveFluidTransport<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -59,7 +116,7 @@ namespace aspect
       for (unsigned int q=0; q<in.temperature.size(); ++q)
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-
+          const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
           switch (fluid_solid_reaction_scheme)
             {
               case no_reaction:
@@ -75,8 +132,37 @@ namespace aspect
                 // The fluid volume fraction in equilibrium with the solid
                 // at any point (stored in the melt_fractions vector) is
                 // equal to the sum of the bound fluid content and porosity.
-                const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
                 melt_fractions[q] = in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx];
+                break;
+              }
+              case tian_approximation:
+              {
+                // The bound fluid content is calculated using parametrized phase
+                // diagrams for four different rock types: sediment, MORB, gabbro, and
+                // peridotite.
+                const unsigned int sediment_idx = this->introspection().compositional_index_for_name("sediment");
+                const unsigned int MORB_idx = this->introspection().compositional_index_for_name("MORB");
+                const unsigned int gabbro_idx = this->introspection().compositional_index_for_name("gabbro");
+                const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
+
+                // Initialize a vector that stores the compositions (mass fractions) for
+                // the four different rock compositions,
+                std::vector<double> tracked_rock_mass_fractions(4);
+                tracked_rock_mass_fractions[0] = (in.composition[q][peridotite_idx]);
+                tracked_rock_mass_fractions[1] = (in.composition[q][gabbro_idx]);
+                tracked_rock_mass_fractions[2] = (in.composition[q][MORB_idx]);
+                tracked_rock_mass_fractions[3] = (in.composition[q][sediment_idx]);
+
+                // The bound water content (water within the solid phase) for the four different rock types
+                std::vector<double> tian_eq_bound_water_content = tian_equilibrium_bound_water_content(in, q);
+
+                // average the water content between the four different rock types
+                double average_eq_bound_water_content = MaterialUtilities::average_value (tracked_rock_mass_fractions, tian_eq_bound_water_content, MaterialUtilities::arithmetic);
+
+                // The fluid volume fraction in equilibrium with the solid (stored in the melt_fractions vector)
+                // is equal to the sum of the porosity and the change in bound fluid content
+                // (current bound fluid - updated average bound fluid).
+                melt_fractions[q] = std::max(in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx] - average_eq_bound_water_content, 0.0);
                 break;
               }
               default:
@@ -85,8 +171,6 @@ namespace aspect
                 break;
               }
             }
-
-
         }
     }
 
@@ -246,12 +330,26 @@ namespace aspect
                              "computed. If the model does not use operator splitting, this parameter is not used. "
                              "Units: yr or s, depending on the ``Use years "
                              "in output instead of seconds'' parameter.");
+          prm.declare_entry ("Maximum weight percent water in sediment", "3",
+                             Patterns::Double (0),
+                             "The maximum allowed weight percent that the sediment composition can hold.");
+          prm.declare_entry ("Maximum weight percent water in MORB", "2",
+                             Patterns::Double (0),
+                             "The maximum allowed weight percent that the sediment composition can hold.");
+          prm.declare_entry ("Maximum weight percent water in gabbro", "1",
+                             Patterns::Double (0),
+                             "The maximum allowed weight percent that the sediment composition can hold.");
+          prm.declare_entry ("Maximum weight percent water in peridotite", "8",
+                             Patterns::Double (0),
+                             "The maximum allowed weight percent that the sediment composition can hold.");
           prm.declare_entry ("Fluid-solid reaction scheme", "no reaction",
-                             Patterns::Selection("no reaction|zero solubility"),
+                             Patterns::Selection("no reaction|zero solubility|tian approximation"),
                              "Select what type of scheme to use for reactions between fluid and solid phases. "
                              "The current available options are models where no reactions occur between "
                              "the two phases, or the solid phase is insoluble (zero solubility) and all "
-                             "of the bound fluid is released into the fluid phase.");
+                             "of the bound fluid is released into the fluid phase, tian approximation "
+                             "use polynomials to describe hydration and dehydration reactions for four different "
+                             "rock compositions as defined in Tian et al., 2019.");
         }
         prm.leave_subsection();
       }
@@ -281,6 +379,11 @@ namespace aspect
           fluid_compressibility             = prm.get_double ("Fluid compressibility");
           fluid_reaction_time_scale         = prm.get_double ("Fluid reaction time scale for operator splitting");
 
+          tian_max_peridotite_water         = prm.get_double ("Maximum weight percent water in peridotite");
+          tian_max_gabbro_water             = prm.get_double ("Maximum weight percent water in gabbro");
+          tian_max_MORB_water               = prm.get_double ("Maximum weight percent water in MORB");
+          tian_max_sediment_water           = prm.get_double ("Maximum weight percent water in sediment");
+
           // Create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
           // leave the current section.
@@ -293,9 +396,29 @@ namespace aspect
 
           // Reaction scheme parameter
           if (prm.get ("Fluid-solid reaction scheme") == "zero solubility")
-            fluid_solid_reaction_scheme = zero_solubility;
+            {
+              fluid_solid_reaction_scheme = zero_solubility;
+            }
           else if (prm.get ("Fluid-solid reaction scheme") == "no reaction")
-            fluid_solid_reaction_scheme = no_reaction;
+            {
+              fluid_solid_reaction_scheme = no_reaction;
+            }
+          else if (prm.get ("Fluid-solid reaction scheme") == "tian approximation")
+            {
+              AssertThrow(this->introspection().compositional_name_exists("sediment"),
+                          ExcMessage("The Tian approximation only works "
+                                     "if there is a compositional field called sediment."));
+              AssertThrow(this->introspection().compositional_name_exists("MORB"),
+                          ExcMessage("The Tian approximation only works "
+                                     "if there is a compositional field called MORB."));
+              AssertThrow(this->introspection().compositional_name_exists("gabbro"),
+                          ExcMessage("The Tian approximation only works "
+                                     "if there is a compositional field called gabbro."));
+              AssertThrow(this->introspection().compositional_name_exists("peridotite"),
+                          ExcMessage("The Tian approximation only works "
+                                     "if there is a compositional field called peridotite."));
+              fluid_solid_reaction_scheme = tian_approximation;
+            }
           else
             AssertThrow(false, ExcMessage("Not a valid fluid-solid reaction scheme"));
 
@@ -309,6 +432,12 @@ namespace aspect
             {
               AssertThrow(this->get_parameters().use_operator_splitting,
                           ExcMessage("The Fluid-reaction scheme zero solubility must be used with operator splitting."));
+            }
+
+          if (fluid_solid_reaction_scheme == tian_approximation)
+            {
+              AssertThrow(this->get_parameters().use_operator_splitting,
+                          ExcMessage("The Fluid-reaction scheme tian approximation must be used with operator splitting."));
             }
 
           if (this->get_parameters().use_operator_splitting)
@@ -338,7 +467,6 @@ namespace aspect
       // After parsing the parameters for this model, parse parameters related to the base model.
       base_model->parse_parameters(prm);
       this->model_dependence = base_model->get_model_dependence();
-
       if (fluid_solid_reaction_scheme == zero_solubility)
         {
           AssertThrow(this->get_material_model().is_compressible() == false,
