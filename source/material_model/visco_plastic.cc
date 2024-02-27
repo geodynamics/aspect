@@ -133,9 +133,6 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      // Store which components do not represent volumetric compositions (e.g. strain components).
-      const ComponentMask volumetric_compositions = rheology->get_volumetric_composition_mask();
-
       EquationOfStateOutputs<dim> eos_outputs (this->introspection().n_chemical_composition_fields()+1);
       EquationOfStateOutputs<dim> eos_outputs_all_phases (n_phases);
 
