@@ -29,7 +29,6 @@
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/grid/grid_tools.h>
 
-#include <deal.II/matrix_free/fe_point_evaluation.h>
 #include <deal.II/fe/mapping_cartesian.h>
 
 #include <boost/serialization/map.hpp>
@@ -747,55 +746,6 @@ namespace aspect
 
     namespace internal
     {
-      // This class evaluates the solution vector at arbitrary positions inside a cell.
-      // This base class only provides the interface for SolutionEvaluatorsImplementation.
-      // See there for more details.
-      template <int dim>
-      class SolutionEvaluators
-      {
-        public:
-          // virtual Destructor.
-          virtual ~SolutionEvaluators() = default;
-
-          // Reinitialize all variables to evaluate the given solution for the given cell
-          // and the given positions. The update flags control if only the solution or
-          // also the gradients should be evaluated.
-          // If other flags are set an assertion is triggered.
-          virtual
-          void
-          reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                 const ArrayView<Point<dim>> &positions,
-                 const ArrayView<double> &solution_values,
-                 const UpdateFlags update_flags) = 0;
-
-          // Fill @p solution with all solution components at the given @p evaluation_point. Note
-          // that this function only works after a successful call to reinit(),
-          // because this function only returns the results of the computation that
-          // happened in reinit().
-          virtual
-          void get_solution(const unsigned int evaluation_point,
-                            Vector<double> &solution) = 0;
-
-          // Fill @p gradients with all solution gradients at the given @p evaluation_point. Note
-          // that this function only works after a successful call to reinit(),
-          // because this function only returns the results of the computation that
-          // happened in reinit().
-          virtual
-          void get_gradients(const unsigned int evaluation_point,
-                             std::vector<Tensor<1,dim>> &gradients) = 0;
-
-          // Return the evaluator for velocity or fluid velocity. This is the only
-          // information necessary for advecting particles.
-          virtual
-          FEPointEvaluation<dim, dim> &
-          get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity) = 0;
-
-          // Return the cached mapping information.
-          virtual
-          NonMatching::MappingInfo<dim> &
-          get_mapping_info() = 0;
-      };
-
       // This class evaluates the solution vector at arbitrary positions inside a cell.
       // It uses the deal.II class FEPointEvaluation to do this efficiently. Because
       // FEPointEvaluation only supports a single finite element, but ASPECT uses a FESystem with
