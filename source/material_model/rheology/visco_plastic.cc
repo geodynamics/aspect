@@ -672,6 +672,24 @@ namespace aspect
             options.check_values_per_key = true;
           }
 
+        // Make sure fields that track the age and deposition depth of deposited sediments
+        // do not have a chemical composition field type.
+#ifdef ASPECT_WITH_FASTSCAPE
+        if (this->introspection().compositional_name_exists("sediment_age"))
+          {
+            AssertThrow (chemical_field_names.find("sediment_age") == std::string::npos,
+                         ExcMessage("There is a field sediment_age that is of type chemical composition. "
+                                    "Please change it to type generic so that it does not affect material properties."));
+
+          }
+        if (this->introspection().compositional_name_exists("deposition_depth"))
+          {
+            AssertThrow(chemical_field_names.find("deposition_depth") != std::string::npos,
+                        ExcMessage("There is a field deposition_depth that is of type chemical composition. "
+                                   "Please change it to type generic so that it does not affect material properties."));
+          }
+#endif
+
         minimum_viscosity = Utilities::MapParsing::parse_map_to_double_array (prm.get("Minimum viscosity"),
                                                                               options);
 
