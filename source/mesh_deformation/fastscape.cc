@@ -142,7 +142,7 @@ namespace aspect
       void fastscape_execute_step_();
 
       /**
-       * Create a .VTK file for the FastScape surface within the fastscape folder of the
+       * Create a .VTK file for the FastScape surface within the FastScape folder of the
        * ASPECT output folder.
        */
       void fastscape_named_vtk_(double *fp,
@@ -222,7 +222,7 @@ namespace aspect
       restart = this->get_parameters().resume_computation;
 
       // Since we don't open these until we're on one process, we need to check if the
-      // restart files exist before hand.
+      // restart files exist beforehand.
       if (restart)
         {
           if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
@@ -300,7 +300,7 @@ namespace aspect
     {
 
       // Because there is no increase in time during timestep 0, we return and only
-      // initialize and run fastscape from timestep 1 and on.
+      // initialize and run FastScape from timestep 1 and on.
       if (this->get_timestep_number() == 0)
         return;
 
@@ -332,7 +332,7 @@ namespace aspect
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           // Initialize the variables that will be sent to FastScape.
-          // Elevation is initialzied at a very high number so that we can later check that all points
+          // Elevation is initialized at a very high number so that we can later check that all points
           // received data from ASPECT, and if not throw an assert.
           std::vector<double> elevation(fastscape_array_size, std::numeric_limits<double>::max());
           std::vector<double> velocity_x(fastscape_array_size);
@@ -406,8 +406,8 @@ namespace aspect
             {
               elevation_old[i] = elevation[i];
 
-              // Initialize random noise after elevation_old is set, so aspect sees this initial topography change.
-              // Changing boundary height directly  on a fixed fastscape boundary causes reproducibility issues,
+              // Initialize random noise after elevation_old is set, so ASPECT sees this initial topography change.
+              // Changing boundary height directly on a fixed FastScape boundary causes reproducibility issues,
               // as such we do not add noise to the boundaries regardless of whether they are ghost nodes
               // or not. However, the boundaries can be changed using the uplift velocity and not cause
               // these issues.
@@ -477,7 +477,7 @@ namespace aspect
                                               &sediment_deposition_g,
                                               &slope_exponent_p);
 
-          // Find  timestep size, run fastscape, and make visualizations.
+          // Find timestep size, run FastScape, and make visualizations.
           execute_fastscape(elevation,
                             bedrock_transport_coefficient_array,
                             velocity_x,
@@ -610,7 +610,7 @@ namespace aspect
                     // The quadrature rule is created so that there are enough interpolation points in the
                     // lowest resolved ASPECT surface cell to fill out the FastScape mesh. However, as the
                     // same rule is used for all cell sizes, higher resolution areas will have interpolation
-                    // points that do not correspond to a fastscape node. In which case, indx will not be a
+                    // points that do not correspond to a FastScape node. In which case, indx will not be a
                     // whole number and we can ignore the point.
                     if (std::abs(indx - round(indx)) >= node_tolerance)
                       continue;
@@ -832,7 +832,7 @@ namespace aspect
         if (current_timestep == 1)
           {
             this->get_pcout() << "      Writing initial VTK..." << std::endl;
-            // The fastscape by default visualizes a field called HHHHH,
+            // FastScape by default visualizes a field called HHHHH,
             // and the parameter this shows will be whatever is given as the first
             // position. At the moment it visualizes the bedrock diffusivity.
             fastscape_named_vtk_(extra_vtk_field.data(),
@@ -846,7 +846,7 @@ namespace aspect
           {
             fastscape_execute_step_();
 
-            // If we are using the ghost nodes we want to reset them every fastscape timestep.
+            // If we are using the ghost nodes we want to reset them every FastScape timestep.
             if (use_ghost_nodes)
               {
                 fastscape_copy_h_(elevation.data());
@@ -1193,7 +1193,7 @@ namespace aspect
               // Of these 9 nodes, 0 and 8 are ghost nodes and 1 and 7 are the periodic ASPECT boundaries.
               // If we assume that the horizontal ASPECT direction of travel is towards node 7, then we would
               // set the ghost node 8 velocities and heights to that of node 2, ghost node 0 to node 6, and
-              // ASPECT boundary node 1 to ASPECT boundary node 7. E.g., based on the fastscape values for
+              // ASPECT boundary node 1 to ASPECT boundary node 7. E.g., based on the FastScape values for
               // vx, vy, vz, and elevation, the nodes could be rewritten as:
               //
               // 6 - 7 - 2 - 3 - 4 - 5 - 6 - 7 - 2
