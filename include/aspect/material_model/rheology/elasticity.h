@@ -129,7 +129,7 @@ namespace aspect
 
           /**
            * Calculate the effective deviatoric strain rate tensor,
-           * which equals the norm of the true deviatoric strain rate plus
+           * which equals the true deviatoric strain rate plus
            * a fictional strain rate which would arise from stored elastic stresses.
            * In ASPECT, this additional strain rate is
            * supported by a fictional body force.
