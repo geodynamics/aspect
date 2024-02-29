@@ -20,9 +20,6 @@
 
 #include <aspect/particle/property/crystal_preferred_orientation.h>
 #include <aspect/geometry_model/interface.h>
-#include <world_builder/grains.h>
-#include <world_builder/world.h>
-
 #include <aspect/citation_info.h>
 #include <aspect/utilities.h>
 
