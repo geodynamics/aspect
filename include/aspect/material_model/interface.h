@@ -1174,7 +1174,7 @@ namespace aspect
         std::vector<SymmetricTensor<2,dim>> elastic_force;
 
         /**
-         * Strain tensor that includes the contribution of elastic shear, which is 
+         * Strain rate tensor that includes the contribution of elastic shear, which is 
          * required by the Newton solver.
          */
         std::vector<SymmetricTensor<2,dim>> viscoelastic_strain_rate;
