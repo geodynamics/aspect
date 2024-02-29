@@ -176,12 +176,13 @@ if(ASPECT_WITH_WORLD_BUILDER)
       ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
       # if we configured with 0.5.0 before, we have a stray include file here. delete it.
       FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder/config.h")
+
       SET(CMAKE_BUILD_TYPE Release)
       SET(CMAKE_CXX_FLAGS "-O3 -DNDEBUG")
       ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder_release/)
       # if we configured with 0.5.0 before, we have a stray include file here. delete it.
       FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder_release/config.h")
-<Merge Conflict>
+
       SET(CMAKE_BUILD_TYPE DebugRelease)
     ELSE()
       ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
