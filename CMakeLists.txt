@@ -165,6 +165,9 @@ if(ASPECT_WITH_WORLD_BUILDER)
   MESSAGE(STATUS "Using World Builder version ${WORLD_BUILDER_VERSION} found at ${WORLD_BUILDER_SOURCE_DIR}.")
 
   IF(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0)
+    # if we configured with 0.5.0 before, we have a stray include file here. delete it.
+    FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder/config.h")
+
     IF(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
       SET(WB_ENABLE_TESTS OFF)
       SET(WB_ENABLE_APPS OFF)
@@ -174,14 +177,10 @@ if(ASPECT_WITH_WORLD_BUILDER)
       SET(WB_TARGET "WorldBuilderDebug")
       SET(CMAKE_CXX_FLAGS "-g")
       ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
-      # if we configured with 0.5.0 before, we have a stray include file here. delete it.
-      FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder/config.h")
 
       SET(CMAKE_BUILD_TYPE Release)
       SET(CMAKE_CXX_FLAGS "-O3 -DNDEBUG")
       ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder_release/)
-      # if we configured with 0.5.0 before, we have a stray include file here. delete it.
-      FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder_release/config.h")
 
       SET(CMAKE_BUILD_TYPE DebugRelease)
     ELSE()
