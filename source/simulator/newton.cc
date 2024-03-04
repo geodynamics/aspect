@@ -34,11 +34,10 @@ namespace aspect
     template <int dim>
     MaterialModelDerivatives<dim>::
     MaterialModelDerivatives (const unsigned int n_points)
-    {
-      viscosity_derivative_wrt_pressure.resize(n_points, numbers::signaling_nan<double>());
-      viscosity_derivative_wrt_strain_rate.resize(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>());
-    }
-
+      : viscosity_derivative_wrt_pressure(n_points, numbers::signaling_nan<double>())
+      , viscosity_derivative_wrt_strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>())
+      , viscosity_before_averaging(n_points, numbers::signaling_nan<double>())
+    {}
   }
 
 

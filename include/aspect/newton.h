@@ -49,11 +49,22 @@ namespace aspect
         MaterialModelDerivatives (const unsigned int n_points);
 
         /**
-         * The derivatives of the viscosities
+         * The derivatives of the viscosities with respect to pressure.
          */
         std::vector<double> viscosity_derivative_wrt_pressure;
+
+        /**
+         * The derivatives of the viscosities with respect to strain rate.
+         */
         std::vector<SymmetricTensor<2,dim>> viscosity_derivative_wrt_strain_rate;
 
+        /**
+         * The viscosity values before material averaging. This vector is 
+         * for calculating the averages of viscosity derivatives when the 
+         * material averaging scheme is harmonic average or geometric/log
+         * average.
+         */
+        std::vector<double> viscosity_before_averaging;
     };
   }
 

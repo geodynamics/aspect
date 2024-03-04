@@ -23,6 +23,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/utilities.h>
+#include <aspect/newton.h>
 
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
@@ -824,6 +825,13 @@ namespace aspect
                                        projection_matrix,
                                        expansion_matrix);
           }
+
+        // store the original viscosities if we need to compute the 
+        // system jacobian later on
+        MaterialModelDerivatives<dim> *derivatives =
+          values_out.template get_additional_output<MaterialModelDerivatives<dim>>();
+        if (derivatives != nullptr)
+          derivatives->viscosity_before_averaging = values_out.viscosities;
 
         if (operation == harmonic_average_only_viscosity)
           {

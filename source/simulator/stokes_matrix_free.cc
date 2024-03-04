@@ -1379,19 +1379,30 @@ namespace aspect
                   const MaterialModel::MaterialModelDerivatives<dim> *derivatives
                     = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
+                  const MaterialModel::ElasticOutputs<dim> *elastic_out
+                    = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
+
                   Assert(derivatives != nullptr,
                          ExcMessage ("Error: The Newton method requires the material to "
                                      "compute derivatives."));
 
+                  Assert(!(sim.parameters.enable_elasticity && elastic_out == nullptr),
+                         ExcMessage("Error: The Newton method requires the material to "
+                                    "compute viscoelastic strain rate when elasticity "
+                                    "is enabled."));
+
                   for (unsigned int q=0; q<n_q_points; ++q)
                     {
+                      const SymmetricTensor<2,dim> effective_strain_rate = 
+                        elastic_out == nullptr ? deviator(in.strain_rate[q]) : elastic_out->viscoelastic_strain_rate[q];
+
                       // use the spd factor when the stabilization is PD or SPD.
                       const double alpha =  (sim.newton_handler->parameters.velocity_block_stabilization
                                              & Newton::Parameters::Stabilization::PD)
                                             != Newton::Parameters::Stabilization::none
                                             ?
                                             Utilities::compute_spd_factor<dim>(out.viscosities[q],
-                                                                               in.strain_rate[q],
+                                                                               effective_strain_rate,
                                                                                derivatives->viscosity_derivative_wrt_strain_rate[q],
                                                                                sim.newton_handler->parameters.SPD_safety_factor)
                                             :
@@ -1408,7 +1419,7 @@ namespace aspect
                         for (unsigned int n=0; n<dim; ++n)
                           {
                             active_cell_data.strain_rate_table(cell, q)[m][n][i]
-                              = in.strain_rate[q][m][n];
+                              = effective_strain_rate[m][n];
 
                             active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
                               = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n]
