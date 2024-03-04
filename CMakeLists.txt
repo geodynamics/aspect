@@ -165,10 +165,27 @@ if(ASPECT_WITH_WORLD_BUILDER)
   MESSAGE(STATUS "Using World Builder version ${WORLD_BUILDER_VERSION} found at ${WORLD_BUILDER_SOURCE_DIR}.")
 
   IF(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0)
-    ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
-    INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/world_builder/include/")
     # if we configured with 0.5.0 before, we have a stray include file here. delete it.
     FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder/config.h")
+
+    IF(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
+      SET(WB_ENABLE_TESTS OFF)
+      SET(WB_ENABLE_APPS OFF)
+      SET(WB_ENABLE_HELPER_TARGETS OFF)
+
+      SET(CMAKE_BUILD_TYPE Debug)
+      SET(WB_TARGET "WorldBuilderDebug")
+      SET(CMAKE_CXX_FLAGS "-g")
+      ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
+
+      SET(CMAKE_BUILD_TYPE Release)
+      SET(CMAKE_CXX_FLAGS "-O3 -DNDEBUG")
+      ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder_release/)
+
+      SET(CMAKE_BUILD_TYPE DebugRelease)
+    ELSE()
+      ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
+    ENDIF()
   ELSE()
     FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/*.cc")
     LIST(APPEND TARGET_SRC ${wb_files})
@@ -522,7 +539,7 @@ IF(NOT ASPECT_ADDITIONAL_CXX_FLAGS STREQUAL "")
   MESSAGE(STATUS "  DEAL_II_CXX_FLAGS_RELEASE: ${DEAL_II_CXX_FLAGS_RELEASE}")
 ENDIF()
 
-# Provide "release" and "debug" targets to switch compile mode
+# Setup targets for ASPECT:
 IF(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
   ADD_EXECUTABLE(${TARGET} ${TARGET_SRC})
   DEAL_II_SETUP_TARGET(${TARGET} DEBUG)
@@ -656,9 +673,19 @@ ELSE()
 ENDIF()
 
 IF(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILDER)
-  FOREACH(_T ${TARGETS})
-    TARGET_LINK_LIBRARIES(${_T} WorldBuilder)
-  ENDFOREACH()
+  IF(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
+    TARGET_INCLUDE_DIRECTORIES(${TARGET} PUBLIC "${CMAKE_BINARY_DIR}/world_builder/include/")
+    TARGET_INCLUDE_DIRECTORIES(${TARGET}-release PUBLIC "${CMAKE_BINARY_DIR}/world_builder_release/include/")
+    TARGET_LINK_LIBRARIES(${TARGET} WorldBuilderDebug)
+    TARGET_LINK_LIBRARIES(${TARGET}-release WorldBuilderRelease)
+    target_compile_definitions(${TARGET}-release PUBLIC "NDEBUG")
+  ELSE()
+    TARGET_INCLUDE_DIRECTORIES(${TARGET} "${CMAKE_BINARY_DIR}/world_builder/include/")
+    TARGET_LINK_LIBRARIES(${TARGET} WorldBuilder)
+    if (${CMAKE_BUILD_TYPE} MATCHES "Release")
+      target_compile_definitions(${TARGET} PUBLIC "NDEBUG")
+      endif()
+    ENDIF()
 ENDIF()
 
 
