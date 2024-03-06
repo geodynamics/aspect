@@ -408,6 +408,15 @@ namespace aspect
         pressure.reinit (cell);
         pressure.gather_evaluate (src.block(1), EvaluationFlags::values);
 
+        // Store the symmetric gradients of the velocity field
+        std::vector<SymmetricTensor<2,dim,VectorizedArray<number>>> grads_phi_u;
+        if (cell_data->enable_newton_derivatives)
+          {
+            grads_phi_u.resize(velocity.n_q_points);
+            for (const unsigned int r : velocity.quadrature_point_indices())
+                grads_phi_u[r] = velocity.get_symmetric_gradient(r);
+          }
+
         for (const unsigned int q : velocity.quadrature_point_indices())
           {
             // Only update the viscosity if a Q1 projection is used.
@@ -418,19 +427,6 @@ namespace aspect
               velocity.get_symmetric_gradient (q);
             const VectorizedArray<number> pres = pressure.get_value(q);
             const VectorizedArray<number> div = trace(sym_grad_u);
-
-            if (cell_data->enable_newton_derivatives)
-              {
-                // Note that derivative_scaling_factor has already been multiplied to newton_factor_wrt_pressure_table.
-                const VectorizedArray<number> newton_pressure_term =
-                  cell_data->pressure_scaling * 2.0
-                  * cell_data->newton_factor_wrt_pressure_table(cell,q)
-                  * (sym_grad_u * cell_data->strain_rate_table(cell,q));
-                pressure.submit_value(-cell_data->pressure_scaling*div + newton_pressure_term, q);
-              }
-            else
-              pressure.submit_value(-cell_data->pressure_scaling*div, q);
-
 
             sym_grad_u *= viscosity_x_2;
 
@@ -443,20 +439,36 @@ namespace aspect
 
             if (cell_data->enable_newton_derivatives)
               {
-                const SymmetricTensor<2,dim,VectorizedArray<number>> grads_phi_u_i = velocity.get_symmetric_gradient (q);
+                const VectorizedArray<number> JxW = velocity.JxW(q);
 
-                SymmetricTensor<2,dim,VectorizedArray<number>> newton_velocity_term =
-                  (grads_phi_u_i * cell_data->strain_rate_table(cell,q))
-                  * cell_data->newton_factor_wrt_strain_rate_table(cell,q);
+                VectorizedArray<number> grads_phi_u_times_eps(0.), grads_phi_u_times_deta_deps(0.);
+                for (const unsigned int r : velocity.quadrature_point_indices())
+                  {
+                    grads_phi_u_times_eps += (grads_phi_u[r] * cell_data->strain_rate_table(cell,r))
+                                             * (velocity.JxW(r) / JxW);
 
-                if (cell_data->symmetrize_newton_system)
-                  newton_velocity_term +=
-                    (cell_data->newton_factor_wrt_strain_rate_table(cell,q)*grads_phi_u_i)
-                    * cell_data->strain_rate_table(cell,q);
+                    if (cell_data->symmetrize_newton_system)
+                      grads_phi_u_times_deta_deps += grads_phi_u[r] * 
+                                                     cell_data->newton_factor_wrt_strain_rate_table(cell,r);
+                  }
+
+                const SymmetricTensor<2,dim,VectorizedArray<number>> newton_velocity_term =
+                  (cell_data->symmetrize_newton_system ?
+                   grads_phi_u_times_eps * cell_data->newton_factor_wrt_strain_rate_table(cell,q) +
+                   grads_phi_u_times_deta_deps * cell_data->strain_rate_table(cell,q) :
+                   (2.0 * grads_phi_u_times_eps) * cell_data->newton_factor_wrt_strain_rate_table(cell,q));
+
+                const VectorizedArray<number> newton_pressure_term =
+                  2.0 * grads_phi_u_times_eps * cell_data->newton_factor_wrt_pressure_table(cell,q);
+
                 velocity.submit_symmetric_gradient(sym_grad_u + newton_velocity_term, q);
+                pressure.submit_value(cell_data->pressure_scaling * (-div + newton_pressure_term), q);
               }
             else
-              velocity.submit_symmetric_gradient(sym_grad_u, q);
+              {
+                velocity.submit_symmetric_gradient(sym_grad_u, q);
+                pressure.submit_value(-cell_data->pressure_scaling*div, q);
+              }
           }
 
         velocity.integrate_scatter (EvaluationFlags::gradients, dst.block(0));
@@ -1345,6 +1357,9 @@ namespace aspect
           MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, sim.introspection.n_compositional_fields);
           MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, sim.introspection.n_compositional_fields);
           sim.newton_handler->create_material_model_outputs(out);
+          if (sim.parameters.enable_elasticity &&
+              out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>() == nullptr)
+            out.additional_outputs.push_back(std::make_unique<MaterialModel::ElasticOutputs<dim>>(out.n_evaluation_points()));
 
           const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();
           const unsigned int n_q_points = quadrature_formula.size();
@@ -1372,6 +1387,12 @@ namespace aspect
                   sim.material_model->fill_additional_material_model_inputs(in, sim.current_linearization_point, fe_values, sim.introspection);
                   sim.material_model->evaluate(in, out);
 
+                  MaterialModel::MaterialAveraging::average(sim.parameters.material_averaging,
+                                                            in.current_cell,
+                                                            fe_values.get_quadrature(),
+                                                            *sim.mapping,
+                                                            out);
+
                   Assert(std::isfinite(in.strain_rate[0].norm()),
                          ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                     "not filled by the caller."));
@@ -1379,17 +1400,12 @@ namespace aspect
                   const MaterialModel::MaterialModelDerivatives<dim> *derivatives
                     = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
-                  const MaterialModel::ElasticOutputs<dim> *elastic_out
-                    = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
-
                   Assert(derivatives != nullptr,
                          ExcMessage ("Error: The Newton method requires the material to "
                                      "compute derivatives."));
 
-                  Assert(!(sim.parameters.enable_elasticity && elastic_out == nullptr),
-                         ExcMessage("Error: The Newton method requires the material to "
-                                    "compute viscoelastic strain rate when elasticity "
-                                    "is enabled."));
+                  const MaterialModel::ElasticOutputs<dim> *elastic_out
+                    = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
 
                   for (unsigned int q=0; q<n_q_points; ++q)
                     {
@@ -1409,10 +1425,13 @@ namespace aspect
                                             1.0;
 
                       active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
-                        = derivatives->viscosity_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
+                        = derivatives->viscosity_derivative_wrt_pressure[q] * 
+                          derivatives->viscosity_derivative_averaging_weights[q] *
+                          newton_derivative_scaling_factor;
                       Assert(std::isfinite(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]),
                              ExcMessage("active_cell_data.newton_factor_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]) +
                                         ". Relevant variables are derivatives->viscosity_derivative_wrt_pressure[q] = " + std::to_string(derivatives->viscosity_derivative_wrt_pressure[q]) +
+                                        ", derivatives->viscosity_derivative_averaging_weights[q] = " + std::to_string(derivatives->viscosity_derivative_averaging_weights[q]) +
                                         ", and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
 
                       for (unsigned int m=0; m<dim; ++m)
@@ -1422,8 +1441,9 @@ namespace aspect
                               = effective_strain_rate[m][n];
 
                             active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
-                              = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n]
-                                * newton_derivative_scaling_factor * alpha;
+                              = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n] *
+                                derivatives->viscosity_derivative_averaging_weights[q] *
+                                newton_derivative_scaling_factor * alpha;
 
                             Assert(std::isfinite(active_cell_data.strain_rate_table(cell, q)[m][n][i]),
                                    ExcMessage("active_cell_data.strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.strain_rate_table(cell, q)[m][n][i])));
