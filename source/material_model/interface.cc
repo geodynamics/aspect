@@ -799,6 +799,42 @@ namespace aspect
       }
 
 
+      double
+      compute_viscosity_derivative_averaging_weight(const AveragingOperation operation,
+                                                    const double average_viscosity,
+                                                    const double viscosity_before_averaging,
+                                                    const double one_over_Nq)
+      {
+        switch (operation)
+          {
+            case none:
+              // should never reach here:
+              return numbers::signaling_nan<double>();
+
+            case arithmetic_average:
+              return one_over_Nq;
+
+            case harmonic_average:
+            case harmonic_average_only_viscosity:
+              return Utilities::fixed_power<2,double>(average_viscosity / viscosity_before_averaging) 
+                     * one_over_Nq;
+
+            case geometric_average:
+            case geometric_average_only_viscosity:
+            case log_average:
+              return (average_viscosity / viscosity_before_averaging)
+                     * one_over_Nq;
+
+            default:
+              AssertThrow(false,
+                          ExcMessage("The Newton method currently only works if the material "
+                                     "averaging scheme is ``none'', ``arithmetic average'', "
+                                     "``harmonic average (only viscosity)'', ``geometric "
+                                     "average (only viscosity)'' or ``log average''."));
+          }
+      }
+
+
       template <int dim>
       void average (const AveragingOperation operation,
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -806,6 +842,9 @@ namespace aspect
                     const Mapping<dim>            &mapping,
                     MaterialModelOutputs<dim>     &values_out)
       {
+        if (operation == none)
+          return;
+
         FullMatrix<double> projection_matrix;
         FullMatrix<double> expansion_matrix;
 
@@ -830,32 +869,44 @@ namespace aspect
         // system jacobian later on
         MaterialModelDerivatives<dim> *derivatives =
           values_out.template get_additional_output<MaterialModelDerivatives<dim>>();
+
+        std::vector<double> viscosity_before_averaging;
         if (derivatives != nullptr)
-          derivatives->viscosity_before_averaging = values_out.viscosities;
+          viscosity_before_averaging = values_out.viscosities;
 
+        // compute the average of viscosity
         if (operation == harmonic_average_only_viscosity)
+          average_property (harmonic_average, projection_matrix, expansion_matrix,
+                            values_out.viscosities);
+
+        else if (operation == geometric_average_only_viscosity)
+          average_property (geometric_average, projection_matrix, expansion_matrix,
+                            values_out.viscosities);
+
+        else if (operation == project_to_Q1_only_viscosity)
+          average_property (project_to_Q1, projection_matrix, expansion_matrix,
+                            values_out.viscosities);
+
+        else
+          average_property (operation, projection_matrix, expansion_matrix,
+                            values_out.viscosities);
+
+        // calculate the weight of viscosity derivative at each 
+        // quadrature point
+        if (derivatives != nullptr)
           {
-            average_property (harmonic_average, projection_matrix, expansion_matrix,
-                              values_out.viscosities);
-            return;
+            for (unsigned int q = 0; q < values_out.n_evaluation_points(); ++q)
+              derivatives->viscosity_derivative_averaging_weights[q] = 
+                compute_viscosity_derivative_averaging_weight(
+                  operation, values_out.viscosities[q], viscosity_before_averaging[q],
+                  1. / values_out.n_evaluation_points());
           }
 
-        if (operation == geometric_average_only_viscosity)
-          {
-            average_property (geometric_average, projection_matrix, expansion_matrix,
-                              values_out.viscosities);
-            return;
-          }
+        if (operation == harmonic_average_only_viscosity ||
+            operation == geometric_average_only_viscosity ||
+            operation == project_to_Q1_only_viscosity)
+          return;
 
-        if (operation == project_to_Q1_only_viscosity)
-          {
-            average_property (project_to_Q1, projection_matrix, expansion_matrix,
-                              values_out.viscosities);
-            return;
-          }
-
-        average_property (operation, projection_matrix, expansion_matrix,
-                          values_out.viscosities);
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.densities);
         average_property (operation, projection_matrix, expansion_matrix,

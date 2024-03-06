@@ -36,7 +36,7 @@ namespace aspect
     MaterialModelDerivatives (const unsigned int n_points)
       : viscosity_derivative_wrt_pressure(n_points, numbers::signaling_nan<double>())
       , viscosity_derivative_wrt_strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>())
-      , viscosity_before_averaging(n_points, numbers::signaling_nan<double>())
+      , viscosity_derivative_averaging_weights(n_points, numbers::signaling_nan<double>())
     {}
   }
 

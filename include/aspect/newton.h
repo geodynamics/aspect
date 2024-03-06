@@ -59,12 +59,10 @@ namespace aspect
         std::vector<SymmetricTensor<2,dim>> viscosity_derivative_wrt_strain_rate;
 
         /**
-         * The viscosity values before material averaging. This vector is 
-         * for calculating the averages of viscosity derivatives when the 
-         * material averaging scheme is harmonic average or geometric/log
-         * average.
+         * The weights used for calculating the averages of viscosity 
+         * derivatives when material averaging is applied.
          */
-        std::vector<double> viscosity_before_averaging;
+        std::vector<double> viscosity_derivative_averaging_weights;
     };
   }
 

@@ -40,42 +40,6 @@ namespace aspect
 
 
 
-    namespace
-    {
-      double
-      viscosity_derivative_averaging_weight(const MaterialModel::MaterialAveraging::AveragingOperation material_averaging,
-                                            const double average_viscosity,
-                                            const double viscosity_before_averaging)
-      {
-        AssertThrow(material_averaging != MaterialModel::MaterialAveraging::none, ExcInternalError());
-        AssertThrow(!std::isnan(viscosity_before_averaging), ExcInternalError());
-
-        switch (material_averaging)
-          {
-            case MaterialModel::MaterialAveraging::arithmetic_average:
-              return 1.;
-
-            case MaterialModel::MaterialAveraging::harmonic_average:
-            case MaterialModel::MaterialAveraging::harmonic_average_only_viscosity:
-              return Utilities::fixed_power<2,double>(average_viscosity / viscosity_before_averaging);
-
-            case MaterialModel::MaterialAveraging::geometric_average:
-            case MaterialModel::MaterialAveraging::geometric_average_only_viscosity:
-            case MaterialModel::MaterialAveraging::log_average:
-              return average_viscosity / viscosity_before_averaging;
-
-            default:
-              AssertThrow(false,
-                          ExcMessage("The Newton method currently only works if the material "
-                                     "averaging scheme is ``none'', ``arithmetic average'', "
-                                     "``harmonic average (only viscosity)'', ``geometric "
-                                     "average (only viscosity)'' or ``log average''."));
-          }
-      }
-    }
-
-
-
     template <int dim>
     void
     NewtonStokesPreconditioner<dim>::
@@ -95,7 +59,8 @@ namespace aspect
       const MaterialModel::MaterialAveraging::AveragingOperation 
       material_averaging = this->get_parameters().material_averaging;
 
-      // If elasticity is enabled, then we need ElasticOutputs to compute the average elastic shear modulus.
+      // If elasticity is enabled, then we need ElasticOutputs to get the viscoelastic
+      // strain rate.
       const MaterialModel::ElasticOutputs<dim> *elastic_out =
         scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
       if (this->get_parameters().enable_elasticity)
@@ -128,22 +93,17 @@ namespace aspect
           AssertThrow(derivatives != nullptr,
                       ExcMessage ("Error: The newton method requires derivatives from the material model."));
 
-          std::vector<double> weights(n_q_points);
-          for (unsigned int q = 0; q < n_q_points; ++q)
-            weights[q] = viscosity_derivative_averaging_weight(material_averaging,
-                                                               scratch.material_model_outputs.viscosities[q],
-                                                               derivatives->viscosity_before_averaging[q]);
-
           for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
             {
               if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
                 {
-                  double sum = 0;
+                  double avg = 0;
                   for (unsigned int q = 0; q < n_q_points; ++q)
-                    sum += weights[q] * (derivatives->viscosity_derivative_wrt_strain_rate[q] *
-                                         scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
+                    avg += derivatives->viscosity_derivative_averaging_weights[q] * 
+                           (derivatives->viscosity_derivative_wrt_strain_rate[q] *
+                            scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
 
-                  deta_deps_times_grads_phi_u[i_stokes] = sum / n_q_points;
+                  deta_deps_times_grads_phi_u[i_stokes] = avg;
 
                   ++i_stokes;
                 }
@@ -352,7 +312,8 @@ namespace aspect
                                                                             scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()
                                                                             : nullptr;
 
-      // If elasticity is enabled, then we need ElasticOutputs to compute the average elastic shear modulus.
+      // If elasticity is enabled, then we need ElasticOutputs to get the viscoelastic
+      // strain rate and the elastic force.
       const bool enable_elasticity = this->get_parameters().enable_elasticity;
       const MaterialModel::ElasticOutputs<dim> *elastic_out =
         scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
@@ -372,12 +333,7 @@ namespace aspect
       const MaterialModel::MaterialModelDerivatives<dim> *derivatives
         = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
-      // This one is only available in debug mode, because normally
-      // the AssertThrow in the preconditioner should already have
-      // caught the problem.
-      Assert(derivatives != nullptr,
-             ExcMessage ("Error: The Newton method requires the material to "
-                         "compute derivatives."));
+
 
       std::vector<double> deta_deps_times_grads_phi_u(stokes_dofs_per_cell);
       std::vector<double> deta_dp_times_phi_p(stokes_dofs_per_cell);
@@ -388,27 +344,30 @@ namespace aspect
       if (derivative_scaling_factor > 0 &&
           material_averaging != MaterialModel::MaterialAveraging::none)
         {
-          std::vector<double> weights(n_q_points);
-          for (unsigned int q = 0; q < n_q_points; ++q)
-            weights[q] = viscosity_derivative_averaging_weight(material_averaging,
-                                                               scratch.material_model_outputs.viscosities[q],
-                                                               derivatives->viscosity_before_averaging[q]);
+          // This one is only available in debug mode, because normally
+          // the AssertThrow in the preconditioner should already have
+          // caught the problem.
+          Assert(derivatives != nullptr,
+                 ExcMessage ("Error: The Newton method requires the material to "
+                             "compute derivatives."));
 
           for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
             {
               if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
                 {
-                  double sum_wrt_eps = 0, sum_wrt_p = 0;
+                  double avg_wrt_eps = 0, avg_wrt_p = 0;
                   for (unsigned int q = 0; q < n_q_points; ++q)
                     {
-                      sum_wrt_eps += weights[q] * (derivatives->viscosity_derivative_wrt_strain_rate[q] *
-                                                   scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
-                      sum_wrt_p   += weights[q] * (derivatives->viscosity_derivative_wrt_pressure[q] *
-                                                   scratch.finite_element_values[introspection.extractors.pressure].value(i, q));
+                      avg_wrt_eps += derivatives->viscosity_derivative_averaging_weights[q] * 
+                                     (derivatives->viscosity_derivative_wrt_strain_rate[q] *
+                                      scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
+                      avg_wrt_p   += derivatives->viscosity_derivative_averaging_weights[q] * 
+                                     (derivatives->viscosity_derivative_wrt_pressure[q] *
+                                      scratch.finite_element_values[introspection.extractors.pressure].value(i, q));
                     }
 
-                  deta_deps_times_grads_phi_u[i_stokes] = sum_wrt_eps / n_q_points;
-                  deta_dp_times_phi_p[i_stokes] = sum_wrt_p / n_q_points;
+                  deta_deps_times_grads_phi_u[i_stokes] = avg_wrt_eps;
+                  deta_dp_times_phi_p[i_stokes] = avg_wrt_p;
 
                   ++i_stokes;
                 }
