@@ -261,7 +261,7 @@ namespace aspect
                     Assert(std::isfinite(in.strain_rate[i].norm()),
                            ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                       "not filled by the caller."));
-                    const SymmetricTensor<2,dim> effective_strain_rate = 
+                    const SymmetricTensor<2,dim> effective_strain_rate =
                       elastic_rheology.calculate_viscoelastic_strain_rate(in.strain_rate[i],
                                                                           stress_old,
                                                                           elastic_shear_moduli[j]);

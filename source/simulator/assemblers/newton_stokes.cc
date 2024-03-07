@@ -56,7 +56,7 @@ namespace aspect
       const double derivative_scaling_factor = this->get_newton_handler().parameters.newton_derivative_scaling_factor;
       const double pressure_scaling = this->get_pressure_scaling();
 
-      const MaterialModel::MaterialAveraging::AveragingOperation 
+      const MaterialModel::MaterialAveraging::AveragingOperation
       material_averaging = this->get_parameters().material_averaging;
 
       // If elasticity is enabled, then we need ElasticOutputs to get the viscoelastic
@@ -85,7 +85,7 @@ namespace aspect
       std::vector<double> deta_deps_times_grads_phi_u(stokes_dofs_per_cell);
       std::vector<double> eps_times_grads_phi_u(stokes_dofs_per_cell);
 
-      // Calculate the weighted average of viscosity derivatives if 
+      // Calculate the weighted average of viscosity derivatives if
       // material averaging is applied.
       if (derivative_scaling_factor > 0 &&
           material_averaging != MaterialModel::MaterialAveraging::none)
@@ -99,7 +99,7 @@ namespace aspect
                 {
                   double avg = 0;
                   for (unsigned int q = 0; q < n_q_points; ++q)
-                    avg += derivatives->viscosity_derivative_averaging_weights[q] * 
+                    avg += derivatives->viscosity_derivative_averaging_weights[q] *
                            (derivatives->viscosity_derivative_wrt_strain_rate[q] *
                             scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
 
@@ -175,7 +175,7 @@ namespace aspect
           else
             {
               const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
-              const SymmetricTensor<2,dim> effective_strain_rate = 
+              const SymmetricTensor<2,dim> effective_strain_rate =
                 elastic_out == nullptr ? deviator(scratch.material_model_inputs.strain_rate[q]) : elastic_out->viscoelastic_strain_rate[q];
 
               const typename Newton::Parameters::Stabilization
@@ -209,9 +209,9 @@ namespace aspect
                       += (
                            // top left block: approximate J^{uu}
                            (2.0 * eta * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j]))
-                           + 
-                           derivative_scaling_factor * alpha * 
-                           ( symmetrize ? 
+                           +
+                           derivative_scaling_factor * alpha *
+                           ( symmetrize ?
                              (eps_times_grads_phi_u[i] * deta_deps_times_grads_phi_u[j] +
                               eps_times_grads_phi_u[j] * deta_deps_times_grads_phi_u[i] ) :
                              2.0 * eps_times_grads_phi_u[i] * deta_deps_times_grads_phi_u[j] )
@@ -303,7 +303,7 @@ namespace aspect
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
       const double derivative_scaling_factor = this->get_newton_handler().parameters.newton_derivative_scaling_factor;
 
-      const MaterialModel::MaterialAveraging::AveragingOperation 
+      const MaterialModel::MaterialAveraging::AveragingOperation
       material_averaging = this->get_parameters().material_averaging;
 
       const bool enable_additional_stokes_rhs = this->get_parameters().enable_additional_stokes_rhs;
@@ -339,7 +339,7 @@ namespace aspect
       std::vector<double> deta_dp_times_phi_p(stokes_dofs_per_cell);
       std::vector<double> eps_times_grads_phi_u(stokes_dofs_per_cell);
 
-      // Calculate the weighted average of viscosity derivtives if 
+      // Calculate the weighted average of viscosity derivtives if
       // material averaging is applied.
       if (derivative_scaling_factor > 0 &&
           material_averaging != MaterialModel::MaterialAveraging::none)
@@ -358,10 +358,10 @@ namespace aspect
                   double avg_wrt_eps = 0, avg_wrt_p = 0;
                   for (unsigned int q = 0; q < n_q_points; ++q)
                     {
-                      avg_wrt_eps += derivatives->viscosity_derivative_averaging_weights[q] * 
+                      avg_wrt_eps += derivatives->viscosity_derivative_averaging_weights[q] *
                                      (derivatives->viscosity_derivative_wrt_strain_rate[q] *
                                       scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q));
-                      avg_wrt_p   += derivatives->viscosity_derivative_averaging_weights[q] * 
+                      avg_wrt_p   += derivatives->viscosity_derivative_averaging_weights[q] *
                                      (derivatives->viscosity_derivative_wrt_pressure[q] *
                                       scratch.finite_element_values[introspection.extractors.pressure].value(i, q));
                     }
@@ -402,7 +402,7 @@ namespace aspect
           const double pressure = scratch.material_model_inputs.pressure[q];
           const double velocity_divergence = scratch.velocity_divergence[q];
 
-          const SymmetricTensor<2,dim> effective_strain_rate = 
+          const SymmetricTensor<2,dim> effective_strain_rate =
             elastic_out == nullptr ? deviator(scratch.material_model_inputs.strain_rate[q]) : elastic_out->viscoelastic_strain_rate[q];
 
           const Tensor<1,dim>
@@ -416,8 +416,8 @@ namespace aspect
           // first assemble the rhs
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             {
-              data.local_rhs(i) -= (eta * 2.0 * (scratch.grads_phi_u[i] * 
-                                    scratch.material_model_inputs.strain_rate[q])
+              data.local_rhs(i) -= (eta * 2.0 * (scratch.grads_phi_u[i] *
+                                                 scratch.material_model_inputs.strain_rate[q])
                                     - (scratch.div_phi_u[i] * pressure)
                                     - (pressure_scaling * scratch.phi_p[i] * velocity_divergence)
                                     -(density * gravity * scratch.phi_u[i]))
@@ -509,15 +509,15 @@ namespace aspect
                     {
                       for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                         {
-                          data.local_matrix(i,j) += ( alpha * 
+                          data.local_matrix(i,j) += ( alpha *
                                                       ( symmetrize ?
                                                         ( eps_times_grads_phi_u[i] * deta_deps_times_grads_phi_u[j] +
                                                           eps_times_grads_phi_u[j] * deta_deps_times_grads_phi_u[i] ) :
-                                                        2.0 * eps_times_grads_phi_u[i] * deta_deps_times_grads_phi_u[j] 
+                                                        2.0 * eps_times_grads_phi_u[i] * deta_deps_times_grads_phi_u[j]
                                                       )
                                                       + pressure_scaling * 2.0 * eps_times_grads_phi_u[i] * deta_dp_times_phi_p[j]
                                                     )
-                                                    * derivative_scaling_factor 
+                                                    * derivative_scaling_factor
                                                     * JxW;
 
                           Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),

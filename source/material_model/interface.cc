@@ -801,8 +801,8 @@ namespace aspect
 
       /**
        * Calculate the weight for viscosity derivative, which depends on
-       * the material averaging scheme. Currently the newton method is 
-       * only compatible with arithmetic average, harmonic average and 
+       * the material averaging scheme. Currently the newton method is
+       * only compatible with arithmetic average, harmonic average and
        * geometric/log average for viscosity.
        */
       double
@@ -822,7 +822,7 @@ namespace aspect
 
             case harmonic_average:
             case harmonic_average_only_viscosity:
-              return Utilities::fixed_power<2,double>(average_viscosity / viscosity_before_averaging) 
+              return Utilities::fixed_power<2,double>(average_viscosity / viscosity_before_averaging)
                      * one_over_Nq;
 
             case geometric_average:
@@ -871,7 +871,7 @@ namespace aspect
                                        expansion_matrix);
           }
 
-        // store the original viscosities if we need to compute the 
+        // store the original viscosities if we need to compute the
         // system jacobian later on
         MaterialModelDerivatives<dim> *derivatives =
           values_out.template get_additional_output<MaterialModelDerivatives<dim>>();
@@ -897,12 +897,12 @@ namespace aspect
           average_property (operation, projection_matrix, expansion_matrix,
                             values_out.viscosities);
 
-        // calculate the weight of viscosity derivative at each 
+        // calculate the weight of viscosity derivative at each
         // quadrature point
         if (derivatives != nullptr)
           {
             for (unsigned int q = 0; q < values_out.n_evaluation_points(); ++q)
-              derivatives->viscosity_derivative_averaging_weights[q] = 
+              derivatives->viscosity_derivative_averaging_weights[q] =
                 compute_viscosity_derivative_averaging_weight(
                   operation, values_out.viscosities[q], viscosity_before_averaging[q],
                   1. / values_out.n_evaluation_points());

@@ -1413,7 +1413,7 @@ namespace aspect
 
                   for (unsigned int q=0; q<n_q_points; ++q)
                     {
-                      const SymmetricTensor<2,dim> effective_strain_rate = 
+                      const SymmetricTensor<2,dim> effective_strain_rate =
                         elastic_out == nullptr ? deviator(in.strain_rate[q]) : elastic_out->viscoelastic_strain_rate[q];
 
                       // use the spd factor when the stabilization is PD or SPD.
@@ -1429,7 +1429,7 @@ namespace aspect
                                             1.0;
 
                       active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
-                        = derivatives->viscosity_derivative_wrt_pressure[q] * 
+                        = derivatives->viscosity_derivative_wrt_pressure[q] *
                           derivatives->viscosity_derivative_averaging_weights[q] *
                           newton_derivative_scaling_factor;
                       Assert(std::isfinite(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]),

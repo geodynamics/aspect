@@ -140,7 +140,7 @@ namespace aspect
       Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>> strain_rate_table;
 
       /**
-       * Table which stores the product of the following three 
+       * Table which stores the product of the following three
        * variables: viscosity derivative with respect to pressure,
        * the Newton derivative scaling factor, and the averaging weight.
        */
@@ -150,7 +150,7 @@ namespace aspect
        * Table which stores the product of the following four
        * variables: viscosity derivative with respect to strain rate,
        * newton derivative scaling factor, alpha, and the averaging
-       * weight. Here alpha is the spd factor when the stabilization 
+       * weight. Here alpha is the spd factor when the stabilization
        * is PD or SPD, otherwise, it is 1.
        */
       Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
