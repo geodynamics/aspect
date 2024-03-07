@@ -408,13 +408,19 @@ namespace aspect
         pressure.reinit (cell);
         pressure.gather_evaluate (src.block(1), EvaluationFlags::values);
 
-        // Store the symmetric gradients of the velocity field
+        // Store the symmetric gradients of the velocity field and the
+        // values of the pressure field
         std::vector<SymmetricTensor<2,dim,VectorizedArray<number>>> grads_phi_u;
+        std::vector<VectorizedArray<number>> phi_p;
         if (cell_data->enable_newton_derivatives)
           {
             grads_phi_u.resize(velocity.n_q_points);
+            phi_p.resize(velocity.n_q_points);
             for (const unsigned int r : velocity.quadrature_point_indices())
+              {
                 grads_phi_u[r] = velocity.get_symmetric_gradient(r);
+                phi_p[r]       = pressure.get_value(r);
+              }
           }
 
         for (const unsigned int q : velocity.quadrature_point_indices())
@@ -439,36 +445,34 @@ namespace aspect
 
             if (cell_data->enable_newton_derivatives)
               {
-                const VectorizedArray<number> JxW = velocity.JxW(q);
-
-                VectorizedArray<number> grads_phi_u_times_eps(0.), grads_phi_u_times_deta_deps(0.);
+                VectorizedArray<number> deta_deps_times_grads_phi_u(0.);
+                VectorizedArray<number> eps_times_grads_phi_u(0.);
+                VectorizedArray<number> deta_dp_times_phi_p(0.);
                 for (const unsigned int r : velocity.quadrature_point_indices())
                   {
-                    grads_phi_u_times_eps += (grads_phi_u[r] * cell_data->strain_rate_table(cell,r))
-                                             * (velocity.JxW(r) / JxW);
-
+                    deta_deps_times_grads_phi_u += cell_data->newton_factor_wrt_strain_rate_table(cell,r)
+                                                   * grads_phi_u[r];
+                    deta_dp_times_phi_p += cell_data->newton_factor_wrt_pressure_table(cell,r)
+                                           * phi_p[r];
                     if (cell_data->symmetrize_newton_system)
-                      grads_phi_u_times_deta_deps += grads_phi_u[r] * 
-                                                     cell_data->newton_factor_wrt_strain_rate_table(cell,r);
+                      eps_times_grads_phi_u += cell_data->strain_rate_table(cell,r)
+                                               * grads_phi_u[r];
                   }
 
-                const SymmetricTensor<2,dim,VectorizedArray<number>> newton_velocity_term =
-                  (cell_data->symmetrize_newton_system ?
-                   grads_phi_u_times_eps * cell_data->newton_factor_wrt_strain_rate_table(cell,q) +
-                   grads_phi_u_times_deta_deps * cell_data->strain_rate_table(cell,q) :
-                   (2.0 * grads_phi_u_times_eps) * cell_data->newton_factor_wrt_strain_rate_table(cell,q));
+                const SymmetricTensor<2,dim,VectorizedArray<number>> viscosity_derivative_term =
+                  ( cell_data->symmetrize_newton_system ?
+                    ( cell_data->strain_rate_table(cell,q) * deta_deps_times_grads_phi_u +
+                      cell_data->newton_factor_wrt_strain_rate_table(cell,q) * eps_times_grads_phi_u ) :
+                    2. * cell_data->strain_rate_table(cell,q) * deta_deps_times_grads_phi_u )
+                  +
+                  2. * cell_data->strain_rate_table(cell,q) * deta_dp_times_phi_p;
 
-                const VectorizedArray<number> newton_pressure_term =
-                  2.0 * grads_phi_u_times_eps * cell_data->newton_factor_wrt_pressure_table(cell,q);
-
-                velocity.submit_symmetric_gradient(sym_grad_u + newton_velocity_term, q);
-                pressure.submit_value(cell_data->pressure_scaling * (-div + newton_pressure_term), q);
+                velocity.submit_symmetric_gradient(sym_grad_u + viscosity_derivative_term, q);
               }
             else
-              {
-                velocity.submit_symmetric_gradient(sym_grad_u, q);
-                pressure.submit_value(-cell_data->pressure_scaling*div, q);
-              }
+              velocity.submit_symmetric_gradient(sym_grad_u, q);
+
+            pressure.submit_value(-cell_data->pressure_scaling * div, q);
           }
 
         velocity.integrate_scatter (EvaluationFlags::gradients, dst.block(0));
