@@ -799,6 +799,12 @@ namespace aspect
       }
 
 
+      /**
+       * Calculate the weight for viscosity derivative, which depends on
+       * the material averaging scheme. Currently the newton method is 
+       * only compatible with arithmetic average, harmonic average and 
+       * geometric/log average for viscosity.
+       */
       double
       compute_viscosity_derivative_averaging_weight(const AveragingOperation operation,
                                                     const double average_viscosity,

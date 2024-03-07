@@ -597,7 +597,7 @@ namespace aspect
 
       Assert(!this->get_parameters().enable_elasticity
              ||
-             outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>()->viscoelastic_strain_rate.size()
+             outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>()->elastic_force.size()
              == n_points, ExcInternalError());
 
       // prescribed dilation:
