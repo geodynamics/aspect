@@ -429,17 +429,17 @@ namespace aspect
             if (use_viscosity_at_quadrature_points)
               viscosity_x_2 = 2. * cell_data->viscosity(cell,q);
 
-            const SymmetricTensor<2,dim,VectorizedArray<number>> 
+            const SymmetricTensor<2,dim,VectorizedArray<number>>
             sym_grad_u_q = u_eval.get_symmetric_gradient(q);
             const VectorizedArray<number> div_u_q = trace(sym_grad_u_q);
             const VectorizedArray<number> val_p_q = p_eval.get_value(q);
 
-            // Terms to be tested by phi_p:  
-            const VectorizedArray<number> pressure_terms = 
+            // Terms to be tested by phi_p:
+            const VectorizedArray<number> pressure_terms =
               -cell_data->pressure_scaling * div_u_q;
 
             // Terms to be tested by the symmetric gradients of phi_u:
-            SymmetricTensor<2,dim,VectorizedArray<number>> 
+            SymmetricTensor<2,dim,VectorizedArray<number>>
             velocity_terms = viscosity_x_2 * sym_grad_u_q;
 
             for (unsigned int d=0; d<dim; ++d)
@@ -464,7 +464,7 @@ namespace aspect
                       eps_times_sym_grad_u += cell_data->strain_rate_table(cell,r) * sym_grad_u[r];
                   }
 
-                velocity_terms += 
+                velocity_terms +=
                   ( cell_data->symmetrize_newton_system ?
                     ( cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u +
                       cell_data->newton_factor_wrt_strain_rate_table(cell,q) * eps_times_sym_grad_u ) :
