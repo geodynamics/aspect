@@ -604,7 +604,8 @@ namespace aspect
       // at a depth beneath the top surface
       p[0] = point2[0]-depth;
 
-      // Now convert to Cartesian coordinates
+      // Now convert to Cartesian coordinates. This ignores the surface topography,
+      // but that is as documented.
       return manifold->push_forward_sphere(p);
     }
 
@@ -677,6 +678,11 @@ namespace aspect
     double
     Chunk<dim>::maximal_depth() const
     {
+      // The depth is defined as relative to a reference surface (without
+      // topography) and since we don't apply topography on the CMB,
+      // the maximal depth really is the formula below, unless one applies a
+      // topography that is always strictly below zero (i.e., where the
+      // actual surface lies strictly below the reference surface).
       return point2[0]-point1[0];
     }
 

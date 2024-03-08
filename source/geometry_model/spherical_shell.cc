@@ -696,8 +696,8 @@ namespace aspect
       Point<dim> p;
       p[dim-1] = std::min (std::max(R1 - depth, R0), R1);
 
-      // TODO: Take into account topography
-
+      // Return this point. This ignores the surface topography,
+      // but that is as documented.
       return p;
     }
 
@@ -707,7 +707,11 @@ namespace aspect
     double
     SphericalShell<dim>::maximal_depth() const
     {
-      // TODO: Take into account topography
+      // The depth is defined as relative to a reference surface (without
+      // topography) and since we don't apply topography on the CMB,
+      // the maximal depth really is R1-R0 unless one applies a
+      // topography that is always strictly below zero (i.e., where the
+      // actual surface lies strictly below the reference surface).
       return R1-R0;
     }
 

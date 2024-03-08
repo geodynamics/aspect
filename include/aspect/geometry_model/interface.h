@@ -114,20 +114,22 @@ namespace aspect
          * only compute the depth with regard to the <i>reference
          * configuration</i> of the geometry, i.e., the geometry initially
          * created. If you are using a dynamic topography in your models
-         * that changes in every time step, then the <i>actual</i> depth
+         * that changes in every time step, or if you apply in initial
+         * topography to your model, then the <i>actual</i> depth
          * of a point with regard to this dynamic topography will not
          * match the value this function returns. This is so because
          * computing the actual depth is difficult: In parallel computations,
          * the processor on which you want to evaluate the depth of a point
          * may know nothing about the displacement of the surface anywhere
-         * if it happens to store only interior cells. furthermore, it is
+         * if it happens to store only interior cells. Furthermore, it is
          * not even clear what "depth" one would compute in such situations:
          * The distance to the closest surface point? The vertical distance
          * to the surface point directly above? Or the length of the line
          * from the given point to a surface point that is locally always
          * parallel to the gravity vector? For all of these reasons, this
          * function simply returns the geometric vertical depth of a point
-         * in the known and fixed reference geometry.
+         * in the known and fixed reference geometry, to the reference
+         * surface that defines what zero depth is.
          */
         virtual
         double depth(const Point<dim> &position) const = 0;
@@ -198,7 +200,12 @@ namespace aspect
         Point<dim> representative_point(const double depth) const = 0;
 
         /**
-         * Returns the maximal depth of this geometry.
+         * Returns the maximal depth of this geometry. For a definition of
+         * how "depth" is to be interpreted, see the documentation of the
+         * depth() member function. In particular, the maximal depth of a
+         * geometry model only represents the depth computed with regard
+         * to some reference configuration, ignoring any dynamic or initial
+         * topography.
          */
         virtual
         double maximal_depth() const = 0;
