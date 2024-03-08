@@ -387,96 +387,98 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>
-  ::local_apply (const dealii::MatrixFree<dim, number>                 &data,
+  ::local_apply (const dealii::MatrixFree<dim, number>                         &data,
                  dealii::LinearAlgebra::distributed::BlockVector<number>       &dst,
                  const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
-                 const std::pair<unsigned int, unsigned int>           &cell_range) const
+                 const std::pair<unsigned int, unsigned int>                   &cell_range) const
   {
-    FEEvaluation<dim,degree_v,degree_v+1,dim,number> velocity (data, 0);
-    FEEvaluation<dim,degree_v-1,  degree_v+1,1,  number> pressure (data, /*dofh*/1);
+    FEEvaluation<dim,degree_v,degree_v+1,dim,number> u_eval(data, 0);
+    FEEvaluation<dim,degree_v-1,degree_v+1,1,number> p_eval(data, /*dofh*/1);
 
     const bool use_viscosity_at_quadrature_points
-      = (cell_data->viscosity.size(1) == velocity.n_q_points);
+      = (cell_data->viscosity.size(1) == u_eval.n_q_points);
 
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
-        VectorizedArray<number> viscosity_x_2 = 2.0*cell_data->viscosity(cell, 0);
+        VectorizedArray<number> viscosity_x_2 = 2. * cell_data->viscosity(cell,0);
 
-        velocity.reinit (cell);
-        velocity.gather_evaluate (src.block(0), EvaluationFlags::gradients);
+        u_eval.reinit(cell);
+        u_eval.gather_evaluate(src.block(0), EvaluationFlags::gradients);
 
-        pressure.reinit (cell);
-        pressure.gather_evaluate (src.block(1), EvaluationFlags::values);
+        p_eval.reinit(cell);
+        p_eval.gather_evaluate(src.block(1), EvaluationFlags::values);
 
         // Store the symmetric gradients of the velocity field and the
         // values of the pressure field
-        std::vector<SymmetricTensor<2,dim,VectorizedArray<number>>> grads_phi_u;
-        std::vector<VectorizedArray<number>> phi_p;
+        std::vector<SymmetricTensor<2,dim,VectorizedArray<number>>> sym_grad_u;
+        std::vector<VectorizedArray<number>> val_p;
         if (cell_data->enable_newton_derivatives)
           {
-            grads_phi_u.resize(velocity.n_q_points);
-            phi_p.resize(velocity.n_q_points);
-            for (const unsigned int r : velocity.quadrature_point_indices())
+            sym_grad_u.resize(u_eval.n_q_points);
+            val_p.resize(u_eval.n_q_points);
+            for (const unsigned int r : u_eval.quadrature_point_indices())
               {
-                grads_phi_u[r] = velocity.get_symmetric_gradient(r);
-                phi_p[r]       = pressure.get_value(r);
+                sym_grad_u[r] = u_eval.get_symmetric_gradient(r);
+                val_p[r]      = p_eval.get_value(r);
               }
           }
 
-        for (const unsigned int q : velocity.quadrature_point_indices())
+        for (const unsigned int q : u_eval.quadrature_point_indices())
           {
             // Only update the viscosity if a Q1 projection is used.
             if (use_viscosity_at_quadrature_points)
-              viscosity_x_2 = 2.0*cell_data->viscosity(cell, q);
+              viscosity_x_2 = 2. * cell_data->viscosity(cell,q);
 
-            SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
-              velocity.get_symmetric_gradient (q);
-            const VectorizedArray<number> pres = pressure.get_value(q);
-            const VectorizedArray<number> div = trace(sym_grad_u);
+            const SymmetricTensor<2,dim,VectorizedArray<number>> 
+            sym_grad_u_q = u_eval.get_symmetric_gradient(q);
+            const VectorizedArray<number> div_u_q = trace(sym_grad_u_q);
+            const VectorizedArray<number> val_p_q = p_eval.get_value(q);
 
-            sym_grad_u *= viscosity_x_2;
+            // Terms to be tested by phi_p:  
+            const VectorizedArray<number> pressure_terms = 
+              -cell_data->pressure_scaling * div_u_q;
+
+            // Terms to be tested by the symmetric gradients of phi_u:
+            SymmetricTensor<2,dim,VectorizedArray<number>> 
+            velocity_terms = viscosity_x_2 * sym_grad_u_q;
 
             for (unsigned int d=0; d<dim; ++d)
-              sym_grad_u[d][d] -= cell_data->pressure_scaling*pres;
+              velocity_terms[d][d] -= cell_data->pressure_scaling * val_p_q;
 
             if (cell_data->is_compressible)
               for (unsigned int d=0; d<dim; ++d)
-                sym_grad_u[d][d] -= viscosity_x_2/3.0*div;
+                velocity_terms[d][d] -= viscosity_x_2 / 3. * div_u_q;
 
+            // Add the Newton derivatives if required.
             if (cell_data->enable_newton_derivatives)
               {
-                VectorizedArray<number> deta_deps_times_grads_phi_u(0.);
-                VectorizedArray<number> eps_times_grads_phi_u(0.);
-                VectorizedArray<number> deta_dp_times_phi_p(0.);
-                for (const unsigned int r : velocity.quadrature_point_indices())
+                VectorizedArray<number> deta_deps_times_sym_grad_u(0.);
+                VectorizedArray<number> eps_times_sym_grad_u(0.);
+                VectorizedArray<number> deta_dp_times_p(0.);
+                for (const unsigned int r : u_eval.quadrature_point_indices())
                   {
-                    deta_deps_times_grads_phi_u += cell_data->newton_factor_wrt_strain_rate_table(cell,r)
-                                                   * grads_phi_u[r];
-                    deta_dp_times_phi_p += cell_data->newton_factor_wrt_pressure_table(cell,r)
-                                           * phi_p[r];
+                    deta_deps_times_sym_grad_u += cell_data->newton_factor_wrt_strain_rate_table(cell,r)
+                                                  * sym_grad_u[r];
+                    deta_dp_times_p += cell_data->newton_factor_wrt_pressure_table(cell,r) * val_p[r];
                     if (cell_data->symmetrize_newton_system)
-                      eps_times_grads_phi_u += cell_data->strain_rate_table(cell,r)
-                                               * grads_phi_u[r];
+                      eps_times_sym_grad_u += cell_data->strain_rate_table(cell,r) * sym_grad_u[r];
                   }
 
-                const SymmetricTensor<2,dim,VectorizedArray<number>> viscosity_derivative_term =
+                velocity_terms += 
                   ( cell_data->symmetrize_newton_system ?
-                    ( cell_data->strain_rate_table(cell,q) * deta_deps_times_grads_phi_u +
-                      cell_data->newton_factor_wrt_strain_rate_table(cell,q) * eps_times_grads_phi_u ) :
-                    2. * cell_data->strain_rate_table(cell,q) * deta_deps_times_grads_phi_u )
+                    ( cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u +
+                      cell_data->newton_factor_wrt_strain_rate_table(cell,q) * eps_times_sym_grad_u ) :
+                    2. * cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u )
                   +
-                  2. * cell_data->strain_rate_table(cell,q) * deta_dp_times_phi_p;
-
-                velocity.submit_symmetric_gradient(sym_grad_u + viscosity_derivative_term, q);
+                  2. * cell_data->strain_rate_table(cell,q) * deta_dp_times_p;
               }
-            else
-              velocity.submit_symmetric_gradient(sym_grad_u, q);
 
-            pressure.submit_value(-cell_data->pressure_scaling * div, q);
+            u_eval.submit_symmetric_gradient(velocity_terms, q);
+            p_eval.submit_value(pressure_terms, q);
           }
 
-        velocity.integrate_scatter (EvaluationFlags::gradients, dst.block(0));
-        pressure.integrate_scatter (EvaluationFlags::values, dst.block(1));
+        u_eval.integrate_scatter(EvaluationFlags::gradients, dst.block(0));
+        p_eval.integrate_scatter(EvaluationFlags::values, dst.block(1));
       }
   }
 
