@@ -285,8 +285,14 @@ namespace aspect
         if (in.requests_property(MaterialProperties::additional_outputs))
           {
             // The viscosity should be averaged if material averaging is applied.
+            // Here the averaging scheme "project to Q1 (only viscosity)"  is
+            // excluded, because there is no way to know the quadrature formula
+            // used for evaluation.
+            // TODO: find a way to include "project to Q1 (only viscosity)" as well.
             std::vector<double> effective_creep_viscosities;
-            if (this->get_parameters().material_averaging != MaterialAveraging::none)
+            if (this->get_parameters().material_averaging != MaterialAveraging::none &&
+                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1 &&
+                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1_only_viscosity)
               {
                 MaterialModelOutputs<dim> out_copy(out.n_evaluation_points(),
                                                    this->introspection().n_compositional_fields);
@@ -358,8 +364,14 @@ namespace aspect
             const double dt = this->get_timestep();
 
             // The viscosity should be averaged if material averaging is applied.
+            // Here the averaging scheme "project to Q1 (only viscosity)"  is
+            // excluded, because there is no way to know the quadrature formula
+            // used for evaluation.
+            // TODO: find a way to include "project to Q1 (only viscosity)" as well.
             std::vector<double> effective_creep_viscosities;
-            if (this->get_parameters().material_averaging != MaterialAveraging::none)
+            if (this->get_parameters().material_averaging != MaterialAveraging::none &&
+                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1 &&
+                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1_only_viscosity)
               {
                 MaterialModelOutputs<dim> out_copy(out.n_evaluation_points(),
                                                    this->introspection().n_compositional_fields);
@@ -369,7 +381,7 @@ namespace aspect
                   get_averaging_operation_for_viscosity(this->get_parameters().material_averaging);
                 MaterialAveraging::average(averaging_operation_for_viscosity,
                                            in.current_cell,
-                                           this->introspection().quadratures.velocities,
+                                           this->introspection().quadratures.compositional_fields,
                                            this->get_mapping(),
                                            out_copy);
 
