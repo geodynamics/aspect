@@ -489,11 +489,11 @@ endif()
 
 # Make sure that the whole library is loaded, so the registration is done correctly.
 if(NOT APPLE AND NOT MSVC)
-  SET(GWB_LIBRARY_WHOLE -Wl,--whole-archive WorldBuilder -Wl,--no-whole-archive)
+  SET(GWB_LIBRARY_WHOLE -Wl,--whole-archive ${WB_TARGET} -Wl,--no-whole-archive)
 elseif(MSVC)
-  SET(GWB_LIBRARY_WHOLE WorldBuilder)
+  SET(GWB_LIBRARY_WHOLE ${WB_TARGET})
 else()
-  SET(GWB_LIBRARY_WHOLE -Wl,-force_load WorldBuilder)
+  SET(GWB_LIBRARY_WHOLE -Wl,-force_load ${WB_TARGET})
 endif()
 
 if(${USE_MPI})
