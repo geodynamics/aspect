@@ -302,16 +302,15 @@ namespace aspect
                              "caused by temperature deviations. The viscosity may vary "
                              "laterally by this factor squared.");
           prm.declare_entry ("Angle of internal friction", "0.",
-                             Patterns::Anything(),
-                             "List of angles of internal friction, $\\phi$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             Patterns::Double (0.),
+                             "The value of the angle of internal friction, $\\phi$."
                              "For a value of zero, in 2D the von Mises criterion is retrieved. "
-                             "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
+                             "Angles higher than 30 degrees are harder to solve numerically."
+                             "Units: degrees (in radians).");
           prm.declare_entry ("Cohesion", "1e20",
-                             Patterns::Anything(),
-                             "List of cohesions, $C$, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
+                             Patterns::Double (0.),
+                             "The value of the cohesion, $C$. The extremely large default"
+                             "cohesion value (1e20 Pa) prevents the viscous stress from "
                              "exceeding the yield stress. Units: \\si{\\pascal}.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
