@@ -680,7 +680,7 @@ IF(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILD
     TARGET_LINK_LIBRARIES(${TARGET}-release WorldBuilderRelease)
     target_compile_definitions(${TARGET}-release PUBLIC "NDEBUG")
   ELSE()
-    TARGET_INCLUDE_DIRECTORIES(${TARGET} "${CMAKE_BINARY_DIR}/world_builder/include/")
+    TARGET_INCLUDE_DIRECTORIES(${TARGET} PUBLIC "${CMAKE_BINARY_DIR}/world_builder/include/")
     TARGET_LINK_LIBRARIES(${TARGET} WorldBuilder)
     if (${CMAKE_BUILD_TYPE} MATCHES "Release")
       target_compile_definitions(${TARGET} PUBLIC "NDEBUG")
