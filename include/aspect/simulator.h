@@ -752,7 +752,7 @@ namespace aspect
        * Assemble and solve the temperature equation.
        * This function returns the residual after solving.
        *
-       * If the `redidual` argument is not a `nullptr`, the function computes
+       * If the `residual` argument is not a `nullptr`, the function computes
        * the residual and puts it into this variable. The function returns
        * the current residual divided by the initial residual given as the
        * first argument. The two arguments may point to the same variable,
@@ -770,7 +770,7 @@ namespace aspect
        * (fields or particles). This function returns the residuals for
        * all fields after solving.
        *
-       * If the `redidual` argument is not a `nullptr`, the function computes
+       * If the `residual` argument is not a `nullptr`, the function computes
        * the residual and puts it into this variable. The function returns
        * the current residual divided by the initial residual given as the
        * first argument. The two arguments may point to the same variable,
@@ -787,7 +787,7 @@ namespace aspect
        * Assemble and solve the Stokes equation.
        * This function returns the nonlinear residual after solving.
        *
-       * If the `redidual` argument is not a `nullptr`, the function computes
+       * If the `residual` argument is not a `nullptr`, the function computes
        * the residual and puts it into this variable. The function returns
        * the current residual divided by the initial residual given as the
        * first argument. The two arguments may point to the same variable,

@@ -8,7 +8,7 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
 # Geometry of the domain. In order to test the depth averaging,
-# we use the X and Y repititions such that four equal depth
+# we use the X and Y repetitions such that four equal depth
 # layers of visocisty are created in the depth-dependent material
 # model.
 subsection Geometry model

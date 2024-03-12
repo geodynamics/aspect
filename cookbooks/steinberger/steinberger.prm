@@ -108,7 +108,7 @@ subsection Material model
     set Minimum viscosity                             = 1e20
 
     # We base our viscosity profile on the adiabat computed based on the
-    # material porperties used in the model rather than the laterally
+    # material properties used in the model rather than the laterally
     # averaged temperature.
     set Use lateral average temperature for viscosity = false
 

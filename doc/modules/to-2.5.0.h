@@ -169,7 +169,7 @@
  * (Elodie Kendall and Anne Glerum, 2022/07/29)
  *
  * <li> Changed: Models that use a strain-dependent rheology
- * can now use an interative Advection scheme, which was
+ * can now use an interactive Advection scheme, which was
  * confirmed not to cause unrealistic accumulation of
  * strain in compositional fields during nonlinear iterations.
  * <br>

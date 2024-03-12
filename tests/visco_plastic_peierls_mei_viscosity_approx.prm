@@ -26,7 +26,7 @@
 #  Fitting parameters for approximated viscosity:
 #    gamma = 0.15 # fitting parameter
 #
-#  Recalcualte strain rate
+#  Recalculate strain rate
 #    edot_ii = A*np.power(sig,n)*np.exp(-(E/(R*T))*np.power((1 - np.power(gamma,p)),q))*np.power(sig/(gamma*sigp),s)
 #            = 9.326722654162315e-11
 #

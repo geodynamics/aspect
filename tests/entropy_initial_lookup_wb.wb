@@ -22,7 +22,7 @@
   "features": [
     {
       "model": "oceanic plate",
-      "name": "Overiding plate",
+      "name": "Overriding plate",
       "max depth": 150000.0,
       "min depth": -100000.0,
       "coordinates": [

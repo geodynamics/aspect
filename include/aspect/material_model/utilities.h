@@ -334,7 +334,7 @@ namespace aspect
 
           private:
             /**
-             * The StucturedDataLookup object that stores the material data.
+             * The StructuredDataLookup object that stores the material data.
              */
             std::unique_ptr<Utilities::StructuredDataLookup<2>> material_lookup;
         };

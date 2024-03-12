@@ -1495,10 +1495,10 @@ namespace aspect
       // Now load the last output at time of restart.
       // this allows us to correctly track when to call
       // FastScape to make new VTK files.
-      std::ifstream in_last_ouput_time(restart_filename_time);
-      AssertThrow (in_last_ouput_time, ExcIO());
+      std::ifstream in_last_output_time(restart_filename_time);
+      AssertThrow (in_last_output_time, ExcIO());
       {
-        in_last_ouput_time >> last_output_time;
+        in_last_output_time >> last_output_time;
       }
     }
 
@@ -1677,7 +1677,7 @@ namespace aspect
                               "Deposition coefficient for bedrock.");
             prm.declare_entry("Sediment deposition coefficient", "-1",
                               Patterns::Double(),
-                              "Deposition coefficient for sediment, -1 sets this to teh same as the bedrock deposition coefficient.");
+                              "Deposition coefficient for sediment, -1 sets this to the same as the bedrock deposition coefficient.");
             prm.declare_entry("Bedrock river incision rate", "1e-5",
                               Patterns::Double(),
                               "River incision rate for bedrock in the Stream Power Law. Units: $\\{m^(1-2*drainage_area_exponent)/yr}$");
