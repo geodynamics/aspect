@@ -22,7 +22,7 @@
 #include <aspect/material_model/visco_plastic.h>
 #include <aspect/material_model/viscoelastic.h>
 #include <aspect/initial_composition/interface.h>
-#include "../world.cc"
+#include <aspect/particle/world.h>
 
 namespace aspect
 {
