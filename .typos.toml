@@ -25,5 +25,5 @@ extend-exclude = [
     "parameters.*", # parameters should be corrected in the original source
     "doc/sphinx/parameters/*", # parameters should be corrected in the original source
     "tests/prmbackslash*", # this test purposefully breaks words on different lines
-    "contrib/python/env-py_aspect.yml", # this constains random strings which may trip up typos
+    "contrib/python/env-py_aspect.yml", # this contains random strings which may trip up typos
     ] 
