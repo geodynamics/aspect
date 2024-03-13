@@ -1,0 +1,125 @@
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations               = 4
+set Output directory                       = iterative_dampening_viscosity_no_dampening
+set Timing output frequency                = 1
+
+# Model geometry (2x2 km, 1 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 2
+    set Y repetitions = 2
+    set X extent      = 2e3
+    set Y extent      = 2e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+# Boundary classifications (fixed T boundaries, prescribed velocity)
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 273
+    set Left temperature   = 273
+    set Right temperature  = 273
+    set Top temperature    = 273
+  end
+end
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+# Compositional fields used to track the viscosity
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = viscosity_field
+  set Compositional field methods = prescribed field
+end
+
+# Set the initial composition for the viscosity field
+# to the same value as the background viscosity.
+# However, this value can be set to any arbitrary
+# viscosity and still have the iterative dampening
+# scheme work.
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 1e26;
+  end
+end
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+
+    # Turn on iterative viscosity dampening, but set the
+    # dampening value to 0 such that no dampening occurs.
+    set Use iterative viscosity dampening = true
+    set Iterative viscosity dampening factor = 0
+
+    # The strain rate given to the material will
+    # always be 1e-20, as all boundaries have
+    # free slip conditions.
+    set Reference strain rate = 1.e-20
+    set Minimum strain rate   = 1.e-20
+
+    # Set the background viscosity to 1e26 Pa s
+    set Viscous flow law                          = dislocation
+    set Prefactors for dislocation creep          = 5.e-27
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
+
+    # After yielding, the calculated viscosity should be
+    # 1.e6 [Pa]  * ( 1. / (2. * 1.e-20 [1/s]) = 5e25 [Pa s]
+    set Yield mechanism = drucker
+    set Angles of internal friction = 0.
+    set Cohesions = 1.e6
+
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, composition statistics,  material statistics
+  set Run postprocessors on nonlinear iterations = true
+end

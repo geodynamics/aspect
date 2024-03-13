@@ -1,0 +1,93 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.6.0-pre (enable_iterative_viscosity_dampening, 5f166c548)
+--     . using deal.II 9.4.0
+--     .       with 32 bit indices and vectorization level 1 (128 bits)
+--     . using Trilinos 13.0.0
+--     . using p4est 2.8.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&sha=5f166c548&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 4 (on 1 levels)
+Number of degrees of freedom: 109 (50+9+25+25)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Copying properties into prescribed compositional field viscosity_field... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.47805e-16, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Postprocessing:
+     RMS, max velocity:                                 3.21e-25 m/year, 8.97e-25 m/year
+     Compositions min/max/mass:                         5e+25/5e+25/2e+32
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 5e+25 Pa s, 1.321e+10 kg
+
+   Solving temperature system... 0 iterations.
+   Copying properties into prescribed compositional field viscosity_field... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.47805e-16, 0, 5.05365e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.05365e-14
+
+   Postprocessing:
+     RMS, max velocity:                                 3.08e-25 m/year, 6.8e-25 m/year
+     Compositions min/max/mass:                         5e+25/5e+25/2e+32
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 5e+25 Pa s, 1.321e+10 kg
+
+
+
+
++------------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start       |      0.17s |            |
+|                                                |            |            |
+| Section                            | no. calls |  wall time | % of total |
++------------------------------------+-----------+------------+------------+
+| Assemble Stokes system             |         2 |   0.00106s |      0.62% |
+| Assemble temperature system        |         2 |   0.00136s |       0.8% |
+| Build Stokes preconditioner        |         2 |   0.00507s |         3% |
+| Build temperature preconditioner   |         2 |  0.000237s |      0.14% |
+| Initialization                     |         1 |     0.153s |        90% |
+| Interpolate prescribed composition |         2 |    0.0006s |      0.35% |
+| Postprocessing                     |         2 |  0.000904s |      0.53% |
+| Setup dof systems                  |         1 |  0.000906s |      0.53% |
+| Setup initial conditions           |         1 |   0.00118s |       0.7% |
+| Setup matrices                     |         1 |   0.00118s |      0.69% |
+| Solve Stokes system                |         2 |   0.00249s |       1.5% |
+| Solve temperature system           |         2 |  0.000454s |      0.27% |
++------------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 0s
+Termination requested by criterion: end time
+
+
++------------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start       |      0.17s |            |
+|                                                |            |            |
+| Section                            | no. calls |  wall time | % of total |
++------------------------------------+-----------+------------+------------+
+| Assemble Stokes system             |         2 |   0.00106s |      0.62% |
+| Assemble temperature system        |         2 |   0.00136s |       0.8% |
+| Build Stokes preconditioner        |         2 |   0.00507s |         3% |
+| Build temperature preconditioner   |         2 |  0.000237s |      0.14% |
+| Initialization                     |         1 |     0.153s |        90% |
+| Interpolate prescribed composition |         2 |    0.0006s |      0.35% |
+| Postprocessing                     |         2 |  0.000904s |      0.53% |
+| Setup dof systems                  |         1 |  0.000906s |      0.53% |
+| Setup initial conditions           |         1 |   0.00118s |       0.7% |
+| Setup matrices                     |         1 |   0.00118s |      0.69% |
+| Solve Stokes system                |         2 |   0.00249s |       1.5% |
+| Solve temperature system           |         2 |  0.000454s |      0.27% |
++------------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 0s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&sha=5f166c548&src=code
+-----------------------------------------------------------------------------
