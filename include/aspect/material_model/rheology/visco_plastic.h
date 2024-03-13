@@ -161,7 +161,7 @@ namespace aspect
            * physical proportion of the material, e.g. volume fraction of peridotite
            * (as opposed to non-volumetric quantities like the amount of finite-strain).
            */
-          //ComponentMask get_volumetric_composition_mask() const;
+          ComponentMask get_volumetric_composition_mask() const;
 
           /**
            * Declare the parameters this function takes through input files.

@@ -492,7 +492,7 @@ namespace aspect
 
 
 
-/*       template <int dim>
+      template <int dim>
       ComponentMask
       ViscoPlastic<dim>::
       get_volumetric_composition_mask() const
@@ -506,22 +506,8 @@ namespace aspect
               composition_mask.set(i,false);
           }
 
-        // Mask fields that track the age and deposition depth of deposited sediments.
-#ifdef ASPECT_WITH_FASTSCAPE
-        if (this->introspection().compositional_name_exists("sediment_age"))
-          {
-            const unsigned int sedi_age_position_tmp = this->introspection().compositional_index_for_name("sediment_age");
-            composition_mask.set(sedi_age_position_tmp,false);
-          }
-        if (this->introspection().compositional_name_exists("deposition_depth"))
-          {
-            const unsigned int depo_depth_position_tmp = this->introspection().compositional_index_for_name("deposition_depth");
-            composition_mask.set(depo_depth_position_tmp,false);
-          }
-#endif
-
         return composition_mask;
-      } */
+      }
 
 
 
@@ -671,24 +657,6 @@ namespace aspect
             // if they are to be used for all phases associated with a given key.
             options.check_values_per_key = true;
           }
-
-        // Make sure fields that track the age and deposition depth of deposited sediments
-        // do not have a chemical composition field type.
-#ifdef ASPECT_WITH_FASTSCAPE
-        if (this->introspection().compositional_name_exists("sediment_age"))
-          {
-            AssertThrow (chemical_field_names.find("sediment_age") == std::string::npos,
-                         ExcMessage("There is a field sediment_age that is of type chemical composition. "
-                                    "Please change it to type generic so that it does not affect material properties."));
-
-          }
-        if (this->introspection().compositional_name_exists("deposition_depth"))
-          {
-            AssertThrow(chemical_field_names.find("deposition_depth") != std::string::npos,
-                        ExcMessage("There is a field deposition_depth that is of type chemical composition. "
-                                   "Please change it to type generic so that it does not affect material properties."));
-          }
-#endif
 
         minimum_viscosity = Utilities::MapParsing::parse_map_to_double_array (prm.get("Minimum viscosity"),
                                                                               options);
