@@ -218,6 +218,27 @@ namespace aspect
             }
         }
 
+        // Several compositional fields are commonly used in conjunction with the FastScape plugin, i.e.
+        // "sediment_age" to track the age of the sediment deposited and "deposition_depth" to track the depth
+        // with respect to the unperturbed surface of the model domain. Their values are controlled by setting
+        // boundary conditions on the top boundary that is deformed by FastScape. While it is useful to track these
+        // fields, they are not necessary for any function in the FastScape plugin. If they exist however, we need
+        // to make sure that these fields to not have the type "chemical composition" and are therefore not taken
+        // into account when computing material properties.
+        const std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
+        if (this->introspection().compositional_name_exists("sediment_age"))
+        {
+          AssertThrow(chemical_field_names.find("sediment_age") == std::string::npos,
+                      ExcMessage("There is a field sediment_age that is of type chemical composition. "
+                                 "Please change it to type generic so that it does not affect material properties."));
+        }
+        if (this->introspection().compositional_name_exists("deposition_depth"))
+        {
+          AssertThrow(chemical_field_names.find("deposition_depth") != std::string::npos,
+                      ExcMessage("There is a field deposition_depth that is of type chemical composition. "
+                                 "Please change it to type generic so that it does not affect material properties."));
+        }
+
       // Initialize parameters for restarting FastScape
       restart = this->get_parameters().resume_computation;
 

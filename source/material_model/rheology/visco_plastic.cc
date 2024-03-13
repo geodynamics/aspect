@@ -492,7 +492,7 @@ namespace aspect
 
 
 
-      template <int dim>
+/*       template <int dim>
       ComponentMask
       ViscoPlastic<dim>::
       get_volumetric_composition_mask() const
@@ -521,7 +521,7 @@ namespace aspect
 #endif
 
         return composition_mask;
-      }
+      } */
 
 
 
