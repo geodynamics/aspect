@@ -309,7 +309,7 @@ namespace aspect
 
         /**
         * Flag for having FastScape advect/uplift the surface. If the free surface is used
-        * in conjuction with FastScape, this can be set to false, then FastScape will only
+        * in conjunction with FastScape, this can be set to false, then FastScape will only
         * apply erosion/deposition to the surface and not advect or uplift it.
         */
         bool fastscape_advection_uplift;
@@ -374,7 +374,7 @@ namespace aspect
         unsigned int left;
 
         /**
-         * Paramters that set the fastscape boundaries periodic even though the ghost nodes are set 'fixed'
+         * Parameters that set the fastscape boundaries periodic even though the ghost nodes are set 'fixed'
          */
         bool topbottom_ghost_nodes_periodic;
         bool leftright_ghost_nodes_periodic;

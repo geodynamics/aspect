@@ -91,7 +91,7 @@ Finally, we use a second Order Runge Kutta integrator to advect the particles.
 We run the model for 200 million years. In the first few tens of millions of years
 there are no large changes in the temperature structure, except that the
 thermal boundary layer increases slightly in thickness. In addition, the grain
-size evolves from its intially constant value, with the grain size being
+size evolves from its initially constant value, with the grain size being
 reduced due to deformation. This leads to a band of particularly low grain
 size in the lowermost part of the oceanic plate. Grain size is also reduced
 in the asthenesphere, but to a lesser degree.

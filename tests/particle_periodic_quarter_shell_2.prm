@@ -1,6 +1,6 @@
 # This test adapts tests/particle_periodic_quarter_shell.prm to test the particle
 # handling at periodic boundaries in the polar direction for a quarter
-# speherical shell geometry.
+# spherical shell geometry.
 # The velocity and the initial particle locations are prescribed so that we know
 # where particles should end up. The time step size is precribed in such a way
 # that particles at the outer boundary should move exactly half of a cell in

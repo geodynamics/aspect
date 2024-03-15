@@ -49,7 +49,7 @@ namespace aspect
      * fault boundaries and in continental regions at locations defined
      * by the the compositional field 'faults' or 'cratons', respectively.
      * The material model also allows the option to compute and use
-     * equilibirum grain size following paleowattmeter approximation
+     * equilibrium grain size following paleowattmeter approximation
      * by Austin and Evans, (2007), Paleowattmeters: "A scaling relation for
      * dynamically recrystallized grain size", Geology, 35, 343.
      * Other material parameters are either based on (1) an input tomography
@@ -246,9 +246,9 @@ namespace aspect
         std::vector<double> average_viscosity_profile;
 
         /**
-         * Variable returned  to determine if the evaluate () funciton is called and
+         * Variable returned  to determine if the evaluate () function is called and
          * viscosities are computed. Initially, it is set to false and then updated
-         * to true in the update () funciton.
+         * to true in the update () function.
          */
         bool initialized;
 
@@ -477,7 +477,7 @@ namespace aspect
         double lithosphere_thickness;
 
         /**
-         * Parameter used to decribe the uppermost mantle based on Tutu (2018).
+         * Parameter used to describe the uppermost mantle based on Tutu (2018).
          */
         double depth_to_base_of_uppermost_mantle;
 

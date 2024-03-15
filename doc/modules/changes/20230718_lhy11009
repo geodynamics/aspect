@@ -1,3 +1,3 @@
-Improved: The iteration scheme in the diffusion dislocation material model now uses the derivative of the logarithm of the strain rate to the logarithm of the stress. This improves efficiency and stablility of the iterative scheme. The parameter "Strain rate residual tolerance" now corresponds to the residual for the logarithm of the strain rate (which close to the solution corresponds to the relative residual).
+Improved: The iteration scheme in the diffusion dislocation material model now uses the derivative of the logarithm of the strain rate to the logarithm of the stress. This improves efficiency and stability of the iterative scheme. The parameter "Strain rate residual tolerance" now corresponds to the residual for the logarithm of the strain rate (which close to the solution corresponds to the relative residual).
 <br>
 (Haoyuan Li and Bob Myhill, 2023/07/18)

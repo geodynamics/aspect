@@ -10,7 +10,7 @@
 # 'band_angle_adaptive.csv' that contain the number of degrees of 
 # freedom for a given model, the standard deviation and the mean band
 # angle, which can be used to plot the convergence of the band angle
-# unsing the script 'plot_band_angle_dofs.py'. 
+# using the script 'plot_band_angle_dofs.py'. 
 
 import numpy as np
 import numpy.fft as fft

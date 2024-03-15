@@ -35,7 +35,7 @@ subsection Geometry model
 end
 
 # Mesh refinement specifications
-# AMR is not used since model X,Y repititions are defined.
+# AMR is not used since model X,Y repetitions are defined.
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0

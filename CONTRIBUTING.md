@@ -118,7 +118,7 @@ you can find it [here](https://sourceforge.net/projects/astyle/files/astyle/asty
 An easy way to install it is through using the following command in Linux (do not do this in the aspect directory):
 `mkdir astyle && cd astyle && wget 'https://sourceforge.net/projects/astyle/files/astyle/astyle 2.04/astyle_2.04_linux.tar.gz' && tar -zxvf astyle_2.04_linux.tar.gz && cd astyle/build/gcc && make && sudo make install`.
 This will create a new directory called astyle, download, unpack, compile and install it.
-When you add the bin direcoty to to your path, the indent command should find astyle.
+When you add the bin directory to to your path, the indent command should find astyle.
 
 ### Changelog entries
 
