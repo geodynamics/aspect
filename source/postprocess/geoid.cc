@@ -931,9 +931,6 @@ namespace aspect
       {
         prm.enter_subsection("Geoid");
         {
-          prm.declare_entry("Include the contributon from dynamic topography", "true",
-                            Patterns::Bool(),
-                            "Option to include the contribution from dynamic topography on geoid. The default is true.");
           prm.declare_entry("Include surface topography contribution", "true",
                             Patterns::Bool(),
                             "Option to include the contribution from surface topography on geoid. The default is true.");
@@ -952,7 +949,7 @@ namespace aspect
           prm.declare_entry("Output data in geographical coordinates", "false",
                             Patterns::Bool(),
                             "Option to output the geoid anomaly in geographical coordinates (latitude and longitude). "
-                            "The default is false, so postprocess will output the data in geocentric coordinates (x,y,z) as normally.");
+                            "The default is false, so the postprocessor will output the data in geocentric coordinates (x,y,z) as normally.");
           prm.declare_entry("Density above","0.",
                             Patterns::Double (0.),
                             "The density value above the surface boundary.");
@@ -962,7 +959,7 @@ namespace aspect
           prm.declare_entry("Output geoid anomaly coefficients", "false",
                             Patterns::Bool(),
                             "Option to output the spherical harmonic coefficients of the geoid anomaly up to the maximum degree. "
-                            "The default is false, so postprocess will only output the geoid anomaly in grid format. ");
+                            "The default is false, so the postprocessor will only output the geoid anomaly in grid format. ");
           prm.declare_entry("Output surface topography contribution coefficients", "false",
                             Patterns::Bool(),
                             "Option to output the spherical harmonic coefficients of the surface topography contribution "
@@ -1001,13 +998,6 @@ namespace aspect
       {
         prm.enter_subsection("Geoid");
         {
-          const bool include_topo_contribution = prm.get_bool ("Include the contributon from dynamic topography");
-
-          AssertThrow (include_topo_contribution == true,
-                       ExcMessage("The parameter 'Include the contributon from dynamic topography' has been "
-                                  " replaced by the two parameters 'Include surface topography contribution' and "
-                                  "'Include CMB topography contribution'. Please use them instead."));
-
           include_surface_topo_contribution = prm.get_bool ("Include surface topography contribution");
           include_CMB_topo_contribution = prm.get_bool ("Include CMB topography contribution");
           max_degree = prm.get_integer ("Maximum degree");
