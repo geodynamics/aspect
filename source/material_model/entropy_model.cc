@@ -306,7 +306,7 @@ namespace aspect
                              "The value of the angle of internal friction, $\\phi$."
                              "For a value of zero, in 2D the von Mises criterion is retrieved. "
                              "Angles higher than 30 degrees are harder to solve numerically."
-                             "Units: degrees (in radians).");
+                             "Units: degrees.");
           prm.declare_entry ("Cohesion", "1e20",
                              Patterns::Double (0.),
                              "The value of the cohesion, $C$. The extremely large default"
@@ -442,7 +442,7 @@ namespace aspect
                                                                        "Saturation prefactors");
           maximum_conductivity = prm.get_double ("Maximum thermal conductivity");
 
-          angle_of_internal_friction = prm.get_double("Angle of internal friction");
+          angle_of_internal_friction = prm.get_double ("Angle of internal friction") * constants::degree_to_radians;
           cohesion = prm.get_double("Cohesion");
 
           prm.leave_subsection();

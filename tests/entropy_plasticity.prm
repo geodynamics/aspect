@@ -31,7 +31,7 @@ subsection Material model
     set Minimum viscosity                = 1e12
     set Maximum lateral viscosity variation          = 2000
     set Cohesion                         = 8e7
-    set Angle of internal friction       = 0.01
+    set Angle of internal friction       = 0.572957795130823 # = 0.01 radians
   end
 
   subsection Depth dependent viscosity
