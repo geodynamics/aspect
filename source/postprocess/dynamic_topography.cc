@@ -365,9 +365,9 @@ namespace aspect
 
       // Possibly output the result to file.
       if (output_surface)
-        output_to_file(true, stored_values_surface);
+        output_to_file(top_boundary_id, stored_values_surface);
       if (output_bottom)
-        output_to_file(false, stored_values_bottom);
+        output_to_file(bottom_boundary_id, stored_values_bottom);
 
       return std::pair<std::string,std::string>("Computing dynamic topography", "");
     }
@@ -411,10 +411,13 @@ namespace aspect
      */
     template <int dim>
     void
-    DynamicTopography<dim>::output_to_file(const bool upper,
-                                           std::vector<std::pair<Point<dim>,
-                                           double>> &stored_values)
+    DynamicTopography<dim>::output_to_file(const types::boundary_id boundary_id,
+                                           const std::vector<std::pair<Point<dim>,double>> &stored_values)
     {
+      // get boundary name and avoid spaces for file output
+      std::string boundary_name = this->get_geometry_model().translate_id_to_symbol_name(boundary_id);
+      std::replace(boundary_name.begin(), boundary_name.end(), ' ', '_');
+
       std::ostringstream output;
 
       // On processor 0, write header lines
@@ -422,7 +425,7 @@ namespace aspect
         {
           output << "# "
                  << ((dim==2)? "x y " : "x y z ")
-                 << (upper ? "surface topography" : "bottom topography") << std::endl;
+                 << " heat_flux_" << boundary_name << std::endl;
         }
 
       for (unsigned int i=0; i<stored_values.size(); ++i)
@@ -436,7 +439,7 @@ namespace aspect
         }
 
       std::string filename = this->get_output_directory() +
-                             (upper ? "dynamic_topography_surface." : "dynamic_topography_bottom.") +
+                             "dynamic_topography_" + boundary_name + "." +
                              Utilities::int_to_string(this->get_timestep_number(), 5);
       if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
         filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));

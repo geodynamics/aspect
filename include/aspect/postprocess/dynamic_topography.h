@@ -88,7 +88,8 @@ namespace aspect
          * Output the dynamic topography solution to
          * a file.
          */
-        void output_to_file(bool upper, std::vector<std::pair<Point<dim>, double>> &values);
+        void output_to_file(const types::boundary_id boundary_id,
+                            const std::vector<std::pair<Point<dim>, double>> &values);
 
         /**
          * A vector which stores the surface stress values calculated

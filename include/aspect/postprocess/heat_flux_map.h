@@ -88,6 +88,13 @@ namespace aspect
          */
         std::pair<std::string,std::string>
         execute (TableHandler &statistics) override;
+
+      private:
+        /**
+         * Output the heat flux density to a file.
+         */
+        void output_to_file(const types::boundary_id boundary_id,
+                            const std::vector<std::vector<std::pair<double, double>>> &heat_flux_and_area);
     };
   }
 }
