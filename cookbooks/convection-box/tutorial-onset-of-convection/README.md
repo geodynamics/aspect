@@ -29,11 +29,11 @@ If you run in your local JupyterLab environment, note the following dependencies
  * ipympl
  * scipy
  * glob
- 
- 
- 
+
+
+
 ## Packages install
- 
+
 The heat flux slider requires the installation of two additional packages.
 
 **Adding Jupyter widgets**
@@ -43,5 +43,3 @@ You should have added this in Step 3 above:
 
 **Installing tables**
 > conda install tables
- 
- 
