@@ -19,7 +19,6 @@
 
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
-#include <array>
 
 namespace aspect
 {
@@ -27,6 +26,157 @@ namespace aspect
   {
     namespace Property
     {
+      namespace Utilities
+      {
+        /**
+         * Return an even permutation based on an index. This is an internal
+         * utilities function, also used by the unit tester.
+         */
+        std::array<unsigned int, 3>
+        indexed_even_permutation(const unsigned int index);
+
+        /**
+         * Computes the Voigt stiffness tensor from the elastic tensor.
+         * The Voigt stiffness tensor (see Browaeys and Chevrot, 2004)
+         * defines the stress needed to cause an isotropic strain in the
+         * material.
+         */
+        SymmetricTensor<2,3>
+        compute_voigt_stiffness_tensor(const SymmetricTensor<2,6> &elastic_tensor);
+
+        /**
+         * Computes the dilatation stiffness tensor from the elastic tensor
+         * The dilatational stiffness tensor (see Browaeys and Chevrot, 2004)
+         * defines the stress to cause isotropic dilatation in the material.
+         */
+        SymmetricTensor<2,3>
+        compute_dilatation_stiffness_tensor(const SymmetricTensor<2,6> &elastic_tensor);
+
+        /**
+         * Computes the Symmetry Cartesian Coordinate System (SCCS).
+         *
+         * This is based on Browaeys and Chevrot (2004), GJI (doi: 10.1111/j.1365-246X.2004.024115.x),
+         * which states at the end of paragraph 3.3 that "... an important property of an orthogonal projection
+         * is that the distance between a vector $X$ and its orthogonal projection $X_H = p(X)$ on a given
+         * subspace is minimum. These two features ensure that the decomposition is optimal once a 3-D Cartesian
+         * coordinate system is chosen.". The other property they talk about is that "The space of elastic
+         * vectors has a finite dimension [...], i.e. using a different norm from eq. 2.3 will change distances
+         * but not the resulting decomposition.".
+         *
+         * With the three SCCS directions, the elastic tensor can be decomposed into the different
+         * symmetries in those three SCCS direction, that is, triclinic, monoclinic, orthorhombic,
+         * tetragonal, hexagonal, and isotropic (Browaeys & Chevrot, 2004).
+         *
+         * The dilatation_stiffness_tensor defines the stress to cause isotropic dilatation in the material.
+         * The voigt_stiffness_tensor defines the stress needed to cause an isotropic strain in the material
+         */
+        Tensor<2,3> compute_unpermutated_SCCS(const SymmetricTensor<2,3> &dilatation_stiffness_tensor,
+                                              const SymmetricTensor<2,3> &voigt_stiffness_tensor);
+
+        /**
+         * Uses the Symmetry Cartesian Coordinate System (SCCS) to try the different permutations to
+         * determine what is the best projection.
+         * This is based on Browaeys and Chevrot (2004), GJI (doi: 10.1111/j.1365-246X.2004.024115.x),
+         * which states at the end of paragraph 3.3 that "... an important property of an orthogonal projection
+         * is that the distance between a vector $X$ and its orthogonal projection $X_H = p(X)$ on a given
+         * subspace is minimum. These two features ensure that the decomposition is optimal once a 3-D Cartesian
+         * coordinate system is chosen.". The other property they talk about is that "The space of elastic
+         * vectors has a finite dimension [...], i.e. using a different norm from eq. 2.3 will change distances
+         * but not the resulting decomposition.".
+         */
+        std::array<std::array<double,3>,7>
+        compute_elastic_tensor_SCCS_decompositions(
+          const Tensor<2,3> &unpermutated_SCCS,
+          const SymmetricTensor<2,6> &elastic_matrix);
+
+
+        /**
+         * The tensors below can be used to project matrices to different symmetries.
+         * See Browaeys and Chevrot, 2004.
+         */
+        static const SymmetricTensor<2,21> projection_matrix_triclinic_to_monoclinic(
+          Tensor<2,21>(
+        {
+          {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+          {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0},
+          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+        })
+        );
+        static const SymmetricTensor<2,9> projection_matrix_monoclinic_to_orthorhombic(
+          Tensor<2,9>(
+        {
+          {1,0,0,0,0,0,0,0,0},
+          {0,1,0,0,0,0,0,0,0},
+          {0,0,1,0,0,0,0,0,0},
+          {0,0,0,1,0,0,0,0,0},
+          {0,0,0,0,1,0,0,0,0},
+          {0,0,0,0,0,1,0,0,0},
+          {0,0,0,0,0,0,1,0,0},
+          {0,0,0,0,0,0,0,1,0},
+          {0,0,0,0,0,0,0,0,1}
+        })
+        );
+        static const SymmetricTensor<2,9> projection_matrix_orthorhombic_to_tetragonal(
+          Tensor<2,9>(
+        {
+          {0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
+          {0.5,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
+          {0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0},
+          {0.0,0.0,0.0,0.5,0.5,0.0,0.0,0.0,0.0},
+          {0.0,0.0,0.0,0.5,0.5,0.0,0.0,0.0,0.0},
+          {0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0},
+          {0.0,0.0,0.0,0.0,0.0,0.0,0.5,0.5,0.0},
+          {0.0,0.0,0.0,0.0,0.0,0.0,0.5,0.5,0.0},
+          {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0}
+        })
+        );
+        static const SymmetricTensor<2,9> projection_matrix_tetragonal_to_hexagonal(
+          Tensor<2,9>(
+        {
+          {3./8.           , 3./8.           , 0.0, 0.0, 0.0, 1./(4.*sqrt(2.))  , 0.0, 0.0, 1./4.            },
+          {3./8.           , 3./8.           , 0.0, 0.0, 0.0, 1./(4.*sqrt(2.))  , 0.0, 0.0, 1./4.            },
+          {0.0             , 0.0             , 1.0, 0.0, 0.0, 0.0               , 0.0, 0.0, 0.0              },
+          {0.0             , 0.0             , 0.0, 0.5, 0.5, 0.0               , 0.0, 0.0, 0.0              },
+          {0.0             , 0.0             , 0.0, 0.5, 0.5, 0.0               , 0.0, 0.0, 0.0              },
+          {1./(4.*sqrt(2.)), 1./(4.*sqrt(2.)), 0.0, 0.0, 0.0, 3./4.             , 0.0, 0.0, -1./(2.*sqrt(2.))},
+          {0.0             , 0.0             , 0.0, 0.0, 0.0, 0.0               , 0.5, 0.5, 0.0              },
+          {0.0             , 0.0             , 0.0, 0.0, 0.0, 0.0               , 0.5, 0.5, 0.0              },
+          {1./4.           , 1./4.           , 0.0, 0.0, 0.0, -1./(2.*sqrt(2.)) , 0.0, 0.0, 0.5              }
+        })
+        );
+        static const SymmetricTensor<2,9> projection_matrix_hexagonal_to_isotropic(
+          Tensor<2,9>(
+        {
+          {3./15.      , 3./15.      , 3./15.      , sqrt(2.)/15. , sqrt(2.)/15. , sqrt(2.)/15. , 2./15.       , 2./15.       , 2./15.        },
+          {3./15.      , 3./15.      , 3./15.      , sqrt(2.)/15. , sqrt(2.)/15. , sqrt(2.)/15. , 2./15.       , 2./15.       , 2./15.        },
+          {3./15.      , 3./15.      , 3./15.      , sqrt(2.)/15. , sqrt(2.)/15. , sqrt(2.)/15. , 2./15.       , 2./15.       , 2./15.        },
+          {sqrt(2.)/15., sqrt(2.)/15., sqrt(2.)/15., 4./15.       , 4./15.       , 4./15.       , -sqrt(2.)/15., -sqrt(2.)/15., -sqrt(2.)/15. },
+          {sqrt(2.)/15., sqrt(2.)/15., sqrt(2.)/15., 4./15.       , 4./15.       , 4./15.       , -sqrt(2.)/15., -sqrt(2.)/15., -sqrt(2.)/15. },
+          {sqrt(2.)/15., sqrt(2.)/15., sqrt(2.)/15., 4./15.       , 4./15.       , 4./15.       , -sqrt(2.)/15., -sqrt(2.)/15., -sqrt(2.)/15. },
+          {2./15.      , 2./15.      , 2./15.      , -sqrt(2.)/15., -sqrt(2.)/15., -sqrt(2.)/15., 1./5.        , 1./5.        , 1./5.         },
+          {2./15.      , 2./15.      , 2./15.      , -sqrt(2.)/15., -sqrt(2.)/15., -sqrt(2.)/15., 1./5.        , 1./5.        , 1./5.         },
+          {2./15.      , 2./15.      , 2./15.      , -sqrt(2.)/15., -sqrt(2.)/15., -sqrt(2.)/15., 1./5.        , 1./5.        , 1./5.         }
+        })
+        );
+      }
 
       /**
        * Computes several properties of a elastic tensor stored on a particle.
@@ -101,72 +251,6 @@ namespace aspect
           need_update () const override;
 
           /**
-           * Return an even permutation based on an index. This is an internal
-           * utility function, also used by the unit tester.
-           */
-          static
-          std::array<unsigned short int, 3>
-          indexed_even_permutation(const unsigned short int index);
-
-          /**
-           * Computes the voigt stiffness tensor from the elastic tensor.
-          * the Voigt stiffness tensor (see Browaeys and chevrot, 2004)
-          * defines the stress needed to cause an isotropic strain in the
-          * material
-           */
-          static
-          SymmetricTensor<2,3>
-          compute_voigt_stiffness_tensor(const SymmetricTensor<2,6> &elastic_tensor);
-
-          /**
-           * Computes the dilatation stiffness tensor from the elastic tensor
-          * The dilatational stiffness tensor (see Browaeys and Chevrot, 2004)
-          * defines the stress to cause isotropic dilatation in the material.
-           */
-          static
-          SymmetricTensor<2,3>
-          compute_dilatation_stiffness_tensor(const SymmetricTensor<2,6> &elastic_tensor);
-
-          /**
-           * Computes the Symmetry Cartesian Coordinate System (SCCS).
-           *
-           * This is based on Browaeys and Chevrot (2004), GJI (doi: 10.1111/j.1365-246X.2004.024115.x),
-           * which states at the end of paragraph 3.3 that "... an important property of an orthogonal projection
-           * is that the distance between a vector $X$ and its orthogonal projection $X_H = p(X)$ on a given
-           * subspace is minimum. These two features ensure that the decomposition is optimal once a 3-D Cartesian
-           * coordinate system is chosen.". The other property they talk about is that "The space of elastic
-           * vectors has a finite dimension [...], i.e. using a different norm from eq. 2.3 will change distances
-           * but not the resulting decomposition.".
-           *
-           * With the three SCCS directions, the elastic tensor can be decomposed into the different
-           * symmetries in those three SCCS direction, that is, triclinic, monoclinic, orthorhombic,
-           * tetragonal, hexagonal, and isotropic (Browaeys & Chevrot, 2004).
-           *
-           * The dilatation_stiffness_tensor defines the stress to cause isotropic dilatation in the material.
-           * The voigt_stiffness_tensor defines the stress needed to cause an isotropic strain in the material
-           */
-          static
-          Tensor<2,3> compute_unpermutated_SCCS(const SymmetricTensor<2,3> &dilatation_stiffness_tensor,
-                                                const SymmetricTensor<2,3> &voigt_stiffness_tensor);
-
-          /**
-           * Uses the Symmetry Cartesian Coordinate System (SCCS) to try the different permutations to
-           * determine what is the best projections.
-           * This is based on Browaeys and Chevrot (2004), GJI (doi: 10.1111/j.1365-246X.2004.024115.x),
-           * which states at the end of paragraph 3.3 that "... an important property of an orthogonal projection
-           * is that the distance between a vector $X$ and its orthogonal projection $X_H = p(X)$ on a given
-           * subspace is minimum. These two features ensure that the decomposition is optimal once a 3-D Cartesian
-           * coordinate system is chosen.". The other property they talk about is that "The space of elastic
-           * vectors has a finite dimension [...], i.e. using a different norm from eq. 2.3 will change distances
-           * but not the resulting decomposition.".
-           */
-          static
-          std::array<std::array<double,3>,7>
-          compute_elastic_tensor_SCCS_decompositions(
-            const Tensor<2,3> &unpermutated_SCCS,
-            const SymmetricTensor<2,6> &elastic_matrix);
-
-          /**
            * Set up the information about the names and number of components
            * this property requires.
            *
@@ -176,31 +260,7 @@ namespace aspect
           std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const override;
 
-          /**
-           * Declare parameters
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Parse parameters
-           */
-          void
-          parse_parameters (ParameterHandler &prm) override;
-
-
-          /**
-           * The tensors below can be used to project matrices to different symmetries.
-           */
-          static SymmetricTensor<2,21> projection_matrix_tric_to_mono;
-          static SymmetricTensor<2,9> projection_matrix_mono_to_ortho;
-          static SymmetricTensor<2,9> projection_matrix_ortho_to_tetra;
-          static SymmetricTensor<2,9> projection_matrix_tetra_to_hexa;
-          static SymmetricTensor<2,9> projection_matrix_hexa_to_iso;
-
         private:
-          unsigned int cpo_data_position;
           unsigned int cpo_elastic_tensor_data_position;
       };
     }

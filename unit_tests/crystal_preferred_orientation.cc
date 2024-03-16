@@ -23,6 +23,7 @@
 #include <aspect/particle/property/crystal_preferred_orientation.h>
 #include <aspect/particle/property/cpo_elastic_tensor.h>
 #include <deal.II/base/parameter_handler.h>
+#include <aspect/utilities.h>
 
 
 /**
@@ -1456,6 +1457,7 @@ TEST_CASE("LPO elastic tensor decomposition")
 {
   using namespace dealii;
   using namespace aspect::Particle::Property;
+  using namespace aspect::Particle::Property::Utilities;
   {
     auto elastic_composition_class = ElasticTensorDecomposition<3>();
 
@@ -1514,9 +1516,9 @@ TEST_CASE("LPO elastic tensor decomposition")
     const Tensor<1,21> reference_T_vector = aspect::Utilities::Tensors::to_voigt_stiffness_vector(reference_T_matrix);
     const Tensor<1,21> reference_O_vector = aspect::Utilities::Tensors::to_voigt_stiffness_vector(reference_O_matrix);
 
-    // this matrix is alreay in the SCCSS, so no rotation needed, only the  projection.
+    // this matrix is already in the SCCSS, so no rotation needed, only the  projection.
     CHECK(full_elastic_vector.norm_square() == Approx(198012.0));
-    const Tensor<1,21> mono_and_higher_vector = ElasticTensorDecomposition<3>::projection_matrix_tric_to_mono * full_elastic_vector;
+    const Tensor<1,21> mono_and_higher_vector = aspect::Particle::Property::Utilities::projection_matrix_triclinic_to_monoclinic * full_elastic_vector;
     const Tensor<1,21> tric_vector = full_elastic_vector-mono_and_higher_vector;
     for (size_t iii = 0; iii < 21; iii++)
       {
@@ -1534,7 +1536,7 @@ TEST_CASE("LPO elastic tensor decomposition")
     mono_and_higher_vector_croped[6] = mono_and_higher_vector[6];
     mono_and_higher_vector_croped[7] = mono_and_higher_vector[7];
     mono_and_higher_vector_croped[8] = mono_and_higher_vector[8];
-    const Tensor<1,9> ortho_and_higher_vector = ElasticTensorDecomposition<3>::projection_matrix_mono_to_ortho*mono_and_higher_vector_croped;
+    const Tensor<1,9> ortho_and_higher_vector = aspect::Particle::Property::Utilities::projection_matrix_monoclinic_to_orthorhombic*mono_and_higher_vector_croped;
     const Tensor<1,9> mono_vector = mono_and_higher_vector_croped-ortho_and_higher_vector;
     for (size_t iii = 0; iii < 9; iii++)
       {
@@ -1542,7 +1544,7 @@ TEST_CASE("LPO elastic tensor decomposition")
       }
     CHECK(mono_vector.norm_square() == Approx(0.0));
 
-    const Tensor<1,9> tetra_and_higher_vector = ElasticTensorDecomposition<3>::projection_matrix_ortho_to_tetra*ortho_and_higher_vector;
+    const Tensor<1,9> tetra_and_higher_vector = aspect::Particle::Property::Utilities::projection_matrix_orthorhombic_to_tetragonal*ortho_and_higher_vector;
     const Tensor<1,9> ortho_vector = ortho_and_higher_vector-tetra_and_higher_vector;
     for (size_t iii = 0; iii < 9; iii++)
       {
@@ -1550,7 +1552,7 @@ TEST_CASE("LPO elastic tensor decomposition")
       }
     CHECK(ortho_vector.norm_square() == Approx(536.0));
 
-    const Tensor<1,9> hexa_and_higher_vector = ElasticTensorDecomposition<3>::projection_matrix_tetra_to_hexa*tetra_and_higher_vector;
+    const Tensor<1,9> hexa_and_higher_vector = aspect::Particle::Property::Utilities::projection_matrix_tetragonal_to_hexagonal*tetra_and_higher_vector;
     const Tensor<1,9> tetra_vector = tetra_and_higher_vector-hexa_and_higher_vector;
     for (size_t iii = 0; iii < 9; iii++)
       {
@@ -1558,7 +1560,7 @@ TEST_CASE("LPO elastic tensor decomposition")
       }
     CHECK(tetra_vector.norm_square() == Approx(72.0));
 
-    const Tensor<1,9> iso_vector = ElasticTensorDecomposition<3>::projection_matrix_hexa_to_iso*hexa_and_higher_vector;
+    const Tensor<1,9> iso_vector = aspect::Particle::Property::Utilities::projection_matrix_hexagonal_to_isotropic*hexa_and_higher_vector;
     for (size_t iii = 0; iii < 9; iii++)
       {
         // something weird is going on with the approx, somehow without a very large
@@ -1670,7 +1672,7 @@ TEST_CASE("LPO elastic tensor decomposition")
     reference_rotated_elastic_matrix[4][4] = 5.61;
     reference_rotated_elastic_matrix[5][5] = 4.52;
 
-    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = ElasticTensorDecomposition<3>::compute_dilatation_stiffness_tensor(full_elastic_matrix);
+    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_dilatation_stiffness_tensor(full_elastic_matrix);
     for (size_t iii = 0; iii < 3; iii++)
       {
         for (size_t jjj = 0; jjj < 3; jjj++)
@@ -1679,7 +1681,7 @@ TEST_CASE("LPO elastic tensor decomposition")
           }
       }
 
-    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = ElasticTensorDecomposition<3>::compute_voigt_stiffness_tensor(full_elastic_matrix);
+    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_voigt_stiffness_tensor(full_elastic_matrix);
     for (size_t iii = 0; iii < 3; iii++)
       {
         for (size_t jjj = 0; jjj < 3; jjj++)
@@ -1687,7 +1689,7 @@ TEST_CASE("LPO elastic tensor decomposition")
             CHECK(reference_voigt_matrix[iii][jjj] == Approx(voigt_stiffness_tensor_full[iii][jjj]));
           }
       }
-    Tensor<2,3> unpermutated_SCCS = ElasticTensorDecomposition<3>::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+    Tensor<2,3> unpermutated_SCCS = aspect::Particle::Property::Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
     for (size_t iii = 0; iii < 3; iii++)
       {
         const double epsilon = 1e-3;
@@ -1701,11 +1703,11 @@ TEST_CASE("LPO elastic tensor decomposition")
       }
     // chose the permutation which fits the solution given in the paper.
     // This is not a even permutation.
-    std::array<unsigned short int, 3> perumation = {{2,1,0}};
+    std::array<unsigned int, 3> permutation = {{2,1,0}};
     Tensor<2,3> permutated_SCCS;
     for (size_t j = 0; j < 3; j++)
       {
-        permutated_SCCS[j] = unpermutated_SCCS[perumation[j]];
+        permutated_SCCS[j] = unpermutated_SCCS[permutation[j]];
       }
     SymmetricTensor<2,6> rotated_elastic_matrix = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(permutated_SCCS,full_elastic_matrix);
 
@@ -1736,10 +1738,10 @@ TEST_CASE("LPO elastic tensor decomposition")
     std::array<std::array<double,3>,7 > reference_norms;
     reference_norms[0] = {{0,0,0}}; // no triclinic
     reference_norms[1] = {{0,0,0}}; // no monoclinic
-    reference_norms[2] = {{12822.0,0,12822.0}}; // orthorhomic depedent on direction (remember, this is basically just one grain)
+    reference_norms[2] = {{12822.0,0,12822.0}}; // orthorhomic dependent on direction (remember, this is basically just one grain)
     reference_norms[3] = {{1568.0,8712.0,1568.0}}; // tetragonal could be present
     reference_norms[4] = {{2759.3333333333,8437.3333333333,2759.3333333333}}; // hexagonal is expected
-    reference_norms[5] = {{247182.6666666667,247182.6666666667,247182.6666666667}}; // isotropic should be the same for every permuation
+    reference_norms[5] = {{247182.6666666667,247182.6666666667,247182.6666666667}}; // isotropic should be the same for every permutation
     reference_norms[6] = {{264332.0,264332.0,264332.0}}; // total should be the same for every direction
 
     // It is already in a SCCS frame, so they should be
@@ -1755,8 +1757,8 @@ TEST_CASE("LPO elastic tensor decomposition")
     reference_unpermutated_SCCS[2][1] = 1;
     reference_unpermutated_SCCS[2][2] = 0;
 
-    // Permuation 2 has the heighest norm, so reference_unpermutated_SCCS
-    // is permuated by {1,2,0};
+    // Permutation 2 has the highest norm, so reference_unpermutated_SCCS
+    // is permutated by {1,2,0};
     Tensor<2,3> reference_hexa_permutated_SCCS;
     reference_hexa_permutated_SCCS[0][0] = 1;
     reference_hexa_permutated_SCCS[0][1] = 0;
@@ -1768,9 +1770,9 @@ TEST_CASE("LPO elastic tensor decomposition")
     reference_hexa_permutated_SCCS[2][1] = 0;
     reference_hexa_permutated_SCCS[2][2] = 1;
 
-    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = ElasticTensorDecomposition<3>::compute_dilatation_stiffness_tensor(full_elastic_matrix);
-    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = ElasticTensorDecomposition<3>::compute_voigt_stiffness_tensor(full_elastic_matrix);
-    Tensor<2,3> unpermutated_SCCS = ElasticTensorDecomposition<3>::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_dilatation_stiffness_tensor(full_elastic_matrix);
+    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_voigt_stiffness_tensor(full_elastic_matrix);
+    Tensor<2,3> unpermutated_SCCS = aspect::Particle::Property::Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
     for (size_t iii = 0; iii < 3; iii++)
       {
         const double epsilon = 1e-3;
@@ -1783,7 +1785,7 @@ TEST_CASE("LPO elastic tensor decomposition")
                    && reference_unpermutated_SCCS[iii][1] == Approx(-unpermutated_SCCS[iii][1]).epsilon(epsilon)
                    && reference_unpermutated_SCCS[iii][2] == Approx(-unpermutated_SCCS[iii][2]).epsilon(epsilon))));
       }
-    std::array<std::array<double,3>,7 > norms = ElasticTensorDecomposition<3>::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
+    std::array<std::array<double,3>,7 > norms = aspect::Particle::Property::Utilities::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
     std::array<double,3> totals = {{0,0,0}};
     for (size_t iii = 0; iii < 7; iii++)
       {
@@ -1813,11 +1815,11 @@ TEST_CASE("LPO elastic tensor decomposition")
       }
 
     const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
-    std::array<unsigned short int, 3> perumation = ElasticTensorDecomposition<3>::indexed_even_permutation(max_hexagonal_element_index);
+    std::array<unsigned int, 3> permutation = aspect::Particle::Property::Utilities::indexed_even_permutation(max_hexagonal_element_index);
     Tensor<2,3> hexa_permutated_SCCS;
     for (size_t index = 0; index < 3; index++)
       {
-        hexa_permutated_SCCS[index] = unpermutated_SCCS[perumation[index]];
+        hexa_permutated_SCCS[index] = unpermutated_SCCS[permutation[index]];
       }
     for (size_t iii = 0; iii < 3; iii++)
       {
@@ -1851,10 +1853,10 @@ TEST_CASE("LPO elastic tensor decomposition")
     std::array<std::array<double,3>,7 > reference_norms;
     reference_norms[0] = {{0,0,0}}; // no triclinic
     reference_norms[1] = {{0,0,0}}; // no monoclinic
-    reference_norms[2] = {{453.5,1044.0,1113.5}}; // orthorhomic depedent on direction
+    reference_norms[2] = {{453.5,1044.0,1113.5}}; // orthorhomic dependent on direction
     reference_norms[3] = {{91.125,84.5,595.125}}; // tetragonal could be present
     reference_norms[4] = {{1350.175,766.3,186.175}}; // hexagonal is expected
-    reference_norms[5] = {{222364.2,222364.2,222364.2}}; // isotropic should be the same for every permuation
+    reference_norms[5] = {{222364.2,222364.2,222364.2}}; // isotropic should be the same for every permutation
     reference_norms[6] = {{224259.0,224259.0,224259.0}}; // total should be the same for every direction
 
     // It is already in a SCCS frame, so they should be
@@ -1870,8 +1872,8 @@ TEST_CASE("LPO elastic tensor decomposition")
     reference_unpermutated_SCCS[2][1] = 0;
     reference_unpermutated_SCCS[2][2] = 1;
 
-    // Permuation 1 has the heighest norm, so reference_unpermutated_SCCS
-    // is permuated by {0,1,2};
+    // Permutation 1 has the highest norm, so reference_unpermutated_SCCS
+    // is permutated by {0,1,2};
     Tensor<2,3> reference_hexa_permutated_SCCS;
     reference_hexa_permutated_SCCS[0][0] = 1;
     reference_hexa_permutated_SCCS[0][1] = 0;
@@ -1883,9 +1885,9 @@ TEST_CASE("LPO elastic tensor decomposition")
     reference_hexa_permutated_SCCS[2][1] = 0;
     reference_hexa_permutated_SCCS[2][2] = 1;
 
-    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = ElasticTensorDecomposition<3>::compute_dilatation_stiffness_tensor(full_elastic_matrix);
-    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = ElasticTensorDecomposition<3>::compute_voigt_stiffness_tensor(full_elastic_matrix);
-    Tensor<2,3> unpermutated_SCCS = ElasticTensorDecomposition<3>::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_dilatation_stiffness_tensor(full_elastic_matrix);
+    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_voigt_stiffness_tensor(full_elastic_matrix);
+    Tensor<2,3> unpermutated_SCCS = aspect::Particle::Property::Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
     for (size_t iii = 0; iii < 3; iii++)
       {
         const double epsilon = 1e-3;
@@ -1898,7 +1900,7 @@ TEST_CASE("LPO elastic tensor decomposition")
                    && reference_unpermutated_SCCS[iii][1] == Approx(-unpermutated_SCCS[iii][1]).epsilon(epsilon)
                    && reference_unpermutated_SCCS[iii][2] == Approx(-unpermutated_SCCS[iii][2]).epsilon(epsilon))));
       }
-    std::array<std::array<double,3>,7 > norms = ElasticTensorDecomposition<3>::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
+    std::array<std::array<double,3>,7 > norms = aspect::Particle::Property::Utilities::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
     std::array<double,3> totals = {{0,0,0}};
     for (size_t iii = 0; iii < 7; iii++)
       {
@@ -1928,11 +1930,11 @@ TEST_CASE("LPO elastic tensor decomposition")
       }
 
     const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
-    std::array<unsigned short int, 3> perumation = ElasticTensorDecomposition<3>::indexed_even_permutation(max_hexagonal_element_index);
+    std::array<unsigned int, 3> permutation = aspect::Particle::Property::Utilities::indexed_even_permutation(max_hexagonal_element_index);
     Tensor<2,3> hexa_permutated_SCCS;
     for (size_t index = 0; index < 3; index++)
       {
-        hexa_permutated_SCCS[index] = unpermutated_SCCS[perumation[index]];
+        hexa_permutated_SCCS[index] = unpermutated_SCCS[permutation[index]];
       }
     for (size_t iii = 0; iii < 3; iii++)
       {
@@ -1967,10 +1969,10 @@ TEST_CASE("LPO elastic tensor decomposition")
     std::array<std::array<double,3>,7 > reference_norms;
     reference_norms[0] = {{0,0,0}}; // no triclinic
     reference_norms[1] = {{0,0,0}}; // no monoclinic
-    reference_norms[2] = {{4181.95385,689.94905,8020.4222}}; // orthorhomic depedent on direction
+    reference_norms[2] = {{4181.95385,689.94905,8020.4222}}; // orthorhomic dependent on direction
     reference_norms[3] = {{1298.2060125,90.3840125,525.5282}}; // tetragonal could be present
     reference_norms[4] = {{4364.6051908333,9064.4319908333,1298.8146533333}}; // hexagonal is expected
-    reference_norms[5] = {{282871.5975466666,282871.5975466666,282871.5975466666}}; // isotropic should be the same for every permuation
+    reference_norms[5] = {{282871.5975466666,282871.5975466666,282871.5975466666}}; // isotropic should be the same for every permutation
     reference_norms[6] = {{292716.3626,292716.3626,292716.3626}}; // total should be the same for every direction
 
     // It is already in a SCCS frame, so they should be
@@ -1986,8 +1988,8 @@ TEST_CASE("LPO elastic tensor decomposition")
     reference_unpermutated_SCCS[2][1] = 1;
     reference_unpermutated_SCCS[2][2] = 0;
 
-    // Permuation 2 has the heighest norm, so reference_unpermutated_SCCS
-    // is permuated by {1,2,0};
+    // Permutation 2 has the highest norm, so reference_unpermutated_SCCS
+    // is permutated by {1,2,0};
     Tensor<2,3> reference_hexa_permutated_SCCS;
     reference_hexa_permutated_SCCS[0][0] = 0;
     reference_hexa_permutated_SCCS[0][1] = 0;
@@ -1999,9 +2001,9 @@ TEST_CASE("LPO elastic tensor decomposition")
     reference_hexa_permutated_SCCS[2][1] = 0;
     reference_hexa_permutated_SCCS[2][2] = 0;
 
-    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = ElasticTensorDecomposition<3>::compute_dilatation_stiffness_tensor(full_elastic_matrix);
-    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = ElasticTensorDecomposition<3>::compute_voigt_stiffness_tensor(full_elastic_matrix);
-    Tensor<2,3> unpermutated_SCCS = ElasticTensorDecomposition<3>::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_dilatation_stiffness_tensor(full_elastic_matrix);
+    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_voigt_stiffness_tensor(full_elastic_matrix);
+    Tensor<2,3> unpermutated_SCCS = aspect::Particle::Property::Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
     for (size_t iii = 0; iii < 3; iii++)
       {
         const double epsilon = 1e-3;
@@ -2014,7 +2016,7 @@ TEST_CASE("LPO elastic tensor decomposition")
                    && reference_unpermutated_SCCS[iii][1] == Approx(-unpermutated_SCCS[iii][1]).epsilon(epsilon)
                    && reference_unpermutated_SCCS[iii][2] == Approx(-unpermutated_SCCS[iii][2]).epsilon(epsilon))));
       }
-    std::array<std::array<double,3>,7 > norms = ElasticTensorDecomposition<3>::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
+    std::array<std::array<double,3>,7 > norms = aspect::Particle::Property::Utilities::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
     std::array<double,3> totals = {{0,0,0}};
     for (size_t iii = 0; iii < 7; iii++)
       {
@@ -2044,11 +2046,11 @@ TEST_CASE("LPO elastic tensor decomposition")
       }
 
     const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
-    std::array<unsigned short int, 3> perumation = ElasticTensorDecomposition<3>::indexed_even_permutation(max_hexagonal_element_index);
+    std::array<unsigned int, 3> permutation = aspect::Particle::Property::Utilities::indexed_even_permutation(max_hexagonal_element_index);
     Tensor<2,3> hexa_permutated_SCCS;
     for (size_t index = 0; index < 3; index++)
       {
-        hexa_permutated_SCCS[index] = unpermutated_SCCS[perumation[index]];
+        hexa_permutated_SCCS[index] = unpermutated_SCCS[permutation[index]];
       }
     for (size_t iii = 0; iii < 3; iii++)
       {
@@ -2083,10 +2085,10 @@ TEST_CASE("LPO elastic tensor decomposition")
     std::array<std::array<double,3>,7 > reference_norms;
     reference_norms[0] = {{0,0,0}}; // no triclinic
     reference_norms[1] = {{0,0,0}}; // no monoclinic
-    reference_norms[2] = {{576.245,1514.945,1679.46}}; // orthorhomic depedent on direction
+    reference_norms[2] = {{576.245,1514.945,1679.46}}; // orthorhomic dependent on direction
     reference_norms[3] = {{67.86125,199.00125,483.605}}; // tetragonal could be present
     reference_norms[4] = {{2076.64175,1006.80175,557.683}}; // hexagonal is expected
-    reference_norms[5] = {{245485.992,245485.992,245485.992}}; // isotropic should be the same for every permuation
+    reference_norms[5] = {{245485.992,245485.992,245485.992}}; // isotropic should be the same for every permutation
     reference_norms[6] = {{248206.74,248206.74,248206.74}}; // total should be the same for every direction
 
     // It is already in a SCCS frame, so they should be
@@ -2102,8 +2104,8 @@ TEST_CASE("LPO elastic tensor decomposition")
     reference_unpermutated_SCCS[2][1] = 1;
     reference_unpermutated_SCCS[2][2] = 0;
 
-    // Permuation 1 has the heighest norm, so reference_unpermutated_SCCS
-    // is permuated by {0,1,2};
+    // Permutation 1 has the highest norm, so reference_unpermutated_SCCS
+    // is permutated by {0,1,2};
     Tensor<2,3> reference_hexa_permutated_SCCS;
     reference_hexa_permutated_SCCS[0][0] = 1;
     reference_hexa_permutated_SCCS[0][1] = 0;
@@ -2115,9 +2117,9 @@ TEST_CASE("LPO elastic tensor decomposition")
     reference_hexa_permutated_SCCS[2][1] = 1;
     reference_hexa_permutated_SCCS[2][2] = 0;
 
-    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = ElasticTensorDecomposition<3>::compute_dilatation_stiffness_tensor(full_elastic_matrix);
-    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = ElasticTensorDecomposition<3>::compute_voigt_stiffness_tensor(full_elastic_matrix);
-    Tensor<2,3> unpermutated_SCCS = ElasticTensorDecomposition<3>::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_dilatation_stiffness_tensor(full_elastic_matrix);
+    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_voigt_stiffness_tensor(full_elastic_matrix);
+    Tensor<2,3> unpermutated_SCCS = aspect::Particle::Property::Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
     for (size_t iii = 0; iii < 3; iii++)
       {
         const double epsilon = 1e-3;
@@ -2130,7 +2132,7 @@ TEST_CASE("LPO elastic tensor decomposition")
                    && reference_unpermutated_SCCS[iii][1] == Approx(-unpermutated_SCCS[iii][1]).epsilon(epsilon)
                    && reference_unpermutated_SCCS[iii][2] == Approx(-unpermutated_SCCS[iii][2]).epsilon(epsilon))));
       }
-    std::array<std::array<double,3>,7 > norms = ElasticTensorDecomposition<3>::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
+    std::array<std::array<double,3>,7 > norms = aspect::Particle::Property::Utilities::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
     std::array<double,3> totals = {{0,0,0}};
     for (size_t iii = 0; iii < 7; iii++)
       {
@@ -2161,11 +2163,11 @@ TEST_CASE("LPO elastic tensor decomposition")
 
 
     const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
-    std::array<unsigned short int, 3> perumation = ElasticTensorDecomposition<3>::indexed_even_permutation(max_hexagonal_element_index);
+    std::array<unsigned int, 3> permutation = aspect::Particle::Property::Utilities::indexed_even_permutation(max_hexagonal_element_index);
     Tensor<2,3> hexa_permutated_SCCS;
     for (size_t index = 0; index < 3; index++)
       {
-        hexa_permutated_SCCS[index] = unpermutated_SCCS[perumation[index]];
+        hexa_permutated_SCCS[index] = unpermutated_SCCS[permutation[index]];
       }
     for (size_t iii = 0; iii < 3; iii++)
       {
@@ -2202,10 +2204,10 @@ TEST_CASE("LPO elastic tensor decomposition")
     std::array<std::array<double,3>,7 > reference_norms;
     reference_norms[0] = {{0,0,0}}; // no triclinic
     reference_norms[1] = {{0,0,0}}; // no monoclinic
-    reference_norms[2] = {{16161.695,0.0,16161.695}}; // orthorhomic depedent on direction
+    reference_norms[2] = {{16161.695,0.0,16161.695}}; // orthorhomic dependent on direction
     reference_norms[3] = {{2786.31125,1425.78,2786.31125}}; // tetragonal could be present
     reference_norms[4] = {{8079.22575,25601.452,8079.22575}}; // hexagonal is expected
-    reference_norms[5] = {{421517.088,421517.088,421517.088}}; // isotropic should be the same for every permuation
+    reference_norms[5] = {{421517.088,421517.088,421517.088}}; // isotropic should be the same for every permutation
     reference_norms[6] = {{448544.32,448544.32,448544.32}}; // total should be the same for every direction
 
     // It is already in a SCCS frame, so they should be
@@ -2221,8 +2223,8 @@ TEST_CASE("LPO elastic tensor decomposition")
     reference_unpermutated_SCCS[2][1] = 1;
     reference_unpermutated_SCCS[2][2] = 0;
 
-    // Permuation 2 has the heighest norm, so reference_unpermutated_SCCS
-    // is permuated by {1,2,0};
+    // Permutation 2 has the highest norm, so reference_unpermutated_SCCS
+    // is permutated by {1,2,0};
     Tensor<2,3> reference_hexa_permutated_SCCS;
     reference_hexa_permutated_SCCS[0][0] = 1;
     reference_hexa_permutated_SCCS[0][1] = 0;
@@ -2234,9 +2236,9 @@ TEST_CASE("LPO elastic tensor decomposition")
     reference_hexa_permutated_SCCS[2][1] = 0;
     reference_hexa_permutated_SCCS[2][2] = 1;
 
-    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = ElasticTensorDecomposition<3>::compute_dilatation_stiffness_tensor(full_elastic_matrix);
-    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = ElasticTensorDecomposition<3>::compute_voigt_stiffness_tensor(full_elastic_matrix);
-    Tensor<2,3> unpermutated_SCCS = ElasticTensorDecomposition<3>::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_dilatation_stiffness_tensor(full_elastic_matrix);
+    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_voigt_stiffness_tensor(full_elastic_matrix);
+    Tensor<2,3> unpermutated_SCCS = aspect::Particle::Property::Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
     for (size_t iii = 0; iii < 3; iii++)
       {
         const double epsilon = 1e-3;
@@ -2249,7 +2251,7 @@ TEST_CASE("LPO elastic tensor decomposition")
                    && reference_unpermutated_SCCS[iii][1] == Approx(-unpermutated_SCCS[iii][1]).epsilon(epsilon)
                    && reference_unpermutated_SCCS[iii][2] == Approx(-unpermutated_SCCS[iii][2]).epsilon(epsilon))));
       }
-    std::array<std::array<double,3>,7 > norms = ElasticTensorDecomposition<3>::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
+    std::array<std::array<double,3>,7 > norms = aspect::Particle::Property::Utilities::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
     std::array<double,3> totals = {{0,0,0}};
     for (size_t iii = 0; iii < 7; iii++)
       {
@@ -2280,11 +2282,11 @@ TEST_CASE("LPO elastic tensor decomposition")
 
 
     const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
-    std::array<unsigned short int, 3> perumation = ElasticTensorDecomposition<3>::indexed_even_permutation(max_hexagonal_element_index);
+    std::array<unsigned int, 3> permutation = aspect::Particle::Property::Utilities::indexed_even_permutation(max_hexagonal_element_index);
     Tensor<2,3> hexa_permutated_SCCS;
     for (size_t index = 0; index < 3; index++)
       {
-        hexa_permutated_SCCS[index] = unpermutated_SCCS[perumation[index]];
+        hexa_permutated_SCCS[index] = unpermutated_SCCS[permutation[index]];
       }
     for (size_t iii = 0; iii < 3; iii++)
       {
