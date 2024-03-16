@@ -14,7 +14,6 @@
  <http://www.gnu.org/licenses/>.
  */
 
-//#include <cstdlib>
 #include <aspect/particle/property/elastic_tensor_decomposition.h>
 #include <aspect/particle/property/cpo_elastic_tensor.h>
 #include <aspect/particle/property/crystal_preferred_orientation.h>
@@ -29,127 +28,9 @@ namespace aspect
     namespace Property
     {
 
-      template <int dim> SymmetricTensor<2,21> ElasticTensorDecomposition<dim>::projection_matrix_tric_to_mono;
-      template <int dim> SymmetricTensor<2,9> ElasticTensorDecomposition<dim>::projection_matrix_mono_to_ortho;
-      template <int dim> SymmetricTensor<2,9> ElasticTensorDecomposition<dim>::projection_matrix_ortho_to_tetra;
-      template <int dim> SymmetricTensor<2,9> ElasticTensorDecomposition<dim>::projection_matrix_tetra_to_hexa;
-      template <int dim> SymmetricTensor<2,9> ElasticTensorDecomposition<dim>::projection_matrix_hexa_to_iso;
-
-
-
       template <int dim>
       ElasticTensorDecomposition<dim>::ElasticTensorDecomposition ()
-      {
-        // setup projection matrices
-        // projection_matrix_tric_to_mono
-        projection_matrix_tric_to_mono[0][0] = 1.0;
-        projection_matrix_tric_to_mono[1][1] = 1.0;
-        projection_matrix_tric_to_mono[2][2] = 1.0;
-        projection_matrix_tric_to_mono[3][3] = 1.0;
-        projection_matrix_tric_to_mono[4][4] = 1.0;
-        projection_matrix_tric_to_mono[5][5] = 1.0;
-        projection_matrix_tric_to_mono[6][6] = 1.0;
-        projection_matrix_tric_to_mono[7][7] = 1.0;
-        projection_matrix_tric_to_mono[8][8] = 1.0;
-        projection_matrix_tric_to_mono[11][11] = 1.0;
-        projection_matrix_tric_to_mono[14][14] = 1.0;
-        projection_matrix_tric_to_mono[17][17] = 1.0;
-        projection_matrix_tric_to_mono[20][20] = 1.0;
-
-
-        // projection_matrix_mono_to_ortho;
-        projection_matrix_mono_to_ortho[0][0] = 1.0;
-        projection_matrix_mono_to_ortho[1][1] = 1.0;
-        projection_matrix_mono_to_ortho[2][2] = 1.0;
-        projection_matrix_mono_to_ortho[3][3] = 1.0;
-        projection_matrix_mono_to_ortho[4][4] = 1.0;
-        projection_matrix_mono_to_ortho[5][5] = 1.0;
-        projection_matrix_mono_to_ortho[6][6] = 1.0;
-        projection_matrix_mono_to_ortho[7][7] = 1.0;
-        projection_matrix_mono_to_ortho[8][8] = 1.0;
-
-        // projection_matrix_ortho_to_tetra;
-        projection_matrix_ortho_to_tetra[0][0] = 0.5;
-        projection_matrix_ortho_to_tetra[0][1] = 0.5;
-        projection_matrix_ortho_to_tetra[1][1] = 0.5;
-        projection_matrix_ortho_to_tetra[2][2] = 1.0;
-        projection_matrix_ortho_to_tetra[3][3] = 0.5;
-        projection_matrix_ortho_to_tetra[3][4] = 0.5;
-        projection_matrix_ortho_to_tetra[4][4] = 0.5;
-        projection_matrix_ortho_to_tetra[5][5] = 1.0;
-        projection_matrix_ortho_to_tetra[6][6] = 0.5;
-        projection_matrix_ortho_to_tetra[6][7] = 0.5;
-        projection_matrix_ortho_to_tetra[7][7] = 0.5;
-        projection_matrix_ortho_to_tetra[8][8] = 1.0;
-
-        // projection_matrix_tetra_to_hexa;
-        projection_matrix_tetra_to_hexa[0][0] = 3./8.;
-        projection_matrix_tetra_to_hexa[0][1] = 3./8.;
-        projection_matrix_tetra_to_hexa[1][1] = 3./8.;
-        projection_matrix_tetra_to_hexa[2][2] = 1.0;
-        projection_matrix_tetra_to_hexa[3][3] = 0.5;
-        projection_matrix_tetra_to_hexa[3][4] = 0.5;
-        projection_matrix_tetra_to_hexa[4][4] = 0.5;
-        projection_matrix_tetra_to_hexa[5][5] = 3./4.;
-        projection_matrix_tetra_to_hexa[6][6] = 0.5;
-        projection_matrix_tetra_to_hexa[6][7] = 0.5;
-        projection_matrix_tetra_to_hexa[7][7] = 0.5;
-        projection_matrix_tetra_to_hexa[8][8] = 0.5;
-        projection_matrix_tetra_to_hexa[5][0] = 1./(4.*std::sqrt(2.0));
-        projection_matrix_tetra_to_hexa[5][1] = 1./(4.*std::sqrt(2.0));
-        projection_matrix_tetra_to_hexa[8][0] = 0.25;
-        projection_matrix_tetra_to_hexa[8][1] = 0.25;
-        projection_matrix_tetra_to_hexa[8][5] = -1/(2*std::sqrt(2.0));
-
-
-        // projection_matrix_hexa_to_iso;
-        projection_matrix_hexa_to_iso[0][0] = 3./15.;
-        projection_matrix_hexa_to_iso[0][1] = 3./15.;
-        projection_matrix_hexa_to_iso[0][2] = 3./15.;
-        projection_matrix_hexa_to_iso[1][1] = 3./15.;
-        projection_matrix_hexa_to_iso[1][2] = 3./15.;
-        projection_matrix_hexa_to_iso[2][2] = 3./15.;
-        projection_matrix_hexa_to_iso[3][3] = 4./15.;
-        projection_matrix_hexa_to_iso[3][4] = 4./15.;
-        projection_matrix_hexa_to_iso[3][5] = 4./15.;
-        projection_matrix_hexa_to_iso[4][4] = 4./15.;
-        projection_matrix_hexa_to_iso[4][5] = 4./15.;
-        projection_matrix_hexa_to_iso[5][5] = 4./15.;
-        projection_matrix_hexa_to_iso[6][6] = 1./5.;
-        projection_matrix_hexa_to_iso[6][7] = 1./5.;
-        projection_matrix_hexa_to_iso[6][8] = 1./5.;
-        projection_matrix_hexa_to_iso[7][7] = 1./5.;
-        projection_matrix_hexa_to_iso[7][8] = 1./5.;
-        projection_matrix_hexa_to_iso[8][8] = 1./5.;
-
-        projection_matrix_hexa_to_iso[0][3] = std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[0][4] = std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[0][5] = std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[1][3] = std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[1][4] = std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[1][5] = std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[2][3] = std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[2][4] = std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[2][5] = std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[0][6] = 2./15.;
-        projection_matrix_hexa_to_iso[0][7] = 2./15.;
-        projection_matrix_hexa_to_iso[0][8] = 2./15.;
-        projection_matrix_hexa_to_iso[1][6] = 2./15.;
-        projection_matrix_hexa_to_iso[1][7] = 2./15.;
-        projection_matrix_hexa_to_iso[1][8] = 2./15.;
-        projection_matrix_hexa_to_iso[2][6] = 2./15.;
-        projection_matrix_hexa_to_iso[2][7] = 2./15.;
-        projection_matrix_hexa_to_iso[2][8] = 2./15.;
-        projection_matrix_hexa_to_iso[3][6] = -std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[3][7] = -std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[3][8] = -std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[4][6] = -std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[4][7] = -std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[4][8] = -std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[5][6] = -std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[5][7] = -std::sqrt(2.0)/15.;
-        projection_matrix_hexa_to_iso[5][8] = -std::sqrt(2.0)/15.;
-      }
+      {}
 
 
 
@@ -182,20 +63,20 @@ namespace aspect
         const SymmetricTensor<2,6> elastic_matrix = Particle::Property::CpoElasticTensor<dim>::get_elastic_tensor(cpo_elastic_tensor_data_position,
                                                     data);
 
-        const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = compute_dilatation_stiffness_tensor(elastic_matrix);
-        const SymmetricTensor<2,3> voigt_stiffness_tensor_full = compute_voigt_stiffness_tensor(elastic_matrix);
-        Tensor<2,3> SCCS_full = compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+        const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = Utility::compute_dilatation_stiffness_tensor(elastic_matrix);
+        const SymmetricTensor<2,3> voigt_stiffness_tensor_full = Utility::compute_voigt_stiffness_tensor(elastic_matrix);
+        const Tensor<2,3> SCCS_full = Utility::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
 
-        std::array<std::array<double,3>,7 > norms = compute_elastic_tensor_SCCS_decompositions(SCCS_full, elastic_matrix);
+        const std::array<std::array<double,3>,7 > norms = Utility::compute_elastic_tensor_SCCS_decompositions(SCCS_full, elastic_matrix);
 
         // get max hexagonal element index, which is the same as the permutation index
         const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
-        std::array<unsigned short int, 3> permutation = indexed_even_permutation(max_hexagonal_element_index);
+        std::array<unsigned int, 3> permutation = Utility::indexed_even_permutation(max_hexagonal_element_index);
         // reorder the SCCS be the SCCS permutation which yields the largest hexagonal vector (percentage of anisotropy)
         Tensor<2,3> hexa_permutated_SCCS;
-        for (size_t index = 0; index < 3; index++)
+        for (size_t index = 0; index < 3; ++index)
           {
-            hexa_permutated_SCCS[index] = SCCS_full[perumation[index]];
+            hexa_permutated_SCCS[index] = SCCS_full[permutation[index]];
           }
 
         data.push_back(SCCS_full[0][0]);
@@ -244,20 +125,20 @@ namespace aspect
                                                     data);
 
 
-        const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = compute_dilatation_stiffness_tensor(elastic_matrix);
-        const SymmetricTensor<2,3> voigt_stiffness_tensor_full = compute_voigt_stiffness_tensor(elastic_matrix);
-        Tensor<2,3> SCCS_full = compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+        const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = Utility::compute_dilatation_stiffness_tensor(elastic_matrix);
+        const SymmetricTensor<2,3> voigt_stiffness_tensor_full = Utility::compute_voigt_stiffness_tensor(elastic_matrix);
+        const Tensor<2,3> SCCS_full = Utility::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
 
-        std::array<std::array<double,3>,7 > norms = compute_elastic_tensor_SCCS_decompositions(SCCS_full, elastic_matrix);
+        const std::array<std::array<double,3>,7 > norms = Utility::compute_elastic_tensor_SCCS_decompositions(SCCS_full, elastic_matrix);
 
         // get max hexagonal element index, which is the same as the permutation index
         const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
-        std::array<unsigned short int, 3> perumation = indexed_even_permutation(max_hexagonal_element_index);
+        std::array<unsigned int, 3> permutation = Utility::indexed_even_permutation(max_hexagonal_element_index);
         // reorder the SCCS by the SCCS permutation which yields the largest hexagonal vector (percentage of anisotropy)
         Tensor<2,3> hexa_permutated_SCCS;
-        for (size_t index = 0; index < 3; index++)
+        for (size_t index = 0; index < 3; ++index)
           {
-            hexa_permutated_SCCS[index] = SCCS_full[perumation[index]];
+            hexa_permutated_SCCS[index] = SCCS_full[permutation[index]];
           }
 
         data[data_position]    = SCCS_full[0][0];
@@ -293,9 +174,8 @@ namespace aspect
 
 
 
-      template<int dim>
-      std::array<unsigned short int, 3>
-      ElasticTensorDecomposition<dim>::indexed_even_permutation(const unsigned short int index)
+      std::array<unsigned int, 3>
+      Utility::indexed_even_permutation(const unsigned int index)
       {
         // there are 6 permutations, but only the odd or even are needed. We use the even
         // permutation here.
@@ -322,12 +202,11 @@ namespace aspect
 
 
 
-      template<int dim>
       SymmetricTensor<2,3>
-      ElasticTensorDecomposition<dim>::compute_voigt_stiffness_tensor(const SymmetricTensor<2,6> &elastic_matrix)
+      Utility::compute_voigt_stiffness_tensor(const SymmetricTensor<2,6> &elastic_matrix)
       {
         /**
-         * the Voigt stiffness tensor (see Browaeys and chevrot, 2004)
+         * the Voigt stiffness tensor (see Browaeys and Chevrot, 2004)
          * It defines the stress needed to cause an isotropic strain in the
          * material
          */
@@ -344,9 +223,8 @@ namespace aspect
 
 
 
-      template<int dim>
       SymmetricTensor<2,3>
-      ElasticTensorDecomposition<dim>::compute_dilatation_stiffness_tensor(const SymmetricTensor<2,6> &elastic_matrix)
+      Utility::compute_dilatation_stiffness_tensor(const SymmetricTensor<2,6> &elastic_matrix)
       {
         /**
          * The dilatational stiffness tensor (see Browaeys and Chevrot, 2004)
@@ -367,12 +245,11 @@ namespace aspect
 
 
 
-      template<int dim>
       Tensor<2,3>
-      ElasticTensorDecomposition<dim>::compute_unpermutated_SCCS(const SymmetricTensor<2,3> &dilatation_stiffness_tensor,
-                                                                 const SymmetricTensor<2,3> &voigt_stiffness_tensor)
+      Utility::compute_unpermutated_SCCS(const SymmetricTensor<2,3> &dilatation_stiffness_tensor,
+                                         const SymmetricTensor<2,3> &voigt_stiffness_tensor)
       {
-        // computing the eigenvector of the dilation and voigt stiffness matrices and then averaging them by bysection.
+        // computing the eigenvector of the dilation and Voigt stiffness matrices and then averaging them by bysection.
         const std::array<std::pair<double,Tensor<1,3,double>>, 3> voigt_eigenvectors_a = eigenvectors(voigt_stiffness_tensor, SymmetricTensorEigenvectorMethod::jacobi);
         const std::array<std::pair<double,Tensor<1,3,double>>, 3> dilatation_eigenvectors_a = eigenvectors(dilatation_stiffness_tensor, SymmetricTensorEigenvectorMethod::jacobi);
 
@@ -387,16 +264,15 @@ namespace aspect
           {
             NDVC = 0;
             double ADVC = 10.0;
-            //double SCN = 0.0;
             for (size_t i2 = 0; i2 < 3; i2++)
               {
                 double dv_dot_product = dilatation_eigenvectors_a[i1].second*voigt_eigenvectors_a[i2].second;
                 // limit the dot product between 1 and -1 so we can use the arccos function safely.
                 if (std::abs(dv_dot_product) >= 1.0)
                   dv_dot_product = std::copysign(1.0,dv_dot_product);
-                // compute the angle between the vectors and account for that vector in the opposite
-                // direction are the same. So limit them between 0 and 90 degrees such that it
-                // represents the minimum angle between the two lines.
+                // Compute the angle between the vectors and account for that vector in the opposite
+                // direction are the same (0 == 180 degrees). So limit the direction of the vectors between
+                // 0 and 90 degrees such that it represents the minimum angle between the two lines.
                 const double ADV = dv_dot_product < 0.0 ? std::acos(-1.0)-std::acos(dv_dot_product) : std::acos(dv_dot_product);
                 // store this if the angle is smaller
                 if (ADV < ADVC)
@@ -406,7 +282,7 @@ namespace aspect
                   }
               }
 
-            // Adds/substracting to vecdi the vecvo with the smallest
+            // Adds/substracting to the dilatation eigenvectors the Voigt eigenvectors with the smallest
             // angle times the i2/j index with the sign of SVD to vecdi
             // (effectively turning the eigenvector),and then nomalizing it.
             unpermutated_SCCS[i1] = 0.5*(dilatation_eigenvectors_a[i1].second + (double)NDVC*voigt_eigenvectors_a[std::abs((int)NDVC)].second);
@@ -423,9 +299,8 @@ namespace aspect
 
 
 
-      template<int dim>
       std::array<std::array<double,3>,7>
-      ElasticTensorDecomposition<dim>::compute_elastic_tensor_SCCS_decompositions(
+      Utility::compute_elastic_tensor_SCCS_decompositions(
         const Tensor<2,3> &unpermutated_SCCS,
         const SymmetricTensor<2,6> &elastic_matrix)
       {
@@ -443,13 +318,13 @@ namespace aspect
         SymmetricTensor<2,6> rotated_elastic_matrix[3];
         std::array<std::array<double,3>,7> norms;
 
-        for (unsigned short int permutation_i = 0; permutation_i < 3; permutation_i++)
+        for (unsigned int permutation_i = 0; permutation_i < 3; permutation_i++)
           {
-            std::array<unsigned short int, 3> perumation = indexed_even_permutation(permutation_i);
+            std::array<unsigned int, 3> permutation = indexed_even_permutation(permutation_i);
 
             for (size_t j = 0; j < 3; j++)
               {
-                permutated[permutation_i][j] = unpermutated_SCCS[perumation[j]];
+                permutated[permutation_i][j] = unpermutated_SCCS[permutation[j]];
               }
 
             rotated_elastic_matrix[permutation_i] = Utilities::Tensors::rotate_voigt_stiffness_matrix((permutated[permutation_i]),elastic_matrix);
