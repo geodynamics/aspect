@@ -39,7 +39,7 @@ namespace aspect
       {
         public:
           /**
-           * constructor
+           * Constructor
            */
           ElasticTensorDecomposition();
 
@@ -67,7 +67,7 @@ namespace aspect
 
           /**
            * Update function. This function is called every time an update is
-           * request by need_update() for every particle for every property.
+           * requested by need_update() for every particle for every property.
            *
            * @param [in] data_position. An unsigned integer that denotes which
            * component of the particle property vector is associated with the
@@ -120,7 +120,7 @@ namespace aspect
 
           /**
            * Computes the dilatation stiffness tensor from the elastic tensor
-          * The dilatational stiffness tensor (see Browaeys and chevrot, 2004)
+          * The dilatational stiffness tensor (see Browaeys and Chevrot, 2004)
           * defines the stress to cause isotropic dilatation in the material.
            */
           static
@@ -135,7 +135,7 @@ namespace aspect
            * is that the distance between a vector $X$ and its orthogonal projection $X_H = p(X)$ on a given
            * subspace is minimum. These two features ensure that the decomposition is optimal once a 3-D Cartesian
            * coordinate system is chosen.". The other property they talk about is that "The space of elastic
-           * vectors has a finite dimension [...], i.e. using a different norm from eq. (2.3 will change distances
+           * vectors has a finite dimension [...], i.e. using a different norm from eq. 2.3 will change distances
            * but not the resulting decomposition.".
            *
            * With the three SCCS directions, the elastic tensor can be decomposed into the different
@@ -157,7 +157,7 @@ namespace aspect
            * is that the distance between a vector $X$ and its orthogonal projection $X_H = p(X)$ on a given
            * subspace is minimum. These two features ensure that the decomposition is optimal once a 3-D Cartesian
            * coordinate system is chosen.". The other property they talk about is that "The space of elastic
-           * vectors has a finite dimension [...], i.e. using a different norm from eq. (2.3 will change distances
+           * vectors has a finite dimension [...], i.e. using a different norm from eq. 2.3 will change distances
            * but not the resulting decomposition.".
            */
           static
@@ -174,7 +174,7 @@ namespace aspect
            * number of components this property plugin defines.
            */
           std::vector<std::pair<std::string, unsigned int>>
-          get_property_information() const  override;
+          get_property_information() const override;
 
           /**
            * Declare parameters
@@ -191,7 +191,7 @@ namespace aspect
 
 
           /**
-           * The tenors below can be used to project matrices to different symmetries.
+           * The tensors below can be used to project matrices to different symmetries.
            */
           static SymmetricTensor<2,21> projection_matrix_tric_to_mono;
           static SymmetricTensor<2,9> projection_matrix_mono_to_ortho;
