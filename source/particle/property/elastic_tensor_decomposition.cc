@@ -190,7 +190,7 @@ namespace aspect
 
         // get max hexagonal element index, which is the same as the permutation index
         const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
-        std::array<unsigned short int, 3> perumation = indexed_even_permutation(max_hexagonal_element_index);
+        std::array<unsigned short int, 3> permutation = indexed_even_permutation(max_hexagonal_element_index);
         // reorder the SCCS be the SCCS permutation which yields the largest hexagonal vector (percentage of anisotropy)
         Tensor<2,3> hexa_permutated_SCCS;
         for (size_t index = 0; index < 3; index++)
@@ -253,7 +253,7 @@ namespace aspect
         // get max hexagonal element index, which is the same as the permutation index
         const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
         std::array<unsigned short int, 3> perumation = indexed_even_permutation(max_hexagonal_element_index);
-        // reorder the SCCS be the SCCS permutation which yields the largest hexagonal vector (percentage of anisotropy)
+        // reorder the SCCS by the SCCS permutation which yields the largest hexagonal vector (percentage of anisotropy)
         Tensor<2,3> hexa_permutated_SCCS;
         for (size_t index = 0; index < 3; index++)
           {
@@ -349,7 +349,7 @@ namespace aspect
       ElasticTensorDecomposition<dim>::compute_dilatation_stiffness_tensor(const SymmetricTensor<2,6> &elastic_matrix)
       {
         /**
-         * The dilatational stiffness tensor (see Browaeys and chevrot, 2004)
+         * The dilatational stiffness tensor (see Browaeys and Chevrot, 2004)
          * It defines the stress to cause isotropic dilatation in the material.
          */
         SymmetricTensor<2,3> dilatation_stiffness_tensor;
@@ -380,7 +380,7 @@ namespace aspect
         std::vector<Tensor<1,3,double>> unpermutated_SCCS(3);
         // averaging eigenvectors
         // the next function looks for the smallest angle
-        // and returns the corresponding vecvo index for that
+        // and returns the corresponding vector index for that
         // vector.
         size_t NDVC = 0;
         for (size_t i1 = 0; i1 < 3; i1++)
@@ -394,14 +394,14 @@ namespace aspect
                 // limit the dot product between 1 and -1 so we can use the arccos function safely.
                 if (std::abs(dv_dot_product) >= 1.0)
                   dv_dot_product = std::copysign(1.0,dv_dot_product);
-                // compute the angle bewteen the vectors and account for that vectors in the oposit
+                // compute the angle between the vectors and account for that vector in the opposite
                 // direction are the same. So limit them between 0 and 90 degrees such that it
                 // represents the minimum angle between the two lines.
-                double ADV = dv_dot_product < 0.0 ? std::acos(-1.0)-std::acos(dv_dot_product) : std::acos(dv_dot_product);
+                const double ADV = dv_dot_product < 0.0 ? std::acos(-1.0)-std::acos(dv_dot_product) : std::acos(dv_dot_product);
                 // store this if the angle is smaller
                 if (ADV < ADVC)
                   {
-                    NDVC=std::copysign(1.0, dv_dot_product)*i2;
+                    NDVC = std::copysign(1.0, dv_dot_product)*i2;
                     ADVC = ADV;
                   }
               }
