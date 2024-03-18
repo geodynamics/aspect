@@ -425,7 +425,7 @@ namespace aspect
         {
           output << "# "
                  << ((dim==2)? "x y " : "x y z ")
-                 << " heat_flux_" << boundary_name << std::endl;
+                 << "dynamic_topography_" << boundary_name << std::endl;
         }
 
       for (unsigned int i=0; i<stored_values.size(); ++i)

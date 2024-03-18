@@ -466,7 +466,10 @@ namespace aspect
             this->get_geometry_model().translate_id_to_symbol_name(boundary_id) == "bottom")
           output_to_file(boundary_id, heat_flux_and_area);
 
-      const std::string placeholder_name = this->get_output_directory() + "heat_flux." + Utilities::int_to_string(this->get_timestep_number(), 5);
+      std::string placeholder_name = this->get_output_directory() + "heat_flux." + Utilities::int_to_string(this->get_timestep_number(), 5);
+      if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
+        placeholder_name.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
+
       return std::pair<std::string,std::string>("Writing heat flux map",
                                                 placeholder_name);
     }
