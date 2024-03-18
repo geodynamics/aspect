@@ -235,7 +235,8 @@ namespace aspect
                                   "Please change it to type generic so that it does not affect material properties."));
         }
       if (this->introspection().compositional_name_exists("deposition_depth"))
-        {          const std::vector<std::string>::const_iterator
+        {
+          const std::vector<std::string>::const_iterator
           it = std::find(chemical_field_names.begin(), chemical_field_names.end(), "deposition_depth");
           AssertThrow (it == chemical_field_names.end(),
                        ExcMessage("There is a field deposition_depth that is of type chemical composition. "
