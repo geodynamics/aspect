@@ -114,6 +114,8 @@ namespace aspect
 
       private:
 
+        //unsigned int n_material_lookups;
+
         double angle_of_internal_friction;
         double cohesion;
 
@@ -155,14 +157,15 @@ namespace aspect
          * Information about the location of data files.
          */
         std::string data_directory;
-        std::string material_file_name;
+        //std::string material_file_name;
+        std::vector<std::string> material_file_names;
         std::string lateral_viscosity_file_name;
 
         /**
          * Pointer to the EntropyReader that reads in material data for
          * given entropy and pressure.
          */
-        std::unique_ptr<MaterialUtilities::Lookup::EntropyReader> entropy_reader;
+        std::vector<std::unique_ptr<MaterialUtilities::Lookup::EntropyReader>> entropy_reader;
 
         /**
          * Pointer to an object that reads and processes data for the lateral
