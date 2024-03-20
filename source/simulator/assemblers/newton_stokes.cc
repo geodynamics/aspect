@@ -339,7 +339,7 @@ namespace aspect
       std::vector<double> deta_dp_times_phi_p(stokes_dofs_per_cell);
       std::vector<double> eps_times_grads_phi_u(stokes_dofs_per_cell);
 
-      // Calculate the weighted average of viscosity derivtives if
+      // Calculate the weighted average of viscosity derivatives if
       // material averaging is applied.
       if (derivative_scaling_factor > 0 &&
           material_averaging != MaterialModel::MaterialAveraging::none)
