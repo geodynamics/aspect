@@ -348,7 +348,7 @@ namespace aspect
           // the AssertThrow in the preconditioner should already have
           // caught the problem.
           Assert(derivatives != nullptr,
-                 ExcMessage ("Error: The Newton method requires the material to "
+                 ExcMessage ("Error: The Newton method requires the material model to "
                              "compute derivatives."));
 
           for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
