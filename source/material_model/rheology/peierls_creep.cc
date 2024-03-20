@@ -492,8 +492,10 @@ namespace aspect
                            "rather than stress. ");
 
         // Viscosity iteration parameters
-        prm.declare_entry ("Peierls strain rate residual tolerance", "1e-22", Patterns::Double(0.),
-                           "Tolerance for the iterative solve to find the correct Peierls creep strain rate.");
+        prm.declare_entry ("Peierls strain rate residual tolerance", "1e-10", Patterns::Double(0.),
+                           "Tolerance for the iterative solve to find the correct Peierls creep strain rate. "
+                           "The tolerance is expressed as the difference between the natural logarithm of the "
+                           "input strain rate and the strain rate at the current iteration.");
         prm.declare_entry ("Maximum Peierls strain rate iterations", "40", Patterns::Integer(0),
                            "Maximum number of iterations to find the correct "
                            "Peierls strain rate.");
