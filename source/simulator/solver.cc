@@ -26,8 +26,7 @@
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/solver_gmres.h>
-
-#include <deal.II/lac/trilinos_solver.h>
+#include <deal.II/lac/solver_cg.h>
 
 #include <deal.II/fe/fe_values.h>
 
@@ -276,7 +275,8 @@ namespace aspect
       {
         SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance);
 
-        TrilinosWrappers::SolverCG solver(solver_control);
+        PrimitiveVectorMemory<LinearAlgebra::Vector> mem;
+        SolverCG<LinearAlgebra::Vector> solver(solver_control,mem);
 
         // Trilinos reports a breakdown
         // in case src=dst=0, even
@@ -323,7 +323,9 @@ namespace aspect
       if (do_solve_A == true)
         {
           SolverControl solver_control(10000, utmp.l2_norm() * A_block_tolerance);
-          TrilinosWrappers::SolverCG solver(solver_control);
+          PrimitiveVectorMemory<LinearAlgebra::Vector> mem;
+          SolverCG<LinearAlgebra::Vector> solver(solver_control,mem);
+
           try
             {
               dst.block(0) = 0.0;
