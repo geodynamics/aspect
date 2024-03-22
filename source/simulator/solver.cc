@@ -193,6 +193,7 @@ namespace aspect
                                   const PreconditionerMp                     &Mppreconditioner,
                                   const PreconditionerA                      &Apreconditioner,
                                   const bool                                  do_solve_A,
+                                  const bool                                  A_block_is_symmetric,
                                   const double                                A_block_tolerance,
                                   const double                                S_block_tolerance);
 
@@ -219,6 +220,7 @@ namespace aspect
          * or to just apply a single preconditioner step with it.
          **/
         const bool do_solve_A;
+        const bool A_block_symmetric;
         mutable unsigned int n_iterations_A_;
         mutable unsigned int n_iterations_S_;
         const double A_block_tolerance;
@@ -233,6 +235,7 @@ namespace aspect
                               const PreconditionerMp                     &Mppreconditioner,
                               const PreconditionerA                      &Apreconditioner,
                               const bool                                  do_solve_A,
+                              const bool                                  A_block_is_symmetric,
                               const double                                A_block_tolerance,
                               const double                                S_block_tolerance)
       :
@@ -241,6 +244,7 @@ namespace aspect
       mp_preconditioner (Mppreconditioner),
       a_preconditioner  (Apreconditioner),
       do_solve_A        (do_solve_A),
+      A_block_symmetric(A_block_is_symmetric),
       n_iterations_A_(0),
       n_iterations_S_(0),
       A_block_tolerance(A_block_tolerance),
@@ -323,12 +327,24 @@ namespace aspect
       if (do_solve_A == true)
         {
           SolverControl solver_control(10000, utmp.l2_norm() * A_block_tolerance);
-          TrilinosWrappers::SolverCG solver(solver_control);
+          PrimitiveVectorMemory<LinearAlgebra::Vector> mem;
+
           try
             {
               dst.block(0) = 0.0;
-              solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
-                           a_preconditioner);
+
+              if (A_block_symmetric)
+                {
+                  TrilinosWrappers::SolverCG solver(solver_control);
+                  solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
+                               a_preconditioner);
+                }
+              else
+                {
+                  SolverFGMRES<LinearAlgebra::Vector> solver(solver_control,mem);
+                  solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
+                               a_preconditioner);
+                }
               n_iterations_A_ += solver_control.last_step();
             }
           // if the solver fails, report the error from processor 0 with some additional
@@ -816,12 +832,16 @@ namespace aspect
         solver_control_cheap.enable_history_data();
         solver_control_expensive.enable_history_data();
 
+        const bool A_block_is_symmetric = !mesh_deformation
+                                          || mesh_deformation->get_boundary_indicators_requiring_stabilization().empty();
+
         // create a cheap preconditioner that consists of only a single V-cycle
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
               LinearAlgebra::PreconditionBase>
               preconditioner_cheap (system_matrix, system_preconditioner_matrix,
                                     *Mp_preconditioner, *Amg_preconditioner,
-                                    false,
+                                    /* do_solve_A = */ false,
+                                    A_block_is_symmetric,
                                     parameters.linear_solver_A_block_tolerance,
                                     parameters.linear_solver_S_block_tolerance);
 
@@ -830,7 +850,8 @@ namespace aspect
               LinearAlgebra::PreconditionBase>
               preconditioner_expensive (system_matrix, system_preconditioner_matrix,
                                         *Mp_preconditioner, *Amg_preconditioner,
-                                        true,
+                                        /* do_solve_A = */ true,
+                                        A_block_is_symmetric,
                                         parameters.linear_solver_A_block_tolerance,
                                         parameters.linear_solver_S_block_tolerance);
 
