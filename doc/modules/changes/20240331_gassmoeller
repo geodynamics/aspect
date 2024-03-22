@@ -1,0 +1,8 @@
+Changed: The A block solver in the expensive Stokes iterations
+has been changed for free surface models from a CG solver to a BiCGStab
+solver. This should improve the stability of the inner (top left)
+preconditioner in free surface models. The new solver can also be forced
+by an input parameter, which can be a useful option for models that
+crash when solving the top left (A) block.
+<br>
+(Rene Gassmoeller, 2024/03/31)

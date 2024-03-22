@@ -63,7 +63,7 @@ Number of mesh deformation degrees of freedom: 1,604
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+13 iterations.
+   Solving Stokes system... 0+14 iterations.
 
    Postprocessing:
      Topography min/max: -18.68 m, 58.45 m
@@ -77,7 +77,7 @@ Number of mesh deformation degrees of freedom: 1,712
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+13 iterations.
+   Solving Stokes system... 0+14 iterations.
 
    Postprocessing:
      Topography min/max: -14.41 m, 48.94 m
@@ -104,7 +104,7 @@ Number of mesh deformation degrees of freedom: 1,766
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+12 iterations.
+   Solving Stokes system... 0+13 iterations.
 
    Postprocessing:
      Topography min/max: -15.63 m, 51.72 m
@@ -114,7 +114,7 @@ Number of mesh deformation degrees of freedom: 1,766
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+11 iterations.
+   Solving Stokes system... 0+12 iterations.
 
    Postprocessing:
      Topography min/max: -16.12 m, 52.83 m

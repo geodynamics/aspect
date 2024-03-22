@@ -11,7 +11,7 @@ Number of mesh deformation degrees of freedom: 1,394
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+18 iterations.
+   Solving Stokes system... 0+17 iterations.
    Solving fluid velocity system... 11 iterations.
 
 Number of active cells: 664 (on 5 levels)
@@ -24,7 +24,7 @@ Number of mesh deformation degrees of freedom: 1,466
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+18 iterations.
+   Solving Stokes system... 0+17 iterations.
    Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
@@ -111,7 +111,7 @@ Number of mesh deformation degrees of freedom: 1,466
    Solving temperature system... 19 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
+   Solving Stokes system... 0+14 iterations.
    Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
@@ -123,7 +123,7 @@ Number of mesh deformation degrees of freedom: 1,466
    Solving temperature system... 18 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
+   Solving Stokes system... 0+14 iterations.
    Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
@@ -135,7 +135,7 @@ Number of mesh deformation degrees of freedom: 1,466
    Solving temperature system... 19 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
+   Solving Stokes system... 0+14 iterations.
    Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
@@ -147,7 +147,7 @@ Number of mesh deformation degrees of freedom: 1,466
    Solving temperature system... 19 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
+   Solving Stokes system... 0+14 iterations.
    Solving fluid velocity system... 12 iterations.
 
    Postprocessing:

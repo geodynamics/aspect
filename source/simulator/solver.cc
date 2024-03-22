@@ -23,9 +23,11 @@
 #include <aspect/global.h>
 #include <aspect/melt.h>
 #include <aspect/stokes_matrix_free.h>
+#include <aspect/mesh_deformation/interface.h>
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/solver_gmres.h>
+#include <deal.II/lac/solver_bicgstab.h>
 #include <deal.II/lac/solver_cg.h>
 
 #include <deal.II/fe/fe_values.h>
@@ -182,6 +184,7 @@ namespace aspect
          * @param Apreconditioner Preconditioner object for the matrix A.
          * @param do_solve_A A flag indicating whether we should actually solve with
          *     the matrix $A$, or only apply one preconditioner step with it.
+         * @param A_block_is_symmetric A flag indicating whether the matrix $A$ is symmetric.
          * @param A_block_tolerance The tolerance for the CG solver which computes
          *     the inverse of the A block.
          * @param S_block_tolerance The tolerance for the CG solver which computes
@@ -192,6 +195,7 @@ namespace aspect
                                   const PreconditionerMp                     &Mppreconditioner,
                                   const PreconditionerA                      &Apreconditioner,
                                   const bool                                  do_solve_A,
+                                  const bool                                  A_block_is_symmetric,
                                   const double                                A_block_tolerance,
                                   const double                                S_block_tolerance);
 
@@ -218,6 +222,7 @@ namespace aspect
          * or to just apply a single preconditioner step with it.
          **/
         const bool do_solve_A;
+        const bool A_block_is_symmetric;
         mutable unsigned int n_iterations_A_;
         mutable unsigned int n_iterations_S_;
         const double A_block_tolerance;
@@ -232,6 +237,7 @@ namespace aspect
                               const PreconditionerMp                     &Mppreconditioner,
                               const PreconditionerA                      &Apreconditioner,
                               const bool                                  do_solve_A,
+                              const bool                                  A_block_symmetric,
                               const double                                A_block_tolerance,
                               const double                                S_block_tolerance)
       :
@@ -240,6 +246,7 @@ namespace aspect
       mp_preconditioner (Mppreconditioner),
       a_preconditioner  (Apreconditioner),
       do_solve_A        (do_solve_A),
+      A_block_is_symmetric(A_block_symmetric),
       n_iterations_A_(0),
       n_iterations_S_(0),
       A_block_tolerance(A_block_tolerance),
@@ -324,13 +331,29 @@ namespace aspect
         {
           SolverControl solver_control(10000, utmp.l2_norm() * A_block_tolerance);
           PrimitiveVectorMemory<LinearAlgebra::Vector> mem;
-          SolverCG<LinearAlgebra::Vector> solver(solver_control,mem);
 
           try
             {
               dst.block(0) = 0.0;
-              solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
-                           a_preconditioner);
+
+              if (A_block_is_symmetric)
+                {
+                  SolverCG<LinearAlgebra::Vector> solver(solver_control,mem);
+                  solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
+                               a_preconditioner);
+                }
+              else
+                {
+                  // Use BiCGStab for non-symmetric matrices.
+                  // Do not compute the exact residual, as this
+                  // is more expensive, and we only need an approximate solution.
+                  SolverBicgstab<LinearAlgebra::Vector>
+                  solver(solver_control,
+                         mem,
+                         SolverBicgstab<LinearAlgebra::Vector>::AdditionalData(/*exact_residual=*/ false));
+                  solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
+                               a_preconditioner);
+                }
               n_iterations_A_ += solver_control.last_step();
             }
           // if the solver fails, report the error from processor 0 with some additional
@@ -818,12 +841,21 @@ namespace aspect
         solver_control_cheap.enable_history_data();
         solver_control_expensive.enable_history_data();
 
+        // The A block should be symmetric, unless there are free surface stabilization terms, or
+        // the user has forced the use of a different solver.
+        bool A_block_is_symmetric = true;
+        if (mesh_deformation && mesh_deformation->get_boundary_indicators_requiring_stabilization().empty() == false)
+          A_block_is_symmetric = false;
+        else if (parameters.force_nonsymmetric_A_block_solver)
+          A_block_is_symmetric = false;
+
         // create a cheap preconditioner that consists of only a single V-cycle
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
               LinearAlgebra::PreconditionBase>
               preconditioner_cheap (system_matrix, system_preconditioner_matrix,
                                     *Mp_preconditioner, *Amg_preconditioner,
-                                    false,
+                                    /* do_solve_A = */ false,
+                                    A_block_is_symmetric,
                                     parameters.linear_solver_A_block_tolerance,
                                     parameters.linear_solver_S_block_tolerance);
 
@@ -832,7 +864,8 @@ namespace aspect
               LinearAlgebra::PreconditionBase>
               preconditioner_expensive (system_matrix, system_preconditioner_matrix,
                                         *Mp_preconditioner, *Amg_preconditioner,
-                                        true,
+                                        /* do_solve_A = */ true,
+                                        A_block_is_symmetric,
                                         parameters.linear_solver_A_block_tolerance,
                                         parameters.linear_solver_S_block_tolerance);
 
