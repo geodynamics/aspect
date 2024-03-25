@@ -114,6 +114,11 @@ namespace aspect
 
       private:
 
+        /**
+         * The thermodynamic lookup equation of state.
+         */
+        EquationOfState::ThermodynamicTableLookup<dim> equation_of_state;
+
         //unsigned int n_material_lookups;
 
         double angle_of_internal_friction;
