@@ -163,9 +163,11 @@ namespace aspect
       const unsigned int projected_density_index = this->introspection().compositional_index_for_name("density_field");
       const unsigned int entropy_index = this->introspection().compositional_index_for_name("entropy");
 
-      std::vector<EquationOfStateOutputs<dim>> eos_outputs (in.n_evaluation_points(), equation_of_state.number_of_lookups());
+  //    std::vector<EquationOfStateOutputs<dim>> eos_outputs (in.n_evaluation_points(), equation_of_state.number_of_lookups());
+      std::vector<EquationOfStateOutputs<dim>> eos_outputs (in.n_evaluation_points(), material_file_names.size());
+      
 
-      std::vector<std::vector<double>> volume_fractions (in.n_evaluation_points(), std::vector<double> (equation_of_state.number_of_lookups()));
+      std::vector<std::vector<double>> volume_fractions (in.n_evaluation_points(), std::vector<double> (material_file_names.size()));
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
@@ -177,17 +179,26 @@ namespace aspect
           const double entropy = in.composition[i][entropy_index];
           const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]) / 1.e5;
 
-        for (unsigned int j=0; j<eos_outputs[i].densities.size(); ++j)
-          {
-            eos_outputs[i].densities[j] = entropy_reader[j]->density(entropy, pressure);
-            eos_outputs[i].thermal_expansion_coefficients[j] = entropy_reader[j]->thermal_expansivity(entropy,pressure);
-            eos_outputs[i].specific_heat_capacities[j] = entropy_reader[j]->specific_heat(entropy,pressure);
-          }
-          
+/*
+          eos_outputs[i].densities[0] = entropy_reader[0]->density(entropy,pressure);
+          eos_outputs[i].thermal_expansion_coefficients[0] = entropy_reader[0]->thermal_expansivity(entropy,pressure);
+          eos_outputs[i].specific_heat_capacities[0] = entropy_reader[0]->specific_heat(entropy,pressure);
+ */ 
+
+
+       //   for (unsigned int j=0; j<eos_outputs[i].densities.size(); ++j)
+       for (unsigned int j=0; j<material_file_names.size(); ++j)
+            {
+              eos_outputs[i].densities[j] = entropy_reader[j]->density(entropy, pressure);
+              eos_outputs[i].thermal_expansion_coefficients[j] = entropy_reader[j]->thermal_expansivity(entropy,pressure);
+              eos_outputs[i].specific_heat_capacities[j] = entropy_reader[j]->specific_heat(entropy,pressure);
+            }
+ 
+
           // Calculate volume fractions from mass fractions
           // If there is only one lookup table, set the mass and volume fractions to 1
           std::vector<double> mass_fractions;
-          if (equation_of_state.number_of_lookups() == 1)
+          if (material_file_names.size() == 1)
             mass_fractions.push_back(1.0);
           else
             {
