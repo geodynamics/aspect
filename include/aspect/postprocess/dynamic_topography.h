@@ -47,7 +47,8 @@ namespace aspect
         execute (TableHandler &statistics) override;
 
         /**
-         * Return the topography vector as calculated by CBF formulation.
+         * Return the topography vector as calculated by the consistent
+         * boundary flux (CBF) formulation.
          * The velocity components store the surface-normal traction,
          * and the temperature component stores the dynamic topography
          * computed from that traction.
@@ -56,7 +57,7 @@ namespace aspect
         topography_vector() const;
 
         /**
-         * Return the cellwise topography vector as calculated by CBF formulation,
+         * Return the cell-wise topography vector as calculated by the CBF formulation,
          * where indices of the vector correspond to cell indices.
          * This vector is considerably smaller than the full topography vector returned
          * by topography_vector(), and is useful for text output and visualization.
