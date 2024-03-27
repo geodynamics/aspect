@@ -3914,11 +3914,11 @@ If the function you are describing represents a vector-valued function with mult
 
 (parameters:Material_20model/Visco_20Plastic/Peierls_20strain_20rate_20residual_20tolerance)=
 ### __Parameter name:__ Peierls strain rate residual tolerance
-**Default value:** 1e-22
+**Default value:** 1e-10
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Tolerance for the iterative solve to find the correct Peierls creep strain rate.
+**Documentation:** Tolerance for the iterative solve to find the correct Peierls creep strain rate. The tolerance is expressed as the difference between the natural logarithm of the input strain rate and the strain rate at the current iteration.
 
 (parameters:Material_20model/Visco_20Plastic/Peierls_20stresses)=
 ### __Parameter name:__ Peierls stresses
