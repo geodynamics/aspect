@@ -66,12 +66,6 @@ if(WB_BUILD_DOCUMENTATION)
 
   add_custom_target(manual
                     COMMAND
-                    ${CMAKE_COMMAND} -E copy_directory
-                    ${CMAKE_CURRENT_SOURCE_DIR}/sphinx/_static/ ${CMAKE_CURRENT_BINARY_DIR}/sphinx/_static/ &&
-                    ${SPHINX_EXECUTABLE} -b html  -c ${CMAKE_CURRENT_BINARY_DIR}/sphinx -v
-                    ${SPHINX_SOURCE} ${SPHINX_BUILD} && 
-                    ${SPHINX_EXECUTABLE} -b latex  -c ${CMAKE_CURRENT_BINARY_DIR}/sphinx -v
-                    ${SPHINX_SOURCE} ${SPHINX_BUILD} && cd ${SPHINX_BUILD} && make
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/sphinx
-                    COMMENT "Generating documentation with Sphinx")
+                    ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target manual_html)
+
 endif()

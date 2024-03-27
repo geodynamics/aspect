@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -22,6 +22,7 @@
 #define WORLD_BUILDER_FEATURES_FEATURE_UTILITIES_H
 
 #include <limits>
+#include <vector>
 
 #include "world_builder/assert.h"
 
@@ -84,6 +85,15 @@ namespace WorldBuilder
         // The local thickness of the segment at the location of the plane.
         double local_thickness;
       };
+
+
+      /**
+       * Add a string to a vector of strings, if the exact string isn't already
+       * in the vector. Returns the location of the string in the final vector.
+       */
+      size_t
+      add_vector_unique(std::vector<std::string> &vector,const std::string &add_string);
+
     } // namespace Utilities
   } // namespace Features
 } // namespace WorldBuilder

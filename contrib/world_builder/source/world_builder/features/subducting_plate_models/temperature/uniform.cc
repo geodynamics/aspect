@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -57,7 +57,7 @@ namespace WorldBuilder
           // Document plugin and require entries if needed.
           // Add `temperature` and to the required parameters.
           prm.declare_entry("", Types::Object({"temperature"}),
-                            "Uniform temperature model. Set the temperature to a constan value.");
+                            "Uniform temperature model. Set the temperature to a constant value.");
 
           // Declare entries of this plugin
           prm.declare_entry("min distance slab top", Types::Double(0),

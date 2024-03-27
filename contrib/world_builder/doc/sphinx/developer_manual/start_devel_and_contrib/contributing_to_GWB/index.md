@@ -2,9 +2,7 @@
 Contributing to the GWB
 ======================
 
-```{todo}
-Explain that contributions can come in many forms. Helping other users, helping with the documentation, contributing to or testing the code itself.
-```
+Starting to contribute may feel like a big hurdle, but it should not. There are many ways to start contributing. This can for example take the form of helping other users, helping with writing or reviewing documentation, testing code and reporting bugs, or writing code. All these kind of contributions are greatly appreciated. This section will outline process for the different ways you can contribute to the World Builder.
 
 ```{toctree}
 :hidden:

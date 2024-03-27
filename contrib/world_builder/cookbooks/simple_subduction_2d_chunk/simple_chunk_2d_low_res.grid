@@ -1,0 +1,15 @@
+# Simple slab in 2D chunk geometry
+# Low resolution grid for quick testing
+grid_type = chunk
+dim = 2
+compositions = 2 
+# x: longitude, y: latitude, z: radius
+x_min = 45
+x_max = 135
+y_min = 0
+y_max = 0
+z_min = 5.371e6
+z_max = 6.371e6
+# grid properties
+n_cell_x = 300 
+n_cell_z = 50

@@ -1,0 +1,29 @@
+{
+  "version": "0.6",
+  "cross section":[[0,0],[100,0]],
+  "features":
+  [
+
+    {"model":"mantle layer", "name":"mantle", "min depth":0, "max depth":750e3, "coordinates":[[-1e3,-1e3],[2001e3,-1e3],[2001e3,1e3],[-1e3,1e3]],
+     "temperature models":[{"model":"linear", "min depth":95e3, "max depth":750e3, "top temperature":1600, "bottom temperature":1700}],
+     "composition models":[{"model":"uniform", "compositions":[4]}]},
+
+    {
+      "model":"plume",
+      "name":"plume A",
+      "coordinates":[[300e3, 0],[370e3, 0],[550e3, 0],[450e3, 0],[400e3, 0]],
+      "cross section depths":[0, 100e3, 250e3, 500e3, 750e3],
+      "semi-major axis":[50e3, 70e3, 30e3, 80e3, 100e3],
+      "eccentricity":[0, 0, 0, 0, 0],
+      "rotation angles":[0, 0, 0, 0, 0],
+      "temperature models":
+      [
+        {
+          "model":"uniform",
+          "max depth":750e3,
+          "temperature":1800
+        }
+      ]
+    }
+  ]
+}

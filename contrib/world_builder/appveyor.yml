@@ -1,4 +1,4 @@
-version: '0.5.0.{build}'
+version: '0.6.0.{build}'
 
 image: Visual Studio 2015
 
@@ -53,7 +53,7 @@ build_script:
   - ls /c/Python38-x64/DLLs/
 
 test_script: 
-  - ctest -VV -C %configuration%
+  - ctest -VV -C %configuration% -E _no_coordinates
 after_test:
 on_finish:
   - cat Testing/Temporary/LastTest.log

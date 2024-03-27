@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -19,6 +19,7 @@
 #include "world_builder/types/double.h"
 
 #include "world_builder/parameters.h"
+#include <cmath>
 
 namespace WorldBuilder
 {
@@ -54,9 +55,13 @@ namespace WorldBuilder
       Document &declarations = prm.declarations;
       const std::string base = prm.get_full_json_path() + "/" + name;
 
-      Pointer((base + "/default value").c_str()).Set(declarations,default_value);
+      if (std::isnan(default_value))
+        Pointer((base + "/default value").c_str()).Set(declarations,"NaN");
+      else
+        Pointer((base + "/default value").c_str()).Set(declarations,default_value);
+
       Pointer((base + "/type").c_str()).Set(declarations,"number");
-      Pointer((base + "/documentation").c_str()).Set(declarations,documentation.c_str());
+      Pointer((base + "/description").c_str()).Set(declarations,documentation.c_str());
     }
   } // namespace Types
 } // namespace WorldBuilder

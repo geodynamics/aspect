@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -94,6 +94,7 @@ namespace WorldBuilder
          */
         static void registerType(const std::string &name,
                                  void ( * /*declare_entries*/)(Parameters &, const std::string &, const std::vector<std::string> &required_entries),
+                                 void ( *make_snippet)(Parameters &),
                                  ObjectFactory *factory);
 
         std::string get_name() const
@@ -129,6 +130,12 @@ namespace WorldBuilder
          * The name of the feature type.
          */
         std::string name;
+
+        /**
+         * The index of the tag for this feature.
+         * This corresponds to the index in the feature_tags variable which is store in the World.
+         */
+        size_t tag_index;
 
         /**
          * The type of interpolation used to get the line position between the points.
@@ -179,6 +186,12 @@ namespace WorldBuilder
                                                  const std::vector<std::string>& required_entries)> declares;
           return declares;
         }
+
+        static std::map<std::string, void ( *)(Parameters &)> &get_snippet_map()
+        {
+          static std::map<std::string, void ( *)(Parameters &)> declares;
+          return declares;
+        }
     };
 
 
@@ -201,7 +214,7 @@ namespace WorldBuilder
     public: \
       klass##Factory() \
       { \
-        Interface::registerType(#name, klass::declare_entries, this); \
+        Interface::registerType(#name, klass::declare_entries, klass::make_snippet, this); \
       } \
       std::unique_ptr<Interface> create(World *world) override final { \
         return std::unique_ptr<Interface>(new klass(world)); \
