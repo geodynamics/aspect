@@ -85,8 +85,15 @@ namespace aspect
                              "iterates over the advection equations but a non iterating solver scheme was selected. "
                              "Please check the consistency of your solver scheme."));
 
-      entropy_reader = std::make_unique<MaterialUtilities::Lookup::EntropyReader>();
-      entropy_reader->initialize(this->get_mpi_communicator(), data_directory, material_file_name);
+      AssertThrow(material_file_names.size() == 1,
+                  ExcMessage("The 'entropy model' material model can only handle one composition, "
+                             "and can therefore only read one material lookup table."));
+
+      for (unsigned int i = 0; i < material_file_names.size(); ++i)
+        {
+          entropy_reader.push_back(std::make_unique<MaterialUtilities::Lookup::EntropyReader>());
+          entropy_reader[i]->initialize(this->get_mpi_communicator(), data_directory, material_file_names[i]);
+        }
 
       lateral_viscosity_prefactor_lookup = std::make_unique<internal::LateralViscosityLookup>(data_directory+lateral_viscosity_file_name,
                                            this->get_mpi_communicator());
@@ -166,17 +173,17 @@ namespace aspect
           const double entropy = in.composition[i][entropy_index];
           const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]) / 1.e5;
 
-          out.densities[i] = entropy_reader->density(entropy,pressure);
-          out.thermal_expansion_coefficients[i] = entropy_reader->thermal_expansivity(entropy,pressure);
-          out.specific_heat[i] = entropy_reader->specific_heat(entropy,pressure);
+          out.densities[i] = entropy_reader[0]->density(entropy,pressure);
+          out.thermal_expansion_coefficients[i] = entropy_reader[0]->thermal_expansivity(entropy,pressure);
+          out.specific_heat[i] = entropy_reader[0]->specific_heat(entropy,pressure);
 
-          const Tensor<1, 2> density_gradient = entropy_reader->density_gradient(entropy,pressure);
+          const Tensor<1, 2> density_gradient = entropy_reader[0]->density_gradient(entropy,pressure);
           const Tensor<1, 2> pressure_unit_vector({0.0, 1.0});
           out.compressibilities[i] = (density_gradient * pressure_unit_vector) / out.densities[i];
 
 
           // Thermal conductivity can be pressure temperature dependent
-          const double temperature_lookup =  entropy_reader->temperature(entropy,pressure);
+          const double temperature_lookup =  entropy_reader[0]->temperature(entropy,pressure);
           out.thermal_conductivities[i] = thermal_conductivity(temperature_lookup, in.pressure[i], in.position[i]);
 
           out.entropy_derivative_pressure[i]    = 0.;
@@ -254,8 +261,8 @@ namespace aspect
           // fill seismic velocities outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
             {
-              seismic_out->vp[i] = entropy_reader->seismic_vp(entropy, pressure);
-              seismic_out->vs[i] = entropy_reader->seismic_vs(entropy, pressure);
+              seismic_out->vp[i] = entropy_reader[0]->seismic_vp(entropy, pressure);
+              seismic_out->vs[i] = entropy_reader[0]->seismic_vs(entropy, pressure);
             }
         }
     }
@@ -404,7 +411,7 @@ namespace aspect
         prm.enter_subsection("Entropy model");
         {
           data_directory              = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
-          material_file_name          = prm.get ("Material file name");
+          material_file_names          = Utilities::split_string_list(prm.get ("Material file name"));
           lateral_viscosity_file_name  = prm.get ("Lateral viscosity file name");
           min_eta                     = prm.get_double ("Minimum viscosity");
           max_eta                     = prm.get_double ("Maximum viscosity");
