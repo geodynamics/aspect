@@ -162,7 +162,6 @@ namespace aspect
          * Information about the location of data files.
          */
         std::string data_directory;
-        //std::string material_file_name;
         std::vector<std::string> material_file_names;
         std::string lateral_viscosity_file_name;
 
