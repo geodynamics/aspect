@@ -51,6 +51,8 @@
 #include <deal.II/fe/fe_dgp.h>
 #include <deal.II/fe/fe_values.h>
 
+#include <deal.II/sundials/arkode.h>
+
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -1643,16 +1645,6 @@ namespace aspect
     LinearAlgebra::BlockVector distributed_reaction_vector (introspection.index_sets.system_partitioning,
                                                             mpi_communicator);
 
-    // we use a different (potentially smaller) time step than in the advection scheme,
-    // and we want all of our reaction time steps (within one advection step) to have the same size
-    const unsigned int number_of_reaction_steps = std::max(static_cast<unsigned int>(time_step / parameters.reaction_time_step),
-                                                           std::max(parameters.reaction_steps_per_advection_step,1U));
-
-    const double reaction_time_step_size = time_step / static_cast<double>(number_of_reaction_steps);
-
-    Assert (reaction_time_step_size > 0,
-            ExcMessage("Reaction time step must be greater than 0."));
-
     pcout << "   Solving composition reactions... " << std::flush;
 
     // make one fevalues for the composition, and one for the temperature (they might use different finite elements)
@@ -1722,72 +1714,104 @@ namespace aspect
     // So even though we touch some DoF more than once, we always start from the same value, compute the
     // same value, and then overwrite the same value in distributed_vector.
     // TODO: make this more efficient.
+
+    using VectorType = Vector<double>;
+    SUNDIALS::ARKode<VectorType>::AdditionalData data (time,             /* initial_time */
+                                                       time + time_step, /* final_time */
+                                                       0.01*time_step,   /* initial_step_size */
+                                                       time_step,        /* output_period */
+                                                       1.e-6*time_step   /* minimum_step_size */);
+    SUNDIALS::ARKode<VectorType> ode(data);
+
+    std::vector<std::vector<double>> initial_values_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
+    std::vector<double> initial_values_T (quadrature_C.size());
+
+    // We have to store all values of the temperature and composition fields in one long vector.
+    // Create the vector and functions for transferring values between this vector and the material model inputs object.
+    const unsigned int n_q_points = dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell;
+    const unsigned int n_fields = 1 + introspection.n_compositional_fields;
+    VectorType fields (n_q_points * n_fields);
+
+    auto copy_fields_into_one_vector = [n_q_points,n_fields](const MaterialModel::MaterialModelInputs<dim> &in,
+                                                             VectorType &fields)
+    {
+      for (unsigned int j=0; j<n_q_points; ++j)
+        for (unsigned int f=0; f<n_fields; ++f)
+          if (f==0)
+            fields[j*n_fields+f] = in.temperature[j];
+          else
+            fields[j*n_fields+f] = in.composition[j][f-1];
+      return;
+    };
+
+    auto copy_fields_into_material_model_inputs = [n_q_points,n_fields](const VectorType &fields,
+                                                                        MaterialModel::MaterialModelInputs<dim> &in)
+    {
+      for (unsigned int j=0; j<n_q_points; ++j)
+        for (unsigned int f=0; f<n_fields; ++f)
+          if (f==0)
+            in.temperature[j]      = fields[j*n_fields+f];
+          else
+            in.composition[j][f-1] = fields[j*n_fields+f];
+      return;
+    };
+
+    auto copy_rates_into_one_vector = [n_q_points,n_fields](const MaterialModel::ReactionRateOutputs<dim> *reaction_out,
+                                                            const HeatingModel::HeatingModelOutputs &heating_out,
+                                                            VectorType &rates)
+    {
+      for (unsigned int j=0; j<n_q_points; ++j)
+        for (unsigned int f=0; f<n_fields; ++f)
+          if (f==0)
+            rates[j*n_fields+f] = heating_out.rates_of_temperature_change[j];
+          else
+            rates[j*n_fields+f] = reaction_out->reaction_rates[j][f-1];
+      return;
+    };
+
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
           fe_values_C.reinit (cell);
           in_C.reinit(fe_values_C, cell, introspection, solution);
 
-          if (temperature_and_composition_use_same_fe == false)
-            {
-              fe_values_T.reinit (cell);
-              in_T.reinit(fe_values_T, cell, introspection, solution);
-            }
-
           std::vector<std::vector<double>> accumulated_reactions_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
           std::vector<double> accumulated_reactions_T (quadrature_T.size());
 
-          // Make the reaction time steps: We have to update the values of compositional fields and the temperature.
-          // Because temperature and composition might use different finite elements, we loop through their elements
-          // separately, and update the temperature and the compositions for both.
-          // We can reuse the same material model inputs and outputs structure for each reaction time step.
-          // We store the computed updates to temperature and composition in a separate (accumulated_reactions) vector,
-          // so that we can later copy it over to the solution vector.
-          for (unsigned int i=0; i<number_of_reaction_steps; ++i)
-            {
-              // Loop over composition element
-              material_model->fill_additional_material_model_inputs(in_C, solution, fe_values_C, introspection);
+          initial_values_C = in_C.composition;
+          initial_values_T = in_C.temperature;
 
-              material_model->evaluate(in_C, out_C);
-              heating_model_manager.evaluate(in_C, out_C, heating_model_outputs_C);
+          copy_fields_into_one_vector (in_C, fields);
 
-              for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
-                {
-                  for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                    {
-                      // simple forward euler
-                      in_C.composition[j][c] = in_C.composition[j][c]
-                                               + reaction_time_step_size * reaction_rate_outputs_C->reaction_rates[j][c];
-                      accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs_C->reaction_rates[j][c];
-                    }
-                  in_C.temperature[j] = in_C.temperature[j]
-                                        + reaction_time_step_size * heating_model_outputs_C.rates_of_temperature_change[j];
+          ode.explicit_function = [&] (const double /*time*/,
+                                       const VectorType &y,
+                                       VectorType &ydot)
+          {
+            copy_fields_into_material_model_inputs (y, in_C);
 
-                  if (temperature_and_composition_use_same_fe)
-                    accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs_C.rates_of_temperature_change[j];
-                }
+            material_model->fill_additional_material_model_inputs(in_C, solution, fe_values_C, introspection);
+            material_model->evaluate(in_C, out_C);
+            heating_model_manager.evaluate(in_C, out_C, heating_model_outputs_C);
 
-              if (!temperature_and_composition_use_same_fe)
-                {
-                  // loop over temperature element
-                  material_model->fill_additional_material_model_inputs(in_T, solution, fe_values_T, introspection);
+            copy_rates_into_one_vector (reaction_rate_outputs_C, heating_model_outputs_C, ydot);
+          };
 
-                  material_model->evaluate(in_T, out_T);
-                  heating_model_manager.evaluate(in_T, out_T, heating_model_outputs_T);
+          ode.solve_ode(fields);
 
-                  for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.temperature).dofs_per_cell; ++j)
-                    {
-                      // simple forward euler
-                      in_T.temperature[j] = in_T.temperature[j]
-                                            + reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
-                      accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
-
-                      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                        in_T.composition[j][c] = in_T.composition[j][c]
-                                                 + reaction_time_step_size * reaction_rate_outputs_T->reaction_rates[j][c];
-                    }
-                }
-            }
+          for (unsigned int j=0; j<n_q_points; ++j)
+            for (unsigned int f=0; f<n_fields; ++f)
+              {
+                if (f==0)
+                  {
+                    in_C.temperature[j]        = fields[j*n_fields+f];
+                    accumulated_reactions_T[j] = in_C.temperature[j] - initial_values_T[j];
+                  }
+                else
+                  {
+                    in_C.composition[j][f-1]        = fields[j*n_fields+f];
+                    accumulated_reactions_C[j][f-1] = in_C.composition[j][f-1] - initial_values_C[j][f-1];
+                  }
+              }
 
           cell->get_dof_indices (local_dof_indices);
 
@@ -1817,11 +1841,7 @@ namespace aspect
               // skip entries that are not locally owned:
               if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[temperature_idx]))
                 {
-                  if (temperature_and_composition_use_same_fe)
-                    distributed_vector(local_dof_indices[temperature_idx]) = in_C.temperature[j];
-                  else
-                    distributed_vector(local_dof_indices[temperature_idx]) = in_T.temperature[j];
-
+                  distributed_vector(local_dof_indices[temperature_idx]) = in_C.temperature[j];
                   distributed_reaction_vector(local_dof_indices[temperature_idx]) = accumulated_reactions_T[j];
                 }
             }
@@ -1842,9 +1862,7 @@ namespace aspect
 
     initialize_current_linearization_point();
 
-    pcout << "in "
-          << number_of_reaction_steps
-          << " substep(s)."
+    pcout << "done."
           << std::endl;
   }
 
