@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "World Builder"
-PROJECT_NUMBER         = 0.5.0
+PROJECT_NUMBER         = 0.6.0
 PROJECT_BRIEF          = "A geodynamic initial conditions generator"
 PROJECT_LOGO           = 
 OUTPUT_DIRECTORY       = doc/doxygen/
@@ -161,7 +161,12 @@ FILE_PATTERNS          = *.c \
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = 
+EXCLUDE_PATTERNS       = */ApprovalTests/* \
+                         */delaunator-cpp/* \
+                         */doctest/* \
+                         */glm/* \
+                         */rapidjson/* \
+                         */vtu11/*
 EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = *

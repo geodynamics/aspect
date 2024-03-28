@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -68,7 +68,7 @@ namespace WorldBuilder
       Pointer((base + "/minItems").c_str()).Set(declarations,min_items);
       Pointer((base + "/maxItems").c_str()).Set(declarations,max_items);
       Pointer((base + "/uniqueItems").c_str()).Set(declarations,unique_items);
-      Pointer((base + "/documentation").c_str()).Set(declarations,documentation.c_str());
+      Pointer((base + "/description").c_str()).Set(declarations,documentation.c_str());
 
       prm.enter_subsection(name);
       {

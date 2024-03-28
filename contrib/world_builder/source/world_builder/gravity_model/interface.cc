@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -50,7 +50,7 @@ namespace WorldBuilder
                 prm.declare_entry("", Types::Object(required_entries), "gravity model");
 
                 prm.declare_entry("model",Types::String("",it.first),
-                                  "The name which the user has given to the feature.");
+                                  "The name of the model for the gravity to use.");
 
                 it.second(prm, parent_name);
               }

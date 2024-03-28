@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -23,15 +23,18 @@
 */
 
 #include "world_builder/features/subducting_plate_models/temperature/mass_conserving.h"
-
+#include "world_builder/features/oceanic_plate_models/temperature/plate_model.h"
 #include "world_builder/nan.h"
 #include "world_builder/types/array.h"
 #include "world_builder/types/bool.h"
 #include "world_builder/types/double.h"
+#include "world_builder/types/one_of.h"
 #include "world_builder/types/object.h"
 #include "world_builder/types/point.h"
+#include "world_builder/types/value_at_points.h"
 #include "world_builder/utilities.h"
 #include "world_builder/world.h"
+#include "world_builder/types/int.h"
 
 namespace WorldBuilder
 {
@@ -48,7 +51,6 @@ namespace WorldBuilder
           min_depth(NaN::DSNAN),
           max_depth(NaN::DSNAN),
           density(NaN::DSNAN),
-          plate_velocity(NaN::DSNAN),
           mantle_coupling_depth(NaN::DSNAN),
           forearc_cooling_factor(NaN::DSNAN),
           thermal_conductivity(NaN::DSNAN),
@@ -116,8 +118,12 @@ namespace WorldBuilder
           prm.declare_entry("density", Types::Double(3300),
                             "The reference density of the subducting plate in $kg/m^3$");
 
-          prm.declare_entry("plate velocity", Types::Double(0.05),
+          prm.declare_entry("plate velocity", Types::OneOf(Types::Double(0.05),Types::Array(Types::ValueAtPoints(0.05, std::numeric_limits<uint64_t>::max()))),
                             "The velocity with which the plate subducts in meters per year. Default is 5 cm/yr");
+
+          prm.declare_entry("subducting velocity", Types::OneOf(Types::Double(-1), Types::Array(Types::Array(Types::Double(-1), 1), 1)),
+                            "The velocity with which the ridge is moving through time, and how long the ridge "
+                            "has been moving. First value is the velocity, second is the time. Default is [0 cm/yr, 0 yr]");
 
           prm.declare_entry("coupling depth", Types::Double(100e3),
                             "The depth at which the slab surface first comes in contact with the hot mantle wedge "
@@ -164,6 +170,17 @@ namespace WorldBuilder
                             "define the location of the ridge. You need to define at least one ridge."
                             "So the an example with two ridges is "
                             "[[[10,20],[20,30],[10,40]],[[50,10],[60,10]]].");
+
+          prm.declare_entry("reference model name",  Types::String("half space model"),
+                            "The type of thermal model to use in the mass conserving model of slab temperature. "
+                            "Options are half space model and plate model");
+
+          prm.declare_entry("apply spline",  Types::Bool(false),
+                            "Whether a spline should be applied on the mass conserving model.");
+
+          prm.declare_entry("number of points in spline", Types::Int(5),
+                            "The number of points in the spline");
+
         }
 
         void
@@ -176,7 +193,8 @@ namespace WorldBuilder
 
           density = prm.get<double>("density");
           thermal_conductivity = prm.get<double>("thermal conductivity");
-          plate_velocity = prm.get<double>("plate velocity");
+          ridge_spreading_velocities = prm.get_value_at_array("plate velocity");
+          subducting_velocities = prm.get_vector_or_double("subducting velocity");
 
           mantle_coupling_depth = prm.get<double>("coupling depth");
           forearc_cooling_factor = prm.get<double>("forearc cooling factor");
@@ -212,6 +230,52 @@ namespace WorldBuilder
               {
                 ridge_coordinate *= dtr;
               }
+
+          unsigned int ridge_point_index = 0;
+          for (const auto &mid_oceanic_ridge : mid_oceanic_ridges)
+            {
+              std::vector<double> ridge_spreading_velocities_for_ridge;
+              for (unsigned int index_y = 0; index_y < mid_oceanic_ridge.size(); index_y++)
+                {
+                  if (ridge_spreading_velocities.second.size() == 1)
+                    {
+                      ridge_spreading_velocities_for_ridge.push_back(ridge_spreading_velocities.second[0]);
+                    }
+                  else
+                    {
+                      ridge_spreading_velocities_for_ridge.push_back(ridge_spreading_velocities.second[ridge_point_index]);
+                    }
+                  ridge_point_index += 1;
+                }
+              ridge_spreading_velocities_at_each_ridge_point.push_back(ridge_spreading_velocities_for_ridge);
+            }
+
+          std::string reference_model_name_str = prm.get<std::string>("reference model name");
+          if (reference_model_name_str=="plate model")
+            reference_model_name = plate_model;
+          else if (reference_model_name_str=="half space model")
+            reference_model_name = half_space_model;
+
+          apply_spline = prm.get<bool>("apply spline");
+          spline_n_points = prm.get<int>("number of points in spline");
+
+          if (subducting_velocities[0].size() > 1)
+            {
+              for (unsigned int ridge_index = 0; ridge_index < mid_oceanic_ridges.size(); ridge_index++)
+                {
+                  WBAssertThrow(subducting_velocities.size() == mid_oceanic_ridges.size() &&
+                                subducting_velocities[ridge_index].size() == mid_oceanic_ridges[ridge_index].size(),
+                                "subducting velocity must have the same dimension as the ridge coordinates parameter.");
+                  for (unsigned int point_index = 0; point_index < mid_oceanic_ridges[ridge_index].size(); point_index++)
+                    {
+                      WBAssertThrow(Utilities::approx(subducting_velocities[ridge_index][point_index],
+                                                      ridge_spreading_velocities_at_each_ridge_point[ridge_index][point_index]),
+                                    "Currently, subducting velocity must equal the spreading velocity to satisfy conservation of mass. "
+                                    "This will be changed in the future to allow for the spreading center to move depending on the relative "
+                                    "difference between the spreading velocity and the subducting velocity, thereby conserving mass.");
+                    }
+                }
+            }
         }
 
         double
@@ -230,88 +294,20 @@ namespace WorldBuilder
           if (distance_from_plane <= max_depth && distance_from_plane >= min_depth)
             {
 
-              const CoordinateSystem coordinate_system = world->parameters.coordinate_system->natural_coordinate_system();
-              double distance_ridge = std::numeric_limits<double>::max();
               const Point<3> trench_point = distance_from_planes.closest_trench_point;
               const Objects::NaturalCoordinate trench_point_natural = Objects::NaturalCoordinate(trench_point,
                                                                       *(world->parameters.coordinate_system));
-              const Point<2> trench_point_2d(trench_point_natural.get_surface_coordinates(),trench_point_natural.get_coordinate_system());
-              // find the distance between the trench and ridge
 
+              std::vector<double> ridge_parameters = Utilities::calculate_ridge_distance_and_spreading(mid_oceanic_ridges,
+                                                     ridge_spreading_velocities_at_each_ridge_point,
+                                                     world->parameters.coordinate_system,
+                                                     trench_point_natural,
+                                                     subducting_velocities,
+                                                     ridge_spreading_velocities.first);
 
-              // first find if the coordinate is on this side of a ridge
-              unsigned int relevant_ridge = 0;
-
-
-              // if there is only one ridge, there is no transform
-              if (mid_oceanic_ridges.size() > 1)
-                {
-                  // There are more than one ridge, so there are transform faults
-                  // Find the first which is on the same side
-                  for (relevant_ridge = 0; relevant_ridge < mid_oceanic_ridges.size()-1; relevant_ridge++)
-                    {
-                      const Point<2> transform_point_0 = mid_oceanic_ridges[relevant_ridge+1][0];
-                      const Point<2> transform_point_1 = mid_oceanic_ridges[relevant_ridge][mid_oceanic_ridges[relevant_ridge].size()-1];
-                      const Point<2> reference_point   = mid_oceanic_ridges[relevant_ridge][0];
-
-                      const bool reference_on_side_of_line = (transform_point_1[0] - transform_point_0[0])
-                                                             * (reference_point[1] - transform_point_0[1])
-                                                             - (transform_point_1[1] - transform_point_0[1])
-                                                             * (reference_point[0] - transform_point_0[0])
-                                                             < 0;
-                      const bool checkpoint_on_side_of_line = (transform_point_1[0] - transform_point_0[0])
-                                                              * (trench_point_2d[1] - transform_point_0[1])
-                                                              - (transform_point_1[1] - transform_point_0[1])
-                                                              * (trench_point_2d[0] - transform_point_0[0])
-                                                              < 0;
-
-                      if (reference_on_side_of_line == checkpoint_on_side_of_line)
-                        {
-                          break;
-                        }
-
-                    }
-                }
-
-              for (unsigned int i_coordinate = 0; i_coordinate < mid_oceanic_ridges[relevant_ridge].size() - 1; i_coordinate++)
-                {
-                  const Point<2> segment_point0 = mid_oceanic_ridges[relevant_ridge][i_coordinate];
-                  const Point<2> segment_point1 = mid_oceanic_ridges[relevant_ridge][i_coordinate + 1];
-
-                  // based on http://geomalgorithms.com/a02-_lines.html
-                  const Point<2> v = segment_point1 - segment_point0;
-                  const Point<2> w = trench_point_2d - segment_point0;
-
-                  const double c1 = (w[0] * v[0] + w[1] * v[1]);
-                  const double c2 = (v[0] * v[0] + v[1] * v[1]);
-
-                  Point<2> Pb(coordinate_system);
-                  // This part is needed when we want to consider segments instead of lines
-                  // If you want to have infinite lines, use only the else statement.
-
-                  if (c1 <= 0)
-                    Pb = segment_point0;
-                  else if (c2 <= c1)
-                    Pb = segment_point1;
-                  else
-                    Pb = segment_point0 + (c1 / c2) * v;
-
-                  Point<3> compare_point(coordinate_system);
-
-                  compare_point[0] = coordinate_system == cartesian ? Pb[0] : trench_point_natural.get_depth_coordinate();
-                  compare_point[1] = coordinate_system == cartesian ? Pb[1] : Pb[0];
-                  compare_point[2] = coordinate_system == cartesian ? trench_point_natural.get_depth_coordinate() : Pb[1];
-
-                  distance_ridge = std::min(distance_ridge, this->world->parameters.coordinate_system->distance_between_points_at_same_depth(Point<3>(trench_point_natural.get_coordinates(),trench_point_natural.get_coordinate_system()), compare_point));
-                }
-
-              const double km2m = 1.0e3; // 1000 m/km
-              const double cm2m = 100; // 100 cm/m
-              const double my = 1.0e6;  // 1e6 y/my
-              const double seconds_in_year = 60.0 * 60.0 * 24.0 * 365.25;  // sec/y
-
-              const double age_at_trench = distance_ridge / plate_velocity; // m/(m/y) = yr
-              const double plate_age_sec = age_at_trench * seconds_in_year; // y --> seconds
+              constexpr double km2m = 1.0e3; // 1000 m/km
+              constexpr double cm2m = 100; // 100 cm/m
+              constexpr double my = 1.0e6;  // 1e6 y/my
 
               /* information about nearest point on the slab segment */
               const double distance_along_plane = distance_from_planes.distance_along_plane;
@@ -319,14 +315,50 @@ namespace WorldBuilder
               const double total_segment_length = additional_parameters.total_local_segment_length;
               const double average_angle = distance_from_planes.average_angle;
 
+              std::vector<double> slab_ages = calculate_effective_trench_and_plate_ages(ridge_parameters, distance_along_plane);
+
+              const double seconds_in_year = 60.0 * 60.0 * 24.0 * 365.25;  // sec/y
+              const double spreading_velocity = ridge_parameters[0] * seconds_in_year; // m/yr
+              double subducting_velocity = ridge_parameters[2] * seconds_in_year; // m/yr
+
+              if (subducting_velocity <= 0)
+                subducting_velocity = spreading_velocity;
+
+              const double age_at_trench = slab_ages[0];
+              const double plate_age_sec = age_at_trench * seconds_in_year; // y --> seconds
               // 1. Determine initial heat content of the slab based on age of plate at trench
-              //    This uses the integral of the half-space temperature profile
-              double initial_heat_content = 2 * thermal_conductivity * (surface_temperature - potential_mantle_temperature) *
-                                            std::sqrt(plate_age_sec / (thermal_diffusivity * Consts::PI));
+              // This uses the integral of the half-space temperature profile
+              // The initial heat content is also decided from the type of thermal model to use in the
+              // mass conserving model
+              double initial_heat_content;
+              if (reference_model_name == plate_model)
+                {
+                  initial_heat_content = thermal_conductivity / thermal_diffusivity *
+                                         (surface_temperature - potential_mantle_temperature) * max_depth / 2.0;
+                  for (int i = 0; i< std::floor(plate_model_summation_number/2.0); ++i)
+                    {
+                      // because n < sommation_number + 1 and n = 2k + 1
+                      // The "spreading_velocity" instead of "spreading_velocity_UI" is used for the last instance as "age_at_trench" has
+                      // a unit of yr.
+                      const double subducting_velocity_UI = subducting_velocity / seconds_in_year;
+                      const double temp_heat_content = thermal_conductivity / thermal_diffusivity *
+                                                       (surface_temperature - potential_mantle_temperature) *
+                                                       4 * max_depth / double(2*i + 1) / double(2*i + 1) / Consts::PI / Consts::PI *
+                                                       exp((subducting_velocity_UI * max_depth / 2 / thermal_diffusivity -
+                                                            std::sqrt(subducting_velocity_UI * subducting_velocity_UI * max_depth * max_depth / 4.0 / thermal_diffusivity / thermal_diffusivity +
+                                                                      double(2*i + 1) * double(2*i + 1) * Consts::PI * Consts::PI)) *
+                                                           subducting_velocity * age_at_trench / max_depth);
+                      initial_heat_content -= temp_heat_content;
+                    }
+                }
+              else
+                {
+                  initial_heat_content = 2 * thermal_conductivity * (surface_temperature - potential_mantle_temperature) *
+                                         std::sqrt(plate_age_sec / (thermal_diffusivity * Consts::PI));
+                }
 
               // Plate age increases with distance along the slab in the mantle
-              double effective_plate_age = plate_age_sec + (distance_along_plane / plate_velocity) * seconds_in_year; // m/(m/y) = y(seconds_in_year)
-
+              double effective_plate_age = slab_ages[1];
 
               // Need adiabatic temperature at position of grid point
               const double background_temperature = adiabatic_heating ? potential_mantle_temperature *
@@ -349,7 +381,7 @@ namespace WorldBuilder
               // increases Tmin slope for slower relative to slope for maximum plate velocity
               // will be between 0.1 (fast) and 0.35 (slow)
               const double max_plate_vel = 20/cm2m;  // e.g., 20 cm/yr -> 0.2 m/yr
-              const double vsubfact = std::min( std::max( 0.35 + ((0.1-0.35) / max_plate_vel) * plate_velocity, 0.1), 0.35);
+              const double vsubfact = std::min( std::max( 0.35 + ((0.1-0.35) / max_plate_vel) * subducting_velocity, 0.1), 0.35);
 
               // increases Tmin slope for younger plate relative to slope for old place
               // will be between 0.1 (old) and 0.35 *(young)
@@ -445,10 +477,33 @@ namespace WorldBuilder
                 {
 
                   // 3. Determine the heat content for side 1 (bottom) of the slab
-                  // Comes from integrating the half-space cooling model temperature
-
-                  const double bottom_heat_content = 2 * thermal_conductivity * (min_temperature - potential_mantle_temperature) *
-                                                     std::sqrt(effective_plate_age /(thermal_diffusivity * Consts::PI));
+                  // Comes from integrating the half-space cooling model or the plate model temperature
+                  // The bottom heat content is also decided from the type of thermal model to use in the
+                  // mass conserving model
+                  double bottom_heat_content;
+                  if (reference_model_name == plate_model)
+                    {
+                      bottom_heat_content = thermal_conductivity / thermal_diffusivity *
+                                            (min_temperature - potential_mantle_temperature) * max_depth / 2.0;
+                      for (int i = 0; i< std::floor(plate_model_summation_number/2.0); ++i)
+                        {
+                          // because n < sommation_number + 1 and n = 2k + 1
+                          const double subducting_velocity_UI = subducting_velocity / seconds_in_year;
+                          const double temp_heat_content = thermal_conductivity / thermal_diffusivity *
+                                                           (min_temperature - potential_mantle_temperature) *
+                                                           4 * max_depth / double(2*i + 1) / double(2*i + 1) / Consts::PI / Consts::PI *
+                                                           exp((subducting_velocity_UI * max_depth / 2.0 / thermal_diffusivity -
+                                                                std::sqrt(subducting_velocity_UI * subducting_velocity_UI * max_depth * max_depth / 4.0 / thermal_diffusivity / thermal_diffusivity +
+                                                                          double(2*i + 1) * double(2*i + 1) * Consts::PI * Consts::PI)) *
+                                                               subducting_velocity_UI * effective_plate_age / max_depth);
+                          bottom_heat_content -= temp_heat_content;
+                        }
+                    }
+                  else
+                    {
+                      bottom_heat_content = 2 * thermal_conductivity * (min_temperature - potential_mantle_temperature) *
+                                            std::sqrt(effective_plate_age /(thermal_diffusivity * Consts::PI));
+                    }
 
                   // 4. The difference in heat content goes into the temperature above where Tmin occurs.
                   // Should not be a positive value
@@ -463,32 +518,34 @@ namespace WorldBuilder
                       top_heat_content = top_heat_content * std::erfc(taper_con*theta);
                     }
 
-                  // Assign the temperature depending on whether distance is negative (above) or positive (below) the slab
-                  if (adjusted_distance < 0)
-                    {
-                      // use 1D infinite space solution for top (side 2) of slab the slab
-                      // 2 times the "top_heat_content" because all this heat needs to be on one side of the Gaussian
-                      const double time_top_slab = (1/(Consts::PI*thermal_diffusivity)) *
-                                                   pow(((2 * top_heat_content) / (2 * density * specific_heat * (min_temperature - temperature_ + 1e-16))),2) + 1e-16;
+                  double nondimensional_adjusted_distance = adjusted_distance / max_depth;
 
-                      // for overriding plate region where plate temperature is less the minimum slab temperature
-                      // need to set temperature = temperature_ otherwise end up with temperature less than surface temperature ;
-                      if (temperature_ < min_temperature)
+                  if (apply_spline)
+                    {
+                      // A total number of (2 * spline_n_points + 1) points are picked,
+                      // spline_n_points points on each side and one at the center.
+                      // These points cover a range of (-1.0, 1.0) in adjusted_distance.
+                      Utilities::interpolation monotone_cubic_spline;
+
+                      const double interval_spline_distance = 1.0 / spline_n_points;
+                      std::vector<double> i_temperatures (2*(spline_n_points + 1), 0.0);
+
+                      for (int i = 0; i < 2 * spline_n_points + 1; ++i)
                         {
-                          temperature = temperature_;
+                          const double i_adjusted_distance = (i * interval_spline_distance - 1.0) * max_depth;
+                          const double i_temperature = get_temperature_analytic(top_heat_content, min_temperature, background_temperature, temperature_, spreading_velocity, effective_plate_age, i_adjusted_distance);
+                          i_temperatures[i] = i_temperature;
                         }
-                      else
-                        {
-                          temperature  = temperature_ + (2 * top_heat_content /
-                                                         (2*density*specific_heat * std::sqrt(Consts::PI * thermal_diffusivity * time_top_slab)))*
-                                         std::exp(-(adjusted_distance*adjusted_distance)/(4*thermal_diffusivity*time_top_slab));
-                        }
+
+                      monotone_cubic_spline.set_points(i_temperatures);
+
+                      const double index_distance = (nondimensional_adjusted_distance + 1.0) / interval_spline_distance;
+                      temperature =  monotone_cubic_spline(index_distance);
                     }
                   else
                     {
-                      // use half-space cooling model for the bottom (side 1) of the slab
-                      temperature = background_temperature + (min_temperature - background_temperature) *
-                                    std::erfc(adjusted_distance / (2 * std::sqrt(thermal_diffusivity * effective_plate_age)));
+                      // Call the analytic solution to compute the temperature
+                      temperature = get_temperature_analytic(top_heat_content, min_temperature, background_temperature, temperature_, spreading_velocity, effective_plate_age, adjusted_distance);
                     }
                 }
               else
@@ -504,6 +561,74 @@ namespace WorldBuilder
             }
 
           return temperature_;
+        }
+
+        double
+        MassConserving::get_temperature_analytic(const double top_heat_content,
+                                                 const double min_temperature,
+                                                 const double background_temperature,
+                                                 const double temperature_,
+                                                 const double subducting_velocity,
+                                                 const double effective_plate_age,
+                                                 const double adjusted_distance) const
+        {
+          const double seconds_in_year = 60.0 * 60.0 * 24.0 * 365.25;  // sec/y
+
+          double temperature = 0.0;
+
+          // Assign the temperature depending on whether distance is negative (above) or positive (below) the slab
+          if (adjusted_distance < 0)
+            {
+              // use 1D infinite space solution for top (side 2) of slab the slab
+              // 2 times the "top_heat_content" because all this heat needs to be on one side of the Gaussian
+              const double time_top_slab = (1/(Consts::PI*thermal_diffusivity)) *
+                                           pow(((2 * top_heat_content) / (2 * density * specific_heat * (min_temperature - temperature_ + 1e-16))),2) + 1e-16;
+
+              // for overriding plate region where plate temperature is less the minimum slab temperature
+              // need to set temperature = temperature_ otherwise end up with temperature less than surface temperature ;
+              if (temperature_ < min_temperature)
+                {
+                  temperature = temperature_;
+                }
+              else
+                {
+                  temperature  = temperature_ + (2 * top_heat_content /
+                                                 (2*density*specific_heat * std::sqrt(Consts::PI * thermal_diffusivity * time_top_slab)))*
+                                 std::exp(-(adjusted_distance*adjusted_distance)/(4*thermal_diffusivity*time_top_slab));
+                }
+            }
+          else
+            {
+              // use half-space cooling or plate model for the bottom (side 1) of the slab
+              if (reference_model_name == plate_model)
+                {
+                  if (adjusted_distance < max_depth)
+                    {
+                      const double subducting_velocity_UI = subducting_velocity / seconds_in_year;
+                      temperature = background_temperature + (min_temperature - background_temperature) * (1 - adjusted_distance / max_depth);
+                      for (int i = 1; i< std::floor(plate_model_summation_number/2.0); ++i)
+                        {
+                          temperature = temperature - (min_temperature - background_temperature) *
+                                        ((2 / (double(i) * Consts::PI)) * std::sin((double(i) * Consts::PI * adjusted_distance) / max_depth) *
+                                         std::exp((((subducting_velocity_UI * max_depth)/(2 * thermal_diffusivity)) -
+                                                   std::sqrt(((subducting_velocity_UI*subducting_velocity_UI*max_depth*max_depth) /
+                                                              (4*thermal_diffusivity*thermal_diffusivity)) + double(i) * double(i) * Consts::PI * Consts::PI)) *
+                                                  ((subducting_velocity_UI * effective_plate_age) / max_depth)));
+                        }
+                    }
+                  else
+                    {
+                      temperature = background_temperature;
+                    }
+                }
+              else
+                {
+                  temperature = background_temperature + (min_temperature - background_temperature) *
+                                std::erfc(adjusted_distance / (2 * std::sqrt(thermal_diffusivity * effective_plate_age)));
+
+                }
+            }
+          return temperature;
         }
 
         WB_REGISTER_FEATURE_SUBDUCTING_PLATE_TEMPERATURE_MODEL(MassConserving, mass conserving)

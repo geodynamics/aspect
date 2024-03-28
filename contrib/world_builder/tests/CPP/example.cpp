@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
   unsigned int random_number_seed = 1; // use a random number seed larger than zero
   double composition = 0;
   bool has_output_dir = 0; // false
-  char output_dir[] = "../../doc/manual/";
+  char output_dir[] = "../../doc/";
 
    if( argc > 2 ) {
       printf("Too many arguments supplied.\n");

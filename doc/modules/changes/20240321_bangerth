@@ -1,0 +1,9 @@
+New: It is now possible to use the "initial topography" plugin system
+for the spherical shell geometry, including using the ascii data
+system that can then be used to import a text description of the
+initial topography. As an example, we also include the file
+`data/geometry-model/initial-topography-model/ascii-data/global_1deg.txt.gz`
+that describes the topography of Earth on a (relatively coarse) 1
+degree mesh.
+<br>
+(Wolfgang Bangerth, 2024/03/21)

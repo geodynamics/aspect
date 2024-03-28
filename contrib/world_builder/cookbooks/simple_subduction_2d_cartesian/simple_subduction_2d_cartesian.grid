@@ -1,0 +1,14 @@
+# Grid File for creating vtk files to view in Paraview or Visit
+grid_type = cartesian
+dim = 2
+compositions = 1
+
+# domain of the grid (x and y are the surface, z is vertical with 0 at the bottom)
+x_min = 0e3
+x_max = 8000e3
+z_min = 0e3
+z_max = 1600e3
+
+# grid properties
+n_cell_x = 2000
+n_cell_z = 400

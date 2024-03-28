@@ -16,13 +16,13 @@ Explain how to use this page. Here is an example how to link to a specific item 
 ::::{tab-item} All open
 :name: all_open
 
-:::{include} ../../../../tests/gwb-dat/world_builder_declarations_open.md
+:::{include} ../../../world_builder_declarations_open.md
 ::::
 
 ::::{tab-item} Only root open
 :name: root_open
 
-:::{include} ../../../../tests/gwb-dat/world_builder_declarations_closed.md
+:::{include} ../../../world_builder_declarations_closed.md
 ::::
 
 :::::

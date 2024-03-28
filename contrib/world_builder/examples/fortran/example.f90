@@ -10,7 +10,7 @@ IMPLICIT NONE
   REAL*8 :: composition
   character(len=256) :: file_name = "../../tests/data/continental_plate.wb"//C_NULL_CHAR
   logical(1) :: has_output_dir = .false.
-  character(len=256) :: output_dir = "../../doc/manual/"//C_NULL_CHAR
+  character(len=256) :: output_dir = "../../doc/"//C_NULL_CHAR
 
   ! Show how to call the functions.
   CALL create_world(cworld, file_name, has_output_dir, output_dir, random_number_seed)

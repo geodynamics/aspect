@@ -11,6 +11,8 @@ ba = "ba"
 
 # Don't correct some other abbreviations
 FOT = "FOT"
+LinearNDInterpolator = "LinearNDInterpolator"
+ND = "ND"
 
 # Don't check the following files
 [files]

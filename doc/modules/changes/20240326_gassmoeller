@@ -1,0 +1,6 @@
+Changed: The solver used during the expensive iterations of
+the AMG preconditioner has been changed from the trilinos implementation
+to the one provided by deal.II. The new solver should be faster and more
+stable, but can produce marginally different results.
+<br>
+(Rene Gassmoeller, 2024/03/26)

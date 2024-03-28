@@ -20,3 +20,12 @@ end
 subsection Boundary velocity model
   set Tangential velocity boundary indicators =
 end
+
+# Enabling the free surface during the model run can throw off
+# the solver. Loosen the tolerance of the A block preconditioner
+# to allow for solver convergence.
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver A block tolerance = 1e-1
+  end
+end

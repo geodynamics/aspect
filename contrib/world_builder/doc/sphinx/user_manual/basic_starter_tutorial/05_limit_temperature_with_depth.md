@@ -3,10 +3,10 @@ Limit temperature with depth
 ============================
 
 
-As you may have noticed, the temperature and compositional field 0 in the model so far, reaches all the way to the bottom of the model. This is far from ideal since our model is 500km deep and the oceanic lithosphere should only reach about 100km and the "crustal composition" should only reach 25km. Luckily, this is easily solved. There are a few ways of doing this, but we can start by setting a global maximum depth of 100km for the whole feature. This is as easy as adding `"max depth":100e3,` to the end of line 7. Please note that units are in meters. Next, we can also do this to individual objects, so let's limit the uniform composition by adding `"max depth":50e3,`. 
+As you may have noticed, the temperature and compositional field 0 in the model both extend to the bottom of the model. However, our model is 500km deep and the oceanic lithosphere should only extend to 100km while the "crustal composition" should only extend to 50km in depth. Luckily, this is easily solved. We start by setting a global maximum depth of 100km for the whole feature by adding `"max depth":100e3` to the end of line 7. We can also set maximums for individual objects so let's limit the uniform composition by adding `"max depth":50e3` to line 12. Please note that units are in meters.
 
 ```{note}
-If we would have set the max depth of the composition to be larger than the feature max depth of the feature, the composition will be be cut off by the feature max depth.
+If the `max depth` of the composition is larger than the feature `max depth`, the composition will be be cut off as it is limited by the feature `max depth`.
 ```
 
 ::::::{tab-set}
@@ -64,5 +64,5 @@ If we would have set the max depth of the composition to be larger than the feat
 :alt: Basic Starter Tutorial section 5. 
 :align: center
 
-Basic Starter Tutorial section 5. The top part of the figure shows where the composition as been assigned as an object. Currently it only shows composition 0 as green which is now limited to 100km depth. The bottom part shows the temperature as seen slightly from below. This shows that the overriding plate with a temperature of 293K is now limited to 100km depth.
+Basic Starter Tutorial section 5. The top part of the figure shows where the composition has been assigned as an object. Composition 0 (green) is now limited to 50km in depth. The bottom part shows the temperature as viewed slightly from below. The temperature of the overriding plate (blue), 293K, is now limited to 100km in depth.
 ```

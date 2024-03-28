@@ -1,0 +1,38 @@
+{
+  "version": "0.6",
+  "surface temperature":273.15,
+  "potential mantle temperature":1573.15,
+  "features":
+  [
+    {"model":"mantle layer", "name":"upper mantle", "min depth":0, "max depth":100e3, "coordinates":[[-1e3,-1e3],[251e3,-1e3],[251e3,101e3],[-1e3,101e3]],
+     "temperature models":[{"model":"linear", "min depth":0, "max depth":100e3, "top temperature":1600, "bottom temperature":1601}]
+    },
+    
+    {
+      "model":"plume", 
+      "name":"plume A", 
+      "min depth":10e2,
+      "max depth":150e3,
+      "coordinates":[[50e3, 50e3],[50e3, 50e3],[50e3, 50e3],[50e3, 50e3]],
+      "cross section depths":[40e3, 50e3, 75e3, 150e3],
+      "semi-major axis":[50e3, 35e3, 40e3, 45e3],
+      "eccentricity":[0.5, 0.5, 0.5, 0.5],
+      "rotation angles":[345, 355, 5, 15],
+      "temperature models":
+      [
+        {
+          "model":"gaussian",
+          "operation":"add",
+          "centerline temperatures":[200, 300, 400],
+          "gaussian sigmas":[0.3, 0.3, 0.3],
+          "depths":[40e3, 60e3, 150e3]
+        }
+      ], 
+      
+      "composition models":
+      [
+        {"model":"uniform","compositions":[1], "min depth":0, "max depth":100e3}
+      ]
+    }
+  ]
+}

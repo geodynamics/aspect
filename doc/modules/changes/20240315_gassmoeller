@@ -1,0 +1,6 @@
+Removed: The outdated input option for the geoid postprocessor named
+'Include the contributon from dynamic topography' has been removed.
+Use 'Include surface topography contribution' or 'Include CMB topography
+contribution' instead.
+<br>
+(Rene Gassmoeller, 2024/03/15)

@@ -228,15 +228,19 @@ namespace aspect
       const std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
       if (this->introspection().compositional_name_exists("sediment_age"))
         {
-          AssertThrow(chemical_field_names.find("sediment_age") == std::string::npos,
-                      ExcMessage("There is a field sediment_age that is of type chemical composition. "
-                                 "Please change it to type generic so that it does not affect material properties."));
+          const std::vector<std::string>::const_iterator
+          it = std::find(chemical_field_names.begin(), chemical_field_names.end(), "sediment_age");
+          AssertThrow (it == chemical_field_names.end(),
+                       ExcMessage("There is a field sediment_age that is of type chemical composition. "
+                                  "Please change it to type generic so that it does not affect material properties."));
         }
       if (this->introspection().compositional_name_exists("deposition_depth"))
         {
-          AssertThrow(chemical_field_names.find("deposition_depth") != std::string::npos,
-                      ExcMessage("There is a field deposition_depth that is of type chemical composition. "
-                                 "Please change it to type generic so that it does not affect material properties."));
+          const std::vector<std::string>::const_iterator
+          it = std::find(chemical_field_names.begin(), chemical_field_names.end(), "deposition_depth");
+          AssertThrow (it == chemical_field_names.end(),
+                       ExcMessage("There is a field deposition_depth that is of type chemical composition. "
+                                  "Please change it to type generic so that it does not affect material properties."));
         }
 
       // Initialize parameters for restarting FastScape

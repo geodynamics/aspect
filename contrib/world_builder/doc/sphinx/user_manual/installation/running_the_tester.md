@@ -2,7 +2,7 @@
 Running the tester
 ==================
 
-Once you have installed the GWB, it is always a good idea to run the tester to see if the installation works. There are a few ways to call the tester:`make test`, `ninja test` and `ctest`. They can all run the same tests suit, but `ctest` is the most universal and versatile of the option. Running CTest may give you output like below:
+Once you have installed the GWB, it is always a good idea to run the tester to see if the installation works. There are a few ways to call the tester: `make test`, `ninja test` and `ctest`. They can all run the same tests suite, but `ctest` is the most universal and versatile of the options. Running CTest may give you output like below:
 
 ```
 Test project /path/toworld-builder/WorldBuilder/build-rl
@@ -23,7 +23,7 @@ Test project /path/toworld-builder/WorldBuilder/build-rl
  ...
  ```
 
- If everything went fine, it will report success. If not it will show something like this at the end:
+ If everything went fine, it will report success. If not, it will show something like this at the end:
 
 ```
 70/74 Test #70: compile_simple_fortran_example ....................   Passed    0.28 sec
@@ -47,7 +47,7 @@ Output from these tests are in: /path/to/world-builder/WorldBuilder/build-rl/Tes
 Use "--rerun-failed --output-on-failure" to re-run the failed cases verbosely.
 ```
 
-Tests can fail for a number of reason without there being a major issue, but you will need to look at them to know whether there is an issue or not. One example is that on different computers there may be very small differences in the outcome. That is, if the differences between the reference output and the generated output are **very** small, the installation is usually fine. Below we will explain how to find out how big the differences are. One way to mitigate this problem a bit is to install a program called `numdiff`. `Numdiff` is a program which can recognize numbers and only reports a difference if it is significant. The GWB will prefer to use `numdiff` over the normal `diff`, if `numdiff` is installed. 
+Tests can fail for a number of reasons without there being a major issue but you will need to look at them to know whether there is an issue or not. One example is that on different computers, there may be very small differences in the outcome. That is, if the differences between the reference output and the generated output are **very** small, the installation is usually fine. Below we will explain how to find out how big the differences are. One way to mitigate this problem is to install a program called `numdiff`. `Numdiff` is a program which can recognize numbers and only reports a difference if it is significant. The GWB will prefer to use `numdiff` over the normal `diff`, if `numdiff` is installed. 
 
 An other example is the problem shown above, which we will now investigate. The easiest way is to use `ctest --rerun-failed --output-on-failure`. This will only rerun the tests which failed and provide output when it fails.
 
@@ -83,4 +83,4 @@ The following tests FAILED:
 Errors while running CTest
 ```
 
-The reason for this particular error is that although you compiled the GWB python module, you didn't install it to a place python can find it. If you are not planning to use the GWB python module, you can safely ignore this error.
+The reason for this particular error is that although you compiled the GWB Python module, you didn't install it to a place Python can find it. If you are not planning to use the GWB Python module, you can safely ignore this error.

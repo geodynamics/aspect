@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -100,23 +100,6 @@ namespace WorldBuilder
       return coordinate_system;
     }
 
-
-    double NaturalCoordinate::get_depth_coordinate() const
-    {
-      switch (coordinate_system)
-        {
-          case CoordinateSystem::cartesian:
-            return coordinates[2];
-
-          case CoordinateSystem::spherical:
-            return coordinates[0];
-
-          default:
-            WBAssertThrow (false, "Coordinate system not implemented.");
-        }
-
-      return 0;
-    }
 
     double &NaturalCoordinate::get_ref_depth_coordinate()
     {

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -95,65 +95,6 @@ namespace WorldBuilder
 
     };
   } // namespace Types
-
-  namespace Objects
-  {
-
-    /**
-      * This class represents an actual segment
-      */
-    template <class A, class B, class C>
-    class Segment final: public Types::Interface
-    {
-      public:
-
-        /**
-         * A constructor for the clone and set_entry function
-         */
-        Segment(const double default_length,
-                const WorldBuilder::Point<2> &default_thickness,
-                const WorldBuilder::Point<2> &default_top_truncation,
-                const WorldBuilder::Point<2> &default_angle,
-                std::vector<std::shared_ptr<A> > temperature_systems,
-                std::vector<std::shared_ptr<B> > composition_systems,
-                std::vector<std::shared_ptr<C> > grains_systems);
-
-        /**
-         * Copy constructor
-         */
-        Segment(Segment const &other);
-
-        /**
-         * Destructor
-         */
-        ~Segment() override final;
-
-        /**
-         * Todo
-         */
-        void write_schema(Parameters &prm,
-                          const std::string &name,
-                          const std::string &documentation) const override final;
-
-
-        double value_length;
-        double default_length;
-        WorldBuilder::Point<2> value_thickness;
-        WorldBuilder::Point<2> value_top_truncation;
-        WorldBuilder::Point<2> value_angle;
-        std::vector<std::shared_ptr<A> > temperature_systems;
-        std::vector<std::shared_ptr<B> > composition_systems;
-        std::vector<std::shared_ptr<C> > grains_systems;
-
-      protected:
-        Segment *clone_impl() const override final
-        {
-          return new Segment(*this);
-        };
-      private:
-
-    };
-  } // namespace Objects
 } // namespace WorldBuilder
 
 #endif

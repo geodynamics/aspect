@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -77,7 +77,7 @@ namespace WorldBuilder
       inline
       const double &operator[](const bool y_axis) const
       {
-        WBAssert(abs((y_axis ? y : x) - *(&x+y_axis)) < std::numeric_limits<double>::epsilon(),
+        WBAssert(std::fabs((y_axis ? y : x) - *(&x+y_axis)) < std::numeric_limits<double>::epsilon(),
                  "Internal error: y_axis=" << y_axis << ", x=" << x << ", y=" << y <<", *(&x+y_axis)=" << *(&x+y_axis) << ", ((bool)y_axis ? x : y) - *(&x+y_axis)=" << abs(((bool)y_axis ? x : y) - *(&x+y_axis)));
         return *(&x+y_axis);
       }
@@ -89,7 +89,7 @@ namespace WorldBuilder
         /**
          * Constructor.
          */
-        KDTree() {};
+        KDTree() = default;
         /**
          * Constructor. Requires a list of Nodes.
          */

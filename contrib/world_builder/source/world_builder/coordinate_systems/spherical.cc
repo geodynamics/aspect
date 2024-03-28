@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018-2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -116,30 +116,18 @@ namespace WorldBuilder
     double
     Spherical::distance_between_points_at_same_depth(const Point<3> &point_1, const Point<3> &point_2) const
     {
-
       WBAssert(point_1.get_coordinate_system() == spherical,
                "Can not convert non spherical points through the spherical coordinate system.");
       WBAssert(point_2.get_coordinate_system() == spherical,
                "Can not convert non spherical points through the spherical coordinate system.");
       const double radius = point_1[0];
       WBAssert((radius - point_2[0]) < std::numeric_limits<double>::epsilon() * std::max(1.0,radius), "The radius of point 1 is not the same as the radius of point 2.");
-      const double lat_1 = point_1[1];
-      const double lat_2 = point_2[1];
-      const double long_1 = point_1[2];
-      const double long_2 = point_2[2];
-      const double long_diff = std::fabs(long_1 - long_2);
-      const double sin_lat_1 = std::sin(lat_1);
-      const double sin_lat_2 = std::sin(lat_2);
-      const double cos_lat_1 = std::cos(lat_1);
-      const double cos_lat_2 = std::cos(lat_2);
-      const double sin_long_diff = std::sin(long_diff);
-      const double cos_long_diff = std::cos(long_diff);
 
-      const double top = std::sqrt((cos_lat_2 * sin_long_diff) * (cos_lat_2 * sin_long_diff) +
-                                   (cos_lat_1 * sin_lat_2 - sin_lat_1 * cos_lat_2 * cos_long_diff) * (cos_lat_1 * sin_lat_2 - sin_lat_1 * cos_lat_2 * cos_long_diff));
-      const double bottom = sin_lat_1 * sin_lat_2 + cos_lat_1 * cos_lat_2 * cos_long_diff;
+      // based on https://math.stackexchange.com/questions/1304169/distance-between-two-points-on-a-sphere
+      const Point<3> point_1_cart = Utilities::spherical_to_cartesian_coordinates(point_1.get_array());
+      const Point<3> point_2_cart = Utilities::spherical_to_cartesian_coordinates(point_2.get_array());
 
-      return radius * std::atan2(top, bottom);
+      return radius * std::acos(std::min(1.,std::max(0.,point_1_cart*point_2_cart/(radius*radius))));
     }
 
 

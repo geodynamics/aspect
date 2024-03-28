@@ -68,5 +68,3 @@ In this case we are going to change the values for the first coordinate, which i
 
 Basic Starter Tutorial section 15 high resolution result. This has 8 times the resolution then the grid file above. Note that the part of the slab on the far side now has a different composition and angle.
 ```
-
-This covers the full complexity of the world builder model we are building for this tutorial. Well done for making it this far! You should now be able to start building your own models in the world builder. In the next two tutorials, we are going to take a look at how to create a 2D model from this 3D model and how to make this into a spherical model.

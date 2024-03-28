@@ -1,0 +1,38 @@
+{
+  "version": "0.6",
+  "coordinate system":{"model":"spherical", "depth method":"starting point"},
+  "maximum distance between coordinates":0.01,
+  "thermal expansion coefficient":0.0,
+  "features":
+  [
+    {"model":"mantle layer", "name":"upper mantle", "min depth":0, "max depth":1000e3, "coordinates":[[-1,-1],[41,-1],[41,-1],[-1,-1]],
+     "temperature models":[{"model":"linear", "min depth":0, "max depth":1000e3, "top temperature":1600, "bottom temperature":1600}]
+    },
+    
+    {
+      "model":"plume", 
+      "name":"plume A", 
+      "min depth":10e2,
+      "coordinates":[[7.5, 7.5],[7.5, 8],[7.5,9]],
+      "cross section depths":[300e3, 500e3, 1000e3],
+      "semi-major axis":[7, 6, 7],
+      "eccentricity":[0.8, 0.8, 0.8],
+      "rotation angles":[355, 40, 90],
+      "temperature models":
+      [
+        {
+          "model":"gaussian",
+          "operation":"add",
+          "centerline temperatures":[200, 300],
+          "gaussian sigmas":[0.3, 0.3],
+          "depths":[200e3, 1000e3]
+        }
+      ], 
+      
+      "composition models":
+      [
+        {"model":"uniform","compositions":[1], "min depth":10e2, "max depth":500e3}
+      ]
+    }
+  ]
+}

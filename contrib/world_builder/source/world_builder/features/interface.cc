@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -49,7 +49,6 @@ namespace WorldBuilder
 
         WBAssertThrow(false,
                       "You provided an interpolation type which is not supported: " << string
-                      << "The options are none, linear, monotone spline and continuous monotone spline. "
                       << "This may be due to all options besides continuous monotone spline have been "
                       << "removed since version 0.5. It is best to remove the interpolation variable "
                       << "from you input file as it may be removed in future versions.");
@@ -68,6 +67,30 @@ namespace WorldBuilder
     Interface::declare_entries(Parameters &prm, const std::string &parent_name, const std::vector<std::string> &required_entries)
     {
 
+      {
+        using namespace rapidjson;
+        Document &declarations = prm.declarations;
+
+        prm.enter_subsection("defaultSnippets");
+        const std::string path = prm.get_full_json_path();
+
+        unsigned int idx = 0;
+        for (auto  &it : get_snippet_map())
+          {
+            std::string item =  path + "/"+std::to_string(idx);
+
+            Pointer((item).c_str()).Set(declarations, "object");
+            Pointer((item+"/label").c_str()).Set(declarations,("add a '" + it.first + "'").c_str());
+            prm.enter_subsection(std::to_string(idx).c_str());
+            it.second(prm);
+            prm.leave_subsection();
+
+            ++idx;
+          }
+
+        prm.leave_subsection();
+      }
+
       unsigned int counter = 0;
       for (auto  &it : get_declare_map())
         {
@@ -81,17 +104,23 @@ namespace WorldBuilder
                 prm.declare_entry("", Types::Object(required_entries), "feature object");
 
                 prm.declare_entry("model", Types::String("",it.first),
-                                  "The name which the user has given to the feature.");
+                                  "The model name of the feature determining its type.");
                 prm.declare_entry("name", Types::String(""),
-                                  "The name which the user has given to the feature.");
+                                  "The name which the user has given to the feature. "
+                                  "This is mostly used for documentation purposes, and should in most cases be unique, "
+                                  "although this is not enforced.");
+                prm.declare_entry("tag", Types::String(""),
+                                  "A tag which can be given to a feature. This is meant to categorize different features. "
+                                  "If the tag is not provided or empty, it is set to the model name.");
                 prm.declare_entry("coordinates", Types::Array(Types::Point<2>(), 1),
                                   "An array of 2d Points representing an array of coordinates where the feature is located.");
 
                 prm.declare_entry("interpolation",Types::String("global"),
                                   "What type of interpolation should be used to enforce the minimum points per "
-                                  "distance parameter. Options are global, none, linear, monotone spline and "
-                                  "continuous monotone spline interpolation. If this "
-                                  "value is set to global, the global value for interpolation is used.");
+                                  "distance parameter. Options are 'global' and "
+                                  "'continuous monotone spline' interpolation. If this "
+                                  "value is set to global, the global value for interpolation is used. "
+                                  "This option is deprecated and will be removed in a future release.");
                 WBAssert(it.second != NULL, "No declare entries given.");
                 it.second(prm, parent_name, {});
               }
@@ -138,10 +167,12 @@ namespace WorldBuilder
     void
     Interface::registerType(const std::string &name,
                             void ( *declare_entries)(Parameters &, const std::string &,const std::vector<std::string> &),
+                            void ( *make_snippet)(Parameters &),
                             ObjectFactory *factory)
     {
       get_factory_map()[name] = factory;
       get_declare_map()[name] = declare_entries;
+      get_snippet_map()[name] = make_snippet;
     }
 
     std::unique_ptr<Interface>

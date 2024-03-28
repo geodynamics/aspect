@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -24,8 +24,9 @@
 #include "world_builder/features/fault_models/composition/interface.h"
 #include "world_builder/features/fault_models/grains/interface.h"
 #include "world_builder/features/fault_models/temperature/interface.h"
-#include "world_builder/types/segment.h"
+#include "world_builder/objects/segment.h"
 #include "world_builder/bounding_box.h"
+#include "world_builder/objects/distance_from_surface.h"
 
 
 namespace WorldBuilder
@@ -79,6 +80,12 @@ namespace WorldBuilder
                              const std::vector<std::string> &required_entries = {});
 
         /**
+         * Produce a JSON snippet for the schema
+         */
+        static
+        void make_snippet(Parameters &prm);
+
+        /**
          * declare and read in the world builder file into the parameters class
          */
         void parse_entries(Parameters &prm) override final;
@@ -128,6 +135,15 @@ namespace WorldBuilder
                    const double gravity,
                    const std::vector<size_t> &entry_in_output,
                    std::vector<double> &output) const override final;
+
+        /**
+        * Returns a PlaneDistances object that has the distance from and along a fault plane,
+        * calculated from the coordinates and the depth of the point.
+        */
+        Objects::PlaneDistances
+        distance_to_feature_plane(const Point<3> &position_in_cartesian_coordinates,
+                                  const Objects::NaturalCoordinate &position_in_natural_coordinates,
+                                  const double depth) const override;
 
       private:
         std::vector<std::shared_ptr<Features::FaultModels::Temperature::Interface> > default_temperature_models;

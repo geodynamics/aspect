@@ -10,6 +10,6 @@ include $ASPECT_SOURCE_DIR/tests/simple_incompressible.prm
 subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 0
-    set Linear solver S block tolerance = 1e-35
+    set Linear solver S block tolerance = 0
   end
 end

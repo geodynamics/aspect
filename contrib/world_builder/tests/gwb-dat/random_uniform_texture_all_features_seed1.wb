@@ -1,0 +1,54 @@
+{
+    "version": "0.6",
+    "coordinate system":{"model":"cartesian"},
+    "random number seed":1,
+    "features":
+    [
+      {
+        "model":"continental plate", "name":"Overriding Plate", "max depth":100e3, 
+        "coordinates":[[0,0],[0,1000e3],[1500e3,1000e3],[1500e3,0]],
+        "temperature models":[{"model":"uniform", "temperature":293}],
+        "composition models":[{"model":"uniform", "compositions":[0]}],
+        "grains models": [{"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                           "normalize grain sizes":[true], "deflections":[0.1]}]
+      },
+
+      {
+        "model":"oceanic plate", "name":"Subducting Plate", "max depth":100e3, 
+        "coordinates":[[1500e3,0],[1500e3,1000e3],[2500e3,1000e3],[2500e3,0]],
+        "temperature models":[{"model":"uniform", "temperature":293}],
+        "composition models":[{"model":"uniform", "compositions":[1]}],
+        "grains models": [{"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                           "normalize grain sizes":[true], "deflections":[0.2]}]
+      },
+
+      {
+        "model":"mantle layer", "name":"Mantle", "min depth":100e3, 
+        "coordinates":[[0,0],[0,1000e3],[2500e3,1000e3],[2500e3,0]],
+        "temperature models":[{"model":"uniform", "temperature":293}],
+        "composition models":[{"model":"uniform", "compositions":[2]}],
+        "grains models": [{"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                           "normalize grain sizes":[true], "deflections":[0.3]}]
+      },
+
+      {
+        "model":"subducting plate", "name":"Slab", "min depth":0e3, 
+        "coordinates":[[1500e3,0],[1500e3,500e3],[1500e3,1000e3]], "dip point":[10, 10],
+        "segments":[{"length":500e3, "thickness":[100e3], "angle":[50]}],
+        "temperature models":[{"model":"uniform", "temperature":10}],
+        "composition models":[{"model":"uniform", "compositions":[3]}],
+        "grains models": [{"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                           "normalize grain sizes":[true], "deflections":[0.4]}]
+      },
+
+      {
+        "model":"fault", "name":"Fault", "min depth":0e3, 
+        "coordinates":[[1000e3,0],[1000e3,500e3],[1000e3,1000e3]], "dip point":[10, 10],
+        "segments":[{"length":200e3, "thickness":[200e3], "angle":[90]}],
+        "temperature models":[{"model":"uniform", "temperature":10}],
+        "composition models":[{"model":"uniform", "compositions":[4]}],
+        "grains models": [{"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                           "normalize grain sizes":[true], "deflections":[0.5]}]
+      }
+    ]
+}

@@ -31,12 +31,20 @@
 #include "world_builder/point.h"
 #include "world_builder/utilities.h"
 #include "world_builder/world.h"
+#include "world_builder/config.h"
+
+#include <algorithm>
+#include <limits>
+
 
 #include "vtu11/vtu11.hpp"
 #undef max
 #undef min
 
 #ifdef WB_WITH_MPI
+// we don't need the c++ MPI wrappers
+#define OMPI_SKIP_MPICXX 1
+#define MPICH_SKIP_MPICXX
 #include <mpi.h>
 #endif
 
@@ -59,6 +67,71 @@
 using namespace WorldBuilder;
 using namespace WorldBuilder::Utilities;
 
+
+
+/**
+ * Filter the cells of a VTU mesh based on a given tag. All tags with smaller value than @p first_tag will be removed
+ */
+void filter_vtu_mesh(int dim,
+                     const std::vector<bool> &include_tag,
+                     vtu11::Vtu11UnstructuredMesh &input_mesh,
+                     const std::vector<vtu11::DataSetData> &input_data,
+                     vtu11::Vtu11UnstructuredMesh &output_mesh,
+                     std::vector<vtu11::DataSetData> &output_data);
+
+void filter_vtu_mesh(int dim,
+                     const std::vector<bool> &include_tag,
+                     vtu11::Vtu11UnstructuredMesh &input_mesh,
+                     const std::vector<vtu11::DataSetData> &input_data,
+                     vtu11::Vtu11UnstructuredMesh &output_mesh,
+                     std::vector<vtu11::DataSetData> &output_data)
+{
+  output_data.resize(input_data.size());
+  const std::int64_t invalid = static_cast<std::uint64_t>(-1);
+  std::vector<std::int64_t> vertex_index_map(input_mesh.points().size(), invalid);
+
+  const unsigned int n_vert_per_cell = (dim==3)?8:4;
+
+  const std::size_t n_cells = input_mesh.types().size();
+  std::uint64_t dst_cellid = 0;
+  for (std::size_t cellidx = 0; cellidx <n_cells; ++cellidx)
+    {
+      int highest_tag = -1;
+      for (unsigned int idx=cellidx*n_vert_per_cell; idx<(cellidx+1)*n_vert_per_cell; ++idx)
+        {
+          const std::int64_t src_vid = input_mesh.connectivity()[idx];
+          highest_tag = std::max(highest_tag,static_cast<int>(input_data[2][src_vid]));
+        }
+      if (highest_tag < 0 || include_tag[highest_tag]==false)
+        continue;
+
+      ++dst_cellid;
+
+      for (unsigned int idx=cellidx*n_vert_per_cell; idx<(cellidx+1)*n_vert_per_cell; ++idx)
+        {
+          const std::int64_t src_vid = input_mesh.connectivity()[idx];
+
+          std::int64_t dst_vid = vertex_index_map[src_vid];
+          if (dst_vid == invalid)
+            {
+              dst_vid = output_mesh.points().size()/3;
+              vertex_index_map[src_vid] = dst_vid;
+
+              for (int i=0; i<3; ++i)
+                output_mesh.points().push_back(input_mesh.points()[src_vid*3+i]);
+
+              for (unsigned int d=0; d<input_data.size(); ++d)
+                output_data[d].push_back(input_data[d][src_vid]);
+            }
+
+          output_mesh.connectivity().push_back(dst_vid);
+
+        }
+      output_mesh.offsets().push_back(dst_cellid*n_vert_per_cell);
+
+      output_mesh.types().push_back(input_mesh.types()[cellidx]);
+    }
+}
 
 /**
  * A very simple threadpool class. The threadpool currently only supports a
@@ -220,9 +293,14 @@ int main(int argc, char **argv)
   /**
    * First parse the command line options
    */
-  std::cout << "[1/6] Parsing file...                         \r";
   std::string wb_file;
   std::string data_file;
+
+  // If set to true, we will output one visualization file per "tag"
+  // with only the cells corresponding to that tag included.
+  bool output_by_tag = false;
+  // If set to true, we output a .filtered.vtu file without the background/mantle
+  bool output_filtered = false;
 
   size_t dim = 3;
   size_t compositions = 0;
@@ -243,18 +321,38 @@ int main(int argc, char **argv)
   double z_min = NaN::DSNAN; // z or inner_radius
   double z_max = NaN::DSNAN; // z or outer_radius
 
-  size_t number_of_threads = 1;
+  // Conservative choice for the number of threads to use:
+  size_t number_of_threads = std::min(20u,1+std::thread::hardware_concurrency()/2);
+  unsigned int max_resolution = std::numeric_limits<unsigned int>::max();
 
   try
     {
+      if (find_command_line_option(argv, argv+argc, "-v") || find_command_line_option(argv, argv+argc, "--version"))
+        {
+          std::cout << "World Builder Grid Visualization tool.\n"
+                    << "GWB Version: " << WorldBuilder::Version::MAJOR << "."
+                    << WorldBuilder::Version::MINOR << "."
+                    << WorldBuilder::Version::PATCH << "."
+                    << WorldBuilder::Version::LABEL << "\n"
+                    << "git hash: " << WorldBuilder::Version::GIT_SHA1 << " branch: " << WorldBuilder::Version::GIT_BRANCH
+                    << std::endl;
+          return 0;
+        }
 
       if (find_command_line_option(argv, argv+argc, "-h") || find_command_line_option(argv, argv+argc, "--help"))
         {
-          std::cout << "This program allows to use the world builder library directly with a world builder file and a grid file. "
-                    "The data file will be filled with initial conditions from the world as set by the world builder file." << std::endl
-                    << "Besides providing two files, where the first is the world builder file and the second is the grid file, the available options are: " << std::endl
-                    << "-h or --help to get this help screen," << std::endl
-                    << "-j the number of threads the visualizer is allowed to use." << std::endl;
+          std::cout << "World Builder Grid Visualization tool.\n"
+                    <<  "This program loads a world builder file and generates a visualization on a structured grid "
+                    << "based on information specified in a separate .grid configuration file.\n\n"
+                    << "Usage:\n"
+                    << argv[0] << " [-j N] [--filtered] [--by-tag] example.wb example.grid\n\n"
+                    << "Available options:\n"
+                    << "  -j N                  Specify the number of threads the visualizer is allowed to use. Default: " << number_of_threads << ".\n"
+                    << "  --filtered            Also produce a .filtered.vtu that removes cells only containing mantle or background.\n"
+                    << "  --by-tag              Also produce a sequence of .N.vtu files that only contain cells of a specific tag.\n"
+                    << "  --resolution-limit X  Specify a maximum resolution."
+                    << "  -h or --help          To get this help screen.\n"
+                    << "  -v or --version       To see version information.\n";
           return 0;
         }
 
@@ -267,29 +365,38 @@ int main(int argc, char **argv)
               number_of_threads = Utilities::string_to_unsigned_int(options_vector[i+1]);
               options_vector.erase(options_vector.begin()+static_cast<std::vector<std::string>::difference_type>(i));
               options_vector.erase(options_vector.begin()+static_cast<std::vector<std::string>::difference_type>(i));
+              --i;
+              continue;
             }
-        }
-
-
-      if (options_vector.empty())
-        {
-          std::cout << "Error: There where no files passed to the World Builder, use --help for more " << std::endl
-                    << "information on how  to use the World Builder app." << std::endl;
-          return 0;
-        }
-
-
-      if (options_vector.size() == 1)
-        {
-          std::cout << "Error:  The World Builder app requires at least two files, a World Builder file " << std::endl
-                    << "and a data file to convert." << std::endl;
-          return 0;
+          if (options_vector[i] == "--filtered")
+            {
+              output_filtered = true;
+              options_vector.erase(options_vector.begin()+static_cast<std::vector<std::string>::difference_type>(i));
+              --i;
+              continue;
+            }
+          if (options_vector[i] == "--by-tag")
+            {
+              output_by_tag = true;
+              options_vector.erase(options_vector.begin()+static_cast<std::vector<std::string>::difference_type>(i));
+              --i;
+              continue;
+            }
+          if (options_vector[i] == "--resolution-limit")
+            {
+              max_resolution = Utilities::string_to_unsigned_int(options_vector[i+1]);
+              options_vector.erase(options_vector.begin()+static_cast<std::vector<std::string>::difference_type>(i));
+              options_vector.erase(options_vector.begin()+static_cast<std::vector<std::string>::difference_type>(i));
+              --i;
+              continue;
+            }
         }
 
       if (options_vector.size() != 2)
         {
-          std::cout << "Only two command line arguments may be given, which should be the world builder file location and the grid file location (in that order). "
-                    << "command line options where given." << std::endl;
+          std::cout << "World Builder Grid Visualization tool.\n"
+                    << "Usage: " << argv[0] << " example.wb example.grid\n"
+                    << "Try '" << argv[0] << " --help' for more information." << std::endl;
           return 0;
         }
 
@@ -315,6 +422,8 @@ int main(int argc, char **argv)
   MPI_Init(&argc,&argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &MPI_RANK);
 #endif
+
+  std::cout << "[1/6] Parsing file...                         \r";
 
   if (MPI_RANK ==  0)
     {
@@ -364,7 +473,7 @@ int main(int argc, char **argv)
 
       // if config file is available, parse it
       WBAssertThrow(data_stream.good(),
-                    "Could not find the provided convig file at the specified location: " + data_file);
+                    "Could not find the provided config file at the specified location: " + data_file);
 
 
       // move the data into a vector of strings
@@ -427,11 +536,11 @@ int main(int argc, char **argv)
             z_max = string_to_double(line_i[2]);
 
           if (line_i[0] == "n_cell_x" && line_i[1] == "=")
-            n_cell_x = string_to_unsigned_int(line_i[2]);
+            n_cell_x = std::min(string_to_unsigned_int(line_i[2]),max_resolution);
           if (line_i[0] == "n_cell_y" && line_i[1] == "=")
-            n_cell_y = string_to_unsigned_int(line_i[2]);
+            n_cell_y = std::min(string_to_unsigned_int(line_i[2]),max_resolution);
           if (line_i[0] == "n_cell_z" && line_i[1] == "=")
-            n_cell_z = string_to_unsigned_int(line_i[2]);
+            n_cell_z = std::min(string_to_unsigned_int(line_i[2]),max_resolution);
 
         }
 
@@ -473,7 +582,7 @@ int main(int argc, char **argv)
 
       if (grid_type == "spherical" ||
           grid_type == "chunk" ||
-          grid_type == "anullus")
+          grid_type == "annulus")
         {
           x_min *= (Consts::PI/180);
           x_max *= (Consts::PI/180);
@@ -745,6 +854,7 @@ int main(int argc, char **argv)
                   grid_x[counter] = std::cos(theta) * (inner_radius + zi);
                   grid_z[counter] = std::sin(theta) * (inner_radius + zi);
                   grid_depth[counter] = outer_radius - std::sqrt(grid_x[counter] * grid_x[counter] + grid_z[counter] * grid_z [counter]);
+                  grid_depth[counter] = (std::fabs(grid_depth[counter]) < 1e-8 ? 0 : grid_depth[counter]);
                   counter++;
                 }
             }
@@ -778,7 +888,6 @@ int main(int argc, char **argv)
           const double inner_radius = z_min;
           const double outer_radius = z_max;
 
-          WBAssertThrow(dim ==3, "2D is currently not supported for the chunk.");
           WBAssertThrow(x_min <= x_max, "The minimum longitude must be less than the maximum longitude.");
           WBAssertThrow(y_min <= y_max, "The minimum latitude must be less than the maximum latitude.");
           WBAssertThrow(inner_radius < outer_radius, "The inner radius must be less than the outer radius.");
@@ -1232,9 +1341,9 @@ int main(int argc, char **argv)
             {
               if (!double_points[i])
                 {
-                  shell_grid_x[counter] = temp_x[i];
-                  shell_grid_y[counter] = temp_y[i];
-                  shell_grid_z[counter] = temp_z[i];
+                  shell_grid_x[counter] = fabs(temp_x[i]) < 1e-8 ? 0. : temp_x[i];
+                  shell_grid_y[counter] = fabs(temp_y[i]) < 1e-8 ? 0. : temp_y[i];
+                  shell_grid_z[counter] = fabs(temp_z[i]) < 1e-8 ? 0. : temp_z[i];
 
                   counter++;
                 }
@@ -1333,6 +1442,7 @@ int main(int argc, char **argv)
                   grid_y[j] = temp_shell_grid_y[counter];
                   grid_z[j] = temp_shell_grid_z[counter];
                   grid_depth[j] = outer_radius - std::sqrt(grid_x[j] * grid_x[j] + grid_y[j] * grid_y[j] + grid_z[j] * grid_z[j]);
+                  grid_depth[j] = (std::fabs(grid_depth[j]) < 1e-8 ? 0 : grid_depth[j]);
 
                   counter++;
                 }
@@ -1446,6 +1556,7 @@ int main(int argc, char **argv)
       {
         { "Depth", vtu11::DataSetType::PointData, 1 },
         { "Temperature", vtu11::DataSetType::PointData, 1 },
+        { "Tag", vtu11::DataSetType::PointData, 1 },
       };
       for (size_t c = 0; c < compositions; ++c)
         {
@@ -1458,15 +1569,20 @@ int main(int argc, char **argv)
       std::vector<std::array<unsigned ,3>> properties;
       properties.push_back({{1,0,0}}); // temperature
 
+      properties.push_back({{4,0,0}}); // tag
+
       for (size_t c = 0; c < compositions; ++c)
         properties.push_back({{2,(unsigned int)c,0}}); // composition c
 
+
       // compute temperature
-      std::vector<vtu11::DataSetData> data_set = { grid_depth };
-      data_set.resize(2+compositions);
+      std::vector<vtu11::DataSetData> data_set(3+compositions);
+      data_set[0] = grid_depth;
       data_set[1].resize(n_p);
+      data_set[2].resize(n_p);
       for (size_t c = 0; c < compositions; ++c)
-        data_set[2+c].resize(n_p);
+        data_set[3+c].resize(n_p);
+
       if (dim == 2)
         {
           pool.parallel_for(0, n_p, [&] (size_t i)
@@ -1474,9 +1590,10 @@ int main(int argc, char **argv)
             const std::array<double,2> coords = {{grid_x[i], grid_z[i]}};
             std::vector<double> output = world->properties(coords, grid_depth[i],properties);
             data_set[1][i] = output[0];
+            data_set[2][i] = output[1];
             for (size_t c = 0; c < compositions; ++c)
               {
-                data_set[2+c][i] = output[1+c];
+                data_set[3+c][i] = output[2+c];
               }
           });
         }
@@ -1487,18 +1604,63 @@ int main(int argc, char **argv)
             const std::array<double,3> coords = {{grid_x[i], grid_y[i], grid_z[i]}};
             std::vector<double> output = world->properties(coords, grid_depth[i],properties);
             data_set[1][i] = output[0];
+            data_set[2][i] = output[1];
             for (size_t c = 0; c < compositions; ++c)
               {
-                data_set[2+c][i] = output[1+c];
+                data_set[3+c][i] = output[2+c];
               }
           });
         }
       std::cout << "[6/6] Writing the paraview file                                                                                \r";
       std::cout.flush();
 
-      vtu11::Vtu11UnstructuredMesh mesh { points, connectivity, offsets, types };
-      vtu11::writeVtu( file_without_extension + ".vtu", mesh, dataSetInfo, data_set, vtu_output_format );
+      {
+        vtu11::Vtu11UnstructuredMesh mesh { points, connectivity, offsets, types };
+        vtu11::writeVtu( file_without_extension + ".vtu", mesh, dataSetInfo, data_set, vtu_output_format );
 
+        if (output_filtered)
+          {
+            std::vector<bool> include_tag(world->feature_tags.size(), true);
+            for (unsigned int idx = 0; idx<include_tag.size(); ++idx)
+              {
+                if (world->feature_tags[idx]=="mantle layer")
+                  include_tag[idx] = false;
+              }
+            std::vector<double> filtered_points;
+            std::vector<vtu11::VtkIndexType> filtered_connectivity;
+            std::vector<vtu11::VtkIndexType> filtered_offsets;
+            std::vector<vtu11::VtkCellType> filtered_types;
+
+            vtu11::Vtu11UnstructuredMesh filtered_mesh {filtered_points, filtered_connectivity, filtered_offsets, filtered_types};
+            std::vector<vtu11::DataSetData> filtered_data_set;
+
+            filter_vtu_mesh(dim, include_tag, mesh, data_set, filtered_mesh, filtered_data_set);
+            vtu11::writeVtu( file_without_extension + ".filtered.vtu", filtered_mesh, dataSetInfo, filtered_data_set, vtu_output_format );
+          }
+
+        if (output_by_tag)
+          {
+            for (unsigned int idx = 0; idx<world->feature_tags.size(); ++idx)
+              {
+                if (world->feature_tags[idx]=="mantle layer")
+                  continue;
+
+                std::vector<double> filtered_points;
+                std::vector<vtu11::VtkIndexType> filtered_connectivity;
+                std::vector<vtu11::VtkIndexType> filtered_offsets;
+                std::vector<vtu11::VtkCellType> filtered_types;
+
+                vtu11::Vtu11UnstructuredMesh filtered_mesh {filtered_points, filtered_connectivity, filtered_offsets, filtered_types};
+                std::vector<vtu11::DataSetData> filtered_data_set;
+
+                std::vector<bool> include_tag(world->feature_tags.size(), false);
+                include_tag[idx]=true;
+                filter_vtu_mesh(dim, include_tag, mesh, data_set, filtered_mesh, filtered_data_set);
+                const std::string filename = file_without_extension + "."+ std::to_string(idx)+".vtu";
+                vtu11::writeVtu( filename, filtered_mesh, dataSetInfo, filtered_data_set, vtu_output_format );
+              }
+          }
+      }
       std::cout << "                                                                                                               \r";
       std::cout.flush();
     }

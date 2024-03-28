@@ -1,0 +1,87 @@
+{
+  "version":"0.6",
+  "coordinate system":{"model":"cartesian"},
+  "gravity model":{"model":"uniform", "magnitude":10},
+  "cross section":[[0,0],[10000e3,0]],"surface temperature":273, "force surface temperature":true,
+  "potential mantle temperature":1673, "thermal expansion coefficient":3.1e-5, 
+  "specific heat":1000, "thermal diffusivity":1.0e-6,
+  "features":
+  [
+    {
+      "model": "oceanic plate",
+      "name": "Subducting Plate plate",
+      "max depth": 100e3,
+      "min depth": 0.0,
+      "coordinates": [ [0, 1000], [0, -1000], [500e3, -1000], [500e3, 1000] ],
+      "temperature models": [
+        {
+          "model": "half space model",
+          "min depth": 0.0,
+          "max depth": 100e3,
+          "spreading velocity": 0.05,
+          "ridge coordinates": [[[-100e3, 1000.0], [-100e3, -1000.0]]]
+        }
+      ],
+      "composition models": 
+      [
+        {"model": "uniform", "min depth": 0.0, "max depth": 100e3, "compositions": [0]}
+      ]
+    },
+
+    {
+      "model": "oceanic plate",
+      "name": "Overriding Plate",
+      "max depth": 100e3,
+      "min depth": 0.0,
+      "coordinates": [ [1000e3, 1000], [1000e3, -1000], [500e3, -1000], [500e3, 1000] ],
+      "temperature models":
+      [
+        {
+          "model": "half space model", "min depth": 0.0, "max depth": 100e3, "spreading velocity": 0.03, 
+          "ridge coordinates": [[[-100e3, 1000.0], [-100e3, -1000.0]]]
+        }
+      ]
+    },
+
+    {
+      "model": "subducting plate", "name": "initial slab", "coordinates": [[500e3, -1000.0], [500e3, 1000.0]],
+      "dip point": [400e6, 0],
+      "segments": [
+        {"length": 418880.0,
+          "thickness": [100e3],
+          "top truncation": [-100000.0],
+          "angle": [0,60],
+          "composition models": [
+            {
+              "model": "uniform",
+              "compositions": [0],
+              "max distance slab top": 100e3
+            }
+          ]
+        },
+        {
+          "length": 100000.0,
+          "thickness": [100e3],
+          "top truncation": [-100000.0],
+          "angle": [60, 60]
+        }
+      ],
+      "temperature models": [
+        {
+          "model": "mass conserving",
+          "density": 3300,
+          "thermal conductivity": 3.3,
+          "adiabatic heating": true,
+          "plate velocity": 0.05,
+          "subducting velocity": [[0.05, 0.05]],
+          "ridge coordinates": [[[-100e3, 1000.0], [-100e3, -1000.0]]],
+          "coupling depth": 50000.0,
+          "taper distance": 100000.0,
+          "min distance slab top": -100000.0,
+          "max distance slab top": 100e3,
+          "reference model name": "half space model"
+        }
+      ]
+    }
+  ]
+}

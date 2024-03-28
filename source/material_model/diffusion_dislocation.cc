@@ -284,7 +284,12 @@ namespace aspect
 
           // Viscosity iteration parameters
           prm.declare_entry ("Strain rate residual tolerance", "1e-10", Patterns::Double(0.),
-                             "Tolerance for determining the correct stress and viscosity from the strain rate by internal iteration. The tolerance is expressed as the difference between the natural logarithm of the input strain rate and the strain rate at the current iteration. This determines that strain rate is correctly partitioned between diffusion and dislocation creep assuming that both mechanisms experience the same stress.");
+                             "Tolerance for determining the correct stress and viscosity from the "
+                             "strain rate by internal iteration. The tolerance is expressed as the "
+                             "difference between the natural logarithm of the input strain rate and "
+                             "the strain rate at the current iteration. This determines that strain "
+                             "rate is correctly partitioned between diffusion and dislocation creep "
+                             "assuming that both mechanisms experience the same stress.");
           prm.declare_entry ("Maximum strain rate ratio iterations", "40", Patterns::Integer(0),
                              "Maximum number of iterations to find the correct "
                              "diffusion/dislocation strain rate ratio.");

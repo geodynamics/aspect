@@ -1,0 +1,31 @@
+{
+  "version": "0.6",
+  "coordinate system":{"model":"spherical", "depth method":"starting point"},
+  "cross section":[[0,0],[10,0]],
+  "maximum distance between coordinates":0.01,
+  "features":
+  [
+    {"model":"plume",
+      "name":"plume A",
+      "coordinates":[[0, 15],[5.7403, 13.8582],[10.6, 10.6],[13.8582, 5.7403],[15, 0],[13.8582, -5.7403],[10.6, -10.6],[5.7403, -13.8582],[0, -15],[-5.7403, -13.8582],[-10.6, -10.6]],
+      "cross section depths":[0, 200e3, 400e3, 600e3, 800e3, 1000e3, 1200e3, 1400e3, 1600e3, 1800e3, 2000e3],
+      "semi-major axis":[16, 17, 18, 19, 20, 21, 22, 24, 24, 25, 26],
+      "eccentricity":[0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+      "rotation angles":[90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315],
+      "temperature models":
+      [
+        {
+          "model":"uniform",
+          "operation":"add",
+          "max depth":2000e3,
+          "temperature":200
+        }
+      ],
+      "composition models":
+      [
+        {"model":"uniform","compositions":[1], "max depth":800e3},
+        {"model":"uniform","compositions":[2], "min depth":800e3, "max depth":1800e3}
+      ]
+    }
+  ]
+}

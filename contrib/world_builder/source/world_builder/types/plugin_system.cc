@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -63,7 +63,7 @@ namespace WorldBuilder
       prm.enter_subsection(name);
       {
         const std::string path = prm.get_full_json_path();
-        Pointer((path + "/documentation").c_str()).Set(prm.declarations,documentation.c_str());
+        Pointer((path + "/description").c_str()).Set(prm.declarations,documentation.c_str());
         Pointer((path + "/default value").c_str()).Set(prm.declarations,default_value.c_str());
 
         if (allow_multiple)

@@ -13,6 +13,8 @@
 "value at points set ap val string": [[100,[[1,2],[3,4]]],[105],["test3",[[5,6]]],[300,[[-10,10]]]],
 "value at points set ap p1 string": [[100,[[1,2],[3,4]]],[105],[200,[[5,6]]],[300,[["test4",10]]]],
 "value at points set ap p2 string": [[100,[[1,2],[3,4]]],[105],[200,[[5,6]]],[300,[[-10,"test5"]]]],
+"value at array full": [[10,[[1, 2, 3]]], [20,[[4, 5]]]],
+"vector for vector or double": [[10, 20, 30, 40], [100, 200]],
 "unsigned int array" :[25,26,27],
 "bool array" :[true,false,true,false,true,false],
 "bool array nob" :[true,false,true,false,"True","false"],

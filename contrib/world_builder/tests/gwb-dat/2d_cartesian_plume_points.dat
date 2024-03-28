@@ -1,0 +1,10 @@
+# This is a comment in the data
+# file. 
+# Now define parameters:
+# dim = 2
+# compositions = 2
+# grain compositions = 2
+# number of grains = 2
+# x y d T
+450e3 225e3 525e3
+600e3 225e3 525e3

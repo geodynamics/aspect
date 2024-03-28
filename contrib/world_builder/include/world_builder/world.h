@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -60,7 +60,7 @@ namespace WorldBuilder
        * documented algorithm), we can test the results and they should be the same even for different
        * compilers and machines.
        */
-      World(std::string filename, bool has_output_dir = false, const std::string &output_dir = "", unsigned long random_number_seed = 1, const bool limit_debug_consistency_checks = false);
+      World(std::string filename, bool has_output_dir = false, const std::string &output_dir = "", unsigned long random_number_seed = 1, const bool limit_debug_consistency_checks = true);
 
       /**
        * Destructor
@@ -120,15 +120,19 @@ namespace WorldBuilder
        *
        * Composition is identified by 2. This produces one
        * value in the output. The second entry  identifies the composition number and the third
-       * number is not used. So a commposition query asking about composition 1 looks like this:
+       * number is not used. So a composition query asking about composition 1 looks like this:
        * {2,1,0}. A composition query prodoces one entry in the output vector.
        *
-       * Grains are identified by 2. The second entry is the grain composition number and the third
+       * Grains are identified by 3. The second entry is the grain composition number and the third
        * entry is the number of grains. A query about the grains, where it asks about composition 1
-       * (for example enstatite) and 500 grains, looks like this: {2,1,500}.
+       * (for example enstatite) and 500 grains, looks like this: {3,1,500}.
        * A composition query prodoces n_grains*10 entries in the output vector. The first n_grains
        * entries are the sizes of all the grains, and the other 9 entries are sets of rotation
        * matrices. The rotation matrix entries are ordered [0][0],[0][1],[0][2],[1][0],[1][1],etc.
+       *
+       * The tag is identified by 4 and no extra information is needed. So the tag
+       * input usually looks like {4,0,0}. A tag query prodoces one entry in the output
+       * vector, representing the index of the tag of the last/dominant feature.
        */
       std::vector<double> properties(const std::array<double, 3> &point,
                                      const double depth,
@@ -275,6 +279,10 @@ namespace WorldBuilder
        */
       std::string interpolation;
 
+      /**
+       * A list of all the feature tags.
+       */
+      std::vector<std::string> feature_tags;
 
     private:
       /**

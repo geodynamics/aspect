@@ -1,0 +1,20 @@
+# This is a comment in the data
+# file. 
+# Now define parameters:
+# dim = 2
+# compositions = 0
+# x y d T C0
+500e3 380e3 20e3
+525e3 380e3 20e3
+550e3 380e3 20e3
+575e3 380e3 20e3
+600e3 380e3 20e3
+625e3 380e3 20e3
+650e3 380e3 20e3
+675e3 380e3 20e3
+700e3 380e3 20e3
+600e3 360e3 40e3
+650e3 340e3 60e3
+700e3 320e3 80e3
+750e3 280e3 120e3
+800e3 240e3 160e3

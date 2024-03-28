@@ -1,0 +1,12 @@
+World Builder Grid Visualization tool.
+This program loads a world builder file and generates a visualization on a structured grid based on information specified in a separate .grid configuration file.
+
+Usage:
+(..path..)bin/gwb-grid [-j N] [--filtered] [--by-tag] example.wb example.grid
+
+Available options:
+  -j N                  Specify the number of threads the visualizer is allowed to use. Default: --.
+  --filtered            Also produce a .filtered.vtu that removes cells only containing mantle or background.
+  --by-tag              Also produce a sequence of .N.vtu files that only contain cells of a specific tag.
+  --resolution-limit X  Specify a maximum resolution.  -h or --help          To get this help screen.
+  -v or --version       To see version information.

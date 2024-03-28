@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018-2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -28,6 +28,10 @@
 #define WORLD_BUILDER_VERSION_PATCH @WORLD_BUILDER_VERSION_PATCH@
 #define WORLD_BUILDER_VERSION_LABEL @WORLD_BUILDER_VERSION_LABEL@
 
+#ifndef NDEBUG
+#define WORLD_BUILDER_DEBUG_MODE
+#endif
+
 /**
  * Returns true if the used World Builder version is greater or equal than the
  * version specified by the three arguments. The internal implementation
@@ -55,6 +59,13 @@ namespace WorldBuilder
     const std::string GIT_BRANCH = "@GIT_BRANCH@";
     const std::string GIT_DATE = "@GIT_DATE@";
     const std::string GIT_COMMIT_SUBJECT = "@GIT_COMMIT_SUBJECT@";
+
+    const std::string BUILD_TYPE =
+#ifdef WORLD_BUILDER_DEBUG_MODE
+      "Debug";
+#else
+      "Release";
+#endif
   }
 
   namespace Data

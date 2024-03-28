@@ -18,12 +18,10 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Geodynamic World Builder'
-copyright = '2022, The authors of the Geodynamic World Builder'
-#author = 'The authors of the Geodynamic World Builder'
-#Built with [Sphinx](https://www.sphinx-doc.org/) using a theme provided by [Executable Book Project](https://ebp.jupyterbook.org/)
+copyright = '2024, The authors of the Geodynamic World Builder'
 # The full version, including alpha/beta/rc tags
-release = '0.5.0'
-html_title = "Manual GWB 0.5.0"
+release = '0.6.0'
+html_title = "Manual GWB 0.6.0"
 
 
 # -- General configuration ---------------------------------------------------

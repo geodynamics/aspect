@@ -1,9 +1,8 @@
 {
-  "version":"0.5",
+  "version": "0.6",
   "potential mantle temperature":1500,
   "thermal expansion coefficient":2.0e-5,
   "maximum distance between coordinates":100000,
-  "interpolation":"monotone spline",
   "surface temperature":293.15,
   "force surface temperature":true,
   "coordinate system":{"model":"cartesian"},

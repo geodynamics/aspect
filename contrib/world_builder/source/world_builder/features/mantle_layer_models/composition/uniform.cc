@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018-2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -62,9 +62,9 @@ namespace WorldBuilder
                             "Uniform compositional model. Sets constant compositional field.");
 
           // Declare entries of this plugin
-          prm.declare_entry("min depth", Types::OneOf(Types::Double(0),Types::Array(Types::ValueAtPoints(0.))),
+          prm.declare_entry("min depth", Types::OneOf(Types::Double(0),Types::Array(Types::ValueAtPoints(0., 2.))),
                             "The depth in meters from which the composition of this feature is present.");
-          prm.declare_entry("max depth", Types::OneOf(Types::Double(std::numeric_limits<double>::max()),Types::Array(Types::ValueAtPoints(std::numeric_limits<double>::max()))),
+          prm.declare_entry("max depth", Types::OneOf(Types::Double(std::numeric_limits<double>::max()),Types::Array(Types::ValueAtPoints(std::numeric_limits<double>::max(), 2.))),
                             "The depth in meters to which the composition of this feature is present.");
           prm.declare_entry("compositions", Types::Array(Types::UnsignedInt(),0),
                             "A list with the labels of the composition which are present there.");

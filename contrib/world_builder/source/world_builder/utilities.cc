@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -17,6 +17,7 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "world_builder/assert.h"
 #include <algorithm>
 #include <cmath>
 #include <fstream>
@@ -26,6 +27,7 @@
 #include <sstream>
 
 #ifdef WB_WITH_MPI
+// we don't need the c++ MPI wrappers
 #define OMPI_SKIP_MPICXX 1
 #define MPICH_SKIP_MPICXX
 #include <mpi.h>
@@ -159,6 +161,32 @@ namespace WorldBuilder
       return (wn != 0);
     }
 
+
+
+    double
+    fraction_from_ellipse_center(const Point<2> &ellipse_center,
+                                 const double semi_major_axis,
+                                 const double eccentricity,
+                                 const double theta,
+                                 const Point<2> &point)
+    {
+      const double x_rotated = (point[0] - ellipse_center[0]) * std::cos(theta) + (point[1] - ellipse_center[1])* std::sin(theta);
+      const double y_rotated = -(point[0] - ellipse_center[0]) * std::sin(theta) + (point[1] - ellipse_center[1])* std::cos(theta);
+
+      const double semi_minor_axis = semi_major_axis * std::sqrt(1 - std::pow(eccentricity, 2));
+
+      if (semi_major_axis < 10 * std::numeric_limits<double>::min()
+          || semi_minor_axis < 10 * std::numeric_limits<double>::min())
+        return false;
+
+      const double ellipse = std::pow((x_rotated), 2) / std::pow(semi_major_axis, 2)
+                             + std::pow((y_rotated), 2) / std::pow(semi_minor_axis, 2);
+
+      return ellipse;
+    }
+
+
+
     double
     signed_distance_to_polygon(const std::vector<Point<2> > &point_list,
                                const Point<2> &point)
@@ -245,10 +273,10 @@ namespace WorldBuilder
     Point<3>
     spherical_to_cartesian_coordinates(const std::array<double,3> &scoord)
     {
-      const double cos_long = scoord[0] * std::sin(0.5 * Consts::PI - scoord[2]);
+      const double cos_lat = scoord[0] * std::sin(0.5 * Consts::PI - scoord[2]);
 
-      return Point<3>(cos_long * std::cos(scoord[1]), // X
-                      cos_long * std::sin(scoord[1]), // Y
+      return Point<3>(cos_lat * std::cos(scoord[1]), // X
+                      cos_lat * std::sin(scoord[1]), // Y
                       scoord[0] * std::cos(0.5 * Consts::PI - scoord[2]), // Z
                       cartesian);;
     }
@@ -559,6 +587,7 @@ namespace WorldBuilder
                   return_values.section = i_section_min_distance;
                   return_values.segment = 0;
                   return_values.average_angle = total_average_angle;
+                  return_values.depth_reference_surface = 0.0;
                   return_values.closest_trench_point = closest_point_on_line_cartesian;
                   return return_values;
                 }
@@ -810,6 +839,10 @@ namespace WorldBuilder
                           new_distance = side_of_line * (check_point_2d - Pb).norm();
                           new_along_plane_distance = (begin_segment - Pb).norm();
                           new_depth_reference_surface = start_radius - Pb[1];
+
+                          WBAssert(!std::isnan(new_depth_reference_surface),
+                                   "new_depth_reference_surface is not a number: " << new_depth_reference_surface << ". "
+                                   << "start_radius = " << start_radius << ",Pb[1] = " << Pb[1] << ".");
                         }
                     }
                 }
@@ -944,6 +977,11 @@ namespace WorldBuilder
                       new_along_plane_distance = (radius_angle_circle * check_point_angle - radius_angle_circle * interpolated_angle_top) * (difference_in_angle_along_segment < 0 ? 1 : -1);
                       // compute the new depth by rotating the begin point to the check point location.
                       new_depth_reference_surface = start_radius-(sin(check_point_angle + interpolated_angle_top) * BSPC[0] + cos(check_point_angle + interpolated_angle_top) * BSPC[1] + center_circle[1]);
+
+                      WBAssert(!std::isnan(new_depth_reference_surface),
+                               "new_depth_reference_surface is not a number: " << new_depth_reference_surface << ". "
+                               << "start_radius = " << start_radius << ", check_point_angle = " << check_point_angle << ", interpolated_angle_top = " << interpolated_angle_top
+                               << ", BSPC[0] = " << BSPC[0] << ".");
                     }
 
                 }
@@ -983,6 +1021,8 @@ namespace WorldBuilder
               total_length += interpolated_segment_length;
             }
         }
+
+      WBAssert(!std::isnan(depth_reference_surface), "depth_reference_surface is not a number: " << depth_reference_surface << ".");
 
       PointDistanceFromCurvedPlanes return_values(natural_coordinate.get_coordinate_system());
       return_values.distance_from_plane = distance;
@@ -1050,6 +1090,29 @@ namespace WorldBuilder
     double wrap_angle(const double angle)
     {
       return angle - 360.0*std::floor(angle/360.0);
+    }
+
+    double interpolate_angle_across_zero(const double angle_1,
+                                         const double angle_2,
+                                         const double fraction)
+    {
+      double theta_1 = angle_1;
+      double theta_2 = angle_2;
+      double rotation_angle;
+
+      if (std::abs(theta_2 - theta_1) > Consts::PI)
+        {
+          if (theta_2 > theta_1)
+            theta_1 += 2.*Consts::PI;
+          else
+            theta_2 += 2.*Consts::PI;
+        }
+      rotation_angle = (1-fraction) * theta_1 + fraction * theta_2;
+
+      // make sure angle is between 0 and 360 degrees
+      rotation_angle = rotation_angle - 2*Consts::PI*std::floor(rotation_angle/(2 * Consts::PI));
+
+      return rotation_angle;
     }
 
     std::array<double,3>
@@ -1125,6 +1188,7 @@ namespace WorldBuilder
               std::size_t filesize;
               std::ifstream filestream;
               filestream.open(filename.c_str());
+              WBAssertThrow (filestream.is_open(), std::string("Could not open file <") + filename + ">.");
 
               // Need to convert to unsigned int, because MPI_Bcast does not support
               // size_t or const unsigned int
@@ -1220,6 +1284,225 @@ namespace WorldBuilder
 
     template std::array<double,2> convert_point_to_array<2>(const Point<2> &point_);
     template std::array<double,3> convert_point_to_array<3>(const Point<3> &point_);
+
+
+    std::vector<double>
+    calculate_ridge_distance_and_spreading(std::vector<std::vector<Point<2>>> mid_oceanic_ridges,
+                                           std::vector<std::vector<double>> mid_oceanic_spreading_velocities,
+                                           const std::unique_ptr<WorldBuilder::CoordinateSystems::Interface> &coordinate_system,
+                                           const Objects::NaturalCoordinate &position_in_natural_coordinates_at_min_depth,
+                                           const std::vector<std::vector<double>> &subducting_plate_velocities,
+                                           const std::vector<double> &ridge_migration_times)
+    {
+      const double seconds_in_year = 60.0 * 60.0 * 24.0 * 365.25;  // sec/y
+
+      double distance_ridge = std::numeric_limits<double>::max();
+      double spreading_velocity_at_ridge = 0;
+      double subducting_velocity_at_trench = 0;
+      double ridge_migration_time = 0;
+
+      // first find if the coordinate is on this side of a ridge
+      unsigned int relevant_ridge = 0;
+      const Point<2> check_point(position_in_natural_coordinates_at_min_depth.get_surface_coordinates(),
+                                 position_in_natural_coordinates_at_min_depth.get_coordinate_system());
+
+      Point<2> other_check_point = check_point;
+      if (check_point.get_coordinate_system() == CoordinateSystem::spherical)
+        other_check_point[0] += check_point[0] < 0 ? 2.0 * WorldBuilder::Consts::PI : -2.0 * WorldBuilder::Consts::PI;
+
+      // if there is only one ridge, there is no transform
+      if (mid_oceanic_ridges[0].size() > 1)
+        {
+          // There are more than one ridge, so there are transform faults
+          // Find the first which is on the same side
+          for (relevant_ridge = 0; relevant_ridge < mid_oceanic_ridges.size()-1; relevant_ridge++)
+            {
+              const Point<2> transform_point_0 = mid_oceanic_ridges[relevant_ridge+1][0];
+              const Point<2> transform_point_1 = mid_oceanic_ridges[relevant_ridge][mid_oceanic_ridges[relevant_ridge].size()-1];
+              const Point<2> reference_point   = mid_oceanic_ridges[relevant_ridge][0];
+              const bool reference_on_side_of_line = (transform_point_1[0] - transform_point_0[0])
+                                                     * (reference_point[1] - transform_point_0[1])
+                                                     - (transform_point_1[1] - transform_point_0[1])
+                                                     * (reference_point[0] - transform_point_0[0])
+                                                     < 0;
+              const bool checkpoint_on_side_of_line = (transform_point_1[0] - transform_point_0[0])
+                                                      * (check_point[1] - transform_point_0[1])
+                                                      - (transform_point_1[1] - transform_point_0[1])
+                                                      * (check_point[0] - transform_point_0[0])
+                                                      < 0;
+
+
+              if (reference_on_side_of_line == checkpoint_on_side_of_line)
+                {
+                  break;
+                }
+
+            }
+        }
+
+      for (unsigned int i_coordinate = 0; i_coordinate < mid_oceanic_ridges[relevant_ridge].size() - 1; i_coordinate++)
+        {
+          const Point<2> segment_point0 = mid_oceanic_ridges[relevant_ridge][i_coordinate];
+          const Point<2> segment_point1 = mid_oceanic_ridges[relevant_ridge][i_coordinate + 1];
+
+          const double spreading_velocity_point0 = mid_oceanic_spreading_velocities[relevant_ridge][i_coordinate];
+          const double spreading_velocity_point1 = mid_oceanic_spreading_velocities[relevant_ridge][i_coordinate + 1];
+
+          // When subducting_velocities is not input by the user, default value is 0, which
+          // results in subducting velocity == spreading_velocity. When a single value is
+          // input by the user, subducting velocity != spreading_velocity, but
+          // subducting velocity is spatially constant.
+          double subducting_velocity_point0 = subducting_plate_velocities[0][0];
+          double subducting_velocity_point1 = subducting_plate_velocities[0][0];
+
+          // When subducting_velocities is input as an array, spatial variation
+          if (subducting_plate_velocities[0].size() > 1)
+            {
+              WBAssert(subducting_plate_velocities.size() == mid_oceanic_ridges.size() && \
+                       subducting_plate_velocities[relevant_ridge].size() == mid_oceanic_ridges[relevant_ridge].size(),
+                       "subducting velocity and ridge coordinates must be the same dimension");
+              WBAssert(ridge_migration_times.size() == mid_oceanic_ridges.size(),
+                       "the times for ridge migration specified in 'spreading velocity' must be the same dimension "
+                       "as ridge coordinates.");
+              subducting_velocity_point0 = subducting_plate_velocities[relevant_ridge][i_coordinate];
+              subducting_velocity_point1 = subducting_plate_velocities[relevant_ridge][i_coordinate + 1];
+              ridge_migration_time = ridge_migration_times[relevant_ridge];
+            }
+
+          {
+            // based on http://geomalgorithms.com/a02-_lines.html
+            const Point<2> v = segment_point1 - segment_point0;
+            const Point<2> w1 = check_point - segment_point0;
+            const Point<2> w2 = other_check_point - segment_point0;
+
+            const double c1 = (w1[0] * v[0] + w1[1] * v[1]);
+            const double c = (v[0] * v[0] + v[1] * v[1]);
+            const double c2 = (w2[0] * v[0] + w2[1] * v[1]);
+
+
+            Point<2> Pb1(coordinate_system->natural_coordinate_system());
+            // This part is needed when we want to consider segments instead of lines
+            // If you want to have infinite lines, use only the else statement.
+
+            // First, compare the results from the two compare points
+            double spreading_velocity_at_ridge_pt1 = 0.0;
+            double subducting_velocity_at_trench_pt1 = 0.0;
+            double spreading_velocity_at_ridge_pt2 = 0.0;
+            double subducting_velocity_at_trench_pt2 = 0.0;
+
+            if (c1 <= 0)
+              {
+                Pb1=segment_point0;
+                spreading_velocity_at_ridge_pt1 = spreading_velocity_point0;
+                subducting_velocity_at_trench_pt1 = subducting_velocity_point0;
+              }
+            else if (c <= c1)
+              {
+                Pb1=segment_point1;
+                spreading_velocity_at_ridge_pt1 = spreading_velocity_point1;
+                subducting_velocity_at_trench_pt1 = subducting_velocity_point1;
+              }
+            else
+              {
+                Pb1=segment_point0 + (c1 / c) * v;
+                spreading_velocity_at_ridge_pt1 = spreading_velocity_point0 + (spreading_velocity_point1 - spreading_velocity_point0) * (c1 / c);
+                subducting_velocity_at_trench_pt1 = subducting_velocity_point0 + (subducting_velocity_point1 - subducting_velocity_point0) * (c1 / c);
+              }
+
+            Point<2> Pb2(coordinate_system->natural_coordinate_system());
+            if (c2 <= 0)
+              {
+                Pb2=segment_point0;
+                spreading_velocity_at_ridge_pt2 = spreading_velocity_point0;
+                subducting_velocity_at_trench_pt2 = subducting_velocity_point0;
+              }
+            else if (c <= c2)
+              {
+                Pb2=segment_point1;
+                spreading_velocity_at_ridge_pt2 = spreading_velocity_point1;
+                subducting_velocity_at_trench_pt2 = spreading_velocity_point1;
+              }
+            else
+              {
+                Pb2=segment_point0 + (c2 / c) * v;
+                spreading_velocity_at_ridge_pt2 = spreading_velocity_point0 + (spreading_velocity_point1 - spreading_velocity_point0) * (c2 / c);
+                subducting_velocity_at_trench_pt2 = subducting_velocity_point0 + (subducting_velocity_point1 - subducting_velocity_point0) * (c2 / c);
+              }
+
+            Point<3> compare_point1(coordinate_system->natural_coordinate_system());
+            Point<3> compare_point2(coordinate_system->natural_coordinate_system());
+
+            compare_point1[0] = coordinate_system->natural_coordinate_system() == cartesian ? Pb1[0] :  position_in_natural_coordinates_at_min_depth.get_depth_coordinate();
+            compare_point1[1] = coordinate_system->natural_coordinate_system() == cartesian ? Pb1[1] : Pb1[0];
+            compare_point1[2] = coordinate_system->natural_coordinate_system() == cartesian ? position_in_natural_coordinates_at_min_depth.get_depth_coordinate() : Pb1[1];
+
+            compare_point2[0] = coordinate_system->natural_coordinate_system() == cartesian ? Pb2[0] :  position_in_natural_coordinates_at_min_depth.get_depth_coordinate();
+            compare_point2[1] = coordinate_system->natural_coordinate_system() == cartesian ? Pb2[1] : Pb2[0];
+            compare_point2[2] = coordinate_system->natural_coordinate_system() == cartesian ? position_in_natural_coordinates_at_min_depth.get_depth_coordinate() : Pb2[1];
+
+            const double compare_distance1 = coordinate_system->distance_between_points_at_same_depth(Point<3>(position_in_natural_coordinates_at_min_depth.get_coordinates(),
+                                             position_in_natural_coordinates_at_min_depth.get_coordinate_system()),
+                                             compare_point1);
+
+            const double compare_distance2 = coordinate_system->distance_between_points_at_same_depth(Point<3>(position_in_natural_coordinates_at_min_depth.get_coordinates(),
+                                             position_in_natural_coordinates_at_min_depth.get_coordinate_system()),
+                                             compare_point2);
+
+            double compare_distance = compare_distance1;
+            double spreading_velocity_at_ridge_pt = spreading_velocity_at_ridge_pt1;
+            double subducting_velocity_at_trench_pt = subducting_velocity_at_trench_pt1;
+
+            // This is required in spherical coordinates to ensure that the distance
+            // returned is the shortest distance around the sphere.
+            if (compare_distance2 < compare_distance1)
+              {
+                compare_distance = compare_distance2;
+                spreading_velocity_at_ridge_pt = spreading_velocity_at_ridge_pt2;
+                subducting_velocity_at_trench_pt = subducting_velocity_at_trench_pt2;
+              }
+
+            // Then, the distance and velocities are taken from the nearest point on the ridge
+            if (i_coordinate == 0 || compare_distance < distance_ridge)
+              {
+                distance_ridge = compare_distance;
+                spreading_velocity_at_ridge = spreading_velocity_at_ridge_pt;
+                subducting_velocity_at_trench = subducting_velocity_at_trench_pt;
+              }
+          }
+        }
+      std::vector<double> result;
+      result.push_back(spreading_velocity_at_ridge / seconds_in_year); // m/s
+      result.push_back(distance_ridge);
+      result.push_back(subducting_velocity_at_trench / seconds_in_year); // m/s
+      result.push_back(ridge_migration_time);
+      return result;
+    }
+
+    // TODO: implement method for modifying the age of the slab based on ridge/trench migration.
+    std::vector<double>
+    calculate_effective_trench_and_plate_ages(std::vector<double> ridge_parameters, double distance_along_plane)
+    {
+      WBAssert(ridge_parameters.size() == 4, "Internal error: ridge_parameters have the wrong size: " << ridge_parameters.size() << " instead of 4.");
+      const double seconds_in_year = 60.0 * 60.0 * 24.0 * 365.25;  // sec/y
+      const double spreading_velocity = ridge_parameters[0] * seconds_in_year; // m/yr
+      double subducting_velocity = ridge_parameters[2] * seconds_in_year; // m/yr
+
+      if (subducting_velocity <= 0)
+        subducting_velocity = spreading_velocity;
+
+      const double age_at_trench = ridge_parameters[1] / spreading_velocity; // m/(m/y) = yr
+      const double plate_age_sec = age_at_trench * seconds_in_year; // y --> seconds
+
+      // Plate age increases with distance along the slab in the mantle
+      double effective_plate_age = plate_age_sec + (distance_along_plane / subducting_velocity) * seconds_in_year; // m/(m/y) = y(seconds_in_year)
+      WBAssertThrow(effective_plate_age >= 0, "The age of the subducting plate is less than or equal to 0. "
+                    "Effective plate age: " << effective_plate_age);
+      std::vector<double> result;
+      result.push_back(age_at_trench);
+      result.push_back(effective_plate_age);
+      return result;
+
+    }
   } // namespace Utilities
 } // namespace WorldBuilder
 

@@ -86,15 +86,17 @@ namespace aspect
                              "iterates over the advection equations but a non iterating solver scheme was selected. "
                              "Please check the consistency of your solver scheme."));
 
-    //for (unsigned i = 0; i < n_material_lookups; ++i)
-      for (unsigned i = 0; i < material_file_names.size(); ++i)
-          {
+      AssertThrow(material_file_names.size() == 1,
+                  ExcMessage("The 'entropy model' material model can only handle one composition, "
+                             "and can therefore only read one material lookup table."));
+
+      for (unsigned int i = 0; i < material_file_names.size(); ++i)
+        {
           entropy_reader.push_back(std::make_unique<MaterialUtilities::Lookup::EntropyReader>());
           entropy_reader[i]->initialize(this->get_mpi_communicator(), data_directory, material_file_names[i]);
-          }
-     // entropy_reader = std::make_unique<MaterialUtilities::Lookup::EntropyReader>();
-     // entropy_reader->initialize(this->get_mpi_communicator(), data_directory, material_file_name);
-          
+        }
+
+
       lateral_viscosity_prefactor_lookup = std::make_unique<internal::LateralViscosityLookup>(data_directory+lateral_viscosity_file_name,
                                            this->get_mpi_communicator());
     }
@@ -179,14 +181,7 @@ namespace aspect
           const double entropy = in.composition[i][entropy_index];
           const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]) / 1.e5;
 
-/*
-          eos_outputs[i].densities[0] = entropy_reader[0]->density(entropy,pressure);
-          eos_outputs[i].thermal_expansion_coefficients[0] = entropy_reader[0]->thermal_expansivity(entropy,pressure);
-          eos_outputs[i].specific_heat_capacities[0] = entropy_reader[0]->specific_heat(entropy,pressure);
- */ 
 
-
-       //   for (unsigned int j=0; j<eos_outputs[i].densities.size(); ++j)
        for (unsigned int j=0; j<material_file_names.size(); ++j)
             {
               eos_outputs[i].densities[j] = entropy_reader[j]->density(entropy, pressure);
@@ -219,17 +214,11 @@ namespace aspect
 
           out.densities[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs[i].densities, MaterialUtilities::arithmetic);
           
-     //     out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs.compressibilities, MaterialUtilities::arithmetic);
-          
+              
           out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs[i].thermal_expansion_coefficients, MaterialUtilities::arithmetic);
           
           out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs[i].specific_heat_capacities, MaterialUtilities::arithmetic);
           
-          
-          
-//          out.densities[i] = entropy_reader[0]->density(entropy,pressure);
-//          out.thermal_expansion_coefficients[i] = entropy_reader[0]->thermal_expansivity(entropy,pressure);
-//          out.specific_heat[i] = entropy_reader[0]->specific_heat(entropy,pressure);
 
           const Tensor<1, 2> density_gradient = entropy_reader[0]->density_gradient(entropy,pressure);
           const Tensor<1, 2> pressure_unit_vector({0.0, 1.0});
@@ -315,6 +304,7 @@ namespace aspect
           // fill seismic velocities outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
             {
+
               for (unsigned int j=0; j<material_file_names.size(); ++j)
             {
               eos_outputs[i].vp[j] = entropy_reader[j]->seismic_vp(entropy, pressure);
@@ -472,8 +462,7 @@ namespace aspect
         {
           data_directory              = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
           material_file_names          = Utilities::split_string_list(prm.get ("Material file name"));
-      //  n_material_lookups           = material_file_names.size();          
-      //  material_file_name          = prm.get ("Material file name");
+
           lateral_viscosity_file_name  = prm.get ("Lateral viscosity file name");
           min_eta                     = prm.get_double ("Minimum viscosity");
           max_eta                     = prm.get_double ("Maximum viscosity");

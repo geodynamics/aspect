@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -91,13 +91,28 @@ namespace WorldBuilder
                                    const WorldBuilder::Utilities::PointDistanceFromCurvedPlanes &distance_from_planes,
                                    const AdditionalParameters &additional_parameters) const override final;
 
+            /**
+             * Returns a temperature based on the given heat content, temperatures, effective plate age,
+             * and adjusted distance to the coldest point in the slab. The temperature is formulated by
+             * the analytical solutions.
+             */
+            double get_temperature_analytic(const double top_heat_content,
+                                            const double min_temperature,
+                                            const double background_temperature,
+                                            const double temperature_,
+                                            const double plate_velocity,
+                                            const double effective_plate_age,
+                                            const double adjusted_distance) const;
+
 
           private:
             //  temperature submodule parameters
             double min_depth;
             double max_depth;
             double density;
-            double plate_velocity;
+            std::vector<std::vector<double>> subducting_velocities;
+            std::pair<std::vector<double>,std::vector<double>> ridge_spreading_velocities;
+            std::vector<std::vector<double>> ridge_spreading_velocities_at_each_ridge_point;
             double mantle_coupling_depth;
             double forearc_cooling_factor;
             double thermal_conductivity;
@@ -110,7 +125,15 @@ namespace WorldBuilder
             bool adiabatic_heating;
             std::vector<std::vector<Point<2>>> mid_oceanic_ridges;
             Operations operation;
-
+            enum ReferenceModelName
+            {
+              half_space_model,
+              plate_model
+            };
+            ReferenceModelName reference_model_name;
+            const int plate_model_summation_number = 100; // for the plate model
+            bool apply_spline;
+            int spline_n_points;
         };
       } // namespace Temperature
     } // namespace SubductingPlateModels

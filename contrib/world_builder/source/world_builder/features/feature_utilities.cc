@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -35,6 +35,21 @@ namespace WorldBuilder
 
         WBAssert(operation == "replace", "Could not find operation: " << operation << '.');
         return Operations::REPLACE;
+      }
+
+      size_t
+      add_vector_unique(std::vector<std::string> &vector,const std::string &add_string)
+      {
+        for (size_t i = 0; i < vector.size(); ++i)
+          {
+            if (vector[i] == add_string)
+              {
+                return i;
+              }
+          }
+
+        vector.push_back(add_string);
+        return vector.size()-1;
       }
     } // namespace FeatureUtilities
   } // namespace Features

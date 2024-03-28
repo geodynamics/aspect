@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -23,6 +23,7 @@
 #include "world_builder/features/continental_plate_models/composition/interface.h"
 #include "world_builder/features/continental_plate_models/grains/interface.h"
 #include "world_builder/features/continental_plate_models/temperature/interface.h"
+#include "world_builder/features/feature_utilities.h"
 #include "world_builder/nan.h"
 #include "world_builder/types/array.h"
 #include "world_builder/types/double.h"
@@ -31,8 +32,6 @@
 #include "world_builder/types/plugin_system.h"
 #include "world_builder/types/value_at_points.h"
 #include "world_builder/world.h"
-
-#include "world_builder/kd_tree.h"
 
 #include <iostream>
 
@@ -55,17 +54,34 @@ namespace WorldBuilder
     ContinentalPlate::~ContinentalPlate()
       = default;
 
+    void ContinentalPlate::make_snippet(Parameters &prm)
+    {
+      using namespace rapidjson;
+      Document &declarations = prm.declarations;
+
+      const std::string path = prm.get_full_json_path();
+
+      Pointer((path + "/body").c_str()).Set(declarations,"object");
+      Pointer((path + "/body/model").c_str()).Set(declarations,"continental plate");
+      Pointer((path + "/body/name").c_str()).Set(declarations,"${1:My Plate}");
+      Pointer((path + "/body/coordinates").c_str()).Create(declarations).SetArray();
+    }
+
+
 
     void
     ContinentalPlate::declare_entries(Parameters &prm,
                                       const std::string & /*unused*/,
                                       const std::vector<std::string> &required_entries)
     {
-      prm.declare_entry("", Types::Object(required_entries), "continental plate object");
 
-      prm.declare_entry("min depth", Types::OneOf(Types::Double(0),Types::Array(Types::ValueAtPoints(0.))),
+
+
+      prm.declare_entry("", Types::Object(required_entries), "Continental plate object. Requires properties `model` and `coordinates`.");
+
+      prm.declare_entry("min depth", Types::OneOf(Types::Double(0),Types::Array(Types::ValueAtPoints(0., 2.))),
                         "The depth from which this feature is present");
-      prm.declare_entry("max depth", Types::OneOf(Types::Double(std::numeric_limits<double>::max()),Types::Array(Types::ValueAtPoints(std::numeric_limits<double>::max()))),
+      prm.declare_entry("max depth", Types::OneOf(Types::Double(std::numeric_limits<double>::max()),Types::Array(Types::ValueAtPoints(std::numeric_limits<double>::max(), 2.))),
                         "The depth to which this feature is present");
       prm.declare_entry("temperature models",
                         Types::PluginSystem("", Features::ContinentalPlateModels::Temperature::Interface::declare_entries, {"model"}),
@@ -84,6 +100,14 @@ namespace WorldBuilder
       const CoordinateSystem coordinate_system = prm.coordinate_system->natural_coordinate_system();
 
       this->name = prm.get<std::string>("name");
+
+      std::string tag = prm.get<std::string>("tag");
+      if (tag == "")
+        {
+          tag = "continental plate";
+        }
+      this->tag_index = FeatureUtilities::add_vector_unique(this->world->feature_tags,tag);
+
       this->get_coordinates("coordinates", prm, coordinate_system);
 
       min_depth_surface = Objects::Surface(prm.get("min depth",coordinates));
@@ -177,9 +201,9 @@ namespace WorldBuilder
                                                                                                      min_depth_local,
                                                                                                      max_depth_local);
 
-                            WBAssert(!std::isnan(output[entry_in_output[i_property]]), "Temparture is not a number: " << output[entry_in_output[i_property]]
+                            WBAssert(!std::isnan(output[entry_in_output[i_property]]), "Temperature is not a number: " << output[entry_in_output[i_property]]
                                      << ", based on a temperature model with the name " << temperature_model->get_name() << ", in feature " << this->name);
-                            WBAssert(std::isfinite(output[entry_in_output[i_property]]), "Temparture is not a finite: " << output[entry_in_output[i_property]]
+                            WBAssert(std::isfinite(output[entry_in_output[i_property]]), "Temperature is not a finite: " << output[entry_in_output[i_property]]
                                      << ", based on a temperature model with the name " << temperature_model->get_name() << ", in feature " << this->name);
 
                           }
@@ -220,10 +244,20 @@ namespace WorldBuilder
 
                           }
                         grains.unroll_into(output,entry_in_output[i_property]);
+                        break;
                       }
-                      break;
+                      case 4:
+                      {
+                        output[entry_in_output[i_property]] = tag_index;
+                        break;
+                      }
                       default:
-                        WBAssertThrow(false, "Internal error: Unimplemented property provided. Only temperature (1), composition (2) or grains (3) are allowed.");
+                      {
+                        WBAssertThrow(false,
+                                      "Internal error: Unimplemented property provided. " <<
+                                      "Only temperature (1), composition (2), grains (3) or tag (4) are allowed. "
+                                      "Provided property number was: " << properties[i_property][0]);
+                      }
                     }
                 }
             }

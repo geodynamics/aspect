@@ -9,6 +9,7 @@ Outline tools (and skills?) are needed and recommended
 ```{toctree}
 :hidden:
 
+typos
 git
 astyle
 IDE

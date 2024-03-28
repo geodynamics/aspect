@@ -1,0 +1,37 @@
+// This is a test for the plume feature in cartesian geometry.
+// It checks if the plume has the right geometry in terms of its temperature,
+// which is uniform within the plume.
+// Specifically, the plume changes the the location of its center axis and its
+// radius, it becomes more eccentric with depth and the semi-major axis rotates
+// in clockwise direction from top to bottom. This rotation crosses from 360
+// to zero degrees, making sure this crossover works correctly.
+{
+  "version": "0.6",
+  "surface temperature":273.15,
+  "potential mantle temperature":1573.15,
+  "features":
+  [
+    {"model":"mantle layer", "name":"upper mantle", "min depth":0, "max depth":100e3, "coordinates":[[-1e3,-1e3],[101e3,-1e3],[101e3,101e3],[-1e3,101e3]],
+     "temperature models":[{"model":"linear", "min depth":0, "max depth":100e3, "top temperature":1600, "bottom temperature":1601}]
+    },
+
+    {
+      "model":"plume",
+      "name":"plume A",
+      "coordinates":[[30e3, 50e3],[40e3, 50e3],[50e3, 50e3],[50e3, 40e3],[50e3, 30e3]],
+      "cross section depths":[0, 25e3, 50e3, 75e3, 100e3],
+      "semi-major axis":[20e3, 40e3, 10e3, 40e3, 20e3],
+      "eccentricity":[0, 0.3, 0.7, 0.8, 0.9],
+      "rotation angles":[335, 345, 355, 5, 15],
+      "temperature models":
+      [
+        {
+          "model":"uniform",
+          "operation":"add",
+          "max depth":100e3,
+          "temperature":200
+        }
+      ]
+    }
+  ]
+}

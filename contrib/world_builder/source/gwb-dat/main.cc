@@ -27,6 +27,9 @@
 #include "world_builder/world.h"
 
 #ifdef WB_WITH_MPI
+// we don't need the c++ MPI wrappers
+#define OMPI_SKIP_MPICXX 1
+#define MPICH_SKIP_MPICXX
 #include <mpi.h>
 #endif
 
@@ -73,7 +76,8 @@ int main(int argc, char **argv)
   unsigned int grain_compositions = 0;
   size_t n_grains = 0;
   bool convert_spherical = false;
-  bool limit_debug_consistency_checks = true;
+  bool limit_debug_consistency_checks = false;
+  bool output_json_files = false;
 
   if (find_command_line_option(argv, argv+argc, "-h") || find_command_line_option(argv, argv+argc, "--help"))
     {
@@ -85,7 +89,10 @@ int main(int argc, char **argv)
     }
 
   if (find_command_line_option(argv, argv+argc, "-ldcc") || find_command_line_option(argv, argv+argc, "--limit-debug-consistency-checks"))
-    limit_debug_consistency_checks = false;
+    limit_debug_consistency_checks = true;
+
+  if (find_command_line_option(argv, argv+argc, "--output-json-files"))
+    output_json_files = true;
 
   if (argc == 1)
     {
@@ -102,11 +109,12 @@ int main(int argc, char **argv)
       return 0;
     }
 
-  if ((argc == 3 && !limit_debug_consistency_checks) || argc > 4)
+  if ((argc == 3 && limit_debug_consistency_checks && output_json_files) || (argc == 4 && !(!limit_debug_consistency_checks != !output_json_files)) || (argc == 5 && (!limit_debug_consistency_checks && !output_json_files)) || argc > 5)
     {
       std::cout << "Only exactly two command line arguments may be given, which should be the world builder file location and the data file location (in that order) "
-                << "or exactly three command line arguments, which should be the world builder file location, the data file location and --limit-debug-consistency-checks (in that order). "
-                << ", argc = " << argc << ", limit_debug_consistency_checks = " << (limit_debug_consistency_checks ? "true" : "false") << std::endl;
+                << "or exactly three command line arguments, which should be the world builder file location, the data file location and --limit-debug-consistency-checks or --output-json-files (in that order),"
+                "or exactly four command line arguments, which should be the world builder file location, the data file location and --limit-debug-consistency-checks and --output-json-files (in that order),"
+                << ", argc = " << argc << ", limit_debug_consistency_checks = " << (limit_debug_consistency_checks ? "true" : "false") << ", output_json_files = " << (output_json_files ? "true" : "false") << std::endl;
       return 0;
     }
 
@@ -130,7 +138,7 @@ int main(int argc, char **argv)
       //try
       {
         const std::string output_dir = wb_file.substr(0,wb_file.find_last_of("/\\") + 1);
-        world = std::make_unique<WorldBuilder::World>(wb_file, true, output_dir,1,limit_debug_consistency_checks);
+        world = std::make_unique<WorldBuilder::World>(wb_file, output_json_files, output_dir,1,limit_debug_consistency_checks);
       }
       /*catch (std::exception &e)
         {
@@ -198,6 +206,8 @@ int main(int argc, char **argv)
       for (size_t gc = 0; gc < grain_compositions; ++gc)
         properties.push_back({{3,(unsigned int)gc,(unsigned int)n_grains}}); // grains gc
 
+      properties.push_back({{4,0,0}}); // tag
+
 
       switch (dim)
         {
@@ -216,11 +226,12 @@ int main(int argc, char **argv)
                           << "gm" << gc << '-' << g << "[1:0] " << "gm" << gc << '-' << g << "[1:1] " << "gm" << gc << '-' << g << "[1:2] "
                           << "gm" << gc << '-' << g << "[2:0] " << "gm" << gc << '-' << g << "[2:1] " << "gm" << gc << '-' << g << "[2:2] ";
 
+            std::cout << "tag ";
             std::cout <<std::endl;
 
             // set the values
             for (unsigned int i = 0; i < data.size(); ++i)
-              if (data[i][0] != "#")
+              if (data[i].size() > 0 && data[i][0] != "#")
                 {
 
                   WBAssertThrow(data[i].size() == dim + 1, "The file needs to contain dim + 1 entries, but contains " << data[i].size() << " entries "
@@ -251,7 +262,7 @@ int main(int argc, char **argv)
 
                         }
                     }
-                  std::cout << std::endl;
+                  std::cout << " " << output[output.size()-1] << std::endl;
 
                 }
             break;
@@ -269,11 +280,12 @@ int main(int argc, char **argv)
                           << "gm" << gc << '-' << g << "[1:0] " << "gm" << gc << '-' << g << "[1:1] " << "gm" << gc << '-' << g << "[1:2] "
                           << "gm" << gc << '-' << g << "[2:0] " << "gm" << gc << '-' << g << "[2:1] " << "gm" << gc << '-' << g << "[2:2] ";
 
+            std::cout << "tag ";
             std::cout <<std::endl;
 
             // set the values
             for (unsigned int i = 0; i < data.size(); ++i)
-              if (data[i][0] != "#")
+              if (data[i].size() > 0 && data[i][0] != "#")
                 {
                   WBAssertThrow(data[i].size() == dim + 1, "The file needs to contain dim + 1 entries, but contains " << data[i].size() << " entries "
                                 " on line " << i+1 << " of the data file (" << data_file << "). Dim is " << dim << '.');
@@ -310,7 +322,7 @@ int main(int argc, char **argv)
 
                         }
                     }
-                  std::cout << std::endl;
+                  std::cout << " " << output[output.size()-1] << std::endl;
 
                 }
             break;

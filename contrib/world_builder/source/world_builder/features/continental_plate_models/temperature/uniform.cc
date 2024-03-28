@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -26,9 +26,6 @@
 #include "world_builder/types/object.h"
 #include "world_builder/types/one_of.h"
 #include "world_builder/types/value_at_points.h"
-#include "world_builder/utilities.h"
-
-#include "world_builder/kd_tree.h"
 
 namespace WorldBuilder
 {
@@ -61,13 +58,13 @@ namespace WorldBuilder
           // Document plugin and require entries if needed.
           // Add `temperature` to the required parameters.
           prm.declare_entry("", Types::Object({"temperature"}),
-                            "Uniform temperature model. Set the temperature to a constan value.");
+                            "Uniform temperature model. Set the temperature to a constant value.");
 
           // Declare entries of this plugin
-          prm.declare_entry("min depth", Types::OneOf(Types::Double(0),Types::Array(Types::ValueAtPoints(0.))),
+          prm.declare_entry("min depth", Types::OneOf(Types::Double(0),Types::Array(Types::ValueAtPoints(0., 2.))),
                             "The depth in meters from which the composition of this feature is present.");
 
-          prm.declare_entry("max depth", Types::OneOf(Types::Double(std::numeric_limits<double>::max()),Types::Array(Types::ValueAtPoints(std::numeric_limits<double>::max()))),
+          prm.declare_entry("max depth", Types::OneOf(Types::Double(std::numeric_limits<double>::max()),Types::Array(Types::ValueAtPoints(std::numeric_limits<double>::max(), 2.))),
                             "The depth in meters to which the composition of this feature is present.");
 
           prm.declare_entry("temperature", Types::Double(293.15),

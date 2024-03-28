@@ -1,0 +1,3 @@
+Expected fail with: 
+AssertThrow `(..error type..)` failed in (..path..)/source/world_builder/parameters.cc at line (..line..): Error: coordinates was not defined in /features/0, schema path: /properties/features/items/oneOf/0/properties.
+

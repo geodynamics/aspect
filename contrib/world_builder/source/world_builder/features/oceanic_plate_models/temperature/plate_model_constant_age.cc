@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -19,8 +19,6 @@
 
 #include "world_builder/features/oceanic_plate_models/temperature/plate_model_constant_age.h"
 
-
-#include "world_builder/kd_tree.h"
 #include "world_builder/nan.h"
 #include "world_builder/types/array.h"
 #include "world_builder/types/double.h"
@@ -28,7 +26,6 @@
 #include "world_builder/types/one_of.h"
 #include "world_builder/types/point.h"
 #include "world_builder/types/value_at_points.h"
-#include "world_builder/utilities.h"
 #include "world_builder/world.h"
 
 
@@ -66,10 +63,10 @@ namespace WorldBuilder
                             "Plate model, but with a fixed age.");
 
           // Declare entries of this plugin
-          prm.declare_entry("min depth", Types::OneOf(Types::Double(0),Types::Array(Types::ValueAtPoints(0.))),
+          prm.declare_entry("min depth", Types::OneOf(Types::Double(0),Types::Array(Types::ValueAtPoints(0., 2.))),
                             "The depth in meters from which the temperature of this feature is present.");
 
-          prm.declare_entry("max depth", Types::OneOf(Types::Double(std::numeric_limits<double>::max()),Types::Array(Types::ValueAtPoints(std::numeric_limits<double>::max()))),
+          prm.declare_entry("max depth", Types::OneOf(Types::Double(std::numeric_limits<double>::max()),Types::Array(Types::ValueAtPoints(std::numeric_limits<double>::max(), 2.))),
                             "The depth in meters to which the temperature of this feature is present.");
 
           prm.declare_entry("top temperature", Types::Double(293.15),
@@ -137,13 +134,13 @@ namespace WorldBuilder
                                      std::exp(-1.0 * i * i * Consts::PI * Consts::PI * thermal_diffusivity * plate_age / (max_depth * max_depth)));
                     }
 
-                  WBAssert(!std::isnan(temperature), "Temparture inside plate model constant age is not a number: " << temperature
+                  WBAssert(!std::isnan(temperature), "Temperature inside plate model constant age is not a number: " << temperature
                            << ". Relevant variables: bottom_temperature_local = " << bottom_temperature_local
                            << ", top_temperature = " << top_temperature
                            << ", max_depth = " << max_depth
                            << ", thermal_diffusivity = " << thermal_diffusivity
                            << ", age = " << plate_age << '.');
-                  WBAssert(std::isfinite(temperature), "Temparture inside plate model constant age is not a finite: " << temperature                           << ". Relevant variables: bottom_temperature_local = " << bottom_temperature_local
+                  WBAssert(std::isfinite(temperature), "Temperature inside plate model constant age is not a finite: " << temperature                           << ". Relevant variables: bottom_temperature_local = " << bottom_temperature_local
                            << ", top_temperature = " << top_temperature
                            << ", thermal_diffusivity = " << thermal_diffusivity
                            << ", age = " << plate_age << '.');

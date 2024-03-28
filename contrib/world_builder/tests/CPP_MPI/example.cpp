@@ -2,6 +2,10 @@
 #include "world_builder/world.h"
 
 #include <stdio.h>
+
+// we don't need the c++ MPI wrappers
+#define OMPI_SKIP_MPICXX 1
+#define MPICH_SKIP_MPICXX
 #include <mpi.h>
 
 int main(int argc, char *argv[]) {
@@ -16,7 +20,7 @@ int main(int argc, char *argv[]) {
   unsigned int random_number_seed = 1; // use a random number seed larger than zero
   double composition = 0;
   bool has_output_dir = 0; // false
-  char output_dir[] = "../../doc/manual/";
+  char output_dir[] = "../../doc/";
 
    if( argc > 2 ) {
       printf("Too many arguments supplied.\n");

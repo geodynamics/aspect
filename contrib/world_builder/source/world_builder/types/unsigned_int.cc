@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -56,7 +56,7 @@ namespace WorldBuilder
       const std::string base = prm.get_full_json_path() + "/" + name;
       Pointer((base + "/default value").c_str()).Set(declarations,default_value);
       Pointer((base + "/type").c_str()).Set(declarations,"integer");
-      Pointer((base + "/documentation").c_str()).Set(declarations,documentation.c_str());
+      Pointer((base + "/description").c_str()).Set(declarations,documentation.c_str());
 
     }
   } // namespace Types

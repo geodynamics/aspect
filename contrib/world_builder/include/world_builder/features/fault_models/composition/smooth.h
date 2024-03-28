@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 - 2022 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -83,7 +83,7 @@ namespace WorldBuilder
             double min_distance;
             double side_distance;
             std::vector<double> center_fraction;
-            // currently not using the side composition, but maybe usefu if you want another composition towards the end
+            // currently not using the side composition, but maybe useful if you want another composition towards the end
             std::vector<double> side_fraction;
             std::vector<unsigned int> compositions;
             Operations operation;
