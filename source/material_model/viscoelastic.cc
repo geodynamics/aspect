@@ -87,7 +87,7 @@ namespace aspect
             }
         }
 
-      elastic_rheology.fill_elastic_force_outputs(in, average_elastic_shear_moduli, out);
+      elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
       elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
 
     }

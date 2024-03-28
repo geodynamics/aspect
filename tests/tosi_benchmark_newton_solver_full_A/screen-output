@@ -37,43 +37,43 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    The linear solver tolerance is set to 0.9. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 1.95282e-05, norm of the rhs: 3.86515e-05, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 1.95239e-05, norm of the rhs: 3.86432e-05, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 0 iterations.
    The linear solver tolerance is set to 0.843263. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 1.33883e-05, norm of the rhs: 2.64991e-05, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 1.339e-05, norm of the rhs: 2.65025e-05, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 0 iterations.
    The linear solver tolerance is set to 0.758936. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 5.44741e-06, norm of the rhs: 1.07819e-05, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 5.4436e-06, norm of the rhs: 1.07744e-05, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 0 iterations.
    The linear solver tolerance is set to 0.639983. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 1.81013e-06, norm of the rhs: 3.58273e-06, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 1.82016e-06, norm of the rhs: 3.60259e-06, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 0 iterations.
    The linear solver tolerance is set to 0.485706. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 6.8561e-07, norm of the rhs: 1.35701e-06, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 7.30469e-07, norm of the rhs: 1.4458e-06, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 0 iterations.
    The linear solver tolerance is set to 0.310843. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 11: 1.87988e-07, norm of the rhs: 3.72078e-07, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 11: 1.92691e-07, norm of the rhs: 3.81387e-07, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 0 iterations.
    The linear solver tolerance is set to 0.150979. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 2.53062e-08, norm of the rhs: 5.00879e-08, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 2.68227e-08, norm of the rhs: 5.30894e-08, newton_derivative_scaling_factor: 1
 
 
    Postprocessing:
@@ -95,17 +95,17 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving temperature system... 20 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 37+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.079647, norm of the rhs: 0.00335872, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.079647, norm of the rhs: 0.00335873, newton_derivative_scaling_factor: 0
 
    Solving temperature system... 22 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 36+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.0921924, norm of the rhs: 0.00388776, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.0921924, norm of the rhs: 0.00388777, newton_derivative_scaling_factor: 0
 
    Solving temperature system... 23 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 37+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 0.109122, norm of the rhs: 0.0046017, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 0.109122, norm of the rhs: 0.00460171, newton_derivative_scaling_factor: 0
 
    Solving temperature system... 25 iterations.
    Rebuilding Stokes preconditioner...
@@ -117,236 +117,236 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    The linear solver tolerance is set to 0.9. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 0.476854, norm of the rhs: 0.020109, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 0.476846, norm of the rhs: 0.0201087, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 29 iterations.
    The linear solver tolerance is set to 0.843263. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 0.541199, norm of the rhs: 0.0228224, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 0.540993, norm of the rhs: 0.0228138, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 32 iterations.
    The linear solver tolerance is set to 0.758936. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 0.42761, norm of the rhs: 0.0180324, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 0.419701, norm of the rhs: 0.0176988, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 37 iterations.
    The linear solver tolerance is set to 0.9. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 0.857526, norm of the rhs: 0.036162, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 0.985512, norm of the rhs: 0.0415592, newton_derivative_scaling_factor: 1
 
-   Solving temperature system... 38 iterations.
+   Solving temperature system... 37 iterations.
    The linear solver tolerance is set to 0.843263. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 0.924726, norm of the rhs: 0.0389958, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 13+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 0.723134, norm of the rhs: 0.0304947, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 41 iterations.
    The linear solver tolerance is set to 0.758936. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 11: 0.882253, norm of the rhs: 0.0372047, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 11: 0.840742, norm of the rhs: 0.0354542, newton_derivative_scaling_factor: 1
 
-   Solving temperature system... 44 iterations.
+   Solving temperature system... 43 iterations.
    The linear solver tolerance is set to 0.639983. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 0.729606, norm of the rhs: 0.0307676, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 0.738766, norm of the rhs: 0.0311539, newton_derivative_scaling_factor: 1
 
-   Solving temperature system... 45 iterations.
+   Solving temperature system... 44 iterations.
    The linear solver tolerance is set to 0.485706. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 13: 0.37606, norm of the rhs: 0.0158585, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 13: 0.384531, norm of the rhs: 0.0162157, newton_derivative_scaling_factor: 1
 
-   Solving temperature system... 50 iterations.
+   Solving temperature system... 47 iterations.
    The linear solver tolerance is set to 0.9. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 14: 0.914611, norm of the rhs: 0.0385692, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 14: 0.916528, norm of the rhs: 0.0386501, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 48 iterations.
    The linear solver tolerance is set to 0.843263. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 15: 0.8061, norm of the rhs: 0.0339933, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 15: 0.831745, norm of the rhs: 0.0350748, newton_derivative_scaling_factor: 1
 
 
    Postprocessing:
-     RMS, max velocity:                               85.9 m/s, 413 m/s
-     Temperature min/avg/max:                         0 K, 0.5044 K, 1 K
-     Heat fluxes through boundary parts:              0 W, 0 W, -3.171 W, 1 W
-     Max, min, and rms velocity along boundary parts: 424.1 m/s, 0.01081 m/s, 179.6 m/s, 226.9 m/s, 0.00626 m/s, 87.96 m/s, 375.8 m/s, 20.05 m/s, 238.1 m/s, 0.3251 m/s, 0.00599 m/s, 0.2354 m/s
+     RMS, max velocity:                               85 m/s, 411 m/s
+     Temperature min/avg/max:                         0 K, 0.5043 K, 1 K
+     Heat fluxes through boundary parts:              0 W, 0 W, -3.127 W, 1 W
+     Max, min, and rms velocity along boundary parts: 422 m/s, 0.01099 m/s, 178.5 m/s, 214.9 m/s, 0.006314 m/s, 83.16 m/s, 375.4 m/s, 19.36 m/s, 236 m/s, 0.3304 m/s, 0.006059 m/s, 0.2396 m/s
 
-*** Timestep 2:  t=0.0020809 seconds, dt=7.36853e-05 seconds
+*** Timestep 2:  t=0.00208127 seconds, dt=7.40502e-05 seconds
    Solving temperature system... 10 iterations.
-   Initial Newton Stokes residual = 0.200773, v = 0.200773, p = 0
+   Initial Newton Stokes residual = 0.20014, v = 0.20014, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 35+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.165182, norm of the rhs: 0.0331639
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.17097, norm of the rhs: 0.034218
 
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 36+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.00972528, norm of the rhs: 0.00195257, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.00988055, norm of the rhs: 0.0019775, newton_derivative_scaling_factor: 0
 
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 35+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.00334065, norm of the rhs: 0.000670712, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.00342384, norm of the rhs: 0.000685249, newton_derivative_scaling_factor: 0
 
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 35+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 0.00121886, norm of the rhs: 0.000244714, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 0.00125573, norm of the rhs: 0.000251322, newton_derivative_scaling_factor: 0
 
    Solving temperature system... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 34+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 0.000465858, norm of the rhs: 9.35315e-05, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 0.000479641, norm of the rhs: 9.59955e-05, newton_derivative_scaling_factor: 0
 
    Solving temperature system... 6 iterations.
    Switching from defect correction form of Picard to the Newton solver scheme.
    The linear solver tolerance is set to 0.9. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 0.000392541, norm of the rhs: 7.88114e-05, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 0.000405296, norm of the rhs: 8.11161e-05, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 6 iterations.
    The linear solver tolerance is set to 0.843263. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 0.000294215, norm of the rhs: 5.90703e-05, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 0.000315462, norm of the rhs: 6.31366e-05, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 5 iterations.
    The linear solver tolerance is set to 0.758936. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 0.000186876, norm of the rhs: 3.75196e-05, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 0.000163047, norm of the rhs: 3.26323e-05, newton_derivative_scaling_factor: 1
 
-   Solving temperature system... 6 iterations.
+   Solving temperature system... 5 iterations.
    The linear solver tolerance is set to 0.639983. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 7.55443e-05, norm of the rhs: 1.51672e-05, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 0.000100723, norm of the rhs: 2.01587e-05, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 5 iterations.
    The linear solver tolerance is set to 0.485706. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 2.70155e-05, norm of the rhs: 5.42397e-06, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 3.93225e-05, norm of the rhs: 7.87e-06, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 5 iterations.
    The linear solver tolerance is set to 0.310843. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 11: 5.56022e-06, norm of the rhs: 1.11634e-06, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 11: 1.19456e-05, norm of the rhs: 2.39079e-06, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 4 iterations.
    The linear solver tolerance is set to 0.150979. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 6.56857e-07, norm of the rhs: 1.31879e-07, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 1.65794e-06, norm of the rhs: 3.31821e-07, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 3 iterations.
-   The linear solver tolerance is set to 0.0286859. Stabilization Preconditioner is SPD and A block is SPD.
+   The linear solver tolerance is set to 0.0014201. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 13: 8.04792e-08, norm of the rhs: 1.6158e-08, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 19+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 13: 7.46085e-08, norm of the rhs: 1.49322e-08, newton_derivative_scaling_factor: 1
 
 
    Postprocessing:
-     RMS, max velocity:                               94.4 m/s, 445 m/s
+     RMS, max velocity:                               93.8 m/s, 444 m/s
      Temperature min/avg/max:                         0 K, 0.5045 K, 1 K
-     Heat fluxes through boundary parts:              0 W, 0 W, -3.281 W, 1 W
-     Max, min, and rms velocity along boundary parts: 458.4 m/s, 0.01096 m/s, 194.8 m/s, 300.8 m/s, 0.005195 m/s, 117.2 m/s, 391.3 m/s, 15.84 m/s, 256.2 m/s, 0.3095 m/s, 0.005178 m/s, 0.2222 m/s
+     Heat fluxes through boundary parts:              0 W, 0 W, -3.238 W, 1 W
+     Max, min, and rms velocity along boundary parts: 457.6 m/s, 0.01118 m/s, 194.3 m/s, 291.1 m/s, 0.005412 m/s, 113.1 m/s, 391.2 m/s, 16.53 m/s, 255.3 m/s, 0.3169 m/s, 0.005396 m/s, 0.228 m/s
 
-*** Timestep 3:  t=0.0021 seconds, dt=1.90954e-05 seconds
+*** Timestep 3:  t=0.0021 seconds, dt=1.873e-05 seconds
    Solving temperature system... 7 iterations.
-   Initial Newton Stokes residual = 0.207121, v = 0.207121, p = 0
+   Initial Newton Stokes residual = 0.205633, v = 0.205633, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 32+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0368881, norm of the rhs: 0.00764028
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0373297, norm of the rhs: 0.00767619
 
    Solving temperature system... 6 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 35+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.00205951, norm of the rhs: 0.000426567, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.00202068, norm of the rhs: 0.000415517, newton_derivative_scaling_factor: 0
 
    Solving temperature system... 5 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 34+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.000702976, norm of the rhs: 0.000145601, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.000685172, norm of the rhs: 0.000140894, newton_derivative_scaling_factor: 0
 
    Solving temperature system... 5 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 34+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 0.000271491, norm of the rhs: 5.62314e-05, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 0.000258834, norm of the rhs: 5.32246e-05, newton_derivative_scaling_factor: 0
 
    Solving temperature system... 4 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 32+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 0.000115075, norm of the rhs: 2.38345e-05, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 0.000105648, norm of the rhs: 2.17247e-05, newton_derivative_scaling_factor: 0
 
    Solving temperature system... 4 iterations.
    Switching from defect correction form of Picard to the Newton solver scheme.
    The linear solver tolerance is set to 0.9. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 0.000105748, norm of the rhs: 2.19026e-05, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 2+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 9.06761e-05, norm of the rhs: 1.8646e-05, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 3 iterations.
    The linear solver tolerance is set to 0.843263. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 8.9604e-05, norm of the rhs: 1.85588e-05, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 7.58466e-05, norm of the rhs: 1.55965e-05, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 3 iterations.
    The linear solver tolerance is set to 0.758936. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 6.19447e-05, norm of the rhs: 1.283e-05, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 5.03389e-05, norm of the rhs: 1.03513e-05, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 3 iterations.
    The linear solver tolerance is set to 0.639983. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 3.25835e-05, norm of the rhs: 6.74873e-06, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 2.66515e-05, norm of the rhs: 5.48041e-06, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 3 iterations.
    The linear solver tolerance is set to 0.485706. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 1.42819e-05, norm of the rhs: 2.95808e-06, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 9.69673e-06, norm of the rhs: 1.99396e-06, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 3 iterations.
    The linear solver tolerance is set to 0.310843. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 11: 2.668e-06, norm of the rhs: 5.52597e-07, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 11: 2.83397e-06, norm of the rhs: 5.82757e-07, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 2 iterations.
    The linear solver tolerance is set to 0.150979. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 3.68001e-07, norm of the rhs: 7.62207e-08, newton_derivative_scaling_factor: 1
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 3.53111e-07, norm of the rhs: 7.26111e-08, newton_derivative_scaling_factor: 1
 
    Solving temperature system... 2 iterations.
-   The linear solver tolerance is set to 0.0347125. Stabilization Preconditioner is SPD and A block is SPD.
+   The linear solver tolerance is set to 0.0274504. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 13: 7.05281e-08, norm of the rhs: 1.46078e-08, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 13: 7.22269e-08, norm of the rhs: 1.48522e-08, newton_derivative_scaling_factor: 1
 
 
    Postprocessing:
-     RMS, max velocity:                               95.5 m/s, 451 m/s
-     Temperature min/avg/max:                         0 K, 0.5046 K, 1 K
-     Heat fluxes through boundary parts:              0 W, 0 W, -3.313 W, 1 W
-     Max, min, and rms velocity along boundary parts: 465 m/s, 0.01111 m/s, 197.7 m/s, 308.2 m/s, 0.005225 m/s, 120.1 m/s, 394.7 m/s, 16.07 m/s, 258.6 m/s, 0.3126 m/s, 0.005207 m/s, 0.2244 m/s
+     RMS, max velocity:                               94.9 m/s, 450 m/s
+     Temperature min/avg/max:                         0 K, 0.5045 K, 1 K
+     Heat fluxes through boundary parts:              0 W, 0 W, -3.269 W, 1 W
+     Max, min, and rms velocity along boundary parts: 464.1 m/s, 0.01134 m/s, 197.1 m/s, 298.4 m/s, 0.005445 m/s, 115.9 m/s, 394.5 m/s, 16.79 m/s, 257.6 m/s, 0.32 m/s, 0.005428 m/s, 0.2302 m/s
 
 Termination requested by criterion: end time
 

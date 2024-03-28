@@ -239,36 +239,93 @@ namespace aspect
       }
 
 
+      namespace
+      {
+        MaterialAveraging::AveragingOperation
+        get_averaging_operation_for_viscosity(const MaterialAveraging::AveragingOperation operation)
+        {
+          MaterialAveraging::AveragingOperation operation_for_viscosity = operation;
+          switch (operation)
+            {
+              case MaterialAveraging::harmonic_average:
+                operation_for_viscosity = MaterialAveraging::harmonic_average_only_viscosity;
+                break;
+
+              case MaterialAveraging::geometric_average:
+                operation_for_viscosity = MaterialAveraging::geometric_average_only_viscosity;
+                break;
+
+              case MaterialAveraging::project_to_Q1:
+                operation_for_viscosity = MaterialAveraging::project_to_Q1_only_viscosity;
+                break;
+
+              default:
+                operation_for_viscosity = operation;
+            }
+
+          return operation_for_viscosity;
+        }
+      }
+
+
 
       template <int dim>
       void
-      Elasticity<dim>::fill_elastic_force_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                                   const std::vector<double> &average_elastic_shear_moduli,
-                                                   MaterialModel::MaterialModelOutputs<dim> &out) const
+      Elasticity<dim>::fill_elastic_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                             const std::vector<double> &average_elastic_shear_moduli,
+                                             MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        // Create a reference to the structure for the elastic force terms that are needed to compute the
-        // right-hand side of the Stokes system
+        // Create a reference to the structure for the elastic outputs
         MaterialModel::ElasticOutputs<dim>
-        *force_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
+        *elastic_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
 
-        if (force_out == nullptr)
+        if (elastic_out == nullptr)
           return;
 
         if (in.requests_property(MaterialProperties::additional_outputs))
-          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
-            {
-              // Get old stresses from compositional fields
-              SymmetricTensor<2,dim> stress_old;
-              for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
-                stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
+          {
+            // The viscosity should be averaged if material averaging is applied.
+            // Here the averaging scheme "project to Q1 (only viscosity)"  is
+            // excluded, because there is no way to know the quadrature formula
+            // used for evaluation.
+            // TODO: find a way to include "project to Q1 (only viscosity)" as well.
+            std::vector<double> effective_creep_viscosities;
+            if (this->get_parameters().material_averaging != MaterialAveraging::none &&
+                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1 &&
+                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1_only_viscosity)
+              {
+                MaterialModelOutputs<dim> out_copy(out.n_evaluation_points(),
+                                                   this->introspection().n_compositional_fields);
+                out_copy.viscosities = out.viscosities;
 
-              // Average viscoelastic viscosity
-              const double average_viscoelastic_viscosity = out.viscosities[i];
+                const MaterialAveraging::AveragingOperation averaging_operation_for_viscosity =
+                  get_averaging_operation_for_viscosity(this->get_parameters().material_averaging);
+                MaterialAveraging::average(averaging_operation_for_viscosity,
+                                           in.current_cell,
+                                           this->introspection().quadratures.velocities,
+                                           this->get_mapping(),
+                                           out_copy);
 
-              // Fill elastic force outputs (See equation 30 in Moresi et al., 2003, J. Comp. Phys.)
-              force_out->elastic_force[i] = -1. * ( average_viscoelastic_viscosity / calculate_elastic_viscosity(average_elastic_shear_moduli[i]) * stress_old );
+                effective_creep_viscosities = out_copy.viscosities;
+              }
+            else
+              effective_creep_viscosities = out.viscosities;
 
-            }
+            for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+              {
+                // Get old stresses from compositional fields
+                SymmetricTensor<2,dim> stress_old;
+                for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
+                  stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
+
+                elastic_out->elastic_force[i] = -effective_creep_viscosities[i] / calculate_elastic_viscosity(average_elastic_shear_moduli[i]) * stress_old;
+                // The viscoelastic strain rate is needed only when the Newton method is selected.
+                const typename Parameters<dim>::NonlinearSolver::Kind nonlinear_solver = this->get_parameters().nonlinear_solver;
+                if ((nonlinear_solver == Parameters<dim>::NonlinearSolver::iterated_Advection_and_Newton_Stokes) ||
+                    (nonlinear_solver == Parameters<dim>::NonlinearSolver::single_Advection_iterated_Newton_Stokes))
+                  elastic_out->viscoelastic_strain_rate[i] = calculate_viscoelastic_strain_rate(in.strain_rate[i], stress_old, average_elastic_shear_moduli[i]);
+              }
+          }
       }
 
 
@@ -306,6 +363,33 @@ namespace aspect
             const double dte = elastic_timestep();
             const double dt = this->get_timestep();
 
+            // The viscosity should be averaged if material averaging is applied.
+            // Here the averaging scheme "project to Q1 (only viscosity)"  is
+            // excluded, because there is no way to know the quadrature formula
+            // used for evaluation.
+            // TODO: find a way to include "project to Q1 (only viscosity)" as well.
+            std::vector<double> effective_creep_viscosities;
+            if (this->get_parameters().material_averaging != MaterialAveraging::none &&
+                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1 &&
+                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1_only_viscosity)
+              {
+                MaterialModelOutputs<dim> out_copy(out.n_evaluation_points(),
+                                                   this->introspection().n_compositional_fields);
+                out_copy.viscosities = out.viscosities;
+
+                const MaterialAveraging::AveragingOperation averaging_operation_for_viscosity =
+                  get_averaging_operation_for_viscosity(this->get_parameters().material_averaging);
+                MaterialAveraging::average(averaging_operation_for_viscosity,
+                                           in.current_cell,
+                                           this->introspection().quadratures.compositional_fields,
+                                           this->get_mapping(),
+                                           out_copy);
+
+                effective_creep_viscosities = out_copy.viscosities;
+              }
+            else
+              effective_creep_viscosities = out.viscosities;
+
             for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               {
                 // Get old stresses from compositional fields
@@ -316,9 +400,6 @@ namespace aspect
                 // Calculate the rotated stresses
                 // Rotation (vorticity) tensor (equation 25 in Moresi et al., 2003, J. Comp. Phys.)
                 const Tensor<2,dim> rotation = 0.5 * (evaluator->get_gradient(i) - transpose(evaluator->get_gradient(i)));
-
-                // Average viscoelastic viscosity
-                const double average_viscoelastic_viscosity = out.viscosities[i];
 
                 // Calculate the current (new) stored elastic stress, which is a function of the material
                 // properties (viscoelastic viscosity, shear modulus), elastic time step size, strain rate,
@@ -334,7 +415,7 @@ namespace aspect
                 Assert(std::isfinite(in.strain_rate[i].norm()),
                        ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                   "not filled by the caller."));
-                const SymmetricTensor<2,dim> stress_creep = 2. * average_viscoelastic_viscosity * ( deviator(in.strain_rate[i]) + stress_0 / (2. * damped_elastic_viscosity ) );
+                const SymmetricTensor<2,dim> stress_creep = 2. * effective_creep_viscosities[i] * ( deviator(in.strain_rate[i]) + stress_0 / (2. * damped_elastic_viscosity ) );
 
                 // stress_new is the (new) stored elastic stress
                 SymmetricTensor<2,dim> stress_new = stress_creep * (1. - (elastic_damper_viscosity / damped_elastic_viscosity)) + elastic_damper_viscosity * stress_0 / damped_elastic_viscosity;
@@ -412,7 +493,7 @@ namespace aspect
 
 
       template <int dim>
-      double
+      SymmetricTensor<2,dim>
       Elasticity<dim>::
       calculate_viscoelastic_strain_rate(const SymmetricTensor<2,dim> &strain_rate,
                                          const SymmetricTensor<2,dim> &stored_stress,
@@ -425,10 +506,8 @@ namespace aspect
         // elastic stresses stored from the last time step.
         // Note the parallels with the viscous part of the strain rate deviator,
         // which is equal to 0.5 * stress / viscosity.
-        const SymmetricTensor<2,dim> edot_deviator = deviator(strain_rate) + 0.5*stored_stress /
-                                                     calculate_elastic_viscosity(shear_modulus);
-        // Return the norm of the strain rate, or 0, whichever is larger.
-        return std::sqrt(std::max(-second_invariant(edot_deviator), 0.));
+        return deviator(strain_rate) + 0.5 * deviator(stored_stress) /
+               calculate_elastic_viscosity(shear_modulus);
       }
     }
   }

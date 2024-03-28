@@ -1151,7 +1151,8 @@ namespace aspect
     {
       public:
         ElasticOutputs(const unsigned int n_points)
-          : elastic_force(n_points, numbers::signaling_nan<Tensor<2,dim>>() )
+          : elastic_force(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>())
+          , viscoelastic_strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>())
         {}
 
         ~ElasticOutputs() override
@@ -1170,7 +1171,13 @@ namespace aspect
          * momentum equation (first part of the Stokes equation) in each
          * quadrature point.
          */
-        std::vector<Tensor<2,dim>> elastic_force;
+        std::vector<SymmetricTensor<2,dim>> elastic_force;
+
+        /**
+         * Strain rate tensor that includes the contribution of elastic shear, which is
+         * required by the Newton solver.
+         */
+        std::vector<SymmetricTensor<2,dim>> viscoelastic_strain_rate;
     };
 
 
