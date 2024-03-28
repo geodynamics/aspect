@@ -1,0 +1,162 @@
+# Input file for the 2D Rayleigh Taylor benchmark described
+# in Kaus (2010) and Rose et al. (2017).
+# The benchmark considers a denser, more viscous layer
+# overlying lighter, less viscous mantle. The interface
+# between the layers is perturbed, leading to drips along
+# the vertical domain boundaries. A free surface allows
+# for the development of surface topography. 
+ 
+############### Global parameters
+set Additional shared libraries            = librayleigh_taylor_instability.so
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 6e6
+# For a timestep of 2500 yr and no stabilitation,
+# the model is stable. For a timestep of 5000 yr,
+# it is not ("drunken sailor").
+set Maximum time step                      = 50e2 
+set Use years in output instead of seconds = true
+set CFL number                             = 0.5
+set Nonlinear solver tolerance             = 1e-8
+set Output directory                       = output_stab_5000_normal
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Pressure normalization                 = no
+
+
+############### Geometry
+# We consider a 2D box of 500x500 km 
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 500e3
+    set Y extent  = 500e3
+  end
+end
+
+
+############### Boundary conditions
+# Vertical boundaries are free slip,
+# the bottom boundary is no slip,
+# and the top boundary is a free surface.
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1
+  set Zero velocity boundary indicators       = 2
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators                    = top: free surface
+  set Additional tangential mesh velocity boundary indicators = left, right
+  subsection Free surface
+    # We test the stability of the free surface
+    # for a timestep of 2500 and 5000 yr with
+    # (0.5) and without (0.0) stabilization.
+    set Free surface stabilization theta = 0.5
+    # We compare the vertical and normal projection of
+    # the free surface.
+    set Surface velocity projection      = normal
+  end
+end
+
+
+############### Material properties
+# No temperature effects. 
+# The top layer is denser and more viscous.
+subsection Material model
+  set Model name = simple
+  subsection Simple model 
+   set Viscosity                                      = 1.0e20
+   set Composition viscosity prefactor                = 10
+   set Reference temperature                          = 1.0
+   set Reference density                              = 3200.0
+   set Density differential for compositional field 1 = 100
+   set Thermal expansion coefficient                  = 0.0
+   set Thermal conductivity                           = 2.7
+   set Reference specific heat                        = 1250
+  end
+end
+
+
+############## Gravity
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+
+############### Parameters describing the temperature field
+# We ignore any temperature effects.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom, left, right
+  set List of model names = initial temperature
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1
+  end
+end
+
+
+############### Parameters describing the compositional fields
+# We include one compositional field plus the background material.
+# The material interface is sinusoidally perturbed with an amplitude
+# A of 5 km. 
+
+subsection Compositional fields
+   set Number of fields = 1 
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function constants  = A=5000, W=250e3, C=250e3
+    set Function expression = if(y>400e3+A*cos(pi*(x-C)/W),1,0)
+  end
+end
+
+
+############### Mesh refinement
+# The Kaus paper considers a resolution of 50x50 elements.
+# We use 64x64.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 6
+  set Refinement fraction                = 0.9
+  set Coarsening fraction                = 0.1
+  set Strategy                           = composition #, slope
+  set Time steps between mesh refinement = 0
+end
+
+
+############### Parameters describing what to do with the solution
+# We monitor the topography over time.
+subsection Postprocess
+  set List of postprocessors = visualization, topography, composition statistics, drip depth
+
+  subsection Visualization
+    set Time between graphical output = 2.5e5
+    set List of output variables      = viscosity, density
+    set Output mesh velocity          = true
+  end
+  subsection Topography
+    set Output to file           = true
+    set Time between text output = 2.e5
+  end
+end
+
+
+############### Parameters describing the solver settings
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-8
+    set Number of cheap Stokes solver steps = 200
+  end
+end
