@@ -317,6 +317,7 @@ namespace aspect
                                                cell,
                                                scratch.finite_element_values.get_quadrature(),
                                                scratch.finite_element_values.get_mapping(),
+                                               scratch.material_model_inputs.requests_property(MaterialModel::MaterialProperties::viscosity),
                                                scratch.material_model_outputs);
 
     for (unsigned int i=0; i<assemblers->stokes_preconditioner.size(); ++i)
@@ -566,6 +567,7 @@ namespace aspect
                                                cell,
                                                scratch.finite_element_values.get_quadrature(),
                                                scratch.finite_element_values.get_mapping(),
+                                               scratch.material_model_inputs.requests_property(MaterialModel::MaterialProperties::viscosity),
                                                scratch.material_model_outputs);
 
     scratch.finite_element_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
@@ -950,6 +952,7 @@ namespace aspect
                                                cell,
                                                scratch.finite_element_values.get_quadrature(),
                                                scratch.finite_element_values.get_mapping(),
+                                               scratch.material_model_inputs.requests_property(MaterialModel::MaterialProperties::viscosity),
                                                scratch.material_model_outputs);
 
     heating_model_manager.evaluate(scratch.material_model_inputs,

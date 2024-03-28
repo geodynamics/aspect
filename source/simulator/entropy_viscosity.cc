@@ -584,6 +584,7 @@ namespace aspect
                                                    cell,
                                                    scratch.finite_element_values.get_quadrature(),
                                                    scratch.finite_element_values.get_mapping(),
+                                                   scratch.material_model_inputs.requests_property(MaterialModel::MaterialProperties::viscosity),
                                                    scratch.material_model_outputs);
 
         if (parameters.advection_stabilization_method == Parameters<dim>::AdvectionStabilizationMethod::entropy_viscosity)

@@ -803,6 +803,7 @@ namespace aspect
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>         &quadrature_formula,
                     const Mapping<dim>            &mapping,
+                    const bool                     average_viscosity,
                     MaterialModelOutputs<dim>     &values_out)
       {
         FullMatrix<double> projection_matrix;
@@ -827,27 +828,32 @@ namespace aspect
 
         if (operation == harmonic_average_only_viscosity)
           {
-            average_property (harmonic_average, projection_matrix, expansion_matrix,
-                              values_out.viscosities);
+            if (average_viscosity)
+              average_property (harmonic_average, projection_matrix, expansion_matrix,
+                                values_out.viscosities);
             return;
           }
 
         if (operation == geometric_average_only_viscosity)
           {
-            average_property (geometric_average, projection_matrix, expansion_matrix,
-                              values_out.viscosities);
+            if (average_viscosity)
+              average_property (geometric_average, projection_matrix, expansion_matrix,
+                                values_out.viscosities);
             return;
           }
 
         if (operation == project_to_Q1_only_viscosity)
           {
-            average_property (project_to_Q1, projection_matrix, expansion_matrix,
-                              values_out.viscosities);
+            if (average_viscosity)
+              average_property (project_to_Q1, projection_matrix, expansion_matrix,
+                                values_out.viscosities);
             return;
           }
 
-        average_property (operation, projection_matrix, expansion_matrix,
-                          values_out.viscosities);
+        if (average_viscosity)
+          average_property (operation, projection_matrix, expansion_matrix,
+                            values_out.viscosities);
+
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.densities);
         average_property (operation, projection_matrix, expansion_matrix,
@@ -1182,7 +1188,8 @@ namespace aspect
                   const DoFHandler<dim>::active_cell_iterator &cell, \
                   const Quadrature<dim>     &quadrature_formula, \
                   const Mapping<dim>        &mapping, \
-                  MaterialModelOutputs<dim>      &values_out); \
+                  const bool                 average_viscosity, \
+                  MaterialModelOutputs<dim> &values_out); \
   }
 
 

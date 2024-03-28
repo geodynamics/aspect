@@ -1127,6 +1127,7 @@ namespace aspect
           FEQ_cell,
           quadrature_formula,
           *sim.mapping,
+          in.requests_property(MaterialModel::MaterialProperties::viscosity),
           out);
 
         for (unsigned int i=0; i<values.size(); ++i)
