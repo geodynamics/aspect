@@ -1,0 +1,277 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.6.0-pre (coupling_fs, 19ad382da)
+--     . using deal.II 9.4.0
+--     .       with 32 bit indices and vectorization level 0 (64 bits)
+--     . using Trilinos 13.2.0
+--     . using p4est 2.3.2
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------
+The output directory <eroding_box/> provided in the input file appears not to exist.
+ASPECT will create it for you.
+-----------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&sha=19ad382da&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 25 (on 1 levels)
+Number of degrees of freedom: 1,524 (1,089+72+363)
+
+Number of mesh deformation degrees of freedom: 216
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: eroding_box/solution/solution-00000
+
+*** Timestep 1:  t=1000 years, dt=1000 years
+   Initializing FastScape... 1 levels, cell size: 20000 m.
+here it works 2
+here it works 3
+here it works 4
+here it works 5
+here it works 6
+here it works 7
+here it works 8
+Fastscape ite 0
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 8
+Fastscape ite 1
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 8
+Fastscape ite 2
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 8
+Fastscape ite 3
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 8
+Fastscape ite 4
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 10
+here it works 11
+here it works 12
+   Solving mesh displacement system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: eroding_box/solution/solution-00001
+
+*** Timestep 2:  t=2000 years, dt=1000 years
+   Initializing FastScape... 1 levels, cell size: 20000 m.
+here it works 2
+here it works 3
+here it works 4
+here it works 5
+here it works 6
+here it works 7
+here it works 8
+Fastscape ite 0
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 8
+Fastscape ite 1
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 8
+Fastscape ite 2
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 8
+Fastscape ite 3
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 8
+Fastscape ite 4
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 10
+here it works 11
+here it works 12
+   Solving mesh displacement system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: eroding_box/solution/solution-00002
+
+*** Timestep 3:  t=3000 years, dt=1000 years
+   Initializing FastScape... 1 levels, cell size: 20000 m.
+here it works 2
+here it works 3
+here it works 4
+here it works 5
+here it works 6
+here it works 7
+here it works 8
+Fastscape ite 0
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 8
+Fastscape ite 1
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 8
+Fastscape ite 2
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 8
+Fastscape ite 3
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 8
+Fastscape ite 4
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+here it works 9
+here it works 9b
+here it works 10
+here it works 11
+here it works 12
+   Solving mesh displacement system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: eroding_box/solution/solution-00003
+
+*** Timestep 4:  t=4000 years, dt=1000 years
+   Initializing FastScape... 1 levels, cell size: 20000 m.
+here it works 2
+here it works 3
+here it works 4
+here it works 5
+here it works 6
+here it works 7
+here it works 8
+Fastscape ite 0
+here it works 8b
+here it works 8c
+here it works 8d
+here it works 8e
+[MacBook-Pro:08191] *** Process received signal ***
+[MacBook-Pro:08191] Signal: Abort trap: 6 (6)
+[MacBook-Pro:08191] Signal code:  (0)
+[MacBook-Pro:08191] [ 0] 0   libsystem_platform.dylib            0x000000019ea52a84 _sigtramp + 56
+[MacBook-Pro:08191] [ 1] 0   libsystem_pthread.dylib             0x000000019ea23c28 pthread_kill + 
+288
+[MacBook-Pro:08191] [ 2] 0   libsystem_c.dylib                   0x000000019e931ae8 abort + 180
+[MacBook-Pro:08191] [ 3] 0   libsystem_malloc.dylib              0x000000019e852e28 malloc_vreport 
++ 908
+[MacBook-Pro:08191] [ 4] 0   libsystem_malloc.dylib              0x000000019e8695d4 
+malloc_zone_error + 104
+[MacBook-Pro:08191] [ 5] 0   libsystem_malloc.dylib              0x000000019e861148 
+nanov2_guard_corruption_detected + 44
+[MacBook-Pro:08191] [ 6] 0   libsystem_malloc.dylib              0x000000019e860344 _nanov2_free + 
+0
+[MacBook-Pro:08191] [ 7] 0   libc++abi.dylib                     0x000000019e9de924 _Znwm + 32
+[MacBook-Pro:08191] [ 8] 0   aspect                              0x0000000105070738 
+_ZN3xtl3mpl9static_ifIZN2xt18assign_xexpressionINS2_17xtensor_containerINS2_7uvectorIdNSt3__19allocatorIdEEEELm2ELNS2_11layout_typeE1ENS2_22xtensor_expression_tagEEENS2_13xstrided_viewIRSC_NS6_5arrayImLm2EEELSA_0ENS2_6detail20inner_storage_getterISE_EEEEEEvRNS2_11xexpressionIT_EERKNSL_IT0_EEEUlSM_E_ZNS3_ISC_SK_EEvSO_SS_EUlSM_E0_EEDcNS6_17integral_constantIbLb0EEERKSM_RKSP_ 
++ 188
+[MacBook-Pro:08191] [ 9] 0   aspect                              0x000000010506e1b8 
+_ZN12fastscapelib20diffusion_adi_eroderINS_14raster_grid_xtINS_11xt_selectorELNS_14raster_connectE1ENS_15neighbors_cacheILh8EEEEES2_E13solve_adi_rowIN2xt13xstrided_viewIRNS9_17xtensor_containerINS9_7uvectorIdNSt3__19allocatorIdEEEELm2ELNS9_11layout_typeE1ENS9_22xtensor_expression_tagEEENSD_5arrayImLm2EEELSH_0ENS9_6detail20inner_storage_getterISK_EEEENSA_IRNSB_ISG_Lm3ELSH_1ESI_EENSL_ImLm3EEELSH_0ENSO_ISS_EEEESV_EEDaOT_OT0_OT1_mmd 
++ 144
+[MacBook-Pro:08191] [10] 0   aspect                              0x000000010501a780 
+_ZN12fastscapelib20diffusion_adi_eroderINS_14raster_grid_xtINS_11xt_selectorELNS_14raster_connectE1ENS_15neighbors_cacheILh8EEEEES2_E5erodeERKN2xt16xarray_containerINS8_7uvectorIdNSt3__19allocatorIdEEEELNS8_11layout_typeE1ENS8_7svectorImLm4ENSC_ImEELb1EEENS8_22xtensor_expression_tagEEEd 
++ 400
+[MacBook-Pro:08191] [11] 0   aspect                              0x000000010501f064 
+_ZNK6aspect15MeshDeformation11FastScapeccILi3EE40compute_velocity_constraints_on_boundaryERKN6dealii10DoFHandlerILi3ELi3EEERNS3_17AffineConstraintsIdEERKNSt3__13setIjNSB_4lessIjEENSB_9allocatorIjEEEE 
++ 6844
+[MacBook-Pro:08191] [12] 0   aspect                              0x0000000105039b38 
+_ZN6aspect15MeshDeformation22MeshDeformationHandlerILi3EE16make_constraintsEv + 1036
+[MacBook-Pro:08191] [13] 0   aspect                              0x0000000105039618 
+_ZN6aspect15MeshDeformation22MeshDeformationHandlerILi3EE7executeEv + 152
+[MacBook-Pro:08191] [14] 0   aspect                              0x00000001048a16f8 
+_ZN6aspect9SimulatorILi3EE14solve_timestepEv + 44
+[MacBook-Pro:08191] [15] 0   aspect                              0x00000001048a0084 
+_ZN6aspect9SimulatorILi3EE3runEv + 892
+[MacBook-Pro:08191] [16] 0   aspect                              0x00000001051b4f44 
+_Z13run_simulatorILi3EEvRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEES8_bbb + 
+868
+[MacBook-Pro:08191] [17] 0   aspect                              0x00000001051b41a8 main + 2580
+[MacBook-Pro:08191] [18] 0   dyld                                0x000000019e6cbf28 start + 2236
+[MacBook-Pro:08191] *** End of error message ***
+--------------------------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code. Per user-direction, the job has been aborted.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+mpirun noticed that process rank 0 with PID 0 on node MacBook-Pro exited on signal 6 (Abort trap: 
+6).
+--------------------------------------------------------------------------

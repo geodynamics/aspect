@@ -228,6 +228,12 @@ if(ASPECT_WITH_WORLD_BUILDER)
   ENDIF()
 ENDIF()
 
+# include Fastscape and Xtensor files 
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/fastscape/include/")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtensor/include/")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtensor/include/xtensor/")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtl/include/")
+
 
 
 # load in version info and export it
