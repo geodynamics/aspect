@@ -114,7 +114,7 @@ namespace aspect
          * only compute the depth with regard to the <i>reference
          * configuration</i> of the geometry, i.e., the geometry initially
          * created. If you are using a dynamic topography in your models
-         * that changes in every time step, or if you apply in initial
+         * that changes in every time step, or if you apply initial
          * topography to your model, then the <i>actual</i> depth
          * of a point with regard to this dynamic topography will not
          * match the value this function returns. This is so because
