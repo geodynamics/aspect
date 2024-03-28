@@ -315,8 +315,14 @@ namespace aspect
           // fill seismic velocities outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
             {
-              seismic_out->vp[i] = entropy_reader[0]->seismic_vp(entropy, pressure);
-              seismic_out->vs[i] = entropy_reader[0]->seismic_vs(entropy, pressure);
+              for (unsigned int j=0; j<material_file_names.size(); ++j)
+            {
+              eos_outputs[i].vp[j] = entropy_reader[j]->seismic_vp(entropy, pressure);
+              eos_outputs[i].vs[j] = entropy_reader[j]->seismic_vs(entropy,pressure);
+            }
+              seismic_out->vp[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs[i].vp, MaterialUtilities::arithmetic);
+              seismic_out->vs[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs[i].vs, MaterialUtilities::arithmetic);
+
             }
         }
     }

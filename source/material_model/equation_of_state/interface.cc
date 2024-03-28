@@ -35,7 +35,9 @@ namespace aspect
       specific_heat_capacities(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
       compressibilities(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
       entropy_derivative_pressure(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
-      entropy_derivative_temperature(n_individual_compositions_and_phases, numbers::signaling_nan<double>())
+      entropy_derivative_temperature(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
+      vp(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
+      vs(n_individual_compositions_and_phases, numbers::signaling_nan<double>())
     {}
 
 
