@@ -1,0 +1,112 @@
+# This cookbook models oceanic subduction in a 2d
+# box of 3000 x 670 km.
+# The subducting plate is driven by inflow boundary
+# conditions on the top part of the right boundary,
+# while a balancing outflow is prescribed underneath.
+# Only density and viscosity differ per composition.
+# Building on case 1, an initial temperature field
+# based on the plate cooling model and
+# a mantle adiabatic gradient of 0.25 degrees/km
+# is prescribed, but temperature still does not affect
+# the material parameters.
+# High resolution is required to a.o. resolve the weak zone
+# between the subducting and overriding plate, so about
+# 100 MPI processes are required.
+
+set Additional shared libraries            = /scratch/usr/bbpanneg/software/aspect/QQ_subduction_cookbook/shared_libs/build_release/lib2d_driven_subduction_box.so
+
+# 2D
+set Dimension                              = 2
+
+# Reuse parts of case 1
+include kinematically_driven_subduction_2d_case1.prm
+
+set Output directory                       = output-Case2a
+
+
+# We fix temperature on the top and bottom
+# as well as on the right boundary because
+# we have inflow through the latter.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, right
+  set List of model names = initial temperature
+end
+
+
+subsection Material model
+  set Model name = multicomponent
+
+  subsection Multicomponent
+    # TODO the benchmark uses different reference temperatures for each composition
+    #set Reference temperature         = 1573.15,473.15,473.15,473.15,473.15,1573.15,1573.15,1573.15
+    set Reference temperature         = 473.15
+    set Viscosity averaging scheme    = maximum composition
+    set Viscosities                   = 1.e20, 1.e23, 1.e20, 1.e23, 1.e23, 1.e23, 1.e23, 1.e20
+    set Densities                     = 3200.0,3000.0,3000.0,3250.0,3250.0,3200.0,3200.0,3200.0
+    set Thermal conductivities        = 183.33,2.5,2.5,2.5,2.5,2.5,2.5,2.5
+    set Heat capacities               = 1250.0,750.0,750.0,750.0,750.0,1250.0,1250.0,750.0
+    set Thermal expansivities         = 0
+  end
+
+end
+
+# The overriding plate (OP) and subducting plate (SP)
+#  are now each divided into three different layers:
+# a layer of Bulk Oceanic Composition (BOC),
+# a layer of Serpentinized HarzBurgite (SHB),
+# and a "thermal layer".
+subsection Compositional fields
+  set Number of fields = 7
+  set Names of fields  = BOC_OP, BOC_SP, SHB_OP, SHB_SP, thermal_OP, thermal_SP, WZ
+end
+
+
+subsection Initial composition model
+  set List of model names = function
+  subsection Function
+    set Function constants  = Ax=1475600.0, Az=670000.0, \
+                              Bx=1500000.0, Bz=670000.0, \
+                              Cx=1358500.0, Cz=588000.0, \
+                              Dx=1382900.0, Dz=588000.0, \
+                              Ex=1530000.0, Ez=560000.0, \
+                              Fz=663000.0, Gz=662000.0, \
+                              Hz=631000.0, Iz=630000.0
+    set Function expression = if(z>=Fz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1,0); \
+                              if(z>=Gz&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz),1,0); \
+                              if(z>=Hz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)&z<Fz,1,0); \
+                              if(z>=Iz&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<Gz,1,0); \
+                              if(z>=Cz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)&z<Hz,1,0); \
+                              if((x>=Ex&z>=Ez&z<Iz)|(x<Ex&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<Iz&z>=((Ez-Dz)/(Ex-Dx)*(x-Dx)+Dz)),1,0); \
+                              if(z>=Cz&z>((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1.5,0)
+    set Variable names      = x,z
+  end
+end
+
+
+# The initial temperature is prescribed through a plugin
+# and uses the plate cooling model for the temperature in both
+# plates (the plates have different ages) and an adiabatic
+# gradient of 0.25 degrees per km in the sublithospheric
+# mantle.
+subsection Initial temperature model
+  set List of model names = QQ plate cooling
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 1
+  set Initial global refinement                = 6
+  set Minimum refinement level                 = 6
+  set Coarsening fraction                      = 0.06
+  set Refinement fraction                      = 0.94
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, heating statistics, maximum depth of field, composition velocity statistics, viscous dissipation statistics, temperature statistics
+
+  subsection Composition velocity statistics
+    # Sum the velocities of the fields that make up the subducting plate.
+    set Names of selected compositional fields = BOC_SP, SHB_SP, thermal_SP
+  end
+end
