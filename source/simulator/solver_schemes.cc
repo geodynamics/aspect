@@ -337,6 +337,60 @@ namespace aspect
     if (fields_advected_by_particles.size() > 0)
       interpolate_particle_properties(fields_advected_by_particles);
 
+    // If elasticity is switched on, the stress tensor can have components
+    // with very large values and components that are and stay practically zero.
+    // Therefore, we include all fields that represent stress tensor components
+    // of the same stress tensor in the computation of the initial residual
+    // for the fields that belong to that tensor. In other words, we compute an
+    // averaged initial residual using those fields that belong to the ve_stress tensor,
+    // and one for those belonging to the ve_stress_old tensor.
+    // TODO ve_stress_old values are not independent components of the solution vector,
+    // do we need to compute a residual for them at all?
+    // TODO Is this residual calculation representative of a second order tensor?
+    double stress_initial_residual = 0.0;
+    double old_stress_initial_residual = 0.0;
+    std::vector<unsigned int> stress_indices;
+    std::vector<unsigned int> old_stress_indices;
+    if (parameters.enable_elasticity == true)
+      {
+        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xx"));
+        stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yy"));
+        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xx_old"));
+        old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yy_old"));
+        if (dim == 2)
+          {
+            stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy"));
+            old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy_old"));
+          }
+        else if (dim == 3)
+          {
+            stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_zz"));
+            stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy"));
+            stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xz"));
+            stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yz"));
+            old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_zz_old"));
+            old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xy_old"));
+            old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xz_old"));
+            old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yz_old"));
+          }
+
+
+        if (residual)
+          {
+            const double n_stress_fields = stress_indices.size();
+            for (auto &c : stress_indices)
+              stress_initial_residual += system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm() / n_stress_fields;
+            for (auto &c : old_stress_indices)
+              old_stress_initial_residual += system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm() / n_stress_fields;
+
+            // Overwrite the initial residual
+            for (auto &c : stress_indices)
+              (*residual)[c] = stress_initial_residual;
+            for (auto &c : old_stress_indices)
+              (*residual)[c] = old_stress_initial_residual;
+          }
+      }
+
 
     // for consistency we update the current linearization point only after we have solved
     // all fields, so that we use the same point in time for every field when solving
@@ -346,7 +400,9 @@ namespace aspect
           = solution.block(introspection.block_indices.compositional_fields[c]);
 
         if ((initial_residual.size() > 0) && (initial_residual[c] > 0))
-          current_residual[c] /= initial_residual[c];
+          {
+            current_residual[c] /= initial_residual[c];
+          }
         else
           current_residual[c] = 0.0;
       }
@@ -992,11 +1048,22 @@ namespace aspect
 
     do
       {
-        // Restore particles through stored copy of particle handler,
-        // but only if they have already been displaced in a nonlinear
-        // iteration (in the assemble_and_solve_composition call).
-        if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
-          particle_world->restore_particles();
+        if (particle_world.get() != nullptr)
+          {
+            // Restore particles through stored copy of particle handler,
+            // but only if they have already been displaced in a nonlinear
+            // iteration (in the assemble_and_solve_composition call).
+            if (nonlinear_iteration > 0)
+              particle_world->restore_particles();
+
+            // Apply a particle update if required by the particle properties.
+            // Apply the update even if nonlinear_iteration == 0,
+            // because the signal could be used, for example, to apply operator
+            // splitting on the particles, and this would need to be
+            // applied at the beginning of the timestep and after
+            // every restore_particles().
+            signals.post_restore_particles(*particle_world.get());
+          }
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(initial_temperature_residual,
@@ -1114,11 +1181,22 @@ namespace aspect
 
     do
       {
-        // Restore particles through stored copy of particle handler,
-        // but only if they have already been displaced in a nonlinear
-        // iteration (in the assemble_and_solve_composition call).
-        if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
-          particle_world->restore_particles();
+        if (particle_world.get() != nullptr)
+          {
+            // Restore particles through stored copy of particle handler,
+            // but only if they have already been displaced in a nonlinear
+            // iteration (in the assemble_and_solve_composition call).
+            if (nonlinear_iteration > 0)
+              particle_world->restore_particles();
+
+            // Apply a particle update if required by the particle properties.
+            // Apply the update even if nonlinear_iteration == 0,
+            // because the signal could be used, for example, to apply operator
+            // splitting on the particles, and this would need to be
+            // applied at the beginning of the timestep and after
+            // every restore_particles().
+            signals.post_restore_particles(*particle_world.get());
+          }
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(initial_temperature_residual,
@@ -1269,11 +1347,22 @@ namespace aspect
 
     do
       {
-        // Restore particles through stored copy of particle handler,
-        // but only if they have already been displaced in a nonlinear
-        // iteration (in the assemble_and_solve_composition call).
-        if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
-          particle_world->restore_particles();
+        if (particle_world.get() != nullptr)
+          {
+            // Restore particles through stored copy of particle handler,
+            // but only if they have already been displaced in a nonlinear
+            // iteration (in the assemble_and_solve_composition call).
+            if (nonlinear_iteration > 0)
+              particle_world->restore_particles();
+
+            // Apply a particle update if required by the particle properties.
+            // Apply the update even if nonlinear_iteration == 0,
+            // because the signal could be used, for example, to apply operator
+            // splitting on the particles, and this would need to be
+            // applied at the beginning of the timestep and after
+            // every restore_particles().
+            signals.post_restore_particles(*particle_world.get());
+          }
 
         assemble_and_solve_temperature();
         assemble_and_solve_composition();

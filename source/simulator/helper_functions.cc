@@ -1603,6 +1603,17 @@ namespace aspect
   {
     solution.block(block_index) = distributed_vector.block(block_index);
 
+    // If a limiter is used for a Discontinuous Galerkin field,
+    // also update the stored unlimited solution.
+    // TODO the update is computed using the limited solution,
+    // is that consistent?
+    if ((parameters.use_discontinuous_temperature_discretization
+         && parameters.use_limiter_for_discontinuous_temperature_solution)
+        ||
+        (parameters.use_discontinuous_composition_discretization
+         && parameters.use_limiter_for_discontinuous_composition_solution))
+      unlimited_solution.block(block_index) = distributed_vector.block(block_index);
+
     // we have to update the old solution with our reaction update too
     // so that the advection scheme will have the correct time stepping in the next step
     LinearAlgebra::BlockVector tmp;

@@ -76,8 +76,8 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
           /**
-           * Create the additional material model outputs object that contains the
-           * elastic shear moduli.
+           * Create the additional material model output objects that contain the
+           * elastic shear moduli and reaction rates.
            */
           void
           create_elastic_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
@@ -86,7 +86,7 @@ namespace aspect
            * Given the stress of the previous time step in the material model inputs @p in,
            * the elastic shear moduli @p average_elastic_shear_moduli a each point,
            * and the (viscous) viscosities given in the material model outputs object @p out,
-           * fill an additional material model outputs objects with the elastic force terms.
+           * fill a material model outputs objects with the elastic force terms.
            */
           void
           fill_elastic_force_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -104,6 +104,28 @@ namespace aspect
           fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
                                  const std::vector<double> &average_elastic_shear_moduli,
                                  MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+          /**
+           * Given the stress of the previous time step in the material model inputs @p in,
+           * the elastic shear moduli @p average_elastic_shear_moduli at each point,
+           * and the (viscous) viscosities given in the material model outputs object @p out,
+           * compute the update to the elastic stresses of the previous timestep and use it
+           * to fill the reaction rates material model output property.
+           */
+          void
+          fill_reaction_rates (const MaterialModel::MaterialModelInputs<dim> &in,
+                               const std::vector<double> &average_elastic_shear_moduli,
+                               MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+          /**
+           * A function that fills the elastic output in the
+           * MaterialModelOutputs object that is handed over, if it exists.
+           * Does nothing otherwise.
+           */
+          void fill_elastic_outputs(const unsigned int point_index,
+                                    const MaterialModel::MaterialModelInputs<dim> &in,
+                                    const double average_elastic_shear_modulus,
+                                    MaterialModel::MaterialModelOutputs<dim> &out) const;
 
           /**
            * Return the values of the elastic shear moduli for each composition used in the
@@ -138,15 +160,24 @@ namespace aspect
            * total current stress tensor multiplied by a scalar.
            */
           double
-          calculate_viscoelastic_strain_rate (const SymmetricTensor<2,dim> &strain_rate,
-                                              const SymmetricTensor<2,dim> &stored_stress,
-                                              const double shear_modulus) const;
+          calculate_viscoelastic_strain_rate(const SymmetricTensor<2, dim> &strain_rate,
+                                             const SymmetricTensor<2, dim> &stress_0_advected,
+                                             const SymmetricTensor<2, dim> &stress_old,
+                                             const double viscosity_pre_yield,
+                                             const double shear_modulus) const;
 
           /**
            * Compute the elastic time step.
            */
           double
           elastic_timestep () const;
+
+          /**
+           * Calculate the ratio between the computational timestep and
+           * the elastic timestep.
+           */
+          double
+          calculate_timestep_ratio() const;
 
         private:
           /**
@@ -183,13 +214,22 @@ namespace aspect
           double stabilization_time_scale_factor;
 
           /**
-           * We cache the evaluator that is necessary to evaluate the old velocity
-           * gradients. They are required to compute the elastic stresses, but
+           * We cache the evaluator that is necessary to evaluate the velocity
+           * gradients and the old compositions. They are required to compute the elastic stresses, but
            * are not provided by the material model.
-           * By caching the evaluator, we can avoid recreating it every time we
+           * By caching the evaluators, we can avoid recreating it every time we
            * need it.
            */
           mutable std::unique_ptr<FEPointEvaluation<dim, dim>> evaluator;
+          static constexpr unsigned int n_independent_components = SymmetricTensor<2, dim>::n_independent_components;
+          mutable std::unique_ptr<FEPointEvaluation<n_independent_components, dim>> evaluator_composition;
+
+          /**
+           * The names and indices of the compositional fields that represent components of the
+           * viscoelastic stress tensors.
+           */
+          std::vector<std::string> stress_field_names;
+          std::vector<unsigned int> stress_field_indices;
       };
     }
   }

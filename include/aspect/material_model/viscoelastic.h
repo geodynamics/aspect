@@ -174,41 +174,68 @@ namespace aspect
          */
 
         /**
-         * Declare the parameters this class takes through input files.
+         * @name The elastic viscosity
+         * @{
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        void
-        parse_parameters (ParameterHandler &prm) override;
+        double get_elastic_viscosity (const double shear_modulus) const;
         /**
          * @}
          */
 
-        void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+        /**
+         * @name The elastic timestep
+         * @{
+         */
+        double get_elastic_timestep () const;
+        /**
+         * @}
+         */
 
+        /**
+         * Return the ratio between the computational and elastic timestep;
+         * the elastic timestep can be larger than the computational timestep.
+         */
+        double get_timestep_ratio() const;
+
+        /**
+        * @name Functions used in dealing with run-time parameters
+        * @{
+        */
+
+        /**
+        * Declare the parameters this class takes through input files.
+        */
+        static void
+        declare_parameters(ParameterHandler &prm);
+
+        /**
+        * Read the parameters this class declares from the parameter file.
+        */
+        void
+        parse_parameters(ParameterHandler &prm) override;
+        /**
+        * @}
+        */
+
+        void
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
       private:
         /**
-         * Enumeration for selecting which viscosity averaging scheme to use.
-         */
+        * Enumeration for selecting which viscosity averaging scheme to use.
+        */
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
 
         /**
-         * Vector for field viscosities, read from parameter file.
-         */
+        * Vector for field viscosities, read from parameter file.
+        */
         std::vector<double> viscosities;
 
         /**
-         * Vector for field thermal conductivities, read from parameter file.
-         */
+        * Vector for field thermal conductivities, read from parameter file.
+        */
         std::vector<double> thermal_conductivities;
 
         Rheology::Elasticity<dim> elastic_rheology;

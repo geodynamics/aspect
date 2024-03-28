@@ -1151,7 +1151,8 @@ namespace aspect
     {
       public:
         ElasticOutputs(const unsigned int n_points)
-          : elastic_force(n_points, numbers::signaling_nan<Tensor<2,dim>>() )
+          : elastic_force(n_points, numbers::signaling_nan<Tensor<2, dim>>()),
+            viscous_dissipation(n_points, numbers::signaling_nan<double>())
         {}
 
         ~ElasticOutputs() override
@@ -1171,6 +1172,12 @@ namespace aspect
          * quadrature point.
          */
         std::vector<Tensor<2,dim>> elastic_force;
+
+        /**
+         * The viscous dissipation computed with the viscoplastic strain rate instead of the
+         * full strain rate.
+         */
+        std::vector<double> viscous_dissipation;
     };
 
 

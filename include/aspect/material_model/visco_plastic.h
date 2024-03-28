@@ -197,6 +197,24 @@ namespace aspect
          */
         bool is_compressible () const override;
 
+        /**
+         * Return the elastic viscosity, which equals the shear modulus
+         * times the elastic timestep plus possibly a damper viscosity.
+         */
+        double get_elastic_viscosity (const double shear_modulus) const;
+
+        /**
+         * Return the elastic timestep, which can be larger than the
+         * computational timestep.
+         */
+        double get_elastic_timestep () const;
+
+        /**
+         * Return the ratio between the computational and elastic timestep;
+         * the elastic timestep can be larger than the computational timestep.
+         */
+        double get_timestep_ratio () const;
+
         static
         void
         declare_parameters (ParameterHandler &prm);

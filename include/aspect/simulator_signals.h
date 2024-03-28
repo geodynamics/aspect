@@ -287,6 +287,16 @@ namespace aspect
     boost::signals2::signal<void (const SimulatorAccess<dim> &,
                                   aspect::Assemblers::Manager<dim> &)>
     set_assemblers;
+
+    /**
+     * A signal that is triggered after particles have been restored to their position
+     * and property values from the beginning of the current timestep. This happens
+     * at the beginning of each nonlinear iteration (except for the first iteration of the timestep)
+     * of iterative advection schemes.
+     * Parameters are a reference to the ParticleWorld.
+     */
+    boost::signals2::signal<void (Particle::World<dim> &)> post_restore_particles;
+
   };
 
 
