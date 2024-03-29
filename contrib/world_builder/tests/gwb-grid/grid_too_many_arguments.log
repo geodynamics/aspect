@@ -1,0 +1,3 @@
+World Builder Grid Visualization tool.
+Usage: (..path..)bin/gwb-grid example.wb example.grid
+Try '(..path..)bin/gwb-grid --help' for more information.

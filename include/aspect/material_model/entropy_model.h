@@ -166,8 +166,8 @@ namespace aspect
         std::string lateral_viscosity_file_name;
 
         /**
-         * Pointer to the EntropyReader that reads in material data for
-         * given entropy and pressure.
+         * List of pointers to the EntropyReader that reads in material data for
+         * given entropy and pressure. There is one pointer/object per lookup file.
          */
         std::vector<std::unique_ptr<MaterialUtilities::Lookup::EntropyReader>> entropy_reader;
 

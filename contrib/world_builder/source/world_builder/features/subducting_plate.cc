@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -25,6 +25,7 @@
 #include "world_builder/types/double.h"
 #include "world_builder/types/object.h"
 #include "world_builder/types/point.h"
+#include "world_builder/types/segment.h"
 #include "world_builder/types/unsigned_int.h"
 #include "world_builder/world.h"
 #include <algorithm>
@@ -50,6 +51,37 @@ namespace WorldBuilder
 
 
 
+    void SubductingPlate::make_snippet(Parameters &prm)
+    {
+      using namespace rapidjson;
+      Document &declarations = prm.declarations;
+
+      const std::string path = prm.get_full_json_path();
+
+      /*
+      ideally:
+       {
+        "model": "fault",
+        "name": "${1:default name}",
+        "dip point":[0.0,0.0],
+        "coordinates": [[0.0,0.0]],
+        "segments": [],
+        "sections": [],
+        "temperature models":[{"model":"uniform", "temperature":600.0}],
+        "composition models":[{"model":"uniform", "compositions": [0], "fractions":[1.0]}]
+       }
+       */
+
+      Pointer((path + "/body").c_str()).Set(declarations,"object");
+      Pointer((path + "/body/model").c_str()).Set(declarations,"subducting plate");
+      Pointer((path + "/body/name").c_str()).Set(declarations,"${1:My Subducting Plate}");
+      Pointer((path + "/body/coordinates").c_str()).Create(declarations).SetArray();
+      Pointer((path + "/body/temperature models").c_str()).Create(declarations).SetArray();
+      Pointer((path + "/body/composition models").c_str()).Create(declarations).SetArray();
+    }
+
+
+
     void
     SubductingPlate::declare_entries(Parameters &prm,
                                      const std::string &parent_name,
@@ -63,7 +95,7 @@ namespace WorldBuilder
         }
       else
         {
-          prm.declare_entry("", Types::Object(required_entries), "Subducting slab object");
+          prm.declare_entry("", Types::Object(required_entries), "Subducting slab object. Requires properties `model` and `coordinates`.");
         }
 
 
@@ -117,6 +149,14 @@ namespace WorldBuilder
       const CoordinateSystem coordinate_system = prm.coordinate_system->natural_coordinate_system();
 
       this->name = prm.get<std::string>("name");
+
+      std::string tag = prm.get<std::string>("tag");
+      if (tag == "")
+        {
+          tag = "subducting plate";
+        }
+      this->tag_index = FeatureUtilities::add_vector_unique(this->world->feature_tags,tag);
+
       this->get_coordinates("coordinates", prm, coordinate_system);
 
 
@@ -533,9 +573,9 @@ namespace WorldBuilder
                                                                                                  distance_from_planes,
                                                                                                  additional_parameters);
 
-                                WBAssert(!std::isnan(temperature_current_section), "Temparture is not a number: " << temperature_current_section
+                                WBAssert(!std::isnan(temperature_current_section), "Temperature is not a number: " << temperature_current_section
                                          << ", based on a temperature model with the name " << temperature_model->get_name() << ", in feature " << this->name);
-                                WBAssert(std::isfinite(temperature_current_section), "Temparture is not a finite: " << temperature_current_section
+                                WBAssert(std::isfinite(temperature_current_section), "Temperature is not a finite: " << temperature_current_section
                                          << ", based on a temperature model with the name " << temperature_model->get_name() << ", in feature " << this->name);
 
                               }
@@ -551,9 +591,9 @@ namespace WorldBuilder
                                                                                               distance_from_planes,
                                                                                               additional_parameters);
 
-                                WBAssert(!std::isnan(temperature_next_section), "Temparture is not a number: " << temperature_next_section
+                                WBAssert(!std::isnan(temperature_next_section), "Temperature is not a number: " << temperature_next_section
                                          << ", based on a temperature model with the name " << temperature_model->get_name() << ", in feature " << this->name);
-                                WBAssert(std::isfinite(temperature_next_section), "Temparture is not a finite: " << temperature_next_section
+                                WBAssert(std::isfinite(temperature_next_section), "Temperature is not a finite: " << temperature_next_section
                                          << ", based on a temperature model with the name " << temperature_model->get_name() << ", in feature " << this->name);
 
                               }
@@ -659,11 +699,16 @@ namespace WorldBuilder
                             grains.unroll_into(output,entry_in_output[i_property]);
                             break;
                           }
+                          case 4:
+                          {
+                            output[entry_in_output[i_property]] = tag_index;
+                            break;
+                          }
                           default:
                           {
                             WBAssertThrow(false,
                                           "Internal error: Unimplemented property provided. " <<
-                                          "Only temperature (1), composition (2) or grains (3) are allowed. "
+                                          "Only temperature (1), composition (2), grains (3) or tag (4) are allowed. "
                                           "Provided property number was: " << properties[i_property][0]);
                           }
                         }

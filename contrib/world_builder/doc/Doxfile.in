@@ -161,7 +161,12 @@ FILE_PATTERNS          = *.c \
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = 
+EXCLUDE_PATTERNS       = */ApprovalTests/* \
+                         */delaunator-cpp/* \
+                         */doctest/* \
+                         */glm/* \
+                         */rapidjson/* \
+                         */vtu11/*
 EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = *

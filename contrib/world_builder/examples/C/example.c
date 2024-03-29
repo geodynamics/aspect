@@ -16,7 +16,7 @@ int main() {
   double composition = 0;
   char file_name[] = "../../tests/data/continental_plate.wb";
   bool has_output_dir = 0; // false
-  char output_dir[] = "../../doc/manual/";
+  char output_dir[] = "../../doc/";
 
   // Show how to call the functions.
   printf("create world \n");

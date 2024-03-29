@@ -25,8 +25,19 @@ DOI = {10.5194/se-10-1785-2019}
   author       = {Menno Fraters and
                   others},
   month        = jun,
-  year         = 2021,
+  year         = 2023,
   DOI          = {10.5281/zenodo.7998525},
   URL          = {https://doi.org/10.5281/zenodo.7998525},
 }
+
+@misc{gwb-doi-v0.6.0,
+  title        = {{The Geodynamic World Builder} v0.6.0 [software]},
+  author       = {Menno Fraters and
+                  others},
+  month        = mar,
+  year         = 2024,
+  DOI          = {10.5281/zenodo.10794862},
+  URL          = {https://doi.org/10.5281/zenodo.10794862},
+}
+
 

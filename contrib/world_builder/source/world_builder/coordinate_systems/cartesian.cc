@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018-2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -37,7 +37,7 @@ namespace WorldBuilder
     Cartesian::declare_entries(Parameters &prm, const std::string & /*unused*/)
     {
       prm.declare_entry("", Types::Object(),
-                        "A Cartesian coordinate system. Coordinates are (x,y,z) and extend infintly in all directions.");
+                        "A Cartesian coordinate system. Coordinates are (x,y,z) and extend infinitely in all directions.");
     }
 
     void
@@ -77,9 +77,9 @@ namespace WorldBuilder
     Cartesian::distance_between_points_at_same_depth(const Point<3> &point_1, const Point<3> &point_2) const
     {
       WBAssert(point_1.get_coordinate_system() == cartesian,
-               "Can not convert non cartesian points through the cartesian coordinate system.");
+               "Can not convert non-Cartesian points through the Cartesian coordinate system.");
       WBAssert(point_2.get_coordinate_system() == cartesian,
-               "Can not convert non cartesian points through the cartesian coordinate system.");
+               "Can not convert non-Cartesian points through the Cartesian coordinate system.");
       // Todo: check that points are at the same depth.
       const Point<3> difference = point_1-point_2;
       const Point<2> point_at_depth(difference[0],difference[1], cartesian);

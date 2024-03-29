@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -40,6 +40,7 @@ namespace WorldBuilder
          * A constructor
          */
         ValueAtPoints(const double default_value,
+                      uint64_t max_values_in_array,
                       std::vector<Point<2>> default_points_ = std::vector<Point<2>>());
 
         /**
@@ -61,6 +62,7 @@ namespace WorldBuilder
                           const std::string &documentation) const override final;
 
         double default_value;
+        uint64_t max_values_in_array;
         std::vector<Point<2> > default_points;
 
       protected:

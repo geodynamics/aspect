@@ -1,0 +1,17 @@
+{
+  "version": "0.6",
+  "coordinate system":{"model":"cartesian"},
+  "gravity model":{"model":"uniform", "magnitude":10},
+  "surface temperature":273, "force surface temperature":true,
+  "potential mantle temperature":1673, "thermal expansion coefficient":3.1e-5, 
+  "specific heat":1250, "thermal diffusivity":1.0e-6,
+  "features":
+  [
+    { "model":"oceanic plate", "name":"Subducting", "max depth":250e3,"min depth":0,
+      "coordinates" :[[500e3, -100e3],[500e3, 100e3],[0, 100e3],[0, -100e3]],
+      "temperature models":[
+        {"model":"plate model", "min depth":0,  "max depth":100e3, "spreading velocity":[ [0,[[0.1, 0.0005, 0.000001]]], [1,[[0.000005, 0.005]]] ],
+        "top temperature":273,
+         "ridge coordinates": [[[100e3,-110e3], [150e3, -60e3], [100e3, 0]], [[400e3, 0], [400e3, 110e3]]]}]}      
+  ]
+}

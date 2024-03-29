@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -18,7 +18,6 @@
 */
 #include "world_builder/assert.h"
 #include "world_builder/objects/surface.h"
-#include "world_builder/utilities.h"
 
 #include <iostream>
 
@@ -38,7 +37,7 @@ namespace WorldBuilder
        */
       bool in_triangle(const std::array<std::array<double,3>,3> &points,
                        const std::array<double,8> &precomputed,
-                       const Point<2> check_point,
+                       const Point<2> &check_point,
                        double &interpolate_value,
                        double &interpolator_s,
                        double &interpolator_t)

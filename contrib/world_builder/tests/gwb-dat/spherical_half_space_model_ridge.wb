@@ -1,0 +1,15 @@
+{
+  "version":"0.6",
+  "coordinate system":{"model":"spherical", "depth method":"begin at end segment"},
+  "features":
+  [
+
+{
+"model":"oceanic plate", "name":"Oceanic Lithosphere", "min depth":0, "max depth":100000.0, "coordinates":[[60, 10], [60, -10], [115, -10], [115, 10]],
+"temperature models":[{"model":"half space model", "max depth":100000.0, "min depth":0.0, "top temperature":300, "bottom temperature":-1, "spreading velocity":0.02, "ridge coordinates":[[[115, 0], [60, 0]]]}],
+"composition models":[{"model":"uniform", "compositions":[0], "max depth":100000.0, "operation":"replace", "min depth":0}]
+}
+
+
+]
+}
