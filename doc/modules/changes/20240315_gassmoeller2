@@ -5,4 +5,4 @@ single file 'heat flux map' now writes one file per boundary. Both
 postprocessors now take care to not include spaces in the data file
 headers so that separating the header columns by spaces works correctly.
 <br>
- (Rene Gassmoeller, 2024/03/15)
+(Rene Gassmoeller, 2024/03/15)

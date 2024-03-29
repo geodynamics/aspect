@@ -86,10 +86,12 @@ namespace aspect
       private:
         /**
          * Output the dynamic topography solution to
-         * a file.
+         * a file for a given boundary id. All the values
+         * in @p position_and_topography are written to a file
+         * with a file name determined by @p boundary_id.
          */
         void output_to_file(const types::boundary_id boundary_id,
-                            const std::vector<std::pair<Point<dim>, double>> &values);
+                            const std::vector<std::pair<Point<dim>, double>> &position_and_topography);
 
         /**
          * A vector which stores the surface stress values calculated

@@ -412,7 +412,7 @@ namespace aspect
     template <int dim>
     void
     DynamicTopography<dim>::output_to_file(const types::boundary_id boundary_id,
-                                           const std::vector<std::pair<Point<dim>,double>> &stored_values)
+                                           const std::vector<std::pair<Point<dim>,double>> &position_and_topography)
     {
       // get boundary name and avoid spaces for file output
       std::string boundary_name = this->get_geometry_model().translate_id_to_symbol_name(boundary_id);
@@ -428,13 +428,13 @@ namespace aspect
                  << "dynamic_topography_" << boundary_name << std::endl;
         }
 
-      for (unsigned int i=0; i<stored_values.size(); ++i)
+      for (unsigned int i = 0; i < position_and_topography.size(); ++i)
         {
           output << std::setprecision(10)
-                 << stored_values[i].first
+                 << position_and_topography[i].first
                  << ' '
                  << std::setprecision(10)
-                 << stored_values[i].second
+                 << position_and_topography[i].second
                  << std::endl;
         }
 
