@@ -99,6 +99,7 @@ namespace aspect
       std::vector<double> entropy_derivative_temperature;
       std::vector<double> vp;
       std::vector<double> vs;
+      std::vector<Tensor<1, 2>> density_gradient;
     };
 
 
