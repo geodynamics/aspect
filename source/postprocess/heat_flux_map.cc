@@ -460,8 +460,31 @@ namespace aspect
       std::vector<std::vector<std::pair<double, double>>> heat_flux_and_area =
         internal::compute_heat_flux_through_boundary_faces (*this);
 
-      // have a stream into which we write the data. the text stream is then
-      // later sent to processor 0
+      const auto boundary_ids = this->get_geometry_model().get_used_boundary_indicators();
+      for (const auto &boundary_id: boundary_ids)
+        if (this->get_geometry_model().translate_id_to_symbol_name(boundary_id) == "top" ||
+            this->get_geometry_model().translate_id_to_symbol_name(boundary_id) == "bottom")
+          output_to_file(boundary_id, heat_flux_and_area);
+
+      std::string placeholder_name = this->get_output_directory() + "heat_flux." + Utilities::int_to_string(this->get_timestep_number(), 5);
+      if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
+        placeholder_name.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
+
+      return std::pair<std::string,std::string>("Writing heat flux map",
+                                                placeholder_name);
+    }
+
+
+
+    template <int dim>
+    void
+    HeatFluxMap<dim>::output_to_file(const types::boundary_id boundary_id,
+                                     const std::vector<std::vector<std::pair<double, double>>> &heat_flux_and_area)
+    {
+      // get boundary name and avoid spaces for file output
+      std::string boundary_name = this->get_geometry_model().translate_id_to_symbol_name(boundary_id);
+      std::replace(boundary_name.begin(), boundary_name.end(), ' ', '_');
+
       std::ostringstream output;
 
       // write the file header. note that we only do so on processor 0
@@ -469,21 +492,14 @@ namespace aspect
         {
           output << "# "
                  << ((dim==2)? "x y" : "x y z")
-                 << " heat flux" << std::endl;
+                 << " heat_flux_" << boundary_name << std::endl;
         }
-
-      std::vector<std::pair<Point<dim>,double>> stored_values;
-
-      // loop over all of the surface cells and evaluate the heat flux
-      const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
-      const types::boundary_id bottom_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
-          for (const unsigned int f : cell->face_indices())
+          for (const unsigned int f: cell->face_indices())
             if (cell->at_boundary(f) &&
-                (cell->face(f)->boundary_id() == top_boundary_id ||
-                 cell->face(f)->boundary_id() == bottom_boundary_id))
+                (cell->face(f)->boundary_id() == boundary_id))
               {
                 // evaluate position of heat flow to write into output file
                 const bool respect_manifold = true;
@@ -492,33 +508,21 @@ namespace aspect
                 const double flux_density = heat_flux_and_area[cell->active_cell_index()][f].first /
                                             heat_flux_and_area[cell->active_cell_index()][f].second;
 
-                // store final position and heat flow
-                stored_values.emplace_back (midpoint_at_surface, flux_density);
+                output << std::setprecision(10)
+                       << midpoint_at_surface
+                       << ' '
+                       << std::setprecision(10)
+                       << flux_density
+                       << std::endl;
               }
 
-
-      // Write the solution to an output stream
-      for (unsigned int i=0; i<stored_values.size(); ++i)
-        {
-          output << stored_values[i].first
-                 << ' '
-                 << stored_values[i].second
-                 << std::endl;
-        }
-
-
-
       std::string filename = this->get_output_directory() +
-                             "heat_flux." +
+                             "heat_flux_" + boundary_name + "." +
                              Utilities::int_to_string(this->get_timestep_number(), 5);
       if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
         filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
 
-
       Utilities::collect_and_write_file_content(filename, output.str(), this->get_mpi_communicator());
-
-      return std::pair<std::string,std::string>("Writing heat flux map:",
-                                                filename);
     }
   }
 }
