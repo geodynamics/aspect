@@ -93,7 +93,7 @@ namespace aspect
         /**
          * Output the heat flux density for the boundary determined
          * by @p boundary_id to a file. The heat flux density is
-         * handed over in the vector @ heat_flux_and_area. This vector
+         * handed over in the vector @p heat_flux_and_area. This vector
          * is expected to be of the structure described for the return value
          * of the function compute_heat_flux_through_boundary_faces() and
          * only the values at the faces of the given @p boundary_id are
