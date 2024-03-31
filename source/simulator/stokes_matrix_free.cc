@@ -2365,7 +2365,7 @@ namespace aspect
       {
         const auto &pbs = sim.geometry_model->get_periodic_boundary_pairs();
 
-        for (const auto p: pbs)
+        for (const auto &p: pbs)
           {
             DoFTools::make_periodicity_constraints(dof_handler_v,
                                                    p.first.first,  // first boundary id
@@ -2403,7 +2403,7 @@ namespace aspect
       {
         const auto &pbs = sim.geometry_model->get_periodic_boundary_pairs();
 
-        for (const auto p: pbs)
+        for (const auto &p: pbs)
           {
             DoFTools::make_periodicity_constraints(dof_handler_p,
                                                    p.first.first,  // first boundary id
