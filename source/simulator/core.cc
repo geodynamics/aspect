@@ -1693,8 +1693,6 @@ namespace aspect
       // Possibly store data of plugins associated with cells
       signals.pre_refinement_store_user_data(triangulation);
 
-
-
       exchange_refinement_flags();
 
       triangulation.prepare_coarsening_and_refinement();
