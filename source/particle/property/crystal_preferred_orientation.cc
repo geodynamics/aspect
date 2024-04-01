@@ -90,13 +90,13 @@ namespace aspect
         // first generate three random numbers between 0 and 1 and multiply them with 2 PI or 2 for z. Note that these are not the same as phi_1, theta and phi_2.
 
         boost::random::uniform_real_distribution<double> uniform_distribution(0,1);
-        double one = uniform_distribution(this->random_number_generator);
-        double two = uniform_distribution(this->random_number_generator);
+        double one   = uniform_distribution(this->random_number_generator);
+        double two   = uniform_distribution(this->random_number_generator);
         double three = uniform_distribution(this->random_number_generator);
 
         double theta = 2.0 * numbers::PI * one; // Rotation about the pole (Z)
-        double phi = 2.0 * numbers::PI * two; // For direction of pole deflection.
-        double z = dt != 0.0 ? 0.1 * three : 2.0 * three; //For magnitude of pole deflection.
+        double phi   = 2.0 * numbers::PI * two; // For direction of pole deflection.
+        double z     = 2.0 * three; //For magnitude of pole deflection.
 
         // Compute a vector V used for distributing points over the sphere
         // via the reflection I - V Transpose(V).  This formulation of V
@@ -359,11 +359,19 @@ namespace aspect
               }
 
             // normalize the volume fractions back to a total of 1 for each mineral
-            const double inv_sum_volume_mineral = 1.0;///sum_volume_mineral;
+            double inv_sum_volume_mineral;///sum_volume_mineral;
 
-            Assert(std::isfinite(inv_sum_volume_mineral),
-                   ExcMessage("inv_sum_volume_mineral is not finite. sum_volume_enstatite = "
-                              + std::to_string(sum_volume_mineral)));
+            if (temp_cpo_derivative_algorithm ==  "D-Rex 2004")
+                {
+                  inv_sum_volume_mineral = 1/sum_volume_mineral
+                  Assert(std::isfinite(inv_sum_volume_mineral),
+                    ExcMessage("inv_sum_volume_mineral is not finite. sum_volume_enstatite = "
+                                + std::to_string(sum_volume_mineral)));
+                }
+            else
+                {
+                  inv_sum_volume_mineral = 1;
+                }
 
             for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
               {
