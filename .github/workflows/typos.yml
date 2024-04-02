@@ -22,7 +22,6 @@ jobs:
         with:
           persist-credentials: false
       - name: Check spelling with typos
-        #uses: crate-ci/typos@master
         env:
           GH_TOKEN: "${{ github.token }}"
         run: |
@@ -33,8 +32,21 @@ jobs:
           "${{ runner.temp }}/typos/typos" --version
 
           "${{ runner.temp }}/typos/typos" --config .typos.toml --format json >> ${{ runner.temp }}/typos.jsonl || true
-          
-
+      - name: Update repo with fixable typos
+        uses: crate-ci/typos@v1.19.0
+        with:
+          write_changes: true
+          config: ./.typos.toml
+          files: .
+      - name: Store typos diff file
+        run:  git diff > changes-typos.diff
+      - name: archive typos results
+        uses: actions/upload-artifact@v4
+        with:
+          name: changes-typos.diff
+          path: changes-typos.diff
+      - name: Report typos as warnings
+        run: |
           python -c '
           import sys, json
           old = set()
@@ -48,4 +60,3 @@ jobs:
                   new["path"], new["line_num"], new["byte_offset"],
                   new["typo"], " or ".join(new["corrections"])))
           sys.exit(1 if not clean else 0)' "${{ runner.temp }}/typos.jsonl"
-
