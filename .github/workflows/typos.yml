@@ -27,12 +27,8 @@ jobs:
           GH_TOKEN: "${{ github.token }}"
         run: |
           mkdir -p "${{ runner.temp }}/typos"
-          RELEASE_ASSET_URL="$(
-            gh api /repos/crate-ci/typos/releases/latest \
-            --jq '."assets"[] | select(."name" | test("^typos-.+-x86_64-unknown-linux-musl\\.tar\\.gz$")) | ."browser_download_url"'
-          )"
           wget --secure-protocol=TLSv1_3 --max-redirect=1 --retry-on-host-error --retry-connrefused --tries=3 \
-            --quiet --output-document=- "${RELEASE_ASSET_URL}" \
+            --quiet --output-document=- "https://github.com/crate-ci/typos/releases/download/v1.19.0/typos-v1.19.0-x86_64-unknown-linux-musl.tar.gz" \
             | tar -xz -C "${{ runner.temp }}/typos" ./typos
           "${{ runner.temp }}/typos/typos" --version
 
