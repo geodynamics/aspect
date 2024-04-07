@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 by the authors of the ASPECT code.
+  Copyright (C) 2023 by the authors of the ASPECT code.
   This file is part of ASPECT.
   ASPECT is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
   You should have received a copy of the GNU General Public License
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
-*/
+*/ 
 
 #ifndef _aspect_mesh_deformation_fastscapecc_h
 #define _aspect_mesh_deformation_fastscapecc_h
@@ -43,11 +43,6 @@ namespace aspect
          * Initialize variables for FastScape.
          */
         virtual void initialize ();
-
-        // /**
-        //  * Destructor for FastScape.
-        //  */
-        // ~FastScape() override;
  
         /**
           * A function that creates constraints for the velocity of certain mesh
@@ -73,7 +68,21 @@ namespace aspect
         void parse_parameters (ParameterHandler &prm);
 
       private:
+        
+        // Unique pointer for fastscapelib raster_boundary_status.
+        std::unique_ptr<fastscapelib::raster_boundary_status> bs;
 
+        // Unique pointer for fastscapelib raster_grid.
+        std::unique_ptr<fastscapelib::raster_grid> grid;
+
+        // Unique pointer for fastscapelib flow_graph with raster_grid as template parameter.
+        std::unique_ptr<fastscapelib::flow_graph<fastscapelib::raster_grid>> flow_graph;
+
+        // Unique pointer for fastscapelib spl_eroder with flow_graph<raster_grid> as template parameter.
+        std::unique_ptr<fastscapelib::spl_eroder<fastscapelib::flow_graph<fastscapelib::raster_grid>>> spl_eroder;
+
+        // Unique pointer for fastscapelib diffusion_adi_eroder with raster_grid as template parameter.
+        std::unique_ptr<fastscapelib::diffusion_adi_eroder<fastscapelib::raster_grid>> diffusion_eroder;
 
         /**
          * Fill velocity data table to be interpolated back onto the ASPECT mesh.
@@ -97,14 +106,15 @@ namespace aspect
          */
         double maximum_fastscape_timestep;
 
-        mutable bool restart;
-
         /**
-         * We want to check that every point within the FastScape mesh has been given a value.
-         * However, this is done only on processor 0, so this allows us to send an error later on
-         * if necessary.
+         * Maximum timestep allowed for FastScape, if the suggested timestep exceeds this
+         * limit it is repeatedly divided by 2 until the final timestep is smaller than this parameter.
          */
-        // mutable bool fastscape_mesh_filled = true;
+        
+        /**
+         * Check whether FastScape needs to be restarted.
+         */
+        mutable bool restart;
 
         /**
          * ASPECT end time to check if we should destroy FastScape.
@@ -155,7 +165,7 @@ namespace aspect
         /**
          * How many levels FastScape should be refined above the maximum ASPECT surface resolution.
          */
-        unsigned int additional_refinement;
+        unsigned int additional_refinement_levels;
 
         /**
          * Maximum expected refinement level at ASPECT's surface.
@@ -243,7 +253,6 @@ namespace aspect
          */
         unsigned int left;
 
-
         /**
          * Integer that holds the full boundary conditions sent to FastScape (e.g., 1111).
          */
@@ -297,12 +306,18 @@ namespace aspect
          * for the value to be transferred. This is only necessary if use_v is set to 0
          * and the free surface is used to advect the surface with a normal projection.
          */
-        double precision;
+        double node_tolerance;
 
         /**
          * The number of cells in each coordinate direction.
          */
         std::array<unsigned int, dim> repetitions;
+
+
+        /**
+         * FastScape X extent (ASPECT X extent + 2*dx for ghost nodes).
+         */
+        double precision;
 
 
     };
