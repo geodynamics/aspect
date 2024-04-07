@@ -25,6 +25,9 @@
 
 #include <algorithm> // For std::copy
 
+#include <aspect/geometry_model/spherical_shell.h>
+
+
 
 namespace aspect
 {
@@ -34,11 +37,14 @@ namespace aspect
     void
     FastScapecc<dim>::initialize ()
     {
-        AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
-                         ExcMessage("FastScape can only be run with a box geometry model."));
+        // AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
+        //                  ExcMessage("FastScape can only be run with a box geometry model."));
 
-             const GeometryModel::Box<dim> *geometry
-               = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
+            //  const GeometryModel::Box<dim> *geometry
+              //  = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
+
+                const GeometryModel::SphericalShell<dim> *geometry
+               = dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model());
 
              // Find the id associated with the top boundary and boundaries that call mesh deformation.
              const types::boundary_id top_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
@@ -66,30 +72,30 @@ namespace aspect
       restart = this->get_parameters().resume_computation;
       
         // The first entry represents the minimum coordinates of the model domain, the second the model extent.
-        for (unsigned int i=0; i<dim; ++i)
-          {
-            grid_extent[i].first = geometry->get_origin()[i];
-            grid_extent[i].second = geometry->get_extents()[i];
-          }
+        // for (unsigned int i=0; i<dim; ++i)
+        //   {
+        //     grid_extent[i].first = geometry->get_origin()[i];
+        //     grid_extent[i].second = geometry->get_extents()[i];
+        //   }
 
-         nx = repetitions[0] + 1;
+        //  nx = repetitions[0] + 1;
 
-         // Size of FastScape cell.
-         dx = (grid_extent[0].second)/( repetitions[0]);
+        //  // Size of FastScape cell.
+        //  dx = (grid_extent[0].second)/( repetitions[0]);
 
-         // FastScape X extent, which is generally ASPECT's extent unless the ghost nodes are used,
-         // in which case 2 cells are added on either side.
-         x_extent = (grid_extent[0].second) ;
+        //  // FastScape X extent, which is generally ASPECT's extent unless the ghost nodes are used,
+        //  // in which case 2 cells are added on either side.
+        //  x_extent = (grid_extent[0].second) ;
 
-        // Sub intervals are 1 less than points.
-        table_intervals[0] = repetitions[0];
-        table_intervals[dim-1] = 1;
+        // // Sub intervals are 1 less than points.
+        // table_intervals[0] = repetitions[0];
+        // table_intervals[dim-1] = 1;
 
-        ny = repetitions[1] + 1;
-        dy = (grid_extent[1].second)/( repetitions[1]);
-        table_intervals[1] = repetitions[1];
-        y_extent = (grid_extent[1].second)  ;
-        array_size = nx*ny;
+        // ny = repetitions[1] + 1;
+        // dy = (grid_extent[1].second)/( repetitions[1]);
+        // table_intervals[1] = repetitions[1];
+        // y_extent = (grid_extent[1].second)  ;
+        // array_size = nx*ny;
 
     }
 
@@ -114,7 +120,7 @@ namespace aspect
 
       // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
       const QIterated<dim-1> face_corners (QTrapez<1>(),
-                                           static_cast<unsigned int>(std::pow(2,additional_refinement+surface_refinement_difference)));
+                                           static_cast<unsigned int>(std::pow(2,additional_refinement_levels+surface_refinement_difference)));
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
@@ -269,9 +275,9 @@ namespace aspect
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) != 0)
         return;
 
-      this->get_pcout() << "   Initializing FastScape... " << (1 + maximum_surface_refinement_level + additional_refinement) <<
+      this->get_pcout() << "   Initializing FastScape... " << (1 + maximum_surface_refinement_level + additional_refinement_levels) <<
                         " levels, cell size: " << dx << " m." << std::endl;
-
+ 
 
       // Keep initial h values so we can calculate velocity later.
       // In the first timestep, h will be given from other processes.
@@ -330,23 +336,25 @@ namespace aspect
       xt::xarray<double> drainage_area(vec_shape.shape());
       xt::xarray<double> uplifted_elevation(vec_shape.shape());
 
-      // uplift rate
-      // std::vector<double> uplift_rate_in_m_year(vz.size());
-      // for (size_t i = 0; i < vz.size(); ++i) {
-      //     uplift_rate_in_m_year[i] = vz[i] / year_in_seconds;
-      // }
+      //sediment flux
+      xt::xarray<double> sediment_flux(vec_shape.shape());
 
-      //xt::xarray<double> uplift_rate(vec_shape.shape(), 0);
-      //  xt::xarray<double> uplift_rate = xt::adapt(uplift_rate_in_m_year,vec_shape.shape());
+      
+      std::vector<double> uplift_rate_in_m_year(vz.size());
+      for (size_t i = 0; i < vz.size(); ++i) {
+          uplift_rate_in_m_year[i] = vz[i];
+          //  / year_in_seconds;
+      }
+            // std::cout << "uplift_rate_in_m_year[1]"<<uplift_rate_in_m_year[100]<<std::endl;
 
-      xt::xarray<double> uplift_rate(vec_shape.shape(), 0);
 
-      auto row_bounds = xt::view(uplift_rate, xt::keep(0, -1), xt::all());
-      row_bounds = 0.0;
-      auto col_bounds = xt::view(uplift_rate, xt::all(), xt::keep(0, -1));
-      col_bounds = 0.0;
+
+      // xt::xarray<double> uplift_rate(vec_shape.shape(), 0);
 
       std::vector<std::size_t> shape = { static_cast<unsigned long>(nx), static_cast<unsigned long>(ny) };
+      auto uplift_rate = xt::adapt(uplift_rate_in_m_year, shape);
+
+
       auto elevation = xt::adapt(h, shape);
       auto elevation_old = xt::adapt(h_old, shape);
 
@@ -386,6 +394,10 @@ namespace aspect
           // apply channel erosion then hillslope diffusion
           auto spl_erosion = spl_eroder.erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
           std::cout << "here it works 8e "<<std::endl;
+
+          //calculate the cumulated erosion flux
+          auto sediment_flux = flow_graph.accumulate(spl_erosion);
+
           auto diff_erosion = diffusion_eroder.erode(uplifted_elevation - spl_erosion, fastscape_timestep_in_years);
           std::cout << "here it works 9"<<std::endl;
           // update topography
@@ -531,7 +543,7 @@ namespace aspect
           prm.declare_entry("Maximum timestep", "10e3",
                             Patterns::Double(0),
                             "Maximum timestep for FastScape. Units: $\\{yrs}$");
-          prm.declare_entry("Additional fastscape refinement", "0",
+          prm.declare_entry("Additional fastscape refinement levels", "0",
                             Patterns::Integer(),
                             "How many levels above ASPECT FastScape should be refined.");
           prm.declare_entry ("Use center slice for 2d", "false",
@@ -644,7 +656,7 @@ namespace aspect
         {
           fastscape_steps_per_aspect_step = prm.get_integer("Number of steps");
           maximum_fastscape_timestep = prm.get_double("Maximum timestep");
-          additional_refinement = prm.get_integer("Additional fastscape refinement");
+          additional_refinement_levels = prm.get_integer("Additional fastscape refinement levels");
           center_slice = prm.get_bool("Use center slice for 2d");
           fs_seed = prm.get_integer("Fastscape seed");
           maximum_surface_refinement_level = prm.get_integer("Maximum surface refinement level");
