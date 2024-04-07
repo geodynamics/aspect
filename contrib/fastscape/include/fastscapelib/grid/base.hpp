@@ -323,12 +323,12 @@ namespace fastscapelib
         using neighbors_indices_type = xt::xtensor<size_type, 1>;
         using neighbors_distances_type = xt::xtensor<grid_data_type, 1>;
 
-        using node_status_type = xt_tensor_t<xt_selector, node_status, inner_types::xt_ndims>;
+        using nodes_status_type = xt_tensor_t<xt_selector, node_status, inner_types::xt_ndims>;
 
         size_type size() const noexcept;
         shape_type shape() const noexcept;
 
-        const node_status_type& nodes_status() const;
+        const nodes_status_type& nodes_status() const;
         node_status nodes_status(const size_type& idx) const;
 
         inline grid_nodes_indices<G> nodes_indices() const;
@@ -501,7 +501,7 @@ namespace fastscapelib
      * Returns a constant reference to the array of status at grid nodes.
      */
     template <class G>
-    inline auto grid<G>::nodes_status() const -> const node_status_type&
+    inline auto grid<G>::nodes_status() const -> const nodes_status_type&
     {
         return derived_grid().m_nodes_status;
     }

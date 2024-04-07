@@ -4,6 +4,7 @@
 #ifndef FASTSCAPELIB_GRID_RASTER_GRID_H
 #define FASTSCAPELIB_GRID_RASTER_GRID_H
 
+#include <map>
 #include <vector>
 #include <utility>
 
@@ -453,17 +454,18 @@ namespace fastscapelib
         using neighbors_indices_raster_type = std::vector<raster_idx_type>;
         using neighbors_raster_type = std::vector<raster_neighbor>;
 
-        using node_status_type = typename base_type::node_status_type;
+        using nodes_status_type = typename base_type::nodes_status_type;
+        using nodes_status_map_type = typename std::map<raster_idx_type, node_status>;
 
         raster_grid_xt(const shape_type& shape,
                        const spacing_type& spacing,
                        const raster_boundary_status& bounds_status,
-                       const std::vector<raster_node>& nodes_status = {});
+                       const nodes_status_map_type& nodes_status = {});
 
         static raster_grid_xt from_length(const shape_type& shape,
                                           const length_type& length,
                                           const raster_boundary_status& bounds_status,
-                                          const std::vector<raster_node>& nodes_status = {});
+                                          const nodes_status_map_type& nodes_status = {});
 
         shape_type shape() const noexcept;
         raster_boundary_status bounds_status() const noexcept;
@@ -505,7 +507,7 @@ namespace fastscapelib
         length_type m_length;
         grid_data_type m_node_area;
 
-        node_status_type m_nodes_status;
+        nodes_status_type m_nodes_status;
         raster_boundary_status m_bounds_status;
 
         struct corner_node
@@ -525,7 +527,7 @@ namespace fastscapelib
         inline size_type ravel_idx(const size_type& row, const size_type& col) const noexcept;
         inline raster_idx_type unravel_idx(const size_type& idx) const noexcept;
 
-        void set_nodes_status(const std::vector<raster_node>& nodes_status);
+        void set_nodes_status(const nodes_status_map_type& nodes_status);
 
         void build_nodes_codes();
         coded_noffsets_type build_coded_neighbors_offsets();
@@ -564,7 +566,7 @@ namespace fastscapelib
     raster_grid_xt<S, RC, C>::raster_grid_xt(const shape_type& shape,
                                              const spacing_type& spacing,
                                              const raster_boundary_status& bounds_status,
-                                             const std::vector<raster_node>& nodes_status)
+                                             const nodes_status_map_type& nodes_status)
         : base_type(shape[0] * shape[1])
         , m_shape(shape)
         , m_spacing(spacing)
@@ -601,7 +603,7 @@ namespace fastscapelib
         const shape_type& shape,
         const length_type& length,
         const raster_boundary_status& bounds_status,
-        const std::vector<raster_node>& nodes_status)
+        const nodes_status_map_type& nodes_status)
     {
         spacing_type spacing = length / (xt::adapt(shape) - 1);
         return raster_grid_xt<S, RC, C>(shape, spacing, bounds_status, nodes_status);
@@ -653,9 +655,9 @@ namespace fastscapelib
     }
 
     template <class S, raster_connect RC, class C>
-    void raster_grid_xt<S, RC, C>::set_nodes_status(const std::vector<raster_node>& nodes_status)
+    void raster_grid_xt<S, RC, C>::set_nodes_status(const nodes_status_map_type& nodes_status)
     {
-        node_status_type temp_nodes_status(m_shape, node_status::core);
+        nodes_status_type temp_nodes_status(m_shape, node_status::core);
         const auto nrows = static_cast<size_type>(m_shape[0]);
         const auto ncols = static_cast<size_type>(m_shape[1]);
 
@@ -686,21 +688,21 @@ namespace fastscapelib
         }
 
         // set user-defined nodes
-        for (const raster_node& n : nodes_status)
+        for (const auto& [idx, status] : nodes_status)
         {
-            if (n.status == node_status::looped)
+            if (status == node_status::looped)
             {
                 throw std::invalid_argument("node_status::looped is not allowed in "
                                             "'nodes_status' "
                                             "(use 'bounds_status' instead)");
             }
-            else if (temp_nodes_status.at(n.row, n.col) == node_status::looped)
+            else if (temp_nodes_status.at(idx.first, idx.second) == node_status::looped)
             {
                 throw std::invalid_argument("cannot overwrite the status of a "
                                             "looped boundary node");
             }
 
-            temp_nodes_status.at(n.row, n.col) = n.status;
+            temp_nodes_status.at(idx.first, idx.second) = status;
         }
 
         m_nodes_status = temp_nodes_status;
