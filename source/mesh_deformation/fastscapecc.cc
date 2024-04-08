@@ -40,11 +40,11 @@ namespace aspect
         // AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
         //                  ExcMessage("FastScape can only be run with a box geometry model."));
 
-            //  const GeometryModel::Box<dim> *geometry
-              //  = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
+             const GeometryModel::Box<dim> *geometry
+               = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
 
-                const GeometryModel::SphericalShell<dim> *geometry
-               = dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model());
+              //   const GeometryModel::SphericalShell<dim> *geometry
+              //  = dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model());
 
              // Find the id associated with the top boundary and boundaries that call mesh deformation.
              const types::boundary_id top_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
@@ -72,30 +72,30 @@ namespace aspect
       restart = this->get_parameters().resume_computation;
       
         // The first entry represents the minimum coordinates of the model domain, the second the model extent.
-        // for (unsigned int i=0; i<dim; ++i)
-        //   {
-        //     grid_extent[i].first = geometry->get_origin()[i];
-        //     grid_extent[i].second = geometry->get_extents()[i];
-        //   }
+        for (unsigned int i=0; i<dim; ++i)
+          {
+            grid_extent[i].first = geometry->get_origin()[i];
+            grid_extent[i].second = geometry->get_extents()[i];
+          }
 
-        //  nx = repetitions[0] + 1;
+         nx = repetitions[0] + 1;
 
-        //  // Size of FastScape cell.
-        //  dx = (grid_extent[0].second)/( repetitions[0]);
+         // Size of FastScape cell.
+         dx = (grid_extent[0].second)/( repetitions[0]);
 
-        //  // FastScape X extent, which is generally ASPECT's extent unless the ghost nodes are used,
-        //  // in which case 2 cells are added on either side.
-        //  x_extent = (grid_extent[0].second) ;
+         // FastScape X extent, which is generally ASPECT's extent unless the ghost nodes are used,
+         // in which case 2 cells are added on either side.
+         x_extent = (grid_extent[0].second) ;
 
-        // // Sub intervals are 1 less than points.
-        // table_intervals[0] = repetitions[0];
-        // table_intervals[dim-1] = 1;
+        // Sub intervals are 1 less than points.
+        table_intervals[0] = repetitions[0];
+        table_intervals[dim-1] = 1;
 
-        // ny = repetitions[1] + 1;
-        // dy = (grid_extent[1].second)/( repetitions[1]);
-        // table_intervals[1] = repetitions[1];
-        // y_extent = (grid_extent[1].second)  ;
-        // array_size = nx*ny;
+        ny = repetitions[1] + 1;
+        dy = (grid_extent[1].second)/( repetitions[1]);
+        table_intervals[1] = repetitions[1];
+        y_extent = (grid_extent[1].second)  ;
+        array_size = nx*ny;
 
     }
 
