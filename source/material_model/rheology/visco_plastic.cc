@@ -261,11 +261,12 @@ namespace aspect
                     Assert(std::isfinite(in.strain_rate[i].norm()),
                            ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                       "not filled by the caller."));
-                    const double effective_strain_rate_invariant = elastic_rheology.calculate_viscoelastic_strain_rate(in.strain_rate[i],
-                                                                   stress_old,
-                                                                   elastic_shear_moduli[j]);
+                    const SymmetricTensor<2,dim> effective_strain_rate =
+                      elastic_rheology.calculate_viscoelastic_strain_rate(in.strain_rate[i],
+                                                                          stress_old,
+                                                                          elastic_shear_moduli[j]);
 
-                    effective_edot_ii = std::max(effective_strain_rate_invariant,
+                    effective_edot_ii = std::max(std::sqrt(std::max(-second_invariant(effective_strain_rate), 0.)),
                                                  min_strain_rate);
                   }
 
@@ -403,17 +404,15 @@ namespace aspect
                    ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                               "not filled by the caller."));
 
+            const SymmetricTensor<2,dim> deviatoric_strain_rate = deviator(in.strain_rate[i]);
+
             // For each independent component, compute the derivative.
             for (unsigned int component = 0; component < SymmetricTensor<2,dim>::n_independent_components; ++component)
               {
                 const TableIndices<2> strain_rate_indices = SymmetricTensor<2,dim>::unrolled_to_component_indices (component);
 
-                // components that are not on the diagonal are multiplied by 0.5, because the symmetric tensor
-                // is modified by 0.5 in both symmetric directions (xy/yx) simultaneously and we compute the combined
-                // derivative
-                const SymmetricTensor<2,dim> strain_rate_difference = in.strain_rate[i]
-                                                                      + std::max(std::fabs(in.strain_rate[i][strain_rate_indices]), min_strain_rate)
-                                                                      * (component > dim-1 ? 0.5 : 1 )
+                const SymmetricTensor<2,dim> strain_rate_difference = deviatoric_strain_rate
+                                                                      + std::max(std::fabs(deviatoric_strain_rate[strain_rate_indices]), min_strain_rate)
                                                                       * finite_difference_accuracy
                                                                       * Utilities::nth_basis_for_symmetric_tensors<dim>(component);
 

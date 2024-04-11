@@ -49,11 +49,20 @@ namespace aspect
         MaterialModelDerivatives (const unsigned int n_points);
 
         /**
-         * The derivatives of the viscosities
+         * The derivatives of the viscosities with respect to pressure.
          */
         std::vector<double> viscosity_derivative_wrt_pressure;
+
+        /**
+         * The derivatives of the viscosities with respect to strain rate.
+         */
         std::vector<SymmetricTensor<2,dim>> viscosity_derivative_wrt_strain_rate;
 
+        /**
+         * The weights used for calculating the averages of viscosity
+         * derivatives when material averaging is applied.
+         */
+        std::vector<double> viscosity_derivative_averaging_weights;
     };
   }
 
@@ -234,6 +243,12 @@ namespace aspect
         void
         execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
                  internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
+
+        /**
+         * Create additional material models outputs for computing viscoelastic strain rate when
+         * elasticity is enabled.
+         */
+        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
     /**

@@ -2525,17 +2525,11 @@ namespace aspect
       if ((strain_rate.norm() == 0) || (dviscosities_dstrain_rate.norm() == 0))
         return 1;
 
-      const double norm_a_b = std::sqrt((strain_rate*strain_rate)*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));//std::sqrt((deviator(strain_rate)*deviator(strain_rate))*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));
-      const double contract_b_a = (dviscosities_dstrain_rate*strain_rate);
-      const double one_minus_part = 1 - (contract_b_a / norm_a_b);
-      const double denom = one_minus_part * one_minus_part * norm_a_b;
-
-      // the case denom == 0 (smallest eigenvalue is zero), should return one,
-      // and it does here, because C_safety * 2.0 * eta is always larger then zero.
-      if (denom <= SPD_safety_factor * 2.0 * eta)
+      const double E = strain_rate * dviscosities_dstrain_rate;
+      if (E >= -eta * SPD_safety_factor)
         return 1.0;
       else
-        return std::max(0.0, SPD_safety_factor * ((2.0 * eta) / denom));
+        return SPD_safety_factor * std::abs(eta / E);
     }
 
 
