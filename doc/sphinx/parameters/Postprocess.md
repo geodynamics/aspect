@@ -35,7 +35,7 @@ The following postprocessors are available:
 
 &lsquo;core statistics&rsquo;: A postprocessor that computes some statistics about the core evolution. (Working only with dynamic core boundary temperature plugin)
 
-&lsquo;crystal preferred orientation&rsquo;: A Postprocessor that writes out CPO specific particle data.It can write out the CPO data as it is stored (raw) and/or as arandom draw volume weighted representation. The latter oneis recommended for plotting against real data. For both representationsthe specific output fields and their order can be set.The work of this postprocessor should better be done by the main particles postprocessor, however we need to be able to process the data before outputing it, which does not work with that postprocessor. If this is added to the other postprocessor in the future this one becomes obsolete.
+&lsquo;crystal preferred orientation&rsquo;: A Postprocessor that writes out CPO specific particle data.It can write out the CPO data as it is stored (raw) and/or as arandom draw volume weighted representation. The latter oneis recommended for plotting against real data. For both representationsthe specific output fields and their order can be set.The work of this postprocessor should better be done by the main particles postprocessor, however we need to be able to process the data before outputting it, which does not work with that postprocessor. If this is added to the other postprocessor in the future this one becomes obsolete.
 
 &lsquo;depth average&rsquo;: A postprocessor that computes depth averaged quantities and writes them into a file <depth_average.ext> in the output directory, where the extension of the file is determined by the output format you select. In addition to the output format, a number of other parameters also influence this postprocessor, and they can be set in the section `Postprocess/Depth average` in the input file.
 
@@ -43,12 +43,10 @@ In the output files, the $x$-value of each data point corresponds to the depth, 
 
 &lsquo;domain volume statistics&rsquo;: A postprocessor that computes the total area (in 2d) or volume (in 3d) of the computational domain.
 
-&lsquo;dynamic topography&rsquo;: A postprocessor that computes a measure of dynamic topography based on the stress at the surface and bottom. The data is written into text files named &lsquo;dynamic\_topography.NNNNN&rsquo; in the output directory, where NNNNN is the number of the time step.
+&lsquo;dynamic topography&rsquo;: A postprocessor that computes a measure of dynamic topography based on the stress at the boundary. The data is written into text files named &lsquo;dynamic\_topography_\X.NNNNN&rsquo; in the output directory, where X is the name of the boundary and NNNNN is the number of the time step.
 
-The exact approach works as follows: At the centers of all cells that sit along the top surface, we evaluate the stress and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)- \frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. For the bottom surface we chose the convection that positive values are up (out) and negative values are in (down), analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.
+The exact approach works as follows: At each selected boundary, we compute the traction that acts normal to the boundary faces using the consistent boundary flux method as described in &ldquo;Gresho, Lee, Sani, Maslanik, Eaton (1987). The consistent Galerkin FEM for computing derived boundary quantities in thermal and or fluids problems. International Journal for Numerical Methods in Fluids, 7(4), 371-394.&rdquo; From this traction, the dynamic topography is computed using the formula $h=\frac{\sigma_{n}}{g \rho}$ where $g$ is the norm of the gravity and $\rho$ is the density. For the bottom surface we chose the convention that positive values are up and negative values are down, analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.
 The file format then consists of lines with Euclidean coordinates followed by the corresponding topography value.
-
-(As a side note, the postprocessor chooses the cell center instead of the center of the cell face at the surface, where we really are interested in the quantity, since this often gives better accuracy. The results should in essence be the same, though.)
 
 &lsquo;entropy viscosity statistics&rsquo;: A postprocessor that computes the maximum and volume averagedentropy viscosity stabilization for the temperature field.
 
@@ -124,6 +122,8 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 &lsquo;topography&rsquo;: A postprocessor intended for use with a deforming top surface.  After every step it loops over all the vertices on the top surface and determines the maximum and minimum topography relative to a reference datum (initial box height for a box geometry model or initial radius for a sphere/spherical shell geometry model). If &rsquo;Topography.Output to file&rsquo; is set to true, also outputs topography into text files named &lsquo;topography.NNNNN&rsquo; in the output directory, where NNNNN is the number of the time step.
 The file format then consists of lines with Euclidean coordinates followed by the corresponding topography value.Topography is printed/written in meters.
+
+It is worth comparing this postprocessor with the visualization postprocessor called &ldquo;surface elevation&rdquo;. The latter is used to *visualize* the surface elevation in graphical form, by outputting it into the same files that the solution and other postprocessed variables are written, to then be used for visualization using programs such as VisIt or Paraview. In contrast, the current postprocessor generates the same *kind* of information, but instead writes it as a point cloud that can then more easily be processed using tools other than visualization programs.
 
 &lsquo;velocity boundary statistics&rsquo;: A postprocessor that computes some statistics about the velocity along the boundaries. For each boundary indicator (see your geometry description for which boundary indicators are used), the min and max velocity magnitude is computed.
 
@@ -255,7 +255,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 **Pattern:** [Bool]
 
-**Documentation:** Wether to compress the raw and weighted cpo data output files with zlib.
+**Documentation:** Whether to compress the raw and weighted cpo data output files with zlib.
 
 (parameters:Postprocess/Crystal_20Preferred_20Orientation/Random_20number_20seed)=
 ### __Parameter name:__ Random number seed
@@ -263,7 +263,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** The seed used to generate random numbers. This will make sure that results are reproducable as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = random number seed + MPI Rank.
+**Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = random number seed + MPI Rank.
 
 (parameters:Postprocess/Crystal_20Preferred_20Orientation/Temporary_20output_20location)=
 ### __Parameter name:__ Temporary output location
@@ -298,7 +298,7 @@ Units: years if the &rsquo;Use years in output instead of seconds&rsquo; paramet
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list containing the what part of the random draw volume weighted particle cpo data needs to be written out after the particle id. after using a random draw volume weighting. The random draw volume weigthing uses a uniform random distribution This writes out the raw cpo data files for each MPI process. It can write out the following data: olivine volume fraction, olivine rotation matrix, olivine Euler angles, enstatite volume fraction, enstatite rotation matrix, enstatite Euler angles.
-Note that the rotation matrix and Euler angles both contain the same information, but in a different format. Euler angles are recommended over the rotation matrix since they only require to write 3 values instead of 9. If the list is empty, this file will not be written. Furthermore, the entries will be written out in the order given, and if entries are entered muliple times, they will be written out multiple times.
+Note that the rotation matrix and Euler angles both contain the same information, but in a different format. Euler angles are recommended over the rotation matrix since they only require to write 3 values instead of 9. If the list is empty, this file will not be written. Furthermore, the entries will be written out in the order given, and if entries are entered multiple times, they will be written out multiple times.
 
 (parameters:Postprocess/Crystal_20Preferred_20Orientation/Write_20out_20raw_20cpo_20data)=
 ### __Parameter name:__ Write out raw cpo data
@@ -307,7 +307,7 @@ Note that the rotation matrix and Euler angles both contain the same information
 **Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A list containing what particle cpo data needs to be written out after the particle id. This writes out the raw cpo data files for each MPI process. It can write out the following data: olivine volume fraction, olivine rotation matrix, olivine Euler angles, enstatite volume fraction, enstatite rotation matrix, enstatite Euler angles.
-Note that the rotation matrix and Euler angles both contain the same information, but in a different format. Euler angles are recommended over the rotation matrix since they only require to write 3 values instead of 9. If the list is empty, this file will not be written.Furthermore, the entries will be written out in the order given, and if entries are entered muliple times, they will be written out multiple times.
+Note that the rotation matrix and Euler angles both contain the same information, but in a different format. Euler angles are recommended over the rotation matrix since they only require to write 3 values instead of 9. If the list is empty, this file will not be written.Furthermore, the entries will be written out in the order given, and if entries are entered multiple times, they will be written out multiple times.
 
 (parameters:Postprocess/Depth_20average)=
 ## **Subsection:** Postprocess / Depth average
@@ -344,7 +344,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 ### __Parameter name:__ Output format
 **Default value:** gnuplot, txt
 
-**Pattern:** [MultipleSelection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot_binary|vtk|vtu|hdf5|svg|deal.II intermediate|txt ]
+**Pattern:** [MultipleSelection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|vtk|vtu|hdf5|svg|deal.II intermediate|txt ]
 
 **Documentation:** A list of formats in which the output shall be produced. The format in which the output is generated also determines the extension of the file into which data is written. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described. By default the output is written as gnuplot file (for plotting), and as a simple text file.
 
@@ -464,14 +464,6 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Documentation:** Option to include the contribution from surface topography on geoid. The default is true.
 
-(parameters:Postprocess/Geoid/Include_20the_20contributon_20from_20dynamic_20topography)=
-### __Parameter name:__ Include the contributon from dynamic topography
-**Default value:** true
-
-**Pattern:** [Bool]
-
-**Documentation:** Option to include the contribution from dynamic topography on geoid. The default is true.
-
 (parameters:Postprocess/Geoid/Maximum_20degree)=
 ### __Parameter name:__ Maximum degree
 **Default value:** 20
@@ -502,7 +494,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Bool]
 
-**Documentation:** Option to output the geoid anomaly in geographical coordinates (latitude and longitude). The default is false, so postprocess will output the data in geocentric coordinates (x,y,z) as normally.
+**Documentation:** Option to output the geoid anomaly in geographical coordinates (latitude and longitude). The default is false, so the postprocessor will output the data in geocentric coordinates (x,y,z) as normally.
 
 (parameters:Postprocess/Geoid/Output_20density_20anomaly_20contribution_20coefficients)=
 ### __Parameter name:__ Output density anomaly contribution coefficients
@@ -518,7 +510,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 **Pattern:** [Bool]
 
-**Documentation:** Option to output the spherical harmonic coefficients of the geoid anomaly up to the maximum degree. The default is false, so postprocess will only output the geoid anomaly in grid format.
+**Documentation:** Option to output the spherical harmonic coefficients of the geoid anomaly up to the maximum degree. The default is false, so the postprocessor will only output the geoid anomaly in grid format.
 
 (parameters:Postprocess/Geoid/Output_20gravity_20anomaly)=
 ### __Parameter name:__ Output gravity anomaly
@@ -724,7 +716,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 ### __Parameter name:__ Data output format
 **Default value:** vtu
 
-**Pattern:** [MultipleSelection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot_binary|vtk|vtu|hdf5|svg|deal.II intermediate|ascii ]
+**Pattern:** [MultipleSelection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|vtk|vtu|hdf5|svg|deal.II intermediate|ascii ]
 
 **Documentation:** A comma separated list of file formats to be used for graphical output. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described.
 
@@ -1532,7 +1524,7 @@ Of course, activating this option also greatly increases the amount of data ASPE
 ### __Parameter name:__ List of output variables
 **Default value:**
 
-**Pattern:** [MultipleSelection ISA rotation timescale|Vp anomaly|Vs anomaly|adiabat|artificial viscosity|artificial viscosity composition|boundary indicators|boundary strain rate residual|boundary velocity residual|compositional vector|depth|dynamic topography|error indicator|geoid|grain lag angle|gravity|heat flux map|heating|material properties|maximum horizontal compressive stress|melt fraction|melt material properties|named additional outputs|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|principal stress|shear stress|spd factor|spherical velocity components|strain rate|strain rate tensor|stress|stress second invariant|surface dynamic topography|surface strain rate tensor|surface stress|temperature anomaly|vertical heat flux|volume of fluid values|volumetric strain rate|density|specific heat|thermal conductivity|thermal diffusivity|thermal expansivity|viscosity ]
+**Pattern:** [MultipleSelection ISA rotation timescale|Vp anomaly|Vs anomaly|adiabat|artificial viscosity|artificial viscosity composition|boundary indicators|boundary strain rate residual|boundary velocity residual|compositional vector|depth|dynamic topography|error indicator|geoid|grain lag angle|gravity|heat flux map|heating|material properties|maximum horizontal compressive stress|melt fraction|melt material properties|named additional outputs|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|principal stress|shear stress|spd factor|spherical velocity components|strain rate|strain rate tensor|stress|stress second invariant|surface dynamic topography|surface elevation|surface strain rate tensor|surface stress|temperature anomaly|vertical heat flux|volume of fluid values|volumetric strain rate|density|specific heat|thermal conductivity|thermal diffusivity|thermal expansivity|viscosity ]
 
 **Documentation:** A comma separated list of visualization objects that should be run whenever writing graphical output. By default, the graphical output files will always contain the primary variables velocity, pressure, and temperature. However, one frequently wants to also visualize derived quantities, such as the thermodynamic phase that corresponds to a given temperature-pressure value, or the corresponding seismic wave speeds. The visualization objects do exactly this: they compute such derived quantities and place them into the output file. The current parameter is the place where you decide which of these additional output variables you want to have in your output file.
 
@@ -1580,9 +1572,11 @@ Physical units: None.
 
 &lsquo;depth&rsquo;: A visualization output postprocessor that outputs the depth for all points inside the domain, as determined by the geometry model.
 
+It is worth comparing this visualization postprocessor with the one called &ldquo;surface elevation&rdquo;. The current one is used to visualize a volume variable, whereas the latter only outputs information on the surface. Moreover &ldquo;depth&rdquo; is based on a member function of the geometry models that is documented as never returning a number less than zero -- in other words, it returns the depth of an evaluation point with regard to a reference surface that defines a zero depth, but for points that lie above this reference surface, it returns zero. As a consequence, it cannot be used to visualize positive elevations, whereas the the one called &ldquo;surface elevation&rdquo; can.
+
 Physical units: \si{\meter}.
 
-&lsquo;dynamic topography&rsquo;: A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The approach to determine the dynamic topography requires us to compute the stress tensor and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)-\frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. For the bottom surface we chose the convection that positive values are up (out) and negative values are in (down), analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.
+&lsquo;dynamic topography&rsquo;: A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The actual computation of this topography is handled inside the &rsquo;dynamic topography&rsquo; postprocessor, please check its documentation for details about the numerical methods.
 
 Strictly speaking, the dynamic topography is of course a quantity that is only of interest at the surface. However, we compute it everywhere to make things fit into the framework within which we produce data for visualization. You probably only want to visualize whatever data this postprocessor generates at the surface of your domain and simply ignore the rest of the data generated.
 
@@ -1704,9 +1698,19 @@ Physical units: \si{\pascal}.
 
 Physical units: \si{\pascal}.
 
-&lsquo;surface dynamic topography&rsquo;: A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The approach to determine the dynamic topography requires us to compute the stress tensor and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)-\frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. For the bottom surface we chose the convection that positive values are up (out) and negative values are in (down), analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.
+&lsquo;surface dynamic topography&rsquo;: A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The actual computation of this topography is handled inside the &rsquo;dynamic topography&rsquo; postprocessor, please check its documentation for details about the numerical methods.
 
 In contrast to the &lsquo;dynamic topography&rsquo; visualization postprocessor, this plugin really only evaluates the dynamic topography at faces of cells that are adjacent to &lsquo;bottom&rsquo; and &lsquo;top&rsquo; boundaries, and only outputs information on the surface of the domain, rather than padding the information with zeros in the interior of the domain.
+
+Physical units: \si{\meter}.
+
+&lsquo;surface elevation&rsquo;: This postprocessor is used to visualize the elevation of points on the surface of the geometry relative to a &ldquo;reference elevation&rdquo; defined by an undeformed geometry. It can be used, for example, to visualize an initial topography field, as well as the result of dynamic surface deformation due to a free surface.
+
+The surface elevation is computed only for those parts of the boundary that the geometry description marks as &ldquo;top&rdquo;. On all other parts of the boundary, the class outputs a zero elevation.
+
+It is worth comparing this visualization postprocessor with the one called &ldquo;depth&rdquo;. The latter is used to visualize a volume variable, whereas the current one only outputs information on the surface. Moreover &ldquo;depth&rdquo; is based on a member function of the geometry models that is documented as never returning a number less than zero -- in other words, it returns the depth of an evaluation point with regard to a reference surface that defines a zero depth, but for points that lie above this reference surface, it returns zero. As a consequence, it cannot be used to visualize positive elevations, whereas the current visualization postprocessor can.
+
+Finally, it is worth pointing out the &ldquo;topography&rdquo; postprocessor (not a visualization postprocessor) that returns the surface elevation as a point cloud into a text file. The information is comparable to what the current object creates, but it is not as easily used to visualize information.
 
 Physical units: \si{\meter}.
 
@@ -1746,7 +1750,7 @@ Physical units: \si{\per\second}.
 ### __Parameter name:__ Output format
 **Default value:** vtu
 
-**Pattern:** [Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|tecplot_binary|vtk|vtu|hdf5|svg|deal.II intermediate|parallel deal.II intermediate ]
+**Pattern:** [Selection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|vtk|vtu|hdf5|svg|deal.II intermediate|parallel deal.II intermediate ]
 
 **Documentation:** The file format to be used for graphical output. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described.
 
