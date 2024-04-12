@@ -6,6 +6,7 @@ Number of degrees of freedom: 1,224 (480+72+240+432)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
 
@@ -16,6 +17,7 @@ Number of degrees of freedom: 1,224 (480+72+240+432)
 
 *** Timestep 1:  t=0.0015296 seconds, dt=0.0015296 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21+0 iterations.
 
@@ -26,6 +28,7 @@ Number of degrees of freedom: 1,224 (480+72+240+432)
 
 *** Timestep 2:  t=0.003 seconds, dt=0.0014704 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21+0 iterations.
 

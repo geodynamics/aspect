@@ -1,13 +1,10 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 128 (on 4 levels)
 Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
+   Advecting particles...  done.
    Solving field system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
@@ -15,6 +12,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
+   Advecting particles...  done.
    Solving field system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -28,6 +26,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 *** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
    Solving temperature system... 15 iterations.
+   Advecting particles...  done.
    Solving field system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
@@ -35,6 +34,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0618188
 
    Solving temperature system... 8 iterations.
+   Advecting particles...  done.
    Solving field system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -42,10 +42,11 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.86467e-05
 
    Solving temperature system... 2 iterations.
+   Advecting particles...  done.
    Solving field system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.35331e-11, 3.47735e-13, 0, 4.08028e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.35331e-11, 3.47753e-13, 0, 4.08028e-08
       Relative nonlinear residual (total system) after nonlinear iteration 3: 4.08028e-08
 
 
@@ -54,6 +55,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 *** Timestep 2:  t=0.125 seconds, dt=0.0625 seconds
    Solving temperature system... 14 iterations.
+   Advecting particles...  done.
    Solving field system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
@@ -61,6 +63,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00996774
 
    Solving temperature system... 7 iterations.
+   Advecting particles...  done.
    Solving field system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -74,6 +77,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 *** Timestep 3:  t=0.1875 seconds, dt=0.0625 seconds
    Solving temperature system... 14 iterations.
+   Advecting particles...  done.
    Solving field system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
@@ -81,6 +85,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0108406
 
    Solving temperature system... 7 iterations.
+   Advecting particles...  done.
    Solving field system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -93,6 +98,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 *** Timestep 4:  t=0.25 seconds, dt=0.0625 seconds
    Solving temperature system... 14 iterations.
+   Advecting particles...  done.
    Solving field system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
@@ -100,6 +106,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00916238
 
    Solving temperature system... 7 iterations.
+   Advecting particles...  done.
    Solving field system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -113,6 +120,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 *** Timestep 5:  t=0.3125 seconds, dt=0.0625 seconds
    Solving temperature system... 14 iterations.
+   Advecting particles...  done.
    Solving field system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
@@ -120,6 +128,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00681677
 
    Solving temperature system... 7 iterations.
+   Advecting particles...  done.
    Solving field system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -133,6 +142,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 *** Timestep 6:  t=0.375 seconds, dt=0.0625 seconds
    Solving temperature system... 14 iterations.
+   Advecting particles...  done.
    Solving field system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
@@ -140,6 +150,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00594464
 
    Solving temperature system... 7 iterations.
+   Advecting particles...  done.
    Solving field system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -152,6 +163,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 *** Timestep 7:  t=0.4375 seconds, dt=0.0625 seconds
    Solving temperature system... 14 iterations.
+   Advecting particles...  done.
    Solving field system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
@@ -159,6 +171,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00543021
 
    Solving temperature system... 7 iterations.
+   Advecting particles...  done.
    Solving field system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -172,6 +185,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 *** Timestep 8:  t=0.5 seconds, dt=0.0625 seconds
    Solving temperature system... 14 iterations.
+   Advecting particles...  done.
    Solving field system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
@@ -179,6 +193,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00527246
 
    Solving temperature system... 7 iterations.
+   Advecting particles...  done.
    Solving field system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -192,6 +207,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 *** Timestep 9:  t=0.5625 seconds, dt=0.0625 seconds
    Solving temperature system... 14 iterations.
+   Advecting particles...  done.
    Solving field system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
@@ -199,6 +215,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00505676
 
    Solving temperature system... 7 iterations.
+   Advecting particles...  done.
    Solving field system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -211,6 +228,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 *** Timestep 10:  t=0.625 seconds, dt=0.0625 seconds
    Solving temperature system... 13 iterations.
+   Advecting particles...  done.
    Solving field system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
@@ -218,6 +236,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00502904
 
    Solving temperature system... 7 iterations.
+   Advecting particles...  done.
    Solving field system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -231,6 +250,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 *** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Solving temperature system... 13 iterations.
+   Advecting particles...  done.
    Solving field system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
@@ -238,6 +258,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00497477
 
    Solving temperature system... 7 iterations.
+   Advecting particles...  done.
    Solving field system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -250,6 +271,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 *** Timestep 12:  t=0.75 seconds, dt=0.0625 seconds
    Solving temperature system... 13 iterations.
+   Advecting particles...  done.
    Solving field system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
@@ -257,6 +279,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.938756
 
    Solving temperature system... 768 iterations.
+   Advecting particles...  done.
    Solving field system ... retrying linear solve with different preconditioner...
 234 iterations.
    Rebuilding Stokes preconditioner...
@@ -265,6 +288,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.322224
 
    Solving temperature system... 609 iterations.
+   Advecting particles...  done.
    Solving field system ... retrying linear solve with different preconditioner...
 36 iterations.
    Rebuilding Stokes preconditioner...
@@ -273,16 +297,18 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 6.86589e-05
 
    Solving temperature system... 73 iterations.
+   Advecting particles...  done.
    Solving field system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.61371e-11, 9.63101e-13, 0, 7.94444e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.61371e-11, 9.63033e-13, 0, 7.94444e-08
       Relative nonlinear residual (total system) after nonlinear iteration 4: 7.94444e-08
 
 
 Repeating the current time step based on the time stepping manager ...
 *** Timestep 12:  t=0.71875 seconds, dt=0.03125 seconds
    Solving temperature system... 10 iterations.
+   Advecting particles...  done.
    Solving field system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
@@ -290,6 +316,7 @@ Repeating the current time step based on the time stepping manager ...
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00185587
 
    Solving temperature system... 5 iterations.
+   Advecting particles...  done.
    Solving field system ... 5 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -303,6 +330,7 @@ Repeating the current time step based on the time stepping manager ...
 
 *** Timestep 13:  t=0.750625 seconds, dt=0.031875 seconds
    Solving temperature system... 10 iterations.
+   Advecting particles...  done.
    Solving field system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
@@ -310,6 +338,7 @@ Repeating the current time step based on the time stepping manager ...
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.938756
 
    Solving temperature system... 79 iterations.
+   Advecting particles...  done.
    Solving field system ... 90 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
@@ -317,6 +346,7 @@ Repeating the current time step based on the time stepping manager ...
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.163827
 
    Solving temperature system... 47 iterations.
+   Advecting particles...  done.
    Solving field system ... 64 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -324,16 +354,18 @@ Repeating the current time step based on the time stepping manager ...
       Relative nonlinear residual (total system) after nonlinear iteration 3: 2.28739e-05
 
    Solving temperature system... 4 iterations.
+   Advecting particles...  done.
    Solving field system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.80442e-12, 9.49827e-13, 0, 8.20045e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.80436e-12, 9.49817e-13, 0, 8.20045e-08
       Relative nonlinear residual (total system) after nonlinear iteration 4: 8.20045e-08
 
 
 Repeating the current time step based on the time stepping manager ...
 *** Timestep 13:  t=0.734688 seconds, dt=0.0159375 seconds
    Solving temperature system... 9 iterations.
+   Advecting particles...  done.
    Solving field system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 4+0 iterations.
@@ -341,6 +373,7 @@ Repeating the current time step based on the time stepping manager ...
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000480075
 
    Solving temperature system... 4 iterations.
+   Advecting particles...  done.
    Solving field system ... 4 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -353,6 +386,7 @@ Repeating the current time step based on the time stepping manager ...
 
 *** Timestep 14:  t=0.750944 seconds, dt=0.0162562 seconds
    Solving temperature system... 9 iterations.
+   Advecting particles...  done.
    Solving field system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.
@@ -360,6 +394,7 @@ Repeating the current time step based on the time stepping manager ...
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.938756
 
    Solving temperature system... 34 iterations.
+   Advecting particles...  done.
    Solving field system ... 38 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
@@ -367,6 +402,7 @@ Repeating the current time step based on the time stepping manager ...
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0835698
 
    Solving temperature system... 22 iterations.
+   Advecting particles...  done.
    Solving field system ... 26 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -379,6 +415,7 @@ Repeating the current time step based on the time stepping manager ...
 
 *** Timestep 15:  t=0.755 seconds, dt=0.00405625 seconds
    Solving temperature system... 17 iterations.
+   Advecting particles...  done.
    Solving field system ... 18 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
@@ -386,6 +423,7 @@ Repeating the current time step based on the time stepping manager ...
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.228178
 
    Solving temperature system... 14 iterations.
+   Advecting particles...  done.
    Solving field system ... 15 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
@@ -393,6 +431,7 @@ Repeating the current time step based on the time stepping manager ...
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00626308
 
    Solving temperature system... 7 iterations.
+   Advecting particles...  done.
    Solving field system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -406,9 +445,4 @@ Repeating the current time step based on the time stepping manager ...
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

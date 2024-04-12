@@ -10,6 +10,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
+   Advecting particles...  done.
    Skipping C_1 composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -27,6 +28,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
 
 *** Timestep 1:  t=100000 years, dt=100000 years
    Solving temperature system... 15 iterations.
+   Advecting particles...  done.
    Skipping C_1 composition solve because RHS is zero.
    Solving Stokes system... 15+0 iterations.
 

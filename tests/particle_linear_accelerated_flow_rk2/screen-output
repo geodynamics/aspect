@@ -4,6 +4,7 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
 
    Postprocessing:
      RMS, max velocity:       0.1 m/s, 0.1 m/s
@@ -11,6 +12,7 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 1:  t=1 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
 
    Postprocessing:
      RMS, max velocity:       1.1 m/s, 1.1 m/s
