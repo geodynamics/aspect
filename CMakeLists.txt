@@ -168,31 +168,25 @@ if(ASPECT_WITH_WORLD_BUILDER)
     # if we configured with 0.5.0 before, we have a stray include file here. delete it.
     FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder/config.h")
 
-    SET(WB_ENABLE_TESTS OFF)
-    SET(WB_ENABLE_APPS OFF)
-    SET(WB_ENABLE_HELPER_TARGETS OFF)
-    SET(WB_ENABLE_PYTHON OFF)
-
     IF(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
+      SET(WB_ENABLE_TESTS OFF)
+      SET(WB_ENABLE_APPS OFF)
+      SET(WB_ENABLE_HELPER_TARGETS OFF)
+      SET(WB_ENABLE_PYTHON OFF)
+
       SET(CMAKE_BUILD_TYPE Debug)
       SET(WB_TARGET "WorldBuilderDebug")
+      SET(CMAKE_CXX_FLAGS "-g")
       ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
-      TARGET_COMPILE_OPTIONS(WorldBuilderDebug PUBLIC "-g")
 
       SET(CMAKE_BUILD_TYPE Release)
       SET(WB_TARGET "WorldBuilderRelease")
+      SET(CMAKE_CXX_FLAGS "-O3 -DNDEBUG")
       ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder_release/)
-      TARGET_COMPILE_DEFINITIONS(WorldBuilderRelease PUBLIC "NDEBUG")
-      TARGET_COMPILE_OPTIONS(WorldBuilderRelease PUBLIC "-O3")
 
       SET(CMAKE_BUILD_TYPE DebugRelease)
-    ELSEIF(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+    ELSE()
       ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
-      TARGET_COMPILE_OPTIONS(WorldBuilder PUBLIC "-g")
-    ELSEIF(${CMAKE_BUILD_TYPE} MATCHES "Release")
-      ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
-      TARGET_COMPILE_DEFINITIONS(WorldBuilder PUBLIC "NDEBUG")
-      TARGET_COMPILE_OPTIONS(WorldBuilder PUBLIC "-O3")
     ENDIF()
   ELSE()
     FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/*.cc")
@@ -561,15 +555,14 @@ ELSE()
   DEAL_II_SETUP_TARGET(${TARGET})
 ENDIF()
 
-# This should be done in DEAL_II_SETUP_TARGET, but deal.II 9.5
-# does not do so, so do it here. Remove this when we require deal.II 9.6.
-IF (DEAL_II_PACKAGE_VERSION VERSION_LESS 9.6.0)
-  IF (CMAKE_BUILD_TYPE MATCHES Release)
-    ADD_DEFINITIONS("-DNDEBUG")
-  ENDIF()
-  IF (CMAKE_BUILD_TYPE MATCHES DebugRelease)
-    target_compile_definitions(${TARGET}-release PUBLIC "NDEBUG")
-  ENDIF()
+# deal.II does not define NDEBUG, but the world builder relies on it to disable
+# its asserts in release mode. Set it manually for anything but debug mode.
+# Note: If deal.II decides in the future to define this, this can be removed.
+IF (CMAKE_BUILD_TYPE MATCHES Release)
+  ADD_DEFINITIONS("-DNDEBUG")
+ENDIF()
+IF (CMAKE_BUILD_TYPE MATCHES DebugRelease)
+  target_compile_definitions(${TARGET}-release PUBLIC "NDEBUG")
 ENDIF()
 
 # find zlib if it is installed in a non-standard location
@@ -687,10 +680,14 @@ IF(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILD
     TARGET_INCLUDE_DIRECTORIES(${TARGET}-release PUBLIC "${CMAKE_BINARY_DIR}/world_builder_release/include/")
     TARGET_LINK_LIBRARIES(${TARGET} WorldBuilderDebug)
     TARGET_LINK_LIBRARIES(${TARGET}-release WorldBuilderRelease)
+    target_compile_definitions(${TARGET}-release PUBLIC "NDEBUG")
   ELSE()
     TARGET_INCLUDE_DIRECTORIES(${TARGET} PUBLIC "${CMAKE_BINARY_DIR}/world_builder/include/")
     TARGET_LINK_LIBRARIES(${TARGET} WorldBuilder)
-  ENDIF()
+    if (${CMAKE_BUILD_TYPE} MATCHES "Release")
+      target_compile_definitions(${TARGET} PUBLIC "NDEBUG")
+      endif()
+    ENDIF()
 ENDIF()
 
 
