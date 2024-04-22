@@ -4,6 +4,7 @@ Number of degrees of freedom: 3,770 (2,187+125+729+729)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 26+0 iterations.
@@ -15,6 +16,7 @@ Number of degrees of freedom: 3,770 (2,187+125+729+729)
 
 *** Timestep 1:  t=10 seconds, dt=10 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 11 iterations.
    Solving Stokes system... 22+0 iterations.
 

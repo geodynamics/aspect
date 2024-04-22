@@ -6,6 +6,7 @@ Number of degrees of freedom: 159 (50+12+25+36+36)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
 

@@ -6,6 +6,7 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving strain_xx system ... 0 iterations.
    Skipping strain_xy composition solve because RHS is zero.
    Skipping strain_yx composition solve because RHS is zero.
@@ -21,6 +22,7 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
 
 *** Timestep 1:  t=0.025 seconds, dt=0.025 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving strain_xx system ... 0 iterations.
    Solving strain_xy system ... 11 iterations.
    Solving strain_yx system ... 11 iterations.

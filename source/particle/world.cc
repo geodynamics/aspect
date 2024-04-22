@@ -1287,6 +1287,7 @@ namespace aspect
     void
     World<dim>::advance_timestep()
     {
+      this->get_pcout() << "   Advecting particles... " << std::flush;
       do
         {
           advect_particles();
@@ -1308,6 +1309,7 @@ namespace aspect
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
           particle_handler->exchange_ghost_particles();
         }
+      this->get_pcout() << " done." << std::endl;
     }
 
 

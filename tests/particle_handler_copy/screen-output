@@ -45,6 +45,7 @@ Original position: 0.5 0.2. Copied position: 0.5 0.2
 Original properties: 0. Copied properties: 0
 Original position: 0.5 0.3. Copied position: 0.5 0.3
 Original properties: 0. Copied properties: 0
+   Advecting particles...  done.
    Solving C_1 system ... duplicating particle handler
 Original position: 0.3 0.1. Copied position: 0.3 0.1
 Original properties: 0. Copied properties: 0
@@ -132,6 +133,7 @@ Original position: 0.5 0.2. Copied position: 0.5 0.2
 Original properties: 0. Copied properties: 0
 Original position: 0.5 0.3. Copied position: 0.5 0.3
 Original properties: 0. Copied properties: 0
+   Advecting particles...  done.
    Solving C_1 system ... duplicating particle handler
 Original position: 0.276018 0.102682. Copied position: 0.276018 0.102682
 Original properties: -0.000336763. Copied properties: -0.000336763

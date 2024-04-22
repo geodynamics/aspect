@@ -4,6 +4,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
+   Advecting particles...  done.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -13,6 +14,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 1:  t=1.02774e+06 seconds, dt=1.02774e+06 seconds
    Solving temperature system... 25 iterations.
+   Advecting particles...  done.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -22,6 +24,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 2:  t=2.1003e+06 seconds, dt=1.07256e+06 seconds
    Solving temperature system... 19 iterations.
+   Advecting particles...  done.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -31,6 +34,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 3:  t=3.22036e+06 seconds, dt=1.12006e+06 seconds
    Solving temperature system... 19 iterations.
+   Advecting particles...  done.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -42,6 +46,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 4:  t=4.39059e+06 seconds, dt=1.17022e+06 seconds
    Solving temperature system... 19 iterations.
+   Advecting particles...  done.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -51,6 +56,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 5:  t=5.61338e+06 seconds, dt=1.2228e+06 seconds
    Solving temperature system... 19 iterations.
+   Advecting particles...  done.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -60,6 +66,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 6:  t=6.89231e+06 seconds, dt=1.27893e+06 seconds
    Solving temperature system... 19 iterations.
+   Advecting particles...  done.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -69,6 +76,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 7:  t=8.23159e+06 seconds, dt=1.33928e+06 seconds
    Solving temperature system... 19 iterations.
+   Advecting particles...  done.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -80,6 +88,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 8:  t=9.63611e+06 seconds, dt=1.40452e+06 seconds
    Solving temperature system... 20 iterations.
+   Advecting particles...  done.
    Solving Stokes system... done.
 
    Postprocessing:
@@ -89,6 +98,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 9:  t=1e+07 seconds, dt=363889 seconds
    Solving temperature system... 9 iterations.
+   Advecting particles...  done.
    Solving Stokes system... done.
 
    Postprocessing:
