@@ -378,10 +378,10 @@ namespace WorldBuilder
 
               Point<2> estimate_point = a*est*est*est+b*est*est+c*est+d;
 
-              double cos_lat_dg;
-              double sin_d_long_h_dg;
-              double sin_d_lat_h_dg;
-              double min_squared_distance_cartesian_temp_dg;
+              double cos_lat_dg = NaN::DSNAN;
+              double sin_d_long_h_dg = NaN::DSNAN;
+              double sin_d_lat_h_dg = NaN::DSNAN;
+              double min_squared_distance_cartesian_temp_dg = NaN::DSNAN;
               if (verbose == true)
                 {
                   cos_lat_dg = cos(estimate_point[1]);
