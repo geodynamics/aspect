@@ -33,7 +33,7 @@ jobs:
 
           "${{ runner.temp }}/typos/typos" --config .typos.toml --format json >> ${{ runner.temp }}/typos.jsonl || true
       - name: Update repo with fixable typos
-        uses: crate-ci/typos@v1.19.0
+        uses: crate-ci/typos@v1.21.0
         with:
           write_changes: true
           config: ./.typos.toml
