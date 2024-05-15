@@ -345,6 +345,7 @@ namespace aspect
               else
                 {
                   // Use BiCGStab for non-symmetric matrices.
+                  // BiCGStab can also solve indefinite systems if necessary.
                   // Do not compute the exact residual, as this
                   // is more expensive, and we only need an approximate solution.
                   SolverBicgstab<LinearAlgebra::Vector>
@@ -841,21 +842,13 @@ namespace aspect
         solver_control_cheap.enable_history_data();
         solver_control_expensive.enable_history_data();
 
-        // The A block should be symmetric, unless there are free surface stabilization terms, or
-        // the user has forced the use of a different solver.
-        bool A_block_is_symmetric = true;
-        if (mesh_deformation && mesh_deformation->get_boundary_indicators_requiring_stabilization().empty() == false)
-          A_block_is_symmetric = false;
-        else if (parameters.force_nonsymmetric_A_block_solver)
-          A_block_is_symmetric = false;
-
         // create a cheap preconditioner that consists of only a single V-cycle
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
               LinearAlgebra::PreconditionBase>
               preconditioner_cheap (system_matrix, system_preconditioner_matrix,
                                     *Mp_preconditioner, *Amg_preconditioner,
                                     /* do_solve_A = */ false,
-                                    A_block_is_symmetric,
+                                    stokes_A_block_is_symmetric(),
                                     parameters.linear_solver_A_block_tolerance,
                                     parameters.linear_solver_S_block_tolerance);
 
@@ -865,7 +858,7 @@ namespace aspect
               preconditioner_expensive (system_matrix, system_preconditioner_matrix,
                                         *Mp_preconditioner, *Amg_preconditioner,
                                         /* do_solve_A = */ true,
-                                        A_block_is_symmetric,
+                                        stokes_A_block_is_symmetric(),
                                         parameters.linear_solver_A_block_tolerance,
                                         parameters.linear_solver_S_block_tolerance);
 

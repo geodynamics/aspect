@@ -306,6 +306,7 @@ namespace aspect
               else
                 {
                   // Use BiCGStab for non-symmetric matrices.
+                  // BiCGStab can also solve indefinite systems if necessary.
                   // Do not compute the exact residual, as this
                   // is more expensive, and we only need an approximate solution.
                   SolverBicgstab<dealii::LinearAlgebra::distributed::Vector<double>>
@@ -2035,21 +2036,13 @@ namespace aspect
     solver_control_cheap.enable_history_data();
     solver_control_expensive.enable_history_data();
 
-    // The A block should be symmetric, unless there are free surface stabilization terms, or
-    // the user has forced the use of a different solver.
-    bool A_block_is_symmetric = true;
-    if (sim.mesh_deformation && sim.mesh_deformation->get_boundary_indicators_requiring_stabilization().empty() == false)
-      A_block_is_symmetric = false;
-    else if (sim.parameters.force_nonsymmetric_A_block_solver)
-      A_block_is_symmetric = false;
-
     // create a cheap preconditioner that consists of only a single V-cycle
     const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
     preconditioner_cheap (stokes_matrix, A_block_matrix, Schur_complement_block_matrix,
                           prec_A, prec_Schur,
                           /*do_solve_A*/false,
                           /*do_solve_Schur*/false,
-                          A_block_is_symmetric,
+                          sim.stokes_A_block_is_symmetric(),
                           sim.parameters.linear_solver_A_block_tolerance,
                           sim.parameters.linear_solver_S_block_tolerance);
 
@@ -2059,7 +2052,7 @@ namespace aspect
                               prec_A, prec_Schur,
                               /*do_solve_A*/true,
                               /*do_solve_Schur*/true,
-                              A_block_is_symmetric,
+                              sim.stokes_A_block_is_symmetric(),
                               sim.parameters.linear_solver_A_block_tolerance,
                               sim.parameters.linear_solver_S_block_tolerance);
 
