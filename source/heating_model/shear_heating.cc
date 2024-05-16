@@ -39,8 +39,7 @@ namespace aspect
       Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.strain_rate.size(),
              ExcMessage ("The shear heating plugin needs the strain rate!"));
 
-      // Some material models provide dislocation viscosities and boundary area work fractions
-      // as additional material outputs. If they are attached, use them.
+      // Check if the material model has additional outputs relevant for the shear heating.
       const ShearHeatingOutputs<dim> *shear_heating_out =
         material_model_outputs.template get_additional_output<ShearHeatingOutputs<dim>>();
 
