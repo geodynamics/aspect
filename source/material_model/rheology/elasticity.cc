@@ -21,12 +21,13 @@
 
 #include <aspect/material_model/rheology/elasticity.h>
 
-#include <deal.II/base/signaling_nan.h>
-#include <deal.II/base/parameter_handler.h>
 #include <aspect/utilities.h>
 #include <aspect/material_model/visco_plastic.h>
 #include <aspect/material_model/viscoelastic.h>
+#include <aspect/heating_model/shear_heating.h>
 
+#include <deal.II/base/signaling_nan.h>
+#include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/quadrature_lib.h>
 
 
@@ -318,6 +319,14 @@ namespace aspect
               std::make_unique<ElasticAdditionalOutputs<dim>> (n_points));
           }
 
+        // We need to modify the shear heating outputs to correctly account for elastic stresses.
+        if (out.template get_additional_output<HeatingModel::PrescribedShearHeatingOutputs<dim>>() == nullptr)
+          {
+            const unsigned int n_points = out.n_evaluation_points();
+            out.additional_outputs.push_back(
+              std::make_unique<HeatingModel::PrescribedShearHeatingOutputs<dim>> (n_points));
+          }
+
         // Create the ReactionRateOutputs that are necessary for the operator splitting
         // step (either on the fields or directly on the particles)
         // that sets both sets of stresses to the total stress of the
@@ -374,6 +383,12 @@ namespace aspect
 
         if (elastic_out == nullptr)
           return;
+
+        HeatingModel::PrescribedShearHeatingOutputs<dim>
+        *heating_out = out.template get_additional_output<HeatingModel::PrescribedShearHeatingOutputs<dim>>();
+
+        AssertThrow(heating_out != nullptr,
+                    ExcMessage("The heating model outputs are required for the elastic outputs."));
 
         if (in.requests_property(MaterialProperties::additional_outputs))
           {
@@ -462,7 +477,9 @@ namespace aspect
                 //                             1. / 3. * trace(visco_plastic_strain_rate) * unit_symmetric_tensor<dim>();
                 const SymmetricTensor<2, dim> visco_plastic_strain_rate = deviatoric_strain_rate - ((stress - stress_0_advected) / (2. * dtc * average_elastic_shear_moduli[i]));
 
-                elastic_out->viscous_dissipation[i] = stress * visco_plastic_strain_rate;
+                // The shear heating term needs to account for the elastic stress, but only the visco_plastic strain rate.
+                // This is best computed here, and stored for later use by the heating model.
+                heating_out->prescribed_shear_heating_rates[i] = stress * visco_plastic_strain_rate;
               }
 
           }

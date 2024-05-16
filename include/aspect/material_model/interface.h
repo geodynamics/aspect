@@ -1169,8 +1169,7 @@ namespace aspect
       public:
         ElasticOutputs(const unsigned int n_points)
           : elastic_force(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>()),
-            viscoelastic_strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>()),
-            viscous_dissipation(n_points, numbers::signaling_nan<double>())
+            viscoelastic_strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>())
         {}
 
         ~ElasticOutputs() override
@@ -1196,12 +1195,6 @@ namespace aspect
          * required by the Newton solver.
          */
         std::vector<SymmetricTensor<2,dim>> viscoelastic_strain_rate;
-
-        /**
-         * The viscous dissipation computed with the viscoplastic strain rate instead of the
-         * full strain rate.
-         */
-        std::vector<double> viscous_dissipation;
     };
 
 
