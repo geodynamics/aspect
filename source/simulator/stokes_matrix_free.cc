@@ -410,8 +410,8 @@ namespace aspect
 
         // Store the symmetric gradients of the velocity field and the
         // values of the pressure field
-        std::vector<SymmetricTensor<2,dim,VectorizedArray<number>>> sym_grad_u;
-        std::vector<VectorizedArray<number>> val_p;
+        AlignedVector<SymmetricTensor<2,dim,VectorizedArray<number>>> sym_grad_u;
+        AlignedVector<VectorizedArray<number>> val_p;
         if (cell_data->enable_newton_derivatives)
           {
             sym_grad_u.resize(u_eval.n_q_points);
