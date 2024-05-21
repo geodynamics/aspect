@@ -36,11 +36,8 @@ namespace aspect
               const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
-      Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.position.size(),
+      Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.n_evaluation_points(),
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
-
-      Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.strain_rate.size(),
-             ExcMessage ("The shear heating plugin needs the strain rate!"));
 
       Assert(this->introspection().compositional_name_exists("porosity"),
              ExcMessage("Heating model shear heating with melt only works if there "
@@ -102,7 +99,7 @@ namespace aspect
         return;
 
       inputs.additional_inputs.push_back(
-        std::make_unique<MaterialModel::MeltInputs<dim>> (inputs.position.size()));
+        std::make_unique<MaterialModel::MeltInputs<dim>> (inputs.n_evaluation_points()));
     }
   }
 }

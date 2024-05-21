@@ -595,13 +595,14 @@ namespace aspect
       // If the temperature or pressure are zero, this model does not work.
       // This should only happen when setting the melt constraints before we have the initial temperature.
       // In this case, just fill the permeabilities and fluid viscosities and return.
-      for (unsigned int q=0; q<in.position.size(); ++q)
+      const unsigned int n_points = in.n_evaluation_points();
+      for (unsigned int q=0; q<n_points; ++q)
         {
           if (in.temperature[q] == 0.0)
             {
               if (melt_out != nullptr)
                 {
-                  for (unsigned int q=0; q<in.position.size(); ++q)
+                  for (unsigned int q=0; q<n_points; ++q)
                     {
                       const double porosity = std::max(in.composition[q][porosity_idx],0.0);
                       melt_out->fluid_viscosities[q] = eta_f;
@@ -881,7 +882,8 @@ namespace aspect
       // fill melt outputs if they exist
       if (melt_out != nullptr)
         {
-          for (unsigned int q=0; q<in.position.size(); ++q)
+          const unsigned int n_points = in.n_evaluation_points();
+          for (unsigned int q=0; q<n_points; ++q)
             {
               double porosity = std::max(in.composition[q][porosity_idx],0.0);
 
