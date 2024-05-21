@@ -119,9 +119,8 @@ namespace aspect
     if (output.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>() != nullptr)
       return;
 
-    const unsigned int n_points = output.viscosities.size();
     output.additional_outputs.push_back(
-      std::make_unique<MaterialModel::MaterialModelDerivatives<dim>>(n_points));
+      std::make_unique<MaterialModel::MaterialModelDerivatives<dim>>(output.n_evaluation_points()));
   }
 
 
