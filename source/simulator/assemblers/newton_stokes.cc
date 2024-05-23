@@ -274,13 +274,11 @@ namespace aspect
     NewtonStokesPreconditioner<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
-      const unsigned int n_points = outputs.viscosities.size();
-
       if (this->get_parameters().enable_elasticity &&
           outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std::make_unique<MaterialModel::ElasticOutputs<dim>> (n_points));
+            std::make_unique<MaterialModel::ElasticOutputs<dim>> (outputs.n_evaluation_points()));
         }
 
       if (this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0)
@@ -574,7 +572,7 @@ namespace aspect
     NewtonStokesIncompressibleTerms<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
-      const unsigned int n_points = outputs.viscosities.size();
+      const unsigned int n_points = outputs.n_evaluation_points();
 
       if (this->get_parameters().enable_additional_stokes_rhs
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)

@@ -36,7 +36,7 @@ namespace aspect
                const MaterialModel::MaterialModelOutputs<dim> &/*material_model_outputs*/,
                const std::vector<Tensor<1,dim>> &normal_vectors) const
     {
-      const unsigned int n_evaluation_points = material_model_inputs.position.size();
+      const unsigned int n_evaluation_points = material_model_inputs.n_evaluation_points();
       std::vector<Tensor<1,dim>> heat_flux(normal_vectors);
 
       for (unsigned int i=0; i<n_evaluation_points; ++i)

@@ -35,7 +35,7 @@ namespace aspect
               const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
-      Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.position.size(),
+      Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.n_evaluation_points(),
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
 
       AssertThrow(this->include_melt_transport(),
@@ -135,7 +135,7 @@ namespace aspect
         return;
 
       inputs.additional_inputs.push_back(
-        std::make_unique<MaterialModel::MeltInputs<dim>> (inputs.position.size()));
+        std::make_unique<MaterialModel::MeltInputs<dim>> (inputs.n_evaluation_points()));
     }
   }
 }

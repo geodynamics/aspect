@@ -191,7 +191,7 @@ namespace aspect
           heating_model_outputs.rates_of_temperature_change[q] = 0.0;
         }
 
-      HeatingModel::HeatingModelOutputs individual_heating_outputs(material_model_inputs.position.size(),
+      HeatingModel::HeatingModelOutputs individual_heating_outputs(material_model_inputs.n_evaluation_points(),
                                                                    this->n_compositional_fields());
 
       const MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs

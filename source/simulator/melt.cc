@@ -173,19 +173,17 @@ namespace aspect
     {
       MeltHandler<dim>::create_material_model_outputs(outputs);
 
-      const unsigned int n_points = outputs.viscosities.size();
-
       if (this->get_parameters().enable_additional_stokes_rhs
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>(n_points));
+            std::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>(outputs.n_evaluation_points()));
         }
 
       Assert(!this->get_parameters().enable_additional_stokes_rhs
              ||
              outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()->rhs_u.size()
-             == n_points, ExcInternalError());
+             == outputs.n_evaluation_points(), ExcInternalError());
     }
 
 
@@ -1834,10 +1832,9 @@ namespace aspect
     if (output.template get_additional_output<MaterialModel::MeltOutputs<dim>>() != nullptr)
       return;
 
-    const unsigned int n_points = output.viscosities.size();
     const unsigned int n_comp = output.reaction_terms[0].size();
     output.additional_outputs.push_back(
-      std::make_unique<MaterialModel::MeltOutputs<dim>> (n_points, n_comp));
+      std::make_unique<MaterialModel::MeltOutputs<dim>> (output.n_evaluation_points(), n_comp));
   }
 
 

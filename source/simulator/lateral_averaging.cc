@@ -148,7 +148,8 @@ namespace aspect
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output) override
         {
-          for (unsigned i = 0; i < out.viscosities.size(); ++i)
+          const unsigned int n_points = out.n_evaluation_points();
+          for (unsigned i = 0; i < n_points; ++i)
             output[i] = std::log10 (out.viscosities[i]);
         }
     };

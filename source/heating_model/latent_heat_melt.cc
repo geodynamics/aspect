@@ -34,7 +34,7 @@ namespace aspect
               const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
               HeatingModel::HeatingModelOutputs &heating_model_outputs) const
     {
-      Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.position.size(),
+      Assert(heating_model_outputs.heating_source_terms.size() == material_model_inputs.n_evaluation_points(),
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
 
       const bool use_operator_split = (this->get_parameters().use_operator_splitting);
@@ -162,9 +162,8 @@ namespace aspect
       if (this->include_melt_transport() && retrieve_entropy_change_from_material_model
           && outputs.template get_additional_output<MaterialModel::EnthalpyOutputs<dim>>() == nullptr)
         {
-          const unsigned int n_points = outputs.densities.size();
           outputs.additional_outputs.push_back(
-            std::make_unique<MaterialModel::EnthalpyOutputs<dim>> (n_points));
+            std::make_unique<MaterialModel::EnthalpyOutputs<dim>> (outputs.n_evaluation_points()));
         }
     }
   }
