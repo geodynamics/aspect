@@ -43,11 +43,8 @@ namespace aspect
                                                       const std::vector<Tensor<1,dim>> &gradients,
                                                       typename ParticleHandler<dim>::particle_iterator &particle) const
       {
-        const auto data = particle->get_properties();
-
-        Tensor<2,dim> old_strain;
-        for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-          old_strain[Tensor<2,dim>::unrolled_to_component_indices(i)] = data[data_position + i];
+        const Tensor<2,dim> old_strain(make_array_view(&particle->get_properties()[data_position],
+                                                       &particle->get_properties()[data_position] + Tensor<2,dim>::n_independent_components));
 
         Tensor<2,dim> grad_u;
         for (unsigned int d=0; d<dim; ++d)
@@ -75,8 +72,9 @@ namespace aspect
         // strain of the current time step
         new_strain = old_strain + (k1 + 2.0*k2 + 2.0*k3 + k4)/6.0;
 
-        for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-          data[data_position + i] = new_strain[Tensor<2,dim>::unrolled_to_component_indices(i)];
+        // unroll and store the new strain
+        new_strain.unroll(&particle->get_properties()[data_position],
+                          &particle->get_properties()[data_position] + Tensor<2,dim>::n_independent_components);
       }
 
       template <int dim>
