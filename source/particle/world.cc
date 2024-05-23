@@ -482,55 +482,6 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                       const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                                       const typename ParticleHandler<dim>::particle_iterator &end_particle)
-    {
-      const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-      const unsigned int solution_components = this->introspection().n_components;
-
-      Vector<double>              value (solution_components);
-      std::vector<Tensor<1,dim>> gradient (solution_components,Tensor<1,dim>());
-
-      std::vector<Vector<double>>              values(n_particles_in_cell,value);
-      std::vector<std::vector<Tensor<1,dim>>> gradients(n_particles_in_cell,gradient);
-      std::vector<Point<dim>>                  positions(n_particles_in_cell);
-
-      typename ParticleHandler<dim>::particle_iterator it = begin_particle;
-      for (unsigned int i = 0; it!=end_particle; ++it,++i)
-        {
-          positions[i] = it->get_reference_location();
-        }
-
-      const Quadrature<dim> quadrature_formula(positions);
-      const UpdateFlags update_flags = property_manager->get_needed_update_flags();
-      FEValues<dim> fe_value (this->get_mapping(),
-                              this->get_fe(),
-                              quadrature_formula,
-                              update_flags);
-
-      fe_value.reinit (cell);
-      if (update_flags & update_values)
-        fe_value.get_function_values (this->get_solution(),
-                                      values);
-      if (update_flags & update_gradients)
-        fe_value.get_function_gradients (this->get_solution(),
-                                         gradients);
-
-      it = begin_particle;
-      for (unsigned int i = 0; it!=end_particle; ++it,++i)
-        {
-          property_manager->update_one_particle(it,
-                                                values[i],
-                                                gradients[i]);
-        }
-    }
-
-
-
-
-    template <int dim>
-    void
     World<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                        const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle,
@@ -592,101 +543,6 @@ namespace aspect
                                        end_particle,
                                        old_velocities,
                                        velocities,
-                                       this->get_timestep());
-    }
-
-
-
-    template <int dim>
-    void
-    World<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                       const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                                       const typename ParticleHandler<dim>::particle_iterator &end_particle)
-    {
-      const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-
-      std::vector<Tensor<1,dim>>  velocity(n_particles_in_cell);
-      std::vector<Tensor<1,dim>>  old_velocity(n_particles_in_cell);
-
-      // Below we manually evaluate the solution at all support points of the
-      // current cell, and then use the shape functions to interpolate the
-      // solution to the particle points. All of this can be done with less
-      // code using an FEValues object, but since this object initializes a lot
-      // of memory for other purposes and we can not reuse the FEValues object
-      // for other cells, it is much faster to do the work manually. Also this
-      // function is quite performance critical.
-
-      std::vector<types::global_dof_index> cell_dof_indices (this->get_fe().dofs_per_cell);
-      cell->get_dof_indices (cell_dof_indices);
-
-      const FiniteElement<dim> &velocity_fe = this->get_fe().base_element(this->introspection()
-                                                                          .base_elements.velocities);
-
-      const bool compute_fluid_velocity = this->include_melt_transport() &&
-                                          property_manager->get_data_info().fieldname_exists("melt_presence");
-
-      const unsigned int fluid_component_index = (compute_fluid_velocity ?
-                                                  this->introspection().variable("fluid velocity").first_component_index
-                                                  :
-                                                  numbers::invalid_unsigned_int);
-
-      // In regions without melt, the fluid velocity equals the solid velocity, so we can use it for all particles.
-      std::vector<bool> use_fluid_velocity((compute_fluid_velocity ?
-                                            n_particles_in_cell
-                                            :
-                                            0), compute_fluid_velocity);
-
-      for (unsigned int j=0; j<velocity_fe.dofs_per_cell; ++j)
-        {
-          Tensor<1,dim> velocity_at_support_point;
-          Tensor<1,dim> old_velocity_at_support_point;
-
-          for (unsigned int dir=0; dir<dim; ++dir)
-            {
-              const unsigned int support_point_index
-                = this->get_fe().component_to_system_index(this->introspection()
-                                                           .component_indices.velocities[dir],j);
-
-              velocity_at_support_point[dir] = this->get_current_linearization_point()[cell_dof_indices[support_point_index]];
-              old_velocity_at_support_point[dir] = this->get_old_solution()[cell_dof_indices[support_point_index]];
-            }
-
-          Tensor<1,dim> fluid_velocity_at_support_point;
-          Tensor<1,dim> old_fluid_velocity_at_support_point;
-
-          if (compute_fluid_velocity)
-            for (unsigned int dir=0; dir<dim; ++dir)
-              {
-                const unsigned int support_point_index
-                  = this->get_fe().component_to_system_index(fluid_component_index + dir,j);
-
-                fluid_velocity_at_support_point[dir] = this->get_solution()[cell_dof_indices[support_point_index]];
-                old_fluid_velocity_at_support_point[dir] = this->get_old_solution()[cell_dof_indices[support_point_index]];
-              }
-
-          typename ParticleHandler<dim>::particle_iterator it = begin_particle;
-          for (unsigned int particle_index = 0; it!=end_particle; ++it,++particle_index)
-            {
-              // melt FE uses the same FE so the shape value is the same
-              const double shape_value = velocity_fe.shape_value(j,it->get_reference_location());
-
-              if (compute_fluid_velocity && use_fluid_velocity[particle_index])
-                {
-                  velocity[particle_index] += fluid_velocity_at_support_point * shape_value;
-                  old_velocity[particle_index] += old_fluid_velocity_at_support_point * shape_value;
-                }
-              else
-                {
-                  velocity[particle_index] += velocity_at_support_point * shape_value;
-                  old_velocity[particle_index] += old_velocity_at_support_point * shape_value;
-                }
-            }
-        }
-
-      integrator->local_integrate_step(begin_particle,
-                                       end_particle,
-                                       old_velocity,
-                                       velocity,
                                        this->get_timestep());
     }
 
@@ -1183,22 +1039,15 @@ namespace aspect
         {
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Update properties");
 
+          Assert(dealii::internal::FEPointEvaluation::is_fast_path_supported(this->get_mapping()) == true,
+                 ExcMessage("The particle system was optimized for deal.II mappings that support the fast evaluation path "
+                            "of the class FEPointEvaluation. The mapping currently in use does not support this path. "
+                            "It is safe to uncomment this assertion, but you can expect a performance penalty."));
+
           const UpdateFlags update_flags = property_manager->get_needed_update_flags();
 
-          // Only use deal.II FEPointEvaluation if its fast path is used. Prior to deal.II 10.0
-          // FEPointEvaluation did not support MappingCartesian for box geometries, and there was
-          // a bug for dynamically allocating scalar evaluators for individual components of a
-          // base element with multiplicity (see https://github.com/dealii/dealii/pull/12786).
-          bool use_fast_path = false;
-          if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr ||
-              dynamic_cast<const MappingCartesian<dim> *>(&this->get_mapping()) != nullptr)
-            use_fast_path = true;
-          std::unique_ptr<internal::SolutionEvaluators<dim>> evaluators;
-
-          if (use_fast_path == true)
-            evaluators = internal::construct_solution_evaluators(*this,
-                                                                 update_flags);
-
+          std::unique_ptr<internal::SolutionEvaluators<dim>> evaluators = internal::construct_solution_evaluators(*this,
+                                                                           update_flags);
 
           // Loop over all cells and update the particles cell-wise
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -1210,16 +1059,10 @@ namespace aspect
                 // Only update particles, if there are any in this cell
                 if (particles_in_cell.begin() != particles_in_cell.end())
                   {
-
-                    if (use_fast_path)
-                      local_update_particles(cell,
-                                             particles_in_cell.begin(),
-                                             particles_in_cell.end(),
-                                             *evaluators);
-                    else
-                      local_update_particles(cell,
-                                             particles_in_cell.begin(),
-                                             particles_in_cell.end());
+                    local_update_particles(cell,
+                                           particles_in_cell.begin(),
+                                           particles_in_cell.end(),
+                                           *evaluators);
                   }
 
               }
@@ -1236,6 +1079,11 @@ namespace aspect
         // TODO: Change this loop over all cells to use the WorkStream interface
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Advect");
 
+        Assert(dealii::internal::FEPointEvaluation::is_fast_path_supported(this->get_mapping()) == true,
+               ExcMessage("The particle system was optimized for deal.II mappings that support the fast evaluation path "
+                          "of the class FEPointEvaluation. The mapping currently in use does not support this path. "
+                          "It is safe to uncomment this assertion, but you can expect a performance penalty."));
+
         std::unique_ptr<internal::SolutionEvaluators<dim>> evaluators =
           std::make_unique<internal::SolutionEvaluatorsImplementation<dim, 0>>(*this,
                                                                                 update_values);
@@ -1250,26 +1098,10 @@ namespace aspect
               // Only advect particles, if there are any in this cell
               if (particles_in_cell.begin() != particles_in_cell.end())
                 {
-                  // Only use deal.II FEPointEvaluation if it's fast path is used
-                  bool use_fast_path = false;
-
-                  if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr ||
-                      dynamic_cast<const MappingCartesian<dim> *>(&this->get_mapping()) != nullptr)
-                    use_fast_path = true;
-
-
-
-                  if (use_fast_path)
-                    local_advect_particles(cell,
-                                           particles_in_cell.begin(),
-                                           particles_in_cell.end(),
-                                           *evaluators);
-                  else
-                    local_advect_particles(cell,
-                                           particles_in_cell.begin(),
-                                           particles_in_cell.end());
-
-
+                  local_advect_particles(cell,
+                                         particles_in_cell.begin(),
+                                         particles_in_cell.end(),
+                                         *evaluators);
                 }
             }
       }

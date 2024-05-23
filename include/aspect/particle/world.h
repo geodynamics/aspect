@@ -480,19 +480,6 @@ namespace aspect
         void
         local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                               const typename ParticleHandler<dim>::particle_iterator &end_particle);
-
-        /**
-         * Update the particle properties of one cell.
-         *
-         * This version of the function above uses the deal.II class FEPointEvaluation,
-         * which allows for a faster evaluation of the solution under certain conditions.
-         * Check the place where this function is called for a list of conditions
-         * (they will change while FEPointEvaluation is generalized).
-         */
-        void
-        local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                internal::SolutionEvaluators<dim> &evaluators);
 
@@ -503,24 +490,6 @@ namespace aspect
          * during this advection step are removed from the local multimap and
          * stored in @p particles_out_of_cell for further treatment (sorting
          * them into the new cell).
-         */
-        void
-        local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                               const typename ParticleHandler<dim>::particle_iterator &end_particle);
-
-        /**
-         * Advect the particles of one cell. Performs only one step for
-         * multi-step integrators. Needs to be called until integrator->continue()
-         * evaluates to false. Particles that moved out of their old cell
-         * during this advection step are removed from the local multimap and
-         * stored in @p particles_out_of_cell for further treatment (sorting
-         * them into the new cell).
-         *
-         * This version of the above function uses the deal.II class FEPointEvaluation,
-         * which allows for a faster evaluation of the solution under certain conditions.
-         * Check the place where this function is called for a list of conditions
-         * (they will change while FEPointEvaluation is generalized).
          */
         void
         local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
