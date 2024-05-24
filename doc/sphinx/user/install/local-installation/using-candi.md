@@ -38,7 +38,7 @@ class="smallcaps">p4est</span> and Trilinos.
       - trilinos
       - hdf5 (optional)
       - netcdf (optional)
-      - sundials (optional)
+      - sundials
       - deal.II
     and that you should consider enabling `NATIVE_OPTIMIZATIONS`. The packages above
     marked `(optional)` are not required to be able to run ASPECT, but some features
