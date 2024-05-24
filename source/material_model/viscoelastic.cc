@@ -34,7 +34,7 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      EquationOfStateOutputs<dim> eos_outputs (this->introspection().n_chemical_composition_fields()+1);
+      EquationOfStateOutputs<dim> eos_outputs (this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::chemical_composition)+1);
 
       // Store which components to exclude during volume fraction computation.
       ComponentMask composition_mask(this->n_compositional_fields(), true);
@@ -50,7 +50,8 @@ namespace aspect
         {
           const std::vector<double> composition = in.composition[i];
 
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition, this->introspection().chemical_composition_field_indices());
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition,
+                                                       this->introspection().chemical_composition_field_indices());
 
           equation_of_state.evaluate(in, i, eos_outputs);
 

@@ -454,7 +454,8 @@ namespace aspect
 
           // Rheological parameters for chemical compositions
           // increment by one for background:
-          const unsigned int n_chemical_composition_fields = this->introspection().n_chemical_composition_fields() + 1;
+          const unsigned int n_chemical_composition_fields =
+            this->introspection().n_chemical_composition_fields() + 1;
 
           // Diffusion creep parameters
           diffusion_creep.initialize_simulator (this->get_simulator());
