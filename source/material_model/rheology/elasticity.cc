@@ -314,9 +314,8 @@ namespace aspect
             for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               {
                 // Get old stresses from compositional fields
-                SymmetricTensor<2,dim> stress_old;
-                for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
-                  stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
+                const SymmetricTensor<2,dim> stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][0],
+                                                         &in.composition[i][0]+SymmetricTensor<2,dim>::n_independent_components));
 
                 elastic_out->elastic_force[i] = -effective_creep_viscosities[i] / calculate_elastic_viscosity(average_elastic_shear_moduli[i]) * stress_old;
                 // The viscoelastic strain rate is needed only when the Newton method is selected.
@@ -393,9 +392,8 @@ namespace aspect
             for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               {
                 // Get old stresses from compositional fields
-                SymmetricTensor<2,dim> stress_old;
-                for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
-                  stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
+                const SymmetricTensor<2,dim> stress_old(Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][0],
+                                                        &in.composition[i][0]+SymmetricTensor<2,dim>::n_independent_components));
 
                 // Calculate the rotated stresses
                 // Rotation (vorticity) tensor (equation 25 in Moresi et al., 2003, J. Comp. Phys.)
@@ -426,11 +424,12 @@ namespace aspect
                 // timestep, then no averaging occurs as dt/dte = 1.
                 stress_new = ( ( 1. - ( dt / dte ) ) * stress_old ) + ( ( dt / dte ) * stress_new ) ;
 
-                // Fill reaction terms
-                for (unsigned int j = 0; j < SymmetricTensor<2,dim>::n_independent_components ; ++j)
-                  out.reaction_terms[i][j] = -stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)]
-                                             + stress_new[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)];
+                const SymmetricTensor<2,dim> stress_update = stress_new - stress_old;
 
+                // Fill reaction terms
+                Utilities::Tensors::unroll_symmetric_tensor_into_array(stress_update,
+                                                                       &out.reaction_terms[i][0],
+                                                                       &out.reaction_terms[i][0]+SymmetricTensor<2,dim>::n_independent_components);
               }
           }
       }

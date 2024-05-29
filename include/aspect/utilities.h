@@ -1245,6 +1245,45 @@ namespace aspect
      */
     namespace Tensors
     {
+      /**
+       * Convert a series of doubles to a SymmetricTensor of the same size.
+       * The input is expected to be ordered according to the
+       * SymmetricTensor::unrolled_to_component_indices() function.
+       */
+      template <int dim, class Iterator>
+      inline
+      SymmetricTensor<2,dim>
+      to_symmetric_tensor(const Iterator begin,
+                          const Iterator end)
+      {
+        AssertDimension(std::distance(begin, end), (SymmetricTensor<2,dim>::n_independent_components));
+
+        SymmetricTensor<2,dim> output;
+
+        Iterator next = begin;
+        for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i, ++next)
+          output[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)] = *next;
+
+        return output;
+      }
+
+      /**
+       * Unroll a SymmetricTensor into a series of doubles. The output is ordered
+       * according to the SymmetricTensor::unrolled_to_component_indices() function.
+       */
+      template <int dim, class Iterator>
+      inline
+      void
+      unroll_symmetric_tensor_into_array(const SymmetricTensor<2,dim> &tensor,
+                                         const Iterator begin,
+                                         const Iterator end)
+      {
+        AssertDimension(std::distance(begin, end), (SymmetricTensor<2,dim>::n_independent_components));
+
+        Iterator next = begin;
+        for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i, ++next)
+          *next = tensor[SymmetricTensor<2,dim>::unrolled_to_component_indices(i)];
+      }
 
       /**
        * Rotate a 3D 4th order tensor representing the full stiffnexx matrix using a 3D 2nd order rotation tensor
