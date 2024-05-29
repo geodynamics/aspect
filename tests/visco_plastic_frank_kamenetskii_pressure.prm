@@ -2,7 +2,7 @@
 # Frank-Kamenetskii viscosity approximation:
 # viscosity = A * exp(E * 0.5 * (1.0-(T/ref_T)) + F * (P-ref_P)/(ref_rho*g*h))
 # A: 1.e21, E: 15., ref_T: 1573, F: 2., ref_P = 0
-# UUsing these values, the computed viscosity at the model surface (P = ref_P = 0) should be
+# Using these values, the computed viscosity at the model surface (P = ref_P = 0) should be
 #   ~ 1e21 Pa s.
 
 # Global parameters
