@@ -203,7 +203,8 @@ namespace aspect
                   }
                   case frank_kamenetskii:
                   {
-                    non_yielding_viscosity = frank_kamenetskii_rheology->compute_viscosity(in.temperature[i], j);
+                    non_yielding_viscosity = frank_kamenetskii_rheology->compute_viscosity(in.temperature[i], in.pressure[i],
+                                                                                           this->get_adiabatic_conditions().density(this->get_geometry_model().representative_point(0)), j);
                     break;
                   }
                   case composite:

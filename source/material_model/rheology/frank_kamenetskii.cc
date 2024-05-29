@@ -41,11 +41,25 @@ namespace aspect
       template <int dim>
       double
       FrankKamenetskii<dim>::compute_viscosity (const double temperature,
+                                                const double pressure,
+                                                const double density,
                                                 const unsigned int composition) const
       {
         const double reference_temperature = this->get_adiabatic_surface_temperature();
+        const double reference_pressure = this->get_surface_pressure();
+        const double max_depth = this->get_geometry_model().maximal_depth();
 
-        const double viscosity_frank_kamenetskii = prefactors_frank_kamenetskii[composition] * std::exp(viscosity_ratios_frank_kamenetskii[composition] * 0.5 * (1.0-temperature/reference_temperature));
+        // get the magnitude of gravitational acceleration
+        const Tensor <1,dim> g = this->get_gravity_model().gravity_vector(this->get_geometry_model().representative_point(0));
+        const Point<dim> point_surf = this->get_geometry_model().representative_point(0);
+        const Point<dim> point_bot = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
+        const int gravity_direction =  (g * (point_bot - point_surf) >= 0) ? 1 :-1;
+        const double gravity = gravity_direction * this->get_gravity_model().gravity_vector(this->get_geometry_model().representative_point(0)).norm(); //gravity magnitude at surface
+
+        //FK with pressure term
+        const double viscosity_frank_kamenetskii = temperature_prefactors_frank_kamenetskii[composition] * std::exp(viscosity_ratios_frank_kamenetskii[composition] * 0.5 * (1.0-temperature/reference_temperature)
+                                                   + pressure_prefactors_frank_kamenetskii[composition]*(pressure-reference_pressure)/(density*gravity*max_depth));
+
 
         return viscosity_frank_kamenetskii;
       }
@@ -65,12 +79,21 @@ namespace aspect
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
                            "Units: None");
-        prm.declare_entry ("Prefactors for Frank Kamenetskii", "1.e21",
+        prm.declare_entry ("Temperature prefactors for Frank Kamenetskii", "1.e21",
                            Patterns::List(Patterns::Double (0.)),
                            "A viscosity prefactor for the viscosity approximation, "
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None");
+
+        // new addition
+        prm.declare_entry ("Pressure prefactors for Frank Kamenetskii", "4.159",
+                           Patterns::List(Patterns::Double (0.)),
+                           "A prefactor for the pressure term in the viscosity approximation, "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
+                           "If only one value is given, then all use the same value. "
+                           "Units: None");
       }
 
 
@@ -79,6 +102,7 @@ namespace aspect
       void
       FrankKamenetskii<dim>::parse_parameters (ParameterHandler &prm)
       {
+
         AssertThrow (this->include_adiabatic_heating() == false,
                      ExcMessage("The Frank-Kamenetskii rheology is currently only implemented for "
                                 "models without adiabatic heating. Please implement the necessary "
@@ -108,8 +132,12 @@ namespace aspect
                                              options);
 
         options.property_name = "Prefactors for Frank Kamenetskii";
-        prefactors_frank_kamenetskii = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactors for Frank Kamenetskii"),
+        temperature_prefactors_frank_kamenetskii = Utilities::MapParsing::parse_map_to_double_array(prm.get("Temperature prefactors for Frank Kamenetskii"),
                                                                                         options);
+
+        options.property_name = "Pressure prefactors for Frank Kamenetskii";
+        pressure_prefactors_frank_kamenetskii = Utilities::MapParsing::parse_map_to_double_array(prm.get("Pressure prefactors for Frank Kamenetskii"),
+                                                options);
       }
     }
   }
