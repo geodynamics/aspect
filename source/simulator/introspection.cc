@@ -405,6 +405,8 @@ namespace aspect
   bool
   Introspection<dim>::composition_type_exists (const CompositionalFieldDescription::Type &type) const
   {
+    Assert(type < composition_indices_for_type.size(), ExcInternalError());
+
     return composition_indices_for_type[type].size() > 0;
   }
 
@@ -414,6 +416,8 @@ namespace aspect
   unsigned int
   Introspection<dim>::find_composition_type (const typename CompositionalFieldDescription::Type &type) const
   {
+    Assert(type < composition_indices_for_type.size(), ExcInternalError());
+
     if (composition_indices_for_type[type].size() > 0)
       return composition_indices_for_type[type][0];
 
@@ -439,6 +443,7 @@ namespace aspect
   const std::vector<unsigned int> &
   Introspection<dim>::get_indices_for_fields_of_type (const CompositionalFieldDescription::Type &type) const
   {
+    Assert(type < composition_indices_for_type.size(), ExcInternalError());
     return composition_indices_for_type[type];
   }
 
@@ -448,6 +453,7 @@ namespace aspect
   const std::vector<std::string> &
   Introspection<dim>::get_names_for_fields_of_type (const CompositionalFieldDescription::Type &type) const
   {
+    Assert(type < composition_names_for_type.size(), ExcInternalError());
     return composition_names_for_type[type];
   }
 
@@ -457,6 +463,7 @@ namespace aspect
   unsigned int
   Introspection<dim>::get_number_of_fields_of_type (const CompositionalFieldDescription::Type &type) const
   {
+    Assert(type < composition_indices_for_type.size(), ExcInternalError());
     return composition_indices_for_type[type].size();
   }
 
