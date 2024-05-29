@@ -162,31 +162,21 @@ namespace aspect
       };
 
       /**
-       * This Postprocessor will generate the output variables of velocity,
-       * pressure, temperature, and compositional fields on the surface of the
-       * domain.
+       * Adapt the previous class BaseVariablePostprocessor for the case of surface output,
+       * so output on the surface of the model domain. The only difference with the previous
+       * class is that each output variable name is prepended with the string 'surface_'.
        */
       template <int dim>
-      class SurfaceBaseVariablePostprocessor: public VisualizationPostprocessors::SurfaceOnlyVisualization<dim>, public BaseVariablePostprocessor< dim >
+      class SurfaceBaseVariablePostprocessor: public VisualizationPostprocessors::SurfaceOnlyVisualization<dim>, public BaseVariablePostprocessor<dim>
       {
         public:
 
           std::vector<std::string> get_names () const override
           {
-            std::vector<std::string> solution_names (dim, "surface_velocity");
+            std::vector<std::string> solution_names = BaseVariablePostprocessor<dim>::get_names();
 
-            if (this->include_melt_transport())
-              {
-                solution_names.emplace_back("surface_p_f");
-                solution_names.emplace_back("surface_p_c_bar");
-                for (unsigned int i=0; i<dim; ++i)
-                  solution_names.emplace_back("surface_u_f");
-              }
-            solution_names.emplace_back("surface_p");
-
-            solution_names.emplace_back("surface_T");
-            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              solution_names.push_back ("surface_" + this->introspection().name_for_compositional_index(c));
+            for (std::string &name : solution_names)
+              name = "surface_" + name;
 
             return solution_names;
           }
