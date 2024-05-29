@@ -51,7 +51,7 @@ namespace aspect
         const double reference_pressure = this->get_surface_pressure();
         const double max_depth = this->get_geometry_model().maximal_depth();
 
-        //FK with pressure term
+        //Frank-Kamenetskii equation with added pressure dependence terms
         const double viscosity_frank_kamenetskii = prefactors_frank_kamenetskii[composition] * std::exp(viscosity_ratios_frank_kamenetskii[composition] * 0.5 * (1.0-temperature/reference_temperature)
                                                    + pressure_prefactors_frank_kamenetskii[composition] * (pressure-reference_pressure)/(density*gravity*max_depth));
 
