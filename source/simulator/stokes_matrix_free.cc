@@ -2422,8 +2422,11 @@ namespace aspect
       IndexSet locally_relevant_dofs;
       DoFTools::extract_locally_relevant_dofs (dof_handler_v,
                                                locally_relevant_dofs);
+#if DEAL_II_VERSION_GTE(9,6,0)
+      constraints_v.reinit(dof_handler_v.locally_owned_dofs(), locally_relevant_dofs);
+#else
       constraints_v.reinit(locally_relevant_dofs);
-
+#endif
 
       {
         const auto &pbs = sim.geometry_model->get_periodic_boundary_pairs();
@@ -2461,7 +2464,11 @@ namespace aspect
       IndexSet locally_relevant_dofs;
       DoFTools::extract_locally_relevant_dofs (dof_handler_p,
                                                locally_relevant_dofs);
-      constraints_p.reinit(locally_relevant_dofs);
+      constraints_p.reinit(
+#if DEAL_II_VERSION_GTE(9,6,0)
+        dof_handler_p.locally_owned_dofs(),
+#endif
+        locally_relevant_dofs);
       {
         const auto &pbs = sim.geometry_model->get_periodic_boundary_pairs();
 
@@ -2651,7 +2658,13 @@ namespace aspect
           {
             IndexSet relevant_dofs;
             DoFTools::extract_locally_relevant_level_dofs(dof_handler_p, level, relevant_dofs);
+
+#if DEAL_II_VERSION_GTE(9,6,0)
+            level_constraints_p.reinit(dof_handler_p.locally_owned_mg_dofs(level), relevant_dofs);
+#else
             level_constraints_p.reinit(relevant_dofs);
+#endif
+
             level_constraints_p.close();
           }
 
