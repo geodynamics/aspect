@@ -1774,7 +1774,7 @@ namespace aspect
 
     // Estimate the eigenvalues for the Chebyshev smoothers.
 
-    types::global_dof_index coarse_A_size, coarse_S_size;
+    types::global_dof_index coarse_A_size = numbers::invalid_dof_index, coarse_S_size = numbers::invalid_dof_index;
 
     //TODO: The setup for the smoother (as well as the entire GMG setup) should
     //       be moved to an assembly timing block instead of the Stokes solve
