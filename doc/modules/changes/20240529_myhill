@@ -1,0 +1,5 @@
+New: ASPECT now has a DiffusionDislocation rheology. This rheology
+is identical to the one that was originally in the Material Model
+of the same name.
+<br>
+(Bob Myhill, 2024/05/29)
