@@ -497,6 +497,7 @@ namespace aspect
     unsigned int                   n_expensive_stokes_solver_steps;
     double                         linear_solver_A_block_tolerance;
     bool                           use_full_A_block_preconditioner;
+    bool                           force_nonsymmetric_A_block_solver;
     double                         linear_solver_S_block_tolerance;
     unsigned int                   stokes_gmres_restart_length;
 

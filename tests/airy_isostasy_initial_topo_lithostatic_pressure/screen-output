@@ -9,7 +9,7 @@ Number of mesh deformation degrees of freedom: 2,178
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+5 iterations.
+   Solving Stokes system... 200+6 iterations.
 
 Number of active cells: 1,204 (on 7 levels)
 Number of degrees of freedom: 21,360 (10,034+1,292+5,017+5,017)

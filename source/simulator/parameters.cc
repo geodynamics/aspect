@@ -497,6 +497,15 @@ namespace aspect
                            "particular for very strong viscosity contrasts the full $A$ block can be "
                            "advantageous.");
 
+        prm.declare_entry ("Force nonsymmetric A block solver", "false",
+                           Patterns::Bool(),
+                           "This parameter determines whether to enforce a solver that supports nonsymmetric "
+                           "matrices when solving the inner $A$ block of the Stokes system. "
+                           "By default ASPECT recognizes cases where the A block is nonsymmetric "
+                           "automatically, and chooses an appropriate solver. However, if the "
+                           "inner A block solver does not converge, this parameter can be set to 'true' "
+                           "to force the use of a solver that can handle nonsymmetric matrices.");
+
         prm.declare_entry ("Linear solver S block tolerance", "1e-6",
                            Patterns::Double(0., 1.),
                            "A relative tolerance up to which the approximate inverse of the $S$ block "
@@ -1434,6 +1443,7 @@ namespace aspect
         n_expensive_stokes_solver_steps = prm.get_integer ("Maximum number of expensive Stokes solver steps");
         linear_solver_A_block_tolerance = prm.get_double ("Linear solver A block tolerance");
         use_full_A_block_preconditioner = prm.get_bool ("Use full A block as preconditioner");
+        force_nonsymmetric_A_block_solver = prm.get_bool("Force nonsymmetric A block solver");
         linear_solver_S_block_tolerance = prm.get_double ("Linear solver S block tolerance");
         stokes_gmres_restart_length     = prm.get_integer("GMRES solver restart length");
       }

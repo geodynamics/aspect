@@ -41,6 +41,8 @@
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/read_write_vector.templates.h>
 #include <deal.II/lac/solver_idr.h>
+#include <deal.II/lac/solver_cg.h>
+#include <deal.II/lac/solver_bicgstab.h>
 
 #include <deal.II/grid/manifold.h>
 
@@ -116,6 +118,7 @@ namespace aspect
          *     the matrix $A_block$, or only apply one preconditioner step with it.
          * @param do_solve_Schur_complement A flag indicating whether we should actually solve with
          *     the matrix $Schur_complement_block$, or only apply one preconditioner step with it.
+         * @param A_block_is_symmetric A flag indicating whether the A block is symmetric.
          * @param A_block_tolerance The tolerance for the CG solver which computes
          *     the inverse of the A block.
          * @param Schur_complement_tolerance The tolerance for the CG solver which computes
@@ -128,6 +131,7 @@ namespace aspect
                                      const SchurComplementPreconditionerType &Schur_complement_preconditioner,
                                      const bool                               do_solve_A,
                                      const bool                               do_solve_Schur_complement,
+                                     const bool                               A_block_is_symmetric,
                                      const double                             A_block_tolerance,
                                      const double                             Schur_complement_tolerance);
 
@@ -157,6 +161,7 @@ namespace aspect
          */
         const bool                                                      do_solve_A;
         const bool                                                      do_solve_Schur_complement;
+        const bool                                                      A_block_is_symmetric;
         mutable unsigned int                                            n_iterations_A_;
         mutable unsigned int                                            n_iterations_Schur_complement_;
         const double                                                    A_block_tolerance;
@@ -175,6 +180,7 @@ namespace aspect
                                                              const SchurComplementPreconditionerType &Schur_complement_preconditioner,
                                                              const bool                               do_solve_A,
                                                              const bool                               do_solve_Schur_complement,
+                                                             const bool                               A_block_symmetric,
                                                              const double                             A_block_tolerance,
                                                              const double                             Schur_complement_tolerance)
                                   :
@@ -185,6 +191,7 @@ namespace aspect
                                   Schur_complement_preconditioner (Schur_complement_preconditioner),
                                   do_solve_A                      (do_solve_A),
                                   do_solve_Schur_complement       (do_solve_Schur_complement),
+                                  A_block_is_symmetric            (A_block_symmetric),
                                   n_iterations_A_                 (0),
                                   n_iterations_Schur_complement_  (0),
                                   A_block_tolerance               (A_block_tolerance),
@@ -286,11 +293,30 @@ namespace aspect
       if (do_solve_A == true)
         {
           SolverControl solver_control(1000, utmp.block(0).l2_norm() * A_block_tolerance);
-          SolverCG<dealii::LinearAlgebra::distributed::Vector<double>> solver(solver_control);
+          PrimitiveVectorMemory<dealii::LinearAlgebra::distributed::Vector<double>> mem;
+
           try
             {
-              solver.solve(A_block, dst.block(0), utmp.block(0),
-                           A_block_preconditioner);
+              if (A_block_is_symmetric)
+                {
+                  SolverCG<dealii::LinearAlgebra::distributed::Vector<double>> solver(solver_control,mem);
+                  solver.solve(A_block, dst.block(0), utmp.block(0),
+                               A_block_preconditioner);
+                }
+              else
+                {
+                  // Use BiCGStab for non-symmetric matrices.
+                  // BiCGStab can also solve indefinite systems if necessary.
+                  // Do not compute the exact residual, as this
+                  // is more expensive, and we only need an approximate solution.
+                  SolverBicgstab<dealii::LinearAlgebra::distributed::Vector<double>>
+                  solver(solver_control,
+                         mem,
+                         SolverBicgstab<dealii::LinearAlgebra::distributed::Vector<double>>::AdditionalData(/*exact_residual=*/ false));
+                  solver.solve(A_block, dst.block(0), utmp.block(0),
+                               A_block_preconditioner);
+                }
+
               n_iterations_A_ += solver_control.last_step();
             }
           // if the solver fails, report the error from processor 0 with some additional
@@ -2015,6 +2041,7 @@ namespace aspect
                           prec_A, prec_Schur,
                           /*do_solve_A*/false,
                           /*do_solve_Schur*/false,
+                          sim.stokes_A_block_is_symmetric(),
                           sim.parameters.linear_solver_A_block_tolerance,
                           sim.parameters.linear_solver_S_block_tolerance);
 
@@ -2024,6 +2051,7 @@ namespace aspect
                               prec_A, prec_Schur,
                               /*do_solve_A*/true,
                               /*do_solve_Schur*/true,
+                              sim.stokes_A_block_is_symmetric(),
                               sim.parameters.linear_solver_A_block_tolerance,
                               sim.parameters.linear_solver_S_block_tolerance);
 

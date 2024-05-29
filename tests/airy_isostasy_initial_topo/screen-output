@@ -63,7 +63,7 @@ Number of mesh deformation degrees of freedom: 4,162
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+4 iterations.
+   Solving Stokes system... 200+5 iterations.
 
    Postprocessing:
      RMS, max velocity:     1.53e+06 m/year, 1.99e+06 m/year

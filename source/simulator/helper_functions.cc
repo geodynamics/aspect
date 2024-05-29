@@ -29,6 +29,7 @@
 #include <aspect/heating_model/interface.h>
 #include <aspect/heating_model/adiabatic_heating.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/particle/generator/interface.h>
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
@@ -1355,6 +1356,23 @@ namespace aspect
 
 
   template <int dim>
+  bool
+  Simulator<dim>::stokes_A_block_is_symmetric() const
+  {
+    // The A block should be symmetric, unless there are free surface stabilization terms, or
+    // the user has forced the use of a different solver.
+    bool A_block_is_symmetric = true;
+    if (mesh_deformation && mesh_deformation->get_boundary_indicators_requiring_stabilization().empty() == false)
+      A_block_is_symmetric = false;
+    else if (parameters.force_nonsymmetric_A_block_solver)
+      A_block_is_symmetric = false;
+
+    return A_block_is_symmetric;
+  }
+
+
+
+  template <int dim>
   void Simulator<dim>::apply_limiter_to_dg_solutions (const AdvectionField &advection_field)
   {
     // TODO: Modify to more robust method
@@ -2526,6 +2544,7 @@ namespace aspect
   template void Simulator<dim>::write_plugin_graph(std::ostream &) const; \
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
+  template bool Simulator<dim>::stokes_A_block_is_symmetric() const; \
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \

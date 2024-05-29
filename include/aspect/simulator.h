@@ -1705,6 +1705,18 @@ namespace aspect
       stokes_matrix_depends_on_solution () const;
 
       /**
+       * Return whether to the best of our knowledge the A block of the
+       * Stokes system is symmetric. This is the case for most models, except
+       * if additional non-symmetric terms are added by special assemblers
+       * (e.g., the free surface stabilization term).
+       *
+       * This function is implemented in
+       * <code>source/simulator/helper_functions.cc</code>.
+      */
+      bool
+      stokes_A_block_is_symmetric () const;
+
+      /**
        * This function checks that the user-selected formulations of the
        * equations are consistent with the other inputs. If an incorrect
        * selection is detected it throws an exception. It for example assures that
