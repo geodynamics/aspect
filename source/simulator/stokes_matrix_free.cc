@@ -2392,7 +2392,6 @@ namespace aspect
 
       DoFRenumbering::hierarchical(dof_handler_v);
 
-      constraints_v.clear();
       IndexSet locally_relevant_dofs;
       DoFTools::extract_locally_relevant_dofs (dof_handler_v,
                                                locally_relevant_dofs);
@@ -2432,7 +2431,6 @@ namespace aspect
 
       DoFRenumbering::hierarchical(dof_handler_p);
 
-      constraints_p.clear();
       IndexSet locally_relevant_dofs;
       DoFTools::extract_locally_relevant_dofs (dof_handler_p,
                                                locally_relevant_dofs);

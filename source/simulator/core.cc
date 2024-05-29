@@ -799,7 +799,6 @@ namespace aspect
 #if DEAL_II_VERSION_GTE(9,6,0)
     current_constraints = std::move(new_current_constraints);
 #else
-    current_constraints.clear();
     current_constraints.reinit (introspection.index_sets.system_relevant_set);
     current_constraints.copy_from(new_current_constraints);
 #endif
@@ -1459,7 +1458,6 @@ namespace aspect
 
 
     // Reconstruct the constraint-matrix:
-    constraints.clear();
 #if DEAL_II_VERSION_GTE(9,6,0)
     constraints.reinit (dof_handler.locally_owned_dofs(), introspection.index_sets.system_relevant_set);
 #else
