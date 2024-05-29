@@ -780,19 +780,14 @@ namespace aspect
                                                                            * std::cos(th) * std::cos(th)))))
                     * constants::radians_to_degree;
 
-        if (dim == 3)
-          {
-            ecoord[1] = std::atan2(position(1), position(0))
-                        * constants::radians_to_degree;
+        ecoord[1] = std::atan2(position(1), position(0))
+                    * constants::radians_to_degree;
 
-            /* Set all longitudes between [0,360]. */
-            if (ecoord[1] < 0.)
-              ecoord[1] += 360.;
-            else if (ecoord[1] > 360.)
-              ecoord[1] -= 360.;
-          }
-        else
-          ecoord[1] = 0.0;
+        // Set all longitudes between [0,360]:
+        if (ecoord[1] < 0.)
+          ecoord[1] += 360.;
+        else if (ecoord[1] > 360.)
+          ecoord[1] -= 360.;
 
 
         ecoord[0] = radius/std::sqrt(1- ellipticity * ellipticity
@@ -3450,9 +3445,6 @@ namespace aspect
                                                                 const Point<dim> &position); \
   \
   template \
-  std::array<double,dim> Coordinates::WGS84_coordinates<dim>(const Point<dim> &position); \
-  \
-  template \
   bool polygon_contains_point<dim>(const std::vector<Point<2>> &pointList, \
                                    const dealii::Point<2> &point); \
   \
@@ -3522,6 +3514,11 @@ namespace aspect
     ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE
+
+    // only instantiate for dim=3:
+    template                \
+    std::array<double,3> Coordinates::WGS84_coordinates<3>(const Point<3> &position);
+
 
     template double
     derivative_of_weighted_p_norm_average (const double averaged_parameter,
