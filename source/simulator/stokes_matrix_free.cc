@@ -333,11 +333,10 @@ namespace aspect
     OperatorCellData<dim,number>::clear()
     {
       enable_newton_derivatives = false;
-      // TODO: use Table::clear() once implemented in 10.0.pre
-      viscosity.reinit(TableIndices<2>(0,0));
-      newton_factor_wrt_pressure_table.reinit(TableIndices<2>(0,0));
-      strain_rate_table.reinit(TableIndices<2>(0,0));
-      newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
+      viscosity.clear();
+      newton_factor_wrt_pressure_table.clear();
+      strain_rate_table.clear();
+      newton_factor_wrt_strain_rate_table.clear();
     }
   }
 
