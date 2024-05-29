@@ -81,7 +81,6 @@ namespace aspect
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None");
 
-        // new addition
         prm.declare_entry ("Pressure prefactors for Frank Kamenetskii", "0.0",
                            Patterns::List(Patterns::Double (0.)),
                            "A prefactor for the pressure term in the viscosity approximation, "
