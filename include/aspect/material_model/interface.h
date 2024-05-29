@@ -230,7 +230,10 @@ namespace aspect
       }
     }
 
-    template <int dim> class AdditionalMaterialInputs;
+
+    // Forward declaration:
+    template <int dim>
+    class AdditionalMaterialInputs;
 
     /**
      * A data structure with all inputs for the
@@ -457,7 +460,9 @@ namespace aspect
     };
 
 
-    template <int dim>     class AdditionalMaterialOutputs;
+    // Forward declaration:
+    template <int dim>
+    struct AdditionalMaterialOutputs;
 
 
     /**
@@ -766,6 +771,10 @@ namespace aspect
     class AdditionalMaterialInputs
     {
       public:
+        /**
+         * Destructor. This destructor is made `virtual` to ensure that
+         * derived classes can be accessed via a pointer-to-base-class.
+         */
         virtual ~AdditionalMaterialInputs() = default;
 
         /**
