@@ -83,6 +83,12 @@ namespace aspect
          * A function object representing the components of the velocity.
          */
         Functions::ParsedFunction<dim> heating_model_function;
+
+        /**
+         * The coordinate representation to evaluate the function. Possible
+         * choices are depth, cartesian and spherical.
+         */
+        Utilities::Coordinates::CoordinateSystem coordinate_system;
     };
   }
 }
