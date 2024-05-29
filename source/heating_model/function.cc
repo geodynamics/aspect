@@ -43,10 +43,12 @@ namespace aspect
     {
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
-          // return a constant value
+          // convert the position into the selected coordinate system
           const Point<dim> position = material_model_inputs.position[q];
           const Utilities::NaturalCoordinate<dim> point =
             this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
+
+          // then compute the heating function value at this position
           heating_model_outputs.heating_source_terms[q] = heating_model_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()))
                                                           * material_model_outputs.densities[q];
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
@@ -74,19 +76,19 @@ namespace aspect
     {
       prm.enter_subsection("Heating model");
       {
-        prm.declare_entry ("Coordinate system", "cartesian",
-                           Patterns::Selection ("cartesian|spherical|depth"),
-                           "A selection that determines the assumed coordinate "
-                           "system for the function variables. Allowed values "
-                           "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
-                           "are interpreted as r,phi or r,phi,theta in 2d/3d "
-                           "respectively with theta being the polar angle. `depth' "
-                           "will create a function, in which only the first "
-                           "parameter is non-zero, which is interpreted to "
-                           "be the depth of the point.");
-
         prm.enter_subsection("Function");
         {
+          prm.declare_entry ("Coordinate system", "cartesian",
+                             Patterns::Selection ("cartesian|spherical|depth"),
+                             "A selection that determines the assumed coordinate "
+                             "system for the function variables. Allowed values "
+                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                             "respectively with theta being the polar angle. `depth' "
+                             "will create a function, in which only the first "
+                             "parameter is non-zero, which is interpreted to "
+                             "be the depth of the point.");
+
           Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
         }
         prm.leave_subsection();

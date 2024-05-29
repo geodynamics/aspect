@@ -1,0 +1,17 @@
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 2,832 (1,728+240+864)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 34+0 iterations.
+
+   Postprocessing:
+     Heating rate (average/total):  0.2032 W/kg, 0.4453 W
+     Writing graphical output:      output-heating_function_depth/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+
