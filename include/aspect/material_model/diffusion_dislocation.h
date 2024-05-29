@@ -23,8 +23,7 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/material_model/rheology/diffusion_creep.h>
-#include <aspect/material_model/rheology/dislocation_creep.h>
+#include <aspect/material_model/rheology/diffusion_dislocation.h>
 
 namespace aspect
 {
@@ -107,39 +106,19 @@ namespace aspect
 
       private:
         /**
-         * Objects for computing viscous creep viscosities.
+         * Object for computing viscous creep viscosities.
          */
-        Rheology::DiffusionCreep<dim> diffusion_creep;
-        Rheology::DislocationCreep<dim> dislocation_creep;
+        Rheology::DiffusionDislocation<dim> diffusion_dislocation;
 
         double reference_T;
 
-        /**
-         * Defining a minimum strain rate stabilizes the viscosity calculation,
-         * which involves a division by the strain rate. Units: 1/s.
-         */
-        double min_strain_rate;
-        double minimum_viscosity;
-        double maximum_viscosity;
-        double veff_coefficient;
-
-        double log_strain_rate_residual_threshold;
-        unsigned int stress_max_iteration_number;
-
         double thermal_diffusivity;
         double heat_capacity;
-        double grain_size;
 
         std::vector<double> densities;
         std::vector<double> thermal_expansivities;
 
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
-
-        std::vector<double>
-        calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
-                                          const double &pressure,
-                                          const double &temperature,
-                                          const SymmetricTensor<2,dim> &strain_rate) const;
 
     };
 
