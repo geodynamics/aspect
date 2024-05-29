@@ -1257,6 +1257,7 @@ namespace aspect
                           const Iterator end)
       {
         AssertDimension(std::distance(begin, end), (SymmetricTensor<2,dim>::n_independent_components));
+        (void) end;
 
         SymmetricTensor<2,dim> output;
 
@@ -1279,6 +1280,7 @@ namespace aspect
                                          const Iterator end)
       {
         AssertDimension(std::distance(begin, end), (SymmetricTensor<2,dim>::n_independent_components));
+        (void) end;
 
         Iterator next = begin;
         for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i, ++next)
