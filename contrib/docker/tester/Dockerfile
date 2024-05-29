@@ -27,7 +27,7 @@ RUN cd /opt && \
 
 # Set environment variables for this image to be used
 # by Github Actions
-ENV PATH="/opt/astyle-2.04:/opt/cmake-3.20.5-linux-x86_64/bin:$PATH"
+ENV PATH="/opt/astyle-2.04:/opt/cmake-3.26.4-linux-x86_64/bin:$PATH"
 ENV DEAL_II_DIR /opt/deal.II-master
 ENV NETCDF_DIR /opt/netcdf-4.7.4
 ENV OMPI_MCA_btl_base_warn_component_unused=0
@@ -38,7 +38,7 @@ ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 
 # Set environment variables for derived images, which
 # are build by Jenkins
-ONBUILD ENV PATH="/opt/astyle-2.04:/opt/cmake-3.20.5-linux-x86_64/bin:$PATH"
+ONBUILD ENV PATH="/opt/astyle-2.04:/opt/cmake-3.26.4-linux-x86_64/bin:$PATH"
 ONBUILD ENV DEAL_II_DIR /opt/deal.II-master
 ONBUILD ENV NETCDF_DIR /opt/netcdf-4.7.4
 ONBUILD ENV OMPI_MCA_btl_base_warn_component_unused=0
