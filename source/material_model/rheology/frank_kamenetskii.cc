@@ -57,8 +57,8 @@ namespace aspect
         const double gravity = gravity_direction * this->get_gravity_model().gravity_vector(this->get_geometry_model().representative_point(0)).norm(); //gravity magnitude at surface
 
         //FK with pressure term
-        const double viscosity_frank_kamenetskii = temperature_prefactors_frank_kamenetskii[composition] * std::exp(viscosity_ratios_frank_kamenetskii[composition] * 0.5 * (1.0-temperature/reference_temperature)
-                                                   + pressure_prefactors_frank_kamenetskii[composition]*(pressure-reference_pressure)/(density*gravity*max_depth));
+        const double viscosity_frank_kamenetskii = prefactors_frank_kamenetskii[composition] * std::exp(viscosity_ratios_frank_kamenetskii[composition] * 0.5 * (1.0-temperature/reference_temperature)
+                                                   + pressure_prefactors_frank_kamenetskii[composition] * (pressure-reference_pressure)/(density*gravity*max_depth));
 
 
         return viscosity_frank_kamenetskii;
@@ -79,7 +79,7 @@ namespace aspect
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
                            "Units: None");
-        prm.declare_entry ("Temperature prefactors for Frank Kamenetskii", "1.e21",
+        prm.declare_entry ("Prefactors for Frank Kamenetskii", "1.e21",
                            Patterns::List(Patterns::Double (0.)),
                            "A viscosity prefactor for the viscosity approximation, "
                            "for a total of N+1 values, where N is the number of all compositional fields or only "
@@ -132,7 +132,7 @@ namespace aspect
                                              options);
 
         options.property_name = "Prefactors for Frank Kamenetskii";
-        temperature_prefactors_frank_kamenetskii = Utilities::MapParsing::parse_map_to_double_array(prm.get("Temperature prefactors for Frank Kamenetskii"),
+        prefactors_frank_kamenetskii = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactors for Frank Kamenetskii"),
                                                                                         options);
 
         options.property_name = "Pressure prefactors for Frank Kamenetskii";
