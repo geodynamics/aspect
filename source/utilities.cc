@@ -762,6 +762,8 @@ namespace aspect
       std::array<double,dim>
       WGS84_coordinates(const Point<dim> &position)
       {
+        Assert (dim==3, ExcNotImplemented());
+
         std::array<double,dim> ecoord;
 
         // Define WGS84 ellipsoid constants.
