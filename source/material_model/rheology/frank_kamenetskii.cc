@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/rheology/frank_kamenetskii.h>
+#include <aspect/gravity_model/interface.h>
 #include <aspect/utilities.h>
 
 #include <deal.II/base/signaling_nan.h>
@@ -43,18 +44,12 @@ namespace aspect
       FrankKamenetskii<dim>::compute_viscosity (const double temperature,
                                                 const double pressure,
                                                 const double density,
+                                                const double gravity,
                                                 const unsigned int composition) const
       {
         const double reference_temperature = this->get_adiabatic_surface_temperature();
         const double reference_pressure = this->get_surface_pressure();
         const double max_depth = this->get_geometry_model().maximal_depth();
-
-        // get the magnitude of gravitational acceleration
-        const Tensor <1,dim> g = this->get_gravity_model().gravity_vector(this->get_geometry_model().representative_point(0));
-        const Point<dim> point_surf = this->get_geometry_model().representative_point(0);
-        const Point<dim> point_bot = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
-        const int gravity_direction =  (g * (point_bot - point_surf) >= 0) ? 1 :-1;
-        const double gravity = gravity_direction * this->get_gravity_model().gravity_vector(this->get_geometry_model().representative_point(0)).norm(); //gravity magnitude at surface
 
         //FK with pressure term
         const double viscosity_frank_kamenetskii = prefactors_frank_kamenetskii[composition] * std::exp(viscosity_ratios_frank_kamenetskii[composition] * 0.5 * (1.0-temperature/reference_temperature)
@@ -87,7 +82,7 @@ namespace aspect
                            "If only one value is given, then all use the same value.  Units: None");
 
         // new addition
-        prm.declare_entry ("Pressure prefactors for Frank Kamenetskii", "4.159",
+        prm.declare_entry ("Pressure prefactors for Frank Kamenetskii", "0.0",
                            Patterns::List(Patterns::Double (0.)),
                            "A prefactor for the pressure term in the viscosity approximation, "
                            "for a total of N+1 values, where N is the number of all compositional fields or only "

@@ -70,6 +70,7 @@ namespace aspect
           compute_viscosity (const double temperature,
                              const double pressure,
                              const double density,
+                             const double gravity,
                              const unsigned int composition) const;
 
         private:
