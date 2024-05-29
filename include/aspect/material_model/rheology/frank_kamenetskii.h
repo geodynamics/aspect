@@ -68,10 +68,10 @@ namespace aspect
            */
           double
           compute_viscosity (const double temperature,
-                             const double pressure,
-                             const double density,
-                             const double gravity,
-                             const unsigned int composition) const;
+                             const unsigned int composition,
+                             const double pressure = std::numeric_limits<double>::infinity(),
+                             const double density = std::numeric_limits<double>::infinity(),
+                             const double gravity = std::numeric_limits<double>::infinity()) const;
 
         private:
           /**

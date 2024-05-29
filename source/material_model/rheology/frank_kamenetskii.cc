@@ -42,10 +42,10 @@ namespace aspect
       template <int dim>
       double
       FrankKamenetskii<dim>::compute_viscosity (const double temperature,
+                                                const unsigned int composition,
                                                 const double pressure,
                                                 const double density,
-                                                const double gravity,
-                                                const unsigned int composition) const
+                                                const double gravity) const
       {
         const double reference_temperature = this->get_adiabatic_surface_temperature();
         const double reference_pressure = this->get_surface_pressure();
