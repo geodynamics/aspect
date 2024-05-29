@@ -310,11 +310,6 @@ namespace aspect
                                            this->get_adiabatic_conditions().temperature(position)
                                            :
                                            temperature;
-      const double adiabatic_pressure = this->get_adiabatic_conditions().is_initialized()
-                                        ?
-                                        this->get_adiabatic_conditions().pressure(position)
-                                        :
-                                        pressure;
 
       do
         {
@@ -344,8 +339,8 @@ namespace aspect
           const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
           const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
-          const double current_diffusion_viscosity   = diffusion_viscosity(temperature, adiabatic_temperature, adiabatic_pressure, grain_size, second_strain_rate_invariant, position);
-          current_dislocation_viscosity              = dislocation_viscosity(temperature, adiabatic_temperature, adiabatic_pressure, strain_rate, position, current_diffusion_viscosity, current_dislocation_viscosity);
+          const double current_diffusion_viscosity   = diffusion_viscosity(temperature, adiabatic_temperature, pressure, grain_size, second_strain_rate_invariant, position);
+          current_dislocation_viscosity              = dislocation_viscosity(temperature, adiabatic_temperature, pressure, strain_rate, position, current_diffusion_viscosity, current_dislocation_viscosity);
 
           double current_viscosity;
           if (std::abs(second_strain_rate_invariant) > 1e-30)
@@ -894,22 +889,17 @@ namespace aspect
                                                    this->get_adiabatic_conditions().temperature(in.position[i])
                                                    :
                                                    in.temperature[i];
-              const double adiabatic_pressure = this->get_adiabatic_conditions().is_initialized()
-                                                ?
-                                                this->get_adiabatic_conditions().pressure(in.position[i])
-                                                :
-                                                in.pressure[i];
 
               const double diff_viscosity = diffusion_viscosity(in.temperature[i],
                                                                 adiabatic_temperature,
-                                                                adiabatic_pressure,
+                                                                pressure,
                                                                 composition[grain_size_index],
                                                                 second_strain_rate_invariant,
                                                                 in.position[i]);
 
               if (std::abs(second_strain_rate_invariant) > 1e-30)
                 {
-                  disl_viscosity = dislocation_viscosity(in.temperature[i], adiabatic_temperature, adiabatic_pressure, in.strain_rate[i], in.position[i], diff_viscosity);
+                  disl_viscosity = dislocation_viscosity(in.temperature[i], adiabatic_temperature, pressure, in.strain_rate[i], in.position[i], diff_viscosity);
                   effective_viscosity = disl_viscosity * diff_viscosity / (disl_viscosity + diff_viscosity);
                 }
               else
