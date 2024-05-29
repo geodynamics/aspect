@@ -1361,13 +1361,12 @@ namespace aspect
   {
     // The A block should be symmetric, unless there are free surface stabilization terms, or
     // the user has forced the use of a different solver.
-    bool A_block_is_symmetric = true;
     if (mesh_deformation && mesh_deformation->get_boundary_indicators_requiring_stabilization().empty() == false)
-      A_block_is_symmetric = false;
+      return false;
     else if (parameters.force_nonsymmetric_A_block_solver)
-      A_block_is_symmetric = false;
-
-    return A_block_is_symmetric;
+      return false;
+    else
+      return true;
   }
 
 
