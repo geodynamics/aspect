@@ -1,0 +1,5 @@
+Changed: A pressure term was added to the Frank Kamenetskii viscous flow law
+in the Visco Plastic material model. The new FK function is given by 
+viscosity = A * exp(E * 0.5 * (1.0-(T/ref_T)) + F * (P-ref_P)/(ref_rho*g*h))
+<br>
+(Grant Block, 2024/05/29)
