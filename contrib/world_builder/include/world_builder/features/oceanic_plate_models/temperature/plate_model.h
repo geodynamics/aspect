@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -93,8 +93,9 @@ namespace WorldBuilder
             Objects::Surface max_depth_surface;
             double top_temperature;
             double bottom_temperature;
-            double spreading_velocity;
+            std::pair<std::vector<double>,std::vector<double>> spreading_velocities;
             std::vector<std::vector<Point<2> > > mid_oceanic_ridges;
+            std::vector<std::vector<double>> spreading_velocities_at_each_ridge_point;
             Operations operation;
 
         };

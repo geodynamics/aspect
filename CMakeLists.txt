@@ -16,7 +16,7 @@
 # along with ASPECT; see the file doc/COPYING.  If not see
 # <http://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.13.4)
 
 MESSAGE(STATUS "====================================================")
 MESSAGE(STATUS "============ Configuring ASPECT ====================")
@@ -101,7 +101,7 @@ LIST(APPEND CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}/cmake/modules
   )
 
-FIND_PACKAGE(deal.II 9.4.0 QUIET
+FIND_PACKAGE(deal.II 9.5.0 QUIET
   HINTS ${deal.II_DIR} ${DEAL_II_DIR} $ENV{DEAL_II_DIR}
   )
 IF(NOT ${deal.II_FOUND})
@@ -130,9 +130,16 @@ IF(NOT DEAL_II_WITH_TRILINOS)
     SET(_DEALII_GOOD OFF)
 ENDIF()
 
+IF(NOT DEAL_II_WITH_SUNDIALS)
+    MESSAGE(SEND_ERROR
+      "\n-- deal.II was built without support for SUNDIALS!\n"
+      )
+    SET(_DEALII_GOOD OFF)
+ENDIF()
+
 IF (NOT _DEALII_GOOD)
   MESSAGE(FATAL_ERROR
-    "\nASPECT requires a deal.II installation built with support for Trilinos and p4est but one or both of these appears to be missing!\n"
+    "\nASPECT requires a deal.II installation built with certain features enabled that seem to be missing (see above)!\n"
     )
 ENDIF()
 
@@ -158,41 +165,52 @@ if(ASPECT_WITH_WORLD_BUILDER)
   MESSAGE(STATUS "Using World Builder version ${WORLD_BUILDER_VERSION} found at ${WORLD_BUILDER_SOURCE_DIR}.")
 
   IF(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0)
-    ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
-    INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/world_builder/include/")
-  ELSE()
-    IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
-      FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/*.cc")
-    ELSE()
-      FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/*.cc")
+    # if we configured with 0.5.0 before, we have a stray include file here. delete it.
+    FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder/config.h")
+
+    SET(WB_ENABLE_TESTS OFF)
+    SET(WB_ENABLE_APPS OFF)
+    SET(WB_ENABLE_HELPER_TARGETS OFF)
+    SET(WB_ENABLE_PYTHON OFF)
+
+    IF(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
+      SET(CMAKE_BUILD_TYPE Debug)
+      SET(WB_TARGET "WorldBuilderDebug")
+      ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
+      TARGET_COMPILE_OPTIONS(WorldBuilderDebug PRIVATE "-g" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
+
+      SET(CMAKE_BUILD_TYPE Release)
+      SET(WB_TARGET "WorldBuilderRelease")
+      ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder_release/)
+      TARGET_COMPILE_DEFINITIONS(WorldBuilderRelease PUBLIC "NDEBUG")
+      TARGET_COMPILE_OPTIONS(WorldBuilderRelease PRIVATE "-O3" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
+
+      SET(CMAKE_BUILD_TYPE DebugRelease)
+    ELSEIF(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+      ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
+      TARGET_COMPILE_OPTIONS(WorldBuilder PRIVATE "-g" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
+    ELSEIF(${CMAKE_BUILD_TYPE} MATCHES "Release")
+      ADD_SUBDIRECTORY("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
+      TARGET_COMPILE_DEFINITIONS(WorldBuilder PUBLIC "NDEBUG")
+      TARGET_COMPILE_OPTIONS(WorldBuilder PRIVATE "-O3" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
     ENDIF()
+  ELSE()
+    FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/*.cc")
     LIST(APPEND TARGET_SRC ${wb_files})
     ADD_DEFINITIONS(-DWB_WITH_MPI)
 
     # generate config.cc and include it:
-    IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
-      CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in"
-                     "${CMAKE_BINARY_DIR}/source/world_builder/config.cc" @ONLY)
-      LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
-      FILE(REMOVE "${CMAKE_BINARY_DIR}/include/world_builder/config.h")
-    ELSE()
-      CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/include/world_builder/config.h.in"
-                     "${CMAKE_BINARY_DIR}/include/world_builder/config.h" @ONLY)
-      INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/include/")
-      FILE(REMOVE "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
-    ENDIF()
+    CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/include/world_builder/config.h.in"
+                    "${CMAKE_BINARY_DIR}/include/world_builder/config.h" @ONLY)
+    INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/include/")
+    FILE(REMOVE "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
 
     # Move some file to the end for unity builds to make sure other file come
     # "before". Note: The current design keeps all ASPECT files (including
     # ASPECT_UNITY_LAST files) before all GWB files. Mixing them will causes
     # many issues with non-unique namespace names like Utilities.
-    IF(WORLD_BUILDER_VERSION VERSION_LESS 0.5.0)
-      SET(UNITY_WB_LAST_FILES
-      "${WORLD_BUILDER_SOURCE_DIR}/source/parameters.cc")
-    ELSE()
-      SET(UNITY_WB_LAST_FILES
-      "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/parameters.cc")
-    ENDIF()
+    SET(UNITY_WB_LAST_FILES
+        "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/parameters.cc")
 
     FOREACH(_source_file ${UNITY_WB_LAST_FILES})
       LIST(FIND TARGET_SRC ${_source_file} _index)
@@ -207,13 +225,11 @@ if(ASPECT_WITH_WORLD_BUILDER)
     FOREACH(_source_file ${wb_files})
       # exclude the world builder files from including precompiled headers, they
       # do not include ASPECT's dependencies at all.
-      SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE )
       SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
       # Temporarily disable world builder unity builds:
       SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE )
     ENDFOREACH()
 
-    SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY COTIRE_EXCLUDED TRUE )
     SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
   ENDIF()
 ENDIF()
@@ -531,7 +547,7 @@ IF(NOT ASPECT_ADDITIONAL_CXX_FLAGS STREQUAL "")
   MESSAGE(STATUS "  DEAL_II_CXX_FLAGS_RELEASE: ${DEAL_II_CXX_FLAGS_RELEASE}")
 ENDIF()
 
-# Provide "release" and "debug" targets to switch compile mode
+# Setup targets for ASPECT:
 IF(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
   ADD_EXECUTABLE(${TARGET} ${TARGET_SRC})
   DEAL_II_SETUP_TARGET(${TARGET} DEBUG)
@@ -545,14 +561,15 @@ ELSE()
   DEAL_II_SETUP_TARGET(${TARGET})
 ENDIF()
 
-# deal.II does not define NDEBUG, but the world builder relies on it to disable
-# its asserts in release mode. Set it manually for anything but debug mode.
-# Note: If deal.II decides in the future to define this, this can be removed.
-IF (CMAKE_BUILD_TYPE MATCHES Release)
-  ADD_DEFINITIONS("-DNDEBUG")
-ENDIF()
-IF (CMAKE_BUILD_TYPE MATCHES DebugRelease)
-  target_compile_definitions(${TARGET}-release PUBLIC "NDEBUG")
+# This should be done in DEAL_II_SETUP_TARGET, but deal.II 9.5
+# does not do so, so do it here. Remove this when we require deal.II 9.6.
+IF (DEAL_II_PACKAGE_VERSION VERSION_LESS 9.6.0)
+  IF (CMAKE_BUILD_TYPE MATCHES Release)
+    ADD_DEFINITIONS("-DNDEBUG")
+  ENDIF()
+  IF (CMAKE_BUILD_TYPE MATCHES DebugRelease)
+    target_compile_definitions(${TARGET}-release PUBLIC "NDEBUG")
+  ENDIF()
 ENDIF()
 
 # find zlib if it is installed in a non-standard location
@@ -597,33 +614,83 @@ IF(ASPECT_WITH_LIBDAP)
   ENDIF()
 ENDIF()
 
-#
-# NETCDF (c including parallel)
-#
-SET(ASPECT_WITH_NETCDF OFF CACHE BOOL "Check if the user wants to compile ASPECT with the NETCDF libraries.")
 
-MESSAGE(STATUS "Using ASPECT_WITH_NETCDF = '${ASPECT_WITH_NETCDF}'")
+# Check for FastScape library and link it to ASPECT if requested
+SET(ASPECT_WITH_FASTSCAPE OFF CACHE BOOL "Whether the user wants to compile ASPECT with the landscape evolution code FastScape, or not.")
+MESSAGE(STATUS "Using ASPECT_WITH_FASTSCAPE = '${ASPECT_WITH_FASTSCAPE}'")
+IF(ASPECT_WITH_FASTSCAPE)
+  FIND_LIBRARY(FASTSCAPE NAMES fastscapelib_fortran PATHS $ENV{FASTSCAPE_DIR} ${FASTSCAPE_DIR} PATH_SUFFIXES lib NO_DEFAULT_PATH)
+  IF (FASTSCAPE)
+     MESSAGE(STATUS "FastScape library found at ${FASTSCAPE_DIR}")
+
+    # Get the fastscape source path so we can check the version.
+    FILE (STRINGS "${FASTSCAPE_DIR}/Makefile" _fastscape_makefile)
+    foreach(_line ${_fastscape_makefile})
+        if("${_line}" MATCHES "^CMAKE_SOURCE_DIR")
+          string(REPLACE "CMAKE_SOURCE_DIR = " "" FASTSCAPE_SOURCE_DIR ${_line})
+        endif()
+    endforeach()
+
+    # Now get the version from setup.py
+    MESSAGE(STATUS "Parsing '${FASTSCAPE_SOURCE_DIR}/setup.py' for version information")
+    FILE (STRINGS "${FASTSCAPE_SOURCE_DIR}/setup.py" _fastscape_info)
+    foreach(_line ${_fastscape_info})
+        string(STRIP ${_line} _line)
+        if("${_line}" MATCHES "^version")
+          string(REGEX REPLACE "[^0-9.]" "" FASTSCAPE_VERSION ${_line})
+        endif()
+    endforeach()
+
+    # Throw an error if the version is too old.
+    IF(${FASTSCAPE_VERSION} VERSION_LESS 2.8)
+      MESSAGE(FATAL_ERROR "The linked FastScape version is ${FASTSCAPE_VERSION}, however at least 2.8.0 is required.")
+    ENDIF()
+
+    FOREACH(_T ${TARGETS})
+      TARGET_LINK_LIBRARIES(${_T} ${FASTSCAPE})
+    ENDFOREACH()
+  ELSE()
+     MESSAGE(FATAL_ERROR "Trying to link with FastScape but libfastscapelib_fortran.so was not found in ${FASTSCAPE_DIR}")
+  ENDIF()
+ENDIF()
+
+
+#
+# NetCDF (c including parallel)
+#
+
+SET(ASPECT_WITH_NETCDF ON CACHE BOOL "Check if the user wants to compile ASPECT with the NetCDF libraries.")
 
 IF(ASPECT_WITH_NETCDF)
   FIND_PACKAGE(NETCDF)
   IF(${NETCDF_FOUND})
-    MESSAGE(STATUS "  NETCDF_INCLUDE_DIR: ${NETCDF_INCLUDE_DIR}")
-    MESSAGE(STATUS "  NETCDF_LIBRARY: ${NETCDF_LIBRARY}")
-    MESSAGE(STATUS "  NETCDF_VERSION: ${NETCDF_VERSION}")
-
     INCLUDE_DIRECTORIES(${NETCDF_INCLUDE_DIRS})
     FOREACH(_T ${TARGETS})
       TARGET_LINK_LIBRARIES(${_T} ${NETCDF_LIBRARIES})
     ENDFOREACH()
+
+    MESSAGE(STATUS "Using ASPECT_WITH_NETCDF = '${ASPECT_WITH_NETCDF}'")
+    MESSAGE(STATUS "  NETCDF_INCLUDE_DIR: ${NETCDF_INCLUDE_DIR}")
+    MESSAGE(STATUS "  NETCDF_LIBRARY: ${NETCDF_LIBRARY}")
+    MESSAGE(STATUS "  NETCDF_VERSION: ${NETCDF_VERSION}")
   ELSE()
-    MESSAGE(FATAL_ERROR "NETCDF not found. Disable ASPECT_WITH_NETCDF or specify a hint to your installation directory with NETCDF_DIR.")
+    MESSAGE(STATUS "NetCDF not found. Disabling ASPECT_WITH_NETCDF. You can specify a hint to your installation directory with NETCDF_DIR.")
+    SET(ASPECT_WITH_NETCDF OFF CACHE BOOL "" FORCE)
   ENDIF()
+ELSE()
+  MESSAGE(STATUS "NetCDF support disabled.")
 ENDIF()
 
 IF(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILDER)
-  FOREACH(_T ${TARGETS})
-    TARGET_LINK_LIBRARIES(${_T} WorldBuilder)
-  ENDFOREACH()
+  IF(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
+    TARGET_INCLUDE_DIRECTORIES(${TARGET} PUBLIC "${CMAKE_BINARY_DIR}/world_builder/include/")
+    TARGET_INCLUDE_DIRECTORIES(${TARGET}-release PUBLIC "${CMAKE_BINARY_DIR}/world_builder_release/include/")
+    TARGET_LINK_LIBRARIES(${TARGET} WorldBuilderDebug)
+    TARGET_LINK_LIBRARIES(${TARGET}-release WorldBuilderRelease)
+  ELSE()
+    TARGET_INCLUDE_DIRECTORIES(${TARGET} PUBLIC "${CMAKE_BINARY_DIR}/world_builder/include/")
+    TARGET_LINK_LIBRARIES(${TARGET} WorldBuilder)
+  ENDIF()
 ENDIF()
 
 
@@ -679,20 +746,14 @@ CONFIGURE_FILE(
 
 
 # Check if we want to precompile header files. This speeds up compile time,
-# but can fail on some machines with old cmake, therefore it is disabled by
-# default. Also cotire currently has issues with cmake generator expressions
-# used in deal.II for cmake version 3.9 and above. Disable cotire for cmake >=
-# 3.9. Starting with cmake 3.16 there is native support inside cmake and we can
-# use that.
-IF(CMAKE_VERSION VERSION_LESS 3.9)
-  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time. Currently only supported for cmake 3.8 and older versions, or 3.16 and newer versions.")
-  SET(ASPECT_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions." FORCE)
-ELSEIF(NOT CMAKE_VERSION VERSION_LESS 3.16)
-  SET(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake 3.8 and older versions or 3.16 and newer versions.")
-  SET(ASPECT_UNITY_BUILD ON CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions.")
+# but can fail on some machines with old CMake. Starting with CMake 3.16
+# there is native support inside CMake and we can precompile headers.
+IF(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+  SET(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for CMake 3.16 and newer versions.")
+  SET(ASPECT_UNITY_BUILD ON CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for CMake 3.16 and newer versions.")
 ELSE()
-  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake 3.8 and older versions or 3.16 and newer versions." FORCE)
-  SET(ASPECT_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions." FORCE)
+  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for CMake 3.16 and newer versions." FORCE)
+  SET(ASPECT_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for CMake 3.16 and newer versions." FORCE)
 ENDIF()
 
 IF (ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
@@ -702,25 +763,7 @@ IF (ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
 ENDIF()
 
 IF (ASPECT_PRECOMPILE_HEADERS)
-  IF (CMAKE_VERSION VERSION_LESS 3.9)
-    MESSAGE(STATUS "Enabling cotire to precompile external header files.")
-    INCLUDE(cmake/cotire)
-
-    FOREACH(_T ${TARGETS})
-      # Set some properties that are necessary for the header precompilations
-      # and unity build to pass. We need to exclude some headers that
-      # frequently cause problems, and undefine some macros between source
-      # files that would otherwise interfere with each other.
-      SET_TARGET_PROPERTIES (${_T} PROPERTIES
-        COTIRE_PREFIX_HEADER_IGNORE_PATH
-        "/usr/include/;${CMAKE_SOURCE_DIR};${CMAKE_BINARY_DIR}")
-
-      # This line activates the cotire module for the aspect target,
-      # and therefore the whole precompilation
-      cotire(${_T})
-    ENDFOREACH()
-
-  ELSEIF (NOT CMAKE_VERSION VERSION_LESS 3.16)
+  IF (CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
     MESSAGE(STATUS "Precompiling common header files.")
     # Use the native cmake support to precompile some common headers
     # from ASPECT and deal.II that are frequently included, but rarely changed.
@@ -734,7 +777,7 @@ IF (ASPECT_PRECOMPILE_HEADERS)
         <deal.II/particles/particle_handler.h>)
     ENDFOREACH()
   ELSE()
-    MESSAGE(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake 3.8 and older versions or 3.16 and newer versions.")
+    MESSAGE(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake 3.16 and newer versions.")
   ENDIF()
 
 ELSE()
@@ -742,7 +785,7 @@ ELSE()
 ENDIF()
 
 IF (ASPECT_UNITY_BUILD)
-  IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
+  IF (CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
     FOREACH(_T ${TARGETS})
       SET_PROPERTY(TARGET ${_T} PROPERTY UNITY_BUILD TRUE)
     ENDFOREACH()
@@ -751,7 +794,7 @@ IF (ASPECT_UNITY_BUILD)
     MESSAGE(FATAL_ERROR "ASPECT_UNITY_BUILD is currently only supported for CMake 3.16 and newer versions.")
   ENDIF()
 ELSE()
-  IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
+  IF (CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
     SET_PROPERTY(TARGET ${TARGET} PROPERTY UNITY_BUILD FALSE)
   ENDIF()
 

@@ -28,9 +28,11 @@ end
 
 subsection Initial temperature model
   set Model name = patch on S40RTS
+
   subsection Patch on S40RTS
     set Maximum grid depth = 700000
   end
+
   subsection S40RTS perturbation
     set Initial condition file name           = S20RTS.sph
     set Vs to density scaling method          = file
@@ -40,17 +42,14 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Gravity model
   set Model name = ascii data
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 0
   set Initial adaptive refinement        = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics
@@ -60,5 +59,4 @@ subsection Postprocess
     set Output format                 = gnuplot
     set Time between graphical output = 0
   end
-
 end

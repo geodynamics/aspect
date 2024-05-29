@@ -3,7 +3,6 @@ set Use years in output instead of seconds = false
 set Start time                             = 0
 set End time                               = 0
 
-
 subsection Material model
   set Model name = simple
 
@@ -12,7 +11,6 @@ subsection Material model
     set Viscosity                     = 1e22
   end
 end
-
 
 subsection Geometry model
   set Model name = spherical shell
@@ -23,35 +21,24 @@ subsection Geometry model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0
-end
-
-subsection Boundary velocity model
   set Tangential velocity boundary indicators = 1
 end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0,1
-end
-
-
-subsection Boundary temperature model
   set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 1600
     set Outer temperature = 1600
   end
 end
 
-
 subsection Initial temperature model
   set Model name = S40RTS perturbation
+
   subsection S40RTS perturbation
     set Initial condition file name           = S20RTS.sph
     set Vs to density scaling                 = 0.3
@@ -61,11 +48,9 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Gravity model
   set Model name = ascii data
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 0
@@ -73,7 +58,6 @@ subsection Mesh refinement
   set Strategy                           = temperature
   set Time steps between mesh refinement = 15
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics
@@ -83,5 +67,4 @@ subsection Postprocess
     set Output format                 = gnuplot
     set Time between graphical output = 0
   end
-
 end

@@ -8,23 +8,18 @@
 # Geosystems, 4(9), 8615.
 
 set Additional shared libraries            = ./libshear_bands.so
-
 set Adiabatic surface temperature          = 1623
 set CFL number                             = 0.5
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Output directory                       = output
 set Max nonlinear iterations               = 5
 set Nonlinear solver tolerance             = 1e-5
-
 set Dimension                              = 2
-
 set End time                               = 0
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
-
 set Use years in output instead of seconds = true
 
 subsection Discretization
@@ -46,6 +41,7 @@ end
 # move with the same speed u0, but in opposite directions
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = 2:function, 3:function
+
   subsection Function
     set Function constants = u0=5e2,ymid=0.0005
     set Function expression = u0*(y/ymid-1.0);0
@@ -61,9 +57,7 @@ subsection Geometry model
     set X periodic = true
     set X repetitions = 4
   end
-
 end
-
 
 subsection Gravity model
   set Model name = vertical
@@ -73,12 +67,11 @@ subsection Gravity model
     # radially outward from the center of the earth.
     set Magnitude = 0.0
   end
-
 end
-
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function constants  = l=64000
     set Function expression = 0.0
@@ -118,7 +111,6 @@ end
 subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.0
-
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 8
   set Strategy                                 = composition
@@ -130,25 +122,19 @@ subsection Melt settings
 end
 
 subsection Postprocess
-
   set List of postprocessors = visualization,composition statistics,velocity statistics, shear bands growth rate
 
   subsection Visualization
-
     set List of output variables      = density, viscosity, thermal expansivity, strain rate, melt material properties
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0
 
     subsection Melt material properties
       set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
     end
-
-    set Number of grouped files       = 0
-    set Output format                 = vtu
-    set Time between graphical output = 0
   end
-
 end
-
-
 
 subsection Solver parameters
   set Composition solver tolerance = 1e-24

@@ -12,11 +12,11 @@ Number of mesh deformation degrees of freedom: 462
    Solving upper_crust system ... 0 iterations.
    Solving lower_crust system ... 0 iterations.
    Solving lithospheric_mantle system ... 0 iterations.
-   Initial Newton Stokes residual = 3.03395e+14, v = 2.95216e+14, p = 6.99719e+13
+   Initial Newton Stokes residual = 3.04034e+14, v = 2.95216e+14, p = 7.26906e+13
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+18 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 3.03395e+14
+   Solving Stokes system... 0+20 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 3.04034e+14
 
 
    Postprocessing:
@@ -31,11 +31,11 @@ Number of mesh deformation degrees of freedom: 462
    Solving upper_crust system ... 9 iterations.
    Solving lower_crust system ... 9 iterations.
    Solving lithospheric_mantle system ... 9 iterations.
-   Initial Newton Stokes residual = 8.14683e+16, v = 8.14683e+16, p = 1.18823e+13
+   Initial Newton Stokes residual = 1.84302e+14, v = 1.83878e+14, p = 1.24975e+13
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+18 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.000175212, norm of the rhs: 1.42743e+13
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.114774, norm of the rhs: 2.11532e+13
 
 
    Postprocessing:

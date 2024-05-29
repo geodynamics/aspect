@@ -23,8 +23,8 @@ Number of degrees of freedom: 3,001 (1,838+244+919)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 48+0 iterations.
 
-Number of active cells: 346 (on 4 levels)
-Number of degrees of freedom: 5,173 (3,174+412+1,587)
+Number of active cells: 352 (on 4 levels)
+Number of degrees of freedom: 5,271 (3,234+420+1,617)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.

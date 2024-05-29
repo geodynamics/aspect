@@ -37,6 +37,7 @@
 #include <map>
 #include <iostream>
 #include <typeinfo>
+#include <type_traits>
 
 
 namespace aspect
@@ -56,8 +57,17 @@ namespace aspect
      * a radial gravity model might only be implemented for spherical geometry
      * models, and would want to check if the current geometry is in fact a
      * spherical shell.
+     *
+     * This function can only be called with types that correspond to the same
+     * plugin system. In other words, the type of the plugin has to either be
+     * derived from the type of the object being tested, or they have to both
+     * be derived from a common base class. This function is not appropriate
+     * to check whether a class `TestType` derived from an interface base
+     * class is *also* derived from a second base class `PluginType`. For these
+     * cases, use a `dynamic_cast`.
      */
-    template <typename TestType, typename PluginType>
+    template <typename TestType, typename PluginType,
+              typename = typename std::enable_if<std::is_base_of<PluginType,TestType>::value>::type>
     inline
     bool
     plugin_type_matches (const PluginType &object)
@@ -73,8 +83,17 @@ namespace aspect
      * first check if the plugin type is actually convertible by calling
      * plugin_matches_type() before calling this function. If the plugin is
      * not convertible this function throws an exception.
+     *
+     * This function can only be called with types that correspond to the same
+     * plugin system. In other words, the type of the plugin has to either be
+     * derived from the type of the object being tested, or they have to both
+     * be derived from a common base class. This function is not appropriate
+     * to convert references to classes whether a class `TestType` derived
+     * from an interface base class is *also* derived from a second base
+     * class `PluginType`. For these cases, use a `dynamic_cast`.
      */
-    template <typename TestType, typename PluginType>
+    template <typename TestType, typename PluginType,
+              typename = typename std::enable_if<std::is_base_of<PluginType,TestType>::value>::type>
     inline
     TestType &
     get_plugin_as_type (PluginType &object)
@@ -245,8 +264,8 @@ namespace aspect
          * Given the name of one plugin, create a corresponding object and
          * return a pointer to it. The second argument provides a hint where
          * this function was called from, to be printed in case there is an
-         * error. Before returning, let the newly created object read its run-
-         * time parameters from the parameter object.
+         * error. Before returning, let the newly created object read its
+         * run-time parameters from the parameter object.
          *
          * Ownership of the object is handed over to the caller of this
          * function.

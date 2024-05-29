@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+# 14: RMS velocity (m/year)
+# 15: Max. velocity (m/year)
+# 16: Minimal temperature (K)
+# 17: Average temperature (K)
+# 18: Maximal temperature (K)
+# 19: Average nondimensional temperature (K)
+# 20: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 1 ("top") (W)
+# 22: Outward heat flux through boundary with indicator 2 ("left") (W)
+# 23: Outward heat flux through boundary with indicator 3 ("right") (W)
+0 0.000000000000e+00 0.000000000000e+00 768 7235 3201 3201 0 4294967295 273 276 1049 output-steinberger_continuous_viscosity/solution/solution-00000 7.47009003e-03 3.32324809e-02 2.73000000e+02 2.04467242e+03 3.77300000e+03 5.06192119e-01 -3.30725308e+05 4.17914326e+05 5.92971595e+04 -5.92971595e+04 
+1 2.000000000000e+06 2.000000000000e+06 768 7235 3201 3201 8 4294967295 166 168  655 output-steinberger_continuous_viscosity/solution/solution-00001 7.57695525e-03 3.36297009e-02 2.73000000e+02 2.04424379e+03 3.77300000e+03 5.06069655e-01 -3.64322031e+05 5.28187241e+05 3.15996198e+04 -3.15996198e+04 

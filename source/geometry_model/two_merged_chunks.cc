@@ -39,23 +39,14 @@ namespace aspect
     void
     TwoMergedChunks<dim>::initialize ()
     {
-      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(&this->get_initial_topography_model()) != nullptr ||
-                  dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr,
+      AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) ||
+                  Plugins::plugin_type_matches<const InitialTopographyModel::AsciiData<dim>>(this->get_initial_topography_model()),
                   ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used with the TwoMergedChunks geometry model."));
 
-      manifold.initialize(&(this->get_initial_topography_model()));
-    }
-
-
-    template <int dim>
-    void
-    TwoMergedChunks<dim>::set_topography_model (const InitialTopographyModel::Interface<dim> *topo_pointer)
-    {
-      AssertThrow(dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo_pointer) != nullptr ||
-                  dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(topo_pointer) != nullptr,
-                  ExcMessage("At the moment, only the Zero or AsciiData initial topography model can be used with the TwoMergedChunks geometry model."));
-
-      manifold.initialize(topo_pointer);
+      manifold = std::make_unique<internal::ChunkGeometry<dim>>(this->get_initial_topography_model(),
+                                                                 point1[1],
+                                                                 point1[0],
+                                                                 point2[0]-point1[0]);
     }
 
 
@@ -109,15 +100,15 @@ namespace aspect
       GridTools::transform (
         [&](const Point<dim> &p) -> Point<dim>
       {
-        return manifold.push_forward(p);
+        return manifold->push_forward(p);
       },
       coarse_grid);
 
-      // Deal with a curved mesh
-      // Attach the real manifold to slot 15.
-      coarse_grid.set_manifold (15, manifold);
+      // Deal with a curved mesh by assigning a manifold. We arbitrarily
+      // choose manifold_id 15 for this.
+      coarse_grid.set_manifold (my_manifold_id, *manifold);
       for (const auto &cell : coarse_grid.active_cell_iterators())
-        cell->set_all_manifold_ids (15);
+        cell->set_all_manifold_ids (my_manifold_id);
 
       // Set the boundary indicators.
       set_boundary_indicators(coarse_grid);
@@ -266,20 +257,6 @@ namespace aspect
 
     template <int dim>
     double
-    TwoMergedChunks<dim>::depth_wrt_topo(const Point<dim> &position) const
-    {
-      // depth is defined wrt the reference surface point2[0] + the topography
-      // depth is therefore always positive
-      const double outer_radius = manifold.get_radius(position);
-      const Point<dim> rtopo_phi_theta = manifold.pull_back_sphere(position);
-      Assert (rtopo_phi_theta[0] <= outer_radius, ExcMessage("The radius is bigger than the maximum radius."));
-      return std::max(0.0, outer_radius - rtopo_phi_theta[0]);
-    }
-
-
-
-    template <int dim>
-    double
     TwoMergedChunks<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
       return position.norm()-point2[0];
@@ -302,7 +279,7 @@ namespace aspect
       p[0] = point2[0]-depth;
 
       // Now convert to Cartesian coordinates
-      return manifold.push_forward_sphere(p);
+      return manifold->push_forward_sphere(p);
     }
 
 
@@ -419,7 +396,7 @@ namespace aspect
       AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
                   ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      const Point<dim> spherical_point = manifold.pull_back(point);
+      const Point<dim> spherical_point = manifold->pull_back(point);
 
       for (unsigned int d = 0; d < dim; ++d)
         if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
@@ -439,7 +416,7 @@ namespace aspect
       // This is exactly what we need.
       // Ignore the topography to avoid a loop when calling the
       // AsciiDataBoundary for topography which uses this function....
-      const Point<dim> transformed_point = manifold.pull_back_sphere(position_point);
+      const Point<dim> transformed_point = manifold->pull_back_sphere(position_point);
       std::array<double,dim> position_array;
       for (unsigned int i = 0; i < dim; ++i)
         position_array[i] = transformed_point(i);
@@ -471,7 +448,7 @@ namespace aspect
       Point<dim> position_point;
       for (unsigned int i = 0; i < dim; ++i)
         position_point[i] = position_tensor[i];
-      const Point<dim> transformed_point = manifold.push_forward_sphere(position_point);
+      const Point<dim> transformed_point = manifold->push_forward_sphere(position_point);
 
       return transformed_point;
     }
@@ -580,13 +557,6 @@ namespace aspect
           AssertThrow(point3[0] < point2[0],
                       ExcMessage("Middle boundary radius must be less than outer radius."));
 
-          // Inform the manifold about the minimum longitude
-          manifold.set_min_longitude(point1[1]);
-          // Inform the manifold about the minimum radius
-          manifold.set_min_radius(point1[0]);
-          // Inform the manifold about the maximum depth (without topo)
-          manifold.set_max_depth(point2[0]-point1[0]);
-
           if (dim == 3)
             {
               point1[2] = prm.get_double ("Chunk minimum latitude") * constants::degree_to_radians;
@@ -658,7 +628,7 @@ namespace aspect
                                    "the velocity in direction of the cylinder axes is zero. "
                                    "This is consistent with the definition of what we consider "
                                    "the two-dimension case given in "
-                                   "Section~\\ref{sec:meaning-of-2d}. "
+                                   "Section~\\ref{sec:methods:2d-models}. "
                                    "It is also possible to add initial topography to the chunk geometry, "
                                    "based on an ascii data file. ")
   }

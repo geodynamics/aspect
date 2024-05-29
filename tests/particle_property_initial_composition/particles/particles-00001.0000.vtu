@@ -11,27 +11,27 @@
 <Piece NumberOfPoints="5" NumberOfCells="5" >
   <Points>
     <DataArray type="Float32" NumberOfComponents="3" format="binary">
-AQAAADwAAAA8AAAANwAAAA==eNrrWPHfTuCrhg0DEMT3MNuz5HqD2RVsGfZpT+PtQGyBS4L2m+/MB7Or5qrau2pOA7MB/oAPZA==
+AQAAADwAAAA8AAAAOAAAAA==eAHrWPHfTuCrhg0DEMT3MNuz5HqD2RVsGfZpT+PtQOIClwTtN9+ZD2ZXzVW1d9WcBmYDAP6AD2Q=
     </DataArray>
   </Points>
 
   <Cells>
     <DataArray type="Int32" Name="connectivity" format="binary">
-AQAAABQAAAAUAAAAFgAAAA==eNpjYGBgYARiJiBmBmIWIAYAAGQACw==
+AQAAABQAAAAUAAAAFgAAAA==eAFjYGBgYARiJiBmBmIWIAYAAGQACw==
     </DataArray>
     <DataArray type="Int32" Name="offsets" format="binary">
-AQAAABQAAAAUAAAAFgAAAA==eNpjZGBgYAJiZiBmAWJWIAYAAKAAEA==
+AQAAABQAAAAUAAAAFgAAAA==eAFjZGBgYAJiZiBmAWJWIAYAAKAAEA==
     </DataArray>
     <DataArray type="UInt8" Name="types" format="binary">
-AQAAAAUAAAAFAAAACwAAAA==eNpjZAQCAAAUAAY=
+AQAAAAUAAAAFAAAACwAAAA==eAFjZAQCAAAUAAY=
     </DataArray>
   </Cells>
   <PointData Scalars="scalars">
     <DataArray type="Float32" Name="id" format="binary">
-AQAAABQAAAAUAAAAFQAAAA==eNpjYACBBnsg4QCkgdjBAQARhwJA
+AQAAABQAAAAUAAAAFQAAAA==eAFjYACBBnsg4QCkgdjBAQARhwJA
     </DataArray>
     <DataArray type="Float32" Name="initial anomaly" format="binary">
-AQAAABQAAAAUAAAAGwAAAA==eNpjYGiwZwDiIykLreM2GpkdeMduDgA9Xwbm
+AQAAABQAAAAUAAAAGwAAAA==eAFjYGiwZwDiIykLreM2GpkdeMduDgA9Xwbm
     </DataArray>
   </PointData>
  </Piece>

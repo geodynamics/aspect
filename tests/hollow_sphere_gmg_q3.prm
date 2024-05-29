@@ -26,30 +26,26 @@ subsection Geometry model
     set Outer radius = 1.0
     set Cells along circumference = 12
   end
-
 end
 
 #Boundary conditions
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = inner : HollowSphereBoundary, \
                                                 outer : HollowSphereBoundary
 end
 
-
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude = 1.0
   end
 end
 
 subsection HollowSphere benchmark
-   #Viscosity parameter is m
-   set Viscosity parameter             = -1
+  #Viscosity parameter is m
+  set Viscosity parameter             = -1
 end
 
 ############### Parameters describing the temperature field
@@ -64,7 +60,6 @@ subsection Initial temperature model
   end
 end
 
-
 ############### Parameters describing the discretization
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
@@ -78,7 +73,6 @@ subsection Mesh refinement
   set Strategy                           = velocity
   set Run postprocessors on initial refinement            = true
 end
-
 
 ############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to

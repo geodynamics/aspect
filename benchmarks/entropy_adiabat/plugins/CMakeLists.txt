@@ -16,7 +16,7 @@
 # along with ASPECT; see the file LICENSE.  If not see
 # <http://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.13.4)
 
 FIND_PACKAGE(Aspect 2.4.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
 
@@ -35,5 +35,5 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 SET(TARGET "entropy_plugins")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED compute_entropy_profile.h compute_entropy_profile.cc entropy_model.h entropy_model.cc entropy_advection.cc entropy_advection.h prescribed_temperature.cc prescribed_temperature.h)
+ADD_LIBRARY(${TARGET} SHARED entropy_advection.cc entropy_advection.h)
 ASPECT_SETUP_PLUGIN(${TARGET})

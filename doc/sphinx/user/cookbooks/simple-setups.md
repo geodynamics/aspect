@@ -20,4 +20,6 @@ cookbooks/muparser_temperature_example/doc/muparser_temperature_example.md
 cookbooks/christensen_yuen_phase_function/doc/christensen_yuen_phase_function.md
 cookbooks/visualizing_phase_diagram/doc/visualizing_phase_diagram.md
 cookbooks/plume_2D_chunk/doc/plume.md
+cookbooks/fastscape_eroding_box/doc/README.md
+cookbooks/convection-box/tutorial-onset-of-convection/README.md
 :::

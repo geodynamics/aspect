@@ -13,6 +13,7 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
 
+
 # Global parameters
 set Start time                             = 0
 set End time                               = 200e3
@@ -51,10 +52,6 @@ subsection Boundary traction model
   set Prescribed traction boundary indicators = top: initial lithostatic pressure, bottom: initial lithostatic pressure
 
   # Set the point for the open top and bottom boundaries
-  subsection Initial lithostatic pressure
-    set Representative point = 320e3, 160e3
-    set Number of integration points = 10000
-  end
 
   subsection Initial lithostatic pressure
     set Representative point = 320e3, 0
@@ -66,6 +63,7 @@ end
 # Make the beam 9x longer than it is wide to ensure the 'thin' approximation is valid
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  =
@@ -77,6 +75,7 @@ end
 # The density contrast has to be small with such a large beam to preserve the small deflection approximation
 subsection Material model
   set Model name = viscoelastic
+
   subsection Viscoelastic
     set Densities            =  2800,  2800,  2800,  2800,  2805
     set Viscosities          = 1.e18, 1.e18, 1.e18, 1.e18, 1.e24

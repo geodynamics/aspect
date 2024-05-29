@@ -24,26 +24,36 @@ set Nonlinear solver scheme                          = single Advection, iterate
 set Nonlinear solver tolerance                       = 1e-7
 set Max nonlinear iterations                         = 100
 
+# For restarting the model
+set Resume computation                               = auto
+
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance                      = 1e-8
     set Number of cheap Stokes solver steps          = 0
 
-# A higher restart length makes the solver more robust for large viscosity
-# contrasts.
+    # A higher restart length makes the solver more robust for large viscosity
+    # contrasts.
     set GMRES solver restart length                  = 200
   end
 end
 
+# The  discontinuous composition bound preserving limiter produces sharp
+# interfaces between compositional layers.
 subsection Discretization
   set Composition polynomial degree                  = 2
   set Temperature polynomial degree                  = 2
   set Stokes velocity polynomial degree              = 2
   set Use locally conservative discretization        = false
+  set Use discontinuous composition discretization   = true
+
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = true
+    set Global composition maximum                 = 1, 1, 1, 1, 1, 100
+    set Global composition minimum                 = 0, 0, 0, 0, 0, 0
+  end
 end
 
-# For restarting the model
-set Resume computation                               = auto
 subsection Checkpointing
   set Steps between checkpoint                       = 20
 end
@@ -51,6 +61,7 @@ end
 # Gravity model
 subsection Gravity model
   set Model name                                     = vertical
+
   subsection Vertical
     set Magnitude                                    = 9.81
   end
@@ -59,21 +70,22 @@ end
 ### Parameters describing the model
 
 # Model geometry (36 x 8 cm)
- subsection Geometry model
-   set Model name                                    = box
+subsection Geometry model
+  set Model name                                    = box
 
-   subsection Box
-     set X repetitions                               = 180
-     set Y repetitions                               = 40
-     set X extent                                    = 0.36
-     set Y extent                                    = 0.08
-   end
- end
+  subsection Box
+    set X repetitions                               = 180
+    set Y repetitions                               = 40
+    set X extent                                    = 0.36
+    set Y extent                                    = 0.08
+  end
+end
 
 # Mesh refinement specifications
 subsection Mesh refinement
   set Initial adaptive refinement                    = 0
-#The resolution is 0.5 mm/cell
+
+  #The resolution is 0.5 mm/cell
   set Initial global refinement                      = 2
   set Time steps between mesh refinement             = 0
 end
@@ -108,6 +120,7 @@ end
 
 subsection Initial composition model
   set Model name                                     = function
+
   subsection Function
     set Variable names                               = x,y
     set Function constants                           = w1=0.35, w2=0.352, \
@@ -130,6 +143,7 @@ end
 # Initial temperature field
 subsection Initial temperature model
   set Model name                                     = function
+
   subsection Function
     set Function expression                          = 293
   end
@@ -140,15 +154,16 @@ subsection Boundary velocity model
   set Zero velocity boundary indicators              = bottom    #no slip
   set Tangential velocity boundary indicators        = left      #free slip
 
-# right - material inflow with a velocity of 2.5 cm/hour at the height of
-# the pushing block. The velocity linearly decreases from the base of the
-# rigid block to 0 cm/hour at the base of the model.
+  # right - material inflow with a velocity of 2.5 cm/hour at the height of
+  # the pushing block. The velocity linearly decreases from the base of the
+  # rigid block to 0 cm/hour at the base of the model.
   set Prescribed velocity boundary indicators        = right:function
-    subsection Function
-      set Variable names                             = x,y
-      set Function constants                         = cm=0.01, h=3600, th=0.002
-      set Function expression                        = if(y>th, -2.5*cm/h, -(y/th)*2.5*cm/h); 0
-   end
+
+  subsection Function
+    set Variable names                             = x,y
+    set Function constants                         = cm=0.01, h=3600, th=0.002
+    set Function expression                        = if(y>th, -2.5*cm/h, -(y/th)*2.5*cm/h); 0
+  end
 end
 
 # The top boundary is open (zero traction), which allows the sticky air to
@@ -157,17 +172,6 @@ end
 # distortion and associated numerical instabilities.
 subsection Boundary traction model
   set Prescribed traction boundary indicators        = top: zero traction
-end
-
-# The  discontinuous composition bound preserving limiter produces sharp
-# interfaces between compositional layers.
-subsection Discretization
-  set Use discontinuous composition discretization   = true
-  subsection Stabilization parameters
-      set Use limiter for discontinuous composition solution = true
-      set Global composition maximum                 = 1, 1, 1, 1, 1, 100
-      set Global composition minimum                 = 0, 0, 0, 0, 0, 0
-  end
 end
 
 # Material properties
@@ -182,38 +186,34 @@ subsection Material model
     set Minimum strain rate                          = 1e-20
     set Reference strain rate                        = 2e-5
 
-# The viscosity contrast is 10^7 here and any value higher than this causes
-# divergence of the solver.
+    # The viscosity contrast is 10^7 here and any value higher than this causes
+    # divergence of the solver.
     set Minimum viscosity                            = 1e5
     set Maximum viscosity                            = 1e12
-
     set Thermal diffusivities                        = 1e-6
     set Heat capacities                              = 750
     set Densities                                    = 1560, 1560, 1890, 1560, 3000, 0, 1e5
     set Thermal expansivities                        = 0
     set Viscosity averaging scheme                   = harmonic
     set Viscous flow law                             = dislocation
-
     set Prefactors for dislocation creep             = 5e-15, 5e-15, 5e-15, 5e-15, 5e-18, 5e-5, 5e-18
     set Stress exponents for dislocation creep       = 1
     set Activation energies for dislocation creep    = 0
     set Activation volumes for dislocation creep     = 0
-
     set Angles of internal friction                  = 36, 36, 36, 16, 0, 0, 1e18
     set Cohesions                                    = 30, 30, 30, 30, 1e18, 1e18, 1e18
-
     set Strain weakening mechanism                   = total strain
     set Start plasticity strain weakening intervals  = 0.5
     set End plasticity strain weakening intervals    = 1
     set Cohesion strain weakening factors            = 1
     set Friction strain weakening factors            = 1, 0.861, 0.861, 0.875, 1, 1, 1
-
   end
 end
 
 # Post processing
 subsection Postprocess
   set List of postprocessors                         = velocity statistics, basic statistics, temperature statistics, visualization
+
   subsection Visualization
     set List of output variables                     = density, viscosity, strain rate, error indicator
     set Output format                                = vtu

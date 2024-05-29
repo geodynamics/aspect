@@ -1,0 +1,58 @@
+# A test for the grain size material model using the pinned state damage formulation.
+# Over time the model maintains nearly constant temperatures, pressures and
+# strain rates. The grain size in the test approaches the equilibrium
+# grain size for t -> infinity. At 400 Myr the equilibrium grain size should
+# be 0.015124 m.
+
+include $ASPECT_SOURCE_DIR/tests/grain_size_strain.prm
+
+set Output directory                       = output_grain_size_strain_pinned_state
+set End time = 1e6
+
+subsection Material model
+  set Model name = grain size
+
+  subsection Grain size model
+    set Reference density                = 3400
+    set Thermal conductivity             = 0
+    set Thermal expansion coefficient    = 0
+    set Reference compressibility        = 0
+    set Viscosity                        = 1e18
+    set Minimum viscosity                = 1e16
+    set Reference temperature            = 1600
+    set Recrystallized grain size        =
+    set Grain growth activation energy       = 39072
+    set Grain growth activation volume       = 0.0
+    set Grain growth rate constant           = 1.6E-022
+    set Grain growth exponent                = 4
+    set Average specific grain boundary energy = 1.0
+    set Geometric constant                   = 3
+    set Grain size evolution formulation     = pinned grain damage
+
+    # Mulyukova and Bercovici (2018)
+    # Diffusion creep
+    set Diffusion creep prefactor            = 1e-200 # s^-1 Pa^-1 m^p
+    set Diffusion creep exponent             = 1.0 # 1 for diffusion creep
+    set Diffusion creep grain size exponent  = 3
+    set Diffusion activation energy          = 3e5 #J/mol
+    set Diffusion activation volume          = 0 # m^3/mol
+    set Dislocation viscosity iteration threshold = 1e-3
+
+    # Kawazoe et al. (2009)
+    # Dislocation creep
+    set Dislocation creep prefactor          = 1e-13 # s^-1 Pa^-n
+    set Dislocation creep exponent           = 3
+    set Dislocation activation energy        = 390720 # J/mol
+    set Dislocation activation volume        = 0 # m^3/mol
+
+    subsection Grain damage partitioning
+      set Minimum grain size reduction work fraction = 1e-6
+    end
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end

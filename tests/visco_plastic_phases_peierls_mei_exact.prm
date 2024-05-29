@@ -5,6 +5,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/visco_plastic_peierls_mei_exact.prm
 
+
 subsection Compositional fields
   set Number of fields = 1
   set Names of fields = right
@@ -14,28 +15,29 @@ end
 subsection Initial composition model
   set List of model names = function
   set List of model operators = add
+
   subsection Function
-     set Coordinate system = cartesian
-     set Variable names = x, y
-     set Function constants = XMAX=100e3
-     set Function expression = (x>XMAX/2.0) ? 1.0 : 0.0
+    set Coordinate system = cartesian
+    set Variable names = x, y
+    set Function constants = XMAX=100e3
+    set Function expression = (x>XMAX/2.0) ? 1.0 : 0.0
   end
 end
 
 subsection Material model
   set Model name = visco plastic
+
   subsection Visco Plastic
     set Phase transition depths = background:50e3|75e3, right:50e3|75e3
     set Phase transition widths = background:1e3|1e3, right:1e3|1e3
     set Phase transition temperatures = background:273|273, right:273|273
     set Phase transition Clapeyron slopes = background:0|0, right:0|0
-
     set Densities = background:3300|3400|3500, right:3600|3700|3800
     set Thermal expansivities = background:3.5e-5|2e-5|1.5e-5, right:3.5e-5|2e-5|1.5e-5
     set Heat capacities = background:1200|1000|900, right:1200|1000|900
-
     set Reference strain rate                     = 9.326722654162315e-11
     set Minimum strain rate                       = 9.326722654162315e-11
+
     # dislocation creep parameters
     # These values produce such a sufficiently high viscosity that the
     # composite viscosity between the diffusion and dislocation creep
@@ -45,6 +47,7 @@ subsection Material model
     set Stress exponents for dislocation creep    = 1.0
     set Activation energies for dislocation creep = 0
     set Activation volumes for dislocation creep  = 0
+
     # Peierls creep parameters
     set Include Peierls creep                     = true
     set Peierls creep flow law                    = exact
@@ -56,9 +59,8 @@ subsection Material model
     set Peierls fitting parameters                = 0.15
     set Peierls glide parameters p                = 0.5
     set Peierls glide parameters q                = 1.0
-
-    set Peierls strain rate residual tolerance = 1e-12
-    set Maximum Peierls strain rate iterations = 40
+    set Peierls strain rate residual tolerance    = 1e-12
+    set Maximum Peierls strain rate iterations    = 40
   end
 end
 

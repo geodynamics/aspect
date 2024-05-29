@@ -7,7 +7,6 @@ set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = false
 
-
 subsection Geometry model
   set Model name = box
 
@@ -17,21 +16,8 @@ subsection Geometry model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2, 3
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0, 1, 2, 3
-end
-
-
-subsection Boundary temperature model
   set List of model names = box
 
   subsection Box
@@ -40,11 +26,13 @@ subsection Boundary temperature model
   end
 end
 
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2, 3
+end
 
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Initial temperature model
   set Model name = function
@@ -54,7 +42,6 @@ subsection Initial temperature model
     set Function expression = (1-z)
   end
 end
-
 
 # Compared to the passive material model, we here make
 # the density composition dependent by letting it depend
@@ -72,12 +59,10 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 3
 end
-
 
 # For a temperature between zero and one,
 # density will vary between (1 - 3e-5) and 1.

@@ -28,9 +28,9 @@ subsection Gravity model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1e-10 + 4000 * x
   end
@@ -46,7 +46,6 @@ subsection Material model
     set Radial viscosity file name       = test-radial-visc.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false
-
     set Thermal conductivity formulation = p-T-dependent
     set Thermal conductivity transition depths = 0.41, 0.52, 0.66
     set Reference thermal conductivities = 2.47, 3.81, 3.52, 3.48
@@ -57,17 +56,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 5
   set Time steps between mesh refinement = 0
 end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   =
@@ -77,10 +70,8 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
 end
 
-
 subsection Postprocess
   set List of postprocessors = visualization, depth average
-
 
   subsection Visualization
     set Interpolate output            = true
@@ -92,6 +83,5 @@ subsection Postprocess
   subsection Depth average
     set Time between graphical output = 0
     set Number of zones = 10
- end
-
+  end
 end

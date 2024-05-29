@@ -67,10 +67,17 @@ namespace aspect
         virtual void initialize ();
 
         /**
-         * Return the value of the elevation at the given point.
+         * Return the value of the elevation at the given surface point.
+         *
+         * Note that different geometry models use different conventions for
+         * how they describe surface points. In general, the models use
+         * their own "natural" coordinate system. For example, box-type
+         * geometry models will generally provide points as x-y coordinates
+         * on the surface, whereas spherical-type geometry models will generally
+         * provide surface points in spherical coordinates.
          */
         virtual
-        double value (const Point<dim-1> &p) const = 0;
+        double value (const Point<dim-1> &surface_point) const = 0;
 
         /**
          * Return the maximum value of the elevation.
@@ -97,7 +104,6 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
-
     };
 
 

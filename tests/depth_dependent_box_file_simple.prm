@@ -42,7 +42,6 @@ subsection Geometry model
   end
 end
 
-
 # The next section deals with the initial conditions for the
 # temperature (there are no initial conditions for the
 # velocity variable since the velocity is assumed to always
@@ -63,7 +62,6 @@ subsection Initial temperature model
   end
 end
 
-
 # Then follows a section that describes the boundary conditions
 # for the temperature. The model we choose is called 'box' and
 # allows to set a constant temperature on each of the four sides
@@ -71,8 +69,14 @@ end
 # heated from below and cooled from above. (As will be seen
 # in the next section, the actual temperature prescribed here
 # at the left and right does not matter.)
+# We then also have to prescribe several other parts of the model such as
+# which boundaries actually carry a prescribed boundary temperature, whereas
+# all other parts of the boundary are insulated (i.e., no heat flux through
+# these boundaries; this is also often used to specify symmetry boundaries).
+
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = bottom, top
 
   subsection Box
     set Bottom temperature = 2773
@@ -82,23 +86,9 @@ subsection Boundary temperature model
   end
 end
 
-
-# We then also have to prescribe several other parts of the model such as
-# which boundaries actually carry a prescribed boundary temperature, whereas
-# all other parts of the boundary are insulated (i.e., no heat flux through
-# these boundaries; this is also often used to specify symmetry boundaries).
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
-
 
 # The following two sections describe first the
 # direction (vertical) and magnitude of gravity and the
@@ -113,9 +103,9 @@ subsection Gravity model
   end
 end
 
-
 subsection Material model
   set Model name = depth dependent
+
   subsection Depth dependent model
     set Base model = simple
     set Depth dependence method = File
@@ -123,6 +113,7 @@ subsection Material model
     set Viscosity depth file = visc_depth.txt
     set Reference viscosity = 1e25
   end
+
   subsection Simple model
     set Reference density             = 3300.0
     set Reference specific heat       = 1250.0
@@ -132,7 +123,6 @@ subsection Material model
     set Viscosity                     = 1e25
   end
 end
-
 
 # The settings above all pertain to the description of the
 # continuous partial differential equations we want to solve.
@@ -145,7 +135,6 @@ subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
-
 
 # The final part is to specify what ASPECT should do with the
 # solution once computed at the end of every time step. The

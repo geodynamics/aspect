@@ -114,6 +114,16 @@ namespace aspect
                                               const double temperature,
                                               const DiffusionCreepParameters creep_parameters) const;
 
+          /**
+           * Compute the logarithm of strain rate and first derivative with respect to
+           * the logarithm of the stress based on the diffusion creep law.
+           */
+          std::pair<double, double>
+          compute_log_strain_rate_and_derivative (const double log_stress,
+                                                  const double pressure,
+                                                  const double temperature,
+                                                  const DiffusionCreepParameters creep_parameters) const;
+
         private:
 
           /**

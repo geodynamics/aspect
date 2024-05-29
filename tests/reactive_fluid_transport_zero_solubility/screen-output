@@ -1,0 +1,41 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 74 (18+7+18+4+9+9+9)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Solving bound_fluid system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.42804e-16, 0, 2.27658e-16, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     Compositions min/max/mass:   0/0/0 // 0.01/0.01/4e+04
+     Melt fraction min/total/max: 0.01, 4e+04, 0.01
+     RMS, max velocity:           8.75e-19 m/year, 1.5e-18 m/year
+
+*** Timestep 1:  t=10000 years, dt=10000 years
+   Solving composition reactions... in 10 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.5731e-17, 2.27658e-16, 0, 1.29556e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.29556e-07
+
+
+   Postprocessing:
+     Compositions min/max/mass:   0.01/0.01/4e+04 // 0/0/0
+     Melt fraction min/total/max: 0.01, 4e+04, 0.01
+     RMS, max velocity:           2.95e-07 m/year, 4.04e-07 m/year
+
+Termination requested by criterion: end time
+
+
+

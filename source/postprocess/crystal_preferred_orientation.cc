@@ -132,7 +132,7 @@ namespace aspect
 
       AssertThrow (out, ExcMessage(std::string("Trying to write to file <") +
                                    filename +
-                                   ">, but the file can't be opened!"))
+                                   ">, but the file can't be opened!"));
 
       // now write and then move the tmp file to its final destination
       // if necessary
@@ -389,11 +389,14 @@ namespace aspect
               std::vector<std::vector<std::array<double,3>>> weighted_euler_angles;
 
               weighted_euler_angles.resize(n_minerals);
+              weighted_rotation_matrices.resize(n_minerals);
               std::vector<std::vector<double>> volume_fractions_grains(n_minerals,std::vector<double>(n_grains,-1.));
               for (unsigned int mineral = 0; mineral < n_minerals; ++mineral)
                 {
                   for (unsigned int i_grain = 0; i_grain < n_grains; ++i_grain)
                     {
+                      weighted_euler_angles[mineral].resize(n_grains);
+                      weighted_rotation_matrices[mineral].resize(n_grains);
                       volume_fractions_grains[mineral][i_grain] = cpo_particle_property.get_volume_fractions_grains(
                                                                     cpo_data_position,
                                                                     properties,
@@ -588,7 +591,7 @@ namespace aspect
           prm.declare_entry ("Random number seed", "1",
                              Patterns::Integer (0),
                              "The seed used to generate random numbers. This will make sure that "
-                             "results are reproducable as long as the problem is run with the "
+                             "results are reproducible as long as the problem is run with the "
                              "same amount of MPI processes. It is implemented as final seed = "
                              "random number seed + MPI Rank. ");
 
@@ -620,7 +623,7 @@ namespace aspect
                              "over the rotation matrix since they only require to write 3 values instead "
                              "of 9. If the list is empty, this file will not be written."
                              "Furthermore, the entries will be written out in the order given, "
-                             "and if entries are entered muliple times, they will be written "
+                             "and if entries are entered multiple times, they will be written "
                              "out multiple times.");
 
           prm.declare_entry ("Write out draw volume weighted cpo data",
@@ -639,11 +642,11 @@ namespace aspect
                              "over the rotation matrix since they only require to write 3 values instead "
                              "of 9. If the list is empty, this file will not be written. "
                              "Furthermore, the entries will be written out in the order given, "
-                             "and if entries are entered muliple times, they will be written "
+                             "and if entries are entered multiple times, they will be written "
                              "out multiple times.");
           prm.declare_entry ("Compress cpo data files", "true",
                              Patterns::Bool(),
-                             "Wether to compress the raw and weighted cpo data output files with zlib.");
+                             "Whether to compress the raw and weighted cpo data output files with zlib.");
         }
         prm.leave_subsection ();
       }
@@ -718,7 +721,7 @@ namespace aspect
 
               AssertThrow(split_raw_cpo_instructions.size() == 2,
                           ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option "
-                                     + "because it should contain a mineral identification and a output specifier seprated by a colon (:). This entry "
+                                     + "because it should contain a mineral identification and a output specifier separated by a colon (:). This entry "
                                      + "does not follow those rules."));
 
               // get mineral number
@@ -744,7 +747,7 @@ namespace aspect
               Output cpo_fabric_instruction = string_to_output_enum(split_raw_cpo_instructions[1]);
 
               AssertThrow(cpo_fabric_instruction != Output::not_found,
-                          ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option."))
+                          ExcMessage("Value \""+ write_raw_cpo_list[i] +"\", set in \"Write out raw cpo data\", is not a correct option."));
 
               if (cpo_fabric_instruction == Output::EulerAngles)
                 found_euler_angles = true;
@@ -761,7 +764,7 @@ namespace aspect
 
               AssertThrow(split_draw_volume_weighted_cpo_instructions.size() == 2,
                           ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option "
-                                     + "because it should contain a mineral identification and a output specifier seprated by a colon (:). This entry "
+                                     + "because it should contain a mineral identification and a output specifier separated by a colon (:). This entry "
                                      + "does not follow those rules."));
 
               // get mineral number
@@ -787,7 +790,7 @@ namespace aspect
               Output cpo_fabric_instruction = string_to_output_enum(split_draw_volume_weighted_cpo_instructions[1]);
 
               AssertThrow(cpo_fabric_instruction != Output::not_found,
-                          ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option."))
+                          ExcMessage("Value \""+ write_draw_volume_weighted_cpo_list[i] +"\", set in \"Write out draw volume weighted cpo data\", is not a correct option."));
 
               if (cpo_fabric_instruction == Output::RotationMatrix)
                 found_rotation_matrix = true;
@@ -829,7 +832,7 @@ namespace aspect
                                   "is recommended for plotting against real data. For both representations"
                                   "the specific output fields and their order can be set."
                                   "The work of this postprocessor should better be done by the main particles "
-                                  "postprocessor, however we need to be able to process the data before outputing it, "
+                                  "postprocessor, however we need to be able to process the data before outputting it, "
                                   "which does not work with that postprocessor. If this is added to the other "
                                   "postprocessor in the future this one becomes obsolete.")
   }

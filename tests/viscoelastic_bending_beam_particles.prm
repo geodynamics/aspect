@@ -11,6 +11,7 @@ set Output directory = viscoelastic_bending_beam_particles
 # Significantly reduce resolution
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X repetitions = 15
     set Y repetitions = 10
@@ -28,6 +29,7 @@ end
 # Post processing
 subsection Postprocess
   set List of postprocessors = basic statistics, composition statistics, particles
+
   subsection Particles
     set Number of particles = 4.5e3
     set Minimum particles per cell  = 25

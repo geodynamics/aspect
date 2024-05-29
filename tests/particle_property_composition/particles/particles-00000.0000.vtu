@@ -10,30 +10,30 @@
 <Piece NumberOfPoints="5" NumberOfCells="5" >
   <Points>
     <DataArray type="Float32" NumberOfComponents="3" format="binary">
-AQAAADwAAAA8AAAAIQAAAA==eNpjYFjgwMBwwokBDEBsO2cE2wOJHYTEngZmAwD/jgfl
+AQAAADwAAAA8AAAAIQAAAA==eAFjYFjgwMBwwokBDEBsO2cE2wOJHYTEngZmAwD/jgfl
     </DataArray>
   </Points>
 
   <Cells>
     <DataArray type="Int32" Name="connectivity" format="binary">
-AQAAABQAAAAUAAAAFgAAAA==eNpjYGBgYARiJiBmBmIWIAYAAGQACw==
+AQAAABQAAAAUAAAAFgAAAA==eAFjYGBgYARiJiBmBmIWIAYAAGQACw==
     </DataArray>
     <DataArray type="Int32" Name="offsets" format="binary">
-AQAAABQAAAAUAAAAFgAAAA==eNpjZGBgYAJiZiBmAWJWIAYAAKAAEA==
+AQAAABQAAAAUAAAAFgAAAA==eAFjZGBgYAJiZiBmAWJWIAYAAKAAEA==
     </DataArray>
     <DataArray type="UInt8" Name="types" format="binary">
-AQAAAAUAAAAFAAAACwAAAA==eNpjZAQCAAAUAAY=
+AQAAAAUAAAAFAAAACwAAAA==eAFjZAQCAAAUAAY=
     </DataArray>
   </Cells>
   <PointData Scalars="scalars">
     <DataArray type="Float32" Name="id" format="binary">
-AQAAABQAAAAUAAAAFwAAAA==eNpjYHBwYGBgAOIGewYwaHAAABSLAkA=
+AQAAABQAAAAUAAAAFwAAAA==eAFjYHBwYGBgAOIGeyANBA0OABSLAkA=
     </DataArray>
     <DataArray type="Float32" Name="porosity" format="binary">
-AQAAABQAAAAUAAAAGAAAAA==eNrjndFs1aukaMN1XdkGRPMC+QBAywYd
+AQAAABQAAAAUAAAAGAAAAA==eAHjndFs1aukaMN1XdkGRPMC+QBAywYd
     </DataArray>
     <DataArray type="Float32" Name="peridotite" format="binary">
-AQAAABQAAAAUAAAAGAAAAA==eNrjndFs1aukaMN1XdkGRPMC+QBAywYd
+AQAAABQAAAAUAAAAGAAAAA==eAHjndFs1aukaMN1XdkGRPMC+QBAywYd
     </DataArray>
   </PointData>
  </Piece>

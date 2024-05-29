@@ -1,9 +1,9 @@
 subsection Geometry model
   set Model name = box
 
-# The extents of the box is the same as the width
-# and height of the drawing in px
-# (an A4 page = 7350x10500 px).
+  # The extents of the box is the same as the width
+  # and height of the drawing in px
+  # (an A4 page = 7350x10500 px).
   subsection Box
     set X extent = 7350
     set Y extent = 10500

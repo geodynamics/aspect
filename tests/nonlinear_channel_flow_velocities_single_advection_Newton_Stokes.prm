@@ -3,5 +3,7 @@
 # 'single Advection, iterated Newton Stokes'
 
 set Dimension = 2
+
 include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_velocities_Newton_Stokes.prm
+
 set Nonlinear solver scheme = single Advection, iterated Newton Stokes

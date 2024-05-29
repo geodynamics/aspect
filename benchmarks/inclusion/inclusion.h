@@ -278,8 +278,6 @@ namespace aspect
         std::pair<std::string,std::string>
         execute (TableHandler &/*statistics*/) override
         {
-          std::unique_ptr<Function<dim>> ref_func;
-
           AssertThrow(Plugins::plugin_type_matches<const InclusionMaterial<dim>>(this->get_material_model()),
                       ExcMessage("Postprocessor only works with the inclusion material model."));
 
@@ -287,9 +285,10 @@ namespace aspect
           material_model
             = Plugins::get_plugin_as_type<const InclusionMaterial<dim>>(this->get_material_model());
 
-          ref_func.reset (new AnalyticSolutions::FunctionInclusion<dim>(
-                            material_model.get_eta_B(),
-                            this->n_compositional_fields()));
+          std::unique_ptr<Function<dim>> ref_func
+            = std::make_unique<AnalyticSolutions::FunctionInclusion<dim>>(
+                material_model.get_eta_B(),
+                this->n_compositional_fields());
 
           const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
 

@@ -10,7 +10,7 @@
 #
 # The analytical solution for viscoelastic stress build-up in
 # an incompressible medium with a constant strain-rate is:
-#   simga_ij = 2 * edot_ii * eta * (1 - e^(-mu*t/eta)),
+#   sigma_ij = 2 * edot_ii * eta * (1 - e^(-mu*t/eta)),
 # where sigma_ij is the elastic deviatoric stress tensor, edot_ij is
 # the deviatoric strain-rate, eta is the background viscosity, mu is the
 # shear modulus and t is time.
@@ -35,10 +35,11 @@
 # in the compositional fields tracking viscoelastic stresses.
 #
 # For the current test, we prescribe initial values to the compositional fields
-# that track the viscoelastic stresses that are equal to the eventual
-# analytical solution for the viscoelastic stress.
+# that track the viscoelastic stresses that are equal to the
+# analytical solution for the viscoelastic stress after 250 Kyr.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
+
 
 #  Global parameters
 set Dimension                              = 2
@@ -51,6 +52,7 @@ set Output directory                       = output
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, left
   set Prescribed velocity boundary indicators = bottom y:function, right x:function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = Lx = 100000, yinsec = 31557600, eps_ii = 1e-14
@@ -62,6 +64,7 @@ end
 # ve_stress_xx, ve_stress_yy, ve_stress_xy
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = eta = 1e22, mu = 1e10, eps = 1e-14, t = 250000, yinsec = 31557600
@@ -74,7 +77,7 @@ end
 subsection Postprocess
   subsection Visualization
     set Time between graphical output = 1e3
+    set List of output variables = stress, shear stress, stress second invariant
     set Output format = gnuplot
   end
-
 end

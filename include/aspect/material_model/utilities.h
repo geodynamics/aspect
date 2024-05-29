@@ -31,7 +31,14 @@
 namespace aspect
 {
   template <int dim> class SimulatorAccess;
+  namespace Utilities
+  {
+    using namespace dealii;
+    using namespace dealii::Utilities;
 
+    template <int dim>
+    class StructuredDataLookup;
+  }
   namespace MaterialModel
   {
     using namespace dealii;
@@ -245,7 +252,7 @@ namespace aspect
             HeFESToReader(const std::string &material_filename,
                           const std::string &derivatives_filename,
                           const bool interpol,
-                          const MPI_Comm &comm);
+                          const MPI_Comm comm);
         };
 
         /**
@@ -257,7 +264,79 @@ namespace aspect
           public:
             PerplexReader(const std::string &filename,
                           const bool interpol,
-                          const MPI_Comm &comm);
+                          const MPI_Comm comm);
+        };
+
+        /**
+        * This class reads in an entropy-pressure material table and looks up material
+        * properties for the given entropy and pressure.
+        */
+        class EntropyReader
+        {
+          public:
+
+            /**
+             * Read the table.
+             */
+            void
+            initialize(const MPI_Comm comm,
+                       const std::string data_directory,
+                       const std::string material_file_name);
+
+            /**
+             * Returns the specific heat for a given entropy and pressure.
+             */
+            double
+            specific_heat(const double entropy,
+                          const double pressure) const;
+
+            /**
+             * Returns the density for a given entropy and pressure.
+             */
+            double
+            density(const double entropy,
+                    const double pressure) const;
+
+            /**
+             * Returns the thermal_expansivity for a given entropy and pressure.
+             */
+            double
+            thermal_expansivity(const double entropy,
+                                const double pressure) const;
+
+            /**
+             * Returns the temperature for a given entropy and pressure.
+             */
+            double
+            temperature(const double entropy,
+                        const double pressure) const;
+
+            /**
+             * Returns the seismic p wave velocity for a given entropy and pressure.
+             */
+            double
+            seismic_vp(const double entropy,
+                       const double pressure) const;
+
+            /**
+             * Returns the seismic s wave velocity for a given entropy and pressure.
+             */
+            double
+            seismic_vs(const double entropy,
+                       const double pressure) const;
+
+            /**
+             * Returns density gradient for a given entropy and pressure.
+             */
+            Tensor<1, 2>
+            density_gradient(const double entropy,
+                             const double pressure) const;
+
+          private:
+            /**
+             * The StructuredDataLookup object that stores the material data.
+             */
+            std::unique_ptr<Utilities::StructuredDataLookup<2>> material_lookup;
         };
       }
 

@@ -9,17 +9,14 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = 0, 1
 end
-
-
 
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -28,13 +25,11 @@ subsection Geometry model
     set X extent = 3.3
     set Y extent = 2.2
     set Z extent = 1.1
-
     set Box origin X coordinate = -1.9
     set Box origin Y coordinate = 2.5
     set Box origin Z coordinate = 3.1
   end
 end
-
 
 subsection Initial temperature model
   set Model name = perturbed box
@@ -42,20 +37,18 @@ end
 
 subsection Compositional fields
   set Number of fields = 2
-
   set Names of fields = adv_field, adv_particle
-
   set Compositional field methods = field, particles
 end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names = x,y
     set Function expression = 0; 0
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -70,7 +63,6 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 1
@@ -78,24 +70,11 @@ end
 
 subsection Discretization
   set Use discontinuous temperature discretization = false
-
   set Use discontinuous composition discretization = true
-end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0, 1
 end
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 1
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0, 2, 3
 end
 
@@ -105,7 +84,6 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set Output format                 = gnuplot
-
     set Time between graphical output = 0
   end
 

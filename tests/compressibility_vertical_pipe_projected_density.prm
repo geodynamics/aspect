@@ -2,6 +2,7 @@ set Dimension = 2
 
 include $ASPECT_SOURCE_DIR/benchmarks/compressibility_formulations/vertical_pipe/vertical_pipe.prm
 
+
 include $ASPECT_SOURCE_DIR/benchmarks/compressibility_formulations/vertical_pipe/projected_density.prm
 
 set End time = 1e6

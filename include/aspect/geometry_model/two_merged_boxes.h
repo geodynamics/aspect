@@ -143,7 +143,8 @@ namespace aspect
          */
         void
         adjust_positions_for_periodicity (Point<dim> &position,
-                                          const ArrayView<Point<dim>> &connected_positions = {}) const override;
+                                          const ArrayView<Point<dim>> &connected_positions = {},
+                                          const ArrayView<Tensor<1, dim>> &connected_velocities = {}) const override;
 
         /**
          * @copydoc Interface::has_curved_elements()
@@ -254,10 +255,8 @@ namespace aspect
         /**
          * Bind boundary indicators to child cells after each mesh refinement round.
          */
-        virtual
         void
         set_boundary_indicators (parallel::distributed::Triangulation<dim> &triangulation) const;
-
     };
   }
 }

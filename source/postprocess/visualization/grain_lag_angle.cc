@@ -43,10 +43,11 @@ namespace aspect
 
 
       template<int dim>
-      std::pair<std::string, Vector<float> *> GrainLagAngle<dim>::execute() const
+      std::pair<std::string, std::unique_ptr<Vector<float>>>
+      GrainLagAngle<dim>::execute() const
       {
-        std::pair<std::string, Vector<float> *> return_value("grain_lag_angle",
-                                                             new Vector<float>(this->get_triangulation().n_active_cells()));
+        std::pair<std::string, std::unique_ptr<Vector<float>>> return_value("grain_lag_angle",
+                                                                              std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
 
         const QMidpoint<dim> quadrature_formula;
         const unsigned int n_q_points = quadrature_formula.size(); // this is 1 for QMidpoint

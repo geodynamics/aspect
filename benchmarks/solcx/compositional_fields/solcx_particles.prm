@@ -8,12 +8,9 @@ set Additional shared libraries            = ./libsolcx_compositional_fields.so
 ############### Global parameters
 
 set Dimension                              = 2
-
 set Start time                             = 0
 set End time                               = 0
-
 set Output directory                       = output
-
 set Pressure normalization                 = volume
 
 ############### Parameters describing the model
@@ -26,7 +23,6 @@ subsection Geometry model
     set Y extent = 1
   end
 end
-
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
@@ -57,6 +53,7 @@ subsection Discretization
   set Stokes velocity polynomial degree       = 2
   set Use locally conservative discretization = true
   set Use discontinuous composition discretization = true
+
   subsection Stabilization parameters
     set Use limiter for discontinuous composition solution = false # apply the limiter to the DG solutions
   end
@@ -82,6 +79,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = pi=3.1415926, eta_b=1e6, background_density=0.0
@@ -110,6 +108,7 @@ subsection Postprocess
     set Interpolation scheme = cell average
     set Maximum particles per cell = 16384
     set Update ghost particles = true
+    set Particle generator name = reference cell
 
     subsection Function
       set Number of components = 2
@@ -117,8 +116,6 @@ subsection Postprocess
       set Function constants  = pi=3.1415926, eta_b=1e6, background_density=0.0
       set Function expression =  background_density - sin(pi*y) * cos(pi*x); if(x<0.5, 1, eta_b)
     end
-
-    set Particle generator name = reference cell
 
     subsection Generator
       subsection Reference cell

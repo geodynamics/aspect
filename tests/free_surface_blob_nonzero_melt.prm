@@ -22,6 +22,7 @@ set Maximum time step                      = 1e4
 subsection Boundary temperature model
   set List of model names = constant
   set Fixed temperature boundary indicators   = 2,3
+
   subsection Constant
     set Boundary indicator to temperature mappings = 2:0,3:0
   end
@@ -29,6 +30,7 @@ end
 
 subsection Boundary fluid pressure model
   set Plugin name = density
+
   subsection Density
     set Density formulation = fluid density
   end
@@ -38,6 +40,7 @@ subsection Discretization
   set Stokes velocity polynomial degree       = 2
   set Temperature polynomial degree           = 2
   set Use locally conservative discretization = false
+
   subsection Stabilization parameters
     set alpha = 2
     set beta  = 0.078
@@ -45,9 +48,9 @@ subsection Discretization
   end
 end
 
-
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 500.e3
     set Y extent = 200.e3
@@ -56,26 +59,26 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression =  if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
   end
 end
 
-
 subsection Material model
   set Model name = melt free surface
+
   subsection Simple model
     set Reference density             = 3300
     set Reference specific heat       = 1250
@@ -86,7 +89,6 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Additional refinement times        =
   set Initial adaptive refinement        = 2
@@ -95,27 +97,21 @@ subsection Mesh refinement
   set Coarsening fraction                = 0.00
   set Strategy                           = minimum refinement function
   set Time steps between mesh refinement = 0
+
   subsection Minimum refinement function
     set Variable names      = depth, phi
     set Function expression = if(depth<10000,5,3)
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = 2
 end
 
 subsection Mesh deformation
   set Mesh deformation boundary indicators = 3: free surface
+
   subsection Free surface
     set Free surface stabilization theta = 0.5
   end
@@ -132,6 +128,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = 0.02 * (sin (3.141*x/5.e5) * sin (2*3.141*y/5.e5)) * (sin (3.141*x/5.e5) * sin (2*3.141*y/5.e5))

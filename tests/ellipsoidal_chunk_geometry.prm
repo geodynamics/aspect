@@ -13,15 +13,16 @@ set End time                               = 0
 
 subsection Geometry model
   set Model name = ellipsoidal chunk
-    subsection Ellipsoidal chunk
-        set NE corner = 7.5:30
-        set SW corner = -7.5:-10
-        set Depth = 3000000
-        set Eccentricity = 0.5
-        set East-West subdivisions = 1
-        set North-South subdivisions = 2
-        set Depth subdivisions = 3
-   end
+
+  subsection Ellipsoidal chunk
+    set NE corner = 7.5:30
+    set SW corner = -7.5:-10
+    set Depth = 3000000
+    set Eccentricity = 0.5
+    set East-West subdivisions = 1
+    set North-South subdivisions = 2
+    set Depth subdivisions = 3
+  end
 end
 
 subsection Boundary velocity model
@@ -32,11 +33,11 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = inner, outer,north,south,east,west
   set List of model names = constant
+
   subsection Constant
     set Boundary indicator to temperature mappings = west: 0, east: 1, south: 2, north: 3, inner: 4, outer:5
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -49,6 +50,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1.473e3
   end
@@ -72,6 +74,5 @@ subsection Postprocess
     set Interpolate output = false
     set List of output variables          = density
     set Output format                     = gnuplot
-
   end
 end

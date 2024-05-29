@@ -6,14 +6,12 @@
 #
 set Dimension                              = 2
 set Nonlinear solver scheme                = iterated Advection and Stokes
-
 set Use operator splitting                 = true
 
 # There are several global variables that have to do with what
 # time system we want to work in and what the end time is.
 set Use years in output instead of seconds = false
 set End time                               = 0.1
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1600
@@ -22,7 +20,6 @@ subsection Discretization
   set Stokes velocity polynomial degree    = 2
   set Composition polynomial degree        = 1
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -40,14 +37,16 @@ end
 
 subsection Initial temperature model
   set Model name = function
-    subsection Function
-      set Function expression       = 1 + y
-      set Variable names        = x,y
+
+  subsection Function
+    set Function expression       = 1 + y
+    set Variable names        = x,y
   end
 end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0.1; 0.0
   end
@@ -55,39 +54,24 @@ end
 
 subsection Boundary temperature model
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 2
 end
 
 subsection Boundary composition model
   set List of model names = initial composition
+  set Fixed composition boundary indicators   = 2
 end
 
 subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+
   subsection Function
     set Function expression = 0;0
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0,1,2,3
-end
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = 2
-end
-
 subsection Melt settings
   set Include melt transport                  = true
-end
-
-subsection Melt settings
   set Heat advection by melt = true
 end
 
@@ -106,7 +90,6 @@ subsection Gravity model
     set Magnitude = 1.1111111111111
   end
 end
-
 
 subsection Material model
   set Model name = melt global advection
@@ -128,13 +111,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement                = 4
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = temperature statistics, heating statistics, visualization

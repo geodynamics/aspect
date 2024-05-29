@@ -118,10 +118,13 @@ namespace aspect
               stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
           }
 
-        // The first time this function is called (first iteration of first time step)
-        // a specified "reference" strain rate is used as the returned value would
-        // otherwise be zero.
-        const bool use_reference_strainrate = (this->get_timestep_number() == 0) &&
+        // Use a specified "reference" strain rate if the strain rate is not yet available,
+        // or close to zero. This is to avoid division by zero.
+        const bool use_reference_strainrate = this->simulator_is_past_initialization() == false
+                                              ||
+                                              (this->get_timestep_number() == 0 &&
+                                               this->get_nonlinear_iteration() == 0)
+                                              ||
                                               (in.strain_rate[i].norm() <= std::numeric_limits<double>::min());
 
         double edot_ii;
@@ -142,7 +145,12 @@ namespace aspect
               // Choice of activation volume depends on whether there is an adiabatic temperature
               // gradient used when calculating the viscosity. This allows the same activation volume
               // to be used in incompressible and compressible models.
-              const double temperature_for_viscosity = in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*in.pressure[i];
+              const double temperature_for_viscosity = (this->simulator_is_past_initialization())
+                                                       ?
+                                                       in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*in.pressure[i]
+                                                       :
+                                                       this->get_adiabatic_conditions().temperature(in.position[i]);
+
               AssertThrow(temperature_for_viscosity != 0, ExcMessage(
                             "The temperature used in the calculation of the visco-plastic rheology is zero. "
                             "This is not allowed, because this value is used to divide through. It is probably "
@@ -253,11 +261,12 @@ namespace aspect
                     Assert(std::isfinite(in.strain_rate[i].norm()),
                            ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                       "not filled by the caller."));
-                    const double effective_strain_rate_invariant = elastic_rheology.calculate_viscoelastic_strain_rate(in.strain_rate[i],
-                                                                   stress_old,
-                                                                   elastic_shear_moduli[j]);
+                    const SymmetricTensor<2,dim> effective_strain_rate =
+                      elastic_rheology.calculate_viscoelastic_strain_rate(in.strain_rate[i],
+                                                                          stress_old,
+                                                                          elastic_shear_moduli[j]);
 
-                    effective_edot_ii = std::max(effective_strain_rate_invariant,
+                    effective_edot_ii = std::max(std::sqrt(std::max(-second_invariant(effective_strain_rate), 0.)),
                                                  min_strain_rate);
                   }
 
@@ -395,17 +404,15 @@ namespace aspect
                    ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                               "not filled by the caller."));
 
+            const SymmetricTensor<2,dim> deviatoric_strain_rate = deviator(in.strain_rate[i]);
+
             // For each independent component, compute the derivative.
             for (unsigned int component = 0; component < SymmetricTensor<2,dim>::n_independent_components; ++component)
               {
                 const TableIndices<2> strain_rate_indices = SymmetricTensor<2,dim>::unrolled_to_component_indices (component);
 
-                // components that are not on the diagonal are multiplied by 0.5, because the symmetric tensor
-                // is modified by 0.5 in both symmetric directions (xy/yx) simultaneously and we compute the combined
-                // derivative
-                const SymmetricTensor<2,dim> strain_rate_difference = in.strain_rate[i]
-                                                                      + std::max(std::fabs(in.strain_rate[i][strain_rate_indices]), min_strain_rate)
-                                                                      * (component > dim-1 ? 0.5 : 1 )
+                const SymmetricTensor<2,dim> strain_rate_difference = deviatoric_strain_rate
+                                                                      + std::max(std::fabs(deviatoric_strain_rate[strain_rate_indices]), min_strain_rate)
                                                                       * finite_difference_accuracy
                                                                       * Utilities::nth_basis_for_symmetric_tensors<dim>(component);
 
@@ -589,8 +596,8 @@ namespace aspect
                            Patterns::List(Patterns::Double (0.)),
                            "List of stress limiter exponents, $n_{\\text{lim}}$, "
                            "for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
-                           "Units: none.");
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. Units: none.");
 
         // Temperature gradient in viscosity laws to include an adiabat (note units of K/Pa)
         prm.declare_entry ("Adiabat temperature gradient for viscosity", "0.0", Patterns::Double (0.),
@@ -611,12 +618,6 @@ namespace aspect
       ViscoPlastic<dim>::parse_parameters (ParameterHandler &prm,
                                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
-        // Establish that a background field is required here
-        const bool has_background_field = true;
-
-        // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
-
         strain_rheology.initialize_simulator (this->get_simulator());
         strain_rheology.parse_parameters(prm);
 
@@ -632,19 +633,36 @@ namespace aspect
         // Reference and minimum/maximum values
         min_strain_rate = prm.get_double("Minimum strain rate");
         ref_strain_rate = prm.get_double("Reference strain rate");
-        minimum_viscosity = Utilities::parse_map_to_double_array (prm.get("Minimum viscosity"),
-                                                                  list_of_composition_names,
-                                                                  has_background_field,
-                                                                  "Minimum viscosity",
-                                                                  true,
-                                                                  expected_n_phases_per_composition);
 
-        maximum_viscosity = Utilities::parse_map_to_double_array (prm.get("Maximum viscosity"),
-                                                                  list_of_composition_names,
-                                                                  has_background_field,
-                                                                  "Maximum viscosity",
-                                                                  true,
-                                                                  expected_n_phases_per_composition);
+        // Retrieve the list of composition names
+        std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+
+        // Retrieve the list of names of fields that represent chemical compositions, and not, e.g.,
+        // plastic strain
+        std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
+
+        // Establish that a background field is required here
+        compositional_field_names.insert(compositional_field_names.begin(), "background");
+        chemical_field_names.insert(chemical_field_names.begin(), "background");
+
+        Utilities::MapParsing::Options options(chemical_field_names, "Minimum viscosity");
+        options.list_of_allowed_keys = compositional_field_names;
+        options.allow_multiple_values_per_key = true;
+        if (expected_n_phases_per_composition)
+          {
+            options.n_values_per_key = *expected_n_phases_per_composition;
+
+            // check_values_per_key is required to be true to duplicate single values
+            // if they are to be used for all phases associated with a given key.
+            options.check_values_per_key = true;
+          }
+
+        minimum_viscosity = Utilities::MapParsing::parse_map_to_double_array (prm.get("Minimum viscosity"),
+                                                                              options);
+
+        options.property_name = "Maximum viscosity";
+        maximum_viscosity = Utilities::MapParsing::parse_map_to_double_array (prm.get("Maximum viscosity"),
+                                                                              options);
 
         Assert(maximum_viscosity.size() == minimum_viscosity.size(),
                ExcMessage("The input parameters 'Maximum viscosity' and 'Minimum viscosity' should have the same number of entries."));
@@ -714,11 +732,13 @@ namespace aspect
         drucker_prager_plasticity.initialize_simulator (this->get_simulator());
         drucker_prager_plasticity.parse_parameters(prm, expected_n_phases_per_composition);
 
-        // Stress limiter parameter
-        exponents_stress_limiter = Utilities::parse_map_to_double_array (prm.get("Stress limiter exponents"),
-                                                                         list_of_composition_names,
-                                                                         has_background_field,
-                                                                         "Stress limiter exponents");
+        // Stress limiter parameter (does not allow for phases per composition)
+        options.property_name = "Stress limiter exponents";
+        options.allow_multiple_values_per_key = false;
+        options.check_values_per_key = false;
+
+        exponents_stress_limiter = Utilities::MapParsing::parse_map_to_double_array (prm.get("Stress limiter exponents"),
+                                                                                     options);
 
         // Include an adiabat temperature gradient in flow laws
         adiabatic_temperature_gradient_for_viscosity = prm.get_double("Adiabat temperature gradient for viscosity");
@@ -801,6 +821,8 @@ namespace aspect
   namespace MaterialModel
   {
 #define INSTANTIATE(dim) \
+  template class PlasticAdditionalOutputs<dim>; \
+  \
   namespace Rheology \
   { \
     template class ViscoPlastic<dim>; \

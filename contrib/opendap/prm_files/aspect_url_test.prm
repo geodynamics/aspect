@@ -26,33 +26,25 @@ subsection Geometry model
 end
 
 subsection Initial temperature model
-   set Model name = adiabatic boundary
- subsection Adiabatic boundary
+  set Model name = adiabatic boundary
+
+  subsection Adiabatic boundary
     set Data directory    =
     set Data file name       = http://balto.opendap.org/opendap/lithosphere_thickness/lithospheric_thickness.csv
-end
-end
-
-
-subsection Boundary temperature model
-  set List of model names = initial temperature
-  subsection Initial temperature
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary temperature model
+  set List of model names = initial temperature
   set Fixed temperature boundary indicators   = inner, outer
+
+  subsection Initial temperature
+  end
 end
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = inner, outer, west, east, south, north
 end
-
 
 subsection Gravity model
   set Model name = ascii data
@@ -68,14 +60,14 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
 end
 
-
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics
+
   subsection Visualization
     set List of output variables      = viscosity, density, strain rate
     set Time between graphical output = 1.0
     set Output format = vtu
-end
+  end
 end
 
 subsection Solver parameters

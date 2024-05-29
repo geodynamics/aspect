@@ -1,0 +1,32 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for Stokes solver
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
+# 14: Minimal value for composition total_strain
+# 15: Maximal value for composition total_strain
+# 16: Global mass for composition total_strain
+# 17: Average density (kg/m^3)
+# 18: Average viscosity (Pa s)
+# 19: Total mass (kg)
+# 20: Minimal temperature (K)
+# 21: Average temperature (K)
+# 22: Maximal temperature (K)
+# 23: Average nondimensional temperature (K)
+# 24: RMS velocity (m/year)
+# 25: Max. velocity (m/year)
+# 26: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 25 278 121 121 1 0  0 19 21 20 2.00000000e-01 2.00000000e-01 2.00000000e+09 3.30231000e+03 5.00000000e+21 3.30231000e+13 2.73000000e+02 2.73000000e+02 2.73000000e+02 -3.01316824e-17 7.77388553e-14 2.02765461e-13 output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00000 
+1 2.000000000000e+06 2.000000000000e+06 25 278 121 121 1 0 10 18 20 20 1.62174669e-01 1.62174669e-01 1.62174669e+09 3.30231000e+03 5.94563328e+21 3.30231000e+13 2.73000000e+02 2.73000000e+02 2.73000000e+02 -3.01316824e-17 1.44920392e-18 3.87210576e-18 output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00001 
+2 4.000000000000e+06 2.000000000000e+06 25 278 121 121 1 0  0 18 20 20 1.24349338e-01 1.24349338e-01 1.24349338e+09 3.30231000e+03 6.89126656e+21 3.30231000e+13 2.73000000e+02 2.73000000e+02 2.73000000e+02 -3.01316824e-17 1.21762261e-18 3.35218690e-18 output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00002 
+3 6.000000000000e+06 2.000000000000e+06 25 278 121 121 1 0  0 22 24 24 8.65240064e-02 8.65240064e-02 8.65240064e+08 3.30231000e+03 7.83689984e+21 3.30231000e+13 2.73000000e+02 2.73000000e+02 2.73000000e+02 -3.01316824e-17 2.61880563e-18 5.34825167e-18 output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00003 
+4 8.000000000000e+06 2.000000000000e+06 25 278 121 121 1 0  1 23 25 25 4.86986752e-02 4.86986752e-02 4.86986752e+08 3.30231000e+03 8.78253312e+21 3.30231000e+13 2.73000000e+02 2.73000000e+02 2.73000000e+02 -3.01316824e-17 1.30432536e-18 2.91076485e-18 output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00004 
+5 1.000000000000e+07 2.000000000000e+06 25 278 121 121 1 0  1 23 25 25 1.08733440e-02 1.08733440e-02 1.08733440e+08 3.30231000e+03 9.72816640e+21 3.30231000e+13 2.73000000e+02 2.73000000e+02 2.73000000e+02 -3.01316824e-17 9.67854896e-19 2.21720614e-18 output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00005 

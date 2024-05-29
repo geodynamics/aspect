@@ -447,7 +447,7 @@ namespace aspect
     StokesIncompressibleTerms<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
-      const unsigned int n_points = outputs.viscosities.size();
+      const unsigned int n_points = outputs.n_evaluation_points();
 
       // Stokes RHS:
       if (this->get_parameters().enable_additional_stokes_rhs

@@ -203,7 +203,7 @@ void validate_shared_lib_list (const bool before_loading_shared_libs)
         error << "Since this is happening already before opening additional\n"
               << "shared libraries, this means that something must have gone\n"
               << "wrong when you configured deal.II and/or ASPECT. Please\n"
-              << "contact the mailing lists for help.\n";
+              << "contact the forum for help.\n";
       else
         error << "Since this is happening after opening additional shared\n"
               << "library plugins, this likely means that you have compiled\n"
@@ -289,7 +289,13 @@ void possibly_load_shared_libs (const std::string &parameters)
                        ExcMessage (std::string("Could not successfully load shared library <")
                                    + filename + ">. The operating system reports "
                                    + "that the error is this: <"
-                                   + dlerror() + ">."));
+                                   + dlerror() +
+                                   ">. Did you call 'cmake' and then compile "
+                                   "the plugin library you are trying to load, and did "
+                                   "you check the spelling of the library's name? "
+                                   "Are you running ASPECT in a directory so that the path "
+                                   "to the library in question is as specified in the "
+                                   ".prm file?"));
 
           // check again whether the list of shared libraries is
           // internally consistent or whether we link with both the

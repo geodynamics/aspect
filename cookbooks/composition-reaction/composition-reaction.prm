@@ -11,7 +11,6 @@ set End time                               = 20
 set Use years in output instead of seconds = false
 set Output directory                       = output-composition-reaction
 
-
 ############### Parameters describing the model
 # Let us here choose again a box domain of size 2x1
 # where we fix the temperature at the bottom and top,
@@ -28,11 +27,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Compositional fields
   set Number of fields = 2
 end
-
 
 # We then set the temperature to one at the bottom and zero
 # at the top:
@@ -45,7 +42,6 @@ subsection Boundary temperature model
     set Top temperature    = 0
   end
 end
-
 
 # The velocity along the top boundary models a spreading
 # center that is moving left and right:
@@ -60,7 +56,6 @@ subsection Boundary velocity model
   end
 end
 
-
 # We then choose a vertical gravity model and describe the
 # initial temperature with a vertical gradient. The default
 # strength for gravity is one. The material model is the
@@ -68,7 +63,6 @@ end
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Initial temperature model
   set Model name = function
@@ -88,7 +82,6 @@ subsection Initial composition model
   end
 end
 
-
 subsection Material model
   set Model name = composition reaction
 
@@ -102,7 +95,6 @@ subsection Material model
   end
 end
 
-
 # The final part of this input file describes how many times the
 # mesh is refined and what to do with the solution once computed
 subsection Mesh refinement
@@ -110,7 +102,6 @@ subsection Mesh refinement
   set Initial global refinement          = 5
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, heat flux statistics

@@ -11,7 +11,6 @@ set End time                               = 1e5
 set Adiabatic surface temperature          = 1600.0
 set Use years in output instead of seconds = true
 
-
 subsection Solver parameters
   subsection Stokes solver parameters
     set Use full A block as preconditioner = true
@@ -20,6 +19,8 @@ end
 
 subsection Boundary temperature model
   set List of model names = spherical constant
+  set Fixed temperature boundary indicators   = 0,1
+
   subsection Spherical constant
     set Inner temperature = 4250
     set Outer temperature = 273
@@ -44,9 +45,9 @@ subsection Gravity model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = harmonic perturbation
+
   subsection Harmonic perturbation
     set Magnitude = 200.0
   end
@@ -62,40 +63,21 @@ subsection Material model
     set Viscosity = 1e21
     set Reference compressibility = 2.5e-12
   end
-
 end
-
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-
   set Initial global refinement          = 3
-
   set Refinement fraction                = 0.0
   set Coarsening fraction                = 0.0
-
   set Strategy                           = velocity
-
   set Time steps between mesh refinement = 0
-end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,1
 end
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,2,3
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = 1
 end
-
 
 subsection Postprocess
   set List of postprocessors =

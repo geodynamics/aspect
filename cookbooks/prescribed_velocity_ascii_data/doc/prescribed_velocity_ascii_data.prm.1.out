@@ -11,6 +11,7 @@ subsection Prescribed velocities
 
   subsection Velocity function
     set Variable names = x,y,t
+
     # Return u_x; u_y; u_z (u_z only used if in 3d)
     set Function expression = 0;0
   end

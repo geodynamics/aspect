@@ -1,5 +1,6 @@
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1473
   end

@@ -34,6 +34,7 @@ end
 # outer radius of 6371km
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Inner radius  = 3481000
     set Outer radius  = 6371000
@@ -47,6 +48,7 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
   set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 2000
     set Outer temperature = 1000
@@ -58,6 +60,7 @@ end
 # everywhere
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude = 10
   end
@@ -70,23 +73,23 @@ end
 # with a cubic spline.
 subsection Initial temperature model
   set Model name = S40RTS perturbation
-    subsection S40RTS perturbation
 
-# The two input options here are S20RTS or the higher resolution
-# S40RTS (Ritsema et al., 2011). One can choose to remove the
-# degree 0 from these files so that the depth average value
-# is zero.
+  subsection S40RTS perturbation
+    # The two input options here are S20RTS or the higher resolution
+    # S40RTS (Ritsema et al., 2011). One can choose to remove the
+    # degree 0 from these files so that the depth average value
+    # is zero.
     set Initial condition file name       = S20RTS.sph
     set Remove degree 0 from perturbation = false
 
-# The following parameters determine the scaling from shear wave
-# velocity perturbation to temperature differences. We chose the
-# scaling to density perturbation as 0.15
+    # The following parameters determine the scaling from shear wave
+    # velocity perturbation to temperature differences. We chose the
+    # scaling to density perturbation as 0.15
     set Vs to density scaling             = 0.15
     set Thermal expansion coefficient in initial temperature scaling = 3e-5
 
-# This specifies the background temperature to which we add the
-# temperature difference.
+    # This specifies the background temperature to which we add the
+    # temperature difference.
     set Reference temperature             = 1600
   end
 end
@@ -95,7 +98,8 @@ end
 # a constant density, and other parameters as stated below.
 subsection Material model
   set Model name = simple
-    subsection Simple model
+
+  subsection Simple model
     set Reference density                 = 3300
     set Viscosity                         = 1e21
     set Thermal expansion coefficient     = 3e-5
@@ -119,7 +123,6 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, bottom
 end
 
-
 # We output the density, velocity, dynamic topography, geoid and heat flux density
 # for plotting.
 subsection Postprocess
@@ -131,9 +134,9 @@ subsection Postprocess
     set Time between graphical output = 0
     set Number of grouped files       = 1
 
-# We only have dirichlet boundaries with tangential velocities, so we can
-# increase the output resolution as described in the documentation of the 'heat
-# flux map' postprocessor.
+    # We only have dirichlet boundaries with tangential velocities, so we can
+    # increase the output resolution as described in the documentation of the 'heat
+    # flux map' postprocessor.
     subsection Heat flux map
       set Output point wise heat flux = true
     end

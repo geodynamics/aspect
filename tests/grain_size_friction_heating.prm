@@ -6,7 +6,6 @@
 set Dimension                              = 2
 set End time                               = 10000
 set Use years in output instead of seconds = true
-
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1600
 
@@ -24,28 +23,20 @@ subsection Heating model
   set List of model names = shear heating
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top,bottom
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Minimal temperature = 1400
+  end
 end
 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top:function,bottom:function
-end
 
-subsection Boundary velocity model
   subsection Function
     set Function expression = 1.0*(y/100000);0
-  end
-end
-
-subsection Boundary temperature model
-  set List of model names = initial temperature
-  subsection Initial temperature
-    set Minimal temperature = 1400
   end
 end
 
@@ -55,6 +46,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0.0
   end
@@ -65,6 +57,7 @@ subsection Initial temperature model
 
   subsection Adiabatic
     set Age top boundary layer      = 0
+
     subsection Function
       set Function expression       = 0
     end
@@ -98,7 +91,6 @@ subsection Material model
     set Minimum viscosity                = 1e16
     set Reference temperature            = 1600
     set Recrystallized grain size        =
-
     set Grain growth activation energy       = 4e5
     set Grain growth activation volume       = 0.0
     set Grain growth rate constant           = 1.92E-010
@@ -106,25 +98,25 @@ subsection Material model
     set Average specific grain boundary energy = 1.0
     set Work fraction for boundary area change = 0.1
     set Geometric constant                   = 3
-    set Use paleowattmeter                          = true
+    set Grain size evolution formulation     = paleowattmeter
     set Reciprocal required strain                  = 10
 
     # Faul and Jackson 2007
     # Diffusion creep
     # new scaled prefactors to match vertical viscosity profile
-    set Diffusion creep prefactor            =3.0e-015 # s^-1 Pa^-1 m^p
-    set Diffusion creep exponent             =1.0 # 1 for diffusion creep
-    set Diffusion creep grain size exponent  =3
-    set Diffusion activation energy          =3.75e5 #J/mol
-    set Diffusion activation volume          =6e-6 # m^3/mol (from Karato 2010)
-
+    set Diffusion creep prefactor            = 3.0e-015 # s^-1 Pa^-1 m^p
+    set Diffusion creep exponent             = 1.0 # 1 for diffusion creep
+    set Diffusion creep grain size exponent  = 3
+    set Diffusion activation energy          = 3.75e5 #J/mol
+    set Diffusion activation volume          = 6e-6 # m^3/mol (from Karato 2010)
     set Dislocation viscosity iteration threshold = 1e-3
+
     # Kawazoe et al. (2009)
     # Dislocation creep
-    set Dislocation creep prefactor          =1.244507e-15 # s^-1 Pa^-n
-    set Dislocation creep exponent           =3.5
-    set Dislocation activation energy        =530000 # J/mol
-    set Dislocation activation volume        =1.40E-005 # m^3/mol
+    set Dislocation creep prefactor          = 1.244507e-15 # s^-1 Pa^-n
+    set Dislocation creep exponent           = 3.5
+    set Dislocation activation energy        = 530000 # J/mol
+    set Dislocation activation volume        = 1.40E-005 # m^3/mol
   end
 end
 

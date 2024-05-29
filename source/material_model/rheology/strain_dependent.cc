@@ -29,6 +29,7 @@
 #include <aspect/simulator.h>
 
 #include <deal.II/fe/fe_values.h>
+#include <deal.II/numerics/fe_field_function.h>
 #include <deal.II/base/quadrature_lib.h>
 
 namespace aspect
@@ -103,7 +104,8 @@ namespace aspect
                            "List of strain weakening interval initial strains "
                            "for the cohesion and friction angle parameters of the "
                            "background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. Units: None.");
 
         prm.declare_entry ("End plasticity strain weakening intervals", "1.",
@@ -111,21 +113,24 @@ namespace aspect
                            "List of strain weakening interval final strains "
                            "for the cohesion and friction angle parameters of the "
                            "background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
 
         prm.declare_entry ("Cohesion strain weakening factors", "1.",
                            Patterns::List(Patterns::Double (0.)),
                            "List of cohesion strain weakening factors "
                            "for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
 
         prm.declare_entry ("Friction strain weakening factors", "1.",
                            Patterns::List(Patterns::Double (0.)),
                            "List of friction strain weakening factors "
                            "for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
 
         prm.declare_entry ("Start prefactor strain weakening intervals", "0.",
@@ -133,7 +138,8 @@ namespace aspect
                            "List of strain weakening interval initial strains "
                            "for the diffusion and dislocation prefactor parameters of the "
                            "background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
 
         prm.declare_entry ("End prefactor strain weakening intervals", "1.",
@@ -141,14 +147,16 @@ namespace aspect
                            "List of strain weakening interval final strains "
                            "for the diffusion and dislocation prefactor parameters of the "
                            "background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
 
         prm.declare_entry ("Prefactor strain weakening factors", "1.",
                            Patterns::List(Patterns::Double(0., 1.)),
                            "List of viscous strain weakening factors "
                            "for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields "
+                           "or only those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value.  Units: None.");
 
         prm.declare_entry ("Strain healing mechanism", "no healing",
@@ -232,7 +240,7 @@ namespace aspect
                             ExcMessage("A material model with strain weakening using the full strain tensor only works if there are "
                                        "compositional fields called sij, with i=1,..,dim and j=1,...,dim listed in the following order: "
                                        "s11, s12, s21, s22."));
-                AssertThrow(n_s22 == n_s11+s-1, ExcMessage("The strain tensor components should be represented by consecutive fields."))
+                AssertThrow(n_s22 == n_s11+s-1, ExcMessage("The strain tensor components should be represented by consecutive fields."));
               }
             if (dim==3)
               {
@@ -298,45 +306,45 @@ namespace aspect
 
 
         // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+        std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+
+        // Retrieve the list of names of fields that represent chemical compositions, and not, e.g.,
+        // plastic strain
+        std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
 
         // Establish that a background field is required here
-        const bool has_background_field = true;
+        compositional_field_names.insert(compositional_field_names.begin(), "background");
+        chemical_field_names.insert(chemical_field_names.begin(),"background");
 
-        start_plastic_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("Start plasticity strain weakening intervals"),
-                                                   list_of_composition_names,
-                                                   has_background_field,
-                                                   "Start plasticity strain weakening intervals");
+        Utilities::MapParsing::Options options(chemical_field_names, "Start plasticity strain weakening intervals");
+        options.list_of_allowed_keys = compositional_field_names;
 
-        end_plastic_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("End plasticity strain weakening intervals"),
-                                                                                       list_of_composition_names,
-                                                                                       has_background_field,
-                                                                                       "End plasticity strain weakening intervals");
+        start_plastic_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("Start plasticity strain weakening intervals"),
+                                                   options);
 
-        start_viscous_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("Start prefactor strain weakening intervals"),
-                                                   list_of_composition_names,
-                                                   has_background_field,
-                                                   "Start prefactor strain weakening intervals");
+        options.property_name = "End plasticity strain weakening intervals";
+        end_plastic_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("End plasticity strain weakening intervals"),
+                                                 options);
 
-        end_viscous_strain_weakening_intervals = Utilities::parse_map_to_double_array (prm.get("End prefactor strain weakening intervals"),
-                                                                                       list_of_composition_names,
-                                                                                       has_background_field,
-                                                                                       "End prefactor strain weakening intervals");
+        options.property_name = "Start prefactor strain weakening intervals";
+        start_viscous_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("Start prefactor strain weakening intervals"),
+                                                   options);
 
-        viscous_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Prefactor strain weakening factors"),
-                                                                                 list_of_composition_names,
-                                                                                 has_background_field,
-                                                                                 "Prefactor strain weakening factors");
+        options.property_name = "End prefactor strain weakening intervals";
+        end_viscous_strain_weakening_intervals = Utilities::MapParsing::parse_map_to_double_array(prm.get("End prefactor strain weakening intervals"),
+                                                 options);
 
-        cohesion_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Cohesion strain weakening factors"),
-                                                                                  list_of_composition_names,
-                                                                                  has_background_field,
-                                                                                  "Cohesion strain weakening factors");
+        options.property_name = "Prefactor strain weakening factors";
+        viscous_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactor strain weakening factors"),
+                                           options);
 
-        friction_strain_weakening_factors = Utilities::parse_map_to_double_array (prm.get("Friction strain weakening factors"),
-                                                                                  list_of_composition_names,
-                                                                                  has_background_field,
-                                                                                  "Friction strain weakening factors");
+        options.property_name = "Cohesion strain weakening factors";
+        cohesion_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Cohesion strain weakening factors"),
+                                            options);
+
+        options.property_name = "Friction strain weakening factors";
+        friction_strain_weakening_factors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Friction strain weakening factors"),
+                                            options);
 
         if (prm.get ("Strain healing mechanism") == "no healing")
           healing_mechanism = no_healing;
@@ -530,33 +538,151 @@ namespace aspect
                                             min_strain_rate);
             double delta_e_ii = edot_ii*this->get_timestep();
 
-            // Adjusting strain values to account for strain healing without exceeding an unreasonable range
+            // Assign accumulated strain value according to active deformation mechanism
+
+            // Plastic strain
+            double delta_e_ii_plastic = 0.;
+            if (plastic_yielding == true)
+              delta_e_ii_plastic = delta_e_ii;
+
+            // Viscous strain
+            double delta_e_ii_viscous = 0.;
+            if (plastic_yielding == false)
+              delta_e_ii_viscous = delta_e_ii;
+
+            // Now account for strain healing
             if (healing_mechanism != no_healing)
               {
-                // Never heal more strain than exists
-                delta_e_ii -= calculate_strain_healing(in,i);
+                // Temperature-dependent healing occurs independent of deformation state
+                const double healed_strain = calculate_strain_healing(in,i);
+
+                delta_e_ii_plastic -= healed_strain;
+                delta_e_ii_viscous -= healed_strain;
+                delta_e_ii -= healed_strain;
               }
-            if (weakening_mechanism == plastic_weakening_with_plastic_strain_only && plastic_yielding == true)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] =
-                std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("plastic_strain")]);
-            if (weakening_mechanism == viscous_weakening_with_viscous_strain_only && plastic_yielding == false)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] =
-                std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("viscous_strain")]);
+
+            // We need to obtain the strain values from compositional fields at the previous time step,
+            // as the values from the current linearization point are an extrapolation of the solution
+            // from the old timesteps.
+            // Prepare the field function and extract the old solution values at the current cell.
+            std::vector<Point<dim>> quadrature_positions(1,this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]));
+
+            // Use a boost::small_vector to avoid memory allocation if possible.
+            // Create 100 values by default, which should be enough for most cases.
+            // If there are more than 100 DoFs per cell, this will work like a normal vector.
+            boost::container::small_vector<double, 100> old_solution_values(this->get_fe().dofs_per_cell);
+            in.current_cell->get_dof_values(this->get_old_solution(),
+                                            old_solution_values.begin(),
+                                            old_solution_values.end());
+
+            // If we have not been here before, create one evaluator for each compositional field
+            if (composition_evaluators.size() == 0)
+              composition_evaluators.resize(this->n_compositional_fields());
+
+            // Make sure the evaluators have been initialized correctly, and have not been tampered with
+            Assert(composition_evaluators.size() == this->n_compositional_fields(),
+                   ExcMessage("The number of composition evaluators should be equal to the number of compositional fields."));
+
+            const auto &component_indices = this->introspection().component_indices.compositional_fields;
+
+            // Assign incremental strain values to reaction terms
+            if (weakening_mechanism == plastic_weakening_with_plastic_strain_only)
+              {
+                const unsigned int strain_index = this->introspection().compositional_index_for_name("plastic_strain");
+                // Only create the evaluator the first time we get here
+                if (!composition_evaluators[strain_index])
+                  composition_evaluators[strain_index]
+                    = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                                   this->get_fe(),
+                                                                   update_values,
+                                                                   component_indices[strain_index]);
+
+                composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
+                composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
+                                                               EvaluationFlags::values);
+                out.reaction_terms[i][strain_index] = std::max(delta_e_ii_plastic,
+                                                               -composition_evaluators[strain_index]->get_value(0));
+              }
+            if (weakening_mechanism == viscous_weakening_with_viscous_strain_only)
+              {
+                const unsigned int strain_index = this->introspection().compositional_index_for_name("viscous_strain");
+                // Only create the evaluator the first time we get here
+                if (!composition_evaluators[strain_index])
+                  composition_evaluators[strain_index]
+                    = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                                   this->get_fe(),
+                                                                   update_values,
+                                                                   component_indices[strain_index]);
+
+                composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
+                composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
+                                                               EvaluationFlags::values);
+                out.reaction_terms[i][strain_index] = std::max(delta_e_ii_viscous,
+                                                               -composition_evaluators[strain_index]->get_value(0));
+              }
             if (weakening_mechanism == total_strain || weakening_mechanism == plastic_weakening_with_total_strain_only)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] =
-                std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("total_strain")]);
+              {
+                const unsigned int strain_index = this->introspection().compositional_index_for_name("total_strain");
+                // Only create the evaluator the first time we get here
+                if (!composition_evaluators[strain_index])
+                  composition_evaluators[strain_index]
+                    = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                                   this->get_fe(),
+                                                                   update_values,
+                                                                   component_indices[strain_index]);
+                composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
+                composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
+                                                               EvaluationFlags::values);
+                out.reaction_terms[i][strain_index] = std::max(delta_e_ii,
+                                                               -composition_evaluators[strain_index]->get_value(0));
+              }
             if (weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
               {
-                if (plastic_yielding == true)
-                  out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] =
-                    std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("plastic_strain")]);
-                else
-                  out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] =
-                    std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("viscous_strain")]);
+                const unsigned int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
+                // Only create the evaluator the first time we get here
+                if (!composition_evaluators[plastic_strain_index])
+                  composition_evaluators[plastic_strain_index]
+                    = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                                   this->get_fe(),
+                                                                   update_values,
+                                                                   component_indices[plastic_strain_index]);
+                composition_evaluators[plastic_strain_index]->reinit(in.current_cell, quadrature_positions);
+                composition_evaluators[plastic_strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
+                                                                       EvaluationFlags::values);
+                out.reaction_terms[i][plastic_strain_index] = std::max(delta_e_ii_plastic,
+                                                                       -composition_evaluators[plastic_strain_index]->get_value(0));
+
+                const unsigned viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
+                // Only create the evaluator the first time we get here
+                if (!composition_evaluators[viscous_strain_index])
+                  composition_evaluators[viscous_strain_index]
+                    = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                                   this->get_fe(),
+                                                                   update_values,
+                                                                   component_indices[viscous_strain_index]);
+                composition_evaluators[viscous_strain_index]->reinit(in.current_cell, quadrature_positions);
+                composition_evaluators[viscous_strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
+                                                                       EvaluationFlags::values);
+                out.reaction_terms[i][viscous_strain_index] = std::max(delta_e_ii_viscous,
+                                                                       -composition_evaluators[viscous_strain_index]->get_value(0));
               }
-            if (this->introspection().compositional_name_exists("noninitial_plastic_strain") && plastic_yielding == true)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("noninitial_plastic_strain")] =
-                std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("noninitial_plastic_strain")]);
+            if (this->introspection().compositional_name_exists("noninitial_plastic_strain"))
+              {
+                const unsigned int strain_index = this->introspection().compositional_index_for_name("noninitial_plastic_strain");
+                // Only create the evaluator the first time we get here
+                if (!composition_evaluators[strain_index])
+                  composition_evaluators[strain_index]
+                    = std::make_unique<FEPointEvaluation<1, dim>>(this->get_mapping(),
+                                                                   this->get_fe(),
+                                                                   update_values,
+                                                                   component_indices[strain_index]);
+
+                composition_evaluators[strain_index]->reinit(in.current_cell, quadrature_positions);
+                composition_evaluators[strain_index]->evaluate({old_solution_values.data(),old_solution_values.size()},
+                                                               EvaluationFlags::values);
+                out.reaction_terms[i][strain_index] = std::max(delta_e_ii_plastic,
+                                                               -composition_evaluators[strain_index]->get_value(0));
+              }
           }
       }
 
@@ -584,10 +710,10 @@ namespace aspect
 
             // Only create the evaluator the first time we get here
             if (!evaluator)
-              evaluator.reset(new FEPointEvaluation<dim, dim>(this->get_mapping(),
-                                                              this->get_fe(),
-                                                              update_gradients,
-                                                              this->introspection().component_indices.velocities[0]));
+              evaluator = std::make_unique<FEPointEvaluation<dim, dim>>(this->get_mapping(),
+                                                                         this->get_fe(),
+                                                                         update_gradients,
+                                                                         this->introspection().component_indices.velocities[0]);
 
             // Initialize the evaluator for the old velocity gradients
             evaluator->reinit(in.current_cell, quadrature_positions);

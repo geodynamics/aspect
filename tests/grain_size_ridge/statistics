@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+# 14: Minimal value for composition grain_size
+# 15: Maximal value for composition grain_size
+# 16: Global mass for composition grain_size
+# 17: RMS velocity (m/year)
+# 18: Max. velocity (m/year)
+# 19: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 20: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 21: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 22: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 23: Number of advected particles
+# 24: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 2560 23923 10593 23040 9  0 187 205 205 output-grain_size_ridge/solution/solution-00000 2.10133496e-03 5.00000000e-03 8.19450376e+09 3.55594540e-02 1.17070460e-01 0.00000000e+00 4.13279598e+07 -1.83495520e+07 0.00000000e+00 500000 output-grain_size_ridge/particles/particles-00000 
+1 5.000000000000e+02 5.000000000000e+02 2560 23923 10593 23040 2 12   0   4   4                                              "" 5.80387542e-04 5.00012724e-03 7.93036424e+09 3.55148486e-02 1.18077896e-01 0.00000000e+00 4.13279598e+07 -1.69455336e+07 0.00000000e+00 499998                                                "" 

@@ -24,20 +24,19 @@ subsection Geometry model
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = inner
-end
-
-subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right
 end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 4273
+    set Outer temperature = 973
+  end
 end
 
 subsection Mesh deformation
@@ -46,14 +45,6 @@ end
 
 subsection Heating model
   set List of model names =  shear heating
-end
-
-subsection Boundary temperature model
-  set List of model names = spherical constant
-  subsection Spherical constant
-    set Inner temperature = 4273
-    set Outer temperature = 973
-  end
 end
 
 subsection Initial temperature model
@@ -71,6 +62,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = topography
+
   subsection Topography
     set Time between text output       = 0
     set Output to file = true

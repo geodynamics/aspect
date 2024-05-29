@@ -365,9 +365,9 @@ namespace aspect
 
       // Possibly output the result to file.
       if (output_surface)
-        output_to_file(true, stored_values_surface);
+        output_to_file(top_boundary_id, stored_values_surface);
       if (output_bottom)
-        output_to_file(false, stored_values_bottom);
+        output_to_file(bottom_boundary_id, stored_values_bottom);
 
       return std::pair<std::string,std::string>("Computing dynamic topography", "");
     }
@@ -411,10 +411,13 @@ namespace aspect
      */
     template <int dim>
     void
-    DynamicTopography<dim>::output_to_file(const bool upper,
-                                           std::vector<std::pair<Point<dim>,
-                                           double>> &stored_values)
+    DynamicTopography<dim>::output_to_file(const types::boundary_id boundary_id,
+                                           const std::vector<std::pair<Point<dim>,double>> &position_and_topography)
     {
+      // get boundary name and avoid spaces for file output
+      std::string boundary_name = this->get_geometry_model().translate_id_to_symbol_name(boundary_id);
+      std::replace(boundary_name.begin(), boundary_name.end(), ' ', '_');
+
       std::ostringstream output;
 
       // On processor 0, write header lines
@@ -422,21 +425,21 @@ namespace aspect
         {
           output << "# "
                  << ((dim==2)? "x y " : "x y z ")
-                 << (upper ? "surface topography" : "bottom topography") << std::endl;
+                 << "dynamic_topography_" << boundary_name << std::endl;
         }
 
-      for (unsigned int i=0; i<stored_values.size(); ++i)
+      for (unsigned int i = 0; i < position_and_topography.size(); ++i)
         {
           output << std::setprecision(10)
-                 << stored_values[i].first
+                 << position_and_topography[i].first
                  << ' '
                  << std::setprecision(10)
-                 << stored_values[i].second
+                 << position_and_topography[i].second
                  << std::endl;
         }
 
       std::string filename = this->get_output_directory() +
-                             (upper ? "dynamic_topography_surface." : "dynamic_topography_bottom.") +
+                             "dynamic_topography_" + boundary_name + "." +
                              Utilities::int_to_string(this->get_timestep_number(), 5);
       if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
         filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
@@ -519,36 +522,27 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(DynamicTopography,
                                   "dynamic topography",
                                   "A postprocessor that computes a measure of dynamic topography "
-                                  "based on the stress at the surface and bottom. The data is written into text "
-                                  "files named `dynamic\\_topography.NNNNN' in the output directory, "
-                                  "where NNNNN is the number of the time step."
+                                  "based on the stress at the boundary. The data is written into text "
+                                  "files named `dynamic\\_topography_\\X.NNNNN' in the output directory, "
+                                  "where X is the name of the boundary and NNNNN is the number of the time step."
                                   "\n\n"
-                                  "The exact approach works as follows: At the centers of all cells "
-                                  "that sit along the top surface, we evaluate the stress and "
-                                  "evaluate the component of it in the direction in which "
-                                  "gravity acts. In other words, we compute "
-                                  "$\\sigma_{rr}={\\hat g}^T(2 \\eta \\varepsilon(\\mathbf u)- \\frac 13 (\\textrm{div}\\;\\mathbf u)I)\\hat g - p_d$ "
-                                  "where $\\hat g = \\mathbf g/\\|\\mathbf g\\|$ is the direction of "
-                                  "the gravity vector $\\mathbf g$ and $p_d=p-p_a$ is the dynamic "
-                                  "pressure computed by subtracting the adiabatic pressure $p_a$ "
-                                  "from the total pressure $p$ computed as part of the Stokes "
-                                  "solve. From this, the dynamic "
-                                  "topography is computed using the formula "
-                                  "$h=\\frac{\\sigma_{rr}}{(\\mathbf g \\cdot \\mathbf n)  \\rho}$ where $\\rho$ "
-                                  "is the density at the cell center. For the bottom surface we chose the convection "
-                                  "that positive values are up (out) and negative values are in (down), analogous to "
+                                  "The exact approach works as follows: At each selected boundary, we compute "
+                                  "the traction that acts normal to the boundary faces using the "
+                                  "consistent boundary flux method as described in "
+                                  "``Gresho, Lee, Sani, Maslanik, Eaton (1987). "
+                                  "The consistent Galerkin FEM for computing derived boundary "
+                                  "quantities in thermal and or fluids problems. International "
+                                  "Journal for Numerical Methods in Fluids, 7(4), 371-394.'' "
+                                  "From this traction, the dynamic topography is computed using the formula "
+                                  "$h=\\frac{\\sigma_{n}}{g \\rho}$ where $g$ is the norm of the gravity and $\\rho$ "
+                                  "is the density. For the bottom surface we chose the convention "
+                                  "that positive values are up and negative values are down, analogous to "
                                   "the deformation of the upper surface. Note that this implementation takes "
                                   "the direction of gravity into account, which means that reversing the flow "
                                   "in backward advection calculations will not reverse the instantaneous topography "
                                   "because the reverse flow will be divided by the reverse surface gravity.  "
                                   "\n"
                                   "The file format then consists of lines with Euclidean coordinates "
-                                  "followed by the corresponding topography value."
-                                  "\n\n"
-                                  "(As a side note, the postprocessor chooses the cell center "
-                                  "instead of the center of the cell face at the surface, where we "
-                                  "really are interested in the quantity, since "
-                                  "this often gives better accuracy. The results should in essence "
-                                  "be the same, though.)")
+                                  "followed by the corresponding topography value.")
   }
 }

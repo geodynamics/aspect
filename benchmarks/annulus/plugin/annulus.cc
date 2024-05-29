@@ -494,9 +494,9 @@ namespace aspect
           const unsigned int n_components = this->introspection().n_components;
 
           compute_density_error = (material_model.analytical_density() == false);
-          reference_solution.reset (new AnalyticSolutions::FunctionAnnulus<dim>(material_model.get_k(),
-                                                                                n_components,
-                                                                                material_model.use_transient_solution()));
+          reference_solution = std::make_unique<AnalyticSolutions::FunctionAnnulus<dim>>(material_model.get_k(),
+                                                                                          n_components,
+                                                                                          material_model.use_transient_solution());
         }
 
 

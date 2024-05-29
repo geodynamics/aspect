@@ -41,6 +41,7 @@ subsection Mesh refinement
   set Initial global refinement          = 2
   set Time steps between mesh refinement = 1
   set Strategy                           = minimum refinement function
+
   subsection Minimum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y
@@ -63,6 +64,7 @@ end
 subsection Mesh deformation
   set Mesh deformation boundary indicators = top: free surface
   set Additional tangential mesh velocity boundary indicators = left,right
+
   subsection Free surface
     set Surface velocity projection = normal
   end
@@ -93,6 +95,7 @@ end
 # Spatial domain of different compositional fields
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  =
@@ -115,6 +118,7 @@ end
 # Temperature initial conditions
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 293
   end
@@ -122,7 +126,6 @@ end
 
 # Material model
 subsection Material model
-
   set Model name = viscoelastic
   set Material averaging = project to Q1 only viscosity
 
@@ -134,12 +137,12 @@ subsection Material model
     set Fixed elastic time step     = 2.5
     set Viscosity averaging scheme  = harmonic
   end
-
 end
 
 # Gravity model
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.815
   end
@@ -151,12 +154,12 @@ subsection Postprocess
 
   subsection Visualization
     set List of output variables = material properties, nonadiabatic pressure, strain rate
+    set Time between graphical output = 10000
+    set Interpolate output = false
+    set Number of grouped files = 1
+
     subsection Material properties
       set List of material properties = density, viscosity
     end
-
-    set Time between graphical output = 10000
-    set Interpolate output = false
-  set Number of grouped files = 1
   end
 end

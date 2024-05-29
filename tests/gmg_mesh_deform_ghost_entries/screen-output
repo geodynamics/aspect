@@ -16,7 +16,7 @@ Number of mesh deformation degrees of freedom: 882
 Number of active cells: 544 (on 3 levels)
 Number of degrees of freedom: 12,838 (4,652+604+604+2,326+2,326+2,326)
 
-Number of mesh deformation degrees of freedom: 1208
+Number of mesh deformation degrees of freedom: 1,208
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 5 iterations.
@@ -36,7 +36,7 @@ Number of mesh deformation degrees of freedom: 1208
 Number of active cells: 517 (on 3 levels)
 Number of degrees of freedom: 12,281 (4,450+578+578+2,225+2,225+2,225)
 
-Number of mesh deformation degrees of freedom: 1156
+Number of mesh deformation degrees of freedom: 1,156
    Solving mesh displacement system... 0 iterations.
 
 
@@ -58,7 +58,7 @@ Number of mesh deformation degrees of freedom: 1156
 Number of active cells: 505 (on 3 levels)
 Number of degrees of freedom: 12,017 (4,354+566+566+2,177+2,177+2,177)
 
-Number of mesh deformation degrees of freedom: 1132
+Number of mesh deformation degrees of freedom: 1,132
 
 
 

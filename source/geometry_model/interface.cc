@@ -25,6 +25,7 @@
 #include <deal.II/base/exceptions.h>
 #include <tuple>
 #include <deal.II/dofs/dof_tools.h>
+#include <deal.II/base/utilities.h>
 
 namespace aspect
 {
@@ -60,7 +61,8 @@ namespace aspect
     template <int dim>
     void
     Interface<dim>::adjust_positions_for_periodicity (Point<dim> &/*position*/,
-                                                      const ArrayView<Point<dim>> &/*connected_positions*/) const
+                                                      const ArrayView<Point<dim>> &/*connected_positions*/,
+                                                      const ArrayView<Tensor<1, dim>> &/*connected_velocities*/) const
     {
       AssertThrow(false,
                   ExcMessage("Positions cannot be adjusted for periodicity in the chosen geometry model."));
@@ -168,25 +170,7 @@ namespace aspect
         if (boundary_names_mapping.find (name) != boundary_names_mapping.end())
           return boundary_names_mapping.find(name)->second;
         else
-          {
-            // if it wasn't a symbolic name, it better be a number. we would
-            // like to use Utilities::string_to_int, but as indicated by a
-            // comment in that function, as of mid-2014 the function does not
-            // do any error checking, so do it by hand here. (this was fixed
-            // in late July 2014, so should work in deal.II 8.2.)
-            //
-            // since we test for errno, we need to make sure it is zero before
-            // or otherwise the conversion may succeed and strtol will just
-            // leave it where it was.
-            char *p;
-            errno = 0;
-            const long int boundary_id = std::strtol(name.c_str(), &p, 10);
-            if ((errno != 0) || (name.size() == 0) || ((name.size()>0) && (*p != '\0')))
-              throw std::string ("Could not convert from string <") + name + "> to a boundary indicator.";
-
-            // seems as if the conversion worked:
-            return boundary_id;
-          }
+          return dealii::Utilities::string_to_int(name);
       }
 
 

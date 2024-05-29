@@ -34,11 +34,10 @@ namespace aspect
     template <int dim>
     MaterialModelDerivatives<dim>::
     MaterialModelDerivatives (const unsigned int n_points)
-    {
-      viscosity_derivative_wrt_pressure.resize(n_points, numbers::signaling_nan<double>());
-      viscosity_derivative_wrt_strain_rate.resize(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>());
-    }
-
+      : viscosity_derivative_wrt_pressure(n_points, numbers::signaling_nan<double>())
+      , viscosity_derivative_wrt_strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>())
+      , viscosity_derivative_averaging_weights(n_points, numbers::signaling_nan<double>())
+    {}
   }
 
 
@@ -120,9 +119,8 @@ namespace aspect
     if (output.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>() != nullptr)
       return;
 
-    const unsigned int n_points = output.viscosities.size();
     output.additional_outputs.push_back(
-      std::make_unique<MaterialModel::MaterialModelDerivatives<dim>>(n_points));
+      std::make_unique<MaterialModel::MaterialModelDerivatives<dim>>(output.n_evaluation_points()));
   }
 
 
@@ -196,7 +194,7 @@ namespace aspect
                              Patterns::Selection ("SPD|PD|symmetric|none"),
                              "This parameters allows for the stabilization of the preconditioner. If one derives the Newton "
                              "method without any modifications, the matrix created for the preconditioning is not necessarily "
-                             "Symmetric Positive Definite. This is problematic (see \\cite{FBTGS19}). When `none' is chosen, "
+                             "Symmetric Positive Definite. This is problematic (see \\cite{fraters:etal:2019}). When `none' is chosen, "
                              "the preconditioner is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes "
                              "the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric "
                              "Positive Definite.");
@@ -205,7 +203,7 @@ namespace aspect
                              Patterns::Selection ("SPD|PD|symmetric|none"),
                              "This parameters allows for the stabilization of the velocity block. If one derives the Newton "
                              "method without any modifications, the matrix created for the velocity block is not necessarily "
-                             "Symmetric Positive Definite. This is problematic (see \\cite{FBTGS19}). When `none' is chosen, "
+                             "Symmetric Positive Definite. This is problematic (see \\cite{fraters:etal:2019}). When `none' is chosen, "
                              "the velocity block is not stabilized. The `symmetric' parameters symmetrizes the matrix, and `PD' makes "
                              "the matrix Positive Definite. `SPD' is the full stabilization, where the matrix is guaranteed Symmetric "
                              "Positive Definite.");

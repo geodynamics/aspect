@@ -5,7 +5,7 @@ on:
     branches:
       - 'main'
   release:
-    types: [created]
+    types: [published]
 
 # If a merged PR triggers a rebuild of this docker image, and another
 # PR is merged during the build, cancel the first of these since (i) this
@@ -25,30 +25,30 @@ jobs:
     if: github.repository == 'geodynamics/aspect'
     steps:    
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_LOGIN }}
 
       - name: Build and push Docker image for main
         if: contains(github.event_name, 'push')
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./contrib/docker/docker/
           cache-from: type=registry,ref=ubuntu:22.04
@@ -61,7 +61,7 @@ jobs:
 
       - name: Build and push Docker image for release
         if: contains(github.event_name, 'release')
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./contrib/docker/docker/
           cache-from: type=registry,ref=ubuntu:22.04
@@ -77,22 +77,22 @@ jobs:
     if: github.repository == 'geodynamics/aspect'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_LOGIN }}
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -100,7 +100,7 @@ jobs:
 
       - name: Build and push Docker image for main
         if: contains(github.event_name, 'push')
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./contrib/docker/docker_tacc/
           cache-from: type=registry,ref=ubuntu:22.04
@@ -113,7 +113,7 @@ jobs:
 
       - name: Build and push Docker image for release
         if: contains(github.event_name, 'release')
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: ./contrib/docker/docker_tacc/
           cache-from: type=registry,ref=ubuntu:22.04

@@ -11,8 +11,6 @@
 # We use a plugin that implements the reactions for exponential
 # decay.
 set Additional shared libraries = ./libexponential_decay.so
-
-
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 100
@@ -21,7 +19,7 @@ set Use years in output instead of seconds = false
 # We use a new solver scheme option that enables the operator split.
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Use operator splitting                 = true
-
+set Maximum time step                      = 10
 
 # As we split the time-stepping of advection and reactions,
 # there are now two different time steps in the model:
@@ -35,8 +33,6 @@ subsection Solver parameters
     set Reaction time step                 = 0.0005
   end
 end
-set Maximum time step                      = 10
-
 
 subsection Geometry model
   set Model name = box
@@ -47,22 +43,17 @@ subsection Geometry model
   end
 end
 
-
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 1, 2, 3
 end
-
 
 subsection Compositional fields
   set Number of fields = 1
 end
 
-
 subsection Gravity model
   set Model name = vertical
 end
-
 
 # Both initial temperature and composition are set to 1,
 # and will decay starting from this value.
@@ -83,7 +74,6 @@ subsection Initial composition model
     set Function expression = 1.0
   end
 end
-
 
 # We choose material and heating models that let temperature
 # and composition decay over time, and that is implemented in
@@ -110,7 +100,6 @@ subsection Material model
     set Density differential for compositional field 1 = 0
   end
 end
-
 
 # As composition and temperature do not depend on x or y,
 # we can use a coarse resolution.

@@ -10,9 +10,9 @@ set Pressure normalization                 = no
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1623   # Set to the mantle temperature
 
-
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 150e3
     set Y extent = 150e3
@@ -23,6 +23,7 @@ end
 
 subsection Initial temperature model
   set Model name = adiabatic
+
   subsection Adiabatic
     set Top boundary layer age model = function
     set Cooling model = half-space cooling
@@ -37,6 +38,7 @@ end
 subsection Boundary temperature model
   set List of model names = box
   set Fixed temperature boundary indicators = top, bottom
+
   subsection Box
     set Bottom temperature = 1623
     set Top temperature = 293
@@ -49,14 +51,15 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10
   end
 end
 
-
 subsection Material model
   set Model name = simpler
+
   subsection Simpler model
     set Reference density        = 3300
     set Reference specific heat  = 1000

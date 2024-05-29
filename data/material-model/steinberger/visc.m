@@ -22,7 +22,7 @@ mat=[0.186E+21 0.5448
 0.264E+23 0.9843
 ];
 
-% values are for the middle of the inveral, so shift the x values
+% values are for the middle of the interval, so shift the x values
 
 len = size(mat,1);
 for i=1:size(mat,1)-1

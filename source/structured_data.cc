@@ -30,8 +30,10 @@
 #include <aspect/geometry_model/initial_topography_model/ascii_data.h>
 #include <aspect/geometry_model/two_merged_chunks.h>
 
-#include <boost/lexical_cast.hpp>
 #include <deal.II/base/exceptions.h>
+
+#include <boost/lexical_cast.hpp>
+#include <regex>
 
 #ifdef ASPECT_WITH_NETCDF
 
@@ -189,7 +191,7 @@ namespace aspect
     StructuredDataLookup<dim>::reinit(const std::vector<std::string> &column_names,
                                       std::vector<std::vector<double>> &&coordinate_values_,
                                       std::vector<Table<dim,double>> &&data_table,
-                                      const MPI_Comm &mpi_communicator,
+                                      const MPI_Comm mpi_communicator,
                                       const unsigned int root_process)
     {
       // If this is the root process, or if the user did not request
@@ -332,8 +334,8 @@ namespace aspect
 
     template <int dim>
     void
-    StructuredDataLookup<dim>::load_file(const std::string &filename,
-                                         const MPI_Comm &comm)
+    StructuredDataLookup<dim>::load_ascii(const std::string &filename,
+                                          const MPI_Comm comm)
     {
       const unsigned int root_process = 0;
 
@@ -548,7 +550,7 @@ namespace aspect
                                   "lines against the POINTS header in the file."));
         }
 
-      // If deal.II is new enough to support sharing data (since 9.4), then we have
+      // deal.II supports sharing data (since 9.4), so we have to
       // set up member variables on the root process, but not on any of
       // the other processes. So broadcast the data to the remaining
       // processes -- the code above really only wrote into one
@@ -823,7 +825,7 @@ namespace aspect
                 for (int i=0; i<dim; ++i)
                   ind_to_use[i] = ind[dimids_to_use[i]];
 
-                data_tables[var](ind) = raw_data[n];
+                data_tables[var](ind) = scale_factor * raw_data[n];
               }
           }
 
@@ -836,6 +838,18 @@ namespace aspect
       // ready to go:
       this->reinit(data_column_names, std::move(coordinate_values),std::move(data_tables));
 #endif
+    }
+
+    template <int dim>
+    void
+    StructuredDataLookup<dim>::load_file(const std::string &filename,
+                                         const MPI_Comm communicator)
+    {
+      const bool is_netcdf_filename = std::regex_search(filename, std::regex("\\.(nc|NC)$"));
+      if (is_netcdf_filename)
+        load_netcdf(filename);
+      else
+        load_ascii(filename, communicator);
     }
 
     template <int dim>
@@ -1836,7 +1850,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataProfile<dim>::initialize (const MPI_Comm &communicator)
+    AsciiDataProfile<dim>::initialize (const MPI_Comm communicator)
     {
       lookup = std::make_unique<Utilities::StructuredDataLookup<1>> (this->scale_factor);
 

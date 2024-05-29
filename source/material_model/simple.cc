@@ -239,9 +239,7 @@ namespace aspect
                                    "Specifying a value of 0.0 for the minimum or maximum values will disable pre-factor limiting."
                                    "\n\n"
                                    "The compositional pre-factor for the viscosity is defined as "
-                                   "\\begin{align}"
-                                   "  \\zeta(\\mathfrak c) &= \\xi^{c_0}"
-                                   "\\end{align} "
+                                   "$ \\zeta(\\mathfrak c) = \\xi^{c_0}$ "
                                    "if the model has compositional fields and equals one otherwise. $\\xi$ "
                                    "corresponds to the parameter ``Composition viscosity prefactor'' in the "
                                    "input file."
@@ -255,11 +253,13 @@ namespace aspect
                                    "medium despite the fact that the density follows the law "
                                    "$\\rho(T)=\\rho_0(1-\\alpha(T-T_{\\text{ref}}))$. "
                                    "\n\n"
-                                   "\\note{Despite its name, this material model is not exactly ``simple'', "
+                                   ":::{note}\n"
+                                   "Despite its name, this material model is not exactly ``simple'', "
                                    "as indicated by the formulas above. While it was originally intended "
                                    "to be simple, it has over time acquired all sorts of temperature "
                                    "and compositional dependencies that weren't initially intended. "
                                    "Consequently, there is now a ``simpler'' material model that now fills "
-                                   "the role the current model was originally intended to fill.}")
+                                   "the role the current model was originally intended to fill.\n"
+                                   ":::")
   }
 }

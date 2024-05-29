@@ -587,11 +587,6 @@ namespace aspect
           unsigned int property_advection_max_iterations;
 
           /**
-           * The tensor representation of the permutation symbol.
-           */
-          Tensor<3,3> permutation_operator_3d;
-
-          /**
            * @name D-Rex variables
            */
           /** @{ */

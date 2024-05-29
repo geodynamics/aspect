@@ -10,6 +10,7 @@ set Output directory                       = output-burnman
 
 subsection Material model
   set Model name = ascii reference profile
+  set Material averaging = harmonic average
 
   subsection Ascii reference profile
     set Thermal viscosity exponent = 10.0
@@ -20,8 +21,6 @@ subsection Material model
       set Data file name = example_isentrope.txt
     end
   end
-
-  set Material averaging = harmonic average
 end
 
 # The geometry is a spherical shell with the inner and
@@ -44,13 +43,13 @@ subsection Adiabatic conditions model
   end
 end
 
-
 # The gravity model reads an ascii data file that contains a gravity
 # profile consistent with the material properties computed using the
 # Birch-Murnaghan equation of state. It automatically uses the same file
 # specified in the adiabatic conditions model.
 subsection Gravity model
   set Model name = ascii data
+
   subsection Ascii data model
     set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
     set Data file name = example_isentrope.txt
@@ -77,7 +76,6 @@ subsection Boundary velocity model
   end
 end
 
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
   set List of model names = spherical constant
@@ -102,7 +100,6 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Mesh refinement
   set Refinement fraction                = 0.4
   set Coarsening fraction                = 0.05
@@ -111,7 +108,6 @@ subsection Mesh refinement
   set Strategy                           = temperature
   set Time steps between mesh refinement = 5
 end
-
 
 subsection Heating model
   set List of model names = adiabatic heating, shear heating

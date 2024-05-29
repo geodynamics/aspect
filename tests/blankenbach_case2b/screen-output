@@ -1,4 +1,6 @@
 
+Loading shared library <./libblankenbach_case2b.debug.so>
+
 Number of active cells: 640 (on 4 levels)
 Number of degrees of freedom: 8,716 (5,346+697+2,673)
 
@@ -8,7 +10,6 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system... 40+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach_case2b/solution/solution-00000
      RMS, max velocity:                  21.8 m/s, 69.8 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -2.5 W, 2.5 W
@@ -20,7 +21,6 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system... 44+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach_case2b/solution/solution-00001
      RMS, max velocity:                  94.2 m/s, 311 m/s
      Temperature min/avg/max:            0 K, 0.5001 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -2.578 W, 2.512 W
@@ -208,7 +208,6 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system... 46+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach_case2b/solution/solution-00002
      RMS, max velocity:                  631 m/s, 2.68e+03 m/s
      Temperature min/avg/max:            0 K, 0.5008 K, 1.006 K
      Heat fluxes through boundary parts: 0 W, 0 W, -7.412 W, 3.441 W
@@ -495,13 +494,14 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system... 68+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-blankenbach_case2b/solution/solution-00003
      RMS, max velocity:                  261 m/s, 1.29e+03 m/s
      Temperature min/avg/max:            0 K, 0.4971 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -11.96 W, 18.51 W
      Heating rate (average/total):       0 W/kg, 0 W
 
 Termination requested by criterion: end time
+*** Snapshot created!
+
 
 
 

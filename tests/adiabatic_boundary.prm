@@ -2,7 +2,6 @@
 # for the adiabatic boundary initial conditions plugin.
 
 set Dimension                              = 3
-
 set Use years in output instead of seconds = true
 set End time                               = 0
 set Nonlinear solver scheme                = single Advection, iterated Stokes
@@ -30,19 +29,18 @@ end
 
 subsection Initial temperature model
   set Model name = adiabatic boundary
-   subsection Ascii data model
+
+  subsection Ascii data model
     set Data file name = adiabatic_boundary.txt
   end
 end
 
 subsection Boundary temperature model
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = inner, outer
+
   subsection Initial temperature
   end
-end
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = inner, outer
 end
 
 subsection Boundary velocity model

@@ -8,7 +8,6 @@ set Nonlinear solver scheme = no Advection, no Stokes
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
-
 # 1x1 box with an initial hill topography
 subsection Geometry model
   set Model name = box
@@ -17,8 +16,10 @@ subsection Geometry model
     set X extent = 1
     set Y extent = 1
   end
+
   subsection Initial topography model
     set Model name = function
+
     subsection Function
       set Function constants = A=0.075, L=1.
       set Function expression = \
@@ -26,7 +27,6 @@ subsection Geometry model
     end
   end
 end
-
 
 # Temperature effects are ignored
 subsection Initial temperature model
@@ -40,15 +40,12 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
   set List of model names = initial temperature
-
 end
-
 
 # Free slip on all boundaries
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
-
 
 # The mesh will be deformed according to the displacement
 # of the surface nodes due to diffusion of the topography.
@@ -64,7 +61,6 @@ subsection Mesh deformation
   end
 end
 
-
 # Vertical gravity
 subsection Gravity model
   set Model name = vertical
@@ -73,7 +69,6 @@ subsection Gravity model
     set Magnitude = 1
   end
 end
-
 
 # One material with unity properties
 subsection Material model
@@ -89,14 +84,12 @@ subsection Material model
   end
 end
 
-
 # We also have to specify that we want to use the Boussinesq
 # approximation (assuming the density in the temperature
 # equation to be constant, and incompressibility).
 subsection Formulation
   set Formulation = Boussinesq approximation
 end
-
 
 # We here use a globally refined mesh without
 # adaptive mesh refinement.
@@ -106,11 +99,11 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
 end
 
-
 # We output the computed topography and the analytical topography
 # value to file.
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, analytical topography
+
   subsection Topography
     set Output to file = true
     set Analytical solution of example = 1

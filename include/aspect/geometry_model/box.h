@@ -72,6 +72,13 @@ namespace aspect
         Point<dim> get_extents () const;
 
         /**
+         * Return an integer array that denotes the number of repetitions of
+         * the box's coarse mesh.
+         */
+        const std::array<unsigned int, dim> &
+        get_repetitions () const;
+
+        /**
          * Return a point that denotes the lower left corner of the box
          * domain.
          */
@@ -163,7 +170,8 @@ namespace aspect
          */
         void
         adjust_positions_for_periodicity (Point<dim> &position,
-                                          const ArrayView<Point<dim>> &connected_positions = {}) const override;
+                                          const ArrayView<Point<dim>> &connected_positions = {},
+                                          const ArrayView<Tensor<1, dim>> &connected_velocities = {}) const override;
 
         /**
          * @copydoc Interface::has_curved_elements()
@@ -216,6 +224,11 @@ namespace aspect
 
       private:
         /**
+         * A pointer to the initial topography model.
+         */
+        InitialTopographyModel::Interface<dim> *topo_model;
+
+        /**
          * Extent of the box in x-, y-, and z-direction (in 3d).
          */
         Point<dim> extents;
@@ -234,11 +247,6 @@ namespace aspect
          * The number of cells in each coordinate direction.
          */
         std::array<unsigned int, dim> repetitions;
-
-        /**
-         * A pointer to the initial topography model.
-         */
-        InitialTopographyModel::Interface<dim> *topo_model;
     };
   }
 }

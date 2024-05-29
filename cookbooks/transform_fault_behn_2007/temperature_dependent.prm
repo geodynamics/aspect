@@ -1,0 +1,24 @@
+# This is a model of a mid-ocean ridge with a transform fault,
+# specifically, it is a model that reproduces the setup of Behn et
+# al., 2007: Thermal structure of oceanic transform faults.
+# This input file covers case 2 from that publication (with a
+# temperature-dependent viscosity).
+
+include ./transform_fault_behn_2007.prm
+
+set World builder file = $ASPECT_SOURCE_DIR/contrib/world_builder/cookbooks/3d_cartesian_transform_fault/3d_cartesian_transform_fault.wb
+set Output directory = transform-fault-behn-2007-temperature-dependent
+set Dimension        = 3
+
+# In case 2, viscosity is temperature-dependent with an
+# activation energy of 250 kJ/mol. We also need to scale the
+# prefactor to account for the different formulation of the
+# diffusion creep flow law.
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Prefactors for diffusion creep          = 9.99479239e-12
+    set Activation energies for diffusion creep = 250e3
+  end
+end

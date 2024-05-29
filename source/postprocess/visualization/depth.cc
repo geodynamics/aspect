@@ -75,6 +75,18 @@ namespace aspect
                                                   "the depth for all points inside the domain, as "
                                                   "determined by the geometry model."
                                                   "\n\n"
+                                                  "It is worth comparing this visualization postprocessor with the "
+                                                  "one called ``surface elevation''. The current one is used to visualize a volume "
+                                                  "variable, whereas the latter only outputs information on "
+                                                  "the surface. Moreover ``depth'' is based on a member function of "
+                                                  "the geometry models that is documented as never returning a "
+                                                  "number less than zero -- in other words, it returns the depth "
+                                                  "of an evaluation point with regard to a reference surface that "
+                                                  "defines a zero depth, but for points that lie above this "
+                                                  "reference surface, it returns zero. As a consequence, it cannot "
+                                                  "be used to visualize positive elevations, whereas the the one "
+                                                  "called ``surface elevation'' can."
+                                                  "\n\n"
                                                   "Physical units: \\si{\\meter}.")
     }
   }

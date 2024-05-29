@@ -33,6 +33,7 @@
 #include <deal.II/multigrid/mg_constrained_dofs.h>
 #include <deal.II/multigrid/multigrid.h>
 #include <deal.II/multigrid/mg_transfer_matrix_free.h>
+#include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
 #include <deal.II/multigrid/mg_tools.h>
 #include <deal.II/multigrid/mg_coarse.h>
 #include <deal.II/multigrid/mg_smoother.h>
@@ -139,18 +140,18 @@ namespace aspect
       Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>> strain_rate_table;
 
       /**
-       * Table which stores the product of the viscosity derivative
-       * with respect to pressure and the Newton derivative scaling
-       * factor alpha.
+       * Table which stores the product of the following three
+       * variables: viscosity derivative with respect to pressure,
+       * the Newton derivative scaling factor, and the averaging weight.
        */
       Table<2, VectorizedArray<number>> newton_factor_wrt_pressure_table;
 
       /**
-       * Table which stores the product of the following three
+       * Table which stores the product of the following four
        * variables: viscosity derivative with respect to strain rate,
-       * newton derivative scaling factor, and alpha. Here alpha is
-       * the spd factor when the stabilization is PD or SPD,
-       * otherwise, it is 1.
+       * newton derivative scaling factor, alpha, and the averaging
+       * weight. Here alpha is the spd factor when the stabilization
+       * is PD or SPD, otherwise, it is 1.
        */
       Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
       newton_factor_wrt_strain_rate_table;
@@ -482,14 +483,14 @@ namespace aspect
        * Return a pointer to the MGTransfer object used for the A block
        * of the block GMG Stokes solver.
        */
-      virtual const MGTransferMatrixFree<dim,GMGNumberType> &
+      virtual const MGTransferMF<dim,GMGNumberType> &
       get_mg_transfer_A () const = 0;
 
       /**
        * Return a pointer to the MGTransfer object used for the Schur
        * complement block of the block GMG Stokes solver.
        */
-      virtual const MGTransferMatrixFree<dim,GMGNumberType> &
+      virtual const MGTransferMF<dim,GMGNumberType> &
       get_mg_transfer_S () const = 0;
 
       /**
@@ -598,14 +599,14 @@ namespace aspect
        * Return a pointer to the MGTransfer object used for the A block
        * of the block GMG Stokes solver.
        */
-      const MGTransferMatrixFree<dim,GMGNumberType> &
+      const MGTransferMF<dim,GMGNumberType> &
       get_mg_transfer_A () const override;
 
       /**
        * Return a pointer to the MGTransfer object used for the Schur
        * complement block of the block GMG Stokes solver.
        */
-      const MGTransferMatrixFree<dim,GMGNumberType> &
+      const MGTransferMF<dim,GMGNumberType> &
       get_mg_transfer_S () const override;
 
 
@@ -690,8 +691,8 @@ namespace aspect
       MGConstrainedDoFs mg_constrained_dofs_Schur_complement;
       MGConstrainedDoFs mg_constrained_dofs_projection;
 
-      MGTransferMatrixFree<dim,GMGNumberType> mg_transfer_A_block;
-      MGTransferMatrixFree<dim,GMGNumberType> mg_transfer_Schur_complement;
+      MGTransferMF<dim,GMGNumberType> mg_transfer_A_block;
+      MGTransferMF<dim,GMGNumberType> mg_transfer_Schur_complement;
 
       std::vector<std::shared_ptr<MatrixFree<dim,double>>> matrix_free_objects;
   };

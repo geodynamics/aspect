@@ -1,0 +1,16 @@
+{
+  "configurations": [
+    {
+      "name": "DebugRelease",
+      "buildType": "DebugRelease"
+    },
+    {
+      "name": "Debug",
+      "buildType": "Debug"
+    },
+    {
+      "name": "Release",
+      "buildType": "Release"
+    }
+  ]
+}

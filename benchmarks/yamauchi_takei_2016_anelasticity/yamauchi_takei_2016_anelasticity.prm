@@ -12,15 +12,14 @@ set End time                               = 0
 set Additional shared libraries = ./libanelasticity_temperature.so
 set Output directory                       = output_yamauchi_takei_2016_anelasticity
 
-
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 52000
     set Y extent = 100000
   end
 end
-
 
 subsection Initial temperature model
   set Model name = anelastic Vs to temperature
@@ -28,24 +27,20 @@ subsection Initial temperature model
   set Set reference temperature down to specified depth = 600
   set Use Yamauchi and Takei parameterization = true
   set Use original density and frequency model of Yamauchi and Takei = true
+
   subsection Ascii data model
     set Data directory       = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
     set Data file name       = box_2d_Vs_YT16.txt
   end
 end
 
-
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = bottom:function,left:function,right:function,top:function
-end
 
-
-subsection Boundary velocity model
   subsection Function
     set Function expression = 1;0
   end
 end
-
 
 subsection Gravity model
   set Model name = vertical
@@ -55,14 +50,13 @@ subsection Gravity model
   end
 end
 
-
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Viscosity = 1e21
   end
 end
-
 
 subsection Mesh refinement
   set Initial global refinement                = 6
@@ -71,9 +65,9 @@ subsection Mesh refinement
   set Strategy                                 = temperature
 end
 
-
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, point values
+
   subsection Point values
     set Evaluation points = 0,25000;2000,25000;4000,25000;\
   6000,25000;8000,25000;10000,25000;12000,25000;14000,25000;16000,25000;18000,25000;20000,25000;22000,25000;24000,25000;26000,25000;\

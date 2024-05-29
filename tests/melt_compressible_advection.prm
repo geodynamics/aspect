@@ -17,12 +17,10 @@ set Dimension                              = 2
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
 set End time                               = 0.025
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 2.0
 set Resume computation                     = false
 set Start time                             = 0
-
 set Use years in output instead of seconds = false
 
 subsection Compositional fields
@@ -42,6 +40,7 @@ end
 
 subsection Boundary temperature model
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 2,3
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.
@@ -50,14 +49,13 @@ subsection Boundary temperature model
     # Temperature at the outer boundary (lithosphere water/air). Units: K.
     set Minimal temperature = 273
   end
-
 end
 
 subsection Boundary composition model
   set Allow fixed composition on outflow boundaries = true
   set List of model names = initial composition
+  set Fixed composition boundary indicators   = 2,3
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -66,29 +64,30 @@ subsection Geometry model
     set X extent  = 1.0
     set Y extent  = 1.0
   end
-
 end
-
 
 subsection Gravity model
   set Model name = function
+
   subsection Function
     set Function expression = 0;1.0
     set Variable names      = x,y
   end
-
 end
 
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
+  set Zero velocity boundary indicators       =
+
   subsection Function
     set Function expression = 0.0;y+0.1
     set Variable names      = x,y
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
     set Variable names      = x,y
@@ -97,60 +96,33 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = -0.1/(exp(y+0.1) * (y+0.1)) + 1.0
     set Variable names      = x,y
   end
 end
 
-
 subsection Material model
   set Model name = compressible melt material
 end
 
-
 subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.0
-
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 5
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2,3
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = 2,3
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function
-end
-
-subsection Boundary velocity model
-  set Zero velocity boundary indicators       =
-end
-
 subsection Melt settings
   set Include melt transport                  = true
 end
 
-
 subsection Postprocess
   set List of postprocessors = velocity statistics, pressure statistics, velocity boundary statistics, compressible melt error
-
 end
-
-
 
 subsection Solver parameters
   subsection Stokes solver parameters

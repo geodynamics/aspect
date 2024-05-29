@@ -39,7 +39,7 @@ namespace aspect
         {
           public:
             SphericalHarmonicsLookup(const std::string &filename,
-                                     const MPI_Comm &comm);
+                                     const MPI_Comm comm);
 
             /// Declare a function that returns the cosine coefficients
             const std::vector<double> &
@@ -61,7 +61,7 @@ namespace aspect
         {
           public:
             SplineDepthsLookup(const std::string &filename,
-                               const MPI_Comm &comm);
+                               const MPI_Comm comm);
 
             const std::vector<double> &
             spline_depths() const;

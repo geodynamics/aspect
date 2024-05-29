@@ -3,7 +3,6 @@
 # Model for global mantle convection with tracking of the finite strain tensor.
 
 set Additional shared libraries            = ./libfinite_strain_cookbook.so
-
 set Adiabatic surface temperature          = 1600
 set Maximum time step                      = 1e6
 set Dimension                              = 2
@@ -12,7 +11,6 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Use years in output instead of seconds = true
 set Output directory                       = output-finite_strain
-
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
@@ -24,26 +22,23 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Compositional fields
   set Number of fields = 4
   set Names of fields = strain_xx, strain_xy, strain_yx, strain_yy
 end
 
-
 subsection Boundary composition model
   set List of model names = initial composition
 end
 
-
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 1.0;0.0;0.0;1.0
     set Variable names      = x,y
   end
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -54,9 +49,7 @@ subsection Geometry model
     set X repetitions = 3
     set X periodic = true
   end
-
 end
-
 
 subsection Gravity model
   set Model name = vertical
@@ -66,9 +59,9 @@ subsection Gravity model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = adiabatic
+
   subsection Adiabatic
     set Age bottom boundary layer = 5e8
     set Age top boundary layer    = 3e8
@@ -82,9 +75,9 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Material model
   set Model name = finite strain
+  set Material averaging = none
 
   subsection Simple model
     set Thermal conductivity = 4.7
@@ -94,17 +87,13 @@ subsection Material model
     set Thermal viscosity exponent = 7
     set Reference temperature = 1600
   end
-
-  set Material averaging = none
 end
-
 
 subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 6
   set Time steps between mesh refinement       = 0
 end
-
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = top,bottom
@@ -113,7 +102,6 @@ end
 subsection Nullspace removal
   set Remove nullspace                        = net x translation
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization,composition statistics,velocity statistics, temperature statistics

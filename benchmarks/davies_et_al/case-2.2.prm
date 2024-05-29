@@ -4,26 +4,21 @@
 # point to the folder that contains the results of Case 2.1.
 
 set CFL number                             = 10
-
 set End time                               = 3
 set Output directory                       = output
-
 set Resume computation                     = true
-
 set Start time                             = 0
-
 set Use years in output instead of seconds = false
-
 
 subsection Checkpointing
   set Steps between checkpoint = 15
 end
 
-
 ############### Parameters describing the model
 
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Inner radius  = 1.22
     set Opening angle = 360
@@ -31,11 +26,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Nullspace removal
   set Remove nullspace                        = net rotation
 end
-
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
@@ -43,6 +36,7 @@ end
 
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude =  1e11
   end
@@ -50,6 +44,7 @@ end
 
 subsection Material model
   set Model name = simpler
+
   subsection Simpler model
     set Reference density             = 1
     set Reference specific heat       = 1.
@@ -70,13 +65,13 @@ subsection Boundary temperature model
   end
 end
 
-
 ############### Parameters describing the temperature field
 # Angular mode is set to 4 in order to match the number of
 # convective cells reported by Davies et al.
 
 subsection Initial temperature model
   set Model name = spherical hexagonal perturbation
+
   subsection Spherical hexagonal perturbation
     set Angular mode          = 4
     set Rotation offset       = 0
@@ -101,15 +96,11 @@ subsection Mesh refinement
   set Additional refinement times        =
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 5
-  set Additional refinement times        =
   set Refinement fraction                = 1
   set Coarsening fraction                = 0
-
   set Strategy                           = temperature
-
   set Time steps between mesh refinement = 0
 end
-
 
 ############### Parameters describing what to do with the solution
 

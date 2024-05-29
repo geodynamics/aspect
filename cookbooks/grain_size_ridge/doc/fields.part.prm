@@ -1,0 +1,11 @@
+# Our only compositional field is the grain size, and we use particles
+# to track it. In order for the grain size to not just be tracked, but
+# to evolve over time depending on the temperature and deformation in
+# the model, we select ``grain_size'' as the mapped particle property
+# for the grain_size compositional field.
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = grain_size
+  set Compositional field methods = particles
+  set Mapped particle properties = grain_size:grain_size
+end

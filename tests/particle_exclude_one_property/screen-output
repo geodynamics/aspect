@@ -4,6 +4,7 @@ Number of degrees of freedom: 56,014 (8,450+1,089+4,225+4,225+4,225+4,225+4,225+
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
+   Advecting particles...  done.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.

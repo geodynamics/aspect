@@ -9,7 +9,6 @@ set End time                               = 3e8
 set Output directory                       = output-gplates-3d
 set Adiabatic surface temperature          = 1600
 
-
 subsection Material model
   set Model name = simple
 
@@ -20,7 +19,6 @@ subsection Material model
   end
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
 
@@ -29,7 +27,6 @@ subsection Geometry model
     set Outer radius  = 6336000
   end
 end
-
 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top:gplates
@@ -43,7 +40,6 @@ subsection Boundary velocity model
   end
 end
 
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
   set List of model names = spherical constant
@@ -54,7 +50,6 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = adiabatic
 
@@ -62,7 +57,6 @@ subsection Initial temperature model
     set Age top boundary layer = 5e7
   end
 end
-
 
 subsection Gravity model
   set Model name = radial constant
@@ -72,14 +66,12 @@ subsection Gravity model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 1
   set Initial global refinement          = 3
   set Strategy                           = temperature
   set Time steps between mesh refinement = 2
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average

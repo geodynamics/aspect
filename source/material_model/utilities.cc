@@ -21,7 +21,9 @@
 
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
+#include <aspect/structured_data.h>
 
+#include <aspect/geometry_model/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
 
@@ -303,7 +305,7 @@ namespace aspect
         HeFESToReader::HeFESToReader(const std::string &material_filename,
                                      const std::string &derivatives_filename,
                                      const bool interpol,
-                                     const MPI_Comm &comm)
+                                     const MPI_Comm comm)
         {
           /* Initializing variables */
           interpolation = interpol;
@@ -509,7 +511,7 @@ namespace aspect
 
         PerplexReader::PerplexReader(const std::string &filename,
                                      const bool interpol,
-                                     const MPI_Comm &comm)
+                                     const MPI_Comm comm)
         {
           /* Initializing variables */
           interpolation = interpol;
@@ -606,17 +608,17 @@ namespace aspect
             {
               first_natural_variable = column_name;
               in >> column_name;
-              AssertThrow(column_name == "T(K)", ExcMessage("The second column name in PerpleX lookup file " + filename + " should be T(K)."))
+              AssertThrow(column_name == "T(K)", ExcMessage("The second column name in PerpleX lookup file " + filename + " should be T(K)."));
             }
           else if (column_name == "T(K)")
             {
               first_natural_variable = column_name;
               in >> column_name;
-              AssertThrow(column_name == "P(bar)", ExcMessage("The second column name in PerpleX lookup file " + filename + " should be P(bar)."))
+              AssertThrow(column_name == "P(bar)", ExcMessage("The second column name in PerpleX lookup file " + filename + " should be P(bar)."));
             }
           else
             {
-              AssertThrow(false, ExcMessage("The first column name in the PerpleX lookup file " + filename + " should be P(bar) or T(K)."))
+              AssertThrow(false, ExcMessage("The first column name in the PerpleX lookup file " + filename + " should be P(bar) or T(K)."));
             }
 
           for (unsigned int n=2; n<n_columns; ++n)
@@ -786,6 +788,90 @@ namespace aspect
           AssertThrow(i == n_temperature*n_pressure, ExcMessage("Material table size not consistent with header."));
 
         }
+
+
+
+        void
+        EntropyReader::initialize(const MPI_Comm comm,
+                                  const std::string data_directory,
+                                  const std::string material_file_name)
+        {
+          material_lookup = std::make_unique<Utilities::StructuredDataLookup<2>>(7,1.0);
+          material_lookup->load_file(data_directory+material_file_name,
+                                     comm);
+        }
+
+
+
+        double
+        EntropyReader::specific_heat(const double entropy,
+                                     const double pressure) const
+        {
+          const double specific_heat = material_lookup->get_data({entropy,pressure}, 3);
+          return specific_heat;
+        }
+
+
+
+        double
+        EntropyReader::density(const double entropy,
+                               const double pressure) const
+        {
+          const double density = material_lookup->get_data({entropy,pressure}, 1);
+          return density;
+        }
+
+
+
+        double
+        EntropyReader::thermal_expansivity(const double entropy,
+                                           const double pressure) const
+        {
+          const double thermal_expansivity = material_lookup->get_data({entropy,pressure}, 2);
+          return thermal_expansivity;
+        }
+
+
+
+        double
+        EntropyReader::temperature(const double entropy,
+                                   const double pressure) const
+        {
+          const double temperature = material_lookup->get_data({entropy,pressure}, 0);
+          return temperature;
+        }
+
+
+
+        double
+        EntropyReader::seismic_vp(const double entropy,
+                                  const double pressure) const
+        {
+          const double seismic_vp = material_lookup->get_data({entropy,pressure}, 4);
+          return seismic_vp;
+        }
+
+
+
+        double
+        EntropyReader::seismic_vs(const double entropy,
+                                  const double pressure) const
+        {
+          const double seismic_vs = material_lookup->get_data({entropy,pressure}, 5);
+          return seismic_vs;
+        }
+
+
+
+        Tensor<1, 2>
+        EntropyReader::density_gradient(const double entropy,
+                                        const double pressure) const
+        {
+          const Tensor<1, 2> density_gradient= material_lookup->get_gradients({entropy,pressure}, 1);
+          return density_gradient;
+        }
+
+
       }
 
 
@@ -881,7 +967,12 @@ namespace aspect
       {
         Assert(masses.size() == densities.size(),
                ExcMessage ("The mass fractions and densities vectors used for computing "
-                           "volumes from masses have to have the same length!"));
+                           "volumes from masses have to have the same length! "
+                           "You have provided "
+                           + Utilities::int_to_string(masses.size()) +
+                           " mass fractions and "
+                           + Utilities::int_to_string(densities.size()) +
+                           " densities."));
 
         const unsigned int n_fields = masses.size();
         std::vector<double> volumes(n_fields);
@@ -942,7 +1033,11 @@ namespace aspect
       {
         Assert(volume_fractions.size() == parameter_values.size(),
                ExcMessage ("The volume fractions and parameter values vectors used for averaging "
-                           "have to have the same length!"));
+                           "have to have the same length! You have provided "
+                           + Utilities::int_to_string(volume_fractions.size()) +
+                           " volume fractions and "
+                           + Utilities::int_to_string(parameter_values.size()) +
+                           " parameter values."));
 
         double averaged_parameter = 0.0;
 

@@ -7,7 +7,6 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0.001
 set Use years in output instead of seconds = true
-
 set Pressure normalization                 = volume
 
 subsection Termination criteria
@@ -17,15 +16,12 @@ end
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent  = 1.0000
     set Y extent  = 1.0000
   end
 end
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = left, right, bottom, top
@@ -33,6 +29,7 @@ end
 
 subsection Material model
   set Model name = simple
+  set Material averaging = harmonic average
 
   subsection Simple model
     set Reference density             = 1
@@ -41,28 +38,26 @@ subsection Material model
     set Composition viscosity prefactor = 1e6
     set Density differential for compositional field 1 = 10
   end
-
-  set Material averaging = harmonic average
 end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 1
   end
 end
-
 
 ############### Parameters describing the temperature field
 # Note: The temperature plays no role in this model
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
 end
-
 
 ############### Parameters describing the compositional field
 # Note: The compositional field is what drives the flow
@@ -74,18 +69,17 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = if( (sqrt((x-0.5)^2+(y-0.5)^2)>0.22) , 0 , 1 )
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement          = 4
   set Initial adaptive refinement        = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, point values
@@ -101,6 +95,7 @@ subsection Postprocess
     set Output format                 = vtu
     set Time between graphical output = 0
     set List of output variables = density, viscosity, artificial viscosity composition
+
     subsection Artificial viscosity composition
       set Name of compositional field = C_1
     end

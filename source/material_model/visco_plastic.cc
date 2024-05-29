@@ -53,9 +53,8 @@ namespace aspect
       in.composition[i] = composition;
       in.strain_rate[i] = strain_rate;
 
-      const std::vector<double> volume_fractions
-        = MaterialUtilities::compute_composition_fractions(composition,
-                                                           rheology->get_volumetric_composition_mask());
+      const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition,
+                                                   this->introspection().chemical_composition_field_indices());
 
       const IsostrainViscosities isostrain_viscosities
         = rheology->calculate_isostrain_viscosities(in, i, volume_fractions);
@@ -78,7 +77,8 @@ namespace aspect
     {
       Assert(in.n_evaluation_points() == 1, ExcInternalError());
 
-      const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[0], rheology->get_volumetric_composition_mask());
+      const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[0],
+                                                   this->introspection().chemical_composition_field_indices());
 
       /* The following handles phases in a similar way as in the 'evaluate' function.
        * Results then enter the calculation of plastic yielding.
@@ -133,9 +133,6 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      // Store which components do not represent volumetric compositions (e.g. strain components).
-      const ComponentMask volumetric_compositions = rheology->get_volumetric_composition_mask();
-
       EquationOfStateOutputs<dim> eos_outputs (this->introspection().n_chemical_composition_fields()+1);
       EquationOfStateOutputs<dim> eos_outputs_all_phases (n_phases);
 
@@ -179,9 +176,6 @@ namespace aspect
                                                   n_phase_transitions_for_each_chemical_composition,
                                                   eos_outputs);
 
-          // TODO: Update rheology to only compute viscosity for chemical compositional fields
-          // Then remove volume_fractions_for_rheology
-          const std::vector<double> volume_fractions_for_rheology = MaterialUtilities::compute_composition_fractions(in.composition[i], volumetric_compositions);
           const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i], this->introspection().chemical_composition_field_indices());
 
           // not strictly correct if thermal expansivities are different, since we are interpreting
@@ -220,39 +214,41 @@ namespace aspect
           out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
           out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
 
-          // Compute the effective viscosity if requested and retrieve whether the material is plastically yielding
+          // Compute the effective viscosity if requested and retrieve whether the material is plastically yielding.
+          // Also always compute the viscosity if additional outputs are requested, because the viscosity is needed
+          // to compute the elastic force term.
           bool plastic_yielding = false;
           IsostrainViscosities isostrain_viscosities;
-          if (in.requests_property(MaterialProperties::viscosity))
+          if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs))
             {
               // Currently, the viscosities for each of the compositional fields are calculated assuming
               // isostrain amongst all compositions, allowing calculation of the viscosity ratio.
               // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
               // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
               isostrain_viscosities =
-                rheology->calculate_isostrain_viscosities(in, i, volume_fractions_for_rheology, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
+                rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_values, n_phase_transitions_for_each_chemical_composition);
 
               // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
               // creep (where n_diff=1) viscosities are stress and strain-rate independent, so the calculation
               // of compositional field viscosities is consistent with any averaging scheme.
-              out.viscosities[i] = MaterialUtilities::average_value(volume_fractions_for_rheology, isostrain_viscosities.composition_viscosities, rheology->viscosity_averaging);
+              out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, isostrain_viscosities.composition_viscosities, rheology->viscosity_averaging);
 
               // Decide based on the maximum composition if material is yielding.
               // This avoids for example division by zero for harmonic averaging (as plastic_yielding
               // holds values that are either 0 or 1), but might not be consistent with the viscosity
               // averaging chosen.
-              std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions_for_rheology.begin(), volume_fractions_for_rheology.end());
-              plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions_for_rheology.begin(), max_composition)];
+              std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
+              plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(), max_composition)];
 
               // Compute viscosity derivatives if they are requested
               if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
                     out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
 
-                rheology->compute_viscosity_derivatives(i, volume_fractions_for_rheology,
+                rheology->compute_viscosity_derivatives(i, volume_fractions,
                                                         isostrain_viscosities.composition_viscosities,
                                                         in, out, phase_function_values,
-                                                        phase_function.n_phase_transitions_for_each_composition());
+                                                        n_phase_transitions_for_each_chemical_composition);
             }
           else
             {
@@ -285,12 +281,12 @@ namespace aspect
           // has been called.
           // TODO do we even need a separate function? We could compute the PlasticAdditionalOutputs here like
           // the ElasticAdditionalOutputs.
-          rheology->fill_plastic_outputs(i, volume_fractions_for_rheology, plastic_yielding, in, out, isostrain_viscosities);
+          rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
 
           if (this->get_parameters().enable_elasticity)
             {
               // Compute average elastic shear modulus
-              average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions_for_rheology,
+              average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions,
                                                                                  rheology->elastic_rheology.get_elastic_shear_moduli(),
                                                                                  rheology->viscosity_averaging);
 
@@ -307,7 +303,7 @@ namespace aspect
 
       if (this->get_parameters().enable_elasticity)
         {
-          rheology->elastic_rheology.fill_elastic_force_outputs(in, average_elastic_shear_moduli, out);
+          rheology->elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
           rheology->elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
         }
     }
@@ -351,7 +347,8 @@ namespace aspect
           prm.declare_entry ("Thermal diffusivities", "0.8e-6",
                              Patterns::List(Patterns::Double (0.)),
                              "List of thermal diffusivities, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value.  "
                              "Units: \\si{\\meter\\squared\\per\\second}.");
           prm.declare_entry ("Define thermal conductivities","false",
@@ -362,7 +359,8 @@ namespace aspect
           prm.declare_entry ("Thermal conductivities", "3.0",
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal conductivities, for background material and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
         }
@@ -387,11 +385,6 @@ namespace aspect
 
           std::vector<unsigned int> n_phases_for_each_composition = phase_function.n_phases_for_each_composition();
 
-          // TODO ASPECT_3: Require all field types to be specified by the user
-          // Remove the following code block *and* replace following code snippets matching
-          // MaterialUtilities::make_csv_substring(prm.get("*"), indices) with
-          // prm.get("*")
-          // BEGIN CODE BLOCK
           const std::vector<unsigned int> indices = this->introspection().chemical_composition_field_indices();
 
           // Currently, phase_function.n_phases_for_each_composition() returns a list of length
@@ -407,7 +400,6 @@ namespace aspect
               n_phase_transitions_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1] - 1);
               n_phases += n_phases_for_each_composition[i+1];
             }
-          // END CODE BLOCK
 
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
@@ -436,7 +428,7 @@ namespace aspect
 
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
-          rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(phase_function.n_phases_for_each_composition()));
+          rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
         }
         prm.leave_subsection();
       }
@@ -483,9 +475,9 @@ namespace aspect
                                    "(Anne Glerum), and `Viscoelastic' (John Naliboff) material models. "
                                    "\n\n "
                                    "The viscosity for dislocation or diffusion creep is defined as "
-                                   "\\[v = \\frac 12 A^{-\\frac{1}{n}} d^{\\frac{m}{n}} "
+                                   "$ \\eta = \\frac 12 A^{-\\frac{1}{n}} d^{\\frac{m}{n}} "
                                    "\\dot{\\varepsilon}_{ii}^{\\frac{1-n}{n}} "
-                                   "\\exp\\left(\\frac{E + PV}{nRT}\\right)\\] "
+                                   "\\exp\\left(\\frac{E + PV}{nRT}\\right)$ "
                                    "where $A$ is the prefactor, $n$ is the stress exponent, "
                                    "$\\dot{\\varepsilon}_{ii}$ is the square root of the deviatoric "
                                    "strain rate tensor second invariant, $d$ is grain size, "
@@ -504,9 +496,9 @@ namespace aspect
                                    "should carefully check how the viscous prefactor and grain size "
                                    "terms are defined. "
                                    "\n\n "
-                                   "One may select to use the diffusion ($v_{\\text{diff}}$; $n=1$, $m\neq 0$), "
-                                   "dislocation ($v_{\\text{disl}}$, $n>1$, $m=0$) or composite "
-                                   "$\\frac{v_{\\text{diff}} v_{\\text{disl}}}{v_{\\text{diff}}+v_{\\text{disl}}}$ equation form. "
+                                   "One may select to use the diffusion ($\\eta_{\\text{diff}}$; $n=1$, $m\\neq 0$), "
+                                   "dislocation ($\\eta_{\\text{disl}}$, $n>1$, $m=0$) or composite "
+                                   "$\\frac{\\eta_{\\text{diff}} \\eta_{\\text{disl}}}{\\eta_{\\text{diff}}+\\eta_{\\text{disl}}}$ equation form. "
                                    "\n\n "
                                    "The diffusion and dislocation prefactors can be weakened with a factor "
                                    "between 0 and 1 according to the total or the viscous strain only. "
@@ -523,9 +515,9 @@ namespace aspect
                                    "internal friction.  Note that the 2d form is equivalent to the "
                                    "Mohr Coulomb yield surface.  If $\\phi$ is 0, the yield stress "
                                    "is fixed and equal to the cohesion (Von Mises yield criterion). "
-                                   "When the viscous stress ($2v{\\varepsilon}_{ii}$) exceeds "
+                                   "When the viscous stress ($2\\eta {\\varepsilon}_{ii}$) exceeds "
                                    "the yield stress, the viscosity is rescaled back to the yield "
-                                   "surface: $v_{y}=\\sigma_{y}/(2{\\varepsilon}_{ii})$. "
+                                   "surface: $\\eta_{y}=\\sigma_{y}/(2{\\varepsilon}_{ii})$. "
                                    "This form of plasticity is commonly used in geodynamic models. "
                                    "See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. "
                                    "\n\n"

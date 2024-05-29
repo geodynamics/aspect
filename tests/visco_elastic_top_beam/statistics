@@ -1,0 +1,24 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for composition solver 4
+# 13: Iterations for Stokes solver
+# 14: Velocity iterations in Stokes preconditioner
+# 15: Schur complement iterations in Stokes preconditioner
+# 16: RMS velocity (m/year)
+# 17: Max. velocity (m/year)
+# 18: Minimal temperature (K)
+# 19: Average temperature (K)
+# 20: Maximal temperature (K)
+# 21: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 150 1478 176 5400 0 0 0 0 0 34 36 106 6.58347910e-04 2.00347912e-03 2.93000000e+02 2.93000000e+02 2.93000000e+02 output-visco_elastic_top_beam/solution/solution-00000 
+1 1.000000000000e+03 1.000000000000e+03 150 1478 176 5400 0 2 2 3 2 26 28  84 5.43456945e-04 1.67092291e-03 2.93000000e+02 2.93000000e+02 2.93000000e+02 output-visco_elastic_top_beam/solution/solution-00001 
+2 2.000000000000e+03 1.000000000000e+03 150 1478 176 5400 0 2 2 2 2 25 27  81 5.00492630e-04 1.47834479e-03 2.93000000e+02 2.93000000e+02 2.93000000e+02 output-visco_elastic_top_beam/solution/solution-00002 

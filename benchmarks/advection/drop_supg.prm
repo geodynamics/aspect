@@ -1,19 +1,18 @@
 # Dropping box benchmark on the right half of the domain
 
 set Dimension                              = 2
-
 set Use years in output instead of seconds = false
 set End time                               = 5.0
 set Output directory                       = output-drop-supg
+set Nonlinear solver scheme                = single Advection, no Stokes
 
 subsection Prescribed Stokes solution
   set Model name = function
+
   subsection Velocity function
     set Function expression = 0; if (x>0,-0.2,0)
   end
 end
-
-set Nonlinear solver scheme                = single Advection, no Stokes
 
 subsection Discretization
   set Temperature polynomial degree = 2
@@ -22,7 +21,6 @@ subsection Discretization
     set Stabilization method = SUPG
   end
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -34,7 +32,6 @@ subsection Geometry model
     set Box origin Y coordinate = -1
   end
 end
-
 
 subsection Initial temperature model
   set Model name = function
@@ -58,6 +55,7 @@ end
 
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = top, bottom, left, right
 
   subsection Box
     set Bottom temperature = 0
@@ -69,6 +67,7 @@ end
 
 subsection Boundary composition model
   set List of model names = box
+  set Fixed composition boundary indicators   = top, bottom, left, right
 
   subsection Box
     set Bottom composition = 0
@@ -78,14 +77,6 @@ subsection Boundary composition model
   end
 end
 
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = top, bottom, left, right
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = top, bottom, left, right
-end
-
 subsection Gravity model
   set Model name = vertical
 
@@ -93,7 +84,6 @@ subsection Gravity model
     set Magnitude = 0.0
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -118,7 +108,6 @@ subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization

@@ -270,11 +270,8 @@ namespace aspect
     std::pair<std::string,std::string>
     DoneaHuertaPostprocessor<dim>::execute (TableHandler &)
     {
-      std::unique_ptr<Function<dim>> ref_func;
-      {
-
-        ref_func.reset (new AnalyticSolutions::FunctionDoneaHuerta<dim>());
-      }
+      std::unique_ptr<Function<dim>> ref_func =
+        std::make_unique<AnalyticSolutions::FunctionDoneaHuerta<dim>>();
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);
 

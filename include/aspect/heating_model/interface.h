@@ -335,8 +335,12 @@ namespace aspect
          * in the input file (and are consequently currently active) and return
          * true if one of them has the desired type specified by the template
          * argument.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
          */
-        template <typename HeatingModelType>
+        template <typename HeatingModelType,
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,HeatingModelType>::value>>
         bool
         has_matching_heating_model () const;
 
@@ -347,8 +351,12 @@ namespace aspect
          * argument or can be casted to that type. If so, return a reference
          * to it. If no heating model is active that matches the given type,
          * throw an exception.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
          */
-        template <typename HeatingModelType>
+        template <typename HeatingModelType,
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,HeatingModelType>::value>>
         const HeatingModelType &
         get_matching_heating_model () const;
 
@@ -391,7 +399,7 @@ namespace aspect
 
 
     template <int dim>
-    template <typename HeatingModelType>
+    template <typename HeatingModelType, typename>
     inline
     bool
     Manager<dim>::has_matching_heating_model () const
@@ -404,7 +412,7 @@ namespace aspect
 
 
     template <int dim>
-    template <typename HeatingModelType>
+    template <typename HeatingModelType, typename>
     inline
     const HeatingModelType &
     Manager<dim>::get_matching_heating_model () const

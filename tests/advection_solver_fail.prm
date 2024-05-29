@@ -6,6 +6,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/simple_incompressible.prm
 
+
 subsection Solver parameters
-  set Temperature solver tolerance = 1e-35
+  set Temperature solver tolerance = 0
 end

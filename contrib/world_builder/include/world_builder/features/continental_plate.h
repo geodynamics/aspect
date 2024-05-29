@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -74,6 +74,12 @@ namespace WorldBuilder
         void declare_entries(Parameters &prm,
                              const std::string &parent_name = "",
                              const std::vector<std::string> &required_entries = {});
+
+        /**
+         * Produce a JSON snippet for the schema
+         */
+        static
+        void make_snippet(Parameters &prm);
 
         /**
          * declare and read in the world builder file into the parameters class

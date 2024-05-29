@@ -5,7 +5,6 @@ set End time                               = 0
 set Nonlinear solver scheme                = no Advection, no Stokes
 set Output directory                       = output-solve_no_advection_no_stokes
 
-
 subsection Material model
   set Model name = simple
 
@@ -14,7 +13,6 @@ subsection Material model
     set Viscosity                     = 1e22
   end
 end
-
 
 subsection Geometry model
   set Model name = spherical shell
@@ -26,24 +24,15 @@ subsection Geometry model
   end
 end
 
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = inner
-end
-
-subsection Boundary velocity model
   set Tangential velocity boundary indicators = outer,west,south,east
 end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = inner,outer
-end
-
-
-subsection Boundary temperature model
   set List of model names = initial temperature
 end
-
 
 subsection Initial temperature model
   set List of model names = ascii profile, harmonic perturbation
@@ -60,11 +49,9 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Gravity model
   set Model name = ascii data
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 1
@@ -72,7 +59,6 @@ subsection Mesh refinement
   set Strategy                           = temperature
   set Time steps between mesh refinement = 15
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics

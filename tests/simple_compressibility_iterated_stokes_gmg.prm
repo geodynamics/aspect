@@ -2,6 +2,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/simple_compressibility_iterated_stokes.prm
 
+
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 3

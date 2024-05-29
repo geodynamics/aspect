@@ -7,16 +7,15 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-
 subsection Boundary temperature model
   set List of model names = spherical constant
+  set Fixed temperature boundary indicators   = 0, 1
 
   subsection Spherical constant
     set Inner temperature = 1613.0
     set Outer temperature = 1613.0
   end
 end
-
 
 subsection Gravity model
   set Model name = radial constant
@@ -25,7 +24,6 @@ subsection Gravity model
     set Magnitude = 9.81
   end
 end
-
 
 subsection Geometry model
   set Model name = spherical shell
@@ -37,7 +35,6 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
 
@@ -45,7 +42,6 @@ subsection Initial temperature model
     set Function expression = 1613.0
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -60,31 +56,19 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 5
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0, 1
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0, 2, 3
-end
-
-subsection Boundary velocity model
   set Zero velocity boundary indicators       = 1
 end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics, depth average
+
   subsection Depth average
     set Number of zones = 10
   end

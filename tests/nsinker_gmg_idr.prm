@@ -5,6 +5,7 @@ set Dimension = 3
 
 include $ASPECT_SOURCE_DIR/benchmarks/nsinker/nsinker_gmg.prm
 
+
 subsection Material model
   set Material averaging = harmonic average only viscosity
 end

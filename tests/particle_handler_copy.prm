@@ -9,6 +9,7 @@ set Use years in output instead of seconds = false
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent  = 0.9142
     set Y extent  = 1.0000
@@ -22,6 +23,7 @@ end
 
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Reference density             = 1010
     set Viscosity                     = 1e2
@@ -32,6 +34,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10
   end
@@ -39,6 +42,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
@@ -50,6 +54,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,z
     set Function constants  = pi=3.1415926
@@ -74,7 +79,6 @@ subsection Postprocess
     set Time between data output = 70
     set Data output format = vtu
     set List of particle properties = velocity
-
     set Particle generator name = uniform box
 
     subsection Generator

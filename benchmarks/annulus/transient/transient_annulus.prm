@@ -8,13 +8,13 @@
 # of the benchmark. Refer to that parameter file for most settings.
 include $ASPECT_SOURCE_DIR/benchmarks/annulus/instantaneous/annulus.prm
 
+
 # Only list parameters that are specific for the transient benchmark
 set Additional shared libraries            = ../plugin/libannulus.so
 set Dimension                              = 2
 
 # for benchmark: t = log(1 + 4 pi)
 set End time                                = 2.6075939815049280917817614240391581472837221358084918109292273672
-
 set Nonlinear solver scheme                = single Advection, single Stokes
 
 subsection Discretization
@@ -35,9 +35,9 @@ subsection Material model
 end
 
 subsection Annulus benchmark
-   set Use analytical density  = false
-   set Use transient solution  = true
-   set k                       = 4
+  set Use analytical density  = false
+  set Use transient solution  = true
+  set k                       = 4
 end
 
 subsection Mesh refinement
@@ -76,5 +76,6 @@ subsection Solver parameters
     set Number of cheap Stokes solver steps = 200
     set Stokes solver type = block GMG
     set Krylov method for cheap solver steps = IDR(s)
+    set IDR(s) parameter = 4
   end
 end

@@ -1,0 +1,40 @@
+
+Loading shared library <./libtomography_based_plate_motions_cookbook.debug.so>
+
+
+   Loading Ascii data boundary file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/crustal_structure_2D.txt.
+
+
+   Loading Ascii data initial file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/upper_mantle_TM1_2D.txt.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/LAB_CAM2016_2D.txt.
+
+
+   Loading Ascii data initial file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/LLNL_model_cropped_cratons_faults.txt.gz.
+
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
+Number of active cells: 48 (on 2 levels)
+Number of degrees of freedom: 2,232 (480+72+240+240+240+240+240+240+240)
+
+Number of active cells: 192 (on 3 levels)
+Number of degrees of freedom: 8,016 (1,728+240+864+864+864+864+864+864+864)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Copying properties into prescribed temperature field... done.
+   Solving Stokes system... 65+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0.012107
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.012107
+
+
+   Postprocessing:
+     Max, min, and RMS residual velocity along boundary parts: 1.123 m/year, 0.0004104 m/year, 0.4248 m/year
+     Max, min, and rms velocity along boundary parts:          0.8438 m/year, 0.000775 m/year, 0.3246 m/year, 1.123 m/year, 0.0004104 m/year, 0.4248 m/year
+     Writing graphical output:                                 output-tomography_based_plate_motions_cookbook/solution/solution-00000
+     Heat fluxes through boundary parts:                       -1.242e+07 W, 5.98e+07 W
+     Writing depth average:                                    output-tomography_based_plate_motions_cookbook/depth_average
+
+Termination requested by criterion: end time
+
+
+

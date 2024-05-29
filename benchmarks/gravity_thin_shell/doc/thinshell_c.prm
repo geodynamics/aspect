@@ -1,5 +1,6 @@
 subsection Postprocess
   set List of postprocessors = gravity calculation,visualization
+
   subsection Gravity calculation
     set Sampling scheme = map
     set Minimum radius = 6621e3

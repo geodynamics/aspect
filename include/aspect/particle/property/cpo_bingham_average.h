@@ -200,11 +200,6 @@ namespace aspect
            */
           unsigned int n_samples;
 
-          /**
-           * The tensor equivalent to the permutation symbol (Levi-Civita symbol).
-           */
-          Tensor<3,3> permutation_operator_3d;
-
       };
     }
   }

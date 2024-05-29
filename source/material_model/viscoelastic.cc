@@ -50,10 +50,6 @@ namespace aspect
         {
           const std::vector<double> composition = in.composition[i];
 
-
-          // TODO: Update elasticity to only compute elastic moduli for chemical compositional fields
-          // Then remove volume_fractions_for_elasticity
-          const std::vector<double> volume_fractions_for_elasticity = MaterialUtilities::compute_composition_fractions(composition, composition_mask);
           const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition, this->introspection().chemical_composition_field_indices());
 
           equation_of_state.evaluate(in, i, eos_outputs);
@@ -78,7 +74,7 @@ namespace aspect
 
           // Average viscosity and shear modulus
           const double average_viscosity = MaterialUtilities::average_value(volume_fractions, viscosities, viscosity_averaging);
-          average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions_for_elasticity, elastic_shear_moduli, viscosity_averaging);
+          average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions, elastic_shear_moduli, viscosity_averaging);
 
           // Average viscoelastic (e.g., effective) viscosity (equation 28 in Moresi et al., 2003, J. Comp. Phys.)
           out.viscosities[i] = elastic_rheology.calculate_viscoelastic_viscosity(average_viscosity,
@@ -91,7 +87,7 @@ namespace aspect
             }
         }
 
-      elastic_rheology.fill_elastic_force_outputs(in, average_elastic_shear_moduli, out);
+      elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
       elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
 
     }
@@ -118,13 +114,15 @@ namespace aspect
           prm.declare_entry ("Viscosities", "1.e21",
                              Patterns::List(Patterns::Double (0.)),
                              "List of viscosities for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::List(Patterns::Double (0.)),
                              "List of thermal conductivities for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "for a total of N+1 values, where N is the number of all compositional fields or only "
+                             "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Viscosity averaging scheme", "harmonic",
@@ -166,7 +164,6 @@ namespace aspect
 
           Utilities::MapParsing::Options options(chemical_field_names, "Viscosities");
           options.list_of_allowed_keys = compositional_field_names;
-          options.allow_multiple_values_per_key = true;
 
           viscosities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Viscosities"), options);
           options.property_name = "Thermal conductivities";

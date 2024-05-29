@@ -25,35 +25,56 @@ set Nonlinear solver tolerance             = 1e-7
 # and in addition, we limit the maximum reaction time step size to
 # 500,000 years.
 set Use operator splitting                     = true
+
+# The end time of the simulation. We only do one time step.
+set End time                               = 1e5
+
 subsection Solver parameters
   subsection Operator splitting parameters
     set Reaction time step                     = 1e5
     set Reaction time steps per advection step = 50
   end
+
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-8
+    set Number of cheap Stokes solver steps = 100
+  end
 end
 
-# The end time of the simulation. We only do one time step.
-set End time                               = 1e5
-
 # We apply the lithostatic pressure at the bottom and the right side.
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
+##################### Boundary conditions ########################
+
+# As boundary conditions for the temperature, we just use the
+# initial conditions again. This temperature is applied as a prescribed
+# temperature at the top and bottom boundary, as specified above.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Minimal temperature = 293
+    set Maximal temperature = 3700
+  end
 end
 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top:function
-end
-
-subsection Boundary velocity model
   set Tangential velocity boundary indicators = left
+
+  subsection Function
+    set Function constants  =
+    set Function expression = 0; 0
+  end
 end
 
 subsection Boundary traction model
   set Prescribed traction boundary indicators = right:initial lithostatic pressure, bottom y:initial lithostatic pressure
+
+  subsection Initial lithostatic pressure
+    set Number of integration points = 10000
+    set Representative point         = 300000,150000
+  end
 end
 
 subsection Melt settings
@@ -61,21 +82,6 @@ subsection Melt settings
   # run a model with melt transport.
   set Include melt transport                  = true
 end
-
-subsection Boundary traction model
-  subsection Initial lithostatic pressure
-    set Number of integration points = 10000
-    set Representative point         = 300000,150000
-  end
-end
-
-subsection Boundary velocity model
-  subsection Function
-    set Function constants  =
-    set Function expression = 0; 0
-  end
-end
-
 
 ##################### Settings for melt transport ########################
 
@@ -87,6 +93,7 @@ end
 subsection Discretization
   set Stokes velocity polynomial degree    = 2
   set Composition polynomial degree        = 1
+
   subsection Stabilization parameters
     set beta  = 0.5
     set cR    = 1
@@ -98,6 +105,7 @@ end
 # We choose an adiabatic temperature profile as initial condition.
 subsection Initial temperature model
   set List of model names = adiabatic
+
   subsection Adiabatic
     set Age bottom boundary layer = 0
     set Age top boundary layer    = 5e7
@@ -114,23 +122,10 @@ end
 # of the model run.
 subsection Initial composition model
   set List of model names = function, porosity
+
   subsection Function
     set Function expression = 0; 0
     set Variable names      = x,y
-  end
-end
-
-##################### Boundary conditions ########################
-
-# As boundary conditions for the temperature, we just use the
-# initial conditions again. This temperature is applied as a prescribed
-# temperature at the top and bottom boundary, as specified above.
-subsection Boundary temperature model
-  set List of model names = initial temperature
-
-  subsection Initial temperature
-    set Minimal temperature = 293
-    set Maximal temperature = 3700
   end
 end
 
@@ -143,6 +138,7 @@ end
 # Models with melt transport also need an additional boundary condition.
 subsection Boundary fluid pressure model
   set Plugin name = density
+
   subsection Density
     set Density formulation = average density
   end
@@ -159,7 +155,6 @@ subsection Geometry model
     set Y extent = 150000
     set X repetitions = 2
   end
-
 end
 
 ################ Gravity and material properties ##################
@@ -179,10 +174,9 @@ end
 # such as the permeability, the melt density and the melt
 # viscosity.
 subsection Material model
-
   set Model name = melt global
-  subsection Melt global
 
+  subsection Melt global
     # First we describe the parameters for the solid, in the same way
     # we did in the model without melt transport
     set Thermal conductivity              = 4.7
@@ -237,7 +231,6 @@ subsection Material model
     # model this using a simplified, linear relationship, saying that to melt 100%
     # of the rock the temperature has to be 200 K higher than to melt it initially.
     set Depletion solidus change          = 200
-
     set Melting time scale for operator splitting = 1e100
     set Include melting and freezing      = false
   end
@@ -254,7 +247,6 @@ end
 subsection Mesh refinement
   set Coarsening fraction                      = 0.05
   set Refinement fraction                      = 0.8
-
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 4
   set Time steps between mesh refinement       = 0
@@ -271,7 +263,6 @@ end
 ##################### Postprocessing ########################
 
 subsection Postprocess
-
   set List of postprocessors = visualization, composition statistics, velocity statistics, temperature statistics, mass flux statistics
   set Run postprocessors on nonlinear iterations = true
 
@@ -281,6 +272,10 @@ subsection Postprocess
 
   subsection Visualization
     set List of output variables      = material properties, nonadiabatic temperature, strain rate, melt material properties, nonadiabatic pressure
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    set Interpolate output            = true
 
     subsection Material properties
       set List of material properties = density, viscosity, thermal expansivity
@@ -289,19 +284,5 @@ subsection Postprocess
     subsection Melt material properties
       set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
     end
-
-    set Number of grouped files       = 0
-    set Output format                 = vtu
-    set Time between graphical output = 0
-    set Interpolate output            = true
-  end
-
-end
-
-
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-8
-    set Number of cheap Stokes solver steps = 100
   end
 end

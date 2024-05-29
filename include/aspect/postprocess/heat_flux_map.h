@@ -88,6 +88,19 @@ namespace aspect
          */
         std::pair<std::string,std::string>
         execute (TableHandler &statistics) override;
+
+      private:
+        /**
+         * Output the heat flux density for the boundary determined
+         * by @p boundary_id to a file. The heat flux density is
+         * handed over in the vector @p heat_flux_and_area. This vector
+         * is expected to be of the structure described for the return value
+         * of the function compute_heat_flux_through_boundary_faces() and
+         * only the values at the faces of the given @p boundary_id are
+         * written to the file.
+         */
+        void output_to_file(const types::boundary_id boundary_id,
+                            const std::vector<std::vector<std::pair<double, double>>> &heat_flux_and_area);
     };
   }
 }

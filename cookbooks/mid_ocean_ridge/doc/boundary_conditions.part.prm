@@ -12,6 +12,7 @@
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top:function
   set Tangential velocity boundary indicators = left
+
   subsection Function
     # We choose a half-spreading rate of u0=3cm/yr.
     set Function constants  = u0=0.03, x0=10000

@@ -1,10 +1,8 @@
 ##### simple test for ascii data initial composition
 
 set Dimension                              = 3
-
 set Use years in output instead of seconds = true
 set End time                               = 1e5
-
 set Adiabatic surface temperature          = 1613.0
 
 subsection Geometry model
@@ -20,56 +18,44 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1613
   end
 end
 
-
 subsection Boundary temperature model
   set List of model names = spherical constant
+  set Fixed temperature boundary indicators   = inner, outer
+
   subsection Spherical constant
     set Inner temperature = 3000
     set Outer temperature = 273
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = inner, outer
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = north, south, east, west, inner, outer
-end
 
-subsection Boundary velocity model
   subsection Function
     set Function expression = 1;0;0
   end
 end
 
-
 subsection Compositional fields
   set Number of fields = 1
 end
 
-
 subsection Initial composition model
   set Model name = ascii data
+
   subsection Ascii data model
     set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
     set Data file name       = shell_3d.txt
   end
 end
-
 
 subsection Gravity model
   set Model name = radial constant
@@ -79,14 +65,13 @@ subsection Gravity model
   end
 end
 
-
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Viscosity = 1e21
   end
 end
-
 
 subsection Mesh refinement
   set Initial global refinement                = 1
@@ -94,7 +79,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
   set Strategy                                 = temperature
 end
-
 
 subsection Postprocess
   set List of postprocessors = temperature statistics

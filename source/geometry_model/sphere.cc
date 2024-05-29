@@ -23,20 +23,13 @@
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 
 #include <deal.II/grid/grid_generator.h>
+#include <deal.II/grid/manifold_lib.h>
 #include <aspect/utilities.h>
 
 namespace aspect
 {
   namespace GeometryModel
   {
-    template <int dim>
-    Sphere<dim>::Sphere()
-      :
-      spherical_manifold()
-    {}
-
-
-
     template <int dim>
     void
     Sphere<dim>::
@@ -46,7 +39,7 @@ namespace aspect
                                  Point<dim>(),
                                  R);
 
-      coarse_grid.set_manifold(0,spherical_manifold);
+      coarse_grid.set_manifold(0, SphericalManifold<dim>());
       coarse_grid.set_all_manifold_ids_on_boundary(0);
     }
 
@@ -240,6 +233,6 @@ namespace aspect
                                    "the velocity in direction of the cylinder axes is zero. "
                                    "This is consistent with the definition of what we consider "
                                    "the two-dimension case given in "
-                                   "Section~\\ref{sec:meaning-of-2d}.")
+                                   "Section~\\ref{sec:methods:2d-models}.")
   }
 }

@@ -207,7 +207,7 @@ $V_\text{lat}$ is the value from the lateral viscosity file, $T$ is
 temperature, $T_\text{ref}$ is the reference temperature profile, and
 $\Delta T$ is the deviation from the reference temperature profile.
 
-This reference profile can be chosen in two different ways: On the one hand,
+This reference profile can be chosen in several different ways: On the one hand,
 it can be chosen as the laterally averaged temperature (and in this case, a
 number of depth slices for this lateral averaging can be specified as well).
 This is the original formulation of {cite:t}`steinberger:calderwood:2006`, and the
@@ -224,13 +224,13 @@ these boundary layers (because otherwise we would compute their effect twice).
 This option allows the viscosity in the boundary layers to develop based on
 the temperature in the model, which is why we choose it for this cookbook.
 
-The default data directory already contains two radial viscosity files, one
-for each of these cases. The file
-[data/material-model/steinberger/radial-visc.txt] is the original
+The default data directory already contains several radial viscosity files.
+The file
+[data/material-model/steinberger/radial-visc.txt](https://www.github.com/geodynamics/aspect/blob/main/data/material-model/steinberger/radial-visc.txt) is the original
 {cite:t}`steinberger:calderwood:2006` profile (with an
 interpolation between the original discrete layers) and for use with the
 laterally averaged temperature. The file
-[data/material-model/steinberger/radial-visc-simple.txt] is for use with the
+[data/material-model/steinberger/radial-visc-simple.txt](https://www.github.com/geodynamics/aspect/blob/main/data/material-model/steinberger/radial-visc-simple.txt) is for use with the
 adiabatic profile. To illustrate the difference, the content of both files is
 plotted in {numref}`fig:steinberger-viscosity1` and {numref}`fig:steinberger-viscosity2`.
 
@@ -245,6 +245,40 @@ Viscosity profile based on the original {cite:t}`steinberger:calderwood:2006` fo
 <img src="radial-visc-simple.svg" style="width:48.0%" />
 
 Modified viscosity profile without boundary layers, intended for use with a temperature dependence of viscosity based on an adiabatic temperature profile.
+```
+
+In addition, there are two different ways these viscosity profiles are
+represented in {cite:t}`steinberger:calderwood:2006`. They start out with
+non-optimized normalized viscosity profiles (as in their Figure 4), and then
+optimize them based on observational data. During this optimization, the different
+layers that make up the profiles (usually lithosphere, upper mantle, transition
+zone, and lower mantle) are shifted left or right relative to each other.
+The figures that show these optimized profiles in the paper represent them as
+piece-wise constant values within 22 layers, and the profiles shown in Figures
+{numref}`fig:steinberger-viscosity1` and {numref}`fig:steinberger-viscosity2`
+are interpolations between these 22 layers. However, we can also represent
+the profile as a variation of the initial normalized viscosity profile, with
+the four different layers being shifted relative to each other based on the
+optimization. This viscosity profile is given in
+[data/material-model/steinberger/radial-visc-continuous.txt](https://www.github.com/geodynamics/aspect/blob/main/data/material-model/steinberger/radial-visc-continuous.txt).
+The image below illustrates the difference compared to
+[data/material-model/steinberger/radial-visc-simple.txt](https://www.github.com/geodynamics/aspect/blob/main/data/material-model/steinberger/radial-visc-simple.txt), the profile based
+on interpolation of the discrete layers.
+The profile with the continuously varying viscosity within 4 layers is the more faithful
+representation of the results of {cite:t}`steinberger:calderwood:2006`, and we therefore
+recommend its use in models that use their viscosity profile.
+
+```{figure-md} fig:steinberger-viscosity3
+<img src="comparison.svg" style="width:48.0%" />
+
+Comparison of the viscosity profiles without boundary layers, showing the interpolation of the piece-wise constant profile [data/material-model/steinberger/radial-visc-simple.txt](https://www.github.com/geodynamics/aspect/blob/main/data/material-model/steinberger/radial-visc-simple.txt) in green and the profile that is continuous within 4 layers, but features jumps between these layers [data/material-model/steinberger/radial-visc-continuous.txt](https://www.github.com/geodynamics/aspect/blob/main/data/material-model/steinberger/radial-visc-continuous.txt) in purple.
+```
+
+To change from the interpolated profile (which is the one being used in the
+input file of this cookbook) requires changing the `Radial viscosity file name`
+parameter in the Steinberger material model to the desired value.
+
+```{literalinclude} rheology2.part.prm
 ```
 
 In order to improve solver convergence, the material model has additional
@@ -317,4 +351,12 @@ end of the model run and some of the material properties are shown in
 <img src="endstate.png" style="width:96.0%" />
 
  End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity.
+```
+
+For comparison, we also show the end state of the model with the continuous
+viscosity profile.
+```{figure-md} fig:steinberger-end-state-2
+<img src="endstate_continuous.png" style="width:96.0%" />
+
+ End state of the model with continuous viscosity profile. Left: temperature. Right: viscosity.
 ```

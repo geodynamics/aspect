@@ -964,6 +964,16 @@ namespace aspect
                                                                    neighbor,
                                                                    this->introspection(),
                                                                    this->get_current_linearization_point());
+
+              this->create_additional_material_model_outputs(scratch.neighbor_face_material_model_outputs);
+              this->get_heating_model_manager().create_additional_material_model_inputs_and_outputs(scratch.neighbor_face_material_model_inputs,
+                  scratch.neighbor_face_material_model_outputs);
+
+              this->get_material_model().fill_additional_material_model_inputs(scratch.neighbor_face_material_model_inputs,
+                                                                               this->get_current_linearization_point(),
+                                                                               *scratch.neighbor_face_finite_element_values,
+                                                                               this->introspection());
+
               this->get_material_model().evaluate(scratch.neighbor_face_material_model_inputs,
                                                   scratch.neighbor_face_material_model_outputs);
 

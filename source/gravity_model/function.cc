@@ -115,6 +115,6 @@ namespace aspect
                                   "``Gravity model|Function''. The format of these "
                                   "functions follows the syntax understood by the "
                                   "muparser library, see "
-                                  "{ref}`sec:run-aspect:parameters-overview:muparser-format`.")
+                                  "{ref}\\`sec:run-aspect:parameters-overview:muparser-format\\`.")
   }
 }

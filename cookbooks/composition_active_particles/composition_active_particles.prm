@@ -13,8 +13,6 @@ set End time                               = 20
 set Use years in output instead of seconds = false
 set Output directory                       = output-composition-active-particles
 
-
-
 subsection Geometry model
   set Model name = box
 
@@ -23,7 +21,6 @@ subsection Geometry model
     set Y extent = 1
   end
 end
-
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
@@ -34,7 +31,6 @@ subsection Boundary temperature model
     set Top temperature    = 0
   end
 end
-
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom
@@ -47,11 +43,9 @@ subsection Boundary velocity model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Initial temperature model
   set Model name = function
@@ -61,7 +55,6 @@ subsection Initial temperature model
     set Function expression = (1-z)
   end
 end
-
 
 # Compared to the passive material model, we here make
 # the density composition dependent by letting it depend
@@ -79,13 +72,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 5
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, composition statistics,particles
@@ -104,9 +95,7 @@ subsection Postprocess
     set Update ghost particles = true
     set Particle generator name = random uniform
   end
-
 end
-
 
 # Here, we track compositional fields via active particle particles.
 # The initial composition assigned to the particles is 'mapped'

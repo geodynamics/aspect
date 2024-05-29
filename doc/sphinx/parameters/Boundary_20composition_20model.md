@@ -55,7 +55,7 @@ The format of these functions follows the syntax understood by the muparser libr
 
 Because this class simply takes what the initial composition had described, this class can not know certain pieces of information such as the minimal and maximal composition on the boundary. For operations that require this, for example in post-processing, this boundary composition model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary composition model/Initial composition&rdquo;.
 
-&lsquo;spherical constant&rsquo;: A model in which the composition is chosen constant on the inner and outer boundaries of a surface, spherical shell, chunk or ellipsoidal chunk. Parameters are read from subsection &rsquo;Spherical constant&rsquo;.
+&lsquo;spherical constant&rsquo;: A model in which the composition is chosen constant on the inner and outer boundaries of a sphere, spherical shell, chunk or ellipsoidal chunk. Parameters are read from subsection &rsquo;Spherical constant&rsquo;.
 
 (parameters:Boundary_20composition_20model/List_20of_20model_20operators)=
 ### __Parameter name:__ List of model operators
@@ -89,7 +89,7 @@ The format of these functions follows the syntax understood by the muparser libr
 
 Because this class simply takes what the initial composition had described, this class can not know certain pieces of information such as the minimal and maximal composition on the boundary. For operations that require this, for example in post-processing, this boundary composition model must therefore be told what the minimal and maximal values on the boundary are. This is done using parameters set in section &ldquo;Boundary composition model/Initial composition&rdquo;.
 
-&lsquo;spherical constant&rsquo;: A model in which the composition is chosen constant on the inner and outer boundaries of a surface, spherical shell, chunk or ellipsoidal chunk. Parameters are read from subsection &rsquo;Spherical constant&rsquo;.
+&lsquo;spherical constant&rsquo;: A model in which the composition is chosen constant on the inner and outer boundaries of a sphere, spherical shell, chunk or ellipsoidal chunk. Parameters are read from subsection &rsquo;Spherical constant&rsquo;.
 
 **Warning**: This parameter provides an old and deprecated way of specifying boundary composition models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
 
@@ -297,14 +297,14 @@ If the function you are describing represents a vector-valued function with mult
 ### __Parameter name:__ Inner composition
 **Default value:** 1.
 
-**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+**Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Composition at the inner boundary (core mantle boundary). Units: none.
+**Documentation:** A comma separated list of composition boundary values at the bottom boundary (at minimal radius). This list must have one entry or as many entries as there are compositional fields. Units: none.
 
 (parameters:Boundary_20composition_20model/Spherical_20constant/Outer_20composition)=
 ### __Parameter name:__ Outer composition
 **Default value:** 0.
 
-**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
+**Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Composition at the outer boundary (lithosphere water/air). For a spherical geometry model, this is the only boundary. Units: none.
+**Documentation:** A comma separated list of composition boundary values at the top boundary (at maximal radius). This list must have one entry or as many entries as there are compositional fields. Units: none.

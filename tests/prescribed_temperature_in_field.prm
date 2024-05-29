@@ -21,6 +21,7 @@ end
 
 subsection Initial composition model
   set List of model names = function
+
   subsection Function
     set Coordinate system = cartesian
     set Variable names = x,y
@@ -30,6 +31,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = if(x<=0.4, 1000, 100)
   end
@@ -41,6 +43,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0
   end
@@ -57,6 +60,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = temperature statistics, visualization
+
   subsection Visualization
     set Time between graphical output = 0
   end

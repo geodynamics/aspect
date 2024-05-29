@@ -184,8 +184,12 @@ namespace aspect
          * in the input file (and are consequently currently active) and return
          * true if one of them has the desired type specified by the template
          * argument.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
          */
-        template <typename InitialTemperatureType>
+        template <typename InitialTemperatureType,
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,InitialTemperatureType>::value>>
         bool
         has_matching_initial_temperature_model () const;
 
@@ -196,8 +200,12 @@ namespace aspect
          * argument or can be casted to that type. If so, return a reference
          * to it. If no initial temperature model is active that matches the given type,
          * throw an exception.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
          */
-        template <typename InitialTemperatureType>
+        template <typename InitialTemperatureType,
+                  typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,InitialTemperatureType>::value>>
         const InitialTemperatureType &
         get_matching_initial_temperature_model () const;
 
@@ -248,7 +256,7 @@ namespace aspect
 
 
     template <int dim>
-    template <typename InitialTemperatureType>
+    template <typename InitialTemperatureType, typename>
     inline
     bool
     Manager<dim>::has_matching_initial_temperature_model () const
@@ -261,7 +269,7 @@ namespace aspect
 
 
     template <int dim>
-    template <typename InitialTemperatureType>
+    template <typename InitialTemperatureType, typename>
     inline
     const InitialTemperatureType &
     Manager<dim>::get_matching_initial_temperature_model () const

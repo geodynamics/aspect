@@ -30,12 +30,12 @@ subsection Geometry model
   end
 end
 
-
 # Advecting the free surface vertically rather than
 # in the surface normal direction can result in a
 # more stable mesh when the deformation is large
 subsection Mesh deformation
   set Mesh deformation boundary indicators = top: free surface
+
   subsection Free surface
     set Surface velocity projection = vertical
     set Free surface stabilization theta = 0.5
@@ -45,6 +45,7 @@ end
 subsection Material model
   set Material averaging = harmonic average
   set Model name = visco plastic
+
   subsection Visco Plastic
     set Densities = 2800
     set Minimum viscosity = 1e22
@@ -60,14 +61,13 @@ subsection Material model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end
 end
-
 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left: function, right:function, bottom:function
@@ -78,9 +78,6 @@ subsection Boundary velocity model
     set Function expression =  if (x<40e3 , 1*cm/year, -1*cm/year) ; 0
   end
 end
-
-
-
 
 ############### Parameters describing the temperature field
 # As above, there is no need to set anything for the
@@ -93,7 +90,6 @@ subsection Initial temperature model
     set Function expression = 293
   end
 end
-
 
 ############### Parameters describing the discretization
 # The following parameters describe how often we want to refine
@@ -111,7 +107,6 @@ subsection Mesh refinement
   set Run postprocessors on initial refinement = true
 end
 
-
 ############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to
 # run at the end of each time step. We select to generate graphical
@@ -120,12 +115,16 @@ end
 # viscosity. We also select to compute some statistics about the
 # velocity field.
 
+
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics, material statistics, topography
+
   subsection Visualization
     set List of output variables = density, viscosity, strain rate, error indicator, heating, partition
     set Time between graphical output = 0
+    set Output mesh velocity = true
   end
+
   subsection Topography
     set Output to file = false
   end
@@ -136,12 +135,5 @@ subsection Solver parameters
     set Stokes solver type = block GMG
     set Linear solver tolerance = 1e-6
     set Number of cheap Stokes solver steps = 2000
-  end
-end
-
-
-subsection Postprocess
-  subsection Visualization
-    set Output mesh velocity = true
   end
 end

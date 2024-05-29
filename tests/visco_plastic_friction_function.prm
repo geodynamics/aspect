@@ -15,6 +15,7 @@ set Maximum time step                      = 1
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model
   set Model name      = box
+
   subsection Box
     set X repetitions = 10
     set Y repetitions = 10
@@ -30,32 +31,13 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
 # Boundary classifications (fixed T boundaries, prescribed velocity)
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top, left, right
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
-end
-
-# Velocity on boundaries characterized by functions
-subsection Boundary velocity model
-  subsection Function
-    set Variable names      = x,y
-
-    set Function expression = 0; 0;
-  end
-end
 
 # Temperature boundary and initial conditions
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
   set List of model names = box
+
   subsection Box
     set Bottom temperature = 273
     set Left temperature   = 273
@@ -63,8 +45,20 @@ subsection Boundary temperature model
     set Top temperature    = 273
   end
 end
+
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; 0;
+  end
+end
+
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 273
   end
@@ -73,6 +67,7 @@ end
 # Material model (values for background material)
 subsection Material model
   set Model name = visco plastic
+
   subsection Visco Plastic
     set Reference strain rate                     = 1.e-16
     set Viscous flow law                          = dislocation
@@ -86,6 +81,7 @@ subsection Material model
 
     # these are the lines you need to use the friction function
     set Friction mechanism                        = function
+
     subsection Friction function
       set Coordinate system                       = cartesian
       set Variable names                          = x,y,t
@@ -97,6 +93,7 @@ end
 # Gravity model
 subsection Gravity model
   set Model name  = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end

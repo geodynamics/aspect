@@ -14,11 +14,9 @@ set Output directory                       = output_free_surface_viscous_cylinde
 
 # Material model
 subsection Material model
-
   set Model name = viscoelastic
 
   subsection Viscoelastic
     set Elastic shear moduli        = 1.e50
   end
-
 end

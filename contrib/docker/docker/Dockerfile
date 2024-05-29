@@ -2,8 +2,8 @@ FROM ubuntu:22.04
 
 LABEL maintainer <rene.gassmoeller@mailbox.org>
 
-ARG VERSION=9.4.0
-ARG REPO=ppa:ginggs/deal.ii-9.4.0-backports
+ARG VERSION=9.5.1
+ARG REPO=ppa:ginggs/deal.ii-9.5.1-backports
 
 RUN DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -yq && \
   apt install -yq --install-recommends sudo software-properties-common \
@@ -11,7 +11,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -yq && \
   gfortran git libblas-dev liblapack-dev libopenmpi-dev \
   lsb-release ninja-build numdiff openmpi-bin \
   openmpi-common wget zlib1g-dev \
-  libboost-all-dev &&\
+  libboost-all-dev libnetcdf-dev &&\
   add-apt-repository $REPO && apt update && \
   apt install -yq libdeal.ii-$VERSION libdeal.ii-dev && \
   apt-get clean && rm -r /var/lib/apt/lists/*

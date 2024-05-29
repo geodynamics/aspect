@@ -12,19 +12,17 @@ set Start time                             = 0
 set End time                               = 0
 set Adiabatic surface temperature          = 1600.0
 
-
 subsection Solver parameters
   subsection Stokes solver parameters
-   set Linear solver tolerance                         = 1e-4
-   set Stokes solver type                              = block GMG
-   set Number of cheap Stokes solver steps             = 5000
-   set GMRES solver restart length                     = 1000
-   set Maximum number of expensive Stokes solver steps = 0
-   set Use full A block as preconditioner              = true
-   set Linear solver A block tolerance                 = 1e-2
+    set Linear solver tolerance                         = 1e-4
+    set Stokes solver type                              = block GMG
+    set Number of cheap Stokes solver steps             = 5000
+    set GMRES solver restart length                     = 1000
+    set Maximum number of expensive Stokes solver steps = 0
+    set Use full A block as preconditioner              = true
+    set Linear solver A block tolerance                 = 1e-2
   end
 end
-
 
 subsection Geometry model
   set Model name = spherical shell
@@ -35,19 +33,16 @@ subsection Geometry model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement = 0
   set Initial global refinement = 3
 end
-
 
 subsection Compositional fields
   set Number of fields = 1
   set Names of fields = composition_1
   set Compositional field methods = static
 end
-
 
 subsection Initial composition model
   set List of model names = ascii data
@@ -61,26 +56,23 @@ subsection Initial composition model
   end
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, top
 end
-
 
 subsection Nullspace removal
   set Remove nullspace = net surface rotation
 end
 
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom
   set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 3700
     set Outer temperature = 273
   end
 end
-
 
 subsection Initial temperature model
   set List of model names = adiabatic
@@ -91,16 +83,13 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Heating model
   set List of model names = adiabatic heating, shear heating
 end
 
-
 subsection Gravity model
   set Model name = radial constant
 end
-
 
 subsection Material model
   set Model name         = simple
@@ -111,7 +100,6 @@ subsection Material model
     set Thermal viscosity exponent = 10.0
   end
 end
-
 
 subsection Postprocess
   set List of postprocessors         = velocity statistics, visualization

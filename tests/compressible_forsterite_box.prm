@@ -5,13 +5,13 @@
 set Dimension                              = 2
 set End time                               = 0
 
-
 subsection Compositional fields
   set Number of fields          = 1
 end
 
 subsection Initial composition model
   set List of model names = function
+
   subsection Function
     set Function expression = 1
   end
@@ -19,6 +19,7 @@ end
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent                = 400e3
     set X repetitions           = 1
@@ -29,6 +30,7 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end
@@ -36,6 +38,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = 1000 + y/400
@@ -48,6 +51,7 @@ end
 
 subsection Material model
   set Model name         = multicomponent compressible
+
   subsection Multicomponent compressible
     set Reference temperatures = 298.15
     set Reference densities = 3222.5
@@ -66,7 +70,6 @@ end
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization

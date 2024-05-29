@@ -17,8 +17,27 @@ subsection Discretization
   end
 end
 
+# This material model reads in the Hefesto table
 subsection Material model
   set Material averaging = harmonic average only viscosity
+  set Model name = entropy model
+
+  subsection Entropy model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/opxtable/
+    set Material file name               = material_table.txt
+    set Lateral viscosity file name      = constant_lateral_vis_prefactor_50000.txt
+    set Thermal conductivity formulation = p-T-dependent
+    set Maximum viscosity                = 1e30
+    set Minimum viscosity                = 1e12
+    set Maximum lateral viscosity variation          = 2000
+    set Cohesion                         = 8e7
+    set Angle of internal friction       = 0.572957795130823 # = 0.01 radians
+  end
+
+  subsection Depth dependent viscosity
+    set Data directory                   = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/data/
+    set Data file name                   = constant_viscosity.txt
+  end
 end
 
 subsection Geometry model
@@ -97,40 +116,18 @@ end
 
 # Set the boundary entropy to values corresponding to
 # realistic temperature.
+
 subsection Boundary composition model
   set Fixed composition boundary indicators = top, bottom
   set List of model names = spherical constant
+  set Allow fixed composition on outflow boundaries = true
 
   subsection Spherical constant
     # Corresponding to T=300 K for p=0 GPa according to used table
     set Outer composition = 600
+
     # Corresponding to T=3400 K for p=140 GPa according to used table
     set Inner composition = 2950
-  end
-end
-
-# This material model reads in the Hefesto table
-subsection Material model
-  set Model name = entropy model
-
-  subsection Entropy model
-    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/opxtable/
-    set Material file name               = material_table.txt
-    set Lateral viscosity file name      = constant_lateral_vis_prefactor_50000.txt
-
-    set Thermal conductivity formulation = p-T-dependent
-
-    set Maximum viscosity                = 1e30
-    set Minimum viscosity                = 1e12
-    set Maximum lateral viscosity variation          = 2000
-
-    set Cohesion                         = 8e7
-    set Angle of internal friction       = 0.01
-  end
-
-  subsection Depth dependent viscosity
-    set Data directory                   = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/data/
-    set Data file name                   = constant_viscosity.txt
   end
 end
 
@@ -152,8 +149,4 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics
-end
-
-subsection Boundary composition model
-   set Allow fixed composition on outflow boundaries = true
 end

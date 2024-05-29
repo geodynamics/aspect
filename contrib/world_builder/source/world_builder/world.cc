@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
+  Copyright (C) 2018-2024 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -30,13 +30,16 @@
 #include "world_builder/types/object.h"
 #include "world_builder/types/plugin_system.h"
 #include "world_builder/types/point.h"
+#include "world_builder/types/int.h"
 
 #include <iostream>
 #include <world_builder/coordinate_system.h>
 #include <world_builder/objects/distance_from_surface.h>
 
 #ifdef WB_WITH_MPI
+// we don't need the c++ MPI wrappers
 #define OMPI_SKIP_MPICXX 1
+#define MPICH_SKIP_MPICXX
 #include <mpi.h>
 #endif
 
@@ -106,6 +109,8 @@ namespace WorldBuilder
 
       prm.declare_entry("version", Types::String(""),"The major and minor version number for which the input file was written.");
 
+      prm.declare_entry("$schema", Types::String(""),"The optional filename or https address to a JSON schema file");
+
       prm.declare_entry("cross section", Types::Array(Types::Point<2>(),2,2),"This is an array of two points along where the cross section is taken");
 
       prm.declare_entry("potential mantle temperature", Types::Double(1600),
@@ -137,7 +142,11 @@ namespace WorldBuilder
 
       prm.declare_entry("gravity model", Types::PluginSystem("uniform", GravityModel::Interface::declare_entries, {"model"}, false),"A gravity model for the world.");
 
-      prm.declare_entry("features", Types::PluginSystem("",Features::Interface::declare_entries, {"model", "coordinates"}),"A list of features.");
+      prm.declare_entry("features", Types::PluginSystem("",Features::Interface::declare_entries, {"model"}),"A list of features.");
+
+      prm.declare_entry("random number seed", Types::Int(-1),
+                        "This allows the input of a preferred random number seed to generate random numbers."
+                        " If no input is given, this value is -1 and triggers the use of default seed = 1.");
 
     }
     prm.leave_subsection();
@@ -231,10 +240,18 @@ namespace WorldBuilder
     thermal_diffusivity = prm.get<double>("thermal diffusivity");
 
     /**
-     * Model discretiation parameters
+     * Model discretization parameters
      */
     maximum_distance_between_coordinates = prm.get<double>("maximum distance between coordinates");
     interpolation = prm.get<std::string>("interpolation");
+
+    /**
+     * Local random number seed parameter
+    */
+    const int local_seed = prm.get<int>("random number seed");
+
+    if (local_seed>=0)
+      random_number_engine.seed(local_seed+MPI_RANK);
 
     /**
      * Now load the features. Some features use for example temperature values,
@@ -303,12 +320,12 @@ namespace WorldBuilder
   {
     // We receive the cartesian points from the user.
     const Point<3> point(point_,cartesian);
-
     (void) this->limit_debug_consistency_checks;
-    WBAssert(!this->limit_debug_consistency_checks || this->parameters.coordinate_system->natural_coordinate_system() == cartesian
+    WBAssert(this->limit_debug_consistency_checks || this->parameters.coordinate_system->natural_coordinate_system() == cartesian
              || approx(depth, this->parameters.coordinate_system->max_model_depth()-sqrt(point_[0]*point_[0]+point_[1]*point_[1]+point_[2]*point_[2])),
-             "Inconsistent input. Please check whether the radius in the sperhical coordinates is consistent with the radius of the planet as defined "
-             << "in the program that uses the Geodynamic World Builder. "
+             "Inconsistent input. Please check whether the radius in the spherical coordinates is consistent with the radius of the planet as defined "
+             << "in the program that uses the Geodynamic World Builder. This is a debug check in GWB and can be disabled by setting "
+             << "limit_debug_consistency_checks to true. "
              << "Depth = " << depth << ", radius = " << this->parameters.coordinate_system->max_model_depth()
              << ", point = " << point_[0] << " " << point_[1] << " " << point_[2]
              << ", radius-point.norm() = " << this->parameters.coordinate_system->max_model_depth()-sqrt(point_[0]*point_[0]+point_[1]*point_[1]+point_[2]*point_[2]));
@@ -352,8 +369,18 @@ namespace WorldBuilder
               properties_local.emplace_back(properties[i_property]);
               break;
             }
+            case 4: // tag
+            {
+              entry_in_output.emplace_back(output.size());
+              output.emplace_back(-1);
+              properties_local.emplace_back(properties[i_property]);
+              break;
+            }
             default:
-              WBAssertThrow(false, "Unimplemented property provided. Only temperature (1), composition (2) or grains (3) are allowed.");
+              WBAssertThrow(false,
+                            "Internal error: Unimplemented property provided. " <<
+                            "Only temperature (1), composition (2), grains (3) or tag (4) are allowed. "
+                            "Provided property number was: " << properties[i_property][0]);
           }
       }
     for (auto &&it : parameters.features)
@@ -444,10 +471,11 @@ namespace WorldBuilder
     // We receive the cartesian points from the user.
     const Point<3> point(point_,cartesian);
 
-    WBAssert(!this->limit_debug_consistency_checks || this->parameters.coordinate_system->natural_coordinate_system() == cartesian
+    WBAssert(this->limit_debug_consistency_checks || this->parameters.coordinate_system->natural_coordinate_system() == cartesian
              || approx(depth, this->parameters.coordinate_system->max_model_depth()-sqrt(point_[0]*point_[0]+point_[1]*point_[1]+point_[2]*point_[2])),
-             "Inconsistent input. Please check whether the radius in the sperhical coordinates is consistent with the radius of the planet as defined "
-             << "in the program that uses the Geodynamic World Builder. "
+             "Inconsistent input. Please check whether the radius in the spherical coordinates is consistent with the radius of the planet as defined "
+             << "in the program that uses the Geodynamic World Builder. This is a debug check in GWB and can be disabled by setting "
+             << "limit_debug_consistency_checks to true. "
              << "Depth = " << depth << ", radius = " << this->parameters.coordinate_system->max_model_depth()
              << ", point = " << point_[0] << " " << point_[1] << " " << point_[2]
              << ", radius-point.norm() = " << this->parameters.coordinate_system->max_model_depth()-sqrt(point_[0]*point_[0]+point_[1]*point_[1]+point_[2]*point_[2]));

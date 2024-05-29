@@ -1,5 +1,6 @@
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X repetitions = 10
     set Y repetitions = 5
@@ -13,6 +14,7 @@ subsection Mesh refinement
   set Initial global refinement          = 3
   set Time steps between mesh refinement = 0
   set Strategy = minimum refinement function
+
   subsection Minimum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y

@@ -9,6 +9,7 @@ set Dimension                              = 2
 
 include $ASPECT_SOURCE_DIR/tests/remove_net_rotation.prm
 
+
 subsection Nullspace removal
   set Remove nullspace = net surface rotation
 end

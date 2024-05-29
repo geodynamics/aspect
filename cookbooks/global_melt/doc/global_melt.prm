@@ -24,15 +24,17 @@ set Nonlinear solver tolerance             = 1e-5
 # advection time step, we want to do at least 10 reaction time steps.
 # If these time steps would be larger than 10,000 years, we will do
 # more reaction time steps (so that reaction time step size never exceeds
-# 10,000 years).  Here, we also specify the Stokes linear solver tolerance
+# 10,000 years). Here, we also specify the Stokes linear solver tolerance
 # and maximum number of cheap Stokes solver steps to improve the nonlinear
 # convergence behavior.
 set Use operator splitting                     = true
+
 subsection Solver parameters
   subsection Operator splitting parameters
     set Reaction time step                     = 1e4
     set Reaction time steps per advection step = 10
   end
+
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-8
     set Number of cheap Stokes solver steps = 100
@@ -50,10 +52,10 @@ end
 # In models with melt transport, we always need a compositional field with
 # the name 'porosity'. Only the field with that name will be advected with
 # the melt velocity, all other compositional fields will continue to work
-# as before. Material model will typically query for the field with the
+# as before. Material models will typically query for the field with the
 # name porosity to compute all melt material properties.
-# In addition, the 'melt global' model also requires a field with the name
-# 'peridotite'. This field is used to track how much material has been
+# In addition, the 'melt global' material model also requires a field with the
+# name 'peridotite'. This field is used to track how much material has been
 # molten at each point of the model, so it tracks the information how the
 # composition of the rock changes due to partial melting events (sometimes
 # also called depletion). This is important, because usually less melt is
@@ -73,6 +75,7 @@ end
 # of the model run.
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0; 0
     set Variable names      = x,y
@@ -95,10 +98,11 @@ end
 # flow in and out of the model (even if the solid can not flow out) according to
 # the dynamic fluid pressure in the model. Conversely, if we choose the
 # fluid pressure gradient = fluid density * gravity, melt will flow in or out
-# with the same velocity as the solid (so for a closer boundary, no melt will
+# with the same velocity as the solid (so for a closed boundary, no melt will
 # flow in or out). This is what we choose as our boundary condition here.
 subsection Boundary fluid pressure model
   set Plugin name = density
+
   subsection Density
     set Density formulation = fluid density
   end
@@ -109,10 +113,9 @@ end
 # In addition to the material properties for the solid rock,
 # we also have to specify properties for the melt.
 subsection Material model
-
   set Model name = melt global
-  subsection Melt global
 
+  subsection Melt global
     # First we describe the parameters for the solid, in the same way
     # we did in the model without melt transport
     set Thermal conductivity              = 4.7
@@ -146,9 +149,8 @@ subsection Material model
     # In dependence of how much melt is present, we also weaken the shear
     # viscosity: The more melt is present, the weaker the rock gets.
     # This scaling is exponential, following the relation
-    # viscosity ~ exp(-alpha * DeltaT),
-    # where alpha is the parameter given here, and DeltaT is the deviation from the
-    # reference temperature.
+    # viscosity ~ exp(-alpha * phi),
+    # where alpha is the parameter given here, and phi is the porosity.
     set Exponential melt weakening factor = 10
 
     # In the same way the shear viscosity is reduced with increasing temperature,
@@ -188,30 +190,32 @@ end
 ##################### Mesh refinement #########################
 
 # For the model with melt migration, we use adaptive refinement.
-# We make use of two different refinement criteria: we set a minimum of 4 global
+# We make use of two different refinement criteria: we set a minimum of 5 global
 # refinements everywhere in the model (which is the same resolution as for the
 # model without melt), and we refine in regions where melt is present, to be
-# precise, everywhere where the porosity is bigger than 1e-5.
+# precise, everywhere where the porosity is bigger than 1e-6.
 # We adapt the mesh every 5 time steps.
 subsection Mesh refinement
   set Coarsening fraction                      = 0.05
   set Refinement fraction                      = 0.8
-
   set Initial adaptive refinement              = 2
-  set Initial global refinement                = 4
-  set Strategy                                 = composition threshold, minimum refinement function
-  set Time steps between mesh refinement       = 4
+  set Initial global refinement                = 5
+  set Strategy                                 = composition threshold, minimum refinement function, boundary
+  set Time steps between mesh refinement       = 5
 
-  # minimum of 4 global refinements
+  # minimum of 5 global refinements
   subsection Minimum refinement function
-    set Coordinate system   = depth
-    set Function expression = 4
-    set Variable names      = depth,phi
+    set Function expression = 5
   end
 
-  # refine where the porosity is bigger than 1e-5
+  # refine where the porosity is bigger than 1e-6
   subsection Composition threshold
-    set Compositional field thresholds = 1e-5,1.0
+    set Compositional field thresholds = 1e-6,1.0
+  end
+
+  # refine at top and bottom boundary
+  subsection Boundary
+    set Boundary refinement indicators = top, bottom
   end
 end
 
@@ -224,7 +228,6 @@ end
 # the "depth average" postprocessor that will allow us to plot
 # depth-averaged model quantities over time.
 subsection Postprocess
-
   set List of postprocessors = visualization, composition statistics, velocity statistics, temperature statistics, depth average
 
   # For the model with melt migration, also add a visualization
@@ -239,6 +242,7 @@ subsection Postprocess
     end
 
     subsection Melt material properties
-      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity, p_c
+      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
     end
+  end
 end

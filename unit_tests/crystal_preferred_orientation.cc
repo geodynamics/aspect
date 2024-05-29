@@ -20,6 +20,7 @@
 
 #include "common.h"
 #include <aspect/particle/property/crystal_preferred_orientation.h>
+#include <aspect/particle/property/cpo_elastic_tensor.h>
 #include <deal.II/base/parameter_handler.h>
 
 
@@ -238,10 +239,6 @@ TEST_CASE("CPO core: Store and Load")
   cpo.set_volume_fractions_grains(cpo_data_position,data,1,0,0.4);
   cpo.set_volume_fractions_grains(cpo_data_position,data,1,1,0.5);
   cpo.set_volume_fractions_grains(cpo_data_position,data,1,2,0.6);
-
-  std::vector<unsigned int> deformation_types_ref = {(unsigned int)aspect::Particle::Property::DeformationType::passive,
-                                                     (unsigned int)aspect::Particle::Property::DeformationType::passive
-                                                    };
 
   data[0] = 20847932.2;
   data[65] = 6541684.3;
@@ -1066,4 +1063,387 @@ TEST_CASE("CPO")
           }
       }
   }
+}
+
+
+
+TEST_CASE("CPO elastic tensor")
+{
+  std::vector<double> volume_fraction_mineral = {0.7,0.3};
+  std::vector<std::vector<double>> volume_fractions_grains(2,std::vector<double>(8));
+  std::vector<std::vector<dealii::Tensor<2,3>>> a_cosine_matrices_grains(2,std::vector<dealii::Tensor<2,3>>(8));
+
+  dealii::Tensor<2,6> reference_elastic_tensor;
+  dealii::Tensor<2,6> computed_elastic_tensor;
+
+  unsigned int cpo_data_position = 0;
+  std::vector<double> data_array(200,-1.);
+  dealii::ArrayView<double> data_cpo(&data_array[0],200);
+
+
+  // test the averaging function
+  aspect::Particle::Property::CrystalPreferredOrientation<3> cpo;
+  aspect::Particle::Property::CpoElasticTensor<3> cpo_elastic_tensor;
+  aspect::ParameterHandler prm;
+  cpo.declare_parameters(prm);
+  cpo_elastic_tensor.declare_parameters(prm);
+  prm.enter_subsection("Postprocess");
+  {
+    prm.enter_subsection("Particles");
+    {
+      prm.enter_subsection("Crystal Preferred Orientation");
+      {
+        prm.set("Random number seed","1");
+        prm.set("Number of grains per particle","8");
+        prm.set("CPO derivatives algorithm","Spin tensor");
+        prm.set("Property advection method","Backward Euler");
+        prm.enter_subsection("Initial grains");
+        {
+          prm.set("Model name","Uniform grains and random uniform rotations");
+          // Let the minerals just passively rotate with the rotation of
+          // the particle caused by the flow.
+          prm.set("Minerals","Passive,Passive");
+          prm.set("Volume fractions minerals","0.7,0.3");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection ();
+    }
+    prm.leave_subsection ();
+  }
+  prm.leave_subsection ();
+
+  cpo.parse_parameters(prm);
+  cpo.initialize();
+
+  cpo_elastic_tensor.parse_parameters(prm);
+
+  // All these numbers are directly from the Fortran D-Rex
+  // Had to fix the random seed to get consistent results.
+  // Fixed the random set to an array filled with zeros.
+  using namespace dealii;
+  Tensor<2,3> rotation_matrix;
+  rotation_matrix[TableIndices<2>(0,0)] = -0.87492387659370430;
+  rotation_matrix[TableIndices<2>(0,1)] = -0.47600252255715020;
+  rotation_matrix[TableIndices<2>(0,2)] = -0.10151800968122601;
+  rotation_matrix[TableIndices<2>(1,0)] = 0.13036031917262200;
+  rotation_matrix[TableIndices<2>(1,1)] = -2.6406769698713056E-002;
+  rotation_matrix[TableIndices<2>(1,2)] = -0.99232315682823224;
+  rotation_matrix[TableIndices<2>(2,0)] = 0.46957683898444408;
+  rotation_matrix[TableIndices<2>(2,1)] = -0.87974004016081919;
+  rotation_matrix[TableIndices<2>(2,2)] = 8.6098835151007691E-002;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,0,0,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = -0.98046837857873570;
+  rotation_matrix[TableIndices<2>(0,1)] = 0.19463893778994429;
+  rotation_matrix[TableIndices<2>(0,2)] = -2.8239743415760400E-002;
+  rotation_matrix[TableIndices<2>(1,0)] = 6.8942963409018593E-002;
+  rotation_matrix[TableIndices<2>(1,1)] = 0.20565757913350766;
+  rotation_matrix[TableIndices<2>(1,2)] = -0.97619251975954824;
+  rotation_matrix[TableIndices<2>(2,0)] = -0.18419735979776022;
+  rotation_matrix[TableIndices<2>(2,1)] = -0.95907282258851756;
+  rotation_matrix[TableIndices<2>(2,2)] = -0.21505972600848655;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,0,1,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = -0.60475851993637786;
+  rotation_matrix[TableIndices<2>(0,1)] = 0.70843624030907060;
+  rotation_matrix[TableIndices<2>(0,2)] = -0.36543256811748415;
+  rotation_matrix[TableIndices<2>(1,0)] = 0.14301138974031016;
+  rotation_matrix[TableIndices<2>(1,1)] = -0.35406726088673490;
+  rotation_matrix[TableIndices<2>(1,2)] = -0.92567249145068109;
+  rotation_matrix[TableIndices<2>(2,0)] = -0.78533679283378455;
+  rotation_matrix[TableIndices<2>(2,1)] = -0.61106385979914768;
+  rotation_matrix[TableIndices<2>(2,2)] = 0.11279851062549377;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,0,2,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = 0.86791495614143876;
+  rotation_matrix[TableIndices<2>(0,1)] = 0.11797028562530290;
+  rotation_matrix[TableIndices<2>(0,2)] = -0.48441508819120616;
+  rotation_matrix[TableIndices<2>(1,0)] = 0.29623368357270952;
+  rotation_matrix[TableIndices<2>(1,1)] = 0.66075310029034506;
+  rotation_matrix[TableIndices<2>(1,2)] = 0.69114249890201696;
+  rotation_matrix[TableIndices<2>(2,0)] = 0.40054408016972737;
+  rotation_matrix[TableIndices<2>(2,1)] = -0.74231595966649988;
+  rotation_matrix[TableIndices<2>(2,2)] = 0.53869116329275069;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,0,3,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = 6.2142369991145308E-002;
+  rotation_matrix[TableIndices<2>(0,1)] = 0.99798524450925208;
+  rotation_matrix[TableIndices<2>(0,2)] = 1.4733749724082583E-002;
+  rotation_matrix[TableIndices<2>(1,0)] = 0.16313304505497195;
+  rotation_matrix[TableIndices<2>(1,1)] = 3.9946223138032123E-003;
+  rotation_matrix[TableIndices<2>(1,2)] = -0.99141604427573704;
+  rotation_matrix[TableIndices<2>(2,0)] = -0.98947772660983668;
+  rotation_matrix[TableIndices<2>(2,1)] = 6.3633828841832010E-002;
+  rotation_matrix[TableIndices<2>(2,2)] = -0.16253511002663851;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,0,4,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = 0.95811162445076037;
+  rotation_matrix[TableIndices<2>(0,1)] = -0.24047036409864109;
+  rotation_matrix[TableIndices<2>(0,2)] = -0.18394917461469307;
+  rotation_matrix[TableIndices<2>(1,0)] = -0.26945849516984494;
+  rotation_matrix[TableIndices<2>(1,1)] = -0.95216866624585605;
+  rotation_matrix[TableIndices<2>(1,2)] = -0.14816174866727450;
+  rotation_matrix[TableIndices<2>(2,0)] = -0.13948857525086517;
+  rotation_matrix[TableIndices<2>(2,1)] = 0.18918653693665904;
+  rotation_matrix[TableIndices<2>(2,2)] = -0.97685775746677384;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,0,5,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = 0.54599545795872684;
+  rotation_matrix[TableIndices<2>(0,1)] = -0.79260950430410815;
+  rotation_matrix[TableIndices<2>(0,2)] = -0.27534584625644454;
+  rotation_matrix[TableIndices<2>(1,0)] = -0.83567561116582212;
+  rotation_matrix[TableIndices<2>(1,1)] = -0.55085590166106368;
+  rotation_matrix[TableIndices<2>(1,2)] = -6.8746495709015629E-002;
+  rotation_matrix[TableIndices<2>(2,0)] = -9.6081601263635075E-002;
+  rotation_matrix[TableIndices<2>(2,1)] = 0.26479508638287669;
+  rotation_matrix[TableIndices<2>(2,2)] = -0.96221681521835400;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,0,6,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = 0.14540407652501869;
+  rotation_matrix[TableIndices<2>(0,1)] = -0.61649901222701298;
+  rotation_matrix[TableIndices<2>(0,2)] = -0.77881206212059828;
+  rotation_matrix[TableIndices<2>(1,0)] = -0.59216315099851768;
+  rotation_matrix[TableIndices<2>(1,1)] = -0.68282211925029168;
+  rotation_matrix[TableIndices<2>(1,2)] = 0.43341920614609419;
+  rotation_matrix[TableIndices<2>(2,0)] = -0.79819736735552915;
+  rotation_matrix[TableIndices<2>(2,1)] = 0.39350172081601731;
+  rotation_matrix[TableIndices<2>(2,2)] = -0.46322016633770996;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,0,7,rotation_matrix);
+
+
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,0,0,2.5128593570287589E-002);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,0,1,0.83128842847575013);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,0,2,2.4387041141724769E-002);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,0,3,2.4763275182773107E-002);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,0,4,2.4801714431754770E-002);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,0,5,2.3943562805875843E-002);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,0,6,2.1493810045792379E-002);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,0,7,2.4193574346041427E-002);
+
+  rotation_matrix[TableIndices<2>(0,0)] = -0.66168933252008499;
+  rotation_matrix[TableIndices<2>(0,1)] = -0.27722421136423192;
+  rotation_matrix[TableIndices<2>(0,2)] = 0.70016104334335305;
+  rotation_matrix[TableIndices<2>(1,0)] = -0.45052346117292291;
+  rotation_matrix[TableIndices<2>(1,1)] = -0.59946225647123619;
+  rotation_matrix[TableIndices<2>(1,2)] = -0.66370395454608444;
+  rotation_matrix[TableIndices<2>(2,0)] = 0.60350910238307343;
+  rotation_matrix[TableIndices<2>(2,1)] = -0.75116099269655345;
+  rotation_matrix[TableIndices<2>(2,2)] = 0.27207473610935284;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,1,0,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = 0.70309122563849258;
+  rotation_matrix[TableIndices<2>(0,1)] = -0.23393734574397834;
+  rotation_matrix[TableIndices<2>(0,2)] = -0.67775637808568567;
+  rotation_matrix[TableIndices<2>(1,0)] = 0.68298185906364617;
+  rotation_matrix[TableIndices<2>(1,1)] = -6.6406501211459870E-002;
+  rotation_matrix[TableIndices<2>(1,2)] = 0.73168002139436472;
+  rotation_matrix[TableIndices<2>(2,0)] = -0.21654097292603913;
+  rotation_matrix[TableIndices<2>(2,1)] = -0.97001835897279087;
+  rotation_matrix[TableIndices<2>(2,2)] = 0.11341644508992850;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,1,1,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = -0.37892641930874921;
+  rotation_matrix[TableIndices<2>(0,1)] = 0.92610670487847191;
+  rotation_matrix[TableIndices<2>(0,2)] = 3.9338024409460159E-002;
+  rotation_matrix[TableIndices<2>(1,0)] = -0.10014673867324062;
+  rotation_matrix[TableIndices<2>(1,1)] = 2.1922389732184896E-004;
+  rotation_matrix[TableIndices<2>(1,2)] = -0.99514251026853373;
+  rotation_matrix[TableIndices<2>(2,0)] = -0.92466780075091537;
+  rotation_matrix[TableIndices<2>(2,1)] = -0.37833500123197994;
+  rotation_matrix[TableIndices<2>(2,2)] = 9.2539397053637271E-002;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,1,2,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = 0.73973803569795438;
+  rotation_matrix[TableIndices<2>(0,1)] = -0.58084801380447959;
+  rotation_matrix[TableIndices<2>(0,2)] = -0.35134329241205425;
+  rotation_matrix[TableIndices<2>(1,0)] = 0.30883050284698427;
+  rotation_matrix[TableIndices<2>(1,1)] = -0.17349072757172229;
+  rotation_matrix[TableIndices<2>(1,2)] = 0.94047567596335968;
+  rotation_matrix[TableIndices<2>(2,0)] = -0.60686583881969203;
+  rotation_matrix[TableIndices<2>(2,1)] = -0.79564553570809793;
+  rotation_matrix[TableIndices<2>(2,2)] = 5.0387432541084881E-002;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,1,3,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = 4.2730545437086563E-002;
+  rotation_matrix[TableIndices<2>(0,1)] = 0.99790446393350407;
+  rotation_matrix[TableIndices<2>(0,2)] = 4.9677348699965519E-002;
+  rotation_matrix[TableIndices<2>(1,0)] = 0.24607319829629554;
+  rotation_matrix[TableIndices<2>(1,1)] = 3.7594987859276820E-002;
+  rotation_matrix[TableIndices<2>(1,2)] = -0.97243353311600111;
+  rotation_matrix[TableIndices<2>(2,0)] = -0.97326576151708344;
+  rotation_matrix[TableIndices<2>(2,1)] = 5.2990062123162360E-002;
+  rotation_matrix[TableIndices<2>(2,2)] = -0.24420040893728351;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,1,4,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = -0.92112012021624434;
+  rotation_matrix[TableIndices<2>(0,1)] = 0.17590913101287936;
+  rotation_matrix[TableIndices<2>(0,2)] = 0.34726602737040008;
+  rotation_matrix[TableIndices<2>(1,0)] = -0.27292179963530816;
+  rotation_matrix[TableIndices<2>(1,1)] = -0.92793421776529450;
+  rotation_matrix[TableIndices<2>(1,2)] = -0.25387354780599874;
+  rotation_matrix[TableIndices<2>(2,0)] = 0.27758135269283285;
+  rotation_matrix[TableIndices<2>(2,1)] = -0.32862450412044819;
+  rotation_matrix[TableIndices<2>(2,2)] = 0.90274831467569783;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,1,5,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = -4.6028553384029648E-002;
+  rotation_matrix[TableIndices<2>(0,1)] = -0.82828827663204008;
+  rotation_matrix[TableIndices<2>(0,2)] = -0.56150509327989218;
+  rotation_matrix[TableIndices<2>(1,0)] = -0.62780239844730912;
+  rotation_matrix[TableIndices<2>(1,1)] = -0.41264414122407550;
+  rotation_matrix[TableIndices<2>(1,2)] = 0.66416683570654200;
+  rotation_matrix[TableIndices<2>(2,0)] = -0.78150657001547463;
+  rotation_matrix[TableIndices<2>(2,1)] = 0.37975977805647526;
+  rotation_matrix[TableIndices<2>(2,2)] = -0.50060220610535922;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,1,6,rotation_matrix);
+
+  rotation_matrix[TableIndices<2>(0,0)] = -0.69974343277254114;
+  rotation_matrix[TableIndices<2>(0,1)] = -0.60514581197791628;
+  rotation_matrix[TableIndices<2>(0,2)] = 0.38074455421574593;
+  rotation_matrix[TableIndices<2>(1,0)] = 0.27181144918830025;
+  rotation_matrix[TableIndices<2>(1,1)] = -0.71756260285634454;
+  rotation_matrix[TableIndices<2>(1,2)] = -0.64160793166977359;
+  rotation_matrix[TableIndices<2>(2,0)] = 0.66130789657394939;
+  rotation_matrix[TableIndices<2>(2,1)] = -0.34496383827187421;
+  rotation_matrix[TableIndices<2>(2,2)] = 0.66656470768691123;
+  cpo.set_rotation_matrix_grains(cpo_data_position,data_cpo,1,7,rotation_matrix);
+
+
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,1,0,2.4802805652404735E-002);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,1,1,2.4917064186342413E-002);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,1,2,2.4790722064907112E-002);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,1,3,2.4932751194567736E-002);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,1,4,2.4896744967217745E-002);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,1,5,0.79902139535472505);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,1,6,2.4861121542485400E-002);
+  cpo.set_volume_fractions_grains(cpo_data_position,data_cpo,1,7,5.1777395037349808E-002);
+
+  reference_elastic_tensor[0][0] = 282.99195951271281;
+  reference_elastic_tensor[0][1] = 74.161110997372660;
+  reference_elastic_tensor[0][2] = 69.528000044099443;
+  reference_elastic_tensor[0][3] = 0.85449958913948032;
+  reference_elastic_tensor[0][4] = 0.15156631865980030;
+  reference_elastic_tensor[0][5] = -10.295196344728696;
+  reference_elastic_tensor[1][0] = 74.161110997372674;
+  reference_elastic_tensor[1][1] = 223.44404040361212;
+  reference_elastic_tensor[1][2] = 70.938305212304968;
+  reference_elastic_tensor[1][3] = 1.4935368335052783;
+  reference_elastic_tensor[1][4] = -1.5555954844298270;
+  reference_elastic_tensor[1][5] = -3.5461136157235025;
+  reference_elastic_tensor[2][0] = 69.528000044099443;
+  reference_elastic_tensor[2][1] = 70.938305212304940;
+  reference_elastic_tensor[2][2] = 208.89404139751849;
+  reference_elastic_tensor[2][3] = 0.48656291118743428;
+  reference_elastic_tensor[2][4] = 0.49424401802786699;
+  reference_elastic_tensor[2][5] = -0.15651560991351129;
+  reference_elastic_tensor[3][0] = 0.85449958913948365;
+  reference_elastic_tensor[3][1] = 1.4935368335052732;
+  reference_elastic_tensor[3][2] = 0.48656291118742612;
+  reference_elastic_tensor[3][3] = 71.502776245041289;
+  reference_elastic_tensor[3][4] = -2.3939425644793477;
+  reference_elastic_tensor[3][5] = 0.62714033620769472;
+  reference_elastic_tensor[4][0] = 0.15156631865980935;
+  reference_elastic_tensor[4][1] = -1.5555954844298292;
+  reference_elastic_tensor[4][2] = 0.49424401802786488;
+  reference_elastic_tensor[4][3] = -2.3939425644793459;
+  reference_elastic_tensor[4][4] = 78.565442407530099;
+  reference_elastic_tensor[4][5] = -0.69890743507815323;
+  reference_elastic_tensor[5][0] = -10.295196344728710;
+  reference_elastic_tensor[5][1] = -3.5461136157235131;
+  reference_elastic_tensor[5][2] = -0.15651560991350758;
+  reference_elastic_tensor[5][3] = 0.62714033620769460;
+  reference_elastic_tensor[5][4] = -0.69890743507815523;
+  reference_elastic_tensor[5][5] = 80.599981331604567;
+
+
+  cpo.set_volume_fraction_mineral(cpo_data_position,data_cpo,0,0.7);
+  cpo.set_volume_fraction_mineral(cpo_data_position,data_cpo,1,0.3);
+
+  cpo.set_deformation_type(cpo_data_position,data_cpo,0,(double)aspect::Particle::Property::DeformationType::olivine_a_fabric);
+  cpo.set_deformation_type(cpo_data_position,data_cpo,1,(double)aspect::Particle::Property::DeformationType::enstatite);
+
+  computed_elastic_tensor = cpo_elastic_tensor.voigt_average_elastic_tensor(cpo,
+                                                                            cpo_data_position,
+                                                                            data_cpo);
+
+
+  for (size_t i = 0; i < 6; i++)
+    {
+      for (size_t j = 0; j < 6; j++)
+        {
+          CHECK(computed_elastic_tensor[i][j] == Approx(reference_elastic_tensor[i][j]));
+        }
+    }
+
+  // test store and load functions
+  // the first and last element should not be changed
+  // by these functions.
+  std::vector<double> array_ref = {0.0,
+                                   1.,2.,3.,4.,5,6,
+                                   7.,8.,9.,10,11,12,
+                                   13,14,15,16,17,18,
+                                   19,20,21,22,23,24,
+                                   25,26,27,28,29,30,
+                                   31,32,33,34,35,36,
+                                   37
+                                  };
+
+  std::vector<double> array = {0.0,
+                               1.,2.,3.,4.,5.,6.,
+                               7.,8.,9.,10,11,12,
+                               13,14,15,16,17,18,
+                               19,20,21,22,23,24,
+                               25,26,27,28,29,30,
+                               31,32,33,34,35,36,
+                               37
+                              };
+
+  // There used to be 36 unique entries, but now because we are using the
+  // symmetric tensor, there are only 21 unique entries.
+  std::vector<double> array_plus_100 = {0.0,
+                                        101.,102.,103.,104.,105.,106.,
+                                        107.,108.,109.,110.,111.,112.,
+                                        113.,114.,115.,116.,117.,118.,
+                                        119.,120.,121.,22.,23.,24.,
+                                        25.,26.,27.,28.,29.,30.,
+                                        31.,32.,33.,34.,35.,36.,
+                                        37.
+                                       };
+
+  cpo_data_position = 1;
+  dealii::ArrayView<double> data(&array[0],38);
+  dealii::SymmetricTensor<2,6> tensor = cpo_elastic_tensor.get_elastic_tensor(cpo_data_position,data);
+
+  for (unsigned int i = 0; i < dealii::SymmetricTensor<2,6>::n_independent_components ; ++i)
+    {
+      CHECK(data[cpo_data_position + i] == tensor[dealii::SymmetricTensor<2,6>::unrolled_to_component_indices(i)]);
+    }
+
+  cpo_elastic_tensor.set_elastic_tensor(cpo_data_position,data,tensor);
+
+  for (unsigned int i = 0; i < array.size() ; ++i)
+    CHECK(data[i] == array_ref[i]);
+
+  for (unsigned int i = 0; i < dealii::SymmetricTensor<2,6>::n_independent_components ; ++i)
+    {
+      tensor[dealii::SymmetricTensor<2,6>::unrolled_to_component_indices(i)] += 100;
+    }
+
+  cpo_elastic_tensor.set_elastic_tensor(cpo_data_position,data,tensor);
+
+  for (unsigned int i = 0; i < array.size() ; ++i)
+    CHECK(data[i] == array_plus_100[i]);
+
+  tensor = cpo_elastic_tensor.get_elastic_tensor(cpo_data_position,data);
+
+  for (unsigned int i = 0; i < dealii::SymmetricTensor<2,6>::n_independent_components ; ++i)
+    {
+      CHECK(data[cpo_data_position + i] == tensor[dealii::SymmetricTensor<2,6>::unrolled_to_component_indices(i)]);
+    }
+
+  for (unsigned int i = 0; i < dealii::SymmetricTensor<2,6>::n_independent_components ; ++i)
+    {
+      CHECK(array_plus_100[cpo_data_position + i] == tensor[dealii::SymmetricTensor<2,6>::unrolled_to_component_indices(i)]);
+    }
 }

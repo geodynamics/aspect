@@ -1,4 +1,4 @@
-        (parameters:Initial_20composition_20model)=
+(parameters:Initial_20composition_20model)=
 # Initial composition model
 
 
@@ -9,7 +9,7 @@
 ### __Parameter name:__ List of model names
 **Default value:**
 
-**Pattern:** [MultipleSelection adiabatic density|ascii data|ascii data layered|function|porosity|slab model|world builder ]
+**Pattern:** [MultipleSelection adiabatic density|ascii data|ascii data layered|entropy table lookup|function|porosity|slab model|world builder ]
 
 **Documentation:** A comma-separated list of initial composition models that together describe the initial composition field. These plugins are loaded in the order given, and modify the existing composition field via the operators listed in &rsquo;List of model operators&rsquo;.
 
@@ -21,11 +21,13 @@ The following composition models are available:
 
 &lsquo;ascii data layered&rsquo;: Implementation of a model in which the initial composition is derived from files containing data in ascii format. Each file defines a surface on which compositional fields are defined. Between the surfaces, the fields can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with &lsquo;#&rsquo;, but one of these lines needs to contain the number of grid points in each dimension as for example &lsquo;# POINTS: 3 3&rsquo;. The order of the data columns has to be &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo; etc. in a 2d model and &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;z&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo; etc. in a 3d model; i.e. the columns before the compositional field always contains the position of the surface along the vertical direction. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. &lsquo;x&rsquo; will be replaced by the azimuth angle and &lsquo;y&rsquo; (if 3d) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3d is &lsquo;phi&rsquo;, &lsquo;theta&rsquo;, &lsquo;r&rsquo;, &lsquo;T&rsquo;and not &lsquo;theta&rsquo;, &lsquo;phi&rsquo;, &lsquo;r&rsquo;, &lsquo;T&rsquo; as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
 
+&lsquo;entropy table lookup&rsquo;: A class that implements initial conditions for the entropy field by converting the initial temperature field through a look up table. Note that this plugin only works if there is a compositional field called &lsquo;entropy&rsquo;, and an additional look up table that can convert pressure and temperature to entropy. For all compositional fields except entropy this plugin returns 0.0, and they are therefore not changed as long as the default &lsquo;add&rsquo; operator is selected for this plugin.
+
 &lsquo;function&rsquo;: Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
 &lsquo;porosity&rsquo;: A class that implements initial conditions for the porosity field by computing the equilibrium melt fraction for the given initial condition and reference pressure profile. Note that this plugin only works if there is a compositional field called &lsquo;porosity&rsquo;, and the used material model implements the &rsquo;MeltFractionModel&rsquo; interface. For all compositional fields except porosity this plugin returns 0.0, and they are therefore not changed as long as the default &lsquo;add&rsquo; operator is selected for this plugin.
 
-&lsquo;slab model&rsquo;: An initial composition model that implements subducted slab geometries as a compositional field determined from an input file. The file defines the depth to the top of the slab and the slab thickness. The computed compositional value is 1 within the slabs and zero elsewhere. An example model that is included is Slab2 described in Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., Flamme, H., Furtney, M., \& Smoczyk, G. M. (2018). Slab2, a comprehensive subduction zone geometry model. Science, 362(6410), 58-61. The script to convert the Slab2 model into an aspect input data file is available in the directory data/initial-composition/slab-model/. Please note that Slab2 and the example data file assume spherical geometry (latitude, longitude coordinates), however, that is not necessary for this plugin, data files in cartesian coordinates will work with box geometries.
+&lsquo;slab model&rsquo;: An initial composition model that implements subducted slab geometries as a compositional field determined from an input file. The file defines the depth to the top of the slab and the slab thickness. The computed compositional value is 1 within the slabs and zero elsewhere. An example model that is included is Slab2 described in Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., Flamme, H., Furtney, M., \& Smoczyk, G. M. (2018). Slab2, a comprehensive subduction zone geometry model. Science, 362(6410), 58-61. The script to convert the Slab2 model into an aspect input data file is available in the directory data/initial-composition/slab-model/. Please note that Slab2 and the example data file assume spherical geometry (latitude, longitude coordinates), however, that is not necessary for this plugin, data files in Cartesian coordinates will work with box geometries.
 
 &lsquo;world builder&rsquo;: Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter &rsquo;World builder file&rsquo;. It is possible to use the World Builder only for selected compositional fields by specifying the parameter &rsquo;List of relevant compositions&rsquo;.
 
@@ -41,7 +43,7 @@ The following composition models are available:
 ### __Parameter name:__ Model name
 **Default value:** unspecified
 
-**Pattern:** [Selection adiabatic density|ascii data|ascii data layered|function|porosity|slab model|world builder|unspecified ]
+**Pattern:** [Selection adiabatic density|ascii data|ascii data layered|entropy table lookup|function|porosity|slab model|world builder|unspecified ]
 
 **Documentation:** Select one of the following models:
 
@@ -51,11 +53,13 @@ The following composition models are available:
 
 &lsquo;ascii data layered&rsquo;: Implementation of a model in which the initial composition is derived from files containing data in ascii format. Each file defines a surface on which compositional fields are defined. Between the surfaces, the fields can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with &lsquo;#&rsquo;, but one of these lines needs to contain the number of grid points in each dimension as for example &lsquo;# POINTS: 3 3&rsquo;. The order of the data columns has to be &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo; etc. in a 2d model and &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;z&rsquo;, &lsquo;composition1&rsquo;, &lsquo;composition2&rsquo; etc. in a 3d model; i.e. the columns before the compositional field always contains the position of the surface along the vertical direction. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. &lsquo;x&rsquo; will be replaced by the azimuth angle and &lsquo;y&rsquo; (if 3d) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3d is &lsquo;phi&rsquo;, &lsquo;theta&rsquo;, &lsquo;r&rsquo;, &lsquo;T&rsquo;and not &lsquo;theta&rsquo;, &lsquo;phi&rsquo;, &lsquo;r&rsquo;, &lsquo;T&rsquo; as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
 
+&lsquo;entropy table lookup&rsquo;: A class that implements initial conditions for the entropy field by converting the initial temperature field through a look up table. Note that this plugin only works if there is a compositional field called &lsquo;entropy&rsquo;, and an additional look up table that can convert pressure and temperature to entropy. For all compositional fields except entropy this plugin returns 0.0, and they are therefore not changed as long as the default &lsquo;add&rsquo; operator is selected for this plugin.
+
 &lsquo;function&rsquo;: Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see {ref}`sec:run-aspect:parameters-overview:muparser-format`.
 
 &lsquo;porosity&rsquo;: A class that implements initial conditions for the porosity field by computing the equilibrium melt fraction for the given initial condition and reference pressure profile. Note that this plugin only works if there is a compositional field called &lsquo;porosity&rsquo;, and the used material model implements the &rsquo;MeltFractionModel&rsquo; interface. For all compositional fields except porosity this plugin returns 0.0, and they are therefore not changed as long as the default &lsquo;add&rsquo; operator is selected for this plugin.
 
-&lsquo;slab model&rsquo;: An initial composition model that implements subducted slab geometries as a compositional field determined from an input file. The file defines the depth to the top of the slab and the slab thickness. The computed compositional value is 1 within the slabs and zero elsewhere. An example model that is included is Slab2 described in Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., Flamme, H., Furtney, M., \& Smoczyk, G. M. (2018). Slab2, a comprehensive subduction zone geometry model. Science, 362(6410), 58-61. The script to convert the Slab2 model into an aspect input data file is available in the directory data/initial-composition/slab-model/. Please note that Slab2 and the example data file assume spherical geometry (latitude, longitude coordinates), however, that is not necessary for this plugin, data files in cartesian coordinates will work with box geometries.
+&lsquo;slab model&rsquo;: An initial composition model that implements subducted slab geometries as a compositional field determined from an input file. The file defines the depth to the top of the slab and the slab thickness. The computed compositional value is 1 within the slabs and zero elsewhere. An example model that is included is Slab2 described in Hayes, G. P., Moore, G. L., Portner, D. E., Hearne, M., Flamme, H., Furtney, M., \& Smoczyk, G. M. (2018). Slab2, a comprehensive subduction zone geometry model. Science, 362(6410), 58-61. The script to convert the Slab2 model into an aspect input data file is available in the directory data/initial-composition/slab-model/. Please note that Slab2 and the example data file assume spherical geometry (latitude, longitude coordinates), however, that is not necessary for this plugin, data files in Cartesian coordinates will work with box geometries.
 
 &lsquo;world builder&rsquo;: Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter &rsquo;World builder file&rsquo;. It is possible to use the World Builder only for selected compositional fields by specifying the parameter &rsquo;List of relevant compositions&rsquo;.
 
@@ -138,6 +142,24 @@ When &ldquo;composition is specified, the initial model is treated as a standard
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use a 2d data slice of a 3d data file or the entire data file. Slicing a 3d dataset is only supported for 2d models.
+
+(parameters:Initial_20composition_20model/Entropy_20table_20lookup)=
+## **Subsection:** Initial composition model / Entropy table lookup
+(parameters:Initial_20composition_20model/Entropy_20table_20lookup/Data_20directory)=
+### __Parameter name:__ Data directory
+**Default value:** $ASPECT_SOURCE_DIR/data/material-model/entropy-table/pyrtable/
+
+**Pattern:** [DirectoryName]
+
+**Documentation:** The path to the model data. The path may also include the special text &rsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+
+(parameters:Initial_20composition_20model/Entropy_20table_20lookup/Material_20file_20name)=
+### __Parameter name:__ Material file name
+**Default value:** material_table_temperature_pressure.txt
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The file name of the material data.
 
 (parameters:Initial_20composition_20model/Function)=
 ## **Subsection:** Initial composition model / Function

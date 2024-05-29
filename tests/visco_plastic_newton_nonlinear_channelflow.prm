@@ -21,7 +21,7 @@ subsection Solver parameters
   end
 
   subsection Newton solver parameters
-     set Max pre-Newton nonlinear iterations = 10
+    set Max pre-Newton nonlinear iterations = 10
     set Nonlinear Newton solver switch tolerance = 1e-20
     set Max Newton line search iterations = 0
     set Maximum linear Stokes solver tolerance = 1e-2
@@ -34,27 +34,28 @@ end
 
 subsection Boundary temperature model
   set List of model names = box
+  set Fixed temperature boundary indicators   = 2, 3
+
   subsection Box
     set Left temperature = 1
   end
 end
 
+subsection Initial temperature model
+  set Model name = function
 
- subsection Initial temperature model
-   set Model name = function
-   subsection Function
+  subsection Function
     set Function expression = 1
-   end
- end
-
+  end
+end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0
   end
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -69,42 +70,43 @@ end
 subsection Material model
   set Model name = visco plastic
 
-
   subsection Visco Plastic
     set Viscous flow law = dislocation
     set Minimum viscosity = 1e19
     set Maximum viscosity = 1e24
- set Prefactors for diffusion creep = 1
-  set Prefactors for dislocation creep = 1e-37
-  set Grain size exponents for diffusion creep = 0
+    set Prefactors for diffusion creep = 1
+    set Prefactors for dislocation creep = 1e-37
+    set Grain size exponents for diffusion creep = 0
     set Activation energies for diffusion creep = 0
     set Activation energies for dislocation creep = 0
     set Activation volumes for diffusion creep = 0
     set Activation volumes for dislocation creep = 0
-        set Stress exponents for dislocation creep = 3
+    set Stress exponents for dislocation creep = 3
   end
 end
-
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 2
 end
 
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2, 3
-end
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0, 1
   set Prescribed velocity boundary indicators = 2: function, 3: function # velocity bc
-end
 
+  subsection Function
+    set Function constants = n = 3
+    set Variable names = x,z
+
+    # For velocity boundary conditions both are used, for pressure boundary conditions only the first (x) component
+    set Function expression = 0;(1e-37/(n+1))*((1e9/8e3)^n)*(((5e3)^(n+1))-(abs(x-(5e3))^(n+1)));
+  end
+end
 
 subsection Boundary traction model
   subsection Function
     set Variable names = x,z
+
     # We want to prescribe a pressure of 2 at the left boundary
     # and -2 at the right boundary.
     # The traction in this case is defined as:
@@ -116,15 +118,5 @@ subsection Boundary traction model
     # Right boundary: tau = - pressure(right) (1;0) = - (-2) (1;0) = (2;0).
     # Conveniently, the traction is the same on both boundaries.
     set Function expression = 0;if(z>0,0,1e9)
-  end
-end
-
-
-subsection Boundary velocity model
-  subsection Function
-       set Function constants = n = 3
-    set Variable names = x,z
-    # For velocity boundary conditions both are used, for pressure boundary conditions only the first (x) component
-    set Function expression = 0;(1e-37/(n+1))*((1e9/8e3)^n)*(((5e3)^(n+1))-(abs(x-(5e3))^(n+1)));
   end
 end

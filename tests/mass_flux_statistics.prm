@@ -5,11 +5,9 @@ set Dimension                              = 2
 set CFL number                             = 1.0
 set End time                               = 0
 
-
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -20,32 +18,22 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = harmonic perturbation
 end
 
-
 subsection Material model
   set Model name = simpler
 end
-
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 3
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left:function,right:function,top:function,bottom:function
-end
 
-subsection Boundary velocity model
   subsection Function
     set Function expression = 1;1
   end

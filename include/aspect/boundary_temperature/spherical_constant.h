@@ -33,8 +33,8 @@ namespace aspect
     /**
      * A class that implements a temperature boundary condition for a
      * spherical shell geometry in which the temperature at the inner and
-     * outer surfaces (i.e. at the core-mantle and the mantle-
-     * lithosphere/atmosphere boundaries) are constant.
+     * outer surfaces (i.e. at the core-mantle and the
+     * mantle-lithosphere/atmosphere boundaries) are constant.
      *
      * @ingroup BoundaryTemperatures
      */
@@ -42,6 +42,12 @@ namespace aspect
     class SphericalConstant : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+        /**
+        * Initialize some variables.
+        */
+        void
+        initialize() override;
+
         /**
          * This function returns the constant compositions read from the
          * parameter file for the inner and outer boundaries.
@@ -89,6 +95,12 @@ namespace aspect
          */
         double inner_temperature;
         double outer_temperature;
+
+        /**
+         * The boundary indicator for the inner and outer boundaries.
+         */
+        types::boundary_id inner_boundary_indicator;
+        types::boundary_id outer_boundary_indicator;
     };
   }
 }

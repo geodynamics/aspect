@@ -141,7 +141,7 @@
 
 **Pattern:** [Selection SPD|PD|symmetric|none ]
 
-**Documentation:** This parameters allows for the stabilization of the preconditioner. If one derives the Newton method without any modifications, the matrix created for the preconditioning is not necessarily Symmetric Positive Definite. This is problematic (see \cite{FBTGS19}). When &lsquo;none&rsquo; is chosen, the preconditioner is not stabilized. The &lsquo;symmetric&rsquo; parameters symmetrizes the matrix, and &lsquo;PD&rsquo; makes the matrix Positive Definite. &lsquo;SPD&rsquo; is the full stabilization, where the matrix is guaranteed Symmetric Positive Definite.
+**Documentation:** This parameters allows for the stabilization of the preconditioner. If one derives the Newton method without any modifications, the matrix created for the preconditioning is not necessarily Symmetric Positive Definite. This is problematic (see {cite}`fraters:etal:2019`). When &lsquo;none&rsquo; is chosen, the preconditioner is not stabilized. The &lsquo;symmetric&rsquo; parameters symmetrizes the matrix, and &lsquo;PD&rsquo; makes the matrix Positive Definite. &lsquo;SPD&rsquo; is the full stabilization, where the matrix is guaranteed Symmetric Positive Definite.
 
 (parameters:Solver_20parameters/Newton_20solver_20parameters/Stabilization_20velocity_20block)=
 ### __Parameter name:__ Stabilization velocity block
@@ -149,7 +149,7 @@
 
 **Pattern:** [Selection SPD|PD|symmetric|none ]
 
-**Documentation:** This parameters allows for the stabilization of the velocity block. If one derives the Newton method without any modifications, the matrix created for the velocity block is not necessarily Symmetric Positive Definite. This is problematic (see \cite{FBTGS19}). When &lsquo;none&rsquo; is chosen, the velocity block is not stabilized. The &lsquo;symmetric&rsquo; parameters symmetrizes the matrix, and &lsquo;PD&rsquo; makes the matrix Positive Definite. &lsquo;SPD&rsquo; is the full stabilization, where the matrix is guaranteed Symmetric Positive Definite.
+**Documentation:** This parameters allows for the stabilization of the velocity block. If one derives the Newton method without any modifications, the matrix created for the velocity block is not necessarily Symmetric Positive Definite. This is problematic (see {cite}`fraters:etal:2019`). When &lsquo;none&rsquo; is chosen, the velocity block is not stabilized. The &lsquo;symmetric&rsquo; parameters symmetrizes the matrix, and &lsquo;PD&rsquo; makes the matrix Positive Definite. &lsquo;SPD&rsquo; is the full stabilization, where the matrix is guaranteed Symmetric Positive Definite.
 
 (parameters:Solver_20parameters/Newton_20solver_20parameters/Use_20Eisenstat_20Walker_20method_20for_20Picard_20iterations)=
 ### __Parameter name:__ Use Eisenstat Walker method for Picard iterations
@@ -227,7 +227,7 @@ Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat W
 
 **Pattern:** [Double 0...1 (inclusive)]
 
-**Documentation:** A relative tolerance up to which the approximate inverse of the $A$ block of the Stokes system is computed. This approximate $A$ is used in the preconditioning used in the GMRES solver. The exact definition of this block preconditioner for the Stokes equation can be found in \cite{KHB12}.
+**Documentation:** A relative tolerance up to which the approximate inverse of the $A$ block of the Stokes system is computed. This approximate $A$ is used in the preconditioning used in the GMRES solver. The exact definition of this block preconditioner for the Stokes equation can be found in {cite}`kronbichler:etal:2012`.
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters/Linear_20solver_20S_20block_20tolerance)=
 ### __Parameter name:__ Linear solver S block tolerance
@@ -235,7 +235,7 @@ Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat W
 
 **Pattern:** [Double 0...1 (inclusive)]
 
-**Documentation:** A relative tolerance up to which the approximate inverse of the $S$ block (i.e., the Schur complement matrix $S = BA^{-1}B^{T}$) of the Stokes system is computed. This approximate inverse of the $S$ block is used in the preconditioning used in the GMRES solver. The exact definition of this block preconditioner for the Stokes equation can be found in \cite{KHB12}.
+**Documentation:** A relative tolerance up to which the approximate inverse of the $S$ block (i.e., the Schur complement matrix $S = BA^{-1}B^{T}$) of the Stokes system is computed. This approximate inverse of the $S$ block is used in the preconditioning used in the GMRES solver. The exact definition of this block preconditioner for the Stokes equation can be found in {cite}`kronbichler:etal:2012`.
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters/Linear_20solver_20tolerance)=
 ### __Parameter name:__ Linear solver tolerance
@@ -261,7 +261,7 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** As explained in the paper that describes ASPECT (Kronbichler, Heister, and Bangerth, 2012, see \cite{KHB12}) we first try to solve the Stokes system in every time step using a GMRES iteration with a poor but cheap preconditioner. By default, we try whether we can converge the GMRES solver in 200 such iterations before deciding that we need a better preconditioner. This is sufficient for simple problems with variable viscosity and we never need the second phase with the more expensive preconditioner. On the other hand, for more complex problems, and in particular for problems with strongly nonlinear viscosity, the 200 cheap iterations don&rsquo;t actually do very much good and one might skip this part right away. In that case, this parameter can be set to zero, i.e., we immediately start with the better but more expensive preconditioner.
+**Documentation:** As explained in the paper that describes ASPECT (Kronbichler, Heister, and Bangerth, 2012, see {cite}`kronbichler:etal:2012`) we first try to solve the Stokes system in every time step using a GMRES iteration with a poor but cheap preconditioner. By default, we try whether we can converge the GMRES solver in 200 such iterations before deciding that we need a better preconditioner. This is sufficient for simple problems with variable viscosity and we never need the second phase with the more expensive preconditioner. On the other hand, for more complex problems, and in particular for problems with strongly nonlinear viscosity, the 200 cheap iterations don&rsquo;t actually do very much good and one might skip this part right away. In that case, this parameter can be set to zero, i.e., we immediately start with the better but more expensive preconditioner.
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters/Stokes_20solver_20type)=
 ### __Parameter name:__ Stokes solver type
@@ -285,7 +285,7 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 **Pattern:** [Bool]
 
-**Documentation:** This parameter determines whether we use an simplified approximation of the $A$ block as preconditioner for the Stokes solver, or the full $A$ block. The simplified approximation only contains the terms that describe the coupling of identical components (plus boundary conditions) as described in \cite{KHB12}. The full block is closer to the description in \cite{rudi2017weighted}.
+**Documentation:** This parameter determines whether we use an simplified approximation of the $A$ block as preconditioner for the Stokes solver, or the full $A$ block. The simplified approximation only contains the terms that describe the coupling of identical components (plus boundary conditions) as described in {cite}`kronbichler:etal:2012`. The full block is closer to the description in {cite}`rudi2017weighted`.
 
 There is no clear way to determine which preconditioner performs better. The default value (simplified approximation) requires more outer GMRES iterations, but is faster to apply in each iteration. The full block needs less assembly time (because the block is available anyway), converges in less GMRES iterations, but requires more time per iteration. There are also differences in the amount of memory consumption between the two approaches.
 

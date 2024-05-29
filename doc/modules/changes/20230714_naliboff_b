@@ -1,0 +1,8 @@
+New: There is now a new material model ('reactive fluid 
+transport') that is designed to advect fluids and 
+compute fluid release and absorption based on 
+different models for fluid-rock interaction. The
+properties of the solid are taken from a 
+base material model. 
+<br>
+(John Naliboff, 2023/07/14)

@@ -19,10 +19,8 @@ set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 50
 set CFL number                             = 0.2
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
-
 
 ############### Parameters describing the model
 # Let us here choose again a box domain
@@ -40,13 +38,14 @@ subsection Geometry model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2, 3
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1600
+    set Top temperature    = 293
+  end
 end
 
 subsection Boundary velocity model
@@ -69,31 +68,22 @@ subsection Compositional fields
   set Names of fields = porosity, peridotite
 end
 
-
-subsection Boundary temperature model
-  set List of model names = box
-
-  subsection Box
-    set Bottom temperature = 1600
-    set Top temperature    = 293
-  end
-end
-
-
 # We then choose a vertical gravity model and describe the
 # initial temperature with a vertical gradient.
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
 end
 
-
 subsection Initial temperature model
   set Model name = adiabatic
+
   subsection Adiabatic
     set Age top boundary layer      = 1e6
+
     subsection Function
       set Function expression       = 0;0
     end
@@ -110,11 +100,9 @@ subsection Initial composition model
   end
 end
 
-
 subsection Material model
   set Model name = melting rate
 end
-
 
 # The final part of this input file describes how many times the
 # mesh is refined and what to do with the solution once computed
@@ -125,26 +113,19 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-
   set List of postprocessors = composition statistics, visualization
 
   subsection Visualization
     set Interpolate output = false
-
     set List of output variables      = density, viscosity, thermal expansivity, melt material properties
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0
 
     subsection Melt material properties
       set List of properties = permeability, fluid density, compaction viscosity, fluid viscosity
     end
-
-    set Number of grouped files       = 0
-
-    set Output format                 = vtu
-
-    set Time between graphical output = 0
-
   end
-
 end
 
 subsection Solver parameters

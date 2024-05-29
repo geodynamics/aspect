@@ -11,13 +11,6 @@ end
 
 subsection Boundary temperature model
   set List of model names = box
-end
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
 end
 
@@ -40,10 +33,12 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization
+
   subsection Visualization
     set Interpolate output = false
     set List of output variables = compositional vector
     set Output format = gnuplot
+
     subsection Compositional fields as vectors
       set Names of vectors = vector_field
       set Names of fields = vec_x, vec_y, vec_z
@@ -58,6 +53,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 1;1;.5;1;0
   end

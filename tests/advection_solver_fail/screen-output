@@ -21,8 +21,8 @@ Additional information:
     The iterative advection solver in Simulator::solve_advection did not
     converge.
     
-    The initial residual was: 5.447218e+05
-    The final residual is: 8.718778e-11
+    The initial residual was: 6.012476e+05
+    The final residual is: 9.049629e-11
     The required residual for convergence is: 5.533280e-14
     See output-advection_solver_fail/solver_history.txt for the full
     convergence history.
@@ -41,7 +41,7 @@ Additional information:
     iteration_state == SolverControl::success
     Additional information:
     Iterative method reported convergence failure in step 1000. The
-    residual in the last step was 8.71878e-11.
+    residual in the last step was 9.04963e-11.
     
     This error message can indicate that you have simply not allowed a
     sufficiently large number of iterations for your iterative solver to

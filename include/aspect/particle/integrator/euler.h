@@ -45,7 +45,7 @@ namespace aspect
           /**
            * Perform an integration step of moving the particles of one cell
            * by the specified timestep dt. This function implements an explicit
-           * euler integration scheme.
+           * Euler integration scheme.
            *
            * @param [in] begin_particle An iterator to the first particle to be moved.
            * @param [in] end_particle An iterator to the last particle to be moved.
@@ -67,6 +67,20 @@ namespace aspect
                                const double dt) override;
 
           /**
+           * Return a list of boolean values indicating which solution vectors
+           * are required for the integration. The first entry indicates if
+           * the particle integrator requires the solution vector at the old
+           * old time (k-1), the second entry indicates if the particle integrator
+           * requires the solution vector at the old time (k), and the third entry
+           * indicates if the particle integrator requires the solution vector
+           * at the new time (k+1).
+           *
+           * The forward Euler integrator only requires the solution vector at the
+           * old time (k), and consequently returns `{false, true, false}`.
+          */
+          std::array<bool, 3> required_solution_vectors() const override;
+
+          /**
            * We need to tell the property manager how many intermediate properties this integrator requires,
            * so that it can allocate sufficient space for each particle. However, the integrator is not
            * created at the time the property manager is set up and we can not reverse the order of creation,
@@ -75,7 +89,7 @@ namespace aspect
            * a static property of this class. Therefore, the property manager can access this variable even
            * before any object is constructed.
            *
-           * The forward euler integrator does not need any intermediate storage space.
+           * The forward Euler integrator does not need any intermediate storage space.
            */
           static const unsigned int n_integrator_properties = 0;
       };

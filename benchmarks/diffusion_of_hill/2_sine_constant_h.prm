@@ -1,6 +1,7 @@
 set Additional shared libraries            = libanalytical_topography.so
 set Dimension                              = 2
 set Use years in output instead of seconds = false
+
 # You will want to run the model for longer to see
 # significant changes in model height
 set End time                               = 3.15576e9 # 100 yr
@@ -10,7 +11,6 @@ set Nonlinear solver scheme = no Advection, no Stokes
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
-
 # 1x1 box with or without an initial hill topography
 subsection Geometry model
   set Model name = box
@@ -19,8 +19,10 @@ subsection Geometry model
     set X extent = 10000
     set Y extent = 10000
   end
+
   subsection Initial topography model
     set Model name = function
+
     subsection Function
       set Function constants = A=100, L=10000.
       set Function expression = \
@@ -28,7 +30,6 @@ subsection Geometry model
     end
   end
 end
-
 
 # Temperature effects are ignored
 subsection Initial temperature model
@@ -44,14 +45,12 @@ subsection Boundary temperature model
   set List of model names = initial temperature
 end
 
-
 # Free slip on the top and bottom boundaries,
 # no slip on the left and right boundaries.
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, top
   set Zero velocity boundary indicators = left, right
 end
-
 
 subsection Mesh deformation
   set Mesh deformation boundary indicators = top : diffusion
@@ -62,7 +61,6 @@ subsection Mesh deformation
   end
 end
 
-
 # Vertical gravity
 subsection Gravity model
   set Model name = vertical
@@ -71,7 +69,6 @@ subsection Gravity model
     set Magnitude = 10
   end
 end
-
 
 # One material
 subsection Material model
@@ -87,14 +84,12 @@ subsection Material model
   end
 end
 
-
 # We also have to specify that we want to use the Boussinesq
 # approximation (assuming the density in the temperature
 # equation to be constant, and incompressibility).
 subsection Formulation
   set Formulation = Boussinesq approximation
 end
-
 
 # We here use a globally refined mesh without
 # adaptive mesh refinement.
@@ -104,11 +99,11 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
 end
 
-
 # We output the computed topography and the analytical topography
 # value to file.
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, analytical topography
+
   subsection Topography
     set Output to file = true
     set Analytical solution of example = 2
@@ -121,7 +116,6 @@ subsection Postprocess
     set Output mesh velocity = true
   end
 end
-
 
 subsection Solver parameters
   subsection Stokes solver parameters

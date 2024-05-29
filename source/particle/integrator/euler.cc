@@ -40,20 +40,46 @@ namespace aspect
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
 
-        const bool geometry_has_periodic_boundary = (this->get_geometry_model().get_periodic_boundary_pairs().size() != 0);
+        const auto cell = begin_particle->get_surrounding_cell();
+        bool at_periodic_boundary = false;
+        if (this->get_triangulation().get_periodic_face_map().empty() == false)
+          for (const auto face_index: cell->face_indices())
+            if (cell->at_boundary(face_index))
+              if (cell->has_periodic_neighbor(face_index))
+                {
+                  at_periodic_boundary = true;
+                  break;
+                }
+
         typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
 
         for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
              it != end_particle; ++it, ++old_velocity)
           {
-            const Point<dim> loc = it->get_location();
-            Point<dim> new_location = loc + dt * (*old_velocity);
+#if DEAL_II_VERSION_GTE(9, 6, 0)
+            // Get a reference to the particle location, so that we can update it in-place
+            Point<dim> &location = it->get_location();
+#else
+            Point<dim> location = it->get_location();
+#endif
+            location += dt * (*old_velocity);
 
-            if (geometry_has_periodic_boundary)
-              this->get_geometry_model().adjust_positions_for_periodicity(new_location);
+            if (at_periodic_boundary)
+              this->get_geometry_model().adjust_positions_for_periodicity(location);
 
-            it->set_location(new_location);
+#if !DEAL_II_VERSION_GTE(9, 6, 0)
+            it->set_location(location);
+#endif
           }
+      }
+
+
+
+      template <int dim>
+      std::array<bool, 3>
+      Euler<dim>::required_solution_vectors() const
+      {
+        return {{false, true, false}};
       }
     }
   }

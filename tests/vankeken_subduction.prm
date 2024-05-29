@@ -1,0 +1,13 @@
+include $ASPECT_SOURCE_DIR/cookbooks/vankeken_subduction/vankeken_corner_flow.prm
+
+set End time = 0
+
+subsection Mesh refinement
+  set Initial global refinement = 0
+  set Initial adaptive refinement = 0
+end
+
+# Postprocessing
+subsection Postprocess
+  set List of postprocessors = velocity statistics
+end

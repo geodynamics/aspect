@@ -1,5 +1,6 @@
-ASPECT - Advanced Solver for Problems in Earth's ConvecTion
-===========================================================
+ASPECT - the Advanced Solver for Planetary Evolution, Convection, and Tectonics
+====================================================================================
+
 [![License GPL2+:](https://img.shields.io/badge/License-GPL%202%2B-red)](https://github.com/geodynamics/aspect/blob/main/LICENSE)
 [![Online Documentation](https://readthedocs.org/projects/aspect-documentation/badge/?version=latest)](https://aspect-documentation.readthedocs.io/en/latest/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6903424.svg)](https://doi.org/10.5281/zenodo.6903424)
@@ -10,12 +11,12 @@ ASPECT - Advanced Solver for Problems in Earth's ConvecTion
 About
 -----
 
-ASPECT is a code to simulate convection in Earth's mantle and elsewhere.
-It has grown from a pure mantle-convection code into a tool for many
-geodynamic applications including applications for inner core convection,
-lithospheric scale deformation, two-phase flow, and numerical methods development.
-The project is supported by CIG (http://geodynamics.org).
-
+ASPECT is a code to simulate convection and tectonic processes in
+Earth and other planetary bodies. It has grown from a pure
+mantle-convection code into a tool for many geodynamic applications
+including applications for inner core convection, lithospheric scale
+deformation, two-phase flow, and numerical methods development. The
+project is supported by CIG (https://geodynamics.org).
 
 
 Installation instructions
@@ -27,13 +28,13 @@ in the Installation instructions section of the ASPECT
 problems during the installation, please consult our
 [wiki](https://github.com/geodynamics/aspect/wiki) for typical installation
 problems or specific instructions for MacOS users, before asking your question
-on the mailing list.
+on the forum.
 
 In short, ASPECT is configured using CMake and has the following requirements:
-- CMake 3.1.0
-- GCC, Clang, or Intel compiler with C++14 support
-- [deal.II](https://github.com/dealii/dealii) 9.4 or newer configured with:
-  - MPI, Trilinos, p4est (required)
+- CMake 3.13.4
+- GCC, Clang, or Intel compiler with C++17 support
+- [deal.II](https://github.com/dealii/dealii) 9.5.0 or newer configured with:
+  - MPI, Trilinos, p4est, SUNDIALS (required)
   - BLAS/LAPACK, zlib (strongly recommended)
   - HDF5 (optional)
 - optional: PerpleX, LIBDAP, NETCDF

@@ -18,6 +18,12 @@ set Nonlinear solver scheme                = iterated Advection and Newton Stoke
 set Max nonlinear iterations               = 30
 set Nonlinear solver tolerance             = 1e-7
 
+# We choose a zero average pressure
+# at the surface of the domain (for the current geometry, the
+# surface is defined as the top boundary).
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
 subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 200
@@ -37,14 +43,6 @@ subsection Solver parameters
   end
 end
 
-
-# We choose a zero average pressure
-# at the surface of the domain (for the current geometry, the
-# surface is defined as the top boundary).
-set Pressure normalization                 = surface
-set Surface pressure                       = 0
-
-
 # Our model domain is the unit square.
 subsection Geometry model
   set Model name = box
@@ -54,7 +52,6 @@ subsection Geometry model
     set Y extent = 1
   end
 end
-
 
 # We prescribe a linear temperature profile that
 # matches the boundary conditions defined below plus
@@ -69,7 +66,6 @@ subsection Initial temperature model
   end
 end
 
-
 # The top and bottom boundary carry a prescribed boundary temperature, whereas
 # all other parts of the boundary are insulated (i.e., no heat flux through
 # these boundaries; this is also often used to specify symmetry boundaries).
@@ -77,7 +73,7 @@ subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
   set List of model names = box
 
-# The temperature at the bottom is set to 1; at the top to 0.
+  # The temperature at the bottom is set to 1; at the top to 0.
   subsection Box
     set Bottom temperature = 1
     set Left temperature   = 0
@@ -86,13 +82,11 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Boundary velocity model
   # Here, all four sides of the box allow tangential
   # unrestricted flow but with a zero normal component:
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
-
 
 # Gravity is vertical and of magnitude 1e8.
 # //TODO elaborate on scaling/rayleigh
@@ -103,7 +97,6 @@ subsection Gravity model
     set Magnitude = 1e8
   end
 end
-
 
 subsection Material model
   set Model name = TosiMaterial
@@ -124,7 +117,6 @@ subsection Material model
   end
 end
 
-
 # The settings above all pertain to the description of the
 # continuous partial differential equations we want to solve.
 # The following section deals with the discretization of
@@ -136,7 +128,6 @@ subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
-
 
 # The final part is to specify what ASPECT should do with the
 # solution once computed at the end of every time step. The

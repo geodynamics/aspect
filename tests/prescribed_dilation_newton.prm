@@ -8,11 +8,11 @@ set Nonlinear solver scheme = iterated Advection and Newton Stokes
 
 subsection Solver parameters
   subsection Stokes solver parameters
-#    set Stokes solver type = block GMG
-#    set Number of cheap Stokes solver steps = 200
+    #    set Stokes solver type = block GMG
+    #    set Number of cheap Stokes solver steps = 200
   end
 end
 
 subsection Material model
-#  set Material averaging = harmonic average
+  #  set Material averaging = harmonic average
 end

@@ -56,6 +56,7 @@ namespace aspect
     using namespace dealii;
     using namespace dealii::Utilities;
 
+
     /**
      * Given an array @p values, consider three cases:
      * - If it has size @p N, return the original array.
@@ -356,6 +357,19 @@ namespace aspect
 
 
 
+    /**
+     * Given a point @p point, find out if any of the MPI
+     * processes own the cell in which this point lies. If
+     * not, the point lies outside the @p triangulation.
+     */
+    template <int dim>
+    bool
+    point_is_in_triangulation(const Mapping<dim> &mapping,
+                              const parallel::distributed::Triangulation<dim> &triangulation,
+                              const Point<dim> &point,
+                              const MPI_Comm mpi_communicator);
+
+
     namespace Coordinates
     {
 
@@ -369,10 +383,14 @@ namespace aspect
       WGS84_coordinates(const dealii::Point<dim> &position);
 
       /**
-       * Returns spherical coordinates of a Cartesian point. The returned array
-       * is filled with radius, phi and theta (polar angle). If the dimension is
-       * set to 2 theta is omitted. Phi is always normalized to [0,2*pi].
-       *
+       * Returns spherical coordinates of a Cartesian point. If `dim==3`, then
+       * the returned array contains the three values radius, phi, and theta
+       * (polar angle). In other words, the two angles correspond to longitude
+       * and *colatitude* (instead of latitude). If `dim==2`, then theta is omitted.
+       * The longitude Phi is always considered in the interval $[0,2\pi]$. Note
+       * that that implies that input files that use spherical coordinates also
+       * have to provide data using this convention, rather than providing their
+       * data from $-\pi$ (=180 degrees west) to $+\pi$ (=180 degrees east).
        */
       template <int dim>
       std::array<double,dim>
@@ -576,7 +594,7 @@ namespace aspect
      * @param comm MPI communicator to use.
      */
     bool fexists(const std::string &filename,
-                 MPI_Comm comm);
+                 const MPI_Comm comm);
 
     /**
      * Checks to see if the user is trying to use data from a url.
@@ -606,7 +624,7 @@ namespace aspect
      */
     std::string
     read_and_distribute_file_content(const std::string &filename,
-                                     const MPI_Comm &comm);
+                                     const MPI_Comm comm);
 
     /**
      * Collect the content of @p file_content using MPI_Gather to process 0.
@@ -623,7 +641,7 @@ namespace aspect
     void
     collect_and_write_file_content(const std::string &filename,
                                    const std::string &file_content,
-                                   const MPI_Comm &comm);
+                                   const MPI_Comm comm);
 
     /**
      * Creates a path as if created by the shell command "mkdir -p", therefore
@@ -652,7 +670,7 @@ namespace aspect
      * to true.
      */
     void create_directory(const std::string &pathname,
-                          const MPI_Comm &comm,
+                          const MPI_Comm comm,
                           bool silent);
 
     /**
@@ -1015,7 +1033,7 @@ namespace aspect
                                                const std::string &function_name,
                                                const std::vector<SolverControl> &solver_controls,
                                                const std::exception &exc,
-                                               const MPI_Comm &mpi_communicator,
+                                               const MPI_Comm mpi_communicator,
                                                const std::string &output_filename = "");
 
     /**
@@ -1277,31 +1295,16 @@ namespace aspect
       to_voigt_stiffness_vector(const SymmetricTensor<4,3> &input);
 
 
-      namespace internal
-      {
-        constexpr Tensor<3,3> create_levi_civita_tensor_3d()
-        {
-          Tensor<3,3> permutation_operator_3d;
-          permutation_operator_3d[0][1][2]  = 1;
-          permutation_operator_3d[1][2][0]  = 1;
-          permutation_operator_3d[2][0][1]  = 1;
-          permutation_operator_3d[0][2][1]  = -1;
-          permutation_operator_3d[1][0][2]  = -1;
-          permutation_operator_3d[2][1][0]  = -1;
-          return permutation_operator_3d;
-        }
-      }
-
       /**
-       * The Levi-Civita tensor, also called a permutation or "totally antisymmetric" tensor.
+       * Return the Levi-Civita tensor, also called a permutation or "totally antisymmetric" tensor.
        * See https://en.wikipedia.org/wiki/Levi-Civita_symbol for a definition.
-       * See https://en.wikipedia.org/wiki/Levi-Civita_symbol for more info.
        */
-      template<int dim>
-      constexpr Tensor<dim,dim> levi_civita;
+      template <int dim>
+      const Tensor<dim,dim> &levi_civita();
 
-      template <> constexpr Tensor<3,3> levi_civita<3> = internal::create_levi_civita_tensor_3d();
-
+      // Declare the existence of a specialization:
+      template <>
+      const Tensor<3,3> &levi_civita<3>();
     }
 
   }

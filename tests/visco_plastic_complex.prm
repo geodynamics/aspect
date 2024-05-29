@@ -11,6 +11,7 @@ set Timing output frequency                = 1
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X repetitions = 10
     set Y repetitions = 10
@@ -26,35 +27,27 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
 # Boundary classifications (fixed T boundaries, prescribed velocity)
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
+# Temperature boundary conditions
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
-end
+  set List of model names = box
 
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+  subsection Box
+    set Bottom temperature = 1573
+    set Top temperature    =  273
+  end
 end
 
 # Velocity on boundaries characterized by functions
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = m=0.0005, year=1
     set Function expression = if (x<50e3 , -1*m/year, 1*m/year); if (y<50e3 , 1*m/year, -1*m/year);
-  end
-end
-
-# Temperature boundary conditions
-subsection Boundary temperature model
-  set List of model names = box
-  subsection Box
-    set Bottom temperature = 1573
-    set Top temperature    =  273
   end
 end
 
@@ -69,6 +62,7 @@ end
 #   mantle thermal conductivity (km) = 3.65 (W/(m K));
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names = x,y
     set Function constants = h=100e3,ts=273,tm=873.,qs=0.0635,qb=0.0365,kc=2.5,km=3.65,A=9.e-7
@@ -85,6 +79,7 @@ end
 # the heating rate (assuming a single element) is 9.e-7/2800. = 3.214287e-10
 subsection Heating model
   set List of model names = radioactive decay
+
   subsection Radioactive decay
     set Number of elements            = 1
     set Heating rates                 = 3.2142857e-10
@@ -105,6 +100,7 @@ end
 # Initial composition model
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = 0; if(y>=70.e3, 1, 0);
@@ -119,8 +115,8 @@ end
 # Material model (values for background material, strain fields and crust)
 subsection Material model
   set Model name = visco plastic
-  subsection Visco Plastic
 
+  subsection Visco Plastic
     # Reference values and viscosity averaging
     set Minimum strain rate = 1.e-20
     set Reference strain rate = 1.e-16
@@ -154,13 +150,13 @@ subsection Material model
     set End plasticity strain weakening intervals = 1.0
     set Cohesion strain weakening factors = 0.5
     set Friction strain weakening factors = 0.5
-
   end
 end
 
 # Gravity model
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end

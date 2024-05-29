@@ -18,19 +18,16 @@ set Nonlinear solver tolerance             = 5e-9
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
-
-
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Start time                             = 0
 set End time                               = 1e4
-
 set Use years in output instead of seconds = true
 
 subsection Discretization
   set Stokes velocity polynomial degree    = 2
   set Composition polynomial degree        = 1
+
   subsection Stabilization parameters
     set beta  = 0.2
   end
@@ -41,9 +38,9 @@ subsection Compositional fields
   set Names of fields = porosity, peridotite
 end
 
-
 subsection Boundary temperature model
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 2,3
 
   subsection Initial temperature
     set Minimal temperature = 293
@@ -56,6 +53,8 @@ subsection Boundary composition model
 end
 
 subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+
   subsection Function
     set Function constants  = b=100000, c=20000
     set Variable names      = x,y
@@ -71,7 +70,6 @@ subsection Geometry model
     set Y extent = 2900000
     set X repetitions = 1
   end
-
 end
 
 subsection Gravity model
@@ -82,9 +80,9 @@ subsection Gravity model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = adiabatic
+
   subsection Adiabatic
     set Age bottom boundary layer = 5e8
     set Age top boundary layer    = 3e8
@@ -104,6 +102,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function constants  = pi=3.1415926,a = 0.0, b = 2500000, c = 100000, d=1450000
     set Function expression = a * exp(-((y-b)*(y-b)+(0.2*(x-d))*(0.2*(x-d)))/(2*c*c)); a * exp(-((y-b)*(y-b)+(0.2*(x-d))*(0.2*(x-d)))/(2*c*c))
@@ -111,25 +110,21 @@ subsection Initial composition model
   end
 end
 
-
 subsection Material model
-
   set Model name = test material
 end
-
 
 subsection Mesh refinement
   set Coarsening fraction                      = 0.05
   set Refinement fraction                      = 0.8
-
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 5
   set Time steps between mesh refinement       = 0
 end
 
-
 subsection Boundary fluid pressure model
   set Plugin name = density
+
   subsection Density
     set Density formulation = solid density
   end
@@ -139,35 +134,20 @@ subsection Heating model
   set List of model names = adiabatic heating
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2,3
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0,1,2,3
-end
-
-
 subsection Postprocess
-
   set List of postprocessors = composition statistics
 
   subsection Visualization
     set List of output variables      = material properties
-    subsection Material properties
-      set List of material properties = density, viscosity, thermal expansivity, reaction terms
-    end
-
     set Number of grouped files       = 0
     set Interpolate output            = false
     set Output format                 = vtu
     set Time between graphical output = 0
-  end
 
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, reaction terms
+    end
+  end
 end
 
 subsection Solver parameters

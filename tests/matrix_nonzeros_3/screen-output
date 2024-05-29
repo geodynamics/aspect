@@ -4,6 +4,7 @@ Number of degrees of freedom: 156 (50+9+25+36+36)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
+   Advecting particles...  done.
    Skipping adv_field composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.

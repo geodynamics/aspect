@@ -5,11 +5,8 @@
 # (rather than through an ipython notebook).
 
 set Dimension                              = 2
-
 set Use years in output instead of seconds = true
 set Output directory                       = output
-
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Use conduction timestep                = true
@@ -56,7 +53,6 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
@@ -68,7 +64,6 @@ subsection Gravity model
     set Magnitude = 10.0
   end
 end
-
 
 subsection Material model
   set Model name = simple

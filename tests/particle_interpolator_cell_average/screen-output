@@ -4,6 +4,7 @@ Number of degrees of freedom: 10,468 (2,178+289+1,089+2,304+2,304+2,304)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving advection_field system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 34+0 iterations.
@@ -15,6 +16,7 @@ Number of degrees of freedom: 10,468 (2,178+289+1,089+2,304+2,304+2,304)
 
 *** Timestep 1:  t=70 seconds, dt=70 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving advection_field system ... 5 iterations.
    Solving Stokes system... 34+0 iterations.
 

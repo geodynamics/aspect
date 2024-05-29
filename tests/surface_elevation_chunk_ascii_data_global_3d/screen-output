@@ -1,0 +1,41 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/geometry-model/initial-topography-model/ascii-data/global_1deg.txt.gz.
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,041 (2,187+125+729)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+Number of active cells: 344 (on 4 levels)
+Number of degrees of freedom: 15,226 (11,001+558+3,667)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+Number of active cells: 1,212 (on 5 levels)
+Number of degrees of freedom: 52,971 (38,319+1,879+12,773)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+Number of active cells: 4,180 (on 6 levels)
+Number of degrees of freedom: 179,412 (129,879+6,240+43,293)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+   Postprocessing:
+     Writing graphical output: output-surface_elevation_chunk_ascii_data_global_3d/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

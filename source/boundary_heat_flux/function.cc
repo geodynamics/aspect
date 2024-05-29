@@ -36,7 +36,7 @@ namespace aspect
                const MaterialModel::MaterialModelOutputs<dim> &/*material_model_outputs*/,
                const std::vector<Tensor<1,dim>> &normal_vectors) const
     {
-      const unsigned int n_evaluation_points = material_model_inputs.position.size();
+      const unsigned int n_evaluation_points = material_model_inputs.n_evaluation_points();
       std::vector<Tensor<1,dim>> heat_flux(normal_vectors);
 
       for (unsigned int i=0; i<n_evaluation_points; ++i)
@@ -160,7 +160,7 @@ namespace aspect
                                              "``Boundary heat flux model|Function''. The format of these "
                                              "functions follows the syntax understood by the "
                                              "muparser library, see "
-                                             "{ref}`sec:run-aspect:parameters-overview:muparser-format`."
+                                             "{ref}\\`sec:run-aspect:parameters-overview:muparser-format\\`."
                                              "\n\n"
                                              "The formula you describe in the mentioned "
                                              "section is a scalar value for the heat flux that is assumed "

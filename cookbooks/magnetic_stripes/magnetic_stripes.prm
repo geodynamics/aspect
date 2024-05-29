@@ -23,7 +23,6 @@ subsection Discretization
   end
 end
 
-
 ############### Parameters describing the model
 # Let us here choose again a box domain (400 km wide and 100 km in depth)
 # where we fix the temperature at the bottom and top,
@@ -42,8 +41,6 @@ subsection Geometry model
   end
 end
 
-
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
   set List of model names = box
@@ -53,7 +50,6 @@ subsection Boundary temperature model
     set Top temperature    = 293
   end
 end
-
 
 # The velocity along the top boundary models a spreading
 # center of a mid-ocean ridge.
@@ -76,17 +72,16 @@ subsection Boundary traction model
   end
 end
 
-
 # We then choose a vertical gravity model and describe the
 # initial temperature as a constant (being equivalent to a
 # plate age of 0).
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10
   end
 end
-
 
 subsection Initial temperature model
   set Model name = function
@@ -96,7 +91,6 @@ subsection Initial temperature model
     set Function expression = 1600
   end
 end
-
 
 subsection Compositional fields
   set Number of fields = 1
@@ -115,7 +109,6 @@ subsection Boundary composition model
   set Fixed composition boundary indicators = bottom
   set Model name = initial composition
 end
-
 
 subsection Material model
   set Model name = magnetic stripes
@@ -224,7 +217,6 @@ subsection Material model
   end
 end
 
-
 # The final part of this input file describes how many times the
 # mesh is refined and what to do with the solution once computed
 subsection Mesh refinement
@@ -238,7 +230,6 @@ subsection Mesh refinement
     set Function expression = if(depth<7000,7,if(depth<10000,6,if(depth<30000,5,if(depth<45000,4,3))))
   end
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, heat flux statistics

@@ -6,7 +6,6 @@ set Use years in output instead of seconds = true
 set End time                               = 5.e6 #by this time net rotation will start to be evident
 set Output directory                       = output
 
-
 subsection Material model
   set Model name = simple
 
@@ -16,9 +15,9 @@ subsection Material model
   end
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Inner radius  = 3481000
     set Outer radius  = 6336000
@@ -26,42 +25,31 @@ subsection Geometry model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
 end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0,1
-end
-
-subsection Nullspace removal
-  set Remove nullspace = net rotation
-end
-
-
-subsection Boundary temperature model
   set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 100
     set Outer temperature = 0
   end
 end
 
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end
 
 subsection Initial temperature model
   set Model name = spherical hexagonal perturbation
 end
 
-
 subsection Gravity model
   set Model name = radial constant
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 2
@@ -70,9 +58,9 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
 subsection Postprocess
   set List of postprocessors = velocity statistics, basic statistics, rotation statistics
+
   subsection Rotation statistics
     set Use constant density of one = true
   end

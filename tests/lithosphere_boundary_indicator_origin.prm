@@ -5,6 +5,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/lithosphere_boundary_indicator.prm
 
+
 subsection Geometry model
   set Model name = box with lithosphere boundary indicators
 

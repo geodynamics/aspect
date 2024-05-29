@@ -71,7 +71,7 @@ namespace aspect
         std::pair<std::string,std::string> execute (TableHandler &statistics) override;
 
         /**
-         * This funcion ensures that the particle postprocessor is run before
+         * This function ensures that the particle postprocessor is run before
          * this postprocessor.
          */
         std::list<std::string>

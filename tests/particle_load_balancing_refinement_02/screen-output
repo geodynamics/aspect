@@ -4,6 +4,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -16,6 +17,7 @@ Number of degrees of freedom: 678 (316+46+158+158)
 
 *** Timestep 1:  t=100.897 seconds, dt=100.897 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -27,6 +29,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 2:  t=183.96 seconds, dt=83.0635 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 14 iterations.
    Solving Stokes system... 18+0 iterations.
 
@@ -38,6 +41,7 @@ Number of degrees of freedom: 400 (186+28+93+93)
 
 *** Timestep 3:  t=246.92 seconds, dt=62.9594 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -50,6 +54,7 @@ Number of degrees of freedom: 451 (210+31+105+105)
 
 *** Timestep 4:  t=297.668 seconds, dt=50.7486 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -62,6 +67,7 @@ Number of degrees of freedom: 400 (186+28+93+93)
 
 *** Timestep 5:  t=341.577 seconds, dt=43.909 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -74,6 +80,7 @@ Number of degrees of freedom: 511 (238+35+119+119)
 
 *** Timestep 6:  t=375.564 seconds, dt=33.9864 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
@@ -85,6 +92,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 7:  t=407.95 seconds, dt=32.386 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 13 iterations.
    Solving Stokes system... 16+0 iterations.
 
@@ -95,6 +103,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 8:  t=439.706 seconds, dt=31.7567 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 13 iterations.
    Solving Stokes system... 15+0 iterations.
 
@@ -106,6 +115,7 @@ Number of degrees of freedom: 631 (294+43+147+147)
 
 *** Timestep 9:  t=470.251 seconds, dt=30.5452 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -118,6 +128,7 @@ Number of degrees of freedom: 614 (286+42+143+143)
 
 *** Timestep 10:  t=486.652 seconds, dt=16.4006 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -130,6 +141,7 @@ Number of degrees of freedom: 567 (264+39+132+132)
 
 *** Timestep 11:  t=500 seconds, dt=13.3479 seconds
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 17+0 iterations.

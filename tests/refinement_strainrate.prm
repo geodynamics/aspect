@@ -28,15 +28,9 @@ subsection Geometry model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
 end
-
 
 subsection Material model
   set Model name = simple
@@ -44,9 +38,9 @@ subsection Material model
   subsection Simple model
     set Reference density             = 3300
     set Viscosity                     = 1e22
+    set Density differential for compositional field 1 = 100
   end
 end
-
 
 subsection Gravity model
   set Model name = vertical
@@ -55,7 +49,6 @@ subsection Gravity model
     set Magnitude = 9.81
   end
 end
-
 
 ############### Parameters describing the temperature field
 # As above, there is no need to set anything for the
@@ -95,15 +88,6 @@ subsection Initial composition model
   end
 end
 
-subsection Material model
-  subsection Simple model
-    set Density differential for compositional field 1 = 100
-  end
-end
-
-
-
-
 ############### Parameters describing the discretization
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
@@ -117,7 +101,6 @@ subsection Mesh refinement
   set Coarsening fraction                = 0.
   set Strategy                           = strain rate
 end
-
 
 ############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to

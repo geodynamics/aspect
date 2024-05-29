@@ -51,7 +51,9 @@ namespace aspect
 
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
 
-      // Get a quadrature rule that exists only on the corners
+      // Define a quadrature rule that has points only on the vertices of
+      // a face, so that we can evaluate the solution at the surface
+      // nodes.
       const QTrapezoid<dim-1> face_corners;
       FEFaceValues<dim> face_vals (this->get_mapping(), this->get_fe(), face_corners, update_quadrature_points);
 
@@ -232,6 +234,17 @@ namespace aspect
                                   "where NNNNN is the number of the time step.\n"
                                   "The file format then consists of lines with Euclidean coordinates "
                                   "followed by the corresponding topography value."
-                                  "Topography is printed/written in meters.")
+                                  "Topography is printed/written in meters."
+                                  "\n\n"
+                                  "It is worth comparing this postprocessor with the "
+                                  "visualization postprocessor called ``surface elevation''. The latter is "
+                                  "used to *visualize* the surface elevation in graphical form, by "
+                                  "outputting it into the same files that the solution and other "
+                                  "postprocessed variables are written, to then be used for "
+                                  "visualization using programs such as VisIt or Paraview. In "
+                                  "contrast, the current postprocessor generates the same *kind* "
+                                  "of information, but instead writes it as a point cloud that "
+                                  "can then more easily be processed using tools other "
+                                  "than visualization programs.")
   }
 }

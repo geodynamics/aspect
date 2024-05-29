@@ -6,15 +6,11 @@ set Additional shared libraries            = ./libsolcx_compositional_fields.so
 ############### Global parameters
 
 set Dimension                              = 2
-
 set Start time                             = 0
 set End time                               = 0
-
 set Output directory                       = output
-
 set Pressure normalization                 = volume
 set Nonlinear solver scheme                = no Advection, iterated Stokes
-
 
 ############### Parameters describing the model
 
@@ -26,7 +22,6 @@ subsection Geometry model
     set Y extent = 1
   end
 end
-
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
@@ -58,11 +53,12 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x, z
     set Function constants  = pi=3.1415926536, eta_b=1e6, background_density=0.0
     set Function expression = background_density - sin(pi*z) * cos(pi*x); if(x<=0.5, 1, eta_b)
- end
+  end
 end
 
 ############### Parameters describing the discretization
@@ -80,7 +76,6 @@ subsection Discretization
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 5
@@ -90,6 +85,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, SolCxPostprocessor
+
   subsection Visualization
     set Output format = vtu
     set Number of grouped files = 1

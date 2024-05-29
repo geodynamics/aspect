@@ -27,12 +27,9 @@ subsection Geometry model
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
+  set List of model names = initial temperature
 end
 
 subsection Boundary velocity model
@@ -77,30 +74,22 @@ subsection Material model
     set Minimum viscosity = 1e1
     set Maximum viscosity = 1e28
     set Effective viscosity coefficient = 1.0
-
     set Thermal diffusivity = 0.8e-6
     set Heat capacity = 1.25e3
     set Densities = 3330, 3300
     set Thermal expansivities = 2e-5
-
     set Viscosity averaging scheme = harmonic
-
     set Grain size = 1e-3
     set Prefactors for diffusion creep = 1.5e-15
     set Stress exponents for diffusion creep = 1
     set Grain size exponents for diffusion creep = 3
     set Activation energies for diffusion creep = 3.75e5
     set Activation volumes for diffusion creep = 6e-6
-
     set Prefactors for dislocation creep = 1.1e-16
     set Stress exponents for dislocation creep = 3.5
     set Activation energies for dislocation creep = 5.3e5
     set Activation volumes for dislocation creep = 1.4e-5
   end
-end
-
-subsection Boundary temperature model
-  set List of model names = initial temperature
 end
 
 subsection Boundary composition model

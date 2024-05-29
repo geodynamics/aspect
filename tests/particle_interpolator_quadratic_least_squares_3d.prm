@@ -10,7 +10,6 @@ set End time                               = .1
 set Use years in output instead of seconds = false
 set Output directory = temp_output
 
-
 subsection Geometry model
   set Model name = box
 
@@ -20,7 +19,6 @@ subsection Geometry model
     set Z extent = 1
   end
 end
-
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
@@ -32,16 +30,13 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top, front, back
 end
 
-
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Initial temperature model
   set Model name = function
@@ -51,7 +46,6 @@ subsection Initial temperature model
     set Function expression = (1-z)
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -66,18 +60,15 @@ subsection Material model
   end
 end
 
-
 subsection Discretization
   set Use discontinuous composition discretization = true
 end
-
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 3
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = particles, velocity statistics, composition statistics, temperature statistics
@@ -110,12 +101,10 @@ subsection Postprocess
   end
 end
 
-
 subsection Compositional fields
   set Number of fields = 2
   set Compositional field methods = particles
 end
-
 
 subsection Initial composition model
   set Model name = function

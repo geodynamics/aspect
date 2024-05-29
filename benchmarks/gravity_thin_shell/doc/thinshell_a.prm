@@ -1,5 +1,6 @@
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Inner radius = 6266e3
     set Outer radius = 6276e3

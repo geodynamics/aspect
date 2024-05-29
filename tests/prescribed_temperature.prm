@@ -17,6 +17,10 @@ set Use years in output instead of seconds = false
 
 subsection Gravity model
   set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1.0
+  end
 end
 
 subsection Geometry model
@@ -35,19 +39,11 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1
   end
 end
-
-
-subsection Gravity model
-  set Model name = vertical
-  subsection Vertical
-    set Magnitude = 1.0
-  end
-end
-
 
 subsection Material model
   set Model name = prescribed temperature material
@@ -63,12 +59,10 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 2
 end
-
 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = top:function, bottom:function
@@ -83,7 +77,6 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
-
     set List of output variables      = named additional outputs, strain rate, material properties
     set Number of grouped files       = 0
     set Output format                 = vtu

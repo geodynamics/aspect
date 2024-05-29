@@ -16,6 +16,7 @@ set Pressure normalization                 = volume
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent = 2
     set Y extent = 2
@@ -37,14 +38,15 @@ end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 0
   end
 end
 
 subsection LayeredFlow benchmark
-   set Viscosity parameter beta = 0.001
-   set Viscosity parameter epsilon = 0.05
+  set Viscosity parameter beta = 0.001
+  set Viscosity parameter epsilon = 0.05
 end
 
 ############### Parameters describing the temperature field
@@ -58,7 +60,6 @@ subsection Initial temperature model
     set Function expression = 0
   end
 end
-
 
 ############### Parameters describing the discretization
 # The following parameters describe how often we want to refine
@@ -79,6 +80,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, LayeredFlowPostprocessor
+
   subsection Visualization
     set List of output variables = viscosity, strain rate
   end

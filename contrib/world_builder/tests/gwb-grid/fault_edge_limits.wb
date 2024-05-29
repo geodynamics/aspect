@@ -1,0 +1,51 @@
+{
+	"version":"0.6", 
+	"features":
+	[
+
+        {"model":"continental plate","name":"quaternary","max depth":5e3,
+            "coordinates":[[0,0],[8e3,0],[8e3,5e3],[0,5e3]],
+            "temperature models":[{"model":"uniform","temperature":273}],
+            "composition models": [
+                {"model":"uniform","max depth":5e3,"compositions":[2]}]},
+
+        {"model":"continental plate","name":"bedrock","max depth":5e3,
+            "coordinates":[[8e3,0],[10e3,0],[10e3,5e3],[8e3,5e3]],
+            "temperature models":[{"model":"uniform","temperature":273}],
+            "composition models": [
+                {"model":"uniform","max depth":5e3,"compositions":[3]}]},
+
+//	{"model":"fault","name":"Strand_1","dip point":[-1000e6,25e2], 
+//		"coordinates":[
+//[5700, 2200], 
+//[5800, 2400]
+//],
+//        "segments":
+//        [
+//            {"length":5.7e3,"thickness":[50],"angle":[60]}
+//        ],
+//        "temperature models":[{"model":"uniform","temperature":273}],
+//        "composition models":
+//        [
+//            {"model":"uniform","compositions":[0]}
+//        ]
+//		}
+//        ,
+	{"model":"subducting plate","name":"Strand_2","dip point":[-1000e6,25e2], 
+		"coordinates":[
+[5700, 2600], 
+[5600, 2800] 
+],
+        "segments":
+        [
+            {"length":5.7e3,"thickness":[50],"angle":[60]}
+        ],
+        "temperature models":[{"model":"uniform","temperature":273}],
+
+        "composition models":
+        [
+            {"model":"uniform","compositions":[0]}
+        ]
+        }
+]
+}

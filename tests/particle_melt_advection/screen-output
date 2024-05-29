@@ -6,6 +6,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
+   Advecting particles...  done.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -15,6 +16,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.168325
 
    Solving temperature system... 0 iterations.
+   Advecting particles...  done.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -34,6 +36,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
 
 *** Timestep 1:  t=3000 years, dt=3000 years
    Solving temperature system... 7 iterations.
+   Advecting particles...  done.
    Solving porosity system ... 4 iterations.
    Solving peridotite system ... 4 iterations.
    Rebuilding Stokes preconditioner...
@@ -43,6 +46,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0288581
 
    Solving temperature system... 5 iterations.
+   Advecting particles...  done.
    Solving porosity system ... 4 iterations.
    Solving peridotite system ... 3 iterations.
    Rebuilding Stokes preconditioner...
@@ -52,6 +56,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00156113
 
    Solving temperature system... 4 iterations.
+   Advecting particles...  done.
    Solving porosity system ... 3 iterations.
    Solving peridotite system ... 3 iterations.
    Rebuilding Stokes preconditioner...
@@ -61,6 +66,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 6.71022e-05
 
    Solving temperature system... 3 iterations.
+   Advecting particles...  done.
    Solving porosity system ... 3 iterations.
    Solving peridotite system ... 2 iterations.
    Rebuilding Stokes preconditioner...

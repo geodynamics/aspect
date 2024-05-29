@@ -1,6 +1,6 @@
 # This test adapts tests/particle_periodic_quarter_shell.prm to test the particle
 # handling at periodic boundaries in the polar direction for a quarter
-# speherical shell geometry.
+# spherical shell geometry.
 # The velocity and the initial particle locations are prescribed so that we know
 # where particles should end up. The time step size is precribed in such a way
 # that particles at the outer boundary should move exactly half of a cell in
@@ -17,6 +17,7 @@ set Maximum time step                      = 0.00818125
 # We prescibe rotating flow with an angular velocity increase with radius
 subsection Prescribed Stokes solution
   set Model name = function
+
   subsection Velocity function
     set Function expression = -y * sqrt(x*x+y*y); x * sqrt(x*x+y*y)
   end
@@ -24,6 +25,7 @@ end
 
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Opening angle = 90
     set Inner radius = 0.5
@@ -32,34 +34,35 @@ subsection Geometry model
   end
 end
 
-
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Reference density             = 1000
     set Viscosity                     = 1e2
     set Thermal expansion coefficient = 0
+    set Density differential for compositional field 1 = -10
   end
 end
 
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude = 10
   end
 end
-
 
 ############### Parameters describing the temperature field
 # Note: The temperature plays no role in this model
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
 end
-
 
 ############### Parameters describing the compositional field
 # Note: The compositional field is what drives the flow
@@ -69,24 +72,16 @@ subsection Compositional fields
   set Number of fields = 1
 end
 
-
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names = r, phi
     set Function constants  = pi=3.1415926
     set Coordinate system = spherical
     set Function expression = if( r < 4.195 + (0.3*sin(3*phi)) + (0.3*cos(3*phi)), 1, 0)
-
   end
 end
-
-subsection Material model
-  subsection Simple model
-    set Density differential for compositional field 1 = -10
-  end
-end
-
 
 ############### Parameters describing the discretization
 
@@ -95,8 +90,6 @@ subsection Mesh refinement
   set Initial global refinement          = 4
   set Time steps between mesh refinement = 0
 end
-
-
 
 ############### Parameters describing what to do with the solution
 
@@ -123,5 +116,4 @@ subsection Postprocess
       end
     end
   end
-
 end

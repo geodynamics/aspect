@@ -8,9 +8,9 @@ set Use years in output instead of seconds = false
 set Start time                             = 0
 set End time                               = 1e05
 
-
 subsection Material model
   set Model name = replace lithosphere viscosity
+
   subsection Replace lithosphere viscosity
     set Base model = simple
     set Lithosphere viscosity = 1e25
@@ -23,7 +23,6 @@ subsection Material model
   end
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
 
@@ -33,37 +32,33 @@ subsection Geometry model
   end
 end
 
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = bottom
   set Tangential velocity boundary indicators = top
 end
 
-
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Coordinate system = depth
     set Function constants = temp=2500
     set Function expression = temp
   end
-
 end
-
 
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude = 10
   end
 end
 
-
 subsection Mesh refinement
   set Initial global refinement          = 0
   set Initial adaptive refinement        = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = velocity statistics

@@ -13,6 +13,7 @@ subsection Mesh refinement
   set Initial adaptive refinement        = 4
   set Time steps between mesh refinement = 1
   set Strategy                           = minimum refinement function
+
   subsection Minimum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y

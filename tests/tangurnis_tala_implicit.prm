@@ -7,7 +7,6 @@ set Additional shared libraries            = ./code/libtangurnis.so
 # simulation
 set Dimension = 2
 
-
 # In computations, the time step $k$ is chosen according to $k = c \min_K
 # \frac{h_K}{\|u\|_{\infty,K} p_T}$ where $h_K$ is the diameter of cell $K$,
 # and the denominator is the maximal magnitude of the velocity on cell $K$
@@ -24,7 +23,6 @@ set CFL number                             = 1.0
 # The end time of the simulation. Units: years if the 'Use years in output
 # instead of seconds' parameter is set; seconds otherwise.
 set End time                               = 0.0001
-
 set Nonlinear solver scheme                = no Advection, iterated Stokes
 
 # The name of the directory into which all output files should be placed. This
@@ -51,23 +49,6 @@ set Start time                             = 0
 # general mathematical model.
 set Adiabatic surface temperature          = 0
 
-subsection Adiabatic conditions model
-  set Model name = function
-  subsection Function
-    set Function constants  = Di=0.5, gamma=1.0
-    set Function expression = 0;0;exp(Di/gamma*depth)  # T,p,rho
-    set Variable names      = depth
-  end
-
-end
-
-subsection Formulation
-  set Formulation = custom
-  set Mass conservation        = implicit reference density profile
-  set Temperature equation     = reference density profile
-end
-
-
 # The mathematical equations that describe thermal convection only determine
 # the pressure up to an arbitrary constant. On the other hand, for comparison
 # and for looking up material parameters it is important that the pressure be
@@ -92,20 +73,32 @@ set Surface pressure                       = 0
 # such conversion happens.
 set Use years in output instead of seconds = false
 
+subsection Adiabatic conditions model
+  set Model name = function
 
-subsection Boundary temperature model
-  # Select one of the following models:
-  #
-  # `box': A model in which the temperature is chosen constant on the left and
-  # right sides of a box.
-  #
-  # `spherical constant': A model in which the temperature is chosen constant
-  # on the inner and outer boundaries of a spherical shell. Parameters are
-  # read from subsection 'Spherical constant'.
-  set List of model names = Tan Gurnis
-
+  subsection Function
+    set Function constants  = Di=0.5, gamma=1.0
+    set Function expression = 0;0;exp(Di/gamma*depth)  # T,p,rho
+    set Variable names      = depth
+  end
 end
 
+subsection Formulation
+  set Formulation = custom
+  set Mass conservation        = implicit reference density profile
+  set Temperature equation     = reference density profile
+end
+
+subsection Boundary temperature model
+  set List of model names = Tan Gurnis
+
+  # A comma separated list of integers denoting those boundaries on which the
+  # temperature is fixed and described by the boundary temperature object
+  # selected in its own section of this input file. All boundary indicators
+  # used by the geometry but not explicitly listed here will end up with
+  # no-flux (insulating) boundary conditions.
+  set Fixed temperature boundary indicators   = left, right, bottom, top
+end
 
 subsection Discretization
   # The polynomial degree to use for the velocity variables in the Stokes
@@ -133,19 +126,9 @@ subsection Discretization
     # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
     set cR    = 0.5
   end
-
 end
 
-
 subsection Geometry model
-  # Select one of the following models:
-  #
-  # `box': A box geometry parallel to the coordinate directions. The extent of
-  # the box in each coordinate direction is set in the parameter file.
-  #
-  # `spherical shell': A geometry representing a spherical shell or a piece of
-  # it. Inner and outer radii are read from the parameter file in subsection
-  # 'Spherical shell'.
   set Model name = box
 
   subsection Box
@@ -161,60 +144,27 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
 end
 
-
 subsection Initial temperature model
-  # Select one of the following models:
-  #
-  # `perturbed box': An initial temperature field in which the temperature is
-  # perturbed slightly from an otherwise constant value equal to one. The
-  # perturbation is chosen in such a way that the initial temperature is
-  # constant to one along the entire boundary.
-  #
-  # `spherical hexagonal perturbation': An initial temperature field in which
-  # the temperature is perturbed following a six-fold pattern in angular
-  # direction from an otherwise spherically symmetric state.
-  #
-  # `spherical gaussian perturbation': An initial temperature field in which
-  # the temperature is perturbed by a single Gaussian added to an otherwise
-  # spherically symmetric state. Additional parameters are read from the
-  # parameter file in subsection 'Spherical gaussian perturbation'.
   set Model name = function
+
   subsection Function
     set Function expression = sin(pi*y)*cos(pi*1*x)
   end
 end
 
-
 subsection Material model
-  # Select one of the following models:
-  #
-  # `simple': A simple material model that has constant values for all
-  # coefficients but the density. This model uses the formulation that assumes
-  # an incompressible medium despite the fact that the density follows the law
-  # $\rho(T)=\rho_0(1-\beta(T-T_{\text{ref}})$. The value for the components
-  # of this formula and additional parameters are read from the parameter file
-  # in subsection 'Simple model'.
-  #
-  # `Steinberger': lookup from the paper of Steinberger/Calderwood
-  #
-  # `table': A material model that reads tables of pressure and temperature
-  # dependent material coefficients from files.
   set Model name = Tan Gurnis
 
   subsection Tan Gurnis model
     set Di                            = 0.5
     set gamma                         = 1
-
     set a                             = 0
-
     set wavenumber                    = 1
   end
-
 end
 
 subsection Heating model
@@ -231,22 +181,7 @@ subsection Mesh refinement
 
   # The method used to determine which cells to refine and which to coarsen.
   set Strategy                           = thermal energy density
-
-   set Time steps between mesh refinement = 100
-end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  # A comma separated list of integers denoting those boundaries on which the
-  # temperature is fixed and described by the boundary temperature object
-  # selected in its own section of this input file. All boundary indicators
-  # used by the geometry but not explicitly listed here will end up with
-  # no-flux (insulating) boundary conditions.
-  set Fixed temperature boundary indicators   = left, right, bottom, top
+  set Time steps between mesh refinement = 100
 end
 
 subsection Boundary velocity model
@@ -256,7 +191,6 @@ subsection Boundary velocity model
   # force that requires the flow to be tangential).
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
-
 
 subsection Postprocess
   # A comma separated list of postprocessor objects that should be run at the

@@ -79,8 +79,10 @@ def escape_doc_string(text) :
     tmp = (text
            .replace("``", "&ldquo;")
            .replace("''", "&rdquo;")
+           .replace("\`", "[[[backtick]]]") # temporarily replace escaped backticks by a placeholder
            .replace("`", "&lsquo;")
            .replace("'", "&rsquo;")
+           .replace("[[[backtick]]]", "`") # and now change them to actual backticks
            .replace("\\aspect{}", "ASPECT")
            .replace("\\dealii{}", "deal.II")
     )
@@ -94,6 +96,12 @@ def escape_doc_string(text) :
                  tmp)
     tmp = re.sub(r'\\texttt\{(.*?)\}',
                  r'`\1`',
+                 tmp)
+    tmp = re.sub(r'\\cite\{(.*?)\}',
+                 r'{cite}`\1`',
+                 tmp)
+    tmp = re.sub(r'Section~\\ref\{(.*?)\}',
+                 r'{ref}`\1`',
                  tmp)
 
     # Finally escape some characters that have special meaning in markdown:

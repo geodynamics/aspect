@@ -11,22 +11,21 @@
 # The sticky air layer is set on top of the sand layer and approximates a
 # free surface.
 
-......
-
 # Velocity boundary conditions
 subsection Boundary velocity model
   set Zero velocity boundary indicators              = bottom    #no slip
   set Tangential velocity boundary indicators        = left      #free slip
 
-# right - material inflow with a velocity of 2.5 cm/hour at the height of
-# the pushing block. The velocity linearly decreases from the base of the
-# rigid block to 0 cm/hour at the base of the model.
+  # right - material inflow with a velocity of 2.5 cm/hour at the height of
+  # the pushing block. The velocity linearly decreases from the base of the
+  # rigid block to 0 cm/hour at the base of the model.
   set Prescribed velocity boundary indicators        = right:function
-    subsection Function
-      set Variable names                             = x,y
-      set Function constants                         = cm=0.01, h=3600, th=0.002
-      set Function expression                        = if(y>th, -2.5*cm/h, -(y/th)*2.5*cm/h); 0
-   end
+
+  subsection Function
+    set Variable names                             = x,y
+    set Function constants                         = cm=0.01, h=3600, th=0.002
+    set Function expression                        = if(y>th, -2.5*cm/h, -(y/th)*2.5*cm/h); 0
+  end
 end
 
 # The top boundary is open (zero traction), which allows the sticky air to

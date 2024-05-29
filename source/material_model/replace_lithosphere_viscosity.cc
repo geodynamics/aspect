@@ -157,7 +157,7 @@ namespace aspect
                                    "\n"
                                    "Note the required format of the input data file: The first lines may "
                                    "contain any number of comments if they begin with ‘#’, but one of these lines "
-                                   "needs to contain the number of grid points in each dimension as for example"
+                                   "needs to contain the number of grid points in each dimension as for example "
                                    "‘# POINTS: 3 3’. For a spherical model, the order of the data columns has to be"
                                    "'phi', 'theta','depth (m)', where phi is the  azimuth angle and theta is the "
                                    "polar angle measured positive from the north pole.")

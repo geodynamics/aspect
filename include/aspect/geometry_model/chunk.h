@@ -57,19 +57,15 @@ namespace aspect
           /**
            * Constructor
            */
-          ChunkGeometry();
+          ChunkGeometry(const InitialTopographyModel::Interface<dim> &topography,
+                        const double min_longitude,
+                        const double min_radius,
+                        const double max_depth);
 
           /**
            * Copy constructor
            */
-          ChunkGeometry(const ChunkGeometry &other);
-
-          /*
-           * An initialization function to make sure that the
-           * manifold has access to the topography plugins.
-           */
-          void
-          initialize(const InitialTopographyModel::Interface<dim> *topography);
+          ChunkGeometry(const ChunkGeometry &other) = default;
 
           /**
            * This function receives a point in cartesian coordinates x, y and z,
@@ -129,34 +125,17 @@ namespace aspect
           get_radius(const Point<dim> &space_point) const;
 
           /**
-           * Set the minimum longitude of the domain,
-           * which is used in pulling back cartesian coordinates
-           * to spherical to get the longitude in the correct
-           * quarter.
-           */
-          virtual
-          void
-          set_min_longitude(const double p1_lon);
-
-          /**
            * Return a copy of this manifold.
            */
           std::unique_ptr<Manifold<dim,dim>>
           clone() const override;
 
-          /**
-           * Set the minimal radius of the domain.
-           */
-          void
-          set_min_radius(const double p1_rad);
-
-          /**
-           * Set the maximum depth of the domain.
-           */
-          void
-          set_max_depth(const double p2_rad_minus_p1_rad);
-
         private:
+          /**
+           * A pointer to the topography model.
+           */
+          const InitialTopographyModel::Interface<dim> *topo;
+
           /**
            * The minimum longitude of the domain.
            */
@@ -190,11 +169,6 @@ namespace aspect
           virtual
           Point<dim>
           push_forward_topo(const Point<dim> &chart_point) const;
-
-          /**
-           * A pointer to the topography model.
-           */
-          const InitialTopographyModel::Interface<dim> *topo;
       };
     }
 
@@ -229,12 +203,6 @@ namespace aspect
          * from SimulatorAccess.
          */
         void initialize () override;
-
-        /**
-         * This function calls the initialize function of the manifold
-         * with the given pointer to the initial topography model.
-         */
-        void set_topography_model (const InitialTopographyModel::Interface<dim> *topo_pointer);
 
         /**
          * Generate a coarse mesh for the geometry described by this class.
@@ -308,21 +276,6 @@ namespace aspect
          * @copydoc Interface::representative_point()
          */
         Point<dim> representative_point(const double depth) const override;
-
-        /**
-         * Whereas the depth function returns the depth with respect
-         * to the unperturbed surface, this function
-         * returns the depth with respect to the surface
-         * including the initial topography. For models without
-         * initial topography, the result will be the same.
-         *
-         * Note that the perturbed surface only considers the
-         * initially prescribed topography, not any perturbations
-         * due to a displacement of the free surface. Therefore,
-         * be careful with using this function if the surface changes
-         * over time.
-         */
-        double depth_wrt_topo(const Point<dim> &position) const;
 
         /**
          * Return the longitude at the western edge of the chunk measured in
@@ -451,9 +404,22 @@ namespace aspect
         std::array<unsigned int, dim> repetitions;
 
         /**
-         * An object that describes the geometry.
+         * An object that describes the geometry. This pointer is
+         * initialized in the initialize() function, and serves as the manifold
+         * object that the triangulation is later given in create_coarse_mesh()
+         * where the triangulation clones it.
+         *
+         * The object is marked as 'const' to make it clear that it should not
+         * be modified once created. That is because the triangulation copies it,
+         * and modifying the current object will not have any impact on the
+         * manifold used by the triangulation.
          */
-        internal::ChunkGeometry<dim> manifold;
+        std::unique_ptr<const internal::ChunkGeometry<dim>> manifold;
+
+        /**
+         * Give a symbolic name to the manifold id to be used by this class.
+         */
+        static const types::manifold_id my_manifold_id = 15;
     };
   }
 }

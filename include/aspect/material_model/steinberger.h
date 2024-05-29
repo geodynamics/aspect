@@ -50,7 +50,7 @@ namespace aspect
            * Read in a file.
            */
           LateralViscosityLookup(const std::string &filename,
-                                 const MPI_Comm &comm);
+                                 const MPI_Comm comm);
 
           /**
            * Returns a temperature-dependency for a given depth.
@@ -89,7 +89,7 @@ namespace aspect
            * Constructor. Reads in the given file.
            */
           RadialViscosityLookup(const std::string &filename,
-                                const MPI_Comm &comm);
+                                const MPI_Comm comm);
 
           /**
            * Return the viscosity for a given depth.
@@ -275,6 +275,14 @@ namespace aspect
         std::vector<double> conductivity_exponents;
         std::vector<double> saturation_scaling;
         double maximum_conductivity;
+
+        /**
+         * Compositional prefactors with which to multiply the reference viscosity.
+         * Volume fractions are used to weight the prefactors according to the
+         * assigned viscosity averaging scheme.
+         */
+        std::vector<double> viscosity_prefactors;
+        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging_scheme;
 
         /**
          * Information about lateral temperature averages.

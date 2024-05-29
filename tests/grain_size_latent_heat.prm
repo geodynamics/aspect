@@ -5,7 +5,6 @@
 # test see the latent_heat_enthalpy test case.
 
 set Dimension = 2
-
 set Start time                             = 0
 set End time                               = 1e15
 set Use years in output instead of seconds = false
@@ -21,9 +20,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
@@ -44,37 +43,21 @@ subsection Compositional fields
   set Names of fields   = grain_size
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 # Warning: Merge the parameter in the following subsection with any
 # other parameter of the same name, otherwise your model results might change
 subsection Heating model
   set List of model names = adiabatic heating
 end
 
+############### Boundary conditions
+# We set the top temperature to T1=1000K.
 subsection Boundary temperature model
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. To guarantee a steady downward flow, we fix the velocity
   # at the top and bottom, and set it to free slip on the sides.
   set Fixed temperature boundary indicators   = top
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = bottom:function
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = left, right
-end
-
-
-############### Boundary conditions
-# We set the top temperature to T1=1000K.
-subsection Boundary temperature model
   set List of model names = box
+
   subsection Box
     set Top temperature = 1000
   end
@@ -82,6 +65,9 @@ end
 
 # We prescribe a constant downward flow.
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom:function
+  set Tangential velocity boundary indicators = left, right
+
   subsection Function
     set Function expression = 0;-2.1422e-11
     set Variable names      = x,y
@@ -90,15 +76,16 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1000.0 + (y-1000000)/1000000
     set Variable names      = x,y
   end
 end
 
-
 subsection Material model
   set Model name = grain size latent heat
+
   subsection Grain size model
     set Reference density                = 3400
     set Thermal conductivity             = 2.38
@@ -110,7 +97,6 @@ subsection Material model
     set Maximum viscosity                = 8.44e21
     set Reference temperature            = 1000
     set Recrystallized grain size        =
-
     set Data directory = $ASPECT_SOURCE_DIR/data/material-model/latent-heat-enthalpy-test/
     set Material file names = testdata.txt
     set Material file format = perplex
@@ -118,13 +104,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 2
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Discretization
   subsection Stabilization parameters
@@ -140,7 +124,6 @@ subsection Discretization
     set cR    = 0.5
   end
 end
-
 
 subsection Postprocess
   set List of postprocessors = temperature statistics, composition statistics

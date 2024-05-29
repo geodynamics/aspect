@@ -6,6 +6,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/simple_incompressible.prm
 
+
 subsection Material model
   set Material averaging = project to Q1 only viscosity
 end

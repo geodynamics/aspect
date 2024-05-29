@@ -1,0 +1,17 @@
+{
+  "version": "0.6",
+  "gravity model":{"model":"uniform", "magnitude":10},
+  "cross section":[[0,50e3],[50e3,0]],
+  "features":
+  [
+    {
+      "model":"continental plate", "name":"overriding plate", "max depth":200e3,
+      "coordinates":[[-550e3,-550e3],[-550e3,550e3],[550e3,550e3],[550e3,-550e3]],
+      "composition models":
+          [
+            {"model":"random", "compositions":[0], "max depth":30e3, "min value":[5], "max value":[10]},
+            {"model":"random", "compositions":[1], "min depth":30e3}
+          ]
+    }
+  ]
+}

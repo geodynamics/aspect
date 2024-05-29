@@ -17,25 +17,8 @@ subsection Geometry model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2, 3
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0, 1, 2
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 3: function
-end
-
-
-subsection Boundary temperature model
   set List of model names = box
 
   subsection Box
@@ -44,8 +27,10 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2
+  set Prescribed velocity boundary indicators = 3: function
+
   subsection Function
     set Variable names      = x,z,t
     set Function constants  = pi=3.1415926
@@ -53,11 +38,9 @@ subsection Boundary velocity model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
 end
-
 
 subsection Initial temperature model
   set Model name = function
@@ -67,7 +50,6 @@ subsection Initial temperature model
     set Function expression = (1-z)
   end
 end
-
 
 subsection Material model
   set Model name = simple
@@ -79,13 +61,11 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 3
   set Time steps between mesh refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, composition statistics
@@ -94,9 +74,8 @@ subsection Postprocess
     set Interpolate output = false
     set Time between graphical output = 0.1
     set Output format                 = gnuplot
- end
+  end
 end
-
 
 # This is the new part: We declare that there will
 # be two compositional fields with same initial condition

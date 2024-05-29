@@ -129,11 +129,24 @@ namespace aspect
     /**
      * Base class for material models that implement a melt fraction function.
      * This is used to compute some statistics about the melt fraction.
+     *
+     * This class is used as a "mix-in" class: Concrete material models will
+     * be derived from MaterialModel::Interface (and consequently have to
+     * implement the `virtual` functions of that class) *and also* from the
+     * current class (and consequently have to implement the `virtual` function
+     * of the current class). The inheritance from MaterialModel::Interface is
+     * typically via the MaterialModel::MeltInterface intermediate class.
      */
     template <int dim>
     class MeltFractionModel
     {
       public:
+        /**
+         * Destructor. Does nothing but is virtual so that derived classes
+         * destructors are also virtual.
+         */
+        virtual ~MeltFractionModel () = default;
+
         /**
          * Compute the equilibrium melt fractions for the given input conditions.
          * @p in and @p melt_fractions need to have the same size.
@@ -146,11 +159,54 @@ namespace aspect
                                      std::vector<double> &melt_fractions) const = 0;
 
         /**
-         * Destructor. Does nothing but is virtual so that derived classes
-         * destructors are also virtual.
+         * Return whether an object provided as argument is of a class that is
+         * derived from the current MeltFractionModel class. (Many of these models
+         * will be derived from MaterialModel::Interface and *also* be derived
+         * from MeltFractionModel; only the latter derivation is of interest to
+         * this function.
          */
-        virtual ~MeltFractionModel () = default;
+        template <typename ModelType>
+        static
+        bool is_melt_fraction_model (const ModelType &model_object);
+
+        /**
+         * Return a reference to the MeltFractionModel base class of
+         * the object. This function will throw an exception unless
+         * is_melt_fraction_model() returns `true` for the given argument.
+         */
+        template <typename ModelType>
+        static
+        const MeltFractionModel<dim> &
+        as_melt_fraction_model (const ModelType &model_object);
     };
+
+
+
+    template <int dim>
+    template <typename ModelType>
+    inline
+    bool
+    MeltFractionModel<dim>::is_melt_fraction_model (const ModelType &model_object)
+    {
+      return (dynamic_cast<const MeltFractionModel<dim>*>(&model_object)
+              != nullptr);
+    }
+
+
+    template <int dim>
+    template <typename ModelType>
+    inline
+    const MeltFractionModel<dim> &
+    MeltFractionModel<dim>::as_melt_fraction_model (const ModelType &model_object)
+    {
+      Assert (is_melt_fraction_model(model_object) == true,
+              ExcMessage ("This function can only be called for model objects "
+                          "whose types are derived from MeltFractionModel."));
+
+      return dynamic_cast<const MeltFractionModel<dim>&>(model_object);
+    }
+
+
 
     /**
      * Base class for material models to be used with melt transport enabled.

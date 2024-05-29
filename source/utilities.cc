@@ -39,8 +39,7 @@
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/patterns.h>
-
-
+#include <deal.II/grid/grid_tools.h>
 
 #include <cerrno>
 #include <dirent.h>
@@ -82,11 +81,7 @@ namespace aspect
         inline MPI_Datatype
         mpi_type_id(const bool *)
         {
-#  if DEAL_II_MPI_VERSION_GTE(2, 2)
           return MPI_CXX_BOOL;
-#  else
-          return MPI_C_BOOL;
-#  endif
         }
 
 
@@ -211,6 +206,9 @@ namespace aspect
 #endif
       }
     }
+
+
+
 
 
 
@@ -729,6 +727,34 @@ namespace aspect
 
 
 
+    template <int dim>
+    bool
+    point_is_in_triangulation(const Mapping<dim> &mapping,
+                              const parallel::distributed::Triangulation<dim> &triangulation,
+                              const Point<dim> &point,
+                              const MPI_Comm mpi_communicator)
+    {
+      // Try to find the cell around the given point.
+      bool cell_found = false;
+      std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
+          Point<dim>> it =
+            GridTools::find_active_cell_around_point<>(mapping, triangulation, point);
+
+      // If we found the correct cell on this MPI process, we have found the right cell.
+      if (it.first.state() == IteratorState::valid && it.first->is_locally_owned())
+        cell_found = true;
+
+      // Compute how many processes found the cell.
+      const int n_procs_cell_found = Utilities::MPI::sum(cell_found ? 1 : 0, mpi_communicator);
+      // If at least one process found the cell, the point is in the triangulation.
+      if (n_procs_cell_found > 0)
+        return true;
+      else
+        return false;
+    }
+
+
+
     namespace Coordinates
     {
 
@@ -782,12 +808,19 @@ namespace aspect
         std::array<double,dim> scoord;
 
         scoord[0] = position.norm(); // R
-        scoord[1] = std::atan2(position(1),position(0)); // Phi
+
+        // Compute the longitude phi. Note that atan2 is documented to return
+        // its result as a value between -pi and +pi, whereas we use the
+        // convention that we consider eastern longitude between 0 and 2pi.
+        // As a consequence, we correct where necessary.
+        scoord[1] = std::atan2(position(1),position(0));
         if (scoord[1] < 0.0)
           scoord[1] += 2.0*numbers::PI; // correct phi to [0,2*pi]
+
+        // In 3d also compute the polar angle (=colatitude)
         if (dim==3)
           {
-            if (scoord[0] > std::numeric_limits<double>::min())
+            if (/* R= */scoord[0] > std::numeric_limits<double>::min())
               scoord[2] = std::acos(position(2)/scoord[0]);
             else
               scoord[2] = 0.0;
@@ -1336,8 +1369,7 @@ namespace aspect
 
 
     bool
-    fexists(const std::string &filename,
-            MPI_Comm comm)
+    fexists(const std::string &filename, const MPI_Comm comm)
     {
       bool file_exists = false;
       if (Utilities::MPI::this_mpi_process(comm) == 0)
@@ -1366,7 +1398,7 @@ namespace aspect
 
     std::string
     read_and_distribute_file_content(const std::string &filename,
-                                     const MPI_Comm &comm)
+                                     const MPI_Comm comm)
     {
       std::string data_string;
 
@@ -1561,7 +1593,7 @@ namespace aspect
     void
     collect_and_write_file_content(const std::string &filename,
                                    const std::string &file_content,
-                                   const MPI_Comm &comm)
+                                   const MPI_Comm comm)
     {
       const std::vector<std::string> collected_content = Utilities::MPI::gather(comm, file_content);
 
@@ -1639,7 +1671,7 @@ namespace aspect
 
 
     void create_directory(const std::string &pathname,
-                          const MPI_Comm &comm,
+                          const MPI_Comm comm,
                           bool silent)
     {
       // verify that the output directory actually exists. if it doesn't, create
@@ -2493,17 +2525,11 @@ namespace aspect
       if ((strain_rate.norm() == 0) || (dviscosities_dstrain_rate.norm() == 0))
         return 1;
 
-      const double norm_a_b = std::sqrt((strain_rate*strain_rate)*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));//std::sqrt((deviator(strain_rate)*deviator(strain_rate))*(dviscosities_dstrain_rate*dviscosities_dstrain_rate));
-      const double contract_b_a = (dviscosities_dstrain_rate*strain_rate);
-      const double one_minus_part = 1 - (contract_b_a / norm_a_b);
-      const double denom = one_minus_part * one_minus_part * norm_a_b;
-
-      // the case denom == 0 (smallest eigenvalue is zero), should return one,
-      // and it does here, because C_safety * 2.0 * eta is always larger then zero.
-      if (denom <= SPD_safety_factor * 2.0 * eta)
+      const double E = strain_rate * dviscosities_dstrain_rate;
+      if (E >= -eta * SPD_safety_factor)
         return 1.0;
       else
-        return std::max(0.0, SPD_safety_factor * ((2.0 * eta) / denom));
+        return SPD_safety_factor * std::abs(eta / E);
     }
 
 
@@ -2890,7 +2916,7 @@ namespace aspect
                                                const std::string &function_name,
                                                const std::vector<SolverControl> &solver_controls,
                                                const std::exception &exc,
-                                               const MPI_Comm &mpi_communicator,
+                                               const MPI_Comm mpi_communicator,
                                                const std::string &output_filename)
     {
       if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
@@ -3369,6 +3395,27 @@ namespace aspect
         });
 
       }
+
+
+      template <>
+      const Tensor<3,3> &levi_civita<3>()
+      {
+        static const Tensor<3,3> t =
+          []()
+        {
+          Tensor<3,3> permutation_operator_3d;
+
+          permutation_operator_3d[0][1][2]  = 1;
+          permutation_operator_3d[1][2][0]  = 1;
+          permutation_operator_3d[2][0][1]  = 1;
+          permutation_operator_3d[0][2][1]  = -1;
+          permutation_operator_3d[1][0][2]  = -1;
+          permutation_operator_3d[2][1][0]  = -1;
+          return permutation_operator_3d;
+        }();
+
+        return t;
+      }
     }
 
 
@@ -3406,6 +3453,12 @@ namespace aspect
   template \
   bool polygon_contains_point<dim>(const std::vector<Point<2>> &pointList, \
                                    const dealii::Point<2> &point); \
+  \
+  template \
+  bool point_is_in_triangulation<dim>(const Mapping<dim> &mapping, \
+                                      const parallel::distributed::Triangulation<dim> &triangulation, \
+                                      const Point<dim> &point, \
+                                      const MPI_Comm mpi_communicator); \
   \
   template \
   double signed_distance_to_polygon<dim>(const std::vector<Point<2>> &pointList, \

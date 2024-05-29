@@ -3,6 +3,7 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/gerya_2019/gerya_2019_vp.prm
 
+
 #  Global parameters
 set Dimension                              = 2
 set Max nonlinear iterations               = 2

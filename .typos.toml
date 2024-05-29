@@ -11,6 +11,8 @@ ba = "ba"
 
 # Don't correct some other abbreviations
 FOT = "FOT"
+LinearNDInterpolator = "LinearNDInterpolator"
+ND = "ND"
 
 # Don't check the following files
 [files]
@@ -20,8 +22,10 @@ extend-exclude = [
     "*.vtu",
     "contrib/catch/*",
     "contrib/world_builder/*",
+    "tests/world_builder_declarations*",
     "*.bib", # bib entries contain many arbitrary abbreviations
     "parameters.*", # parameters should be corrected in the original source
     "doc/sphinx/parameters/*", # parameters should be corrected in the original source
     "tests/prmbackslash*", # this test purposefully breaks words on different lines
+    "contrib/python/env-py_aspect.yml", # this contains random strings which may trip up typos
     ] 

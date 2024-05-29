@@ -9,6 +9,7 @@ Number of mesh deformation degrees of freedom: 8
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving mesh displacement system... 0 iterations.
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
 
    Postprocessing:
      Writing graphical output: output-mesh_deformation_particles/solution/solution-00000
@@ -17,6 +18,7 @@ Number of mesh deformation degrees of freedom: 8
 *** Timestep 1:  t=0.5 seconds, dt=0.5 seconds
    Solving mesh displacement system... 0 iterations.
    Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
 
    Postprocessing:
      Writing graphical output: output-mesh_deformation_particles/solution/solution-00001

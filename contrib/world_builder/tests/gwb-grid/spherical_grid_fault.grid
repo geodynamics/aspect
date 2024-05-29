@@ -1,0 +1,15 @@
+# output variables
+grid_type = sphere
+dim = 3
+compositions = 1
+# domain of the grid
+x_min = -180
+x_max = 180
+y_min = -90
+y_max = 90
+z_min = 6071000
+z_max = 6371000
+# grid properties
+n_cell_x = 12
+n_cell_y = 12
+n_cell_z = 1

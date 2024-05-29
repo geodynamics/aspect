@@ -17,6 +17,7 @@ end
 # Post processing
 subsection Postprocess
   set List of postprocessors = velocity statistics, basic statistics, particles, temperature statistics, visualization
+
   subsection Particles
     set Number of particles = 4e5
     set Minimum particles per cell  = 95

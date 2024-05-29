@@ -1,0 +1,15 @@
+# This is a comment in the data
+# file. 
+# Now define parameters:
+# dim = 3
+# compositions = 0
+# convert spherical = true
+# R long lat d T
+6321e3 22.5 16 50e3
+6321e3 22.5 18 50e3
+6321e3 22.5 20 50e3
+6321e3 22.5 22 50e3
+6321e3 22.5 23 50e3
+6321e3 22.5 25 50e3
+6321e3 22.5 27 50e3
+6321e3 22.5 29 50e3

@@ -34,22 +34,23 @@ set Nonlinear solver tolerance             = 1e-5
 # and maximum number of cheap Stokes solver steps to improve the nonlinear
 # convergence behavior.
 set Use operator splitting                     = true
+
+# The end time of the simulation. Because we want to see how upwellings
+# and downwellings evolve over time, and if differences develop between
+# the model with and without melt migration, we set the end time to 200 Ma.
+set End time                               = 2e8
+
 subsection Solver parameters
   subsection Operator splitting parameters
     set Reaction time step                     = 1e4
     set Reaction time steps per advection step = 10
   end
+
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-8
     set Number of cheap Stokes solver steps = 100
   end
 end
-
-# The end time of the simulation. Because we want to see how upwellings
-# and downwellings evolve over time, and if differences develop between
-# the model with and without melt migration, we set the end time to 140 Ma.
-set End time                               = 1.4e8
-
 
 # We prescribe free-slip boundary conditions on all sides.
 subsection Boundary velocity model
@@ -102,8 +103,8 @@ end
 # We choose an adiabatic temperature profile as initial condition,
 # with conductive temperature profiles in the top and bottom boundary
 # layers, which were computed using a half space cooling model.
-# The cold top boundary layer corresponds to an age of 300 Ma,
-# and the hot top boundary layer corresponds to an age of 500 Ma.
+# The cold top boundary layer corresponds to an age of 70 Ma,
+# and the hot top boundary layer corresponds to an age of 700 Ma.
 # A small temperature perturbation is added at the bottom of the
 # domain. To make the model asymmetric, we place it in a distance of
 # x = 2900 km from the left boundary.
@@ -111,9 +112,10 @@ end
 # added (by default).
 subsection Initial temperature model
   set List of model names = adiabatic, function
+
   subsection Adiabatic
-    set Age bottom boundary layer = 5e8
-    set Age top boundary layer    = 3e8
+    set Age bottom boundary layer = 7e8
+    set Age top boundary layer    = 7e7
 
     subsection Function
       set Function expression       = 0;0
@@ -132,6 +134,7 @@ end
 # of the model run.
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0; 0
     set Variable names      = x,y
@@ -149,7 +152,7 @@ subsection Boundary temperature model
 
   subsection Initial temperature
     set Minimal temperature = 293
-    set Maximal temperature = 3700
+    set Maximal temperature = 3900
   end
 end
 
@@ -171,6 +174,7 @@ end
 # flow in or out). This is what we choose as our boundary condition here.
 subsection Boundary fluid pressure model
   set Plugin name = density
+
   subsection Density
     set Density formulation = fluid density
   end
@@ -188,7 +192,6 @@ subsection Geometry model
     set Y extent = 2900000
     set X repetitions = 3
   end
-
 end
 
 ################ Gravity and material properties ##################
@@ -210,10 +213,9 @@ end
 # In addition to the material properties for the solid rock,
 # we also have to specify properties for the melt.
 subsection Material model
-
   set Model name = melt global
-  subsection Melt global
 
+  subsection Melt global
     # First we describe the parameters for the solid, in the same way
     # we did in the model without melt transport
     set Thermal conductivity              = 4.7
@@ -288,28 +290,32 @@ end
 ##################### Mesh refinement #########################
 
 # For the model with melt migration, we use adaptive refinement.
-# We make use of two different refinement criteria: we set a minimum of 4 global
+# We make use of two different refinement criteria: we set a minimum of 5 global
 # refinements everywhere in the model (which is the same resolution as for the
 # model without melt), and we refine in regions where melt is present, to be
-# precise, everywhere where the porosity is bigger than 1e-5.
+# precise, everywhere where the porosity is bigger than 1e-6.
 # We adapt the mesh every 5 time steps.
 subsection Mesh refinement
   set Coarsening fraction                      = 0.05
   set Refinement fraction                      = 0.8
-
   set Initial adaptive refinement              = 2
-  set Initial global refinement                = 4
-  set Strategy                                 = composition threshold, minimum refinement function
+  set Initial global refinement                = 5
+  set Strategy                                 = composition threshold, minimum refinement function, boundary
   set Time steps between mesh refinement       = 5
 
-  # minimum of 4 global refinements
+  # minimum of 5 global refinements
   subsection Minimum refinement function
-    set Function expression = 4
+    set Function expression = 5
   end
 
-  # refine where the porosity is bigger than 1e-8
+  # refine where the porosity is bigger than 1e-6
   subsection Composition threshold
-    set Compositional field thresholds = 1e-8,1.0
+    set Compositional field thresholds = 1e-6,1.0
+  end
+
+  # refine at top and bottom boundary
+  subsection Boundary
+    set Boundary refinement indicators = top, bottom
   end
 end
 
@@ -330,7 +336,6 @@ end
 # the "depth average" postprocessor that will allow us to plot
 # depth-averaged model quantities over time.
 subsection Postprocess
-
   set List of postprocessors = visualization, composition statistics, velocity statistics, temperature statistics, depth average
 
   # For the model with melt migration, also add a visualization
@@ -339,6 +344,9 @@ subsection Postprocess
 
   subsection Visualization
     set List of output variables      = material properties, nonadiabatic temperature, strain rate, melt material properties
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 6e5
 
     subsection Material properties
       set List of material properties = density, viscosity, thermal expansivity
@@ -347,17 +355,12 @@ subsection Postprocess
     subsection Melt material properties
       set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
     end
-
-    set Number of grouped files       = 0
-    set Output format                 = vtu
-    set Time between graphical output = 6e5
   end
 
   subsection Depth average
     set Number of zones = 12
     set Time between graphical output = 6e5
   end
-
 end
 
 # We write a checkpoint approximately every half an hour,

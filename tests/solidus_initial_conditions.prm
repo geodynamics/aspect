@@ -7,7 +7,6 @@ set Use years in output instead of seconds = true
 set End time                               = 1.5e-9
 set Adiabatic surface temperature          = 1200
 
-
 subsection Material model
   set Model name = simple
 
@@ -16,7 +15,6 @@ subsection Material model
     set Viscosity                     = 1e22
   end
 end
-
 
 subsection Geometry model
   set Model name = spherical shell
@@ -27,55 +25,44 @@ subsection Geometry model
   end
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0
-end
-
-subsection Boundary velocity model
   set Tangential velocity boundary indicators = 1
 end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0,1
-end
-
-
-subsection Boundary temperature model
   set List of model names = spherical constant
+
   subsection Spherical constant
     set Inner temperature = 2200
     set Outer temperature = 250
   end
 end
 
-
 subsection Initial temperature model
   set Model name              = solidus
+
   subsection Solidus
     set Supersolidus          = -50
     set Lithosphere thickness = 500e3
+
     subsection Perturbation
       set Temperature amplitude           = 100
       set Lithosphere thickness amplitude = 250e3
       set Lateral wave number one         = 12
       set Lateral wave number two         = 6
     end
+
     subsection Data
       set Solidus filename = $ASPECT_SOURCE_DIR/data/initial-temperature/solidus.Mars
     end
   end
 end
 
-
 subsection Gravity model
   set Model name = ascii data
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 3
@@ -83,7 +70,6 @@ subsection Mesh refinement
   set Strategy                           = temperature
   set Time steps between mesh refinement = 15
 end
-
 
 subsection Postprocess
   set List of postprocessors = temperature statistics, depth average

@@ -34,8 +34,8 @@ namespace aspect
     /**
      * A class that implements a composition boundary condition for a
      * spherical shell geometry in which the composition at the inner and
-     * outer surfaces (i.e. at the core-mantle and the mantle-
-     * lithosphere/atmosphere boundaries) are constant.
+     * outer surfaces (i.e. at the core-mantle and the
+     * mantle-lithosphere/atmosphere boundaries) are constant.
      * This class works for the sphere, spherical shell,
      * chunk and ellipsoidal chunk geometries.
      *
@@ -46,6 +46,12 @@ namespace aspect
     {
       public:
         /**
+         * Initialize some variables.
+        */
+        void
+        initialize() override;
+
+        /**
          * This function returns the constant compositions read from the
          * parameter file for the inner and outer boundaries.
          *
@@ -54,20 +60,6 @@ namespace aspect
         double boundary_composition (const types::boundary_id boundary_indicator,
                                      const Point<dim> &position,
                                      const unsigned int compositional_field) const override;
-
-        /**
-         * Return the minimal composition on that part of the boundary on
-         * which Dirichlet conditions are posed.
-         */
-        virtual
-        double minimal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;
-
-        /**
-         * Return the maximal composition on that part of the boundary on
-         * which Dirichlet conditions are posed.
-         */
-        virtual
-        double maximal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;
 
         /**
          * Declare the parameters this class takes through input files. This
@@ -87,8 +79,14 @@ namespace aspect
         /**
          * Compositions at the inner and outer boundaries.
          */
-        double inner_composition;
-        double outer_composition;
+        std::vector<double> inner_composition;
+        std::vector<double> outer_composition;
+
+        /**
+         * Boundary indicators for the inner and outer boundaries.
+         */
+        types::boundary_id inner_boundary_indicator;
+        types::boundary_id outer_boundary_indicator;
     };
   }
 }

@@ -95,7 +95,7 @@ namespace aspect
       template <int dim>
       void
       GPlatesLookup<dim>::load_file(const std::string &filename,
-                                    const MPI_Comm &comm)
+                                    const MPI_Comm comm)
       {
         // Read data from disk and distribute among processes
         std::istringstream filecontent(

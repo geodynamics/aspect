@@ -16,6 +16,7 @@ set End time                               = 0
 # outer radius of 6371km
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Inner radius  = 3481000
     set Outer radius  = 6371000
@@ -25,8 +26,12 @@ end
 # This section specifies the temperature at the boundary of
 # the domain. Here we set the temperature to be constant.
 # Alternatively it could be set to the initial condition.
+# We assume fixed temperatures and free slip at the inner and outer boundary
+
 subsection Boundary temperature model
   set List of model names = spherical constant
+  set Fixed temperature boundary indicators   = 0,1
+
   subsection Spherical constant
     set Inner temperature = 1600
     set Outer temperature = 1600
@@ -38,6 +43,7 @@ end
 # everywhere
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude = 10
   end
@@ -60,7 +66,8 @@ end
 # a constant density, and other parameters as stated below.
 subsection Material model
   set Model name = simple
-    subsection Simple model
+
+  subsection Simple model
     set Reference density                 = 3300
     set Viscosity                         = 1e21
     set Thermal expansion coefficient     = 3e-5
@@ -76,15 +83,6 @@ end
 subsection Mesh refinement
   set Initial global refinement          = 0
   set Initial adaptive refinement        = 0
-end
-
-# We assume fixed temperatures and free slip at the inner and outer boundary
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,1
 end
 
 subsection Boundary velocity model

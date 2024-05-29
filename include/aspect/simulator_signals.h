@@ -232,9 +232,13 @@ namespace aspect
                                          ParameterHandler &)>  parse_additional_parameters;
 
     /**
-     * A signal that is triggered when the iterative Stokes solver is done.
-     * Parameters are a reference to the SimulatorAccess, the number of
-     * preconditioner inner solver iterations for the S and A block of the
+     * A signal that is triggered when the iterative Stokes solver (either
+     * matrix-based or matrix-free) is done. The signal is not called when
+     * using a direct solver because the kind of information passed on by this
+     * signal does not exist when using a direct solver.
+     *
+     * Arguments to this signal are a reference to the SimulatorAccess, the number of
+     * preconditioner inner solver iterations for the $S$ and $A$ block of the
      * system, and two information objects that contain information
      * about the success of the solve, the number of outer GMRES iterations
      * and the residual history for the cheap and expensive solver phase.
@@ -247,7 +251,7 @@ namespace aspect
 
     /**
      * A signal that is triggered when the iterative advection solver is done.
-     * Parameters are a reference to the SimulatorAccess, a bool indicating
+     * Arguments are a reference to the SimulatorAccess, a bool indicating
      * whether the temperature field or a compositional field was solved,
      * a composition index that describes which compositional field
      * was solved, and an information object that contains information
@@ -271,7 +275,8 @@ namespace aspect
 
     /**
      * A signal that is triggered when mesh deformation has occurred.
-     * Parameters are a reference to the SimulatorAccess.
+     * The arguments to this signal is a reference to the SimulatorAccess
+     * object.
      */
     boost::signals2::signal<void (const SimulatorAccess<dim> &)> post_mesh_deformation;
 

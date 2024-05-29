@@ -475,7 +475,7 @@ namespace aspect
     geometry_model->create_coarse_mesh (triangulation);
     Assert (triangulation.all_reference_cells_are_hyper_cube(),
             ExcMessage ("ASPECT only supports meshes that are composed of quadrilateral "
-                        "or hexahedral cells."))
+                        "or hexahedral cells."));
     global_Omega_diameter = GridTools::diameter (triangulation);
 
     // After creating the coarse mesh, initialize mapping cache if one is used
@@ -655,9 +655,12 @@ namespace aspect
   {
     // We put the constraints we compute into a separate AffineConstraints<double> so we can check
     // if the set of constraints has changed. If it did, we need to update the sparsity patterns.
-    AffineConstraints<double> new_current_constraints;
-    new_current_constraints.clear ();
-    new_current_constraints.reinit (introspection.index_sets.system_relevant_set);
+    AffineConstraints<double> new_current_constraints(
+#if DEAL_II_VERSION_GTE(9,6,0)
+      dof_handler.locally_owned_dofs(),
+#endif
+      introspection.index_sets.system_relevant_set
+    );
     new_current_constraints.merge (constraints);
     compute_current_velocity_boundary_constraints(new_current_constraints);
 
@@ -787,12 +790,20 @@ namespace aspect
       }
 
     // If at least one processor has different constraints, force rebuilding the matrices:
-    const bool any_constrained_dofs_set_changed = Utilities::MPI::sum(constraints_changed ? 1 : 0,
-                                                                      mpi_communicator) > 0;
+    const bool any_constrained_dofs_set_changed = (Utilities::MPI::sum(constraints_changed ? 1 : 0,
+                                                                       mpi_communicator)
+                                                   > 0);
     if (any_constrained_dofs_set_changed)
       rebuild_sparsity_and_matrices = true;
 
+#if DEAL_II_VERSION_GTE(9,6,0)
+    current_constraints = std::move(new_current_constraints);
+#else
+    current_constraints.clear();
+    current_constraints.reinit (introspection.index_sets.system_relevant_set);
     current_constraints.copy_from(new_current_constraints);
+#endif
+    current_constraints.close();
 
     // TODO: We should use current_constraints.is_consistent_in_parallel()
     // here to assert that our constraints are consistent between
@@ -1449,7 +1460,11 @@ namespace aspect
 
     // Reconstruct the constraint-matrix:
     constraints.clear();
+#if DEAL_II_VERSION_GTE(9,6,0)
+    constraints.reinit (dof_handler.locally_owned_dofs(), introspection.index_sets.system_relevant_set);
+#else
     constraints.reinit(introspection.index_sets.system_relevant_set);
+#endif
 
     // Set up the constraints for periodic boundary conditions:
 
@@ -1677,8 +1692,6 @@ namespace aspect
 
       // Possibly store data of plugins associated with cells
       signals.pre_refinement_store_user_data(triangulation);
-
-
 
       exchange_refinement_flags();
 

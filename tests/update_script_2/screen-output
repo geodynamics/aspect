@@ -10,6 +10,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
+   Advecting particles...  done.
    Skipping C_1 composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -22,11 +23,12 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing depth average:              output-update_script_2/depth_average
      Writing particle output:            output-update_script_2/particles/particles-00000
      Heating rate (average/total):       -3.807e-10 W/kg, -3.214e+07 W
-     Pressure at top/bottom of domain:   -1.093e-08 Pa, 1.136e+11 Pa
+     Pressure at top/bottom of domain:   -5.465e-09 Pa, 1.136e+11 Pa
      Computing dynamic topography        
 
 *** Timestep 1:  t=100000 years, dt=100000 years
    Solving temperature system... 15 iterations.
+   Advecting particles...  done.
    Skipping C_1 composition solve because RHS is zero.
    Solving Stokes system... 15+0 iterations.
 
@@ -38,7 +40,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing depth average:              output-update_script_2/depth_average
      Number of advected particles:       50
      Heating rate (average/total):       -3.727e-10 W/kg, -3.147e+07 W
-     Pressure at top/bottom of domain:   4.684e-09 Pa, 1.136e+11 Pa
+     Pressure at top/bottom of domain:   8.587e-09 Pa, 1.136e+11 Pa
      Computing dynamic topography        
 
 Termination requested by criterion: end time

@@ -82,7 +82,6 @@ subsection Material model
   set Model name = Steinberger
 
   subsection Steinberger model
-
     # This data directory contains the files for the viscosity profile,
     # the lateral viscosity variations due to temperature, and all
     # material files containing look-up tables computed by mineral physics
@@ -109,7 +108,7 @@ subsection Material model
     set Minimum viscosity                             = 1e20
 
     # We base our viscosity profile on the adiabat computed based on the
-    # material porperties used in the model rather than the laterally
+    # material properties used in the model rather than the laterally
     # averaged temperature.
     set Use lateral average temperature for viscosity = false
 
@@ -186,7 +185,6 @@ subsection Mesh refinement
     set Function expression = if(depth<700000, 6, 5)
   end
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics

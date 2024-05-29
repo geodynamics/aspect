@@ -9,18 +9,16 @@ set End time                                = 0
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent    = 1000000.0
     set Y extent    =  450000.0
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators     = top, bottom
+  set List of model names = initial temperature
 end
 
 subsection Boundary velocity model
@@ -39,6 +37,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names = x,z,t
     set Function expression = if(((450000-z)<=225000),1,0)
@@ -54,16 +53,13 @@ subsection Initial temperature model
   end
 end
 
-subsection Boundary temperature model
-  set List of model names = initial temperature
-end
-
 subsection Boundary composition model
   set List of model names = initial composition
 end
 
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end

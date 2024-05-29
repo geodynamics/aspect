@@ -790,12 +790,11 @@ namespace aspect
   void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
                                                         LinearAlgebra::Vector &vec)
   {
-    AffineConstraints<double> hanging_constraints(introspection.index_sets.system_relevant_set);
-    DoFTools::make_hanging_node_constraints(dof_handler, hanging_constraints);
-    hanging_constraints.close();
-
     Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
+
     const std::vector<Point<dim>> mesh_support_points = finite_element.base_element(introspection.base_elements.velocities).get_unit_support_points();
+    const unsigned int n_velocity_dofs_per_cell = finite_element.base_element(introspection.base_elements.velocities).dofs_per_cell;
+
     FEValues<dim> mesh_points (*mapping, finite_element, mesh_support_points, update_quadrature_points);
     std::vector<types::global_dof_index> cell_dof_indices (finite_element.dofs_per_cell);
 
@@ -804,19 +803,48 @@ namespace aspect
         {
           mesh_points.reinit(cell);
           cell->get_dof_indices (cell_dof_indices);
-          for (unsigned int j=0; j<finite_element.base_element(introspection.base_elements.velocities).dofs_per_cell; ++j)
+          for (unsigned int j=0; j<n_velocity_dofs_per_cell; ++j)
             for (unsigned int dir=0; dir<dim; ++dir)
               {
-                unsigned int support_point_index
+                const unsigned int support_point_index
                   = finite_element.component_to_system_index(/*velocity component=*/ introspection.component_indices.velocities[dir],
                                                                                      /*dof index within component=*/ j);
-                Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
                 vec[cell_dof_indices[support_point_index]] = func.value(mesh_points.quadrature_point(j))[dir];
               }
         }
 
     vec.compress(VectorOperation::insert);
-    hanging_constraints.distribute(vec);
+
+    AffineConstraints<double> hanging_node_constraints(introspection.index_sets.system_relevant_set);
+    DoFTools::make_hanging_node_constraints(dof_handler, hanging_node_constraints);
+    hanging_node_constraints.close();
+
+    // Create a view of all constraints that only pertains to the
+    // Stokes subset of degrees of freedom. We can then use this later
+    // to call constraints.distribute(), constraints.set_zero(), etc.,
+    // on those block vectors that only have the Stokes components in
+    // them.
+    //
+    // For the moment, assume that the Stokes degrees are first in the
+    // overall vector, so that they form a contiguous range starting
+    // at zero. The assertion checks this, but this could easily be
+    // generalized if the Stokes block were not starting at zero.
+#if DEAL_II_VERSION_GTE(9,6,0)
+    Assert (introspection.block_indices.velocities == 0,
+            ExcNotImplemented());
+    if (parameters.use_direct_stokes_solver == false)
+      Assert (introspection.block_indices.pressure == 1,
+              ExcNotImplemented());
+
+    IndexSet stokes_dofs (dof_handler.n_dofs());
+    stokes_dofs.add_range (0, vec.size());
+    const AffineConstraints<double> stokes_hanging_node_constraints
+      = hanging_node_constraints.get_view (stokes_dofs);
+#else
+    const AffineConstraints<double> &stokes_hanging_node_constraints = hanging_node_constraints;
+#endif
+
+    stokes_hanging_node_constraints.distribute(vec);
   }
 
 
@@ -1977,6 +2005,7 @@ namespace aspect
   }
 
 
+
   template <int dim>
   void
   Simulator<dim>::check_consistency_of_formulation()
@@ -2002,7 +2031,8 @@ namespace aspect
       }
     else if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::isentropic_compression
              || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile
-             || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
+             || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile
+             || parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::projected_density_field)
       {
         AssertThrow(material_model->is_compressible() == true,
                     ExcMessage("ASPECT detected an inconsistency in the provided input file. "
@@ -2084,9 +2114,14 @@ namespace aspect
 
     std::vector<Tensor<1,dim>> face_current_velocity_values (fe_face_values.n_quadrature_points);
 
-    // Do not replace the id on boundaries with tangential velocity
-    const std::set<types::boundary_id> &tangential_velocity_boundaries =
+    const auto &tangential_velocity_boundaries =
       boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
+
+    const auto &zero_velocity_boundaries =
+      boundary_velocity_manager.get_zero_boundary_velocity_indicators();
+
+    const auto &prescribed_velocity_boundaries =
+      boundary_velocity_manager.get_active_boundary_velocity_conditions();
 
     // Loop over all of the boundary faces, ...
     for (const auto &cell : dof_handler.active_cell_iterators())
@@ -2094,8 +2129,11 @@ namespace aspect
         for (const unsigned int face_number : cell->face_indices())
           {
             const typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
+
+            // If the face is at a boundary where we may want to replace its id
             if (face->at_boundary() &&
-                tangential_velocity_boundaries.find(face->boundary_id()) == tangential_velocity_boundaries.end())
+                tangential_velocity_boundaries.find(face->boundary_id()) == tangential_velocity_boundaries.end() &&
+                zero_velocity_boundaries.find(face->boundary_id()) == zero_velocity_boundaries.end())
               {
                 Assert(face->boundary_id() <= offset,
                        ExcMessage("If you do not 'Allow fixed temperature/composition on outflow boundaries', "
@@ -2108,15 +2146,22 @@ namespace aspect
                 // ... check if the face is an outflow boundary by integrating the normal velocities
                 // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
                 double integrated_flow = 0;
+
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
-                    integrated_flow += (face_current_velocity_values[q] * fe_face_values.normal_vector(q)) *
+                    Tensor<1,dim> boundary_velocity;
+                    if (prescribed_velocity_boundaries.find(face->boundary_id()) == prescribed_velocity_boundaries.end())
+                      boundary_velocity = face_current_velocity_values[q];
+                    else
+                      boundary_velocity = boundary_velocity_manager.boundary_velocity(face->boundary_id(),
+                                                                                      fe_face_values.quadrature_point(q));
+
+                    integrated_flow += (boundary_velocity * fe_face_values.normal_vector(q)) *
                                        fe_face_values.JxW(q);
                   }
 
                 // ... and change the boundary id of any outflow boundary faces.
-                // If there is no flow, we do not want to apply dirichlet boundary conditions either.
-                if (integrated_flow >= 0)
+                if (integrated_flow > 0)
                   face->set_boundary_id(face->boundary_id() + offset);
               }
           }
@@ -2484,6 +2529,7 @@ namespace aspect
   template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \
+  template void Simulator<dim>::initialize_current_linearization_point (); \
   template void Simulator<dim>::interpolate_material_output_into_advection_field(const AdvectionField &adv_field); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
   template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset); \

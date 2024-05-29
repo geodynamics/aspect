@@ -1,7 +1,6 @@
 include Tosi_base.prm
 
 set Additional shared libraries            = ./libtosi_benchmark.so
-
 set Output directory                       = Case1_5
 
 subsection Mesh refinement

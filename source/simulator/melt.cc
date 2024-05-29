@@ -173,19 +173,17 @@ namespace aspect
     {
       MeltHandler<dim>::create_material_model_outputs(outputs);
 
-      const unsigned int n_points = outputs.viscosities.size();
-
       if (this->get_parameters().enable_additional_stokes_rhs
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>(n_points));
+            std::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>(outputs.n_evaluation_points()));
         }
 
       Assert(!this->get_parameters().enable_additional_stokes_rhs
              ||
              outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()->rhs_u.size()
-             == n_points, ExcInternalError());
+             == outputs.n_evaluation_points(), ExcInternalError());
     }
 
 
@@ -1506,6 +1504,7 @@ namespace aspect
                                          cell,
                                          this->introspection(),
                                          this->get_current_linearization_point());
+
             // We only need access to the MeltOutputs in p_c_scale().
             material_model_inputs.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
@@ -1571,7 +1570,12 @@ namespace aspect
     for_constraints.subtract_set(nonzero_pc_dofs);
 
     // and constrain the remaining dofs (that are not in melt cells).
+#if DEAL_II_VERSION_GTE(9,6,0)
+    for (const auto index : for_constraints)
+      constraints.constrain_dof_to_zero(index);
+#else
     constraints.add_lines(for_constraints);
+#endif
   }
 
 
@@ -1828,10 +1832,9 @@ namespace aspect
     if (output.template get_additional_output<MaterialModel::MeltOutputs<dim>>() != nullptr)
       return;
 
-    const unsigned int n_points = output.viscosities.size();
     const unsigned int n_comp = output.reaction_terms[0].size();
     output.additional_outputs.push_back(
-      std::make_unique<MaterialModel::MeltOutputs<dim>> (n_points, n_comp));
+      std::make_unique<MaterialModel::MeltOutputs<dim>> (output.n_evaluation_points(), n_comp));
   }
 
 

@@ -1,10 +1,8 @@
 ##### simple test for ascii data
 
 set Dimension                              = 2
-
 set Use years in output instead of seconds = true
 set End time                               = 1e6
-
 set Adiabatic surface temperature          = 1613.0
 
 subsection Geometry model
@@ -19,40 +17,27 @@ end
 
 subsection Initial temperature model
   set Model name = adiabatic
+
   subsection Adiabatic
     set Amplitude = 300
     set Radius    = 250000
   end
 end
 
-
 subsection Boundary temperature model
   set List of model names = box
-end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top,bottom
 end
 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = bottom:ascii boundary member,left: ascii boundary member,right: ascii boundary member,top: ascii boundary member
-end
 
-
-subsection Boundary velocity model
   subsection Ascii data model
     set Data file name       = box_2d_%s.0.txt
-
     set Data directory = $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/
     set Scale factor = 0.01
   end
 end
-
 
 subsection Gravity model
   set Model name = vertical
@@ -62,14 +47,13 @@ subsection Gravity model
   end
 end
 
-
 subsection Material model
   set Model name = simple
+
   subsection Simple model
     set Viscosity = 1e21
   end
 end
-
 
 subsection Mesh refinement
   set Initial global refinement                = 2
@@ -77,7 +61,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
   set Strategy                                 = temperature
 end
-
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics

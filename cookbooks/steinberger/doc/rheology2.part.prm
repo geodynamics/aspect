@@ -1,0 +1,5 @@
+subsection Material model
+  subsection Steinberger model
+    set Radial viscosity file name                    = radial-visc-continuous.txt
+  end
+end

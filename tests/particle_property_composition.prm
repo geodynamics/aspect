@@ -4,7 +4,6 @@
 # which records the presence of melt over the melt transport threshold
 
 set Additional shared libraries            = ./libsolitary_wave.so
-
 set Adiabatic surface temperature          = 1623
 set CFL number                             = 1.0
 set Nonlinear solver scheme                = iterated Advection and Stokes
@@ -20,12 +19,10 @@ set Dimension                              = 2
 # This end time is chosen in such a way that the solitary wave travels
 # approximately 5 times its wavelength during the model time.
 set End time                               = 0
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Resume computation                     = false
 set Start time                             = 0
-
 set Use years in output instead of seconds = true
 
 subsection Discretization
@@ -39,9 +36,9 @@ subsection Compositional fields
   set Names of fields = porosity,peridotite
 end
 
-
 subsection Boundary temperature model
   set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 2,3
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.
@@ -50,22 +47,28 @@ subsection Boundary temperature model
     # Temperature at the outer boundary (lithosphere water/air). Units: K.
     set Minimal temperature = 273
   end
-
 end
 
 subsection Boundary composition model
   set List of model names = initial composition
+  set Fixed composition boundary indicators   = 2,3
 end
 
 # we apply the phase speed of the wave here, so that it always stays in the same place in our model
 # the phase speed is c = 5.25e-11 m/s, but we have to convert it to m/years using the same conversion
 # that is used internally in ASPECT: year_in_seconds = 60*60*24*365.2425
+
+
 subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 2:function, 3:function
+  set Tangential velocity boundary indicators = 0,1
+
   subsection Function
-#    set Function expression = 0;-8.2836999e-5
+    #    set Function expression = 0;-8.2836999e-5
     set Function expression = 0;-1.65673998e-4
-#    set Function expression = 0;-3.31347996e-4
-#    set Function expression = 0;-6.62695992e-4
+
+    #    set Function expression = 0;-3.31347996e-4
+    #    set Function expression = 0;-6.62695992e-4
   end
 end
 
@@ -77,25 +80,21 @@ subsection Geometry model
     set Y extent  = 400
     set Y repetitions = 40
   end
-
 end
-
 
 subsection Gravity model
   set Model name = vertical
-
 
   subsection Vertical
     # Magnitude of the gravity vector in $m/s^2$. The direction is always
     # radially outward from the center of the earth.
     set Magnitude = 10.0
   end
-
 end
-
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 0
   end
@@ -103,6 +102,7 @@ end
 
 subsection Initial composition model
   set Model name = Solitary wave initial condition
+
   subsection Solitary wave initial condition
     set Offset = 200
     set Read solution from file = false
@@ -111,75 +111,46 @@ subsection Initial composition model
   end
 end
 
-
 subsection Material model
   set Model name = Solitary Wave
+
   subsection Solitary wave
     set Reference permeability = 5e-9
   end
 end
 
-
 subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.0
-
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 2
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2,3
-end
-
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = 2,3
-end
-
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = 2:function, 3:function
-end
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0,1
-end
-
 subsection Melt settings
   set Include melt transport                  = true
 end
 
-
 subsection Postprocess
+  set List of postprocessors = particles,visualization,composition statistics,velocity statistics,solitary wave statistics
 
   subsection Particles
+    set Particle generator name       = ascii file
+    set List of particle properties   = composition
+    set Time between data output      = 0
+    set Number of particles           = 10
+
     subsection Generator
       subsection Ascii file
         set Data file name            = particle_property_composition.txt
       end
     end
-    set Particle generator name       = ascii file
-    set List of particle properties   = composition
-    set Time between data output      = 0
-    set Number of particles           = 10
   end
-
-  set List of postprocessors = particles,visualization,composition statistics,velocity statistics,solitary wave statistics
 
   subsection Visualization
     set Interpolate output = false
-
     set List of output variables      = density, viscosity, thermal expansivity, melt material properties
-
-    subsection Melt material properties
-      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
-    end
 
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no
@@ -196,8 +167,11 @@ subsection Postprocess
     # step. Units: years if the 'Use years in output instead of seconds'
     # parameter is set; seconds otherwise.
     set Time between graphical output = 5e5
-  end
 
+    subsection Melt material properties
+      set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
+    end
+  end
 end
 
 subsection Solver parameters

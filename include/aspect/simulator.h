@@ -750,53 +750,59 @@ namespace aspect
 
       /**
        * Assemble and solve the temperature equation.
-       * This function returns the residual after solving
-       * and can optionally compute and store an initial
-       * residual before solving the equation.
+       * This function returns the residual after solving.
+       *
+       * If the `residual` argument is not a `nullptr`, the function computes
+       * the residual and puts it into this variable. The function returns
+       * the current residual divided by the initial residual given as the
+       * first argument. The two arguments may point to the same variable,
+       * in which case the function first computes the residual and at
+       * the end scales that residual by itself, thus returning 1.0.
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      double assemble_and_solve_temperature (const bool compute_initial_residual = false,
-                                             double *initial_residual = nullptr);
+      double assemble_and_solve_temperature (const double &initial_residual = 0,
+                                             double *residual = nullptr);
 
       /**
        * Solve the composition equations with whatever method is selected
        * (fields or particles). This function returns the residuals for
-       * all fields after solving
-       * and can optionally compute and store the initial
-       * residuals before solving the equation. For lack of a definition
-       * the residuals of all compositional fields that are advected
-       * using particles are considered zero.
+       * all fields after solving.
+       *
+       * If the `residual` argument is not a `nullptr`, the function computes
+       * the residual and puts it into this variable. The function returns
+       * the current residual divided by the initial residual given as the
+       * first argument. The two arguments may point to the same variable,
+       * in which case the function first computes the residual and at
+       * the end scales that residual by itself, thus returning 1.0.
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      std::vector<double> assemble_and_solve_composition (const bool compute_initial_residual = false,
-                                                          std::vector<double> *initial_residual = nullptr);
+      std::vector<double> assemble_and_solve_composition (const std::vector<double> &initial_residual = {},
+                                                          std::vector<double> *residual = nullptr);
 
       /**
        * Assemble and solve the Stokes equation.
-       * This function returns the nonlinear residual after solving
-       * and can optionally compute and store an initial
-       * residual before solving the equation in the second argument
-       * if the first argument is set to @p true.
+       * This function returns the nonlinear residual after solving.
        *
-       * The returned nonlinear residual is normalized by the initial
-       * residual, i.e., it is the nonlinear residual computed by
-       * solve_stokes() divided by the initial residual as either
-       * already stored in the second argument, or as computed
-       * at the top of the function.
-       *
+       * If the `residual` argument is not a `nullptr`, the function computes
+       * the residual and puts it into this variable. The function returns
+       * the current residual divided by the initial residual given as the
+       * first argument. The two arguments may point to the same variable,
+       * in which case the function first computes the residual and at
+       * the end scales that residual by itself, thus returning 1.0.
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      double assemble_and_solve_stokes (const bool compute_initial_residual = false,
-                                        double *initial_nonlinear_residual = nullptr);
+      double assemble_and_solve_stokes (const double &initial_nonlinear_residual = 0,
+                                        double *nonlinear_residual = nullptr);
 
       /**
-       * Assemble and solve the defect correction form of the Stokes equation.
+       * Do one step of the defect correction form of the Stokes equation;
+       * i.e., assemble and solve the defect correction equations.
        * This function takes a structure of DefectCorrectionResiduals which
        * contains information about different residuals. The information in
        * this structure is updated by this function. The parameter use_picard
@@ -806,8 +812,8 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void assemble_and_solve_defect_correction_Stokes(DefectCorrectionResiduals &dcr,
-                                                       const bool use_picard);
+      void do_one_defect_correction_Stokes_step(DefectCorrectionResiduals &dcr,
+                                                const bool use_picard);
 
       /**
        * Initiate the assembly of one advection matrix and right hand side and

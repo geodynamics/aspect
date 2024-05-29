@@ -100,10 +100,10 @@ namespace aspect
        * the solution.
        *
        * Using this way of describing a visualization postprocessor will yield
-       * a class  that would then have the following base classes: -
-       * aspect::Postprocess::VisualizationPostprocessors::Interface -
-       * aspect::SimulatorAccess - dealii::DataPostprocessor or any of the
-       * other ones listed above
+       * a class  that would then have the following base classes:
+       * - aspect::Postprocess::VisualizationPostprocessors::Interface
+       * - aspect::SimulatorAccess
+       * - dealii::DataPostprocessor or any of the other ones listed above
        *
        * <li> The second possibility is for a class to not derive from
        * dealii::DataPostprocessor but instead from the CellDataVectorCreator
@@ -315,7 +315,7 @@ namespace aspect
            * to.
            */
           virtual
-          std::pair<std::string, Vector<float> *>
+          std::pair<std::string, std::unique_ptr<Vector<float>>>
           execute () const = 0;
       };
 
@@ -568,16 +568,16 @@ namespace aspect
         bool write_higher_order_output;
 
         /**
-         * For mesh deformation computations ASPECT uses an Arbitrary-Lagrangian-
-         * Eulerian formulation to handle deforming the domain, so the mesh
-         * has its own velocity field.  This may be written as an output field
-         * by setting output_mesh_velocity to true.
+         * For mesh deformation computations ASPECT uses an
+         * Arbitrary-Lagrangian-Eulerian formulation to handle deforming the
+         * domain, so the mesh has its own velocity field. This may be
+         * written as an output field by setting output_mesh_velocity to true.
          */
         bool output_mesh_velocity;
 
         /**
-         * For mesh deformation computations ASPECT uses an Arbitrary-Lagrangian-
-         * Eulerian formulation to handle deforming the domain, so the mesh
+         * For mesh deformation computations ASPECT uses an
+         * Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain, so the mesh
          * has a field that determines the displacement from the reference
          * configuration. This may be written as an output field by setting
          * this flag to true.
@@ -585,9 +585,9 @@ namespace aspect
         bool output_mesh_displacement;
 
         /**
-         * For mesh deformation computations ASPECT uses an Arbitrary-Lagrangian-
-         * Eulerian formulation to handle deforming the domain, but we output the
-         * mesh in its deformed state if this flag is set to true. If set to false,
+         * For mesh deformation computations ASPECT uses an
+         * Arbitrary-Lagrangian-Eulerian formulation to handle deforming the domain, and we output the
+         * mesh in its deformed state by default. If this flag is set to true,
          * the mesh is written undeformed.
          */
         bool output_undeformed_mesh;

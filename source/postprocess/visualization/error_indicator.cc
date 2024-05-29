@@ -38,12 +38,12 @@ namespace aspect
 
 
       template <int dim>
-      std::pair<std::string, Vector<float> *>
+      std::pair<std::string, std::unique_ptr<Vector<float>>>
       ErrorIndicator<dim>::execute() const
       {
-        std::pair<std::string, Vector<float> *>
+        std::pair<std::string, std::unique_ptr<Vector<float>>>
         return_value ("error_indicator",
-                      new Vector<float>(this->get_triangulation().n_active_cells()));
+                      std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
         this->get_refinement_criteria(*return_value.second);
 
         return return_value;

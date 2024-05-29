@@ -21,7 +21,7 @@ RUN cd /opt && \
     echo "BUILD_EXAMPLES=OFF" >> local.cfg && \
     echo "USE_64_BIT_INDICES=ON" >> local.cfg && \
     echo "DEAL_CONFOPTS='-DDEAL_II_WITH_COMPLEX_VALUES=OFF -DDEAL_II_WITH_LAPACK=ON'" >> local.cfg && \
-    ./candi.sh -j 2 --packages="once:cmake once:p4est once:trilinos once:hdf5 dealii" -p /opt && \
+    ./candi.sh -j 2 --packages="once:cmake once:p4est once:trilinos once:hdf5 once:netcdf once:sundials dealii" -p /opt && \
     rm -rf /opt/tmp
 
 # Build aspect, replace git checkout command to create image for release

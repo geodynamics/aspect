@@ -9,8 +9,8 @@ subsection Solver parameters
     set Linear solver tolerance             = 1e-8
     set Number of cheap Stokes solver steps = 0
 
-# A higher restart length makes the solver more robust for large viscosity
-# contrasts.
+    # A higher restart length makes the solver more robust for large viscosity
+    # contrasts.
     set GMRES solver restart length         = 200
   end
 end
@@ -19,10 +19,11 @@ end
 # interfaces between compositional layers.
 subsection Discretization
   set Use discontinuous composition discretization   = true
+
   subsection Stabilization parameters
-      set Use limiter for discontinuous composition solution = true
-      set Global composition maximum                 = 1, 1, 1, 1, 1, 100
-      set Global composition minimum                 = 0, 0, 0, 0, 0, 0
+    set Use limiter for discontinuous composition solution = true
+    set Global composition maximum                 = 1, 1, 1, 1, 1, 100
+    set Global composition minimum                 = 0, 0, 0, 0, 0, 0
   end
 end
 
@@ -34,10 +35,10 @@ subsection Material model
   set Model name                                     = visco plastic
 
   subsection Visco Plastic
-
-# The viscosity contrast is 10^7 here and any value higher than this causes
-# divergence of the solver.
+    # The viscosity contrast is 10^7 here and any value higher than this causes
+    # divergence of the solver.
     set Minimum viscosity                            = 1e5
     set Maximum viscosity                            = 1e12
-
     set Viscosity averaging scheme                   = harmonic
+  end
+end

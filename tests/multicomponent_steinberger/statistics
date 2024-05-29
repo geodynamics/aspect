@@ -1,0 +1,17 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 6435 0 0  0 0 62 548 190 output-multicomponent_steinberger/solution/solution-00000 
+1 6.000000000000e+04 6.000000000000e+04 512 4851 2145 6435 0 8 10 9 56 482 174                                                        "" 

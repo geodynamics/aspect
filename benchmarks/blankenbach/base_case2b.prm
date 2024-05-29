@@ -1,7 +1,6 @@
 # This is case 2b from the Blankenbach Benchmark (Blankenbach 1989).
 
 set Additional shared libraries            = ./plugin/libblankenbach.so
-
 set End time                               = 1.0
 set Use years in output instead of seconds = false
 set CFL number = 5.0
@@ -14,7 +13,6 @@ subsection Adiabatic conditions model
     set Function expression = 0; 0; 1
     set Variable names      = depth
   end
-
 end
 
 subsection Boundary temperature model
@@ -40,43 +38,37 @@ subsection Geometry model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 1
   end
 end
 
-
 subsection Initial temperature model
-  set Model name = function
+  set Model name = ascii data
+
   subsection Function
     set Variable names      = x,z
     set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1, ratio=2.5
     set Function expression = 1* ((1.0-z/L) + p*cos(k*pi*x/L/ratio)*sin(pi*z/L))
   end
 
-  set Model name = ascii data
   subsection Ascii data model
     set Data directory =
     set Data file name = initial_temperature_case2b.txt
   end
 end
 
-
 subsection Material model
   set Model name = nondimensional
+
   subsection Nondimensional model
     set Di                      = 0.0
     set Ra                      = 1e4
-    # Reference density $\rho_0$. Units: \\si{\\kilogram\\per\\meter\\cubed}.
     set Reference density       = 1
-
-    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.
     set Reference specific heat = 1
-
-    # Whether to use the TALA instead of the ALA approximation.
     set Use TALA                = false
     set Viscosity temperature prefactor = 9.70406052783923433184
     set Viscosity depth prefactor = 4.1588830833596718565
@@ -84,20 +76,17 @@ subsection Material model
   end
 end
 
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 3
   set Time steps between mesh refinement = 0
-  set Coarsening fraction                      = 0.0
-  set Refinement fraction                      = 1.0
+  set Coarsening fraction                = 0.0
+  set Refinement fraction                = 1.0
 end
-
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
-
 
 subsection Formulation
   set Formulation          = custom # with this selection equivalent to BA
@@ -106,8 +95,9 @@ subsection Formulation
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, heating statistics, heat flux densities, temperature ascii out
-subsection Visualization
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, heat flux statistics gradient, heating statistics, heat flux densities, temperature ascii out
+
+  subsection Visualization
     set Time between graphical output = 0.002
     set List of output variables      = material properties, adiabat, thermal conductivity, heating, artificial viscosity
   end

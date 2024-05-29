@@ -14,10 +14,10 @@ set Output directory                       = output_free_surface_VE_cylinder_2D_
 set Timing output frequency                = 10
 set Pressure normalization                 = no
 
-
 subsection Time stepping
   set List of model names = convection time step, repeat on cutback
   set Minimum time step size = 0.5
+
   subsection Repeat on cutback
     set Relative repeat threshold = 0.99
   end
@@ -72,18 +72,19 @@ subsection Boundary velocity model
 end
 
 # Prescribe a fixed vertical traction on the top boundary
-subsection Boundary traction model
-  set Prescribed traction boundary indicators = top y: function
-end
 
 subsection Boundary traction model
+  set Prescribed traction boundary indicators = top y: function
+
   subsection Function
     set Variable names = x,y,t
+
     #set Function expression = 0; 1.e9 + -20.e3*x
     set Function constants  = r0=100.e3, H0=1.e3, t1=1.e3, rhoi=900, g=9.8, t0=1.e3
-        # r0 is load radius, H0 is load height, t1 is time load is fully removed,
-  # rhoi is density of ice/load
-  # option to linearly thin load beginning at time t0.
+
+    # r0 is load radius, H0 is load height, t1 is time load is fully removed,
+    # rhoi is density of ice/load
+    # option to linearly thin load beginning at time t0.
     set Function expression = 0; if (x<r0 ,if(t<t0,-g*H0*rhoi,if(t<t1,-g*H0*rhoi*(1-(t-t0)/t1),0)), 0)
   end
 end
@@ -97,6 +98,7 @@ end
 # Spatial domain of different compositional fields
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  =
@@ -119,6 +121,7 @@ end
 # Temperature initial conditions
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 293
   end
@@ -126,7 +129,6 @@ end
 
 # Material model
 subsection Material model
-
   set Model name = viscoelastic
 
   subsection Viscoelastic
@@ -137,12 +139,12 @@ subsection Material model
     set Fixed elastic time step     = 3
     set Viscosity averaging scheme  = harmonic
   end
-
 end
 
 # Gravity model
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.8
   end
@@ -154,22 +156,21 @@ subsection Postprocess
 
   subsection Visualization
     set List of output variables = material properties, strain rate
+    set Time between graphical output = 2
+    set Interpolate output = true
 
     subsection Material properties
       set List of material properties = density, viscosity
     end
-
-    set Time between graphical output = 2
-    set Interpolate output = true
   end
 
   subsection Topography
-     set Output to file = true
-     set Time between text output = 2
+    set Output to file = true
+    set Time between text output = 2
   end
 end
 
 # Termination criteria
 subsection Termination criteria
- set Termination criteria = end time
+  set Termination criteria = end time
 end

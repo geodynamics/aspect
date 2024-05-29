@@ -10,13 +10,11 @@
 
 
 set Dimension                              = 2
-
 set Use years in output instead of seconds = false
 set End time                               = 1
 set Maximum time step                      = 0.01
 set Output directory                       = output_latent_heat
 set Nonlinear solver scheme                = single Advection, no Stokes
-
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1000
@@ -24,18 +22,23 @@ set Use operator splitting = true
 
 subsection Prescribed Stokes solution
   set Model name = function
+
   subsection Velocity function
     set Function expression = 0;0
   end
+
   subsection Pressure function
     set Function expression = 0
   end
+
   subsection Fluid pressure function
     set Function expression = 0
   end
+
   subsection Compaction pressure function
     set Function expression = 0
   end
+
   subsection Fluid velocity function
     set Function expression = 0;0
   end
@@ -71,7 +74,6 @@ subsection Geometry model
   end
 end
 
-
 subsection Initial temperature model
   set List of model names = function
 
@@ -83,8 +85,9 @@ end
 
 subsection Initial composition model
   set List of model names = function
+
   subsection Function
-   set Function expression = 0; 0
+    set Function expression = 0; 0
   end
 end
 
@@ -98,7 +101,6 @@ subsection Boundary composition model
   set List of model names = initial composition
 end
 
-
 subsection Heating model
   set List of model names = latent heat melt, function
 
@@ -111,7 +113,6 @@ subsection Heating model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
 
@@ -119,7 +120,6 @@ subsection Gravity model
     set Magnitude = 0.0
   end
 end
-
 
 subsection Material model
   set Model name = melt global
@@ -131,7 +131,6 @@ subsection Material model
     set Exponential melt weakening factor    = 0
     set Include melting and freezing  = true
     set Melting time scale for operator splitting = 0.0005
-
     set Thermal expansion coefficient = 0
     set Reference specific heat       = 100
     set Reference temperature         = 1000
@@ -139,11 +138,9 @@ subsection Material model
     set Reference melt density        = 1000
     set Depletion solidus change      = 0
     set Pressure solidus change       = 0
-
     set Surface solidus               = 1000
   end
 end
-
 
 subsection Mesh refinement
   set Initial global refinement                = 0
@@ -151,7 +148,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
   set Minimum refinement level                 = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, composition statistics, visualization
