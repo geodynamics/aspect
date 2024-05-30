@@ -71,7 +71,7 @@ namespace aspect
       else if (depth > local_thicknesses[0] && depth <= local_thicknesses[0] + local_thicknesses[1]
                && compositional_index == id_lower)
         return 1.;
-      else if (depth > local_thicknesses[0] + local_thicknesses[2] && depth <= local_thicknesses[0] + local_thicknesses[1] + local_thicknesses[2]
+      else if (depth > local_thicknesses[0] + local_thicknesses[1] && depth <= local_thicknesses[0] + local_thicknesses[1] + local_thicknesses[2]
                && compositional_index == id_mantle_L)
         return 1.;
       else
@@ -174,9 +174,12 @@ namespace aspect
 
       // Compute the local thickness of the upper crust, lower crust and mantle part of the lithosphere
       // (in this exact order) based on the distance from the rift axis and the polygons.
+      // The transition from reference and/or rift perturbation lithosphere to polygon lithosphere
+      // is smoothed by a hyperbolic tangent.
       const double polygon_contribution = (0.5 + 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon));
       const double rift_contribution = (0.5 - 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon));
       
+      // The rift perturbation follows a Gaussian contribution.
       std::vector<double> local_thicknesses(3);
       for (unsigned int i = 0; i < 3; ++i)
         local_thicknesses[i] = (1.0 - A_rift[i] * std::exp((-std::pow(distance_to_rift_axis, 2) / (2.0 * std::pow(sigma_rift, 2))))) 

@@ -60,8 +60,9 @@ namespace aspect
         initial_composition_manager = this->get_initial_composition_manager_pointer();
 
       // Check that the required initial composition model is used.
-      AssertThrow(initial_composition_manager->template has_matching_initial_composition_model<const InitialComposition::LithosphereRift<dim>>(),
-                  ExcMessage("The initial temperature plugin lithosphere with rift requires the correspond initial composition plugin."));
+      // This doesn't work during initialization.
+      //AssertThrow(initial_composition_manager->template has_matching_initial_composition_model<const InitialComposition::LithosphereRift<dim>>(),
+      //             ExcMessage("The initial temperature plugin lithosphere with rift requires the corresponding initial composition plugin."));
 
       // Determine whether a cartesian or a spherical geometry is used.
       cartesian_geometry = Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model());
@@ -73,6 +74,9 @@ namespace aspect
     LithosphereRift<dim>::
     initial_temperature (const Point<dim> &position) const
     {
+      Assert(initial_composition_manager->template has_matching_initial_composition_model<const InitialComposition::LithosphereRift<dim>>(),
+                  ExcMessage("The initial temperature plugin lithosphere with rift requires the corresponding initial composition plugin."));
+                  
       // Get the initial composition plugin
       const InitialComposition::LithosphereRift<dim> &ic = initial_composition_manager->template get_matching_initial_composition_model<const InitialComposition::LithosphereRift<dim>>();
 
