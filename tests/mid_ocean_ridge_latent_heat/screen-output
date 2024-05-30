@@ -1,0 +1,109 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 2.6.0-pre (vp-melt, 024a96c93)
+--     . using deal.II 9.5.1
+--     .       with 32 bit indices and vectorization level 2 (256 bits)
+--     . using Trilinos 13.2.0
+--     . using p4est 2.3.2
+--     . using Geodynamic World Builder 0.6.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&melt=1&sha=024a96c93&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 384 (on 4 levels)
+Number of degrees of freedom: 13,321 (3,234+1,577+3,234+425+1,617+1,617+1,617)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 44+0 iterations.
+   Solving fluid velocity system... 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.73839e-16, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving fluid velocity system... 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.73839e-16, 0, 0, 8.7539e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.7539e-08
+
+
+   Postprocessing:
+     Writing graphical output:  output-mid_ocean_ridge/solution/solution-00000
+     Compositions min/max/mass: 0/0/0 // 0/0/0
+     RMS, max velocity:         0.0169 m/year, 0.0298 m/year
+
+*** Timestep 1:  t=10000 years, dt=10000 years
+   Solving composition reactions... in 50 substep(s).
+   Solving temperature system... 6 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 29+0 iterations.
+   Solving fluid velocity system... 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0206447, 0, 0, 0.000319384
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0206447
+
+   Solving temperature system... 4 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+   Solving fluid velocity system... 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.58708e-05, 0, 0, 7.35391e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.58708e-05
+
+   Solving temperature system... 3 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+   Solving fluid velocity system... 10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.2291e-07, 0, 0, 6.71156e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.2291e-07
+
+
+   Postprocessing:
+     Writing graphical output:  output-mid_ocean_ridge/solution/solution-00001
+     Compositions min/max/mass: 0/0/0 // 0/0/0
+     RMS, max velocity:         0.0169 m/year, 0.0298 m/year
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      24.3s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         5 |      3.81s |        16% |
+| Assemble composition system      |        10 |      6.17s |        25% |
+| Assemble temperature system      |         5 |      3.02s |        12% |
+| Build Stokes preconditioner      |         5 |       2.3s |       9.5% |
+| Build temperature preconditioner |         5 |    0.0114s |         0% |
+| Initialization                   |         1 |      0.62s |       2.5% |
+| Postprocessing                   |         2 |     0.554s |       2.3% |
+| Setup dof systems                |         1 |    0.0869s |      0.36% |
+| Setup initial conditions         |         1 |      1.14s |       4.7% |
+| Setup matrices                   |         1 |     0.696s |       2.9% |
+| Solve Stokes system              |         5 |       2.7s |        11% |
+| Solve composition reactions      |         1 |     0.485s |         2% |
+| Solve temperature system         |         5 |    0.0111s |         0% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 24s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&melt=1&sha=024a96c93&src=code
+-----------------------------------------------------------------------------
