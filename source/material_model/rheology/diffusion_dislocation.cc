@@ -40,9 +40,8 @@ namespace aspect
       template <int dim>
       std::vector<double>
       DiffusionDislocation<dim>::
-      calculate_isostrain_viscosities ( const double &pressure,
-                                        const double &temperature,
-                                        const std::vector<double> &volume_fractions,
+      calculate_isostrain_viscosities ( const double pressure,
+                                        const double temperature,
                                         const SymmetricTensor<2,dim> &strain_rate) const
       {
         // This function calculates viscosities assuming that all the compositional fields
@@ -59,8 +58,8 @@ namespace aspect
 
         // Find effective viscosities for each of the individual phases
         // Viscosities should have same number of entries as compositional fields
-        std::vector<double> composition_viscosities(volume_fractions.size());
-        for (unsigned int j=0; j < volume_fractions.size(); ++j)
+        std::vector<double> composition_viscosities(n_chemical_composition_fields);
+        for (unsigned int j=0; j < n_chemical_composition_fields; ++j)
           {
             // Power law creep equation
             // edot_ii_i = A_i * stress_ii_i^{n_i} * d^{-m} \exp\left(-\frac{E_i^\ast + PV_i^\ast}{n_iRT}\right)
@@ -194,7 +193,7 @@ namespace aspect
         // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
         // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
         const std::vector<double> composition_viscosities =
-          calculate_isostrain_viscosities(pressure, temperature, volume_fractions, strain_rate);
+          calculate_isostrain_viscosities(pressure, temperature, strain_rate);
 
         // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
         // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
@@ -337,15 +336,10 @@ namespace aspect
       void
       DiffusionDislocation<dim>::parse_parameters (ParameterHandler &prm)
       {
-
-        // Initialise empty vector for compositional field variables
-        std::vector<double> x_values;
-
         // Reference and minimum/maximum values
         min_strain_rate = prm.get_double("Minimum strain rate");
         minimum_viscosity = prm.get_double ("Minimum viscosity");
         maximum_viscosity = prm.get_double ("Maximum viscosity");
-        veff_coefficient = prm.get_double ("Effective viscosity coefficient");
 
         // Iteration parameters
         log_strain_rate_residual_threshold = prm.get_double ("Strain rate residual tolerance");
@@ -359,7 +353,7 @@ namespace aspect
 
         // Rheological parameters for chemical compositions
         // increment by one for background:
-        const unsigned int n_chemical_composition_fields = this->introspection().n_chemical_composition_fields() + 1;
+        n_chemical_composition_fields = this->introspection().n_chemical_composition_fields() + 1;
 
         // Diffusion creep parameters
         diffusion_creep.initialize_simulator (this->get_simulator());

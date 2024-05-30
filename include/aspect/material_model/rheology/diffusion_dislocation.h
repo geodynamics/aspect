@@ -81,18 +81,19 @@ namespace aspect
            */
           DiffusionDislocation();
 
+          /**
+           * Calculate the viscosities for each compositional field
+           * assuming that each composition experiences the same strain rate.
+           */
           std::vector<double>
-          calculate_isostrain_viscosities ( const double &pressure,
-                                            const double &temperature,
-                                            const std::vector<double> &volume_fractions,
+          calculate_isostrain_viscosities ( const double pressure,
+                                            const double temperature,
                                             const SymmetricTensor<2,dim> &strain_rate) const;
 
           /**
-           * Compute the viscosity based on the composite viscous creep law.
-           * If @p n_phase_transitions_per_composition points to a vector of
-           * unsigned integers this is considered the number of phase transitions
-           * for each compositional field and viscosity will be first computed on
-           * each phase and then averaged for each compositional field.
+           * Compute the viscosity based on the composite viscous creep law,
+           * averaging over all compositional fields according to their
+           * volume fractions.
            */
           double
           compute_viscosity (const double pressure,
@@ -121,12 +122,12 @@ namespace aspect
           double min_strain_rate;
           double minimum_viscosity;
           double maximum_viscosity;
-          double veff_coefficient;
 
           double log_strain_rate_residual_threshold;
           unsigned int stress_max_iteration_number;
 
           double grain_size;
+          unsigned int n_chemical_composition_fields;
 
           MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
