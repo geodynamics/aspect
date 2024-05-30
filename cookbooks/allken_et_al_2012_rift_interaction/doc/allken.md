@@ -3,7 +3,7 @@
 
 *This section was contributed by Cedric Thieulot*
 
-The setup for this experiment is based of {cite:t}`alht11,alht12,alhf13`.
+The setup for this experiment is based of {cite:t}`allken:etal:2011,allken:etal:2012,allken:etal:2013`.
 The Cartesian domain is $L_x\times L_y\times L_z=210\text{ km}\times 210\text{ km}\times 30\text{ km}$
 in size (see {numref}`fig:allken-setup`).
 It is a simple 2-layer crustal model consisting of $h_{uc}=15~\text{ km}$ of upper crust (characterised by a Mohr-Coulomb rheology with cohesion
@@ -15,12 +15,13 @@ Both materials have the same density $\rho=2800\text{ kg}/\text{m}^3$ and the gr
 ```{figure-md} fig:allken-setup
 <img src="allken_setup.png" style="width:80.0%" />
 
-(a) Model setup showing box of dimension. (b) Rheological profile implemented: Mohr-Coulomb plasticity in the upper crust and a fixed viscosity.
-(c) Frictional plastic strain weakening behavior of the upper crust. Figure taken from {cite}`alht12`.
+(a) Model setup showing the computational domain, the boundary conditions and the weak zones. 
+(b) Rheological profile implemented: Mohr-Coulomb plasticity in the upper crust and a fixed viscosity.
+(c) Frictional plastic strain weakening behavior of the upper crust. Figure taken from {cite}`allken:etal:2012`.
 ```
 
 The boundary conditions are free slip on the bottom and on the $y=0$ and $y=L_y$ faces,
-free surface at the top, and a velocity $(\pm v_{ext},0,0)$ is prescribed on the
+free surface at the top, and an outward velocity $(\pm v_{ext},0,0)$ is prescribed on the
 $x=0$ and $x=L_x$ sides, with $v_{ext}=0.5\text{ cm}/\text{yr}$, so as to generate extension in the domain.
 
 Strain weakening is an essential part of this experiment: both cohesion and angle of friction see their values linearly decrease
