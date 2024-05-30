@@ -65,18 +65,12 @@ namespace aspect
       const std::pair<double, unsigned int> distance_to_L_polygon = distance_to_polygon(surface_point);
 
       // Compute the local thickness of the upper crust, lower crust and mantle part of the lithosphere
-      // (in this exact order) based on the distance from the rift axis.
+      // (in this exact order) based on the distance from the rift axis and the polygons.
+      const double polygon_contribution = (0.5+0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon));
+      const double rift_contribution = (0.5-0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon));
       std::vector <double> local_thicknesses(3);
       for (unsigned int i = 0; i<3; ++i)
-        local_thicknesses[i] = ((0.5+0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*polygon_thicknesses[distance_to_L_polygon.second][i]
-                                +(0.5-0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*reference_thicknesses[i])
-                               * (!blend_rift_and_polygon && distance_to_L_polygon.first > 0.-2.*sigma_polygon ? 1. : (1.0 - A_rift[i] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
-      //const double local_lower_crust_thickness = ((0.5+0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*polygon_thicknesses[distance_to_L_polygon.second][1]
-      //                                            +(0.5-0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*reference_thicknesses[1])
-      //                                           * (!blend_rift_and_polygon && distance_to_L_polygon.first > 0.-2.*sigma_polygon ? 1. : (1.0 - A_rift[1] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
-      //const double local_mantle_lithosphere_thickness = ((0.5+0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*polygon_thicknesses[distance_to_L_polygon.second][2]
-      //                                                   +(0.5-0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*reference_thicknesses[2])
-      //                                                  *  (!blend_rift_and_polygon && distance_to_L_polygon.first > 0.-2.*sigma_polygon ? 1. : (1.0 - A_rift[2] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
+        local_thicknesses[i] = (1.0 - A_rift[i] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))) * thicknesses[i] * rift_contribution + craton_contribution * polygon_thicknesses[distance_to_L_polygon.second][i];
 
       // Get depth with respect to the surface.
       const double depth = this->get_geometry_model().depth(position);
@@ -201,11 +195,6 @@ namespace aspect
                             "The half width of the hyperbolic tangent smoothing used to transition to the "
                             "lithospheric thicknesses of the polygon. This parameter is taken to be the same for all polygons. "
                             "Units: \\si{\\meter} or degrees.");
-          prm.declare_entry ("Blend polygons and rifts", "true",
-                             Patterns::Bool (),
-                             "Whether or not to blend the contributions of polygons and rift segments. If true, "
-                             "they are blended, if false the polygon thicknesses are taken as the local thicknesses. "
-                             "Units: none.");
           prm.declare_entry("Layer thicknesses", "30000.",
                             Patterns::List(Patterns::Double(0)),
                             "List of reference lithospheric layer thicknesses, i.e., the thicknesses of "
@@ -263,7 +252,6 @@ namespace aspect
                                                                           3,
                                                                           "Amplitude of Gaussian rift geometry");
           sigma_polygon          = prm.get_double ("Half width of polygon smoothing");
-          blend_rift_and_polygon = prm.get_bool ("Blend polygons and rifts");
           reference_thicknesses  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Layer thicknesses"))),
                                                                            3,
                                                                            "Layer thicknesses");
