@@ -395,9 +395,8 @@ namespace aspect
             case finite_strain_tensor:
             {
               // Calculate second invariant of left stretching tensor "L"
-              Tensor<2,dim> strain;
-              for (unsigned int q = 0; q < Tensor<2,dim>::n_independent_components ; ++q)
-                strain[Tensor<2,dim>::unrolled_to_component_indices(q)] = composition[q];
+              const Tensor<2,dim> strain(make_array_view(&composition[0],
+                                                         &composition[0] + Tensor<2,dim>::n_independent_components));
               const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
 
               const double strain_ii = std::fabs(second_invariant(L));

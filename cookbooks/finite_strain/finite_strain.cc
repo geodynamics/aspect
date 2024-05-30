@@ -80,16 +80,15 @@ namespace aspect
           for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
             {
               // Convert the compositional fields into the tensor quantity they represent.
-              Tensor<2,dim> strain;
-              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-                strain[Tensor<2,dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
+              const Tensor<2,dim> strain(make_array_view(&in.composition[q][0],
+                                                         &in.composition[q][0] + Tensor<2,dim>::n_independent_components));
 
               // Compute the strain accumulated in this timestep.
               const Tensor<2,dim> strain_increment = this->get_timestep() * (velocity_gradients[q] * strain);
 
               // Output the strain increment component-wise to its respective compositional field's reaction terms.
-              for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-                out.reaction_terms[q][i] = strain_increment[Tensor<2,dim>::unrolled_to_component_indices(i)];
+              strain_increment.unroll(&out.reaction_terms[q][0],
+                                      &out.reaction_terms[q][0] + Tensor<2,dim>::n_independent_components);
             }
         }
     }
