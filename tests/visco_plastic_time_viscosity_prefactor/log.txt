@@ -1,0 +1,102 @@
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 1,885 (882+121+441+441)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving weak_layer system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0
+
+
+   Postprocessing:
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Writing graphical output:           visco_plastic_time_viscosity_prefactor/solution/solution-00000
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.415s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         1 |    0.0217s |       5.2% |
+| Assemble composition system      |         1 |    0.0232s |       5.6% |
+| Assemble temperature system      |         1 |    0.0209s |         5% |
+| Build Stokes preconditioner      |         1 |    0.0148s |       3.6% |
+| Build composition preconditioner |         1 |  0.000354s |         0% |
+| Build temperature preconditioner |         1 |  0.000331s |         0% |
+| Initialization                   |         1 |     0.279s |        67% |
+| Postprocessing                   |         1 |   0.00977s |       2.4% |
+| Setup dof systems                |         1 |   0.00343s |      0.83% |
+| Setup initial conditions         |         1 |    0.0154s |       3.7% |
+| Setup matrices                   |         1 |    0.0187s |       4.5% |
+| Solve Stokes system              |         1 |  0.000633s |      0.15% |
+| Solve composition system         |         1 |  0.000251s |         0% |
+| Solve temperature system         |         1 |  0.000312s |         0% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 0s
+*** Timestep 1:  t=10000 years, dt=10000 years
+   Solving temperature system... 0 iterations.
+   Solving weak_layer system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0
+
+
+   Postprocessing:
+     RMS, max velocity:                  0 m/year, 0 m/year
+     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Writing graphical output:           visco_plastic_time_viscosity_prefactor/solution/solution-00001
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.543s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         2 |     0.044s |       8.1% |
+| Assemble composition system      |         2 |     0.058s |        11% |
+| Assemble temperature system      |         2 |    0.0517s |       9.5% |
+| Build Stokes preconditioner      |         2 |    0.0354s |       6.5% |
+| Build composition preconditioner |         2 |  0.000708s |      0.13% |
+| Build temperature preconditioner |         2 |  0.000642s |      0.12% |
+| Initialization                   |         1 |     0.279s |        51% |
+| Postprocessing                   |         2 |    0.0216s |         4% |
+| Setup dof systems                |         1 |   0.00343s |      0.63% |
+| Setup initial conditions         |         1 |    0.0154s |       2.8% |
+| Setup matrices                   |         1 |    0.0187s |       3.4% |
+| Solve Stokes system              |         2 |   0.00132s |      0.24% |
+| Solve composition system         |         2 |  0.000505s |         0% |
+| Solve temperature system         |         2 |  0.000581s |      0.11% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 1s
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.543s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         2 |     0.044s |       8.1% |
+| Assemble composition system      |         2 |     0.058s |        11% |
+| Assemble temperature system      |         2 |    0.0517s |       9.5% |
+| Build Stokes preconditioner      |         2 |    0.0354s |       6.5% |
+| Build composition preconditioner |         2 |  0.000708s |      0.13% |
+| Build temperature preconditioner |         2 |  0.000642s |      0.12% |
+| Initialization                   |         1 |     0.279s |        51% |
+| Postprocessing                   |         2 |    0.0216s |         4% |
+| Setup dof systems                |         1 |   0.00343s |      0.63% |
+| Setup initial conditions         |         1 |    0.0154s |       2.8% |
+| Setup matrices                   |         1 |    0.0187s |       3.4% |
+| Solve Stokes system              |         2 |   0.00132s |      0.24% |
+| Solve composition system         |         2 |  0.000505s |         0% |
+| Solve temperature system         |         2 |  0.000581s |      0.11% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 1s

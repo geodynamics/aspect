@@ -1,0 +1,23 @@
+# Global parameters
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_constant_viscosity_prefactor.prm
+set Output directory                       = visco_plastic_time_viscosity_prefactor
+set End time                               = 10000
+
+# Material model (values for background material)
+subsection Material model
+  subsection Visco Plastic
+    # The background field viscosity is reduced by a factor of 10 at the start of the
+    # model t=0, and the weak_layer composition is reduced by a factor of 100 half way
+    # through the model run at t=5000 years.
+    set Viscosity prefactors = 0.1, 0.01
+    set Weakening times      = 0, 5000
+  end
+end
+
+# Post processing
+# named additional outputs includes the weakened cohesions and friction angles
+subsection Postprocess
+  subsection Visualization
+    set Time between graphical output = 10000
+  end
+end

@@ -236,6 +236,9 @@ namespace aspect
             // Step 1e: multiply the viscosity by a constant (default value is 1)
             non_yielding_viscosity = constant_viscosity_prefactors.compute_viscosity(non_yielding_viscosity, j);
 
+            // Step 1f: multiply the viscosity by other prefactors (default value is 1)
+            non_yielding_viscosity = variable_viscosity_prefactors.compute_viscosity(non_yielding_viscosity, j);
+
             // Step 2: calculate strain weakening factors for the cohesion, friction, and pre-yield viscosity
             // If no strain weakening is applied, the factors are 1.
             const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
@@ -591,6 +594,9 @@ namespace aspect
         // Constant viscosity prefactor parameters
         Rheology::ConstantViscosityPrefactors<dim>::declare_parameters(prm);
 
+        // Variable viscosity prefactor parameters
+        Rheology::ViscosityPrefactors<dim>::declare_parameters(prm);
+
         // Drucker Prager plasticity parameters
         Rheology::DruckerPrager<dim>::declare_parameters(prm);
 
@@ -730,6 +736,9 @@ namespace aspect
         // Constant viscosity prefactor parameters
         constant_viscosity_prefactors.initialize_simulator (this->get_simulator());
         constant_viscosity_prefactors.parse_parameters(prm);
+
+        variable_viscosity_prefactors.initialize_simulator (this->get_simulator());
+        variable_viscosity_prefactors.parse_parameters(prm);
 
         // Plasticity parameters
         drucker_prager_plasticity.initialize_simulator (this->get_simulator());
