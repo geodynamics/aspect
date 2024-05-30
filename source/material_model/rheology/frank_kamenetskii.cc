@@ -21,6 +21,7 @@
 
 #include <aspect/material_model/rheology/frank_kamenetskii.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/geometry_model/interface.h>
 #include <aspect/utilities.h>
 
 #include <deal.II/base/signaling_nan.h>
