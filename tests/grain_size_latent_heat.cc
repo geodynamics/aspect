@@ -51,13 +51,13 @@ namespace aspect
     class GrainSizeLatentHeat : public MaterialModel::GrainSize<dim>
     {
       public:
-        virtual bool is_compressible () const
+        virtual bool is_compressible () const override
         {
           return false;
         }
 
         virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
-                              typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
+                              typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const override
         {
           double dHdT = 0.0;
           double dHdp = 0.0;
@@ -137,40 +137,37 @@ namespace aspect
                 for (unsigned int c=0; c<composition.size(); ++c)
                   composition[c] = std::max(this->min_grain_size,composition[c]);
 
-              // set up an integer that tells us which phase transition has been crossed inside of the cell
+              // Set up an integer that tells us which phase transition has been crossed inside of the cell.
               int crossed_transition(-1);
 
-              if (this->get_adiabatic_conditions().is_initialized())
-                for (unsigned int phase=0; phase<this->transition_depths.size(); ++phase)
-                  {
-                    // first, get the pressure at which the phase transition occurs normally
-                    const Point<dim,double> transition_point = this->get_geometry_model().representative_point(this->transition_depths[phase]);
-                    const Point<dim,double> transition_plus_width = this->get_geometry_model().representative_point(this->transition_depths[phase] + this->transition_widths[phase]);
-                    const Point<dim,double> transition_minus_width = this->get_geometry_model().representative_point(this->transition_depths[phase] - this->transition_widths[phase]);
-                    const double transition_pressure = this->get_adiabatic_conditions().pressure(transition_point);
-                    const double pressure_width = 0.5 * (this->get_adiabatic_conditions().pressure(transition_plus_width)
-                                                         - this->get_adiabatic_conditions().pressure(transition_minus_width));
+              // Figure out if the material in the current cell underwent a phase change.
+              // To do so, check if a grain has moved further than the distance from the phase transition and
+              // if the velocity is in the direction of the phase change. After the check 'crossed_transition' will
+              // be -1 if we crossed no transition, or the index of the phase transition, if we crossed it.
+              for (unsigned int phase=0; phase<this->transition_depths.size(); ++phase)
+                {
+                  const Tensor<1,dim> vertical_direction = this->get_gravity_model().gravity_vector(in.position[i])
+                                                           /this->get_gravity_model().gravity_vector(in.position[i]).norm();
+                  const double timestep = this->simulator_is_past_initialization()
+                                          ?
+                                          this->get_timestep()
+                                          :
+                                          0.0;
 
+                  // Both distances are positive when they are downward from the transition (since gravity points down)
+                  const double distance_from_transition = this->get_geometry_model().depth(in.position[i]) - this->transition_depths[phase];
+                  const double distance_moved = in.velocity[i] * vertical_direction * timestep;
 
-                    // then calculate the deviation from the transition point (both in temperature
-                    // and in pressure)
-                    double pressure_deviation = in.pressure[i] - transition_pressure
-                                                - this->transition_slopes[phase] * (in.temperature[i] - this->transition_temperatures[phase]);
-
-                    if ((std::abs(pressure_deviation) < pressure_width)
-                        &&
-                        ((in.velocity[i] * this->get_gravity_model().gravity_vector(in.position[i])) * pressure_deviation > 0))
-                      crossed_transition = phase;
-                  }
-              else
-                for (unsigned int j=0; j<in.n_evaluation_points(); ++j)
-                  for (unsigned int k=0; k<this->transition_depths.size(); ++k)
-                    if ((this->phase_function(in.position[i], in.temperature[i], in.pressure[i], k)
-                         != this->phase_function(in.position[j], in.temperature[j], in.pressure[j], k))
-                        &&
-                        ((in.velocity[i] * this->get_gravity_model().gravity_vector(in.position[i]))
-                         * ((in.position[i] - in.position[j]) * this->get_gravity_model().gravity_vector(in.position[i])) > 0))
-                      crossed_transition = k;
+                  // If we are close to the phase boundary (closer than the distance a grain has moved
+                  // within one time step) and the velocity points away from the phase transition,
+                  // then the material has crossed the transition.
+                  // To make sure we actually reset the grain size of all the material passing through
+                  // the transition, we take 110% of the distance a grain has moved for the check.
+                  if (std::abs(distance_moved) * 1.1 > std::abs(distance_from_transition)
+                      &&
+                      distance_moved * distance_from_transition >= 0)
+                    crossed_transition = phase;
+                }
 
               if (in.requests_property(MaterialProperties::viscosity))
                 {
