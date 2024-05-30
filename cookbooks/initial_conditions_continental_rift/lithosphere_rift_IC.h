@@ -49,7 +49,7 @@ namespace aspect
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize ();
+        initialize () override;
 
         /**
          * Return the initial composition as a function of position and number
@@ -57,7 +57,7 @@ namespace aspect
          */
         virtual
         double initial_composition (const Point<dim> &position,
-                                    const unsigned int compositional_index) const;
+                                    const unsigned int compositional_index) const override;
 
         /**
          * Return the overall shortest distance to the rift center segments.
@@ -82,7 +82,7 @@ namespace aspect
          * and lithospheric mantle based on the distance to the rift center
          * and the edge of polygons.
          */
-        std::vector<double> compute_local_thicknesses(const Point<dim> &position) const;
+        std::vector<double> compute_local_thicknesses(const Point<dim-1> &position) const;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -96,7 +96,7 @@ namespace aspect
          */
         virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
 

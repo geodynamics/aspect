@@ -60,7 +60,7 @@ namespace aspect
 
       // Compute the local thickness of the upper crust, lower crust and mantle part of the lithosphere
       // (in this exact order) based on the distance from the rift axis and the polygons.
-      const std::vector<double> local_thicknesses = compute_local_thickness(surface_points);
+      const std::vector<double> local_thicknesses = compute_local_thicknesses(surface_point);
 
       // Get depth with respect to the surface.
       const double depth = this->get_geometry_model().depth(position);
@@ -180,7 +180,7 @@ namespace aspect
       std::vector<double> local_thicknesses(3);
       for (unsigned int i = 0; i < 3; ++i)
         local_thicknesses[i] = (1.0 - A_rift[i] * std::exp((-std::pow(distance_to_rift_axis, 2) / (2.0 * std::pow(sigma_rift, 2))))) 
-        * thicknesses[i] * rift_contribution + craton_contribution * polygon_thicknesses[distance_to_L_polygon.second][i];
+        * reference_thicknesses[i] * rift_contribution + polygon_contribution * polygon_thicknesses[distance_to_L_polygon.second][i];
       
       return local_thicknesses;
     }

@@ -52,13 +52,13 @@ namespace aspect
          * beginning of the program. Checks preconditions.
          */
         void
-        initialize ();
+        initialize () override;
 
         /**
          * Return the initial temperature as a function of position.
          */
         virtual
-        double initial_temperature (const Point<dim> &position) const;
+        double initial_temperature (const Point<dim> &position) const override;
 
         /**
          * Return the initial temperature as a function of depth and
@@ -80,7 +80,7 @@ namespace aspect
          */
         virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
 
@@ -185,4 +185,4 @@ namespace aspect
 }
 
 
-#endiff
+#endif

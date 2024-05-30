@@ -53,7 +53,7 @@ namespace aspect
          * Initialization function.
          */
         void
-        initialize ();
+        initialize () override;
 
         /**
          * Return the initial composition as a function of position and number
@@ -61,7 +61,7 @@ namespace aspect
          * around a user-defined set of line-segments.
          */
         virtual
-        double initial_composition (const Point<dim> &position, const unsigned int n_comp) const;
+        double initial_composition (const Point<dim> &position, const unsigned int n_comp) const override;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -81,7 +81,7 @@ namespace aspect
          */
         virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters(ParameterHandler &prm) override;
 
       private:
 

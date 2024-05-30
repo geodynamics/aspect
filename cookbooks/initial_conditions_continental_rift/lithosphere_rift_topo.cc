@@ -69,17 +69,17 @@ namespace aspect
       ref_rgh = 0;
       // Assume constant gravity magnitude, so ignore
       for (unsigned int l=0; l<3; ++l)
-        ref_rgh += densities[l+1] * thicknesses[l];
+        ref_rgh += densities[l+1] * reference_thicknesses[l];
 
       // The total lithosphere thickness
-      const double sum_thicknesses = std::accumulate(thicknesses.begin(), thicknesses.end(),0);
+      const double sum_thicknesses = std::accumulate(reference_thicknesses.begin(), reference_thicknesses.end(), 0);
 
       // Make sure the compensation depth is in the sublithospheric mantle
       compensation_depth = 2. * sum_thicknesses + 1e3;
 
       // The column at the rift center
       double rift_rgh = 0;
-      rift_thicknesses = thicknesses;
+      rift_thicknesses = reference_thicknesses;
       for (unsigned int l=0; l<rift_thicknesses.size(); ++l)
         rift_thicknesses[l] *= (1.-A_rift[l]);
 
@@ -148,10 +148,23 @@ namespace aspect
       for (unsigned int d=0; d<dim-1; ++d)
         surface_position[d] = position[d];
 
-      const InitialComposition::LithosphereRift<dim> &ic = initial_composition_manager->template get_matching_initial_composition_model<const InitialComposition::LithosphereRift<dim>>();
+      // Get the distance to the line segments along a path parallel to the surface
+      double distance_to_rift_axis = 1e23;
+      std::pair<double,unsigned int> distance_to_L_polygon;
+      for (typename std::list<std::unique_ptr<InitialComposition::Interface<dim>>>::const_iterator it = initial_composition_manager->get_active_initial_composition_conditions().begin();
+           it != initial_composition_manager->get_active_initial_composition_conditions().end();
+           ++it)
+        if ( InitialComposition::LithosphereRift<dim> *ic = dynamic_cast<InitialComposition::LithosphereRift<dim> *> ((*it).get()))
+          {
+            distance_to_rift_axis = ic->distance_to_rift(surface_position);
+            distance_to_L_polygon = ic->distance_to_polygon(surface_position);
+          }
 
       // Compute the topography based on distance to the rift and distance to the polygon
-      std::vector<double> local_thicknesses = ic.compute_local_thicknesses(surface_position);
+      std::vector<double> local_thicknesses(3);
+      local_thicknesses[0] = ((0.5 + 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon)) * polygon_thicknesses[distance_to_L_polygon.second][0] + (0.5 - 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon)) * reference_thicknesses[0]) * (!blend_rift_and_polygon && distance_to_L_polygon.first > 0. - 2. * sigma_polygon ? 1. : (1.0 - A_rift[0] * std::exp((-std::pow(distance_to_rift_axis, 2) / (2.0 * std::pow(sigma_rift, 2))))));
+      local_thicknesses[1] = ((0.5 + 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon)) * polygon_thicknesses[distance_to_L_polygon.second][1] + (0.5 - 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon)) * reference_thicknesses[1]) * (!blend_rift_and_polygon && distance_to_L_polygon.first > 0. - 2. * sigma_polygon ? 1. : (1.0 - A_rift[1] * std::exp((-std::pow(distance_to_rift_axis, 2) / (2.0 * std::pow(sigma_rift, 2))))));
+      local_thicknesses[2] = ((0.5 + 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon)) * polygon_thicknesses[distance_to_L_polygon.second][2] + (0.5 - 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon)) * reference_thicknesses[2]) * (!blend_rift_and_polygon && distance_to_L_polygon.first > 0. - 2. * sigma_polygon ? 1. : (1.0 - A_rift[2] * std::exp((-std::pow(distance_to_rift_axis, 2) / (2.0 * std::pow(sigma_rift, 2))))));
 
       // The local lithospheric column
       double local_rgh = 0;
@@ -187,6 +200,33 @@ namespace aspect
     void
     LithosphereRift<dim>::parse_parameters (ParameterHandler &prm)
     {
+      prm.enter_subsection ("Initial composition model");
+      {
+        prm.enter_subsection("Lithosphere with rift");
+        {
+          sigma_rift           = prm.get_double ("Standard deviation of Gaussian rift geometry");
+          sigma_polygon        = prm.get_double ("Half width of polygon smoothing");
+          blend_rift_and_polygon = prm.get_bool ("Blend polygons and rifts");
+          A_rift = Utilities::possibly_extend_from_1_to_N(Utilities::string_to_double(Utilities::split_string_list(prm.get("Amplitude of Gaussian rift geometry"))),
+                                                          3,
+                                                          "Amplitude of Gaussian rift geometry");
+          reference_thicknesses = Utilities::possibly_extend_from_1_to_N(Utilities::string_to_double(Utilities::split_string_list(prm.get("Layer thicknesses"))),
+                                                                         3,
+                                                                         "Layer thicknesses");
+          // Split the string into the separate polygons
+          const std::vector<std::string> temp_thicknesses = Utilities::split_string_list(prm.get("Lithospheric polygon layer thicknesses"),';');
+          const unsigned int n_polygons = temp_thicknesses.size();
+          polygon_thicknesses.resize(n_polygons);
+          for (unsigned int i_polygons = 0; i_polygons < n_polygons; ++i_polygons)
+            {
+              polygon_thicknesses[i_polygons] = Utilities::string_to_double(Utilities::split_string_list(temp_thicknesses[i_polygons],','));
+              AssertThrow(polygon_thicknesses[i_polygons].size()==3, ExcMessage ("The number of layer thicknesses should be equal to 3."));
+            }
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+
       prm.enter_subsection ("Compositional fields");
       {
         list_of_composition_names = Utilities::split_string_list (prm.get("Names of fields"));
@@ -198,31 +238,12 @@ namespace aspect
         prm.enter_subsection("Visco Plastic");
         {
           n_phases_for_each_composition = std::make_unique<std::vector<unsigned int>>();
-          
-          const std::vector<unsigned int> indices = this->introspection().chemical_composition_field_indices();
-
-          std::vector<unsigned int> n_phases_for_each_chemical_composition = {n_phases_for_each_composition[0]};
-          for (auto i : indices)
-          {
-            n_phases_for_each_chemical_composition.push_back(n_phases_for_each_composition[i + 1]);
-          }
-
-          std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
-          chemical_field_names.insert(chemical_field_names.begin(), "background");
-
-          std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
-          compositional_field_names.insert(compositional_field_names.begin(), "background");
-
-          Utilities::MapParsing::Options options(chemical_field_names, "Densities");
-          options.list_of_allowed_keys = compositional_field_names;
-          options.allow_multiple_values_per_key = true;
-          options.n_values_per_key = n_phases_for_each_chemical_composition;
-          options.check_values_per_key = (options.n_values_per_key.size() != 0);
-          options.store_values_per_key = (options.n_values_per_key.size() == 0);
-
-
-          temp_densities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Densities"),
-                                                                 options);
+          temp_densities = Utilities::parse_map_to_double_array (prm.get("Densities"),
+                                                                 list_of_composition_names,
+                                                                 /*has_background_field=*/true,
+                                                                 "Densities",
+                                                                 true,
+                                                                 n_phases_for_each_composition);
         }
         prm.leave_subsection();
       }
