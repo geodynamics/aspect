@@ -77,6 +77,13 @@ namespace aspect
         Point<dim-1> surface_position (const Point<dim> &position,
                                        const bool cartesian_geometry) const;
 
+        /*
+         * Compute the local thicknesses of the upper and lower crust
+         * and lithospheric mantle based on the distance to the rift center
+         * and the edge of polygons.
+         */
+        std::vector<double> compute_local_thicknesses(const Point<dim> &position) const;
+
         /**
          * Declare the parameters this class takes through input files.
          */
@@ -116,12 +123,6 @@ namespace aspect
          * between reference and polygon lithospheric thicknesses.
          */
         double sigma_polygon;
-
-        /**
-         * Whether or not to take the polygon thicknesses as dominant, or to smooth them
-         * gradually into rift areas.
-         */
-        bool blend_rift_and_polygon;
 
         /**
          * The list of line segments consisting of two 2d coordinates per segment.

@@ -58,19 +58,9 @@ namespace aspect
       // Get the surface coordinates of the point under consideration
       const Point<dim-1> surface_point = surface_position(position, cartesian_geometry);
 
-      // Get the distance to the rift segments along a path parallel to the surface
-      const double distance_to_rift_axis = distance_to_rift(surface_point);
-
-      // Get the signed distance to potential polygons of different lithospheric thicknesses
-      const std::pair<double, unsigned int> distance_to_L_polygon = distance_to_polygon(surface_point);
-
       // Compute the local thickness of the upper crust, lower crust and mantle part of the lithosphere
       // (in this exact order) based on the distance from the rift axis and the polygons.
-      const double polygon_contribution = (0.5+0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon));
-      const double rift_contribution = (0.5-0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon));
-      std::vector <double> local_thicknesses(3);
-      for (unsigned int i = 0; i<3; ++i)
-        local_thicknesses[i] = (1.0 - A_rift[i] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))) * thicknesses[i] * rift_contribution + craton_contribution * polygon_thicknesses[distance_to_L_polygon.second][i];
+      const std::vector<double> local_thicknesses = compute_local_thickness(surface_points);
 
       // Get depth with respect to the surface.
       const double depth = this->get_geometry_model().depth(position);
@@ -169,6 +159,30 @@ namespace aspect
             }
         }
       return std::pair<double, unsigned int> (max_distance, max_distance_polygon);
+    }
+
+    template <int dim>
+    std::vector<double>
+    LithosphereRift<dim>::
+    compute_local_thicknesses(const Point<dim - 1> &surface_point) const
+    {
+      // Get the distance to the rift segments along a path parallel to the surface
+      const double distance_to_rift_axis = distance_to_rift(surface_point);
+
+      // Get the signed distance to potential polygons of different lithospheric thicknesses
+      const std::pair<double, unsigned int> distance_to_L_polygon = distance_to_polygon(surface_point);
+
+      // Compute the local thickness of the upper crust, lower crust and mantle part of the lithosphere
+      // (in this exact order) based on the distance from the rift axis and the polygons.
+      const double polygon_contribution = (0.5 + 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon));
+      const double rift_contribution = (0.5 - 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon));
+      
+      std::vector<double> local_thicknesses(3);
+      for (unsigned int i = 0; i < 3; ++i)
+        local_thicknesses[i] = (1.0 - A_rift[i] * std::exp((-std::pow(distance_to_rift_axis, 2) / (2.0 * std::pow(sigma_rift, 2))))) 
+        * thicknesses[i] * rift_contribution + craton_contribution * polygon_thicknesses[distance_to_L_polygon.second][i];
+      
+      return local_thicknesses;
     }
 
     template <int dim>

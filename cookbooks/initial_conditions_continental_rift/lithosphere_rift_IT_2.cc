@@ -73,24 +73,15 @@ namespace aspect
     LithosphereRift<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      // Get the distance to the line segments along a path parallel to the surface
-      double distance_to_rift_axis = 1e23;
-      Point<dim-1> surface_position;
-      std::pair<double, unsigned int> distance_to_L_polygon;
       // Get the initial composition plugin
       const InitialComposition::LithosphereRift<dim> &ic = initial_composition_manager->template get_matching_initial_composition_model<const InitialComposition::LithosphereRift<dim>>();
-      surface_position = ic.surface_position(position, cartesian_geometry);
-      distance_to_rift_axis = ic.distance_to_rift(surface_position);
-      distance_to_L_polygon = ic.distance_to_polygon(surface_position);
+
+      // Convert to surface position
+      const Point<dim - 1> surface_position = ic.surface_position(position, cartesian_geometry);
 
       // Compute the local thickness of the upper crust, lower crust and mantle part of the lithosphere
-      // based on the distance from the rift axis.
-      std::vector<double> local_thicknesses(3);
-      for (unsigned int i = 0; i<3; ++i)
-        local_thicknesses[i] = ((0.5+0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*polygon_thicknesses[distance_to_L_polygon.second][i]
-                                +(0.5-0.5*std::tanh(distance_to_L_polygon.first/sigma_polygon))*reference_thicknesses[i])
-                               *(!blend_rift_and_polygon && distance_to_L_polygon.first > 0.-2.*sigma_polygon ? 1. :
-                                 (1.0 - A_rift[i] * std::exp((-std::pow(distance_to_rift_axis,2)/(2.0*std::pow(sigma_rift,2))))));
+      // based on the distance from the rift axis and polygon edges.
+      std::vector<double> local_thicknesses = ic.compute_local_thicknesses(surface_position);
 
       // Get depth with respect to the surface.
       const double depth = this->get_geometry_model().depth(position);
@@ -182,33 +173,6 @@ namespace aspect
       prm.enter_subsection ("Compositional fields");
       {
         n_fields = prm.get_integer ("Number of fields");
-      }
-      prm.leave_subsection();
-
-      prm.enter_subsection ("Initial composition model");
-      {
-        prm.enter_subsection("Lithosphere with rift");
-        {
-          sigma_rift             = prm.get_double ("Standard deviation of Gaussian rift geometry");
-          sigma_polygon          = prm.get_double ("Half width of polygon smoothing");
-          blend_rift_and_polygon = prm.get_bool ("Blend polygons and rifts");
-          A_rift                 = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Amplitude of Gaussian rift geometry"))),
-                                                                           3,
-                                                                           "Amplitude of Gaussian rift geometry");
-          reference_thicknesses = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Layer thicknesses"))),
-                                                                          3,
-                                                                          "Layer thicknesses");
-          // Split the string into the separate polygons
-          const std::vector<std::string> temp_thicknesses = Utilities::split_string_list(prm.get("Lithospheric polygon layer thicknesses"),';');
-          const unsigned int n_polygons = temp_thicknesses.size();
-          polygon_thicknesses.resize(n_polygons);
-          for (unsigned int i_polygons = 0; i_polygons < n_polygons; ++i_polygons)
-            {
-              polygon_thicknesses[i_polygons] = Utilities::string_to_double(Utilities::split_string_list(temp_thicknesses[i_polygons],','));
-              AssertThrow(polygon_thicknesses[i_polygons].size()==3, ExcMessage ("The number of layer thicknesses should be equal to 3."));
-            }
-        }
-        prm.leave_subsection();
       }
       prm.leave_subsection();
 
