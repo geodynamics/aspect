@@ -57,13 +57,11 @@ namespace aspect
         }
 
       // Get the relevant densities for the lithosphere.
+      // We take the reference density of the first phase.
       densities.push_back(densities_per_composition[0][0]);
       densities.push_back(densities_per_composition[id_upper+1][0]);
       densities.push_back(densities_per_composition[id_lower+1][0]);
       densities.push_back(densities_per_composition[id_mantle_L+1][0]);
-      std::cout << "Assembling final densities: " << densities_per_composition[0][0] << ", ";
-      std::cout << densities_per_composition[id_upper+1][0] << ", " << densities_per_composition[id_lower+1][0];
-      std::cout  << ", " <<  densities_per_composition[id_mantle_L+1][0] <<  std::endl;
 
       // The reference column
       ref_rgh = 0;
@@ -73,9 +71,6 @@ namespace aspect
 
       // The total lithosphere thickness
       const double sum_thicknesses = std::accumulate(reference_thicknesses.begin(), reference_thicknesses.end(), 0);
-
-      // Make sure the compensation depth is in the sublithospheric mantle
-      compensation_depth = 2. * sum_thicknesses + 1e3;
 
       // The column at the rift center
       double rift_rgh = 0;
@@ -93,6 +88,7 @@ namespace aspect
       const unsigned int n_polygons = polygon_thicknesses.size();
       std::vector<double> polygon_rgh(n_polygons);
       std::vector<double> sum_polygon_thicknesses(n_polygons);
+      double max_sum_polygon_thicknesses = 0.;
       for (unsigned int i_polygons=0; i_polygons<n_polygons; ++i_polygons)
         {
           for (unsigned int l=0; l<3; ++l)
@@ -101,25 +97,32 @@ namespace aspect
             }
           // The total lithosphere thickness
           sum_polygon_thicknesses[i_polygons] = std::accumulate(polygon_thicknesses[i_polygons].begin(), polygon_thicknesses[i_polygons].end(),0);
+          max_sum_polygon_thicknesses = std::max(max_sum_polygon_thicknesses, sum_polygon_thicknesses[i_polygons]);
+
+        }
+
+        // Make sure the compensation depth is in the sublithospheric mantle
+        compensation_depth = std::max(sum_thicknesses, std::max(sum_rift_thicknesses, max_sum_polygon_thicknesses)) + 5e3;
+
+        // Add sublithospheric mantle part to the columns
+        ref_rgh += (compensation_depth - sum_thicknesses) * densities[0];
+        rift_rgh += (compensation_depth - sum_rift_thicknesses) * densities[0];
+        for (unsigned int i_polygons = 0; i_polygons < n_polygons; ++i_polygons)
+        {
           polygon_rgh[i_polygons] += (compensation_depth - sum_polygon_thicknesses[i_polygons]) * densities[0];
         }
 
-      // Add sublithospheric mantle part to the columns
-      ref_rgh += (compensation_depth - sum_thicknesses) * densities[0];
-      rift_rgh += (compensation_depth - sum_rift_thicknesses) * densities[0];
+        // Compute the maximum topography based on mass surplus/deficit
+        topo_rift_amplitude = (ref_rgh - rift_rgh) / densities[0];
+        for (unsigned int i_polygons = 0; i_polygons < n_polygons; ++i_polygons)
+          topo_polygon_amplitude = std::max((ref_rgh - polygon_rgh[i_polygons]) / densities[0], topo_polygon_amplitude);
 
-      // Compute the maximum topography based on mass surplus/deficit
-      topo_rift_amplitude = (ref_rgh-rift_rgh) / densities[0];
-      for (unsigned int i_polygons=0; i_polygons<n_polygons; ++i_polygons)
-        topo_polygon_amplitude = std::max((ref_rgh-polygon_rgh[i_polygons]) / densities[0],topo_polygon_amplitude);
+        // TODO: probably there are combinations of rift and polygon topography
+        // that result in a higher topography
+        maximum_topography = std::max(topo_rift_amplitude, topo_polygon_amplitude);
 
-      // TODO: probably there are combinations of rift and polygon topography
-      // that result in a higher topography
-      maximum_topography = std::max(topo_rift_amplitude, topo_polygon_amplitude);
-
-      this->get_pcout() << "   Maximum initial topography of rift: " << topo_rift_amplitude << " m" << std::endl;
-      this->get_pcout() << "   Maximum initial topography of polygon: " << topo_polygon_amplitude << " m" << std::endl;
-
+        this->get_pcout() << "   Maximum initial topography of rift: " << topo_rift_amplitude << " m" << std::endl;
+        this->get_pcout() << "   Maximum initial topography of polygon: " << topo_polygon_amplitude << " m" << std::endl;
     }
 
 
@@ -134,37 +137,26 @@ namespace aspect
       // here.
       if (initial_composition_manager == nullptr)
         const_cast<std::shared_ptr<const aspect::InitialComposition::Manager<dim>>&>(initial_composition_manager) = this->get_initial_composition_manager_pointer();
+
       // Check that the required initial composition model is used
       // We have to do it here instead of in initialize() because
       // the names are not available upon initialization of the
       // initial topography model yet.
       const std::vector<std::string> active_initial_composition_models = initial_composition_manager->get_active_initial_composition_names();
-      AssertThrow(std::find(active_initial_composition_models.begin(),active_initial_composition_models.end(), "lithosphere with rift") != active_initial_composition_models.end(),
-                  ExcMessage("The lithosphere with rift initial mesh refinement plugin requires the lithosphere with rift initial composition plugin."));
+      AssertThrow(initial_composition_manager->template has_matching_initial_composition_model<const InitialComposition::LithosphereRift<dim>>(),
+                  ExcMessage("The 'lithosphere with rift' initial topography plugin requires the 'lithosphere with rift' initial composition plugin."));
 
-      // When cartesian, position contains x(,y); when spherical, position contains lon(,lat) (in degrees);
+      // When cartesian, position contains x(,y); when spherical, position contains lon(,lat) (in degrees).
       // Turn into a Point<dim-1>
       Point<dim-1> surface_position;
       for (unsigned int d=0; d<dim-1; ++d)
         surface_position[d] = position[d];
 
-      // Get the distance to the line segments along a path parallel to the surface
-      double distance_to_rift_axis = 1e23;
-      std::pair<double,unsigned int> distance_to_L_polygon;
-      for (typename std::list<std::unique_ptr<InitialComposition::Interface<dim>>>::const_iterator it = initial_composition_manager->get_active_initial_composition_conditions().begin();
-           it != initial_composition_manager->get_active_initial_composition_conditions().end();
-           ++it)
-        if ( InitialComposition::LithosphereRift<dim> *ic = dynamic_cast<InitialComposition::LithosphereRift<dim> *> ((*it).get()))
-          {
-            distance_to_rift_axis = ic->distance_to_rift(surface_position);
-            distance_to_L_polygon = ic->distance_to_polygon(surface_position);
-          }
+      // Get the initial composition plugin
+      const InitialComposition::LithosphereRift<dim> &ic = initial_composition_manager->template get_matching_initial_composition_model<const InitialComposition::LithosphereRift<dim>>();
 
       // Compute the topography based on distance to the rift and distance to the polygon
-      std::vector<double> local_thicknesses(3);
-      local_thicknesses[0] = ((0.5 + 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon)) * polygon_thicknesses[distance_to_L_polygon.second][0] + (0.5 - 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon)) * reference_thicknesses[0]) * (!blend_rift_and_polygon && distance_to_L_polygon.first > 0. - 2. * sigma_polygon ? 1. : (1.0 - A_rift[0] * std::exp((-std::pow(distance_to_rift_axis, 2) / (2.0 * std::pow(sigma_rift, 2))))));
-      local_thicknesses[1] = ((0.5 + 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon)) * polygon_thicknesses[distance_to_L_polygon.second][1] + (0.5 - 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon)) * reference_thicknesses[1]) * (!blend_rift_and_polygon && distance_to_L_polygon.first > 0. - 2. * sigma_polygon ? 1. : (1.0 - A_rift[1] * std::exp((-std::pow(distance_to_rift_axis, 2) / (2.0 * std::pow(sigma_rift, 2))))));
-      local_thicknesses[2] = ((0.5 + 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon)) * polygon_thicknesses[distance_to_L_polygon.second][2] + (0.5 - 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon)) * reference_thicknesses[2]) * (!blend_rift_and_polygon && distance_to_L_polygon.first > 0. - 2. * sigma_polygon ? 1. : (1.0 - A_rift[2] * std::exp((-std::pow(distance_to_rift_axis, 2) / (2.0 * std::pow(sigma_rift, 2))))));
+      std::vector<double> local_thicknesses = ic.compute_local_thicknesses(surface_position);
 
       // The local lithospheric column
       double local_rgh = 0;
@@ -204,9 +196,6 @@ namespace aspect
       {
         prm.enter_subsection("Lithosphere with rift");
         {
-          sigma_rift           = prm.get_double ("Standard deviation of Gaussian rift geometry");
-          sigma_polygon        = prm.get_double ("Half width of polygon smoothing");
-          blend_rift_and_polygon = prm.get_bool ("Blend polygons and rifts");
           A_rift = Utilities::possibly_extend_from_1_to_N(Utilities::string_to_double(Utilities::split_string_list(prm.get("Amplitude of Gaussian rift geometry"))),
                                                           3,
                                                           "Amplitude of Gaussian rift geometry");

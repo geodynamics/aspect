@@ -75,18 +75,6 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
       private:
-        /**
-         * The standard deviation of the rift-perpendicular Gaussian distribution
-         * of the thinning/thickening of the lithospheric thicknesses with its
-         * maximum along the rift axis.
-         */
-        double sigma_rift;
-
-        /**
-         * The half width of the hyperbolic tangent used to smooth the transitions
-         * between reference and polygon lithospheric thicknesses.
-         */
-        double sigma_polygon;
 
         /**
          * The maximum amplitude of the Gaussian distribution of the thinning/thickening
@@ -115,12 +103,6 @@ namespace aspect
          * based on isostasy.
          */
         double compensation_depth;
-
-        /**
-         * Whether or not to take the polygon thicknesses as dominant, or to smooth them
-         * gradually into rift areas.
-         */
-        bool blend_rift_and_polygon;
 
         /**
          * The maximum amplitude of the topography of the polygon area.
