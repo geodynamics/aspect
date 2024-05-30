@@ -34,6 +34,15 @@ namespace aspect
 
     namespace MeltModel
     {
+
+       /**
+     * A melt model that calculates melt fraction and entropy change
+     * according to the melting model for dry peridotite of Katz, 2003. 
+     * This also includes a computation of the latent heat of melting (if the latent heat
+     * heating model is active).
+     *
+     * @ingroup MeltModel
+     */
       template <int dim>
       class MeltSimpleFraction : public ::aspect::SimulatorAccess<dim>
       {
