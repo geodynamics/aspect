@@ -25,6 +25,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/postprocess/melt_statistics.h>
 #include <aspect/melt.h>
+#include <aspect/material_model/melt_model/melt_simple_fraction.h>
 
 namespace aspect
 {
@@ -49,8 +50,9 @@ namespace aspect
      * Interface::is_compressible) only if this is specified in the input file,
      * and contains compressibility for both solid and melt.
      *
-     * @ingroup MaterialModels
+     * @ingroup MeltModel
      */
+    namespace MeltModel {}
     template <int dim>
     class MeltSimple : public MaterialModel::MeltInterface<dim>,
       public MaterialModel::MeltFractionModel<dim>,
@@ -171,15 +173,17 @@ namespace aspect
         // entropy change upon melting
         double peridotite_melting_entropy_change;
 
+        MeltModel::MeltSimpleFraction<dim> melt_simple_fraction;
+
         /**
          * Percentage of material that is molten for a given @p temperature and
          * @p pressure (assuming equilibrium conditions). Melting model after Katz,
          * 2003, for dry peridotite.
          */
-        virtual
-        double
-        melt_fraction (const double temperature,
-                       const double pressure) const;
+        // virtual
+        // double
+        // melt_fraction (const double temperature,
+        //                const double pressure) const;
 
         /**
          * Compute the change in entropy due to melting for a given @p temperature
