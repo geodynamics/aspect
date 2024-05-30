@@ -174,10 +174,8 @@ namespace aspect
       CpoElasticTensor<dim>::get_elastic_tensor(unsigned int cpo_data_position,
                                                 const ArrayView<double> &data)
       {
-        SymmetricTensor<2,6> elastic_tensor;
-        for (unsigned int i = 0; i < SymmetricTensor<2,6>::n_independent_components ; ++i)
-          elastic_tensor[SymmetricTensor<2,6>::unrolled_to_component_indices(i)] = data[cpo_data_position + i];
-        return elastic_tensor;
+        return Utilities::Tensors::to_symmetric_tensor<6>(&data[cpo_data_position],
+                                                          &data[cpo_data_position]+SymmetricTensor<2,6>::n_independent_components);
       }
 
 
@@ -188,8 +186,9 @@ namespace aspect
                                                 const ArrayView<double> &data,
                                                 const SymmetricTensor<2,6> &elastic_tensor)
       {
-        for (unsigned int i = 0; i < SymmetricTensor<2,6>::n_independent_components ; ++i)
-          data[cpo_data_position + i] = elastic_tensor[SymmetricTensor<2,6>::unrolled_to_component_indices(i)];
+        Utilities::Tensors::unroll_symmetric_tensor_into_array(elastic_tensor,
+                                                               &data[cpo_data_position],
+                                                               &data[cpo_data_position]+SymmetricTensor<2,6>::n_independent_components);
       }
 
 
