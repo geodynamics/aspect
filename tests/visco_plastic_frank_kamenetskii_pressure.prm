@@ -1,8 +1,8 @@
 # A test for Frank Kamenetskii rheology in the visco_plastic material model.
 # Frank-Kamenetskii viscosity approximation:
-# viscosity = A * exp(E * 0.5 * (1.0-(T/ref_T)))
-# A: 1.e21, E: 15., ref_T: 1573
-# Using these values, the computed viscosity should be
+# viscosity = A * exp(E * 0.5 * (1.0-(T/ref_T)) + F * (P-ref_P)/(ref_rho*g*h))
+# A: 1.e21, E: 15., ref_T: 1573, F: 2., ref_P = 0
+# Using these values, the computed viscosity at the model surface (P = ref_P = 0) should be
 #   ~ 1e21 Pa s.
 
 # Global parameters
@@ -77,6 +77,7 @@ subsection Material model
     set Viscous flow law = frank kamenetskii
     set Viscosity ratios for Frank Kamenetskii = 15.
     set Prefactors for Frank Kamenetskii = 1.e21
+    set Pressure prefactors for Frank Kamenetskii = 2.
   end
 end
 

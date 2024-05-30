@@ -68,7 +68,10 @@ namespace aspect
            */
           double
           compute_viscosity (const double temperature,
-                             const unsigned int composition) const;
+                             const unsigned int composition,
+                             const double pressure = std::numeric_limits<double>::infinity(),
+                             const double density = std::numeric_limits<double>::infinity(),
+                             const double gravity = std::numeric_limits<double>::infinity()) const;
 
         private:
           /**
@@ -80,6 +83,11 @@ namespace aspect
            * List of Frank-Kamenetskii prefactors (A).
            */
           std::vector<double> prefactors_frank_kamenetskii;
+
+          /**
+           * List of Frank-Kamenetskii pressure prefactors (F).
+           */
+          std::vector<double> pressure_prefactors_frank_kamenetskii;
       };
     }
   }
