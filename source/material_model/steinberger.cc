@@ -291,7 +291,8 @@ namespace aspect
           else
             {
               // We only want to compute mass/volume fractions for fields that are chemical compositions.
-              mass_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i], this->introspection().chemical_composition_field_indices());
+              mass_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i],
+                                                                                     this->introspection().chemical_composition_field_indices());
 
               // The function compute_volumes_from_masses expects as many mass_fractions as densities.
               // But the function compute_composition_fractions always adds another element at the start
@@ -534,11 +535,12 @@ namespace aspect
           equation_of_state.parse_parameters(prm);
 
           // Assign background field and do some error checking
+          const unsigned int n_chemical_composition_fields = this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::chemical_composition);
           has_background_field = ((equation_of_state.number_of_lookups() == 1) ||
-                                  (equation_of_state.number_of_lookups() == this->introspection().n_chemical_composition_fields() + 1));
+                                  (equation_of_state.number_of_lookups() == n_chemical_composition_fields + 1));
           AssertThrow ((equation_of_state.number_of_lookups() == 1) ||
-                       (equation_of_state.number_of_lookups() == this->introspection().n_chemical_composition_fields()) ||
-                       (equation_of_state.number_of_lookups() == this->introspection().n_chemical_composition_fields() + 1),
+                       (equation_of_state.number_of_lookups() == n_chemical_composition_fields) ||
+                       (equation_of_state.number_of_lookups() == n_chemical_composition_fields + 1),
                        ExcMessage("The Steinberger material model assumes that either there is a single material "
                                   "in the simulation, or that all compositional fields of the type "
                                   "chemical composition correspond to mass fractions of different materials. "
@@ -547,7 +549,7 @@ namespace aspect
                                   "or one additional file (if a background field is used). You have "
                                   + Utilities::int_to_string(equation_of_state.number_of_lookups())
                                   + " material data files, but there are "
-                                  + Utilities::int_to_string(this->introspection().n_chemical_composition_fields())
+                                  + Utilities::int_to_string(n_chemical_composition_fields)
                                   + " fields of type chemical composition."));
 
           // Parse the Composition viscosity prefactors parameter

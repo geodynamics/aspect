@@ -133,7 +133,7 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      EquationOfStateOutputs<dim> eos_outputs (this->introspection().n_chemical_composition_fields()+1);
+      EquationOfStateOutputs<dim> eos_outputs (this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::chemical_composition)+1);
       EquationOfStateOutputs<dim> eos_outputs_all_phases (n_phases);
 
       std::vector<double> average_elastic_shear_moduli (in.n_evaluation_points());
@@ -176,7 +176,8 @@ namespace aspect
                                                   n_phase_transitions_for_each_chemical_composition,
                                                   eos_outputs);
 
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i], this->introspection().chemical_composition_field_indices());
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i],
+                                                       this->introspection().chemical_composition_field_indices());
 
           // not strictly correct if thermal expansivities are different, since we are interpreting
           // these compositions as volume fractions, but the error introduced should not be too bad.
@@ -385,8 +386,6 @@ namespace aspect
 
           std::vector<unsigned int> n_phases_for_each_composition = phase_function.n_phases_for_each_composition();
 
-          const std::vector<unsigned int> indices = this->introspection().chemical_composition_field_indices();
-
           // Currently, phase_function.n_phases_for_each_composition() returns a list of length
           // equal to the total number of compositions, whether or not they are chemical compositions.
           // The equation_of_state (multicomponent incompressible) requires a list only for
@@ -394,7 +393,7 @@ namespace aspect
           std::vector<unsigned int> n_phases_for_each_chemical_composition = {n_phases_for_each_composition[0]};
           n_phase_transitions_for_each_chemical_composition = {n_phases_for_each_composition[0] - 1};
           n_phases = n_phases_for_each_composition[0];
-          for (auto i : indices)
+          for (auto i : this->introspection().chemical_composition_field_indices())
             {
               n_phases_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1]);
               n_phase_transitions_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1] - 1);
