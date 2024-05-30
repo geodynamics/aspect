@@ -25,7 +25,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/postprocess/melt_statistics.h>
 #include <aspect/melt.h>
-#include <aspect/material_model/melt_model/melt_simple_fraction.h>
+#include <aspect/material_model/melt_model/katz2003_mantle_melting.h>
 
 namespace aspect
 {
@@ -172,7 +172,7 @@ namespace aspect
         // entropy change upon melting
         double peridotite_melting_entropy_change;
 
-        MeltModel::MeltSimpleFraction<dim> melt_simple_fraction;
+        MeltModel::Katz2003MantleMelting<dim> katz2003_model;
 
         /**
          * Percentage of material that is molten for a given @p temperature and

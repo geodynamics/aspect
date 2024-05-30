@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_model_melt_model_melt_simple_fraction_h
-#define _aspect_material_model_melt_model_melt_simple_fraction_h
+#ifndef _aspect_material_model_melt_katz2003_mantle_melting_h
+#define _aspect_material_model_melt_katz2003_mantle_melting_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -40,15 +40,18 @@ namespace aspect
      * according to the melting model for dry peridotite of Katz, 2003. 
      * This also includes a computation of the latent heat of melting (if the latent heat
      * heating model is active).
+     * 
+     * These functions can be used in the calculation of melting and melt transport
+     * in the melt_simple material model and can be extended to other material models
      *
      * @ingroup MeltModel
      */
       template <int dim>
-      class MeltSimpleFraction : public ::aspect::SimulatorAccess<dim>
+      class Katz2003MantleMelting : public ::aspect::SimulatorAccess<dim>
       {
         public:
           // constructor
-          MeltSimpleFraction();
+          Katz2003MantleMelting();
 
           /**
           * Declare the parameters this function takes through input files.
