@@ -450,13 +450,12 @@ namespace aspect
         convert_log_grain_size (std::vector<double> &compositional_fields) const;
 
         /**
-         * list of depth, width and Clapeyron slopes for the different phase
+         * List of depth, temperature and Clapeyron slopes for the different phase
          * transitions and in which phase they occur
          */
         std::vector<double> transition_depths;
         std::vector<double> transition_temperatures;
         std::vector<double> transition_slopes;
-        std::vector<double> transition_widths;
 
 
         /**
