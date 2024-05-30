@@ -472,171 +472,172 @@ namespace aspect
      * MaterialModelInputs::position.
      */
     template <int dim>
-    struct MaterialModelOutputs
+    class MaterialModelOutputs
     {
-      /**
-       * Constructor. Initialize the various arrays of this structure with the
-       * given number of quadrature points and (finite element) components.
-       *
-       * @param n_points The number of quadrature points for which input
-       * quantities will be provided.
-       * @param n_comp The number of vector quantities (in the order in which
-       * the Introspection class reports them) for which input will be
-       * provided.
-       */
-      MaterialModelOutputs (const unsigned int n_points,
-                            const unsigned int n_comp);
+      public:
+        /**
+         * Constructor. Initialize the various arrays of this structure with the
+         * given number of quadrature points and (finite element) components.
+         *
+         * @param n_points The number of quadrature points for which input
+         * quantities will be provided.
+         * @param n_comp The number of vector quantities (in the order in which
+         * the Introspection class reports them) for which input will be
+         * provided.
+         */
+        MaterialModelOutputs (const unsigned int n_points,
+                              const unsigned int n_comp);
 
-      /**
-       * Copy constructor. This constructor copies all data members of the
-       * source object except for the additional output data (of type
-       * AdditionalMaterialOutputs) pointers, stored in the
-       * `source.additional_outputs` member variable.
-       *
-       * This is because these pointers can not be copied (they
-       * are unique to the @p source object). Since they can also not
-       * be recreated without the original code that created these objects
-       * in the first place, this constructor throws an exception if the
-       * @p source object had any additional output data objects
-       * associated with it.
-       */
-      MaterialModelOutputs (const MaterialModelOutputs &source);
+        /**
+         * Copy constructor. This constructor copies all data members of the
+         * source object except for the additional output data (of type
+         * AdditionalMaterialOutputs) pointers, stored in the
+         * `source.additional_outputs` member variable.
+         *
+         * This is because these pointers can not be copied (they
+         * are unique to the @p source object). Since they can also not
+         * be recreated without the original code that created these objects
+         * in the first place, this constructor throws an exception if the
+         * @p source object had any additional output data objects
+         * associated with it.
+         */
+        MaterialModelOutputs (const MaterialModelOutputs &source);
 
-      /**
-       * Move constructor. This constructor simply moves all members.
-       */
-      MaterialModelOutputs (MaterialModelOutputs &&)  noexcept = default;
+        /**
+         * Move constructor. This constructor simply moves all members.
+         */
+        MaterialModelOutputs (MaterialModelOutputs &&)  noexcept = default;
 
-      /**
-       * Copy operator. Copying these objects is expensive, and consequently
-       * prohibited.
-       */
-      MaterialModelOutputs &operator= (const MaterialModelOutputs &source) = delete;
+        /**
+         * Copy operator. Copying these objects is expensive, and consequently
+         * prohibited.
+         */
+        MaterialModelOutputs &operator= (const MaterialModelOutputs &source) = delete;
 
-      /**
-       * Move operator.
-       */
-      MaterialModelOutputs &operator= (MaterialModelOutputs &&)  noexcept = default;
+        /**
+         * Move operator.
+         */
+        MaterialModelOutputs &operator= (MaterialModelOutputs &&)  noexcept = default;
 
-      /**
-       * Function that returns the number of points at which
-       * the material model is to be evaluated.
-       */
-      unsigned int n_evaluation_points() const;
+        /**
+         * Function that returns the number of points at which
+         * the material model is to be evaluated.
+         */
+        unsigned int n_evaluation_points() const;
 
-      /**
-       * Viscosity $\eta$ values at the given positions.
-       */
-      std::vector<double> viscosities;
+        /**
+         * Viscosity $\eta$ values at the given positions.
+         */
+        std::vector<double> viscosities;
 
-      /**
-       * Density values at the given positions.
-       */
-      std::vector<double> densities;
+        /**
+         * Density values at the given positions.
+         */
+        std::vector<double> densities;
 
-      /**
-       * Thermal expansion coefficients at the given positions. It is defined
-       * as $\alpha = - \frac{1}{\rho} \frac{\partial\rho}{\partial T}$
-       */
-      std::vector<double> thermal_expansion_coefficients;
+        /**
+         * Thermal expansion coefficients at the given positions. It is defined
+         * as $\alpha = - \frac{1}{\rho} \frac{\partial\rho}{\partial T}$
+         */
+        std::vector<double> thermal_expansion_coefficients;
 
-      /**
-       * Specific heat at the given positions.
-       */
-      std::vector<double> specific_heat;
+        /**
+         * Specific heat at the given positions.
+         */
+        std::vector<double> specific_heat;
 
-      /**
-       * Thermal conductivity at the given positions.
-       */
-      std::vector<double> thermal_conductivities;
+        /**
+         * Thermal conductivity at the given positions.
+         */
+        std::vector<double> thermal_conductivities;
 
-      /**
-       * Compressibility at the given positions. The compressibility is defined
-       * as $\kappa = \frac{1}{\rho} \frac{\partial\rho}{\partial p}$.
-       */
-      std::vector<double> compressibilities;
+        /**
+         * Compressibility at the given positions. The compressibility is defined
+         * as $\kappa = \frac{1}{\rho} \frac{\partial\rho}{\partial p}$.
+         */
+        std::vector<double> compressibilities;
 
-      /**
-       * The product of the change of entropy $\Delta S$ at a phase transition
-       * and the derivative of the phase function $X=X(p,T,\mathfrak c,\mathbf
-       * x)$ with regard to pressure at the given positions.
-       */
-      std::vector<double> entropy_derivative_pressure;
+        /**
+         * The product of the change of entropy $\Delta S$ at a phase transition
+         * and the derivative of the phase function $X=X(p,T,\mathfrak c,\mathbf
+         * x)$ with regard to pressure at the given positions.
+         */
+        std::vector<double> entropy_derivative_pressure;
 
-      /**
-       * The product of (minus) the change of entropy $-\Delta S$ at a phase
-       * transition and the derivative of the phase function
-       * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to temperature at the
-       * given positions.
-       */
-      std::vector<double> entropy_derivative_temperature;
+        /**
+         * The product of (minus) the change of entropy $-\Delta S$ at a phase
+         * transition and the derivative of the phase function
+         * $X=X(p,T,\mathfrak c,\mathbf x)$ with regard to temperature at the
+         * given positions.
+         */
+        std::vector<double> entropy_derivative_temperature;
 
-      /**
-       * Change in composition due to chemical reactions at the given
-       * positions. The term reaction_terms[i][c] is the change in
-       * compositional field c at point i.
-       *
-       * The mental model behind prescribing actual changes in composition
-       * rather than reaction rates is that we assume that there is always an
-       * equilibrium between the compositional fields (because the time scale
-       * of reactions is normally much shorter than that of convection), so
-       * the quantity returned by this function is an actual change in the
-       * amount of material, which is added to or subtracted from the current
-       * value of the compositional field, and NOT a reaction rate. The idea
-       * is, that in dependence of temperature, pressure, position and the
-       * compositional fields themselves an equilibrium can be calculated, and
-       * the difference between the current value and the equilibrium can be
-       * added to the respective compositional field.
-       *
-       * For mass conservation it should ALWAYS be checked that what is
-       * subtracted from one field is added to another field (and the other
-       * way round) and that one never subtracts more than the actual value of
-       * a field (so it does not get negative).
-       *
-       * This function has a default implementation that sets the reaction
-       * term to zero (assuming no reactions).
-       *
-       * @note In cases where one has slow chemical reactions (or cases where
-       * compositional fields are used to track quantities different than
-       * actual compositions, for example accumulated strains in damage
-       * models), models are formulated as differential equations with right
-       * hand sides, not as instantaneous equations. In such cases, the
-       * reaction terms (i.e., the incremental additions to the previous
-       * state) are usually of the form reaction rate times time step size. To
-       * implement something like this, derive your material model from
-       * SimulatorAccess so you can query the time step used by the simulator
-       * in order to compute the reaction increment.
-       */
-      std::vector<std::vector<double>> reaction_terms;
+        /**
+         * Change in composition due to chemical reactions at the given
+         * positions. The term reaction_terms[i][c] is the change in
+         * compositional field c at point i.
+         *
+         * The mental model behind prescribing actual changes in composition
+         * rather than reaction rates is that we assume that there is always an
+         * equilibrium between the compositional fields (because the time scale
+         * of reactions is normally much shorter than that of convection), so
+         * the quantity returned by this function is an actual change in the
+         * amount of material, which is added to or subtracted from the current
+         * value of the compositional field, and NOT a reaction rate. The idea
+         * is, that in dependence of temperature, pressure, position and the
+         * compositional fields themselves an equilibrium can be calculated, and
+         * the difference between the current value and the equilibrium can be
+         * added to the respective compositional field.
+         *
+         * For mass conservation it should ALWAYS be checked that what is
+         * subtracted from one field is added to another field (and the other
+         * way round) and that one never subtracts more than the actual value of
+         * a field (so it does not get negative).
+         *
+         * This function has a default implementation that sets the reaction
+         * term to zero (assuming no reactions).
+         *
+         * @note In cases where one has slow chemical reactions (or cases where
+         * compositional fields are used to track quantities different than
+         * actual compositions, for example accumulated strains in damage
+         * models), models are formulated as differential equations with right
+         * hand sides, not as instantaneous equations. In such cases, the
+         * reaction terms (i.e., the incremental additions to the previous
+         * state) are usually of the form reaction rate times time step size. To
+         * implement something like this, derive your material model from
+         * SimulatorAccess so you can query the time step used by the simulator
+         * in order to compute the reaction increment.
+         */
+        std::vector<std::vector<double>> reaction_terms;
 
-      /**
-       * Vector of shared pointers to additional material model output
-       * objects that can then be added to MaterialModelOutputs. By default,
-       * no outputs are added.
-       */
-      std::vector<std::unique_ptr<AdditionalMaterialOutputs<dim>>> additional_outputs;
+        /**
+         * Vector of shared pointers to additional material model output
+         * objects that can then be added to MaterialModelOutputs. By default,
+         * no outputs are added.
+         */
+        std::vector<std::unique_ptr<AdditionalMaterialOutputs<dim>>> additional_outputs;
 
-      /**
-       * Given an additional material model output class as explicitly specified
-       * template argument, returns a pointer to this additional material model
-       * output object if it is used in the current simulation.
-       * The output can then be filled in the MaterialModels::Interface::evaluate()
-       * function. If the output does not exist, a null pointer is returned.
-       */
-      template <class AdditionalOutputType>
-      AdditionalOutputType *get_additional_output();
+        /**
+         * Given an additional material model output class as explicitly specified
+         * template argument, returns a pointer to this additional material model
+         * output object if it is used in the current simulation.
+         * The output can then be filled in the MaterialModels::Interface::evaluate()
+         * function. If the output does not exist, a null pointer is returned.
+         */
+        template <class AdditionalOutputType>
+        AdditionalOutputType *get_additional_output();
 
-      /**
-       * Constant version of get_additional_output() returning a const pointer.
-       */
-      template <class AdditionalOutputType>
-      const AdditionalOutputType *get_additional_output() const;
+        /**
+         * Constant version of get_additional_output() returning a const pointer.
+         */
+        template <class AdditionalOutputType>
+        const AdditionalOutputType *get_additional_output() const;
 
-      /**
-       * Steal the additional outputs from @p other. The destination (@p
-       * this), is expected to currently have no additional outputs.
-       */
-      void move_additional_outputs_from(MaterialModelOutputs<dim> &other);
+        /**
+         * Steal the additional outputs from @p other. The destination (@p
+         * this), is expected to currently have no additional outputs.
+         */
+        void move_additional_outputs_from(MaterialModelOutputs<dim> &other);
     };
 
 
