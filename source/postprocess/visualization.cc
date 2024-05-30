@@ -47,7 +47,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    namespace internal
+    namespace
     {
       /**
        * This Postprocessor will generate the output variables of velocity,
@@ -765,7 +765,7 @@ namespace aspect
       else if (increase_file_number)
         ++output_file_number;
 
-      internal::BaseVariablePostprocessor<dim> base_variables;
+      BaseVariablePostprocessor<dim> base_variables;
       base_variables.initialize_simulator (this->get_simulator());
 
       // Keep a list of the names of all output variables
@@ -778,8 +778,8 @@ namespace aspect
                                          base_variables.get_physical_units(),
                                          visualization_field_names_and_units);
 
-      std::unique_ptr<internal::MeshDeformationPostprocessor<dim>> mesh_deformation_velocity;
-      std::unique_ptr<internal::MeshDeformationPostprocessor<dim>> mesh_deformation_displacement;
+      std::unique_ptr<MeshDeformationPostprocessor<dim>> mesh_deformation_velocity;
+      std::unique_ptr<MeshDeformationPostprocessor<dim>> mesh_deformation_displacement;
 
       DataOut<dim> data_out;
       data_out.attach_dof_handler (this->get_dof_handler());
@@ -805,7 +805,7 @@ namespace aspect
       // If there is a deforming mesh, also attach the mesh velocity object
       if ( this->get_parameters().mesh_deformation_enabled && output_mesh_velocity)
         {
-          mesh_deformation_velocity = std::make_unique<internal::MeshDeformationPostprocessor<dim>>("mesh_velocity", true);
+          mesh_deformation_velocity = std::make_unique<MeshDeformationPostprocessor<dim>>("mesh_velocity", true);
           mesh_deformation_velocity->initialize_simulator(this->get_simulator());
 
           // Insert mesh deformation variable names into set of all output field names
@@ -819,7 +819,7 @@ namespace aspect
 
       if ( this->get_parameters().mesh_deformation_enabled && output_mesh_displacement)
         {
-          mesh_deformation_displacement = std::make_unique<internal::MeshDeformationPostprocessor<dim>>("mesh_displacement", false);
+          mesh_deformation_displacement = std::make_unique<MeshDeformationPostprocessor<dim>>("mesh_displacement", false);
           mesh_deformation_displacement->initialize_simulator(this->get_simulator());
 
           // Insert mesh deformation variable names into set of all output field names
