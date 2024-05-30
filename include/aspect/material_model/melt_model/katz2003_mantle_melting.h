@@ -75,10 +75,24 @@ namespace aspect
           double
           melt_fraction (const double temperature,
                          const double pressure) const;
+
+           /**
+         * Compute the change in entropy due to melting for a given @p temperature
+         * and @p pressure, and under the assumption that a fraction
+         * @p maximum_melt_fraction of the material has already been molten
+         * previously. The entropy change is computed with respect to temperature
+         * or pressure, depending on @p dependence.
+         * This is needed to calculate the latent heat of melt.
+         */
+        double
+        entropy_change (const double temperature,
+                        const double pressure,
+                        const double maximum_melt_fraction,
+                        const NonlinearDependence::Dependence dependence) const;
         private:
-          /**
-          * Parameters for anhydrous melting of peridotite after Katz, 2003
-          */
+           /**
+         * Parameters for anhydrous melting of peridotite after Katz, 2003
+         */
 
           // for the solidus temperature
           double A1;   // °C
@@ -102,6 +116,9 @@ namespace aspect
 
           // melt fraction exponent
           double beta;
+
+          // entropy change upon melting
+          double peridotite_melting_entropy_change;
       };
     }
 
