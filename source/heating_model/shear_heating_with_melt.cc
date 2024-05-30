@@ -95,11 +95,9 @@ namespace aspect
     create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const
     {
       // we need the melt inputs for this shear heating of melt
-      if (inputs.template get_additional_input<MaterialModel::MeltInputs<dim>>() != nullptr)
-        return;
-
-      inputs.additional_inputs.push_back(
-        std::make_unique<MaterialModel::MeltInputs<dim>> (inputs.n_evaluation_points()));
+      if (inputs.template get_additional_input<MaterialModel::MeltInputs<dim>>() == nullptr)
+        inputs.additional_inputs.emplace_back(
+          std::make_unique<MaterialModel::MeltInputs<dim>> (inputs.n_evaluation_points()));
     }
   }
 }
