@@ -15,7 +15,7 @@ Both materials have the same density $\rho=2800\text{ kg}/\text{m}^3$ and the gr
 ```{figure-md} fig:allken-setup
 <img src="allken_setup.png" style="width:80.0%" />
 
-(a) Model setup showing the computational domain, the boundary conditions and the weak zones. 
+(a) Model setup showing the computational domain, the boundary conditions and the weak zones.
 (b) Rheological profile implemented: Mohr-Coulomb plasticity in the upper crust and a fixed viscosity.
 (c) Frictional plastic strain weakening behavior of the upper crust. Figure taken from {cite}`allken:etal:2012`.
 ```
