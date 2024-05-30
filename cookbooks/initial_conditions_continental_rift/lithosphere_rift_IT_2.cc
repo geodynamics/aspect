@@ -75,8 +75,8 @@ namespace aspect
     initial_temperature (const Point<dim> &position) const
     {
       Assert(initial_composition_manager->template has_matching_initial_composition_model<const InitialComposition::LithosphereRift<dim>>(),
-                  ExcMessage("The initial temperature plugin lithosphere with rift requires the corresponding initial composition plugin."));
-                  
+             ExcMessage("The initial temperature plugin lithosphere with rift requires the corresponding initial composition plugin."));
+
       // Get the initial composition plugin
       const InitialComposition::LithosphereRift<dim> &ic = initial_composition_manager->template get_matching_initial_composition_model<const InitialComposition::LithosphereRift<dim>>();
 

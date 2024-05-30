@@ -40,7 +40,7 @@ subsection Geometry model
   # to obtain isostasy.
   subsection Initial topography model
     set Model name = lithosphere with rift
-  end 
+  end
 
 end
 
@@ -143,7 +143,7 @@ subsection Initial composition model
     set Amplitude of Gaussian rift geometry            = -0.25, 0, 0.17647
     # Where the rift axis should be. In this case in the centre of the domain.
     # In 3D simulations, line segments consisting of two coordinates
-    # should be provided. 
+    # should be provided.
     set Rift axis line segments                        = 200e3
 
     # The thicknesses of the lithospheric layer within a polygon
@@ -209,14 +209,14 @@ subsection Boundary temperature model
   subsection Box
     set Top temperature    =  293
     # Unrealistically high, so that it is always taken from initial temperature plugin
-    set Bottom temperature = 5000   
+    set Bottom temperature = 5000
   end
 end
 
 # Initial temperature field
 # The initial temperature consists of a typical continental geotherm
 # based on equations Turcotte and Schubert Ch. 4.6.
-# Below the lithosphere-asthenosphere boundary (LAB, defined initially by the 
+# Below the lithosphere-asthenosphere boundary (LAB, defined initially by the
 # bottom of the mantle lithsphere and the 1623 K isotherm,
 # we prescribe an adiabatic temperature increase.
 subsection Initial temperature model

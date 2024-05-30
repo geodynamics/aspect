@@ -101,28 +101,28 @@ namespace aspect
 
         }
 
-        // Make sure the compensation depth is in the sublithospheric mantle
-        compensation_depth = std::max(sum_thicknesses, std::max(sum_rift_thicknesses, max_sum_polygon_thicknesses)) + 5e3;
+      // Make sure the compensation depth is in the sublithospheric mantle
+      compensation_depth = std::max(sum_thicknesses, std::max(sum_rift_thicknesses, max_sum_polygon_thicknesses)) + 5e3;
 
-        // Add sublithospheric mantle part to the columns
-        ref_rgh += (compensation_depth - sum_thicknesses) * densities[0];
-        rift_rgh += (compensation_depth - sum_rift_thicknesses) * densities[0];
-        for (unsigned int i_polygons = 0; i_polygons < n_polygons; ++i_polygons)
+      // Add sublithospheric mantle part to the columns
+      ref_rgh += (compensation_depth - sum_thicknesses) * densities[0];
+      rift_rgh += (compensation_depth - sum_rift_thicknesses) * densities[0];
+      for (unsigned int i_polygons = 0; i_polygons < n_polygons; ++i_polygons)
         {
           polygon_rgh[i_polygons] += (compensation_depth - sum_polygon_thicknesses[i_polygons]) * densities[0];
         }
 
-        // Compute the maximum topography based on mass surplus/deficit
-        topo_rift_amplitude = (ref_rgh - rift_rgh) / densities[0];
-        for (unsigned int i_polygons = 0; i_polygons < n_polygons; ++i_polygons)
-          topo_polygon_amplitude = std::max((ref_rgh - polygon_rgh[i_polygons]) / densities[0], topo_polygon_amplitude);
+      // Compute the maximum topography based on mass surplus/deficit
+      topo_rift_amplitude = (ref_rgh - rift_rgh) / densities[0];
+      for (unsigned int i_polygons = 0; i_polygons < n_polygons; ++i_polygons)
+        topo_polygon_amplitude = std::max((ref_rgh - polygon_rgh[i_polygons]) / densities[0], topo_polygon_amplitude);
 
-        // TODO: probably there are combinations of rift and polygon topography
-        // that result in a higher topography
-        maximum_topography = std::max(topo_rift_amplitude, topo_polygon_amplitude);
+      // TODO: probably there are combinations of rift and polygon topography
+      // that result in a higher topography
+      maximum_topography = std::max(topo_rift_amplitude, topo_polygon_amplitude);
 
-        this->get_pcout() << "   Maximum initial topography of rift: " << topo_rift_amplitude << " m" << std::endl;
-        this->get_pcout() << "   Maximum initial topography of polygon: " << topo_polygon_amplitude << " m" << std::endl;
+      this->get_pcout() << "   Maximum initial topography of rift: " << topo_rift_amplitude << " m" << std::endl;
+      this->get_pcout() << "   Maximum initial topography of polygon: " << topo_polygon_amplitude << " m" << std::endl;
     }
 
 

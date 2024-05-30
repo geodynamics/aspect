@@ -178,13 +178,13 @@ namespace aspect
       // is smoothed by a hyperbolic tangent.
       const double polygon_contribution = (0.5 + 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon));
       const double rift_contribution = (0.5 - 0.5 * std::tanh(distance_to_L_polygon.first / sigma_polygon));
-      
+
       // The rift perturbation follows a Gaussian contribution.
       std::vector<double> local_thicknesses(3);
       for (unsigned int i = 0; i < 3; ++i)
-        local_thicknesses[i] = (1.0 - A_rift[i] * std::exp((-std::pow(distance_to_rift_axis, 2) / (2.0 * std::pow(sigma_rift, 2))))) 
-        * reference_thicknesses[i] * rift_contribution + polygon_contribution * polygon_thicknesses[distance_to_L_polygon.second][i];
-      
+        local_thicknesses[i] = (1.0 - A_rift[i] * std::exp((-std::pow(distance_to_rift_axis, 2) / (2.0 * std::pow(sigma_rift, 2)))))
+                               * reference_thicknesses[i] * rift_contribution + polygon_contribution * polygon_thicknesses[distance_to_L_polygon.second][i];
+
       return local_thicknesses;
     }
 
