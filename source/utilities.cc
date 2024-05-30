@@ -44,7 +44,6 @@
 #include <cerrno>
 #include <dirent.h>
 #include <fstream>
-#include <locale>
 #include <string>
 #include <sys/stat.h>
 #include <iostream>
