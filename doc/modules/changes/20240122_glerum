@@ -1,7 +1,4 @@
- Improved: For the diffusion_dislocation, visco_plastic and
- visco_elastic material models, it is no longer necessary to
- specify material properties in the input file for fields
- that do not represent chemical compositions, like strain
- and stress fields.
+ New: Solution variables can now also be outputted
+ on the surface mesh of the model domain.
  <br>
- (Anne Glerum, 2024/01/22)
+ (Anne Glerum, 2024/05/30)
