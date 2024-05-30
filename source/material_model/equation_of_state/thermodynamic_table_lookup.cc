@@ -144,7 +144,12 @@ namespace aspect
           }
       }
 
-
+      template <int dim>
+      const std::vector<std::string> &
+      ThermodynamicTableLookup<dim>::get_phase_names_one_lookup(unsigned int lookup_index) const
+      {
+        return material_lookup[lookup_index]->get_dominant_phase_names();
+      }
 
       template <int dim>
       unsigned int

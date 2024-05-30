@@ -1327,6 +1327,28 @@ namespace aspect
         return transition_slopes[phase_index];
       }
 
+      template <int dim>
+      unsigned int
+      PhaseFunctionLookup<dim>::
+      n_phases () const
+      {
+        return n_phases_total;
+      }
+
+      template <int dim>
+      const std::vector<unsigned int> &
+      PhaseFunctionLookup<dim>::n_phases_for_each_composition () const
+      {
+        return n_phases_per_composition;
+      }
+
+      template <int dim>
+      const std::vector<std::string> &
+      PhaseFunctionLookup<dim>::transition_lookup_phase_names () const
+      {
+        return transition_lookup_phases;
+      }
+
 
 
       template <int dim>
@@ -1506,6 +1528,46 @@ namespace aspect
             n_phases_total += n+1;
           }
       }
+
+
+      template <int dim>
+      void
+      PhaseFunctionLookup<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.declare_entry ("Phase transition lookup phases", "",
+                           Patterns::Anything(),
+                           "A list of phase indices corresponding to "
+                           "phases in lookup table. Indices must be "
+                           "from lookup file but number of indices "
+                           "listed may be less than total number "
+                           "of phases in table.");
+      }
+
+      template <int dim>
+      void
+      PhaseFunctionLookup<dim>::parse_parameters (ParameterHandler &prm,
+                                                  const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
+      {
+        // Establish that a background field is required here
+        const bool has_background_field = true;
+
+        // Retrieve the list of composition names
+        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+
+        n_phases_total = 0;
+        n_phases_per_composition.clear();
+        transition_lookup_phases.clear();
+        const std::vector<std::string> phase_transition_lookup_phases_compositions  = Utilities::split_string_list(prm.get("Phase transition lookup phases"));
+        for (auto &phase_transition_lookup_phases_composition : phase_transition_lookup_phases_compositions) {
+            const std::vector<std::string> composition_with_name_raw = Utilities::split_string_list(phase_transition_lookup_phases_composition, ':');
+            std::vector<std::string> composition_with_name = Utilities::split_string_list(composition_with_name_raw[1], '|');
+            n_phases_per_composition.push_back(composition_with_name.size());
+            n_phases_total += composition_with_name.size();
+            transition_lookup_phases.insert(transition_lookup_phases.end(), composition_with_name.begin(), composition_with_name.end());
+          }
+
+
+      }
     }
   }
 }
@@ -1525,7 +1587,8 @@ namespace aspect
                                                               const unsigned int, \
                                                               MaterialModelOutputs<dim> &); \
   template struct PhaseFunctionInputs<dim>; \
-  template class PhaseFunction<dim>;
+  template class PhaseFunction<dim>; \
+  template class PhaseFunctionLookup<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 

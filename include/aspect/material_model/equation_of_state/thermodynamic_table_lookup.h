@@ -101,6 +101,8 @@ namespace aspect
           const MaterialModel::MaterialUtilities::Lookup::MaterialLookup &
           get_material_lookup (unsigned int lookup_index) const;
 
+          const std::vector<std::string> &
+          get_phase_names_one_lookup(unsigned int lookup_index) const;
 
         private:
           unsigned int n_material_lookups;
