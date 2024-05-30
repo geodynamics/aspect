@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -60,7 +60,6 @@ namespace aspect
            * @p pressure (assuming equilibrium conditions). Melting model after Katz,
            * 2003, for dry peridotite.
            */
-          virtual
           double
           melt_fraction (const double temperature,
                          const double pressure) const;
@@ -91,8 +90,6 @@ namespace aspect
 
           // melt fraction exponent
           double beta;
-
-
       };
     }
 
