@@ -36,22 +36,22 @@ def ascii_to_netcdf(filename):
     print (n_r, n_phi, n_theta)
 
     # Create dimensions.
-    dims = [ds.createDimension('r', n_r),
-            ds.createDimension('phi', n_phi),
-            ds.createDimension('theta',  n_theta)]
+    dims = [ds.createDimension('radius', n_r),
+            ds.createDimension('longitude', n_phi),
+            ds.createDimension('latitude',  n_theta)]
 
     # Create variables for each of the data columns.
-    radius           = ds.createVariable('radius', np.float64, ('r'), fill_value=np.nan)
+    radius           = ds.createVariable('radius', np.float64, ('radius'), fill_value=np.nan)
     radius.units     = 'meters'
-    longitudes       = ds.createVariable('longitude', np.float64, ('phi'), fill_value=np.nan)
+    longitudes       = ds.createVariable('longitude', np.float64, ('longitude'), fill_value=np.nan)
     longitudes.units = 'degrees_east'
-    latitudes        = ds.createVariable('latitude', np.float64, ('theta'), fill_value=np.nan)
+    latitudes        = ds.createVariable('latitude', np.float64, ('latitude'), fill_value=np.nan)
     latitudes.units  = 'degrees_north'
     
     # Create the data field variable. 
     # Note that the ordering looks wrong, but it is consistent with how the data needs to be
     # reshaped with the input file ordering
-    vel         = ds.createVariable('s_velocity', np.float64,('phi', 'theta', 'r'), fill_value=np.nan)    
+    vel         = ds.createVariable('s_velocity', np.float64,('longitude', 'latitude', 'radius'), fill_value=np.nan)
     vel.units   = 'meters_per_sec'
     
     # Fill the coordinate and field data. We convert phi and theta from spherical coordinate
