@@ -34,7 +34,6 @@ namespace aspect
   {
     namespace MeltModel
     {
-
       template <int dim>
       MeltSimpleFraction<dim>::MeltSimpleFraction()
         = default;

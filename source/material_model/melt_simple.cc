@@ -49,46 +49,7 @@ namespace aspect
     {
       return model_is_compressible;
     }
-
-    // template <int dim>
-    // double
-    // MeltSimple<dim>::
-    // melt_fraction (const double temperature,
-    //                const double pressure) const
-    // {
-    //   // anhydrous melting of peridotite after Katz, 2003
-    //   const double T_solidus  = A1 + 273.15
-    //                             + A2 * pressure
-    //                             + A3 * pressure * pressure;
-    //   const double T_lherz_liquidus = B1 + 273.15
-    //                                   + B2 * pressure
-    //                                   + B3 * pressure * pressure;
-    //   const double T_liquidus = C1 + 273.15
-    //                             + C2 * pressure
-    //                             + C3 * pressure * pressure;
-
-    //   // melt fraction for peridotite with clinopyroxene
-    //   double peridotite_melt_fraction;
-    //   if (temperature < T_solidus || pressure > 1.3e10)
-    //     peridotite_melt_fraction = 0.0;
-    //   else if (temperature > T_lherz_liquidus)
-    //     peridotite_melt_fraction = 1.0;
-    //   else
-    //     peridotite_melt_fraction = std::pow((temperature - T_solidus) / (T_lherz_liquidus - T_solidus),beta);
-
-    //   // melt fraction after melting of all clinopyroxene
-    //   const double R_cpx = r1 + r2 * std::max(0.0, pressure);
-    //   const double F_max = M_cpx / R_cpx;
-
-    //   if (peridotite_melt_fraction > F_max && temperature < T_liquidus)
-    //     {
-    //       const double T_max = std::pow(F_max,1/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
-    //       peridotite_melt_fraction = F_max + (1 - F_max) * pow((temperature - T_max) / (T_liquidus - T_max),beta);
-    //     }
-    //   return peridotite_melt_fraction;
-    // }
-
-
+    
     template <int dim>
     double
     MeltSimple<dim>::
@@ -97,7 +58,6 @@ namespace aspect
                     const double maximum_melt_fraction,
                     const NonlinearDependence::Dependence dependence) const
     {
-
       double entropy_gradient = 0.0;
 
       // calculate latent heat of melting
@@ -205,7 +165,6 @@ namespace aspect
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
       ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
-      //this->melt_simple_fraction = std::make_unique<MeltModel::MeltSimpleFraction<dim>>();
 
       for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
