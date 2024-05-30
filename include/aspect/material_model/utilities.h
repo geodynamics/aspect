@@ -599,6 +599,11 @@ namespace aspect
           double get_transition_slope (const unsigned int phase_index) const;
 
           /**
+           * Return the depth for phase transition number @p phase_index.
+           */
+          double get_transition_depth (const unsigned int phase_index) const;
+
+          /**
            * Return how many phase transitions there are for each composition.
            */
           const std::vector<unsigned int> &

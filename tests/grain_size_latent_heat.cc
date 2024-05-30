@@ -144,7 +144,7 @@ namespace aspect
               // To do so, check if a grain has moved further than the distance from the phase transition and
               // if the velocity is in the direction of the phase change. After the check 'crossed_transition' will
               // be -1 if we crossed no transition, or the index of the phase transition, if we crossed it.
-              for (unsigned int phase=0; phase<this->transition_depths.size(); ++phase)
+              for (unsigned int phase=0; phase<this->n_phase_transitions; ++phase)
                 {
                   const Tensor<1,dim> vertical_direction = this->get_gravity_model().gravity_vector(in.position[i])
                                                            /this->get_gravity_model().gravity_vector(in.position[i]).norm();
@@ -155,7 +155,7 @@ namespace aspect
                                           0.0;
 
                   // Both distances are positive when they are downward from the transition (since gravity points down)
-                  const double distance_from_transition = this->get_geometry_model().depth(in.position[i]) - this->transition_depths[phase];
+                  const double distance_from_transition = this->get_geometry_model().depth(in.position[i]) - this->phase_function.get_transition_depth(phase);
                   const double distance_moved = in.velocity[i] * vertical_direction * timestep;
 
                   // If we are close to the phase boundary (closer than the distance a grain has moved

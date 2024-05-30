@@ -1319,12 +1319,23 @@ namespace aspect
       }
 
 
+
       template <int dim>
       double
       PhaseFunction<dim>::
       get_transition_slope (const unsigned int phase_index) const
       {
         return transition_slopes[phase_index];
+      }
+
+
+
+      template <int dim>
+      double
+      PhaseFunction<dim>::
+      get_transition_depth (const unsigned int phase_index) const
+      {
+        return transition_depths[phase_index];
       }
 
 

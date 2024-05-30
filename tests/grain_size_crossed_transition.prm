@@ -107,6 +107,7 @@ subsection Material model
     set Phase transition depths              = 50000
     set Phase transition Clapeyron slopes    = 1e6
     set Phase transition temperatures        = 1600
+    set Phase transition widths              = 0
     set Recrystallized grain size            = 1e-3
 
     # Faul and Jackson 2007

@@ -23,6 +23,7 @@
 #define _aspect_model_grain_size_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/utilities.h>
 #include <aspect/simulator_access.h>
 
 #include <deal.II/matrix_free/fe_point_evaluation.h>
@@ -335,7 +336,7 @@ namespace aspect
                                     const double adiabatic_pressure,
                                     const double grain_size,
                                     const double second_strain_rate_invariant,
-                                    const Point<dim> &position) const;
+                                    const unsigned int phase_index) const;
 
         /**
          * This function calculates the dislocation viscosity. For this purpose
@@ -352,7 +353,7 @@ namespace aspect
                                       const double adiabatic_temperature,
                                       const double adiabatic_pressure,
                                       const SymmetricTensor<2,dim> &strain_rate,
-                                      const Point<dim> &position,
+                                      const unsigned int phase_index,
                                       const double diffusion_viscosity,
                                       const double viscosity_guess = 0) const;
 
@@ -412,31 +413,21 @@ namespace aspect
                            const double                  pressure,
                            const std::vector<double>    &compositional_fields,
                            const SymmetricTensor<2,dim> &strain_rate,
-                           const Tensor<1,dim>          &velocity,
                            const Point<dim>             &position,
                            const unsigned int            grain_size_index,
-                           const int                     crossed_transition) const;
-
-        /**
-         * Function that defines the phase transition interface
-         * (0 above, 1 below the phase transition).This is done
-         * individually for each transition and summed up in the end.
-         */
-        double
-        phase_function (const Point<dim> &position,
-                        const double temperature,
-                        const double pressure,
-                        const unsigned int phase) const;
+                           const int                     crossed_transition,
+                           const unsigned int            phase_index) const;
 
         /**
          * Function that returns the phase for a given
-         * position, temperature, pressure and compositional
-         * field index.
+         * temperature, depth, pressure, and density gradient
+         * (which are all contained in the @p in argument).
+         * Because the function returns just the dominant
+         * phase, phase transitions are discrete in this
+         * material model (they have a zero width).
          */
         unsigned int
-        get_phase_index (const Point<dim> &position,
-                         const double temperature,
-                         const double pressure) const;
+        get_phase_index (const MaterialUtilities::PhaseFunctionInputs<dim> &in) const;
 
         /**
          * Function that takes an object in the same format
@@ -449,13 +440,19 @@ namespace aspect
         void
         convert_log_grain_size (std::vector<double> &compositional_fields) const;
 
+
         /**
-         * List of depth, temperature and Clapeyron slopes for the different phase
-         * transitions and in which phase they occur
+         * Number of phase transitions for the one chemical composition used in this model.
          */
-        std::vector<double> transition_depths;
-        std::vector<double> transition_temperatures;
-        std::vector<double> transition_slopes;
+        unsigned int n_phase_transitions;
+
+        /**
+         * Object that handles phase transitions.
+         * Allows it to compute the phase function for each individual phase
+         * transition in the model, given the temperature, pressure, depth,
+         * and density gradient.
+         */
+        MaterialUtilities::PhaseFunction<dim> phase_function;
 
 
         /**
